@@ -28,49 +28,23 @@ public class PlayerCore : ShellCore {
     /// 0) no directional input detected
     /// </summary>
     /// <returns></returns>
-    public static int getDirectionalInput()
+    public static Vector2 getDirectionalInput()
     {
+        //Sum up all inputs
+        Vector2 direction = Vector2.zero;
         if (Input.GetKey("w"))
-        {
-            if (Input.GetKey("d"))
-            {
-                return 1; // northeast
-            }
-            else if (Input.GetKey("a"))
-            {
-                return 2;
-            }
-            else
-            {
-                return 3; // return north even if "s" is pressed (this has priority and works like in the original Shellcore)
-            }
-        }
-        if (Input.GetKey("s"))
-        {
-            if (Input.GetKey("d"))
-            {
-                return 4; // southeast
-            }
-            else if (Input.GetKey("a"))
-            {
-                return 5; // southwest
-            }
-            else
-            {
-                return 6; // south
-            }
-        }
+            direction += new Vector2(0, 1);
         if (Input.GetKey("a"))
-        {
-            return 7; // return west even if "d" is pressed (this has priority and works like in the original Shellcore)
-        }
+            direction += new Vector2(-1, 0);
+        if (Input.GetKey("s"))
+            direction += new Vector2(0, -1);
         if (Input.GetKey("d"))
-        {
-            return 8; // east
-        }
-        return 0;  // no directional input
+            direction += new Vector2(1, 0);
 
-        // it's not exactly like it was in the original game, but I like it more like this actually
+        //Send unit vector
+        direction.Normalize();
+
+        return direction; // it's not exactly like it was in the original game, but I like it more like this actually
     }
 
     protected override void Awake()

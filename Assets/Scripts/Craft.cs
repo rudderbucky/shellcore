@@ -232,63 +232,37 @@ public abstract class Craft : MonoBehaviour {
     /// Movement tries to emulate original Shellcore Command movement (specifically episode 1) but is not perfect
     /// </summary>
     /// <param name="direction">integer that specifies the direction of movement</param>
-    protected void MoveCraft(int direction)
+    protected void MoveCraft(Vector2 direction)
     {
         if (!isImmobile)
         {
-            switch (direction)
-            {
-                // switch based on the direction
-                // although it seems like these case statements run extremely similar code, I decided not to give a crap since it would be painful
-                // to initialize multiple integers just to dunk them into one piece of code. Besides, this makes actually seeing the logic pretty fun
-                case 1: // northeast
-                    CraftMover(upRight);
-                    break;
-                case 2: // northwest
-                    CraftMover(upLeft);
-                    break;
-                case 3: // north
-                    CraftMover(Vector2.up);
-                    break;
-                case 4: // southeast
-                    CraftMover(bottomRight);
-                    break;
-                case 5: // southwest
-                    CraftMover(bottomLeft);
-                    break;
-                case 6: // south
-                    CraftMover(-Vector2.up);
-                    break;
-                case 7: // west
-                    CraftMover(-Vector2.right);
-                    break;
-                case 8: // east
-                    CraftMover(Vector2.right);
-                    break;
-            }
+            CraftMover(direction);
         }
     }
     private void RotateCraft(Vector2 directionVector) {
-        float angle = Vector2.Angle(directionVector, Vector2.up);
-        if (directionVector.x < 0)
+
+        //no need to do anything if there's no movement
+        if (directionVector == Vector2.zero)
+            return;
+
+        //calculate difference of angles and compare them to find the correct turning direction
+        float targetAngle = Mathf.Atan2(directionVector.y, directionVector.x) * Mathf.Rad2Deg;
+        float craftAngle = Mathf.Atan2(craftBody.transform.up.y, craftBody.transform.up.x) * Mathf.Rad2Deg;
+
+        float delta = Mathf.Abs(Mathf.DeltaAngle(targetAngle - craftAngle, 90));
+        bool direction = delta < 90;
+
+        //rotate with physics
+        craftBody.transform.Rotate(0, 0, (direction ? 2 : -2) * enginePower / craftBody.mass * Time.deltaTime);
+
+        //check if the angle has gone over the target
+        craftAngle = Mathf.Atan2(craftBody.transform.up.y, craftBody.transform.up.x) * Mathf.Rad2Deg;
+        delta = Mathf.Abs(Mathf.DeltaAngle(targetAngle - craftAngle, 90));
+
+        if (direction != (delta < 90))
         {
-            angle = -angle;
-        }
-        if ((int)(Vector2.Angle(craftBody.transform.right, directionVector)) > 90) // if this is true move the craft ANTICLOCKWISE (+ve is anticlockwise)
-        {
-            craftBody.transform.Rotate(0, 0, 2 * enginePower / craftBody.mass * Time.deltaTime);
-            if ((int)(Vector2.Angle(craftBody.transform.right, directionVector)) < 90) // check if the rotation went too far anticlockwise, reset if it did
-            {
-                craftBody.transform.rotation = Quaternion.Euler(0, 0, -angle);
-            }
-        }
-        else if ((int)(Vector2.Angle(craftBody.transform.right, directionVector)) < 90 || Vector2.Angle(craftBody.transform.up, directionVector) > 0) // if this is true move the craft CLOCKWISE (-ve is clockwise)
-        {
-            craftBody.transform.Rotate(0, 0, -2 * enginePower / craftBody.mass * Time.deltaTime); // check if the rotation went too far clockwise, reset if it did
-            if ((int)(Vector2.Angle(craftBody.transform.right, directionVector)) > 90)
-            {
-                craftBody.transform.rotation = Quaternion.Euler(0, 0, -angle);
-            }
+            //if so, set the angle to be exactly the target
+            craftBody.transform.eulerAngles = new Vector3(0, 0, targetAngle - 90);
         }
     }
     /// <summary>
