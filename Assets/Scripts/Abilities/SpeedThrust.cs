@@ -7,19 +7,10 @@ using UnityEngine;
 /// </summary>
 public class SpeedThrust : ActiveAbility
 {
-    /*protected override void Start()
-    {
-        ID = 1;
-        cooldownDuration = 5;
-        CDRemaining = cooldownDuration;
-        activeDuration = 3;
-        activeTimeRemaining = activeDuration;
-        energyCost = 50;
-    }*/
-
     protected override void Awake()
     {
-        base.Awake();
+        base.Awake(); // base awake
+        // hardcoded values here
         ID = 1;
         cooldownDuration = 5;
         CDRemaining = cooldownDuration;
@@ -28,25 +19,22 @@ public class SpeedThrust : ActiveAbility
         energyCost = 50;
     }
 
-    //public override int GetID() {
-    //    return 1;
-    //}
     /// <summary>
     /// Returns the engine power to the original value
     /// </summary>
     protected override void Deactivate()
     {
-        core.enginePower /= 2;
+        core.enginePower -= 200; // bring the engine power back (will change to vary as Speed Thrust is tiered)
     }
 
     /// <summary>
-    /// Increases core engine power
+    /// Increases core engine power to speed up the core
     /// </summary>
     protected override void Execute()
     {
         // adjust fields
-        core.enginePower *= 2;
-        isActive = true;
-        isOnCD = true;
+        core.enginePower += 200; // add 200 to engine power (will change to vary as Speed Thrust is tiered)
+        isActive = true; // set to active
+        isOnCD = true; // set to on cooldown
     }
 }

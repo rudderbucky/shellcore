@@ -10,24 +10,18 @@ public class PlayerCore : ShellCore {
 
     public HUDScript hud;
 
+    /// <summary>
+    /// Respawns the player core, deinitializes the HUD
+    /// </summary>
     protected override void Respawn() {
-        hud.DeinitializeHUD();
-        transform.position = spawnPoint;
-        base.Respawn();
+        hud.DeinitializeHUD(); // deinitialize HUD
+        transform.position = spawnPoint; // reset position to spawn point
+        base.Respawn(); // this will reinitialize the HUD
     }
     /// <summary>
-    /// The directional driver for the player core, outputs an integer based on an intended direction-
-    /// 1) northeast
-    /// 2) northwest
-    /// 3) north
-    /// 4) southeast
-    /// 5) southwest
-    /// 6) south
-    /// 7) west
-    /// 8) east
-    /// 0) no directional input detected
+    /// The directional driver for the player core, returns a vector based on current inputs
     /// </summary>
-    /// <returns></returns>
+    /// <returns>a directional vector based on current inputs</returns>
     public static Vector2 getDirectionalInput()
     {
         //Sum up all inputs
@@ -50,19 +44,12 @@ public class PlayerCore : ShellCore {
     protected override void Awake()
     {
         base.Awake();
-        /*energyRegen = 10;
-        shellRegen = 10;
-        shellMax = 100;
-        shell = 50;
-        core = coreMax = 100;
-        energy = energyMax = 100;*/
-
     }
-    // Use this for initialization
+    // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
     protected override void Start () {
-        // adjust fields
+        // initialize instance fields
         base.Start();
-        spawnPoint = transform.position = Vector3.zero; // has to go before because oscillator reset depends on spawn point
+        spawnPoint = transform.position = Vector3.zero; // overrides the shellcore spawn point
         regenRate[0] = 10;
         regenRate[2] = 20;
         maxHealth[0] = 100;
@@ -70,17 +57,18 @@ public class PlayerCore : ShellCore {
         currentHealth[1] = maxHealth[1] = 100;
         currentHealth[2] = maxHealth[2] = 100;
 
+        // temporary direct tampering with the ability array
         abilities = new Ability[3];
         abilities[2] = GetComponent<MainBullet>();
         abilities[1] = GetComponent<ShellHeal>();
         abilities[0] = GetComponent<SpeedThrust>();
-        hud.InitializeHUD();
+        hud.InitializeHUD(); // initialize the HUD
 	}
 	
 	// Update is called once per frame
 	protected override void Update () {
         // call methods
-        base.Update();
-        MoveCraft(getDirectionalInput());
+        base.Update(); // base update
+        MoveCraft(getDirectionalInput()); // move the craft based on the directional input
 	}
 }

@@ -11,8 +11,11 @@ public abstract class ActiveAbility : Ability
     protected float activeTimeRemaining; // how much active time is remaining on the ability
     protected int activeDuration; // the duration it is active for
 
+    /// <summary>
+    /// Initialization of every active ability
+    /// </summary>
     protected override void Awake() {
-        base.Awake();
+        base.Awake(); // base awake
     }
     /// <summary>
     /// Get the active time remaining
@@ -20,9 +23,9 @@ public abstract class ActiveAbility : Ability
     /// <returns>The active time remaining</returns>
     public override float GetActiveTimeRemaining()
     {
-        if (isActive)
+        if (isActive) // active
         {
-            return activeTimeRemaining;
+            return activeTimeRemaining; // return active time remaining
         }
         else return 0; // not active
     }
@@ -38,23 +41,20 @@ public abstract class ActiveAbility : Ability
     /// <param name="key">Associated string on the button to push to activate</param>
     public override void Tick(string key)
     {
-        if (isActive)
+        if (isActive) // active
         {
             TickDown(activeDuration, ref activeTimeRemaining, ref isActive); // tick the active time
             if (!isActive) // if the boolean got flipped deactivate
             {
-                Deactivate();
+                Deactivate(); // deactivate
             }
         }
-        if (isOnCD)
+        if (isOnCD) // on cooldown
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
         }
-        else if (!isActive && core.GetHealth()[2] >= energyCost && Input.GetKeyDown(key)) // if energy is sufficient and key is pressed
-        {
-            core.MakeBusy();
-            core.TakeEnergy(energyCost); // take energy
-            Execute(); // activate the special effect
+        else if (!isActive) { // if not active it can run through the base ability behaviour
+            base.Tick(key); // base tick
         }
     }
 }

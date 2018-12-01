@@ -9,8 +9,8 @@ public class ShellHeal : Ability
 {
     protected override void Awake()
     {
-        //base.Start();
-        // initialize instance fields
+        base.Awake(); // base awake
+        // hardcoded values here
         ID = 2;
         cooldownDuration = 10;
         CDRemaining = 10;
@@ -22,7 +22,7 @@ public class ShellHeal : Ability
     /// </summary>
     protected override void Execute()
     {
-        if (core.GetHealth()[0] < core.GetMaxHealth()[0] - 25) // check for overheal
+        if (core.GetHealth()[0] <= core.GetMaxHealth()[0] - 25) // check for overheal
         {
             core.TakeDamage(-25, 0); // heal
             isOnCD = true; // set on cooldown

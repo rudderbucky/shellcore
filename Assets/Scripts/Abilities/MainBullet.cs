@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// The main bullet ability that every shellcore has as a basic ability (this will inherit from the base bullet ability)
+/// </summary>
 public class MainBullet : WeaponAbility {
 
-    public GameObject bulletPrefab;
-    private float bulletSpeed;
-    private float survivalTime;
+    public GameObject bulletPrefab; // the prefabbed sprite for a bullet with a BulletScript
+    private float bulletSpeed; // the speed of the bullet
+    private float survivalTime; // the time the bullet takes to delete itself
+
 
     protected override void Awake()
     {
-        base.Awake();
-        bulletSpeed = 50;
+        base.Awake(); // base awake
+        // hardcoded values here
+        bulletSpeed = 50; 
         survivalTime = 0.5F;
         range = bulletSpeed * survivalTime;
         ID = 3;
@@ -20,28 +25,35 @@ public class MainBullet : WeaponAbility {
         energyCost = 10;
     }
 
+    /// <summary>
+    /// Fires the bullet using the helper method
+    /// </summary>
+    /// <param name="victimPos">The position to fire the bullet to</param>
     protected override void Execute(Vector3 victimPos)
     {
-        if (core.GetTargetingSystem().GetTarget() != null)
+        if (core.GetTargetingSystem().GetTarget() != null) // check if there is actually a target, do not fire if there is not
         {
-            FireBullet(victimPos);
-            isOnCD = true;
+            FireBullet(victimPos); // fire if there is
+            isOnCD = true; // set on cooldown
         }
     }
 
+    /// <summary>
+    /// Helper method for Execute() that creates a bullet and modifies it to be shot
+    /// </summary>
+    /// <param name="targetPos">The position to fire the bullet to</param>
     void FireBullet(Vector3 targetPos)
     {
         // Create the Bullet from the Bullet Prefab
         var bullet = Instantiate(bulletPrefab, core.transform.position + Vector3.Normalize(targetPos - core.transform.position) * 1.5F, Quaternion.identity);
 
-        //bullet.GetComponent<>
         // Update its damage to match main bullet
-        bullet.GetComponent<BulletScript>().SetDamage(10);
+        bullet.GetComponent<BulletScript>().SetDamage(100);
 
         // Add velocity to the bullet
-        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - core.transform.position) * 50;
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - core.transform.position) * bulletSpeed;
 
-        // Destroy the bullet after 0.5 seconds
+        // Destroy the bullet after survival time
         Destroy(bullet, survivalTime);
     }
 }

@@ -2,56 +2,83 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Every ability that is used explicitly to attack other crafts is a weapon ability. 
+/// These all have a respective range at which they are effective as well.
+/// Their active status also does not depend on a duration and can be directly toggled on and off by the craft.
+/// </summary>
 public abstract class WeaponAbility : ActiveAbility {
 
-    protected float range;
+    protected float range; // the range of the ability
     
     protected override void Awake()
     {
-        isActive = true;
+        isActive = true; // initialize abilities to be active
     }
 
+    /// <summary>
+    /// Get the range of the weapon ability
+    /// </summary>
+    /// <returns>the range of the weapon ability</returns>
     public float GetRange() {
-        return range;
+        return range; // get range
     }
 
+    /// <summary>
+    /// Override for active time remaining, just returns a value that is never greater or equal than zero if the ability is active
+    /// and zero if it is not
+    /// </summary>
+    /// <returns>a float value that is directly based on isActive rather than a duration</returns>
     public override float GetActiveTimeRemaining()
     {
-        if (isActive) return -1;
-        else return 0;
+        if (isActive) return -1; // -1 is not zero so the ability is active
+        else return 0; // inactive ability
     }
 
+    /// <summary>
+    /// Override for tick that integrates the targeting system of the core 
+    /// and adjusted for the new isActive behaviour
+    /// </summary>
+    /// <param name="key">the associated trigger key of the ability</param>
     public override void Tick(string key)
     {
-        if (Input.GetKeyDown(key)) {
-            core.MakeBusy();
-            isActive = !isActive;
+        if (Input.GetKeyDown(key)) { // toggle ability
+            core.MakeBusy(); // make core busy
+            isActive = !isActive; // toggle activeness
         }
-        if (isOnCD)
+        if (isOnCD) // on cooldown
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
         }
         else if (isActive && core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
         {
-            if (core.GetTargetingSystem().GetTarget() != null) {
-                core.SetIntoCombat();
+            if (core.GetTargetingSystem().GetTarget() != null) { // check if there is a target
+                core.SetIntoCombat(); // now in combat
                 if (Vector2.Distance(core.transform.position, core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
+                    // check if in range
                 {
-                    Execute(core.GetTargetingSystem().GetTarget().position);
+                    Execute(core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
                     core.TakeEnergy(energyCost); // take energy
                 }
             }
-            // Execute(); // activate the special effect
         }
     }
 
+    /// <summary>
+    /// Unused override for weapon ability, use the position-overloaded Execute() override instead
+    /// </summary>
     protected override void Execute()
     {
         Debug.Log("no argument execute is called on a weapon ability!");
+        // not supposed to be called, log debug message
     }
 
+    /// <summary>
+    /// Virtual Execute() overload for weapon ability
+    /// </summary>
+    /// <param name="victimPos">The position to execute the ability to</param>
     protected virtual void Execute(Vector3 victimPos)
     {
-        isOnCD = true;
+        isOnCD = true; // set on cooldown
     }
 }

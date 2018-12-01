@@ -11,37 +11,43 @@ public abstract class AirCraft : Craft
 
     private float timePassed; // float that stores the time passed since the last aircraft movement, used for idle oscillation and perhaps more down the line
     private Vector2 oscillatorVector; // vector used to oscillate the aircraft during idle time
-    private float tmp; // used for oscillation y-coordination resetting
+    private float positionBeforeOscillation; // used for oscillation y-coordination resetting
     private Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
 
     protected override void Update() {
-        base.Update();
-        Oscillator();
+        base.Update(); // base update
+        Oscillator(); // call oscillator
     }
 
+    /// <summary>
+    /// Respawns the given aircraft at its spawn point
+    /// </summary>
     protected override void Respawn()
     {
-        base.Respawn();
+        base.Respawn(); // base respawn
     }
+
     protected override void Awake()
     {
-        base.Awake();
+        base.Awake(); // base awake
     }
 
     protected override void Start()
     {
-        storedPos = spawnPoint;
-        base.Start();
+        // initialize instance fields
+        storedPos = spawnPoint; 
+        base.Start(); // base start
     }
     /// <summary>
     /// Helper for oscillator
     /// </summary>
     protected void Oscillator()
     {
-        if (isDead) {
+        if (isDead) { // if aircraft is dead
+            // reset all fields
             storedPos = spawnPoint;
             timePassed = 0;
-            tmp = spawnPoint.y;
+            positionBeforeOscillation = spawnPoint.y;
         }
 
         if (IsMoving()) // if core is supposed to be moving 
@@ -49,7 +55,7 @@ public abstract class AirCraft : Craft
             if (timePassed != 0)
             { // need to reset the position due to the oscillator
                 storedPos = craftBody.position;
-                storedPos.y = tmp;
+                storedPos.y = positionBeforeOscillation;
                 craftBody.position = storedPos;
             }
             timePassed = 0; // reset time passed
@@ -60,7 +66,7 @@ public abstract class AirCraft : Craft
         }
         if (craftBody.velocity.y != 0)
         { // store the last core position before oscillator is triggered
-            tmp = craftBody.position.y;
+            positionBeforeOscillation = craftBody.position.y;
         }
     }
 

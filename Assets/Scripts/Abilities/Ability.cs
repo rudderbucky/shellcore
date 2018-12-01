@@ -6,7 +6,7 @@ using UnityEngine;
 /// Interface for objects that can be executed by a handler; mainly used for abilities
 /// </summary>
 interface IPlayerExecutable {
-    void Tick(string key);
+    void Tick(string key); // the state of this object will change over time
 }
 
 /// <summary>
@@ -22,14 +22,34 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     protected float CDRemaining; // amount of time remaining on cooldown
     protected bool isOnCD = false; // check for cooldown
     protected bool isPassive = false; // if the ability is passive
+    protected bool isEnabled = true; // if the ability is enabled
 
+    /// <summary>
+    /// Setter method for isEnabled, will be used by parts
+    /// </summary>
+    /// <param name="input">boolean to set to</param>
+    public void SetIsEnabled(bool input) {
+        isEnabled = input; // set is enabled
+    }
+
+    /// <summary>
+    /// Getter method for isEnabled, will be used by the AbilityHandler
+    /// </summary>
+    /// <returns>true if ability is enabled, false otherwise</returns>
+    public bool GetIsEnabled() {
+        return isEnabled; // get is enabled
+    }
+    /// <summary>
+    /// Initialization of every ability
+    /// </summary>
     protected virtual void Awake() { }
+
     /// <summary>
     /// Get the isPassive of the ability
     /// </summary>
     /// <returns>the isPassive of the ability</returns>
     public bool GetIsPassive() {
-        return isPassive;
+        return isPassive; // is passive
     }
 
     /// <summary>
@@ -37,7 +57,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// </summary>
     /// <returns>Image ID of the ability</returns>
     public virtual int GetID() {
-        return ID;
+        return ID; // ID
     }
 
     /// <summary>
@@ -45,7 +65,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// </summary>
     /// <returns>The energy cost of the ability</returns>
     public int GetEnergyCost() {
-        return energyCost;
+        return energyCost; // energy cost
     }
 
     /// <summary>
@@ -54,7 +74,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// <returns>The cooldown of the ability</returns>
     public float GetCDDuration()
     {
-        return cooldownDuration;
+        return cooldownDuration; // cooldown duration
     }
 
     /// <summary>
@@ -62,7 +82,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// </summary>
     /// <returns>The active time remaining on the ability</returns>
     public virtual float GetActiveTimeRemaining() {
-        return 0;
+        return 0; // active time (unless overriden this is 0)
     }
 
     /// <summary>
@@ -102,11 +122,11 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     virtual public void Tick(string key) {
         if (isOnCD) // tick the cooldown down
         {
-            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); 
+            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }
-        else if (core.GetHealth()[0] >= energyCost && Input.GetKeyDown(key)) // enough energy and button pressed
+        else if (core.GetHealth()[2] >= energyCost && Input.GetKeyDown(key)) // enough energy and button pressed
         {
-            core.MakeBusy();
+            core.MakeBusy(); // make core busy
             core.TakeEnergy(energyCost); // remove the energy
             Execute(); // execute the ability
         }
@@ -116,6 +136,6 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// Used to activate whatever effect the ability has, almost always overriden
     /// </summary>
     virtual protected void Execute() {
-        isOnCD = true; // template
+        isOnCD = true; // template to be overriden
     }
 }

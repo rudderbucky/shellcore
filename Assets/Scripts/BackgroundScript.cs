@@ -19,41 +19,31 @@ public class BackgroundScript : MonoBehaviour {
     /// Updates the tiles' positions
     /// </summary>
     /// <param name="tile">the array of tiles</param>
-    private void tileUpdate(GameObject[] tile)
+    private void TileUpdate(GameObject[] tile)
     {
-        for (int i = 0; i < tile.Length; i++)
+        for (int i = 0; i < tile.Length; i++) // iterate through every tile
         {
-            tileWrapper(tile[i], 0); // update each tile for both dimensions
-            tileWrapper(tile[i], 1); 
+            TileWrapper(tile[i], 0); // update each tile for both dimensions
+            TileWrapper(tile[i], 1); 
         }
     }
 
     /// <summary>
-    /// Helper method for tileUpdate, wraps the tiles around the screen if they move too far
+    /// Helper method for TileUpdate, wraps the tiles around the screen if they move too far
     /// </summary>
     /// <param name="tile">the tile to wrap</param>
     /// <param name="dimension">the dimension (0 is x, 1 is y)</param>
-    private void tileWrapper(GameObject tile, int dimension)
+    private void TileWrapper(GameObject tile, int dimension)
     {
-        float limit;
-        switch (dimension)
-        {
-            case 0:
-                limit = gridWidth * tileSpacing.x / 2; // x axis
-                break;
-            case 1:
-                limit = gridHeight * tileSpacing.y / 2; // y axis
-                break;
-            default: // not supposed to happen lol, too lazy to learn C# exception handling
-                limit = 0;
-                break;
-        }
+        float limit = dimension == 0 ? gridWidth * tileSpacing.x / 2 : gridHeight * tileSpacing.y / 2; 
+        // the limit before the tile should wrap
+        // thanks Ormanus for showing me this ridiculously powerful operator (? and :)
+
         if (Mathf.Abs(tile.transform.position[dimension] - core.position[dimension]) > limit) // this means it is at an axis edge
         {
-            if (tile.transform.position[dimension] - core.position[dimension] > 0) // right edge
-            {
-                limit = -limit; // make it so that you subtract the limit later on
-            }
+            limit = tile.transform.position[dimension] - core.position[dimension] > 0 ? -limit : limit; // right edge
+            // (this may be slightly inefficient but I don't care it's cool)
+
             // if limit remains positive left edge
             displacement = tile.transform.position; // grab the tile position
             displacement[dimension] = displacement[dimension] + 2 * limit; // update the x position to be at the other edge
@@ -64,12 +54,14 @@ public class BackgroundScript : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        //ingameTiles = new GameObject[gridWidth * gridHeight]; // grab an array of tile references
-        tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; // grab tile spacing (this should be constant between the tile sprites given)
-        Vector2 dimensions = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z));
-        gridWidth = 1 + (int)Mathf.Ceil(dimensions.x * 2/ tileSpacing.x);
+        tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
+        // grab tile spacing (this should be constant between the tile sprites given)
+        Vector2 dimensions = Camera.main.ScreenToWorldPoint(
+            new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z)); 
+        // grab camera dimensions
+        gridWidth = 1 + (int)Mathf.Ceil(dimensions.x * 2/ tileSpacing.x); // calculate height and width using camera dimensions
         gridHeight = 1 + (int)Mathf.Ceil(dimensions.y * 2/ tileSpacing.y);
-        ingameTiles = new GameObject[gridWidth * gridHeight];
+        ingameTiles = new GameObject[gridWidth * gridHeight]; // create an array of tile references
         tileStartPos = new Vector2 // get the tile start position (this project needs the tiles to center at 0,0)
         {
             x = -tileSpacing.x * (gridWidth-1)/2,
@@ -95,6 +87,6 @@ public class BackgroundScript : MonoBehaviour {
         // Update is called once per frame
         void LateUpdate()
         {
-        tileUpdate(ingameTiles);
+        TileUpdate(ingameTiles); // tile update called on tile array
         }
     }

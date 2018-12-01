@@ -10,8 +10,10 @@ public class ShellCore : AirCraft {
     // TODO: these will be either enemies or allies, most allies and a few enemies can be interacted with.
     protected override void Start()
     {
-        base.Start();
-        transform.position = new Vector3(20, 0, 0);
+        base.Start(); // base start
+        // initialize instance fields
+        respawns = true;
+        transform.position = new Vector3(10, 0, 0);
         currentHealth[0] = 100;
         maxHealth[0] = 100;
         regenRate[0] = 10;
@@ -20,10 +22,10 @@ public class ShellCore : AirCraft {
 
     protected override void Awake()
     {
-        base.Awake();
-        currentHealth[1] = maxHealth[1] = 100;
+        base.Awake(); // base awake
     }
+
     protected override void Update() {
-        base.Update();
+        base.Update(); // base update
     }
 }
