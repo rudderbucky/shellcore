@@ -5,8 +5,8 @@ using UnityEngine;
 /// <summary>
 /// Every entity that can move is a craft. This includes drones and ShellCores.
 /// </summary>
-public abstract class Craft : MonoBehaviour {
-
+public abstract class Craft : MonoBehaviour
+{
     protected float[] currentHealth; // current health of the craft (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] maxHealth; // maximum health of the craft (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] regenRate; // regeneration rate of the craft (index 0 is shell, index 1 is core, index 2 is energy)
@@ -26,6 +26,9 @@ public abstract class Craft : MonoBehaviour {
     protected Vector3 spawnPoint; // the spawn point of the craft
     public GameObject explosionCirclePrefab; // prefabs for death explosion
     public GameObject explosionLinePrefab;
+    public List<ShellPart> parts; // List containing all parts of the craft
+    public CraftBlueprint blueprint; // Default shell configuration of the craft
+    public int faction; // What side the craft belongs to (0 = green, 1 = red, 2 = blue...) //TODO: use this to set colors of all parts
 
     /// <summary>
     /// Get if the craft is dead
@@ -68,7 +71,7 @@ public abstract class Craft : MonoBehaviour {
         regenRate = new float[3];
         isBusy = false;
         respawns = false;
-        targeter = new TargetingSystem(); // create the associated targeting system for this craft
+        targeter = new TargetingSystem(transform); // create the associated targeting system for this craft
         isInCombat = false;
     }
 
@@ -78,6 +81,7 @@ public abstract class Craft : MonoBehaviour {
         //transform.rotation = Quaternion.identity; // reset rotation
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
+        BuildShip(); // Generate shell parts around the core
     }
 
     protected virtual void Update() {
@@ -112,6 +116,7 @@ public abstract class Craft : MonoBehaviour {
         transform.rotation = Quaternion.identity; // reset rotation so part rotation can be reset
         foreach (Transform child in transform) { // reset all the children rotations
             child.transform.rotation = Quaternion.identity;
+            child.transform.localPosition = Vector3.zero;
             var tmp = child.gameObject.GetComponent<ShellPart>(); 
             // will be changed to check for all parts instead of just shell part
             if (tmp) { // if part exists
@@ -166,6 +171,38 @@ public abstract class Craft : MonoBehaviour {
             }
             else combatTimer += Time.deltaTime; // otherwise continue ticking timer
         }
+    }
+
+    /// <summary>
+    /// Generate shell parts in the blueprint, change ship stats accordingly
+    /// </summary>
+    protected virtual void BuildShip()
+    {
+        // Create shell parts
+        if (blueprint != null)
+        {
+            for (int i = 0; i < blueprint.parts.Count; i++)
+            {
+                CraftBlueprint.PartInfo part = blueprint.parts[i];
+
+                GameObject obj = Instantiate(part.part);
+                obj.transform.SetParent(transform, false);
+                obj.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
+                obj.transform.localPosition = new Vector3(part.location.x, part.location.y, (float)i / -10f);
+                obj.GetComponent<SpriteRenderer>().flipX = part.mirrored;
+                parts.Add(obj.GetComponent<ShellPart>());
+            }
+        }
+
+        // Add abilities
+        abilities = GetComponentsInChildren<Ability>();
+        //Ability[] coreAbilities = GetComponents<Ability>();
+        //Ability[] shellAbilities = GetComponentsInChildren<Ability>();
+
+        //abilities = new Ability[coreAbilities.Length + shellAbilities.Length];
+        //System.Array.Copy(coreAbilities, abilities, coreAbilities.Length);
+        //System.Array.Copy(shellAbilities, 0, abilities, coreAbilities.Length, shellAbilities.Length);
+
     }
 
     /// <summary>

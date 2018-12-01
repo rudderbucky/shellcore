@@ -1,0 +1,23 @@
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// Contains the list of parts and their relative locations and rotations to the craft
+/// </summary>
+/// 
+[CreateAssetMenu(fileName = "Craft", menuName = "ShellCore/Craft", order = 1)]
+public class CraftBlueprint : ScriptableObject
+{
+    [System.Serializable]
+    public struct PartInfo
+    {
+        // Location, rotation and mirroring
+        public Vector2 location;
+        public float rotation;
+        public bool mirrored;
+
+        public GameObject part; //Part prefab
+    }
+
+    public List<PartInfo> parts;
+}

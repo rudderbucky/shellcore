@@ -45,6 +45,15 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     protected virtual void Awake() { }
 
     /// <summary>
+    /// Get core, if it isn't specified elsewhere
+    /// </summary>
+    void Start()
+    {
+        if (core == null)
+            core = GetComponentInParent<Craft>();
+    }
+
+    /// <summary>
     /// Get the isPassive of the ability
     /// </summary>
     /// <returns>the isPassive of the ability</returns>

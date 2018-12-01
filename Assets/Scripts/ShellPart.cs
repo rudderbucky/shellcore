@@ -5,11 +5,11 @@ using UnityEngine;
 /// <summary>
 /// The part script for the shell around a core of a Shellcore (will be salvaged to make a more general part class)
 /// </summary>
+[RequireComponent(typeof(SpriteRenderer))]
 public class ShellPart : MonoBehaviour {
 
     float detachedTime; // time since detachment
     private bool hasDetached; // is the part detached
-    // Use this for initialization
 
     /// <summary>
     /// Detach the part from the Shellcore
@@ -30,8 +30,6 @@ public class ShellPart : MonoBehaviour {
         hasDetached = false;
         GetComponent<SpriteRenderer>().enabled = true;
         Destroy(GetComponent<Rigidbody2D>()); // remove rigidbody
-        transform.position = transform.parent.position;
-        transform.rotation = Quaternion.identity;
 	}
 
     /// <summary>

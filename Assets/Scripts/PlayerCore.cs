@@ -58,10 +58,10 @@ public class PlayerCore : ShellCore {
         currentHealth[2] = maxHealth[2] = 100;
 
         // temporary direct tampering with the ability array
-        abilities = new Ability[3];
-        abilities[2] = GetComponent<MainBullet>();
-        abilities[1] = GetComponent<ShellHeal>();
-        abilities[0] = GetComponent<SpeedThrust>();
+        //abilities = new Ability[1];
+        //abilities[0] = GetComponent<SpeedThrust>();
+        //abilities[1] = GetComponent<ShellHeal>();
+        //abilities[0] = GetComponent<MainBullet>();
         hud.InitializeHUD(); // initialize the HUD
 	}
 	

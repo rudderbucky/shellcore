@@ -31,7 +31,7 @@ public class MainBullet : WeaponAbility {
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override void Execute(Vector3 victimPos)
     {
-        if (core.GetTargetingSystem().GetTarget() != null) // check if there is actually a target, do not fire if there is not
+        if (core.GetTargetingSystem().GetTarget(true) != null) // check if there is actually a target, do not fire if there is not
         {
             FireBullet(victimPos); // fire if there is
             isOnCD = true; // set on cooldown

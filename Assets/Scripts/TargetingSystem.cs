@@ -10,13 +10,15 @@ public class TargetingSystem {
     // and constantly update the position of the targeting system
 
     private Transform target; // the transform of the target
+    public Transform parent; //parent object
 
     /// <summary>
-    /// No argument constructor that sets the target to null
+    /// Constructor that sets the target to null and takes a transform from which distances are calculate from
     /// </summary>
-    public TargetingSystem() {
+    public TargetingSystem(Transform parent) {
         // initialize instance fields
         target = null;
+        this.parent = parent;
     }
 
     /// <summary>
@@ -30,8 +32,35 @@ public class TargetingSystem {
     /// <summary>
     /// Get the target of the targeting system
     /// </summary>
+    /// <param name="findNew">Whether or not the targeting system should find a new target</param>
     /// <returns>The target of the targeting system</returns>
-    public Transform GetTarget() {
+    public Transform GetTarget(bool findNew = false) {
+
+        if(findNew)
+        {
+            //Find the closest enemy
+            //TODO: optimize
+            Craft[] crafts = GameObject.FindObjectsOfType<Craft>();
+
+            Transform closest = null;
+            float closestD = float.MaxValue;
+
+            for (int i = 0; i < crafts.Length; i++)
+            {
+                if (crafts[i].transform == parent)
+                    continue;
+                if (parent.GetComponent<Craft>().faction == crafts[i].faction)
+                    continue;
+
+                float sqrD = Vector3.SqrMagnitude(parent.position - crafts[i].transform.position);
+                if (closest == null || sqrD < closestD)
+                {
+                    closestD = sqrD;
+                    closest = crafts[i].transform;
+                }
+            }
+        }
+
         return target; // get target
     }
 }
