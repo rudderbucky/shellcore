@@ -14,10 +14,6 @@ public class ShellCore : AirCraft {
         // initialize instance fields
         respawns = true;
         transform.position = new Vector3(10, 0, 0);
-        currentHealth[0] = 100;
-        maxHealth[0] = 100;
-        regenRate[0] = 10;
-        currentHealth[1] = maxHealth[1] = 100;
     }
 
     protected override void Awake()

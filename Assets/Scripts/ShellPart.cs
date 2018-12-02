@@ -11,7 +11,20 @@ public class ShellPart : MonoBehaviour {
     float detachedTime; // time since detachment
     private bool hasDetached; // is the part detached
     private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rigid;
     private Craft craft;
+    public float partHealth; // health of the part (half added to shell, quarter to core)
+    private float currentHealth; // current health of part
+    private bool collectible;
+
+    public void SetCollectible(bool collectible) {
+        this.collectible = collectible;
+    }
+
+    public float GetPartHealth()
+    {
+        return partHealth; // part health
+    }
 
     /// <summary>
     /// Detach the part from the Shellcore
@@ -22,12 +35,14 @@ public class ShellPart : MonoBehaviour {
         detachedTime = Time.time; // update detached time
         hasDetached = true; // has detached now
         gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
-        GetComponent<Rigidbody2D>().gravityScale = 0; // adjust the rigid body
-        GetComponent<Rigidbody2D>().drag = 0;
+        rigid = GetComponent<Rigidbody2D>();
+        rigid.gravityScale = 0; // adjust the rigid body
+        rigid.drag = 0;
+        rigid.angularDrag = 0;
 
         // add force and torque
-        GetComponent<Rigidbody2D>().AddForce(new Vector2(250 * Random.Range(-1,2), 250 * Random.Range(-1, 2)));
-        GetComponent<Rigidbody2D>().AddTorque(100 * Random.Range(-20, 21));
+        rigid.AddForce(new Vector2(250 * Random.Range(-1F,2), 250 * Random.Range(-1F, 2)));
+        rigid.AddTorque(100 * Random.Range(-20, 21));
     }
 
     public void Awake()
@@ -41,6 +56,7 @@ public class ShellPart : MonoBehaviour {
         hasDetached = false;
         spriteRenderer.enabled = true;
         Destroy(GetComponent<Rigidbody2D>()); // remove rigidbody
+        currentHealth = partHealth / 4;
         craft = transform.root.GetComponent<Craft>();
         spriteRenderer.color = FactionColors.colors[craft.faction];
     }
@@ -59,7 +75,30 @@ public class ShellPart : MonoBehaviour {
             Blink(); // blink
         }
         else if (hasDetached) { // if it has actually detached
-            spriteRenderer.enabled = false; // disable sprite renderer
+            if (collectible)
+            {
+                spriteRenderer.enabled = true;
+                rigid.velocity = Vector2.zero;
+                rigid.angularVelocity = rigid.angularVelocity > 0 ? 200 : -200;
+            }
+            else
+            {
+                if (name != "Shell Sprite")
+                {
+                    Destroy(gameObject);
+                } else spriteRenderer.enabled = false; // disable sprite renderer
+            }
         }
 	}
+
+    /// <summary>
+    /// Take part damage, if it is damaged too much remove the part
+    /// </summary>
+    /// <param name="damage">damage to deal</param>
+    public void TakeDamage(float damage) {
+        currentHealth -= damage;
+        if (currentHealth <= 0) {
+            craft.RemovePart(this);
+        }
+    }
 }

@@ -51,6 +51,7 @@ public abstract class Craft : MonoBehaviour
 
         for(int i = 0; i < parts.Count; i++)
         {
+            parts[i].SetCollectible((parts[i].name != "Shell Sprite") && Random.Range(0F,5) > 2.5F);
             parts[i].Detach();
         }
 
@@ -180,7 +181,7 @@ public abstract class Craft : MonoBehaviour
     {
         // Remove possible old parts from list
         parts.Clear();
-
+        maxHealth = new float[3];
         // Create shell parts
         if (blueprint != null)
         {
@@ -190,11 +191,19 @@ public abstract class Craft : MonoBehaviour
 
                 GameObject obj = Instantiate(part.part);
                 obj.transform.SetParent(transform, false);
+                obj.transform.SetAsFirstSibling();
                 obj.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
                 obj.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
                 SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
-                sr.flipX = part.mirrored;
+                // sr.flipX = part.mirrored; this doesn't work, it does not flip the collider hitbox
+                var tmp = obj.transform.localScale;
+                tmp.x = part.mirrored ? -1 : 1;
+                obj.transform.localScale = tmp;
                 sr.sortingOrder = i + 2;
+                ShellPart partComp = obj.GetComponent<ShellPart>();
+                maxHealth[0] += partComp.GetPartHealth() / 2;
+                maxHealth[1] += partComp.GetPartHealth() / 4;
+
                 parts.Add(obj.GetComponent<ShellPart>());
             }
         }
@@ -203,15 +212,19 @@ public abstract class Craft : MonoBehaviour
         {
             parts.Add(shellSprite.GetComponent<ShellPart>());
         }
-
+        currentHealth[0] = maxHealth[0];
+        currentHealth[1] = maxHealth[1];
+        currentHealth[2] = maxHealth[2] = 100;
+        regenRate[0] = 100;
+        regenRate[2] = 100;
         // Add abilities
         abilities = GetComponentsInChildren<Ability>();
     }
 
     public void RemovePart(ShellPart part)
     {
-        part.Detach();
         part.GetComponent<Ability>().SetDestroyed(true);
+        part.Detach();
         parts.Remove(part);
     }
 

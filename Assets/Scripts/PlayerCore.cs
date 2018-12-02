@@ -50,18 +50,6 @@ public class PlayerCore : ShellCore {
         // initialize instance fields
         base.Start();
         spawnPoint = transform.position = Vector3.zero; // overrides the shellcore spawn point
-        regenRate[0] = 10;
-        regenRate[2] = 20;
-        maxHealth[0] = 100;
-        currentHealth[0] = 50;
-        currentHealth[1] = maxHealth[1] = 100;
-        currentHealth[2] = maxHealth[2] = 100;
-
-        // temporary direct tampering with the ability array
-        //abilities = new Ability[1];
-        //abilities[0] = GetComponent<SpeedThrust>();
-        //abilities[1] = GetComponent<ShellHeal>();
-        //abilities[0] = GetComponent<MainBullet>();
         hud.InitializeHUD(); // initialize the HUD
 	}
 	
