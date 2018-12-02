@@ -21,13 +21,24 @@ public class BulletScript : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        var hit = collision.gameObject; // grab collision 
+        var hit = collision.gameObject.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<Craft>(); // check if it has a craft component
         if (craft != null) // check if the component was obtained
         {
             craft.TakeDamage(damage, 0); // deal the damage to the target, no shell penetration
-        }
+            damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
 
-        Destroy(gameObject); // bullet has collided, delete immediately
+            // if the shell is low, detach the part
+            if(craft.GetHealth()[0] == 0)
+            {
+                ShellPart part = collision.gameObject.GetComponent<ShellPart>();
+                if (part)
+                {
+                    craft.RemovePart(part);
+                }
+            }
+
+            Destroy(gameObject); // bullet has collided with a target, delete immediately
+        }
     }
 }

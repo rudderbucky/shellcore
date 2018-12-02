@@ -23,6 +23,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     protected bool isOnCD = false; // check for cooldown
     protected bool isPassive = false; // if the ability is passive
     protected bool isEnabled = true; // if the ability is enabled
+    protected bool isDestroyed = false; // has the part detached from the craft
 
     /// <summary>
     /// Setter method for isEnabled, will be used by parts
@@ -39,6 +40,26 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     public bool GetIsEnabled() {
         return isEnabled; // get is enabled
     }
+
+    /// <summary>
+    /// Setter method for isDestroyed
+    /// </summary>
+    /// <param name="input">boolean to set to</param>
+    public void SetDestroyed(bool input)
+    {
+        isDestroyed = input; // set is destroyed
+    }
+
+    /// <summary>
+    /// Getter method for isDestroyed
+    /// </summary>
+    /// <returns>true if ability is destroyed, false otherwise</returns>
+    public bool IsDestroyed()
+    {
+        return isDestroyed; // get is destroyed
+    }
+
+
     /// <summary>
     /// Initialization of every ability
     /// </summary>
@@ -129,7 +150,11 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// </summary>
     /// <param name="key">The associated button to press to activate</param>
     virtual public void Tick(string key) {
-        if (isOnCD) // tick the cooldown down
+        if(isDestroyed)
+        {
+            return; // Part has been destroyed, ability can't be used
+        }
+        else if (isOnCD) // tick the cooldown down
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }

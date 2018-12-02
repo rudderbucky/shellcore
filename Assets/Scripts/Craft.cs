@@ -48,12 +48,12 @@ public abstract class Craft : MonoBehaviour
         MakeBusy(); // make busy
         deathTimer = 0; // reset death timer
         transform.Find("Minimap Image").GetComponent<SpriteRenderer>().enabled = false; // remove from minimap
-        GameObject deadShell = transform.Find("Shell Sprite").gameObject; 
-        // find the shell sprite (temporary, will work with every part later)
-        if (deadShell) // gameobject found
+
+        for(int i = 0; i < parts.Count; i++)
         {
-            deadShell.GetComponent<ShellPart>().Detach(); // will work with every part (the part class will have detach)
+            parts[i].Detach();
         }
+
         GameObject tmp = Instantiate(explosionCirclePrefab); // instantiate circle explosion
         tmp.transform.SetParent(transform, false);
         Destroy(tmp, 2); // destroy explosions after 2 seconds
@@ -178,6 +178,9 @@ public abstract class Craft : MonoBehaviour
     /// </summary>
     protected virtual void BuildShip()
     {
+        // Remove possible old parts from list
+        parts.Clear();
+
         // Create shell parts
         if (blueprint != null)
         {
@@ -188,21 +191,28 @@ public abstract class Craft : MonoBehaviour
                 GameObject obj = Instantiate(part.part);
                 obj.transform.SetParent(transform, false);
                 obj.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
-                obj.transform.localPosition = new Vector3(part.location.x, part.location.y, (float)i / -10f);
-                obj.GetComponent<SpriteRenderer>().flipX = part.mirrored;
+                obj.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
+                SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
+                sr.flipX = part.mirrored;
+                sr.sortingOrder = i + 2;
                 parts.Add(obj.GetComponent<ShellPart>());
             }
+        }
+        Transform shellSprite = transform.Find("Shell Sprite");
+        if(shellSprite)
+        {
+            parts.Add(shellSprite.GetComponent<ShellPart>());
         }
 
         // Add abilities
         abilities = GetComponentsInChildren<Ability>();
-        //Ability[] coreAbilities = GetComponents<Ability>();
-        //Ability[] shellAbilities = GetComponentsInChildren<Ability>();
+    }
 
-        //abilities = new Ability[coreAbilities.Length + shellAbilities.Length];
-        //System.Array.Copy(coreAbilities, abilities, coreAbilities.Length);
-        //System.Array.Copy(shellAbilities, 0, abilities, coreAbilities.Length, shellAbilities.Length);
-
+    public void RemovePart(ShellPart part)
+    {
+        part.Detach();
+        part.GetComponent<Ability>().SetDestroyed(true);
+        parts.Remove(part);
     }
 
     /// <summary>

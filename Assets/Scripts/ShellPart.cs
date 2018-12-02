@@ -10,11 +10,15 @@ public class ShellPart : MonoBehaviour {
 
     float detachedTime; // time since detachment
     private bool hasDetached; // is the part detached
+    private SpriteRenderer spriteRenderer;
+    private Craft craft;
 
     /// <summary>
     /// Detach the part from the Shellcore
     /// </summary>
     public void Detach() {
+        if (name != "Shell Sprite")
+            transform.SetParent(null, true);
         detachedTime = Time.time; // update detached time
         hasDetached = true; // has detached now
         gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
@@ -25,18 +29,27 @@ public class ShellPart : MonoBehaviour {
         GetComponent<Rigidbody2D>().AddForce(new Vector2(250 * Random.Range(-1,2), 250 * Random.Range(-1, 2)));
         GetComponent<Rigidbody2D>().AddTorque(100 * Random.Range(-20, 21));
     }
-	public void Start () {
+
+    public void Awake()
+    {
+        //Find sprite renderer
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    public void Start () {
         // initialize instance fields
         hasDetached = false;
-        GetComponent<SpriteRenderer>().enabled = true;
+        spriteRenderer.enabled = true;
         Destroy(GetComponent<Rigidbody2D>()); // remove rigidbody
-	}
+        craft = transform.root.GetComponent<Craft>();
+        spriteRenderer.color = FactionColors.colors[craft.faction];
+    }
 
     /// <summary>
     /// Makes the part blink like in the original game
     /// </summary>
     void Blink() {
-        GetComponent<SpriteRenderer>().enabled = Time.time % 0.25F > 0.125F; // math stuff that blinks the part
+        spriteRenderer.enabled = Time.time % 0.25F > 0.125F; // math stuff that blinks the part
     }
 
 	// Update is called once per frame
@@ -46,7 +59,7 @@ public class ShellPart : MonoBehaviour {
             Blink(); // blink
         }
         else if (hasDetached) { // if it has actually detached
-            GetComponent<SpriteRenderer>().enabled = false; // disable sprite renderer
+            spriteRenderer.enabled = false; // disable sprite renderer
         }
 	}
 }

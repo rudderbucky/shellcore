@@ -77,7 +77,7 @@ public abstract class AirCraft : Craft
     {
         timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
         oscillatorVector = craftBody.position; // get the current aircraft position
-        oscillatorVector.y = oscillatorVector.y - 0.01F * Mathf.Sin(timePassed); // cool math stuff 
+        oscillatorVector.y = oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + craftBody.position.x); // cool math stuff 
         craftBody.position = oscillatorVector; // set the aircraft position
     }
 }

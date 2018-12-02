@@ -102,7 +102,11 @@ public class AbilityHandler : MonoBehaviour {
             gleaming[index] = true; // start gleaming
             gleamed[index] = true; // has already gleamed once now
         }
-        if (abilities[index].GetActiveTimeRemaining() != 0) // active
+        if(abilities[index].IsDestroyed()) // Not available in the current "reduced" shell configuration
+        {
+            abilityBackgroundArray[index].color = new Color(.1f, .1f, .1f); // make the background dark
+        }
+        else if (abilities[index].GetActiveTimeRemaining() != 0) // active
         {
             abilityBackgroundArray[index].color = Color.green; // make the background green
         } 

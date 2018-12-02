@@ -15,8 +15,8 @@ public class MinimapLockRotationScript : MonoBehaviour {
     public void Initialize() {
         sprRenderer = GetComponent<SpriteRenderer>();
         sprRenderer.enabled = true; // enable sprite renderer
-        Transform tmp = transform.parent.Find("Shell Sprite"); // get the shell color
-        sprRenderer.color = tmp.GetComponent<SpriteRenderer>().color; // adjust minimap color to that
+        Color factionColor = FactionColors.colors[GetComponentInParent<Craft>().faction];
+        sprRenderer.color = factionColor; // adjust minimap color to that
     }
 
     private void Start()
