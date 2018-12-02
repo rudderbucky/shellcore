@@ -57,8 +57,9 @@ public abstract class WeaponAbility : ActiveAbility {
                 if (Vector2.Distance(core.transform.position, core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
                     // check if in range
                 {
-                    Execute(core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
-                    core.TakeEnergy(energyCost); // take energy
+                    bool success = Execute(core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
+                    if(success)
+                        core.TakeEnergy(energyCost); // take energy, if the ability was executed
                 }
             }
         }
@@ -77,8 +78,10 @@ public abstract class WeaponAbility : ActiveAbility {
     /// Virtual Execute() overload for weapon ability
     /// </summary>
     /// <param name="victimPos">The position to execute the ability to</param>
-    protected virtual void Execute(Vector3 victimPos)
+    /// <returns> whether or not the action was executed </returns>
+    protected virtual bool Execute(Vector3 victimPos)
     {
         isOnCD = true; // set on cooldown
+        return true;
     }
 }

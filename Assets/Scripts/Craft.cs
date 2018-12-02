@@ -149,14 +149,20 @@ public abstract class Craft : MonoBehaviour
             }
         }
         else { // not dead, continue normal state changing
+            // regenerate shell and energy
             RegenHealth(ref currentHealth[0], regenRate[0], maxHealth[0]); 
             RegenHealth(ref currentHealth[2], regenRate[2], maxHealth[2]);
-            // regenerate shell and energy
-            if (targeter.GetTarget() != null) // locked on currently
-            {
-                RotateCraft(targeter.GetTarget().transform.position - transform.position);
-                // rotate craft to lock on
-            }
+
+            //if (targeter.GetTarget() != null) // locked on currently
+            //{
+            //    //Lock on only to enemies
+            //    Craft targetCraft = targeter.GetTarget().GetComponent<Craft>();
+            //    if(targetCraft && targetCraft.faction != faction)
+            //    {
+            //        // rotate craft to lock on
+            //        RotateCraft(targeter.GetTarget().transform.position - transform.position);
+            //    }
+            //}
 
             // check if busy state changing is due
             if (busyTimer > 5)
@@ -346,10 +352,7 @@ public abstract class Craft : MonoBehaviour
     /// <param name="directionVector">vector given</param>
     private void CraftMover(Vector2 directionVector)
     {
-        if (targeter.GetTarget() == null) // as long as there is no target
-        {
-            RotateCraft(directionVector); // rotate craft
-        }
+        RotateCraft(directionVector); // rotate craft
         craftBody.AddForce(enginePower * directionVector); 
         // actual force applied to craft; independent of angle rotation
     }

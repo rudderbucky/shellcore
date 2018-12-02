@@ -43,6 +43,9 @@ public class ShellPart : MonoBehaviour {
         // add force and torque
         rigid.AddForce(new Vector2(250 * Random.Range(-1F,2), 250 * Random.Range(-1F, 2)));
         rigid.AddTorque(100 * Random.Range(-20, 21));
+
+        // add "Draggable" component so that shellcores can grab the part
+        gameObject.AddComponent<Draggable>();
     }
 
     public void Awake()

@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class ReticleScript : MonoBehaviour {
 
-    public Craft craft; // the player the reticle is assigned to
+    public PlayerCore craft; // the player the reticle is assigned to
     private TargetingSystem targSys; // the targeting system of the player
     private bool initialized; // if the reticle has been initialized
     private Transform shellimage; // the image representations of the target's shell and core health
@@ -32,17 +32,35 @@ public class ReticleScript : MonoBehaviour {
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
         if (hits.Length != 0) // check if there are actually any hits
         {
-            Craft target = hits[0].transform.gameObject.GetComponent<Craft>(); 
+            Craft craftTarget = hits[0].transform.gameObject.GetComponent<Craft>(); 
             // grab the first one's craft component, others don't matter
-            if (target != null && !target.GetIsDead() /*&& target != craft*/) 
+            if (craftTarget != null && !craftTarget.GetIsDead() /*&& target != craft*/) 
                 // if it is not null, dead or the player itself
             {
-                targSys.SetTarget(target.transform); // set the target to the clicked craft's transform
-                Vector3 targSize = target.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
+                targSys.SetTarget(craftTarget.transform); // set the target to the clicked craft's transform
+                Vector3 targSize = craftTarget.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
                 float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
                 transform.localScale = new Vector3(followedSize, followedSize, 1); // set the scale to match the size of the target
+                return; // Return so that the next check doesn't happen
             }
-            else targSys.SetTarget(null); // otherwise set the target to null
+
+            Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
+            if (draggableTarget)
+            {
+                if (targSys.GetTarget() == draggableTarget.transform)
+                {
+                    PlayerCore player = craft.GetComponent<PlayerCore>();
+                    player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
+                }
+
+                targSys.SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
+                Vector3 targSize = draggableTarget.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
+                float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
+                transform.localScale = new Vector3(followedSize, followedSize, 1); // set the scale to match the size of the target
+                return; // Return so that the next check doesn't happen
+            }
+
+            targSys.SetTarget(null); // otherwise set the target to null
         }
         else {
             targSys.SetTarget(null); // otherwise set the target to null
@@ -59,21 +77,29 @@ public class ReticleScript : MonoBehaviour {
             Transform target = targSys.GetTarget(); // get the target
             transform.position = target.position; // update reticle position
             GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
-            shellimage.GetComponentInChildren<SpriteRenderer>().enabled = true;
-            coreimage.GetComponentInChildren<SpriteRenderer>().enabled = true;
-            float[] targHealth = target.GetComponent<Craft>().GetHealth(); // get the target current health
-            float[] targMax = target.GetComponent<Craft>().GetMaxHealth(); // get the target max health
 
-            // adjust the image scales according to the health ratios
-            Vector3 scale = shellimage.localScale;
-            scale.x = targHealth[0] / targMax[0];
+            Craft targetCraft = target.GetComponent<Craft>(); // if target is a craft
+            if(targetCraft)
+            {
+                // show craft related information
 
-            shellimage.localScale = scale;
+                shellimage.GetComponentInChildren<SpriteRenderer>().enabled = true;
+                coreimage.GetComponentInChildren<SpriteRenderer>().enabled = true;
 
-            scale = coreimage.localScale;
-            scale.x = targHealth[1] / targMax[1];
+                float[] targHealth = targetCraft.GetHealth(); // get the target current health
+                float[] targMax = targetCraft.GetMaxHealth(); // get the target max health
 
-            coreimage.localScale = scale;
+                // adjust the image scales according to the health ratios
+                Vector3 scale = shellimage.localScale;
+                scale.x = targHealth[0] / targMax[0];
+
+                shellimage.localScale = scale;
+
+                scale = coreimage.localScale;
+                scale.x = targHealth[1] / targMax[1];
+
+                coreimage.localScale = scale;
+            }
         }
         else
         {
@@ -93,12 +119,27 @@ public class ReticleScript : MonoBehaviour {
             }
             else if (targSys.GetTarget() != null) // check if the reticle should update
             {
-                if (targSys.GetTarget().GetComponent<Craft>().GetIsDead()) { 
-                    // check if the target is dead
+                Craft targetCraft = targSys.GetTarget().GetComponent<Craft>();
+
+                if (targetCraft && targetCraft.GetIsDead()) { 
+                    // check if the target craft is dead
                     targSys.SetTarget(null); // if so remove the target lock
                 }
             }
             SetTransform(); // update the transform of the reticle accordingly
+
+            // Toggle tractor beam
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if(targSys.GetTarget())
+                {
+                    Draggable draggable = targSys.GetTarget().GetComponent<Draggable>();
+                    if(draggable)
+                    {
+                        craft.SetTractorTarget((craft.GetTractorTarget() == draggable) ? null : draggable);
+                    }
+                }
+            }
         }
 	}
 }

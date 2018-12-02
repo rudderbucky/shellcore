@@ -29,13 +29,19 @@ public class MainBullet : WeaponAbility {
     /// Fires the bullet using the helper method
     /// </summary>
     /// <param name="victimPos">The position to fire the bullet to</param>
-    protected override void Execute(Vector3 victimPos)
+    protected override bool Execute(Vector3 victimPos)
     {
         if (core.GetTargetingSystem().GetTarget(true) != null) // check if there is actually a target, do not fire if there is not
         {
-            FireBullet(victimPos); // fire if there is
-            isOnCD = true; // set on cooldown
+            Craft targetCraft = core.GetTargetingSystem().GetTarget(true).GetComponent<Craft>();
+            if (targetCraft && targetCraft.faction != core.faction) // check what type the target is & check the faction
+            {
+                FireBullet(victimPos); // fire if there is
+                isOnCD = true; // set on cooldown
+                return true;
+            }
         }
+        return false;
     }
 
     /// <summary>
