@@ -43,23 +43,23 @@ public abstract class WeaponAbility : ActiveAbility {
     public override void Tick(string key)
     {
         if (Input.GetKeyDown(key)) { // toggle ability
-            core.MakeBusy(); // make core busy
+            Core.MakeBusy(); // make core busy
             isActive = !isActive; // toggle activeness
         }
         if (isOnCD) // on cooldown
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
         }
-        else if (isActive && core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
+        else if (isActive && Core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
         {
-            if (core.GetTargetingSystem().GetTarget() != null) { // check if there is a target
-                core.SetIntoCombat(); // now in combat
-                if (Vector2.Distance(core.transform.position, core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
+            if (Core.GetTargetingSystem().GetTarget() != null) { // check if there is a target
+                Core.SetIntoCombat(); // now in combat
+                if (Vector2.Distance(Core.transform.position, Core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
                     // check if in range
                 {
-                    bool success = Execute(core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
+                    bool success = Execute(Core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
                     if(success)
-                        core.TakeEnergy(energyCost); // take energy, if the ability was executed
+                        Core.TakeEnergy(energyCost); // take energy, if the ability was executed
                 }
             }
         }
@@ -78,17 +78,17 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
         }
-        else if (isActive && core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
+        else if (isActive && Core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
         {
-            if (core.GetTargetingSystem().GetTarget() != null)
+            if (Core.GetTargetingSystem().GetTarget() != null)
             { // check if there is a target
-                core.SetIntoCombat(); // now in combat
-                if (Vector2.Distance(core.transform.position, core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
+                Core.SetIntoCombat(); // now in combat
+                if (Vector2.Distance(Core.transform.position, Core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
                 // check if in range
                 {
-                    bool success = Execute(core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
+                    bool success = Execute(Core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
                     if (success)
-                        core.TakeEnergy(energyCost); // take energy, if the ability was executed
+                        Core.TakeEnergy(energyCost); // take energy, if the ability was executed
                 }
             }
         }

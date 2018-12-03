@@ -24,7 +24,7 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        core.enginePower -= 200; // bring the engine power back (will change to vary as Speed Thrust is tiered)
+        Core.enginePower -= 200; // bring the engine power back (will change to vary as Speed Thrust is tiered)
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class SpeedThrust : ActiveAbility
     protected override void Execute()
     {
         // adjust fields
-        core.enginePower += 200; // add 200 to engine power (will change to vary as Speed Thrust is tiered)
+        Core.enginePower += 200; // add 200 to engine power (will change to vary as Speed Thrust is tiered)
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
     }

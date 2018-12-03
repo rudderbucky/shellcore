@@ -31,10 +31,10 @@ public class MainBullet : WeaponAbility {
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if (core.GetTargetingSystem().GetTarget(true) != null) // check if there is actually a target, do not fire if there is not
+        if (Core.GetTargetingSystem().GetTarget() != null) // check if there is actually a target, do not fire if there is not
         {
-            Craft targetCraft = core.GetTargetingSystem().GetTarget(true).GetComponent<Craft>();
-            if (targetCraft && targetCraft.faction != core.faction) // check what type the target is & check the faction
+            Craft targetCraft = Core.GetTargetingSystem().GetTarget().GetComponent<Craft>();
+            if (targetCraft && targetCraft.faction != Core.faction) // check what type the target is & check the faction
             {
                 FireBullet(victimPos); // fire if there is
                 isOnCD = true; // set on cooldown
@@ -51,15 +51,15 @@ public class MainBullet : WeaponAbility {
     void FireBullet(Vector3 targetPos)
     {
         // Create the Bullet from the Bullet Prefab
-        var bullet = Instantiate(bulletPrefab, core.transform.position + Vector3.Normalize(targetPos - core.transform.position) * 1.5F, Quaternion.identity);
+        var bullet = Instantiate(bulletPrefab, Core.transform.position + Vector3.Normalize(targetPos - Core.transform.position) * 1.5F, Quaternion.identity);
 
         // Update its damage to match main bullet
         bullet.GetComponent<BulletScript>().SetDamage(100);
 
-        bullet.GetComponent<BulletScript>().SetShooterFaction(core.faction);
+        bullet.GetComponent<BulletScript>().SetShooterFaction(Core.faction);
 
         // Add velocity to the bullet
-        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - core.transform.position) * bulletSpeed;
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - Core.transform.position) * bulletSpeed;
 
         // Destroy the bullet after survival time
         Destroy(bullet, survivalTime);

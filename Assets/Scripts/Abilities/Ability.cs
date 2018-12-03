@@ -15,7 +15,20 @@ interface IPlayerExecutable {
 /// </summary>
 public abstract class Ability : MonoBehaviour, IPlayerExecutable {
 
-    public Craft core; // craft that uses this ability
+    Craft core;  // craft that uses this ability
+    public Craft Core
+    {
+        get
+        {
+            if (core == null)
+                core = GetComponentInParent<Craft>();
+            return core;
+        }
+        set
+        {
+            core = value;
+        }
+    }
     protected int ID; // Image ID, perhaps also ability ID if that were ever to be useful
     protected float cooldownDuration; // cooldown of the ability
     protected int energyCost; // energy cost of the ability
@@ -64,15 +77,6 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// Initialization of every ability
     /// </summary>
     protected virtual void Awake() { }
-
-    /// <summary>
-    /// Get core, if it isn't specified elsewhere
-    /// </summary>
-    void Start()
-    {
-        if (core == null)
-            core = GetComponentInParent<Craft>();
-    }
 
     /// <summary>
     /// Get the isPassive of the ability
@@ -158,10 +162,10 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }
-        else if (core.GetHealth()[2] >= energyCost && Input.GetKeyDown(key)) // enough energy and button pressed
+        else if (Core.GetHealth()[2] >= energyCost && Input.GetKeyDown(key)) // enough energy and button pressed
         {
-            core.MakeBusy(); // make core busy
-            core.TakeEnergy(energyCost); // remove the energy
+            Core.MakeBusy(); // make core busy
+            Core.TakeEnergy(energyCost); // remove the energy
             Execute(); // execute the ability
         }
     }
@@ -180,10 +184,10 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }
-        else if (core.GetHealth()[2] >= energyCost) // enough energy and button pressed
+        else if (Core.GetHealth()[2] >= energyCost) // enough energy and button pressed
         {
-            core.MakeBusy(); // make core busy
-            core.TakeEnergy(energyCost); // remove the energy
+            Core.MakeBusy(); // make core busy
+            Core.TakeEnergy(energyCost); // remove the energy
             Execute(); // execute the ability
         }
     }

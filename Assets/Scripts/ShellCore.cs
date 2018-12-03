@@ -46,10 +46,34 @@ public class ShellCore : AirCraft {
         base.Awake(); // base awake
     }
 
+    protected void FixedUpdate()
+    {
+        if (target && !isDead) // Update tractor beam physics
+        {
+            Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
+            if (rigidbody)
+            {
+                //get direction
+                Vector3 dir = transform.position - target.transform.position;
+                //get distance
+                float dist = dir.magnitude;
+
+                if (target.GetComponent<EnergySphereScript>())
+                {
+                    rigidbody.AddForce(dir.normalized * 100f);
+                }
+                else if (dist > 2f)
+                {
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 10000f * Time.deltaTime);
+                }
+            }
+        }
+    }
+
     protected override void Update() {
         base.Update(); // base update
 
-        if(!target) // Don't grab energy when the craft is pulling something more important
+        if (!target) // Don't grab energy when the craft is pulling something more important
         {
             EnergySphereScript[] energies = FindObjectsOfType<EnergySphereScript>();
 
@@ -69,34 +93,16 @@ public class ShellCore : AirCraft {
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
         }
 
-        if (target && !isDead)
+        if (target && !isDead) // Update tractor beam graphics
         {
             lineRenderer.positionCount = 2;
             lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
-            Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
 
             coreGlow.gameObject.SetActive(true);
             targetGlow.gameObject.SetActive(true);
 
             coreGlow.transform.position = transform.position;
             targetGlow.transform.position = target.transform.position;
-
-            if (rigidbody)
-            {
-                //get direction
-                Vector3 dir = transform.position - target.transform.position;
-                //get distance
-                float dist = dir.magnitude;
-
-                if (target.GetComponent<EnergySphereScript>())
-                {
-                    rigidbody.AddForce(dir.normalized * 100f);
-                }
-                else if (dist > 2f)
-                {
-                    rigidbody.AddForce(dir.normalized * (dist-2F) * 100f);
-                }
-            }
         }
         else
         {
