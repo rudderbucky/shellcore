@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Every entity that can move is a craft. This includes drones and ShellCores.
 /// </summary>
-public abstract class Craft : MonoBehaviour
+public abstract class Craft : Entity
 {
     protected float[] currentHealth; // current health of the craft (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] maxHealth; // maximum health of the craft (index 0 is shell, index 1 is core, index 2 is energy)
