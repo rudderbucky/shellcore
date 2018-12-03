@@ -10,13 +10,18 @@ public class ShellCore : AirCraft {
     public LineRenderer lineRenderer;
     Draggable target;
 
+    protected override void OnDeath()
+    {
+        SetTractorTarget(null);
+        base.OnDeath();
+    }
     // TODO: these will be either enemies or allies, most allies and a few enemies can be interacted with.
     protected override void Start()
     {
         base.Start(); // base start
         // initialize instance fields
         respawns = true;
-        transform.position = new Vector3(10, 0, 0);
+        transform.position = new Vector3(10, 10, 0);
     }
 
     protected override void Awake()
@@ -41,8 +46,8 @@ public class ShellCore : AirCraft {
                 closest = energies[i].transform;
             }
         }
-        if(closest && closestD < 160) SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
-        if (target)
+        if(closest && closestD < 160 && GetTractorTarget() == null) SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
+        if (target && !isDead)
         {
             lineRenderer.positionCount = 2;
             lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });

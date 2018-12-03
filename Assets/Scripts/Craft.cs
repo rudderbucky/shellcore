@@ -41,7 +41,7 @@ public abstract class Craft : MonoBehaviour
     /// <summary>
     /// Helper method for death animation and state changing
     /// </summary>
-    protected void OnDeath() {
+    protected virtual void OnDeath() {
         // set death and immobility
         isDead = true;
         isImmobile = true;
