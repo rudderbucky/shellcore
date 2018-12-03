@@ -8,6 +8,9 @@ using UnityEngine;
 public class ShellCore : AirCraft {
 
     public LineRenderer lineRenderer;
+    public GameObject glowPrefab;
+    Transform coreGlow;
+    Transform targetGlow;
     Draggable target;
 
     // TODO: these will be either enemies or allies, most allies and a few enemies can be interacted with.
@@ -17,6 +20,12 @@ public class ShellCore : AirCraft {
         // initialize instance fields
         respawns = true;
         transform.position = new Vector3(10, 0, 0);
+
+        coreGlow = Instantiate(glowPrefab, transform, true).transform;
+        targetGlow = Instantiate(glowPrefab, transform, true).transform;
+
+        coreGlow.gameObject.SetActive(false);
+        targetGlow.gameObject.SetActive(false);
     }
 
     protected override void Awake()
@@ -48,6 +57,12 @@ public class ShellCore : AirCraft {
             lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
             Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
 
+            coreGlow.gameObject.SetActive(true);
+            targetGlow.gameObject.SetActive(true);
+
+            coreGlow.transform.position = transform.position;
+            targetGlow.transform.position = target.transform.position;
+
             if (rigidbody)
             {
                 //get direction
@@ -65,7 +80,12 @@ public class ShellCore : AirCraft {
                 }
             }
         }
-        else lineRenderer.positionCount = 0;
+        else
+        {
+            lineRenderer.positionCount = 0;
+            coreGlow.gameObject.SetActive(false);
+            targetGlow.gameObject.SetActive(false);
+        }
     }
 
     public void SetTractorTarget(Draggable newTarget)
