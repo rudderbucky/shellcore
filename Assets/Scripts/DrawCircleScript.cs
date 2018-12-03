@@ -10,6 +10,13 @@ public class DrawCircleScript : MonoBehaviour {
     private float speed; // the speed at which the circle expands
     private LineRenderer line; // line renderer used to generate the circle
     private float timer; // timer used to expand the circle
+    private bool initialized;
+
+    public void Initialize()
+    {
+        initialized = true;
+    }
+
 
     private void Start()
     {
@@ -23,15 +30,18 @@ public class DrawCircleScript : MonoBehaviour {
 
     private void Update()
     {
-        timer += Time.deltaTime; // increment time
-        if (timer > 1 && timer < 1.5F) // time to draw
+        if (initialized)
         {
-            CreatePoints(speed * (timer - 1), speed * (timer - 1)); // draw the circle
-        }
-        else
-        {
-            line.startColor = new Color(1, 1, 1, 0); // set to transparent
-            line.endColor = new Color(1, 1, 1, 0); // set to transparent
+            timer += Time.deltaTime; // increment time
+            if (timer > 1 && timer < 1.5F) // time to draw
+            {
+                CreatePoints(speed * (timer - 1), speed * (timer - 1)); // draw the circle
+            }
+            else
+            {
+                line.startColor = new Color(1, 1, 1, 0); // set to transparent
+                line.endColor = new Color(1, 1, 1, 0); // set to transparent
+            }
         }
     }
 

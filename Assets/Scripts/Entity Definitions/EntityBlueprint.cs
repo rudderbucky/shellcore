@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 /// 
 [CreateAssetMenu(fileName = "Craft", menuName = "ShellCore/Craft", order = 1)]
-public class CraftBlueprint : ScriptableObject
+public class EntityBlueprint : ScriptableObject
 {
     [System.Serializable]
     public struct PartInfo

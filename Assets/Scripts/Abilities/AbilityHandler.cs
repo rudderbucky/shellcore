@@ -8,7 +8,7 @@ using UnityEngine;
 public class AbilityHandler : MonoBehaviour {
 
     private bool initialized; // check for the update method
-    public PlayerCore core; // the player
+    private PlayerCore core; // the player
     public UnityEngine.UI.Image abilityBackground; // background of the ability
     public UnityEngine.UI.Image abilityCDIndicator; // used to indicate if the ability is on cooldown
     public UnityEngine.UI.Image abilityGleam; // gleam for the ability
@@ -24,7 +24,8 @@ public class AbilityHandler : MonoBehaviour {
     /// <summary>
     /// Initialization of the ability handler that is tied to the player
     /// </summary>
-    public void Initialize() {
+    public void Initialize(PlayerCore player) {
+        core = player;
         abilities = core.GetAbilities(); // Get the core's ability array
         abilityImagesArray = new UnityEngine.UI.Image[abilities.Length]; // initialize all the GUI arrays
         abilityBackgroundArray = new UnityEngine.UI.Image[abilities.Length];

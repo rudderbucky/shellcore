@@ -50,7 +50,7 @@ public class PlayerCore : ShellCore {
         // initialize instance fields
         base.Start();
         spawnPoint = transform.position = Vector3.zero; // overrides the shellcore spawn point
-        hud.InitializeHUD(); // initialize the HUD
+        hud.InitializeHUD(this); // initialize the HUD
 	}
 	
 	// Update is called once per frame

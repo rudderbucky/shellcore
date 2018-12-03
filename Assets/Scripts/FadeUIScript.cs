@@ -9,7 +9,13 @@ public class FadeUIScript : MonoBehaviour {
 
     public PlayerCore core; // the core to check to fade the UI with
     public Canvas canvas; // the canvas to fade
+    private bool initialized;
 
+    public void Initialize(PlayerCore player)
+    {
+        core = player;
+        initialized = true;
+    }
     /// <summary>
     /// Used to fade the UI
     /// </summary>
@@ -23,13 +29,16 @@ public class FadeUIScript : MonoBehaviour {
 
     // Update is called once per frame
     private void Update () {
-        if (core.GetIsBusy()) // if the core is busy make the canvas opaque
+        if (initialized)
         {
-            canvas.GetComponent<CanvasGroup>().alpha = 1;
-        }
-        else // core not busy
-        {
-            Fade(); // fade UI
+            if (core.GetIsBusy()) // if the core is busy make the canvas opaque
+            {
+                canvas.GetComponent<CanvasGroup>().alpha = 1;
+            }
+            else // core not busy
+            {
+                Fade(); // fade UI
+            }
         }
     }
 }

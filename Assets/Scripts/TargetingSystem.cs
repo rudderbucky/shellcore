@@ -40,7 +40,7 @@ public class TargetingSystem {
         {
             //Find the closest enemy
             //TODO: optimize
-            Craft[] crafts = GameObject.FindObjectsOfType<Craft>();
+            Entity[] crafts = GameObject.FindObjectsOfType<Entity>();
             Transform closest = null;
             float closestD = float.MaxValue;
 

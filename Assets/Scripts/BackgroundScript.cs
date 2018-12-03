@@ -11,8 +11,8 @@ public class BackgroundScript : MonoBehaviour {
     public int gridWidth; // grid width
     public int gridHeight; // grid height
     public int gridDepth; // grid depth
-    public Transform core; // core to follow
-    private Vector3 displacement; // displacement between tile and core
+    public Transform mcamera; // mcamera to follow
+    private Vector3 displacement; // displacement between tile and mcamera
     private GameObject[] ingameTiles; // array of generated tiles
 
     /// <summary>
@@ -39,9 +39,9 @@ public class BackgroundScript : MonoBehaviour {
         // the limit before the tile should wrap
         // thanks Ormanus for showing me this ridiculously powerful operator (? and :)
 
-        if (Mathf.Abs(tile.transform.position[dimension] - core.position[dimension]) > limit) // this means it is at an axis edge
+        if (Mathf.Abs(tile.transform.position[dimension] - mcamera.position[dimension]) > limit) // this means it is at an axis edge
         {
-            limit = tile.transform.position[dimension] - core.position[dimension] > 0 ? -limit : limit; // right edge
+            limit = tile.transform.position[dimension] - mcamera.position[dimension] > 0 ? -limit : limit; // right edge
             // (this may be slightly inefficient but I don't care it's cool)
 
             // if limit remains positive left edge
@@ -54,6 +54,7 @@ public class BackgroundScript : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        mcamera = Camera.main.transform;
         tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
         // grab tile spacing (this should be constant between the tile sprites given)
         Vector2 dimensions = Camera.main.ScreenToWorldPoint(

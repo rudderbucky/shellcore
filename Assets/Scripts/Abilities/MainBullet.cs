@@ -33,7 +33,7 @@ public class MainBullet : WeaponAbility {
     {
         if (Core.GetTargetingSystem().GetTarget() != null) // check if there is actually a target, do not fire if there is not
         {
-            Craft targetCraft = Core.GetTargetingSystem().GetTarget().GetComponent<Craft>();
+            Entity targetCraft = Core.GetTargetingSystem().GetTarget().GetComponent<Entity>();
             if (targetCraft && targetCraft.faction != Core.faction) // check what type the target is & check the faction
             {
                 FireBullet(victimPos); // fire if there is
@@ -54,7 +54,7 @@ public class MainBullet : WeaponAbility {
         var bullet = Instantiate(bulletPrefab, Core.transform.position + Vector3.Normalize(targetPos - Core.transform.position) * 1.5F, Quaternion.identity);
 
         // Update its damage to match main bullet
-        bullet.GetComponent<BulletScript>().SetDamage(100);
+        bullet.GetComponent<BulletScript>().SetDamage(500);
 
         bullet.GetComponent<BulletScript>().SetShooterFaction(Core.faction);
 

@@ -13,9 +13,10 @@ public class MinimapLockRotationScript : MonoBehaviour {
     /// Used to initialize the minimap sprite representation
     /// </summary>
     public void Initialize() {
+        gameObject.layer = 8;
         sprRenderer = GetComponent<SpriteRenderer>();
         sprRenderer.enabled = true; // enable sprite renderer
-        Color factionColor = FactionColors.colors[GetComponentInParent<Craft>().faction];
+        Color factionColor = FactionColors.colors[GetComponentInParent<Entity>().faction];
         sprRenderer.color = factionColor; // adjust minimap color to that
     }
 

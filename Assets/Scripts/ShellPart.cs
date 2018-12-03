@@ -12,8 +12,9 @@ public class ShellPart : MonoBehaviour {
     private bool hasDetached; // is the part detached
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigid;
-    private Craft craft;
+    private Entity craft;
     public float partHealth; // health of the part (half added to shell, quarter to core)
+    public float partMass; // mass of the part
     private float currentHealth; // current health of part
     public bool constructPart;
     private bool collectible;
@@ -22,6 +23,10 @@ public class ShellPart : MonoBehaviour {
         this.collectible = collectible;
     }
 
+    public float GetPartMass()
+    {
+        return partMass;
+    }
     public float GetPartHealth()
     {
         return partHealth; // part health
@@ -61,7 +66,7 @@ public class ShellPart : MonoBehaviour {
         spriteRenderer.enabled = true;
         Destroy(GetComponent<Rigidbody2D>()); // remove rigidbody
         currentHealth = partHealth / 4;
-        craft = transform.root.GetComponent<Craft>();
+        craft = transform.root.GetComponent<Entity>();
         spriteRenderer.color = FactionColors.colors[craft.faction];
     }
 

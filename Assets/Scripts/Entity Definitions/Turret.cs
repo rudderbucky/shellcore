@@ -4,13 +4,4 @@ using UnityEngine;
 
 public class Turret : AirConstruct {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

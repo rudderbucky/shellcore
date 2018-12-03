@@ -10,55 +10,20 @@ public class AirConstruct : Construct {
     private Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
 
     /// <summary>
-    /// Helper for oscillator
-    /// </summary>
-    /*protected void Oscillator()
-    {
-        if (isDead)
-        { // if aircraft is dead
-            // reset all fields
-            storedPos = spawnPoint;
-            timePassed = 0;
-            positionBeforeOscillation = spawnPoint.y;
-        }
-
-        if (IsMoving()) // if core is supposed to be moving 
-        {
-            if (timePassed != 0)
-            { // need to reset the position due to the oscillator
-                storedPos = craftBody.position;
-                storedPos.y = positionBeforeOscillation;
-                craftBody.position = storedPos;
-            }
-            timePassed = 0; // reset time passed
-        }
-        else if (craftBody.velocity.y == 0)
-        { // idle oscillation time
-            OscillatorFunction();
-        }
-        if (craftBody.velocity.y != 0)
-        { // store the last core position before oscillator is triggered
-            positionBeforeOscillation = craftBody.position.y;
-        }
-    }
-
-    /// <summary>
     /// Idle oscillation animation; smoother than the original ShellCore Command one!!!!
+    /// Constructs cannot move so this is way simpler than in aircraft
     /// </summary>
-    private void OscillatorFunction()
+    private void Oscillator()
     {
         timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
-        oscillatorVector = craftBody.position; // get the current aircraft position
-        oscillatorVector.y = oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + craftBody.position.x); // cool math stuff 
-        craftBody.position = oscillatorVector; // set the aircraft position
+        oscillatorVector = transform.position; // get the current aircraft position
+        oscillatorVector.y = oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + transform.position.x); // cool math stuff 
+        transform.position = oscillatorVector; // set the aircraft position
     }
-    // Use this for initialization
-    void Start () {
-		
-	}
 	
 	// Update is called once per frame
-	void Update () {
-		
-	}*/
+	protected override void Update () {
+        base.Update();
+        Oscillator();
+	}
 }

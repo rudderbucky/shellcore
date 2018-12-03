@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class SpeedThrust : ActiveAbility
 {
+    Craft craft;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -17,6 +18,7 @@ public class SpeedThrust : ActiveAbility
         activeDuration = 3;
         activeTimeRemaining = activeDuration;
         energyCost = 50;
+        craft = Core as Craft;
     }
 
     /// <summary>
@@ -24,7 +26,7 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        Core.enginePower -= 200; // bring the engine power back (will change to vary as Speed Thrust is tiered)
+        if(craft) craft.enginePower -= 200; // bring the engine power back (will change to vary as Speed Thrust is tiered)
     }
 
     /// <summary>
@@ -33,7 +35,7 @@ public class SpeedThrust : ActiveAbility
     protected override void Execute()
     {
         // adjust fields
-        Core.enginePower += 200; // add 200 to engine power (will change to vary as Speed Thrust is tiered)
+        if(craft) craft.enginePower += 200; // add 200 to engine power (will change to vary as Speed Thrust is tiered)
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
     }

@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Outpost : AirCraft {
+public class Outpost : AirConstruct {
 
     protected override void Start()
     {
         base.Start();
-        maxHealth[0] = 10;
-        currentHealth[0] = 10;
-        currentHealth[1] = maxHealth[1] = 1;
-        currentHealth[2] = maxHealth[2] = 2500;
-        enginePower = 0;
+        currentHealth[0] = currentHealth[1] = maxHealth[0] = maxHealth[1] = 20;
+    }
+    protected override void Awake()
+    {
+        base.Awake();
+        currentHealth[0] = maxHealth[0] = currentHealth[1] = maxHealth[1] = 10;
     }
 
     public override void RemovePart(ShellPart part) {

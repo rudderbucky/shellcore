@@ -7,8 +7,9 @@ using UnityEngine;
 /// </summary>
 public class ShellCore : AirCraft {
 
-    public LineRenderer lineRenderer;
+    protected LineRenderer lineRenderer;
     public GameObject glowPrefab;
+    public Material tractorMaterial;
     Transform coreGlow;
     Transform targetGlow;
     Draggable target;
@@ -31,8 +32,8 @@ public class ShellCore : AirCraft {
     protected override void Start()
     {
         base.Start(); // base start
+        transform.position = spawnPoint;
         // initialize instance fields
-        respawns = true;
 
         coreGlow = Instantiate(glowPrefab, null, true).transform;
         targetGlow = Instantiate(glowPrefab, null, true).transform;
@@ -41,8 +42,26 @@ public class ShellCore : AirCraft {
         targetGlow.gameObject.SetActive(false);
     }
 
+    protected override void BuildEntity()
+    {
+        if(!transform.Find("TractorBeam"))
+        {
+            GameObject childObject = new GameObject();
+            childObject.transform.SetParent(transform, false);
+            lineRenderer = childObject.AddComponent<LineRenderer>();
+            lineRenderer.material = tractorMaterial;
+            lineRenderer.startWidth = 0.1F;
+            lineRenderer.endWidth = 0.1F;
+            lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            lineRenderer.receiveShadows = false;
+            childObject.name = "TractorBeam";
+        }
+        base.BuildEntity();
+    }
+
     protected override void Awake()
     {
+        respawns = true;
         base.Awake(); // base awake
     }
 

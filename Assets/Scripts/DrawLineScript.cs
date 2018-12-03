@@ -10,6 +10,7 @@ public class DrawLineScript : MonoBehaviour {
     private float timer; // used for transparency and projection
     private float startAngle; // angle to project the line
     private float speed; // speed at which the line is projected
+    private bool initialized;
 
     void Start()
     {
@@ -21,23 +22,30 @@ public class DrawLineScript : MonoBehaviour {
         line.positionCount = 2;
         line.useWorldSpace = false;
     }
+
+    public void Initialize()
+    {
+        initialized = true;
+    }
  
     private void Update()
     {
-        timer += Time.deltaTime; // update timer
-        
-        if (line) // if line renderer isn't destroyed
+        if (initialized)
         {
-            if (timer < 1) // time to project
+            timer += Time.deltaTime; // update timer
+
+            if (line) // if line renderer isn't destroyed
             {
-                DrawLine(speed * timer, 0, startAngle); // project out the line
+                if (timer < 1) // time to project
+                {
+                    DrawLine(speed * timer, 0, startAngle); // project out the line
+                }
+                else // time to shorten
+                {
+                    ShortenLine(speed * (timer - 1), 0, startAngle);
+                }
             }
-            else // time to shorten
-            {
-                ShortenLine(speed * (timer - 1), 0, startAngle);
-            }
-        }
-         
+        }  
     }
 
     /// <summary>

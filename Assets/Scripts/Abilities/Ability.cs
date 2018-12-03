@@ -15,13 +15,13 @@ interface IPlayerExecutable {
 /// </summary>
 public abstract class Ability : MonoBehaviour, IPlayerExecutable {
 
-    Craft core;  // craft that uses this ability
-    public Craft Core
+    Entity core;  // craft that uses this ability
+    public Entity Core
     {
         get
         {
             if (core == null)
-                core = GetComponentInParent<Craft>();
+                core = GetComponentInParent<Entity>();
             return core;
         }
         set

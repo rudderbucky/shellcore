@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class ReticleScript : MonoBehaviour {
 
-    public PlayerCore craft; // the player the reticle is assigned to
+    private PlayerCore craft; // the player the reticle is assigned to
     private TargetingSystem targSys; // the targeting system of the player
     private bool initialized; // if the reticle has been initialized
     private Transform shellimage; // the image representations of the target's shell and core health
@@ -16,8 +16,9 @@ public class ReticleScript : MonoBehaviour {
     /// <summary>
     /// Initializes the reticle
     /// </summary>
-    public void Initialize()
+    public void Initialize(PlayerCore player)
     {
+        craft = player;
         targSys = craft.GetTargetingSystem(); // grab the targeting system
         shellimage = transform.Find("Target Shell"); // grab the sprites
         coreimage = transform.Find("Target Core");
@@ -32,9 +33,9 @@ public class ReticleScript : MonoBehaviour {
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
         if (hits.Length != 0) // check if there are actually any hits
         {
-            Craft craftTarget = hits[0].transform.gameObject.GetComponent<Craft>();
+            Entity craftTarget = hits[0].transform.gameObject.GetComponent<Entity>();
             // grab the first one's craft component, others don't matter
-            if (craftTarget != null && !craftTarget.GetIsDead() /*&& target != craft*/) 
+            if (craftTarget != null && !craftTarget.GetIsDead() && craftTarget != craft) 
                 // if it is not null, dead or the player itself
             {
                 targSys.SetTarget(craftTarget.transform); // set the target to the clicked craft's transform
@@ -77,7 +78,7 @@ public class ReticleScript : MonoBehaviour {
             transform.position = target.position; // update reticle position
             GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
 
-            Craft targetCraft = target.GetComponent<Craft>(); // if target is a craft
+            Entity targetCraft = target.GetComponent<Entity>(); // if target is a craft
             if(targetCraft)
             {
                 // show craft related information
@@ -125,7 +126,7 @@ public class ReticleScript : MonoBehaviour {
             }
             else if (targSys.GetTarget() != null) // check if the reticle should update
             {
-                Craft targetCraft = targSys.GetTarget().GetComponent<Craft>();
+                Entity targetCraft = targSys.GetTarget().GetComponent<Entity>();
 
                 if (targetCraft && targetCraft.GetIsDead()) { 
                     // check if the target craft is dead

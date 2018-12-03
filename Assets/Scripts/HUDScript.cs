@@ -10,12 +10,12 @@ public class HUDScript : MonoBehaviour {
     /// <summary>
     /// Initializes the HUD
     /// </summary>
-    public void InitializeHUD() {
+    public void InitializeHUD(PlayerCore player) {
         // Initialize all HUD elements
-        GetComponentInChildren<HealthBarScript>().Initialize();
-        GetComponentInChildren<AbilityHandler>().Initialize();
-        GetComponentInChildren<ReticleScript>().Initialize();
-        Camera.main.GetComponent<CameraScript>().Start();
+        GetComponentInChildren<HealthBarScript>().Initialize(player);
+        GetComponentInChildren<AbilityHandler>().Initialize(player);
+        GetComponentInChildren<ReticleScript>().Initialize(player);
+        Camera.main.GetComponent<CameraScript>().Initialize(player);
     }
 
     /// <summary>

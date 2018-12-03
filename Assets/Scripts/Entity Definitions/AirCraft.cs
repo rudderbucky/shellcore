@@ -54,19 +54,19 @@ public abstract class AirCraft : Craft
         {
             if (timePassed != 0)
             { // need to reset the position due to the oscillator
-                storedPos = craftBody.position;
+                storedPos = entityBody.position;
                 storedPos.y = positionBeforeOscillation;
-                craftBody.position = storedPos;
+                entityBody.position = storedPos;
             }
             timePassed = 0; // reset time passed
         }
-        else if (craftBody.velocity.y == 0)
+        else if (entityBody.velocity.y == 0)
         { // idle oscillation time
             OscillatorFunction();
         }
-        if (craftBody.velocity.y != 0)
+        if (entityBody.velocity.y != 0)
         { // store the last core position before oscillator is triggered
-            positionBeforeOscillation = craftBody.position.y;
+            positionBeforeOscillation = entityBody.position.y;
         }
     }
 
@@ -76,8 +76,8 @@ public abstract class AirCraft : Craft
     private void OscillatorFunction()
     {
         timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
-        oscillatorVector = craftBody.position; // get the current aircraft position
-        oscillatorVector.y = oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + craftBody.position.x); // cool math stuff 
-        craftBody.position = oscillatorVector; // set the aircraft position
+        oscillatorVector = entityBody.position; // get the current aircraft position
+        oscillatorVector.y = oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + entityBody.position.x); // cool math stuff 
+        entityBody.position = oscillatorVector; // set the aircraft position
     }
 }

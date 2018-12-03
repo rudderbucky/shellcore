@@ -14,13 +14,14 @@ public class HealthBarScript : MonoBehaviour {
     private bool initialized; // if this GUI component is initialized
     private bool[] gleaming; // if the bar is gleaming
     private bool[] gleamed; // if the bar has already gleamed in the cycle
-    public PlayerCore player; // associated player
+    private PlayerCore player; // associated player
 
     /// <summary>
     /// Initializes the Health Bar UI
     /// </summary>
-    public void Initialize()
+    public void Initialize(PlayerCore player)
     {
+        this.player = player;
         barsArray = new UnityEngine.UI.Image[barsInputArray.Length]; // initialize arrays
         gleamArray = new UnityEngine.UI.Image[barsInputArray.Length];
         gleaming = new bool[barsArray.Length];
