@@ -41,7 +41,6 @@ public class TargetingSystem {
             //Find the closest enemy
             //TODO: optimize
             Craft[] crafts = GameObject.FindObjectsOfType<Craft>();
-
             Transform closest = null;
             float closestD = float.MaxValue;
 
@@ -59,6 +58,7 @@ public class TargetingSystem {
                     closest = crafts[i].transform;
                 }
             }
+            target = closest;
         }
 
         return target; // get target

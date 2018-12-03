@@ -146,7 +146,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     }
 
     /// <summary>
-    /// Ability called to change the ability's state over time
+    /// Ability called to change the ability's state over time for players
     /// </summary>
     /// <param name="key">The associated button to press to activate</param>
     virtual public void Tick(string key) {
@@ -166,6 +166,27 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         }
     }
 
+    /// <summary>
+    /// Ability called to change the ability's state over time
+    /// </summary>
+    /// <param name="key">The associated button to press to activate</param>
+    virtual public void Tick()
+    {
+        if (isDestroyed)
+        {
+            return; // Part has been destroyed, ability can't be used
+        }
+        else if (isOnCD) // tick the cooldown down
+        {
+            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
+        }
+        else if (core.GetHealth()[2] >= energyCost) // enough energy and button pressed
+        {
+            core.MakeBusy(); // make core busy
+            core.TakeEnergy(energyCost); // remove the energy
+            Execute(); // execute the ability
+        }
+    }
     /// <summary>
     /// Used to activate whatever effect the ability has, almost always overriden
     /// </summary>

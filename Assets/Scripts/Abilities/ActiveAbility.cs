@@ -36,7 +36,7 @@ public abstract class ActiveAbility : Ability
     virtual protected void Deactivate() { }
 
     /// <summary>
-    /// Overrie on tick that accounts for actives
+    /// Override on tick that accounts for actives for players
     /// </summary>
     /// <param name="key">Associated string on the button to push to activate</param>
     public override void Tick(string key)
@@ -55,6 +55,29 @@ public abstract class ActiveAbility : Ability
         }
         else if (!isActive) { // if not active it can run through the base ability behaviour
             base.Tick(key); // base tick
+        }
+    }
+
+    /// <summary>
+    /// Overrie on tick that accounts for actives
+    /// </summary>
+    /// <param name="key">Associated string on the button to push to activate</param>
+    public override void Tick()
+    {
+        if (isActive) // active
+        {
+            TickDown(activeDuration, ref activeTimeRemaining, ref isActive); // tick the active time
+            if (!isActive) // if the boolean got flipped deactivate
+            {
+                Deactivate(); // deactivate
+            }
+        }
+        if (isOnCD) // on cooldown
+        {
+            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
+        }
+        else if (!isActive) { // if not active it can run through the base ability behaviour
+            base.Tick(); // base tick
         }
     }
 }

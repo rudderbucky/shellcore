@@ -15,6 +15,7 @@ public class ShellPart : MonoBehaviour {
     private Craft craft;
     public float partHealth; // health of the part (half added to shell, quarter to core)
     private float currentHealth; // current health of part
+    public bool constructPart;
     private bool collectible;
 
     public void SetCollectible(bool collectible) {
@@ -39,7 +40,7 @@ public class ShellPart : MonoBehaviour {
         rigid.gravityScale = 0; // adjust the rigid body
         rigid.drag = 0;
         rigid.angularDrag = 0;
-
+        //rigid.interpolation = RigidbodyInterpolation2D.Extrapolate;
         // add force and torque
         rigid.AddForce(new Vector2(250 * Random.Range(-1F,2), 250 * Random.Range(-1F, 2)));
         rigid.AddTorque(100 * Random.Range(-20, 21));
@@ -101,7 +102,7 @@ public class ShellPart : MonoBehaviour {
     /// <param name="damage">damage to deal</param>
     public void TakeDamage(float damage) {
         currentHealth -= damage;
-        if (currentHealth <= 0) {
+        if (currentHealth <= 0 && !constructPart) {
             craft.RemovePart(this);
         }
     }

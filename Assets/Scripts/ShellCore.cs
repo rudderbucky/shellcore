@@ -34,8 +34,6 @@ public class ShellCore : AirCraft {
         // initialize instance fields
         respawns = true;
 
-        transform.position = new Vector3(10, 0, 0);
-
         coreGlow = Instantiate(glowPrefab, null, true).transform;
         targetGlow = Instantiate(glowPrefab, null, true).transform;
 
@@ -96,7 +94,7 @@ public class ShellCore : AirCraft {
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2f) * 100f);
+                    rigidbody.AddForce(dir.normalized * (dist-2F) * 100f);
                 }
             }
         }

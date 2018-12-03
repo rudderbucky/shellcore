@@ -32,7 +32,7 @@ public class ReticleScript : MonoBehaviour {
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
         if (hits.Length != 0) // check if there are actually any hits
         {
-            Craft craftTarget = hits[0].transform.gameObject.GetComponent<Craft>(); 
+            Craft craftTarget = hits[0].transform.gameObject.GetComponent<Craft>();
             // grab the first one's craft component, others don't matter
             if (craftTarget != null && !craftTarget.GetIsDead() /*&& target != craft*/) 
                 // if it is not null, dead or the player itself
@@ -52,7 +52,6 @@ public class ReticleScript : MonoBehaviour {
                     PlayerCore player = craft.GetComponent<PlayerCore>();
                     player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
                 }
-
                 targSys.SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
                 Vector3 targSize = draggableTarget.GetComponent<SpriteRenderer>().bounds.size; //+ Vector3.one * 5; // adjust the size of the reticle
                 float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target

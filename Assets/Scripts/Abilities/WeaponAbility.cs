@@ -36,7 +36,7 @@ public abstract class WeaponAbility : ActiveAbility {
     }
 
     /// <summary>
-    /// Override for tick that integrates the targeting system of the core 
+    /// Override for tick that integrates the targeting system of the core for players
     /// and adjusted for the new isActive behaviour
     /// </summary>
     /// <param name="key">the associated trigger key of the ability</param>
@@ -65,6 +65,34 @@ public abstract class WeaponAbility : ActiveAbility {
         }
     }
 
+    /// <summary>
+    /// Override for tick that integrates the targeting system of the core 
+    /// and adjusted for the new isActive behaviour
+    /// </summary>
+    /// <param name="key">the associated trigger key of the ability</param>
+    public override void Tick()
+    {
+        isActive = true;
+        
+        if (isOnCD) // on cooldown
+        {
+            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
+        }
+        else if (isActive && core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
+        {
+            if (core.GetTargetingSystem().GetTarget() != null)
+            { // check if there is a target
+                core.SetIntoCombat(); // now in combat
+                if (Vector2.Distance(core.transform.position, core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
+                // check if in range
+                {
+                    bool success = Execute(core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
+                    if (success)
+                        core.TakeEnergy(energyCost); // take energy, if the ability was executed
+                }
+            }
+        }
+    }
     /// <summary>
     /// Unused override for weapon ability, use the position-overloaded Execute() override instead
     /// </summary>

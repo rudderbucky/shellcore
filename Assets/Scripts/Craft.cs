@@ -23,7 +23,7 @@ public abstract class Craft : MonoBehaviour
     protected float busyTimer; // the time since the craft was last set to busy
     protected float combatTimer; // the time since the craft was last set into combat
     protected float deathTimer; // the time since the craft last died;
-    protected Vector3 spawnPoint; // the spawn point of the craft
+    public Vector3 spawnPoint; // the spawn point of the craft
     public GameObject explosionCirclePrefab; // prefabs for death explosion
     public GameObject explosionLinePrefab;
     public List<ShellPart> parts; // List containing all parts of the craft
@@ -79,6 +79,8 @@ public abstract class Craft : MonoBehaviour
     virtual protected void Start()
     {
         GetComponentInChildren<MinimapLockRotationScript>().Initialize(); // initialize the minimap dot
+        targeter.SetTarget(null);
+        transform.position = spawnPoint;
         //transform.rotation = Quaternion.identity; // reset rotation
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
@@ -227,7 +229,10 @@ public abstract class Craft : MonoBehaviour
         abilities = GetComponentsInChildren<Ability>();
     }
 
-    public void RemovePart(ShellPart part)
+    public int GetEnginePower() {
+        return enginePower;
+    }
+    public virtual void RemovePart(ShellPart part)
     {
         if(part.GetComponent<Ability>())
         {
@@ -323,7 +328,7 @@ public abstract class Craft : MonoBehaviour
     /// Rotates the craft to the passed vector
     /// </summary>
     /// <param name="directionVector">direction vector to rotate the craft to</param>
-    private void RotateCraft(Vector2 directionVector) {
+    protected void RotateCraft(Vector2 directionVector) {
 
         //no need to do anything if there's no movement
         if (directionVector == Vector2.zero)
@@ -354,7 +359,7 @@ public abstract class Craft : MonoBehaviour
     /// Applies a force to the craft on the vector given
     /// </summary>
     /// <param name="directionVector">vector given</param>
-    private void CraftMover(Vector2 directionVector)
+    protected virtual void CraftMover(Vector2 directionVector)
     {
         RotateCraft(directionVector); // rotate craft
         craftBody.AddForce(enginePower * directionVector); 

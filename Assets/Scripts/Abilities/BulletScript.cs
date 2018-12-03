@@ -10,7 +10,7 @@ public class BulletScript : MonoBehaviour {
     // TODO: Grab the shooter's alignment (once alignment is implemented) to prevent friendly fire
 
     private float damage; // damage of the spawned bullet
-    
+    private int faction;
     /// <summary>
     /// Sets the damage value of the spawned buller
     /// </summary>
@@ -19,24 +19,32 @@ public class BulletScript : MonoBehaviour {
         this.damage = damage; // set damage
     }
 
+    public void SetShooterFaction(int faction)
+    {
+        this.faction = faction;
+    }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<Craft>(); // check if it has a craft component
         if (craft != null) // check if the component was obtained
         {
-            craft.TakeDamage(damage, 0); // deal the damage to the target, no shell penetration
-            // if the shell is low, damage the part
-            if(craft.GetHealth()[0] <= 0)
+            if (craft.faction != faction)
             {
-                ShellPart part = collision.transform.GetComponent<ShellPart>();
-                if (part)
+                craft.TakeDamage(damage, 0); // deal the damage to the target, no shell penetration
+                                             // if the shell is low, damage the part
+                if (craft.GetHealth()[0] <= 0)
                 {
-                    part.TakeDamage(damage); // damage the part
+                    ShellPart part = collision.transform.GetComponent<ShellPart>();
+                    if (part)
+                    {
+                        part.TakeDamage(damage); // damage the part
+                    }
                 }
+                damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
+                Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
-            damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
-            Destroy(gameObject); // bullet has collided with a target, delete immediately
         }
     }
 }
