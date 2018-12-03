@@ -81,6 +81,7 @@ public class ShellPart : MonoBehaviour {
             if (collectible)
             {
                 spriteRenderer.enabled = true;
+                spriteRenderer.sortingOrder = 0;
                 rigid.velocity = Vector2.zero;
                 rigid.angularVelocity = rigid.angularVelocity > 0 ? 200 : -200;
             }

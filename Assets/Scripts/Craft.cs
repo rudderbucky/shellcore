@@ -229,7 +229,11 @@ public abstract class Craft : MonoBehaviour
 
     public void RemovePart(ShellPart part)
     {
-        part.GetComponent<Ability>().SetDestroyed(true);
+        if(part.GetComponent<Ability>())
+        {
+            part.GetComponent<Ability>().SetDestroyed(true);
+        }
+
         part.Detach();
         parts.Remove(part);
     }

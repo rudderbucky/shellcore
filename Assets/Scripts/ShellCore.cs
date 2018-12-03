@@ -27,25 +27,45 @@ public class ShellCore : AirCraft {
     protected override void Update() {
         base.Update(); // base update
 
-        if(target)
+        EnergySphereScript[] energies = FindObjectsOfType<EnergySphereScript>();
+
+        Transform closest = null;
+        float closestD = float.MaxValue;
+
+        for (int i = 0; i < energies.Length; i++)
+        {
+            float sqrD = Vector3.SqrMagnitude(transform.position - energies[i].transform.position);
+            if (closest == null || sqrD < closestD)
+            {
+                closestD = sqrD;
+                closest = energies[i].transform;
+            }
+        }
+        if(closest && closestD < 160) SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
+        if (target)
         {
             lineRenderer.positionCount = 2;
-            lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position});
+            lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
             Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
 
-            if(rigidbody)
+            if (rigidbody)
             {
                 //get direction
                 Vector3 dir = transform.position - target.transform.position;
                 //get distance
                 float dist = dir.magnitude;
 
-                if(dist > 2f)
+                if (target.GetComponent<EnergySphereScript>())
+                {
+                    rigidbody.AddForce(dir.normalized * 100f);
+                }
+                else if (dist > 2f)
                 {
                     rigidbody.AddForce(dir.normalized * (dist - 2f) * 50f);
                 }
             }
         }
+        else lineRenderer.positionCount = 0;
     }
 
     public void SetTractorTarget(Draggable newTarget)

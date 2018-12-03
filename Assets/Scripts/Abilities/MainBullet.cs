@@ -54,7 +54,7 @@ public class MainBullet : WeaponAbility {
         var bullet = Instantiate(bulletPrefab, core.transform.position + Vector3.Normalize(targetPos - core.transform.position) * 1.5F, Quaternion.identity);
 
         // Update its damage to match main bullet
-        bullet.GetComponent<BulletScript>().SetDamage(100);
+        bullet.GetComponent<BulletScript>().SetDamage(500);
 
         // Add velocity to the bullet
         bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - core.transform.position) * bulletSpeed;
