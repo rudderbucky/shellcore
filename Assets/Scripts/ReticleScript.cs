@@ -41,7 +41,6 @@ public class ReticleScript : MonoBehaviour {
                 Vector3 targSize = craftTarget.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
                 float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
                 GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
-                //transform.localScale = new Vector3(followedSize, followedSize, 1);
                 return; // Return so that the next check doesn't happen
             }
 
@@ -58,7 +57,6 @@ public class ReticleScript : MonoBehaviour {
                 Vector3 targSize = draggableTarget.GetComponent<SpriteRenderer>().bounds.size; //+ Vector3.one * 5; // adjust the size of the reticle
                 float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
                 GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
-                //transform.localScale = new Vector3(followedSize, followedSize, 1); // set the scale to match the size of the target
                 return; // Return so that the next check doesn't happen
             }
 
