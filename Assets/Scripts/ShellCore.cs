@@ -18,6 +18,15 @@ public class ShellCore : AirCraft {
         SetTractorTarget(null);
         base.OnDeath();
     }
+
+    private void OnDestroy()
+    {
+        if(coreGlow)
+            Destroy(coreGlow.gameObject);
+        if (targetGlow)
+            Destroy(targetGlow.gameObject);
+    }
+
     // TODO: these will be either enemies or allies, most allies and a few enemies can be interacted with.
     protected override void Start()
     {
@@ -27,8 +36,8 @@ public class ShellCore : AirCraft {
 
         transform.position = new Vector3(10, 0, 0);
 
-        coreGlow = Instantiate(glowPrefab, transform, true).transform;
-        targetGlow = Instantiate(glowPrefab, transform, true).transform;
+        coreGlow = Instantiate(glowPrefab, null, true).transform;
+        targetGlow = Instantiate(glowPrefab, null, true).transform;
 
         coreGlow.gameObject.SetActive(false);
         targetGlow.gameObject.SetActive(false);

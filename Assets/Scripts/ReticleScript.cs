@@ -40,7 +40,8 @@ public class ReticleScript : MonoBehaviour {
                 targSys.SetTarget(craftTarget.transform); // set the target to the clicked craft's transform
                 Vector3 targSize = craftTarget.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
                 float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
-                transform.localScale = new Vector3(followedSize, followedSize, 1); // set the scale to match the size of the target
+                GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
+                //transform.localScale = new Vector3(followedSize, followedSize, 1);
                 return; // Return so that the next check doesn't happen
             }
 
@@ -56,7 +57,8 @@ public class ReticleScript : MonoBehaviour {
                 targSys.SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
                 Vector3 targSize = draggableTarget.GetComponent<SpriteRenderer>().bounds.size; //+ Vector3.one * 5; // adjust the size of the reticle
                 float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
-                transform.localScale = new Vector3(followedSize, followedSize, 1); // set the scale to match the size of the target
+                GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
+                //transform.localScale = new Vector3(followedSize, followedSize, 1); // set the scale to match the size of the target
                 return; // Return so that the next check doesn't happen
             }
 
@@ -91,6 +93,7 @@ public class ReticleScript : MonoBehaviour {
 
                 // adjust the image scales according to the health ratios
                 Vector3 scale = shellimage.localScale;
+
                 scale.x = targHealth[0] / targMax[0];
 
                 shellimage.localScale = scale;
@@ -99,6 +102,12 @@ public class ReticleScript : MonoBehaviour {
                 scale.x = targHealth[1] / targMax[1];
 
                 coreimage.localScale = scale;
+            }
+            else
+            {
+                // disable the craft related info
+                shellimage.GetComponentInChildren<SpriteRenderer>().enabled = false;
+                coreimage.GetComponentInChildren<SpriteRenderer>().enabled = false;
             }
         }
         else
