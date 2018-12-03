@@ -7,7 +7,7 @@ public class EnergySphereScript : MonoBehaviour {
     private void Update()
     {
         timer += Time.deltaTime;
-        if (timer > 5) {
+        if (timer > 10) {
             Destroy(gameObject);
         }
         else if (timer > 3)
@@ -26,6 +26,9 @@ public class EnergySphereScript : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.GetComponent<ShellCore>()) Destroy(gameObject);
+        if (collision.GetComponent<ShellCore>())
+        {
+            Destroy(gameObject);
+        }
     }
 }
