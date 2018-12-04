@@ -38,6 +38,12 @@ public class ReticleScript : MonoBehaviour {
             if (craftTarget != null && !craftTarget.GetIsDead() && craftTarget != craft) 
                 // if it is not null, dead or the player itself
             {
+                if (targSys.GetTarget() == craftTarget.transform)
+                {
+                    if (craftTarget.dialogue)
+                        DialogueSystem.StartDialogue(craftTarget.dialogue);
+                }
+
                 targSys.SetTarget(craftTarget.transform); // set the target to the clicked craft's transform
                 Vector3 targSize = craftTarget.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
                 float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target

@@ -23,7 +23,6 @@ public class DialogueSystem : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        enabled = false;
     }
 
     private void Update()
@@ -47,8 +46,6 @@ public class DialogueSystem : MonoBehaviour
 
     private void startDialogue(Dialogue dialogue)
     {
-        enabled = true;
-
         //create window
         window = Instantiate(dialogueBoxPrefab);
         backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
@@ -95,12 +92,15 @@ public class DialogueSystem : MonoBehaviour
             case Dialogue.DialogueAction.None:
                 //Do nothing and continue after this check
                 break;
+            case Dialogue.DialogueAction.Outpost:
+                //TODO: create outpost
+                break;
             case Dialogue.DialogueAction.Shop:
                 //TODO: create shop
                 endDialogue();
                 return;
             case Dialogue.DialogueAction.Yard:
-                //TODO: create shop
+                //TODO: create yard
                 endDialogue();
                 return;
             case Dialogue.DialogueAction.Exit:
@@ -114,6 +114,7 @@ public class DialogueSystem : MonoBehaviour
         text = current.text.Replace("<br>", "\n");
         characterCount = 0;
         nextCharacterTime = Time.time + timeBetweenCharacters;
+        textRenderer.color = current.textColor;
 
         // create buttons
         buttons = new GameObject[current.nextNodes.Count];
@@ -154,6 +155,5 @@ public class DialogueSystem : MonoBehaviour
     private void endDialogue()
     {
         Destroy(window);
-        enabled = false;
     }
 }

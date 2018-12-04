@@ -8,6 +8,7 @@ public class Dialogue : ScriptableObject
     public enum DialogueAction
     {
         None,
+        Outpost,
         Shop,
         Yard,
         Exit
@@ -20,6 +21,7 @@ public class Dialogue : ScriptableObject
     {
         public string buttonText;
         public string text;
+        public Color textColor;
         public int ID;
         public List<int> nextNodes;
         public DialogueAction action;

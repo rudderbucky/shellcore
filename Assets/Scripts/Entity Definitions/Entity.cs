@@ -31,8 +31,8 @@ public class Entity : MonoBehaviour {
     public Sprite minimapSprite;
     public GameObject bulletPrefab;
     public Vector3 spawnPoint;
+    public Dialogue dialogue;
     private bool initialized;
-    // Use this for initialization
 
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
