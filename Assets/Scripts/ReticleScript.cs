@@ -33,6 +33,23 @@ public class ReticleScript : MonoBehaviour {
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
         if (hits.Length != 0) // check if there are actually any hits
         {
+            Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
+            if (draggableTarget && !(draggableTarget.gameObject.GetComponent<ShellPart>()
+                && draggableTarget.gameObject.GetComponent<ShellPart>().faction == craft.faction))
+            {
+                if (targSys.GetTarget() == draggableTarget.transform)
+                {
+                    PlayerCore player = craft.GetComponent<PlayerCore>();
+                    player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
+                }
+                targSys.SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
+                Vector3 targSize = draggableTarget.GetComponent<SpriteRenderer>().bounds.size; //+ Vector3.one * 5; // adjust the size of the reticle
+                float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
+                GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
+                return; // Return so that the next check doesn't happen
+            }
+
+
             Entity craftTarget = hits[0].transform.gameObject.GetComponent<Entity>();
             // grab the first one's craft component, others don't matter
             if (craftTarget != null && !craftTarget.GetIsDead() && craftTarget != craft) 
@@ -50,22 +67,6 @@ public class ReticleScript : MonoBehaviour {
                 GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
                 return; // Return so that the next check doesn't happen
             }
-
-            Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
-            if (draggableTarget)
-            {
-                if (targSys.GetTarget() == draggableTarget.transform)
-                {
-                    PlayerCore player = craft.GetComponent<PlayerCore>();
-                    player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
-                }
-                targSys.SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
-                Vector3 targSize = draggableTarget.GetComponent<SpriteRenderer>().bounds.size; //+ Vector3.one * 5; // adjust the size of the reticle
-                float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
-                GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
-                return; // Return so that the next check doesn't happen
-            }
-
             targSys.SetTarget(null); // otherwise set the target to null
         }
         else {

@@ -50,16 +50,17 @@ public class MainBullet : WeaponAbility {
     /// <param name="targetPos">The position to fire the bullet to</param>
     void FireBullet(Vector3 targetPos)
     {
+        Vector3 originPos = part ? part.transform.position : Core.transform.position;
         // Create the Bullet from the Bullet Prefab
-        var bullet = Instantiate(bulletPrefab, Core.transform.position + Vector3.Normalize(targetPos - Core.transform.position) * 1.5F, Quaternion.identity);
+        var bullet = Instantiate(bulletPrefab, originPos + Vector3.Normalize(targetPos - originPos) * 1.5F, Quaternion.identity);
 
         // Update its damage to match main bullet
-        bullet.GetComponent<BulletScript>().SetDamage(500);
+        bullet.GetComponent<BulletScript>().SetDamage(100);
 
         bullet.GetComponent<BulletScript>().SetShooterFaction(Core.faction);
 
         // Add velocity to the bullet
-        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - Core.transform.position) * bulletSpeed;
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos) * bulletSpeed;
 
         // Destroy the bullet after survival time
         Destroy(bullet, survivalTime);

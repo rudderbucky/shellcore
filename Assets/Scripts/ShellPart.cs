@@ -18,6 +18,7 @@ public class ShellPart : MonoBehaviour {
     private float currentHealth; // current health of part
     public bool constructPart;
     private bool collectible;
+    public int faction;
 
     public void SetCollectible(bool collectible) {
         this.collectible = collectible;
@@ -49,9 +50,6 @@ public class ShellPart : MonoBehaviour {
         // add force and torque
         rigid.AddForce(new Vector2(250 * Random.Range(-1F,2), 250 * Random.Range(-1F, 2)));
         rigid.AddTorque(100 * Random.Range(-20, 21));
-
-        // add "Draggable" component so that shellcores can grab the part
-        gameObject.AddComponent<Draggable>();
     }
 
     public void Awake()
@@ -67,7 +65,12 @@ public class ShellPart : MonoBehaviour {
         Destroy(GetComponent<Rigidbody2D>()); // remove rigidbody
         currentHealth = partHealth / 4;
         craft = transform.root.GetComponent<Entity>();
+        faction = craft.faction;
         spriteRenderer.color = FactionColors.colors[craft.faction];
+        if (GetComponent<Ability>())
+        {
+            GetComponent<Ability>().part = this;
+        }
     }
 
     /// <summary>
@@ -86,6 +89,8 @@ public class ShellPart : MonoBehaviour {
         else if (hasDetached) { // if it has actually detached
             if (collectible)
             {
+                // add "Draggable" component so that shellcores can grab the part
+                if(!gameObject.GetComponent<Draggable>()) gameObject.AddComponent<Draggable>();
                 spriteRenderer.enabled = true;
                 spriteRenderer.sortingOrder = 0;
                 rigid.velocity = Vector2.zero;

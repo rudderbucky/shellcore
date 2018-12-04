@@ -139,7 +139,7 @@ public class AbilityHandler : MonoBehaviour {
         {
             for (int i = 0; i < core.GetAbilities().Length; i++)
             { // update all abilities
-                if (abilities[i] == null) break; // stop iterating as every ability has been updated already
+                if (abilities[i] == null || core.GetIsDead()) break; // stop iterating as every ability has been updated already or entity is dead
                 AbilityUpdate(i); // otherwise update the current update
             }
         }

@@ -11,6 +11,11 @@ public abstract class Craft : Entity
     protected bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
 
+    protected override void OnDeath()
+    {
+        isImmobile = true;
+        base.OnDeath();
+    }
     protected override void PostDeath() {
         if (respawns)
         {

@@ -48,8 +48,12 @@ public class TargetingSystem {
             {
                 if (crafts[i].transform == parent)
                     continue;
-                if (parent.GetComponent<Craft>().faction == crafts[i].faction)
+                if (parent.GetComponent<Entity>().faction == crafts[i].faction)
                     continue;
+                if (crafts[i].GetIsDead())
+                {
+                    continue;
+                }
 
                 float sqrD = Vector3.SqrMagnitude(parent.position - crafts[i].transform.position);
                 if (closest == null || sqrD < closestD)

@@ -18,9 +18,12 @@ public class SpeedThrust : ActiveAbility
         activeDuration = 3;
         activeTimeRemaining = activeDuration;
         energyCost = 50;
-        craft = Core as Craft;
     }
 
+    private void Start()
+    {
+        craft = Core as Craft;
+    }
     /// <summary>
     /// Returns the engine power to the original value
     /// </summary>

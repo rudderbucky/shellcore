@@ -41,8 +41,8 @@ public class Entity : MonoBehaviour {
     {
         // Remove possible old parts from list
         parts.Clear();
-        maxHealth = new float[3];
-        if (!GetComponent<MainBullet>())
+        maxHealth = new float[] { 100, 100, 100 };
+        if (!GetComponent<MainBullet>() && !(this as Turret))
         {
             MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
             mainBullet.bulletPrefab = bulletPrefab;
@@ -158,7 +158,7 @@ public class Entity : MonoBehaviour {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            parts[i].SetCollectible((parts[i].name != "Shell Sprite") && Random.Range(0F,5) > 2.5F);
+            parts[i].SetCollectible((parts[i].name != "Shell Sprite") && Random.Range(0F,5) > 2.5F && !(this as PlayerCore));
             parts[i].Detach();
         }
 

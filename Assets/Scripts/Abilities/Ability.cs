@@ -37,6 +37,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     protected bool isPassive = false; // if the ability is passive
     protected bool isEnabled = true; // if the ability is enabled
     protected bool isDestroyed = false; // has the part detached from the craft
+    public ShellPart part;
 
     /// <summary>
     /// Setter method for isEnabled, will be used by parts
@@ -162,7 +163,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }
-        else if (Core.GetHealth()[2] >= energyCost && Input.GetKeyDown(key)) // enough energy and button pressed
+        else if (Core.GetHealth()[2] >= energyCost && (Core as PlayerCore && Input.GetKeyDown(key)) || (key == "activate")) // enough energy and button pressed
         {
             Core.MakeBusy(); // make core busy
             Core.TakeEnergy(energyCost); // remove the energy
@@ -170,27 +171,6 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         }
     }
 
-    /// <summary>
-    /// Ability called to change the ability's state over time
-    /// </summary>
-    /// <param name="key">The associated button to press to activate</param>
-    virtual public void Tick()
-    {
-        if (isDestroyed)
-        {
-            return; // Part has been destroyed, ability can't be used
-        }
-        else if (isOnCD) // tick the cooldown down
-        {
-            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
-        }
-        else if (Core.GetHealth()[2] >= energyCost) // enough energy and button pressed
-        {
-            Core.MakeBusy(); // make core busy
-            Core.TakeEnergy(energyCost); // remove the energy
-            Execute(); // execute the ability
-        }
-    }
     /// <summary>
     /// Used to activate whatever effect the ability has, almost always overriden
     /// </summary>

@@ -42,9 +42,9 @@ public abstract class WeaponAbility : ActiveAbility {
     /// <param name="key">the associated trigger key of the ability</param>
     public override void Tick(string key)
     {
-        if (Input.GetKeyDown(key)) { // toggle ability
+        if ((Core as PlayerCore && Input.GetKeyDown(key)) || key == "toggle") { // toggle ability
             Core.MakeBusy(); // make core busy
-            isActive = !isActive; // toggle activeness
+            isActive = !isActive;
         }
         if (isOnCD) // on cooldown
         {
@@ -65,34 +65,6 @@ public abstract class WeaponAbility : ActiveAbility {
         }
     }
 
-    /// <summary>
-    /// Override for tick that integrates the targeting system of the core 
-    /// and adjusted for the new isActive behaviour
-    /// </summary>
-    /// <param name="key">the associated trigger key of the ability</param>
-    public override void Tick()
-    {
-        isActive = true;
-        
-        if (isOnCD) // on cooldown
-        {
-            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
-        }
-        else if (isActive && Core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
-        {
-            if (Core.GetTargetingSystem().GetTarget() != null)
-            { // check if there is a target
-                Core.SetIntoCombat(); // now in combat
-                if (Vector2.Distance(Core.transform.position, Core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
-                // check if in range
-                {
-                    bool success = Execute(Core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
-                    if (success)
-                        Core.TakeEnergy(energyCost); // take energy, if the ability was executed
-                }
-            }
-        }
-    }
     /// <summary>
     /// Unused override for weapon ability, use the position-overloaded Execute() override instead
     /// </summary>

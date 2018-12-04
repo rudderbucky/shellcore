@@ -25,16 +25,16 @@ public class Outpost : AirConstruct {
     protected override void Update()
     {
         base.Update();
-        //targeter.GetTarget(true);
+        targeter.GetTarget(true);
         MainBullet[] bullets = GetComponentsInChildren<MainBullet>();
         for (int i = 0; i < bullets.Length; i++)
         {
-            bullets[i].Tick();
+            bullets[i].Tick(null);
         }
     }
     protected override void OnDeath()
     {
-        faction = faction == 1 ? 1 : 1;
+        faction = faction == 1 ? 0 : 1;
         for (int i = 0; i < parts.Count; i++)
         {
             RemovePart(parts[i]);
