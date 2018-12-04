@@ -7,9 +7,10 @@ using UnityEngine;
 /// </summary>
 public class HealthBarScript : MonoBehaviour {
 
-    public UnityEngine.UI.Image[] barsInputArray; // images of the health bars
+    public UnityEngine.UI.Image inputBar;
+    //public UnityEngine.UI.Image[] barsInputArray; // images of the health bars
     private UnityEngine.UI.Image[] barsArray; // instantiated bars
-    public UnityEngine.UI.Image[] gleamInputArray; // images of the gleam bars
+    //public UnityEngine.UI.Image[] gleamInputArray; // images of the gleam bars
     private UnityEngine.UI.Image[] gleamArray; // instantiated bars
     private bool initialized; // if this GUI component is initialized
     private bool[] gleaming; // if the bar is gleaming
@@ -22,17 +23,25 @@ public class HealthBarScript : MonoBehaviour {
     public void Initialize(PlayerCore player)
     {
         this.player = player;
-        barsArray = new UnityEngine.UI.Image[barsInputArray.Length]; // initialize arrays
-        gleamArray = new UnityEngine.UI.Image[barsInputArray.Length];
+        barsArray = new UnityEngine.UI.Image[3]; // initialize arrays
+        gleamArray = new UnityEngine.UI.Image[3];
         gleaming = new bool[barsArray.Length];
         gleamed = new bool[barsArray.Length];
+        Color[] colors = new Color[] { Color.green, new Color(0.7F,0.7F,0.7F), Color.cyan };
         for (int i = 0; i < barsArray.Length; i++) { // iterate through array
-            barsArray[i] = Instantiate(barsInputArray[i]) as UnityEngine.UI.Image; // instantiate the image
+            barsArray[i] = Instantiate(inputBar) as UnityEngine.UI.Image; // instantiate the image
             barsArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
+            barsArray[i].color = colors[i];
+            Vector3 tmp = barsArray[i].transform.position;
+            tmp.y -= 10*i;
+            barsArray[i].transform.position = tmp;
             barsArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
 
-            gleamArray[i] = Instantiate(gleamInputArray[i]) as UnityEngine.UI.Image; // instantiate the image
+            gleamArray[i] = Instantiate(inputBar) as UnityEngine.UI.Image; // instantiate the image
             gleamArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
+            tmp = gleamArray[i].transform.position;
+            tmp.y -= 10*i;
+            gleamArray[i].transform.position = tmp;
             gleamArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
         }
         initialized = true; // set to initialized

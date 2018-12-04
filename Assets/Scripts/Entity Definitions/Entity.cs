@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class Entity : MonoBehaviour {
 
-    protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected Ability[] abilities; // abilities
@@ -135,7 +135,7 @@ public class Entity : MonoBehaviour {
         }
         currentHealth[0] = maxHealth[0];
         currentHealth[1] = maxHealth[1];
-        currentHealth[2] = maxHealth[2] = 100;
+        currentHealth[2] = maxHealth[2];
         regenRate[0] = 100;
         regenRate[2] = 100;
         // Add abilities

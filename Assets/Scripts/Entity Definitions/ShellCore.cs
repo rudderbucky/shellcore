@@ -83,7 +83,7 @@ public class ShellCore : AirCraft {
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 10000f * Time.deltaTime);
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 10000f * Time.fixedDeltaTime);
                 }
             }
         }
