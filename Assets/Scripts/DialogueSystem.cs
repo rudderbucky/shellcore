@@ -46,6 +46,9 @@ public class DialogueSystem : MonoBehaviour
 
     private void startDialogue(Dialogue dialogue)
     {
+        if (window)
+            return;
+
         //create window
         window = Instantiate(dialogueBoxPrefab);
         backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
