@@ -368,6 +368,7 @@ public class Entity : MonoBehaviour {
             currentHealth[0] = 0; // set shell to zero
         }
         currentHealth[1] -= amount * shellPiercingFactor; // remove the rest of the damage from the core
+        if (currentHealth[1] < 0) currentHealth[1] = 0;
     }
 
     /// <summary>

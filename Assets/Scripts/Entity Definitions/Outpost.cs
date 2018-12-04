@@ -16,7 +16,10 @@ public class Outpost : AirConstruct {
     }
 
     public override void RemovePart(ShellPart part) {
-        Destroy(part.gameObject);
+       if (part.gameObject.name != "Shell Sprite")
+       {
+          Destroy(part.gameObject);
+       }
     }
 
     protected override void Update()
@@ -31,12 +34,12 @@ public class Outpost : AirConstruct {
     }
     protected override void OnDeath()
     {
-        faction = faction == 1 ? 0 : 1;
-        targeter.SetTarget(null);
+        faction = faction == 1 ? 1 : 1;
         for (int i = 0; i < parts.Count; i++)
         {
             RemovePart(parts[i]);
         }
+        targeter.SetTarget(null);
         Start();
     }
 }
