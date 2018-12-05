@@ -90,11 +90,15 @@ public class ShellCore : AirCraft {
         }
     }
 
-    protected override void Update() {
-        base.Update(); // base update
-
+    protected void TractorBeamUpdate()
+    {
+        if (target && (target.transform.position - transform.position).magnitude > 100)
+        {
+            SetTractorTarget(null);
+        }
         if (!target) // Don't grab energy when the craft is pulling something more important
         {
+
             EnergySphereScript[] energies = FindObjectsOfType<EnergySphereScript>();
 
             Transform closest = null;
@@ -130,6 +134,10 @@ public class ShellCore : AirCraft {
             coreGlow.gameObject.SetActive(false);
             targetGlow.gameObject.SetActive(false);
         }
+    }
+    protected override void Update() {
+        base.Update(); // base update
+        TractorBeamUpdate();
     }
 
     public void SetTractorTarget(Draggable newTarget)

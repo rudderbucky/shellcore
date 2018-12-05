@@ -42,7 +42,19 @@ public class Entity : MonoBehaviour {
         // Remove possible old parts from list
         parts.Clear();
         maxHealth = new float[] { 100, 100, 100 };
-        if (!GetComponent<MainBullet>() && !(this as Turret))
+        if (!transform.Find("Shell Sprite"))
+        {
+            GameObject childObject = new GameObject("Shell Sprite");
+            childObject.transform.SetParent(transform, false);
+            PolygonCollider2D collider = childObject.AddComponent<PolygonCollider2D>();
+            collider.isTrigger = true;
+            SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
+            renderer.sortingLayerID = 0;
+            renderer.sprite = this.shellSprite;
+            ShellPart part = childObject.AddComponent<ShellPart>();
+            part.detachible = false;
+        }
+        if (!GetComponent<MainBullet>() && !(this as Construct))
         {
             MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
             mainBullet.bulletPrefab = bulletPrefab;
@@ -82,16 +94,7 @@ public class Entity : MonoBehaviour {
         {
             hitbox = gameObject.AddComponent<PolygonCollider2D>();
             hitbox.isTrigger = true;
-        }
-        if (!transform.Find("Shell Sprite"))
-        {
-            GameObject childObject = new GameObject("Shell Sprite");
-            childObject.transform.SetParent(transform, false);
-            SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
-            renderer.sortingLayerID = 0;
-            renderer.sprite = this.shellSprite;
-            childObject.AddComponent<ShellPart>();
-        }
+        }        
         if(!transform.Find("Minimap Image"))
         {
             GameObject childObject = new GameObject("Minimap Image");
