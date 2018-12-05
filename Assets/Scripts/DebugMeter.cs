@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class DebugMeter : MonoBehaviour {
 
+    public enum Mode
+    {
+        Points,
+        Count
+    }
+
 	public static void AddDataPoint(float data)
     {
         if (instance)
@@ -16,6 +22,17 @@ public class DebugMeter : MonoBehaviour {
         index = (index + 1) % pointCount;
     }
 
+    public static void IncreaseCount()
+    {
+        if (instance)
+            instance.increaseCount();
+    }
+
+    private void increaseCount()
+    {
+        count++;
+    }
+
     static DebugMeter instance;
 
     //float[] data = new float[1024];
@@ -23,6 +40,18 @@ public class DebugMeter : MonoBehaviour {
     new LineRenderer renderer;
     int pointCount = 1024;
     float step = 0.1f;
+    int count = 0;
+    public Mode mode;
+
+    private void FixedUpdate()
+    {
+        if(mode == Mode.Count)
+        {
+            renderer.SetPosition(index, new Vector3(step * index, (float)count / 10f, 0f));
+            index = (index + 1) % pointCount;
+            count = 0;
+        }
+    }
 
     private void Awake()
     {

@@ -19,6 +19,9 @@ public class ShellPart : MonoBehaviour {
     public bool detachible = true;
     private bool collectible;
     private int faction;
+    private Draggable draggable;
+    private bool rotationDirection = true;
+    private float rotationOffset;
 
     public int GetFaction()
     {
@@ -50,9 +53,12 @@ public class ShellPart : MonoBehaviour {
         rigid = GetComponent<Rigidbody2D>();
         rigid.gravityScale = 0; // adjust the rigid body
         rigid.angularDrag = 0;
-        float[] directions = new float[] { -1, 1 };
-        rigid.AddForce(new Vector2(200 * directions[Random.Range(0,2)], 200 * directions[Random.Range(0, 2)]));
-        rigid.AddTorque(150 * directions[Random.Range(0, 1)]);
+        float randomDir = Random.Range(0f, 360f);
+        rigid.AddForce(new Vector2(Mathf.Cos(randomDir), Mathf.Sin(randomDir)) * 200f);
+        //rigid.AddTorque(150f * ((Random.Range(0, 2) == 0) ? 1 : -1));
+        rotationDirection = (Random.Range(0, 2) == 0);
+        gameObject.layer = 9;
+        rotationOffset = Random.Range(0f, 360f);
     }
 
     public void Awake()
@@ -70,7 +76,9 @@ public class ShellPart : MonoBehaviour {
         craft = transform.root.GetComponent<Entity>();
         faction = craft.faction;
         spriteRenderer.color = FactionColors.colors[craft.faction];
-        if(transform.Find("Shooter"))
+        gameObject.layer = 0;
+
+        if (transform.Find("Shooter"))
         {
             transform.Find("Shooter").GetComponent<SpriteRenderer>().color = FactionColors.colors[craft.faction];
         }
@@ -99,20 +107,23 @@ public class ShellPart : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        AimShooter();
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)
         {
             Blink(); // blink
+            //rigid.rotation = rigid.rotation + (rotationDirection ? 1f : -1.0f) * 360f * Time.deltaTime;
+            transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
         }
         else if (hasDetached) { // if it has actually detached
             if (collectible && detachible)
             {
                 rigid.drag = 25;
                 // add "Draggable" component so that shellcores can grab the part
-                if (!gameObject.GetComponent<Draggable>()) gameObject.AddComponent<Draggable>();
+                if (!draggable) draggable = gameObject.AddComponent<Draggable>();
                 spriteRenderer.enabled = true;
                 spriteRenderer.sortingOrder = 0;
-                rigid.angularVelocity = rigid.angularVelocity > 0 ? 200 : -200;
+                transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
+
+                //rigid.angularVelocity = rigid.angularVelocity > 0 ? 200 : -200;
             }
             else
             {
@@ -121,6 +132,10 @@ public class ShellPart : MonoBehaviour {
                     Destroy(gameObject);
                 } else spriteRenderer.enabled = false; // disable sprite renderer
             }
+        }
+        else
+        {
+            AimShooter();
         }
 	}
 

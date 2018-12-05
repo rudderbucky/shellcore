@@ -16,10 +16,11 @@ public class Outpost : AirConstruct {
     }
 
     public override void RemovePart(ShellPart part) {
-       if (part.gameObject.name != "Shell Sprite")
-       {
-          Destroy(part.gameObject);
-       }
+        if (part)
+            if (part.gameObject.name != "Shell Sprite")
+            {
+                Destroy(part.gameObject);
+            }
     }
 
     protected override void Update()

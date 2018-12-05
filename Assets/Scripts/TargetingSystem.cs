@@ -35,31 +35,30 @@ public class TargetingSystem {
     /// <param name="findNew">Whether or not the targeting system should find a new target</param>
     /// <returns>The target of the targeting system</returns>
     public Transform GetTarget(bool findNew = false) {
-
         if(findNew)
         {
             //Find the closest enemy
             //TODO: optimize
-            Entity[] crafts = GameObject.FindObjectsOfType<Entity>();
+            Entity[] entities = GameObject.FindObjectsOfType<Entity>();
             Transform closest = null;
             float closestD = float.MaxValue;
 
-            for (int i = 0; i < crafts.Length; i++)
+            for (int i = 0; i < entities.Length; i++)
             {
-                if (crafts[i].transform == parent)
+                if (entities[i].transform == parent)
                     continue;
-                if (parent.GetComponent<Entity>().faction == crafts[i].faction)
+                if (parent.GetComponent<Entity>().faction == entities[i].faction)
                     continue;
-                if (crafts[i].GetIsDead())
+                if (entities[i].GetIsDead())
                 {
                     continue;
                 }
 
-                float sqrD = Vector3.SqrMagnitude(parent.position - crafts[i].transform.position);
+                float sqrD = Vector3.SqrMagnitude(parent.position - entities[i].transform.position);
                 if (closest == null || sqrD < closestD)
                 {
                     closestD = sqrD;
-                    closest = crafts[i].transform;
+                    closest = entities[i].transform;
                 }
             }
             target = closest;

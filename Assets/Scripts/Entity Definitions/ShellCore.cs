@@ -35,8 +35,11 @@ public class ShellCore : AirCraft {
         transform.position = spawnPoint;
         // initialize instance fields
 
-        coreGlow = Instantiate(glowPrefab, null, true).transform;
-        targetGlow = Instantiate(glowPrefab, null, true).transform;
+
+        if(!coreGlow)
+            coreGlow = Instantiate(glowPrefab, null, true).transform;
+        if (!targetGlow)
+            targetGlow = Instantiate(glowPrefab, null, true).transform;
 
         coreGlow.gameObject.SetActive(false);
         targetGlow.gameObject.SetActive(false);
