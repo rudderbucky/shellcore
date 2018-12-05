@@ -9,6 +9,9 @@ public class Turret : AirConstruct {
         Debug.Log("Doughnut activated!");
         gameObject.AddComponent<Draggable>();
         base.Start();
+        if (entityBody)
+            entityBody.drag = 25f;
+
     }
     protected override void Update()
     {

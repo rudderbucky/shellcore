@@ -44,7 +44,7 @@ public class ShellPart : MonoBehaviour {
         gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
         rigid = GetComponent<Rigidbody2D>();
         rigid.gravityScale = 0; // adjust the rigid body
-        rigid.drag = 0;
+        rigid.drag = 25;
         rigid.angularDrag = 0;
         //rigid.interpolation = RigidbodyInterpolation2D.Extrapolate;
         // add force and torque
@@ -93,7 +93,6 @@ public class ShellPart : MonoBehaviour {
                 if(!gameObject.GetComponent<Draggable>()) gameObject.AddComponent<Draggable>();
                 spriteRenderer.enabled = true;
                 spriteRenderer.sortingOrder = 0;
-                rigid.velocity = Vector2.zero;
                 rigid.angularVelocity = rigid.angularVelocity > 0 ? 200 : -200;
             }
             else
