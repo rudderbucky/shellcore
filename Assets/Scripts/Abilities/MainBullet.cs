@@ -33,13 +33,9 @@ public class MainBullet : WeaponAbility {
     {
         if (Core.GetTargetingSystem().GetTarget() != null) // check if there is actually a target, do not fire if there is not
         {
-            Entity targetCraft = Core.GetTargetingSystem().GetTarget().GetComponent<Entity>();
-            if (targetCraft && targetCraft.faction != Core.faction) // check what type the target is & check the faction
-            {
                 FireBullet(victimPos); // fire if there is
                 isOnCD = true; // set on cooldown
                 return true;
-            }
         }
         return false;
     }

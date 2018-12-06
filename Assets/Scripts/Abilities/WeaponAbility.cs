@@ -54,7 +54,9 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             if (Core.GetTargetingSystem().GetTarget() != null) { // check if there is a target
                 Core.SetIntoCombat(); // now in combat
-                if (Vector2.Distance(Core.transform.position, Core.GetTargetingSystem().GetTarget().transform.position) <= GetRange())
+                Transform targetEntity = Core.GetTargetingSystem().GetTarget();
+                if (Vector2.Distance(Core.transform.position, targetEntity.position) <= GetRange() && targetEntity.GetComponent<Entity>() 
+                    && targetEntity.GetComponent<Entity>().faction != Core.faction)
                     // check if in range
                 {
                     bool success = Execute(Core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire

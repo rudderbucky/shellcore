@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114317180880735196}
   - component: {fileID: 212886192800515342}
   - component: {fileID: 60655527780492516}
-  - component: {fileID: 114265013960249532}
+  - component: {fileID: 114758198117500782}
   m_Layer: 0
   m_Name: ShellPart 6
   m_TagString: Untagged
@@ -101,20 +101,6 @@ PolygonCollider2D:
       - {x: -0.12, y: -0.13}
       - {x: 0.12, y: -0.13}
       - {x: 0.12, y: 0.13}
---- !u!114 &114265013960249532
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1608601267481818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e39af3afa065e8b419baa2d9944aba81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  part: {fileID: 0}
-  bulletPrefab: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480,
-    type: 2}
 --- !u!114 &114317180880735196
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -129,6 +115,20 @@ MonoBehaviour:
   partHealth: 0
   partMass: 0
   detachible: 0
+--- !u!114 &114758198117500782
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1608601267481818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 594a2d78e7db2304ab4a5352208ac97c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: {fileID: 0}
+  line: {fileID: 0}
+  material: {fileID: 2100000, guid: 2592896f9ff9ee54dae8b5d8ebc425e3, type: 2}
 --- !u!212 &212385242418038932
 SpriteRenderer:
   m_ObjectHideFlags: 1

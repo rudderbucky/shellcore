@@ -321,7 +321,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 317661eca9950a1448482528571aa117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  craft: {fileID: 0}
 --- !u!114 &114213291060993932
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -452,15 +451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 541db1538ac5e31448161cfc34fe263d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  barsInputArray:
-  - {fileID: 114687081900446724, guid: ed83f857201168d4c9f9b4cc52221911, type: 2}
-  - {fileID: 114161265801066724, guid: 30a3134cbe8a5154f97b9330f249e648, type: 2}
-  - {fileID: 114394688736540894, guid: 430ee05611944b944b3cf76f361607b8, type: 2}
-  gleamInputArray:
-  - {fileID: 114377222984301578, guid: 613b3308dd20d97448f435623e7cad8c, type: 2}
-  - {fileID: 114377222984301578, guid: 613b3308dd20d97448f435623e7cad8c, type: 2}
-  - {fileID: 114406319435448934, guid: 1306d67916fd6ad4686a7453292fb659, type: 2}
-  player: {fileID: 0}
+  inputBar: {fileID: 114687081900446724, guid: ed83f857201168d4c9f9b4cc52221911, type: 2}
 --- !u!114 &114798618046525886
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -472,7 +463,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b634727e62e1aeb408ffca96bd5b2f10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  core: {fileID: 0}
   abilityBackground: {fileID: 114590687923633336, guid: 97ec2bf38629ec84daacdab7be647f77,
     type: 2}
   abilityCDIndicator: {fileID: 114629999648842878, guid: c59a13fff49be4a40bc5d9e6400801ec,
@@ -484,6 +474,7 @@ MonoBehaviour:
   - {fileID: 114039007186197380, guid: 6c0cf80843f772b4cabdd164b1ad954b, type: 2}
   - {fileID: 114826548513372128, guid: 6efa0abe49de45e47a87aa3931b48109, type: 2}
   - {fileID: 114828149354162452, guid: e211ee5eed5b2be41a884b8f00f6457d, type: 2}
+  - {fileID: 114058620588636134, guid: 4e8b9673a5993494ebf8532bddf7c29b, type: 2}
 --- !u!114 &114831847185794452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -717,11 +708,11 @@ RectTransform:
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
   m_Children: []
   m_Father: {fileID: 224262273140210284}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 17.48999, y: 9.175598}
+  m_AnchoredPosition: {x: 17.48999, y: 9.175659}
   m_SizeDelta: {x: 34.98, y: 33.81}
   m_Pivot: {x: 0.50000024, y: 0.2713722}
 --- !u!224 &224138369072923026
@@ -735,12 +726,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224262273140210284}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -124.73001, y: 50}
-  m_SizeDelta: {x: 249.47, y: 100}
+  m_AnchoredPosition: {x: -234.25, y: 48.81}
+  m_SizeDelta: {x: 468.51, y: 97.62}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224262273140210284
 RectTransform:
@@ -752,8 +743,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 224138369072923026}
   - {fileID: 224037806233693682}
+  - {fileID: 224138369072923026}
   m_Father: {fileID: 4459415406969676}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

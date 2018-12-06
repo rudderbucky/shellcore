@@ -415,16 +415,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1516647871}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 530ea80ca976e744aa9b39d6e5b2d021, type: 3}
+  m_Script: {fileID: 11500000, guid: a33678e2a1107aa45a312f67fdce36b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   items:
-  - prefab: {fileID: 1158218472494236, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
+  - prefab: {fileID: 1776811456427236, guid: a991af4e9d7db89468e456a75b8ca0bc, type: 2}
     icon: {fileID: 21300000, guid: 542abe726172b7d488359febe5b0a812, type: 3}
-    cost: 100
-  - prefab: {fileID: 1158218472494236, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-    icon: {fileID: 21300000, guid: 542abe726172b7d488359febe5b0a812, type: 3}
-    cost: 100
+    cost: 0
   UIPrefab: {fileID: 1884798941415254, guid: f4da396a9a786d14e8b4c2b96f14582b, type: 2}
   buttonPrefab: {fileID: 1274526944393630, guid: a991af4e9d7db89468e456a75b8ca0bc,
     type: 2}
@@ -466,6 +463,11 @@ Prefab:
     - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
       propertyPath: m_RootOrder
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114483016964921414, guid: 0ebad17a0a4ddef418cd2919df23926a,
+        type: 2}
+      propertyPath: blueprint
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
@@ -564,77 +566,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 223767212735640842, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 519420031}
     - target: {fileID: 223388385919826862, guid: 836e2c9a545881d4992a92dd6a559cdb,
         type: 2}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 114798618046525886, guid: 836e2c9a545881d4992a92dd6a559cdb,
+    - target: {fileID: 223767212735640842, guid: 836e2c9a545881d4992a92dd6a559cdb,
         type: 2}
-      propertyPath: core
+      propertyPath: m_Camera
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114743757520158626, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114613304867451244, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: core
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114114399784809928, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: craft
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 224037806233693682, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: 9.175659
-      objectReference: {fileID: 0}
-    - target: {fileID: 114743757520158626, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: inputBar
-      value: 
-      objectReference: {fileID: 114687081900446724, guid: ed83f857201168d4c9f9b4cc52221911,
-        type: 2}
-    - target: {fileID: 224138369072923026, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224037806233693682, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224138369072923026, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: 48.81
-      objectReference: {fileID: 0}
-    - target: {fileID: 224138369072923026, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: m_SizeDelta.y
-      value: 97.62
-      objectReference: {fileID: 0}
-    - target: {fileID: 224138369072923026, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: -234.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 224138369072923026, guid: 836e2c9a545881d4992a92dd6a559cdb,
-        type: 2}
-      propertyPath: m_SizeDelta.x
-      value: 468.51
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 519420031}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 836e2c9a545881d4992a92dd6a559cdb, type: 2}
   m_IsPrefabAsset: 0

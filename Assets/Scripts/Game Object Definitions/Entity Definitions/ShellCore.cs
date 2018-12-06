@@ -94,10 +94,6 @@ public class ShellCore : AirCraft {
 
     protected void TractorBeamUpdate()
     {
-        if (target && (target.transform.position - transform.position).magnitude > 100)
-        {
-            SetTractorTarget(null);
-        }
         if (!target) // Don't grab energy when the craft is pulling something more important
         {
 
@@ -119,7 +115,8 @@ public class ShellCore : AirCraft {
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
         }
 
-        if (target && !isDead) // Update tractor beam graphics
+        if (target && !isDead && (target.transform.position - transform.position).magnitude < 100
+            && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
         {
             lineRenderer.positionCount = 2;
             lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
@@ -132,6 +129,8 @@ public class ShellCore : AirCraft {
         }
         else
         {
+            target = null;
+            SetTractorTarget(null);
             lineRenderer.positionCount = 0;
             coreGlow.gameObject.SetActive(false);
             targetGlow.gameObject.SetActive(false);
