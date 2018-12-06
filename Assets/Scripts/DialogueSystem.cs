@@ -96,7 +96,6 @@ public class DialogueSystem : MonoBehaviour
                 //Do nothing and continue after this check
                 break;
             case Dialogue.DialogueAction.Outpost:
-                //TODO: create outpost
                 break;
             case Dialogue.DialogueAction.Shop:
                 //TODO: create shop

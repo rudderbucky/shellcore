@@ -50,19 +50,23 @@ public class ReticleScript : MonoBehaviour {
             }
 
 
-            Entity craftTarget = hits[0].transform.gameObject.GetComponent<Entity>();
+            Entity entityTarget = hits[0].transform.gameObject.GetComponent<Entity>();
             // grab the first one's craft component, others don't matter
-            if (craftTarget != null && !craftTarget.GetIsDead() && craftTarget != craft) 
+            if (entityTarget != null && !entityTarget.GetIsDead() && entityTarget != craft) 
                 // if it is not null, dead or the player itself
             {
-                if (targSys.GetTarget() == craftTarget.transform)
+                if (targSys.GetTarget() == entityTarget.transform) //Interact with entity
                 {
-                    if (craftTarget.dialogue)
-                        DialogueSystem.StartDialogue(craftTarget.dialogue);
+                    if (entityTarget.dialogue)
+                        DialogueSystem.StartDialogue(entityTarget.dialogue);
+                    else if(entityTarget.GetComponent<OutpostUI>())
+                    {
+                        entityTarget.GetComponent<OutpostUI>().openUI();
+                    }
                 }
 
-                targSys.SetTarget(craftTarget.transform); // set the target to the clicked craft's transform
-                Vector3 targSize = craftTarget.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
+                targSys.SetTarget(entityTarget.transform); // set the target to the clicked craft's transform
+                Vector3 targSize = entityTarget.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
                 float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
                 GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
                 return; // Return so that the next check doesn't happen

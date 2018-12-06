@@ -28,7 +28,6 @@ public class ShellCore : AirCraft {
             Destroy(targetGlow.gameObject);
     }
 
-    // TODO: these will be either enemies or allies, most allies and a few enemies can be interacted with.
     protected override void Start()
     {
         base.Start(); // base start
