@@ -15,6 +15,7 @@ public class HUDScript : MonoBehaviour {
         GetComponentInChildren<HealthBarScript>().Initialize(player);
         GetComponentInChildren<AbilityHandler>().Initialize(player);
         GetComponentInChildren<ReticleScript>().Initialize(player);
+        GetComponentInChildren<QuantityDisplayScript>().Initialize(player);
         Camera.main.GetComponent<CameraScript>().Initialize(player);
     }
 

@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Turret : AirConstruct {
 
+    protected override void Awake()
+    {
+        gameObject.AddComponent<Draggable>();
+        base.Awake();
+    }
     protected override void Start()
     {
         Debug.Log("Doughnut activated!");
-        gameObject.AddComponent<Draggable>();
         base.Start();
         if (entityBody)
             entityBody.drag = 25f;

@@ -13,6 +13,16 @@ public class ShellCore : AirCraft {
     Transform coreGlow;
     Transform targetGlow;
     Draggable target;
+    protected float totalPower;
+
+    public float GetPower()
+    {
+        return totalPower;
+    }
+    public void AddPower(float power)
+    {
+        totalPower += power;
+    }
 
     protected override void OnDeath()
     {
