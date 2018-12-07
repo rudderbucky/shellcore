@@ -17,6 +17,7 @@ public class HUDScript : MonoBehaviour {
         GetComponentInChildren<ReticleScript>().Initialize(player);
         GetComponentInChildren<QuantityDisplayScript>().Initialize(player);
         Camera.main.GetComponent<CameraScript>().Initialize(player);
+        GetComponentInChildren<FadeUIScript>().Initialize(player);
     }
 
     /// <summary>
