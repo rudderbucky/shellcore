@@ -28,6 +28,7 @@ public class EnergySphereScript : MonoBehaviour {
     {
         if (collision.GetComponent<ShellCore>())
         {
+            collision.GetComponent<ShellCore>().AddPower(20);
             Destroy(gameObject);
         }
     }

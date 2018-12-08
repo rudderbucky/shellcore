@@ -59,9 +59,16 @@ public class ReticleScript : MonoBehaviour {
                 {
                     if (entityTarget.dialogue)
                         DialogueSystem.StartDialogue(entityTarget.dialogue);
-                    else if(entityTarget.GetComponent<OutpostUI>())
+                    /*else if(entityTarget.GetComponent<OutpostUI>())
                     {
                         entityTarget.GetComponent<OutpostUI>().openUI();
+                    }*/
+                    else if(entityTarget.GetComponent<Outpost>() && entityTarget.faction == craft.faction)
+                    {
+                        OutpostUI outpostUI = transform.parent.Find("Dialogue").GetComponent<OutpostUI>();
+                        outpostUI.outpostPosition = entityTarget.transform.position;
+                        outpostUI.player = craft;
+                        outpostUI.openUI();
                     }
                 }
 
