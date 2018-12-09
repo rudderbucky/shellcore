@@ -365,6 +365,7 @@ public class Entity : MonoBehaviour {
     /// <param name="amount">The amount of damage to do</param>
     /// <param name="shellPiercingFactor">The factor of damage that pierces through the shell into the core</param>
     public void TakeDamage(float amount, float shellPiercingFactor) {
+        if (amount > 0) SetIntoCombat();
         currentHealth[0] -= amount * (1 - shellPiercingFactor); // subtract amount from shell
         if (currentHealth[0] < 0) { // if shell has dipped below 0
             currentHealth[1] += currentHealth[0]; // remove excess from core
