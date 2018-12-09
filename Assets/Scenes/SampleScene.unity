@@ -321,7 +321,7 @@ MonoBehaviour:
   - ID: part4
     obj: {fileID: 11400000, guid: 7c9108a17197d5a41870837009676aff, type: 2}
   - ID: part5
-    obj: {fileID: 11400000, guid: d02b968ac7478454eb3c0f1b6f349e43, type: 2}
+    obj: {fileID: 11400000, guid: 94f07175c147e9549bde98e2456d3242, type: 2}
   - ID: outpost_part
     obj: {fileID: 11400000, guid: 1383b1dd4aea49548a77bd5e8f177746, type: 2}
   - ID: part2_beam
@@ -389,6 +389,52 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &1042393918
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1042393920}
+  - component: {fileID: 1042393919}
+  m_Layer: 0
+  m_Name: Platform Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1042393919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1042393918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe3e9e76f2cc59441a4e21397681f8bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabs:
+  - {fileID: 0}
+  - {fileID: 1535808194251928, guid: b764e4031e9be0045b6b2f28bc01ba0f, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  blueprint: {fileID: 11400000, guid: 191f0b629ef4dae499faae43e522513b, type: 2}
+--- !u!4 &1042393920
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1042393918}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1428500337
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,6 +596,10 @@ Prefab:
       value: 
       objectReference: {fileID: 11400000, guid: 75898c7b1aea45d49866d0c07d0b4664,
         type: 2}
+    - target: {fileID: 1158218472494236, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
   m_IsPrefabAsset: 0
@@ -586,7 +636,7 @@ MonoBehaviour:
   minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
   spawnPoint: {x: 0, y: 0, z: 0}
   dialogue: {fileID: 0}
-  enginePower: 200
+  enginePower: 500
   glowPrefab: {fileID: 1518099868842826, guid: 0435c97bf304a9c428f765f598b3b3a4, type: 2}
   tractorMaterial: {fileID: 2100000, guid: 5f3cff7e796e50244a54293ef32ae064, type: 2}
   hud: {fileID: 727441928}

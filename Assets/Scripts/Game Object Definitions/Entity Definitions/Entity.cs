@@ -109,6 +109,8 @@ public class Entity : MonoBehaviour {
             childObject.AddComponent<MinimapLockRotationScript>();
         }
 
+        GetComponent<Rigidbody2D>().mass = 1; // reset mass
+
         //For shellcores, create the tractor beam
         // Create shell parts
         if (blueprint != null)
