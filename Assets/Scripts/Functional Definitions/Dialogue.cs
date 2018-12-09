@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Dialogue", menuName = "ShellCore/Dialogue", order = 2)]
+[CreateAssetMenu(fileName = "Dialogue", menuName = "ShellCore/Dialogue", order = 3)]
 public class Dialogue : ScriptableObject
 {
     public enum DialogueAction

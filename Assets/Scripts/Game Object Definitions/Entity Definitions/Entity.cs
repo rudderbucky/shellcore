@@ -112,7 +112,7 @@ public class Entity : MonoBehaviour {
             {
                 EntityBlueprint.PartInfo part = blueprint.parts[i];
 
-                GameObject obj = Instantiate(part.part);
+                GameObject obj = Instantiate(ResourceManager.GetAsset<GameObject>(part.partID));
                 obj.transform.SetParent(transform, false);
                 obj.transform.SetAsFirstSibling();
                 obj.transform.localEulerAngles = new Vector3(0, 0, part.rotation);

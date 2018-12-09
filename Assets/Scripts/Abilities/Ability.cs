@@ -15,6 +15,18 @@ interface IPlayerExecutable {
 /// </summary>
 public abstract class Ability : MonoBehaviour, IPlayerExecutable {
 
+    public enum AbilityType
+    {
+        Bullet,
+        Beam,
+        Cannon,
+        Missile,
+        Torpedo,
+        ShellBoost,
+        CoreHeal,
+        SpeedThrust
+    }
+
     Entity core;  // craft that uses this ability
     public Entity Core
     {

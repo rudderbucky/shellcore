@@ -16,8 +16,9 @@ public class EntityBlueprint : ScriptableObject
         public float rotation;
         public bool mirrored;
 
-        public GameObject part; //Part prefab
+        public string partID; //Part blueprint ID
     }
 
+    public string coreSpriteID;
     public List<PartInfo> parts;
 }

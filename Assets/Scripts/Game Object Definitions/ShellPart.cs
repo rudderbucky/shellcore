@@ -17,6 +17,7 @@ public class ShellPart : MonoBehaviour {
     public float partMass; // mass of the part
     private float currentHealth; // current health of part
     public bool detachible = true;
+    public PartBlueprint blueprint;
     private bool collectible;
     private int faction;
     private Draggable draggable;
@@ -39,6 +40,37 @@ public class ShellPart : MonoBehaviour {
     public float GetPartHealth()
     {
         return partHealth; // part health
+    }
+
+    /// <summary>
+    /// Detach the part from the Shellcore
+    /// </summary>
+    /// <param name="blueprint">blueprint of the part</param>
+    public static GameObject BuildPart(PartBlueprint blueprint)
+    {
+        GameObject obj = new GameObject(blueprint.name);
+
+        //Part sprite
+        var spriteRenderer = obj.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
+        var part = obj.AddComponent<ShellPart>();
+        part.partMass = blueprint.mass;
+        part.partHealth = blueprint.health;
+        var collider = obj.AddComponent<PolygonCollider2D>();
+        collider.isTrigger = true;
+
+        // Add shooter
+        if(blueprint.requiresShooter)
+        {
+            GameObject shooter = new GameObject("Shooter");
+            var shooterSprite = shooter.AddComponent<SpriteRenderer>();
+            shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(blueprint.shooterSpriteID);
+        }
+
+        // This part is only used as a prefab. It must not be active
+        obj.SetActive(false);
+
+        return obj;
     }
 
     /// <summary>
