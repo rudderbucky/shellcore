@@ -63,8 +63,11 @@ public class ShellPart : MonoBehaviour {
         if(blueprint.requiresShooter)
         {
             GameObject shooter = new GameObject("Shooter");
+            shooter.transform.SetParent(part.transform);
+            shooter.transform.localPosition = Vector3.zero;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(blueprint.shooterSpriteID);
+            shooterSprite.sortingOrder = 5;
         }
 
         switch (blueprint.abilityType)
@@ -77,7 +80,7 @@ public class ShellPart : MonoBehaviour {
                 break;
             case Ability.AbilityType.Beam:
                 var beam = obj.AddComponent<Beam>();
-                beam.material = ResourceManager.GetAsset<Material>("white");
+                beam.material = ResourceManager.GetAsset<Material>("white_material");
                 break;
             case Ability.AbilityType.Cannon:
                 break;
