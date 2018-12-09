@@ -184,13 +184,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: []
   faction: 0
-  explosionMaterial: {fileID: 2100000, guid: 2592896f9ff9ee54dae8b5d8ebc425e3, type: 2}
   blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  coreSprite: {fileID: 21300002, guid: c8a5f1a70cfc5b64db0863288355309e, type: 3}
-  shellSprite: {fileID: 0}
   minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
-  bulletPrefab: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480,
-    type: 2}
   spawnPoint: {x: -15, y: 10, z: 0}
   dialogue: {fileID: 11400000, guid: fe3dc4919b3204043a02df34dab8c348, type: 2}
 --- !u!4 &400443710
@@ -269,7 +264,7 @@ GameObject:
   - component: {fileID: 751104752}
   - component: {fileID: 751104751}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: RecourceManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -286,29 +281,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1b12a1e6d8e1ab4dac7aa2868da59b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resources:
-  - name: ShellcoreTier3Core
+  builtInResources:
+  - ID: core1_light
+    obj: {fileID: 21300000, guid: 766b528ee1005ad4fa4b9dc5a2c4fba4, type: 3}
+  - ID: core1_shell
+    obj: {fileID: 21300000, guid: 194ecdaa3832ce6488263374598dce25, type: 3}
+  - ID: core3_light
     obj: {fileID: 21300000, guid: 80a15280da6ac4a4e9af9dc8d732972e, type: 3}
-  - name: ShellcoreTier3Shell
+  - ID: core3_shell
     obj: {fileID: 21300002, guid: 80a15280da6ac4a4e9af9dc8d732972e, type: 3}
-  - name: 
+  - ID: part1_sprite
+    obj: {fileID: 21300000, guid: b308b1f7817853a47b9905910d268b15, type: 3}
+  - ID: part2_sprite
+    obj: {fileID: 21300000, guid: f1ebdbe3f763bec458d91ee715a3b7ed, type: 3}
+  - ID: part3_sprite
+    obj: {fileID: 21300000, guid: b3116e864be9c5144b94a12e04f7dfad, type: 3}
+  - ID: part4_sprite
+    obj: {fileID: 21300000, guid: d1299c1aeaeb7ce448451260cdd0ffd8, type: 3}
+  - ID: defense_turret_sprite
+    obj: {fileID: 21300000, guid: 83aa7227f415d994aae1ac83856c6f6e, type: 3}
+  - ID: shooter_sprite
+    obj: {fileID: 21300002, guid: 83aa7227f415d994aae1ac83856c6f6e, type: 3}
+  - ID: 
     obj: {fileID: 0}
-  - name: 
-    obj: {fileID: 0}
-  - name: 
-    obj: {fileID: 0}
-  - name: 
-    obj: {fileID: 0}
-  - name: 
-    obj: {fileID: 0}
-  - name: 
-    obj: {fileID: 0}
-  - name: 
-    obj: {fileID: 0}
-  - name: 
-    obj: {fileID: 0}
-  data:
-    resources: []
+  - ID: outpost_part_sprite
+    obj: {fileID: 21300000, guid: c8a5f1a70cfc5b64db0863288355309e, type: 3}
+  - ID: outpost_core_sprite
+    obj: {fileID: 21300002, guid: c8a5f1a70cfc5b64db0863288355309e, type: 3}
+  - ID: energy_rock_base
+    obj: {fileID: 21300000, guid: dee01702c98ab614bb1bbbc2cabe8768, type: 3}
+  - ID: energy_rock_lights
+    obj: {fileID: 21300002, guid: dee01702c98ab614bb1bbbc2cabe8768, type: 3}
+  - ID: part1
+    obj: {fileID: 11400000, guid: 9a4c07ac72078434cb7dd284506d6b3d, type: 2}
+  - ID: part2
+    obj: {fileID: 11400000, guid: 123f3aae5cf07dc4a97d44ae7273542c, type: 2}
+  - ID: part3
+    obj: {fileID: 11400000, guid: c1a58aaebd179604f8705c93982d3a1e, type: 2}
+  - ID: part4
+    obj: {fileID: 11400000, guid: 7c9108a17197d5a41870837009676aff, type: 2}
+  - ID: part5
+    obj: {fileID: 11400000, guid: d02b968ac7478454eb3c0f1b6f349e43, type: 2}
+  - ID: outpost_part
+    obj: {fileID: 11400000, guid: 1383b1dd4aea49548a77bd5e8f177746, type: 2}
+  - ID: part2_beam
+    obj: {fileID: 11400000, guid: c061d8a578ce69e4b83ca86ec744cf50, type: 2}
+  - ID: bullet_prefab
+    obj: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480, type: 2}
+  - ID: tractor_beam_material
+    obj: {fileID: 2100000, guid: 5f3cff7e796e50244a54293ef32ae064, type: 2}
+  - ID: white_material
+    obj: {fileID: 2100000, guid: 2592896f9ff9ee54dae8b5d8ebc425e3, type: 2}
+  - ID: beam_part
+    obj: {fileID: 11400000, guid: d02b968ac7478454eb3c0f1b6f349e43, type: 2}
 --- !u!4 &751104752
 Transform:
   m_ObjectHideFlags: 0
@@ -393,13 +418,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: []
   faction: 1
-  explosionMaterial: {fileID: 2100000, guid: 2592896f9ff9ee54dae8b5d8ebc425e3, type: 2}
   blueprint: {fileID: 11400000, guid: 05612ec0affc87a49bdfb25a24278977, type: 2}
-  coreSprite: {fileID: 21300000, guid: 80a15280da6ac4a4e9af9dc8d732972e, type: 3}
-  shellSprite: {fileID: 21300002, guid: 80a15280da6ac4a4e9af9dc8d732972e, type: 3}
   minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
-  bulletPrefab: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480,
-    type: 2}
   spawnPoint: {x: 20, y: 0, z: 0}
   dialogue: {fileID: 0}
   enginePower: 0
@@ -448,13 +468,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: []
   faction: 1
-  explosionMaterial: {fileID: 2100000, guid: 2592896f9ff9ee54dae8b5d8ebc425e3, type: 2}
   blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  coreSprite: {fileID: 21300002, guid: c8a5f1a70cfc5b64db0863288355309e, type: 3}
-  shellSprite: {fileID: 0}
   minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
-  bulletPrefab: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480,
-    type: 2}
   spawnPoint: {x: 15, y: 10, z: 0}
   dialogue: {fileID: 0}
 --- !u!4 &1516647873
@@ -488,6 +503,8 @@ MonoBehaviour:
   UIPrefab: {fileID: 1884798941415254, guid: f4da396a9a786d14e8b4c2b96f14582b, type: 2}
   buttonPrefab: {fileID: 1274526944393630, guid: a991af4e9d7db89468e456a75b8ca0bc,
     type: 2}
+  player: {fileID: 0}
+  outpostPosition: {x: 0, y: 0, z: 0}
 --- !u!1001 &1581317815
 Prefab:
   m_ObjectHideFlags: 0
@@ -531,7 +548,8 @@ Prefab:
         type: 2}
       propertyPath: blueprint
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 75898c7b1aea45d49866d0c07d0b4664,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
   m_IsPrefabAsset: 0
@@ -564,13 +582,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: []
   faction: 0
-  explosionMaterial: {fileID: 2100000, guid: 2592896f9ff9ee54dae8b5d8ebc425e3, type: 2}
   blueprint: {fileID: 11400000, guid: b97795fc12bfc8a4189af4c44e2442db, type: 2}
-  coreSprite: {fileID: 21300000, guid: 766b528ee1005ad4fa4b9dc5a2c4fba4, type: 3}
-  shellSprite: {fileID: 21300000, guid: 194ecdaa3832ce6488263374598dce25, type: 3}
   minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
-  bulletPrefab: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480,
-    type: 2}
   spawnPoint: {x: 0, y: 0, z: 0}
   dialogue: {fileID: 0}
   enginePower: 200

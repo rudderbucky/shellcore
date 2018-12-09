@@ -20,5 +20,6 @@ public class EntityBlueprint : ScriptableObject
     }
 
     public string coreSpriteID;
+    public string coreShellSpriteID;
     public List<PartInfo> parts;
 }

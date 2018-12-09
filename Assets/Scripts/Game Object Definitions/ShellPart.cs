@@ -67,6 +67,35 @@ public class ShellPart : MonoBehaviour {
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(blueprint.shooterSpriteID);
         }
 
+        switch (blueprint.abilityType)
+        {
+            case Ability.AbilityType.None:
+                break;
+            case Ability.AbilityType.Bullet:
+                var mainBullet = obj.AddComponent<MainBullet>();
+                mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                break;
+            case Ability.AbilityType.Beam:
+                var beam = obj.AddComponent<Beam>();
+                beam.material = ResourceManager.GetAsset<Material>("white");
+                break;
+            case Ability.AbilityType.Cannon:
+                break;
+            case Ability.AbilityType.Missile:
+                break;
+            case Ability.AbilityType.Torpedo:
+                break;
+            case Ability.AbilityType.ShellBoost:
+                break;
+            case Ability.AbilityType.CoreHeal:
+                break;
+            case Ability.AbilityType.SpeedThrust:
+                break;
+            default:
+                break;
+        }
+
+
         // This part is only used as a prefab. It must not be active
         obj.SetActive(false);
 

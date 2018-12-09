@@ -10,7 +10,7 @@ public class ResourceManager : MonoBehaviour
     [System.Serializable]
     public struct Resource
     {
-        public string name;
+        public string ID;
         public Object obj;
     }
 
@@ -22,26 +22,27 @@ public class ResourceManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-    }
-
-    private void Start()
-    {
-        //Add built in resources to dictionaries
         resources = new Dictionary<string, Object>();
+
+        //Add built in resources to dictionaries
 
         for(int i = 0; i < builtInResources.Count; i++)
         {
             if(builtInResources[i].obj is PartBlueprint)
             {
-                resources.Add(builtInResources[i].name, ShellPart.BuildPart(builtInResources[i].obj as PartBlueprint));
+                continue;
             }
             else
             {
-                resources.Add(builtInResources[i].name, builtInResources[i].obj);
+                resources.Add(builtInResources[i].ID, builtInResources[i].obj);
             }
         }
 
-        if(File.Exists("ResourceData.txt"))
+        for (int i = 0; i < builtInResources.Count; i++)
+            if (builtInResources[i].obj is PartBlueprint)
+                resources.Add(builtInResources[i].ID, ShellPart.BuildPart(builtInResources[i].obj as PartBlueprint));
+
+        if (File.Exists("ResourceData.txt"))
         {
             string[] lines = File.ReadAllLines("ResourceData.txt");
             int mode = -1;
@@ -92,13 +93,16 @@ public class ResourceManager : MonoBehaviour
 
     public T getAsset<T>(string ID) where T : Object
     {
+        if (ID == "")
+            return null;
+
         if (resources.ContainsKey(ID))
             if (resources[ID] is T)
                 return resources[ID] as T;
             else
                 Debug.LogWarning("Trying to get " + ID + " (" + resources[ID].GetType() + ") as " + typeof(T).FullName);
         else
-            Debug.LogWarning("Resource ID " + ID + " not wound");
+            Debug.LogWarning("Resource ID " + ID + " not found");
         return null;
     }
 }

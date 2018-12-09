@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public class Entity : MonoBehaviour {
 
-    public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected Ability[] abilities; // abilities
@@ -23,13 +22,15 @@ public class Entity : MonoBehaviour {
     protected GameObject explosionCirclePrefab; // prefabs for death explosion
     protected GameObject explosionLinePrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
-    public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: use this to set colors of all parts
-    public Material explosionMaterial;
+    protected Material explosionMaterial;
+    protected Sprite coreSprite;
+    protected Sprite shellSprite;
+    protected GameObject bulletPrefab;
+
+    public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
     public EntityBlueprint blueprint;
-    public Sprite coreSprite;
-    public Sprite shellSprite;
     public Sprite minimapSprite;
-    public GameObject bulletPrefab;
     public Vector3 spawnPoint;
     public Dialogue dialogue;
     private bool initialized;
@@ -42,6 +43,10 @@ public class Entity : MonoBehaviour {
         // Remove possible old parts from list
         parts.Clear();
         maxHealth = new float[] { 100, 100, 100 };
+
+        if (blueprint == null)
+            return;
+
         if (!transform.Find("Shell Sprite"))
         {
             GameObject childObject = new GameObject("Shell Sprite");
@@ -50,37 +55,37 @@ public class Entity : MonoBehaviour {
             collider.isTrigger = true;
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
             renderer.sortingLayerID = 0;
-            renderer.sprite = this.shellSprite;
+            renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
         }
         if (!GetComponent<MainBullet>() && !(this as Construct))
         {
             MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
-            mainBullet.bulletPrefab = bulletPrefab;
+            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
-        if (!explosionCirclePrefab)
+        if (!explosionCirclePrefab) //TODO: get form RM
         {
             explosionCirclePrefab = new GameObject("Explosion Circle");
             explosionCirclePrefab.transform.SetParent(transform, false);
             LineRenderer lineRenderer = explosionCirclePrefab.AddComponent<LineRenderer>();
-            lineRenderer.material = explosionMaterial;
+            lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
             explosionCirclePrefab.AddComponent<DrawCircleScript>();
             explosionCirclePrefab.SetActive(false);
         }
-        if (!explosionLinePrefab)
+        if (!explosionLinePrefab) //TODO: get form RM
         {
             explosionLinePrefab = new GameObject("Explosion Line");
             explosionLinePrefab.transform.SetParent(transform, false);
             LineRenderer lineRenderer = explosionLinePrefab.AddComponent<LineRenderer>();
-            lineRenderer.material = explosionMaterial;
+            lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
             explosionLinePrefab.AddComponent<DrawLineScript>();
             explosionLinePrefab.SetActive(false);
         }
         if (!GetComponent<SpriteRenderer>())
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
-            renderer.sprite = coreSprite;
+            renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
             renderer.sortingOrder = 10;
         }
         if (!GetComponent<Rigidbody2D>())
@@ -95,7 +100,7 @@ public class Entity : MonoBehaviour {
             hitbox = gameObject.AddComponent<PolygonCollider2D>();
             hitbox.isTrigger = true;
         }        
-        if(!transform.Find("Minimap Image"))
+        if(!transform.Find("Minimap Image")) //TODO: get material from RM, generate sprite, change color to match faction
         {
             GameObject childObject = new GameObject("Minimap Image");
             childObject.transform.SetParent(transform, false);
@@ -112,7 +117,9 @@ public class Entity : MonoBehaviour {
             {
                 EntityBlueprint.PartInfo part = blueprint.parts[i];
 
-                GameObject obj = Instantiate(ResourceManager.GetAsset<GameObject>(part.partID));
+                GameObject prefab = ResourceManager.GetAsset<GameObject>(part.partID);
+                GameObject obj = Instantiate(prefab);
+                obj.SetActive(true);
                 obj.transform.SetParent(transform, false);
                 obj.transform.SetAsFirstSibling();
                 obj.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
@@ -136,6 +143,9 @@ public class Entity : MonoBehaviour {
         {
             parts.Add(shellSprite.GetComponent<ShellPart>());
         }
+
+        explosionMaterial = ResourceManager.GetAsset<Material>("white_material");
+
         currentHealth[0] = maxHealth[0];
         currentHealth[1] = maxHealth[1];
         currentHealth[2] = maxHealth[2];
