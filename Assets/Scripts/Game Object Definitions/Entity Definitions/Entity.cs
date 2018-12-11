@@ -26,11 +26,11 @@ public class Entity : MonoBehaviour {
     protected Sprite coreSprite;
     protected Sprite shellSprite;
     protected GameObject bulletPrefab;
+    protected Sprite minimapSprite;
 
     public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
     public EntityBlueprint blueprint;
-    public Sprite minimapSprite;
     public Vector3 spawnPoint;
     public Dialogue dialogue;
     private bool initialized;
@@ -105,7 +105,7 @@ public class Entity : MonoBehaviour {
             GameObject childObject = new GameObject("Minimap Image");
             childObject.transform.SetParent(transform, false);
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
-            renderer.sprite = minimapSprite;
+            renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
         }
 

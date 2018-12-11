@@ -4,14 +4,26 @@ using UnityEngine;
 
 public class EnergyRock : MonoBehaviour {
     public GameObject energySpherePrefab;
-	
-	// Update is called once per frame
-	void Update () {
-        if (Time.time % 3 > 3 - Time.deltaTime) {
+
+
+    float maxTime = 3f;
+    float targetTime = 0f;
+
+    private void Start()
+    {
+        targetTime = Time.time + maxTime;
+    }
+
+    void Update () {
+        if (Time.time > targetTime) {
+            targetTime = Time.time + maxTime;
+
             var x = Instantiate(energySpherePrefab, null, false);
             x.GetComponent<SpriteRenderer>().sortingLayerID = 0;
             x.transform.position = transform.position;
-            x.GetComponent<Rigidbody2D>().AddForce(100 * new Vector2(Random.Range(-5F, 5), Random.Range(-5F, 5)));
+
+            float dir = Random.Range(0f, 360f);
+            x.GetComponent<Rigidbody2D>().AddForce(new Vector2(Mathf.Sin(dir), Mathf.Cos(dir)) * Random.Range(120f, 180f));
         }
 	}
 }

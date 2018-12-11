@@ -20,5 +20,7 @@ public class LandPlatform : ScriptableObject
     }
 
     public float spriteSize;
-    public PlatformRow[] platformRows; // why tf can't I make a 2D serializable
+    public PlatformRow[] platformRows; 
+    // why tf can't I make a 2D serializable
+    // you can flatten it to one dimentional array first
 }

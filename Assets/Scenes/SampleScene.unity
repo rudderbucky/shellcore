@@ -185,7 +185,6 @@ MonoBehaviour:
   currentHealth: []
   faction: 0
   blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
   spawnPoint: {x: -15, y: 10, z: 0}
   dialogue: {fileID: 11400000, guid: fe3dc4919b3204043a02df34dab8c348, type: 2}
 --- !u!4 &400443710
@@ -206,6 +205,51 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 20077421280808370, guid: d5e8074442f47444a987c4a16552339f,
     type: 2}
   m_PrefabInternal: {fileID: 214582984}
+--- !u!1 &557238934
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 557238936}
+  - component: {fileID: 557238935}
+  m_Layer: 0
+  m_Name: Tank (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &557238935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 557238934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13019130897e7ad4aab93d28dde27aba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: []
+  faction: 0
+  blueprint: {fileID: 11400000, guid: b97795fc12bfc8a4189af4c44e2442db, type: 2}
+  spawnPoint: {x: -18, y: 0, z: 0}
+  dialogue: {fileID: 0}
+--- !u!4 &557238936
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 557238934}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &615992207
 Prefab:
   m_ObjectHideFlags: 0
@@ -302,8 +346,8 @@ MonoBehaviour:
     obj: {fileID: 21300000, guid: 83aa7227f415d994aae1ac83856c6f6e, type: 3}
   - ID: shooter_sprite
     obj: {fileID: 21300002, guid: 83aa7227f415d994aae1ac83856c6f6e, type: 3}
-  - ID: 
-    obj: {fileID: 0}
+  - ID: minimap_sprite
+    obj: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
   - ID: outpost_part_sprite
     obj: {fileID: 21300000, guid: c8a5f1a70cfc5b64db0863288355309e, type: 3}
   - ID: outpost_core_sprite
@@ -465,7 +509,6 @@ MonoBehaviour:
   currentHealth: []
   faction: 1
   blueprint: {fileID: 11400000, guid: 05612ec0affc87a49bdfb25a24278977, type: 2}
-  minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
   spawnPoint: {x: 20, y: 0, z: 0}
   dialogue: {fileID: 0}
   enginePower: 0
@@ -515,7 +558,6 @@ MonoBehaviour:
   currentHealth: []
   faction: 1
   blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
   spawnPoint: {x: 15, y: 10, z: 0}
   dialogue: {fileID: 0}
 --- !u!4 &1516647873
@@ -633,7 +675,6 @@ MonoBehaviour:
   currentHealth: []
   faction: 0
   blueprint: {fileID: 11400000, guid: b97795fc12bfc8a4189af4c44e2442db, type: 2}
-  minimapSprite: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
   spawnPoint: {x: 0, y: 0, z: 0}
   dialogue: {fileID: 0}
   enginePower: 500
@@ -652,6 +693,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2094425268
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2094425270}
+  - component: {fileID: 2094425269}
+  m_Layer: 0
+  m_Name: Tank
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2094425269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094425268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13019130897e7ad4aab93d28dde27aba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: []
+  faction: 0
+  blueprint: {fileID: 11400000, guid: b97795fc12bfc8a4189af4c44e2442db, type: 2}
+  spawnPoint: {x: -20, y: 0, z: 0}
+  dialogue: {fileID: 0}
+--- !u!4 &2094425270
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094425268}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2104304461
 Prefab:

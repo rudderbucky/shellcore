@@ -34,8 +34,9 @@ public class ReticleScript : MonoBehaviour {
         if (hits.Length != 0) // check if there are actually any hits
         {
             Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
-            if (draggableTarget && !(draggableTarget.gameObject.GetComponent<ShellPart>()
-                && draggableTarget.gameObject.GetComponent<ShellPart>().GetFaction() == craft.faction))
+            //if (draggableTarget && !(draggableTarget.gameObject.GetComponent<ShellPart>()
+            //    && draggableTarget.gameObject.GetComponent<ShellPart>().GetFaction() == craft.faction))
+            if (draggableTarget)
             {
                 if (targSys.GetTarget() == draggableTarget.transform)
                 {

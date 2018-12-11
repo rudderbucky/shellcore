@@ -66,6 +66,7 @@ public class ShellCore : AirCraft {
             lineRenderer.endWidth = 0.1F;
             lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             lineRenderer.receiveShadows = false;
+            lineRenderer.sortingOrder = 1;
             childObject.name = "TractorBeam";
         }
         base.BuildEntity();
