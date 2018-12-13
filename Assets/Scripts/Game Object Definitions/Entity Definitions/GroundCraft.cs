@@ -2,37 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GroundConstruct : Construct
+public class GroundCraft : Craft
 {
     float time = 0f;
-    protected bool onGround = false;
+    protected bool isOnGround = false;
     protected Draggable draggable; //TODO: draggable in children that need it
 
     protected override void Start()
     {
         base.Start();
 
-        if(!GetComponent<Draggable>())
+        if (!GetComponent<Draggable>())
         {
             draggable = gameObject.AddComponent<Draggable>();
         }
     }
 
-    protected override void Update ()
+    protected override void Update()
     {
-        if(LandPlatformGenerator.CheckOnGround(transform.position) && !draggable.dragging)
+        if (LandPlatformGenerator.CheckOnGround(transform.position) && !draggable.dragging)
         {
-            onGround = true;
+            isOnGround = true;
             transform.rotation = Quaternion.identity;
             base.Update();
         }
         else
         {
-            if(onGround)
+            if (isOnGround)
                 time = Time.time;
-            onGround = false;
+            isOnGround = false;
 
             transform.localEulerAngles = new Vector3(0, 0, (Time.time - time) * -180f);
         }
-	}
+    }
 }

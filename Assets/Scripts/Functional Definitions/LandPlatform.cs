@@ -11,6 +11,7 @@ public class LandPlatform : ScriptableObject
     {
         public int type;
         public int rotation;
+        public int direction; // 0 = right, 1 = up, 2 = left, 3 = down
     }
 
     [System.Serializable]

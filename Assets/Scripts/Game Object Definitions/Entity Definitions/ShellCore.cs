@@ -155,7 +155,11 @@ public class ShellCore : AirCraft {
     public void SetTractorTarget(Draggable newTarget)
     {
         lineRenderer.enabled = (newTarget != null);
+        if(target)
+            target.dragging = false;
         target = newTarget;
+        if (target)
+            target.dragging = true;
     }
 
     public Draggable GetTractorTarget()
