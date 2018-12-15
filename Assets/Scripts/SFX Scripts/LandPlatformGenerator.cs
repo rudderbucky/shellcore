@@ -37,36 +37,36 @@ public class LandPlatformGenerator : MonoBehaviour {
             return Vector3.zero;
 
         Vector3 center = tiles[tileIndex].transform.position;
-        float e = 0.1f;
+        float offset = 0.1f;
         Vector3 direction = Vector3.zero;
 
         switch (directions[tileIndex])
         {
             case 0:
-                if (position.y < center.y - e)
+                if (position.y < center.y - offset)
                     direction += Vector3.up;
-                else if (position.y > center.y + e)
+                else if (position.y > center.y + offset)
                     direction -= Vector3.up;
                 direction += Vector3.right;
                 break;
             case 1:
-                if (position.x < center.x - e)
+                if (position.x < center.x - offset)
                     direction += Vector3.right;
-                else if (position.x > center.x + e)
+                else if (position.x > center.x + offset)
                     direction -= Vector3.right;
                 direction += Vector3.up;
                 break;
             case 2:
-                if (position.y < center.y - e)
+                if (position.y < center.y - offset)
                     direction += Vector3.up;
-                else if (position.y > center.y + e)
+                else if (position.y > center.y + offset)
                     direction -= Vector3.up;
                 direction += -Vector3.right;
                 break;
             case 3:
-                if (position.x < center.x - e)
+                if (position.x < center.x - offset)
                     direction += Vector3.right;
-                else if (position.x > center.x + e)
+                else if (position.x > center.x + offset)
                     direction -= Vector3.right;
                 direction += -Vector3.up;
                 break;
