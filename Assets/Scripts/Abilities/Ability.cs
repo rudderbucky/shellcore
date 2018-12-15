@@ -18,6 +18,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     public enum AbilityType
     {
         None,
+        MainBullet,
         Bullet,
         Beam,
         Cannon,

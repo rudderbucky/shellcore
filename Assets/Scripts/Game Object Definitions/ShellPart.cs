@@ -23,6 +23,7 @@ public class ShellPart : MonoBehaviour {
     private Draggable draggable;
     private bool rotationDirection = true;
     private float rotationOffset;
+    public GameObject shooter;
 
     public int GetFaction()
     {
@@ -58,25 +59,30 @@ public class ShellPart : MonoBehaviour {
         part.partHealth = blueprint.health;
         var collider = obj.AddComponent<PolygonCollider2D>();
         collider.isTrigger = true;
-
+        part.detachible = blueprint.detachible;
         // Add shooter
         if(blueprint.requiresShooter)
         {
-            GameObject shooter = new GameObject("Shooter");
+            var shooter = new GameObject("Shooter");
             shooter.transform.SetParent(part.transform);
             shooter.transform.localPosition = Vector3.zero;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(blueprint.shooterSpriteID);
             shooterSprite.sortingOrder = 5;
+            part.shooter = shooter;
         }
 
         switch (blueprint.abilityType)
         {
             case Ability.AbilityType.None:
                 break;
-            case Ability.AbilityType.Bullet:
+            case Ability.AbilityType.MainBullet:
                 var mainBullet = obj.AddComponent<MainBullet>();
                 mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                break;
+            case Ability.AbilityType.Bullet:
+                var bullet = obj.AddComponent<Bullet>();
+                bullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
                 break;
             case Ability.AbilityType.Beam:
                 var beam = obj.AddComponent<Beam>();
@@ -142,9 +148,9 @@ public class ShellPart : MonoBehaviour {
         spriteRenderer.color = FactionColors.colors[craft.faction];
         gameObject.layer = 0;
 
-        if (transform.Find("Shooter"))
+        if (shooter)
         {
-            transform.Find("Shooter").GetComponent<SpriteRenderer>().color = FactionColors.colors[craft.faction];
+            shooter.GetComponent<SpriteRenderer>().color = FactionColors.colors[craft.faction];
         }
         if (GetComponent<Ability>())
         {
@@ -154,12 +160,20 @@ public class ShellPart : MonoBehaviour {
 
     private void AimShooter()
     {
-        if (craft.GetTargetingSystem().GetTarget() != null && transform.Find("Shooter"))
+        if (shooter)
         {
-            GameObject shooter = transform.Find("Shooter").gameObject;
-            Vector3 targeterPos = craft.GetTargetingSystem().GetTarget().position;
-            Vector3 diff = targeterPos - shooter.transform.position;
-            shooter.transform.eulerAngles = new Vector3(0, 0, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 90);
+            if (craft.GetTargetingSystem().GetTarget() != null)
+            {
+                var targEntity = craft.GetTargetingSystem().GetTarget().GetComponent<Entity>();
+                if (targEntity.faction != craft.faction)
+                {
+                    Vector3 targeterPos = craft.GetTargetingSystem().GetTarget().position;
+                    Vector3 diff = targeterPos - shooter.transform.position;
+                    shooter.transform.eulerAngles = new Vector3(0, 0, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 90);
+                }
+                else shooter.transform.eulerAngles = new Vector3(0, 0, 180);
+            }
+            else shooter.transform.eulerAngles = new Vector3(0,0,180);
         }
     }
     /// <summary>

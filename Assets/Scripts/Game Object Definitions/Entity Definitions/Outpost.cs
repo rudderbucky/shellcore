@@ -27,7 +27,7 @@ public class Outpost : AirConstruct {
     {
         base.Update();
         targeter.GetTarget(true);
-        MainBullet[] bullets = GetComponentsInChildren<MainBullet>();
+        Bullet[] bullets = GetComponentsInChildren<Bullet>();
         for (int i = 0; i < bullets.Length; i++)
         {
             bullets[i].Tick(null);

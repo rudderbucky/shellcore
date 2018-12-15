@@ -198,7 +198,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &519420031 stripped
 Camera:
@@ -234,7 +234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: []
   faction: 0
-  blueprint: {fileID: 11400000, guid: b97795fc12bfc8a4189af4c44e2442db, type: 2}
+  blueprint: {fileID: 11400000, guid: 5546e1a429a17d44b9b60e631354e011, type: 2}
   spawnPoint: {x: -18, y: 0, z: 0}
   dialogue: {fileID: 0}
   enginePower: 100
@@ -249,7 +249,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &615992207
 Prefab:
@@ -309,7 +309,7 @@ GameObject:
   - component: {fileID: 751104752}
   - component: {fileID: 751104751}
   m_Layer: 0
-  m_Name: RecourceManager
+  m_Name: ResourceManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -345,7 +345,7 @@ MonoBehaviour:
     obj: {fileID: 21300000, guid: d1299c1aeaeb7ce448451260cdd0ffd8, type: 3}
   - ID: defense_turret_sprite
     obj: {fileID: 21300000, guid: 83aa7227f415d994aae1ac83856c6f6e, type: 3}
-  - ID: shooter_sprite
+  - ID: beamshooter_sprite
     obj: {fileID: 21300002, guid: 83aa7227f415d994aae1ac83856c6f6e, type: 3}
   - ID: minimap_sprite
     obj: {fileID: 21300000, guid: 039d78697fbf95c479d72065ec4678bd, type: 3}
@@ -379,6 +379,14 @@ MonoBehaviour:
     obj: {fileID: 2100000, guid: 2592896f9ff9ee54dae8b5d8ebc425e3, type: 2}
   - ID: beam_part
     obj: {fileID: 11400000, guid: d02b968ac7478454eb3c0f1b6f349e43, type: 2}
+  - ID: speeder_shell
+    obj: {fileID: 21300000, guid: b90dd2fa88190bc479d8548cda6d52d0, type: 3}
+  - ID: bulletshooter_sprite
+    obj: {fileID: 21300000, guid: f10fe6a230b357e4e87f392bc74b1019, type: 3}
+  - ID: part6
+    obj: {fileID: 11400000, guid: 7312e615c0b7a064a9677cebe54361e0, type: 2}
+  - ID: bullet_part
+    obj: {fileID: 11400000, guid: a94713dd08116df47837083331a7ecee, type: 2}
 --- !u!4 &751104752
 Transform:
   m_ObjectHideFlags: 0
@@ -390,7 +398,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &802761753
 Prefab:
@@ -434,6 +442,72 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &821854607
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 821854610}
+  - component: {fileID: 821854609}
+  - component: {fileID: 821854608}
+  m_Layer: 0
+  m_Name: New Outpost (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &821854608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 821854607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a33678e2a1107aa45a312f67fdce36b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - prefab: {fileID: 1776811456427236, guid: a991af4e9d7db89468e456a75b8ca0bc, type: 2}
+    icon: {fileID: 21300000, guid: 542abe726172b7d488359febe5b0a812, type: 3}
+    cost: 0
+  UIPrefab: {fileID: 1884798941415254, guid: f4da396a9a786d14e8b4c2b96f14582b, type: 2}
+  buttonPrefab: {fileID: 1274526944393630, guid: a991af4e9d7db89468e456a75b8ca0bc,
+    type: 2}
+  player: {fileID: 0}
+  outpostPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &821854609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 821854607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fead9990b7fc8048b5558875ba0a351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: []
+  faction: 0
+  blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
+  spawnPoint: {x: -25, y: 10, z: 0}
+  dialogue: {fileID: 0}
+--- !u!4 &821854610
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 821854607}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1042393918
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,7 +552,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1428500337
 GameObject:
@@ -594,58 +668,6 @@ MonoBehaviour:
     type: 2}
   player: {fileID: 0}
   outpostPosition: {x: 0, y: 0, z: 0}
---- !u!1001 &1581317815
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4077741193619338, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114483016964921414, guid: 0ebad17a0a4ddef418cd2919df23926a,
-        type: 2}
-      propertyPath: blueprint
-      value: 
-      objectReference: {fileID: 11400000, guid: 75898c7b1aea45d49866d0c07d0b4664,
-        type: 2}
-    - target: {fileID: 1158218472494236, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0ebad17a0a4ddef418cd2919df23926a, type: 2}
-  m_IsPrefabAsset: 0
 --- !u!1 &2029120807
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,52 +717,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2094425268
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2094425270}
-  - component: {fileID: 2094425269}
-  m_Layer: 0
-  m_Name: Tank
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2094425269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2094425268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0e678489d2b28945aa0008ddc35378e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 11400000, guid: b97795fc12bfc8a4189af4c44e2442db, type: 2}
-  spawnPoint: {x: -20, y: 0, z: 0}
-  dialogue: {fileID: 0}
-  enginePower: 100
---- !u!4 &2094425270
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2094425268}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2104304461
 Prefab:
   m_ObjectHideFlags: 0
@@ -780,12 +756,12 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 223388385919826862, guid: 836e2c9a545881d4992a92dd6a559cdb,
+    - target: {fileID: 223767212735640842, guid: 836e2c9a545881d4992a92dd6a559cdb,
         type: 2}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 223767212735640842, guid: 836e2c9a545881d4992a92dd6a559cdb,
+    - target: {fileID: 223388385919826862, guid: 836e2c9a545881d4992a92dd6a559cdb,
         type: 2}
       propertyPath: m_Camera
       value: 

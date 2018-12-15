@@ -10,6 +10,7 @@ public class PartBlueprint : ScriptableObject
     public float mass;
     public Ability.AbilityType abilityType;
     public bool requiresShooter;
+    public bool detachible = true;
     public string shooterSpriteID;
 }
 

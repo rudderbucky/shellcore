@@ -7,13 +7,15 @@ public class Tank : GroundCraft
     protected override void Start()
     {
         base.Start();
+        if (entityBody)
+            entityBody.drag = 25f;
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (isOnGround)
+        if (isOnGround && !isDead)
         {
             targeter.GetTarget(true);
             if (!isDead && GetComponentInChildren<WeaponAbility>() && !draggable.dragging)

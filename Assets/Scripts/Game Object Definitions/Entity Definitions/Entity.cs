@@ -59,7 +59,7 @@ public class Entity : MonoBehaviour {
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
         }
-        if (!GetComponent<MainBullet>() && !(this as Construct))
+        if (!GetComponent<MainBullet>() && this as ShellCore)
         {
             MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
             mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
