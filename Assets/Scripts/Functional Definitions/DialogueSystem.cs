@@ -9,6 +9,7 @@ public class DialogueSystem : MonoBehaviour
 
     public GameObject dialogueBoxPrefab;
     public GameObject dialogueButtonPrefab;
+    public Font shellcorefont;
 
     GameObject window;
     RectTransform backgroud;
@@ -54,6 +55,7 @@ public class DialogueSystem : MonoBehaviour
         backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
         backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
         textRenderer = backgroud.transform.Find("Text").GetComponent<Text>();
+        textRenderer.font = shellcorefont;
 
         next(dialogue, 0);
     }

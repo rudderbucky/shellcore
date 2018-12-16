@@ -165,7 +165,7 @@ public class ShellPart : MonoBehaviour {
             if (craft.GetTargetingSystem().GetTarget() != null)
             {
                 var targEntity = craft.GetTargetingSystem().GetTarget().GetComponent<Entity>();
-                if (targEntity.faction != craft.faction)
+                if (targEntity && targEntity.faction != craft.faction)
                 {
                     Vector3 targeterPos = craft.GetTargetingSystem().GetTarget().position;
                     Vector3 diff = targeterPos - shooter.transform.position;
