@@ -28,6 +28,10 @@ public class Tank : GroundCraft
             }
             drive();
         }
+        else
+        {
+            hasPath = false;
+        }
     }
 
     private void pathfindToTarget()
@@ -58,30 +62,24 @@ public class Tank : GroundCraft
     {
         isImmobile = !isOnGround;
 
-        if (isImmobile)
+        if (hasPath)
         {
-            hasPath = false;
+            Vector2 direction = path[index] - (Vector2)transform.position;
+            MoveCraft(direction.normalized);
+
+            if (direction.magnitude < 0.1f)
+            {
+                index--;
+                if (index < 0)
+                {
+                    hasPath = false;
+                }
+            }
         }
         else
         {
-            if (hasPath)
-            {
-                Vector2 direction = path[index] - (Vector2)transform.position;
-                MoveCraft(direction.normalized);
-
-                if (direction.magnitude < 0.1f)
-                {
-                    index--;
-                    if (index < 0)
-                    {
-                        hasPath = false;
-                    }
-                }
-            }
-            else
-            {
-                pathfindToTarget();
-            }
+            Debug.Log("[" + Time.time + "] Pathfinding... ");
+            pathfindToTarget();
         }
     }
 }

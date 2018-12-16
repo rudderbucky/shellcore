@@ -5,7 +5,9 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class LandPlatformGenerator : MonoBehaviour {
+public class LandPlatformGenerator : MonoBehaviour
+{
+    public static LandPlatformGenerator instance { private set; get; }
 
     public GameObject[] prefabs;
     //public LandPlatform blueprint;
@@ -15,17 +17,17 @@ public class LandPlatformGenerator : MonoBehaviour {
     [HideInInspector]
     public int[] tilemap = new int[1];
 
-    private static List<GameObject> tiles;
-    private static List<Rect> areas;
-    private static List<NavigationNode> nodes;
+    private List<GameObject> tiles;
+    private List<Rect> areas;
+    private List<NavigationNode> nodes;
 
-    private static float tileSize;
+    private float tileSize;
 
     public static bool CheckOnGround(Vector3 position)
     {
-        for (int i = 0; i < tiles.Count; i++)
+        for (int i = 0; i < instance.tiles.Count; i++)
         {
-            if (tiles[i].GetComponent<SpriteRenderer>().bounds.Contains(position))
+            if (instance.tiles[i].GetComponent<SpriteRenderer>().bounds.Contains(position))
             {
                 return true;
             }
@@ -75,6 +77,11 @@ public class LandPlatformGenerator : MonoBehaviour {
             neighbours = new List<NavigationNode>();
             distances = new List<float>();
         }
+    }
+
+    private void Awake()
+    {
+        instance = this;
     }
 
     void Start() {
@@ -166,8 +173,8 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     bool isInLoS(Vector2 p1, Vector2 p2)
     {
-        Vector2 p12 = p1 / tileSize + new Vector2(0.5f, 0.5f);
-        Vector2 p22 = p2 / tileSize + new Vector2(0.5f, 0.5f);
+        Vector2 p12 = p1 / tileSize + Vector2.one * 0.5f;
+        Vector2 p22 = p2 / tileSize + Vector2.one * 0.5f;
 
         float d = (p22 - p12).magnitude;
 
@@ -245,11 +252,11 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     public static Vector2[] pathfind(Vector2 startPos, Vector2 targetPos)
     {
-        if (nodes == null)
+        if (instance.nodes == null)
             return null;
 
         //find node closest to start and end positions
-        NavigationNode start = getNearestNode(startPos);
+        NavigationNode start = getNearestNode(startPos, true);
         NavigationNode end = getNearestNode(targetPos);
 
         if (start == end)
@@ -258,6 +265,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         var openList = new List<PathfindNode>();
         var closedList = new List<PathfindNode>();
 
+        //TODO: try adding all nodes in LoS to open list
         openList.Add(new PathfindNode(start, null, 0f));
 
         while (openList.Count > 0)
@@ -281,10 +289,15 @@ public class LandPlatformGenerator : MonoBehaviour {
                 PathfindNode node = current;
                 do
                 {
+                    Debug.Log(node.node.pos);
                     path.Add(node.node.pos);
                     node = node.parent;
                 }
                 while (node.parent != null);
+
+                // Try skipping the first node
+                if(!instance.isInLoS(path[path.Count - 1], startPos))
+                    path.Add(node.node.pos);
 
                 return path.ToArray();
             }
@@ -314,20 +327,19 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     static NavigationNode getNearestNode(Vector2 pos, bool los = false)
     {
-        //TODO: (?) Adjust coordinates
-        NavigationNode nearest = nodes[0];
+        Vector2 pos2 = pos;// + Vector2.one * 0.5f * instance.tileSize;
+        NavigationNode nearest = new NavigationNode(Vector2.zero);
         float minD = float.MaxValue;
-        for (int i = 0; i < nodes.Count; i++)
+        for (int i = 0; i < instance.nodes.Count; i++)
         {
-            if(los)
+            if(los && !instance.isInLoS(instance.nodes[i].pos, pos2))
             {
-                // TODO: static -> singleton & use los here
                 continue;
             }
-            float d = (pos - nodes[i].pos).sqrMagnitude;
+            float d = (pos2 - instance.nodes[i].pos).sqrMagnitude;
             if (d < minD)
             {
-                nearest = nodes[i];
+                nearest = instance.nodes[i];
                 minD = d;
             }
         }
