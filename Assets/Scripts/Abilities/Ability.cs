@@ -26,7 +26,9 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         Torpedo,
         ShellBoost,
         CoreHeal,
-        SpeedThrust
+        SpeedThrust,
+        Bomb,
+        PinDown
     }
 
     Entity core;  // craft that uses this ability
@@ -51,6 +53,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     protected bool isPassive = false; // if the ability is passive
     protected bool isEnabled = true; // if the ability is enabled
     protected bool isDestroyed = false; // has the part detached from the craft
+    private Color originalIndicatorColor;
     public ShellPart part;
 
     /// <summary>
@@ -185,6 +188,15 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         }
     }
 
+    virtual protected void ToggleIndicator()
+    {
+        var indicator = transform.Find("Shooter");
+        originalIndicatorColor = FactionColors.colors[Core.faction];
+        if (indicator)
+        {
+            indicator.GetComponent<SpriteRenderer>().color = indicator.GetComponent<SpriteRenderer>().color == Color.cyan ? originalIndicatorColor : Color.cyan;
+        }
+    }
     /// <summary>
     /// Used to activate whatever effect the ability has, almost always overriden
     /// </summary>

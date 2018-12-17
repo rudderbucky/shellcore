@@ -30,6 +30,7 @@ public class SpeedThrust : ActiveAbility
     protected override void Deactivate()
     {
         if(craft) craft.enginePower -= 200; // bring the engine power back (will change to vary as Speed Thrust is tiered)
+        ToggleIndicator();
     }
 
     /// <summary>
@@ -41,5 +42,6 @@ public class SpeedThrust : ActiveAbility
         if(craft) craft.enginePower += 200; // add 200 to engine power (will change to vary as Speed Thrust is tiered)
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
+        ToggleIndicator();
     }
 }

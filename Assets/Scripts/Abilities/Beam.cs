@@ -41,7 +41,7 @@ public class Beam : WeaponAbility {
 
     protected override bool Execute(Vector3 victimPos)
     {
-        Core.GetTargetingSystem().GetTarget().GetComponent<Entity>().TakeDamage(1000, 0);
+        Core.GetTargetingSystem().GetTarget().GetComponent<Entity>().TakeDamage(200, 0);
         line.positionCount = 2;
         this.victimPos = victimPos;
         timer = 0;

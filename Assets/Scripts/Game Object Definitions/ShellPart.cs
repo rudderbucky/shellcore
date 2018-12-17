@@ -88,7 +88,11 @@ public class ShellPart : MonoBehaviour {
                 var beam = obj.AddComponent<Beam>();
                 beam.material = ResourceManager.GetAsset<Material>("white_material");
                 break;
+            case Ability.AbilityType.Bomb:
+                break;
             case Ability.AbilityType.Cannon:
+                var cannon = obj.AddComponent<Cannon>();
+                cannon.effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
                 break;
             case Ability.AbilityType.Missile:
                 break;
@@ -99,6 +103,9 @@ public class ShellPart : MonoBehaviour {
             case Ability.AbilityType.CoreHeal:
                 break;
             case Ability.AbilityType.SpeedThrust:
+                obj.AddComponent<SpeedThrust>();
+                break;
+            case Ability.AbilityType.PinDown:
                 break;
             default:
                 break;
