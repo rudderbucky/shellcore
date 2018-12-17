@@ -6,7 +6,7 @@ public class GroundCraft : Craft
 {
     float time = 0f;
     protected bool isOnGround = false;
-    protected Draggable draggable; //TODO: draggable in children that need it
+    protected Draggable draggable;
 
     protected override void Start()
     {

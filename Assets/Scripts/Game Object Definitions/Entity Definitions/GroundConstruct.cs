@@ -6,7 +6,7 @@ public class GroundConstruct : Construct
 {
     float time = 0f;
     protected bool onGround = false;
-    protected Draggable draggable; //TODO: draggable in children that need it
+    protected Draggable draggable;
 
     protected override void Start()
     {

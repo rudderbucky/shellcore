@@ -78,7 +78,6 @@ public class Tank : GroundCraft
         }
         else
         {
-            Debug.Log("[" + Time.time + "] Pathfinding... ");
             pathfindToTarget();
         }
     }

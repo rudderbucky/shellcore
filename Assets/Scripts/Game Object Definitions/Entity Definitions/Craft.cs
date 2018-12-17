@@ -57,7 +57,7 @@ public abstract class Craft : Entity
     /// Movement tries to emulate original Shellcore Command movement (specifically episode 1) but is not perfect
     /// </summary>
     /// <param name="direction">integer that specifies the direction of movement</param>
-    protected void MoveCraft(Vector2 direction)
+    public void MoveCraft(Vector2 direction)
     {
         if (!isImmobile) // check for immobility
         {

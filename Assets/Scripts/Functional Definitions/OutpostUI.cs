@@ -73,7 +73,6 @@ public class OutpostUI : MonoBehaviour
 
     public void onButtonPressed(int index)
     {
-        //TODO: outpost item cost
         //TODO: construct entity from blueprint
         //TODO: add sprites and all necessary prefab IDs to the blueprint
         if (player.GetPower() >= items[index].cost)

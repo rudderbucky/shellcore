@@ -64,7 +64,7 @@ public class Entity : MonoBehaviour {
             MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
             mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
-        if (!explosionCirclePrefab) //TODO: get form RM
+        if (!explosionCirclePrefab)
         {
             explosionCirclePrefab = new GameObject("Explosion Circle");
             explosionCirclePrefab.transform.SetParent(transform, false);
@@ -73,7 +73,7 @@ public class Entity : MonoBehaviour {
             explosionCirclePrefab.AddComponent<DrawCircleScript>();
             explosionCirclePrefab.SetActive(false);
         }
-        if (!explosionLinePrefab) //TODO: get form RM
+        if (!explosionLinePrefab)
         {
             explosionLinePrefab = new GameObject("Explosion Line");
             explosionLinePrefab.transform.SetParent(transform, false);
@@ -100,7 +100,7 @@ public class Entity : MonoBehaviour {
             hitbox = gameObject.AddComponent<PolygonCollider2D>();
             hitbox.isTrigger = true;
         }        
-        if(!transform.Find("Minimap Image")) //TODO: get material from RM, generate sprite, change color to match faction
+        if(!transform.Find("Minimap Image"))
         {
             GameObject childObject = new GameObject("Minimap Image");
             childObject.transform.SetParent(transform, false);
