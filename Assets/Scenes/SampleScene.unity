@@ -401,6 +401,8 @@ MonoBehaviour:
     obj: {fileID: 21300000, guid: b06c3597a19c7444bb1b1fdb0c9240f2, type: 3}
   - ID: part8
     obj: {fileID: 11400000, guid: b6d2895da35c0f648be5812504f4a845, type: 2}
+  - ID: drone_light
+    obj: {fileID: 21300000, guid: 2a690c9466642b3479935164772e4d80, type: 3}
 --- !u!4 &751104752
 Transform:
   m_ObjectHideFlags: 0
@@ -732,6 +734,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2052970030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2052970032}
+  - component: {fileID: 2052970031}
+  m_Layer: 0
+  m_Name: Counter Drone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2052970031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2052970030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f3a07b03d9af74aab63f0dfd39aefd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: []
+  faction: 0
+  blueprint: {fileID: 11400000, guid: fa0f57ca25dbe964b83c537778e5b101, type: 2}
+  spawnPoint: {x: -5, y: 0, z: 0}
+  dialogue: {fileID: 0}
+  enginePower: 250
+--- !u!4 &2052970032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2052970030}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2104304461
 Prefab:

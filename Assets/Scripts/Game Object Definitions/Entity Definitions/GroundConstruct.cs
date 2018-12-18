@@ -6,7 +6,7 @@ public class GroundConstruct : Construct
 {
     float time = 0f;
     protected bool onGround = false;
-    protected Draggable draggable;
+    private float initialzangle;
 
     protected override void Start()
     {
@@ -20,19 +20,21 @@ public class GroundConstruct : Construct
 
     protected override void Update ()
     {
-        if(LandPlatformGenerator.CheckOnGround(transform.position) && !draggable.dragging)
+        base.Update();
+        if (LandPlatformGenerator.CheckOnGround(transform.position) && !draggable.dragging)
         {
             onGround = true;
-            transform.rotation = Quaternion.identity;
-            base.Update();
         }
         else
         {
-            if(onGround)
+            if (onGround)
+            {
                 time = Time.time;
+                initialzangle = transform.localEulerAngles.z;
+            }
             onGround = false;
 
-            transform.localEulerAngles = new Vector3(0, 0, (Time.time - time) * -180f);
+            transform.localEulerAngles = new Vector3(0, 0, initialzangle + (Time.time - time) * -180f);
         }
 	}
 }

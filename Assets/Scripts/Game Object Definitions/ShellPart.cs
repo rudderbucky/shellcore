@@ -68,7 +68,7 @@ public class ShellPart : MonoBehaviour {
             shooter.transform.localPosition = Vector3.zero;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(blueprint.shooterSpriteID);
-            shooterSprite.sortingOrder = 5;
+            shooterSprite.sortingOrder = 102;
             part.shooter = shooter;
         }
 

@@ -33,6 +33,8 @@ public class Entity : MonoBehaviour {
     public EntityBlueprint blueprint;
     public Vector3 spawnPoint;
     public Dialogue dialogue;
+    protected bool isDraggable;
+    protected Draggable draggable;
     private bool initialized;
 
     /// <summary>
@@ -54,7 +56,7 @@ public class Entity : MonoBehaviour {
             PolygonCollider2D collider = childObject.AddComponent<PolygonCollider2D>();
             collider.isTrigger = true;
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
-            renderer.sortingLayerID = 0;
+            renderer.sortingOrder = 100;
             renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
@@ -86,7 +88,7 @@ public class Entity : MonoBehaviour {
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
             renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
-            renderer.sortingOrder = 10;
+            renderer.sortingOrder = 101;
         }
         if (!GetComponent<Rigidbody2D>())
         {
@@ -107,6 +109,14 @@ public class Entity : MonoBehaviour {
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
             renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
+        }
+        if (!GetComponent<Draggable>())
+        {
+            draggable = gameObject.AddComponent<Draggable>();
+        } else if(!draggable)
+        {
+            Debug.Log("Draggable was added to an entity manually, " +
+                "it should be added automatically by setting isDraggable to true!");
         }
 
         GetComponent<Rigidbody2D>().mass = 1; // reset mass

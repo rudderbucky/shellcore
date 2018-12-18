@@ -6,33 +6,31 @@ public class GroundCraft : Craft
 {
     float time = 0f;
     protected bool isOnGround = false;
-    protected Draggable draggable;
+    private float initialzangle;
 
     protected override void Start()
     {
         base.Start();
-
-        if (!GetComponent<Draggable>())
-        {
-            draggable = gameObject.AddComponent<Draggable>();
-        }
     }
 
     protected override void Update()
     {
-        if (LandPlatformGenerator.CheckOnGround(transform.position) && !draggable.dragging)
+        base.Update();
+        if (draggable && LandPlatformGenerator.CheckOnGround(transform.position) && !draggable.dragging)
         {
             isOnGround = true;
-            transform.rotation = Quaternion.identity;
-            base.Update();
         }
         else
         {
             if (isOnGround)
+            {
                 time = Time.time;
+                initialzangle = transform.localEulerAngles.z;
+            }
+            
             isOnGround = false;
 
-            transform.localEulerAngles = new Vector3(0, 0, (Time.time - time) * -180f);
+            transform.localEulerAngles = new Vector3(0, 0, initialzangle + (Time.time - time) * -180f);
         }
     }
 }

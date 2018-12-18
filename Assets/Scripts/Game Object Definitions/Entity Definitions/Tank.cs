@@ -10,6 +10,7 @@ public class Tank : GroundCraft
 
     protected override void Start()
     {
+        isDraggable = true;
         base.Start();
         if (entityBody)
             entityBody.drag = 25f;

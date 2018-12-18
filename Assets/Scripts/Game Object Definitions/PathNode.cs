@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PathNode : MonoBehaviour
+public class PathNode : MonoBehaviour 
 {
-    public Vector2 positon;
+    public Vector3 position;
     public int index;
 }

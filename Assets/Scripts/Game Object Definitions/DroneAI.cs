@@ -8,7 +8,8 @@ public class DroneAI : MonoBehaviour
     {
         Auto,
         Follow,
-        Path
+        Path,
+        Inactive
     }
 
     public struct AutoNode
@@ -24,8 +25,11 @@ public class DroneAI : MonoBehaviour
     public static List<AutoNode> targets;
 
     // Path mode:
-    public static PathNode[] path; //TODO: reset when level sector changes
-    int index = 0;
+    public static PathNode[] path; //TODO: reset when level sector changes, why was this static??
+
+    public PathNode currentPath;
+    public Vector3 currentTargetPos;
+    // int index = 0;
     PathNode currentNode;
 
     // Follow mode:
@@ -33,10 +37,10 @@ public class DroneAI : MonoBehaviour
 
     private void Start()
     {
-        if(path == null)
+        /*if(path == null)
         {
             path = FindObjectsOfType<PathNode>();
-        }
+        }*/
 
         if(targets == null)
         {
@@ -67,10 +71,10 @@ public class DroneAI : MonoBehaviour
                         }
                     }
                 }
-                nearests[i] = nearest;
+                nearests.Insert(0, nearest);
             }
 
-            int distance = 0;
+            /*int distance = 0; // Um no idea what this is supposed to do and it's broken so I just commented it out for now
             int resolved = 0;
             while(resolved < constructs.Count)
             {
@@ -90,11 +94,11 @@ public class DroneAI : MonoBehaviour
                     }
                 }
                 distance++;
-            }
+            }*/
         }
     }
 
-    void GetPathTarget()
+    /*void GetPathTarget()
     {
         List<PathNode> nodes = new List<PathNode>();
         for(int i = 0; i < path.Length; i++)
@@ -109,41 +113,58 @@ public class DroneAI : MonoBehaviour
         {
             currentNode = nodes[Random.Range(0, nodes.Count)];
         }
-    }
+    }*/
 
     private void Update()
     {
-        Vector2 direction;
-        switch (mode)
+        //currentNode = paths.Count > 0 ? paths[0] : new PathNode { position = Vector2.zero };
+        if (!craft.GetIsDead())
         {
-            case Mode.Auto:
-                // TODO: get auto target with smaller index (note opposite order!)
-                break;
-            case Mode.Follow:
-                direction = followTarget.position - transform.position;
-                craft.MoveCraft(direction.normalized);
-                break;
-            case Mode.Path:
-                if(currentNode != null)
-                {
-                    //Get a node
-                    direction = currentNode.positon - (Vector2)transform.position;
+            Vector2 direction;
+            switch (mode)
+            {
+                case Mode.Auto:
+                    // TODO: get auto target with smaller index (note opposite order!)
+                    break;
+                case Mode.Follow:
+                    followTarget = FindObjectOfType<PlayerCore>().transform; // temporary, this should change to an owner variable given at spawn
+                    direction = (followTarget.position - transform.position).magnitude > 5 ? followTarget.position - transform.position : Vector3.zero;
                     craft.MoveCraft(direction.normalized);
-                    if(direction.magnitude < 0.5f)
+                    break;
+                case Mode.Path:
+                    if (currentTargetPos != Vector3.zero)
                     {
-                        index++;
-                        GetPathTarget();
+                        direction = currentTargetPos - transform.position;
+                        craft.MoveCraft(direction.normalized);
+                        if (direction.magnitude < 0.5f)
+                        {
+                            currentTargetPos = Vector3.zero;
+                        }
                     }
-                }
-                else
-                {
-                    index = 0;
-                    GetPathTarget();
-                }
-                break;
-            default:
-                Debug.LogWarning("Wtf?");
-                break;
+                    else mode = Mode.Inactive;
+                    /*if (currentNode != null)
+                    {
+                        //Get a node
+                        direction = currentNode.positon - (Vector2)transform.position;
+                        craft.MoveCraft(direction.normalized);
+                        if (direction.magnitude < 0.5f)
+                        {
+                            index++;
+                            GetPathTarget();
+                        }
+                    }
+                    else
+                    {
+                        index = 0;
+                        GetPathTarget();
+                    }*/
+                    break;
+                case Mode.Inactive:
+                    break;
+                default:
+                    Debug.LogWarning("Wtf?"); // What the fuck?
+                    break;
+            }
         }
     }
 }

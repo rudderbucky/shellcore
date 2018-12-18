@@ -29,9 +29,27 @@ public class ReticleScript : MonoBehaviour {
     /// Finds a target to assign to the player at the given mouse position
     /// </summary>
     private void FindTarget() {
+
+        // To say this needs despaghettification would be an understatement...
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
-        if (hits.Length != 0) // check if there are actually any hits
+        if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Drone>() && targSys.GetTarget().GetComponent<Entity>().faction == craft.faction
+            && (hits.Length == 0 || hits[0].transform != targSys.GetTarget()))
+        {
+            if (hits.Length == 0 ||  hits[0].transform != craft.transform) {
+                var pos = Input.mousePosition;
+                pos.z = 10;
+                targSys.GetTarget().GetComponent<DroneAI>().mode = DroneAI.Mode.Path;
+                targSys.GetTarget().GetComponent<Drone>().CommandMovement(Camera.main.ScreenToWorldPoint(pos));
+                targSys.SetTarget(null);
+            } else if (hits[0].transform == craft.transform)
+            {
+                targSys.GetTarget().GetComponent<DroneAI>().mode = DroneAI.Mode.Follow;
+                targSys.SetTarget(null);
+            }
+        }
+        else if (hits.Length != 0) // check if there are actually any hits
         {
             Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
             //if (draggableTarget && !(draggableTarget.gameObject.GetComponent<ShellPart>()
