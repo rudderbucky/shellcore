@@ -110,14 +110,6 @@ public class Entity : MonoBehaviour {
             renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
         }
-        if (!GetComponent<Draggable>())
-        {
-            draggable = gameObject.AddComponent<Draggable>();
-        } else if(!draggable)
-        {
-            Debug.Log("Draggable was added to an entity manually, " +
-                "it should be added automatically by setting isDraggable to true!");
-        }
 
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
 
@@ -215,6 +207,16 @@ public class Entity : MonoBehaviour {
         isBusy = false;
         targeter = new TargetingSystem(transform); // create the associated targeting system for this craft
         isInCombat = false;
+
+        if (!GetComponent<Draggable>() && (this as Drone || this as Tank || this as Turret))
+        {
+            draggable = gameObject.AddComponent<Draggable>();
+        }
+        else if (GetComponent<Draggable>() && !draggable)
+        {
+            Debug.Log("Draggable was added to an entity manually, " +
+                "it should be added automatically by setting isDraggable to true!");
+        }
     }
 
     virtual protected void Start()

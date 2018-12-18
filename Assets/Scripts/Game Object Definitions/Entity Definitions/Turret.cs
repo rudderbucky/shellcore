@@ -6,7 +6,6 @@ public class Turret : AirConstruct {
 
     protected override void Awake()
     {
-        gameObject.AddComponent<Draggable>();
         base.Awake();
     }
     protected override void Start()

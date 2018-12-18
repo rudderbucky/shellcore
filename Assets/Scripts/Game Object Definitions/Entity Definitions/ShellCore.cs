@@ -130,6 +130,7 @@ public class ShellCore : AirCraft {
             && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
         {
             lineRenderer.positionCount = 2;
+            lineRenderer.sortingOrder = 103;
             lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
 
             coreGlow.gameObject.SetActive(true);
