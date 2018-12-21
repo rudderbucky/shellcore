@@ -8,13 +8,16 @@ public class Drone : AirCraft {
     private float time;
     private float initialzangle;
 
+    public Path path;
+
     protected override void Start()
     {
         isDraggable = true;
         base.Start();
         ai = gameObject.AddComponent<DroneAI>();
         ai.craft = this;
-        ai.mode = DroneAI.Mode.Follow;
+        ai.path = path;
+        ai.Mode = path == null ? DroneAI.AIMode.AutoPath : DroneAI.AIMode.Path;
     }
 
     public void CommandMovement(Vector3 pos)
@@ -33,12 +36,12 @@ public class Drone : AirCraft {
             }
         } else
         {
-            if(ai.mode != DroneAI.Mode.Inactive)
+            if(ai.Mode != DroneAI.AIMode.Inactive)
             {
                 time = Time.time;
                 initialzangle = transform.localEulerAngles.z;
             }
-            ai.mode = DroneAI.Mode.Inactive;
+            ai.Mode = DroneAI.AIMode.Inactive;
             transform.localEulerAngles = new Vector3(0, 0, initialzangle + (Time.time - time) * -180f);
         }
     }
