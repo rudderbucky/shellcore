@@ -95,6 +95,8 @@ public class ShellPart : MonoBehaviour {
                 cannon.effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
                 break;
             case Ability.AbilityType.Missile:
+                var missile = obj.AddComponent<Missile>();
+                missile.missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
                 break;
             case Ability.AbilityType.Torpedo:
                 break;
