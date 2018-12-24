@@ -26,9 +26,9 @@ public class EnergySphereScript : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<ShellCore>())
+        if (collision.GetComponent<IHarvester>() != null)
         {
-            collision.GetComponent<ShellCore>().AddPower(20);
+            collision.GetComponent<IHarvester>().AddPower(20);
             Destroy(gameObject);
         }
     }

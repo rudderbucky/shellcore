@@ -7,6 +7,8 @@ public class Bullet : WeaponAbility {
     public GameObject bulletPrefab; // the prefabbed sprite for a bullet with a BulletScript
     protected float bulletSpeed; // the speed of the bullet
     protected float survivalTime; // the time the bullet takes to delete itself
+    protected float damage;
+    protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
 
 
     protected override void Awake()
@@ -20,6 +22,8 @@ public class Bullet : WeaponAbility {
         cooldownDuration = 0.4F;
         CDRemaining = cooldownDuration;
         energyCost = 10;
+        damage = 100;
+        prefabScale = 1 * Vector3.one;
     }
 
     /// <summary>
@@ -45,10 +49,12 @@ public class Bullet : WeaponAbility {
     {
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
         // Create the Bullet from the Bullet Prefab
-        var bullet = Instantiate(bulletPrefab, originPos + Vector3.Normalize(targetPos - originPos) * 1.5F, Quaternion.identity);
+        Vector3 diff = targetPos - originPos;
+        var bullet = Instantiate(bulletPrefab, originPos + Vector3.Normalize(targetPos - originPos) * 1.5F, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90)));
+        bullet.transform.localScale = prefabScale;
 
         // Update its damage to match main bullet
-        bullet.GetComponent<BulletScript>().SetDamage(100);
+        bullet.GetComponent<BulletScript>().SetDamage(damage);
 
         bullet.GetComponent<BulletScript>().SetShooterFaction(Core.faction);
 

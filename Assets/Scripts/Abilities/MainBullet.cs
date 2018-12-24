@@ -18,6 +18,7 @@ public class MainBullet : Bullet {
         cooldownDuration = 0.4F;
         CDRemaining = cooldownDuration;
         energyCost = 10;
+        damage = 100;
     }
 
 }

@@ -77,12 +77,16 @@ public class ShellPart : MonoBehaviour {
             case Ability.AbilityType.None:
                 break;
             case Ability.AbilityType.MainBullet:
-                var mainBullet = obj.AddComponent<MainBullet>();
-                mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                //var mainBullet = obj.AddComponent<Bullet>();
+                //mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
                 break;
             case Ability.AbilityType.Bullet:
                 var bullet = obj.AddComponent<Bullet>();
                 bullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                break;
+            case Ability.AbilityType.SiegeBullet:
+                var siege = obj.AddComponent<SiegeBullet>();
+                siege.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
                 break;
             case Ability.AbilityType.Beam:
                 var beam = obj.AddComponent<Beam>();
@@ -99,8 +103,11 @@ public class ShellPart : MonoBehaviour {
                 missile.missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
                 break;
             case Ability.AbilityType.Torpedo:
+                var torpedo = obj.AddComponent<Torpedo>();
+                torpedo.bulletPrefab = ResourceManager.GetAsset<GameObject>("torpedo_prefab");
                 break;
             case Ability.AbilityType.ShellBoost:
+                obj.AddComponent<ShellHeal>();
                 break;
             case Ability.AbilityType.CoreHeal:
                 break;
@@ -108,6 +115,11 @@ public class ShellPart : MonoBehaviour {
                 obj.AddComponent<SpeedThrust>();
                 break;
             case Ability.AbilityType.PinDown:
+                break;
+            case Ability.AbilityType.EnergyBoost:
+                break;
+            case Ability.AbilityType.Harvester:
+                obj.AddComponent<Harvester>();
                 break;
             default:
                 break;

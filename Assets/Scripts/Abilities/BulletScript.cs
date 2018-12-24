@@ -24,7 +24,6 @@ public class BulletScript : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("hibb");
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<Entity>(); // check if it has a craft component
         if (craft != null) // check if the component was obtained

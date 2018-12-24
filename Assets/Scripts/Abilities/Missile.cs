@@ -12,7 +12,7 @@ public class Missile : WeaponAbility {
         ID = 7;
         cooldownDuration = 5F;
         CDRemaining = cooldownDuration;
-        range = 100;
+        range = 20;
         energyCost = 25;
     }
 

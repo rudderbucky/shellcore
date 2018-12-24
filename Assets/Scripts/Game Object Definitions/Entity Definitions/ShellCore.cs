@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface ITractorer
+{
+
+}
 /// <summary>
 /// All "human-like" craft are considered ShellCores. These crafts are intelligent and all air-borne. This includes player ShellCores.
 /// </summary>
-public class ShellCore : AirCraft {
+public class ShellCore : AirCraft, IHarvester {
 
     protected LineRenderer lineRenderer;
     public GameObject glowPrefab;
@@ -44,7 +48,6 @@ public class ShellCore : AirCraft {
         transform.position = spawnPoint;
         // initialize instance fields
 
-
         if(!coreGlow)
             coreGlow = Instantiate(glowPrefab, null, true).transform;
         if (!targetGlow)
@@ -56,7 +59,12 @@ public class ShellCore : AirCraft {
 
     protected override void BuildEntity()
     {
-        if(!transform.Find("TractorBeam"))
+        if (!glowPrefab)
+            glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
+        if (!tractorMaterial)
+            tractorMaterial = ResourceManager.GetAsset<Material>("tractor_material");
+
+        if (!transform.Find("TractorBeam"))
         {
             GameObject childObject = new GameObject();
             childObject.transform.SetParent(transform, false);

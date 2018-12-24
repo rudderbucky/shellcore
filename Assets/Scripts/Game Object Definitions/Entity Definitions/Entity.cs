@@ -110,7 +110,6 @@ public class Entity : MonoBehaviour {
             renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
         }
-
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
 
         //For shellcores, create the tractor beam

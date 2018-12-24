@@ -8,7 +8,7 @@ public class OutpostUI : MonoBehaviour
     [System.Serializable]
     public struct Item
     {
-        public GameObject prefab; //TODO: replace this with blueprint
+        public EntityBlueprint turretBlueprint; //TODO: replace this with blueprint
         public Sprite icon;
         public int cost;
     }
@@ -77,9 +77,11 @@ public class OutpostUI : MonoBehaviour
         //TODO: add sprites and all necessary prefab IDs to the blueprint
         if (player.GetPower() >= items[index].cost)
         {
-            GameObject creation = Instantiate(items[index].prefab);
+            GameObject creation = new GameObject();
+            Turret tur = creation.AddComponent<Turret>();
+            tur.blueprint = items[index].turretBlueprint;
+            tur.SetOwner(player);
             creation.transform.position = outpostPosition;
-            //creation.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-1F,2) * 1000, Random.Range(-1F, 2) * 1000));
             creation.GetComponent<Entity>().spawnPoint = outpostPosition;
             player.SetTractorTarget(creation.GetComponent<Draggable>());
             player.AddPower(-items[index].cost);

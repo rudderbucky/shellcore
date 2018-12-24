@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Turret : AirConstruct {
 
+    public ShellCore owner;
+
     protected override void Awake()
     {
         base.Awake();
@@ -16,9 +18,14 @@ public class Turret : AirConstruct {
             entityBody.drag = 25f;
 
     }
+
+    public void SetOwner(ShellCore owner)
+    {
+        this.owner = owner;
+    }
+
     protected override void Update()
     {
-
         targeter.GetTarget(true);
         if (!isDead && GetComponentInChildren<WeaponAbility>())
         {

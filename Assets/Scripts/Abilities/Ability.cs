@@ -20,6 +20,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         None,
         MainBullet,
         Bullet,
+        SiegeBullet,
         Beam,
         Cannon,
         Missile,
@@ -28,7 +29,9 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         CoreHeal,
         SpeedThrust,
         Bomb,
-        PinDown
+        PinDown,
+        EnergyBoost,
+        Harvester
     }
 
     Entity core;  // craft that uses this ability

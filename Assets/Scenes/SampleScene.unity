@@ -155,51 +155,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5e8074442f47444a987c4a16552339f, type: 2}
   m_IsPrefabAsset: 0
---- !u!1 &400443708
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 400443710}
-  - component: {fileID: 400443709}
-  m_Layer: 0
-  m_Name: New Outpost (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &400443709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 400443708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fead9990b7fc8048b5558875ba0a351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  spawnPoint: {x: -15, y: 0, z: 0}
-  dialogue: {fileID: 11400000, guid: fe3dc4919b3204043a02df34dab8c348, type: 2}
---- !u!4 &400443710
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 400443708}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &519420031 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 20077421280808370, guid: d5e8074442f47444a987c4a16552339f,
@@ -249,7 +204,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &615992207
 Prefab:
@@ -288,7 +243,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4826440468743046, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 2}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 2}
@@ -372,7 +327,7 @@ MonoBehaviour:
   - ID: part2_beam
     obj: {fileID: 11400000, guid: c061d8a578ce69e4b83ca86ec744cf50, type: 2}
   - ID: bullet_prefab
-    obj: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480, type: 2}
+    obj: {fileID: 1074654150114366, guid: 2ba9118d8c171c946a03c1e66c845480, type: 2}
   - ID: tractor_beam_material
     obj: {fileID: 2100000, guid: 5f3cff7e796e50244a54293ef32ae064, type: 2}
   - ID: white_material
@@ -411,6 +366,32 @@ MonoBehaviour:
     obj: {fileID: 11400000, guid: 05448365cc8358d48877c4687c0aa32f, type: 2}
   - ID: missileshooter_sprite
     obj: {fileID: 21300000, guid: 3466d724cac3c6a46a6f954240a233e0, type: 3}
+  - ID: torpedoshooter_sprite
+    obj: {fileID: 21300000, guid: 579823f828dd6994993cb08ac2e4c55c, type: 3}
+  - ID: torpedo_prefab
+    obj: {fileID: 1894694710822120, guid: 9d48eae81c2f7b84eb9e068b8abd7871, type: 2}
+  - ID: part10
+    obj: {fileID: 11400000, guid: 70727eb2b2a0d8e408cb22855132015e, type: 2}
+  - ID: siege_turret_sprite
+    obj: {fileID: 21300000, guid: a7b59fa9768d7b149863dd660d6e4f17, type: 3}
+  - ID: siegebullet_part
+    obj: {fileID: 11400000, guid: 122728d670e196546bf70100fceabb8c, type: 2}
+  - ID: missile_part
+    obj: {fileID: 11400000, guid: eab3cb2266c8891408f3cc6704b2df57, type: 2}
+  - ID: missile_turret_sprite
+    obj: {fileID: 21300000, guid: a6e3885ed01e29448b340e86dfd19cd3, type: 3}
+  - ID: harvester_part
+    obj: {fileID: 11400000, guid: 775f84824ad4daa4b9881e301b4b71dc, type: 2}
+  - ID: harvester_turret_sprite
+    obj: {fileID: 21300000, guid: b79ab74af7b04dd488241dc343f8bd16, type: 3}
+  - ID: glow_prefab
+    obj: {fileID: 1518099868842826, guid: 0435c97bf304a9c428f765f598b3b3a4, type: 2}
+  - ID: tractor_material
+    obj: {fileID: 2100000, guid: 5f3cff7e796e50244a54293ef32ae064, type: 2}
+  - ID: torpedo_turret_sprite
+    obj: {fileID: 21300000, guid: 5df174ca107073c4991b2fab8c2a1e0b, type: 3}
+  - ID: torpedo_part
+    obj: {fileID: 11400000, guid: 8663ccf597d6a0742a724b3342f5fc2d, type: 2}
 --- !u!4 &751104752
 Transform:
   m_ObjectHideFlags: 0
@@ -422,7 +403,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &802761753
 Prefab:
@@ -466,72 +447,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
   m_IsPrefabAsset: 0
---- !u!1 &821854607
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 821854610}
-  - component: {fileID: 821854609}
-  - component: {fileID: 821854608}
-  m_Layer: 0
-  m_Name: New Outpost (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &821854608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 821854607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a33678e2a1107aa45a312f67fdce36b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  items:
-  - prefab: {fileID: 1776811456427236, guid: a991af4e9d7db89468e456a75b8ca0bc, type: 2}
-    icon: {fileID: 21300000, guid: 542abe726172b7d488359febe5b0a812, type: 3}
-    cost: 0
-  UIPrefab: {fileID: 1884798941415254, guid: f4da396a9a786d14e8b4c2b96f14582b, type: 2}
-  buttonPrefab: {fileID: 1274526944393630, guid: a991af4e9d7db89468e456a75b8ca0bc,
-    type: 2}
-  player: {fileID: 0}
-  outpostPosition: {x: 0, y: 0, z: 0}
---- !u!114 &821854609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 821854607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fead9990b7fc8048b5558875ba0a351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  spawnPoint: {x: -25, y: 10, z: 0}
-  dialogue: {fileID: 0}
---- !u!4 &821854610
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 821854607}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1042393918
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,52 +493,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1243631405
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1243631407}
-  - component: {fileID: 1243631406}
-  m_Layer: 0
-  m_Name: New Outpost (3)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1243631406
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1243631405}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fead9990b7fc8048b5558875ba0a351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  spawnPoint: {x: -15, y: 20, z: 0}
-  dialogue: {fileID: 11400000, guid: fe3dc4919b3204043a02df34dab8c348, type: 2}
---- !u!4 &1243631407
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1243631405}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1428500337
 GameObject:
@@ -673,72 +543,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1516647871
+--- !u!1 &1982871828
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1516647873}
-  - component: {fileID: 1516647872}
-  - component: {fileID: 1516647874}
+  - component: {fileID: 1982871830}
+  - component: {fileID: 1982871829}
   m_Layer: 0
-  m_Name: New Outpost
+  m_Name: Outpost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1516647872
+  m_IsActive: 1
+--- !u!114 &1982871829
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1516647871}
+  m_GameObject: {fileID: 1982871828}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fead9990b7fc8048b5558875ba0a351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: []
-  faction: 1
+  faction: 0
   blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  spawnPoint: {x: 20, y: 10, z: 0}
+  spawnPoint: {x: -10, y: 0, z: 0}
   dialogue: {fileID: 0}
---- !u!4 &1516647873
+--- !u!4 &1982871830
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1516647871}
+  m_GameObject: {fileID: 1982871828}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1516647874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1516647871}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a33678e2a1107aa45a312f67fdce36b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  items:
-  - prefab: {fileID: 1776811456427236, guid: a991af4e9d7db89468e456a75b8ca0bc, type: 2}
-    icon: {fileID: 21300000, guid: 542abe726172b7d488359febe5b0a812, type: 3}
-    cost: 0
-  UIPrefab: {fileID: 1884798941415254, guid: f4da396a9a786d14e8b4c2b96f14582b, type: 2}
-  buttonPrefab: {fileID: 1274526944393630, guid: a991af4e9d7db89468e456a75b8ca0bc,
-    type: 2}
-  player: {fileID: 0}
-  outpostPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &2029120807
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,7 +682,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2104304461
 Prefab:
