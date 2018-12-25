@@ -16,6 +16,7 @@ public class Cannon : WeaponAbility {
         CDRemaining = cooldownDuration;
         range = 25;
         energyCost = 25;
+        category = Entity.EntityCategory.All;
     }
 
     /// <summary>
@@ -24,9 +25,9 @@ public class Cannon : WeaponAbility {
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if (Core.GetTargetingSystem().GetTarget() != null) // check if there is actually a target, do not fire if there is not
+        if (targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not
         {
-            FireCannon(Core.GetTargetingSystem().GetTarget().GetComponent<Entity>()); // fire if there is
+            FireCannon(targetingSystem.GetTarget().GetComponent<Entity>()); // fire if there is
             isOnCD = true; // set on cooldown
             return true;
         }

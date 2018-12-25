@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface IDialogueable
+{
+
+}
+
 [CreateAssetMenu(fileName = "Dialogue", menuName = "ShellCore/Dialogue", order = 3)]
-public class Dialogue : ScriptableObject
+public class Dialogue : ScriptableObject, IDialogueable
 {
     public enum DialogueAction
     {

@@ -21,6 +21,7 @@ public class Beam : WeaponAbility {
         energyCost = 20;
         ID = 4;
         range = 25;
+        category = Entity.EntityCategory.All;
     }
 
     void Update()
@@ -41,12 +42,16 @@ public class Beam : WeaponAbility {
 
     protected override bool Execute(Vector3 victimPos)
     {
-        Core.GetTargetingSystem().GetTarget().GetComponent<Entity>().TakeDamage(200, 0);
-        line.positionCount = 2;
-        this.victimPos = victimPos;
-        timer = 0;
-        isOnCD = true;
-        firing = true;
-        return true;
+        if (targetingSystem.GetTarget())
+        {
+            targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(200, 0);
+            line.positionCount = 2;
+            this.victimPos = victimPos;
+            timer = 0;
+            isOnCD = true;
+            firing = true;
+            return true;
+        }
+        return false;
     }
 }

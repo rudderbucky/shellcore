@@ -31,7 +31,9 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         Bomb,
         PinDown,
         EnergyBoost,
-        Harvester
+        Harvester,
+        SpeederBullet,
+        Laser
     }
 
     Entity core;  // craft that uses this ability

@@ -37,6 +37,25 @@ public class Entity : MonoBehaviour {
     protected Draggable draggable;
     private bool initialized;
 
+    public enum TerrainType
+    {
+        Ground,
+        Air,
+        All,
+        Unset
+    }
+
+    public enum EntityCategory
+    {
+        Station,
+        Unit,
+        All,
+        Unset
+    }
+
+    public EntityCategory category = EntityCategory.Unset;
+    public TerrainType terrain = TerrainType.Unset;
+
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
     /// </summary>
@@ -46,9 +65,6 @@ public class Entity : MonoBehaviour {
         parts.Clear();
         maxHealth = new float[] { 100, 100, 100 };
 
-        if (blueprint == null)
-            return;
-
         if (!transform.Find("Shell Sprite"))
         {
             GameObject childObject = new GameObject("Shell Sprite");
@@ -57,7 +73,9 @@ public class Entity : MonoBehaviour {
             collider.isTrigger = true;
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
             renderer.sortingOrder = 100;
-            renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
+            if(blueprint)
+                renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
+            else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_shell");
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
         }
@@ -65,6 +83,7 @@ public class Entity : MonoBehaviour {
         {
             MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
             mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+            mainBullet.terrain = TerrainType.Air;
         }
         if (!explosionCirclePrefab)
         {
@@ -87,7 +106,9 @@ public class Entity : MonoBehaviour {
         if (!GetComponent<SpriteRenderer>())
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
-            renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+            if (blueprint)
+                renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+            else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
             renderer.sortingOrder = 101;
         }
         if (!GetComponent<Rigidbody2D>())
@@ -111,7 +132,6 @@ public class Entity : MonoBehaviour {
             childObject.AddComponent<MinimapLockRotationScript>();
         }
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
-
         //For shellcores, create the tractor beam
         // Create shell parts
         if (blueprint != null)
@@ -137,6 +157,15 @@ public class Entity : MonoBehaviour {
                 entityBody.mass += partComp.GetPartMass();
                 maxHealth[0] += partComp.GetPartHealth() / 2;
                 maxHealth[1] += partComp.GetPartHealth() / 4;
+
+                if (obj.GetComponent<WeaponAbility>())
+                {
+                    if(obj.GetComponent<WeaponAbility>().terrain == TerrainType.Unset)
+                        obj.GetComponent<WeaponAbility>().terrain = terrain;
+                    if(obj.GetComponent<WeaponAbility>().category == EntityCategory.Unset)
+                        obj.GetComponent<WeaponAbility>().category = category;
+                }
+                    
 
                 parts.Add(obj.GetComponent<ShellPart>());
             }

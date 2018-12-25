@@ -14,15 +14,16 @@ public class Missile : WeaponAbility {
         CDRemaining = cooldownDuration;
         range = 20;
         energyCost = 25;
+        category = Entity.EntityCategory.All;
     }
 
     protected override bool Execute(Vector3 victimPos)
     {
-        if (Core.GetTargetingSystem().GetTarget() != null) // check if there is actually a target, do not fire if there is not
+        if (targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not
         {
             var missile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
             var script = missile.GetComponent<MissileScript>();
-            script.SetTarget(Core.GetTargetingSystem().GetTarget());
+            script.SetTarget(targetingSystem.GetTarget());
             script.faction = Core.faction;
             script.SetDamage(1500);
             Destroy(missile, 7);

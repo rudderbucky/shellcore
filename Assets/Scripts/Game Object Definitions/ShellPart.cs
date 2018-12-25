@@ -44,7 +44,7 @@ public class ShellPart : MonoBehaviour {
     }
 
     /// <summary>
-    /// Detach the part from the Shellcore
+    /// Build Part
     /// </summary>
     /// <param name="blueprint">blueprint of the part</param>
     public static GameObject BuildPart(PartBlueprint blueprint)
@@ -76,9 +76,10 @@ public class ShellPart : MonoBehaviour {
         {
             case Ability.AbilityType.None:
                 break;
-            case Ability.AbilityType.MainBullet:
-                //var mainBullet = obj.AddComponent<Bullet>();
-                //mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+            case Ability.AbilityType.MainBullet: // Shouldn't happen
+                Debug.Log("Main bullet added to a part! This is a ShellCore only ability!");
+                var mainBullet = obj.AddComponent<MainBullet>();
+                mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
                 break;
             case Ability.AbilityType.Bullet:
                 var bullet = obj.AddComponent<Bullet>();
@@ -120,6 +121,14 @@ public class ShellPart : MonoBehaviour {
                 break;
             case Ability.AbilityType.Harvester:
                 obj.AddComponent<Harvester>();
+                break;
+            case Ability.AbilityType.SpeederBullet:
+                var speedBullet = obj.AddComponent<SpeederBullet>();
+                speedBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                break;
+            case Ability.AbilityType.Laser:
+                var laser = obj.AddComponent<Laser>();
+                laser.bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
                 break;
             default:
                 break;
@@ -183,12 +192,13 @@ public class ShellPart : MonoBehaviour {
     {
         if (shooter)
         {
-            if (craft.GetTargetingSystem().GetTarget() != null)
+            var targ = GetComponent<WeaponAbility>().GetTarget();
+            if (targ != null)
             {
-                var targEntity = craft.GetTargetingSystem().GetTarget().GetComponent<Entity>();
+                var targEntity = targ.GetComponent<Entity>();
                 if (targEntity && targEntity.faction != craft.faction)
                 {
-                    Vector3 targeterPos = craft.GetTargetingSystem().GetTarget().position;
+                    Vector3 targeterPos = targ.position;
                     Vector3 diff = targeterPos - shooter.transform.position;
                     shooter.transform.eulerAngles = new Vector3(0, 0, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 90);
                 }
@@ -234,7 +244,7 @@ public class ShellPart : MonoBehaviour {
         }
         else
         {
-            AimShooter();
+            if(GetComponent<WeaponAbility>()) AimShooter();
         }
 	}
 

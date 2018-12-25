@@ -10,6 +10,7 @@ public class GroundCraft : Craft
 
     protected override void Start()
     {
+        terrain = TerrainType.Ground;
         base.Start();
     }
 

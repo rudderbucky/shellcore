@@ -8,6 +8,11 @@ public class AirConstruct : Construct {
     private Vector2 oscillatorVector; // vector used to oscillate the aircraft during idle time
     private Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
 
+    protected override void Start()
+    {
+        terrain = TerrainType.Air;
+        base.Start();
+    }
     /// <summary>
     /// Idle oscillation animation; smoother than the original ShellCore Command one!!!!
     /// Constructs cannot move so this is way simpler than in aircraft

@@ -11,11 +11,12 @@ public class SiegeBullet : Bullet {
         bulletSpeed = 15;
         survivalTime = 3F;
         range = bulletSpeed * survivalTime;
-        ID = 3;
+        ID = 5;
         cooldownDuration = 5F;
         CDRemaining = cooldownDuration;
         energyCost = 10;
         damage = 500;
         prefabScale = 2 * Vector2.one;
+        category = Entity.EntityCategory.Station;
     }
 }

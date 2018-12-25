@@ -9,6 +9,7 @@ public class Bullet : WeaponAbility {
     protected float survivalTime; // the time the bullet takes to delete itself
     protected float damage;
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
+    protected float pierceFactor = 0;
 
 
     protected override void Awake()
@@ -24,6 +25,7 @@ public class Bullet : WeaponAbility {
         energyCost = 10;
         damage = 100;
         prefabScale = 1 * Vector3.one;
+        category = Entity.EntityCategory.All;
     }
 
     /// <summary>
@@ -32,7 +34,7 @@ public class Bullet : WeaponAbility {
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if (Core.GetTargetingSystem().GetTarget() != null) // check if there is actually a target, do not fire if there is not
+        if (targetingSystem.GetTarget()) // check if there is actually a target, do not fire if there is not
         {
             FireBullet(victimPos); // fire if there is
             isOnCD = true; // set on cooldown
@@ -54,9 +56,12 @@ public class Bullet : WeaponAbility {
         bullet.transform.localScale = prefabScale;
 
         // Update its damage to match main bullet
-        bullet.GetComponent<BulletScript>().SetDamage(damage);
-
-        bullet.GetComponent<BulletScript>().SetShooterFaction(Core.faction);
+        var script = bullet.GetComponent<BulletScript>();
+        script.SetDamage(damage);
+        script.SetCategory(category);
+        script.SetTerrain(terrain);
+        script.SetShooterFaction(Core.faction);
+        script.SetPierceFactor(pierceFactor);
 
         // Add velocity to the bullet
         bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos) * bulletSpeed;

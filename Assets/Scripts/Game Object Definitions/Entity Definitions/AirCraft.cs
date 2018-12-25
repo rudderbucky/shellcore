@@ -35,7 +35,8 @@ public abstract class AirCraft : Craft
     protected override void Start()
     {
         // initialize instance fields
-        storedPos = spawnPoint; 
+        storedPos = spawnPoint;
+        terrain = TerrainType.Air;
         base.Start(); // base start
     }
     /// <summary>

@@ -10,10 +10,27 @@ using UnityEngine;
 public abstract class WeaponAbility : ActiveAbility {
 
     protected float range; // the range of the ability
-    
+
+    protected WeaponTargetingSystem targetingSystem;
+    public Entity.TerrainType terrain = Entity.TerrainType.Unset;
+    public Entity.EntityCategory category = Entity.EntityCategory.All;
+
+    public bool CheckCategoryCompatibility(Entity entity)
+    {
+        return (category == Entity.EntityCategory.All || category == entity.category)
+            && (terrain == Entity.TerrainType.All || terrain == entity.terrain);
+    }
+
+    public Transform GetTarget()
+    {
+        return targetingSystem.target;
+    }
+
     protected override void Awake()
     {
         isActive = true; // initialize abilities to be active
+        targetingSystem = new WeaponTargetingSystem();
+        targetingSystem.ability = this;
     }
 
     /// <summary>
@@ -52,14 +69,17 @@ public abstract class WeaponAbility : ActiveAbility {
         }
         else if (isActive && Core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
         {
-            if (Core.GetTargetingSystem().GetTarget() != null) { // check if there is a target
+            Transform target = targetingSystem.GetTarget(true);
+            if (target && target.GetComponent<Entity>()) { // check if there is a target
                 Core.SetIntoCombat(); // now in combat
-                Transform targetEntity = Core.GetTargetingSystem().GetTarget();
-                if (Vector2.Distance(Core.transform.position, targetEntity.position) <= GetRange() && targetEntity.GetComponent<Entity>() 
-                    && targetEntity.GetComponent<Entity>().faction != Core.faction)
+                Transform targetEntity = target;
+                Entity tmp = targetEntity.GetComponent<Entity>();
+
+                if (Vector2.Distance(Core.transform.position, targetEntity.position) <= GetRange()
+                    && tmp.faction != Core.faction)
                     // check if in range
                 {
-                    bool success = Execute(Core.GetTargetingSystem().GetTarget().position); // execute ability using the position to fire
+                    bool success = Execute(targetEntity.position); // execute ability using the position to fire
                     if(success)
                         Core.TakeEnergy(energyCost); // take energy, if the ability was executed
                 }

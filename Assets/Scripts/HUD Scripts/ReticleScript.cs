@@ -76,15 +76,16 @@ public class ReticleScript : MonoBehaviour {
             {
                 if (targSys.GetTarget() == entityTarget.transform) //Interact with entity
                 {
-                    if (entityTarget.dialogue)
-                        DialogueSystem.StartDialogue(entityTarget.dialogue);
+                    if (entityTarget.dialogue as Dialogue)
+                        DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue);
                     /*else if(entityTarget.GetComponent<OutpostUI>())
                     {
                         entityTarget.GetComponent<OutpostUI>().openUI();
                     }*/
-                    else if(entityTarget.GetComponent<Outpost>() && entityTarget.faction == craft.faction)
+                    else if(entityTarget as IVendor != null && entityTarget.faction == craft.faction)
                     {
-                        OutpostUI outpostUI = transform.parent.Find("Dialogue").GetComponent<OutpostUI>();
+                        VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
+                        outpostUI.blueprint = (entityTarget as IVendor).GetVendingBlueprint();
                         outpostUI.outpostPosition = entityTarget.transform.position;
                         outpostUI.player = craft;
                         outpostUI.openUI();

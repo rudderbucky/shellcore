@@ -50,7 +50,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4450453714554562}
-  - component: {fileID: 114386475681653380}
+  - component: {fileID: 114956471116676702}
   m_Layer: 0
   m_Name: Dialogue
   m_TagString: Untagged
@@ -489,38 +489,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &114386475681653380
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1039298726957330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a33678e2a1107aa45a312f67fdce36b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  items:
-  - turretBlueprint: {fileID: 11400000, guid: 75898c7b1aea45d49866d0c07d0b4664, type: 2}
-    icon: {fileID: 21300000, guid: f647c3a12c6e67c4b95d660e9688582b, type: 3}
-    cost: 0
-  - turretBlueprint: {fileID: 11400000, guid: 8eb6e805924286d4eadc12152df22bbb, type: 2}
-    icon: {fileID: 21300000, guid: 43133dde5e9c045478a106ea871c58ef, type: 3}
-    cost: 0
-  - turretBlueprint: {fileID: 11400000, guid: 0c1b18b588929e841b3096d1900df960, type: 2}
-    icon: {fileID: 21300000, guid: c995218d9de72b743ada1d5c1e17b7dd, type: 3}
-    cost: 0
-  - turretBlueprint: {fileID: 11400000, guid: 43c08b3ef0a3839409664fb482218274, type: 2}
-    icon: {fileID: 21300000, guid: f5f999a1d4a12354c89742a49a7336c0, type: 3}
-    cost: 0
-  - turretBlueprint: {fileID: 11400000, guid: ddc3bd062ab88694cbe6a9b146e35160, type: 2}
-    icon: {fileID: 21300000, guid: 25e1869af3690fe468205f453d91bd76, type: 3}
-    cost: 0
-  UIPrefab: {fileID: 1884798941415254, guid: f4da396a9a786d14e8b4c2b96f14582b, type: 2}
-  buttonPrefab: {fileID: 1274526944393630, guid: a991af4e9d7db89468e456a75b8ca0bc,
-    type: 2}
-  player: {fileID: 0}
-  outpostPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &114513335552507398
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -664,6 +632,7 @@ MonoBehaviour:
   - {fileID: 114049502994001398, guid: 4f93fe19dc414e8489f8d41b26a08923, type: 2}
   - {fileID: 114264079555758568, guid: 57a2988ed97d45b4f822d634902357c0, type: 2}
   - {fileID: 114518725738318558, guid: 1757271224c564e47875a1eac9ca681c, type: 2}
+  - {fileID: 114328631393784946, guid: 2e19e0a9c570b95499025750781430c8, type: 2}
 --- !u!114 &114831847185794452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -701,6 +670,22 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &114956471116676702
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1039298726957330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a33678e2a1107aa45a312f67fdce36b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blueprint: {fileID: 0}
+  UIPrefab: {fileID: 0}
+  buttonPrefab: {fileID: 0}
+  player: {fileID: 0}
+  outpostPosition: {x: 0, y: 0, z: 0}
 --- !u!212 &212039800169328938
 SpriteRenderer:
   m_ObjectHideFlags: 1

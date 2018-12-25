@@ -11,9 +11,11 @@ public class Tank : GroundCraft
     protected override void Start()
     {
         isDraggable = true;
+        if (!GetComponent<Draggable>())
+        {
+            draggable = gameObject.AddComponent<Draggable>();
+        }
         base.Start();
-        if (entityBody)
-            entityBody.drag = 25f;
     }
 
     protected override void Update()
@@ -45,14 +47,14 @@ public class Tank : GroundCraft
             if (entities[i].faction == faction)
                 continue;
             float d2 = (transform.position - entities[i].transform.position).sqrMagnitude;
-            if(d2 < minD)
+            if(d2 < minD && GetComponentInChildren<WeaponAbility>().CheckCategoryCompatibility(entities[i]))
             {
                 minD = d2;
                 target = entities[i];
             }
         }
 
-        path = LandPlatformGenerator.pathfind(transform.position, target.transform.position);
+        path = target ? LandPlatformGenerator.pathfind(transform.position, target.transform.position) : null;
         hasPath = (path != null);
 
         if (path != null)
