@@ -14,7 +14,7 @@ public class Beam : WeaponAbility {
     {
         base.Awake();
         line = GetComponent<LineRenderer>() ? GetComponent<LineRenderer>() : gameObject.AddComponent<LineRenderer>();
-        line.sortingOrder = 10;
+        line.sortingLayerName = "Projectiles";
         line.material = material;
         line.startWidth = line.endWidth = 0.2F;
         cooldownDuration = CDRemaining = 5;

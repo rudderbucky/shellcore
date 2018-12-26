@@ -76,7 +76,7 @@ public class BackgroundScript : MonoBehaviour {
                 // the position of the tile
                 GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;
                 // create the tile, no rotation desired
-                go.GetComponent<SpriteRenderer>().color = new Color(0.039F, 0.188F, 0.184F);
+                go.GetComponent<SpriteRenderer>().color = new Color(0.5F, 0, 0);//new Color(0.039F, 0.188F, 0.184F);
                 // change the color (will be changing this line later)
                 ingameTiles[count] = go; // assign to array
                 count++; // increment count

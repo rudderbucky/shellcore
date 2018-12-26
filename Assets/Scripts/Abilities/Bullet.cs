@@ -52,7 +52,7 @@ public class Bullet : WeaponAbility {
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
         // Create the Bullet from the Bullet Prefab
         Vector3 diff = targetPos - originPos;
-        var bullet = Instantiate(bulletPrefab, originPos + Vector3.Normalize(targetPos - originPos) * 1.5F, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90)));
+        var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
 
         // Update its damage to match main bullet
