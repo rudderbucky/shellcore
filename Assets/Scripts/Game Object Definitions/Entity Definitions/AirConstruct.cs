@@ -10,7 +10,7 @@ public class AirConstruct : Construct {
 
     protected override void Start()
     {
-        terrain = TerrainType.Air;
+        Terrain = TerrainType.Air;
         base.Start();
     }
     /// <summary>

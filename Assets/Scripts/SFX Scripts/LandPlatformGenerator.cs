@@ -1,21 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 public class LandPlatformGenerator : MonoBehaviour
 {
     public static LandPlatformGenerator instance { private set; get; }
 
-    public GameObject[] prefabs;
-    //public LandPlatform blueprint;
-    [HideInInspector]
-    public int rows = 1, columns = 1;
-
-    [HideInInspector]
-    public int[] tilemap = new int[1];
+    public LandPlatform blueprint;
 
     private List<GameObject> tiles;
     private List<Rect> areas;
@@ -88,16 +79,19 @@ public class LandPlatformGenerator : MonoBehaviour
         tiles = new List<GameObject>();
         areas = new List<Rect>();
 
-        if (prefabs.Length > 0)
+        if (blueprint == null)
+            return;
+
+        if (blueprint.prefabs.Length > 0)
         {
-            tileSize = prefabs[1].GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-            for (int i = 0; i < rows; i++)
+            tileSize = blueprint.prefabs[1].GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+            for (int i = 0; i < blueprint.rows; i++)
             {
-                for (int j = 0; j < columns; j++)
+                for (int j = 0; j < blueprint.columns; j++)
                 {
-                    if (tilemap[i + j * rows] > -1 && tilemap[i + j * rows] < prefabs.Length && prefabs[tilemap[i + j * rows]] != null)
+                    if (blueprint.tilemap[i + j * blueprint.rows] > -1 && blueprint.tilemap[i + j * blueprint.rows] < blueprint.prefabs.Length && blueprint.prefabs[blueprint.tilemap[i + j * blueprint.rows]] != null)
                     {
-                        GameObject tile = Instantiate(prefabs[tilemap[i + j * rows]], new Vector3(j * tileSize, i * tileSize, 0), Quaternion.identity);
+                        GameObject tile = Instantiate(blueprint.prefabs[blueprint.tilemap[i + j * blueprint.rows]], new Vector3(j * tileSize, i * tileSize, 0), Quaternion.identity);
                         tiles.Add(tile);
                         tile.transform.SetParent(transform);
 
@@ -116,11 +110,11 @@ public class LandPlatformGenerator : MonoBehaviour
 
         float dToCenter = tileSize / 3f; // node distance to center on one axis
         nodes = new List<NavigationNode>();
-        for (int i = 0; i < rows; i++)
+        for (int i = 0; i < blueprint.rows; i++)
         {
-            for (int j = 0; j < columns; j++)
+            for (int j = 0; j < blueprint.columns; j++)
             {
-                if (tilemap[i + j * rows] > -1)
+                if (blueprint.tilemap[i + j * blueprint.rows] > -1)
                 {
                     //create nodes
                     if (!isValidTile(i, j))
@@ -168,7 +162,7 @@ public class LandPlatformGenerator : MonoBehaviour
 
     bool isValidTile(int x, int y)
     {
-        return x < rows && y < columns && x >= 0 && y >= 0 && tilemap[x + y * rows] > -1 && tilemap[x + y * rows] < prefabs.Length && prefabs[tilemap[x + y * rows]] != null;
+        return x < blueprint.rows && y < blueprint.columns && x >= 0 && y >= 0 && blueprint.tilemap[x + y * blueprint.rows] > -1 && blueprint.tilemap[x + y * blueprint.rows] < blueprint.prefabs.Length && blueprint.prefabs[blueprint.tilemap[x + y * blueprint.rows]] != null;
     }
 
     bool isInLoS(Vector2 p1, Vector2 p2)
@@ -181,15 +175,12 @@ public class LandPlatformGenerator : MonoBehaviour
         Vector2 step = (p22 - p12) / (d * 10f);
         Vector2 point = p12;
         float stepLength = step.magnitude;
+        //TODO: get normals, use them
         for (float i = 0; i < d; i += stepLength)
         {
             if (!isValidTile(Mathf.FloorToInt(point.y), Mathf.FloorToInt(point.x)))
             {
                 return false;
-            }
-            else
-            {
-                //TODO: check if the point is too close to a wall
             }
             point += step;
         }
@@ -199,6 +190,9 @@ public class LandPlatformGenerator : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        if (blueprint == null)
+            return;
+
         var v3 = Input.mousePosition;
         v3.z = 10.0f;
         v3 = Camera.main.ScreenToWorldPoint(v3);
@@ -208,7 +202,7 @@ public class LandPlatformGenerator : MonoBehaviour
         {
             for (int i = 0; i < areas.Count; i++)
             {
-                if (new Rect(-0.5f * tileSize, -0.5f * tileSize, columns * tileSize, rows * tileSize).Contains(mPos))
+                if (new Rect(-0.5f * tileSize, -0.5f * tileSize, blueprint.columns * tileSize, blueprint.rows * tileSize).Contains(mPos))
                 {
                     int x = Mathf.FloorToInt(mPos.y / tileSize + 0.5f);
                     int y = Mathf.FloorToInt(mPos.x / tileSize + 0.5f);
@@ -252,6 +246,9 @@ public class LandPlatformGenerator : MonoBehaviour
 
     public static Vector2[] pathfind(Vector2 startPos, Vector2 targetPos)
     {
+        if (instance.blueprint == null)
+            return null;
+
         if (instance.nodes == null)
             return null;
 
@@ -346,73 +343,3 @@ public class LandPlatformGenerator : MonoBehaviour
         return nearest;
     }
 }
-
-#if UNITY_EDITOR
-[CustomEditor(typeof(LandPlatformGenerator))]
-class LandPlatformEditor : Editor
-{
-    SerializedProperty tilemap;
-    SerializedProperty rows;
-    SerializedProperty columns;
-
-    Vector2 scrollPos;
-
-    private void OnEnable()
-    {
-        tilemap = serializedObject.FindProperty("tilemap");
-        rows = serializedObject.FindProperty("rows");
-        columns = serializedObject.FindProperty("columns");
-
-        if (tilemap.arraySize < rows.intValue * columns.intValue)
-        {
-            serializedObject.Update();
-            tilemap.arraySize = rows.intValue * columns.intValue;
-            serializedObject.ApplyModifiedProperties();
-        }
-    }
-
-    public override void OnInspectorGUI()
-    {
-        serializedObject.Update();
-
-        DrawDefaultInspector();
-
-        int oldRows = rows.intValue;
-        int oldColumns = columns.intValue;
-
-        // Edit size
-        EditorGUILayout.BeginHorizontal();
-
-        EditorGUILayout.PrefixLabel("Rows: ");
-        rows.intValue = EditorGUILayout.IntField(rows.intValue);
-        EditorGUILayout.PrefixLabel("Columns: ");
-        columns.intValue = EditorGUILayout.IntField(columns.intValue);
-        if (rows.intValue <= 0)
-            rows.intValue = 1;
-        if (columns.intValue <= 0)
-            columns.intValue = 1;
-
-        EditorGUILayout.EndHorizontal();
-
-        if (rows.intValue != oldRows || columns.intValue != oldColumns)
-            tilemap.arraySize = rows.intValue * columns.intValue;
-
-        using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, GUILayout.Width(columns.intValue*20 + 16), GUILayout.Height(rows.intValue * 20 + 16)))
-        {
-            scrollPos = scrollView.scrollPosition;
-            for (int i = 0; i < rows.intValue; i++)
-            {
-                EditorGUILayout.BeginHorizontal();
-                for (int j = 0; j < columns.intValue; j++)
-                {
-                    SerializedProperty type = tilemap.GetArrayElementAtIndex(i + rows.intValue * j);
-                    type.intValue = EditorGUILayout.IntField(type.intValue, GUILayout.Width(16), GUILayout.Height(16));
-                }
-                EditorGUILayout.EndHorizontal();
-            }
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-
-#endif

@@ -54,7 +54,8 @@ public class Entity : MonoBehaviour {
     }
 
     public EntityCategory category = EntityCategory.Unset;
-    public TerrainType terrain = TerrainType.Unset;
+    TerrainType terrain = TerrainType.Unset;
+    public TerrainType Terrain { get { return terrain; } protected set { terrain = value; } }
 
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
@@ -161,7 +162,7 @@ public class Entity : MonoBehaviour {
                 if (obj.GetComponent<WeaponAbility>())
                 {
                     if(obj.GetComponent<WeaponAbility>().terrain == TerrainType.Unset)
-                        obj.GetComponent<WeaponAbility>().terrain = terrain;
+                        obj.GetComponent<WeaponAbility>().terrain = Terrain;
                     if(obj.GetComponent<WeaponAbility>().category == EntityCategory.Unset)
                         obj.GetComponent<WeaponAbility>().category = category;
                 }

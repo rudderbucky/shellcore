@@ -36,7 +36,7 @@ public abstract class AirCraft : Craft
     {
         // initialize instance fields
         storedPos = spawnPoint;
-        terrain = TerrainType.Air;
+        Terrain = TerrainType.Air;
         base.Start(); // base start
     }
     /// <summary>

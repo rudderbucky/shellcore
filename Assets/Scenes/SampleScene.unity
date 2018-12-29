@@ -197,65 +197,57 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4826440468743046, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 2}
       propertyPath: m_RootOrder
-      value: 6
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 2}
   m_IsPrefabAsset: 0
---- !u!1 &700372492
-GameObject:
+--- !u!1001 &724556954
+Prefab:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 700372494}
-  - component: {fileID: 700372493}
-  m_Layer: 0
-  m_Name: Bunker (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &700372493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 700372492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3db29feb964d6054291976e094fe6a05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 1
-  blueprint: {fileID: 11400000, guid: c8801550469a3d143ad093fc12424db6, type: 2}
-  spawnPoint: {x: 5, y: 10, z: 0}
-  dialogue: {fileID: 0}
-  category: 3
-  terrain: 3
-  vendingBlueprint: {fileID: 11400000, guid: 8a416ef974a215c4197b5a269040a75b, type: 2}
---- !u!4 &700372494
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 700372492}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &727441928 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114213291060993932, guid: 836e2c9a545881d4992a92dd6a559cdb,
-    type: 2}
-  m_PrefabInternal: {fileID: 2104304461}
-  m_Script: {fileID: 11500000, guid: ff479f44e2695c0419e9ad0f63c76428, type: 3}
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4594384083193360, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4594384083193360, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4594384083193360, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4594384083193360, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4594384083193360, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4594384083193360, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4594384083193360, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4594384083193360, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1445312312895834, guid: 2037221141f420e40aab0270311516a7, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2037221141f420e40aab0270311516a7, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1 &751104750
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,6 +422,16 @@ MonoBehaviour:
     obj: {fileID: 21300000, guid: e38bd7b8841efd04fba0f7fa56aa0f9c, type: 3}
   - ID: laser_tank_shell
     obj: {fileID: 21300000, guid: 7de84d3a0e1ce4b4289960ed7f132a7d, type: 3}
+  - ID: carrier_blueprint
+    obj: {fileID: 11400000, guid: 05612ec0affc87a49bdfb25a24278977, type: 2}
+  - ID: shellcore_blueprint
+    obj: {fileID: 11400000, guid: 6bbe4cc748a191643a1e0b053d11abb1, type: 2}
+  - ID: outpost_blueprint
+    obj: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
+  - ID: energy_rock
+    obj: {fileID: 1946733961936512, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
+  - ID: outpost_vending_blueprint
+    obj: {fileID: 11400000, guid: 69becd6272f699747bc6bcc61f03bb00, type: 2}
 --- !u!4 &751104752
 Transform:
   m_ObjectHideFlags: 0
@@ -441,189 +443,45 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &802761753
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4277720434273922, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4277720434273922, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4277720434273922, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4277720434273922, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4277720434273922, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4277720434273922, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4277720434273922, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4277720434273922, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e2f1ad04662d01f42951659664b2cb4a, type: 2}
-  m_IsPrefabAsset: 0
---- !u!1 &876993064
+--- !u!1 &1863658735
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 876993066}
-  - component: {fileID: 876993065}
+  - component: {fileID: 1863658737}
+  - component: {fileID: 1863658736}
   m_Layer: 0
-  m_Name: Outpost (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &876993065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 876993064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fead9990b7fc8048b5558875ba0a351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 1
-  blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  spawnPoint: {x: 30, y: 0, z: 0}
-  dialogue: {fileID: 0}
-  category: 1
-  terrain: 0
-  vendingBlueprint: {fileID: 11400000, guid: 69becd6272f699747bc6bcc61f03bb00, type: 2}
---- !u!4 &876993066
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 876993064}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1042393918
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1042393920}
-  - component: {fileID: 1042393919}
-  m_Layer: 0
-  m_Name: Platform Manager
+  m_Name: SectorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1042393919
+--- !u!114 &1863658736
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1042393918}
+  m_GameObject: {fileID: 1863658735}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe3e9e76f2cc59441a4e21397681f8bd, type: 3}
+  m_Script: {fileID: 11500000, guid: ff3494f0f28514148b907a1abf49dee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabs:
-  - {fileID: 0}
-  - {fileID: 1535808194251928, guid: b764e4031e9be0045b6b2f28bc01ba0f, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  rows: 8
-  columns: 8
-  tilemap: 01000000010000000100000000000000000000000100000001000000010000000100000001000000010000000000000000000000010000000000000001000000010000000100000001000000010000000100000001000000000000000100000001000000010000000000000000000000000000000100000000000000010000000100000001000000010000000100000001000000010000000000000001000000000000000100000000000000000000000000000000000000000000000100000000000000010000000000000001000000010000000100000000000000010000000100000001000000010000000100000000000000010000000100000001000000
---- !u!4 &1042393920
+  sectors:
+  - {fileID: 11400000, guid: c381e686d1c019643898f125c1b2eafa, type: 2}
+  player: {fileID: 1878101311}
+  current: {fileID: 11400000, guid: c381e686d1c019643898f125c1b2eafa, type: 2}
+--- !u!4 &1863658737
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1042393918}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1428500337
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1428500339}
-  - component: {fileID: 1428500338}
-  m_Layer: 0
-  m_Name: New Shellcore
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1428500338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1428500337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47dfa22af0088dc4fbe937f581451bcc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 1
-  blueprint: {fileID: 11400000, guid: 05612ec0affc87a49bdfb25a24278977, type: 2}
-  spawnPoint: {x: 20, y: 0, z: 0}
-  dialogue: {fileID: 0}
-  category: 1
-  terrain: 0
-  enginePower: 0
-  glowPrefab: {fileID: 1518099868842826, guid: 0435c97bf304a9c428f765f598b3b3a4, type: 2}
-  tractorMaterial: {fileID: 2100000, guid: 5f3cff7e796e50244a54293ef32ae064, type: 2}
---- !u!4 &1428500339
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1428500337}
+  m_GameObject: {fileID: 1863658735}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -631,202 +489,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1766904883
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1766904885}
-  - component: {fileID: 1766904884}
-  m_Layer: 0
-  m_Name: Bunker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1766904884
+--- !u!114 &1878101311 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1766904883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3db29feb964d6054291976e094fe6a05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 11400000, guid: c8801550469a3d143ad093fc12424db6, type: 2}
-  spawnPoint: {x: 5, y: 0, z: 0}
-  dialogue: {fileID: 0}
-  category: 3
-  terrain: 3
-  vendingBlueprint: {fileID: 11400000, guid: 8a416ef974a215c4197b5a269040a75b, type: 2}
---- !u!4 &1766904885
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1766904883}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1982871828
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1982871830}
-  - component: {fileID: 1982871829}
-  m_Layer: 0
-  m_Name: Outpost
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1982871829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1982871828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fead9990b7fc8048b5558875ba0a351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
-  spawnPoint: {x: -10, y: 0, z: 0}
-  dialogue: {fileID: 0}
-  category: 1
-  terrain: 0
-  vendingBlueprint: {fileID: 11400000, guid: 69becd6272f699747bc6bcc61f03bb00, type: 2}
---- !u!4 &1982871830
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1982871828}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2029120807
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2029120809}
-  - component: {fileID: 2029120808}
-  m_Layer: 0
-  m_Name: New Player Core
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2029120808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2029120807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 114819593341928148, guid: 2037221141f420e40aab0270311516a7,
+    type: 2}
+  m_PrefabInternal: {fileID: 724556954}
   m_Script: {fileID: 11500000, guid: 01d4afde423d3834e85e923618094ca4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 0}
-  spawnPoint: {x: 0, y: 0, z: 0}
-  dialogue: {fileID: 0}
-  category: 1
-  terrain: 0
-  enginePower: 200
-  glowPrefab: {fileID: 1518099868842826, guid: 0435c97bf304a9c428f765f598b3b3a4, type: 2}
-  tractorMaterial: {fileID: 2100000, guid: 5f3cff7e796e50244a54293ef32ae064, type: 2}
-  hud: {fileID: 727441928}
---- !u!4 &2029120809
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2029120807}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2052970030
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2052970032}
-  - component: {fileID: 2052970031}
-  m_Layer: 0
-  m_Name: Counter Drone
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2052970031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2052970030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31f3a07b03d9af74aab63f0dfd39aefd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 11400000, guid: fa0f57ca25dbe964b83c537778e5b101, type: 2}
-  spawnPoint: {x: -5, y: 0, z: 0}
-  dialogue: {fileID: 0}
-  category: 1
-  terrain: 0
-  enginePower: 250
-  path: {fileID: 0}
---- !u!4 &2052970032
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2052970030}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2104304461
 Prefab:
   m_ObjectHideFlags: 0

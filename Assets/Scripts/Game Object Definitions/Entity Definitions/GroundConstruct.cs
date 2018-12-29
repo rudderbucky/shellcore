@@ -8,7 +8,7 @@ public class GroundConstruct : Construct
 
     protected override void Start()
     {
-        terrain = TerrainType.Ground;
+        Terrain = TerrainType.Ground;
         base.Start();
     }
 

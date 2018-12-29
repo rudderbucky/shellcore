@@ -18,7 +18,7 @@ public abstract class WeaponAbility : ActiveAbility {
     public bool CheckCategoryCompatibility(Entity entity)
     {
         return (category == Entity.EntityCategory.All || category == entity.category)
-            && (terrain == Entity.TerrainType.All || terrain == entity.terrain);
+            && (terrain == Entity.TerrainType.All || terrain == entity.Terrain);
     }
 
     public Transform GetTarget()
