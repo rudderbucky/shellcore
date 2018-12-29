@@ -73,8 +73,11 @@ public class MissileScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-        var moveVector = (target.position - transform.position).normalized;
-        GetComponent<Rigidbody2D>().AddForce(50 * moveVector);
+        if(target)
+        {
+            var moveVector = (target.position - transform.position).normalized;
+            GetComponent<Rigidbody2D>().AddForce(50 * moveVector);
+        }
 	}
 
     public void SetTerrain(Entity.TerrainType terrain)

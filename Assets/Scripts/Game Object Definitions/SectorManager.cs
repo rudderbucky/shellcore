@@ -7,11 +7,12 @@ public class SectorManager : MonoBehaviour
     public List<Sector> sectors; //TODO: RM: load sectors from files
     public PlayerCore player;
     public Sector current;
+    public BackgroundScript background;
+    public InfoText info;
+
     private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
-
-    BattleZoneManager battleZone;
-
-    Dictionary<string, GameObject> objects;
+    private BattleZoneManager battleZone;
+    private Dictionary<string, GameObject> objects;
 
     private void Awake()
     {
@@ -56,8 +57,6 @@ public class SectorManager : MonoBehaviour
 
 
         //load new sector
-        //TODO: colors and stuff
-
         for(int i = 0; i < current.entities.Length; i++)
         {
             Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
@@ -144,15 +143,12 @@ public class SectorManager : MonoBehaviour
                 {
                     entity.dialogue = ResourceManager.GetAsset<Dialogue>(current.entities[i].dialogueID);
                 }
-                if(entity is AirCraft) // Why? Shouldn't this be decided by the build blueprint? (since passives will increase this value)
-                {
-                    AirCraft airCraft = entity as AirCraft;
-                    airCraft.enginePower = 100;
-                }
 
                 objects.Add(current.entities[i].ID, gObj);
             }
         }
+
+        background.setColor(current.backgroundColor);
 
         if (current.type == Sector.SectorType.BattleZone)
         {
@@ -175,6 +171,8 @@ public class SectorManager : MonoBehaviour
         {
             battleZone.enabled = false;
         }
+
+        info.showMessage("Entering sector '" + current.sectorName + "'");
     }
 
 }

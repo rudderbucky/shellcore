@@ -85,9 +85,17 @@ public class BackgroundScript : MonoBehaviour {
             }
         }
     }
-        // Update is called once per frame
-        void LateUpdate()
-        {
+    // Update is called once per frame
+    void LateUpdate()
+    {
         TileUpdate(ingameTiles); // tile update called on tile array
+    }
+
+    public void setColor(Color color)
+    {
+        for(int i = 0; i < ingameTiles.Length; i++)
+        {
+            ingameTiles[i].GetComponent<SpriteRenderer>().color = color;
         }
     }
+}
