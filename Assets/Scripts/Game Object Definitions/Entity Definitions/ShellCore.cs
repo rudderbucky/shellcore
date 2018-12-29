@@ -18,6 +18,7 @@ public class ShellCore : AirCraft, IHarvester {
     Transform targetGlow;
     Draggable target;
     protected float totalPower;
+    protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore) TODO: move to shellcore
 
     public float GetPower()
     {
@@ -63,6 +64,13 @@ public class ShellCore : AirCraft, IHarvester {
             glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
         if (!tractorMaterial)
             tractorMaterial = ResourceManager.GetAsset<Material>("tractor_material");
+
+        if (!GetComponent<MainBullet>()) // TODO: move to shellcore
+        {
+            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
+            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+            mainBullet.terrain = TerrainType.Air;
+        }
 
         if (!transform.Find("TractorBeam"))
         {

@@ -22,22 +22,21 @@ public class Entity : MonoBehaviour {
     protected GameObject explosionCirclePrefab; // prefabs for death explosion
     protected GameObject explosionLinePrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
-    protected Material explosionMaterial;
-    protected Sprite coreSprite;
+    protected Sprite coreSprite; // sprites for shell and core
     protected Sprite shellSprite;
-    protected GameObject bulletPrefab;
-    protected Sprite minimapSprite;
-
+    protected Sprite minimapSprite; // sprite for minimap
     public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
-    public EntityBlueprint blueprint;
+    public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
-    public Dialogue dialogue;
-    protected bool isDraggable;
-    protected Draggable draggable;
-    private bool initialized;
+    public Dialogue dialogue; // dialogue of entity TODO: maybe move to shellcore
+    protected bool isDraggable; // is the entity draggable?
+    protected Draggable draggable; // associated draggable
+    private bool initialized; // is the entity safe to call update() on?
+    public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
+    public TerrainType terrain = TerrainType.Unset;
 
-    public enum TerrainType
+    public enum TerrainType // terrain type of entity
     {
         Ground,
         Air,
@@ -45,7 +44,7 @@ public class Entity : MonoBehaviour {
         Unset
     }
 
-    public enum EntityCategory
+    public enum EntityCategory // category of entity (carriers, outposts and bunkers are stations, everything else are units)
     {
         Station,
         Unit,
@@ -62,29 +61,28 @@ public class Entity : MonoBehaviour {
     /// </summary>
     protected virtual void BuildEntity()
     {
+        // all created entities should have blueprints!
+        if (!blueprint) Debug.Log(this + " does not have a blueprint! EVERY constructed entity should have one!");
+
         // Remove possible old parts from list
         parts.Clear();
-        maxHealth = new float[] { 100, 100, 100 };
+        maxHealth = new float[] { 100, 100, 100 }; // hardcoded base healths of 100
 
-        if (!transform.Find("Shell Sprite"))
+        if (!transform.Find("Shell Sprite")) // no shell in hierarchy yet? no problem
         {
-            GameObject childObject = new GameObject("Shell Sprite");
-            childObject.transform.SetParent(transform, false);
-            PolygonCollider2D collider = childObject.AddComponent<PolygonCollider2D>();
-            collider.isTrigger = true;
-            SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
-            renderer.sortingOrder = 100;
-            if(blueprint)
+            GameObject childObject = new GameObject("Shell Sprite"); // create the child gameobject
+            childObject.transform.SetParent(transform, false); // set to child
+            PolygonCollider2D collider = childObject.AddComponent<PolygonCollider2D>(); // add collider
+            collider.isTrigger = true; // do not allow "actual" collisions
+            SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>(); // add renderer
+            renderer.sortingOrder = 100; // hardcoded max shell sprite value TODO: change this to being dynamic with the other parts
+            if (blueprint)
+            { // check if it contains a blueprint (it should)
                 renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
-            else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_shell");
+            }
+            else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_shell"); // set to default shellcore sprite
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
-        }
-        if (!GetComponent<MainBullet>() && this as ShellCore)
-        {
-            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
-            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-            mainBullet.terrain = TerrainType.Air;
         }
         if (!explosionCirclePrefab)
         {
@@ -108,7 +106,14 @@ public class Entity : MonoBehaviour {
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
             if (blueprint)
+            { // check if it contains a blueprint (it should)
+                if (blueprint.coreSpriteID == "")
+                {
+                    Debug.Log(this + "'s blueprint does not contain a core sprite ID!"); 
+                    // check if the blueprint does not contain a core sprite ID (it should) 
+                }
                 renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+            }
             else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
             renderer.sortingOrder = 101;
         }
@@ -139,6 +144,9 @@ public class Entity : MonoBehaviour {
         {
             for (int i = 0; i < blueprint.parts.Count; i++)
             {
+
+                // lol
+
                 EntityBlueprint.PartInfo part = blueprint.parts[i];
 
                 GameObject prefab = ResourceManager.GetAsset<GameObject>(part.partID);
@@ -176,8 +184,6 @@ public class Entity : MonoBehaviour {
         {
             parts.Add(shellSprite.GetComponent<ShellPart>());
         }
-
-        explosionMaterial = ResourceManager.GetAsset<Material>("white_material");
 
         currentHealth[0] = maxHealth[0];
         currentHealth[1] = maxHealth[1];
@@ -305,17 +311,6 @@ public class Entity : MonoBehaviour {
             // regenerate shell and energy
             RegenHealth(ref currentHealth[0], regenRate[0], maxHealth[0]); 
             RegenHealth(ref currentHealth[2], regenRate[2], maxHealth[2]);
-
-            //if (targeter.GetTarget() != null) // locked on currently
-            //{
-            //    //Lock on only to enemies
-            //    Craft targetCraft = targeter.GetTarget().GetComponent<Craft>();
-            //    if(targetCraft && targetCraft.faction != faction)
-            //    {
-            //        // rotate craft to lock on
-            //        RotateCraft(targeter.GetTarget().transform.position - transform.position);
-            //    }
-            //}
 
             // check if busy state changing is due
             if (busyTimer > 5)

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Tank : GroundCraft
 {
-    Vector2[] path;
-    int index = 0;
+    Vector2[] path; // positions for tank to move to
+    int index = 0; 
     bool hasPath = false;
 
     protected override void Start()
