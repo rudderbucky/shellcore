@@ -65,7 +65,7 @@ public class ShellCore : AirCraft, IHarvester {
         if (!tractorMaterial)
             tractorMaterial = ResourceManager.GetAsset<Material>("tractor_material");
 
-        if (!GetComponent<MainBullet>()) // TODO: move to shellcore
+        if (!GetComponent<MainBullet>())
         {
             MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
             mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
