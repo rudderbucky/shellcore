@@ -44,7 +44,7 @@ public class Beam : WeaponAbility {
     {
         if (targetingSystem.GetTarget()) // check and get the weapon target
         {
-            targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(200, 0); // deal instant damage
+            targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(500, 0); // deal instant damage
             line.positionCount = 2; // render the beam line
             this.victimPos = victimPos; // set the position to render the line to
             timer = 0; // start the timer

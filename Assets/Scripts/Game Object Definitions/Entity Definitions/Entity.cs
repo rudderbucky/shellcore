@@ -224,6 +224,9 @@ public class Entity : MonoBehaviour {
             tmp.GetComponent<DrawLineScript>().Initialize();
             Destroy(tmp, 2); // destroy explosions after 2 seconds
         }
+
+        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
+
     }
 
     protected virtual void PostDeath() 
@@ -286,17 +289,24 @@ public class Entity : MonoBehaviour {
     }
 
     /// <summary>
+    /// Handles death and used for overriding
+    /// </summary>
+    virtual protected void DeathHandler()
+    {
+        if (currentHealth[1] <= 0 && !isDead)
+        { // craft has been killed
+            OnDeath(); // call death helper method
+        }
+    }
+    /// <summary>
     /// Used to update the state of the craft- regeneration, timers, etc
     /// </summary>
     protected void TickState() {
-
-        if (currentHealth[1] <= 0 && !isDead) { // craft has been killed
-            OnDeath(); // call death helper method
-        }
+        DeathHandler();
         if (isDead) // if the craft is dead
         {
             deathTimer += Time.deltaTime; // add time since last frame
-            if (deathTimer >= 1) // hardcoded based on animation
+            if (deathTimer >= 1) // hardcoded based on animation (what?)
             {
                 GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
             }

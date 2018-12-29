@@ -35,6 +35,15 @@ public class Bunker : GroundConstruct, IVendor {
             bullets[i].Tick(null);
         }
     }
+
+    protected override void DeathHandler()
+    {
+        if (currentHealth[0] <= 0 && !isDead)
+        {
+            OnDeath(); // switch factions
+        }
+    }
+
     protected override void OnDeath()
     {
         faction = faction == 1 ? 0 : 1;
@@ -43,6 +52,7 @@ public class Bunker : GroundConstruct, IVendor {
             RemovePart(parts[i]);
         }
         targeter.SetTarget(null);
+        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
         Start();
     }
 

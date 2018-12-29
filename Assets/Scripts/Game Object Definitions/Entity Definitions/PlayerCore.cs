@@ -49,7 +49,7 @@ public class PlayerCore : ShellCore {
     protected override void Start () {
         // initialize instance fields
         base.Start();
-        spawnPoint = transform.position = Vector3.zero; // overrides the shellcore spawn point
+        // spawnPoint = transform.position = Vector3.zero; // overrides the shellcore spawn point
         hud.InitializeHUD(this); // initialize the HUD
 	}
 	

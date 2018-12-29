@@ -11,6 +11,7 @@ public interface ITractorer
 /// </summary>
 public class ShellCore : AirCraft, IHarvester {
 
+    protected ICarrier carrier;
     protected LineRenderer lineRenderer;
     public GameObject glowPrefab;
     public Material tractorMaterial;
@@ -19,6 +20,12 @@ public class ShellCore : AirCraft, IHarvester {
     Draggable target;
     protected float totalPower;
     protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore) TODO: move to shellcore
+
+    public void SetCarrier(ICarrier carrier)
+    {
+        this.carrier = carrier;
+    }
+
 
     public float GetPower()
     {
@@ -46,6 +53,10 @@ public class ShellCore : AirCraft, IHarvester {
     protected override void Start()
     {
         base.Start(); // base start
+        if (carrier != null && carrier.GetIsInitialized())
+        {
+            spawnPoint = carrier.GetSpawnPoint();
+        }
         transform.position = spawnPoint;
         // initialize instance fields
 
@@ -56,6 +67,19 @@ public class ShellCore : AirCraft, IHarvester {
 
         coreGlow.gameObject.SetActive(false);
         targetGlow.gameObject.SetActive(false);
+    }
+
+    protected override void Respawn()
+    {
+        Debug.Log(carrier);
+        if (!(carrier as Entity).GetIsDead() || this as PlayerCore)
+        {
+            base.Respawn();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     protected override void BuildEntity()

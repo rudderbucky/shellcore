@@ -7,6 +7,7 @@ public class SectorManager : MonoBehaviour
     public List<Sector> sectors; //TODO: RM: load sectors from files
     public PlayerCore player;
     public Sector current;
+    private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
 
     BattleZoneManager battleZone;
 
@@ -125,6 +126,13 @@ public class SectorManager : MonoBehaviour
                             drone.path = ResourceManager.GetAsset<Path>(current.entities[i].pathID); //TODO: RM: load paths from files
                             break;
                         }
+                    case EntityBlueprint.IntendedType.AirCarrier:
+                        AirCarrier carrier = gObj.AddComponent<AirCarrier>();
+                        if(!carriers.ContainsKey(current.entities[i].faction))
+                        {
+                            carriers.Add(current.entities[i].faction, carrier);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -136,7 +144,7 @@ public class SectorManager : MonoBehaviour
                 {
                     entity.dialogue = ResourceManager.GetAsset<Dialogue>(current.entities[i].dialogueID);
                 }
-                if(entity is AirCraft)
+                if(entity is AirCraft) // Why? Shouldn't this be decided by the build blueprint? (since passives will increase this value)
                 {
                     AirCraft airCraft = entity as AirCraft;
                     airCraft.enginePower = 100;
@@ -149,8 +157,17 @@ public class SectorManager : MonoBehaviour
         if (current.type == Sector.SectorType.BattleZone)
         {
             battleZone.enabled = true;
+            var playerComp = player.GetComponent<PlayerCore>();
+            battleZone.AddTarget(playerComp);
+            playerComp.SetCarrier(carriers[playerComp.faction]);
             for (int i = 0; i < current.targets.Length; i++)
             {
+                if(objects[current.targets[i]].GetComponent<ShellCore>())
+                {
+                    // set the carrier of the shellcore to the associated faction's carrier
+                    ShellCore shellcore = objects[current.targets[i]].GetComponent<ShellCore>();
+                    shellcore.SetCarrier(carriers[shellcore.faction]);
+                }
                 battleZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
             }
         }
