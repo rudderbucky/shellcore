@@ -24,6 +24,8 @@ public class Missile : WeaponAbility {
             var missile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
             var script = missile.GetComponent<MissileScript>();
             script.SetTarget(targetingSystem.GetTarget());
+            script.SetCategory(category);
+            script.SetTerrain(terrain);
             script.faction = Core.faction;
             script.SetDamage(1500);
             Destroy(missile, 7);

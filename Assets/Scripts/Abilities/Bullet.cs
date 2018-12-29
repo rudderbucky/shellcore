@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Bullet : WeaponAbility {
 
+    // TODO: maybe "blueprint-ize" this ability, as well as every ability?
+
     public GameObject bulletPrefab; // the prefabbed sprite for a bullet with a BulletScript
     protected float bulletSpeed; // the speed of the bullet
     protected float survivalTime; // the time the bullet takes to delete itself
-    protected float damage;
+    protected float damage; // damage of the bullet
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
-    protected float pierceFactor = 0;
+    protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
 
 
     protected override void Awake()
