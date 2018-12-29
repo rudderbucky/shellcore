@@ -16,6 +16,7 @@ public class InfoText : MonoBehaviour
     {
         text.text = message;
         text.color = Color.white;
+        StartCoroutine(fade());
     }
 
     IEnumerator fade()

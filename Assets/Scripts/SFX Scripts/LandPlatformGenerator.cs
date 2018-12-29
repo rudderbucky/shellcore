@@ -75,16 +75,28 @@ public class LandPlatformGenerator : MonoBehaviour
         instance = this;
     }
 
-    void Start() {
+    public void Init(LandPlatform platform)
+    {
+        if(tiles != null)
+            unload();
+
         tiles = new List<GameObject>();
         areas = new List<Rect>();
+
+        blueprint = platform;
 
         if (blueprint == null)
             return;
 
         if (blueprint.prefabs.Length > 0)
         {
-            tileSize = blueprint.prefabs[1].GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+            tileSize = 1f;
+            for(int i = 0; i < blueprint.prefabs.Length; i++)
+                if(blueprint.prefabs[i] != null)
+                {
+                    tileSize = blueprint.prefabs[0].GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+                    break;
+                }
             for (int i = 0; i < blueprint.rows; i++)
             {
                 for (int j = 0; j < blueprint.columns; j++)
@@ -102,6 +114,15 @@ public class LandPlatformGenerator : MonoBehaviour
         }
 
         buildNodes();
+    }
+
+    public void unload()
+    {
+        for(int i = 0; i < tiles.Count; i++)
+        {
+            Destroy(tiles[i]);
+        }
+        tiles.Clear();
     }
 
     void buildNodes()

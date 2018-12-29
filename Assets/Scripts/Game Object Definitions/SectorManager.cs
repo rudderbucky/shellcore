@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
     public List<Sector> sectors; //TODO: RM: load sectors from files
@@ -13,11 +14,21 @@ public class SectorManager : MonoBehaviour
     private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
     private BattleZoneManager battleZone;
     private Dictionary<string, GameObject> objects;
+    private LandPlatformGenerator lpg;
+    private LineRenderer sectorBorders;
 
     private void Awake()
     {
         objects = new Dictionary<string, GameObject>();
         battleZone = gameObject.AddComponent<BattleZoneManager>();
+        lpg = GetComponent<LandPlatformGenerator>();
+
+        sectorBorders = new GameObject("SectorBorders").AddComponent<LineRenderer>();
+        sectorBorders.positionCount = 4;
+        sectorBorders.startWidth = 0.1f;
+        sectorBorders.endWidth = 0.1f;
+        sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
+        sectorBorders.loop = true;
     }
 
     private void Update()
@@ -53,10 +64,10 @@ public class SectorManager : MonoBehaviour
             }
         }
         objects.Clear();
-        objects.Add("player", player.gameObject);
-
 
         //load new sector
+        objects.Add("player", player.gameObject);
+
         for(int i = 0; i < current.entities.Length; i++)
         {
             Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
@@ -148,8 +159,21 @@ public class SectorManager : MonoBehaviour
             }
         }
 
+        //land platforms
+        lpg.Init(current.platform);
+
+        //sector color
         background.setColor(current.backgroundColor);
 
+        //sector borders
+        sectorBorders.SetPositions(new Vector3[]{
+            new Vector3(current.bounds.x, current.bounds.y, 0),
+            new Vector3(current.bounds.x + current.bounds.w, current.bounds.y, 0),
+            new Vector3(current.bounds.x + current.bounds.w, current.bounds.y + current.bounds.h, 0),
+            new Vector3(current.bounds.x, current.bounds.y + current.bounds.h, 0)
+        });
+
+        //battle zone things
         if (current.type == Sector.SectorType.BattleZone)
         {
             battleZone.enabled = true;
