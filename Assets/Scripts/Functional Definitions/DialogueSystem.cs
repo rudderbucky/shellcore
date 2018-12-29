@@ -45,6 +45,40 @@ public class DialogueSystem : MonoBehaviour
         Instance.startDialogue(dialogue);
     }
 
+    public static void ShowPopup(string text)
+    {
+        Instance.showPopup(text);
+    }
+
+    private void showPopup(string text)
+    {
+        if (window)
+            return;
+
+        //create window
+        window = Instantiate(dialogueBoxPrefab);
+        backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
+        backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
+        textRenderer = backgroud.transform.Find("Text").GetComponent<Text>();
+        textRenderer.font = shellcorefont;
+
+        // change text
+        this.text = text.Replace("<br>", "\n");
+        characterCount = 0;
+        nextCharacterTime = Time.time + timeBetweenCharacters;
+        textRenderer.color = Color.white;
+
+        // ok button
+        RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
+        button.SetParent(backgroud, false);
+        button.anchoredPosition = new Vector2(0, 24);
+        button.GetComponent<Button>().onClick.AddListener(endDialogue);
+        button.Find("Text").GetComponent<Text>().text = "Ok";
+
+        buttons = new GameObject[1];
+        buttons[0] = button.gameObject;
+    }
+
     private void startDialogue(Dialogue dialogue)
     {
         if (window)

@@ -36,9 +36,17 @@ public class BattleZoneManager : MonoBehaviour
                 if (pair.Value > 0)
                     factionCount++;
             }
-            if(factionCount < 1)
+            if(factionCount < 2)
             {
-                // TODO: game ended, show stats
+                int winningFaction = -1;
+                foreach (var pair in alive)
+                {
+                    if (pair.Value > 0)
+                        winningFaction = pair.Key;
+                }
+
+                DialogueSystem.ShowPopup("Faction " + winningFaction + " won!");
+                playing = false;
             }
         }
 	}
