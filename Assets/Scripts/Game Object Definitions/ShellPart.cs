@@ -130,6 +130,9 @@ public class ShellPart : MonoBehaviour {
                 var laser = obj.AddComponent<Laser>();
                 laser.bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
                 break;
+            case Ability.AbilityType.MiniDrone:
+                obj.AddComponent<SpawnMiniDrone>();
+                break;
             default:
                 break;
         }

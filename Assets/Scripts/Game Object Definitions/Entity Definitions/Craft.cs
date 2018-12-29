@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public abstract class Craft : Entity
 {
-    public int enginePower; // craft's engine power, determines how fast it goes
+    public int enginePower; // craft's engine power, determines how fast it goes. Why is this an integer?
     protected bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
 
@@ -24,6 +24,17 @@ public abstract class Craft : Entity
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        targeter.GetTarget(true);
+        foreach( Ability a in abilities)
+        {
+            if (a is WeaponAbility)
+                (a as WeaponAbility).Tick("");
         }
     }
 

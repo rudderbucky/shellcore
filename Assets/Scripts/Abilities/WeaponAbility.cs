@@ -59,9 +59,13 @@ public abstract class WeaponAbility : ActiveAbility {
     /// <param name="key">the associated trigger key of the ability</param>
     public override void Tick(string key)
     {
-        if ((Core as PlayerCore && Input.GetKeyDown(key)) || key == "toggle") { // toggle ability
-            Core.MakeBusy(); // make core busy
-            isActive = !isActive;
+        if(key != "")
+        {
+            if ((Core as PlayerCore && Input.GetKeyDown(key)) || key == "toggle")
+            { // toggle ability
+                Core.MakeBusy(); // make core busy
+                isActive = !isActive;
+            }
         }
         if (isOnCD) // on cooldown
         {

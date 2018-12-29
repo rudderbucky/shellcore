@@ -7,10 +7,22 @@ public class Drone : AirCraft {
     private DroneAI ai;
     private float time;
     private float initialzangle;
+    private bool initialized = false;
 
     public Path path;
 
+    public DroneAI getAI()
+    {
+        return ai;
+    }
+
     protected override void Start()
+    {
+        if (!initialized)
+            Init();
+    }
+
+    public void Init()
     {
         isDraggable = true;
         base.Start();
@@ -18,6 +30,7 @@ public class Drone : AirCraft {
         ai.craft = this;
         ai.path = path;
         ai.Mode = path == null ? DroneAI.AIMode.AutoPath : DroneAI.AIMode.Path;
+        initialized = true;
     }
 
     public void CommandMovement(Vector3 pos)
