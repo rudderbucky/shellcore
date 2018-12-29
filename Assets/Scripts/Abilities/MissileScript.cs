@@ -89,7 +89,7 @@ public class MissileScript : MonoBehaviour {
 
     public bool CheckCategoryCompatibility(Entity entity)
     {
-        return (category == Entity.EntityCategory.All || category == entity.category) && (terrain == Entity.TerrainType.All || terrain == entity.terrain);
+        return (category == Entity.EntityCategory.All || category == entity.category) && (terrain == Entity.TerrainType.All || terrain == entity.Terrain);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
