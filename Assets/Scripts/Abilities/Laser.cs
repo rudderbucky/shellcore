@@ -17,7 +17,7 @@ public class Laser : Bullet {
         energyCost = 5;
         damage = 50;
         prefabScale = Vector2.one;
-        //category = Entity.EntityCategory.Unit;
+        category = Entity.EntityCategory.Unit;
         pierceFactor = 0.5F;
     }
 }
