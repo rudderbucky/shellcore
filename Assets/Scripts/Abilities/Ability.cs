@@ -62,6 +62,8 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     protected bool isDestroyed = false; // has the part detached from the craft
     private Color originalIndicatorColor;
     public ShellPart part;
+    protected string abilityName = "Ability";
+    protected string description = "Does things";
 
     /// <summary>
     /// Setter method for isEnabled, will be used by parts
@@ -77,6 +79,24 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// <returns>true if ability is enabled, false otherwise</returns>
     public bool GetIsEnabled() {
         return isEnabled; // get is enabled
+    }
+
+    /// <summary>
+    /// Getter method for ability description, will be used by the AbilityHandler
+    /// </summary>
+    /// <returns>ability description</returns>
+    public string GetDescription()
+    {
+        return description;
+    }
+
+    /// <summary>
+    /// Getter method for ability name, will be used by the AbilityHandler
+    /// </summary>
+    /// <returns>ability name</returns>
+    public string GetName()
+    {
+        return abilityName;
     }
 
     /// <summary>

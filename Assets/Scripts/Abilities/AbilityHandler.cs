@@ -8,13 +8,15 @@ using UnityEngine.UI;
 /// </summary>
 public class AbilityHandler : MonoBehaviour {
 
-    private bool initialized; // check for the update method
-    private PlayerCore core; // the player
     public GameObject abilityBackground; // background of the ability
     public Image abilityCDIndicator; // used to indicate if the ability is on cooldown
     public Image abilityGleam; // gleam for the ability
-    private Ability[] abilities; // ability array of the core
     public Sprite[] abilitySpritesArray; // sprite array for ability images
+    public GameObject tooltipPrefab; // Prefab for showing information when mouse hovers over the ability button
+
+    private bool initialized; // check for the update method
+    private PlayerCore core; // the player
+    private Ability[] abilities; // ability array of the core
     private Image image; // image prefab
     private Image[] abilityImagesArray; // images of the abilities displayed on the GUI
     private GameObject[] abilityBackgroundArray; // all ability backgrounds displayed on the GUI
@@ -52,8 +54,14 @@ public class AbilityHandler : MonoBehaviour {
             // position them all, do not keep the world position
             // instantiate background image
             abilityBackgroundArray[i] = Instantiate(abilityBackground, pos, Quaternion.identity) as GameObject;
-            abilityBackgroundArray[i].transform.SetParent(transform, false);
-            // set parent (do not keep world position)
+            abilityBackgroundArray[i].transform.SetParent(transform, false); // set parent (do not keep world position)
+            var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
+            button.tooltipPrefab = tooltipPrefab;
+            string description = "";
+            description += abilities[i].name + "\n";
+            description += "Energy cost: " + abilities[i].GetEnergyCost() + "\n";
+            description += abilities[i].GetDescription();
+            button.abilityInfo = description;
 
             image.sprite = abilitySpritesArray[abilities[i].GetID()];
             abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
