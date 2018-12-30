@@ -47,7 +47,7 @@ public class AbilityHandler : MonoBehaviour {
             abilityBackgroundArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)
 
-            abilityImagesArray[i] = Instantiate(abilityImagesInput[abilities[i].GetID()], pos, Quaternion.identity) as UnityEngine.UI.Image;
+            abilityImagesArray[i] = Instantiate(abilityImagesInput[abilities[i].GetID()], pos, Quaternion.identity) as UnityEngine.UI.Image; // Why not just use one prefab and change its texture?
             // instantiate ability image
             abilityImagesArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)

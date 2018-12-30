@@ -12,6 +12,7 @@ public class PartBlueprint : ScriptableObject
     public bool requiresShooter;
     public bool detachible = true;
     public string shooterSpriteID;
+    public string spawnID;
 }
 
 // TODO: editor:
