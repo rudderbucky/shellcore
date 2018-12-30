@@ -17,8 +17,10 @@ public class MainBullet : Bullet {
         ID = 3;
         cooldownDuration = 0.4F;
         CDRemaining = cooldownDuration;
-        energyCost = 10;
+        energyCost = 50;
         damage = 100;
+        description = "Projectile that deals " + damage + " damage.";
+        abilityName = "Main Bullet";
     }
 
 }

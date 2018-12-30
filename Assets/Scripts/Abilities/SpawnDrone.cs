@@ -16,7 +16,9 @@ public class SpawnDrone : ActiveAbility
         CDRemaining = cooldownDuration;
         activeDuration = spawnData.delay; 
         activeTimeRemaining = activeDuration;
-        energyCost = spawnData.energyCost; 
+        energyCost = spawnData.energyCost;
+        abilityName = spawnData.abilityName;
+        description = spawnData.description;
     }
 
     protected override void Awake()

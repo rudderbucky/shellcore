@@ -37,7 +37,6 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         SpawnDrone,
         Speed
     }
-
     Entity core;  // craft that uses this ability
     public Entity Core
     {
@@ -62,7 +61,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     protected bool isDestroyed = false; // has the part detached from the craft
     private Color originalIndicatorColor;
     public ShellPart part;
-    protected string abilityName = "Ability";
+    public string abilityName = "Ability";
     protected string description = "Does things";
 
     /// <summary>
@@ -207,7 +206,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }
-        else if ((key == "activate") || Core.GetHealth()[2] >= energyCost && (Core as PlayerCore && key != "" && Input.GetKeyDown(key))) // enough energy and button pressed
+        else if ((key == "activate") || (Core as PlayerCore && key != "" && Input.GetKeyDown(key)) && Core.GetHealth()[2] >= energyCost) // enough energy and button pressed
         {
             Core.MakeBusy(); // make core busy
             Core.TakeEnergy(energyCost); // remove the energy

@@ -11,7 +11,9 @@ public class SpeedThrust : ActiveAbility
     protected override void Awake()
     {
         base.Awake(); // base awake
-        // hardcoded values here
+                      // hardcoded values here
+        abilityName = "Speed Thrust";
+        description = "Temporarily increases speed.";
         ID = 1;
         cooldownDuration = 5;
         CDRemaining = cooldownDuration;

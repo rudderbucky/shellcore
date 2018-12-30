@@ -16,6 +16,7 @@ public abstract class ActiveAbility : Ability
     /// </summary>
     protected override void Awake() {
         base.Awake(); // base awake
+        abilityName = "Active Ability";
     }
     /// <summary>
     /// Get the active time remaining

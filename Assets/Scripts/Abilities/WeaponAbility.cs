@@ -31,6 +31,7 @@ public abstract class WeaponAbility : ActiveAbility {
         isActive = true; // initialize abilities to be active
         targetingSystem = new WeaponTargetingSystem();
         targetingSystem.ability = this;
+        abilityName = "Weapon Ability";
     }
 
     /// <summary>

@@ -6,6 +6,12 @@ public class PassiveAbility : Ability {
 
     private bool initialized = false;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        abilityName = "Passive Ability";
+    }
+
     protected override void Execute()
     {
         

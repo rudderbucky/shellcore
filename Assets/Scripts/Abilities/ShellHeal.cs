@@ -29,12 +29,18 @@ public class HealthHeal : Ability
         switch (type)
         {
             case HealingType.shell:
+                abilityName = "Shell Boost";
+                description = "Instantly heal 300 shell.";
                 ID = 2;
                 break;
             case HealingType.core:
+                abilityName = "Core Heal";
+                description = "Instantly heal 300 core.";
                 ID = 11;
                 break;
             case HealingType.energy:
+                abilityName = "Energy";
+                description = "Instantly heal 300 energy.";
                 ID = 12;
                 energyCost = 0;
                 break;
@@ -48,7 +54,7 @@ public class HealthHeal : Ability
     /// </summary>
     protected override void Execute()
     {
-        if (Core.GetHealth()[(int)type] <= Core.GetMaxHealth()[(int)type] - 100) // check for overheal
+        if (Core.GetHealth()[(int)type] <= Core.GetMaxHealth()[(int)type]) // check for overheal
         {
             switch (type)
             {

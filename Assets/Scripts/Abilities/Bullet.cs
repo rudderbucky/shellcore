@@ -18,13 +18,15 @@ public class Bullet : WeaponAbility {
     {
         base.Awake(); // base awake
         // hardcoded values here
+        description = "Projectile that deals " + damage + " damage.";
+        abilityName = "Bullet";
         bulletSpeed = 50;
         survivalTime = 0.5F;
         range = bulletSpeed * survivalTime;
         ID = 5;
         cooldownDuration = 0.4F;
         CDRemaining = cooldownDuration;
-        energyCost = 10;
+        energyCost = 50;
         damage = 100;
         prefabScale = 1 * Vector3.one;
         category = Entity.EntityCategory.All;

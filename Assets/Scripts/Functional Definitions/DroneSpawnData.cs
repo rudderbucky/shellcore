@@ -11,4 +11,6 @@ public class DroneSpawnData : ScriptableObject
     public float energyCost;
     public float delay;
     public float cooldown;
+    public string abilityName;
+    public string description;
 }

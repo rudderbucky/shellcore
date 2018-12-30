@@ -30,7 +30,7 @@ public class SectorManager : MonoBehaviour
             }
             stationsCount[stationFaction]++;
         }
-        return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 10 : 0; 
+        return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0; 
     }
 
     private void Awake()

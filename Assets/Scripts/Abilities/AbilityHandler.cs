@@ -58,8 +58,12 @@ public class AbilityHandler : MonoBehaviour {
             var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
             button.tooltipPrefab = tooltipPrefab;
             string description = "";
-            description += abilities[i].name + "\n";
+            description += abilities[i].abilityName + "\n";
             description += "Energy cost: " + abilities[i].GetEnergyCost() + "\n";
+            if (abilities[i].GetCDDuration() != 0)
+            {
+                description += "Cooldown duration: " + abilities[i].GetCDDuration() + "\n";
+            }
             description += abilities[i].GetDescription();
             button.abilityInfo = description;
 

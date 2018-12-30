@@ -7,10 +7,13 @@ public class Cannon : WeaponAbility {
     public GameObject effectPrefab;
     public GameObject effect;
     public Entity target;
+    private float damage = 50;
 
     protected override void Awake()
     {
         base.Awake();
+        abilityName = "Cannon";
+        description = "Instant attack that deals " + damage + " damage.";
         ID = 6;
         cooldownDuration = 0.4F;
         CDRemaining = cooldownDuration;
@@ -48,6 +51,6 @@ public class Cannon : WeaponAbility {
         if (effect) Destroy(effect);
         effect = Instantiate(effectPrefab, shooter, false);
         Destroy(effect, 0.1F);
-        target.TakeDamage(50, 0);
+        target.TakeDamage(damage, 0);
     }
 }

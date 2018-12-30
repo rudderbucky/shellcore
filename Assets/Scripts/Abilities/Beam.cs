@@ -9,10 +9,13 @@ public class Beam : WeaponAbility {
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
     private Vector3 victimPos; // second position to render the beam to
+    private float damage = 500;
 
     protected override void Awake()
     {
-        base.Awake(); 
+        base.Awake();
+        abilityName = "Beam";
+        description = "Instant attack that deals " + damage + " damage.";
         // set instance fields (values hardcoded, this may change to being modular)
         line = GetComponent<LineRenderer>() ? GetComponent<LineRenderer>() : gameObject.AddComponent<LineRenderer>();
         line.sortingLayerName = "Projectiles";
@@ -44,7 +47,7 @@ public class Beam : WeaponAbility {
     {
         if (targetingSystem.GetTarget()) // check and get the weapon target
         {
-            targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(500, 0); // deal instant damage
+            targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(damage, 0); // deal instant damage
             line.positionCount = 2; // render the beam line
             this.victimPos = victimPos; // set the position to render the line to
             timer = 0; // start the timer

@@ -6,7 +6,7 @@ public class EnergyRock : MonoBehaviour {
     public GameObject energySpherePrefab;
 
 
-    float maxTime = 3f;
+    float maxTime = 6f;
     float targetTime = 0f;
 
     private void Start()
