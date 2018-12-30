@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>
 /// Handler for abilities used by THE PLAYER on the GUI
@@ -11,15 +11,15 @@ public class AbilityHandler : MonoBehaviour {
     private bool initialized; // check for the update method
     private PlayerCore core; // the player
     public GameObject abilityBackground; // background of the ability
-    public UnityEngine.UI.Image abilityCDIndicator; // used to indicate if the ability is on cooldown
-    public UnityEngine.UI.Image abilityGleam; // gleam for the ability
+    public Image abilityCDIndicator; // used to indicate if the ability is on cooldown
+    public Image abilityGleam; // gleam for the ability
     private Ability[] abilities; // ability array of the core
     public Sprite[] abilitySpritesArray; // sprite array for ability images
-    private UnityEngine.UI.Image image; // image prefab
-    private UnityEngine.UI.Image[] abilityImagesArray; // images of the abilities displayed on the GUI
+    private Image image; // image prefab
+    private Image[] abilityImagesArray; // images of the abilities displayed on the GUI
     private GameObject[] abilityBackgroundArray; // all ability backgrounds displayed on the GUI
-    private UnityEngine.UI.Image[] abilityCDIndicatorArray; // all ability cooldown indicators displayed on the GUI
-    private UnityEngine.UI.Image[] abilityGleamArray; // all ability gleams displayed on the GUI
+    private Image[] abilityCDIndicatorArray; // all ability cooldown indicators displayed on the GUI
+    private Image[] abilityGleamArray; // all ability gleams displayed on the GUI
     private bool[] gleaming; // array to check whether an ability is currently gleaming
     private bool[] gleamed; // array to check whether an ability has already gleamed in the cycle
 
@@ -29,19 +29,19 @@ public class AbilityHandler : MonoBehaviour {
     public void Initialize(PlayerCore player) {
         core = player;
         abilities = core.GetAbilities(); // Get the core's ability array
-        abilityImagesArray = new UnityEngine.UI.Image[abilities.Length]; // initialize all the GUI arrays
+        abilityImagesArray = new Image[abilities.Length]; // initialize all the GUI arrays
         abilityBackgroundArray = new GameObject[abilities.Length];
-        abilityCDIndicatorArray = new UnityEngine.UI.Image[abilities.Length];
-        abilityGleamArray = new UnityEngine.UI.Image[abilities.Length];
+        abilityCDIndicatorArray = new Image[abilities.Length];
+        abilityGleamArray = new Image[abilities.Length];
         gleaming = new bool[abilities.Length]; // initialize the boolean arrays
         gleamed = new bool[abilities.Length];
-        float tileSpacing = abilityBackground.GetComponent<UnityEngine.UI.Image>().sprite.bounds.size.x * 15; // Used to space out the abilities on the GUI
+        float tileSpacing = abilityBackground.GetComponent<Image>().sprite.bounds.size.x * 15; // Used to space out the abilities on the GUI
         abilityCDIndicator.fillAmount = 0; // make the cooldown indicator's fill initially 0
         abilityGleam.color = Color.clear;  // start the gleam as clear
         
         if (!image)
         {
-            image = new GameObject().AddComponent<UnityEngine.UI.Image>();
+            image = new GameObject().AddComponent<Image>();
             image.transform.localScale = new Vector3(0.25F, 0.25F, 0.25F);
             image.gameObject.SetActive(false);
         }
@@ -56,7 +56,7 @@ public class AbilityHandler : MonoBehaviour {
             // set parent (do not keep world position)
 
             image.sprite = abilitySpritesArray[abilities[i].GetID()];
-            abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as UnityEngine.UI.Image;
+            abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
             abilityImagesArray[i].gameObject.SetActive(true);
             var canvasg = abilityImagesArray[i].gameObject.AddComponent<CanvasGroup>(); // this is done for every image, it allows the buttons to be clicked
             canvasg.blocksRaycasts = false;
@@ -66,7 +66,7 @@ public class AbilityHandler : MonoBehaviour {
             abilityImagesArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)
 
-            abilityCDIndicatorArray[i] = Instantiate(abilityCDIndicator, pos, Quaternion.identity) as UnityEngine.UI.Image;
+            abilityCDIndicatorArray[i] = Instantiate(abilityCDIndicator, pos, Quaternion.identity) as Image;
             canvasg = abilityCDIndicatorArray[i].gameObject.AddComponent<CanvasGroup>();
             canvasg.blocksRaycasts = false;
             canvasg.interactable = false;
@@ -74,7 +74,7 @@ public class AbilityHandler : MonoBehaviour {
             abilityCDIndicatorArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)
 
-            abilityGleamArray[i] = Instantiate(abilityGleam, pos, Quaternion.identity) as UnityEngine.UI.Image;
+            abilityGleamArray[i] = Instantiate(abilityGleam, pos, Quaternion.identity) as Image;
             canvasg = abilityGleamArray[i].gameObject.AddComponent<CanvasGroup>();
             canvasg.blocksRaycasts = false;
             canvasg.interactable = false;
@@ -132,19 +132,19 @@ public class AbilityHandler : MonoBehaviour {
         }
         if(abilities[index].IsDestroyed()) // Not available in the current "reduced" shell configuration
         {
-            abilityBackgroundArray[index].GetComponent<UnityEngine.UI.Image>().color = new Color(.1f, .1f, .1f); // make the background dark
+            abilityBackgroundArray[index].GetComponent<Image>().color = new Color(.1f, .1f, .1f); // make the background dark
         }
         else if (abilities[index].GetActiveTimeRemaining() != 0) // active
         {
-            abilityBackgroundArray[index].GetComponent<UnityEngine.UI.Image>().color = Color.green; // make the background green
+            abilityBackgroundArray[index].GetComponent<Image>().color = Color.green; // make the background green
         } 
         else if (core.GetHealth()[2] < abilities[index].GetEnergyCost()) // insufficient energy
         {
-            abilityBackgroundArray[index].GetComponent<UnityEngine.UI.Image>().color = new Color(0, 0, 0.3F); // make the background dark blue
+            abilityBackgroundArray[index].GetComponent<Image>().color = new Color(0, 0, 0.3F); // make the background dark blue
         }
-        else if(abilityBackgroundArray[index].GetComponent<UnityEngine.UI.Image>().color != Color.white) // ability ready
+        else if(abilityBackgroundArray[index].GetComponent<Image>().color != Color.white) // ability ready
         {
-            abilityBackgroundArray[index].GetComponent<UnityEngine.UI.Image>().color = Color.white; // reset color to white
+            abilityBackgroundArray[index].GetComponent<Image>().color = Color.white; // reset color to white
         }
     }
 

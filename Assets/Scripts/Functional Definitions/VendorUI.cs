@@ -92,8 +92,8 @@ public class VendorUI : MonoBehaviour, IDialogueable
 
     public void onButtonPressed(int index)
     {
-        // this is invalid for non ownable items, so must be changed later on
-        if (player.GetPower() >= blueprint.items[index].cost && player.unitsCommanding.Count < player.commandLimit)
+        // TODO: this is invalid for non ownable items, so must be changed later on
+        if (player.GetPower() >= blueprint.items[index].cost && player.unitsCommanding.Count < player.GetTotalCommandLimit())
         {
             GameObject creation = new GameObject();
             switch(blueprint.items[index].entityBlueprint.intendedType)

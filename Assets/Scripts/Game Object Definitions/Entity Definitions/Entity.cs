@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// The base class of every "being" in the game.
 /// </summary>
 public class Entity : MonoBehaviour {
 
+    protected static int maxLayer = 1; // the maximum sorting group layer of all entities
+    protected SortingGroup group;
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected Ability[] abilities; // abilities
@@ -65,6 +68,12 @@ public class Entity : MonoBehaviour {
         // Remove possible old parts from list
         parts.Clear();
         maxHealth = new float[] { 100, 100, 100 }; // hardcoded base healths of 100
+
+        if (!GetComponent<SortingGroup>())
+        {
+            group = gameObject.AddComponent<SortingGroup>();
+            group.sortingOrder = ++maxLayer;
+        }
 
         if (!transform.Find("Shell Sprite")) // no shell in hierarchy yet? no problem
         {

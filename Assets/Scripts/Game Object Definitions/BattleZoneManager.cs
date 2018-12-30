@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BattleZoneManager : MonoBehaviour
 {
+
     List<Entity> targets;
     bool playing;
 
@@ -12,6 +13,7 @@ public class BattleZoneManager : MonoBehaviour
         if (playing)
         {
             Dictionary<int, int> alive = new Dictionary<int, int>();
+
             for (int i = 0; i < targets.Count; i++)
             {
                 if (!alive.ContainsKey(targets[i].faction))

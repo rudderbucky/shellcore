@@ -11,11 +11,27 @@ public class SectorManager : MonoBehaviour
     public BackgroundScript background;
     public InfoText info;
 
+    private Dictionary<int, int> stationsCount = new Dictionary<int, int>();
     private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
+    private List<IVendor> stations = new List<IVendor>();
     private BattleZoneManager battleZone;
     private Dictionary<string, GameObject> objects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
+
+    public int GetExtraCommandUnits(int faction) {
+        stationsCount.Clear();
+        foreach(IVendor vendor in stations)
+        {
+            int stationFaction = (vendor as Entity).faction;
+            if(!stationsCount.ContainsKey(stationFaction))
+            {
+                stationsCount.Add(stationFaction, 0);
+            }
+            stationsCount[stationFaction]++;
+        }
+        return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 10 : 0; 
+    }
 
     private void Awake()
     {
@@ -48,6 +64,11 @@ public class SectorManager : MonoBehaviour
         }
     }
 
+    public void UpdateStations()
+    {
+        
+    }
+
     private void Start()
     {
         loadSector();
@@ -65,8 +86,15 @@ public class SectorManager : MonoBehaviour
         }
         objects.Clear();
 
+        // reset stations and carriers
+
+        stations.Clear();
+        carriers.Clear();
+
         //load new sector
         objects.Add("player", player.gameObject);
+        player.sectorMngr = this;
+
 
         for(int i = 0; i < current.entities.Length; i++)
         {
@@ -87,7 +115,8 @@ public class SectorManager : MonoBehaviour
                 {
                     case EntityBlueprint.IntendedType.ShellCore:
                         {
-                            gObj.AddComponent<ShellCore>();
+                            ShellCore shellcore = gObj.AddComponent<ShellCore>();
+                            shellcore.sectorMngr = this;
                             break;
                         }
                     case EntityBlueprint.IntendedType.PlayerCore:
@@ -95,6 +124,7 @@ public class SectorManager : MonoBehaviour
                             if (player == null)
                             {
                                 player = gObj.AddComponent<PlayerCore>();
+                                player.sectorMngr = this;
                             }
                             else
                             {
@@ -117,12 +147,14 @@ public class SectorManager : MonoBehaviour
                     case EntityBlueprint.IntendedType.Bunker:
                         {
                             Bunker bunker = gObj.AddComponent<Bunker>();
+                            stations.Add(bunker);
                             bunker.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID); //TODO: RM: load vending blueprints from files
                             break;
                         }
                     case EntityBlueprint.IntendedType.Outpost:
                         {
                             Outpost outpost = gObj.AddComponent<Outpost>();
+                            stations.Add(outpost);
                             outpost.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID); //TODO: RM: load vending blueprints from files
                             break;
                         }
@@ -190,6 +222,7 @@ public class SectorManager : MonoBehaviour
                 }
                 battleZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
             }
+            battleZone.UpdateCounters();
         }
         else
         {
@@ -198,5 +231,4 @@ public class SectorManager : MonoBehaviour
 
         if(info) info.showMessage("Entering sector '" + current.sectorName + "'");
     }
-
 }

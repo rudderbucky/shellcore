@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Spawns a drone
+/// Spawns a drone (ShellCore-exclusive)
 /// </summary>
 public class SpawnDrone : ActiveAbility
 {
     public DroneSpawnData spawnData;
-    Craft craft;
+    ShellCore craft;
     public void Init()
     {
         ID = spawnData.abilitySpriteID;
@@ -28,7 +28,7 @@ public class SpawnDrone : ActiveAbility
 
     private void Start()
     {
-        craft = Core as Craft;
+        craft = Core as ShellCore;
     }
     /// <summary>
     /// Creates a drone
@@ -44,7 +44,7 @@ public class SpawnDrone : ActiveAbility
         drone.spawnPoint = part.transform.position;
         drone.enginePower = 100;
         drone.Init();
-        drone.SetOwner(Core as ShellCore);
+        drone.SetOwner(craft as ShellCore);
         drone.getAI().Mode = DroneAI.AIMode.Follow;
         drone.getAI().followTarget = craft.transform;
 
@@ -56,7 +56,7 @@ public class SpawnDrone : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        if ((Core as ShellCore).unitsCommanding.Count < (Core as ShellCore).commandLimit)
+        if (craft.unitsCommanding.Count < craft.GetTotalCommandLimit())
         {
             isActive = true; // set to active
             isOnCD = true; // set to on cooldown

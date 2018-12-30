@@ -22,7 +22,7 @@ public class QuantityDisplayScript : MonoBehaviour {
         {
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
             texts[0].text = player.GetPower() + "";
-            texts[1].text = player.unitsCommanding.Count + "/" + player.commandLimit;
+            texts[1].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
         }
 	}
 }
