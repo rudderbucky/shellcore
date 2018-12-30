@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Spawns a mini drone
+/// Spawns a drone
 /// </summary>
-public class SpawnMiniDrone : ActiveAbility
+public class SpawnDrone : ActiveAbility
 {
+    public DroneSpawnData spawnData;
     Craft craft;
+    public void Init()
+    {
+        ID = spawnData.abilitySpriteID;
+        cooldownDuration = spawnData.cooldown;
+        CDRemaining = cooldownDuration;
+        activeDuration = (int)spawnData.delay; //why int?
+        activeTimeRemaining = activeDuration;
+        energyCost = (int)spawnData.energyCost; //why int?
+    }
+
     protected override void Awake()
     {
         base.Awake(); // base awake
-        // hardcoded values here
-        ID = 10;
-        cooldownDuration = 5;
-        CDRemaining = cooldownDuration;
-        activeDuration = 3;
-        activeTimeRemaining = activeDuration;
-        energyCost = 100;
+        if (spawnData)
+            Init();
     }
 
     private void Start()
@@ -25,14 +31,14 @@ public class SpawnMiniDrone : ActiveAbility
         craft = Core as Craft;
     }
     /// <summary>
-    /// Creates a mini drone
+    /// Creates a drone
     /// </summary>
     protected override void Deactivate()
     {
-        // Spawn drone
-        GameObject go = new GameObject("MiniDrone");
+        // Spawn the drone
+        GameObject go = new GameObject(spawnData.drone.name);
         Drone drone = go.AddComponent<Drone>();
-        drone.blueprint = ResourceManager.GetAsset<EntityBlueprint>("mini_drone");
+        drone.blueprint = spawnData.drone;
         drone.faction = craft.faction;
         drone.transform.position = craft.transform.position;
         drone.spawnPoint = craft.transform.position;

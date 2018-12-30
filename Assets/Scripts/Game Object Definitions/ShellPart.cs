@@ -135,8 +135,10 @@ public class ShellPart : MonoBehaviour {
                 var laser = obj.AddComponent<Laser>();
                 laser.bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
                 break;
-            case Ability.AbilityType.MiniDrone:
-                obj.AddComponent<SpawnMiniDrone>();
+            case Ability.AbilityType.SpawnDrone:
+                var spawn = obj.AddComponent<SpawnDrone>();
+                spawn.spawnData = ResourceManager.GetAsset<DroneSpawnData>(blueprint.spawnID);
+                spawn.Init();
                 break;
             case Ability.AbilityType.Speed:
                 obj.AddComponent<Speed>();

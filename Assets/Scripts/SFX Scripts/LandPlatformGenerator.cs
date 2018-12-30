@@ -114,6 +114,8 @@ public class LandPlatformGenerator : MonoBehaviour
         }
 
         buildNodes();
+
+        // TODO: Align to the center of the sector & offset position parameter in static functions accordingly
     }
 
     public void unload()
