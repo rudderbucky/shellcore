@@ -24,6 +24,8 @@ public class ShellCore : AirCraft, IHarvester {
     public SectorManager sectorMngr;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
+    private DroneAI ai; //--TEMPORARY HACK-- TODO: real AI
+
     public int GetTotalCommandLimit()
     {
         if (sectorMngr)
@@ -81,6 +83,16 @@ public class ShellCore : AirCraft, IHarvester {
 
         coreGlow.gameObject.SetActive(false);
         targetGlow.gameObject.SetActive(false);
+
+        if(!(this as PlayerCore) && !ai)
+        {
+            ai = gameObject.AddComponent<DroneAI>();
+        }
+        if(ai)
+        {
+            ai.craft = this;
+            ai.Mode = DroneAI.AIMode.AutoPath;
+        }
     }
 
     protected override void Respawn()

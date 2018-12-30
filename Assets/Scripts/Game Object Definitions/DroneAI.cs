@@ -129,19 +129,19 @@ public class DroneAI : MonoBehaviour
                 if (nodes[j].index == nodes[i].index - 1)
                 {
                     children.Add(nodes.Count - j - 1);
-                    Debug.Log("ID " + (nodes.Count - i - 1) + "'s child: " + (nodes.Count - j - 1));
+                    //Debug.Log("ID " + (nodes.Count - i - 1) + "'s child: " + (nodes.Count - j - 1));
                 }
             }
             node.children = children.ToArray();
             autoPath.waypoints.Add(node);
-            Debug.Log("Created a node (index " + nodes[i].index + ") @ " + node.position + " with ID " + node.ID + " and " + children.Count + "children.");
+            //Debug.Log("Created a node (index " + nodes[i].index + ") @ " + node.position + " with ID " + node.ID + " and " + children.Count + "children.");
         }
         waypointID = 0;
     }
 
     void GetNextWaypoint()
     {
-        Debug.Log("Getting next waypoint...");
+        //Debug.Log("Getting next waypoint...");
 
         Path p = (Mode == AIMode.AutoPath) ? autoPath : path;
         if (p == null)
@@ -165,7 +165,7 @@ public class DroneAI : MonoBehaviour
                             break;
                         }
                     }
-                    Debug.Log("New waypoint ID: " + waypointID + " @ " + currentTargetPos);
+                    //Debug.Log("New waypoint ID: " + waypointID + " @ " + currentTargetPos);
                     return;
                 }
             }
@@ -198,6 +198,14 @@ public class DroneAI : MonoBehaviour
     {
         if (!craft.GetIsDead())
         {
+            foreach(Ability a in craft.GetAbilities())
+            {
+                if(a is WeaponAbility)
+                {
+                    (a as WeaponAbility).Tick("");
+                }
+            }
+
             Vector2 direction;
             switch (Mode)
             {
@@ -246,6 +254,9 @@ public class DroneAI : MonoBehaviour
                     Debug.LogWarning("Movement mode missing!");
                     break;
             }
+        }
+        {
+            waypointID = 0;
         }
     }
 }
