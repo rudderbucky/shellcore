@@ -10,15 +10,6 @@ public interface IVendor
 
 public class VendorUI : MonoBehaviour, IDialogueable
 {
-    /*[System.Serializable]
-    public struct Item
-    {
-        public EntityBlueprint turretBlueprint; //TODO: replace this with blueprint
-        public Sprite icon;
-        public int cost;
-    }*/
-
-    //public List<Item> items;
     public VendingBlueprint blueprint;
     public GameObject UIPrefab;
     public GameObject buttonPrefab;
@@ -28,6 +19,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
     private Transform background;
     private bool opened;
     private GameObject[] buttons;
+    private Text costInfo;
 
     public void openUI()
     {
@@ -51,6 +43,9 @@ public class VendorUI : MonoBehaviour, IDialogueable
         background = UI.transform.Find("Background");
         Button close = background.transform.Find("Close").GetComponent<Button>();
         close.onClick.AddListener(closeUI);
+        costInfo = background.transform.Find("Cost").GetComponent<Text>();
+        costInfo.text = "";
+
         buttons = new GameObject[blueprint.items.Count];
         for (int i = 0; i < blueprint.items.Count; i++)
         {
@@ -63,6 +58,10 @@ public class VendorUI : MonoBehaviour, IDialogueable
 
             Button button = buttons[i].GetComponent<Button>();
             button.onClick.AddListener(() => { onButtonPressed(index); });
+
+            VendorUIButton vendorUIButton = buttons[i].GetComponent<VendorUIButton>();
+            vendorUIButton.text = blueprint.items[i].entityBlueprint.name + ": " + blueprint.items[i].cost;
+            vendorUIButton.costInfo = costInfo;
 
             Image sr = buttons[i].transform.Find("Icon").GetComponent<Image>();
             sr.sprite = blueprint.items[i].icon;
