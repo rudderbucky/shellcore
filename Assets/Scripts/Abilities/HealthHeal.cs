@@ -54,7 +54,7 @@ public class HealthHeal : Ability
     /// </summary>
     protected override void Execute()
     {
-        if (Core.GetHealth()[(int)type] <= Core.GetMaxHealth()[(int)type]) // check for overheal
+        if (Core.GetHealth()[(int)type] + 100 <= Core.GetMaxHealth()[(int)type]) // check for overheal
         {
             switch (type)
             {
@@ -62,7 +62,7 @@ public class HealthHeal : Ability
                     Core.TakeDamage(-300, 1); // heal core
                     break;
                 case HealingType.energy:
-                    Core.TakeEnergy(-300);
+                    Core.TakeEnergy(-100);
                     break;
                 case HealingType.shell:
                     Core.TakeDamage(-300, 0); // heal energy
