@@ -14,9 +14,9 @@ public class SpawnDrone : ActiveAbility
         ID = spawnData.abilitySpriteID;
         cooldownDuration = spawnData.cooldown;
         CDRemaining = cooldownDuration;
-        activeDuration = (int)spawnData.delay; //why int?
+        activeDuration = spawnData.delay; 
         activeTimeRemaining = activeDuration;
-        energyCost = (int)spawnData.energyCost; //why int?
+        energyCost = spawnData.energyCost; 
     }
 
     protected override void Awake()
@@ -40,10 +40,11 @@ public class SpawnDrone : ActiveAbility
         Drone drone = go.AddComponent<Drone>();
         drone.blueprint = spawnData.drone;
         drone.faction = craft.faction;
-        drone.transform.position = craft.transform.position;
-        drone.spawnPoint = craft.transform.position;
+        drone.transform.position = part.transform.position;
+        drone.spawnPoint = part.transform.position;
         drone.enginePower = 100;
         drone.Init();
+        drone.SetOwner(Core as ShellCore);
         drone.getAI().Mode = DroneAI.AIMode.Follow;
         drone.getAI().followTarget = craft.transform;
 
@@ -55,8 +56,12 @@ public class SpawnDrone : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        isActive = true; // set to active
-        isOnCD = true; // set to on cooldown
-        ToggleIndicator();
+        if ((Core as ShellCore).unitsCommanding.Count < (Core as ShellCore).commandLimit)
+        {
+            isActive = true; // set to active
+            isOnCD = true; // set to on cooldown
+            ToggleIndicator();
+        }
+        else Core.TakeEnergy(-energyCost);
     }
 }

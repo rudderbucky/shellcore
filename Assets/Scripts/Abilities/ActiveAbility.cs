@@ -9,7 +9,7 @@ public abstract class ActiveAbility : Ability
 {
     protected bool isActive = false; // used to check if the ability is active
     protected float activeTimeRemaining; // how much active time is remaining on the ability
-    protected int activeDuration; // the duration it is active for
+    protected float activeDuration; // the duration it is active for
 
     /// <summary>
     /// Initialization of every active ability

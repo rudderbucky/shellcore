@@ -60,17 +60,7 @@ public class ShellPart : MonoBehaviour {
         var collider = obj.AddComponent<PolygonCollider2D>();
         collider.isTrigger = true;
         part.detachible = blueprint.detachible;
-        // Add shooter
-        if(blueprint.requiresShooter)
-        {
-            var shooter = new GameObject("Shooter");
-            shooter.transform.SetParent(part.transform);
-            shooter.transform.localPosition = Vector3.zero;
-            var shooterSprite = shooter.AddComponent<SpriteRenderer>();
-            shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(blueprint.shooterSpriteID);
-            shooterSprite.sortingOrder = 102;
-            part.shooter = shooter;
-        }
+        string shooterID = null;
 
         switch (blueprint.abilityType)
         {
@@ -80,65 +70,80 @@ public class ShellPart : MonoBehaviour {
                 Debug.Log("Main bullet added to a part! This is a ShellCore only ability!");
                 var mainBullet = obj.AddComponent<MainBullet>();
                 mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                shooterID = "bulletshooter_sprite";
                 break;
             case Ability.AbilityType.Bullet:
                 var bullet = obj.AddComponent<Bullet>();
                 bullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                shooterID = "bulletshooter_sprite";
                 break;
             case Ability.AbilityType.SiegeBullet:
                 var siege = obj.AddComponent<SiegeBullet>();
                 siege.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                shooterID = "bulletshooter_sprite";
                 break;
             case Ability.AbilityType.Beam:
                 var beam = obj.AddComponent<Beam>();
                 beam.material = ResourceManager.GetAsset<Material>("white_material");
+                shooterID = "beamshooter_sprite";
                 break;
             case Ability.AbilityType.Bomb:
                 break;
             case Ability.AbilityType.Cannon:
                 var cannon = obj.AddComponent<Cannon>();
                 cannon.effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+                shooterID = "cannonshooter_sprite";
                 break;
             case Ability.AbilityType.Missile:
                 var missile = obj.AddComponent<Missile>();
                 missile.missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
+                shooterID = "missileshooter_sprite";
                 break;
             case Ability.AbilityType.Torpedo:
                 var torpedo = obj.AddComponent<Torpedo>();
                 torpedo.bulletPrefab = ResourceManager.GetAsset<GameObject>("torpedo_prefab");
+                shooterID = "torpedoshooter_sprite";
                 break;
             case Ability.AbilityType.ShellBoost:
                 HealthHeal shellboost = obj.AddComponent<HealthHeal>();
                 shellboost.type = HealthHeal.HealingType.shell;
+                shooterID = "ability_indicator";
                 break;
             case Ability.AbilityType.CoreHeal:
                 HealthHeal coreboost = obj.AddComponent<HealthHeal>();
                 coreboost.type = HealthHeal.HealingType.core;
+                shooterID = "ability_indicator";
                 break;
             case Ability.AbilityType.SpeedThrust:
                 obj.AddComponent<SpeedThrust>();
+                shooterID = "ability_indicator";
                 break;
             case Ability.AbilityType.PinDown:
                 break;
             case Ability.AbilityType.EnergyBoost:
                 HealthHeal energyboost = obj.AddComponent<HealthHeal>();
                 energyboost.type = HealthHeal.HealingType.energy;
+                shooterID = "ability_indicator";
                 break;
             case Ability.AbilityType.Harvester:
                 obj.AddComponent<Harvester>();
+                shooterID = "ability_indicator";
                 break;
             case Ability.AbilityType.SpeederBullet:
                 var speedBullet = obj.AddComponent<SpeederBullet>();
                 speedBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                shooterID = "bulletshooter_sprite";
                 break;
             case Ability.AbilityType.Laser:
                 var laser = obj.AddComponent<Laser>();
                 laser.bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
+                shooterID = "lasershooter_sprite";
                 break;
             case Ability.AbilityType.SpawnDrone:
                 var spawn = obj.AddComponent<SpawnDrone>();
                 spawn.spawnData = ResourceManager.GetAsset<DroneSpawnData>(blueprint.spawnID);
                 spawn.Init();
+                shooterID = "ability_indicator";
                 break;
             case Ability.AbilityType.Speed:
                 obj.AddComponent<Speed>();
@@ -147,6 +152,17 @@ public class ShellPart : MonoBehaviour {
                 break;
         }
 
+        // Add shooter
+        if (shooterID != null)
+        {
+            var shooter = new GameObject("Shooter");
+            shooter.transform.SetParent(part.transform);
+            shooter.transform.localPosition = Vector3.zero;
+            var shooterSprite = shooter.AddComponent<SpriteRenderer>();
+            shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
+            shooterSprite.sortingOrder = 102;
+            part.shooter = shooter;
+        }
 
         // This part is only used as a prefab. It must not be active
         obj.SetActive(false);

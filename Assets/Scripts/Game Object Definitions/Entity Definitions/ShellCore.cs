@@ -20,6 +20,8 @@ public class ShellCore : AirCraft, IHarvester {
     Draggable target;
     protected float totalPower;
     protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore) TODO: move to shellcore
+    public int commandLimit;
+    public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
     public void SetCarrier(ICarrier carrier)
     {
@@ -31,6 +33,7 @@ public class ShellCore : AirCraft, IHarvester {
     {
         return totalPower;
     }
+
     public void AddPower(float power)
     {
         totalPower += power;
@@ -53,6 +56,7 @@ public class ShellCore : AirCraft, IHarvester {
     protected override void Start()
     {
         base.Start(); // base start
+        commandLimit = 3;
         if (carrier != null && carrier.GetIsInitialized())
         {
             spawnPoint = carrier.GetSpawnPoint();

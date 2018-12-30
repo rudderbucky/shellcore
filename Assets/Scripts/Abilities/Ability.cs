@@ -34,7 +34,8 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         Harvester,
         SpeederBullet,
         Laser,
-        SpawnDrone
+        SpawnDrone,
+        Speed
     }
 
     Entity core;  // craft that uses this ability
@@ -53,7 +54,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     }
     protected int ID; // Image ID, perhaps also ability ID if that were ever to be useful
     protected float cooldownDuration; // cooldown of the ability
-    protected int energyCost; // energy cost of the ability
+    protected float energyCost; // energy cost of the ability
     protected float CDRemaining; // amount of time remaining on cooldown
     protected bool isOnCD = false; // check for cooldown
     protected bool isPassive = false; // if the ability is passive
@@ -122,7 +123,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// Get the energy cost of the ability
     /// </summary>
     /// <returns>The energy cost of the ability</returns>
-    public int GetEnergyCost() {
+    public float GetEnergyCost() {
         return energyCost; // energy cost
     }
 

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tank : GroundCraft
+public class Tank : GroundCraft, IOwnable
 {
     Vector2[] path; // positions for tank to move to
     int index = 0; 
     bool hasPath = false;
+    ShellCore owner;
 
     protected override void Start()
     {
@@ -83,5 +84,17 @@ public class Tank : GroundCraft
         {
             pathfindToTarget();
         }
+    }
+
+    public void SetOwner(ShellCore owner)
+    {
+        this.owner = owner;
+        owner.unitsCommanding.Add(this);
+    }
+
+    protected override void OnDeath()
+    {
+        owner.unitsCommanding.Remove(this);
+        base.OnDeath();
     }
 }

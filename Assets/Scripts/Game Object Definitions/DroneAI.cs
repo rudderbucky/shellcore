@@ -35,7 +35,7 @@ public class DroneAI : MonoBehaviour
         }
     }
     public Craft craft;
-
+    public ShellCore owner;
     // Auto mode
     public Path autoPath;
 
@@ -213,9 +213,12 @@ public class DroneAI : MonoBehaviour
                     }
                     break;
                 case AIMode.Follow:
-                    followTarget = FindObjectOfType<PlayerCore>().transform; // temporary, this should change to an owner variable given at spawn
-                    direction = (followTarget.position - transform.position).magnitude > 5 ? followTarget.position - transform.position : Vector3.zero;
-                    craft.MoveCraft(direction.normalized);
+                    if (owner)
+                    {
+                        followTarget = owner.transform; // temporary, this should change to an owner variable given at spawn
+                        direction = (followTarget.position - transform.position).magnitude > 5 ? followTarget.position - transform.position : Vector3.zero;
+                        craft.MoveCraft(direction.normalized);
+                    }
                     break;
                 case AIMode.Path:
                     if (waypointID != -1)

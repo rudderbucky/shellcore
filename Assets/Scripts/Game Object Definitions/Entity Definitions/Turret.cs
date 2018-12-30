@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : AirConstruct {
+public class Turret : AirConstruct, IOwnable {
 
     public ShellCore owner;
 
@@ -19,9 +19,16 @@ public class Turret : AirConstruct {
 
     }
 
+    protected override void OnDeath()
+    {
+        owner.unitsCommanding.Remove(this);
+        base.OnDeath();
+    }
+
     public void SetOwner(ShellCore owner)
     {
         this.owner = owner;
+        owner.unitsCommanding.Add(this);
     }
 
     protected override void Update()

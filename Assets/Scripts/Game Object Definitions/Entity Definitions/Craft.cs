@@ -36,11 +36,6 @@ public abstract class Craft : Entity
     protected override void Update()
     {
         base.Update();
-        foreach( Ability a in abilities)
-        {
-            if (a is WeaponAbility)
-                (a as WeaponAbility).Tick("");
-        }
     }
 
     /// <summary>

@@ -55,16 +55,13 @@ public class AbilityHandler : MonoBehaviour {
             abilityBackgroundArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)
 
-<<<<<<< HEAD
             image.sprite = abilitySpritesArray[abilities[i].GetID()];
             abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as UnityEngine.UI.Image;
             abilityImagesArray[i].gameObject.SetActive(true);
             var canvasg = abilityImagesArray[i].gameObject.AddComponent<CanvasGroup>(); // this is done for every image, it allows the buttons to be clicked
             canvasg.blocksRaycasts = false;
             canvasg.interactable = false;
-=======
-            abilityImagesArray[i] = Instantiate(abilityImagesInput[abilities[i].GetID()], pos, Quaternion.identity) as UnityEngine.UI.Image; // Why not just use one prefab and change its texture?
->>>>>>> c981d19fc4ebdc2114146f1f2814d717d05f6912
+
             // instantiate ability image
             abilityImagesArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)

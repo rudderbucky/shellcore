@@ -2,14 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Drone : AirCraft {
+public interface IOwnable
+{
+    void SetOwner(ShellCore owner);
+}
 
+public class Drone : AirCraft, IOwnable {
+
+    private ShellCore owner;
     private DroneAI ai;
     private float time;
     private float initialzangle;
     private bool initialized = false;
 
     public Path path;
+
+    public void SetOwner(ShellCore owner)
+    {
+        this.owner = owner;
+        ai.owner = owner;
+        owner.unitsCommanding.Add(this);
+    }
+
+    protected override void OnDeath()
+    {
+        owner.unitsCommanding.Remove(this);
+        base.OnDeath();
+    }
 
     public DroneAI getAI()
     {

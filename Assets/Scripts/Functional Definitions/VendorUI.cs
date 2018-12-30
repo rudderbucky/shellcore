@@ -92,9 +92,8 @@ public class VendorUI : MonoBehaviour, IDialogueable
 
     public void onButtonPressed(int index)
     {
-        //TODO: construct entity from blueprint
-        //TODO: add sprites and all necessary prefab IDs to the blueprint
-        if (player.GetPower() >= blueprint.items[index].cost)
+        // this is invalid for non ownable items, so must be changed later on
+        if (player.GetPower() >= blueprint.items[index].cost && player.unitsCommanding.Count < player.commandLimit)
         {
             GameObject creation = new GameObject();
             switch(blueprint.items[index].entityBlueprint.intendedType)
@@ -108,6 +107,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
                     Tank tank = creation.AddComponent<Tank>();
                     tank.blueprint = blueprint.items[index].entityBlueprint;
                     tank.enginePower = 250;
+                    tank.SetOwner(player);
                     break;
                 default:
                     break;
