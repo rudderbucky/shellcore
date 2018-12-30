@@ -102,13 +102,9 @@ public class AbilityHandler : MonoBehaviour {
     /// </summary>
     public void Deinitialize()
     {
-        for (int i = 0; i < abilities.Length; i++)
-        { // iterate through array
-            // destroy the associated bars
-            Destroy(abilityBackgroundArray[i].gameObject);
-            Destroy(abilityImagesArray[i].gameObject);
-            Destroy(abilityCDIndicatorArray[i].gameObject);
-            Destroy(abilityGleamArray[i].gameObject);
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
         }
         initialized = false; // reset initialized
     }

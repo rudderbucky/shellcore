@@ -51,10 +51,9 @@ public class HealthBarScript : MonoBehaviour {
     /// Deinitializes the Health Bar UI
     /// </summary>
     public void Deinitialize() {
-        for (int i = 0; i < barsArray.Length; i++) { // iterate through array
-            // destroy the associated bars
-            Destroy(barsArray[i].gameObject);
-            Destroy(gleamArray[i].gameObject);
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
         }
         initialized = false; // reset initialized
     }

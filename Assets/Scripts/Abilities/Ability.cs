@@ -206,7 +206,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }
-        else if ((key == "activate") || (Core as PlayerCore && key != "" && Input.GetKeyDown(key)) && Core.GetHealth()[2] >= energyCost) // enough energy and button pressed
+        else if (((key == "activate") || (Core as PlayerCore && key != "" && Input.GetKeyDown(key))) && Core.GetHealth()[2] >= energyCost) // enough energy and button pressed
         {
             Core.MakeBusy(); // make core busy
             Core.TakeEnergy(energyCost); // remove the energy
