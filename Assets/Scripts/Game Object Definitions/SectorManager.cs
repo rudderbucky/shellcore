@@ -196,7 +196,7 @@ public class SectorManager : MonoBehaviour
             battleZone.enabled = false;
         }
 
-        info.showMessage("Entering sector '" + current.sectorName + "'");
+        if(info) info.showMessage("Entering sector '" + current.sectorName + "'");
     }
 
 }

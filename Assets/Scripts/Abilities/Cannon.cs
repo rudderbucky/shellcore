@@ -36,7 +36,7 @@ public class Cannon : WeaponAbility {
 
     protected void Update()
     {
-        if (effect && !Core.GetTargetingSystem().GetTarget())
+        if (effect && !targetingSystem.GetTarget())
         {
             Destroy(effect);
         }

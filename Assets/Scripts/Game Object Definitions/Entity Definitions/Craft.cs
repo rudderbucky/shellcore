@@ -11,6 +11,12 @@ public abstract class Craft : Entity
     protected bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
 
+    protected override void BuildEntity()
+    {
+        enginePower = 200;
+        base.BuildEntity();
+    }
+
     protected override void OnDeath()
     {
         isImmobile = true;
@@ -30,7 +36,6 @@ public abstract class Craft : Entity
     protected override void Update()
     {
         base.Update();
-        targeter.GetTarget(true);
         foreach( Ability a in abilities)
         {
             if (a is WeaponAbility)

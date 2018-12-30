@@ -108,9 +108,12 @@ public class ShellPart : MonoBehaviour {
                 torpedo.bulletPrefab = ResourceManager.GetAsset<GameObject>("torpedo_prefab");
                 break;
             case Ability.AbilityType.ShellBoost:
-                obj.AddComponent<ShellHeal>();
+                HealthHeal shellboost = obj.AddComponent<HealthHeal>();
+                shellboost.type = HealthHeal.HealingType.shell;
                 break;
             case Ability.AbilityType.CoreHeal:
+                HealthHeal coreboost = obj.AddComponent<HealthHeal>();
+                coreboost.type = HealthHeal.HealingType.core;
                 break;
             case Ability.AbilityType.SpeedThrust:
                 obj.AddComponent<SpeedThrust>();
@@ -118,6 +121,8 @@ public class ShellPart : MonoBehaviour {
             case Ability.AbilityType.PinDown:
                 break;
             case Ability.AbilityType.EnergyBoost:
+                HealthHeal energyboost = obj.AddComponent<HealthHeal>();
+                energyboost.type = HealthHeal.HealingType.energy;
                 break;
             case Ability.AbilityType.Harvester:
                 obj.AddComponent<Harvester>();
@@ -132,6 +137,9 @@ public class ShellPart : MonoBehaviour {
                 break;
             case Ability.AbilityType.MiniDrone:
                 obj.AddComponent<SpawnMiniDrone>();
+                break;
+            case Ability.AbilityType.Speed:
+                obj.AddComponent<Speed>();
                 break;
             default:
                 break;

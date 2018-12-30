@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>
 /// Master HUD script used to initialize individual HUD elements
@@ -17,7 +19,7 @@ public class HUDScript : MonoBehaviour {
         GetComponentInChildren<ReticleScript>().Initialize(player);
         GetComponentInChildren<QuantityDisplayScript>().Initialize(player);
         Camera.main.GetComponent<CameraScript>().Initialize(player);
-        GetComponentInChildren<FadeUIScript>().Initialize(player);
+        // GetComponentInChildren<FadeUIScript>().Initialize(player); temporarily removed due to implementation difficulties
     }
 
     /// <summary>

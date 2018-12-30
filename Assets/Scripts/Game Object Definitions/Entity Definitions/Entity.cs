@@ -105,7 +105,7 @@ public class Entity : MonoBehaviour {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
             if (blueprint)
             { // check if it contains a blueprint (it should)
-                if (blueprint.coreSpriteID == "")
+                if (blueprint.coreSpriteID == "" && blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore)
                 {
                     Debug.Log(this + "'s blueprint does not contain a core sprite ID!"); 
                     // check if the blueprint does not contain a core sprite ID (it should) 
@@ -167,6 +167,9 @@ public class Entity : MonoBehaviour {
 
                 if (obj.GetComponent<WeaponAbility>())
                 {
+
+                    // if the terrain and category wasn't preset set to the enitity's properties
+
                     if(obj.GetComponent<WeaponAbility>().terrain == TerrainType.Unset)
                         obj.GetComponent<WeaponAbility>().terrain = Terrain;
                     if(obj.GetComponent<WeaponAbility>().category == EntityCategory.Unset)

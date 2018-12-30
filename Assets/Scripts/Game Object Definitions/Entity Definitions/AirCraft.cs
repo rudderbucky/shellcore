@@ -54,7 +54,7 @@ public abstract class AirCraft : Craft
 
         if (IsMoving()) // if core is supposed to be moving 
         {
-            if (timePassed != 0)
+            if (timePassed != 0 && !isDead)
             { // need to reset the position due to the oscillator
                 storedPos = entityBody.position;
                 storedPos.y = positionBeforeOscillation;

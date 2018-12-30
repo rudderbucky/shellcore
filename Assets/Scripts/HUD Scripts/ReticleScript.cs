@@ -78,10 +78,6 @@ public class ReticleScript : MonoBehaviour {
                 {
                     if (entityTarget.dialogue as Dialogue)
                         DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue);
-                    /*else if(entityTarget.GetComponent<OutpostUI>())
-                    {
-                        entityTarget.GetComponent<OutpostUI>().openUI();
-                    }*/
                     else if(entityTarget as IVendor != null && entityTarget.faction == craft.faction)
                     {
                         VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
@@ -116,8 +112,8 @@ public class ReticleScript : MonoBehaviour {
             transform.position = target.position; // update reticle position
             GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
 
-            Entity targetCraft = target.GetComponent<Entity>(); // if target is a craft
-            if(targetCraft)
+            Entity targetCraft = target.GetComponent<Entity>(); // if target is an entity
+            if (targetCraft)
             {
                 // show craft related information
 

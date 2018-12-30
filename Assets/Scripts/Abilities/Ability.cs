@@ -34,7 +34,8 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         Harvester,
         SpeederBullet,
         Laser,
-        MiniDrone
+        MiniDrone,
+        Speed
     }
 
     Entity core;  // craft that uses this ability
@@ -186,7 +187,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }
-        else if (Core.GetHealth()[2] >= energyCost && (Core as PlayerCore && Input.GetKeyDown(key)) || (key == "activate")) // enough energy and button pressed
+        else if ((key == "activate") || Core.GetHealth()[2] >= energyCost && (Core as PlayerCore && key != "" && Input.GetKeyDown(key))) // enough energy and button pressed
         {
             Core.MakeBusy(); // make core busy
             Core.TakeEnergy(energyCost); // remove the energy

@@ -10,30 +10,45 @@ public class FadeUIScript : MonoBehaviour {
     public PlayerCore core; // the core to check to fade the UI with
     public Canvas canvas; // the canvas to fade
     private bool initialized;
+    private float groupalpha;
 
     public void Initialize(PlayerCore player)
     {
         core = player;
+        if (!canvas) canvas = GetComponent<Canvas>();
         initialized = true;
     }
     /// <summary>
     /// Used to fade the UI
     /// </summary>
     private void Fade() {
-        if (canvas.GetComponent<CanvasGroup>().alpha > 0.1F) // check if opacity is above the threshold
+        if (groupalpha > 0.1F) // check if opacity is above the threshold
         {
-            canvas.GetComponent<CanvasGroup>().alpha -= 2 * Time.deltaTime; // reduce opacity if so
+            groupalpha -= 2 * Time.deltaTime;
         }
-        else canvas.GetComponent<CanvasGroup>().alpha = 0.1F; // set opacity to minimum threshold
+        else
+        {
+            groupalpha = 0.1F;
+            GroupUpdate();
+        }// set opacity to minimum threshold
     }
 
+    private void GroupUpdate()
+    {
+        foreach (CanvasGroup group in GetComponentsInChildren<CanvasGroup>())
+        {
+
+            group.alpha = groupalpha;
+        }
+    }
     // Update is called once per frame
     private void Update () {
         if (initialized)
         {
             if (core.GetIsBusy()) // if the core is busy make the canvas opaque
             {
-                canvas.GetComponent<CanvasGroup>().alpha = 1;
+                groupalpha = 1;
+                GroupUpdate();
             }
             else // core not busy
             {

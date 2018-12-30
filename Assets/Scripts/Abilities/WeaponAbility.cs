@@ -41,6 +41,11 @@ public abstract class WeaponAbility : ActiveAbility {
         return range; // get range
     }
 
+    public void SetActive(bool active)
+    {
+        isActive = active;
+    }
+
     /// <summary>
     /// Override for active time remaining, just returns a value that is never greater or equal than zero if the ability is active
     /// and zero if it is not
@@ -61,7 +66,7 @@ public abstract class WeaponAbility : ActiveAbility {
     {
         if(key != "")
         {
-            if ((Core as PlayerCore && Input.GetKeyDown(key)) || key == "toggle")
+            if (key == "activate" || (Core as PlayerCore && Input.GetKeyDown(key)))
             { // toggle ability
                 Core.MakeBusy(); // make core busy
                 isActive = !isActive;
@@ -71,7 +76,7 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
         }
-        else if (isActive && Core.GetHealth()[2] >= energyCost) // if energy is sufficient and key is pressed
+        else if (isActive && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
         {
             Transform target = targetingSystem.GetTarget(true);
             if (target && target.GetComponent<Entity>()) { // check if there is a target

@@ -95,6 +95,8 @@ public class ShellCore : AirCraft, IHarvester {
             mainBullet.terrain = TerrainType.Air;
         }
 
+        GetComponent<MainBullet>().SetActive(true);
+
         if (!transform.Find("TractorBeam"))
         {
             GameObject childObject = new GameObject();

@@ -14,7 +14,7 @@ public class PlayerCore : ShellCore {
     /// Respawns the player core, deinitializes the HUD
     /// </summary>
     protected override void Respawn() {
-        hud.DeinitializeHUD(); // deinitialize HUD
+        if(hud) hud.DeinitializeHUD(); // deinitialize HUD
         transform.position = spawnPoint; // reset position to spawn point
         base.Respawn(); // this will reinitialize the HUD
     }
@@ -50,7 +50,12 @@ public class PlayerCore : ShellCore {
         // initialize instance fields
         base.Start();
         // spawnPoint = transform.position = Vector3.zero; // overrides the shellcore spawn point
-        hud.InitializeHUD(this); // initialize the HUD
+        if (hud) hud.InitializeHUD(this);
+        else
+        {
+            Camera.main.GetComponent<CameraScript>().Initialize(this);
+            GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(this);
+        } // initialize the HUD
 	}
 	
 	// Update is called once per frame
