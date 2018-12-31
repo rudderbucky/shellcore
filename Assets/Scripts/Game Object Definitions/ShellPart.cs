@@ -9,6 +9,7 @@ using UnityEngine;
 public class ShellPart : MonoBehaviour {
 
     float detachedTime; // time since detachment
+    private bool connected = false;
     private bool hasDetached; // is the part detached
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigid;
@@ -38,9 +39,83 @@ public class ShellPart : MonoBehaviour {
     {
         return partMass;
     }
+
     public float GetPartHealth()
     {
         return partHealth; // part health
+    }
+
+    public bool IsAdjacent(ShellPart part)
+    {
+        return GetComponent<Collider2D>().bounds.Intersects(part.GetComponent<Collider2D>().bounds);
+    }
+
+    private void ConnectedTreeCreator()
+    {
+        foreach(ShellPart part in craft.GetParts())
+        {
+            part.connected = false; // reset part connecteds to create the tree
+        }
+        var shell = craft.transform.Find("Shell Sprite");
+        if (shell)
+        {
+            shell.GetComponent<ShellPart>().connected = true; // shell is connected by definition
+            foreach (ShellPart part in craft.GetParts())
+            {
+                part.ConnectedTreeHelper(); 
+                // run for each part so that each part has a chance to be set true via shell connection
+            }
+        }
+        else return; // no shell means the entire tree breaks
+    }
+
+    private void ConnectedTreeHelper()
+    {
+        if (connected) return;
+
+        // get part neighbors
+        var neighbors = new List<ShellPart>();
+        foreach(ShellPart part in craft.GetParts())
+        {
+            if (IsAdjacent(part) && part != this) neighbors.Add(part);
+        }
+
+
+        foreach(ShellPart part in neighbors)
+        {
+            if (part.connected) 
+            {
+                // a neighbor is connected
+
+                connected = true; // so you are connected
+                foreach(ShellPart parts in neighbors)
+                {
+                    parts.ConnectedTreeHelper(); 
+                    // since you are connected your neighbors are connected, their neighbors are connected, etc. This is recursively done
+                }
+                return;
+            }
+        }
+    }
+
+    private void Domino()
+    {
+        // get all parts that were not set to connected by the connected tree call
+        ShellPart[] unconnectedParts = new ShellPart[craft.GetParts().Count];
+        int index = 0;
+        foreach(ShellPart part in craft.GetParts())
+        {
+            if(!part.connected)
+            {
+                unconnectedParts[index++] = part;
+            }
+        }
+
+        // then remove them all
+        for(int i = 0; i < unconnectedParts.Length; i++)
+        {
+            if (unconnectedParts[i]) craft.RemovePart(unconnectedParts[i]);
+        }
     }
 
     /// <summary>
@@ -190,25 +265,6 @@ public class ShellPart : MonoBehaviour {
         rotationOffset = Random.Range(0f, 360f);
     }
 
-    public void Domino()
-    {
-        // domino out if unconnected
-
-        bool connected = false;
-        for(int i = 0; i < craft.GetParts().Count; i++)
-        {
-            if(craft.GetParts()[i] == this)
-            {
-                continue;
-            }
-            if(craft.GetParts()[i].GetComponent<Collider2D>().bounds.Intersects(GetComponent<Collider2D>().bounds))
-            {
-                connected = true;
-                break;
-            }
-        }
-        if (!connected) Detach();
-    }
     public void Awake()
     {
         //Find sprite renderer
@@ -305,10 +361,8 @@ public class ShellPart : MonoBehaviour {
         currentHealth -= damage;
         if (currentHealth <= 0 && detachible) {
             craft.RemovePart(this);
-            foreach(ShellPart part in craft.GetParts())
-            {
-                part.Domino(); // Domino out unconnected parts TODO: make more efficient (perhaps check only part neighbors)
-            }
+            ConnectedTreeCreator(); // these do not run with this part in the part list since it was removed.
+            Domino();
         }
     }
 }
