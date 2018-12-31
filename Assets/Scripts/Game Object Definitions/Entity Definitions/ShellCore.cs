@@ -208,7 +208,6 @@ public class ShellCore : AirCraft, IHarvester {
         }
         else
         {
-            target = null;
             SetTractorTarget(null);
             lineRenderer.positionCount = 0;
             coreGlow.gameObject.SetActive(false);
