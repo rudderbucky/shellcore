@@ -4,12 +4,12 @@ using UnityEngine;
 
 public interface IOwnable
 {
-    void SetOwner(ShellCore owner);
+    void SetOwner(IOwner owner);
 }
 
 public class Drone : AirCraft, IOwnable {
 
-    private ShellCore owner;
+    private IOwner owner;
     private DroneAI ai;
     private float time;
     private float initialzangle;
@@ -17,17 +17,17 @@ public class Drone : AirCraft, IOwnable {
 
     public Path path;
 
-    public void SetOwner(ShellCore owner)
+    public void SetOwner(IOwner owner)
     {
         this.owner = owner;
         ai.owner = owner;
-        owner.unitsCommanding.Add(this);
+        owner.GetUnitsCommanding().Add(this);
     }
 
     protected override void OnDeath()
     {
-        if(owner)
-            owner.unitsCommanding.Remove(this);
+        if(owner != null)
+            owner.GetUnitsCommanding().Remove(this);
         base.OnDeath();
     }
 

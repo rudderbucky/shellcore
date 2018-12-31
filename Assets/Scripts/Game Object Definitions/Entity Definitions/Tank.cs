@@ -7,7 +7,7 @@ public class Tank : GroundCraft, IOwnable
     Vector2[] path; // positions for tank to move to
     int index = 0; 
     bool hasPath = false;
-    ShellCore owner;
+    IOwner owner;
 
     protected override void Start()
     {
@@ -86,15 +86,15 @@ public class Tank : GroundCraft, IOwnable
         }
     }
 
-    public void SetOwner(ShellCore owner)
+    public void SetOwner(IOwner owner)
     {
         this.owner = owner;
-        owner.unitsCommanding.Add(this);
+        owner.GetUnitsCommanding().Add(this);
     }
 
     protected override void OnDeath()
     {
-        owner.unitsCommanding.Remove(this);
+        owner.GetUnitsCommanding().Remove(this);
         base.OnDeath();
     }
 }

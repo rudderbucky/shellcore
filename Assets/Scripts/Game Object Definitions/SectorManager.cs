@@ -174,6 +174,7 @@ public class SectorManager : MonoBehaviour
                         {
                             carriers.Add(current.entities[i].faction, carrier);
                         }
+                        carrier.sectorMngr = this;
                         break;
                     default:
                         break;

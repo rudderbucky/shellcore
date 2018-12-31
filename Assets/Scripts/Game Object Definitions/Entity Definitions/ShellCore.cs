@@ -9,7 +9,7 @@ public interface ITractorer
 /// <summary>
 /// All "human-like" craft are considered ShellCores. These crafts are intelligent and all air-borne. This includes player ShellCores.
 /// </summary>
-public class ShellCore : AirCraft, IHarvester {
+public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected ICarrier carrier;
     protected LineRenderer lineRenderer;
@@ -232,5 +232,20 @@ public class ShellCore : AirCraft, IHarvester {
     public Draggable GetTractorTarget()
     {
         return target;
+    }
+
+    public int GetFaction()
+    {
+        return faction;
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+
+    public List<IOwnable> GetUnitsCommanding()
+    {
+        return unitsCommanding;
     }
 }

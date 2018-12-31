@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Turret : AirConstruct, IOwnable {
 
-    public ShellCore owner;
+    public IOwner owner;
 
     protected override void Awake()
     {
@@ -21,14 +21,14 @@ public class Turret : AirConstruct, IOwnable {
 
     protected override void OnDeath()
     {
-        owner.unitsCommanding.Remove(this);
+        owner.GetUnitsCommanding().Remove(this);
         base.OnDeath();
     }
 
-    public void SetOwner(ShellCore owner)
+    public void SetOwner(IOwner owner)
     {
         this.owner = owner;
-        owner.unitsCommanding.Add(this);
+        owner.GetUnitsCommanding().Add(this);
     }
 
     protected override void Update()

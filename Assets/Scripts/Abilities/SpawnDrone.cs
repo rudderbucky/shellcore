@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public interface IOwner
+{
+    int GetFaction();
+    Transform GetTransform();
+    List<IOwnable> GetUnitsCommanding();
+    int GetTotalCommandLimit();
+}
+
 /// <summary>
 /// Spawns a drone (ShellCore-exclusive)
 /// </summary>
 public class SpawnDrone : ActiveAbility
 {
     public DroneSpawnData spawnData;
-    ShellCore craft;
+    IOwner craft;
     public void Init()
     {
         ID = spawnData.abilitySpriteID;
@@ -30,7 +39,7 @@ public class SpawnDrone : ActiveAbility
 
     private void Start()
     {
-        craft = Core as ShellCore;
+        craft = Core as IOwner;
     }
     /// <summary>
     /// Creates a drone
@@ -41,24 +50,27 @@ public class SpawnDrone : ActiveAbility
         GameObject go = new GameObject(spawnData.drone.name);
         Drone drone = go.AddComponent<Drone>();
         drone.blueprint = spawnData.drone;
-        drone.faction = craft.faction;
+        drone.faction = craft.GetFaction();
         drone.transform.position = part.transform.position;
         drone.spawnPoint = part.transform.position;
         drone.enginePower = 100;
         drone.Init();
-        drone.SetOwner(craft as ShellCore);
-        drone.getAI().Mode = DroneAI.AIMode.Follow;
-        drone.getAI().followTarget = craft.transform;
+        drone.SetOwner(craft);
+        if(craft as ICarrier != null)
+        {
+            drone.getAI().Mode = DroneAI.AIMode.AutoPath;
+        } else drone.getAI().Mode = DroneAI.AIMode.Follow;
+        drone.getAI().followTarget = craft.GetTransform();
 
         ToggleIndicator();
     }
 
     /// <summary>
-    /// Starts the spawning coutdonwn
+    /// Starts the spawning countdown
     /// </summary>
     protected override void Execute()
     {
-        if (craft.unitsCommanding.Count < craft.GetTotalCommandLimit())
+        if (craft != null && craft.GetUnitsCommanding().Count < craft.GetTotalCommandLimit())
         {
             isActive = true; // set to active
             isOnCD = true; // set to on cooldown

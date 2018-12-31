@@ -33,7 +33,7 @@ public class Harvester : WeaponAbility, IHarvester {
             tractorMaterial = ResourceManager.GetAsset<Material>("tractor_material");
         if(!owner)
         {
-            owner = (Core as Turret).owner;
+            owner = (Core as Turret).owner as ShellCore;
         }
         if (!transform.Find("TractorBeam"))
         {
