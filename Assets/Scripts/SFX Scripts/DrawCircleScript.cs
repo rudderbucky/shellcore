@@ -33,9 +33,9 @@ public class DrawCircleScript : MonoBehaviour {
         if (initialized)
         {
             timer += Time.deltaTime; // increment time
-            if (timer > 1 && timer < 1.5F) // time to draw
+            if (timer > 0.5F && timer < 1.25F) // time to draw
             {
-                CreatePoints(speed * (timer - 1), speed * (timer - 1)); // draw the circle
+                CreatePoints(speed * (timer - 0.5F), speed * (timer - 0.5F)); // draw the circle
             }
             else
             {

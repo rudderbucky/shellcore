@@ -9,7 +9,7 @@ public class Torpedo : Bullet {
         base.Awake(); // base awake
         // hardcoded values here
         bulletSpeed = 10;
-        survivalTime = 5F;
+        survivalTime = 2.5F;
         range = bulletSpeed * survivalTime;
         ID = 8;
         cooldownDuration = 3F;

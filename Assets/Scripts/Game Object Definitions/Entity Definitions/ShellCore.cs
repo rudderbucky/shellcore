@@ -160,11 +160,11 @@ public class ShellCore : AirCraft, IHarvester {
 
                 if (target.GetComponent<EnergySphereScript>())
                 {
-                    rigidbody.AddForce(dir.normalized * 100f);
+                    rigidbody.position += (Vector2)dir.normalized * 0.6F;
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 4000f * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 2000f * Time.fixedDeltaTime * rigidbody.mass / 2);
                 }
             }
         }
@@ -183,7 +183,7 @@ public class ShellCore : AirCraft, IHarvester {
             for (int i = 0; i < energies.Length; i++)
             {
                 float sqrD = Vector3.SqrMagnitude(transform.position - energies[i].transform.position);
-                if (closest == null || sqrD < closestD)
+                if ((closest == null || sqrD < closestD) && !energies[i].GetComponent<Draggable>().dragging)
                 {
                     closestD = sqrD;
                     closest = energies[i].transform;

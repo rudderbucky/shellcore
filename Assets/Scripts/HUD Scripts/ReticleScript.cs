@@ -78,7 +78,11 @@ public class ReticleScript : MonoBehaviour {
                 {
                     if (entityTarget.dialogue as Dialogue)
                         DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue);
-                    else if(entityTarget as IVendor != null && entityTarget.faction == craft.faction)
+
+                    // TODO: get range (here 20) from blueprint
+
+                    else if(entityTarget as IVendor != null && entityTarget.faction == craft.faction 
+                        && (entityTarget.transform.position - craft.transform.position).magnitude < 20)
                     {
                         VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
                         outpostUI.blueprint = (entityTarget as IVendor).GetVendingBlueprint();

@@ -190,6 +190,25 @@ public class ShellPart : MonoBehaviour {
         rotationOffset = Random.Range(0f, 360f);
     }
 
+    public void Domino()
+    {
+        // domino out if unconnected
+
+        bool connected = false;
+        for(int i = 0; i < craft.GetParts().Count; i++)
+        {
+            if(craft.GetParts()[i] == this)
+            {
+                continue;
+            }
+            if(craft.GetParts()[i].GetComponent<Collider2D>().bounds.Intersects(GetComponent<Collider2D>().bounds))
+            {
+                connected = true;
+                break;
+            }
+        }
+        if (!connected) Detach();
+    }
     public void Awake()
     {
         //Find sprite renderer
@@ -286,6 +305,10 @@ public class ShellPart : MonoBehaviour {
         currentHealth -= damage;
         if (currentHealth <= 0 && detachible) {
             craft.RemovePart(this);
+            foreach(ShellPart part in craft.GetParts())
+            {
+                part.Domino(); // Domino out unconnected parts TODO: make more efficient (perhaps check only part neighbors)
+            }
         }
     }
 }

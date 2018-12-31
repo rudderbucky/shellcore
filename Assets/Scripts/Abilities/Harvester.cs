@@ -76,14 +76,7 @@ public class Harvester : WeaponAbility, IHarvester {
                 float dist = dir.magnitude;
                 //DebugMeter.AddDataPoint((dir.normalized * (dist - 2F) * 10000f * Time.fixedDeltaTime).magnitude);
 
-                if (target.GetComponent<EnergySphereScript>())
-                {
-                    rigidbody.AddForce(dir.normalized * 100f);
-                }
-                else if (dist > 2f)
-                {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 4000f * Time.fixedDeltaTime);
-                }
+                rigidbody.position += (Vector2)dir.normalized * 0.6F;
             }
         }
     }
@@ -106,13 +99,13 @@ public class Harvester : WeaponAbility, IHarvester {
             for (int i = 0; i < energies.Length; i++)
             {
                 float sqrD = Vector3.SqrMagnitude(transform.position - energies[i].transform.position);
-                if (closest == null || sqrD < closestD)
+                if ((closest == null || sqrD < closestD) && !energies[i].GetComponent<Draggable>().dragging)
                 {
                     closestD = sqrD;
                     closest = energies[i].transform;
                 }
             }
-            if (closest && closestD < 160 && GetTractorTarget() == null && closest.gameObject.GetComponent<Draggable>() != owner.GetTractorTarget())
+            if (closest && closestD < 160 && GetTractorTarget() == null)
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
         }
 

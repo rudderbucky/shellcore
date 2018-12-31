@@ -54,7 +54,7 @@ public class HealthHeal : Ability
     /// </summary>
     protected override void Execute()
     {
-        if (Core.GetHealth()[(int)type] + 100 <= Core.GetMaxHealth()[(int)type]) // check for overheal
+        if (Core.GetHealth()[(int)type] < Core.GetMaxHealth()[(int)type]) 
         {
             switch (type)
             {

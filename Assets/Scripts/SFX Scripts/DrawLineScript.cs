@@ -15,7 +15,7 @@ public class DrawLineScript : MonoBehaviour {
     void Start()
     {
         // initialize instance fields
-        speed = Random.Range(10, 20);
+        speed = Random.Range(20, 25);
         startAngle = Random.Range(0, 2 * Mathf.PI);
         line = gameObject.GetComponent<LineRenderer>();
         line.startWidth = 0;
@@ -36,13 +36,13 @@ public class DrawLineScript : MonoBehaviour {
 
             if (line) // if line renderer isn't destroyed
             {
-                if (timer < 1) // time to project
+                if (timer < 0.5F) // time to project
                 {
                     DrawLine(speed * timer, 0, startAngle); // project out the line
                 }
                 else // time to shorten
                 {
-                    ShortenLine(speed * (timer - 1), 0, startAngle);
+                    ShortenLine(speed * (timer - 0.5F), 0, startAngle);
                 }
             }
         }  

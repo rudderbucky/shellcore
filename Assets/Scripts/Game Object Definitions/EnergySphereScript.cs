@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnergySphereScript : MonoBehaviour {
+
+    // TODO: make undraggable if already being dragged
+
     float timer;
     private void Update()
     {

@@ -57,6 +57,10 @@ public class Entity : MonoBehaviour {
     TerrainType terrain = TerrainType.Unset;
     public TerrainType Terrain { get { return terrain; } protected set { terrain = value; } }
 
+    public List<ShellPart> GetParts()
+    {
+        return parts;
+    }
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
     /// </summary>
@@ -441,6 +445,8 @@ public class Entity : MonoBehaviour {
         }
         currentHealth[1] -= amount * shellPiercingFactor; // remove the rest of the damage from the core
         if (currentHealth[1] < 0) currentHealth[1] = 0;
+        currentHealth[0] = currentHealth[0] > maxHealth[0] ? maxHealth[0] : currentHealth[0];
+        currentHealth[1] = currentHealth[1] > maxHealth[1] ? maxHealth[1] : currentHealth[1];
     }
 
     /// <summary>
@@ -449,5 +455,6 @@ public class Entity : MonoBehaviour {
     /// <param name="amount">The amount of energy to remove</param>
     public void TakeEnergy(float amount) {
         currentHealth[2] -= amount; // remove energy
+        currentHealth[2] = currentHealth[2] > maxHealth[2] ? maxHealth[2] : currentHealth[2];
     }
 }

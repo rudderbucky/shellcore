@@ -24,7 +24,7 @@ public class MissileAnimationScript : MonoBehaviour {
         iteration = 0;
         timer = 0;
         initialPos = Vector3.zero;
-        line.startWidth = line.endWidth = 0.2F;
+        line.startWidth = line.endWidth = 0.1F;
     }
 
     public void Initialize()

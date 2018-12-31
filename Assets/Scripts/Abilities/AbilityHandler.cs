@@ -119,14 +119,13 @@ public class AbilityHandler : MonoBehaviour {
         // this system relies on a conversion of index into a string to find a hotkey to activate
         // temporary workaround in place in line below, but ability type segmenting must be done eventually 
 
-        if (gleaming[index])
-        {
-            Gleam(index); // continue gleam if already gleaming
-        }
+
 
         if (!abilities[index] || abilities[index].IsDestroyed())
         {
             abilityBackgroundArray[index].GetComponent<Image>().color = new Color(.1f, .1f, .1f); // make the background dark
+            if(abilityGleamArray[index]) Destroy(abilityGleamArray[index].gameObject); // remove other sprites; destroying makes them irrelevant
+            if(abilityCDIndicatorArray[index]) Destroy(abilityCDIndicatorArray[index].gameObject);
             return;
         }
         if (clicked)
@@ -134,34 +133,37 @@ public class AbilityHandler : MonoBehaviour {
             abilities[index].Tick("activate");
         } else abilities[index].Tick((index+1) < 10 ? (index + 1).ToString() : ""); // Tick the ability
 
-
-        if (abilities[index].GetCDRemaining() != 0) // on cooldown
+        if (abilityGleamArray[index])
         {
-            gleamed[index] = false; // no longer gleamed
-            abilityCDIndicatorArray[index].fillAmount = abilities[index].GetCDRemaining() / abilities[index].GetCDDuration();
-            // adjust the cooldown indicator
-        }
-        else if (!gleaming[index] && !gleamed[index]) { // ability is off cooldown, check if it should gleam
-            //abilityGleamArray[index].fillAmount = 1;
-            abilityGleamArray[index].color = Color.white;
-            gleaming[index] = true; // start gleaming
-            gleamed[index] = true; // has already gleamed once now
-        }
-        /*if(abilities[index].IsDestroyed()) // Not available in the current "reduced" shell configuration
-        {
-            abilityBackgroundArray[index].GetComponent<Image>().color = new Color(.1f, .1f, .1f); // make the background dark
-        }*/
-        else if (abilities[index].GetActiveTimeRemaining() != 0) // active
-        {
-            abilityBackgroundArray[index].GetComponent<Image>().color = Color.green; // make the background green
-        } 
-        else if (core.GetHealth()[2] < abilities[index].GetEnergyCost()) // insufficient energy
-        {
-            abilityBackgroundArray[index].GetComponent<Image>().color = new Color(0, 0, 0.3F); // make the background dark blue
-        }
-        else if(abilityBackgroundArray[index].GetComponent<Image>().color != Color.white) // ability ready
-        {
-            abilityBackgroundArray[index].GetComponent<Image>().color = Color.white; // reset color to white
+            if (gleaming[index])
+            {
+                Gleam(index); // continue gleam if already gleaming
+            }
+            if (abilities[index].GetCDRemaining() != 0) // on cooldown
+            {
+                gleamed[index] = false; // no longer gleamed
+                abilityCDIndicatorArray[index].fillAmount = abilities[index].GetCDRemaining() / abilities[index].GetCDDuration();
+                // adjust the cooldown indicator
+            }
+            else if (!gleaming[index] && !gleamed[index])
+            { // ability is off cooldown, check if it should gleam
+              //abilityGleamArray[index].fillAmount = 1;
+                abilityGleamArray[index].color = Color.white;
+                gleaming[index] = true; // start gleaming
+                gleamed[index] = true; // has already gleamed once now
+            }
+            else if (abilities[index].GetActiveTimeRemaining() != 0) // active
+            {
+                abilityBackgroundArray[index].GetComponent<Image>().color = Color.green; // make the background green
+            }
+            else if (core.GetHealth()[2] < abilities[index].GetEnergyCost()) // insufficient energy
+            {
+                abilityBackgroundArray[index].GetComponent<Image>().color = new Color(0, 0, 0.3F); // make the background dark blue
+            }
+            else if (abilityBackgroundArray[index].GetComponent<Image>().color != Color.white) // ability ready
+            {
+                abilityBackgroundArray[index].GetComponent<Image>().color = Color.white; // reset color to white
+            }
         }
     }
 
