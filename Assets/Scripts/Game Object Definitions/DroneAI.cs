@@ -200,7 +200,7 @@ public class DroneAI : MonoBehaviour
         {
             foreach(Ability a in craft.GetAbilities())
             {
-                if(a is WeaponAbility)
+                if(a && a is WeaponAbility)
                 {
                     (a as WeaponAbility).Tick("");
                 }
