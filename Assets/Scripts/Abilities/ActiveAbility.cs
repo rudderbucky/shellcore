@@ -31,6 +31,12 @@ public abstract class ActiveAbility : Ability
         else return 0; // not active
     }
 
+    public override void SetDestroyed(bool input)
+    {
+        if (input && isActive) Deactivate();
+        base.SetDestroyed(input);
+    }
+
     /// <summary>
     /// Called when active time hits 0, used to rollback whatever change was done on the core
     /// </summary>

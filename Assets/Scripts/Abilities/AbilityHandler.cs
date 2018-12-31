@@ -118,14 +118,23 @@ public class AbilityHandler : MonoBehaviour {
         // TODO: Fix the problem regarding a bug with having more than 10 abilities, since after 9 the numbers are not valid inputs
         // this system relies on a conversion of index into a string to find a hotkey to activate
         // temporary workaround in place in line below, but ability type segmenting must be done eventually 
+
+        if (gleaming[index])
+        {
+            Gleam(index); // continue gleam if already gleaming
+        }
+
+        if (!abilities[index] || abilities[index].IsDestroyed())
+        {
+            abilityBackgroundArray[index].GetComponent<Image>().color = new Color(.1f, .1f, .1f); // make the background dark
+            return;
+        }
         if (clicked)
         {
             abilities[index].Tick("activate");
         } else abilities[index].Tick((index+1) < 10 ? (index + 1).ToString() : ""); // Tick the ability
 
-        if (gleaming[index]) {
-            Gleam(index); // continue gleam if already gleaming
-        }
+
         if (abilities[index].GetCDRemaining() != 0) // on cooldown
         {
             gleamed[index] = false; // no longer gleamed
@@ -138,10 +147,10 @@ public class AbilityHandler : MonoBehaviour {
             gleaming[index] = true; // start gleaming
             gleamed[index] = true; // has already gleamed once now
         }
-        if(abilities[index].IsDestroyed()) // Not available in the current "reduced" shell configuration
+        /*if(abilities[index].IsDestroyed()) // Not available in the current "reduced" shell configuration
         {
             abilityBackgroundArray[index].GetComponent<Image>().color = new Color(.1f, .1f, .1f); // make the background dark
-        }
+        }*/
         else if (abilities[index].GetActiveTimeRemaining() != 0) // active
         {
             abilityBackgroundArray[index].GetComponent<Image>().color = Color.green; // make the background green

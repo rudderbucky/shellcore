@@ -102,7 +102,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// Setter method for isDestroyed
     /// </summary>
     /// <param name="input">boolean to set to</param>
-    public void SetDestroyed(bool input)
+    virtual public void SetDestroyed(bool input)
     {
         isDestroyed = input; // set is destroyed
     }
