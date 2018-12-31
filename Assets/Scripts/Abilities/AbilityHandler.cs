@@ -185,7 +185,8 @@ public class AbilityHandler : MonoBehaviour {
         {
             for (int i = 0; i < core.GetAbilities().Length; i++)
             { // update all abilities
-                if (abilities[i] == null || core.GetIsDead()) break; // stop iterating as every ability has been updated already or entity is dead
+                if (abilities[i] == null || core.GetIsDead()) continue; 
+                // skip ability instead of break because further abilities may not be destroyed
                 var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
                 AbilityUpdate(i, button.clicked); // otherwise update the current update
                 button.clicked = false;

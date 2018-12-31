@@ -68,7 +68,6 @@ public class HealthHeal : Ability
                     Core.TakeDamage(-300, 0); // heal energy
                     break;
             }
-            Core.TakeDamage(-25, 0); // heal
             isOnCD = true; // set on cooldown
         }
         else {
