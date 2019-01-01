@@ -34,7 +34,10 @@ public class ReticleScript : MonoBehaviour {
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
-        if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Drone>() && targSys.GetTarget().GetComponent<Entity>().faction == craft.faction
+
+        // TODO: add an explicit owner check in IOwnable as well as GetOwner()
+
+        if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Drone>() && targSys.GetTarget().GetComponent<Drone>().GetOwner().Equals(craft)
             && (hits.Length == 0 || hits[0].transform != targSys.GetTarget()))
         {
             if (hits.Length == 0 ||  hits[0].transform != craft.transform) {

@@ -17,6 +17,11 @@ public class Drone : AirCraft, IOwnable {
 
     public Path path;
 
+    public IOwner GetOwner()
+    {
+        return owner;
+    }
+
     public void SetOwner(IOwner owner)
     {
         this.owner = owner;
