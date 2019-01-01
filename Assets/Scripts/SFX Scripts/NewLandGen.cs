@@ -140,14 +140,14 @@ public class NewLandGen : MonoBehaviour {
                     bool left = isValidTile(i, j - 1);
                     bool down = isValidTile(i + 1, j);
 
-                    //Debug.Log(right + "" + up + left + down + (i * blueprint.columns + j));
-                    if ((!right && !up) || (right && up && !isValidTile(i + 1, j + 1))) //check if the tile is a corner
+                    // Debug.Log(right + "" + up + left + down + " " + ((i - 1) * blueprint.columns + j + 1) + " " + isValidTile(i - 1, j + 1) + " " + (i * blueprint.columns + j));
+                    if ((!right && !up) || (right && up && !isValidTile(i - 1, j + 1))) //check if the tile is a corner
                         nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize + dToCenter) + offset));
-                    if ((!left && !up) || (left && up && !isValidTile(i - 1, j + 1)))
+                    if ((!left && !up) || (left && up && !isValidTile(i - 1, j - 1)))
                         nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize + dToCenter) + offset));
-                    if ((!left && !down) || (left && down && !isValidTile(i - 1, j - 1)))
+                    if ((!left && !down) || (left && down && !isValidTile(i + 1, j - 1)))
                         nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize - dToCenter) + offset));
-                    if ((!right && !down) || (right && down && !isValidTile(i + 1, j - 1)))
+                    if ((!right && !down) || (right && down && !isValidTile(i + 1, j + 1)))
                         nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize - dToCenter) + offset));
                 }
             }
@@ -188,9 +188,7 @@ public class NewLandGen : MonoBehaviour {
     private void OnDrawGizmosSelected() {
         Gizmos.color = new Color(0, 100, 150);
         if(nodes == null) return;
-        foreach(NavigationNode node in nodes) {
-            Gizmos.DrawCube(node.pos, new Vector3(0.3F, 0.3F));
-        }
+
         if (nodes != null)
         {
             for (int i = 0; i < nodes.Count; i++)
@@ -207,24 +205,6 @@ public class NewLandGen : MonoBehaviour {
     }
     bool isInLoS(Vector2 p1, Vector2 p2)
     {
-        Vector2 p12 = p1 / tileSize + Vector2.one * 0.5f;
-        Vector2 p22 = p2 / tileSize + Vector2.one * 0.5f;
-
-        float d = (p22 - p12).magnitude;
-
-        Vector2 step = (p22 - p12) / (d * 10f);
-        Vector2 point = p12;
-        float stepLength = step.magnitude;
-        //TODO: get normals, use them
-        for (float i = 0; i < d; i += stepLength)
-        {
-            if (!isValidTile(Mathf.FloorToInt(point.y), Mathf.FloorToInt(point.x)))
-            {
-                return false;
-            }
-            point += step;
-        }
-
         return true;
     }
 }
