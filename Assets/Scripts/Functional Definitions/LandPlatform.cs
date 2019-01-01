@@ -76,7 +76,8 @@ class LandPlatformEditor : Editor
                 EditorGUILayout.BeginHorizontal();
                 for (int j = 0; j < columns.intValue; j++)
                 {
-                    SerializedProperty type = tilemap.GetArrayElementAtIndex(i + rows.intValue * j);
+                    int index = i * (columns.intValue) + j;
+                    SerializedProperty type = tilemap.GetArrayElementAtIndex(index);
                     type.intValue = EditorGUILayout.IntField(type.intValue, GUILayout.Width(16), GUILayout.Height(16));
                 }
                 EditorGUILayout.EndHorizontal();

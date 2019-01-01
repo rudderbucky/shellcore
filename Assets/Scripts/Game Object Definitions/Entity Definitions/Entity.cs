@@ -241,7 +241,8 @@ public class Entity : MonoBehaviour {
             Destroy(tmp, 2); // destroy explosions after 2 seconds
         }
 
-        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
+        if(GameObject.Find("SectorManager")) 
+            GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
 
     }
 
