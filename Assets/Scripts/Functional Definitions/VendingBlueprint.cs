@@ -12,5 +12,6 @@ public class VendingBlueprint : ScriptableObject {
         public int cost;
     }
 
+    public int range;
     public List<Item> items;
 }

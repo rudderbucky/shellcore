@@ -81,14 +81,16 @@ public class ReticleScript : MonoBehaviour {
 
                     // TODO: get range (here 20) from blueprint
 
-                    else if(entityTarget as IVendor != null && entityTarget.faction == craft.faction 
-                        && (entityTarget.transform.position - craft.transform.position).magnitude < 20)
+                    else if(entityTarget as IVendor != null && entityTarget.faction == craft.faction)
                     {
                         VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
                         outpostUI.blueprint = (entityTarget as IVendor).GetVendingBlueprint();
-                        outpostUI.outpostPosition = entityTarget.transform.position;
-                        outpostUI.player = craft;
-                        outpostUI.openUI();
+                        if ((entityTarget.transform.position - craft.transform.position).magnitude < outpostUI.blueprint.range)
+                        {
+                            outpostUI.outpostPosition = entityTarget.transform.position;
+                            outpostUI.player = craft;
+                            outpostUI.openUI();
+                        }
                     }
                 }
 

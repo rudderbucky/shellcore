@@ -20,7 +20,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
     private bool opened;
     private GameObject[] buttons;
     private Text costInfo;
-    public int range = 20;
+    public int range;
 
     public void openUI()
     {
@@ -46,6 +46,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
         close.onClick.AddListener(closeUI);
         costInfo = background.transform.Find("Cost").GetComponent<Text>();
         costInfo.text = "";
+        range = blueprint.range;
 
         buttons = new GameObject[blueprint.items.Count];
         for (int i = 0; i < blueprint.items.Count; i++)
@@ -74,7 +75,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
     {
         if (opened)
         {
-            if((outpostPosition - player.transform.position).magnitude > 20)
+            if((outpostPosition - player.transform.position).magnitude > range)
             {
                 Debug.Log((outpostPosition - player.transform.position).magnitude + " " + range);
                 closeUI();
