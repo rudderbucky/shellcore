@@ -118,7 +118,7 @@ public class NewLandGen : MonoBehaviour {
     {
         Debug.Log("Building nodes...");
 
-        float dToCenter = tileSize / 2f; // node distance to center on one axis
+        float dToCenter = tileSize / 3f; // node distance to center on one axis
         nodes = new List<NavigationNode>();
         var offset = new Vector2 
         {
@@ -205,6 +205,32 @@ public class NewLandGen : MonoBehaviour {
     }
     bool isInLoS(Vector2 p1, Vector2 p2)
     {
+        var offset = new Vector2 
+        {
+            x = -tileSize * (blueprint.columns-1)/2,
+            y = +tileSize * (blueprint.rows-1)/2
+        };
+
+        Vector2 p12 = (p1 - offset) / tileSize + Vector2.one * 0.5f;
+        Vector2 p22 = (p2 - offset) / tileSize + Vector2.one * 0.5f;
+
+        float d = (p22 - p12).magnitude;
+
+        Vector2 step = (p22 - p12) / (d * 10f);
+        Vector2 point = p12;
+        float stepLength = step.magnitude;
+        //TODO: get normals, use them
+        for (float i = 0; i < d; i += stepLength)
+        {
+            Debug.Log(point);
+            if (!isValidTile(Mathf.FloorToInt(point.y), Mathf.FloorToInt(point.x)))
+            {
+                Debug.Log("failed" + p1 + " " + p2);
+                return false;
+            }
+            point += step;
+        }
+
         return true;
     }
 }
