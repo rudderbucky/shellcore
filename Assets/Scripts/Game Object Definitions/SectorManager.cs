@@ -193,7 +193,7 @@ public class SectorManager : MonoBehaviour
         }
 
         //land platforms
-        lpg.Init(current.platform);
+        lpg.BuildTiles(current.platform);
 
         //sector color
         background.setColor(current.backgroundColor);
