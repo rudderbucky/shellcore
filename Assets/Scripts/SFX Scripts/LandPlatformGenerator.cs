@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LandPlatformGenerator : MonoBehaviour
-{
+public class LandPlatformGenerator : MonoBehaviour {
+
+
+    // TODO: create nodes, create paths, create platform generation based on blueprint
     public static LandPlatformGenerator instance { private set; get; }
-
     public LandPlatform blueprint;
-
     private List<GameObject> tiles;
     private List<Rect> areas;
     private List<NavigationNode> nodes;
-
     private float tileSize;
 
+    private Vector2 offset;
     public static bool CheckOnGround(Vector3 position)
     {
         for (int i = 0; i < instance.tiles.Count; i++)
@@ -26,9 +26,63 @@ public class LandPlatformGenerator : MonoBehaviour
         return false;
     }
 
-    public static Vector3 getDirection(Vector3 position)
+    public void BuildTiles(LandPlatform platform) {
+
+        blueprint = platform;
+
+        if (!blueprint || blueprint.prefabs.Length <= 0)
+            return;
+        
+        if(tiles != null) Unload();
+
+        tileSize = blueprint.prefabs[0].GetComponent<SpriteRenderer>().bounds.size.x;
+
+        var cols = blueprint.columns;
+        var rows = blueprint.rows;
+        offset = new Vector2 
+        {
+            x = -tileSize * (cols-1)/2,
+            y = +tileSize * (rows-1)/2
+        };
+
+        tiles = new List<GameObject>();
+        areas = new List<Rect>();
+
+        for(int i = 0; i < blueprint.tilemap.Length; i++) {
+
+            var pos = new Vector3
+            {
+                x = offset.x + tileSize * (i % cols),
+                y = offset.y - tileSize * (i / cols),
+                z = 0
+            };
+
+            switch(blueprint.tilemap[i]) {
+                case -1:
+                    break;
+                default:
+                    var tile = Instantiate(blueprint.prefabs[blueprint.tilemap[i]], pos, Quaternion.identity);
+                    tiles.Add(tile);
+                    tile.transform.parent = transform;
+                    areas.Add(new Rect(pos.x, pos.y, tileSize, tileSize));
+                    break;
+            }
+        }
+        BuildNodes();
+    }
+
+    private void Awake()
     {
-        return Vector3.zero;
+        instance = this;
+    }
+
+    public void Unload()
+    {
+        for(int i = 0; i < tiles.Count; i++)
+        {
+            Destroy(tiles[i]);
+        }
+        tiles.Clear();
     }
 
     struct NavigationNode
@@ -69,65 +123,7 @@ public class LandPlatformGenerator : MonoBehaviour
             distances = new List<float>();
         }
     }
-
-    private void Awake()
-    {
-        instance = this;
-    }
-
-    public void Init(LandPlatform platform)
-    {
-        if(tiles != null)
-            unload();
-
-        tiles = new List<GameObject>();
-        areas = new List<Rect>();
-
-        blueprint = platform;
-
-        if (blueprint == null)
-            return;
-
-        if (blueprint.prefabs.Length > 0)
-        {
-            tileSize = 1f;
-            for(int i = 0; i < blueprint.prefabs.Length; i++)
-                if(blueprint.prefabs[i] != null)
-                {
-                    tileSize = blueprint.prefabs[0].GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-                    break;
-                }
-            for (int i = 0; i < blueprint.rows; i++)
-            {
-                for (int j = 0; j < blueprint.columns; j++)
-                {
-                    if (blueprint.tilemap[i + j * blueprint.rows] > -1 && blueprint.tilemap[i + j * blueprint.rows] < blueprint.prefabs.Length && blueprint.prefabs[blueprint.tilemap[i + j * blueprint.rows]] != null)
-                    {
-                        GameObject tile = Instantiate(blueprint.prefabs[blueprint.tilemap[i + j * blueprint.rows]], new Vector3(j * tileSize, i * tileSize, 0), Quaternion.identity);
-                        tiles.Add(tile);
-                        tile.transform.SetParent(transform);
-
-                        areas.Add(new Rect(j * tileSize, i * tileSize, tileSize, tileSize));
-                    }
-                }
-            }
-        }
-
-        buildNodes();
-
-        // TODO: Align to the center of the sector & offset position parameter in static functions accordingly
-    }
-
-    public void unload()
-    {
-        for(int i = 0; i < tiles.Count; i++)
-        {
-            Destroy(tiles[i]);
-        }
-        tiles.Clear();
-    }
-
-    void buildNodes()
+    void BuildNodes()
     {
         Debug.Log("Building nodes...");
 
@@ -137,25 +133,26 @@ public class LandPlatformGenerator : MonoBehaviour
         {
             for (int j = 0; j < blueprint.columns; j++)
             {
-                if (blueprint.tilemap[i + j * blueprint.rows] > -1)
+                if (blueprint.tilemap[i * blueprint.columns + j] > -1)
                 {
                     //create nodes
                     if (!isValidTile(i, j))
                         continue;
 
-                    bool right = isValidTile(i + 1, j);
-                    bool up = isValidTile(i, j + 1);
-                    bool left = isValidTile(i - 1, j);
-                    bool down = isValidTile(i, j - 1);
+                    bool right = isValidTile(i, j + 1);
+                    bool up = isValidTile(i - 1, j);
+                    bool left = isValidTile(i, j - 1);
+                    bool down = isValidTile(i + 1, j);
 
-                    if ((!right && !up) || (right && up && !isValidTile(i + 1, j + 1))) //check if the tile is a corner
-                        nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, i * tileSize + dToCenter)));
-                    if ((!left && !up) || (left && up && !isValidTile(i - 1, j + 1)))
-                        nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, i * tileSize - dToCenter)));
-                    if ((!left && !down) || (left && down && !isValidTile(i - 1, j - 1)))
-                        nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, i * tileSize - dToCenter)));
-                    if ((!right && !down) || (right && down && !isValidTile(i + 1, j - 1)))
-                        nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, i * tileSize + dToCenter)));
+                    // Debug.Log(right + "" + up + left + down + " " + ((i - 1) * blueprint.columns + j + 1) + " " + isValidTile(i - 1, j + 1) + " " + (i * blueprint.columns + j));
+                    if ((!right && !up) || (right && up && !isValidTile(i - 1, j + 1))) //check if the tile is a corner
+                        nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize + dToCenter) + offset));
+                    if ((!left && !up) || (left && up && !isValidTile(i - 1, j - 1)))
+                        nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize + dToCenter) + offset));
+                    if ((!left && !down) || (left && down && !isValidTile(i + 1, j - 1)))
+                        nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize - dToCenter) + offset));
+                    if ((!right && !down) || (right && down && !isValidTile(i + 1, j + 1)))
+                        nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize - dToCenter) + offset));
                 }
             }
         }
@@ -163,7 +160,7 @@ public class LandPlatformGenerator : MonoBehaviour
         int debugCount = 0;
 
         //connect nodes
-        Debug.Log("Connecting nodes...");
+         Debug.Log("Connecting nodes...");
         for (int i = 0; i < nodes.Count; i++)
         {
             for (int j = i + 1; j < nodes.Count; j++)
@@ -185,30 +182,11 @@ public class LandPlatformGenerator : MonoBehaviour
 
     bool isValidTile(int x, int y)
     {
-        return x < blueprint.rows && y < blueprint.columns && x >= 0 && y >= 0 && blueprint.tilemap[x + y * blueprint.rows] > -1 && blueprint.tilemap[x + y * blueprint.rows] < blueprint.prefabs.Length && blueprint.prefabs[blueprint.tilemap[x + y * blueprint.rows]] != null;
-    }
-
-    bool isInLoS(Vector2 p1, Vector2 p2)
-    {
-        Vector2 p12 = p1 / tileSize + Vector2.one * 0.5f;
-        Vector2 p22 = p2 / tileSize + Vector2.one * 0.5f;
-
-        float d = (p22 - p12).magnitude;
-
-        Vector2 step = (p22 - p12) / (d * 10f);
-        Vector2 point = p12;
-        float stepLength = step.magnitude;
-        //TODO: get normals, use them
-        for (float i = 0; i < d; i += stepLength)
-        {
-            if (!isValidTile(Mathf.FloorToInt(point.y), Mathf.FloorToInt(point.x)))
-            {
-                return false;
-            }
-            point += step;
-        }
-
-        return true;
+        bool limitCheck = x < blueprint.rows && y < blueprint.columns && x >= 0 && y >= 0;
+        bool selfIsTile = limitCheck && blueprint.tilemap[x * blueprint.columns + y] > -1;
+        bool selfIsWithinLengthLimit = selfIsTile && blueprint.tilemap[x * blueprint.columns + y] < blueprint.prefabs.Length;
+        bool final = selfIsWithinLengthLimit && blueprint.prefabs[blueprint.tilemap[x * blueprint.columns + y]] != null;
+        return final;
     }
 
     private void OnDrawGizmosSelected()
@@ -225,14 +203,14 @@ public class LandPlatformGenerator : MonoBehaviour
         {
             for (int i = 0; i < areas.Count; i++)
             {
-                if (new Rect(-0.5f * tileSize, -0.5f * tileSize, blueprint.columns * tileSize, blueprint.rows * tileSize).Contains(mPos))
+                if (new Rect(-0.5f * tileSize + offset.x, -0.5f * tileSize - offset.y, blueprint.columns * tileSize, blueprint.rows * tileSize).Contains(mPos))
                 {
-                    int x = Mathf.FloorToInt(mPos.y / tileSize + 0.5f);
-                    int y = Mathf.FloorToInt(mPos.x / tileSize + 0.5f);
+                    int x = -Mathf.FloorToInt((mPos.y - offset.y )/ tileSize + 0.5f);
+                    int y = Mathf.FloorToInt((mPos.x - offset.x) / tileSize + 0.5f);
                     if (isValidTile(x, y))
                     {
                         Gizmos.color = new Color(0, 100, 150);
-                        Gizmos.DrawCube(new Vector3(y * tileSize, x * tileSize, 0), new Vector3(tileSize, tileSize, tileSize));
+                        Gizmos.DrawCube(new Vector3(y * tileSize, -x * tileSize, 0) + (Vector3)offset, new Vector3(tileSize, tileSize, tileSize));
                     }
                 }
             }
@@ -252,6 +230,38 @@ public class LandPlatformGenerator : MonoBehaviour
             }
         }
     }
+    bool isInLoS(Vector2 p1, Vector2 p2)
+    {
+        Vector2 p12 = (p1 - offset) / tileSize; //+ Vector2.one * 0.5f;
+        p12.x += 0.5f;
+        p12.y = -p12.y + 0.5f;
+        Vector2 p22 = (p2 - offset) / tileSize; //+ Vector2.one * 0.5f;
+        p22.x += 0.5f;
+        p22.y = -p22.y + 0.5f;
+        //tmp = p22.x;
+        //p22.x = p22.y;
+        //p22.y = tmp;
+        float d = (p22 - p12).magnitude;
+
+        Vector2 step = (p22 - p12) / (d * 10f);
+        Vector2 point = p12;
+        float stepLength = step.magnitude;
+        //TODO: get normals, use them
+        //Debug.Log(p12 + " " + p22 + step);
+        for (float i = 0; i < d; i += stepLength)
+        {
+            //Debug.Log((int)checkPoint.y + " " + (int)checkPoint.x);
+            if (!isValidTile(Mathf.FloorToInt(point.y), Mathf.FloorToInt(point.x)))
+            {
+                //Debug.Log("failed" + p1 + " " + p2);
+                return false;
+            }
+            point += step;
+        }
+
+        //Debug.Log("passed" + p1 + " " + p2);
+        return true;
+    }
 
     private class PathfindNode
     {
@@ -266,7 +276,6 @@ public class LandPlatformGenerator : MonoBehaviour
             d = distance;
         }
     }
-
     public static Vector2[] pathfind(Vector2 startPos, Vector2 targetPos)
     {
         if (instance.blueprint == null)
