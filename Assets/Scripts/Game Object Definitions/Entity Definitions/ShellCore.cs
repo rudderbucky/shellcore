@@ -97,7 +97,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected override void Respawn()
     {
-        if (!(carrier as Entity).GetIsDead() || this as PlayerCore)
+        if ((carrier != null && !(carrier as Entity).GetIsDead()) || this as PlayerCore)
         {
             base.Respawn();
         }

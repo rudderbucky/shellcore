@@ -8,6 +8,7 @@ using UnityEngine.Rendering;
 /// </summary>
 public class Entity : MonoBehaviour {
 
+    public ShellPart shell;
     protected static int maxLayer = 1; // the maximum sorting group layer of all entities
     protected SortingGroup group;
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
@@ -57,11 +58,6 @@ public class Entity : MonoBehaviour {
     TerrainType terrain = TerrainType.Unset;
     public TerrainType Terrain { get { return terrain; } protected set { terrain = value; } }
 
-    public List<ShellPart> GetParts()
-    {
-        return parts;
-    }
-
     // TODO: Respawn animation
 
     /// <summary>
@@ -97,6 +93,7 @@ public class Entity : MonoBehaviour {
             else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_shell"); // set to default shellcore sprite
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
+            shell = part;
         }
         if (!explosionCirclePrefab)
         {
@@ -196,11 +193,12 @@ public class Entity : MonoBehaviour {
                 parts.Add(obj.GetComponent<ShellPart>());
             }
         }
-        Transform shellSprite = transform.Find("Shell Sprite");
+        Transform shellSprite = shell.transform;
         if(shellSprite)
         {
             parts.Add(shellSprite.GetComponent<ShellPart>());
         }
+        ConnectedTreeCreator();
 
         currentHealth[0] = maxHealth[0];
         currentHealth[1] = maxHealth[1];
@@ -227,7 +225,7 @@ public class Entity : MonoBehaviour {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            parts[i].SetCollectible((parts[i].name != "Shell Sprite") && Random.Range(0F,5) > 2.5F && !(this as PlayerCore));
+            parts[i].SetCollectible((parts[i] != shell) && Random.Range(0F,5) > 2.5F && !(this as PlayerCore));
             parts[i].Detach();
         }
 
@@ -330,7 +328,7 @@ public class Entity : MonoBehaviour {
             {
                 GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
             }
-            if (deathTimer >= 2)
+            if (deathTimer >= 5F)
             {
                 PostDeath();
             }
@@ -362,7 +360,8 @@ public class Entity : MonoBehaviour {
         {
             part.GetComponent<Ability>().SetDestroyed(true);
         }
-
+        entityBody.mass -= part.partMass;
+        Domino(part);
         part.Detach();
         parts.Remove(part);
     }
@@ -460,5 +459,48 @@ public class Entity : MonoBehaviour {
     public void TakeEnergy(float amount) {
         currentHealth[2] -= amount; // remove energy
         currentHealth[2] = currentHealth[2] > maxHealth[2] ? maxHealth[2] : currentHealth[2];
+    }
+
+    private void ConnectedTreeCreator() {
+        foreach(ShellPart part in parts) 
+        {
+            if(part == shell) continue;
+
+            // attach all core-connected parts to the shell as well
+            if(part.GetComponent<SpriteRenderer>().bounds.Intersects(GetComponent<SpriteRenderer>().bounds)) {
+                part.parent = shell;
+                shell.children.Add(part);
+            }
+        }
+        ConnectedTreeHelper(shell);
+    }
+
+    private void ConnectedTreeHelper(ShellPart parent) {
+        foreach(ShellPart part in parts) 
+        {
+            if(part.parent != null || part == parent || part == shell) continue;
+            if(part.IsAdjacent(parent)) {
+                part.parent = parent;
+                parent.children.Add(part);
+            }
+        }
+        foreach(ShellPart part in parent.children) {
+            ConnectedTreeHelper(part);
+        }
+    }
+    private void DominoHelper(ShellPart parent) {
+        foreach(ShellPart part in parent.children.ToArray()) {
+            if(part) 
+            {
+                RemovePart(part);
+            }
+        }
+    }
+
+    private void Domino(ShellPart part) {
+        if(part.parent) {
+            part.parent.children.Remove(part);
+        }
+        DominoHelper(part);
     }
 }
