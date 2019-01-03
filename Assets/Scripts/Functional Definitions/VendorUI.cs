@@ -77,7 +77,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
         {
             if((outpostPosition - player.transform.position).magnitude > range)
             {
-                Debug.Log((outpostPosition - player.transform.position).magnitude + " " + range);
+                Debug.Log("Player moved out of the vendor range");
                 closeUI();
             }
             for (int i = 0; i < blueprint.items.Count; i++)

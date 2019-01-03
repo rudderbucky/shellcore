@@ -13,6 +13,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     private List<NavigationNode> nodes;
 
     private Dictionary<NavigationNode, int> areaIDByNode;
+    private Dictionary<GameObject, int> areaIDByTile;
     private float tileSize;
     private Color color;
     private Vector2 offset;
@@ -135,6 +136,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         float dToCenter = tileSize / 3f; // node distance to center on one axis
         nodes = new List<NavigationNode>();
         areaIDByNode = new Dictionary<NavigationNode, int>();
+        areaIDByTile = new Dictionary<GameObject, int>();
         for (int i = 0; i < blueprint.rows; i++)
         {
             for (int j = 0; j < blueprint.columns; j++)
@@ -190,8 +192,22 @@ public class LandPlatformGenerator : MonoBehaviour {
                 }
             }
         }
-
-        Debug.Log("Done! Nodes: " + nodes.Count + " Connections: " + debugCount);
+        foreach(GameObject tile in tiles) {
+            if(areaIDByTile.ContainsKey(tile)) continue;
+            foreach(NavigationNode node in nodes) {
+                if(isInLoS(tile.transform.position, node.pos)) {
+                    areaIDByTile.Add(tile, areaIDByNode[node]);
+                    break;
+                }
+            }
+        }
+        List<int> ids = new List<int>();
+        foreach(int ID in areaIDByTile.Values) {
+            if(!ids.Contains(ID)) {
+                ids.Add(ID);
+            }
+        }
+        Debug.Log("Done! Nodes: " + nodes.Count + " Connections: " + debugCount + " Landmasses: " + ids.Count);
     }
 
     bool isValidTile(int x, int y)
@@ -314,47 +330,51 @@ public class LandPlatformGenerator : MonoBehaviour {
             GameObject closestTile = null;
             float distance = float.MaxValue;
             foreach(GameObject tile in tiles) {
-                var dist = ((Vector2)tile.transform.position - targetPos).magnitude;
-                if(dist < distance) {
-                    closestTile = tile;
-                    distance = dist;
-                } else if(dist - distance < 0.01F) {
-                    var mag1 = (closestTile.transform.position - (Vector3)startPos).magnitude;
-                    var mag2 = (tile.transform.position - (Vector3)startPos).magnitude;
-                    if(mag1 > mag2) {
+                    var dist = ((Vector2)tile.transform.position - targetPos).magnitude;
+                    if(dist < distance) {
                         closestTile = tile;
                         distance = dist;
+                    } else if(dist - distance < 0.01F) {
+                        var mag1 = (closestTile.transform.position - (Vector3)startPos).magnitude;
+                        var mag2 = (tile.transform.position - (Vector3)startPos).magnitude;
+                        if(mag1 - mag2 > 0.01F) {
+                            closestTile = tile;
+                            distance = dist;
+                        }
                     }
-                }
             }
             if(closestTile != null) {
                 Vector3 dist = targetPos;
+                Vector3 tilePos = closestTile.transform.position;
                 Vector3 offset = Vector3.zero;
-                if((int)(dist.x / (instance.tileSize / 2)) == 0) {
-                    offset.x = closestTile.transform.position.x > 0 ? -instance.tileSize / 3F : instance.tileSize / 3F;
-                    dist.x = 0;
+                bool[] resetDist = new bool[2];
+                if((int)(dist.x - tilePos.x) % (int)(instance.tileSize / 2) == 0) {
+                    offset.y = tilePos.y > dist.y  ? -instance.tileSize / 3F : instance.tileSize / 3F;
+                    resetDist[0] = true;
                 }
-                if((int)(dist.y / (instance.tileSize / 2)) == 0) {
-                    offset.y = closestTile.transform.position.y > 0 ? -instance.tileSize / 3F : instance.tileSize / 3F;
-                    dist.y = 0;
+                if((int)(dist.y - tilePos.y) % (int)(instance.tileSize / 2) == 0) {
+                    offset.x = tilePos.x > dist.x  ? -instance.tileSize / 3F : instance.tileSize / 3F;
+                    resetDist[1] = true;
                 }
-
-                targetPos = offset + closestTile.transform.position + dist.normalized * instance.tileSize / 3F;
-                end = getNearestNode(closestTile.transform.position);
+                for(int i = 0; i < 2; i++) {
+                    if(resetDist[i]) dist[i] = 0;
+                }
+                targetPos = offset + tilePos + dist.normalized * instance.tileSize / 3F;
+                end = getNearestNode(tilePos, true);
             }
-            else return null;
+            else{
+                return null;
+            }
         }
-
-        if (Mathf.Abs((startPos - targetPos).magnitude) < 0.01F)
+        if (Mathf.Abs((startPos - targetPos).magnitude) < 0.01F) {
             return null;
-
+        }
         if (instance.isInLoS(startPos, targetPos)) {
             return new Vector2[] {targetPos};
         } else if (start == end) {
             return new Vector2[] {end.pos};
         }
         
-
         while (openList.Count > 0)
         {
             // Get next node with shortest total distance
@@ -422,14 +442,8 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     public GameObject[] GetTilesByID(int ID) {
         List<GameObject> tilesToReturn = new List<GameObject>();
-        Bounds bound = new Bounds();
-        foreach(NavigationNode node in nodes) {
-            if(areaIDByNode[node] == ID) {
-                bound.Encapsulate(node.pos);
-            }
-        }
-        foreach(GameObject tile in tiles) {
-            if(bound.Contains(tile.transform.position)) {
+        foreach(GameObject tile in areaIDByTile.Keys) {
+            if(areaIDByTile[tile] == ID) {
                 tilesToReturn.Add(tile);
             }
         }
