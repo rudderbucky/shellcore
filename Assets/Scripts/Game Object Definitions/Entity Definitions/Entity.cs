@@ -61,6 +61,9 @@ public class Entity : MonoBehaviour {
     {
         return parts;
     }
+
+    // TODO: Respawn animation
+
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
     /// </summary>

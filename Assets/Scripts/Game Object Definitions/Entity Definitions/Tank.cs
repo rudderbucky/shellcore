@@ -77,7 +77,10 @@ public class Tank : GroundCraft, IOwnable
                 {
                     hasPath = false;
                 }
-            } else MoveCraft(direction.normalized);
+            } else if(index > 0 || direction.magnitude > 2F) 
+            {
+                MoveCraft(direction.normalized);
+            } else MoveCraft(direction.normalized * 0.5F);
         }
         else
         {

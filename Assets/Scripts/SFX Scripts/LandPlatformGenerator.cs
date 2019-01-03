@@ -67,7 +67,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                     break;
                 default:
                     var tile = Instantiate(blueprint.prefabs[blueprint.tilemap[i]], pos, Quaternion.identity);
-                    if(color != null) tile.GetComponent<SpriteRenderer>().color = color;
+                    tile.GetComponent<SpriteRenderer>().color = color;
                     tiles.Add(tile);
                     tile.transform.parent = transform;
                     areas.Add(new Rect(pos.x, pos.y, tileSize, tileSize));
@@ -203,6 +203,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         return final;
     }
 
+    #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         if (blueprint == null)
@@ -245,6 +246,7 @@ public class LandPlatformGenerator : MonoBehaviour {
             }
         }
     }
+    #endif
     bool isInLoS(Vector2 p1, Vector2 p2)
     {
         Vector2 p12 = (p1 - offset) / tileSize; //+ Vector2.one * 0.5f;
@@ -297,12 +299,6 @@ public class LandPlatformGenerator : MonoBehaviour {
         if (instance.nodes == null)
             return null;
 
-        if (startPos == targetPos)
-            return null;
-
-        if (instance.isInLoS(startPos, targetPos)) {
-            return new Vector2[] {targetPos};
-        }
         //find node closest to start and end positions
         NavigationNode start = getNearestNode(startPos, true);
         NavigationNode end = getNearestNode(targetPos, true);
@@ -313,6 +309,52 @@ public class LandPlatformGenerator : MonoBehaviour {
         //TODO: try adding all nodes in LoS to open list
         openList.Add(new PathfindNode(start, null, 0f));
         
+        if(instance.areaIDByNode[start] != instance.areaIDByNode[end]) {
+            GameObject[] tiles = instance.GetTilesByID(instance.areaIDByNode[start]);
+            GameObject closestTile = null;
+            float distance = float.MaxValue;
+            foreach(GameObject tile in tiles) {
+                var dist = ((Vector2)tile.transform.position - targetPos).magnitude;
+                if(dist < distance) {
+                    closestTile = tile;
+                    distance = dist;
+                } else if(dist - distance < 0.01F) {
+                    var mag1 = (closestTile.transform.position - (Vector3)startPos).magnitude;
+                    var mag2 = (tile.transform.position - (Vector3)startPos).magnitude;
+                    if(mag1 > mag2) {
+                        closestTile = tile;
+                        distance = dist;
+                    }
+                }
+            }
+            if(closestTile != null) {
+                Vector3 dist = targetPos;
+                Vector3 offset = Vector3.zero;
+                if((int)(dist.x / (instance.tileSize / 2)) == 0) {
+                    offset.x = closestTile.transform.position.x > 0 ? -instance.tileSize / 3F : instance.tileSize / 3F;
+                    dist.x = 0;
+                }
+                if((int)(dist.y / (instance.tileSize / 2)) == 0) {
+                    offset.y = closestTile.transform.position.y > 0 ? -instance.tileSize / 3F : instance.tileSize / 3F;
+                    dist.y = 0;
+                }
+
+                targetPos = offset + closestTile.transform.position + dist.normalized * instance.tileSize / 3F;
+                end = getNearestNode(closestTile.transform.position);
+            }
+            else return null;
+        }
+
+        if (Mathf.Abs((startPos - targetPos).magnitude) < 0.01F)
+            return null;
+
+        if (instance.isInLoS(startPos, targetPos)) {
+            return new Vector2[] {targetPos};
+        } else if (start == end) {
+            return new Vector2[] {end.pos};
+        }
+        
+
         while (openList.Count > 0)
         {
             // Get next node with shortest total distance
@@ -376,6 +418,22 @@ public class LandPlatformGenerator : MonoBehaviour {
             closedList.Add(current);
         }
         return null;
+    }
+
+    public GameObject[] GetTilesByID(int ID) {
+        List<GameObject> tilesToReturn = new List<GameObject>();
+        Bounds bound = new Bounds();
+        foreach(NavigationNode node in nodes) {
+            if(areaIDByNode[node] == ID) {
+                bound.Encapsulate(node.pos);
+            }
+        }
+        foreach(GameObject tile in tiles) {
+            if(bound.Contains(tile.transform.position)) {
+                tilesToReturn.Add(tile);
+            }
+        }
+        return tilesToReturn.ToArray();
     }
 
     static NavigationNode getNearestNode(Vector2 pos, bool los = false)
