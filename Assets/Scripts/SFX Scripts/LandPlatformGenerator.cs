@@ -11,8 +11,10 @@ public class LandPlatformGenerator : MonoBehaviour {
     private List<GameObject> tiles;
     private List<Rect> areas;
     private List<NavigationNode> nodes;
-    private float tileSize;
 
+    private Dictionary<NavigationNode, int> areaIDByNode;
+    private float tileSize;
+    private Color color;
     private Vector2 offset;
     public static bool CheckOnGround(Vector3 position)
     {
@@ -26,6 +28,9 @@ public class LandPlatformGenerator : MonoBehaviour {
         return false;
     }
 
+    public void SetColor(Color color) {
+        this.color = color;
+    }
     public void BuildTiles(LandPlatform platform) {
 
         blueprint = platform;
@@ -62,6 +67,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                     break;
                 default:
                     var tile = Instantiate(blueprint.prefabs[blueprint.tilemap[i]], pos, Quaternion.identity);
+                    if(color != null) tile.GetComponent<SpriteRenderer>().color = color;
                     tiles.Add(tile);
                     tile.transform.parent = transform;
                     areas.Add(new Rect(pos.x, pos.y, tileSize, tileSize));
@@ -115,7 +121,6 @@ public class LandPlatformGenerator : MonoBehaviour {
         public Vector2 pos;
         public List<NavigationNode> neighbours;
         public List<float> distances;
-
         public NavigationNode(Vector2 position)
         {
             pos = position;
@@ -129,6 +134,7 @@ public class LandPlatformGenerator : MonoBehaviour {
 
         float dToCenter = tileSize / 3f; // node distance to center on one axis
         nodes = new List<NavigationNode>();
+        areaIDByNode = new Dictionary<NavigationNode, int>();
         for (int i = 0; i < blueprint.rows; i++)
         {
             for (int j = 0; j < blueprint.columns; j++)
@@ -161,12 +167,20 @@ public class LandPlatformGenerator : MonoBehaviour {
 
         //connect nodes
          Debug.Log("Connecting nodes...");
+         int currentAreaID = 0;
         for (int i = 0; i < nodes.Count; i++)
         {
+            if(!areaIDByNode.ContainsKey(nodes[i])) {
+                areaIDByNode.Add(nodes[i], currentAreaID++);
+            }
             for (int j = i + 1; j < nodes.Count; j++)
             {
                 if (isInLoS(nodes[i].pos, nodes[j].pos))
                 {
+                    if(!areaIDByNode.ContainsKey(nodes[j])) 
+                    {
+                        areaIDByNode.Add(nodes[j], areaIDByNode[nodes[i]]);
+                    }
                     nodes[i].neighbours.Add(nodes[j]);
                     nodes[j].neighbours.Add(nodes[i]);
                     float d = (nodes[i].pos - nodes[j].pos).magnitude;
@@ -210,7 +224,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                     if (isValidTile(x, y))
                     {
                         Gizmos.color = new Color(0, 100, 150);
-                        Gizmos.DrawCube(new Vector3(y * tileSize, -x * tileSize, 0) + (Vector3)offset, new Vector3(tileSize, tileSize, tileSize));
+                        Gizmos.DrawCube(new Vector3(y * tileSize, -x * tileSize, 0) + (Vector3)offset, new Vector3(tileSize, tileSize, 0));
                     }
                 }
             }
@@ -222,6 +236,7 @@ public class LandPlatformGenerator : MonoBehaviour {
             {
                 Gizmos.color = new Color(0, 100, 255);
                 Gizmos.DrawSphere(nodes[i].pos, 0.2f);
+                UnityEditor.Handles.Label(nodes[i].pos + Vector2.right, nodes[i].pos.ToString());
                 Gizmos.color = new Color(200, 0, 0, 100);
                 for (int j = 0; j < nodes[i].neighbours.Count; j++)
                 {
@@ -238,9 +253,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         Vector2 p22 = (p2 - offset) / tileSize; //+ Vector2.one * 0.5f;
         p22.x += 0.5f;
         p22.y = -p22.y + 0.5f;
-        //tmp = p22.x;
-        //p22.x = p22.y;
-        //p22.y = tmp;
+
         float d = (p22 - p12).magnitude;
 
         Vector2 step = (p22 - p12) / (d * 10f);
@@ -284,19 +297,22 @@ public class LandPlatformGenerator : MonoBehaviour {
         if (instance.nodes == null)
             return null;
 
+        if (startPos == targetPos)
+            return null;
+
+        if (instance.isInLoS(startPos, targetPos)) {
+            return new Vector2[] {targetPos};
+        }
         //find node closest to start and end positions
         NavigationNode start = getNearestNode(startPos, true);
-        NavigationNode end = getNearestNode(targetPos);
-
-        if (start == end)
-            return null;
+        NavigationNode end = getNearestNode(targetPos, true);
 
         var openList = new List<PathfindNode>();
         var closedList = new List<PathfindNode>();
 
         //TODO: try adding all nodes in LoS to open list
         openList.Add(new PathfindNode(start, null, 0f));
-
+        
         while (openList.Count > 0)
         {
             // Get next node with shortest total distance
@@ -322,12 +338,20 @@ public class LandPlatformGenerator : MonoBehaviour {
                     path.Add(node.node.pos);
                     node = node.parent;
                 }
-                while (node.parent != null);
+                while (node != null && node.parent != null);
 
                 // Try skipping the first node
                 if(!instance.isInLoS(path[path.Count - 1], startPos))
                     path.Add(node.node.pos);
 
+                 if(instance.isInLoS(end.pos, targetPos)) 
+                {
+                    // if the second last path is in the line of sight you can skip the last one to the target
+                    if(path.Count > 1 && instance.isInLoS(path[1], targetPos)) {
+                        path[0] = targetPos;
+                    } else // otherwise add the target position as the last destination
+                        path.Insert(0, targetPos);
+                }
                 return path.ToArray();
             }
 

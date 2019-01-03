@@ -65,20 +65,19 @@ public class Tank : GroundCraft, IOwnable
     protected virtual void drive()
     {
         isImmobile = !isOnGround;
-
         if (hasPath)
         {
             Vector2 direction = path[index] - (Vector2)transform.position;
-            MoveCraft(direction.normalized);
 
-            if (direction.magnitude < 0.1f)
+            if (direction.magnitude < 0.5f)
             {
-                index--;
+                //if(index > 0)
+                    index--;
                 if (index < 0)
                 {
                     hasPath = false;
                 }
-            }
+            } else MoveCraft(direction.normalized);
         }
         else
         {

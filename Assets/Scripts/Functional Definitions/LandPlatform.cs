@@ -56,6 +56,8 @@ class LandPlatformEditor : Editor
 
         EditorGUILayout.PrefixLabel("Rows: ");
         rows.intValue = EditorGUILayout.IntField(rows.intValue);
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel("Columns: ");
         columns.intValue = EditorGUILayout.IntField(columns.intValue);
         if (rows.intValue <= 0)

@@ -31,7 +31,7 @@ public class EnergySphereScript : MonoBehaviour {
     {
         if (collision.GetComponent<IHarvester>() != null)
         {
-            collision.GetComponent<IHarvester>().AddPower(20);
+            collision.GetComponent<IHarvester>().AddPower(1000);
             Destroy(gameObject);
         }
     }

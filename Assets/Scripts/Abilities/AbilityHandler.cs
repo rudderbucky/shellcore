@@ -152,13 +152,14 @@ public class AbilityHandler : MonoBehaviour {
                 gleaming[index] = true; // start gleaming
                 gleamed[index] = true; // has already gleamed once now
             }
+
+            if (core.GetHealth()[2] < abilities[index].GetEnergyCost()) // insufficient energy
+            {
+                abilityBackgroundArray[index].GetComponent<Image>().color = new Color(0, 0, 0.3F); // make the background dark blue
+            }
             else if (abilities[index].GetActiveTimeRemaining() != 0) // active
             {
                 abilityBackgroundArray[index].GetComponent<Image>().color = Color.green; // make the background green
-            }
-            else if (core.GetHealth()[2] < abilities[index].GetEnergyCost()) // insufficient energy
-            {
-                abilityBackgroundArray[index].GetComponent<Image>().color = new Color(0, 0, 0.3F); // make the background dark blue
             }
             else if (abilityBackgroundArray[index].GetComponent<Image>().color != Color.white) // ability ready
             {
