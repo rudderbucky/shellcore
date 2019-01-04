@@ -17,10 +17,15 @@ public class ResourceManager : MonoBehaviour
         public Object obj;
     }
 
+    #if UNITY_EDITOR
+    public List<Resource> segmentedBuiltIns;
+    
+
     [HideInInspector]
     public string fieldID;
     [HideInInspector]
     public Object newObject;
+    #endif
     public List<Resource> builtInResources;
 
     Dictionary<string, Object> resources;
@@ -93,6 +98,44 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    #if UNITY_EDITOR
+    public void GenerateSegmentedList(ResourceManagerEditor.ResourcesByType type) {
+        segmentedBuiltIns = new List<Resource>();
+        switch(type) {
+            case ResourceManagerEditor.ResourcesByType.entity:
+                foreach(Resource res in builtInResources) {
+                    if(res.obj as EntityBlueprint) {
+                        segmentedBuiltIns.Add(res);
+                    }
+                }
+                break;
+            case ResourceManagerEditor.ResourcesByType.part:
+                foreach(Resource res in builtInResources) {
+                    if(res.obj as PartBlueprint) {
+                        segmentedBuiltIns.Add(res);
+                    }
+                }
+                break;
+            case ResourceManagerEditor.ResourcesByType.sprite:
+                foreach(Resource res in builtInResources) {
+                    if(res.obj as Sprite) {
+                        segmentedBuiltIns.Add(res);
+                    }
+                }
+                break;
+            case ResourceManagerEditor.ResourcesByType.prefab:
+                foreach(Resource res in builtInResources) {
+                    if(res.obj as GameObject) {
+                        segmentedBuiltIns.Add(res);
+                    }
+                }
+                break;
+            case ResourceManagerEditor.ResourcesByType.all:
+                segmentedBuiltIns = builtInResources;
+                break;
+        }
+    }
+    #endif
     public static T GetAsset<T>(string ID) where T : Object
     {
         return Instance.getAsset<T>(ID);
@@ -116,7 +159,16 @@ public class ResourceManager : MonoBehaviour
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(ResourceManager))]
-    class ResourceManagerEditor : Editor {
+    public class ResourceManagerEditor : Editor {
+        
+            public enum ResourcesByType {
+                part,
+                sprite,
+                entity,
+                prefab,
+                all,
+            }
+
             enum EditorState {
                 failedToFind,
                 successDelete,
@@ -126,16 +178,103 @@ public class ResourceManager : MonoBehaviour
                 successModify
             }
             EditorState state = EditorState.None;
+            ResourcesByType displayType = ResourcesByType.all;
             SerializedProperty IDField;
             SerializedProperty ObjectField;
+            SerializedProperty segmentedBuiltIns;
             ResourceManager manager;
+
+            
         private void OnEnable() {
             manager = (ResourceManager)target;
+            manager.GenerateSegmentedList(ResourcesByType.all);
+            segmentedBuiltIns = serializedObject.FindProperty("segmentedBuiltIns");
             IDField = serializedObject.FindProperty("fieldID");
             ObjectField = serializedObject.FindProperty("newObject");
         }
+
         public override void OnInspectorGUI() {
             serializedObject.Update();
+            var oldDisplayType = displayType;
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Resource Manager");
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("The #1 choice for ALL ShellCore asset injections!");
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            manager.fieldID = EditorGUILayout.TextField("Resource ID:", IDField.stringValue) as string;
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            manager.newObject = EditorGUILayout.ObjectField("Resource Object:", 
+            ObjectField.objectReferenceValue, typeof(Object), true) as Object;
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            GUI.SetNextControlName("add");
+            if(GUILayout.Button("Add/Modify Resource by ID!")) {
+                ResourceManager.Resource resource = new ResourceManager.Resource();
+                resource.ID = manager.fieldID;
+                resource.obj = manager.newObject;
+                for(int i = 0; i < manager.builtInResources.Count; i++) {
+                    if(manager.builtInResources[i].ID == manager.fieldID) {
+                        manager.builtInResources[i] = resource;
+                        state = EditorState.successModify;
+                        break;
+                    }
+                }
+                if(state != EditorState.successModify) {
+                    manager.builtInResources.Add(resource);
+                    state = EditorState.successAdd;
+                }
+                manager.GenerateSegmentedList(displayType);
+                IDField.stringValue = null;
+                manager.fieldID = null;
+                manager.newObject = ObjectField.objectReferenceValue = null;
+                GUI.FocusControl("add");
+                serializedObject.Update();
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            GUI.SetNextControlName("delete");
+            if(GUILayout.Button("Delete Resource by ID!")) {
+                state = EditorState.failedToFind;
+                foreach(ResourceManager.Resource res in manager.builtInResources) {
+                    if(res.ID == manager.fieldID) {
+                        manager.builtInResources.Remove(res);
+                        manager.fieldID = IDField.stringValue = "";
+                        manager.newObject = ObjectField.objectReferenceValue = null;
+                        manager.GenerateSegmentedList(displayType);
+                        state = EditorState.successDelete;
+                        GUI.FocusControl("delete");
+                        serializedObject.Update();
+                        break;
+                    }
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            if(GUILayout.Button("Find Resource by ID!")) {
+                state = EditorState.failedToFind;
+                foreach(ResourceManager.Resource res in manager.builtInResources) {
+                    if(res.ID == manager.fieldID) {
+                        manager.newObject = res.obj;
+                        state = EditorState.successFind;
+                        break;
+                    }
+                }
+                serializedObject.Update();
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+                displayType = (ResourcesByType)EditorGUILayout.EnumPopup("Resources by type: ", displayType);
+                if(displayType != oldDisplayType) {
+                    manager.GenerateSegmentedList(displayType);
+                }
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(segmentedBuiltIns, new GUIContent("Built-ins by type"), true);
+            EditorGUILayout.EndHorizontal();
             switch(state) {
                 case EditorState.failedToFind:
                     EditorGUILayout.HelpBox("Failed to find a resource with the specified ID!", MessageType.Warning);
@@ -155,67 +294,6 @@ public class ResourceManager : MonoBehaviour
                 default:
                     break; 
             }
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Resource Manager");
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("The #1 choice for ALL ShellCore asset injections!");
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();
-            manager.fieldID = EditorGUILayout.TextField("Resource ID:", IDField.stringValue);
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();
-            manager.newObject = EditorGUILayout.ObjectField("Resource Object:", 
-            ObjectField.objectReferenceValue, typeof(Object), true) as Object;
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();
-            if(GUILayout.Button("Add/Modify Resource by ID!")) {
-                ResourceManager.Resource resource = new ResourceManager.Resource();
-                resource.ID = manager.fieldID;
-                resource.obj = manager.newObject;
-                for(int i = 0; i < manager.builtInResources.Count; i++) {
-                    if(manager.builtInResources[i].ID == manager.fieldID) {
-                        manager.builtInResources[i] = resource;
-                        state = EditorState.successModify;
-                        break;
-                    }
-                }
-                if(state != EditorState.successModify) {
-                    manager.builtInResources.Add(resource);
-                    state = EditorState.successAdd;
-                }
-                manager.fieldID = "";
-                manager.newObject = null;
-            }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();
-            if(GUILayout.Button("Delete Resource by ID!")) {
-                state = EditorState.failedToFind;
-                foreach(ResourceManager.Resource res in manager.builtInResources) {
-                    if(res.ID == manager.fieldID) {
-                        manager.builtInResources.Remove(res);
-                        manager.fieldID = "";
-                        state = EditorState.successDelete;
-                        break;
-                    }
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal();
-            if(GUILayout.Button("Find Resource by ID!")) {
-                state = EditorState.failedToFind;
-                foreach(ResourceManager.Resource res in manager.builtInResources) {
-                    if(res.ID == manager.fieldID) {
-                        manager.newObject = res.obj;
-                        state = EditorState.successFind;
-                        break;
-                    }
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-            DrawDefaultInspector();
-            if (EditorApplication.isPlaying)
-                Repaint();
             serializedObject.ApplyModifiedProperties();
         }
     }
