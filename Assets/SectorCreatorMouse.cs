@@ -20,6 +20,12 @@ public class SectorCreatorMouse : MonoBehaviour {
 		public ObjectTypes type;
 		public int faction;
 	}
+
+	public struct SectorData {
+		public string sectorjson;
+		public string platformjson;
+	}
+
 	public bool windowEnabled = true;
 	public int numberOfFactions;
 	public PlaceableObject[] placeables;
@@ -149,16 +155,32 @@ public class SectorCreatorMouse : MonoBehaviour {
 	}
 
 	public void GetPlatformIndex(Vector3 pos) {
-		int columns = Mathf.FloorToInt(width / tileSize) - ((Mathf.Abs(x) % tileSize) < (tileSize) / 2 ? 1 : 0);
-		var rows = Mathf.FloorToInt(height / tileSize) - ((Mathf.Abs(y) % tileSize) < (tileSize) / 2 ? 1 : 0);
+		Vector3 firstTilePos = new Vector3 {
+			x = 0,
+			y = 0
+		};
+		Vector3 lastTilePos = new Vector3 {
+			x = 0,
+			y = 0
+		};
+		foreach(PlaceableObject ojs in objects) {
+			Vector3 tilePos = ojs.obj.transform.position;
+			if(tilePos.x < firstTilePos.x) firstTilePos.x = tilePos.x;
+			if(tilePos.y > firstTilePos.y) firstTilePos.y = tilePos.y;
+			if(tilePos.x > lastTilePos.x) lastTilePos.x = tilePos.x;
+			if(tilePos.y < lastTilePos.y) lastTilePos.y = tilePos.y;
+		}
+		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x), Mathf.Abs(lastTilePos.x)) / tileSize) * 2 + 1;
+		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y), Mathf.Abs(lastTilePos.y)) / tileSize) * 2 + 1;
 		Vector2 offset = new Vector2 {
-			x = -(rows) * tileSize / 2,
-			y = -(columns) * tileSize / 2
+			x = -(columns - 1) * tileSize/2,
+			y = (rows - 1) * tileSize/2
+
 		};
 		int[] coordinates = new int[2];
-		coordinates[1] = -Mathf.RoundToInt((pos.y + offset.y) / 4.19F);
-		coordinates[0] =  columns - 1 + Mathf.RoundToInt((pos.x + offset.x) / 4.19F);
-		Debug.Log("row: " + coordinates[1] + " column: " + coordinates[0] + " of a square with " + rows + " rows and " + columns + " columns");
+		coordinates[1] = Mathf.RoundToInt((pos.x - offset.x) / tileSize);
+		coordinates[0] = -Mathf.RoundToInt((pos.y - offset.y) / tileSize);
+		Debug.Log("row: " + coordinates[0] + " column: " + coordinates[1] +  " of a square with "  + rows + " rows and "  + columns + " columns");
 	}
 	public void ToJSON() {
 		Sector sct = ScriptableObject.CreateInstance<Sector>();
@@ -174,18 +196,38 @@ public class SectorCreatorMouse : MonoBehaviour {
 				break;
 		}
 		LandPlatform platform = ScriptableObject.CreateInstance<LandPlatform>();
-		int columns = Mathf.FloorToInt(width / tileSize) - ((Mathf.Abs(x) % tileSize) < (tileSize) / 2 ? 1 : 0);
-		int rows = Mathf.FloorToInt(height / tileSize) - ((Mathf.Abs(y) % tileSize) < (tileSize) / 2 ? 1 : 0);
+
+		Vector3 firstTilePos = new Vector3 {
+			x = 0,
+			y = 0
+		};
+		Vector3 lastTilePos = new Vector3 {
+			x = 0,
+			y = 0
+		};
+		foreach(PlaceableObject ojs in objects) {
+			if(ojs.type == ObjectTypes.Platform) {
+				Vector3 tilePos = ojs.obj.transform.position;
+				if(tilePos.x < firstTilePos.x) firstTilePos.x = tilePos.x;
+				if(tilePos.y > firstTilePos.y) firstTilePos.y = tilePos.y;
+				if(tilePos.x > lastTilePos.x) lastTilePos.x = tilePos.x;
+				if(tilePos.y < lastTilePos.y) lastTilePos.y = tilePos.y;
+			}
+		}
+		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x), Mathf.Abs(lastTilePos.x)) / tileSize) * 2 + 1;
+		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y), Mathf.Abs(lastTilePos.y)) / tileSize) * 2 + 1;
+		Vector2 offset = new Vector2 {
+			x = -(columns - 1) * tileSize/2,
+			y = (rows - 1) * tileSize/2
+		};
+		
 		platform.rows = rows;
 		platform.columns = columns;
 		platform.tilemap = new int[rows * columns];
 		for(int i = 0; i < platform.tilemap.Length; i++) {
 			platform.tilemap[i] = -1;
 		}
-		Vector2 offset = new Vector2 {
-			x = -(platform.rows) * tileSize / 2,
-			y = -(platform.columns) * tileSize / 2
-		};
+
 		IntRect rect = new IntRect();
 		List<string> targetIDS = new List<string>();
 		List<Sector.LevelEntity> ents = new List<Sector.LevelEntity>();
@@ -222,9 +264,9 @@ public class SectorCreatorMouse : MonoBehaviour {
 				ents.Add(ent);
 			} else {
 				int[] coordinates = new int[2];
-				coordinates[1] = -Mathf.RoundToInt((oj.obj.transform.position.y + offset.y) / 4.19F);
-				coordinates[0] =  columns - 1 + Mathf.RoundToInt((oj.obj.transform.position.x + offset.x) / 4.19F);
-
+				coordinates[1] = Mathf.RoundToInt((oj.obj.transform.position.x - offset.x) / tileSize);
+				coordinates[0] = -Mathf.RoundToInt((oj.obj.transform.position.y - offset.y) / tileSize);
+				
 				Debug.Log(coordinates[0] + " " + coordinates[1]);
 				platform.tilemap[coordinates[1] + platform.columns * coordinates[0]] = 0;
 			}
@@ -233,7 +275,13 @@ public class SectorCreatorMouse : MonoBehaviour {
 		sct.targets = targetIDS.ToArray();
 		sct.name = sctName;
 		sct.backgroundColor = new Color(0.5F,0,0);
-		string output = JsonUtility.ToJson(sct) + "\n" + JsonUtility.ToJson(platform);
+
+		SectorData data = new SectorData();
+		data.sectorjson = JsonUtility.ToJson(sct);
+		data.platformjson = JsonUtility.ToJson(platform);
+
+		string output = JsonUtility.ToJson(data);
+
 		if(!System.IO.Directory.Exists(Application.dataPath + "\\..\\Sectors\\")) {
 			System.IO.Directory.CreateDirectory(Application.dataPath + "\\..\\Sectors\\");
 		}
