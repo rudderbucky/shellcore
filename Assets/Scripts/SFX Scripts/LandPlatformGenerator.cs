@@ -36,7 +36,7 @@ public class LandPlatformGenerator : MonoBehaviour {
 
         blueprint = platform;
 
-        if (!blueprint || blueprint.prefabs.Length <= 0)
+        if (blueprint == null || blueprint.prefabs.Length <= 0)
             return;
         
         if(tiles != null) Unload();
@@ -168,11 +168,13 @@ public class LandPlatformGenerator : MonoBehaviour {
         int debugCount = 0;
 
         //connect nodes
-         Debug.Log("Connecting nodes...");
-         int currentAreaID = 0;
+        Debug.Log("Connecting nodes...");
+        int currentAreaID = 0;
         for (int i = 0; i < nodes.Count; i++)
         {
+            Debug.Log("node: " + nodes[i].pos);
             if(!areaIDByNode.ContainsKey(nodes[i])) {
+                Debug.Log("new patch");
                 areaIDByNode.Add(nodes[i], currentAreaID++);
             }
             for (int j = i + 1; j < nodes.Count; j++)
@@ -181,8 +183,9 @@ public class LandPlatformGenerator : MonoBehaviour {
                 {
                     if(!areaIDByNode.ContainsKey(nodes[j])) 
                     {
+                        Debug.Log("neighbor added: " + nodes[j].pos);
                         areaIDByNode.Add(nodes[j], areaIDByNode[nodes[i]]);
-                    }
+                    } else Debug.Log(nodes[i].pos + " " + nodes[j].pos);
                     nodes[i].neighbours.Add(nodes[j]);
                     nodes[j].neighbours.Add(nodes[i]);
                     float d = (nodes[i].pos - nodes[j].pos).magnitude;
@@ -192,6 +195,27 @@ public class LandPlatformGenerator : MonoBehaviour {
                 }
             }
         }
+
+        /*Possible solutions:
+        Create a recursive function that changes all neighbors, neighbors' neighbors, etc into one id, 
+        and call it every time a node finds a neighbor that is ID'd but is not the same ID
+        Drawbacks: Will cause a stack fucking overflow
+        
+         */
+        /* int currentAreaID = 0;
+        for(int i = 0; i < nodes.Count; i++) {
+            if(!areaIDByNode.ContainsKey(nodes[i])) {
+                foreach(NavigationNode node in nodes[i].neighbours) {
+                    if(areaIDByNode.ContainsKey(node)) {
+                        areaIDByNode.Add(nodes[i], areaIDByNode[node]);
+                        break;
+                    }
+                }
+                if(!areaIDByNode.ContainsKey(nodes[i]))
+                    areaIDByNode.Add(nodes[i], currentAreaID++);
+            }
+        }*/
+
         foreach(GameObject tile in tiles) {
             if(areaIDByTile.ContainsKey(tile)) continue;
             foreach(NavigationNode node in nodes) {
@@ -209,7 +233,6 @@ public class LandPlatformGenerator : MonoBehaviour {
         }
         Debug.Log("Done! Nodes: " + nodes.Count + " Connections: " + debugCount + " Landmasses: " + ids.Count);
     }
-
     bool isValidTile(int x, int y)
     {
         bool limitCheck = x < blueprint.rows && y < blueprint.columns && x >= 0 && y >= 0;

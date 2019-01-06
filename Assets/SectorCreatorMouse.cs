@@ -183,19 +183,19 @@ public class SectorCreatorMouse : MonoBehaviour {
 		Debug.Log("row: " + coordinates[0] + " column: " + coordinates[1] +  " of a square with "  + rows + " rows and "  + columns + " columns");
 	}
 	public void ToJSON() {
-		Sector sct = ScriptableObject.CreateInstance<Sector>();
+		SectorDataWrapper sct = new SectorDataWrapper();
 		if(sctName == null || sctName == "") {
 			Debug.Log("Name your damn sector!");
 			return;
 		}
-		sct.name = sctName;
+		sct.sectorName = sctName;
 		sct.type = type;
 		switch(sct.type) {
 			case Sector.SectorType.BattleZone:
 				sct.backgroundColor = new Color(0.5F,0,0);
 				break;
 		}
-		LandPlatform platform = ScriptableObject.CreateInstance<LandPlatform>();
+		LandPlatformDataWrapper platform = new LandPlatformDataWrapper();
 
 		Vector3 firstTilePos = new Vector3 {
 			x = 0,
@@ -273,7 +273,6 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 		sct.entities = ents.ToArray();
 		sct.targets = targetIDS.ToArray();
-		sct.name = sctName;
 		sct.backgroundColor = new Color(0.5F,0,0);
 
 		SectorData data = new SectorData();
@@ -285,7 +284,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		if(!System.IO.Directory.Exists(Application.dataPath + "\\..\\Sectors\\")) {
 			System.IO.Directory.CreateDirectory(Application.dataPath + "\\..\\Sectors\\");
 		}
-		System.IO.File.WriteAllText(Application.dataPath + "\\..\\Sectors\\" + sct.name, output);
-		Debug.Log("JSON written to location: " + Application.dataPath + "\\..\\Sectors\\" + sct.name);
+		System.IO.File.WriteAllText(Application.dataPath + "\\..\\Sectors\\" + sct.sectorName, output);
+		Debug.Log("JSON written to location: " + Application.dataPath + "\\..\\Sectors\\" + sct.sectorName);
 	}
 }

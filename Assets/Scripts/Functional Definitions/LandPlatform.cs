@@ -15,8 +15,19 @@ public class LandPlatform : ScriptableObject
 
     [HideInInspector]
     public int[] tilemap = new int[1];
+
+    public void SetViaWrapper(LandPlatformDataWrapper wrapper) {
+        rows = wrapper.rows;
+        columns = wrapper.columns;
+        tilemap = wrapper.tilemap;
+    }
 }
 
+public class LandPlatformDataWrapper {
+    public int rows = 1;
+    public int columns = 1;
+    public int[] tilemap = new int[1];
+}
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(LandPlatform))]
@@ -27,7 +38,6 @@ class LandPlatformEditor : Editor
     SerializedProperty columns;
 
     Vector2 scrollPos;
-
     private void OnEnable()
     {
         tilemap = serializedObject.FindProperty("tilemap");

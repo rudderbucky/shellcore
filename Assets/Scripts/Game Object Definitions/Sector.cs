@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [System.Serializable]
 public struct IntRect
 {
@@ -49,6 +50,26 @@ public class Sector : ScriptableObject
     public SectorType type;
     public Color backgroundColor;
     public LevelEntity[] entities;
+    public LandPlatform platform;
+    public string[] targets;
+
+    public void SetViaWrapper(SectorDataWrapper wrapper) {
+        sectorName = wrapper.sectorName;
+        bounds = wrapper.bounds;
+        type = wrapper.type;
+        entities = wrapper.entities;
+        platform = wrapper.platform;
+        targets = wrapper.targets;
+        backgroundColor = wrapper.backgroundColor;
+    }
+}
+
+public class SectorDataWrapper {
+    public string sectorName;
+    public IntRect bounds;
+    public Sector.SectorType type;
+    public Color backgroundColor;
+    public Sector.LevelEntity[] entities;
     public LandPlatform platform;
     public string[] targets;
 }

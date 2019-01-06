@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
+    public bool jsonMode;
     public List<Sector> sectors; //TODO: RM: load sectors from files
     public PlayerCore player;
     public Sector current;
@@ -71,7 +72,21 @@ public class SectorManager : MonoBehaviour
 
     private void Start()
     {
-        loadSector();
+            if(jsonMode) {
+                string sectorfile = System.IO.Directory.GetFiles(Application.dataPath + "\\..\\Sectors\\")[0];
+                string sectorjson = System.IO.File.ReadAllText(sectorfile);
+                Debug.Log(sectorjson);
+                SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
+                SectorDataWrapper sector = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
+                Sector curSect = ScriptableObject.CreateInstance<Sector>();
+                curSect.SetViaWrapper(sector);
+                LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                plat.SetViaWrapper(platform);
+                curSect.platform = plat;
+                current = curSect;
+                loadSector();
+            } else loadSector();
     }
 
     void loadSector()
