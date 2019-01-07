@@ -50,7 +50,7 @@ public class SectorManager : MonoBehaviour
 
     private void Update()
     {
-        if(current == null || !current.bounds.contains(player.transform.position))
+        if(!jsonMode && (current == null || !current.bounds.contains(player.transform.position)))
         {
             // load sector
             for(int i = 0; i < sectors.Count; i++)
@@ -75,9 +75,10 @@ public class SectorManager : MonoBehaviour
             if(jsonMode) {
                 string sectorfile = System.IO.Directory.GetFiles(Application.dataPath + "\\..\\Sectors\\")[0];
                 string sectorjson = System.IO.File.ReadAllText(sectorfile);
-                Debug.Log(sectorjson);
                 SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                Debug.Log("Platform JSON: " + data.platformjson);
                 LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
+                Debug.Log("Sector JSON: " + data.sectorjson);
                 SectorDataWrapper sector = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
                 Sector curSect = ScriptableObject.CreateInstance<Sector>();
                 curSect.SetViaWrapper(sector);
@@ -94,7 +95,7 @@ public class SectorManager : MonoBehaviour
         //unload previous sector
         foreach(var obj in objects)
         {
-            if(obj.Value != player.GetTractorTarget().gameObject)
+            if(player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject)
             {
                 Destroy(obj.Value);
             }

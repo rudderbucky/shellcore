@@ -169,23 +169,12 @@ public class LandPlatformGenerator : MonoBehaviour {
 
         //connect nodes
         Debug.Log("Connecting nodes...");
-        int currentAreaID = 0;
         for (int i = 0; i < nodes.Count; i++)
         {
-            Debug.Log("node: " + nodes[i].pos);
-            if(!areaIDByNode.ContainsKey(nodes[i])) {
-                Debug.Log("new patch");
-                areaIDByNode.Add(nodes[i], currentAreaID++);
-            }
             for (int j = i + 1; j < nodes.Count; j++)
             {
                 if (isInLoS(nodes[i].pos, nodes[j].pos))
                 {
-                    if(!areaIDByNode.ContainsKey(nodes[j])) 
-                    {
-                        Debug.Log("neighbor added: " + nodes[j].pos);
-                        areaIDByNode.Add(nodes[j], areaIDByNode[nodes[i]]);
-                    } else Debug.Log(nodes[i].pos + " " + nodes[j].pos);
                     nodes[i].neighbours.Add(nodes[j]);
                     nodes[j].neighbours.Add(nodes[i]);
                     float d = (nodes[i].pos - nodes[j].pos).magnitude;
@@ -196,25 +185,12 @@ public class LandPlatformGenerator : MonoBehaviour {
             }
         }
 
-        /*Possible solutions:
-        Create a recursive function that changes all neighbors, neighbors' neighbors, etc into one id, 
-        and call it every time a node finds a neighbor that is ID'd but is not the same ID
-        Drawbacks: Will cause a stack fucking overflow
-        
-         */
-        /* int currentAreaID = 0;
-        for(int i = 0; i < nodes.Count; i++) {
-            if(!areaIDByNode.ContainsKey(nodes[i])) {
-                foreach(NavigationNode node in nodes[i].neighbours) {
-                    if(areaIDByNode.ContainsKey(node)) {
-                        areaIDByNode.Add(nodes[i], areaIDByNode[node]);
-                        break;
-                    }
-                }
-                if(!areaIDByNode.ContainsKey(nodes[i]))
-                    areaIDByNode.Add(nodes[i], currentAreaID++);
+        int currentAreaID = 0;
+        foreach(NavigationNode node in nodes) {
+            if(!areaIDByNode.ContainsKey(node)) {
+                RecursivelyDefineIDs(node, currentAreaID++);
             }
-        }*/
+        }
 
         foreach(GameObject tile in tiles) {
             if(areaIDByTile.ContainsKey(tile)) continue;
@@ -233,6 +209,19 @@ public class LandPlatformGenerator : MonoBehaviour {
         }
         Debug.Log("Done! Nodes: " + nodes.Count + " Connections: " + debugCount + " Landmasses: " + ids.Count);
     }
+
+
+    void RecursivelyDefineIDs(NavigationNode node, int ID) {
+        if(!areaIDByNode.ContainsKey(node)) {
+            areaIDByNode.Add(node, ID);
+        } else if (areaIDByNode[node] != ID) {
+            areaIDByNode[node] = ID;
+        } else return;
+        foreach(NavigationNode neighbor in node.neighbours) {
+            RecursivelyDefineIDs(neighbor, ID);
+        }
+    }
+
     bool isValidTile(int x, int y)
     {
         bool limitCheck = x < blueprint.rows && y < blueprint.columns && x >= 0 && y >= 0;

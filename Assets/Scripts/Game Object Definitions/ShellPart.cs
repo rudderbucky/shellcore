@@ -56,7 +56,14 @@ public class ShellPart : MonoBehaviour {
     /// <param name="blueprint">blueprint of the part</param>
     public static GameObject BuildPart(PartBlueprint blueprint)
     {
+        GameObject holder;
+        if(!GameObject.Find("Part Holder")) {
+            holder = new GameObject("Part Holder");
+        } else holder = GameObject.Find("Part Holder");
+
+
         GameObject obj = new GameObject(blueprint.name);
+        obj.transform.SetParent(holder.transform);
 
         //Part sprite
         var spriteRenderer = obj.AddComponent<SpriteRenderer>();

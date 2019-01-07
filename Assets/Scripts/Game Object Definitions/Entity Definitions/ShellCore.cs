@@ -101,10 +101,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         {
             base.Respawn();
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        //else
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 
     protected override void BuildEntity()
