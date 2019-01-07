@@ -30,12 +30,6 @@ public class SecCrCamera : MonoBehaviour {
 
 			transform.position += Input.GetAxis("Horizontal") * Vector3.right;
 			transform.position += Input.GetAxis("Vertical") * Vector3.up;
-
-			if(Input.GetKey("space")) {
-				Vector3 center = mouse.center;
-				center.z -= 10;
-				transform.position = center;
-			}
 		}
 	}
 }

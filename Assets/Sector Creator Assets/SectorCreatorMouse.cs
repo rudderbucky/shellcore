@@ -16,11 +16,112 @@ public class SectorCreatorMouse : MonoBehaviour {
 		Platform,
 		ShellCore
 	}
+
+	public enum CommandTypes {
+		Place,
+		Remove,
+		Center,
+		ChangeFaction,
+		Clear
+	}
+
+	public struct Command {
+		public CommandTypes type;
+		public PlaceableObject obj;
+		public Vector3 position;
+		public List<PlaceableObject> clearedList;
+	}
+
+	public Stack<Command> undoStack = new Stack<Command>();
+	public Stack<Command> redoStack = new Stack<Command>();
+
+	public void Undo() {
+		if(undoStack.Count > 0) {
+			Command com = undoStack.Pop();
+			switch(com.type) {
+				case CommandTypes.Place:
+					foreach(PlaceableObject obj in objects) {
+						if(obj.type == com.obj.type && obj.obj.transform.position == com.position) {
+							objects.Remove(obj);
+							Destroy(obj.obj);
+							break;
+						}
+					}
+					break;
+				case CommandTypes.Remove:
+					com.obj.obj = Instantiate(placeables[com.obj.placeablesIndex].obj, com.position, Quaternion.identity);
+					objects.Add(com.obj);
+					break;
+				case CommandTypes.Center:
+					Camera.main.transform.position = com.position;
+					break;
+				case CommandTypes.ChangeFaction:
+					objects.Remove(com.obj);
+					int newFaction = com.obj.faction - 1 < 0 ? numberOfFactions - 1 : com.obj.faction - 1;
+					com.obj.faction = newFaction;
+					foreach(SpriteRenderer renderer in com.obj.obj.GetComponentsInChildren<SpriteRenderer>()) {
+						renderer.color = FactionColors.colors[newFaction];
+					}
+					com.obj.obj.GetComponent<SpriteRenderer>().color = Color.white;
+					objects.Add(com.obj);
+					break;
+				case CommandTypes.Clear:
+					foreach(PlaceableObject obj in com.clearedList) {
+						PlaceableObject newObj = new PlaceableObject();
+						newObj = obj;
+						newObj.obj = Instantiate(placeables[obj.placeablesIndex].obj, obj.pos, Quaternion.identity);
+						objects.Add(newObj);
+					}
+					break;
+			}
+			redoStack.Push(com);
+		}
+	}
+
+	public void Redo() {
+		if(redoStack.Count > 0) {
+			Command com = redoStack.Pop();
+			switch(com.type) {
+				case CommandTypes.Place:
+					com.obj.obj = Instantiate(placeables[com.obj.placeablesIndex].obj, com.position, Quaternion.identity);
+					objects.Add(com.obj);
+					break;
+				case CommandTypes.Remove:
+					objects.Remove(com.obj);
+					Destroy(com.obj.obj);
+					break;
+				case CommandTypes.Center:
+					Vector3 pos = center;
+					pos.z -= 10;
+					Camera.main.transform.position = pos;
+					break;
+				case CommandTypes.ChangeFaction:
+					objects.Remove(com.obj);
+					com.obj.faction = (com.obj.faction + 1) % numberOfFactions;
+					foreach(SpriteRenderer renderer in com.obj.obj.GetComponents<SpriteRenderer>()) {
+						renderer.color = FactionColors.colors[com.obj.faction];
+					}
+					com.obj.obj.GetComponent<SpriteRenderer>().color = Color.white;
+					objects.Add(com.obj);
+					break;
+				case CommandTypes.Clear:
+					foreach(PlaceableObject oj in objects) {
+						Destroy(oj.obj);
+					}
+					objects.Clear();
+					break;
+			}
+			undoStack.Push(com);
+		}
+	}
+
 	[System.Serializable]
 	public struct PlaceableObject {
 		public GameObject obj;
 		public ObjectTypes type;
 		public int faction;
+		public int placeablesIndex;
+		public Vector3 pos;
 	}
 
 	public struct SectorData {
@@ -36,6 +137,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 	public List<PlaceableObject> objects;
 	GUIWindowScripts mainMenu;
 	GUIWindowScripts sectorProps;
+	GUIWindowScripts hotkeyList;
 	int cursorCount = 0;
 	string sctName;
 	int x;
@@ -46,12 +148,16 @@ public class SectorCreatorMouse : MonoBehaviour {
 	Color currentColor = SectorColors.colors[0];
 	// Update is called once per frame
 	void Start() {
+		for(int i = 0; i < placeables.Length; i++) {
+			placeables[i].placeablesIndex = i;
+		}
 		windowEnabled = true;
 		objects = new List<PlaceableObject>();
 		cursor = placeables[0];
 		cursor.obj = Instantiate(placeables[0].obj) as GameObject;
 		mainMenu = transform.Find("MenuBox").GetComponent<GUIWindowScripts>();
 		sectorProps = transform.Find("SectorProps").GetComponent<GUIWindowScripts>();
+		hotkeyList = transform.Find("Hotkey List").GetComponent<GUIWindowScripts>();
 		UpdateColors();
 	}
 
@@ -77,24 +183,36 @@ public class SectorCreatorMouse : MonoBehaviour {
 		return !(type == ObjectTypes.Platform || type == ObjectTypes.PowerRock);
 	}
 	void DeleteObject(){
+		Command com = new Command();
+		com.type = CommandTypes.Remove;
 		PlaceableObject tile = new PlaceableObject();
-		foreach(PlaceableObject obj in objects) {
+		foreach(PlaceableObject obj in objects) { 
+			// goes through every placeableobject, 
+			// saves the platform for later as if it finds a non-platform it deletes the non-platform and returns
 				if(obj.obj.transform.position == cursor.obj.transform.position) {
 					if(obj.type == ObjectTypes.Platform) {
 						tile = obj;
 					} else {
+						com.obj = obj;
+						com.position = obj.obj.transform.position;
+						undoStack.Push(com);
+						redoStack.Clear();
 						objects.Remove(obj);
 						Destroy(obj.obj);
 						return;
 					}
 				}
 			}
+		com.obj = tile;
+		com.position = tile.obj.transform.position;
+		undoStack.Push(com);
+		redoStack.Clear();
 		objects.Remove(tile);
 		Destroy(tile.obj);
 	}
 
 	void Update () {
-		windowEnabled = mainMenu.gameObject.activeSelf || sectorProps.gameObject.activeSelf;
+		windowEnabled = mainMenu.gameObject.activeSelf || sectorProps.gameObject.activeSelf || hotkeyList.gameObject.activeSelf;
 
 		Vector3 mousePos = Input.mousePosition;
 		mousePos.z += 10;
@@ -104,13 +222,34 @@ public class SectorCreatorMouse : MonoBehaviour {
 
 		if(Input.GetKeyDown("g") && (!windowEnabled || mainMenu.gameObject.activeSelf)) {
 			mainMenu.ToggleActive();
-		} else if(Input.GetKeyDown("g") && sectorProps.gameObject.activeSelf) {
+		} else {
+			if(Input.GetKeyDown("g") && sectorProps.gameObject.activeSelf) {
 				sectorProps.ToggleActive();
+			}
+			if(Input.GetKeyDown("g") && hotkeyList.gameObject.activeSelf) {
+				hotkeyList.ToggleActive();
+			}
 		}
 
 		if(!windowEnabled) {
+			if(Input.GetKeyDown("space")) {
+				Command com = new Command();
+				com.position = Camera.main.transform.position;
+				com.type = CommandTypes.Center;
+				undoStack.Push(com);
+				redoStack.Clear();
+				Vector3 pos = center;
+				pos.z -= 10;
+				Camera.main.transform.position = pos;
+			}
 			if(Input.GetKeyDown("k")) {
 				GetPlatformIndex(mousePos);	
+			}
+			if(Input.GetKeyDown("z")) {
+				Undo();
+			}
+			if(Input.GetKeyDown("t")) {
+				Redo();
 			}
 			if(Input.GetKeyDown("q")) {
 				Destroy(cursor.obj);
@@ -121,9 +260,16 @@ public class SectorCreatorMouse : MonoBehaviour {
 				cursor.obj = Instantiate(placeables[cursorCount % placeables.Length].obj, cursor.obj.transform.position, Quaternion.identity) as GameObject;
 			}
 			if(Input.GetKeyDown("c")) {
+				Command com = new Command();
+				List<PlaceableObject> oldList = new List<PlaceableObject>();
 				foreach(PlaceableObject placeable in objects) {
+					oldList.Add(placeable);
 					Destroy(placeable.obj);
 				}
+				com.type = CommandTypes.Clear;
+				com.clearedList = oldList;
+				undoStack.Push(com);
+				redoStack.Clear();
 				objects.Clear();
 			}
 			if(Input.GetKeyDown("e")) {
@@ -136,6 +282,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 			}
 			if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("f")) {
 				
+				Command com = new Command();
 				bool shouldInstantiate = true;
 				PlaceableObject placed;
 				int newFaction = 0;
@@ -144,6 +291,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 					if(obj.obj.transform.position == cursor.obj.transform.position
 						&& cursor.type == obj.type && isFactable) {
 						newFaction = (obj.faction + 1) % numberOfFactions;
+						com.type = CommandTypes.ChangeFaction;
 						objects.Remove(obj);
 						Destroy(obj.obj);
 						shouldInstantiate = true;
@@ -151,6 +299,11 @@ public class SectorCreatorMouse : MonoBehaviour {
 					} else if(obj.obj.transform.position == cursor.obj.transform.position
 						&& ((cursor.type != obj.type && isFactable && GetIsFactable(cursor.type))
 						|| (cursor.type == obj.type && !isFactable))) {
+							com.type = CommandTypes.Remove;
+							com.obj = obj;
+							com.position = obj.obj.transform.position;
+							undoStack.Push(com);
+							redoStack.Clear();
 							objects.Remove(obj);
 							Destroy(obj.obj);
 							shouldInstantiate = false;
@@ -166,6 +319,19 @@ public class SectorCreatorMouse : MonoBehaviour {
 							renderer.color = FactionColors.colors[placed.faction];
 						}
 						placed.obj.GetComponent<SpriteRenderer>().color = Color.white;
+					}
+					placed.pos = placed.obj.transform.position;
+					if(com.type != CommandTypes.ChangeFaction) {
+						com.type = CommandTypes.Place;
+						com.obj = placed;
+						com.position = placed.pos;
+						undoStack.Push(com);
+						redoStack.Clear();
+					} else {
+						com.obj = placed;
+						com.position = placed.pos;
+						undoStack.Push(com);
+						redoStack.Clear();
 					}
 					objects.Add(placed);
 				}
