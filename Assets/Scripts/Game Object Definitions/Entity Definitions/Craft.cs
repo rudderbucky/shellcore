@@ -57,6 +57,10 @@ public abstract class Craft : Entity
             }
         }
         Start(); // once everything else is done initialize the craft again
+        var circle = Instantiate(explosionCirclePrefab, transform, false);
+        circle.SetActive(true);
+        circle.GetComponent<DrawCircleScript>().Initialize();
+        circle.GetComponent<DrawCircleScript>().SetRespawnMode(true);
     }
 
     public int GetEnginePower() {
