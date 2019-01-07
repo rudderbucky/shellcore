@@ -185,7 +185,6 @@ public class SectorCreatorMouse : MonoBehaviour {
 			y = this.y + (height / 2),
 			z = 0
 		};
-		Debug.Log(x + " " + y + " " + width + " " + height + " ");
 		var rend = GameObject.Find("SectorBorders").GetComponent<LineRenderer>();
 		rend.SetPositions(new Vector3[]{
             new Vector3(x, y, 0),
@@ -274,7 +273,6 @@ public class SectorCreatorMouse : MonoBehaviour {
 		IntRect rect = new IntRect();
 		List<string> targetIDS = new List<string>();
 		List<Sector.LevelEntity> ents = new List<Sector.LevelEntity>();
-		List<Sector.LevelEntity> cores = new List<Sector.LevelEntity>();
 		rect.x = x;
 		rect.y = y;
 		rect.w = width;
@@ -341,7 +339,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				ents.Add(ent);
 			}
 		}
-		
+
 		sct.entities = ents.ToArray();
 		sct.targets = targetIDS.ToArray();
 		sct.backgroundColor = currentColor;

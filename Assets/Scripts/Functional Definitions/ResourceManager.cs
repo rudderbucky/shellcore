@@ -198,7 +198,7 @@ public class ResourceManagerEditor : Editor
     SerializedProperty ObjectField;
     SerializedProperty segmentedBuiltIns;
     SerializedProperty resourcePack;
-    SerializedProperty resourceList;
+    //SerializedProperty resourceList;
     ResourceManager manager;
 
     private void OnEnable()
@@ -207,7 +207,7 @@ public class ResourceManagerEditor : Editor
         manager.GenerateSegmentedList(ResourcesByType.all);
         segmentedBuiltIns = serializedObject.FindProperty("segmentedBuiltIns");
         resourcePack = serializedObject.FindProperty("resourcePack");
-        resourceList = resourcePack.FindPropertyRelative("resources");
+        //resourceList = resourcePack.FindPropertyRelative("resources");
         IDField = serializedObject.FindProperty("fieldID");
         ObjectField = serializedObject.FindProperty("newObject");
     }

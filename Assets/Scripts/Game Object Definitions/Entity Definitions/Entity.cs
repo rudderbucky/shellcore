@@ -283,6 +283,10 @@ public class Entity : MonoBehaviour {
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
         initialized = true;
+        var circle = Instantiate(explosionCirclePrefab, transform, false);
+        circle.SetActive(true);
+        circle.GetComponent<DrawCircleScript>().Initialize();
+        circle.GetComponent<DrawCircleScript>().SetRespawnMode(true);
     }
 
     protected virtual void Update() {
