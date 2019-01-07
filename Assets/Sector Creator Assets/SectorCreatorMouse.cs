@@ -59,6 +59,15 @@ public class SectorCreatorMouse : MonoBehaviour {
 					objects.Remove(com.obj);
 					int newFaction = com.obj.faction - 1 < 0 ? numberOfFactions - 1 : com.obj.faction - 1;
 					com.obj.faction = newFaction;
+					if(com.obj.obj == null) {
+						foreach(PlaceableObject place in objects) {
+							if(place.type == com.obj.type && place.pos == com.obj.pos) {
+								com.obj.obj = place.obj;
+								objects.Remove(place);
+								break;
+							}
+						}
+					}
 					foreach(SpriteRenderer renderer in com.obj.obj.GetComponentsInChildren<SpriteRenderer>()) {
 						renderer.color = FactionColors.colors[newFaction];
 					}
@@ -70,6 +79,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 						PlaceableObject newObj = new PlaceableObject();
 						newObj = obj;
 						newObj.obj = Instantiate(placeables[obj.placeablesIndex].obj, obj.pos, Quaternion.identity);
+						newObj.obj.transform.localEulerAngles = new Vector3(0,0,90 * newObj.rotation);
 						objects.Add(newObj);
 					}
 					break;
@@ -84,11 +94,17 @@ public class SectorCreatorMouse : MonoBehaviour {
 			switch(com.type) {
 				case CommandTypes.Place:
 					com.obj.obj = Instantiate(placeables[com.obj.placeablesIndex].obj, com.position, Quaternion.identity);
+					com.obj.pos = com.position;
 					objects.Add(com.obj);
 					break;
 				case CommandTypes.Remove:
-					objects.Remove(com.obj);
-					Destroy(com.obj.obj);
+					foreach(PlaceableObject place in objects) {
+						if(place.type == com.obj.type && place.pos == com.obj.pos) {
+							objects.Remove(place);
+							Destroy(place.obj);
+							break;
+						}
+					}
 					break;
 				case CommandTypes.Center:
 					Vector3 pos = center;
@@ -96,9 +112,16 @@ public class SectorCreatorMouse : MonoBehaviour {
 					Camera.main.transform.position = pos;
 					break;
 				case CommandTypes.ChangeFaction:
-					objects.Remove(com.obj);
+					foreach(PlaceableObject place in objects) {
+						if(place.pos == com.obj.pos && place.type == com.obj.type) {
+							Destroy(place.obj);
+							objects.Remove(place);
+							break;
+						}
+					}
 					com.obj.faction = (com.obj.faction + 1) % numberOfFactions;
-					foreach(SpriteRenderer renderer in com.obj.obj.GetComponents<SpriteRenderer>()) {
+					if(!com.obj.obj) com.obj.obj = Instantiate(placeables[com.obj.placeablesIndex].obj, com.position, Quaternion.identity);
+					foreach(SpriteRenderer renderer in com.obj.obj.GetComponentsInChildren<SpriteRenderer>()) {
 						renderer.color = FactionColors.colors[com.obj.faction];
 					}
 					com.obj.obj.GetComponent<SpriteRenderer>().color = Color.white;
@@ -122,6 +145,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		public int faction;
 		public int placeablesIndex;
 		public Vector3 pos;
+		public int rotation;
 	}
 
 	public struct SectorData {
@@ -138,6 +162,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 	GUIWindowScripts mainMenu;
 	GUIWindowScripts sectorProps;
 	GUIWindowScripts hotkeyList;
+	GUIWindowScripts readFile;
 	int cursorCount = 0;
 	string sctName;
 	int x;
@@ -158,6 +183,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		mainMenu = transform.Find("MenuBox").GetComponent<GUIWindowScripts>();
 		sectorProps = transform.Find("SectorProps").GetComponent<GUIWindowScripts>();
 		hotkeyList = transform.Find("Hotkey List").GetComponent<GUIWindowScripts>();
+		readFile = transform.Find("ReadFile").GetComponent<GUIWindowScripts>();
 		UpdateColors();
 	}
 
@@ -203,16 +229,19 @@ public class SectorCreatorMouse : MonoBehaviour {
 					}
 				}
 			}
-		com.obj = tile;
-		com.position = tile.obj.transform.position;
-		undoStack.Push(com);
-		redoStack.Clear();
-		objects.Remove(tile);
-		Destroy(tile.obj);
+		if(tile.obj) {
+			com.obj = tile;
+			com.position = tile.obj.transform.position;
+			undoStack.Push(com);
+			redoStack.Clear();
+			objects.Remove(tile);
+			Destroy(tile.obj);
+		}
 	}
 
 	void Update () {
-		windowEnabled = mainMenu.gameObject.activeSelf || sectorProps.gameObject.activeSelf || hotkeyList.gameObject.activeSelf;
+		windowEnabled = mainMenu.gameObject.activeSelf || sectorProps.gameObject.activeSelf || hotkeyList.gameObject.activeSelf
+		|| readFile.gameObject.activeSelf;
 
 		Vector3 mousePos = Input.mousePosition;
 		mousePos.z += 10;
@@ -228,6 +257,9 @@ public class SectorCreatorMouse : MonoBehaviour {
 			}
 			if(Input.GetKeyDown("g") && hotkeyList.gameObject.activeSelf) {
 				hotkeyList.ToggleActive();
+			}
+			if(Input.GetKeyDown("g") && readFile.gameObject.activeSelf) {
+				readFile.ToggleActive();
 			}
 		}
 
@@ -281,59 +313,56 @@ public class SectorCreatorMouse : MonoBehaviour {
 				DeleteObject();
 			}
 			if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("f")) {
-				
+
 				Command com = new Command();
-				bool shouldInstantiate = true;
-				PlaceableObject placed;
-				int newFaction = 0;
+				bool found = false;
 				foreach(PlaceableObject obj in objects) {
-					bool isFactable = GetIsFactable(obj.type);
-					if(obj.obj.transform.position == cursor.obj.transform.position
-						&& cursor.type == obj.type && isFactable) {
-						newFaction = (obj.faction + 1) % numberOfFactions;
-						com.type = CommandTypes.ChangeFaction;
-						objects.Remove(obj);
-						Destroy(obj.obj);
-						shouldInstantiate = true;
-						break;
-					} else if(obj.obj.transform.position == cursor.obj.transform.position
-						&& ((cursor.type != obj.type && isFactable && GetIsFactable(cursor.type))
-						|| (cursor.type == obj.type && !isFactable))) {
-							com.type = CommandTypes.Remove;
-							com.obj = obj;
-							com.position = obj.obj.transform.position;
+					if(obj.pos == cursor.obj.transform.position && cursor.type == obj.type) {
+						if(GetIsFactable(cursor.type)) {
+							com.type = CommandTypes.ChangeFaction;
+							com.position = cursor.obj.transform.position;
+							objects.Remove(obj);
+							var newObj = obj;
+							newObj.faction = (obj.faction + 1) % numberOfFactions;
+							foreach(SpriteRenderer rend in newObj.obj.GetComponentsInChildren<SpriteRenderer>()) {
+								rend.color = FactionColors.colors[newObj.faction];
+							}
+							newObj.obj.GetComponent<SpriteRenderer>().color = Color.white;
+							objects.Add(newObj);
+							com.obj = newObj;
 							undoStack.Push(com);
-							redoStack.Clear();
+						} else if(obj.type == ObjectTypes.Platform) {
+							objects.Remove(obj);
+							PlaceableObject newObj = obj;
+							newObj.rotation = (newObj.rotation + 1) % 4;
+							Vector3 rot = newObj.obj.transform.localEulerAngles;
+							rot.z = 90 * newObj.rotation;
+							newObj.obj.transform.localEulerAngles = rot;
+							objects.Add(newObj);
+						}
+						else {
+							com.type = CommandTypes.Remove;
+							com.position = cursor.obj.transform.position;
+							com.obj = obj;
+							undoStack.Push(com);
 							objects.Remove(obj);
 							Destroy(obj.obj);
-							shouldInstantiate = false;
-							break;
+						}
+						redoStack.Clear();
+						found = true;
+						break;
 					}
 				}
-				if(shouldInstantiate) {
-					placed = cursor;
-					placed.faction = newFaction;
-					placed.obj = Instantiate(cursor.obj, cursor.obj.transform.position, Quaternion.identity);
-					if(GetIsFactable(placed.type)) {
-						foreach(SpriteRenderer renderer in placed.obj.GetComponentsInChildren<SpriteRenderer>()) {
-							renderer.color = FactionColors.colors[placed.faction];
-						}
-						placed.obj.GetComponent<SpriteRenderer>().color = Color.white;
-					}
-					placed.pos = placed.obj.transform.position;
-					if(com.type != CommandTypes.ChangeFaction) {
-						com.type = CommandTypes.Place;
-						com.obj = placed;
-						com.position = placed.pos;
-						undoStack.Push(com);
-						redoStack.Clear();
-					} else {
-						com.obj = placed;
-						com.position = placed.pos;
-						undoStack.Push(com);
-						redoStack.Clear();
-					}
-					objects.Add(placed);
+				if(!found) {
+					com.type = CommandTypes.Place;
+					PlaceableObject newo = cursor;
+					newo.pos = cursor.obj.transform.position;
+					com.position = newo.pos;
+					newo.obj = Instantiate(cursor.obj, newo.pos, Quaternion.identity);
+					com.obj = newo;
+					undoStack.Push(com);
+					redoStack.Clear();
+					objects.Add(newo);
 				}
 			}
 		cursor.obj.transform.position = mousePos;
@@ -432,6 +461,16 @@ public class SectorCreatorMouse : MonoBehaviour {
 		platform.rows = rows;
 		platform.columns = columns;
 		platform.tilemap = new int[rows * columns];
+		platform.rotations = new int[rows * columns];
+		platform.prefabs = new string[] {
+			"4 Entry",
+			"3 Entry",
+			"2 Entry",
+			"1 Entry",
+			"0 Entry",
+			"Junction"
+		};
+
 		for(int i = 0; i < platform.tilemap.Length; i++) {
 			platform.tilemap[i] = -1;
 		}
@@ -479,7 +518,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 				coordinates[1] = Mathf.RoundToInt((oj.obj.transform.position.x - offset.x) / tileSize);
 				coordinates[0] = -Mathf.RoundToInt((oj.obj.transform.position.y - offset.y) / tileSize);
 				
-				platform.tilemap[coordinates[1] + platform.columns * coordinates[0]] = 0;
+				platform.tilemap[coordinates[1] + platform.columns * coordinates[0]] = oj.placeablesIndex;
+				platform.rotations[coordinates[1] + platform.columns * coordinates[0]] = oj.rotation;
 			}
 		}
 
@@ -490,7 +530,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				Sector.LevelEntity ent = new Sector.LevelEntity();
 				ent.ID = ID++ + "";
 				ent.faction = oj.faction;
-				ent.position = coreSpawnPointsByFaction[ent.faction];
+				ent.position = oj.pos;// = coreSpawnPointsByFaction[ent.faction];
 				switch(oj.faction) 
 				{
 					case 0:
@@ -519,7 +559,122 @@ public class SectorCreatorMouse : MonoBehaviour {
 		if(!System.IO.Directory.Exists(Application.dataPath + "\\..\\Sectors\\")) {
 			System.IO.Directory.CreateDirectory(Application.dataPath + "\\..\\Sectors\\");
 		}
-		System.IO.File.WriteAllText(Application.dataPath + "\\..\\Sectors\\" + sct.sectorName, output);
+		string path = Application.dataPath + "\\..\\Sectors\\" + sct.sectorName;
+		System.IO.File.WriteAllText(path, output);
+		System.IO.Path.ChangeExtension(path, ".json");
 		Debug.Log("JSON written to location: " + Application.dataPath + "\\..\\Sectors\\" + sct.sectorName);
+	}
+
+	public void FromJSON() {
+		string path = GameObject.Find("JSONPath").GetComponentsInChildren<Text>()[1].text;
+		if(System.IO.File.Exists(path)) {
+			SectorData data = JsonUtility.FromJson<SectorData>(System.IO.File.ReadAllText(path));
+			SectorDataWrapper sectorDataWrapper = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
+			LandPlatformDataWrapper platformDataWrapper = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
+
+			type = sectorDataWrapper.type;
+			currentColor = sectorDataWrapper.backgroundColor;
+			sctName = sectorDataWrapper.sectorName;
+			UpdateColors();
+
+			int cols = platformDataWrapper.columns;
+			int rows = platformDataWrapper.rows;
+
+			x = sectorDataWrapper.bounds.x;
+			y = sectorDataWrapper.bounds.y;
+			width = sectorDataWrapper.bounds.w;
+			height = sectorDataWrapper.bounds.h;
+
+			sectorProps.ToggleActive();
+			GameObject.Find("Beginning X").GetComponentInChildren<InputField>().text = x + "";
+			GameObject.Find("Beginning Y").GetComponentInChildren<InputField>().text = "" + y;
+			GameObject.Find("Height").GetComponentInChildren<InputField>().text = "" + height;
+			GameObject.Find("Width").GetComponentInChildren<InputField>().text = "" + width;
+			GameObject.Find("Sector Name").GetComponentInChildren<InputField>().text = sctName;
+			GameObject.Find("Sector Type").GetComponent<Dropdown>().value = (int)sectorDataWrapper.type;
+			sectorProps.ToggleActive();
+
+			var rend = GameObject.Find("SectorBorders").GetComponent<LineRenderer>();
+			rend.SetPositions(new Vector3[]{
+            new Vector3(x, y, 0),
+            new Vector3(x + width, y, 0),
+            new Vector3(x + width, y + height, 0),
+            new Vector3(x, y + height, 0)
+        	});
+			
+			center = new Vector3 {
+				x = this.x + width / 2,
+				y = this.y + height / 2,
+			};
+			Vector2 offset = new Vector2 
+			{
+				x = center.x -tileSize * (cols-1)/2,
+				y = center.y +tileSize * (rows-1)/2
+			};
+
+			for(int i = 0; i < platformDataWrapper.tilemap.Length; i++) {
+				switch(platformDataWrapper.tilemap[i]) {
+					case -1:
+						break;
+					default:
+						PlaceableObject obj = new PlaceableObject();
+						obj.type = ObjectTypes.Platform;
+						obj.placeablesIndex = platformDataWrapper.tilemap[i];
+						obj.rotation = platformDataWrapper.rotations[i];
+						Vector3 pos = new Vector3 {
+							x = offset.x + (i % cols) * tileSize,
+							y = offset.y - (i / cols) * tileSize,
+							z = 0
+						};
+						obj.pos = pos;
+						obj.obj = Instantiate(placeables[platformDataWrapper.tilemap[i]].obj, pos, Quaternion.identity);
+						obj.obj.transform.localEulerAngles = new Vector3(0,0,90*platformDataWrapper.rotations[i]);
+						objects.Add(obj);
+						break;
+				}
+			}
+			foreach(Sector.LevelEntity ent in sectorDataWrapper.entities) {
+				PlaceableObject obj = new PlaceableObject();
+				obj.pos = ent.position;
+				obj.faction = ent.faction;
+				switch(ent.assetID) {
+					case "outpost_blueprint":
+						obj.type = ObjectTypes.Outpost;
+						obj.placeablesIndex = 6;
+						obj.obj = Instantiate(placeables[6].obj, obj.pos, Quaternion.identity);
+						break;
+					case "bunker_blueprint":
+						obj.type = ObjectTypes.Bunker;
+						obj.placeablesIndex = 7;
+						obj.obj = Instantiate(placeables[7].obj, obj.pos, Quaternion.identity);
+						break;
+					case "carrier_blueprint":
+						obj.type = ObjectTypes.Carrier;
+						obj.placeablesIndex = 8;
+						obj.obj = Instantiate(placeables[8].obj, obj.pos, Quaternion.identity);
+						break;
+					case "energy_rock":
+						obj.type = ObjectTypes.PowerRock;
+						obj.placeablesIndex = 9;
+						obj.obj = Instantiate(placeables[9].obj, obj.pos, Quaternion.identity);
+						break;
+					case "shellcore_blueprint":
+					case "demo_enemy_shellcore":
+						obj.type = ObjectTypes.ShellCore;
+						obj.placeablesIndex = 10;
+						obj.obj = Instantiate(placeables[10].obj, obj.pos, Quaternion.identity);
+						break;
+					default:
+						break;
+				}
+				if(GetIsFactable(obj.type)) {
+					foreach(SpriteRenderer renderer in obj.obj.GetComponentsInChildren<SpriteRenderer>()) {
+						renderer.color = FactionColors.colors[obj.faction];
+					}
+				obj.obj.GetComponent<SpriteRenderer>().color = Color.white;
+				}
+				objects.Add(obj);
+			}
+		}
 	}
 }

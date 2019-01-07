@@ -41,7 +41,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         
         if(tiles != null) Unload();
 
-        tileSize = blueprint.prefabs[0].GetComponent<SpriteRenderer>().bounds.size.x;
+        tileSize = ResourceManager.GetAsset<GameObject>(blueprint.prefabs[0]).GetComponent<SpriteRenderer>().bounds.size.x;
 
         var cols = blueprint.columns;
         var rows = blueprint.rows;
@@ -67,7 +67,8 @@ public class LandPlatformGenerator : MonoBehaviour {
                 case -1:
                     break;
                 default:
-                    var tile = Instantiate(blueprint.prefabs[blueprint.tilemap[i]], pos, Quaternion.identity);
+                    var tile = Instantiate(ResourceManager.GetAsset<GameObject>(blueprint.prefabs[blueprint.tilemap[i]]), pos, Quaternion.identity);
+                    tile.transform.localEulerAngles = new Vector3(0,0,90 * blueprint.rotations[i]);
                     tile.GetComponent<SpriteRenderer>().color = color;
                     tiles.Add(tile);
                     tile.transform.parent = transform;

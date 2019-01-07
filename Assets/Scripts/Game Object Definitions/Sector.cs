@@ -61,6 +61,7 @@ public class Sector : ScriptableObject
         platform = wrapper.platform;
         targets = wrapper.targets;
         backgroundColor = wrapper.backgroundColor;
+        name = sectorName;
     }
 }
 

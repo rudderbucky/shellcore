@@ -83,6 +83,7 @@ public class SectorManager : MonoBehaviour
                 Sector curSect = ScriptableObject.CreateInstance<Sector>();
                 curSect.SetViaWrapper(sector);
                 LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                plat.name = curSect.name + "Platform";
                 plat.SetViaWrapper(platform);
                 curSect.platform = plat;
                 current = curSect;
@@ -210,9 +211,6 @@ public class SectorManager : MonoBehaviour
 
         //land platforms
         lpg.SetColor(current.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
-        var tiles = new GameObject[1];
-        tiles[0] = ResourceManager.GetAsset<GameObject>("4entry");
-        current.platform.prefabs = tiles;
         lpg.BuildTiles(current.platform);
 
         //sector color
