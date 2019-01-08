@@ -67,7 +67,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected override void Start()
     {
-        base.Start(); // base start
         intrinsicCommandLimit = 3;
         if (carrier != null && carrier.GetIsInitialized())
         {
@@ -75,7 +74,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         }
         transform.position = spawnPoint;
         // initialize instance fields
-
+        base.Start(); // base start
         if(!coreGlow)
             coreGlow = Instantiate(glowPrefab, null, true).transform;
         if (!targetGlow)

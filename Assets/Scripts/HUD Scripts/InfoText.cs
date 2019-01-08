@@ -28,7 +28,7 @@ public class InfoText : MonoBehaviour
         yield return new WaitForSeconds(3f);
         while(text.color.a > 0f)
         {
-            text.color = new Color(1f, 1f, 1f, text.color.a - Time.deltaTime);
+            text.color = new Color(1f, 1f, 1f, 0);
             yield return new WaitForFixedUpdate();
         }
     }
