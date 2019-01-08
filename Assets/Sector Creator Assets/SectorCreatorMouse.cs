@@ -68,11 +68,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 							}
 						}
 					}
-					foreach(SpriteRenderer renderer in com.obj.obj.GetComponentsInChildren<SpriteRenderer>()) {
-						renderer.color = FactionColors.colors[newFaction];
-					}
-					com.obj.obj.GetComponent<SpriteRenderer>().color = Color.white;
 					objects.Add(com.obj);
+					UpdateColors();
 					break;
 				case CommandTypes.Clear:
 					foreach(PlaceableObject obj in com.clearedList) {
@@ -82,6 +79,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 						newObj.obj.transform.localEulerAngles = new Vector3(0,0,90 * newObj.rotation);
 						objects.Add(newObj);
 					}
+					UpdateColors();
 					break;
 			}
 			redoStack.Push(com);
@@ -121,11 +119,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 					}
 					com.obj.faction = (com.obj.faction + 1) % numberOfFactions;
 					if(!com.obj.obj) com.obj.obj = Instantiate(placeables[com.obj.placeablesIndex].obj, com.position, Quaternion.identity);
-					foreach(SpriteRenderer renderer in com.obj.obj.GetComponentsInChildren<SpriteRenderer>()) {
-						renderer.color = FactionColors.colors[com.obj.faction];
-					}
-					com.obj.obj.GetComponent<SpriteRenderer>().color = Color.white;
 					objects.Add(com.obj);
+					UpdateColors();
 					break;
 				case CommandTypes.Clear:
 					foreach(PlaceableObject oj in objects) {
@@ -202,6 +197,11 @@ public class SectorCreatorMouse : MonoBehaviour {
 		foreach(PlaceableObject placeable in objects) {
 			if(placeable.type == ObjectTypes.Platform) {
 				placeable.obj.GetComponent<SpriteRenderer>().color = currentColor + new Color(0.5F,0.5F,0.5F);
+			} else if(GetIsFactable(placeable.type)) {
+				foreach(SpriteRenderer renderer in placeable.obj.GetComponentsInChildren<SpriteRenderer>()) {
+					renderer.color = FactionColors.colors[placeable.faction];
+				}
+				placeable.obj.GetComponent<SpriteRenderer>().color = Color.white;
 			}
 		}
 	}
@@ -324,11 +324,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 							objects.Remove(obj);
 							var newObj = obj;
 							newObj.faction = (obj.faction + 1) % numberOfFactions;
-							foreach(SpriteRenderer rend in newObj.obj.GetComponentsInChildren<SpriteRenderer>()) {
-								rend.color = FactionColors.colors[newObj.faction];
-							}
-							newObj.obj.GetComponent<SpriteRenderer>().color = Color.white;
 							objects.Add(newObj);
+							UpdateColors();
 							com.obj = newObj;
 							undoStack.Push(com);
 						} else if(obj.type == ObjectTypes.Platform) {

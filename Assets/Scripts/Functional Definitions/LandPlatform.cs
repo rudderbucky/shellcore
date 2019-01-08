@@ -16,7 +16,6 @@ public class LandPlatform : ScriptableObject
     [HideInInspector]
     public int[] tilemap = new int[1];
 
-    [HideInInspector]
     public int[] rotations = new int[1];
 
     public void SetViaWrapper(LandPlatformDataWrapper wrapper) {

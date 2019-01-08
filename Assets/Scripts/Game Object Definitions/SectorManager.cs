@@ -39,8 +39,8 @@ public class SectorManager : MonoBehaviour
         objects = new Dictionary<string, GameObject>();
         battleZone = gameObject.AddComponent<BattleZoneManager>();
         lpg = GetComponent<LandPlatformGenerator>();
-
         sectorBorders = new GameObject("SectorBorders").AddComponent<LineRenderer>();
+        sectorBorders.enabled = false;
         sectorBorders.positionCount = 4;
         sectorBorders.startWidth = 0.1f;
         sectorBorders.endWidth = 0.1f;
@@ -65,16 +65,12 @@ public class SectorManager : MonoBehaviour
         }
     }
 
-    public void UpdateStations()
-    {
-        
-    }
-
-    private void Start()
-    {
-            if(jsonMode) {
-                string sectorfile = System.IO.Directory.GetFiles(Application.dataPath + "\\..\\Sectors\\")[0];
-                string sectorjson = System.IO.File.ReadAllText(sectorfile);
+    public void TryGettingJSON() {
+        string path = GameObject.Find("Path Input").GetComponent<UnityEngine.UI.InputField>().text;
+        GameObject.Find("Path Input").transform.parent.gameObject.SetActive(false);
+        if(System.IO.File.Exists(path)) {
+            try {
+                string sectorjson = System.IO.File.ReadAllText(path);
                 SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                 Debug.Log("Platform JSON: " + data.platformjson);
                 LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
@@ -88,7 +84,38 @@ public class SectorManager : MonoBehaviour
                 curSect.platform = plat;
                 current = curSect;
                 loadSector();
-            } else loadSector();
+            } catch(System.Exception) {
+                jsonMode = false;
+                loadSector();
+            }
+        } else {
+            jsonMode = false;
+            loadSector();
+        }
+    }
+    private void Start()
+    {
+                background.setColor(SectorColors.colors[0]);
+     /*        if(jsonMode) {
+                if(System.IO.Directory.GetFiles(Application.dataPath + "\\..\\Sectors\\").Length > 0) 
+                {
+                    string sectorfile = System.IO.Directory.GetFiles(Application.dataPath + "\\..\\Sectors\\")[0];
+                    string sectorjson = System.IO.File.ReadAllText(sectorfile);
+                    SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                    Debug.Log("Platform JSON: " + data.platformjson);
+                    LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
+                    Debug.Log("Sector JSON: " + data.sectorjson);
+                    SectorDataWrapper sector = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
+                    Sector curSect = ScriptableObject.CreateInstance<Sector>();
+                    curSect.SetViaWrapper(sector);
+                    LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                    plat.name = curSect.name + "Platform";
+                    plat.SetViaWrapper(platform);
+                    curSect.platform = plat;
+                    current = curSect;
+                } else jsonMode = false;
+                loadSector();
+            } else loadSector();*/
     }
 
     void loadSector()
@@ -217,6 +244,7 @@ public class SectorManager : MonoBehaviour
         background.setColor(current.backgroundColor);
 
         //sector borders
+        sectorBorders.enabled = true;
         sectorBorders.SetPositions(new Vector3[]{
             new Vector3(current.bounds.x, current.bounds.y, 0),
             new Vector3(current.bounds.x + current.bounds.w, current.bounds.y, 0),
