@@ -18,6 +18,8 @@ public class HUDScript : MonoBehaviour {
         GetComponentInChildren<AbilityHandler>().Initialize(player);
         GetComponentInChildren<ReticleScript>().Initialize(player);
         GetComponentInChildren<QuantityDisplayScript>().Initialize(player);
+        GetComponentInChildren<InfoText>().player = player.transform;
+        player.alerter = GetComponentInChildren<InfoText>();
         Camera.main.GetComponent<CameraScript>().Initialize(player);
         // GetComponentInChildren<FadeUIScript>().Initialize(player); temporarily removed due to implementation difficulties
     }

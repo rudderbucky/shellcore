@@ -46,12 +46,14 @@ public class Bunker : GroundConstruct, IVendor {
 
     protected override void OnDeath()
     {
+        int oldFaction = faction;
         faction = faction == 1 ? 0 : 1;
         for (int i = 0; i < parts.Count; i++)
         {
             RemovePart(parts[i]);
         }
         targeter.SetTarget(null);
+        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().AlertPlayers(oldFaction, "WARNING: Bunker lost!");
         GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
         Start();
     }

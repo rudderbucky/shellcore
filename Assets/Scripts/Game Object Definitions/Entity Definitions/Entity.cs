@@ -223,6 +223,8 @@ public class Entity : MonoBehaviour {
         deathTimer = 0; // reset death timer
         transform.Find("Minimap Image").GetComponent<SpriteRenderer>().enabled = false; // remove from minimap
 
+        ResourceManager.PlayClipByID("clip_explosion1", transform.position);
+
         for(int i = 0; i < parts.Count; i++)
         {
             parts[i].SetCollectible((parts[i] != shell) && Random.Range(0F,5) > 2.5F && !(this as PlayerCore));

@@ -6,14 +6,18 @@ using UnityEngine.UI;
 public class InfoText : MonoBehaviour
 {
     public Text text;
+    public Transform player;
 
     private void Start()
     {
         text.color = Color.clear;
     }
 
-    public void showMessage(string message)
+    public void showMessage(string message, string soundID = null)
     {
+        if(soundID != null) {
+            ResourceManager.PlayClipByID(soundID, player.position);
+        }
         text.text = message;
         text.color = Color.white;
         StartCoroutine(fade());

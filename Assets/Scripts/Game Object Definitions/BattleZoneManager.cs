@@ -8,6 +8,13 @@ public class BattleZoneManager : MonoBehaviour
     List<Entity> targets;
     bool playing;
 
+    public void AlertPlayers(int faction, string message) {
+        foreach(Entity target in targets) {
+            if(target as PlayerCore && target.faction == faction) {
+                ((PlayerCore)target).alerter.showMessage(message, "clip_alert");
+            }
+        }
+    }
     public void UpdateCounters()
     {
         if (playing)
@@ -35,7 +42,11 @@ public class BattleZoneManager : MonoBehaviour
                     if (pair.Value > 0)
                         winningFaction = pair.Key;
                 }
-
+                foreach(Entity ent in targets) {
+                    if(ent as PlayerCore && ent.faction == winningFaction) {
+                        ResourceManager.PlayClipByID("clip_victory", ent.transform.position);
+                    }
+                }
                 DialogueSystem.ShowPopup("Faction " + winningFaction + " won!");
                 playing = false;
             }

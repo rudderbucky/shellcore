@@ -123,7 +123,6 @@ GameObject:
   m_Component:
   - component: {fileID: 49778931}
   - component: {fileID: 49778933}
-  - component: {fileID: 49778932}
   m_Layer: 0
   m_Name: Minimap Camera
   m_TagString: Untagged
@@ -145,14 +144,6 @@ Transform:
   m_Father: {fileID: 2077949627}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &49778932
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 81262491703076448, guid: d5e8074442f47444a987c4a16552339f,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 49778930}
-  m_Enabled: 1
 --- !u!20 &49778933
 Camera:
   m_ObjectHideFlags: 0
@@ -249,6 +240,26 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 114973486850442440, guid: 836e2c9a545881d4992a92dd6a559cdb,
+        type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114973486850442440, guid: 836e2c9a545881d4992a92dd6a559cdb,
+        type: 2}
+      propertyPath: m_FontData.m_BestFit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114973486850442440, guid: 836e2c9a545881d4992a92dd6a559cdb,
+        type: 2}
+      propertyPath: m_FontData.m_MaxSize
+      value: 122
+      objectReference: {fileID: 0}
+    - target: {fileID: 114973486850442440, guid: 836e2c9a545881d4992a92dd6a559cdb,
+        type: 2}
+      propertyPath: m_FontData.m_MinSize
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 836e2c9a545881d4992a92dd6a559cdb, type: 2}
   m_IsPrefabAsset: 0
@@ -651,6 +662,26 @@ MonoBehaviour:
     obj: {fileID: 1118546193406874, guid: df6e17d0ebe9e0a46ab7ec6f94f4e263, type: 2}
   - ID: Junction
     obj: {fileID: 1438003325463656, guid: ff40d154a62073249a97ab74ffb33278, type: 2}
+  - ID: clip_respawn
+    obj: {fileID: 8300000, guid: fcdc02c551db0b94d898de488f45a1fa, type: 3}
+  - ID: clip_explosion1
+    obj: {fileID: 8300000, guid: 543bca5b51290c544afb77708a7ffd54, type: 3}
+  - ID: clip_victory
+    obj: {fileID: 8300000, guid: 01d0ee7ae87955744b45844e7bac85a0, type: 3}
+  - ID: clip_bullet
+    obj: {fileID: 8300000, guid: be804f5dee28d0841a9588203d57de06, type: 3}
+  - ID: clip_beam
+    obj: {fileID: 8300000, guid: f73c576cf77576f429f29f8823baa04a, type: 3}
+  - ID: clip_cannon
+    obj: {fileID: 8300000, guid: 51837ea2438fb2e4d9ef25cd8658a10e, type: 3}
+  - ID: clip_activateability
+    obj: {fileID: 8300000, guid: 0e39e18750a38c246a38a389d0cf3928, type: 3}
+  - ID: clip_powerup
+    obj: {fileID: 8300000, guid: 10ebb418722785e4e8fff241e6325184, type: 3}
+  - ID: clip_healeffect
+    obj: {fileID: 8300000, guid: 256a4b847d7dfa546855671ecf5d587e, type: 3}
+  - ID: clip_alert
+    obj: {fileID: 8300000, guid: 1235a4732c550a04cb7fdac1eaea8b49, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
@@ -1315,6 +1346,7 @@ MonoBehaviour:
   intrinsicCommandLimit: 0
   sectorMngr: {fileID: 0}
   hud: {fileID: 123063170}
+  alerter: {fileID: 0}
 --- !u!1 &2068204859
 GameObject:
   m_ObjectHideFlags: 0

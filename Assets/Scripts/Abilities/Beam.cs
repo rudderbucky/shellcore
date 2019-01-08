@@ -47,6 +47,7 @@ public class Beam : WeaponAbility {
     {
         if (targetingSystem.GetTarget()) // check and get the weapon target
         {
+            ResourceManager.PlayClipByID("clip_beam", transform.position);
             targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(damage, 0); // deal instant damage
             line.positionCount = 2; // render the beam line
             this.victimPos = victimPos; // set the position to render the line to

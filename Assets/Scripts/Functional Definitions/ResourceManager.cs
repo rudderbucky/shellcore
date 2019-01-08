@@ -107,6 +107,11 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    
+    public static void PlayClipByID(string ID, Vector3 pos) {
+        AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos);
+    }
+    
     #if UNITY_EDITOR
     public void GenerateSegmentedList(ResourceManagerEditor.ResourcesByType type)
     {
@@ -200,7 +205,6 @@ public class ResourceManagerEditor : Editor
     SerializedProperty resourcePack;
     //SerializedProperty resourceList;
     ResourceManager manager;
-
     private void OnEnable()
     {
         manager = (ResourceManager)target;
