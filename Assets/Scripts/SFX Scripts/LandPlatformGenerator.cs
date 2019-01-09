@@ -32,7 +32,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     public void SetColor(Color color) {
         this.color = color;
     }
-    public void BuildTiles(LandPlatform platform) {
+    public void BuildTiles(LandPlatform platform, Vector2 center) {
 
         blueprint = platform;
 
@@ -47,10 +47,9 @@ public class LandPlatformGenerator : MonoBehaviour {
         var rows = blueprint.rows;
         offset = new Vector2 
         {
-            x = -tileSize * (cols-1)/2,
-            y = +tileSize * (rows-1)/2
+            x = center.x - tileSize * (cols-1)/2F,
+            y = center.y + tileSize * (rows-1)/2F
         };
-
         tiles = new List<GameObject>();
         areas = new List<Rect>();
 

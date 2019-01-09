@@ -10,8 +10,8 @@ public class PlayerViewScript : MonoBehaviour {
 		obj.SetActive(false);
 	}
 	void Update () {
-		if(Input.GetButtonUp("Cancel")) {
-			obj.SetActive(!obj.activeSelf);
+		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
+			obj.SetActive(!obj.activeSelf); // toggle
 		}
 	}
 }

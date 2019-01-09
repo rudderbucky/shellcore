@@ -12,7 +12,7 @@ public class DrawCircleScript : MonoBehaviour {
     private float timer; // timer used to expand the circle
     private bool initialized;
     public bool respawnMode;
-    private float xrad = 3F;
+    private float xrad = 3F; // for respawns
     private float yrad = 3F;
 
     public void Initialize()
@@ -23,6 +23,7 @@ public class DrawCircleScript : MonoBehaviour {
     public void SetRespawnMode(bool mode) {
         respawnMode = mode;
         if(mode) {
+            // initialize instance fields for respawning
             speed = 20F;
             alpha = 1;
             initialized = true;
@@ -31,7 +32,7 @@ public class DrawCircleScript : MonoBehaviour {
             line.positionCount = 21;
             line.startColor = line.endColor = Color.white;
             line.startWidth = line.endWidth = 0.25F;
-            CreatePoints(xrad, yrad);
+            CreatePoints(xrad, yrad); // create the circle's initial position
         }
     }
 

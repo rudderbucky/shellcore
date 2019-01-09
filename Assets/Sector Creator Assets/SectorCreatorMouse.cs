@@ -35,6 +35,57 @@ public class SectorCreatorMouse : MonoBehaviour {
 	public Stack<Command> undoStack = new Stack<Command>();
 	public Stack<Command> redoStack = new Stack<Command>();
 
+	[System.Serializable]
+	public struct PlaceableObject {
+		public GameObject obj;
+		public ObjectTypes type;
+		public int faction;
+		public int placeablesIndex;
+		public Vector3 pos;
+		public int rotation;
+	}
+
+	public struct SectorData {
+		public string sectorjson;
+		public string platformjson;
+	}
+
+	public bool windowEnabled = true;
+	public int numberOfFactions;
+	public PlaceableObject[] placeables;
+	private float tileSize = 5F;
+	Vector2 cursorOffset = new Vector2(2.5F, 2.5F);
+	[HideInInspector]
+	public List<PlaceableObject> objects;
+	GUIWindowScripts mainMenu;
+	GUIWindowScripts sectorProps;
+	GUIWindowScripts hotkeyList;
+	GUIWindowScripts readFile;
+	int cursorCount = 0;
+	string sctName;
+	int x;
+	int y;
+	int height;
+	int width;
+	PlaceableObject cursor;
+	Color currentColor = SectorColors.colors[0];
+	// Update is called once per frame
+	void Start() {
+		for(int i = 0; i < placeables.Length; i++) {
+			placeables[i].placeablesIndex = i;
+		}
+		windowEnabled = true;
+		objects = new List<PlaceableObject>();
+		cursor = placeables[0];
+		cursor.obj = Instantiate(placeables[0].obj) as GameObject;
+		cursor.obj.transform.position = cursorOffset;
+		mainMenu = transform.Find("MenuBox").GetComponent<GUIWindowScripts>();
+		sectorProps = transform.Find("SectorProps").GetComponent<GUIWindowScripts>();
+		hotkeyList = transform.Find("Hotkey List").GetComponent<GUIWindowScripts>();
+		readFile = transform.Find("ReadFile").GetComponent<GUIWindowScripts>();
+		UpdateColors();
+	}
+
 	public void Undo() {
 		if(undoStack.Count > 0) {
 			Command com = undoStack.Pop();
@@ -133,55 +184,6 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 	}
 
-	[System.Serializable]
-	public struct PlaceableObject {
-		public GameObject obj;
-		public ObjectTypes type;
-		public int faction;
-		public int placeablesIndex;
-		public Vector3 pos;
-		public int rotation;
-	}
-
-	public struct SectorData {
-		public string sectorjson;
-		public string platformjson;
-	}
-
-	public bool windowEnabled = true;
-	public int numberOfFactions;
-	public PlaceableObject[] placeables;
-	private float tileSize = 4.19F;
-	[HideInInspector]
-	public List<PlaceableObject> objects;
-	GUIWindowScripts mainMenu;
-	GUIWindowScripts sectorProps;
-	GUIWindowScripts hotkeyList;
-	GUIWindowScripts readFile;
-	int cursorCount = 0;
-	string sctName;
-	int x;
-	int y;
-	int height;
-	int width;
-	PlaceableObject cursor;
-	Color currentColor = SectorColors.colors[0];
-	// Update is called once per frame
-	void Start() {
-		for(int i = 0; i < placeables.Length; i++) {
-			placeables[i].placeablesIndex = i;
-		}
-		windowEnabled = true;
-		objects = new List<PlaceableObject>();
-		cursor = placeables[0];
-		cursor.obj = Instantiate(placeables[0].obj) as GameObject;
-		mainMenu = transform.Find("MenuBox").GetComponent<GUIWindowScripts>();
-		sectorProps = transform.Find("SectorProps").GetComponent<GUIWindowScripts>();
-		hotkeyList = transform.Find("Hotkey List").GetComponent<GUIWindowScripts>();
-		readFile = transform.Find("ReadFile").GetComponent<GUIWindowScripts>();
-		UpdateColors();
-	}
-
 	void UpdateColors() {
 		foreach(Transform tile in GameObject.Find("Tile Holder").transform) {
 			tile.GetComponent<SpriteRenderer>().color = currentColor;
@@ -246,8 +248,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 		Vector3 mousePos = Input.mousePosition;
 		mousePos.z += 10;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-		mousePos.x = tileSize * (int)(mousePos.x / tileSize + (mousePos.x > 0 ? 0.5F : -0.5F));
-		mousePos.y = tileSize * (int)(mousePos.y / tileSize + (mousePos.y > 0 ? 0.5F : -0.5F));
+		mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x / 2> 0 ? 0.5F : -0.5F));
+		mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y / 2> 0 ? 0.5F : -0.5F));
 
 		if(Input.GetKeyDown("g") && (!windowEnabled || mainMenu.gameObject.activeSelf)) {
 			mainMenu.ToggleActive();
@@ -408,14 +410,15 @@ public class SectorCreatorMouse : MonoBehaviour {
 				if(tilePos.y < lastTilePos.y) lastTilePos.y = tilePos.y;
 			}
 		}
-		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x), Mathf.Abs(lastTilePos.x - center.x)) / tileSize) * 2 + 1;
-		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y), Mathf.Abs(lastTilePos.y - center.y)) / tileSize) * 2 + 1;
+		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x), Mathf.Abs(lastTilePos.x - center.x)) / tileSize) * 2;
+		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y), Mathf.Abs(lastTilePos.y - center.y)) / tileSize) * 2;
 		Vector2 offset = new Vector2 {
 			x = center.x + -(columns - 1) * tileSize/2,
 			y = center.y + (rows - 1) * tileSize/2
 
 		};
 		int[] coordinates = new int[2];
+
 		coordinates[1] = Mathf.RoundToInt((pos.x - offset.x) / tileSize);
 		coordinates[0] = -Mathf.RoundToInt((pos.y - offset.y) / tileSize);
 		Debug.Log("row: " + coordinates[0] + " column: " + coordinates[1] +  " of a square with "  + rows + " rows and "  + columns + " columns");
@@ -432,12 +435,12 @@ public class SectorCreatorMouse : MonoBehaviour {
 		LandPlatformDataWrapper platform = new LandPlatformDataWrapper();
 
 		Vector3 firstTilePos = new Vector3 {
-			x = 0,
-			y = 0
+			x = center.x,
+			y = center.y
 		};
 		Vector3 lastTilePos = new Vector3 {
-			x = 0,
-			y = 0
+			x = center.x,
+			y = center.y
 		};
 		foreach(PlaceableObject ojs in objects) {
 			if(ojs.type == ObjectTypes.Platform) {
@@ -448,11 +451,11 @@ public class SectorCreatorMouse : MonoBehaviour {
 				if(tilePos.y < lastTilePos.y) lastTilePos.y = tilePos.y;
 			}
 		}
-		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x), Mathf.Abs(lastTilePos.x)) / tileSize) * 2 + 1;
-		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y), Mathf.Abs(lastTilePos.y)) / tileSize) * 2 + 1;
+		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x), Mathf.Abs(lastTilePos.x - center.x)) / tileSize) * 2;
+		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y), Mathf.Abs(lastTilePos.y - center.y)) / tileSize) * 2;
 		Vector2 offset = new Vector2 {
-			x = -(columns - 1) * tileSize/2,
-			y = (rows - 1) * tileSize/2
+			x = center.x - (columns - 1) * tileSize/2,
+			y = center.y + (rows - 1) * tileSize/2
 		};
 		
 		platform.rows = rows;
@@ -600,15 +603,16 @@ public class SectorCreatorMouse : MonoBehaviour {
         	});
 			
 			center = new Vector3 {
-				x = this.x + width / 2,
-				y = this.y + height / 2,
+				x = this.x + width / 2F,
+				y = this.y + height / 2F,
 			};
+			Debug.Log(center);
+
 			Vector2 offset = new Vector2 
 			{
 				x = center.x -tileSize * (cols-1)/2,
 				y = center.y +tileSize * (rows-1)/2
 			};
-
 			for(int i = 0; i < platformDataWrapper.tilemap.Length; i++) {
 				switch(platformDataWrapper.tilemap[i]) {
 					case -1:
@@ -634,6 +638,9 @@ public class SectorCreatorMouse : MonoBehaviour {
 				PlaceableObject obj = new PlaceableObject();
 				obj.pos = ent.position;
 				obj.faction = ent.faction;
+
+				// TODO: change this system once the shellcore editor is ready
+				
 				switch(ent.assetID) {
 					case "outpost_blueprint":
 						obj.type = ObjectTypes.Outpost;
