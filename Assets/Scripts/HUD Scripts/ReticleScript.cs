@@ -185,6 +185,8 @@ public class ReticleScript : MonoBehaviour {
                 if (targSys.GetTarget())
                 {
                     Draggable draggable = targSys.GetTarget().GetComponent<Draggable>();
+
+                    // it's draggable if it's not an entity or it's a draggable entity with the same faction
                     if (draggable 
                     && (!targSys.GetTarget().GetComponent<Entity>() 
                     || targSys.GetTarget().GetComponent<Entity>().faction == craft.faction))

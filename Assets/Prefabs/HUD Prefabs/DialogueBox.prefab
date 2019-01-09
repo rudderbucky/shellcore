@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 223656416705784446}
   - component: {fileID: 114770138115523030}
   - component: {fileID: 114957234421256294}
+  - component: {fileID: 114400083845006316}
   m_Layer: 5
   m_Name: DialogueBox
   m_TagString: Untagged
@@ -128,7 +129,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 0087ff109103a47428e04c089e213a16, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -141,6 +142,17 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Dialogue text
+--- !u!114 &114400083845006316
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1472588909470664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7a1f2df04cba0b48b7b20a393a39592, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114770138115523030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -200,7 +212,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114980104069540848}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114400083845006316}
+        m_MethodName: ToggleActive
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114957234421256294

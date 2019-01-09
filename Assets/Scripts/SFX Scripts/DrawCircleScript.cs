@@ -11,36 +11,67 @@ public class DrawCircleScript : MonoBehaviour {
     private LineRenderer line; // line renderer used to generate the circle
     private float timer; // timer used to expand the circle
     private bool initialized;
+    public bool respawnMode;
+    private float xrad = 3F; // for respawns
+    private float yrad = 3F;
 
     public void Initialize()
     {
         initialized = true;
     }
 
+    public void SetRespawnMode(bool mode) {
+        respawnMode = mode;
+        if(mode) {
+            // initialize instance fields for respawning
+            speed = 20F;
+            alpha = 1;
+            initialized = true;
+            line = GetComponent<LineRenderer>();
+            line.useWorldSpace = false;
+            line.positionCount = 21;
+            line.startColor = line.endColor = Color.white;
+            line.startWidth = line.endWidth = 0.25F;
+            CreatePoints(xrad, yrad); // create the circle's initial position
+        }
+    }
 
     private void Start()
     {
+        if(respawnMode) {
+        } else {
         // initialize instance fields
-        alpha = 1;
-        speed = Random.Range(30, 40);
-        line = gameObject.GetComponent<LineRenderer>();
-        line.useWorldSpace = false;
-        line.positionCount = 60;
+            alpha = 1;
+            speed = Random.Range(30, 40);
+            line = gameObject.GetComponent<LineRenderer>();
+            line.useWorldSpace = false;
+            line.positionCount = 60;
+        }
     }
 
     private void Update()
     {
         if (initialized)
         {
-            timer += Time.deltaTime; // increment time
-            if (timer > 0.5F && timer < 1.25F) // time to draw
-            {
-                CreatePoints(speed * (timer - 0.5F), speed * (timer - 0.5F)); // draw the circle
-            }
-            else
-            {
-                line.startColor = new Color(1, 1, 1, 0); // set to transparent
-                line.endColor = new Color(1, 1, 1, 0); // set to transparent
+            if(respawnMode) {
+                line.enabled = true;
+                xrad -= Time.deltaTime * speed;
+                yrad -= Time.deltaTime * speed;
+                if(xrad < 0) {
+                    Destroy(gameObject);
+                } else
+                CreatePoints(xrad, yrad);
+            } else {
+                timer += Time.deltaTime; // increment time
+                if (timer > 0.5F && timer < 1.25F) // time to draw
+                {
+                    CreatePoints(speed * (timer - 0.5F), speed * (timer - 0.5F)); // draw the circle
+                }
+                else
+                {
+                    line.startColor = new Color(1, 1, 1, 0); // set to transparent
+                    line.endColor = new Color(1, 1, 1, 0); // set to transparent
+                }
             }
         }
     }

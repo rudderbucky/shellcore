@@ -223,6 +223,8 @@ public class Entity : MonoBehaviour {
         deathTimer = 0; // reset death timer
         transform.Find("Minimap Image").GetComponent<SpriteRenderer>().enabled = false; // remove from minimap
 
+        ResourceManager.PlayClipByID("clip_explosion1", transform.position);
+
         for(int i = 0; i < parts.Count; i++)
         {
             parts[i].SetCollectible((parts[i] != shell) && Random.Range(0F,5) > 2.5F && !(this as PlayerCore));
@@ -327,6 +329,10 @@ public class Entity : MonoBehaviour {
             if (deathTimer >= 0.5F) // hardcoded based on animation (what?)
             {
                 GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
+                if(this as PlayerCore && (deathTimer > 2)) {
+                    ((PlayerCore)this).alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
+                    + (5 - deathTimer > 1 ? "s." : "."));
+                }
             }
             if (deathTimer >= 5F)
             {

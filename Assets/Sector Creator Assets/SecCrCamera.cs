@@ -30,10 +30,6 @@ public class SecCrCamera : MonoBehaviour {
 
 			transform.position += Input.GetAxis("Horizontal") * Vector3.right;
 			transform.position += Input.GetAxis("Vertical") * Vector3.up;
-
-			if(Input.GetKey("space")) {
-				transform.position = new Vector3(0,0,-10);
-			}
 		}
 	}
 }

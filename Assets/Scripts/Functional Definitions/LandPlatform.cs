@@ -9,14 +9,31 @@ using UnityEditor;
 public class LandPlatform : ScriptableObject
 {
     //public LandPlatform blueprint;
-    public GameObject[] prefabs;
+    public string[] prefabs;
     [HideInInspector]
     public int rows = 1, columns = 1;
 
     [HideInInspector]
     public int[] tilemap = new int[1];
+
+    public int[] rotations = new int[1];
+
+    public void SetViaWrapper(LandPlatformDataWrapper wrapper) {
+        rows = wrapper.rows;
+        columns = wrapper.columns;
+        tilemap = wrapper.tilemap;
+        rotations = wrapper.rotations;
+        prefabs = wrapper.prefabs;
+    }
 }
 
+public class LandPlatformDataWrapper {
+    public int rows = 1;
+    public int columns = 1;
+    public int[] tilemap = new int[1];
+    public int[] rotations = new int[1];
+    public string[] prefabs;
+}
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(LandPlatform))]
@@ -27,7 +44,6 @@ class LandPlatformEditor : Editor
     SerializedProperty columns;
 
     Vector2 scrollPos;
-
     private void OnEnable()
     {
         tilemap = serializedObject.FindProperty("tilemap");

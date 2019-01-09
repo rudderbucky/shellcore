@@ -32,25 +32,24 @@ public class LandPlatformGenerator : MonoBehaviour {
     public void SetColor(Color color) {
         this.color = color;
     }
-    public void BuildTiles(LandPlatform platform) {
+    public void BuildTiles(LandPlatform platform, Vector2 center) {
 
         blueprint = platform;
 
-        if (!blueprint || blueprint.prefabs.Length <= 0)
+        if (blueprint == null || blueprint.prefabs.Length <= 0)
             return;
         
         if(tiles != null) Unload();
 
-        tileSize = blueprint.prefabs[0].GetComponent<SpriteRenderer>().bounds.size.x;
+        tileSize = ResourceManager.GetAsset<GameObject>(blueprint.prefabs[0]).GetComponent<SpriteRenderer>().bounds.size.x;
 
         var cols = blueprint.columns;
         var rows = blueprint.rows;
         offset = new Vector2 
         {
-            x = -tileSize * (cols-1)/2,
-            y = +tileSize * (rows-1)/2
+            x = center.x - tileSize * (cols-1)/2F,
+            y = center.y + tileSize * (rows-1)/2F
         };
-
         tiles = new List<GameObject>();
         areas = new List<Rect>();
 
@@ -67,7 +66,8 @@ public class LandPlatformGenerator : MonoBehaviour {
                 case -1:
                     break;
                 default:
-                    var tile = Instantiate(blueprint.prefabs[blueprint.tilemap[i]], pos, Quaternion.identity);
+                    var tile = Instantiate(ResourceManager.GetAsset<GameObject>(blueprint.prefabs[blueprint.tilemap[i]]), pos, Quaternion.identity);
+                    tile.transform.localEulerAngles = new Vector3(0,0,90 * blueprint.rotations[i]);
                     tile.GetComponent<SpriteRenderer>().color = color;
                     tiles.Add(tile);
                     tile.transform.parent = transform;
@@ -168,21 +168,13 @@ public class LandPlatformGenerator : MonoBehaviour {
         int debugCount = 0;
 
         //connect nodes
-         Debug.Log("Connecting nodes...");
-         int currentAreaID = 0;
+        Debug.Log("Connecting nodes...");
         for (int i = 0; i < nodes.Count; i++)
         {
-            if(!areaIDByNode.ContainsKey(nodes[i])) {
-                areaIDByNode.Add(nodes[i], currentAreaID++);
-            }
             for (int j = i + 1; j < nodes.Count; j++)
             {
                 if (isInLoS(nodes[i].pos, nodes[j].pos))
                 {
-                    if(!areaIDByNode.ContainsKey(nodes[j])) 
-                    {
-                        areaIDByNode.Add(nodes[j], areaIDByNode[nodes[i]]);
-                    }
                     nodes[i].neighbours.Add(nodes[j]);
                     nodes[j].neighbours.Add(nodes[i]);
                     float d = (nodes[i].pos - nodes[j].pos).magnitude;
@@ -192,6 +184,14 @@ public class LandPlatformGenerator : MonoBehaviour {
                 }
             }
         }
+
+        int currentAreaID = 0;
+        foreach(NavigationNode node in nodes) {
+            if(!areaIDByNode.ContainsKey(node)) {
+                RecursivelyDefineIDs(node, currentAreaID++);
+            }
+        }
+
         foreach(GameObject tile in tiles) {
             if(areaIDByTile.ContainsKey(tile)) continue;
             foreach(NavigationNode node in nodes) {
@@ -208,6 +208,18 @@ public class LandPlatformGenerator : MonoBehaviour {
             }
         }
         Debug.Log("Done! Nodes: " + nodes.Count + " Connections: " + debugCount + " Landmasses: " + ids.Count);
+    }
+
+
+    void RecursivelyDefineIDs(NavigationNode node, int ID) {
+        if(!areaIDByNode.ContainsKey(node)) {
+            areaIDByNode.Add(node, ID);
+        } else if (areaIDByNode[node] != ID) {
+            areaIDByNode[node] = ID;
+        } else return;
+        foreach(NavigationNode neighbor in node.neighbours) {
+            RecursivelyDefineIDs(neighbor, ID);
+        }
     }
 
     bool isValidTile(int x, int y)

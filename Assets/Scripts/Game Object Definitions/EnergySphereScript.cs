@@ -10,10 +10,10 @@ public class EnergySphereScript : MonoBehaviour {
     private void Update()
     {
         timer += Time.deltaTime;
-        if (timer > 6) {
+        if (timer > 10) {
             Destroy(gameObject);
         }
-        else if (timer > 3)
+        else if (timer > 7)
         {
             Blink();
         }
@@ -31,6 +31,7 @@ public class EnergySphereScript : MonoBehaviour {
     {
         if (collision.GetComponent<IHarvester>() != null)
         {
+            ResourceManager.PlayClipByID("clip_powerup", transform.position);
             collision.GetComponent<IHarvester>().AddPower(20);
             Destroy(gameObject);
         }

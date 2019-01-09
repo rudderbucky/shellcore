@@ -59,6 +59,15 @@ public abstract class Craft : Entity
         Start(); // once everything else is done initialize the craft again
     }
 
+    protected override void Start() {
+        base.Start();
+        var circle = Instantiate(explosionCirclePrefab, transform, false);
+        circle.SetActive(true);
+        circle.GetComponent<DrawCircleScript>().Initialize();
+        circle.GetComponent<DrawCircleScript>().SetRespawnMode(true);
+        ResourceManager.PlayClipByID("clip_respawn", transform.position);
+    }
+
     public int GetEnginePower() {
         return enginePower;
     }

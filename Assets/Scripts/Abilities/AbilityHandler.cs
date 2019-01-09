@@ -94,6 +94,7 @@ public class AbilityHandler : MonoBehaviour {
             abilityGleamArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)
         }
+        if(image) Destroy(image.gameObject);
         initialized = true; // handler completely initialized, safe to update now
     }
 

@@ -9,6 +9,7 @@ using UnityEngine;
 public class PlayerCore : ShellCore {
 
     public HUDScript hud;
+    public InfoText alerter;
 
     /// <summary>
     /// Respawns the player core, deinitializes the HUD

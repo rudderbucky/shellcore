@@ -107,6 +107,11 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    
+    public static void PlayClipByID(string ID, Vector3 pos) {
+        AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos);
+    }
+    
     #if UNITY_EDITOR
     public void GenerateSegmentedList(ResourceManagerEditor.ResourcesByType type)
     {
@@ -199,7 +204,6 @@ public class ResourceManagerEditor : Editor
     SerializedProperty segmentedBuiltIns;
     SerializedProperty resourcePack;
     ResourceManager manager;
-
     private void OnEnable()
     {
         manager = (ResourceManager)target;
@@ -251,6 +255,7 @@ public class ResourceManagerEditor : Editor
                 if (manager.resourcePack.resources[i].ID == manager.fieldID)
                 {
                     manager.resourcePack.resources[i] = resource;
+                    Debug.Log(manager.fieldID);
                     state = EditorState.successModify;
                     break;
                 }
@@ -307,6 +312,22 @@ public class ResourceManagerEditor : Editor
         }
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Export all to ResourcePack"))
+        {
+            ResourcePack pack = CreateInstance<ResourcePack>();
+            pack.resources = new List<ResourceManager.Resource>();
+            foreach (ResourceManager.Resource res in manager.resourcePack.resources)
+            {
+                pack.resources.Add(res);
+            }
+
+            string path = AssetDatabase.GenerateUniqueAssetPath("Assets/DefaultResources.asset");
+            AssetDatabase.CreateAsset(pack, path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
         displayType = (ResourcesByType)EditorGUILayout.EnumPopup("Resources by type: ", displayType);
         if (displayType != oldDisplayType)
         {
@@ -337,22 +358,6 @@ public class ResourceManagerEditor : Editor
             default:
                 break;
         }
-
-        //TEMP
-        //if (GUILayout.Button("Export all to ResourcePack"))
-        //{
-        //    ResourcePack pack = CreateInstance<ResourcePack>();
-        //    pack.resources = new List<ResourceManager.Resource>();
-        //    foreach (ResourceManager.Resource res in manager.builtInResources)
-        //    {
-        //        pack.resources.Add(res);
-        //    }
-
-        //    string path = AssetDatabase.GenerateUniqueAssetPath("Assets/DefaultResources.asset");
-        //    AssetDatabase.CreateAsset(pack, path);
-        //    AssetDatabase.SaveAssets();
-        //    AssetDatabase.Refresh();
-        //}
 
         serializedObject.ApplyModifiedProperties();
     }

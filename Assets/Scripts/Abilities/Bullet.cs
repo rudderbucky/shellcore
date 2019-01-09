@@ -53,6 +53,7 @@ public class Bullet : WeaponAbility {
     /// <param name="targetPos">The position to fire the bullet to</param>
     void FireBullet(Vector3 targetPos)
     {
+        ResourceManager.PlayClipByID("clip_bullet", transform.position);
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
         // Create the Bullet from the Bullet Prefab
         Vector3 diff = targetPos - originPos;

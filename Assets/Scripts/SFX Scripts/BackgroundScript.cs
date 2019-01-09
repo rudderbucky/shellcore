@@ -56,6 +56,7 @@ public class BackgroundScript : MonoBehaviour {
     {
         mcamera = Camera.main.transform;
         tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
+        GameObject parent = new GameObject("Tile Holder");
         // grab tile spacing (this should be constant between the tile sprites given)
         Vector2 dimensions = Camera.main.ScreenToWorldPoint(
             new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z)); 
@@ -75,6 +76,7 @@ public class BackgroundScript : MonoBehaviour {
                 instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
                 // the position of the tile
                 GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;
+                go.transform.SetParent(parent.transform, true);
                 // create the tile, no rotation desired
                 go.GetComponent<SpriteRenderer>().color = new Color(0.5F, 0, 0);//new Color(0.039F, 0.188F, 0.184F);
                 // change the color (will be changing this line later)

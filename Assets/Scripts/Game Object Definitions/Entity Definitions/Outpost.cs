@@ -54,13 +54,16 @@ public class Outpost : AirConstruct, IVendor {
         // this won't trigger PostDeath() since that only gets called if the timer ticks to a value
         // the timer doesn't tick unless isDead is set to true
 
+        int otherFaction = faction;
         faction = faction == 1 ? 0 : 1;
+        
         for (int i = 0; i < parts.Count; i++)
         {
             RemovePart(parts[i]);
         }
         targeter.SetTarget(null);
         GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
+        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().AlertPlayers(otherFaction, "WARNING: Outpost lost!");
         Start();
     }
 }

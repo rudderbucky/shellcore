@@ -217,6 +217,11 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     virtual protected void ToggleIndicator()
     {
         var indicator = transform.Find("Shooter");
+        GameObject glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
+        glowPrefab = Instantiate(glowPrefab, transform, false);
+        glowPrefab.transform.localScale = new Vector3(0.5F,0.5F,1);
+        glowPrefab.GetComponent<SpriteRenderer>().color = new Color(1,1,1,0.5F);
+        Destroy(glowPrefab, GetActiveTimeRemaining());
         originalIndicatorColor = FactionColors.colors[Core.faction];
         if (indicator)
         {
