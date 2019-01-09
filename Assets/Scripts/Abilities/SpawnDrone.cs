@@ -56,11 +56,14 @@ public class SpawnDrone : ActiveAbility
         drone.enginePower = 100;
         drone.Init();
         drone.SetOwner(craft);
-        if(craft as ICarrier != null)
+        if (craft as ICarrier != null)
         {
-            drone.getAI().Mode = DroneAI.AIMode.AutoPath;
-        } else drone.getAI().Mode = DroneAI.AIMode.Follow;
-        drone.getAI().followTarget = craft.GetTransform();
+            drone.getAI().setMode(AirCraftAI.AIMode.Path);
+        }
+        else
+        {
+            drone.getAI().follow(craft.GetTransform());
+        }
 
         ToggleIndicator();
     }

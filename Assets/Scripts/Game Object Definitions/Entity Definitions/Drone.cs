@@ -10,7 +10,7 @@ public interface IOwnable
 public class Drone : AirCraft, IOwnable {
 
     private IOwner owner;
-    private DroneAI ai;
+    private AirCraftAI ai;
     private float time;
     private float initialzangle;
     private bool initialized = false;
@@ -36,7 +36,7 @@ public class Drone : AirCraft, IOwnable {
         base.OnDeath();
     }
 
-    public DroneAI getAI()
+    public AirCraftAI getAI()
     {
         return ai;
     }
@@ -51,16 +51,16 @@ public class Drone : AirCraft, IOwnable {
     {
         isDraggable = true;
         base.Start();
-        ai = gameObject.AddComponent<DroneAI>();
-        ai.craft = this;
-        ai.path = path;
-        ai.Mode = path == null ? DroneAI.AIMode.AutoPath : DroneAI.AIMode.Path;
+        ai = gameObject.AddComponent<AirCraftAI>();
+        ai.Init(this, owner);
+        ai.setPath(path);
+        //ai.setMode(AirCraftAI.AIMode.Path);
         initialized = true;
     }
 
     public void CommandMovement(Vector3 pos)
     {
-        ai.currentTargetPos = pos;
+        ai.moveToPosition(pos);
     }
 
     protected override void Update()
@@ -74,12 +74,12 @@ public class Drone : AirCraft, IOwnable {
             }
         } else
         {
-            if(ai.Mode != DroneAI.AIMode.Inactive)
+            if(ai.getMode() != AirCraftAI.AIMode.Inactive)
             {
                 time = Time.time;
                 initialzangle = transform.localEulerAngles.z;
             }
-            ai.Mode = DroneAI.AIMode.Inactive;
+            ai.setMode(AirCraftAI.AIMode.Inactive);
             transform.localEulerAngles = new Vector3(0, 0, initialzangle + (Time.time - time) * -180f);
         }
     }

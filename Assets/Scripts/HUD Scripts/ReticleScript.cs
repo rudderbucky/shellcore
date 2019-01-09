@@ -43,12 +43,11 @@ public class ReticleScript : MonoBehaviour {
             if (hits.Length == 0 ||  hits[0].transform != craft.transform) {
                 var pos = Input.mousePosition;
                 pos.z = 10;
-                targSys.GetTarget().GetComponent<DroneAI>().Mode = DroneAI.AIMode.Position;
                 targSys.GetTarget().GetComponent<Drone>().CommandMovement(Camera.main.ScreenToWorldPoint(pos));
                 targSys.SetTarget(null);
             } else if (hits[0].transform == craft.transform)
             {
-                targSys.GetTarget().GetComponent<DroneAI>().Mode = DroneAI.AIMode.Follow;
+                targSys.GetTarget().GetComponent<AirCraftAI>().follow(craft.transform);
                 targSys.SetTarget(null);
             }
         }
