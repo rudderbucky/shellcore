@@ -248,9 +248,13 @@ public class SectorCreatorMouse : MonoBehaviour {
 		Vector3 mousePos = Input.mousePosition;
 		mousePos.z += 10;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-		mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x / 2> 0 ? 0.5F : -0.5F));
-		mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y / 2> 0 ? 0.5F : -0.5F));
-
+		if(cursor.type == ObjectTypes.Platform) {
+			mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x / 2> 0 ? 0.5F : -0.5F));
+			mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y / 2> 0 ? 0.5F : -0.5F));
+		} else {
+			mousePos.x = 0.5F * tileSize * Mathf.RoundToInt((mousePos.x) / (0.5F * tileSize));
+			mousePos.y = 0.5F * tileSize * Mathf.RoundToInt((mousePos.y) / (0.5F * tileSize));
+		}
 		if(Input.GetKeyDown("g") && (!windowEnabled || mainMenu.gameObject.activeSelf)) {
 			mainMenu.ToggleActive();
 		} else {
