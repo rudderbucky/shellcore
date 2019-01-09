@@ -9,12 +9,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 	public Vector3 center = new Vector3(0,0,0);
 	public Sector.SectorType type = Sector.SectorType.Neutral;
 	public enum ObjectTypes {
-		Outpost,
-		Bunker,
-		Carrier,
-		PowerRock,
-		Platform,
-		ShellCore
+		Other,
+		Platform
 	}
 
 	public enum CommandTypes {
@@ -39,6 +35,9 @@ public class SectorCreatorMouse : MonoBehaviour {
 	public struct PlaceableObject {
 		public GameObject obj;
 		public ObjectTypes type;
+		public string assetID;
+		public string vendingID;
+		public bool isTarget;
 		public int faction;
 		public int placeablesIndex;
 		public Vector3 pos;
@@ -199,16 +198,17 @@ public class SectorCreatorMouse : MonoBehaviour {
 		foreach(PlaceableObject placeable in objects) {
 			if(placeable.type == ObjectTypes.Platform) {
 				placeable.obj.GetComponent<SpriteRenderer>().color = currentColor + new Color(0.5F,0.5F,0.5F);
-			} else if(GetIsFactable(placeable.type)) {
+			} else if(GetIsFactable(placeable)) {
 				foreach(SpriteRenderer renderer in placeable.obj.GetComponentsInChildren<SpriteRenderer>()) {
 					renderer.color = FactionColors.colors[placeable.faction];
 				}
-				placeable.obj.GetComponent<SpriteRenderer>().color = Color.white;
+				if(placeable.obj.GetComponentsInChildren<SpriteRenderer>().Length > 1)
+					placeable.obj.GetComponent<SpriteRenderer>().color = Color.white;
 			}
 		}
 	}
-	bool GetIsFactable(ObjectTypes type) {
-		return !(type == ObjectTypes.Platform || type == ObjectTypes.PowerRock);
+	bool GetIsFactable(PlaceableObject placeable) {
+		return !(placeable.type == ObjectTypes.Platform) && placeable.assetID != "energy_rock";
 	}
 	void DeleteObject(){
 		Command com = new Command();
@@ -324,7 +324,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				bool found = false;
 				foreach(PlaceableObject obj in objects) {
 					if(obj.pos == cursor.obj.transform.position && cursor.type == obj.type) {
-						if(GetIsFactable(cursor.type)) {
+						if(GetIsFactable(cursor)) {
 							com.type = CommandTypes.ChangeFaction;
 							com.position = cursor.obj.transform.position;
 							objects.Remove(obj);
@@ -414,8 +414,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 				if(tilePos.y < lastTilePos.y) lastTilePos.y = tilePos.y;
 			}
 		}
-		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x), Mathf.Abs(lastTilePos.x - center.x)) / tileSize) * 2;
-		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y), Mathf.Abs(lastTilePos.y - center.y)) / tileSize) * 2;
+		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x) + 1, Mathf.Abs(lastTilePos.x - center.x) + 1) / tileSize) * 2;
+		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y) + 1, Mathf.Abs(lastTilePos.y - center.y) + 1) / tileSize) * 2;
 		Vector2 offset = new Vector2 {
 			x = center.x + -(columns - 1) * tileSize/2,
 			y = center.y + (rows - 1) * tileSize/2
@@ -455,8 +455,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 				if(tilePos.y < lastTilePos.y) lastTilePos.y = tilePos.y;
 			}
 		}
-		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x), Mathf.Abs(lastTilePos.x - center.x)) / tileSize) * 2;
-		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y), Mathf.Abs(lastTilePos.y - center.y)) / tileSize) * 2;
+		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x) + 1, Mathf.Abs(lastTilePos.x - center.x) + 1) / tileSize) * 2;
+		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y) + 1, Mathf.Abs(lastTilePos.y - center.y) + 1) / tileSize) * 2;
 		Vector2 offset = new Vector2 {
 			x = center.x - (columns - 1) * tileSize/2,
 			y = center.y + (rows - 1) * tileSize/2
@@ -490,31 +490,14 @@ public class SectorCreatorMouse : MonoBehaviour {
 		int ID = 0;
 		Vector3[] coreSpawnPointsByFaction = new Vector3[numberOfFactions];
 		foreach(PlaceableObject oj in objects) {
-			if(oj.type != ObjectTypes.Platform && oj.type != ObjectTypes.ShellCore) {
+			if(oj.type != ObjectTypes.Platform) {
 				Sector.LevelEntity ent = new Sector.LevelEntity();
 				ent.ID = ID++ + "";
 				ent.faction = oj.faction;
 				ent.position = oj.obj.transform.position;
-				switch(oj.type) {
-					case ObjectTypes.Bunker:
-						ent.assetID = "bunker_blueprint";
-						ent.vendingID = "bunker_vending_blueprint";
-						break;
-					case ObjectTypes.Outpost:
-						ent.assetID = "outpost_blueprint";
-						ent.vendingID = "outpost_vending_blueprint";
-						break;
-					case ObjectTypes.Carrier:
-						ent.assetID = "carrier_blueprint";
-						targetIDS.Add(ent.ID);
-						Vector3 pos = oj.obj.transform.position;
-						pos.y -= 3;
-						coreSpawnPointsByFaction[ent.faction] = pos;
-						break;
-					case ObjectTypes.PowerRock:
-						ent.assetID = "energy_rock";
-						break;
-				}
+				ent.assetID = oj.assetID;
+				ent.vendingID = oj.vendingID;
+				if(oj.isTarget) targetIDS.Add(ent.ID);
 				ent.name = ent.assetID + ent.ID;
 				ents.Add(ent);
 			} else if (oj.type == ObjectTypes.Platform) {
@@ -524,29 +507,6 @@ public class SectorCreatorMouse : MonoBehaviour {
 				
 				platform.tilemap[coordinates[1] + platform.columns * coordinates[0]] = oj.placeablesIndex;
 				platform.rotations[coordinates[1] + platform.columns * coordinates[0]] = oj.rotation;
-			}
-		}
-
-		// create shellcores and assign spawn points
-
-		foreach(PlaceableObject oj in objects) {
-			if(oj.type == ObjectTypes.ShellCore) {
-				Sector.LevelEntity ent = new Sector.LevelEntity();
-				ent.ID = ID++ + "";
-				ent.faction = oj.faction;
-				ent.position = oj.pos;// = coreSpawnPointsByFaction[ent.faction];
-				switch(oj.faction) 
-				{
-					case 0:
-						ent.assetID = "shellcore_blueprint";
-						break;
-					case 1:
-						ent.assetID = "demo_enemy_shellcore";
-						break;
-				}
-				ent.name = ent.assetID + ent.ID;
-				targetIDS.Add(ent.ID);
-				ents.Add(ent);
 			}
 		}
 
@@ -638,48 +598,32 @@ public class SectorCreatorMouse : MonoBehaviour {
 						break;
 				}
 			}
+
+
 			foreach(Sector.LevelEntity ent in sectorDataWrapper.entities) {
 				PlaceableObject obj = new PlaceableObject();
 				obj.pos = ent.position;
 				obj.faction = ent.faction;
 
 				// TODO: change this system once the shellcore editor is ready
-				
-				switch(ent.assetID) {
-					case "outpost_blueprint":
-						obj.type = ObjectTypes.Outpost;
-						obj.placeablesIndex = 6;
-						obj.obj = Instantiate(placeables[6].obj, obj.pos, Quaternion.identity);
+				obj.assetID = ent.assetID;
+				obj.type = ObjectTypes.Other;
+				obj.vendingID = ent.vendingID;
+				for(int i = 0; i < placeables.Length; i++) {
+					if(placeables[i].assetID == obj.assetID) {
+						obj.placeablesIndex = i;
 						break;
-					case "bunker_blueprint":
-						obj.type = ObjectTypes.Bunker;
-						obj.placeablesIndex = 7;
-						obj.obj = Instantiate(placeables[7].obj, obj.pos, Quaternion.identity);
-						break;
-					case "carrier_blueprint":
-						obj.type = ObjectTypes.Carrier;
-						obj.placeablesIndex = 8;
-						obj.obj = Instantiate(placeables[8].obj, obj.pos, Quaternion.identity);
-						break;
-					case "energy_rock":
-						obj.type = ObjectTypes.PowerRock;
-						obj.placeablesIndex = 9;
-						obj.obj = Instantiate(placeables[9].obj, obj.pos, Quaternion.identity);
-						break;
-					case "shellcore_blueprint":
-					case "demo_enemy_shellcore":
-						obj.type = ObjectTypes.ShellCore;
-						obj.placeablesIndex = 10;
-						obj.obj = Instantiate(placeables[10].obj, obj.pos, Quaternion.identity);
-						break;
-					default:
-						break;
+					}
 				}
-				if(GetIsFactable(obj.type)) {
+
+				obj.obj = Instantiate(placeables[obj.placeablesIndex].obj, obj.pos, Quaternion.identity);
+				
+				if(GetIsFactable(obj)) {
 					foreach(SpriteRenderer renderer in obj.obj.GetComponentsInChildren<SpriteRenderer>()) {
 						renderer.color = FactionColors.colors[obj.faction];
 					}
-				obj.obj.GetComponent<SpriteRenderer>().color = Color.white;
+					if(obj.obj.GetComponentsInChildren<SpriteRenderer>().Length > 1)
+						obj.obj.GetComponent<SpriteRenderer>().color = Color.white;
 				}
 				objects.Add(obj);
 			}

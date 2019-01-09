@@ -3535,11 +3535,69 @@ MonoBehaviour:
     obj: {fileID: 11400000, guid: 8a416ef974a215c4197b5a269040a75b, type: 2}
   - ID: demo_enemy_shellcore
     obj: {fileID: 11400000, guid: 8b9cce9b8a5c1d545b7eb9b9bd135b26, type: 2}
-  - ID: 4entry
+  - ID: clip_respawn
+    obj: {fileID: 8300000, guid: fcdc02c551db0b94d898de488f45a1fa, type: 3}
+  - ID: 4 Entry
     obj: {fileID: 1535808194251928, guid: b764e4031e9be0045b6b2f28bc01ba0f, type: 2}
+  - ID: clip_bullet
+    obj: {fileID: 8300000, guid: be804f5dee28d0841a9588203d57de06, type: 3}
+  - ID: clip_beam
+    obj: {fileID: 8300000, guid: f73c576cf77576f429f29f8823baa04a, type: 3}
+  - ID: clip_cannon
+    obj: {fileID: 8300000, guid: 51837ea2438fb2e4d9ef25cd8658a10e, type: 3}
+  - ID: clip_alert
+    obj: {fileID: 8300000, guid: 1235a4732c550a04cb7fdac1eaea8b49, type: 3}
+  - ID: clip_explosion1
+    obj: {fileID: 8300000, guid: 543bca5b51290c544afb77708a7ffd54, type: 3}
+  - ID: clip_healeffect
+    obj: {fileID: 8300000, guid: 256a4b847d7dfa546855671ecf5d587e, type: 3}
+  - ID: clip_activateability
+    obj: {fileID: 8300000, guid: 0e39e18750a38c246a38a389d0cf3928, type: 3}
+  - ID: clip_powerup
+    obj: {fileID: 8300000, guid: 10ebb418722785e4e8fff241e6325184, type: 3}
+  - ID: clip_victory
+    obj: {fileID: 8300000, guid: 01d0ee7ae87955744b45844e7bac85a0, type: 3}
+  - ID: 3 Entry
+    obj: {fileID: 1264187143274894, guid: 5175559aec42da041a87188bbf194388, type: 2}
+  - ID: 2 Entry
+    obj: {fileID: 1735308715549426, guid: b0d4691e82aaa8c4c8dcb7862717e46d, type: 2}
+  - ID: 1 Entry
+    obj: {fileID: 1153605561530452, guid: 13fcaccaed8f2bb419d68e71e748399e, type: 2}
+  - ID: 0 Entry
+    obj: {fileID: 1118546193406874, guid: df6e17d0ebe9e0a46ab7ec6f94f4e263, type: 2}
+  - ID: Junction
+    obj: {fileID: 1438003325463656, guid: ff40d154a62073249a97ab74ffb33278, type: 2}
+  - ID: defense_turret
+    obj: {fileID: 11400000, guid: 75898c7b1aea45d49866d0c07d0b4664, type: 2}
+  - ID: harvester_turret
+    obj: {fileID: 11400000, guid: 43c08b3ef0a3839409664fb482218274, type: 2}
+  - ID: missile_turret
+    obj: {fileID: 11400000, guid: 0c1b18b588929e841b3096d1900df960, type: 2}
+  - ID: siege_turret
+    obj: {fileID: 11400000, guid: 8eb6e805924286d4eadc12152df22bbb, type: 2}
+  - ID: torpedo_turret
+    obj: {fileID: 11400000, guid: ddc3bd062ab88694cbe6a9b146e35160, type: 2}
+  - ID: beam_tank
+    obj: {fileID: 11400000, guid: a07c6902837dfbe47a7289fea0b5d8b2, type: 2}
+  - ID: bullet_tank
+    obj: {fileID: 11400000, guid: ace15ffb3f0c4184c9cabb6817292d37, type: 2}
+  - ID: laser_tank
+    obj: {fileID: 11400000, guid: 5c457fbfe0e65f24692bec3236d87d0a, type: 2}
+  - ID: missile_tank
+    obj: {fileID: 11400000, guid: 9aaf616ced57edf439a503ef39dd088f, type: 2}
+  - ID: siege_tank
+    obj: {fileID: 11400000, guid: 81accb15a45e56247bfa93a5478e0d9d, type: 2}
+  - ID: speeder_tank
+    obj: {fileID: 11400000, guid: 5546e1a429a17d44b9b60e631354e011, type: 2}
+  - ID: core_gate
+    obj: {fileID: 1146272079168228, guid: 1c91994c103394b429f0c0dfe88ce1ef, type: 2}
+  - ID: broken_core_gate
+    obj: {fileID: 1220973572766998, guid: 95b56b1249d91614daf49742e16645dd, type: 2}
+  - ID: floater
+    obj: {fileID: 1836663842053594, guid: 821eebcc09569ca46a80a846ddb88636, type: 2}
   fieldID: 
   newObject: {fileID: 0}
-  resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
+  resourcePack: {fileID: 11400000, guid: c767ffa95a909c9409739ede1233b6af, type: 2}
 --- !u!4 &1376981538
 Transform:
   m_ObjectHideFlags: 0
@@ -5834,67 +5892,226 @@ MonoBehaviour:
   numberOfFactions: 2
   placeables:
   - obj: {fileID: 1535808194251928, guid: b764e4031e9be0045b6b2f28bc01ba0f, type: 2}
-    type: 4
+    type: 1
+    assetID: 
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1264187143274894, guid: 5175559aec42da041a87188bbf194388, type: 2}
-    type: 4
+    type: 1
+    assetID: 
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1735308715549426, guid: b0d4691e82aaa8c4c8dcb7862717e46d, type: 2}
-    type: 4
+    type: 1
+    assetID: 
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1153605561530452, guid: 13fcaccaed8f2bb419d68e71e748399e, type: 2}
-    type: 4
+    type: 1
+    assetID: 
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1118546193406874, guid: df6e17d0ebe9e0a46ab7ec6f94f4e263, type: 2}
-    type: 4
+    type: 1
+    assetID: 
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1438003325463656, guid: ff40d154a62073249a97ab74ffb33278, type: 2}
-    type: 4
+    type: 1
+    assetID: 
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1012085447253930, guid: 5ba097b87663b5042856f900111c6991, type: 2}
     type: 0
+    assetID: outpost_blueprint
+    vendingID: outpost_vending_blueprint
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1788078517366466, guid: f5299ff94ec458b4b9d8e5f852958cc6, type: 2}
-    type: 1
+    type: 0
+    assetID: bunker_blueprint
+    vendingID: bunker_vending_blueprint
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1505105959290672, guid: 4934ae925c0f3094ca3e76219277af6b, type: 2}
-    type: 2
+    type: 0
+    assetID: carrier_blueprint
+    vendingID: 
+    isTarget: 1
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1994422708007848, guid: a93627c403ee0aa47a187051ed3f6040, type: 2}
-    type: 3
+    type: 0
+    assetID: energy_rock
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
     rotation: 0
   - obj: {fileID: 1555845416231088, guid: f5d45e5048c0ce94ca853fdcdcacf060, type: 2}
-    type: 5
+    type: 0
+    assetID: shellcore_blueprint
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1888131655616636, guid: 2afeda657c9ee80459dd447b71e99e07, type: 2}
+    type: 0
+    assetID: beam_tank
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1164121178012436, guid: 5b4b7438a920d984f853ba81ccc9a47e, type: 2}
+    type: 0
+    assetID: bullet_tank
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1015096354410560, guid: c59657d45c7f5054b82dcba111066ef4, type: 2}
+    type: 0
+    assetID: laser_tank
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1309469109187080, guid: 31fcf004778fb454ab2a635d9690313a, type: 2}
+    type: 0
+    assetID: missile_tank
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1753495076242706, guid: 743ace26d8fa1a648a5ca28848f703e8, type: 2}
+    type: 0
+    assetID: siege_tank
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1268986859650490, guid: 8a7e30c041c31724f8197197c17cf178, type: 2}
+    type: 0
+    assetID: speeder_tank
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1854779683430978, guid: 8dd453ae66618dc4f9a4d51b0ab9ee18, type: 2}
+    type: 0
+    assetID: defense_turret
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1700098778036572, guid: e29745f49bc2ff94d965257983e7486b, type: 2}
+    type: 0
+    assetID: harvester_turret
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1240470509651844, guid: aff47274eb1166e4c9ae43bd1f586804, type: 2}
+    type: 0
+    assetID: missile_turret
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1222099831657882, guid: a6ae6fb6eedc71d49af0290162ebdf74, type: 2}
+    type: 0
+    assetID: siege_turret
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1843659202034496, guid: 01bcfcd8e6083e54fa6dc1430c462bc0, type: 2}
+    type: 0
+    assetID: torpedo_turret
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1146272079168228, guid: 1c91994c103394b429f0c0dfe88ce1ef, type: 2}
+    type: 0
+    assetID: core_gate
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1220973572766998, guid: 95b56b1249d91614daf49742e16645dd, type: 2}
+    type: 0
+    assetID: broken_core_gate
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+  - obj: {fileID: 1836663842053594, guid: 821eebcc09569ca46a80a846ddb88636, type: 2}
+    type: 0
+    assetID: floater
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
