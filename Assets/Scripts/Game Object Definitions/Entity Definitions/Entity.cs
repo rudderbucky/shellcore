@@ -273,6 +273,13 @@ public class Entity : MonoBehaviour {
             Debug.Log("Draggable was added to an entity manually, " +
                 "it should be added automatically by setting isDraggable to true!");
         }
+
+        AirCraftAI.entities.Add(this);
+    }
+
+    protected virtual void OnDestroy()
+    {
+        AirCraftAI.entities.Remove(this);
     }
 
     virtual protected void Start()

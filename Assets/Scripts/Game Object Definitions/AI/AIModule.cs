@@ -10,5 +10,6 @@ public abstract class AIModule
     protected bool initialized;
 
     public abstract void Init();
-    public abstract void Tick();
+    public abstract void StateTick();
+    public abstract void ActionTick();
 }

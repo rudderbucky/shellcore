@@ -57,8 +57,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         base.OnDeath();
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
         if(coreGlow)
             Destroy(coreGlow.gameObject);
         if (targetGlow)
@@ -91,6 +92,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         {
             ai.Init(this);
             ai.setMode(AirCraftAI.AIMode.Battle);
+            ai.allowRetreat = true;
         }
     }
 

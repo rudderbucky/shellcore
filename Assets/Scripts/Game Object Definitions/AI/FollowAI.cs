@@ -12,7 +12,7 @@ public class FollowAI : AIModule
         initialized = true;
     }
 
-    public override void Tick()
+    public override void ActionTick()
     {
         Transform target;
         if(owner != null)
@@ -28,5 +28,9 @@ public class FollowAI : AIModule
             Vector2 direction = (target.position - craft.transform.position).magnitude > 5 ? target.position - craft.transform.position : Vector3.zero;
             craft.MoveCraft(direction.normalized);
         }
+    }
+
+    public override void StateTick()
+    {
     }
 }

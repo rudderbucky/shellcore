@@ -53,6 +53,8 @@ public class Drone : AirCraft, IOwnable {
         base.Start();
         ai = gameObject.AddComponent<AirCraftAI>();
         ai.Init(this, owner);
+        ai.aggression = AirCraftAI.AIAggression.KeepMoving;
+        ai.allowRetreat = false;
         ai.setPath(path);
         //ai.setMode(AirCraftAI.AIMode.Path);
         initialized = true;

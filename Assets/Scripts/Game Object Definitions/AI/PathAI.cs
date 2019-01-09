@@ -41,7 +41,7 @@ public class PathAI : AIModule
             StartPath();
     }
 
-    public override void Tick()
+    public override void ActionTick()
     {
         if (waypointID != -1)
         {
@@ -56,6 +56,11 @@ public class PathAI : AIModule
         {
             
         }
+    }
+
+    public override void StateTick()
+    {
+
     }
 
     void createPath()
