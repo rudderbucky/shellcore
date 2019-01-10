@@ -9,8 +9,7 @@ public class BattleAI : AIModule
     {
         Attack,
         Defend,
-        Collect,
-        Fortify
+        Collect
     }
 
     BattleState state = BattleState.Attack;
@@ -70,27 +69,22 @@ public class BattleAI : AIModule
                 }
                 else
                 {
-                    state = BattleState.Fortify;
-                    primaryTarget = carrier;
+                    state = BattleState.Collect;
                 }
             }
             // if population is nearly capped, attack
-            else if (shellcore.GetTotalCommandLimit() > shellcore.GetUnitsCommanding().Count - 2) // TODO: OR if enemy base is weak
+            else if (shellcore.GetTotalCommandLimit() > shellcore.GetUnitsCommanding().Count) // TODO: OR if enemy base is weak
             {
                 state = BattleState.Attack;
             }
             // if there's no need for more population space, try to create turrets to protect owned outposts and stations
-            else if (shellcore.GetPower() < 100f)
+            else
             {
                 if(state != BattleState.Collect)
                 {
                     collectTarget = null;
                 }
                 state = BattleState.Collect;
-            }
-            else
-            {
-                state = BattleState.Fortify;
             }
 
             nextStateCheckTime = Time.time + 1f;
@@ -178,20 +172,47 @@ public class BattleAI : AIModule
                 if(collectTarget != null)
                 {
                     Vector2 delta = collectTarget.transform.position - craft.transform.position;
-                    if ((delta).sqrMagnitude < 400f)
+                    if (delta.sqrMagnitude > 400f)
                     {
                         craft.MoveCraft(delta.normalized);
                     }
                     else
                     {
+                        if(collectTarget.faction == craft.faction)
+                        {
+                            for (int i = 0; i < collectTarget.vendingBlueprint.items.Count; i++)
+                            {
+                                if (collectTarget.vendingBlueprint.items[i].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                                {
+                                    GameObject creation = new GameObject();
+                                    switch (collectTarget.vendingBlueprint.items[i].entityBlueprint.intendedType)
+                                    {
+                                        case EntityBlueprint.IntendedType.Turret:
+                                            Turret tur = creation.AddComponent<Turret>();
+                                            tur.blueprint = collectTarget.vendingBlueprint.items[i].entityBlueprint;
+                                            tur.SetOwner(shellcore);
+                                            break;
+                                        case EntityBlueprint.IntendedType.Tank:
+                                            Tank tank = creation.AddComponent<Tank>();
+                                            tank.blueprint = collectTarget.vendingBlueprint.items[i].entityBlueprint;
+                                            tank.enginePower = 250;
+                                            tank.SetOwner(shellcore);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                    creation.transform.position = collectTarget.transform.position;
+                                    creation.GetComponent<Entity>().spawnPoint = collectTarget.transform.position;
+                                    shellcore.SetTractorTarget(creation.GetComponent<Draggable>());
+                                    shellcore.AddPower(-collectTarget.vendingBlueprint.items[i].cost);
+                                }
+                            }
+                        }
+
                         findNewTarget = true;
                     }
                 }
-                break;
-            case BattleState.Fortify:
-                // move between own outposts and buy more turrets
-                
-
                 break;
             default:
                 break;

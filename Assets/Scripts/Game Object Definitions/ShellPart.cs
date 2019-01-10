@@ -225,10 +225,12 @@ public class ShellPart : MonoBehaviour {
         craft = transform.root.GetComponent<Entity>();
         faction = craft.faction;
         spriteRenderer.color = FactionColors.colors[craft.faction];
+        spriteRenderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
         gameObject.layer = 0;
 
         if (shooter)
         {
+            shooter.GetComponent<SpriteRenderer>().material = ResourceManager.GetAsset<Material>("material_color_swap");
             shooter.GetComponent<SpriteRenderer>().color = FactionColors.colors[craft.faction];
         }
         if (GetComponent<Ability>())
