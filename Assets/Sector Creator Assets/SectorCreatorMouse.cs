@@ -488,7 +488,6 @@ public class SectorCreatorMouse : MonoBehaviour {
 		rect.h = height;
 		sct.bounds = rect;
 		int ID = 0;
-		Vector3[] coreSpawnPointsByFaction = new Vector3[numberOfFactions];
 		foreach(PlaceableObject oj in objects) {
 			if(oj.type != ObjectTypes.Platform) {
 				Sector.LevelEntity ent = new Sector.LevelEntity();

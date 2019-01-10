@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
@@ -68,7 +69,32 @@ public class SectorManager : MonoBehaviour
     public void TryGettingJSON() {
         string path = GameObject.Find("Path Input").GetComponent<UnityEngine.UI.InputField>().text;
         GameObject.Find("Path Input").transform.parent.gameObject.SetActive(false);
-        if(System.IO.File.Exists(path)) {
+        if(System.IO.Directory.Exists(path)) {
+            DirectoryInfo dir = new DirectoryInfo(path);
+            FileInfo[] info = dir.GetFiles("*.*");
+                current = null;
+                sectors = new List<Sector>();
+            foreach (FileInfo f in info)
+            {
+                string sectorjson = System.IO.File.ReadAllText(f.ToString());
+                SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                Debug.Log("Platform JSON: " + data.platformjson);
+                LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
+                Debug.Log("Sector JSON: " + data.sectorjson);
+                SectorDataWrapper sector = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
+                Sector curSect = ScriptableObject.CreateInstance<Sector>();
+                curSect.SetViaWrapper(sector);
+                LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                plat.name = curSect.name + "Platform";
+                plat.SetViaWrapper(platform);
+                curSect.platform = plat;
+                sectors.Add(curSect);
+            }
+            Debug.Log("worked");
+            jsonMode = false;
+            return;
+        }
+        else if(System.IO.File.Exists(path)) {
             try {
                 string sectorjson = System.IO.File.ReadAllText(path);
                 SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
@@ -84,14 +110,11 @@ public class SectorManager : MonoBehaviour
                 curSect.platform = plat;
                 current = curSect;
                 loadSector();
+                return;
             } catch(System.Exception) {
-                jsonMode = false;
-                loadSector();
             }
-        } else {
-            jsonMode = false;
-            loadSector();
-        }
+        } 
+        jsonMode = false;
     }
     private void Start()
     {
