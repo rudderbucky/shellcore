@@ -70,13 +70,13 @@ public class SectorManager : MonoBehaviour
         string path = GameObject.Find("Path Input").GetComponent<UnityEngine.UI.InputField>().text;
         GameObject.Find("Path Input").transform.parent.gameObject.SetActive(false);
         if(System.IO.Directory.Exists(path)) {
-            DirectoryInfo dir = new DirectoryInfo(path);
-            FileInfo[] info = dir.GetFiles("*.*");
-                current = null;
-                sectors = new List<Sector>();
-            foreach (FileInfo f in info)
+            try {
+            string[] files = Directory.GetFiles(path);
+            current = null;
+            sectors = new List<Sector>();
+            foreach (string file in files)
             {
-                string sectorjson = System.IO.File.ReadAllText(f.ToString());
+                string sectorjson = System.IO.File.ReadAllText(file);
                 SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                 Debug.Log("Platform JSON: " + data.platformjson);
                 LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
@@ -93,6 +93,8 @@ public class SectorManager : MonoBehaviour
             Debug.Log("worked");
             jsonMode = false;
             return;
+            } catch(System.Exception){
+            };
         }
         else if(System.IO.File.Exists(path)) {
             try {
@@ -115,6 +117,7 @@ public class SectorManager : MonoBehaviour
             }
         } 
         jsonMode = false;
+        loadSector();
     }
     private void Start()
     {
@@ -146,7 +149,8 @@ public class SectorManager : MonoBehaviour
         //unload previous sector
         foreach(var obj in objects)
         {
-            if(player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject)
+            if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
+                && obj.Value != player.gameObject)
             {
                 Destroy(obj.Value);
             }
