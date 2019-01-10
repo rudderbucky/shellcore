@@ -68,6 +68,7 @@ public class ShellPart : MonoBehaviour {
         //Part sprite
         var spriteRenderer = obj.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
+        spriteRenderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
         var part = obj.AddComponent<ShellPart>();
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
@@ -179,6 +180,7 @@ public class ShellPart : MonoBehaviour {
             shooter.transform.SetParent(part.transform);
             shooter.transform.localPosition = Vector3.zero;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
+            shooterSprite.material = ResourceManager.GetAsset<Material>("material_color_swap");
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
             shooterSprite.sortingOrder = 102;
             part.shooter = shooter;
@@ -224,8 +226,8 @@ public class ShellPart : MonoBehaviour {
         currentHealth = partHealth / 4;
         craft = transform.root.GetComponent<Entity>();
         faction = craft.faction;
-        spriteRenderer.color = FactionColors.colors[craft.faction];
         spriteRenderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
+        spriteRenderer.color = FactionColors.colors[craft.faction];
         gameObject.layer = 0;
 
         if (shooter)

@@ -136,7 +136,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e39af3afa065e8b419baa2d9944aba81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  core: {fileID: 0}
+  part: {fileID: 0}
+  abilityName: Ability
+  terrain: 3
+  category: 2
   bulletPrefab: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480,
     type: 2}
 --- !u!114 &114587244534902594
@@ -150,14 +153,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fead9990b7fc8048b5558875ba0a351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enginePower: 0
-  craftBody: {fileID: 50284234924283370}
-  hitbox: {fileID: 60029378252589372}
-  explosionCirclePrefab: {fileID: 0}
-  explosionLinePrefab: {fileID: 0}
-  parts: []
-  blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
+  shell: {fileID: 0}
+  currentHealth: []
   faction: 1
+  blueprint: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
+  spawnPoint: {x: 0, y: 0, z: 0}
+  dialogue: {fileID: 0}
+  category: 3
+  vendingBlueprint: {fileID: 0}
 --- !u!114 &114899544184641012
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -230,7 +233,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 11db0898634b08349860cff50279a55b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -248,7 +251,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1946410583
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300002, guid: c8a5f1a70cfc5b64db0863288355309e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

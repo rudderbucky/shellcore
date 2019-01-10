@@ -171,7 +171,7 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.49559665, y: 0.50587106}
+    pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.38, y: 0.38}
     newSize: {x: 0.81, y: 0.98}
     adaptiveTilingThreshold: 0.5
@@ -212,7 +212,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92f3b595f89591344a7998efa0faf834, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  children: []
   partHealth: 0
+  partMass: 0
+  detachible: 1
+  shooter: {fileID: 0}
 --- !u!114 &114401580892457946
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -224,19 +229,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47dfa22af0088dc4fbe937f581451bcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enginePower: 0
-  craftBody: {fileID: 50981203438162948}
-  hitbox: {fileID: 60706331062475066}
-  spawnPoint: {x: 20, y: 0, z: 0}
-  explosionCirclePrefab: {fileID: 1681438439547028, guid: 6af7feb21c9b21d48969260eb60050c7,
-    type: 2}
-  explosionLinePrefab: {fileID: 1151987013782820, guid: 263cc7e67640daa47be5005d17153277,
-    type: 2}
-  parts: []
-  blueprint: {fileID: 11400000, guid: 05612ec0affc87a49bdfb25a24278977, type: 2}
+  shell: {fileID: 0}
+  currentHealth: []
   faction: 1
-  lineRenderer: {fileID: 120257282297227796}
+  blueprint: {fileID: 11400000, guid: 05612ec0affc87a49bdfb25a24278977, type: 2}
+  spawnPoint: {x: 20, y: 0, z: 0}
+  dialogue: {fileID: 0}
+  category: 3
+  enginePower: 0
   glowPrefab: {fileID: 1518099868842826, guid: 0435c97bf304a9c428f765f598b3b3a4, type: 2}
+  tractorMaterial: {fileID: 0}
+  intrinsicCommandLimit: 0
+  sectorMngr: {fileID: 0}
 --- !u!114 &114665455471431506
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -259,7 +263,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e39af3afa065e8b419baa2d9944aba81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  core: {fileID: 114401580892457946}
+  part: {fileID: 0}
+  abilityName: Ability
+  terrain: 3
+  category: 2
   bulletPrefab: {fileID: 1000173100890534, guid: 2ba9118d8c171c946a03c1e66c845480,
     type: 2}
 --- !u!120 &120257282297227796
@@ -459,7 +466,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 11db0898634b08349860cff50279a55b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -85,6 +85,7 @@ public class Entity : MonoBehaviour {
             PolygonCollider2D collider = childObject.AddComponent<PolygonCollider2D>(); // add collider
             collider.isTrigger = true; // do not allow "actual" collisions
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>(); // add renderer
+            renderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
             renderer.sortingOrder = 100; // hardcoded max shell sprite value TODO: change this to being dynamic with the other parts
             if (blueprint)
             { // check if it contains a blueprint (it should)
@@ -116,6 +117,7 @@ public class Entity : MonoBehaviour {
         if (!GetComponent<SpriteRenderer>())
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
+            renderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
             if (blueprint)
             { // check if it contains a blueprint (it should)
                 if (blueprint.coreSpriteID == "" && blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore)
