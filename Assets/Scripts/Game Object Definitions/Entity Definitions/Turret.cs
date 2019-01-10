@@ -21,7 +21,8 @@ public class Turret : AirConstruct, IOwnable {
 
     protected override void OnDeath()
     {
-        owner.GetUnitsCommanding().Remove(this);
+        if(owner != null)
+            owner.GetUnitsCommanding().Remove(this);
         base.OnDeath();
     }
 
