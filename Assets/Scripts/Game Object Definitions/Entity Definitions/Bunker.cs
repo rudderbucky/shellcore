@@ -29,7 +29,7 @@ public class Bunker : GroundConstruct, IVendor {
     {
         base.Update();
         targeter.GetTarget(true);
-        Bullet[] bullets = GetComponentsInChildren<Bullet>();
+        WeaponAbility[] bullets = GetComponentsInChildren<WeaponAbility>();
         for (int i = 0; i < bullets.Length; i++)
         {
             bullets[i].Tick(null);

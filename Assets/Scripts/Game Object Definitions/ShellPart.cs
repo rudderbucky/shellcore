@@ -111,7 +111,13 @@ public class ShellPart : MonoBehaviour {
             case Ability.AbilityType.Missile:
                 var missile = obj.AddComponent<Missile>();
                 missile.missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
-                shooterID = "missileshooter_sprite";
+                if(blueprint.spawnID != "missile_station_shooter") {
+                    shooterID = "missileshooter_sprite";
+                } else {
+                    shooterID = "missile_station_shooter";
+                    missile.category = Entity.EntityCategory.All;
+                    missile.terrain = Entity.TerrainType.All;
+                    }
                 break;
             case Ability.AbilityType.Torpedo:
                 var torpedo = obj.AddComponent<Torpedo>();

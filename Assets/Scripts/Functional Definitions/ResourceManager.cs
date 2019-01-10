@@ -321,7 +321,7 @@ public class ResourceManagerEditor : Editor
                 pack.resources.Add(res);
             }
 
-            string path = AssetDatabase.GenerateUniqueAssetPath("Assets/DefaultResources.asset");
+            string path = "Assets/DefaultResources.asset";
             AssetDatabase.CreateAsset(pack, path);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
