@@ -69,7 +69,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     protected override void Start()
     {
         intrinsicCommandLimit = 3;
-        if (carrier != null && carrier.GetIsInitialized())
+        if ((carrier != null && !carrier.Equals(null)) && carrier.GetIsInitialized())
         {
             spawnPoint = carrier.GetSpawnPoint();
         }

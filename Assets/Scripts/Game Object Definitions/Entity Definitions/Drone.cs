@@ -31,7 +31,7 @@ public class Drone : AirCraft, IOwnable {
 
     protected override void OnDeath()
     {
-        if(owner != null)
+        if(owner != null && !(owner.Equals(null)))
             owner.GetUnitsCommanding().Remove(this);
         base.OnDeath();
     }

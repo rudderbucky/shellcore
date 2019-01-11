@@ -117,6 +117,7 @@ public class Entity : MonoBehaviour {
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
             renderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
+            renderer.color = FactionColors.colors[faction];
             if (blueprint)
             { // check if it contains a blueprint (it should)
                 if (blueprint.coreSpriteID == "" && blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore)
