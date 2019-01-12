@@ -52,25 +52,4 @@ public class Sector : ScriptableObject
     public LevelEntity[] entities;
     public LandPlatform platform;
     public string[] targets;
-
-    public void SetViaWrapper(SectorDataWrapper wrapper) {
-        sectorName = wrapper.sectorName;
-        bounds = wrapper.bounds;
-        type = wrapper.type;
-        entities = wrapper.entities;
-        platform = wrapper.platform;
-        targets = wrapper.targets;
-        backgroundColor = wrapper.backgroundColor;
-        name = sectorName;
-    }
-}
-
-public class SectorDataWrapper {
-    public string sectorName;
-    public IntRect bounds;
-    public Sector.SectorType type;
-    public Color backgroundColor;
-    public Sector.LevelEntity[] entities;
-    public LandPlatform platform;
-    public string[] targets;
 }

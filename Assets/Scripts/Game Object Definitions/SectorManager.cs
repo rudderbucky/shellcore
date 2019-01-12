@@ -79,14 +79,12 @@ public class SectorManager : MonoBehaviour
                 string sectorjson = System.IO.File.ReadAllText(file);
                 SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                 Debug.Log("Platform JSON: " + data.platformjson);
-                LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
                 Debug.Log("Sector JSON: " + data.sectorjson);
-                SectorDataWrapper sector = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
                 Sector curSect = ScriptableObject.CreateInstance<Sector>();
-                curSect.SetViaWrapper(sector);
+                JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
                 LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                JsonUtility.FromJsonOverwrite(data.platformjson, plat);
                 plat.name = curSect.name + "Platform";
-                plat.SetViaWrapper(platform);
                 curSect.platform = plat;
                 sectors.Add(curSect);
             }
@@ -101,19 +99,18 @@ public class SectorManager : MonoBehaviour
                 string sectorjson = System.IO.File.ReadAllText(path);
                 SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                 Debug.Log("Platform JSON: " + data.platformjson);
-                LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
                 Debug.Log("Sector JSON: " + data.sectorjson);
-                SectorDataWrapper sector = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
                 Sector curSect = ScriptableObject.CreateInstance<Sector>();
-                curSect.SetViaWrapper(sector);
+                JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
                 LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                JsonUtility.FromJsonOverwrite(data.platformjson, plat);
                 plat.name = curSect.name + "Platform";
-                plat.SetViaWrapper(platform);
                 curSect.platform = plat;
                 current = curSect;
                 loadSector();
                 return;
-            } catch(System.Exception) {
+            } catch(System.Exception e) {
+                Debug.Log(e);
             }
         } 
         jsonMode = false;
