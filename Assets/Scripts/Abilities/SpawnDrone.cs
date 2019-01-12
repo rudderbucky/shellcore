@@ -12,7 +12,7 @@ public interface IOwner
 }
 
 /// <summary>
-/// Spawns a drone (ShellCore-exclusive)
+/// Spawns a drone 
 /// </summary>
 public class SpawnDrone : ActiveAbility
 {

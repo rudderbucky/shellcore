@@ -7,7 +7,7 @@ public class Cannon : WeaponAbility {
     public GameObject effectPrefab;
     public GameObject effect;
     public Entity target;
-    private float damage = 50;
+    private float damage;
 
     protected override void Awake()
     {
@@ -15,7 +15,8 @@ public class Cannon : WeaponAbility {
         abilityName = "Cannon";
         description = "Instant attack that deals " + damage + " damage.";
         ID = 6;
-        cooldownDuration = 0.4F;
+        damage = 100;
+        cooldownDuration = 1F;
         CDRemaining = cooldownDuration;
         range = 10;
         energyCost = 10;

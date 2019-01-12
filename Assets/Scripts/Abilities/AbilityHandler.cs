@@ -13,7 +13,7 @@ public class AbilityHandler : MonoBehaviour {
     public Image abilityGleam; // gleam for the ability
     public Sprite[] abilitySpritesArray; // sprite array for ability images
     public GameObject tooltipPrefab; // Prefab for showing information when mouse hovers over the ability button
-
+    public Image HUDbg;
     private bool initialized; // check for the update method
     private PlayerCore core; // the player
     private Ability[] abilities; // ability array of the core
@@ -25,12 +25,47 @@ public class AbilityHandler : MonoBehaviour {
     private bool[] gleaming; // array to check whether an ability is currently gleaming
     private bool[] gleamed; // array to check whether an ability has already gleamed in the cycle
 
+    public enum AbilityTypes {
+        Skills,
+        Spawns,
+        Weapons,
+        Passive
+    }
+
+    public AbilityTypes currentVisibles;
+    public List<Ability> visibleAbilities = new List<Ability>();
+
+    void Awake() {
+        currentVisibles = AbilityTypes.Spawns;
+    }
     /// <summary>
     /// Initialization of the ability handler that is tied to the player
     /// </summary>
     public void Initialize(PlayerCore player) {
         core = player;
         abilities = core.GetAbilities(); // Get the core's ability array
+
+        foreach(Ability ab in abilities) {
+            switch(currentVisibles) {
+                case AbilityTypes.Skills:
+                    if(ab as Ability && !(ab as SpawnDrone) && !(ab as WeaponAbility) && !(ab as PassiveAbility))
+                        visibleAbilities.Add(ab);
+                    break;
+                case AbilityTypes.Passive:
+                    if(ab as PassiveAbility)
+                        visibleAbilities.Add(ab);
+                    break;
+                case AbilityTypes.Spawns:
+                    if(ab as SpawnDrone)
+                        visibleAbilities.Add(ab);
+                    break;
+                case AbilityTypes.Weapons:
+                    if(ab as WeaponAbility)
+                        visibleAbilities.Add(ab);
+                    break;
+            }
+        }
+
         abilityImagesArray = new Image[abilities.Length]; // initialize all the GUI arrays
         abilityBackgroundArray = new GameObject[abilities.Length];
         abilityCDIndicatorArray = new Image[abilities.Length];
@@ -45,29 +80,32 @@ public class AbilityHandler : MonoBehaviour {
         {
             image = new GameObject().AddComponent<Image>();
             image.transform.localScale = new Vector3(0.25F, 0.25F, 0.25F);
+            image.rectTransform.anchorMax = Vector2.zero;
+            image.rectTransform.anchorMin = Vector2.zero;
             image.gameObject.SetActive(false);
         }
-        for (int i = 0; i < abilities.Length; i++)
+        for (int i = 0; i < visibleAbilities.Count; i++)
         { // iterate through to display all the abilities
-            if (abilities[i] == null) break;
-            Vector3 pos = new Vector3(tileSpacing * i, this.transform.position.y, this.transform.position.z); // find where to position the images
+            if (visibleAbilities[i] == null) break;
+            Vector3 pos = new Vector3(tileSpacing * (i+1.5F), tileSpacing*0.8F, this.transform.position.z); // find where to position the images
             // position them all, do not keep the world position
+
             // instantiate background image
             abilityBackgroundArray[i] = Instantiate(abilityBackground, pos, Quaternion.identity) as GameObject;
             abilityBackgroundArray[i].transform.SetParent(transform, false); // set parent (do not keep world position)
             var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
             button.tooltipPrefab = tooltipPrefab;
             string description = "";
-            description += abilities[i].abilityName + "\n";
-            description += "Energy cost: " + abilities[i].GetEnergyCost() + "\n";
-            if (abilities[i].GetCDDuration() != 0)
+            description += visibleAbilities[i].abilityName + "\n";
+            description += "Energy cost: " + visibleAbilities[i].GetEnergyCost() + "\n";
+            if (visibleAbilities[i].GetCDDuration() != 0)
             {
-                description += "Cooldown duration: " + abilities[i].GetCDDuration() + "\n";
+                description += "Cooldown duration: " + visibleAbilities[i].GetCDDuration() + "\n";
             }
-            description += abilities[i].GetDescription();
+            description += visibleAbilities[i].GetDescription();
             button.abilityInfo = description;
 
-            image.sprite = abilitySpritesArray[abilities[i].GetID()];
+            image.sprite = abilitySpritesArray[visibleAbilities[i].GetID()];
             abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
             abilityImagesArray[i].gameObject.SetActive(true);
             var canvasg = abilityImagesArray[i].gameObject.AddComponent<CanvasGroup>(); // this is done for every image, it allows the buttons to be clicked
@@ -94,6 +132,14 @@ public class AbilityHandler : MonoBehaviour {
             abilityGleamArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)
         }
+        var y = HUDbg.GetComponent<RectTransform>().anchoredPosition;
+        y.x = abilityGleamArray[0].rectTransform.anchoredPosition.x - 0.5F * tileSpacing;
+        HUDbg.GetComponent<RectTransform>().anchoredPosition = y;
+
+        var x = HUDbg.GetComponent<RectTransform>().sizeDelta;
+        x.x = abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition.x + 0.5F * tileSpacing - y.x;//135.975F + 19.425F;//abilityBackgroundArray[visibleAbilities.Count - 1].GetComponent<RectTransform>().transform.position.x;
+        Debug.Log(abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition);
+        HUDbg.GetComponent<RectTransform>().sizeDelta = x;
         if(image) Destroy(image.gameObject);
         initialized = true; // handler completely initialized, safe to update now
     }
@@ -122,7 +168,7 @@ public class AbilityHandler : MonoBehaviour {
 
 
 
-        if (!abilities[index] || abilities[index].IsDestroyed())
+        if (!visibleAbilities[index] || visibleAbilities[index].IsDestroyed())
         {
             abilityBackgroundArray[index].GetComponent<Image>().color = new Color(.1f, .1f, .1f); // make the background dark
             if(abilityGleamArray[index]) Destroy(abilityGleamArray[index].gameObject); // remove other sprites; destroying makes them irrelevant
@@ -131,8 +177,8 @@ public class AbilityHandler : MonoBehaviour {
         }
         if (clicked)
         {
-            abilities[index].Tick("activate");
-        } else abilities[index].Tick((index+1) < 10 ? (index + 1).ToString() : ""); // Tick the ability
+            visibleAbilities[index].Tick("activate");
+        } else visibleAbilities[index].Tick((index+1) < 10 ? (index + 1).ToString() : ""); // Tick the ability
 
         if (abilityGleamArray[index])
         {
@@ -140,10 +186,10 @@ public class AbilityHandler : MonoBehaviour {
             {
                 Gleam(index); // continue gleam if already gleaming
             }
-            if (abilities[index].GetCDRemaining() != 0) // on cooldown
+            if (visibleAbilities[index].GetCDRemaining() != 0) // on cooldown
             {
                 gleamed[index] = false; // no longer gleamed
-                abilityCDIndicatorArray[index].fillAmount = abilities[index].GetCDRemaining() / abilities[index].GetCDDuration();
+                abilityCDIndicatorArray[index].fillAmount = visibleAbilities[index].GetCDRemaining() / visibleAbilities[index].GetCDDuration();
                 // adjust the cooldown indicator
             }
             else if (!gleaming[index] && !gleamed[index])
@@ -154,11 +200,11 @@ public class AbilityHandler : MonoBehaviour {
                 gleamed[index] = true; // has already gleamed once now
             }
 
-            if (core.GetHealth()[2] < abilities[index].GetEnergyCost()) // insufficient energy
+            if (core.GetHealth()[2] < visibleAbilities[index].GetEnergyCost()) // insufficient energy
             {
                 abilityBackgroundArray[index].GetComponent<Image>().color = new Color(0, 0, 0.3F); // make the background dark blue
             }
-            else if (abilities[index].GetActiveTimeRemaining() != 0) // active
+            else if (visibleAbilities[index].GetActiveTimeRemaining() != 0) // active
             {
                 abilityBackgroundArray[index].GetComponent<Image>().color = Color.green; // make the background green
             }
@@ -189,9 +235,12 @@ public class AbilityHandler : MonoBehaviour {
             { // update all abilities
                 if (abilities[i] == null || core.GetIsDead()) continue; 
                 // skip ability instead of break because further abilities may not be destroyed
-                var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
-                AbilityUpdate(i, button.clicked); // otherwise update the current update
-                button.clicked = false;
+                if(visibleAbilities.Contains(abilities[i])) {
+                    int ind = visibleAbilities.IndexOf(abilities[i]);
+                    var button = abilityBackgroundArray[ind].GetComponent<AbilityButtonScript>();
+                    AbilityUpdate(ind, button.clicked); // otherwise update the current update
+                    button.clicked = false;
+                } else abilities[i].Tick("");
             }
         }
 	}
