@@ -49,19 +49,20 @@ public class ResourceManager : MonoBehaviour
 
         for (int i = 0; i < resourcePack.resources.Count; i++)
         {
-            if(resourcePack.resources[i].obj is PartBlueprint)
-            {
-                continue;
-            }
-            else
-            {
-                resources.Add(resourcePack.resources[i].ID, resourcePack.resources[i].obj);
-            }
+            resources.Add(resourcePack.resources[i].ID, resourcePack.resources[i].obj);
+            //if (resourcePack.resources[i].obj is PartBlueprint)
+            //{
+            //    continue;
+            //}
+            //else
+            //{
+                
+            //}
         }
 
-        for (int i = 0; i < resourcePack.resources.Count; i++)
-            if (resourcePack.resources[i].obj is PartBlueprint)
-                resources.Add(resourcePack.resources[i].ID, ShellPart.BuildPart(resourcePack.resources[i].obj as PartBlueprint));
+        //for (int i = 0; i < resourcePack.resources.Count; i++)
+        //    if (resourcePack.resources[i].obj is PartBlueprint)
+        //        resources.Add(resourcePack.resources[i].ID, ShellPart.BuildPart(resourcePack.resources[i].obj as PartBlueprint));
 
         if (File.Exists("ResourceData.txt"))
         {
@@ -80,24 +81,28 @@ public class ResourceManager : MonoBehaviour
                     mode = 2;
                 else
                 {
-                    string[] separated = line.Split(':');
+                    string[] names = line.Split(':');
                     switch (mode)
                     {
                         case 0:
                             //load sprite
                             Texture2D texture = new Texture2D(2, 2);
-                            texture.LoadImage(File.ReadAllBytes(separated[1]));
-                            resources.Add(separated[0], Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f)));
+                            texture.LoadImage(File.ReadAllBytes(names[1]));
+                            resources.Add(names[0], Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f)));
                             break;
                         case 1:
                             //load part
-                            string partData = File.ReadAllText(separated[1]);
-                            resources.Add(separated[0], ShellPart.BuildPart(JsonUtility.FromJson<PartBlueprint>(partData)));
+                            string partData = File.ReadAllText(names[1]);
+                            PartBlueprint partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
+                            JsonUtility.FromJsonOverwrite(partData, partBlueprint);
+                            resources[names[0]] = partBlueprint;
                             break;
                         case 2:
                             //load entity
-                            string entityData = File.ReadAllText(separated[1]);
-                            resources.Add(separated[0], JsonUtility.FromJson<EntityBlueprint>(entityData));
+                            string entityData = File.ReadAllText(names[1]);
+                            EntityBlueprint entityBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                            JsonUtility.FromJsonOverwrite(entityData, entityBlueprint);
+                            resources[names[0]] = entityBlueprint;
                             break;
                         default:
                             break;
@@ -327,6 +332,24 @@ public class ResourceManagerEditor : Editor
             AssetDatabase.Refresh();
         }
         EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        GUI.SetNextControlName("CreateJSON");
+        if (GUILayout.Button("Create JSON file"))
+        {
+            ResourceManager.Resource resource = new ResourceManager.Resource();
+            resource.ID = manager.fieldID;
+            resource.obj = manager.newObject;
+            File.WriteAllText(manager.newObject.name + ".json", JsonUtility.ToJson(manager.newObject));
+            if (!File.Exists("ResourceData.txt"))
+                File.Create("ResourceData.txt").Close();
+            File.AppendAllText("ResourceData.txt", manager.newObject.name + ".json");
+            IDField.stringValue = null;
+            manager.fieldID = null;
+            manager.newObject = ObjectField.objectReferenceValue = null;
+        }
+        EditorGUILayout.EndHorizontal();
+
         EditorGUILayout.BeginHorizontal();
         displayType = (ResourcesByType)EditorGUILayout.EnumPopup("Resources by type: ", displayType);
         if (displayType != oldDisplayType)

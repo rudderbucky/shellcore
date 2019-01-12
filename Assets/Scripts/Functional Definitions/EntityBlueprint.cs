@@ -16,6 +16,9 @@ public class EntityBlueprint : ScriptableObject
         public float rotation;
         public bool mirrored;
 
+        public Ability.AbilityType abilityType;
+        public string spawnID;
+
         public string partID; //Part blueprint ID
     }
 

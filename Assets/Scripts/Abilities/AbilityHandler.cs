@@ -37,6 +37,7 @@ public class AbilityHandler : MonoBehaviour {
 
     void Awake() {
         currentVisibles = AbilityTypes.Spawns;
+        Debug.Log("Awake!");
     }
     /// <summary>
     /// Initialization of the ability handler that is tied to the player
@@ -44,8 +45,9 @@ public class AbilityHandler : MonoBehaviour {
     public void Initialize(PlayerCore player) {
         core = player;
         abilities = core.GetAbilities(); // Get the core's ability array
+        visibleAbilities.Clear();
 
-        foreach(Ability ab in abilities) {
+        foreach (Ability ab in abilities) {
             switch(currentVisibles) {
                 case AbilityTypes.Skills:
                     if(ab as Ability && !(ab as SpawnDrone) && !(ab as WeaponAbility) && !(ab as PassiveAbility))
@@ -65,7 +67,6 @@ public class AbilityHandler : MonoBehaviour {
                     break;
             }
         }
-
         abilityImagesArray = new Image[abilities.Length]; // initialize all the GUI arrays
         abilityBackgroundArray = new GameObject[abilities.Length];
         abilityCDIndicatorArray = new Image[abilities.Length];
@@ -132,15 +133,20 @@ public class AbilityHandler : MonoBehaviour {
             abilityGleamArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)
         }
-        var y = HUDbg.GetComponent<RectTransform>().anchoredPosition;
-        y.x = abilityGleamArray[0].rectTransform.anchoredPosition.x - 0.5F * tileSpacing;
-        HUDbg.GetComponent<RectTransform>().anchoredPosition = y;
 
-        var x = HUDbg.GetComponent<RectTransform>().sizeDelta;
-        x.x = abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition.x + 0.5F * tileSpacing - y.x;//135.975F + 19.425F;//abilityBackgroundArray[visibleAbilities.Count - 1].GetComponent<RectTransform>().transform.position.x;
-        Debug.Log(abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition);
-        HUDbg.GetComponent<RectTransform>().sizeDelta = x;
-        if(image) Destroy(image.gameObject);
+        if(visibleAbilities.Count > 0)
+        {
+            var y = HUDbg.GetComponent<RectTransform>().anchoredPosition;
+            y.x = abilityGleamArray[0].rectTransform.anchoredPosition.x - 0.5F * tileSpacing;
+            HUDbg.GetComponent<RectTransform>().anchoredPosition = y;
+
+            var x = HUDbg.GetComponent<RectTransform>().sizeDelta;
+            x.x = abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition.x + 0.5F * tileSpacing - y.x;//135.975F + 19.425F;//abilityBackgroundArray[visibleAbilities.Count - 1].GetComponent<RectTransform>().transform.position.x;
+            Debug.Log(abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition);
+            HUDbg.GetComponent<RectTransform>().sizeDelta = x;
+        }
+
+        if (image) Destroy(image.gameObject);
         initialized = true; // handler completely initialized, safe to update now
     }
 
@@ -149,7 +155,7 @@ public class AbilityHandler : MonoBehaviour {
     /// </summary>
     public void Deinitialize()
     {
-        for(int i = 0; i < transform.childCount; i++)
+        for(int i = 1; i < transform.childCount; i++)  //STart from one, because index 1 is the background
         {
             Destroy(transform.GetChild(i).gameObject);
         }

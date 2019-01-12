@@ -161,38 +161,156 @@ public class Entity : MonoBehaviour {
                 // lol
 
                 EntityBlueprint.PartInfo part = blueprint.parts[i];
+                PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(part.partID);
 
-                GameObject prefab = ResourceManager.GetAsset<GameObject>(part.partID);
-                GameObject obj = Instantiate(prefab);
-                obj.SetActive(true);
-                obj.transform.SetParent(transform, false);
-                obj.transform.SetAsFirstSibling();
-                obj.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
-                obj.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
-                SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
+                GameObject partObject = ShellPart.BuildPart(partBlueprint);
+                ShellPart shellPart = partObject.GetComponent<ShellPart>();
+
+                //Add an ability to the part:
+
+                string shooterID = null;
+
+                switch (part.abilityType)
+                {
+                    case Ability.AbilityType.None:
+                        break;
+                    case Ability.AbilityType.MainBullet: // Shouldn't happen
+                        Debug.Log("Main bullet added to a part! This is a ShellCore only ability!");
+                        var mainBullet = partObject.AddComponent<MainBullet>();
+                        mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                        shooterID = "bulletshooter_sprite";
+                        break;
+                    case Ability.AbilityType.Bullet:
+                        var bullet = partObject.AddComponent<Bullet>();
+                        bullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                        shooterID = "bulletshooter_sprite";
+                        break;
+                    case Ability.AbilityType.SiegeBullet:
+                        var siege = partObject.AddComponent<SiegeBullet>();
+                        siege.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                        shooterID = "bulletshooter_sprite";
+                        break;
+                    case Ability.AbilityType.Beam:
+                        var beam = partObject.AddComponent<Beam>();
+                        beam.SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
+                        shooterID = "beamshooter_sprite";
+                        break;
+                    case Ability.AbilityType.Bomb:
+                        break;
+                    case Ability.AbilityType.Cannon:
+                        var cannon = partObject.AddComponent<Cannon>();
+                        cannon.effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+                        shooterID = "cannonshooter_sprite";
+                        break;
+                    case Ability.AbilityType.Missile:
+                        var missile = partObject.AddComponent<Missile>();
+                        missile.missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
+                        if (part.spawnID != "missile_station_shooter")
+                        {
+                            shooterID = "missileshooter_sprite";
+                        }
+                        else
+                        {
+                            shooterID = "missile_station_shooter";
+                            missile.category = EntityCategory.All;
+                            missile.terrain = TerrainType.All;
+                        }
+                        break;
+                    case Ability.AbilityType.Torpedo:
+                        var torpedo = partObject.AddComponent<Torpedo>();
+                        torpedo.bulletPrefab = ResourceManager.GetAsset<GameObject>("torpedo_prefab");
+                        shooterID = "torpedoshooter_sprite";
+                        break;
+                    case Ability.AbilityType.ShellBoost:
+                        HealthHeal shellboost = partObject.AddComponent<HealthHeal>();
+                        shellboost.type = HealthHeal.HealingType.shell;
+                        shooterID = "ability_indicator";
+                        break;
+                    case Ability.AbilityType.CoreHeal:
+                        HealthHeal coreboost = partObject.AddComponent<HealthHeal>();
+                        coreboost.type = HealthHeal.HealingType.core;
+                        shooterID = "ability_indicator";
+                        break;
+                    case Ability.AbilityType.SpeedThrust:
+                        partObject.AddComponent<SpeedThrust>();
+                        shooterID = "ability_indicator";
+                        break;
+                    case Ability.AbilityType.PinDown:
+                        break;
+                    case Ability.AbilityType.EnergyBoost:
+                        HealthHeal energyboost = partObject.AddComponent<HealthHeal>();
+                        energyboost.type = HealthHeal.HealingType.energy;
+                        shooterID = "ability_indicator";
+                        break;
+                    case Ability.AbilityType.Harvester:
+                        partObject.AddComponent<Harvester>();
+                        shooterID = "ability_indicator";
+                        break;
+                    case Ability.AbilityType.SpeederBullet:
+                        var speedBullet = partObject.AddComponent<SpeederBullet>();
+                        speedBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                        shooterID = "bulletshooter_sprite";
+                        break;
+                    case Ability.AbilityType.Laser:
+                        var laser = partObject.AddComponent<Laser>();
+                        laser.bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
+                        shooterID = "lasershooter_sprite";
+                        break;
+                    case Ability.AbilityType.SpawnDrone:
+                        var spawn = partObject.AddComponent<SpawnDrone>();
+                        spawn.spawnData = ResourceManager.GetAsset<DroneSpawnData>(part.spawnID);
+                        spawn.Init();
+                        shooterID = "ability_indicator";
+                        break;
+                    case Ability.AbilityType.Speed:
+                        partObject.AddComponent<Speed>();
+                        break;
+                    default:
+                        break;
+                }
+
+                
+
+                // Add shooter
+                if (shooterID != null)
+                {
+                    var shooter = new GameObject("Shooter");
+                    shooter.transform.SetParent(partObject.transform);
+                    shooter.transform.localPosition = Vector3.zero;
+                    var shooterSprite = shooter.AddComponent<SpriteRenderer>();
+                    shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
+                    shooterSprite.sortingOrder = 102;
+                    shellPart.shooter = shooter;
+                }
+
+                partObject.transform.SetParent(transform, false);
+                partObject.transform.SetAsFirstSibling();
+                partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
+                partObject.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
+                SpriteRenderer sr = partObject.GetComponent<SpriteRenderer>();
                 // sr.flipX = part.mirrored; this doesn't work, it does not flip the collider hitbox
-                var tmp = obj.transform.localScale;
+                var tmp = partObject.transform.localScale;
                 tmp.x = part.mirrored ? -1 : 1;
-                obj.transform.localScale = tmp;
+                partObject.transform.localScale = tmp;
                 sr.sortingOrder = i + 2;
-                ShellPart partComp = obj.GetComponent<ShellPart>();
-                entityBody.mass += partComp.GetPartMass();
-                maxHealth[0] += partComp.GetPartHealth() / 2;
-                maxHealth[1] += partComp.GetPartHealth() / 4;
+                entityBody.mass += partBlueprint.mass;
+                maxHealth[0] += partBlueprint.health / 2;
+                maxHealth[1] += partBlueprint.health / 4;
 
-                if (obj.GetComponent<WeaponAbility>())
+                var weaponAbility = partObject.GetComponent<WeaponAbility>();
+                if (weaponAbility)
                 {
 
                     // if the terrain and category wasn't preset set to the enitity's properties
 
-                    if(obj.GetComponent<WeaponAbility>().terrain == TerrainType.Unset)
-                        obj.GetComponent<WeaponAbility>().terrain = Terrain;
-                    if(obj.GetComponent<WeaponAbility>().category == EntityCategory.Unset)
-                        obj.GetComponent<WeaponAbility>().category = category;
+                    if(weaponAbility.terrain == TerrainType.Unset)
+                        weaponAbility.terrain = Terrain;
+                    if(weaponAbility.category == EntityCategory.Unset)
+                        weaponAbility.category = category;
                 }
                     
 
-                parts.Add(obj.GetComponent<ShellPart>());
+                parts.Add(partObject.GetComponent<ShellPart>());
             }
         }
         Transform shellSprite = shell.transform;
