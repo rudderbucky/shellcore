@@ -107,8 +107,8 @@ public class BattleAI : AIModule
                     primaryTarget = AirCraftAI.getNearestEntity<AirConstruct>(craft.transform.position, craft.faction, true); //TODO: Exclude turrets?
                     nextSearchTime = Time.time + 1f;
 
-                    if(primaryTarget)
-                        Debug.Log("AggroTarget: " + primaryTarget.name + " Factions: " + primaryTarget.faction + " - " + craft.faction);
+                    //if(primaryTarget)
+                    //    Debug.Log("AggroTarget: " + primaryTarget.name + " Factions: " + primaryTarget.faction + " - " + craft.faction);
                 }
                 if(primaryTarget != null)
                 {

@@ -20,14 +20,14 @@ public class Bullet : WeaponAbility {
         // hardcoded values here
         description = "Projectile that deals " + damage + " damage.";
         abilityName = "Bullet";
-        bulletSpeed = 50;
+        bulletSpeed = 15;
         survivalTime = 0.5F;
         range = bulletSpeed * survivalTime;
         ID = 5;
-        cooldownDuration = 0.4F;
+        cooldownDuration = 2F;
         CDRemaining = cooldownDuration;
         energyCost = 50;
-        damage = 100;
+        damage = 450;
         prefabScale = 1 * Vector3.one;
         category = Entity.EntityCategory.All;
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Beam : WeaponAbility {
 
     public LineRenderer line; // line renderer of the beam
-    public Material material; // material used by the line renderer
+    private Material material; // material used by the line renderer
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
     private Vector3 victimPos; // second position to render the beam to
@@ -26,6 +26,12 @@ public class Beam : WeaponAbility {
         ID = 4;
         range = 25;
         category = Entity.EntityCategory.All;
+    }
+
+    public void SetMaterial(Material material)
+    {
+        this.material = material;
+        line.material = material;
     }
 
     void Update()

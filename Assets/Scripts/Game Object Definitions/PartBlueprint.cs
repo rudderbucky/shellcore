@@ -8,9 +8,7 @@ public class PartBlueprint : ScriptableObject
     public string spriteID;
     public float health;
     public float mass;
-    public Ability.AbilityType abilityType;
     public bool detachible = true;
-    public string spawnID;
 }
 
 // TODO: editor:
