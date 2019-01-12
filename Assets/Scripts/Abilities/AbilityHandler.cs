@@ -37,7 +37,6 @@ public class AbilityHandler : MonoBehaviour {
 
     void Awake() {
         currentVisibles = AbilityTypes.Spawns;
-        Debug.Log("Awake!");
     }
     /// <summary>
     /// Initialization of the ability handler that is tied to the player

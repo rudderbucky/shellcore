@@ -39,30 +39,12 @@ public class ResourceManager : MonoBehaviour
         Instance = this;
         resources = new Dictionary<string, Object>();
 
-        //builtInResources = new List<Resource>();
-        //for (int i = 0; i < resourcePack.resources.Count; i++)
-        //{
-        //    builtInResources.Add(resourcePack.resources[i]);
-        //}
-
         //Add built in resources to dictionaries
 
         for (int i = 0; i < resourcePack.resources.Count; i++)
         {
             resources.Add(resourcePack.resources[i].ID, resourcePack.resources[i].obj);
-            //if (resourcePack.resources[i].obj is PartBlueprint)
-            //{
-            //    continue;
-            //}
-            //else
-            //{
-                
-            //}
         }
-
-        //for (int i = 0; i < resourcePack.resources.Count; i++)
-        //    if (resourcePack.resources[i].obj is PartBlueprint)
-        //        resources.Add(resourcePack.resources[i].ID, ShellPart.BuildPart(resourcePack.resources[i].obj as PartBlueprint));
 
         if (File.Exists("ResourceData.txt"))
         {
@@ -73,39 +55,49 @@ public class ResourceManager : MonoBehaviour
             for(int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
+                if (line == "")
+                    continue;
                 if (line.ToLower().StartsWith("sprites:"))
                     mode = 0;
                 else if (line.ToLower().StartsWith("parts:"))
                     mode = 1;
-                else if (line.ToLower().StartsWith("blueprints:"))
+                else if (line.ToLower().StartsWith("entities:"))
                     mode = 2;
                 else
                 {
                     string[] names = line.Split(':');
-                    switch (mode)
+
+                    if (File.Exists(names[1]))
                     {
-                        case 0:
-                            //load sprite
-                            Texture2D texture = new Texture2D(2, 2);
-                            texture.LoadImage(File.ReadAllBytes(names[1]));
-                            resources.Add(names[0], Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f)));
-                            break;
-                        case 1:
-                            //load part
-                            string partData = File.ReadAllText(names[1]);
-                            PartBlueprint partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
-                            JsonUtility.FromJsonOverwrite(partData, partBlueprint);
-                            resources[names[0]] = partBlueprint;
-                            break;
-                        case 2:
-                            //load entity
-                            string entityData = File.ReadAllText(names[1]);
-                            EntityBlueprint entityBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                            JsonUtility.FromJsonOverwrite(entityData, entityBlueprint);
-                            resources[names[0]] = entityBlueprint;
-                            break;
-                        default:
-                            break;
+                        switch (mode)
+                        {
+                            case 0:
+                                //load sprite
+                                Texture2D texture = new Texture2D(2, 2);
+                                texture.LoadImage(File.ReadAllBytes(names[1]));
+                                resources[names[0]] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                                break;
+                            case 1:
+                                //load part
+                                string partData = File.ReadAllText(names[1]);
+                                PartBlueprint partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
+                                JsonUtility.FromJsonOverwrite(partData, partBlueprint);
+                                resources[names[0]] = partBlueprint;
+                                break;
+                            case 2:
+                                //load entity
+                                string entityData = File.ReadAllText(names[1]);
+                                EntityBlueprint entityBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                                JsonUtility.FromJsonOverwrite(entityData, entityBlueprint);
+                                resources[names[0]] = entityBlueprint;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", names[1], names[0]);
                     }
                 }
             }
@@ -337,16 +329,48 @@ public class ResourceManagerEditor : Editor
         GUI.SetNextControlName("CreateJSON");
         if (GUILayout.Button("Create JSON file"))
         {
-            ResourceManager.Resource resource = new ResourceManager.Resource();
-            resource.ID = manager.fieldID;
-            resource.obj = manager.newObject;
-            File.WriteAllText(manager.newObject.name + ".json", JsonUtility.ToJson(manager.newObject));
-            if (!File.Exists("ResourceData.txt"))
-                File.Create("ResourceData.txt").Close();
-            File.AppendAllText("ResourceData.txt", manager.newObject.name + ".json");
-            IDField.stringValue = null;
-            manager.fieldID = null;
-            manager.newObject = ObjectField.objectReferenceValue = null;
+            string type = null;
+            if (manager.newObject is EntityBlueprint)
+            {
+                type = "entities";
+            }
+            else if(manager.newObject is PartBlueprint)
+            {
+                type = "parts";
+            }
+            if(type != null)
+            {
+                // Create JSON
+                File.WriteAllText(manager.newObject.name + ".json", JsonUtility.ToJson(manager.newObject));
+
+                // Add path and ID to resource data
+                if (!File.Exists("ResourceData.txt"))
+                    File.Create("ResourceData.txt").Close();
+
+                List<string> lines = new List<string>(File.ReadAllLines("ResourceData.txt"));
+                bool sectionFound = false;
+                for (int i = 0; i < lines.Count; i++)
+                    if(lines[i].StartsWith(type))
+                    {
+                        lines.Insert(i + 1, manager.fieldID + ":" + manager.newObject.name + ".json");
+                        sectionFound = true;
+                        break;
+                    }
+                if (!sectionFound)
+                {
+                    lines.Add(type + ":");
+                    lines.Add(manager.fieldID + ":" + manager.newObject.name + ".json");
+                }
+
+                File.WriteAllLines("ResourceData.txt", lines.ToArray());
+
+                manager.fieldID = null;
+                manager.newObject = ObjectField.objectReferenceValue = null;
+            }
+            else
+            {
+                Debug.Log("Can't serialize that asset to json format!");
+            }
         }
         EditorGUILayout.EndHorizontal();
 
