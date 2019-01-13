@@ -5,7 +5,7 @@ using UnityEngine;
 public class LandPlatformGenerator : MonoBehaviour {
 
 
-    // TODO: create nodes, create paths, create platform generation based on blueprint
+    // TODO: generate one mesh instead of multiple objects
     public static LandPlatformGenerator instance { private set; get; }
     public LandPlatform blueprint;
     private List<GameObject> tiles;
@@ -289,12 +289,12 @@ public class LandPlatformGenerator : MonoBehaviour {
         Vector2 step = (p22 - p12) / (d * 10f);
         Vector2 point = p12;
         float stepLength = step.magnitude;
-        //TODO: get normals, use them
+        Vector2 normal = new Vector2(step.y, -step.x).normalized * 0.5f / tileSize; //half-width of a tank = 0.5f
         //Debug.Log(p12 + " " + p22 + step);
         for (float i = 0; i < d; i += stepLength)
         {
             //Debug.Log((int)checkPoint.y + " " + (int)checkPoint.x);
-            if (!isValidTile(Mathf.FloorToInt(point.y), Mathf.FloorToInt(point.x)))
+            if (!isValidTile(Mathf.FloorToInt(point.y + normal.y), Mathf.FloorToInt(point.x + normal.x)) || !isValidTile(Mathf.FloorToInt(point.y - normal.y), Mathf.FloorToInt(point.x - normal.x)))
             {
                 //Debug.Log("failed" + p1 + " " + p2);
                 return false;
@@ -334,7 +334,6 @@ public class LandPlatformGenerator : MonoBehaviour {
         var openList = new List<PathfindNode>();
         var closedList = new List<PathfindNode>();
 
-        //TODO: try adding all nodes in LoS to open list
         openList.Add(new PathfindNode(start, null, 0f));
         
         if(instance.areaIDByNode[start] != instance.areaIDByNode[end]) {

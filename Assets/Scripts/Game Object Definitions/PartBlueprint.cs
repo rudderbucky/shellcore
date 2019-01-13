@@ -10,8 +10,3 @@ public class PartBlueprint : ScriptableObject
     public float mass;
     public bool detachible = true;
 }
-
-// TODO: editor:
-// Show part sprite when the ID is correct & exist in built in resources
-// Sprite search?
-// This would be really useful b/c Unity's own show & search don't work with this

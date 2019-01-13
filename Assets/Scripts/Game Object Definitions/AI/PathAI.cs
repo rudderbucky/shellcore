@@ -72,7 +72,7 @@ public class PathAI : AIModule
         // Get end target
         for (int i = 0; i < constructs.Count; i++)
         {
-            //TODO: find carrier (from sector data?)
+            //TODO: find carrier (Add to blackboard)
             if (constructs[i].faction != craft.faction)
             {
                 nodes.Add(new AutoNode() { construct = constructs[i], index = 0 });
@@ -82,7 +82,7 @@ public class PathAI : AIModule
 
         if (nodes.Count == 0)
         {
-            //TODO: AIManager.mode = inactive;
+            ai.setMode(AirCraftAI.AIMode.Inactive);
             return;
         }
 

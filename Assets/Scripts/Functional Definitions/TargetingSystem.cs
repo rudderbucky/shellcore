@@ -10,7 +10,7 @@ public class TargetingSystem {
     // and constantly update the position of the targeting system
 
     private Transform target; // the transform of the target
-    public Transform parent; //parent object
+    public Transform parent; // parent object
 
     /// <summary>
     /// Constructor that sets the target to null and takes a transform from which distances are calculate from
@@ -39,26 +39,25 @@ public class TargetingSystem {
         {
             //Find the closest enemy
             //TODO: optimize
-            Entity[] entities = GameObject.FindObjectsOfType<Entity>();
             Transform closest = null;
             float closestD = float.MaxValue;
 
-            for (int i = 0; i < entities.Length; i++)
+            for (int i = 0; i < AirCraftAI.entities.Count; i++)
             {
-                if (entities[i].transform == parent)
+                if (AirCraftAI.entities[i].transform == parent)
                     continue;
-                if (parent.GetComponent<Entity>().faction == entities[i].faction)
+                if (parent.GetComponent<Entity>().faction == AirCraftAI.entities[i].faction)
                     continue;
-                if (entities[i].GetIsDead())
+                if (AirCraftAI.entities[i].GetIsDead())
                 {
                     continue;
                 }
 
-                float sqrD = Vector3.SqrMagnitude(parent.position - entities[i].transform.position);
+                float sqrD = Vector3.SqrMagnitude(parent.position - AirCraftAI.entities[i].transform.position);
                 if (closest == null || sqrD < closestD)
                 {
                     closestD = sqrD;
-                    closest = entities[i].transform;
+                    closest = AirCraftAI.entities[i].transform;
                 }
             }
             target = closest;
