@@ -31,12 +31,16 @@ public class AbilityHandler : MonoBehaviour {
         Weapons,
         Passive
     }
-
+    
     public AbilityTypes currentVisibles;
     public List<Ability> visibleAbilities = new List<Ability>();
 
-    void Awake() {
-        currentVisibles = AbilityTypes.Spawns;
+    public void SetCurrentVisible(AbilityTypes type) {
+        if(currentVisibles != type) {
+            currentVisibles = type;
+            Deinitialize();
+            Initialize(core);
+        }
     }
     /// <summary>
     /// Initialization of the ability handler that is tied to the player
@@ -93,6 +97,7 @@ public class AbilityHandler : MonoBehaviour {
             // instantiate background image
             abilityBackgroundArray[i] = Instantiate(abilityBackground, pos, Quaternion.identity) as GameObject;
             abilityBackgroundArray[i].transform.SetParent(transform, false); // set parent (do not keep world position)
+            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = visibleAbilities[i].abilityName;
             var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
             button.tooltipPrefab = tooltipPrefab;
             string description = "";
@@ -140,8 +145,7 @@ public class AbilityHandler : MonoBehaviour {
             HUDbg.GetComponent<RectTransform>().anchoredPosition = y;
 
             var x = HUDbg.GetComponent<RectTransform>().sizeDelta;
-            x.x = abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition.x + 0.5F * tileSpacing - y.x;//135.975F + 19.425F;//abilityBackgroundArray[visibleAbilities.Count - 1].GetComponent<RectTransform>().transform.position.x;
-            Debug.Log(abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition);
+            x.x = abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition.x + 0.5F * tileSpacing - y.x;
             HUDbg.GetComponent<RectTransform>().sizeDelta = x;
         }
 
@@ -154,7 +158,7 @@ public class AbilityHandler : MonoBehaviour {
     /// </summary>
     public void Deinitialize()
     {
-        for(int i = 1; i < transform.childCount; i++)  //STart from one, because index 1 is the background
+        for(int i = 5; i < transform.childCount; i++)  //STart from one, because index 1 is the background
         {
             Destroy(transform.GetChild(i).gameObject);
         }
