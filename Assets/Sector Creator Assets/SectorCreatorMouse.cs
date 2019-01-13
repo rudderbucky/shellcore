@@ -428,15 +428,15 @@ public class SectorCreatorMouse : MonoBehaviour {
 		Debug.Log("row: " + coordinates[0] + " column: " + coordinates[1] +  " of a square with "  + rows + " rows and "  + columns + " columns");
 	}
 	public void ToJSON() {
-		SectorDataWrapper sct = new SectorDataWrapper();
 		if(sctName == null || sctName == "") {
 			Debug.Log("Name your damn sector!");
 			return;
 		}
+		Sector sct = ScriptableObject.CreateInstance<Sector>();
 		sct.sectorName = sctName;
 		sct.type = type;
 		sct.backgroundColor = currentColor;
-		LandPlatformDataWrapper platform = new LandPlatformDataWrapper();
+		LandPlatform platform = ScriptableObject.CreateInstance<LandPlatform>();
 
 		Vector3 firstTilePos = new Vector3 {
 			x = center.x,
@@ -532,8 +532,10 @@ public class SectorCreatorMouse : MonoBehaviour {
 		string path = GameObject.Find("JSONPath").GetComponentsInChildren<Text>()[1].text;
 		if(System.IO.File.Exists(path)) {
 			SectorData data = JsonUtility.FromJson<SectorData>(System.IO.File.ReadAllText(path));
-			SectorDataWrapper sectorDataWrapper = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
-			LandPlatformDataWrapper platformDataWrapper = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
+			Sector sectorDataWrapper = ScriptableObject.CreateInstance<Sector>();
+			JsonUtility.FromJsonOverwrite(data.sectorjson, sectorDataWrapper);
+			LandPlatform platformDataWrapper = ScriptableObject.CreateInstance<LandPlatform>();
+			JsonUtility.FromJsonOverwrite(data.platformjson, platformDataWrapper);
 
 			type = sectorDataWrapper.type;
 			currentColor = sectorDataWrapper.backgroundColor;
