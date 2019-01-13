@@ -162,7 +162,6 @@ public class ShellPart : MonoBehaviour {
             transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
         }
         else if (hasDetached) { // if it has actually detached
-            collectible = false; // TODO: make part drops rare
             if (collectible && detachible)
             {
                 rigid.drag = 25;

@@ -7,7 +7,7 @@ using System.IO;
 public class SectorManager : MonoBehaviour
 {
     public bool jsonMode;
-    public List<Sector> sectors; //TODO: RM: load sectors from files
+    public List<Sector> sectors; //TODO: RM: load sectors from files (already done elsewhere; would it make sense to move it to RM?)
     public PlayerCore player;
     public Sector current;
     public BackgroundScript background;
@@ -216,14 +216,14 @@ public class SectorManager : MonoBehaviour
                         {
                             Bunker bunker = gObj.AddComponent<Bunker>();
                             stations.Add(bunker);
-                            bunker.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID); //TODO: RM: load vending blueprints from files
+                            bunker.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID);
                             break;
                         }
                     case EntityBlueprint.IntendedType.Outpost:
                         {
                             Outpost outpost = gObj.AddComponent<Outpost>();
                             stations.Add(outpost);
-                            outpost.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID); //TODO: RM: load vending blueprints from files
+                            outpost.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID);
                             break;
                         }
                     case EntityBlueprint.IntendedType.Tower:
@@ -233,7 +233,7 @@ public class SectorManager : MonoBehaviour
                     case EntityBlueprint.IntendedType.Drone:
                         {
                             Drone drone = gObj.AddComponent<Drone>();
-                            drone.path = ResourceManager.GetAsset<Path>(current.entities[i].pathID); //TODO: RM: load paths from files
+                            drone.path = ResourceManager.GetAsset<Path>(current.entities[i].pathID);
                             break;
                         }
                     case EntityBlueprint.IntendedType.AirCarrier:

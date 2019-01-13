@@ -63,6 +63,10 @@ public class ResourceManager : MonoBehaviour
                     mode = 1;
                 else if (line.ToLower().StartsWith("entities:"))
                     mode = 2;
+                else if (line.ToLower().StartsWith("vending-options:"))
+                    mode = 3;
+                else if (line.ToLower().StartsWith("paths:"))
+                    mode = 4;
                 else
                 {
                     string[] names = line.Split(':');
@@ -80,16 +84,30 @@ public class ResourceManager : MonoBehaviour
                             case 1:
                                 //load part
                                 string partData = File.ReadAllText(names[1]);
-                                PartBlueprint partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
+                                var partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
                                 JsonUtility.FromJsonOverwrite(partData, partBlueprint);
                                 resources[names[0]] = partBlueprint;
                                 break;
                             case 2:
                                 //load entity
                                 string entityData = File.ReadAllText(names[1]);
-                                EntityBlueprint entityBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                                var entityBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                                 JsonUtility.FromJsonOverwrite(entityData, entityBlueprint);
                                 resources[names[0]] = entityBlueprint;
+                                break;
+                            case 3:
+                                //load vending blueprint
+                                string vendingData = File.ReadAllText(names[1]);
+                                var vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
+                                JsonUtility.FromJsonOverwrite(vendingData, vendingBlueprint);
+                                resources[names[0]] = vendingBlueprint;
+                                break;
+                            case 4:
+                                //load path
+                                string pathData = File.ReadAllText(names[1]);
+                                var pathBlueprint = ScriptableObject.CreateInstance<Path>();
+                                JsonUtility.FromJsonOverwrite(pathData, pathBlueprint);
+                                resources[names[0]] = pathBlueprint;
                                 break;
                             default:
                                 break;

@@ -41,7 +41,7 @@ public class AirCraftAI : MonoBehaviour
     bool retreatTargetFound = false;
     Vector2 retreatTarget;
 
-    public static List<Entity> entities = new List<Entity>();
+    public static List<Entity> entities = new List<Entity>(); //TODO: move somewhere more appropriate
 
     public void setMode(AIMode mode)
     {

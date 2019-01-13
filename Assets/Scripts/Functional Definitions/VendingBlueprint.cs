@@ -7,7 +7,7 @@ public class VendingBlueprint : ScriptableObject {
     [System.Serializable]
     public struct Item
     {
-        public EntityBlueprint entityBlueprint; //TODO: replace this with blueprint
+        public EntityBlueprint entityBlueprint;
         public Sprite icon;
         public int cost;
     }
