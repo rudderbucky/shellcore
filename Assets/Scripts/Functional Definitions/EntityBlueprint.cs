@@ -21,7 +21,7 @@ public class EntityBlueprint : ScriptableObject
 
         public string partID; //Part blueprint ID
     }
-
+    public string entityName = "Unnamed";
     public string coreSpriteID;
     public string coreShellSpriteID;
     public enum IntendedType

@@ -8,6 +8,7 @@ public class Turret : AirConstruct, IOwnable {
 
     protected override void Awake()
     {
+        category = EntityCategory.Unit;
         base.Awake();
     }
     protected override void Start()

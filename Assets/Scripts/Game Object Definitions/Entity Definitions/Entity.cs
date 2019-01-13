@@ -39,6 +39,7 @@ public class Entity : MonoBehaviour {
     private bool initialized; // is the entity safe to call update() on?
     public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
 
+    public string entityName;
     public enum TerrainType // terrain type of entity
     {
         Ground,

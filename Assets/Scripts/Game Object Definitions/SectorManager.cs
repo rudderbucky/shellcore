@@ -248,6 +248,7 @@ public class SectorManager : MonoBehaviour
                         break;
                 }
                 Entity entity = gObj.GetComponent<Entity>();
+                entity.entityName = blueprint.entityName;
                 entity.faction = current.entities[i].faction;
                 entity.spawnPoint = current.entities[i].position;
                 entity.blueprint = blueprint;

@@ -21,8 +21,17 @@ public class QuantityDisplayScript : MonoBehaviour {
         if (initialized)
         {
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
-            texts[0].text = player.GetPower() + "";
-            texts[1].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
+            texts[1].text = player.GetPower() + "";
+            texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
+            string description;
+            if(player.GetTargetingSystem().GetTarget()) {
+                Entity ent = player.GetTargetingSystem().GetTarget().GetComponent<Entity>();
+                description = ent.Terrain + " ";
+                description += ent.category;
+                texts[6].text = description;
+                texts[7].text = ent.entityName;
+                texts[6].color = texts[7].color = FactionColors.colors[ent.faction];
+            } else texts[6].text = texts[7].text = "";
         }
 	}
 }
