@@ -225,11 +225,13 @@ public class Entity : MonoBehaviour {
                         HealthHeal shellboost = partObject.AddComponent<HealthHeal>();
                         shellboost.type = HealthHeal.HealingType.shell;
                         shooterID = "ability_indicator";
+                        shellboost.Initialize();
                         break;
                     case Ability.AbilityType.CoreHeal:
                         HealthHeal coreboost = partObject.AddComponent<HealthHeal>();
                         coreboost.type = HealthHeal.HealingType.core;
                         shooterID = "ability_indicator";
+                        coreboost.Initialize();
                         break;
                     case Ability.AbilityType.SpeedThrust:
                         partObject.AddComponent<SpeedThrust>();
@@ -241,6 +243,7 @@ public class Entity : MonoBehaviour {
                         HealthHeal energyboost = partObject.AddComponent<HealthHeal>();
                         energyboost.type = HealthHeal.HealingType.energy;
                         shooterID = "ability_indicator";
+                        energyboost.Initialize();
                         break;
                     case Ability.AbilityType.Harvester:
                         partObject.AddComponent<Harvester>();

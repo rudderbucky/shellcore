@@ -91,7 +91,7 @@ public class AbilityHandler : MonoBehaviour {
         for (int i = 0; i < visibleAbilities.Count; i++)
         { // iterate through to display all the abilities
             if (visibleAbilities[i] == null) break;
-            Vector3 pos = new Vector3(tileSpacing * (i+1.5F), tileSpacing*0.8F, this.transform.position.z); // find where to position the images
+            Vector3 pos = new Vector3(tileSpacing * (0.8F*i+1.5F), tileSpacing*0.8F, this.transform.position.z); // find where to position the images
             // position them all, do not keep the world position
 
             // instantiate background image

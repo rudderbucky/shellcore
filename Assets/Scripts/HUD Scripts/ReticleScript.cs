@@ -192,7 +192,7 @@ public class ReticleScript : MonoBehaviour {
                     || targSys.GetTarget().GetComponent<Entity>().faction == craft.faction))
                     {
                         craft.SetTractorTarget((craft.GetTractorTarget() == draggable) ? null : draggable);
-                    }
+                    } else craft.SetTractorTarget(null);
                 }
                 else craft.SetTractorTarget(null);
             }

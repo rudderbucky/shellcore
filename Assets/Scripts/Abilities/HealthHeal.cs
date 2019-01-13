@@ -8,24 +8,7 @@ using UnityEngine;
 public class HealthHeal : Ability
 {
 
-    public enum HealingType
-    {
-        shell,
-        core,
-        energy
-    }
-
-    public HealingType type;
-
-    protected override void Awake()
-    {
-        base.Awake(); // base awake
-                      // hardcoded values here
-
-        energyCost = 35;
-
-        // remember, the ID change works here 
-        // because awake only triggers AFTER the thread which instantiated the ability is completely executed
+    public void Initialize() {
         switch (type)
         {
             case HealingType.shell:
@@ -45,6 +28,25 @@ public class HealthHeal : Ability
                 energyCost = 0;
                 break;
         }
+    }
+    public enum HealingType
+    {
+        shell,
+        core,
+        energy
+    }
+
+    public HealingType type;
+
+    protected override void Awake()
+    {
+        base.Awake(); // base awake
+                      // hardcoded values here
+
+        energyCost = 35;
+
+        // remember, the ID change works here 
+        // because awake only triggers AFTER the thread which instantiated the ability is completely executed
         cooldownDuration = 10;
         CDRemaining = 10;
     }

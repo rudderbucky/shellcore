@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Health Bar script that displays the player's health values
 /// </summary>
 public class HealthBarScript : MonoBehaviour {
 
-    public UnityEngine.UI.Image inputBar;
+    public GameObject inputBar;
     //public UnityEngine.UI.Image[] barsInputArray; // images of the health bars
     private UnityEngine.UI.Image[] barsArray; // instantiated bars
     //public UnityEngine.UI.Image[] gleamInputArray; // images of the gleam bars
@@ -15,6 +16,7 @@ public class HealthBarScript : MonoBehaviour {
     private bool initialized; // if this GUI component is initialized
     private bool[] gleaming; // if the bar is gleaming
     private bool[] gleamed; // if the bar has already gleamed in the cycle
+    private string[] names = new string[] {"SHELL: ", "CORE: ", "ENERGY: "};
     private PlayerCore player; // associated player
 
     /// <summary>
@@ -29,18 +31,19 @@ public class HealthBarScript : MonoBehaviour {
         gleamed = new bool[barsArray.Length];
         Color[] colors = new Color[] { Color.green, new Color(0.7F,0.7F,0.7F), Color.cyan };
         for (int i = 0; i < barsArray.Length; i++) { // iterate through array
-            barsArray[i] = Instantiate(inputBar) as UnityEngine.UI.Image; // instantiate the image
+            barsArray[i] = Instantiate(inputBar).GetComponent<Image>(); // instantiate the image
             barsArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
             barsArray[i].color = colors[i];
             Vector3 tmp = barsArray[i].transform.position;
-            tmp.y -= 10*i;
+            tmp.y -= 12*i;
             barsArray[i].transform.position = tmp;
             barsArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
 
-            gleamArray[i] = Instantiate(inputBar) as UnityEngine.UI.Image; // instantiate the image
+            gleamArray[i] = Instantiate(inputBar).GetComponent<Image>(); // instantiate the image
+            if(gleamArray[i].GetComponentInChildren<Text>()) Destroy(gleamArray[i].GetComponentInChildren<Text>().gameObject);
             gleamArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
             tmp = gleamArray[i].transform.position;
-            tmp.y -= 10*i;
+            tmp.y -= 12*i;
             gleamArray[i].transform.position = tmp;
             gleamArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
         }
@@ -51,7 +54,7 @@ public class HealthBarScript : MonoBehaviour {
     /// Deinitializes the Health Bar UI
     /// </summary>
     public void Deinitialize() {
-        for (int i = 0; i < transform.childCount; i++)
+        for (int i = 1; i < transform.childCount; i++)
         {
             Destroy(transform.GetChild(i).gameObject);
         }
@@ -115,19 +118,9 @@ public class HealthBarScript : MonoBehaviour {
                     gleaming[i] = true;
                 }
                 barsArray[i].fillAmount = UpdateBar(barsArray[i].fillAmount, currentHealth[i], maxHealth[i]); 
+                if(barsArray[i].GetComponentInChildren<Text>())
+                    barsArray[i].GetComponentInChildren<Text>().text = names[i] + (int)currentHealth[i] + "/" + maxHealth[i];
                 // otherwise directly update bar
-            }
-
-            // adjust render order of bars
-            if (barsArray[0].fillAmount > barsArray[1].fillAmount)
-            {
-                gleamArray[0].transform.SetAsFirstSibling();
-                barsArray[0].transform.SetAsFirstSibling(); // sets the shell and gleam to render first so core texture doesn't get overlapped     
-            }
-            else if (barsArray[0].fillAmount <= barsArray[1].fillAmount) // explicitly done to minimize method calls
-            {
-                gleamArray[1].transform.SetAsFirstSibling();
-                barsArray[1].transform.SetAsFirstSibling(); // vice-versa
             }
         }
     } 
