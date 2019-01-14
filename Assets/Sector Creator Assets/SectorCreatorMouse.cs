@@ -258,13 +258,13 @@ public class SectorCreatorMouse : MonoBehaviour {
 		if(Input.GetKeyDown("g") && (!windowEnabled || mainMenu.gameObject.activeSelf)) {
 			mainMenu.ToggleActive();
 		} else {
-			if(Input.GetKeyDown("g") && sectorProps.gameObject.activeSelf) {
+			if(Input.GetKeyDown("g") && sectorProps.gameObject.activeSelf && !sectorProps.transform.Find("Sector Name").GetComponent<InputField>().isFocused) {
 				sectorProps.ToggleActive();
 			}
 			if(Input.GetKeyDown("g") && hotkeyList.gameObject.activeSelf) {
 				hotkeyList.ToggleActive();
 			}
-			if(Input.GetKeyDown("g") && readFile.gameObject.activeSelf) {
+			if(Input.GetKeyDown("g") && readFile.gameObject.activeSelf && !readFile.transform.Find("JSONPath").GetComponent<InputField>().isFocused) {
 				readFile.ToggleActive();
 			}
 		}

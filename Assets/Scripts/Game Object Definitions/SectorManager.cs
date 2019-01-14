@@ -244,11 +244,18 @@ public class SectorManager : MonoBehaviour
                         }
                         carrier.sectorMngr = this;
                         break;
+                    case EntityBlueprint.IntendedType.GroundCarrier:
+                        GroundCarrier gcarrier = gObj.AddComponent<GroundCarrier>();
+                        if(!carriers.ContainsKey(current.entities[i].faction))
+                        {
+                            carriers.Add(current.entities[i].faction, gcarrier);
+                        }
+                        gcarrier.sectorMngr = this;
+                        break;
                     default:
                         break;
                 }
                 Entity entity = gObj.GetComponent<Entity>();
-                entity.entityName = blueprint.entityName;
                 entity.faction = current.entities[i].faction;
                 entity.spawnPoint = current.entities[i].position;
                 entity.blueprint = blueprint;

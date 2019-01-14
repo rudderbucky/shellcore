@@ -49,7 +49,6 @@ public class SpawnDrone : ActiveAbility
         // Spawn the drone
         GameObject go = new GameObject(spawnData.drone.name);
         Drone drone = go.AddComponent<Drone>();
-        drone.entityName = spawnData.drone.entityName;
         drone.blueprint = spawnData.drone;
         drone.faction = craft.GetFaction();
         drone.transform.position = part.transform.position;
