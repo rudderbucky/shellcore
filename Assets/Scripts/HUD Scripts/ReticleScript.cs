@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// GUI Reticle to display the target of the player core
@@ -12,6 +14,7 @@ public class ReticleScript : MonoBehaviour {
     private bool initialized; // if the reticle has been initialized
     private Transform shellimage; // the image representations of the target's shell and core health
     private Transform coreimage;
+    public EventSystem system;
 
     /// <summary>
     /// Initializes the reticle
@@ -54,8 +57,7 @@ public class ReticleScript : MonoBehaviour {
         else if (hits.Length != 0) // check if there are actually any hits
         {
             Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
-            //if (draggableTarget && !(draggableTarget.gameObject.GetComponent<ShellPart>()
-            //    && draggableTarget.gameObject.GetComponent<ShellPart>().GetFaction() == craft.faction))
+
             if (draggableTarget)
             {
                 if (targSys.GetTarget() == draggableTarget.transform 
@@ -161,11 +163,11 @@ public class ReticleScript : MonoBehaviour {
 	void Update () {
         if (initialized) // check if it is safe to update
         {
-            if (Input.GetMouseButtonDown(0)) // mouse click, scan for target
+            if (Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject()) // mouse click, scan for target
             {
                 FindTarget(); // find target
             }
-            else if (targSys.GetTarget() != null) // check if the reticle should update
+            if (targSys.GetTarget() != null) // check if the reticle should update
             {
                 Entity targetCraft = targSys.GetTarget().GetComponent<Entity>();
 

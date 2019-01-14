@@ -5,6 +5,7 @@ using UnityEngine;
 public class SecCrCamera : MonoBehaviour {
 
 	public SectorCreatorMouse mouse;
+	public BackgroundScript background;
 	// Use this for initialization
 	void Start () {
 		
@@ -30,6 +31,15 @@ public class SecCrCamera : MonoBehaviour {
 
 			transform.position += Input.GetAxis("Horizontal") * Vector3.right;
 			transform.position += Input.GetAxis("Vertical") * Vector3.up;
+
+			if(Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.z >= -30) {
+				transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 5);
+				background.Restart();
+			}
+			if(Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") > 0 && transform.position.z < -10) {
+				transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 5);
+				background.Restart();
+			}
 		}
 	}
 }

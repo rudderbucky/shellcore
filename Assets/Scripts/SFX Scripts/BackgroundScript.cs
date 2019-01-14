@@ -35,19 +35,20 @@ public class BackgroundScript : MonoBehaviour {
     /// <param name="dimension">the dimension (0 is x, 1 is y)</param>
     private void TileWrapper(GameObject tile, int dimension)
     {
-        float limit = dimension == 0 ? gridWidth * tileSpacing.x / 2 : gridHeight * tileSpacing.y / 2; 
-        // the limit before the tile should wrap
-        // thanks Ormanus for showing me this ridiculously powerful operator (? and :)
+        if(tile) {
+            float limit = dimension == 0 ? gridWidth * tileSpacing.x / 2 : gridHeight * tileSpacing.y / 2; 
+            // the limit before the tile should wrap
 
-        if (Mathf.Abs(tile.transform.position[dimension] - mcamera.position[dimension]) > limit) // this means it is at an axis edge
-        {
-            limit = tile.transform.position[dimension] - mcamera.position[dimension] > 0 ? -limit : limit; // right edge
-            // (this may be slightly inefficient but I don't care it's cool)
+            if (Mathf.Abs(tile.transform.position[dimension] - mcamera.position[dimension]) > limit) // this means it is at an axis edge
+            {
+                limit = tile.transform.position[dimension] - mcamera.position[dimension] > 0 ? -limit : limit; // right edge
+                // (this may be slightly inefficient but I don't care it's cool)
 
-            // if limit remains positive left edge
-            displacement = tile.transform.position; // grab the tile position
-            displacement[dimension] = displacement[dimension] + 2 * limit; // update the x position to be at the other edge
-            tile.transform.position = displacement; // update the tile position, similar process for the other checks as well
+                // if limit remains positive left edge
+                displacement = tile.transform.position; // grab the tile position
+                displacement[dimension] = displacement[dimension] + 2 * limit; // update the x position to be at the other edge
+                tile.transform.position = displacement; // update the tile position, similar process for the other checks as well
+            }
         }
     }
 
@@ -58,16 +59,16 @@ public class BackgroundScript : MonoBehaviour {
         tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
         GameObject parent = new GameObject("Tile Holder");
         // grab tile spacing (this should be constant between the tile sprites given)
-        Vector2 dimensions = Camera.main.ScreenToWorldPoint(
-            new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z)); 
+        Vector3 dimensions = Camera.main.ScreenToWorldPoint(
+            new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z));
         // grab camera dimensions
-        gridWidth = 1 + (int)Mathf.Ceil(dimensions.x * 2/ tileSpacing.x); // calculate height and width using camera dimensions
-        gridHeight = 1 + (int)Mathf.Ceil(dimensions.y * 2/ tileSpacing.y);
+        gridWidth = 1 + (int)Mathf.Ceil((dimensions.x - mcamera.position.x) * 2/ tileSpacing.x); // calculate height and width using camera dimensions
+        gridHeight = 1 + (int)Mathf.Ceil((dimensions.y - mcamera.position.y) * 2 / tileSpacing.y);
         ingameTiles = new GameObject[gridWidth * gridHeight]; // create an array of tile references
         tileStartPos = new Vector2 // get the tile start position (this project needs the tiles to center at 0,0)
         {
-            x = -tileSpacing.x * (gridWidth-1)/2,
-            y = -tileSpacing.y * (gridHeight-1)/2
+            x = mcamera.position.x -tileSpacing.x * (gridWidth-1)/2,
+            y = mcamera.position.y -tileSpacing.y * (gridHeight-1)/2
         };
         int count = 0; // used for array assignment (to keep a 1d count in the 2d loop)
         for (int i = 0; i < gridHeight; i++) {
@@ -93,6 +94,12 @@ public class BackgroundScript : MonoBehaviour {
         TileUpdate(ingameTiles); // tile update called on tile array
     }
 
+    public void Restart() {
+        Color c = ingameTiles[0].GetComponent<SpriteRenderer>().color;
+        Destroy(GameObject.Find("Tile Holder"));
+        Start();
+        setColor(c);
+    }
     public void setColor(Color color)
     {
         for(int i = 0; i < ingameTiles.Length; i++)

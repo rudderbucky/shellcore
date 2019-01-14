@@ -246,7 +246,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		|| readFile.gameObject.activeSelf;
 
 		Vector3 mousePos = Input.mousePosition;
-		mousePos.z += 10;
+		mousePos.z -= Camera.main.transform.position.z;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 		if(cursor.type == ObjectTypes.Platform) {
 			mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x / 2> 0 ? 0.5F : -0.5F));
@@ -277,7 +277,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				undoStack.Push(com);
 				redoStack.Clear();
 				Vector3 pos = center;
-				pos.z -= 10;
+				pos.z = Camera.main.transform.position.z;
 				Camera.main.transform.position = pos;
 			}
 			if(Input.GetKeyDown("k")) {
@@ -289,7 +289,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 			if(Input.GetKeyDown("t")) {
 				Redo();
 			}
-			if(Input.GetKeyDown("q")) {
+			if(Input.GetKeyDown("q") || (Input.GetAxis("Mouse ScrollWheel") < 0 && !Input.GetKey(KeyCode.LeftControl))) {
 				Destroy(cursor.obj);
 				if(--cursorCount < 0) {
 					cursorCount = placeables.Length - 1;
@@ -310,7 +310,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				redoStack.Clear();
 				objects.Clear();
 			}
-			if(Input.GetKeyDown("e")) {
+			if(Input.GetKeyDown("e")  || (Input.GetAxis("Mouse ScrollWheel") > 0 && !Input.GetKey(KeyCode.LeftControl))) {
 				Destroy(cursor.obj);
 				cursor = placeables[++cursorCount % placeables.Length];
 				cursor.obj = Instantiate(placeables[cursorCount % placeables.Length].obj, cursor.obj.transform.position, Quaternion.identity) as GameObject;
@@ -368,7 +368,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 					objects.Add(newo);
 				}
 			}
-		cursor.obj.transform.position = mousePos;
+		cursor.obj.transform.position = new Vector3(mousePos.x,mousePos.y,0);
 		}
 	}
 
