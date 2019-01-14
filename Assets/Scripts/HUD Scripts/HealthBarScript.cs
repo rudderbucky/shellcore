@@ -40,7 +40,11 @@ public class HealthBarScript : MonoBehaviour {
             barsArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
 
             gleamArray[i] = Instantiate(inputBar).GetComponent<Image>(); // instantiate the image
-            if(gleamArray[i].GetComponentInChildren<Text>()) Destroy(gleamArray[i].GetComponentInChildren<Text>().gameObject);
+            if(gleamArray[i].GetComponentInChildren<Text>()) 
+            {
+                foreach(Text text in gleamArray[i].GetComponentsInChildren<Text>())
+                    Destroy(text.gameObject);
+            }
             gleamArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
             tmp = gleamArray[i].transform.position;
             tmp.y -= 12*i;
@@ -118,8 +122,11 @@ public class HealthBarScript : MonoBehaviour {
                     gleaming[i] = true;
                 }
                 barsArray[i].fillAmount = UpdateBar(barsArray[i].fillAmount, currentHealth[i], maxHealth[i]); 
-                if(barsArray[i].GetComponentInChildren<Text>())
-                    barsArray[i].GetComponentInChildren<Text>().text = names[i] + (int)currentHealth[i] + "/" + maxHealth[i];
+                if(barsArray[i].GetComponentInChildren<Text>()) {
+                    var x = barsArray[i].GetComponentsInChildren<Text>();
+                    x[0].text = (int)currentHealth[i] + "/" + maxHealth[i];
+                    x[1].text = names[i];
+                }
                 // otherwise directly update bar
             }
         }

@@ -28,8 +28,8 @@ public class QuantityDisplayScript : MonoBehaviour {
                 Entity ent = player.GetTargetingSystem().GetTarget().GetComponent<Entity>();
                 description = ent.Terrain + " ";
                 description += ent.category;
-                texts[6].text = description;
-                texts[7].text = ent.entityName;
+                texts[7].text = description;
+                texts[6].text = ent.entityName;
                 texts[8].text = "Distance: " + (int)(ent.transform.position - player.transform.position).magnitude;
                 texts[6].color = texts[7].color = texts[8].color = FactionColors.colors[ent.faction];
             } else texts[6].text = texts[7].text = texts[8].text = "";
