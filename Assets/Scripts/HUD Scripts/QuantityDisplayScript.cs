@@ -24,7 +24,7 @@ public class QuantityDisplayScript : MonoBehaviour {
             texts[1].text = player.GetPower() + "";
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
             string description;
-            if(player.GetTargetingSystem().GetTarget()) {
+            if(player.GetTargetingSystem().GetTarget() && player.GetTargetingSystem().GetTarget().GetComponent<Entity>()) {
                 Entity ent = player.GetTargetingSystem().GetTarget().GetComponent<Entity>();
                 description = ent.Terrain + " ";
                 description += ent.category;

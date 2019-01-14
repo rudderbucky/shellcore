@@ -99,7 +99,7 @@ public class AirCraftAI : MonoBehaviour
     {
         setMode(AIMode.Path);
         (module as PathAI).setPath(path);
-        module.Init();
+        if(module != null) module.Init();
     }
 
     private void Start()

@@ -267,7 +267,7 @@ public class SectorManager : MonoBehaviour
 
         //sector color
         background.setColor(current.backgroundColor);
-
+        Camera.main.backgroundColor = current.backgroundColor;
         //sector borders
         sectorBorders.enabled = true;
         sectorBorders.SetPositions(new Vector3[]{

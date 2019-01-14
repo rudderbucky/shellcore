@@ -21,6 +21,7 @@ public class HUDScript : MonoBehaviour {
         GetComponentInChildren<InfoText>().player = player.transform;
         player.alerter = GetComponentInChildren<InfoText>();
         Camera.main.GetComponent<CameraScript>().Initialize(player);
+        GetComponentInChildren<HUDArrowScript>().Initialize(player);
         // GetComponentInChildren<FadeUIScript>().Initialize(player); temporarily removed due to implementation difficulties
     }
 
