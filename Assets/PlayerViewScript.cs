@@ -12,7 +12,7 @@ public class PlayerViewScript : MonoBehaviour {
 	void Update () {
 		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
 			escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
-			transform.Find("Settings").gameObject.SetActive(false);
+			if(transform.Find("Settings")) transform.Find("Settings").gameObject.SetActive(false);
 		}
 	}
 }
