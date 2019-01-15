@@ -306,7 +306,7 @@ public class Entity : MonoBehaviour {
                     var shooterSprite = shooter.AddComponent<SpriteRenderer>();
                     shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
                     if(this as Turret || this as Tank) shooterSprite.sortingOrder = 500;
-                    else shooterSprite.sortingOrder = sr.sortingOrder + 101;
+                    else shooterSprite.sortingOrder = sr.sortingOrder + 1;
                     shellPart.shooter = shooter;
                 }
 

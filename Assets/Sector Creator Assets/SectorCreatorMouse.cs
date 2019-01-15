@@ -189,7 +189,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				tile.GetComponent<SpriteRenderer>().color = currentColor;
 			}
 		BackgroundScript.bgCol = currentColor;
-		Camera.main.backgroundColor = currentColor;
+		Camera.main.backgroundColor = currentColor / 2F;
 		if(cursor.type == ObjectTypes.Platform) {
 			cursor.obj.GetComponent<SpriteRenderer>().color = currentColor + new Color(0.5F,0.5F,0.5F);
 		}
