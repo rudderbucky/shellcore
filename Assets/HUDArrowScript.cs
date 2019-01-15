@@ -7,11 +7,17 @@ public class HUDArrowScript : MonoBehaviour {
 
 	public PlayerCore player;
 	private SpriteRenderer spr;
+	public static bool active = false;
 	public void Initialize(PlayerCore player) {
+		if(active) {
 		spr = GetComponent<SpriteRenderer>();
 		this.player = player;
+		}
 	}
 	
+	public void SetActive(bool act) {
+		active = act;
+	}
 	// Update is called once per frame
 	void Update () {
 		if(player) {

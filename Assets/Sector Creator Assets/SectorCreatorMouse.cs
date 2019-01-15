@@ -184,9 +184,12 @@ public class SectorCreatorMouse : MonoBehaviour {
 	}
 
 	void UpdateColors() {
-		foreach(Transform tile in GameObject.Find("Tile Holder").transform) {
-			tile.GetComponent<SpriteRenderer>().color = currentColor;
-		}
+		if(GameObject.Find("Tile Holder"))
+			foreach(Transform tile in GameObject.Find("Tile Holder").transform) {
+				tile.GetComponent<SpriteRenderer>().color = currentColor;
+			}
+		BackgroundScript.bgCol = currentColor;
+		Camera.main.backgroundColor = currentColor;
 		if(cursor.type == ObjectTypes.Platform) {
 			cursor.obj.GetComponent<SpriteRenderer>().color = currentColor + new Color(0.5F,0.5F,0.5F);
 		}
@@ -283,12 +286,21 @@ public class SectorCreatorMouse : MonoBehaviour {
 			if(Input.GetKeyDown("k")) {
 				GetPlatformIndex(mousePos);	
 			}
+			#if UNITY_EDITOR
 			if(Input.GetKeyDown("z")) {
 				Undo();
 			}
-			if(Input.GetKeyDown("t")) {
+			if(Input.GetKeyDown("y")) {
 				Redo();
 			}
+			#else
+			if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown("z")) {
+				Undo();
+			}
+			if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown("y")) {
+				Redo();
+			}
+			#endif
 			if(Input.GetKeyDown("q") || (Input.GetAxis("Mouse ScrollWheel") < 0 && !Input.GetKey(KeyCode.LeftControl))) {
 				Destroy(cursor.obj);
 				if(--cursorCount < 0) {

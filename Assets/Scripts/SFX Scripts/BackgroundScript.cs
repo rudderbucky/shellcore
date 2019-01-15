@@ -14,6 +14,12 @@ public class BackgroundScript : MonoBehaviour {
     public Transform mcamera; // mcamera to follow
     private Vector3 displacement; // displacement between tile and mcamera
     private GameObject[] ingameTiles; // array of generated tiles
+    public static bool active = true;
+    public static Color bgCol;
+    
+    public void SetActive(bool act) {
+        active = act;
+    }
 
     /// <summary>
     /// Updates the tiles' positions
@@ -21,6 +27,7 @@ public class BackgroundScript : MonoBehaviour {
     /// <param name="tile">the array of tiles</param>
     private void TileUpdate(GameObject[] tile)
     {
+        if(tile != null)
         for (int i = 0; i < tile.Length; i++) // iterate through every tile
         {
             TileWrapper(tile[i], 0); // update each tile for both dimensions
@@ -55,61 +62,68 @@ public class BackgroundScript : MonoBehaviour {
     // Use this for initialization
     void Build()
     {
-        if(transform.Find("Tile Holder")) Destroy(transform.Find("Tile Holder").gameObject);
-        mcamera = Camera.main.transform;
-        tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
-        GameObject parent = new GameObject("Tile Holder");
-        parent.transform.SetParent(transform, true);
-        // grab tile spacing (this should be constant between the tile sprites given)
-        Vector3 dimensions = Camera.main.ScreenToWorldPoint(
-            new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z));
-        // grab camera dimensions
-        gridWidth = 1 + (int)Mathf.Ceil((dimensions.x - mcamera.position.x) * 2/ tileSpacing.x); // calculate height and width using camera dimensions
-        gridHeight = 1 + (int)Mathf.Ceil((dimensions.y - mcamera.position.y) * 2 / tileSpacing.y);
-        ingameTiles = new GameObject[gridWidth * gridHeight]; // create an array of tile references
-        tileStartPos = new Vector2 // get the tile start position (this project needs the tiles to center at 0,0)
-        {
-            x = mcamera.position.x -tileSpacing.x * (gridWidth-1)/2,
-            y = mcamera.position.y -tileSpacing.y * (gridHeight-1)/2
-        };
-        int count = 0; // used for array assignment (to keep a 1d count in the 2d loop)
-        for (int i = 0; i < gridHeight; i++) {
-            for (int j = 0; j < gridWidth; j++) {
-                int randomTile = Random.Range(0, tile.Length); // grabs a random tile from the array of sprites
-                instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
-                // the position of the tile
-                GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;
-                go.transform.SetParent(parent.transform, true);
-                // create the tile, no rotation desired
-                go.GetComponent<SpriteRenderer>().color = new Color(0.5F, 0, 0);//new Color(0.039F, 0.188F, 0.184F);
-                // change the color (will be changing this line later)
-                ingameTiles[count] = go; // assign to array
-                count++; // increment count
-                // I don't want the tiles to be a child of the object using this script 
-                // as I want the tiles to warp like the particles instead of constantly follow
+        if(active) {
+            if(transform.Find("Tile Holder")) Destroy(transform.Find("Tile Holder").gameObject);
+            mcamera = Camera.main.transform;
+            tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
+            GameObject parent = new GameObject("Tile Holder");
+            parent.transform.SetParent(transform, true);
+            // grab tile spacing (this should be constant between the tile sprites given)
+            Vector3 dimensions = Camera.main.ScreenToWorldPoint(
+                new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z));
+            // grab camera dimensions
+            gridWidth = 1 + (int)Mathf.Ceil((dimensions.x - mcamera.position.x) * 2/ tileSpacing.x); // calculate height and width using camera dimensions
+            gridHeight = 1 + (int)Mathf.Ceil((dimensions.y - mcamera.position.y) * 2 / tileSpacing.y);
+            ingameTiles = new GameObject[gridWidth * gridHeight]; // create an array of tile references
+            tileStartPos = new Vector2 // get the tile start position (this project needs the tiles to center at 0,0)
+            {
+                x = mcamera.position.x -tileSpacing.x * (gridWidth-1)/2,
+                y = mcamera.position.y -tileSpacing.y * (gridHeight-1)/2
+            };
+            int count = 0; // used for array assignment (to keep a 1d count in the 2d loop)
+            for (int i = 0; i < gridHeight; i++) {
+                for (int j = 0; j < gridWidth; j++) {
+                    int randomTile = Random.Range(0, tile.Length); // grabs a random tile from the array of sprites
+                    instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
+                    // the position of the tile
+                    GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;
+                    go.transform.SetParent(parent.transform, true);
+                    // create the tile, no rotation desired
+                    go.GetComponent<SpriteRenderer>().color = new Color(0.5F, 0, 0);//new Color(0.039F, 0.188F, 0.184F);
+                    // change the color (will be changing this line later)
+                    ingameTiles[count] = go; // assign to array
+                    count++; // increment count
+                    // I don't want the tiles to be a child of the object using this script 
+                    // as I want the tiles to warp like the particles instead of constantly follow
+                }
             }
         }
     }
     // Update is called once per frame
     void LateUpdate()
     {
-        TileUpdate(ingameTiles); // tile update called on tile array
+        if(active)
+            TileUpdate(ingameTiles); // tile update called on tile array
     }
 
     void Awake() {
         Build();
     }
     public void Restart() {
-        Color c = ingameTiles[0].GetComponent<SpriteRenderer>().color;
-        Destroy(GameObject.Find("Tile Holder"));
-        Build();
-        setColor(c);
+        if(active) {
+            if(GameObject.Find("Tile Holder")) Destroy(GameObject.Find("Tile Holder"));
+            Build();
+            setColor(bgCol);
+        }
     }
     public void setColor(Color color)
     {
-        for(int i = 0; i < ingameTiles.Length; i++)
-        {
-            ingameTiles[i].GetComponent<SpriteRenderer>().color = color;
+        bgCol = color;
+        if(active) {
+            for(int i = 0; i < ingameTiles.Length; i++)
+            {
+                ingameTiles[i].GetComponent<SpriteRenderer>().color = color;
+            }
         }
     }
 }

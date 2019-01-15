@@ -7,11 +7,17 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    public GameObject settings;
     public void StartSectorCreator() {
         SceneManager.LoadScene("SectorCreator");
     }
     public void StartGame()
     {
         SceneManager.LoadScene("SampleScene");
+    }
+
+    public void OpenSettings()
+    {
+        if(settings) settings.SetActive(true);
     }
 }

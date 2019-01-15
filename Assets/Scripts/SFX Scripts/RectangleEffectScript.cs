@@ -10,8 +10,13 @@ public class RectangleEffectScript : MonoBehaviour {
     public ParticleSystem partSys; // particle system that stores the particles
     private Vector3 displacement; // used to wrap particles around
 
+    public static bool active = true;
+    public void SetActive(bool act) {
+        active = act;
+    }
+
     // Use this for initialization
-    private void Start () {
+    private void Build() {
         partSys.Clear();
         var sh = partSys.shape; // grab the shape of the particle system
         Vector3 dimensions = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 
@@ -59,14 +64,17 @@ public class RectangleEffectScript : MonoBehaviour {
     }
 
     void OnEnable() {
-        Start();
+        if(active)
+        Build();
     }
     // Update is called once per frame
     void LateUpdate()
     {
+        if(active) {
             ParticleSystem.Particle[] particles = new ParticleSystem.Particle[25]; // constantly update particle array, room for optimization here
             partSys.GetParticles(particles); // get particles
             ParticleUpdate(particles);
             partSys.SetParticles(particles, 25); // set particles
+        }
     }
 }
