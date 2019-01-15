@@ -62,9 +62,9 @@ public class PlayerCore : ShellCore {
 	// Update is called once per frame
 	protected override void Update () {
         // call methods
-        if(group.sortingOrder < maxLayer)
+        if(group.sortingOrder < maxAirLayer)
         {
-            group.sortingOrder = ++maxLayer;
+            group.sortingOrder = ++maxAirLayer;
         }
         base.Update(); // base update
         MoveCraft(getDirectionalInput()); // move the craft based on the directional input

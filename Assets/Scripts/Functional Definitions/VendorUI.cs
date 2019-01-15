@@ -21,11 +21,10 @@ public class VendorUI : MonoBehaviour, IDialogueable
     private GameObject[] buttons;
     private Text costInfo;
     public int range;
-
+    
     public void openUI()
     {
-        if (UI)
-            return;
+        if(opened) closeUI();
         if (!blueprint)
         {
             Debug.Log("No blueprint!");
@@ -39,7 +38,6 @@ public class VendorUI : MonoBehaviour, IDialogueable
         {
             buttonPrefab = ResourceManager.GetAsset<GameObject>("vendor_button");
         }
-
         UI = Instantiate(UIPrefab);
         background = UI.transform.Find("Background");
         Button close = background.transform.Find("Close").GetComponent<Button>();
@@ -62,6 +60,10 @@ public class VendorUI : MonoBehaviour, IDialogueable
             button.onClick.AddListener(() => { onButtonPressed(index); });
 
             VendorUIButton vendorUIButton = buttons[i].GetComponent<VendorUIButton>();
+
+            if(player.GetPower() < blueprint.items[i].cost) 
+                buttons[i].GetComponent<Image>().color = new Color(0,0,0.4F);
+
             vendorUIButton.text = blueprint.items[i].entityBlueprint.name + ": " + blueprint.items[i].cost;
             vendorUIButton.costInfo = costInfo;
 

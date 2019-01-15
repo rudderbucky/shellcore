@@ -336,7 +336,8 @@ public class LandPlatformGenerator : MonoBehaviour {
 
         openList.Add(new PathfindNode(start, null, 0f));
         
-        if(instance.areaIDByNode[start] != instance.areaIDByNode[end]) {
+        if((instance.areaIDByNode.ContainsKey(start) && instance.areaIDByNode.ContainsKey(end)) 
+        && instance.areaIDByNode[start] != instance.areaIDByNode[end]) {
             GameObject[] tiles = instance.GetTilesByID(instance.areaIDByNode[start]);
             GameObject closestTile = null;
             float distance = float.MaxValue;

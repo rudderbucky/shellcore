@@ -9,7 +9,8 @@ using UnityEngine.Rendering;
 public class Entity : MonoBehaviour {
 
     public ShellPart shell;
-    protected static int maxLayer = 1; // the maximum sorting group layer of all entities
+    protected static int maxAirLayer = 1; // the maximum sorting group layer of all entities
+    protected static int maxGroundLayer = 1;
     protected SortingGroup group;
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
@@ -76,7 +77,15 @@ public class Entity : MonoBehaviour {
         if (!GetComponent<SortingGroup>())
         {
             group = gameObject.AddComponent<SortingGroup>();
-            group.sortingOrder = ++maxLayer;
+            if(this as AirCraft || this as AirConstruct) {
+                group.sortingLayerName = "Air Entities";
+                group.sortingOrder = ++maxAirLayer;
+            } else 
+            {
+                group.sortingLayerName = "Ground Entities";
+                group.sortingOrder = ++maxGroundLayer;
+            }
+                
         }
 
         if (!transform.Find("Shell Sprite")) // no shell in hierarchy yet? no problem
@@ -296,7 +305,8 @@ public class Entity : MonoBehaviour {
                     shooter.transform.localPosition = Vector3.zero;
                     var shooterSprite = shooter.AddComponent<SpriteRenderer>();
                     shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-                    shooterSprite.sortingOrder = sr.sortingOrder + 101;
+                    if(this as Turret || this as Tank) shooterSprite.sortingOrder = 500;
+                    else shooterSprite.sortingOrder = sr.sortingOrder + 101;
                     shellPart.shooter = shooter;
                 }
 

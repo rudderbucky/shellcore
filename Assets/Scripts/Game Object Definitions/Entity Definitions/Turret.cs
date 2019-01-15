@@ -17,7 +17,6 @@ public class Turret : AirConstruct, IOwnable {
         base.Start();
         if (entityBody)
             entityBody.drag = 25f;
-
     }
 
     protected override void OnDeath()
