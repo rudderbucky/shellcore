@@ -14,13 +14,13 @@ public class BattleAI : AIModule
 
     BattleState state = BattleState.Attack;
 
-    AirCarrier carrier;
+    List<Entity> carriers;
     ShellCore shellcore;
 
     float nextSearchTime; //timer to reduce the frequency of heavy search functions
     float nextStateCheckTime; //timer to reduce the frequency of heavy search functions
 
-    Construct primaryTarget;
+    Entity primaryTarget;
 
     List<Outpost> outposts;
     Outpost collectTarget = null;
@@ -28,12 +28,21 @@ public class BattleAI : AIModule
 
     public override void Init()
     {
-        AirCarrier[] carriers = Object.FindObjectsOfType<AirCarrier>();
+        carriers = new List<Entity>();
 
-        for(int i = 0; i < carriers.Length; i++)
+        Entity[] targetEntities = BattleZoneManager.getTargets();
+        if(targetEntities == null)
         {
-            if (carriers[i].faction == craft.faction)
-                carrier = carriers[i];
+            Debug.LogError("Battle zone target list not initialized");
+            ai.setMode(AirCraftAI.AIMode.Inactive);
+            return;
+        }
+
+        for(int i = 0; i < targetEntities.Length; i++)
+        {
+            if(targetEntities[i] is ICarrier)
+                if (targetEntities[i].faction == craft.faction)
+                    carriers.Add(targetEntities[i]);
         }
 
         if (craft is ShellCore)
@@ -55,25 +64,36 @@ public class BattleAI : AIModule
         {
             ai.aggression = AirCraftAI.AIAggression.FollowInRange; // usually, allow chasing after enemies
 
-            if (carrier && carrier.GetHealth()[0] < carrier.GetMaxHealth()[0] * 0.3f)
+            for (int i = 0; i < carriers.Count; i++)
             {
-                // if base under attack -> defend
-                if (AirCraftAI.getEnemyCountInRange(carrier.transform.position, 45f, craft.faction) > 0)
+                if (carriers[i] && carriers[i].GetHealth()[0] < carriers[i].GetMaxHealth()[0] * 0.3f)
                 {
-                    if ((carrier.transform.position - craft.transform.position).sqrMagnitude > 1500f)
+                    // if base under attack -> defend
+                    if (AirCraftAI.getEnemyCountInRange(carriers[i].transform.position, 45f, craft.faction) > 0)
                     {
-                        ai.aggression = AirCraftAI.AIAggression.KeepMoving; // Get to the home base asap
-                    }
+                        if ((carriers[i].transform.position - craft.transform.position).sqrMagnitude > 1500f)
+                        {
+                            ai.aggression = AirCraftAI.AIAggression.KeepMoving; // Get to the home base asap
+                            primaryTarget = carriers[i];
+                        }
+                        else
+                        {
+                            primaryTarget = null;
+                            // TODO: find the most dangerous unit in the area, set as primary target
+                        }
 
-                    state = BattleState.Defend;
-                }
-                else
-                {
-                    state = BattleState.Collect;
+                        state = BattleState.Defend;
+                    }
+                    else
+                    {
+                        state = BattleState.Collect;
+                    }
+                    break;
                 }
             }
+
             // if population is nearly capped, attack
-            else if (shellcore.GetTotalCommandLimit() > shellcore.GetUnitsCommanding().Count) // TODO: OR if enemy base is weak
+            if (shellcore.GetTotalCommandLimit() > shellcore.GetUnitsCommanding().Count) // TODO: OR if enemy base is weak
             {
                 state = BattleState.Attack;
             }
@@ -124,9 +144,8 @@ public class BattleAI : AIModule
                 break;
             case BattleState.Defend:
                 // destroy enemy units around base, ignore everything outside siege range
-                if(carrier)
-                    craft.MoveCraft((carrier.transform.position - craft.transform.position).normalized);
-
+                if(primaryTarget && !primaryTarget.GetIsDead())
+                    craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
                 // buy a turret matching the biggest threat's element, if possible
                 break;
             case BattleState.Collect:
@@ -145,7 +164,7 @@ public class BattleAI : AIModule
                 {
                     // Find new target
                     if (collectTarget != null)
-                        collectTarget = AirCraftAI.getNearestEntity<Outpost>(carrier != null ? carrier.transform.position : craft.transform.position, craft.faction, false);
+                        collectTarget = AirCraftAI.getNearestEntity<Outpost>(/*carrier != null ? carrier.transform.position : */craft.transform.position, craft.faction, false);
                     else
                     {
                         float minD = float.MaxValue;

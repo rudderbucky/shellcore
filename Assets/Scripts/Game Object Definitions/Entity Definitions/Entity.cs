@@ -296,7 +296,7 @@ public class Entity : MonoBehaviour {
                     shooter.transform.localPosition = Vector3.zero;
                     var shooterSprite = shooter.AddComponent<SpriteRenderer>();
                     shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-                    shooterSprite.sortingOrder = sr.sortingOrder + 1;
+                    shooterSprite.sortingOrder = sr.sortingOrder + 101;
                     shellPart.shooter = shooter;
                 }
 

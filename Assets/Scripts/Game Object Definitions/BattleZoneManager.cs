@@ -5,7 +5,7 @@ using UnityEngine;
 public class BattleZoneManager : MonoBehaviour
 {
 
-    List<Entity> targets;
+    static List<Entity> targets;
     bool playing;
 
     public void AlertPlayers(int faction, string message) {
@@ -62,5 +62,10 @@ public class BattleZoneManager : MonoBehaviour
         if (target)
             playing = true;
         targets.Add(target);
+    }
+
+    public static Entity[] getTargets()
+    {
+        return targets.ToArray();
     }
 }
