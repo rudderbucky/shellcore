@@ -127,6 +127,7 @@ public class ReticleScript : MonoBehaviour {
                 // show craft related information
 
                 shellimage.GetComponentInChildren<SpriteRenderer>().enabled = true;
+                shellimage.GetComponentInChildren<SpriteRenderer>().color = FactionColors.colors[targSys.GetTarget().GetComponent<Entity>().faction];
                 coreimage.GetComponentInChildren<SpriteRenderer>().enabled = true;
 
                 float[] targHealth = targetCraft.GetHealth(); // get the target current health
