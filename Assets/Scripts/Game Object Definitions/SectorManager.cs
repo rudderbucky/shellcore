@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEditor;
 
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
@@ -45,13 +46,12 @@ public class SectorManager : MonoBehaviour
         sectorBorders.positionCount = 4;
         sectorBorders.startWidth = 0.1f;
         sectorBorders.endWidth = 0.1f;
-        sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
         sectorBorders.loop = true;
     }
 
     private void Update()
     {
-        if(!jsonMode && (current == null || !current.bounds.contains(player.transform.position)))
+        if(!jsonMode && player && (current == null || !current.bounds.contains(player.transform.position)))
         {
             // load sector
             for(int i = 0; i < sectors.Count; i++)
@@ -118,7 +118,9 @@ public class SectorManager : MonoBehaviour
     }
     private void Start()
     {
+                if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
                 background.setColor(SectorColors.colors[0]);
+                if(!jsonMode) loadSector();
      /*        if(jsonMode) {
                 if(System.IO.Directory.GetFiles(Application.dataPath + "\\..\\Sectors\\").Length > 0) 
                 {
@@ -160,8 +162,10 @@ public class SectorManager : MonoBehaviour
         carriers.Clear();
 
         //load new sector
-        objects.Add("player", player.gameObject);
-        player.sectorMngr = this;
+        if(player) {
+            objects.Add("player", player.gameObject);
+            player.sectorMngr = this;
+        }
 
 
         for(int i = 0; i < current.entities.Length; i++)
@@ -171,6 +175,7 @@ public class SectorManager : MonoBehaviour
             if(obj is GameObject)
             {
                 GameObject gObj = Instantiate(obj as GameObject);
+                if(!gObj.GetComponent<EnergyRock>()) gObj.GetComponent<SpriteRenderer>().color = FactionColors.colors[current.entities[i].faction];
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
                 objects.Add(current.entities[i].ID, gObj);
@@ -288,9 +293,11 @@ public class SectorManager : MonoBehaviour
         if (current.type == Sector.SectorType.BattleZone)
         {
             battleZone.enabled = true;
-            var playerComp = player.GetComponent<PlayerCore>();
-            battleZone.AddTarget(playerComp);
-            playerComp.SetCarrier(carriers[playerComp.faction]);
+            if(player) {
+                var playerComp = player.GetComponent<PlayerCore>();
+                battleZone.AddTarget(playerComp);
+                playerComp.SetCarrier(carriers[playerComp.faction]);
+            }
             for (int i = 0; i < current.targets.Length; i++)
             {
                 if(objects[current.targets[i]].GetComponent<ShellCore>())

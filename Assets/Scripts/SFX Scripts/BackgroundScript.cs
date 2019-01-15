@@ -53,7 +53,7 @@ public class BackgroundScript : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start()
+    void Build()
     {
         if(transform.Find("Tile Holder")) Destroy(transform.Find("Tile Holder").gameObject);
         mcamera = Camera.main.transform;
@@ -96,10 +96,13 @@ public class BackgroundScript : MonoBehaviour {
         TileUpdate(ingameTiles); // tile update called on tile array
     }
 
+    void Awake() {
+        Build();
+    }
     public void Restart() {
         Color c = ingameTiles[0].GetComponent<SpriteRenderer>().color;
         Destroy(GameObject.Find("Tile Holder"));
-        Start();
+        Build();
         setColor(c);
     }
     public void setColor(Color color)

@@ -499,6 +499,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				if(oj.isTarget) targetIDS.Add(ent.ID);
 				ent.name = ent.assetID + ent.ID;
 				ents.Add(ent);
+				if(ent.assetID == "shellcore_blueprint") targetIDS.Add(ent.ID);
 			} else if (oj.type == ObjectTypes.Platform) {
 				int[] coordinates = new int[2];
 				coordinates[1] = Mathf.RoundToInt((oj.obj.transform.position.x - offset.x) / tileSize);
