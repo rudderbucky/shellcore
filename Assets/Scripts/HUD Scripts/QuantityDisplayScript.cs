@@ -1,14 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuantityDisplayScript : MonoBehaviour {
 
     private PlayerCore player;
     private bool initialized;
+    Text[] ob;
 	// Use this for initialization
 	void Start () {
-		
+	    ob = transform.parent.parent.Find("MinimapDisplay").GetComponentsInChildren<Text>();
 	}
 	
     public void Initialize(PlayerCore player)
@@ -28,11 +30,11 @@ public class QuantityDisplayScript : MonoBehaviour {
                 Entity ent = player.GetTargetingSystem().GetTarget().GetComponent<Entity>();
                 description = ent.Terrain + " ";
                 description += ent.category;
-                texts[7].text = description;
-                texts[6].text = ent.entityName;
-                texts[8].text = "Distance: " + (int)(ent.transform.position - player.transform.position).magnitude;
-                texts[6].color = texts[7].color = texts[8].color = FactionColors.colors[ent.faction];
-            } else texts[6].text = texts[7].text = texts[8].text = "";
+                ob[0].text = ent.entityName;
+                ob[1].text = description;
+                ob[2].text = "Distance: " + (int)(ent.transform.position - player.transform.position).magnitude;
+                ob[0].color = ob[1].color = ob[2].color = FactionColors.colors[ent.faction];
+            } else ob[0].text = ob[1].text = ob[2].text = "";
         }
 	}
 }

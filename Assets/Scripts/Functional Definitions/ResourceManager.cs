@@ -33,6 +33,11 @@ public class ResourceManager : MonoBehaviour
 
     Dictionary<string, Object> resources;
     public static ResourceManager Instance { get; private set; }
+    public static float soundVolume = 1;
+
+    public void ChangeSoundVolume(float newVol) {
+        soundVolume = newVol;
+    }
 
     private void Awake()
     {
@@ -124,7 +129,7 @@ public class ResourceManager : MonoBehaviour
 
     
     public static void PlayClipByID(string ID, Vector3 pos) {
-        AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos);
+        AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos, soundVolume);
     }
     
     #if UNITY_EDITOR

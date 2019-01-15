@@ -6,9 +6,9 @@ public struct FactionColors
 {
     public static Color[] colors = new Color[]
     {
-        new Color(0.05f, 0.95f, 0.05f, 0.8F),
-        new Color(0.95f, 0.05f, 0.05f, 0.8F),
-        new Color(0.05f, 0.05f, 0.95f, 0.8F),
+        new Color(0f, 1f, 0f, 1F),
+        new Color(1f, 0, 0, 1F),
+        new Color(0f, 0f, 1f, 1F),
     };
 }
 

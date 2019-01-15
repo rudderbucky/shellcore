@@ -274,20 +274,6 @@ public class Entity : MonoBehaviour {
                         break;
                 }
 
-                
-
-                // Add shooter
-                if (shooterID != null)
-                {
-                    var shooter = new GameObject("Shooter");
-                    shooter.transform.SetParent(partObject.transform);
-                    shooter.transform.localPosition = Vector3.zero;
-                    var shooterSprite = shooter.AddComponent<SpriteRenderer>();
-                    shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-                    shooterSprite.sortingOrder = 102;
-                    shellPart.shooter = shooter;
-                }
-
                 partObject.transform.SetParent(transform, false);
                 partObject.transform.SetAsFirstSibling();
                 partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
@@ -301,6 +287,18 @@ public class Entity : MonoBehaviour {
                 entityBody.mass += partBlueprint.mass;
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
+
+                // Add shooter
+                if (shooterID != null)
+                {
+                    var shooter = new GameObject("Shooter");
+                    shooter.transform.SetParent(partObject.transform);
+                    shooter.transform.localPosition = Vector3.zero;
+                    var shooterSprite = shooter.AddComponent<SpriteRenderer>();
+                    shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
+                    shooterSprite.sortingOrder = sr.sortingOrder + 1;
+                    shellPart.shooter = shooter;
+                }
 
                 var weaponAbility = partObject.GetComponent<WeaponAbility>();
                 if (weaponAbility)

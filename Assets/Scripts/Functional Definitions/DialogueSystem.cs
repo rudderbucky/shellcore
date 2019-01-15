@@ -57,6 +57,7 @@ public class DialogueSystem : MonoBehaviour
 
         //create window
         window = Instantiate(dialogueBoxPrefab);
+        window.transform.SetSiblingIndex(0);
         backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
         backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
         textRenderer = backgroud.transform.Find("Text").GetComponent<Text>();
