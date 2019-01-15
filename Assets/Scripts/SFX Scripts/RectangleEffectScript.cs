@@ -12,13 +12,17 @@ public class RectangleEffectScript : MonoBehaviour {
 
     // Use this for initialization
     private void Start () {
+        partSys.Clear();
         var sh = partSys.shape; // grab the shape of the particle system
-        Vector3 dimensions = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, 
-            sh.position.z - Camera.main.transform.position.z));
+        Vector3 dimensions = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 
+        Camera.main.pixelHeight, sh.position.z - Camera.main.transform.position.z));
+        Vector3 pos = Camera.main.transform.position;
+        pos.z = 0;
+        dimensions -= pos;
         // gets the dimensions of the screen the game is playing on in x and y values
         sh.scale = new Vector3(dimensions[1]*2, dimensions[0]*2, 0); // WHY *2?????????
         // scales up the emitters so that particles are uniformly emitted across the screen, I suspect the scale is halved for some reason
-        partSys.Emit(25);
+        partSys.Emit(15);
     }
 
     /// <summary>
@@ -54,6 +58,9 @@ public class RectangleEffectScript : MonoBehaviour {
         }
     }
 
+    void OnEnable() {
+        Start();
+    }
     // Update is called once per frame
     void LateUpdate()
     {

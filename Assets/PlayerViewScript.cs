@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class PlayerViewScript : MonoBehaviour {
 
-	public GameObject obj;
+	public GameObject escapeMenu;
 	// Update is called once per frame
 	void Start() {
-		obj.SetActive(false);
+		escapeMenu.SetActive(false);
 	}
 	void Update () {
 		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
-			obj.SetActive(!obj.activeSelf); // toggle
+			escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
+			transform.Find("Settings").gameObject.SetActive(false);
 		}
 	}
 }

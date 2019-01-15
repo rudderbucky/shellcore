@@ -55,9 +55,11 @@ public class BackgroundScript : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        if(transform.Find("Tile Holder")) Destroy(transform.Find("Tile Holder").gameObject);
         mcamera = Camera.main.transform;
         tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
         GameObject parent = new GameObject("Tile Holder");
+        parent.transform.SetParent(transform, true);
         // grab tile spacing (this should be constant between the tile sprites given)
         Vector3 dimensions = Camera.main.ScreenToWorldPoint(
             new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z));
