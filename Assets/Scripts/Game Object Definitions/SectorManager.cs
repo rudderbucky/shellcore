@@ -107,6 +107,7 @@ public class SectorManager : MonoBehaviour
                 plat.name = curSect.name + "Platform";
                 curSect.platform = plat;
                 current = curSect;
+                Debug.Log("Success! File loaded from " + path);
                 loadSector();
                 return;
             } catch(System.Exception e) {

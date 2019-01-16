@@ -542,7 +542,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 	}
 
 	public void FromJSON() {
-		string path = GameObject.Find("JSONPath").GetComponentsInChildren<Text>()[1].text;
+		string path = GameObject.Find("JSONPath").GetComponentInChildren<InputField>().text;
 		if(System.IO.File.Exists(path)) {
 			SectorData data = JsonUtility.FromJson<SectorData>(System.IO.File.ReadAllText(path));
 			Sector sectorDataWrapper = ScriptableObject.CreateInstance<Sector>();
@@ -641,6 +641,6 @@ public class SectorCreatorMouse : MonoBehaviour {
 				}
 				objects.Add(obj);
 			}
-		}
+		} else Debug.Log("File " + path + " doesn't exist.");
 	}
 }
