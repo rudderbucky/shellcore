@@ -8,10 +8,12 @@ public class HUDArrowScript : MonoBehaviour {
 	public PlayerCore player;
 	private SpriteRenderer spr;
 	public static bool active = false;
+	public bool init;
 	public void Initialize(PlayerCore player) {
 		if(active) {
 		spr = GetComponent<SpriteRenderer>();
 		this.player = player;
+		init = true;
 		}
 	}
 	
@@ -31,7 +33,8 @@ public class HUDArrowScript : MonoBehaviour {
 					x.z = 0;
 					float magcheck = Mathf.Max(viewpos.x, 1- viewpos.x, viewpos.y, 1- viewpos.y);
 					transform.localScale = new Vector3(1 / magcheck,1 / magcheck,1);
-					if(player.IsMoving()) {
+					if(player.IsMoving() || init) {
+						init = false;
 						transform.position = player.transform.position + x.normalized * 10;
 						transform.eulerAngles = new Vector3(0,0,(Mathf.Rad2Deg * Mathf.Atan(x.y/x.x) -(x.x > 0 ? 90 : -90)));
 					}
