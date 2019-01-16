@@ -194,7 +194,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
         }
 
-        if (target && !isDead && (target.transform.position - transform.position).magnitude < 100
+        if (target && !isDead && (target.transform.position - transform.position).sqrMagnitude < 200
             && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
         {
             lineRenderer.positionCount = 2;

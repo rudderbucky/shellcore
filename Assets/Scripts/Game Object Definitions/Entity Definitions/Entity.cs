@@ -466,12 +466,12 @@ public class Entity : MonoBehaviour {
         if (isDead) // if the craft is dead
         {
             deathTimer += Time.deltaTime; // add time since last frame
-            if (deathTimer >= 0.5F) // hardcoded based on animation (what?)
+            if (deathTimer >= 0.5F) 
             {
                 GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
                 if(this as PlayerCore && (deathTimer > 2)) {
                     ((PlayerCore)this).alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
-                    + (5 - deathTimer > 1 ? "s." : "."));
+                    + ((5 - deathTimer) != 1 ? "s." : "."));
                 }
             }
             if (deathTimer >= 5F)

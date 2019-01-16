@@ -109,7 +109,7 @@ public class Harvester : WeaponAbility, IHarvester {
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
         }
 
-        if (target && !Core.GetIsDead() && (target.transform.position - transform.position).magnitude < 100
+        if (target && !Core.GetIsDead() && (target.transform.position - transform.position).sqrMagnitude < 200
             && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
         {
             lineRenderer.positionCount = 2;
