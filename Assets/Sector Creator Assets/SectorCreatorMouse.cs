@@ -532,13 +532,13 @@ public class SectorCreatorMouse : MonoBehaviour {
 
 		string output = JsonUtility.ToJson(data);
 
-		if(!System.IO.Directory.Exists(Application.dataPath + "\\..\\Sectors\\")) {
-			System.IO.Directory.CreateDirectory(Application.dataPath + "\\..\\Sectors\\");
+		if(!System.IO.Directory.Exists(Application.streamingAssetsPath + "\\Sectors\\")) {
+			System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\");
 		}
-		string path = Application.dataPath + "\\..\\Sectors\\" + sct.sectorName;
+		string path = Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName;
 		System.IO.File.WriteAllText(path, output);
 		System.IO.Path.ChangeExtension(path, ".json");
-		Debug.Log("JSON written to location: " + Application.dataPath + "\\..\\Sectors\\" + sct.sectorName);
+		Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName);
 	}
 
 	public void FromJSON() {

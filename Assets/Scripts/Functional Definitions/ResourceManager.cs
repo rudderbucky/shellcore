@@ -51,9 +51,9 @@ public class ResourceManager : MonoBehaviour
             resources.Add(resourcePack.resources[i].ID, resourcePack.resources[i].obj);
         }
 
-        if (File.Exists("ResourceData.txt"))
+        if (File.Exists(Application.streamingAssetsPath + "\\ResourceData.txt"))
         {
-            string[] lines = File.ReadAllLines("ResourceData.txt");
+            string[] lines = File.ReadAllLines(Application.streamingAssetsPath + "\\ResourceData.txt");
             int mode = -1;
 
             //get names
@@ -76,40 +76,40 @@ public class ResourceManager : MonoBehaviour
                 {
                     string[] names = line.Split(':');
 
-                    if (File.Exists(names[1]))
+                    if (File.Exists(Application.streamingAssetsPath + "\\" + names[1]))
                     {
                         switch (mode)
                         {
                             case 0:
                                 //load sprite
                                 Texture2D texture = new Texture2D(2, 2);
-                                texture.LoadImage(File.ReadAllBytes(names[1]));
+                                texture.LoadImage(File.ReadAllBytes(Application.streamingAssetsPath + "\\" + names[1]));
                                 resources[names[0]] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                                 break;
                             case 1:
                                 //load part
-                                string partData = File.ReadAllText(names[1]);
+                                string partData = File.ReadAllText(Application.streamingAssetsPath + "\\" + names[1]);
                                 var partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
                                 JsonUtility.FromJsonOverwrite(partData, partBlueprint);
                                 resources[names[0]] = partBlueprint;
                                 break;
                             case 2:
                                 //load entity
-                                string entityData = File.ReadAllText(names[1]);
+                                string entityData = File.ReadAllText(Application.streamingAssetsPath + "\\" + names[1]);
                                 var entityBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                                 JsonUtility.FromJsonOverwrite(entityData, entityBlueprint);
                                 resources[names[0]] = entityBlueprint;
                                 break;
                             case 3:
                                 //load vending blueprint
-                                string vendingData = File.ReadAllText(names[1]);
+                                string vendingData = File.ReadAllText(Application.streamingAssetsPath + "\\" + names[1]);
                                 var vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
                                 JsonUtility.FromJsonOverwrite(vendingData, vendingBlueprint);
                                 resources[names[0]] = vendingBlueprint;
                                 break;
                             case 4:
                                 //load path
-                                string pathData = File.ReadAllText(names[1]);
+                                string pathData = File.ReadAllText(Application.streamingAssetsPath + "\\" + names[1]);
                                 var pathBlueprint = ScriptableObject.CreateInstance<Path>();
                                 JsonUtility.FromJsonOverwrite(pathData, pathBlueprint);
                                 resources[names[0]] = pathBlueprint;
@@ -120,7 +120,7 @@ public class ResourceManager : MonoBehaviour
                     }
                     else
                     {
-                        Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", names[1], names[0]);
+                        Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", Application.streamingAssetsPath + "\\" + names[1], names[0]);
                     }
                 }
             }
