@@ -76,6 +76,9 @@ public class AbilityHandler : MonoBehaviour {
         abilityGleamArray = new Image[abilities.Length];
         gleaming = new bool[abilities.Length]; // initialize the boolean arrays
         gleamed = new bool[abilities.Length];
+        for(int i = 0; i < gleamed.Length; i++) {
+            gleamed[i] = true;
+        }
         float tileSpacing = abilityBackground.GetComponent<Image>().sprite.bounds.size.x * 15; // Used to space out the abilities on the GUI
         abilityCDIndicator.fillAmount = 0; // make the cooldown indicator's fill initially 0
         abilityGleam.color = Color.clear;  // start the gleam as clear
@@ -250,6 +253,13 @@ public class AbilityHandler : MonoBehaviour {
                     AbilityUpdate(ind, button.clicked); // otherwise update the current update
                     button.clicked = false;
                 } else abilities[i].Tick("");
+            }
+            if(core.GetIsDead()) return;
+            if(Input.GetKeyDown(KeyCode.E)) {
+                SetCurrentVisible((AbilityTypes)(Mathf.Min((int)currentVisibles + 1, 3)));
+            }
+            if(Input.GetKeyDown(KeyCode.Q)) {
+                SetCurrentVisible((AbilityTypes)(Mathf.Max((int)currentVisibles - 1, 0)));
             }
         }
 	}

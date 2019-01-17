@@ -475,7 +475,7 @@ public class Entity : MonoBehaviour {
                 GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
                 if(this as PlayerCore && (deathTimer > 2)) {
                     ((PlayerCore)this).alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
-                    + ((5 - deathTimer) != 1 ? "s." : "."));
+                    + ((5 - deathTimer) > 1 ? "s." : "."));
                 }
             }
             if (deathTimer >= 5F)
