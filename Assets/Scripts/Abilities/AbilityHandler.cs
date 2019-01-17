@@ -147,7 +147,7 @@ public class AbilityHandler : MonoBehaviour {
             var x = HUDbg.GetComponent<RectTransform>().sizeDelta;
             x.x = abilityGleamArray[visibleAbilities.Count - 1].rectTransform.anchoredPosition.x + 0.5F * tileSpacing - y.x;
             HUDbg.GetComponent<RectTransform>().sizeDelta = x;
-        }
+        } else HUDbg.GetComponent<RectTransform>().sizeDelta = new Vector2(0, HUDbg.GetComponent<RectTransform>().sizeDelta.y);
 
         if (image) Destroy(image.gameObject);
         initialized = true; // handler completely initialized, safe to update now

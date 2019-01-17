@@ -11,7 +11,7 @@ public abstract class AirCraft : Craft
 
     private float timePassed; // float that stores the time passed since the last aircraft movement, used for idle oscillation and perhaps more down the line
     private Vector2 oscillatorVector; // vector used to oscillate the aircraft during idle time
-    private float positionBeforeOscillation; // used for oscillation y-coordination resetting
+    protected float positionBeforeOscillation; // used for oscillation y-coordination resetting
     private Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
 
     protected override void Update() {

@@ -127,7 +127,6 @@ public class HealthBarScript : MonoBehaviour {
                     x[0].text = (int)currentHealth[i] + "/" + maxHealth[i];
                     x[1].text = names[i];
                 }
-                // otherwise directly update bar
             }
         }
     } 

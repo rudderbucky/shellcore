@@ -10,6 +10,8 @@ public class PlayerCore : ShellCore {
 
     public HUDScript hud;
     public InfoText alerter;
+    public PlayerSave cursave;
+    public bool loaded;
 
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
@@ -57,12 +59,24 @@ public class PlayerCore : ShellCore {
             Camera.main.GetComponent<CameraScript>().Initialize(this);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(this);
         } // initialize the HUD
+        if(!loaded) {
+            LoadSave(cursave);
+            loaded = true;
+        }
 	}
-	
+
+    public void LoadSave(PlayerSave save) {
+        transform.position = save.position;
+        positionBeforeOscillation = transform.position.y;
+        currentHealth = save.currentHealths;
+        for(int i = 0; i < currentHealth.Length; i++) {
+            if(currentHealth[i] > maxHealth[i]) currentHealth[i] = maxHealth[i];
+        }
+    }
 	// Update is called once per frame
 	protected override void Update () {
         // call methods
-        if(group.sortingOrder < maxAirLayer)
+        if(group.sortingOrder < maxAirLayer) // player must always be above other entities
         {
             group.sortingOrder = ++maxAirLayer;
         }

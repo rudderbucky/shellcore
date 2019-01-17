@@ -1772,6 +1772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  init: 0
 --- !u!212 &618609702
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3046,7 +3047,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Quit to main menu
+  m_Text: Save and quit
 --- !u!222 &935509847
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5405,7 +5406,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1572394359}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1863658739}
+        m_MethodName: Save
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1572394359
@@ -6261,6 +6273,7 @@ GameObject:
   - component: {fileID: 1863658737}
   - component: {fileID: 1863658736}
   - component: {fileID: 1863658738}
+  - component: {fileID: 1863658739}
   m_Layer: 0
   m_Name: SectorManager
   m_TagString: Untagged
@@ -6311,6 +6324,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blueprint: {fileID: 0}
+--- !u!114 &1863658739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1863658735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c14e9f32ba8b4c4c8398c4caa718164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1878101311}
 --- !u!114 &1878101311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6326,7 +6351,7 @@ MonoBehaviour:
   shell: {fileID: 0}
   currentHealth: []
   faction: 0
-  blueprint: {fileID: 11400000, guid: 03cbbb006645bd141a878a3fc7bf46da, type: 2}
+  blueprint: {fileID: 11400000, guid: 772707d15f5183a41880348ff0736ec4, type: 2}
   spawnPoint: {x: 0, y: 0, z: 0}
   dialogue: {fileID: 0}
   category: 3
@@ -6338,6 +6363,12 @@ MonoBehaviour:
   sectorMngr: {fileID: 0}
   hud: {fileID: 123063170}
   alerter: {fileID: 0}
+  cursave:
+    name: 
+    position: {x: 0, y: 0}
+    currentHealths: []
+    currentPlayerBlueprint: 
+  loaded: 0
 --- !u!1 &1906563438
 GameObject:
   m_ObjectHideFlags: 0
