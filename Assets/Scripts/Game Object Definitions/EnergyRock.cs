@@ -14,6 +14,16 @@ public class EnergyRock : MonoBehaviour {
         targetTime = Time.time + maxTime;
     }
 
+    private void Awake()
+    {
+        AIData.energyRocks.Add(this);
+    }
+
+    private void OnDestroy()
+    {
+        AIData.energyRocks.Remove(this);
+    }
+
     void Update () {
         if (Time.time > targetTime) {
             targetTime = Time.time + maxTime;

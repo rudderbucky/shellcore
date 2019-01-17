@@ -407,12 +407,16 @@ public class Entity : MonoBehaviour {
                 "it should be added automatically by setting isDraggable to true!");
         }
 
-        AirCraftAI.entities.Add(this);
+        AIData.entities.Add(this);
+        if(this is IVendor)
+            AIData.vendors.Add(this);
     }
 
     protected virtual void OnDestroy()
     {
-        AirCraftAI.entities.Remove(this);
+        AIData.entities.Remove(this);
+        if (this is IVendor)
+            AIData.vendors.Remove(this);
     }
 
     virtual protected void Start()

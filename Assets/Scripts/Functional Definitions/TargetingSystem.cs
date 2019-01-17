@@ -42,22 +42,22 @@ public class TargetingSystem {
             Transform closest = null;
             float closestD = float.MaxValue;
 
-            for (int i = 0; i < AirCraftAI.entities.Count; i++)
+            for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AirCraftAI.entities[i].transform == parent)
+                if (AIData.entities[i].transform == parent)
                     continue;
-                if (parent.GetComponent<Entity>().faction == AirCraftAI.entities[i].faction)
+                if (parent.GetComponent<Entity>().faction == AIData.entities[i].faction)
                     continue;
-                if (AirCraftAI.entities[i].GetIsDead())
+                if (AIData.entities[i].GetIsDead())
                 {
                     continue;
                 }
 
-                float sqrD = Vector3.SqrMagnitude(parent.position - AirCraftAI.entities[i].transform.position);
+                float sqrD = Vector3.SqrMagnitude(parent.position - AIData.entities[i].transform.position);
                 if (closest == null || sqrD < closestD)
                 {
                     closestD = sqrD;
-                    closest = AirCraftAI.entities[i].transform;
+                    closest = AIData.entities[i].transform;
                 }
             }
             target = closest;

@@ -34,30 +34,30 @@ public class WeaponTargetingSystem {
             Transform closest = null;
             float closestD = float.MaxValue;
 
-            for (int i = 0; i < AirCraftAI.entities.Count; i++) // go through all entities and check them for several factors
+            for (int i = 0; i < AIData.entities.Count; i++) // go through all entities and check them for several factors
             {
                 // checks for: if it is the same faction as the ability entity, 
                 // if it's dead, if it is weapon-compatible
 
-                if (ability.Core.faction == AirCraftAI.entities[i].faction)
+                if (ability.Core.faction == AIData.entities[i].faction)
                 {
                     // if(ability as Beam) Debug.Log(entities[i]);
                     continue;
                 }
-                if (AirCraftAI.entities[i].GetIsDead())
+                if (AIData.entities[i].GetIsDead())
                 {
                     continue;
                 }
-                if (!ability.CheckCategoryCompatibility(AirCraftAI.entities[i]))
+                if (!ability.CheckCategoryCompatibility(AIData.entities[i]))
                     continue;
 
                 // check if it is the closest entity that passed the checks so far
 
-                float sqrD = Vector3.SqrMagnitude(ability.Core.transform.position - AirCraftAI.entities[i].transform.position);
+                float sqrD = Vector3.SqrMagnitude(ability.Core.transform.position - AIData.entities[i].transform.position);
                 if (closest == null || sqrD < closestD)
                 {
                     closestD = sqrD;
-                    closest = AirCraftAI.entities[i].transform;
+                    closest = AIData.entities[i].transform;
                 }
             }
             // set to the closest compatible target

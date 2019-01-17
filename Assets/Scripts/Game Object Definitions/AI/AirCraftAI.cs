@@ -41,7 +41,7 @@ public class AirCraftAI : MonoBehaviour
     bool retreatTargetFound = false;
     Vector2 retreatTarget;
 
-    public static List<Entity> entities = new List<Entity>(); //TODO: move somewhere more appropriate
+    //public static List<Entity> entities = new List<Entity>();
 
     public void setMode(AIMode mode)
     {
@@ -239,22 +239,22 @@ public class AirCraftAI : MonoBehaviour
     {
         float minD = float.MaxValue;
         T nearest = null;
-        for (int i = 0; i < entities.Count; i++)
+        for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if (entities[i].GetIsDead())
+            if (AIData.entities[i].GetIsDead())
                 continue;
-            if (terrainType != Entity.TerrainType.All && entities[i].Terrain != terrainType)
+            if (terrainType != Entity.TerrainType.All && AIData.entities[i].Terrain != terrainType)
                 continue;
-            if (entities[i] is T)
+            if (AIData.entities[i] is T)
             {
-                if (((entities[i].faction == faction) ^ !enemy) && faction != -1)
+                if (((AIData.entities[i].faction == faction) ^ !enemy) && faction != -1)
                     continue;
 
-                float d = (position - entities[i].transform.position).sqrMagnitude;
+                float d = (position - AIData.entities[i].transform.position).sqrMagnitude;
                 if (d < minD)
                 {
                     minD = d;
-                    nearest = entities[i] as T;
+                    nearest = AIData.entities[i] as T;
                 }
             }
         }
@@ -265,11 +265,11 @@ public class AirCraftAI : MonoBehaviour
     {
         int count = 0;
         float sqrRange = range * range;
-        for (int i = 0; i < entities.Count; i++)
+        for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if (entities[i].GetIsDead())
+            if (AIData.entities[i].GetIsDead())
                 continue;
-            if ((position - entities[i].transform.position).sqrMagnitude < sqrRange)
+            if ((position - AIData.entities[i].transform.position).sqrMagnitude < sqrRange)
                 count++;
         }
         return count;

@@ -22,8 +22,7 @@ public class BattleAI : AIModule
 
     Entity primaryTarget;
 
-    List<Outpost> outposts;
-    Outpost collectTarget = null;
+    EnergyRock collectTarget = null;
     bool findNewTarget = false;
 
     public override void Init()
@@ -93,7 +92,7 @@ public class BattleAI : AIModule
             }
 
             // if population is nearly capped, attack
-            if (shellcore.GetTotalCommandLimit() > shellcore.GetUnitsCommanding().Count) // TODO: OR if enemy base is weak
+            if (shellcore.GetTotalCommandLimit() > shellcore.GetUnitsCommanding().Count || shellcore.GetPower() > 100) // TODO: OR if enemy base is weak
             {
                 state = BattleState.Attack;
             }
@@ -135,10 +134,9 @@ public class BattleAI : AIModule
                     craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
                 }
                 //TODO: AI Attack:
-                // create tanks, if bunkers or enemy ground base exists
                 // create torpedo turrets if no bunker is under control
-                // ground attack location = own bunker location (or tank drop location?)
-                // what if there are multiple land masses? how to attack?
+                // ground attack location = own bunker location
+                // drag tanks from one platform to another "LandPlatformGenerator.getEnemiesOnPlatform(Vector2 platformLocation, int faction)"?
                 // how to react to different pressures on land and air?
                 // keep an offensive turret in tracktor beam, if possible
                 break;
@@ -150,91 +148,106 @@ public class BattleAI : AIModule
                 break;
             case BattleState.Collect:
                 // go from outpost to outpost, (also less fortified enemy outposts [count enemy units nearby {TODO}]) and collect energy
-                if(outposts == null)
-                {
-                    outposts = new List<Outpost>();
-                    foreach (var entity in AirCraftAI.entities)
-                    {
-                        if (entity is Outpost)
-                            outposts.Add(entity as Outpost);
-                    }
-                }
-
                 if(findNewTarget || collectTarget == null)
                 {
                     // Find new target
-                    if (collectTarget != null)
-                        collectTarget = AirCraftAI.getNearestEntity<Outpost>(/*carrier != null ? carrier.transform.position : */craft.transform.position, craft.faction, false);
-                    else
+                    float minD = float.MaxValue;
+                    EnergyRock nearest = null;
+                    for (int i = 0; i < AIData.energyRocks.Count; i++)
                     {
-                        float minD = float.MaxValue;
-                        Outpost nearest = null;
-                        for (int i = 0; i < outposts.Count; i++)
+                        if (AirCraftAI.getEnemyCountInRange(AIData.energyRocks[i].transform.position, 15f, craft.faction) > 3)
+                            continue;
+
+                        float d = (craft.transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude;
+                        if (d < minD && AIData.energyRocks[i] != collectTarget)
                         {
-                            if (outposts[i].faction != craft.faction && AirCraftAI.getEnemyCountInRange(outposts[i].transform.position, 15f, craft.faction) < 3)
-                                continue;
-
-                            float d = (craft.transform.position - outposts[i].transform.position).sqrMagnitude;
-                            if (d < minD && outposts[i] != collectTarget)
-                            {
-                                minD = d;
-                                nearest = outposts[i];
-                            }
+                            minD = d;
+                            nearest = AIData.energyRocks[i];
                         }
-                        collectTarget = nearest;
                     }
+                    collectTarget = nearest;
 
-                    if(collectTarget != null)
+                    if (collectTarget != null)
                         findNewTarget = false;
                 }
-
                 if(collectTarget != null)
                 {
                     Vector2 delta = collectTarget.transform.position - craft.transform.position;
-                    if (delta.sqrMagnitude > 400f)
+                    if (delta.sqrMagnitude > 25f)
                     {
                         craft.MoveCraft(delta.normalized);
-                    }
-                    else
-                    {
-                        if(collectTarget.faction == craft.faction)
-                        {
-                            for (int i = 0; i < collectTarget.vendingBlueprint.items.Count; i++)
-                            {
-                                if (collectTarget.vendingBlueprint.items[i].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
-                                {
-                                    GameObject creation = new GameObject();
-                                    switch (collectTarget.vendingBlueprint.items[i].entityBlueprint.intendedType)
-                                    {
-                                        case EntityBlueprint.IntendedType.Turret:
-                                            Turret tur = creation.AddComponent<Turret>();
-                                            tur.blueprint = collectTarget.vendingBlueprint.items[i].entityBlueprint;
-                                            tur.SetOwner(shellcore);
-                                            break;
-                                        case EntityBlueprint.IntendedType.Tank:
-                                            Tank tank = creation.AddComponent<Tank>();
-                                            tank.blueprint = collectTarget.vendingBlueprint.items[i].entityBlueprint;
-                                            tank.enginePower = 250;
-                                            tank.SetOwner(shellcore);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-
-                                    creation.transform.position = collectTarget.transform.position;
-                                    creation.GetComponent<Entity>().spawnPoint = collectTarget.transform.position;
-                                    shellcore.SetTractorTarget(creation.GetComponent<Draggable>());
-                                    shellcore.AddPower(-collectTarget.vendingBlueprint.items[i].cost);
-                                }
-                            }
-                        }
-
-                        findNewTarget = true;
                     }
                 }
                 break;
             default:
                 break;
         }
+
+        for (int i = 0; i < AIData.vendors.Count; i++)
+        {
+            if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 400f)
+            {
+                IVendor vendor = AIData.vendors[i] as IVendor;
+
+                if (vendor.GetVendingBlueprint() == null)
+                    continue;
+
+                int itemIndex = -1;
+                for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+                {
+                    if (vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                    {
+                        if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
+                        {
+                            continue;
+                        }
+
+                        if (vendor.GetVendingBlueprint().items[j].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank && !enemyGroundTargets(true)) //TODO: get turret / tank attack category from somewhere else
+                            continue;
+
+                        itemIndex = j;
+                    }
+                }
+
+                if(itemIndex != -1)
+                {
+                    GameObject creation = new GameObject();
+                    switch (vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.intendedType)
+                    {
+                        case EntityBlueprint.IntendedType.Turret:
+                            Turret tur = creation.AddComponent<Turret>();
+                            tur.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
+                            tur.SetOwner(shellcore);
+                            shellcore.SetTractorTarget(creation.GetComponent<Draggable>());
+                            break;
+                        case EntityBlueprint.IntendedType.Tank:
+                            Tank tank = creation.AddComponent<Tank>();
+                            tank.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
+                            tank.enginePower = 250;
+                            tank.SetOwner(shellcore);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    creation.transform.position = AIData.vendors[i].transform.position;
+                    creation.GetComponent<Entity>().spawnPoint = AIData.vendors[i].transform.position;
+                    shellcore.AddPower(-vendor.GetVendingBlueprint().items[itemIndex].cost);
+                }
+            }
+        }
+    }
+
+    bool enemyGroundTargets(bool allEntities)
+    {
+        Entity[] targets = allEntities ? AIData.entities.ToArray() : BattleZoneManager.getTargets();
+        for (int i = 0; i < targets.Length; i++)
+        {
+            if(targets[i].faction != craft.faction && targets[i].Terrain == Entity.TerrainType.Ground)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
