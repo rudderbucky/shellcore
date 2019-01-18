@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Name: Outpost
   m_EditorClassIdentifier: 
   entityName: Outpost
-  coreSpriteID: outpost_core_sprite
-  coreShellSpriteID: 
+  coreSpriteID: drone_light
+  coreShellSpriteID: drone_shell
+  shellHealth:
+  - 2000
+  - 1000
+  - 500
+  baseRegen:
+  - 120
+  - 0
+  - 300
   intendedType: 5
   parts:
   - location: {x: -0.47, y: 0}
@@ -21,10 +29,10 @@ MonoBehaviour:
     mirrored: 0
     abilityType: 2
     spawnID: 
-    partID: outpost_part
+    partID: MediumSide1
   - location: {x: 0.47, y: 0}
     rotation: 0
     mirrored: 1
     abilityType: 2
     spawnID: 
-    partID: outpost_part
+    partID: MediumSide1

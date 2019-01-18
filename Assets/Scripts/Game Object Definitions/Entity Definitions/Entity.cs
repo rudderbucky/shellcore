@@ -72,7 +72,10 @@ public class Entity : MonoBehaviour {
 
         // Remove possible old parts from list
         parts.Clear();
-        maxHealth = new float[] { 100, 100, 300 }; // hardcoded base healths of 100
+        maxHealth = new float[3];
+        regenRate = new float[3];
+        //blueprint.shellHealth.CopyTo(maxHealth, 0);
+        //blueprint.baseRegen.CopyTo(regenRate, 0);
 
         if (!GetComponent<SortingGroup>())
         {
@@ -333,11 +336,7 @@ public class Entity : MonoBehaviour {
         }
         ConnectedTreeCreator();
 
-        currentHealth[0] = maxHealth[0];
-        currentHealth[1] = maxHealth[1];
-        currentHealth[2] = maxHealth[2];
-        regenRate[0] = 100;
-        regenRate[2] = 75;
+        maxHealth.CopyTo(currentHealth, 0);
         // Add abilities
         abilities = GetComponentsInChildren<Ability>();
     }

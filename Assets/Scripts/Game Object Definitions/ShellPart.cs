@@ -111,7 +111,7 @@ public class ShellPart : MonoBehaviour {
         hasDetached = false;
         spriteRenderer.enabled = true;
         Destroy(GetComponent<Rigidbody2D>()); // remove rigidbody
-        currentHealth = partHealth / 4;
+        currentHealth = partHealth;
         craft = transform.root.GetComponent<Entity>();
         faction = craft.faction;
         spriteRenderer.color = FactionColors.colors[craft.faction];
