@@ -72,10 +72,8 @@ public class Entity : MonoBehaviour {
 
         // Remove possible old parts from list
         parts.Clear();
-        maxHealth = new float[3];
-        regenRate = new float[3];
-        //blueprint.shellHealth.CopyTo(maxHealth, 0);
-        //blueprint.baseRegen.CopyTo(regenRate, 0);
+        blueprint.shellHealth.CopyTo(maxHealth, 0);
+        blueprint.baseRegen.CopyTo(regenRate, 0);
 
         if (!GetComponent<SortingGroup>())
         {
