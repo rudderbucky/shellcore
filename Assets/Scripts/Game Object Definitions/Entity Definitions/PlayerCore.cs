@@ -12,6 +12,7 @@ public class PlayerCore : ShellCore {
     public InfoText alerter;
     public PlayerSave cursave;
     public bool loaded;
+    bool tagToReinitialize;
 
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
@@ -64,6 +65,16 @@ public class PlayerCore : ShellCore {
             loaded = true;
         }
 	}
+
+    public void Rebuild() {
+        hud.DeinitializeHUD();
+        for(int i = 0; i < parts.Count; i++) {
+            if(parts[i].gameObject.name != "Shell Sprite")
+                Destroy(parts[i].gameObject);
+        }
+        BuildEntity();
+        hud.InitializeHUD(this);
+    }
 
     public void LoadSave(PlayerSave save) {
         transform.position = save.position;

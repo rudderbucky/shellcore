@@ -115,15 +115,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         if (!tractorMaterial)
             tractorMaterial = ResourceManager.GetAsset<Material>("tractor_material");
 
-        if (!GetComponent<MainBullet>())
-        {
-            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
-            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-            mainBullet.terrain = TerrainType.Air;
-        }
-
-        GetComponent<MainBullet>().SetActive(true);
-
         if (!transform.Find("TractorBeam"))
         {
             GameObject childObject = new GameObject();

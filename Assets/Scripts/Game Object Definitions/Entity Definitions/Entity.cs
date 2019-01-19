@@ -14,7 +14,7 @@ public class Entity : MonoBehaviour {
     protected SortingGroup group;
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
-    protected Ability[] abilities; // abilities
+    protected List<Ability> abilities; // abilities
     protected Rigidbody2D entityBody; // entity to modify with this script
     protected Collider2D hitbox; // the hitbox of the entity (excluding extra parts)
     protected TargetingSystem targeter; // the TargetingSystem of the entity
@@ -160,6 +160,17 @@ public class Entity : MonoBehaviour {
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
             renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
+        }
+
+        abilities = new List<Ability>();
+
+        if (this as ShellCore)
+        {
+            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
+            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+            mainBullet.terrain = TerrainType.Air;
+            mainBullet.SetActive(true);
+            abilities.Add(mainBullet);
         }
         entityName = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
@@ -325,6 +336,7 @@ public class Entity : MonoBehaviour {
                     
 
                 parts.Add(partObject.GetComponent<ShellPart>());
+                if(partObject.GetComponent<Ability>()) abilities.Add(partObject.GetComponent<Ability>());
             }
         }
         Transform shellSprite = shell.transform;
@@ -336,7 +348,6 @@ public class Entity : MonoBehaviour {
 
         maxHealth.CopyTo(currentHealth, 0);
         // Add abilities
-        abilities = GetComponentsInChildren<Ability>();
     }
    
      public bool GetIsDead() {
@@ -553,7 +564,7 @@ public class Entity : MonoBehaviour {
     /// </summary>
     /// <returns>All the abilities attached to the craft</returns>
     public Ability[] GetAbilities() {
-        return abilities; 
+        return abilities.ToArray(); 
         // create this array during start since it's likely that we'll be calling this multiple times
     }
 

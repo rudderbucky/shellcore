@@ -36,6 +36,7 @@ public class HUDArrowScript : MonoBehaviour {
 					if(player.IsMoving() || init) {
 						init = false;
 						transform.position = player.transform.position + x.normalized * 10;
+						// TODO: check condition for adding/subbing 90
 						transform.eulerAngles = new Vector3(0,0,(Mathf.Rad2Deg * Mathf.Atan(x.y/x.x) -(x.x > 0 ? 90 : -90)));
 					}
 				} else spr.enabled = false;
