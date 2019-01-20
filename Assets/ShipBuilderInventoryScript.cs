@@ -10,6 +10,8 @@ using UnityEngine.SceneManagement;
 public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
     public EntityBlueprint.PartInfo part;
     public ShipBuilderCursorScript cursor;
+    int count;
+    Image image;
 
     public static string GetShooterID(Ability.AbilityType type) {
         switch(type) {
@@ -31,19 +33,30 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
         }
     }
     void Start() {
-        var image = GetComponentsInChildren<Image>()[1];
+        image = GetComponentsInChildren<Image>()[1];
         image.sprite = ResourceManager.GetAsset<Sprite>(part.partID + "_sprite");
         string shooterID = GetShooterID(part.abilityType);
         if(shooterID != null) {
             GetComponentsInChildren<Image>()[2].sprite = ResourceManager.GetAsset<Sprite>(shooterID);
             GetComponentsInChildren<Image>()[2].color = FactionColors.colors[0];
             GetComponentsInChildren<Image>()[2].rectTransform.sizeDelta = GetComponentsInChildren<Image>()[2].sprite.bounds.size * 100;
-        }
+        } else GetComponentsInChildren<Image>()[2].enabled = false;
         image.color = FactionColors.colors[0];
         image.GetComponent<RectTransform>().sizeDelta = image.sprite.bounds.size * 100;
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        cursor.currentPart = part;
+        if(count > 0) {
+            cursor.currentPart = part;
+            count--;
+        }
+    }
+    public void IncrementCount() {
+        count++;
+    }
+
+    void Update() {
+        image.color = count > 0 ? FactionColors.colors[0] : Color.gray; // gray gray gray gray gray USA USA USA USA USA
+        if(GetComponentsInChildren<Image>().Length > 1) GetComponentsInChildren<Image>()[2].color = count > 0 ? FactionColors.colors[0] : Color.gray;
     }
 }

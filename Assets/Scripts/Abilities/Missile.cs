@@ -5,10 +5,13 @@ using UnityEngine;
 public class Missile : WeaponAbility {
 
     public GameObject missilePrefab;
-
+    float damage;
     protected override void Awake()
     {
         base.Awake();
+        damage = 500;
+        description = "Homing projectile that deals " + damage + " damage.";
+        abilityName = "Missile";
         ID = 7;
         cooldownDuration = 5F;
         CDRemaining = cooldownDuration;
@@ -27,7 +30,7 @@ public class Missile : WeaponAbility {
             script.SetCategory(category);
             script.SetTerrain(terrain);
             script.faction = Core.faction;
-            script.SetDamage(500);
+            script.SetDamage(damage);
             Destroy(missile, 7);
             isOnCD = true; // set on cooldown
             return true;

@@ -8,4 +8,6 @@ public class PlayerSave {
 	public Vector2 position;
 	public float[] currentHealths;
 	public string currentPlayerBlueprint;
+
+	public List<EntityBlueprint.PartInfo> partInventory;
 }

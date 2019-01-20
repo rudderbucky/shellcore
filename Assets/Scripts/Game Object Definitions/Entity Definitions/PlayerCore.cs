@@ -84,6 +84,11 @@ public class PlayerCore : ShellCore {
             if(currentHealth[i] > maxHealth[i]) currentHealth[i] = maxHealth[i];
         }
     }
+    public List<EntityBlueprint.PartInfo> GetInventory() {
+        if(cursave != null) return cursave.partInventory;
+        else return null; 
+    }
+    
 	// Update is called once per frame
 	protected override void Update () {
         // call methods

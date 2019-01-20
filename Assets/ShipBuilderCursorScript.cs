@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems; // Required when using Event data.
 using UnityEngine.SceneManagement;
 
+/*
+	THIS CODE SUCKS PLEASE DON'T LOOK AT IT I WILL REVISE IT EVENTUALLY
+ */
 public class ShipBuilderCursorScript : MonoBehaviour {
 
 	public EntityBlueprint.PartInfo currentPart;
@@ -30,7 +33,6 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	bool rotateMode;
 
 	public void FlipLastPart() {
-		Debug.Log("flip");
 		parts.Remove(lastPart);
 		builder.parts.Remove(lastPart.part);
 		lastPart.part.mirrored = !lastPart.part.mirrored;
@@ -126,8 +128,9 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 				image.sprite = sprite;
 				image.color = FactionColors.colors[0];
 				image.GetComponent<RectTransform>().sizeDelta = sprite.bounds.size * 100;
+
 				if(Input.GetMouseButtonUp(0)) {
-					if(RectTransformUtility.RectangleContainsScreenPoint(grid, transform.position)) {
+					if(RectTransformUtility.RectangleContainsScreenPoint(grid, transform.position)) { // place the part back on grid
 						BuilderPartInfo part = new BuilderPartInfo();
 						part.part = currentPart;
 						part.builderImage = Instantiate(image.gameObject, 
@@ -136,11 +139,15 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 						lastPart = part;
 						builder.parts.Add(part.part);
 						parts.Add(part);
-					} else {
+					}
+					else {
+						builder.Dispatch(currentPart);
 						mode = CursorMode.AddRemove;
 					}
+					
 					currentPart.partID = "";
 					image.transform.localEulerAngles = new Vector3(0,0,1);
+					image.transform.localScale = Vector3.one;
 					image.enabled = false;
 					shooter.enabled = false;
 				}
@@ -157,6 +164,32 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 					break;
 				}
 			}
+		}
+	}
+
+	public void LoadBlueprint(EntityBlueprint blueprint) {
+		foreach(EntityBlueprint.PartInfo info in blueprint.parts) {
+			BuilderPartInfo builder = new BuilderPartInfo();
+			builder.part = info;
+			image.enabled = true;
+			var sprite = ResourceManager.GetAsset<Sprite>(info.partID + "_sprite");
+			string shooterID = ShipBuilderInventoryScript.GetShooterID(info.abilityType);
+			if(shooterID != null) 
+			{
+				shooter.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
+				shooter.color = FactionColors.colors[0];
+				shooter.enabled = true;
+				shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
+			} else shooter.enabled = false;
+			image.sprite = sprite;
+			image.color = FactionColors.colors[0];
+			image.GetComponent<RectTransform>().sizeDelta = sprite.bounds.size * 100;
+			builder.builderImage = Instantiate(image.gameObject, transform.parent).GetComponent<Image>();
+			builder.builderImage.rectTransform.anchoredPosition = info.location * 100;
+			builder.builderImage.transform.localScale = new Vector3(info.mirrored ? -1 : 1,1,1);
+			builder.builderImage.transform.localEulerAngles = new Vector3(0,0,info.rotation);
+			parts.Add(builder);
+			this.builder.parts.Add(builder.part);
 		}
 	}
 }
