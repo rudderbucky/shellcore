@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
     public EntityBlueprint.PartInfo part;
+    public GameObject SBPrefab;
     public ShipBuilderCursorScript cursor;
     int count;
     Image image;
@@ -47,7 +48,11 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
     public void OnPointerDown(PointerEventData eventData)
     {
         if(count > 0) {
-            cursor.currentPart = part;
+            var x = Instantiate(SBPrefab, cursor.transform.parent);
+            x.GetComponent<ShipBuilderPart>().info = part;
+            x.GetComponent<ShipBuilderPart>().cursorScript = cursor;
+            cursor.parts.Add(x.GetComponent<ShipBuilderPart>());
+            cursor.GrabPart(x.GetComponent<ShipBuilderPart>());
             count--;
         }
     }

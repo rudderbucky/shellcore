@@ -18,19 +18,19 @@ public class PartPropertyButtonScript : MonoBehaviour, IPointerDownHandler, IPoi
     public void OnPointerDown(PointerEventData eventData)
     {
 		if((int)type == 0) cursor.FlipLastPart();
-        if((int)type == 1) cursor.ToggleRotate();
+        if((int)type == 1) cursor.rotateMode = true;
     }
 
 	public void OnPointerUp(PointerEventData eventData)
     {
         if((int)type == 1) {
-			cursor.ToggleRotate();
+			cursor.rotateMode = false;
 		}
     }
     void Update() {
-		if(cursor.mode == ShipBuilderCursorScript.CursorMode.FlipRotate) {
+		if(cursor.lastPart) {
 			GetComponent<Image>().enabled = true;
-			var tmp = cursor.lastPart.builderImage.transform.position;
+			var tmp = cursor.lastPart.transform.position;
 			tmp.x += ((int)type == 1 ? 15 : -15);
 			tmp.y += 50;
 			transform.position = tmp;
