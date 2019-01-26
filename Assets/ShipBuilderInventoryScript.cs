@@ -60,6 +60,9 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
         count++;
     }
 
+    public int GetCount() {
+        return count;
+    }
     void Update() {
         image.color = count > 0 ? FactionColors.colors[0] : Color.gray; // gray gray gray gray gray USA USA USA USA USA
         if(GetComponentsInChildren<Image>().Length > 1) GetComponentsInChildren<Image>()[2].color = count > 0 ? FactionColors.colors[0] : Color.gray;

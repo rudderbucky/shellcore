@@ -29,6 +29,12 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		} else lastPart = currentPart;
 		currentPart = null;
 	}
+
+	void ClearAllParts() {
+		while(parts.Count > 0) {
+			builder.DispatchPart(parts[0]);
+		}
+	}
 	public bool rotateMode;
 	public void RotateLastPart() {
 		var x = Input.mousePosition - lastPart.transform.position;
@@ -45,6 +51,9 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		lastPart.info.mirrored = !lastPart.info.mirrored;
 	}
 	void Update() {
+		if(Input.GetKeyDown("c")) {
+			ClearAllParts();
+		}
 		transform.position = new Vector3(10 * ((int)Input.mousePosition.x / 10), 10 * ((int)Input.mousePosition.y / 10), 0);
 		if(rotateMode) {
 			RotateLastPart();

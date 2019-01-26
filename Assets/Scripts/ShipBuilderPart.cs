@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+/*
+	This class exists to streamline the process of displaying an image representation of a part, and storing actual data.
+	In other words, this class is made to reflect the current status of the embedded PartInfo in image form.
+ */
 public class ShipBuilderPart : MonoBehaviour {
 
 	Image image;

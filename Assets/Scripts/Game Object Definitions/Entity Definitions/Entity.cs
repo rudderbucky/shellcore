@@ -188,6 +188,7 @@ public class Entity : MonoBehaviour {
 
                 GameObject partObject = ShellPart.BuildPart(partBlueprint);
                 ShellPart shellPart = partObject.GetComponent<ShellPart>();
+                shellPart.info = part;
 
                 //Add an ability to the part:
 

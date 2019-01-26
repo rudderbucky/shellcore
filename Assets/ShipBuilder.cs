@@ -36,6 +36,10 @@ public class ShipBuilder : MonoBehaviour {
 
 	public void Initialize() {
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
+		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
+			partDict.Add(player.GetTractorTarget().GetComponent<ShellPart>().info,
+			Instantiate(buttonPrefab, viewportContents).GetComponent<ShipBuilderInventoryScript>());
+		}
 		shell.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreShellSpriteID);
 		shell.color = FactionColors.colors[0];
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
@@ -45,20 +49,12 @@ public class ShipBuilder : MonoBehaviour {
 		core.preserveAspect = true;
 		core.rectTransform.sizeDelta = core.sprite.bounds.size * 110;
 		List<EntityBlueprint.PartInfo> parts = player.GetInventory();
-		var p1 = new EntityBlueprint.PartInfo();
-		p1.partID = "SmallCenter1";
-		p1.abilityType = Ability.AbilityType.Beam;
-		parts.Add(p1);
-		p1.partID = "MediumCenter3";
-		parts.Add(p1);
-		parts.Add(p1);
-		parts.Add(p1);
+
 		if(parts != null) {
 			for(int i = 0; i < parts.Count; i++) {
 				parts[i] = CullSpatialValues(parts[i]);
 			}
 		}
-		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 		foreach(EntityBlueprint.PartInfo part in parts) {
 			if(!partDict.ContainsKey(part)) 
 			{
@@ -86,7 +82,9 @@ public class ShipBuilder : MonoBehaviour {
 			Destroy(button.gameObject);
 			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
 			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
-				player.cursave.partInventory.Add(info);
+				if(partDict[info].GetCount() > 0)	{
+					player.cursave.partInventory.Add(info);
+				}
 			}
 		}
 		Export();

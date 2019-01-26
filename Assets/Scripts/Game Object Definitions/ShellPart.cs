@@ -28,6 +28,8 @@ public class ShellPart : MonoBehaviour {
     public Ability.AbilityType AbilityType { get; set; }
     public string SpawnID { get; set; }
 
+    public EntityBlueprint.PartInfo info;
+
     public int GetFaction()
     {
         return faction;

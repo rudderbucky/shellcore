@@ -136,6 +136,11 @@ public class ResourceManager : MonoBehaviour
     #if UNITY_EDITOR
     public void GenerateSegmentedList(ResourceManagerEditor.ResourcesByType type)
     {
+        /*
+            Heads up: if you are adding a part, make sure to ID the sprite with the extension _sprite to the part's ID.
+            For example, test_part's sprite would be test_part_sprite
+            Some systems work with this in mind for now (this is likely going to change since it's annoying)
+         */
         segmentedBuiltIns = new List<Resource>();
         if (resourcePack == null)
             return;
