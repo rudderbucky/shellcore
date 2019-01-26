@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ShipBuilder : MonoBehaviour {
 	public GameObject SBPrefab;
-	public UnityEngine.UI.Image shell;
-	public UnityEngine.UI.Image core;
+	public Image shell;
+	public Image core;
 	public ShipBuilderCursorScript cursorScript;
 	public GameObject buttonPrefab;
 	public PlayerCore player;
@@ -31,9 +32,24 @@ public class ShipBuilder : MonoBehaviour {
 		partDict[culledInfo].IncrementCount();
 		cursorScript.parts.Remove(part);
 		Destroy(part.gameObject);
-		//builder.Dispatch(part.info);
 	}
 
+	public bool IsInChain(ShipBuilderPart part) {
+		var x = part.rectTransform.rect;
+		x.center = part.rectTransform.anchoredPosition;
+		var shellRect = shell.rectTransform.rect;
+		if(x.Overlaps(shellRect)) return true;
+		else {
+			foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+				if(shipPart.isInChain && part != shipPart) {
+					var y = shipPart.rectTransform.rect;
+					y.center = shipPart.rectTransform.anchoredPosition;
+					if(x.Overlaps(y) && shipPart.validPos) return true;
+				}
+			}
+			return false;
+		}
+	}
 	public void Initialize() {
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {

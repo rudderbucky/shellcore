@@ -51,6 +51,9 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		lastPart.info.mirrored = !lastPart.info.mirrored;
 	}
 	void Update() {
+		foreach(ShipBuilderPart part in parts) {
+			part.isInChain = builder.IsInChain(part);
+		}
 		if(Input.GetKeyDown("c")) {
 			ClearAllParts();
 		}
