@@ -32,9 +32,9 @@ public class ShipBuilderPart : MonoBehaviour {
 		var y = otherPart.rectTransform.rect;
 		y.center = otherPart.rectTransform.anchoredPosition;
 		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
-		0.0000000000005F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
+		0.2F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
 		Mathf.Abs(rectTransform.anchoredPosition.y - otherPart.rectTransform.anchoredPosition.y) <
-		0.0000000000005F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
+		0.2F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
 		return z;
 		//return y.Contains(x.center);
 	}

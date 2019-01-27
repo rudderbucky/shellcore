@@ -90,15 +90,17 @@ public class ShipBuilder : MonoBehaviour {
 		LoadBlueprint(player.blueprint);
 	}
 
-	public void CloseUI() {
+	public void CloseUI(bool validClose) {
 		gameObject.SetActive(false);
-		foreach(ShipBuilderInventoryScript button in partDict.Values) {
+		if(validClose) {
 			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
 			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
 				if(partDict[info].GetCount() > 0) {
 					player.cursave.partInventory.Add(info);
 				}
 			}
+		}
+		foreach(ShipBuilderInventoryScript button in partDict.Values) {
 			Destroy(button.gameObject);
 		}
 		foreach(ShipBuilderPart part in cursorScript.parts) {
@@ -116,15 +118,17 @@ public class ShipBuilder : MonoBehaviour {
 	}
 
 	public void Deinitialize() {
+		bool invalidState = false;
 		foreach(ShipBuilderPart part in cursorScript.parts) {
 			if(!part.validPos || !part.isInChain) {
-				CloseUI();
-				return;
+				invalidState = true;
+				break;
 			}
-			
 		}
-		Export();
-		CloseUI();
+		if(!invalidState) {
+			Export();
+			CloseUI(true);
+		} else CloseUI(false);
 	}
 
 	public void Export() {
@@ -137,6 +141,6 @@ public class ShipBuilder : MonoBehaviour {
 
 	void Update() {
 		if((player.transform.position - yardPosition).sqrMagnitude > 100)
-			CloseUI();
+			CloseUI(false);
 	}
 }

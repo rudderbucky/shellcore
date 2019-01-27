@@ -107,8 +107,6 @@ public class SectorManager : MonoBehaviour
                 plat.name = curSect.name + "Platform";
                 curSect.platform = plat;
                 current = curSect;
-                AssetDatabase.CreateAsset(curSect, "Assets\\CenterSector.asset");
-                AssetDatabase.CreateAsset(plat, "Assets\\CenterSectorPlatform.asset");
                 Debug.Log("Success! File loaded from " + path);
                 loadSector();
                 return;
