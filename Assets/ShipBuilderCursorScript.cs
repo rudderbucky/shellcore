@@ -30,7 +30,7 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		currentPart = null;
 	}
 
-	void ClearAllParts() {
+	public void ClearAllParts() {
 		while(parts.Count > 0) {
 			builder.DispatchPart(parts[0]);
 		}

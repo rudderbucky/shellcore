@@ -21,7 +21,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     protected float totalPower;
     protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore) TODO: move to shellcore
     public int intrinsicCommandLimit;
-    public SectorManager sectorMngr;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
     private AirCraftAI ai;
@@ -156,7 +155,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 3000f * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * enginePower * 9F * Time.fixedDeltaTime * rigidbody.mass / 2);
                 }
             }
         }

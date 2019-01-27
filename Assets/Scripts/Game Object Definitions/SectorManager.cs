@@ -13,6 +13,7 @@ public class SectorManager : MonoBehaviour
     public Sector current;
     public BackgroundScript background;
     public InfoText info;
+    public List<ShellPart> strayParts = new List<ShellPart>();
 
     private Dictionary<int, int> stationsCount = new Dictionary<int, int>();
     private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
@@ -122,26 +123,6 @@ public class SectorManager : MonoBehaviour
                 if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
                 background.setColor(SectorColors.colors[0]);
                 if(!jsonMode) loadSector();
-     /*        if(jsonMode) {
-                if(System.IO.Directory.GetFiles(Application.dataPath + "\\..\\Sectors\\").Length > 0) 
-                {
-                    string sectorfile = System.IO.Directory.GetFiles(Application.dataPath + "\\..\\Sectors\\")[0];
-                    string sectorjson = System.IO.File.ReadAllText(sectorfile);
-                    SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
-                    Debug.Log("Platform JSON: " + data.platformjson);
-                    LandPlatformDataWrapper platform = JsonUtility.FromJson<LandPlatformDataWrapper>(data.platformjson);
-                    Debug.Log("Sector JSON: " + data.sectorjson);
-                    SectorDataWrapper sector = JsonUtility.FromJson<SectorDataWrapper>(data.sectorjson);
-                    Sector curSect = ScriptableObject.CreateInstance<Sector>();
-                    curSect.SetViaWrapper(sector);
-                    LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
-                    plat.name = curSect.name + "Platform";
-                    plat.SetViaWrapper(platform);
-                    curSect.platform = plat;
-                    current = curSect;
-                } else jsonMode = false;
-                loadSector();
-            } else loadSector();*/
     }
 
     void loadSector()
@@ -155,6 +136,17 @@ public class SectorManager : MonoBehaviour
                 Destroy(obj.Value);
             }
         }
+        foreach(ShellPart part in strayParts) {
+            if(part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part)) {
+                Destroy(part.gameObject);
+            }
+        }
+        strayParts.Clear(); 
+
+        // Add the player's tractored part back so it gets deleted if the player doesn't tractor it through
+        // to another sector
+        if((player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()))
+            strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
         objects.Clear();
 
         // reset stations and carriers
@@ -166,6 +158,7 @@ public class SectorManager : MonoBehaviour
         if(player) {
             objects.Add("player", player.gameObject);
             player.sectorMngr = this;
+            player.alerter.showMessage("ENTERING SECTOR: " + current.name);
         }
 
 
@@ -265,6 +258,7 @@ public class SectorManager : MonoBehaviour
                         break;
                 }
                 Entity entity = gObj.GetComponent<Entity>();
+                entity.sectorMngr = this;
                 entity.faction = current.entities[i].faction;
                 entity.spawnPoint = current.entities[i].position;
                 entity.blueprint = blueprint;

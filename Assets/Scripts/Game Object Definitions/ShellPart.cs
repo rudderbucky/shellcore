@@ -81,7 +81,7 @@ public class ShellPart : MonoBehaviour {
 
         return obj;
     }
-
+    
     /// <summary>
     /// Detach the part from the Shellcore
     /// </summary>
@@ -102,6 +102,9 @@ public class ShellPart : MonoBehaviour {
         rotationOffset = Random.Range(0f, 360f);
     }
 
+    void OnDestroy() {
+        if(parent) parent.children.Remove(this);
+    }
     public void Awake()
     {
         //Find sprite renderer

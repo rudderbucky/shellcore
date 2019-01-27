@@ -60,6 +60,9 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
         count++;
     }
 
+    public void DecrementCount() {
+        count--;
+    }
     public int GetCount() {
         return count;
     }

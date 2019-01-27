@@ -13,6 +13,13 @@ public class ShipBuilder : MonoBehaviour {
 	public PlayerCore player;
 	public Transform viewportContents;
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
+
+	public bool DecrementPartButton(EntityBlueprint.PartInfo info) {
+		if(partDict.ContainsKey(CullSpatialValues(info)) && partDict[CullSpatialValues(info)].GetCount() > 0) {
+			partDict[CullSpatialValues(info)].DecrementCount();
+			return true;
+		} else return false;
+	}
 	public static EntityBlueprint.PartInfo CullSpatialValues(EntityBlueprint.PartInfo x) {
 		var part = new EntityBlueprint.PartInfo();
 		part.partID = x.partID;
@@ -84,6 +91,7 @@ public class ShipBuilder : MonoBehaviour {
 				button.IncrementCount();
 				partDict.Add(part, button);
 			} else partDict[part].IncrementCount();
+			player.cursave.partInventory.Add(part);
 			Destroy(player.GetTractorTarget().gameObject);
 		}
 
@@ -96,7 +104,8 @@ public class ShipBuilder : MonoBehaviour {
 			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
 			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
 				if(partDict[info].GetCount() > 0) {
-					player.cursave.partInventory.Add(info);
+					for(int i = 0; i < partDict[info].GetCount(); i++)
+						player.cursave.partInventory.Add(info);
 				}
 			}
 		}
@@ -139,6 +148,15 @@ public class ShipBuilder : MonoBehaviour {
 		player.Rebuild();
 	}
 
+	void Start() {
+		foreach(PresetButton button in GetComponentsInChildren<PresetButton>()) {
+			button.SBPrefab = SBPrefab;
+			button.player = player;
+			button.cursorScript = cursorScript;
+			button.builder = this;
+			button.Initialize();
+		}
+	}
 	void Update() {
 		if((player.transform.position - yardPosition).sqrMagnitude > 100)
 			CloseUI(false);

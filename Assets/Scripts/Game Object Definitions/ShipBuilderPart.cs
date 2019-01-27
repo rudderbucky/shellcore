@@ -18,6 +18,7 @@ public class ShipBuilderPart : MonoBehaviour {
 	public bool isInChain;
 	public bool validPos;
 	public RectTransform isTooClose;
+	
 	void Awake() {
 		validPos = true;
 		image = GetComponent<Image>();
