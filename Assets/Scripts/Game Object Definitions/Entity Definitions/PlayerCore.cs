@@ -12,6 +12,7 @@ public class PlayerCore : ShellCore {
     public InfoText alerter;
     public PlayerSave cursave;
     public bool loaded;
+    bool tagToReinitialize;
 
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
@@ -65,6 +66,16 @@ public class PlayerCore : ShellCore {
         }
 	}
 
+    public void Rebuild() {
+        hud.DeinitializeHUD();
+        for(int i = 0; i < parts.Count; i++) {
+            if(parts[i].gameObject.name != "Shell Sprite")
+                Destroy(parts[i].gameObject);
+        }
+        BuildEntity();
+        hud.InitializeHUD(this);
+    }
+
     public void LoadSave(PlayerSave save) {
         transform.position = save.position;
         positionBeforeOscillation = transform.position.y;
@@ -73,6 +84,11 @@ public class PlayerCore : ShellCore {
             if(currentHealth[i] > maxHealth[i]) currentHealth[i] = maxHealth[i];
         }
     }
+    public List<EntityBlueprint.PartInfo> GetInventory() {
+        if(cursave != null) return cursave.partInventory;
+        else return null; 
+    }
+    
 	// Update is called once per frame
 	protected override void Update () {
         // call methods

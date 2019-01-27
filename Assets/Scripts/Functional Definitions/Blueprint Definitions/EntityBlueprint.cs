@@ -37,7 +37,8 @@ public class EntityBlueprint : ScriptableObject
         Tower,
         Drone,
         AirCarrier,
-        GroundCarrier
+        GroundCarrier,
+        Yard
     }
 
     public IntendedType intendedType;

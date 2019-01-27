@@ -12,7 +12,7 @@ public class MissileScript : MonoBehaviour {
     public GameObject missileLinePrefab; // line rendering prefab for missiles
     private Transform target; // target of missile
     public int faction; // faction of projectile
-    private int damage; // damage missile projectile should deal
+    private float damage; // damage missile projectile should deal
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
 
@@ -57,7 +57,7 @@ public class MissileScript : MonoBehaviour {
     /// Set the damage of the missile projectile
     /// </summary>
     /// <param name="damage">damage</param>
-    public void SetDamage(int damage)
+    public void SetDamage(float damage)
     {
         this.damage = damage; // set damage
     }

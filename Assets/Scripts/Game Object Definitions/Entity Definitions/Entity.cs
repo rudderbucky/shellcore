@@ -14,7 +14,7 @@ public class Entity : MonoBehaviour {
     protected SortingGroup group;
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
-    protected Ability[] abilities; // abilities
+    protected List<Ability> abilities; // abilities
     protected Rigidbody2D entityBody; // entity to modify with this script
     protected Collider2D hitbox; // the hitbox of the entity (excluding extra parts)
     protected TargetingSystem targeter; // the TargetingSystem of the entity
@@ -72,10 +72,8 @@ public class Entity : MonoBehaviour {
 
         // Remove possible old parts from list
         parts.Clear();
-        maxHealth = new float[3];
-        regenRate = new float[3];
-        //blueprint.shellHealth.CopyTo(maxHealth, 0);
-        //blueprint.baseRegen.CopyTo(regenRate, 0);
+        blueprint.shellHealth.CopyTo(maxHealth, 0);
+        blueprint.baseRegen.CopyTo(regenRate, 0);
 
         if (!GetComponent<SortingGroup>())
         {
@@ -163,6 +161,17 @@ public class Entity : MonoBehaviour {
             renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
         }
+
+        abilities = new List<Ability>();
+
+        if (this as ShellCore)
+        {
+            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
+            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+            mainBullet.terrain = TerrainType.Air;
+            mainBullet.SetActive(true);
+            abilities.Add(mainBullet);
+        }
         entityName = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
         //For shellcores, create the tractor beam
@@ -179,6 +188,7 @@ public class Entity : MonoBehaviour {
 
                 GameObject partObject = ShellPart.BuildPart(partBlueprint);
                 ShellPart shellPart = partObject.GetComponent<ShellPart>();
+                shellPart.info = part;
 
                 //Add an ability to the part:
 
@@ -327,6 +337,7 @@ public class Entity : MonoBehaviour {
                     
 
                 parts.Add(partObject.GetComponent<ShellPart>());
+                if(partObject.GetComponent<Ability>()) abilities.Add(partObject.GetComponent<Ability>());
             }
         }
         Transform shellSprite = shell.transform;
@@ -338,7 +349,6 @@ public class Entity : MonoBehaviour {
 
         maxHealth.CopyTo(currentHealth, 0);
         // Add abilities
-        abilities = GetComponentsInChildren<Ability>();
     }
    
      public bool GetIsDead() {
@@ -359,7 +369,7 @@ public class Entity : MonoBehaviour {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            parts[i].SetCollectible((parts[i] != shell) && Random.value < 0.01f && !(this as PlayerCore));
+            parts[i].SetCollectible((parts[i] != shell) && Random.value < 0.3f && !(this as PlayerCore));
             parts[i].Detach();
         }
 
@@ -555,7 +565,7 @@ public class Entity : MonoBehaviour {
     /// </summary>
     /// <returns>All the abilities attached to the craft</returns>
     public Ability[] GetAbilities() {
-        return abilities; 
+        return abilities.ToArray(); 
         // create this array during start since it's likely that we'll be calling this multiple times
     }
 

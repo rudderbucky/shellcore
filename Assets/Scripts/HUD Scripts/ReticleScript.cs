@@ -94,6 +94,12 @@ public class ReticleScript : MonoBehaviour {
                             outpostUI.player = craft;
                             outpostUI.openUI();
                         }
+                    } else if(entityTarget as IShipBuilder != null && entityTarget.faction == craft.faction
+                    &&(entityTarget.transform.position - craft.transform.position).sqrMagnitude < 100) 
+                    {
+                        ShipBuilder builder = transform.parent.Find("Ship Builder").GetComponent<ShipBuilder>();
+                        builder.gameObject.SetActive(true);
+                        builder.Initialize();
                     }
                 }
 
