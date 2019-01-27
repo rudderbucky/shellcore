@@ -68,9 +68,9 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 				PlaceCurrentPart();
 			}
 		} else if(Input.GetMouseButtonDown(0)) {
-			foreach(ShipBuilderPart part in parts) {
-				if(RectTransformUtility.RectangleContainsScreenPoint(part.rectTransform, transform.position)) {
-					GrabPart(part);
+			for(int i = parts.Count - 1; i >= 0; i--) {
+				if(RectTransformUtility.RectangleContainsScreenPoint(parts[i].rectTransform, transform.position)) {
+					GrabPart(parts[i]);
 					break;
 				}
 			}

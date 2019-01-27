@@ -31,13 +31,19 @@ public class ShipBuilderPart : MonoBehaviour {
 		x.center = rectTransform.anchoredPosition;
 		var y = otherPart.rectTransform.rect;
 		y.center = otherPart.rectTransform.anchoredPosition;
-		return x.Overlaps(y);
+		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
+		0.0000000000005F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
+		Mathf.Abs(rectTransform.anchoredPosition.y - otherPart.rectTransform.anchoredPosition.y) <
+		0.0000000000005F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
+		return z;
+		//return y.Contains(x.center);
 	}
 	void Update() {
 		image.enabled = true;
 		shooter.enabled = true;
 		if(ShipBuilderInventoryScript.GetShooterID(info.abilityType) != null)
 			shooter.sprite = ResourceManager.GetAsset<Sprite>(ShipBuilderInventoryScript.GetShooterID(info.abilityType));
+		else shooter.enabled = false;
 		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
 		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
 		if(validPos) {

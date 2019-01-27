@@ -369,7 +369,7 @@ public class Entity : MonoBehaviour {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            parts[i].SetCollectible((parts[i] != shell) && Random.value < 0.01f && !(this as PlayerCore));
+            parts[i].SetCollectible((parts[i] != shell) && Random.value < 0.3f && !(this as PlayerCore));
             parts[i].Detach();
         }
 

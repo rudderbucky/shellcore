@@ -107,6 +107,8 @@ public class SectorManager : MonoBehaviour
                 plat.name = curSect.name + "Platform";
                 curSect.platform = plat;
                 current = curSect;
+                AssetDatabase.CreateAsset(curSect, "Assets\\CenterSector.asset");
+                AssetDatabase.CreateAsset(plat, "Assets\\CenterSectorPlatform.asset");
                 Debug.Log("Success! File loaded from " + path);
                 loadSector();
                 return;
@@ -257,6 +259,9 @@ public class SectorManager : MonoBehaviour
                             carriers.Add(current.entities[i].faction, gcarrier);
                         }
                         gcarrier.sectorMngr = this;
+                        break;
+                    case EntityBlueprint.IntendedType.Yard:
+                        gObj.AddComponent<Yard>();
                         break;
                     default:
                         break;

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class ShipBuilder : MonoBehaviour {
 	public GameObject SBPrefab;
+	public Vector3 yardPosition;
 	public Image shell;
 	public Image core;
 	public ShipBuilderCursorScript cursorScript;
@@ -12,9 +13,6 @@ public class ShipBuilder : MonoBehaviour {
 	public PlayerCore player;
 	public Transform viewportContents;
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
-	void Start() {
-		Initialize();
-	}
 	public static EntityBlueprint.PartInfo CullSpatialValues(EntityBlueprint.PartInfo x) {
 		var part = new EntityBlueprint.PartInfo();
 		part.partID = x.partID;
@@ -52,10 +50,6 @@ public class ShipBuilder : MonoBehaviour {
 	}
 	public void Initialize() {
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
-		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
-			partDict.Add(player.GetTractorTarget().GetComponent<ShellPart>().info,
-			Instantiate(buttonPrefab, viewportContents).GetComponent<ShipBuilderInventoryScript>());
-		}
 		shell.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreShellSpriteID);
 		shell.color = FactionColors.colors[0];
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
@@ -80,10 +74,38 @@ public class ShipBuilder : MonoBehaviour {
 				partDict[part].IncrementCount();
 			} else partDict[part].IncrementCount();
 		}
+		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
+			var part = player.GetTractorTarget().GetComponent<ShellPart>().info;
+			part = CullSpatialValues(part);
+			if(!partDict.ContainsKey(part)) {
+				var button = Instantiate(buttonPrefab, viewportContents).GetComponent<ShipBuilderInventoryScript>();
+				button.cursor = cursorScript;
+				button.part = part;
+				button.IncrementCount();
+				partDict.Add(part, button);
+			} else partDict[part].IncrementCount();
+			Destroy(player.GetTractorTarget().gameObject);
+		}
 
 		LoadBlueprint(player.blueprint);
 	}
 
+	public void CloseUI() {
+		gameObject.SetActive(false);
+		foreach(ShipBuilderInventoryScript button in partDict.Values) {
+			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
+			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
+				if(partDict[info].GetCount() > 0) {
+					player.cursave.partInventory.Add(info);
+				}
+			}
+			Destroy(button.gameObject);
+		}
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			Destroy(part.gameObject);
+		}
+		cursorScript.parts = new List<ShipBuilderPart>();
+	}
 	public void LoadBlueprint(EntityBlueprint blueprint) {
 		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
 			var p = Instantiate(SBPrefab, cursorScript.transform.parent).GetComponent<ShipBuilderPart>();
@@ -94,16 +116,15 @@ public class ShipBuilder : MonoBehaviour {
 	}
 
 	public void Deinitialize() {
-		foreach(ShipBuilderInventoryScript button in partDict.Values) {
-			Destroy(button.gameObject);
-			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
-			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
-				if(partDict[info].GetCount() > 0)	{
-					player.cursave.partInventory.Add(info);
-				}
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			if(!part.validPos || !part.isInChain) {
+				CloseUI();
+				return;
 			}
+			
 		}
 		Export();
+		CloseUI();
 	}
 
 	public void Export() {
@@ -112,5 +133,10 @@ public class ShipBuilder : MonoBehaviour {
 			player.blueprint.parts.Add(part.info);
 		}
 		player.Rebuild();
+	}
+
+	void Update() {
+		if((player.transform.position - yardPosition).sqrMagnitude > 100)
+			CloseUI();
 	}
 }
