@@ -65,7 +65,8 @@ public class PlayerCore : ShellCore {
         }
 	}
 
-    public void LoadSave(PlayerSave save) {
+    public void LoadSave(PlayerSave save)
+    {
         transform.position = save.position;
         positionBeforeOscillation = transform.position.y;
         currentHealth = save.currentHealths;

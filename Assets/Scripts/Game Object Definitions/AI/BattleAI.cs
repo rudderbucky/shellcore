@@ -92,7 +92,7 @@ public class BattleAI : AIModule
             }
 
             // if population is nearly capped, attack
-            if (shellcore.GetTotalCommandLimit() > shellcore.GetUnitsCommanding().Count || shellcore.GetPower() > 100) // TODO: OR if enemy base is weak
+            if (shellcore.GetTotalCommandLimit() < shellcore.GetUnitsCommanding().Count || shellcore.GetTractorTarget() != null) // TODO: OR if enemy base is weak
             {
                 state = BattleState.Attack;
             }
@@ -169,6 +169,8 @@ public class BattleAI : AIModule
 
                     if (collectTarget != null)
                         findNewTarget = false;
+
+                    Debug.LogFormat("Faction {0} collect target: {1}", craft.faction, collectTarget);
                 }
                 if(collectTarget != null)
                 {
@@ -176,6 +178,10 @@ public class BattleAI : AIModule
                     if (delta.sqrMagnitude > 25f)
                     {
                         craft.MoveCraft(delta.normalized);
+                    }
+                    else
+                    {
+                        findNewTarget = true;
                     }
                 }
                 break;
@@ -185,7 +191,7 @@ public class BattleAI : AIModule
 
         for (int i = 0; i < AIData.vendors.Count; i++)
         {
-            if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 400f)
+            if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 400f && AIData.vendors[i].faction == craft.faction)
             {
                 IVendor vendor = AIData.vendors[i] as IVendor;
 
@@ -218,6 +224,7 @@ public class BattleAI : AIModule
                             Turret tur = creation.AddComponent<Turret>();
                             tur.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
                             tur.SetOwner(shellcore);
+                            tur.faction = craft.faction;
                             shellcore.SetTractorTarget(creation.GetComponent<Draggable>());
                             break;
                         case EntityBlueprint.IntendedType.Tank:
@@ -225,6 +232,7 @@ public class BattleAI : AIModule
                             tank.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
                             tank.enginePower = 250;
                             tank.SetOwner(shellcore);
+                            tank.faction = craft.faction;
                             break;
                         default:
                             break;
@@ -233,6 +241,7 @@ public class BattleAI : AIModule
                     creation.transform.position = AIData.vendors[i].transform.position;
                     creation.GetComponent<Entity>().spawnPoint = AIData.vendors[i].transform.position;
                     shellcore.AddPower(-vendor.GetVendingBlueprint().items[itemIndex].cost);
+                    break;
                 }
             }
         }

@@ -152,6 +152,7 @@ public class AirCraftAI : MonoBehaviour
                         if (craft.GetHealth()[0] < 0.1f * craft.GetMaxHealth()[0])
                         {
                             state = AIState.Retreating;
+                            Debug.LogFormat("Faction {0} retreating!", craft.faction);
                         }
                     }
                 }
@@ -200,11 +201,12 @@ public class AirCraftAI : MonoBehaviour
             {
                 if ((!retreatTargetFound && retreatSearchTimer < Time.time) || retreatSearchTimer < Time.time)
                 {
-                    Entity enemy = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, craft.Terrain);
-                    if (enemy)
+                    Entity enemy = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, Entity.TerrainType.All);
+                    if (enemy && (enemy.transform.position - craft.transform.position).sqrMagnitude < 1600f)
                     {
-                        retreatTarget = (craft.transform.position - enemy.transform.position).normalized * 10f;
+                        retreatTarget = (craft.transform.position - enemy.transform.position).normalized * 20f;
                         retreatTargetFound = true;
+                        Debug.Log("retreat target found!");
                     }
                     else
                         retreatTargetFound = false;
@@ -217,8 +219,27 @@ public class AirCraftAI : MonoBehaviour
                     {
                         craft.MoveCraft(delta.normalized);
                     }
+                    else
+                    {
+                        retreatSearchTimer = Time.time;
+                    }
                 }
-                
+                else
+                {
+                    Vector2 delta = craft.spawnPoint - craft.transform.position;
+                    if (delta.sqrMagnitude > 4f)
+                    {
+                        craft.MoveCraft(delta.normalized);
+                    }
+                }
+
+                // check if retreat necessary anymore
+                if (craft.GetHealth()[0] > 0.1f * craft.GetMaxHealth()[0])
+                {
+                    state = AIState.Active;
+                    Debug.LogFormat("Faction {0} stopped retreating!", craft.faction);
+                }
+
             }
             else
             {
