@@ -49,7 +49,6 @@ public class AbilityHandler : MonoBehaviour {
         core = player;
         abilities = core.GetAbilities(); // Get the core's ability array
         visibleAbilities.Clear();
-
         foreach (Ability ab in abilities) {
             switch(currentVisibles) {
                 case AbilityTypes.Skills:
@@ -161,7 +160,7 @@ public class AbilityHandler : MonoBehaviour {
     /// </summary>
     public void Deinitialize()
     {
-        for(int i = 5; i < transform.childCount; i++)  //STart from one, because index 1 is the background
+        for(int i = 5; i < transform.childCount; i++)  //Start from 5, because index 1 is the background
         {
             Destroy(transform.GetChild(i).gameObject);
         }

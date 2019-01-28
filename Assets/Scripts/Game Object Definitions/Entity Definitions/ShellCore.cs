@@ -115,15 +115,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         if (!tractorMaterial)
             tractorMaterial = ResourceManager.GetAsset<Material>("tractor_material");
 
-        if (!GetComponent<MainBullet>())
-        {
-            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
-            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-            mainBullet.terrain = TerrainType.Air;
-        }
-
-        GetComponent<MainBullet>().SetActive(true);
-
         if (!transform.Find("TractorBeam"))
         {
             GameObject childObject = new GameObject();
@@ -165,7 +156,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 2000f * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 3000f * Time.fixedDeltaTime * rigidbody.mass / 2);
                 }
             }
         }

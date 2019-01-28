@@ -258,6 +258,9 @@ public class SectorManager : MonoBehaviour
                         }
                         gcarrier.sectorMngr = this;
                         break;
+                    case EntityBlueprint.IntendedType.Yard:
+                        gObj.AddComponent<Yard>();
+                        break;
                     default:
                         break;
                 }
