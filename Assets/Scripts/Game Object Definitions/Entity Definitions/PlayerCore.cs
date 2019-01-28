@@ -80,7 +80,14 @@ public class PlayerCore : ShellCore {
     {
         transform.position = save.position;
         positionBeforeOscillation = transform.position.y;
-        currentHealth = save.currentHealths;
+        if(save.currentHealths.Length < 3)
+        {
+            maxHealth.CopyTo(currentHealth, 0);
+        }
+        else
+        {
+            currentHealth = save.currentHealths;
+        }
         for(int i = 0; i < currentHealth.Length; i++) {
             if(currentHealth[i] > maxHealth[i]) currentHealth[i] = maxHealth[i];
         }

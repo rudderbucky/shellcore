@@ -623,6 +623,7 @@ public class Entity : MonoBehaviour {
     private void ConnectedTreeCreator() {
         foreach(ShellPart part in parts) 
         {
+            part.children.Clear();
             if(part == shell) continue;
 
             // attach all core-connected parts to the shell as well
