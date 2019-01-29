@@ -14,29 +14,7 @@ interface IPlayerExecutable {
 /// All weapons have abilities that deal their effect
 /// </summary>
 public abstract class Ability : MonoBehaviour, IPlayerExecutable {
-
-    public enum AbilityType
-    {
-        None,
-        MainBullet,
-        Bullet,
-        SiegeBullet,
-        Beam,
-        Cannon,
-        Missile,
-        Torpedo,
-        ShellBoost,
-        CoreHeal,
-        SpeedThrust,
-        Bomb,
-        PinDown,
-        EnergyBoost,
-        Harvester,
-        SpeederBullet,
-        Laser,
-        SpawnDrone,
-        Speed
-    }
+    
     Entity core;  // craft that uses this ability
     public Entity Core
     {

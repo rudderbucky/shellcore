@@ -27,6 +27,7 @@ public class Harvester : WeaponAbility, IHarvester {
 
     protected void Start()
     {
+        ID = 16;
         if (!glowPrefab)
             glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
         if (!tractorMaterial)

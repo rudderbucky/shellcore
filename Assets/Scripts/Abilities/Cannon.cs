@@ -23,6 +23,9 @@ public class Cannon : WeaponAbility {
         category = Entity.EntityCategory.All;
     }
 
+    protected virtual void Start() {
+        effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+    }
     /// <summary>
     /// Fires the cannon using the helper method
     /// </summary>

@@ -183,8 +183,6 @@ public class Entity : MonoBehaviour {
             for (int i = 0; i < blueprint.parts.Count; i++)
             {
 
-                // lol
-
                 EntityBlueprint.PartInfo part = blueprint.parts[i];
                 PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(part.partID);
 
@@ -194,110 +192,7 @@ public class Entity : MonoBehaviour {
 
                 //Add an ability to the part:
 
-                string shooterID = null;
-
-                switch (part.abilityType)
-                {
-                    case Ability.AbilityType.None:
-                        break;
-                    case Ability.AbilityType.MainBullet: // Shouldn't happen
-                        Debug.Log("Main bullet added to a part! This is a ShellCore only ability!");
-                        var mainBullet = partObject.AddComponent<MainBullet>();
-                        mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-                        shooterID = "bulletshooter_sprite";
-                        break;
-                    case Ability.AbilityType.Bullet:
-                        var bullet = partObject.AddComponent<Bullet>();
-                        bullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-                        shooterID = "bulletshooter_sprite";
-                        break;
-                    case Ability.AbilityType.SiegeBullet:
-                        var siege = partObject.AddComponent<SiegeBullet>();
-                        siege.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-                        shooterID = "bulletshooter_sprite";
-                        break;
-                    case Ability.AbilityType.Beam:
-                        var beam = partObject.AddComponent<Beam>();
-                        beam.SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
-                        shooterID = "beamshooter_sprite";
-                        break;
-                    case Ability.AbilityType.Bomb:
-                        break;
-                    case Ability.AbilityType.Cannon:
-                        var cannon = partObject.AddComponent<Cannon>();
-                        cannon.effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
-                        shooterID = "cannonshooter_sprite";
-                        break;
-                    case Ability.AbilityType.Missile:
-                        var missile = partObject.AddComponent<Missile>();
-                        missile.missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
-                        if (part.spawnID != "missile_station_shooter")
-                        {
-                            shooterID = "missileshooter_sprite";
-                        }
-                        else
-                        {
-                            shooterID = "missile_station_shooter";
-                            missile.category = EntityCategory.All;
-                            missile.terrain = TerrainType.All;
-                        }
-                        break;
-                    case Ability.AbilityType.Torpedo:
-                        var torpedo = partObject.AddComponent<Torpedo>();
-                        torpedo.bulletPrefab = ResourceManager.GetAsset<GameObject>("torpedo_prefab");
-                        shooterID = "torpedoshooter_sprite";
-                        break;
-                    case Ability.AbilityType.ShellBoost:
-                        HealthHeal shellboost = partObject.AddComponent<HealthHeal>();
-                        shellboost.type = HealthHeal.HealingType.shell;
-                        shooterID = "ability_indicator";
-                        shellboost.Initialize();
-                        break;
-                    case Ability.AbilityType.CoreHeal:
-                        HealthHeal coreboost = partObject.AddComponent<HealthHeal>();
-                        coreboost.type = HealthHeal.HealingType.core;
-                        shooterID = "ability_indicator";
-                        coreboost.Initialize();
-                        break;
-                    case Ability.AbilityType.SpeedThrust:
-                        partObject.AddComponent<SpeedThrust>();
-                        shooterID = "ability_indicator";
-                        break;
-                    case Ability.AbilityType.PinDown:
-                        break;
-                    case Ability.AbilityType.EnergyBoost:
-                        HealthHeal energyboost = partObject.AddComponent<HealthHeal>();
-                        energyboost.type = HealthHeal.HealingType.energy;
-                        shooterID = "ability_indicator";
-                        energyboost.Initialize();
-                        break;
-                    case Ability.AbilityType.Harvester:
-                        partObject.AddComponent<Harvester>();
-                        shooterID = "ability_indicator";
-                        break;
-                    case Ability.AbilityType.SpeederBullet:
-                        var speedBullet = partObject.AddComponent<SpeederBullet>();
-                        speedBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-                        shooterID = "bulletshooter_sprite";
-                        break;
-                    case Ability.AbilityType.Laser:
-                        var laser = partObject.AddComponent<Laser>();
-                        laser.bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
-                        shooterID = "lasershooter_sprite";
-                        break;
-                    case Ability.AbilityType.SpawnDrone:
-                        var spawn = partObject.AddComponent<SpawnDrone>();
-                        spawn.spawnData = ResourceManager.GetAsset<DroneSpawnData>(part.spawnID);
-                        spawn.Init();
-                        shooterID = "ability_indicator";
-                        break;
-                    case Ability.AbilityType.Speed:
-                        partObject.AddComponent<Speed>();
-                        break;
-                    default:
-                        break;
-                }
-
+                AbilityUtilities.AddAbilityToGameObjectByID(partObject, part.abilityID, part.secondaryData);
                 partObject.transform.SetParent(transform, false);
                 partObject.transform.SetAsFirstSibling();
                 partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
@@ -312,6 +207,7 @@ public class Entity : MonoBehaviour {
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
 
+                string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
                 // Add shooter
                 if (shooterID != null)
                 {

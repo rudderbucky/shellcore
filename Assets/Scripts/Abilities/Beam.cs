@@ -27,7 +27,9 @@ public class Beam : WeaponAbility {
         range = 25;
         category = Entity.EntityCategory.All;
     }
-
+    protected virtual void Start() {
+        SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
+    }
     public void SetMaterial(Material material)
     {
         this.material = material;

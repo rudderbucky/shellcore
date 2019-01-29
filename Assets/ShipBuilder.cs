@@ -23,8 +23,8 @@ public class ShipBuilder : MonoBehaviour {
 	public static EntityBlueprint.PartInfo CullSpatialValues(EntityBlueprint.PartInfo x) {
 		var part = new EntityBlueprint.PartInfo();
 		part.partID = x.partID;
-		part.spawnID = x.spawnID;
-		part.abilityType = x.abilityType;
+		part.secondaryData = x.secondaryData;
+		part.abilityID = x.abilityID;
 		return part;
 	}
 	public void DispatchPart(ShipBuilderPart part) {

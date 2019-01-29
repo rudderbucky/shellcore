@@ -9,7 +9,7 @@ public class Missile : WeaponAbility {
     protected override void Awake()
     {
         base.Awake();
-        damage = 500;
+        damage = 1000;
         description = "Homing projectile that deals " + damage + " damage.";
         abilityName = "Missile";
         ID = 7;
@@ -20,6 +20,9 @@ public class Missile : WeaponAbility {
         category = Entity.EntityCategory.All;
     }
 
+    protected virtual void Start() {
+        missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
+    }
     protected override bool Execute(Vector3 victimPos)
     {
         if (targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not

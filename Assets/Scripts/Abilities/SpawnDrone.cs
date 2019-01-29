@@ -20,14 +20,12 @@ public class SpawnDrone : ActiveAbility
     IOwner craft;
     public void Init()
     {
-        ID = spawnData.abilitySpriteID;
+        ID = 10;
         cooldownDuration = spawnData.cooldown;
         CDRemaining = cooldownDuration;
         activeDuration = spawnData.delay; 
         activeTimeRemaining = activeDuration;
         energyCost = spawnData.energyCost;
-        abilityName = spawnData.abilityName;
-        description = spawnData.description;
     }
 
     protected override void Awake()

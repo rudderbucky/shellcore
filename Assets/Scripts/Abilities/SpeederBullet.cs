@@ -11,7 +11,7 @@ public class SpeederBullet : Bullet {
         bulletSpeed = 50;
         survivalTime = 0.5F;
         range = bulletSpeed * survivalTime;
-        ID = 5;
+        ID = 15;
         cooldownDuration = 1.2F;
         CDRemaining = cooldownDuration;
         energyCost = 10;

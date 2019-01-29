@@ -21,4 +21,8 @@ public class Laser : Bullet {
         category = Entity.EntityCategory.Unit;
         pierceFactor = 0.5F;
     }
+
+    protected override void Start() {
+        bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
+    }
 }

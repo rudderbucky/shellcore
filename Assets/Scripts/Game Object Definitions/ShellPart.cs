@@ -25,7 +25,6 @@ public class ShellPart : MonoBehaviour {
     private bool rotationDirection = true;
     private float rotationOffset;
     public GameObject shooter;
-    public Ability.AbilityType AbilityType { get; set; }
     public string SpawnID { get; set; }
 
     public EntityBlueprint.PartInfo info;

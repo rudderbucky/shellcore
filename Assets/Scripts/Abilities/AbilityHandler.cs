@@ -98,17 +98,18 @@ public class AbilityHandler : MonoBehaviour {
             // instantiate background image
             abilityBackgroundArray[i] = Instantiate(abilityBackground, pos, Quaternion.identity) as GameObject;
             abilityBackgroundArray[i].transform.SetParent(transform, false); // set parent (do not keep world position)
-            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = visibleAbilities[i].abilityName;
+            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = AbilityUtilities.GetAbilityNameByID(visibleAbilities[i].GetID());
             var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
             button.tooltipPrefab = tooltipPrefab;
             string description = "";
-            description += visibleAbilities[i].abilityName + "\n";
-            description += "Energy cost: " + visibleAbilities[i].GetEnergyCost() + "\n";
+            description += AbilityUtilities.GetAbilityNameByID(visibleAbilities[i].GetID()) + "\n";
+            if(visibleAbilities[i].GetEnergyCost() > 0)
+                description += "Energy cost: " + visibleAbilities[i].GetEnergyCost() + "\n";
             if (visibleAbilities[i].GetCDDuration() != 0)
             {
                 description += "Cooldown duration: " + visibleAbilities[i].GetCDDuration() + "\n";
             }
-            description += visibleAbilities[i].GetDescription();
+            description += AbilityUtilities.GetDescriptionByID(visibleAbilities[i].GetID());
             button.abilityInfo = description;
 
             image.sprite = ResourceManager.GetAsset<Sprite>("AbilitySprite" + visibleAbilities[i].GetID());

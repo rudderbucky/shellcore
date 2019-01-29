@@ -15,9 +15,9 @@ public class EntityBlueprint : ScriptableObject
         public Vector2 location;
         public float rotation;
         public bool mirrored;
-
-        public Ability.AbilityType abilityType;
-        public string spawnID;
+        public int abilityID;
+        public int tier;
+        public string secondaryData;
 
         public string partID; //Part blueprint ID
     }

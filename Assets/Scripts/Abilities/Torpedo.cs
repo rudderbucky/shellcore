@@ -19,4 +19,8 @@ public class Torpedo : Bullet {
         terrain = Entity.TerrainType.Ground;
         category = Entity.EntityCategory.All;
     }
+
+    protected override void Start() {
+        bulletPrefab = ResourceManager.GetAsset<GameObject>("torpedo_prefab");
+    }
 }

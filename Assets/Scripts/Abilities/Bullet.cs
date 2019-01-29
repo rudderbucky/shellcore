@@ -32,6 +32,10 @@ public class Bullet : WeaponAbility {
         category = Entity.EntityCategory.All;
     }
 
+    protected virtual void Start() {
+        bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+    }
+
     /// <summary>
     /// Fires the bullet using the helper method
     /// </summary>
