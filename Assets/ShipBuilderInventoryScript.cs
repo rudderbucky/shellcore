@@ -33,6 +33,43 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
                 return "ability_indicator";
         }
     }
+
+    /*
+        Some abilities cannot be differentiated just by the AbilityType enum (Like Drone Spawns) 
+        and hence the only way to specify which ability perfectly is by using their ID
+     */
+    public static string GetAbilityNameByID(int ID) {
+        switch(ID) {
+            case 1:
+                return "Speed Thrust";
+            case 2:
+                return "Shell Boost";
+            case 3:
+                return "Main Bullet";
+            case 4:
+                return "Beam";
+            case 5:
+                return "Bullet";
+            case 6:
+                return "Cannon";
+            case 7:
+                return "Missile";
+            case 8:
+                return "Torpedo";
+            case 9:
+                return "Laser";
+            case 10:
+                return "Mini Drone";
+            case 11:
+                return "Core Heal";
+            case 12:
+                return "Energy";
+            case 13:
+                return "Speed";
+            default:
+                return null;
+        }
+    }
     void Start() {
         image = GetComponentsInChildren<Image>()[1];
         image.sprite = ResourceManager.GetAsset<Sprite>(part.partID + "_sprite");

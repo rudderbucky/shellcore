@@ -64,7 +64,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler {
 	void Update () {
 		if(!blueprint) 
 		{
-			image.color = text.color = Color.yellow;
+			image.color = text.color = Color.gray;
 			text.text = " Create Preset " + number;
 		}
 		else 
