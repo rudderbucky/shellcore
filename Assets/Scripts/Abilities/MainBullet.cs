@@ -19,7 +19,7 @@ public class MainBullet : Bullet {
         CDRemaining = cooldownDuration;
         energyCost = 50;
         damage = 100;
-        description = "Projectile that deals " + damage + " damage.";
+        description = "Projectile that deals " + damage + " damage. \nStays with you no matter what.";
         abilityName = "Main Bullet";
     }
 

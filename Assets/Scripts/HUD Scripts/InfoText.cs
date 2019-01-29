@@ -7,6 +7,7 @@ public class InfoText : MonoBehaviour
 {
     public Text text;
     public Transform player;
+    float timer;
 
     private void Start()
     {
@@ -15,21 +16,18 @@ public class InfoText : MonoBehaviour
 
     public void showMessage(string message, string soundID = null)
     {
+        timer = 0;
         if(soundID != null) {
             ResourceManager.PlayClipByID(soundID, player.position);
         }
         text.text = message;
         text.color = Color.white;
-        StartCoroutine(fade());
     }
 
-    IEnumerator fade()
-    {
-        yield return new WaitForSeconds(3f);
-        while(text.color.a > 0f)
-        {
-            text.color = new Color(1f, 1f, 1f, 0);
-            yield return new WaitForFixedUpdate();
+    void Update() {
+        if(text.color.a > 0) {
+            timer += Time.deltaTime;
+            if(timer > 3) text.color = text.color - new Color(0,0,0,1);
         }
     }
 }

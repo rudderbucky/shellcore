@@ -10,4 +10,5 @@ public class PlayerSave {
 	public string currentPlayerBlueprint;
 
 	public List<EntityBlueprint.PartInfo> partInventory;
+	public string[] presetBlueprints;
 }

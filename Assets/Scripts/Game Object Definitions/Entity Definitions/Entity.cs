@@ -40,6 +40,8 @@ public class Entity : MonoBehaviour {
     private bool initialized; // is the entity safe to call update() on?
     public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
 
+    public SectorManager sectorMngr;
+
     public string entityName;
     public enum TerrainType // terrain type of entity
     {
@@ -369,7 +371,10 @@ public class Entity : MonoBehaviour {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            parts[i].SetCollectible((parts[i] != shell) && Random.value < 0.3f && !(this as PlayerCore));
+            if((parts[i] != shell) && Random.value < 0.3f && !(this as PlayerCore)) {
+                parts[i].SetCollectible(true);
+                if(sectorMngr) sectorMngr.strayParts.Add(parts[i]);
+            }
             parts[i].Detach();
         }
 
@@ -489,6 +494,7 @@ public class Entity : MonoBehaviour {
             }
             if (deathTimer >= 5F)
             {
+                if(this as PlayerCore) ((PlayerCore)this).alerter.showMessage("");
                 PostDeath();
             }
         }

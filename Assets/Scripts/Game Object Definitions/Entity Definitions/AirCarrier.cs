@@ -11,7 +11,6 @@ public interface ICarrier : IOwner
 
 public class AirCarrier : AirConstruct, ICarrier {
 
-    public SectorManager sectorMngr;
     int intrinsicCommandLimit = 0;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
     private bool initialized;

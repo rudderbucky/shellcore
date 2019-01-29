@@ -11,7 +11,6 @@ public class AbilityHandler : MonoBehaviour {
     public GameObject abilityBackground; // background of the ability
     public Image abilityCDIndicator; // used to indicate if the ability is on cooldown
     public Image abilityGleam; // gleam for the ability
-    public Sprite[] abilitySpritesArray; // sprite array for ability images
     public GameObject tooltipPrefab; // Prefab for showing information when mouse hovers over the ability button
     public Image HUDbg;
     private bool initialized; // check for the update method
@@ -112,7 +111,7 @@ public class AbilityHandler : MonoBehaviour {
             description += visibleAbilities[i].GetDescription();
             button.abilityInfo = description;
 
-            image.sprite = abilitySpritesArray[visibleAbilities[i].GetID()];
+            image.sprite = ResourceManager.GetAsset<Sprite>("AbilitySprite" + visibleAbilities[i].GetID());
             abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
             abilityImagesArray[i].gameObject.SetActive(true);
             var canvasg = abilityImagesArray[i].gameObject.AddComponent<CanvasGroup>(); // this is done for every image, it allows the buttons to be clicked

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GroundCarrier : GroundConstruct, ICarrier {
 
-	public SectorManager sectorMngr;
     int intrinsicCommandLimit = 0;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
     private bool initialized;
