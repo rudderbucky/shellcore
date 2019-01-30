@@ -62,8 +62,6 @@ public class Entity : MonoBehaviour {
     TerrainType terrain = TerrainType.Unset;
     public TerrainType Terrain { get { return terrain; } protected set { terrain = value; } }
 
-    // TODO: Respawn animation
-
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
     /// </summary>

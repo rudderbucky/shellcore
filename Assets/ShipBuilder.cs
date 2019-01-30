@@ -56,6 +56,7 @@ public class ShipBuilder : MonoBehaviour {
 		}
 	}
 	public void Initialize() {
+		player.SetIsInteracting(true);
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 		shell.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreShellSpriteID);
 		shell.color = FactionColors.colors[0];
@@ -99,6 +100,7 @@ public class ShipBuilder : MonoBehaviour {
 	}
 
 	public void CloseUI(bool validClose) {
+		player.SetIsInteracting(false);
 		gameObject.SetActive(false);
 		if(validClose) {
 			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
@@ -160,5 +162,16 @@ public class ShipBuilder : MonoBehaviour {
 	void Update() {
 		if((player.transform.position - yardPosition).sqrMagnitude > 100)
 			CloseUI(false);
+	}
+
+	public void ChangeDisplayFactors(string searcher) {
+		searcher = searcher.ToLower();
+		foreach(ShipBuilderInventoryScript inv in partDict.Values) {
+			string partName = inv.part.partID.ToLower();
+			string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID).ToLower();
+			if(partName.Contains(searcher) || abilityName.Contains(searcher) || searcher == "") {
+				inv.gameObject.SetActive(true);
+			} else inv.gameObject.SetActive(false);
+		}
 	}
 }

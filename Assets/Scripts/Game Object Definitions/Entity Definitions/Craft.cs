@@ -11,6 +11,10 @@ public abstract class Craft : Entity
     protected bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
 
+    public void SetImmobile(bool val) {
+        isImmobile = val;
+    }
+
     protected override void BuildEntity()
     {
         enginePower = 200;

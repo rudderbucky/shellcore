@@ -12,8 +12,16 @@ public class PlayerCore : ShellCore {
     public InfoText alerter;
     public PlayerSave cursave;
     public bool loaded;
+    private bool isInteracting;
     bool tagToReinitialize;
 
+    public bool GetIsInteracting() {
+        return isInteracting;
+    }
+
+    public void SetIsInteracting(bool val) {
+        isInteracting = val;
+    }
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
     /// </summary>
@@ -99,6 +107,7 @@ public class PlayerCore : ShellCore {
     
 	// Update is called once per frame
 	protected override void Update () {
+        isImmobile = isInteracting;
         // call methods
         if(group.sortingOrder < maxAirLayer) // player must always be above other entities
         {

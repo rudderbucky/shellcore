@@ -13,6 +13,8 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	ShipBuilderPart currentPart;
 	public ShipBuilderPart lastPart;
 	public ShipBuilder builder;
+	public InputField field;
+	bool flipped;
 	public void GrabPart(ShipBuilderPart part) {
 		lastPart = null;
 		if(parts.Contains(part)) {
@@ -49,17 +51,22 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	}
 	public void FlipLastPart() {
 		lastPart.info.mirrored = !lastPart.info.mirrored;
+		flipped = true;
 	}
 	void Update() {
 		foreach(ShipBuilderPart part in parts) {
 			part.isInChain = builder.IsInChain(part);
 		}
-		if(Input.GetKeyDown("c")) {
+		if(Input.GetKeyDown("c") && !field.isFocused) {
 			ClearAllParts();
 		}
 		transform.position = new Vector3(10 * ((int)Input.mousePosition.x / 10), 10 * ((int)Input.mousePosition.y / 10), 0);
 		if(rotateMode) {
 			RotateLastPart();
+			return;
+		}
+		if(flipped) {
+			flipped = false;
 			return;
 		}
 		if(currentPart) {

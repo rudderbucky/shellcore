@@ -253,7 +253,7 @@ public class AbilityHandler : MonoBehaviour {
                     button.clicked = false;
                 } else abilities[i].Tick("");
             }
-            if(core.GetIsDead()) return;
+            if(core.GetIsDead() || core.GetIsInteracting()) return;
             if(Input.GetKeyDown(KeyCode.E)) {
                 SetCurrentVisible((AbilityTypes)(Mathf.Min((int)currentVisibles + 1, 3)));
             }
