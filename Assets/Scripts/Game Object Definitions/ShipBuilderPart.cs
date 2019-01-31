@@ -64,7 +64,7 @@ public class ShipBuilderPart : MonoBehaviour {
 			}
 			if(!stillTouching) validPos = true;
 		}
-		image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
+		image.color = shooter.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
 
 		image.rectTransform.anchoredPosition = info.location * 100;
 		image.rectTransform.localEulerAngles = new Vector3(0,0,info.rotation);

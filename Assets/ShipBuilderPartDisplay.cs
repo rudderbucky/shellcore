@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class ShipBuilderPartDisplay : MonoBehaviour {
 
+	public ShipBuilder builder;
 	public ShipBuilderCursorScript cursorScript;
 	public Text partName;
 	public Text partStats;
@@ -21,19 +22,33 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		var part = cursorScript.lastPart;
-		if(part) {
-			if(part.info.abilityID != 0) {
-				abilityImage.sprite = AbilityUtilities.GetAbilityImageByID(part.info.abilityID);
+		EntityBlueprint.PartInfo? part = null;
+		if(cursorScript.GetCurrentInfo() != null) {
+			part = cursorScript.GetCurrentInfo();
+		}
+		else if(cursorScript.GetPartCursorIsOn() != null) {
+			part = cursorScript.GetPartCursorIsOn();
+		}
+		else if(builder.GetButtonPartCursorIsOn() != null) {
+			part = builder.GetButtonPartCursorIsOn();
+		}
+		else if(cursorScript.GetLastInfo() != null) {
+			part = cursorScript.GetLastInfo();
+		}
+
+		if(part != null) {
+			EntityBlueprint.PartInfo info = (EntityBlueprint.PartInfo)part;
+			if(info.abilityID != 0) {
+				abilityImage.sprite = AbilityUtilities.GetAbilityImageByID(info.abilityID);
 				abilityImage.gameObject.SetActive(true);
-				abilityText.text = AbilityUtilities.GetAbilityNameByID(part.info.abilityID);
+				abilityText.text = AbilityUtilities.GetAbilityNameByID(info.abilityID);
 				abilityText.gameObject.SetActive(true);
 				abilityBox.gameObject.SetActive(true);
 
 				string description = "";
 
-				description += AbilityUtilities.GetAbilityNameByID(part.info.abilityID) + "\n";
-				description += AbilityUtilities.GetDescriptionByID(part.info.abilityID);
+				description += AbilityUtilities.GetAbilityNameByID(info.abilityID) + "\n";
+				description += AbilityUtilities.GetDescriptionByID(info.abilityID);
 				buttonScript.abilityInfo = description;
 			} else {
 				abilityBox.gameObject.SetActive(false);
@@ -43,7 +58,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 			image.gameObject.SetActive(true);
 			partName.gameObject.SetActive(true);
 			partStats.gameObject.SetActive(true);
-			string partID = part.info.partID;
+			string partID = info.partID;
 			partName.text = partID;
 			float health = ResourceManager.GetAsset<PartBlueprint>(partID).health;
 			partStats.text = "Part Shell: " + health / 2 + "\nPart Core: " + health / 4;

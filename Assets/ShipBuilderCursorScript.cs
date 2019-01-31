@@ -11,10 +11,20 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
 	public RectTransform grid;
 	ShipBuilderPart currentPart;
-	public ShipBuilderPart lastPart;
+	ShipBuilderPart lastPart;
 	public ShipBuilder builder;
 	public InputField field;
 	bool flipped;
+
+	public EntityBlueprint.PartInfo? GetCurrentInfo() {
+		if(!currentPart) return null;
+		return currentPart.info;
+	}
+
+	public EntityBlueprint.PartInfo? GetLastInfo() {
+		if(!lastPart) return null;
+		return lastPart.info;
+	}
 	public void GrabPart(ShipBuilderPart part) {
 		lastPart = null;
 		if(parts.Contains(part)) {
@@ -32,6 +42,14 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		currentPart = null;
 	}
 
+	public EntityBlueprint.PartInfo? GetPartCursorIsOn() {
+		foreach(ShipBuilderPart part in parts) {
+			if(RectTransformUtility.RectangleContainsScreenPoint(part.rectTransform, Input.mousePosition)) {
+				return part.info;
+			}
+		}
+		return null;
+	}
 	public void ClearAllParts() {
 		while(parts.Count > 0) {
 			builder.DispatchPart(parts[0]);

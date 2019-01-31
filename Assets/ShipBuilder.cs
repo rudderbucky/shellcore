@@ -164,6 +164,14 @@ public class ShipBuilder : MonoBehaviour {
 			CloseUI(false);
 	}
 
+	public EntityBlueprint.PartInfo? GetButtonPartCursorIsOn() {
+		foreach(ShipBuilderInventoryScript inv in partDict.Values) {
+			if(RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition) && inv.gameObject.activeSelf) {
+				return inv.part;
+			}
+		}
+		return null;
+	}
 	public void ChangeDisplayFactors(string searcher) {
 		searcher = searcher.ToLower();
 		foreach(ShipBuilderInventoryScript inv in partDict.Values) {

@@ -28,12 +28,12 @@ public class PartPropertyButtonScript : MonoBehaviour, IPointerDownHandler, IPoi
 		}
     }
     void Update() {
-		if(cursor.lastPart) {
+		if(cursor.GetLastInfo() != null) {
 			GetComponent<Image>().enabled = true;
-			var tmp = cursor.lastPart.transform.position;
-			tmp.x += ((int)type == 1 ? 15 : -15);
-			tmp.y += 50;
-			transform.position = tmp;
+			var tmp = ((EntityBlueprint.PartInfo)cursor.GetLastInfo()).location * 100;
+			tmp.x += ((int)type == 1 ? 25 : -25);
+			tmp.y += 100;
+			((RectTransform)transform).anchoredPosition = tmp;
 		} else GetComponent<Image>().enabled = false;
 	}
 }
