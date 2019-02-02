@@ -56,7 +56,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler {
 		image = GetComponent<Image>();
 		text = GetComponentInChildren<Text>();
 		blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-		if(player.cursave.presetBlueprints != null && player.cursave.presetBlueprints[number - 1] != null) 
+		if(player.cursave.presetBlueprints != null && player.cursave.presetBlueprints.Length == 5 && player.cursave.presetBlueprints[number - 1] != null) 
 			JsonUtility.FromJsonOverwrite(player.cursave.presetBlueprints[number - 1], blueprint);
 		if(blueprint.parts == null) blueprint = null;
 	}
