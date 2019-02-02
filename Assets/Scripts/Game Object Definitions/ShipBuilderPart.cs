@@ -17,21 +17,15 @@ public class ShipBuilderPart : MonoBehaviour {
 	public ShipBuilderCursorScript cursorScript;
 	public bool isInChain;
 	public bool validPos;
-	public RectTransform isTooClose;
 	
 	void Awake() {
 		validPos = true;
 		image = GetComponent<Image>();
 		shooter = GetComponentsInChildren<Image>()[1];
 		rectTransform = image.rectTransform;
-		isTooClose = (RectTransform)rectTransform.Find("TooCloseBound");
 	}
 
 	bool IsTooClose(ShipBuilderPart otherPart) {
-		var x = isTooClose.rect;
-		x.center = rectTransform.anchoredPosition;
-		var y = otherPart.rectTransform.rect;
-		y.center = otherPart.rectTransform.anchoredPosition;
 		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
 		0.2F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
 		Mathf.Abs(rectTransform.anchoredPosition.y - otherPart.rectTransform.anchoredPosition.y) <

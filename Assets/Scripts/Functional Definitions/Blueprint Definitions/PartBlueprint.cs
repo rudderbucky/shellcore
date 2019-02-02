@@ -8,5 +8,6 @@ public class PartBlueprint : ScriptableObject
     public string spriteID;
     public float health;
     public float mass;
+    public int size;
     public bool detachible = true;
 }

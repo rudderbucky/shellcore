@@ -52,6 +52,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler {
 
     // Use this for initialization
     public void Initialize () {
+		// Ship builder finds all child preset buttons and calls this
 		image = GetComponent<Image>();
 		text = GetComponentInChildren<Text>();
 		blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();

@@ -11,14 +11,12 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
     public EntityBlueprint.PartInfo part;
     public GameObject SBPrefab;
     public ShipBuilderCursorScript cursor;
+    public Text val;
     int count;
     Image image;
 
-    /*
-        Some abilities cannot be differentiated just by the AbilityType enum (Like Drone Spawns) 
-        and hence the only way to specify which ability perfectly is by using their ID
-     */
     void Start() {
+        val = GetComponentInChildren<Text>();
         image = GetComponentsInChildren<Image>()[1];
         image.sprite = ResourceManager.GetAsset<Sprite>(part.partID + "_sprite");
         string shooterID = AbilityUtilities.GetShooterByID(part.abilityID);
@@ -52,6 +50,7 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
         return count;
     }
     void Update() {
+        val.text = count + "";
         image.color = count > 0 ? FactionColors.colors[0] : Color.gray; // gray gray gray gray gray USA USA USA USA USA
         if(GetComponentsInChildren<Image>().Length > 1) GetComponentsInChildren<Image>()[2].color = count > 0 ? FactionColors.colors[0] : Color.gray;
     }
