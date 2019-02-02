@@ -36,8 +36,10 @@ public class ShipBuilderPart : MonoBehaviour {
 	void Update() {
 		image.enabled = true;
 		shooter.enabled = true;
-		if(AbilityUtilities.GetShooterByID(info.abilityID) != null)
+		if(AbilityUtilities.GetShooterByID(info.abilityID) != null) {
 			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
+			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
+		}
 		else shooter.enabled = false;
 		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
 		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
