@@ -55,6 +55,9 @@ public class AirCarrier : AirConstruct, ICarrier {
         else return intrinsicCommandLimit;
     }
 
+    public SectorManager GetSectorManager() {
+        return sectorMngr;
+    }
     protected override void Update()
     {
         if (initialized)

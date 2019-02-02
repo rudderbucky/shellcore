@@ -9,6 +9,7 @@ public interface IOwner
     Transform GetTransform();
     List<IOwnable> GetUnitsCommanding();
     int GetTotalCommandLimit();
+    SectorManager GetSectorManager();
 }
 
 /// <summary>
@@ -54,6 +55,7 @@ public class SpawnDrone : ActiveAbility
         drone.enginePower = 100;
         drone.Init();
         drone.SetOwner(craft);
+        craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);
         if (craft as ICarrier != null)
         {
             drone.getAI().setMode(AirCraftAI.AIMode.Path);

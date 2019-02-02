@@ -23,6 +23,7 @@ public class SectorManager : MonoBehaviour
     private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
+    private int uniqueIDInt;
 
     public int GetExtraCommandUnits(int faction) {
         stationsCount.Clear();
@@ -333,6 +334,6 @@ public class SectorManager : MonoBehaviour
     }
 
     public void InsertPersistentObject(string key, GameObject gameObject) {
-        persistentObjects.Add(key, gameObject);
+        persistentObjects.Add(key + uniqueIDInt++, gameObject);
     }
 }

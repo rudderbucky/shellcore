@@ -15,12 +15,12 @@ public class Speed : PassiveAbility {
     // TODO: generalize this deactivation for all passives
     public override void SetDestroyed(bool input)
     {
-        if (input) (Core as Craft).enginePower -= 50;
+        if (input) (Core as Craft).enginePower -= 100;
         base.SetDestroyed(input);
     }
 
     protected override void Execute()
     {
-        (Core as Craft).enginePower += 50;
+        (Core as Craft).enginePower += 100;
     }
 }

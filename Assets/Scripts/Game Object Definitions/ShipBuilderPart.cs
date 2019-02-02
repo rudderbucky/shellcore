@@ -17,7 +17,15 @@ public class ShipBuilderPart : MonoBehaviour {
 	public ShipBuilderCursorScript cursorScript;
 	public bool isInChain;
 	public bool validPos;
+	private Vector3? lastValidPos = null;
+
+	public void SetLastValidPos(Vector3? lastPos) {
+		lastValidPos = lastPos;
+	}
 	
+	public void Snapback() {
+		if(lastValidPos != null) info.location = (Vector3)lastValidPos;
+	}
 	void Awake() {
 		validPos = true;
 		image = GetComponent<Image>();

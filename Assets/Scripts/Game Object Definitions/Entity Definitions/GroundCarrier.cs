@@ -8,6 +8,9 @@ public class GroundCarrier : GroundConstruct, ICarrier {
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
     private bool initialized;
 
+    public SectorManager GetSectorManager() {
+        return sectorMngr;
+    }
     public bool GetIsInitialized()
     {
         return initialized;

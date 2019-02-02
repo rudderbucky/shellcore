@@ -41,6 +41,7 @@ public class ShipBuilder : MonoBehaviour {
 		if(!partDict.ContainsKey(culledInfo)) {
 			int size = ResourceManager.GetAsset<PartBlueprint>(part.info.partID).size;
 			partDict.Add(culledInfo, Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>());
+			contentTexts[size].SetActive(true);
 			partDict[culledInfo].part = culledInfo;
 			partDict[culledInfo].cursor = cursorScript;
 		}
@@ -55,24 +56,32 @@ public class ShipBuilder : MonoBehaviour {
 		rect.size = rect.size * 0.8F;
 		return rect;
 	}
-	public bool IsInChain(ShipBuilderPart part) {
-		var x = GetRect(part.rectTransform);
+	public void UpdateChain() {
 		var shellRect = GetRect(shell.rectTransform);
-		if(x.Intersects(shellRect)) {
-			bool z = Mathf.Abs(part.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
-			0.15F*(part.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
-			Mathf.Abs(part.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
-			0.15F*(part.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
-			return !z;
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			shipPart.isInChain = false;
+			var x = GetRect(shipPart.rectTransform);
+			if(x.Intersects(shellRect)) {
+				bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
+				0.15F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
+				Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
+				0.15F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
+				shipPart.isInChain = !z;
+			}
 		}
-		else {
-			foreach(ShipBuilderPart shipPart in cursorScript.parts) {
-				if(shipPart.isInChain && part != shipPart) {
-					var y = GetRect(shipPart.rectTransform);
-					if(x.Intersects(y) && shipPart.validPos) return true;
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			var x = GetRect(shipPart.rectTransform);
+			if(!shipPart.isInChain) {
+				foreach(ShipBuilderPart part in cursorScript.parts) {
+					if(part.isInChain) {
+						var y = GetRect(part.rectTransform);
+						if(x.Intersects(y)) {
+							shipPart.isInChain = true;
+							break;
+						}
+					}
 				}
 			}
-			return false;
 		}
 	}
 	public void Initialize() {
@@ -117,6 +126,7 @@ public class ShipBuilder : MonoBehaviour {
 			if(!partDict.ContainsKey(part)) {
 				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
 				var button = Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
+				contentTexts[size].SetActive(true);
 				button.cursor = cursorScript;
 				button.part = part;
 				button.IncrementCount();
