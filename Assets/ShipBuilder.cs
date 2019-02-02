@@ -79,6 +79,9 @@ public class ShipBuilder : MonoBehaviour {
 		searcherString = "";
 		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
 		contentTexts = new GameObject[] {smallText, mediumText, largeText};
+		foreach(GameObject obj in contentTexts) {
+			obj.SetActive(true);
+		}
 		displayingTypes = new bool[] {true, true, true, true, true};
 		player.SetIsInteracting(true);
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
@@ -121,7 +124,6 @@ public class ShipBuilder : MonoBehaviour {
 			player.cursave.partInventory.Add(part);
 			Destroy(player.GetTractorTarget().gameObject);
 		}
-
 		LoadBlueprint(player.blueprint);
 	}
 
@@ -199,8 +201,8 @@ public class ShipBuilder : MonoBehaviour {
 		return null;
 	}
 	public void ChangeDisplayFactors() {
-		for(int i = 0; i < 3; i++) {
-			contentTexts[i].gameObject.SetActive(false);
+		foreach(GameObject obj in contentTexts) {
+			obj.SetActive(false);
 		}
 		foreach(ShipBuilderInventoryScript inv in partDict.Values) {
 			string partName = inv.part.partID.ToLower();

@@ -14,6 +14,9 @@ public class ShipBuilderSortingButton : MonoBehaviour, IPointerClickHandler
 		text = GetComponentInChildren<Text>();
 		button.image.color = text.color = Color.green;
 	}
+	void OnEnable() {
+		if(button) button.image.color = text.color = Color.green;
+	}
     public void OnPointerClick(PointerEventData eventData)
     {
         button.image.color = text.color = button.image.color == Color.gray ? Color.green : Color.gray;
