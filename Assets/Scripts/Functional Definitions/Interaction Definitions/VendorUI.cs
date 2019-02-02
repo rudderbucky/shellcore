@@ -120,7 +120,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
                 default:
                     break;
             }
-
+            player.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
             creation.transform.position = outpostPosition;
             creation.GetComponent<Entity>().spawnPoint = outpostPosition;
             player.SetTractorTarget(creation.GetComponent<Draggable>());

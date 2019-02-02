@@ -80,7 +80,7 @@ public class ShipBuilder : MonoBehaviour {
 		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
 		contentTexts = new GameObject[] {smallText, mediumText, largeText};
 		foreach(GameObject obj in contentTexts) {
-			obj.SetActive(true);
+			obj.SetActive(false);
 		}
 		displayingTypes = new bool[] {true, true, true, true, true};
 		player.SetIsInteracting(true);
@@ -105,6 +105,7 @@ public class ShipBuilder : MonoBehaviour {
 			{
 				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
 				partDict.Add(part, Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>());
+				contentTexts[size].SetActive(true);
 				partDict[part].part = part;
 				partDict[part].cursor = cursorScript;
 				partDict[part].IncrementCount();

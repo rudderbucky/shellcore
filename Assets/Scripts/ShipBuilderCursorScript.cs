@@ -11,6 +11,9 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
 	public RectTransform grid;
 	ShipBuilderPart currentPart;
+	Vector3 originalPartPos;
+	int originalPartIndex;
+	int originalSiblingIndex;
 	ShipBuilderPart lastPart;
 	public ShipBuilder builder;
 	public InputField field;
@@ -28,9 +31,12 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public void GrabPart(ShipBuilderPart part) {
 		lastPart = null;
 		if(parts.Contains(part)) {
+			originalPartIndex = parts.IndexOf(part);
+			originalSiblingIndex = part.rectTransform.GetSiblingIndex();
 			parts.Remove(part);
 			parts.Add(part);
 			part.rectTransform.SetAsLastSibling();
+			originalPartPos = part.info.location;
 		}
 		currentPart = part;
 	}
@@ -38,8 +44,16 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		//builder.parts.Add(currentPart.info);
 		if(!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
 			builder.DispatchPart(currentPart);
-		} else lastPart = currentPart;
-		currentPart = null;
+		} else {
+			lastPart = currentPart;
+			currentPart = null;
+			if(!lastPart.isInChain || !lastPart.validPos) {
+				parts.Remove(lastPart);
+				lastPart.info.location = originalPartPos;
+				lastPart.rectTransform.SetSiblingIndex(originalSiblingIndex);
+				parts.Insert(originalPartIndex, lastPart);
+			}
+		}
 	}
 
 	public EntityBlueprint.PartInfo? GetPartCursorIsOn() {

@@ -20,6 +20,7 @@ public class SectorManager : MonoBehaviour
     private List<IVendor> stations = new List<IVendor>();
     private BattleZoneManager battleZone;
     private Dictionary<string, GameObject> objects;
+    private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
 
@@ -40,6 +41,7 @@ public class SectorManager : MonoBehaviour
     private void Awake()
     {
         objects = new Dictionary<string, GameObject>();
+        persistentObjects = new Dictionary<string, GameObject>();
         battleZone = gameObject.AddComponent<BattleZoneManager>();
         lpg = GetComponent<LandPlatformGenerator>();
         sectorBorders = new GameObject("SectorBorders").AddComponent<LineRenderer>();
@@ -136,6 +138,19 @@ public class SectorManager : MonoBehaviour
                 Destroy(obj.Value);
             }
         }
+
+        Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
+        foreach(var obj in persistentObjects)
+        {
+            if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
+                && obj.Value != player.gameObject)
+            {
+                Destroy(obj.Value);
+            } else tmp.Add(obj.Key, obj.Value);
+        }
+
+        persistentObjects = tmp;
+
         foreach(ShellPart part in strayParts) {
             if(part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part)) {
                 Destroy(part.gameObject);
@@ -156,6 +171,7 @@ public class SectorManager : MonoBehaviour
 
         //load new sector
         if(player) {
+            player.ResetPower();
             objects.Add("player", player.gameObject);
             player.sectorMngr = this;
             player.alerter.showMessage("ENTERING SECTOR: " + current.name);
@@ -314,5 +330,9 @@ public class SectorManager : MonoBehaviour
         }
 
         if(info) info.showMessage("Entering sector '" + current.sectorName + "'");
+    }
+
+    public void InsertPersistentObject(string key, GameObject gameObject) {
+        persistentObjects.Add(key, gameObject);
     }
 }
