@@ -10,9 +10,9 @@ public class AirConstruct : Construct {
 
     protected override void Start()
     {
-        storedPos = transform.position;
         Terrain = TerrainType.Air;
         base.Start();
+        storedPos = transform.position;
     }
     /// <summary>
     /// Idle oscillation animation; smoother than the original ShellCore Command one!!!!
