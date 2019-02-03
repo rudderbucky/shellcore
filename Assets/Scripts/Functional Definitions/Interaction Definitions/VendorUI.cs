@@ -8,7 +8,7 @@ public interface IVendor
     VendingBlueprint GetVendingBlueprint();
 }
 
-public class VendorUI : MonoBehaviour, IDialogueable
+public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 {
     public VendingBlueprint blueprint;
     public GameObject UIPrefab;
@@ -24,7 +24,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
     
     public void openUI()
     {
-        if(opened) closeUI();
+        if(opened) CloseUI();
         if (!blueprint)
         {
             Debug.Log("No blueprint!");
@@ -41,7 +41,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
         UI = Instantiate(UIPrefab);
         background = UI.transform.Find("Background");
         Button close = background.transform.Find("Close").GetComponent<Button>();
-        close.onClick.AddListener(closeUI);
+        close.onClick.AddListener(CloseUI);
         costInfo = background.transform.Find("Cost").GetComponent<Text>();
         costInfo.text = "";
         range = blueprint.range;
@@ -80,7 +80,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
             if((outpostPosition - player.transform.position).magnitude > range)
             {
                 Debug.Log("Player moved out of the vendor range");
-                closeUI();
+                CloseUI();
             }
             for (int i = 0; i < blueprint.items.Count; i++)
             {
@@ -92,7 +92,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
         } 
     }
 
-    public void closeUI()
+    public void CloseUI()
     {
         opened = false;
         Destroy(UI);
@@ -125,7 +125,7 @@ public class VendorUI : MonoBehaviour, IDialogueable
             creation.GetComponent<Entity>().spawnPoint = outpostPosition;
             player.SetTractorTarget(creation.GetComponent<Draggable>());
             player.AddPower(-blueprint.items[index].cost);
-            closeUI();
+            CloseUI();
         }
     }
 }

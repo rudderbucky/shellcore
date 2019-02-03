@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShipBuilder : MonoBehaviour {
+public class ShipBuilder : MonoBehaviour, IWindow {
 	public GameObject SBPrefab;
 	public Vector3 yardPosition;
 	public Image shell;
@@ -21,6 +21,8 @@ public class ShipBuilder : MonoBehaviour {
 	public GameObject[] contentTexts;
 	private string searcherString;
 	private bool[] displayingTypes;
+	public Image reconstructImage;
+	public Text reconstructText;
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
 
 	public bool DecrementPartButton(EntityBlueprint.PartInfo info) {
@@ -56,7 +58,17 @@ public class ShipBuilder : MonoBehaviour {
 		rect.size = rect.size * 0.8F;
 		return rect;
 	}
+	public void SetReconstructButton(bool val) {
+		if(val) {
+			reconstructImage.color = reconstructText.color = Color.green;
+			reconstructText.text = "Reconstruct";
+		} else {
+			reconstructImage.color = reconstructText.color = Color.red;
+			reconstructText.text = "A part is in an invalid position!";
+		}
+	}
 	public void UpdateChain() {
+		SetReconstructButton(true);
 		var shellRect = GetRect(shell.rectTransform);
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			shipPart.isInChain = false;
@@ -81,10 +93,14 @@ public class ShipBuilder : MonoBehaviour {
 						}
 					}
 				}
+				if(!shipPart.isInChain || !shipPart.validPos) {
+					SetReconstructButton(false);
+				}
 			}
 		}
 	}
 	public void Initialize() {
+		cursorScript.gameObject.SetActive(false);
 		searcherString = "";
 		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
 		contentTexts = new GameObject[] {smallText, mediumText, largeText};
@@ -136,6 +152,11 @@ public class ShipBuilder : MonoBehaviour {
 			Destroy(player.GetTractorTarget().gameObject);
 		}
 		LoadBlueprint(player.blueprint);
+		cursorScript.gameObject.SetActive(true);
+	}
+
+	public void CloseUI() {
+		CloseUI(false);
 	}
 
 	public void CloseUI(bool validClose) {
@@ -164,6 +185,7 @@ public class ShipBuilder : MonoBehaviour {
 			p.cursorScript = cursorScript;
 			cursorScript.parts.Add(p);
 			p.info = part;
+			p.SetLastValidPos(part.location);
 		}
 	}
 
@@ -178,7 +200,7 @@ public class ShipBuilder : MonoBehaviour {
 		if(!invalidState) {
 			Export();
 			CloseUI(true);
-		} else CloseUI(false);
+		}
 	}
 
 	public void Export() {

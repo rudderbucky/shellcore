@@ -7,14 +7,12 @@ using UnityEngine;
 /// A player ShellCore.
 /// </summary>
 public class PlayerCore : ShellCore {
-
     public HUDScript hud;
     public InfoText alerter;
     public PlayerSave cursave;
     public bool loaded;
     private bool isInteracting;
     bool tagToReinitialize;
-
     public bool GetIsInteracting() {
         return isInteracting;
     }
