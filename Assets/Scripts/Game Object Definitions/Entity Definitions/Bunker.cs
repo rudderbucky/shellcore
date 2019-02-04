@@ -11,10 +11,6 @@ public class Bunker : GroundConstruct, IVendor {
         category = EntityCategory.Station;
         base.Start();
     }
-    protected override void Awake()
-    {
-        base.Awake();
-    }
 
     public override void RemovePart(ShellPart part)
     {

@@ -60,6 +60,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 	GUIWindowScripts sectorProps;
 	GUIWindowScripts hotkeyList;
 	GUIWindowScripts readFile;
+	public GUIWindowScripts successBox;
 	int cursorCount = 0;
 	string sctName;
 	int x;
@@ -410,12 +411,12 @@ public class SectorCreatorMouse : MonoBehaviour {
 
 	public void GetPlatformIndex(Vector3 pos) {
 		Vector3 firstTilePos = new Vector3 {
-			x = center.x,
-			y = center.y,
+			x = float.PositiveInfinity,
+			y = -float.PositiveInfinity,
 		};
 		Vector3 lastTilePos = new Vector3 {
-			x = center.x,
-			y = center.y,
+			x = -float.PositiveInfinity,
+			y = float.PositiveInfinity,
 		};
 		foreach(PlaceableObject ojs in objects) {
 			if(ojs.type == ObjectTypes.Platform) {
@@ -428,10 +429,13 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x) + 1, Mathf.Abs(lastTilePos.x - center.x) + 1) / tileSize) * 2;
 		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y) + 1, Mathf.Abs(lastTilePos.y - center.y) + 1) / tileSize) * 2;
+		if(Mathf.RoundToInt(center.x - cursorOffset.x) % Mathf.RoundToInt(tileSize) == 0)
+			columns++;
+		if(Mathf.RoundToInt(center.y - cursorOffset.y) % Mathf.RoundToInt(tileSize) == 0)
+			rows++;
 		Vector2 offset = new Vector2 {
 			x = center.x + -(columns - 1) * tileSize/2,
 			y = center.y + (rows - 1) * tileSize/2
-
 		};
 		int[] coordinates = new int[2];
 
@@ -467,10 +471,14 @@ public class SectorCreatorMouse : MonoBehaviour {
 				if(tilePos.y < lastTilePos.y) lastTilePos.y = tilePos.y;
 			}
 		}
-		int columns = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x) + 1, Mathf.Abs(lastTilePos.x - center.x) + 1) / tileSize) * 2;
-		int rows = Mathf.RoundToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y) + 1, Mathf.Abs(lastTilePos.y - center.y) + 1) / tileSize) * 2;
+		int columns = Mathf.CeilToInt(Mathf.Max(Mathf.Abs(firstTilePos.x - center.x) + 1, Mathf.Abs(lastTilePos.x - center.x) + 1) / tileSize) * 2;
+		int rows = Mathf.CeilToInt(Mathf.Max(Mathf.Abs(firstTilePos.y - center.y) + 1, Mathf.Abs(lastTilePos.y - center.y) + 1) / tileSize) * 2;
+		if(Mathf.RoundToInt(center.x - cursorOffset.x) % Mathf.RoundToInt(tileSize) == 0)
+			columns++;
+		if(Mathf.RoundToInt(center.y - cursorOffset.y) % Mathf.RoundToInt(tileSize) == 0)
+			rows++;
 		Vector2 offset = new Vector2 {
-			x = center.x - (columns - 1) * tileSize/2,
+			x = center.x + -(columns - 1) * tileSize/2,
 			y = center.y + (rows - 1) * tileSize/2
 		};
 		
@@ -538,6 +546,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 		string path = Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName;
 		System.IO.File.WriteAllText(path, output);
 		System.IO.Path.ChangeExtension(path, ".json");
+		mainMenu.ToggleActive();
+		successBox.ToggleActive();
 		Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName);
 	}
 
@@ -584,7 +594,6 @@ public class SectorCreatorMouse : MonoBehaviour {
 				x = this.x + width / 2F,
 				y = this.y + height / 2F,
 			};
-			Debug.Log(center);
 
 			Vector2 offset = new Vector2 
 			{

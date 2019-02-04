@@ -67,6 +67,19 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			reconstructText.text = "A part is in an invalid position!";
 		}
 	}
+	void UpdateChainHelper(ShipBuilderPart part) {
+		var x = GetRect(part.rectTransform);
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(!shipPart.isInChain) {
+				var y = GetRect(shipPart.rectTransform);
+				if(x.Intersects(y)) {
+					shipPart.isInChain = true;
+					UpdateChainHelper(shipPart);
+				}
+			}
+		}
+	}
+
 	public void UpdateChain() {
 		SetReconstructButton(true);
 		var shellRect = GetRect(shell.rectTransform);
@@ -82,20 +95,12 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			}
 		}
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
-			var x = GetRect(shipPart.rectTransform);
-			if(!shipPart.isInChain) {
-				foreach(ShipBuilderPart part in cursorScript.parts) {
-					if(part.isInChain) {
-						var y = GetRect(part.rectTransform);
-						if(x.Intersects(y)) {
-							shipPart.isInChain = true;
-							break;
-						}
-					}
-				}
-				if(!shipPart.isInChain || !shipPart.validPos) {
-					SetReconstructButton(false);
-				}
+			if(shipPart.isInChain) UpdateChainHelper(shipPart);
+		}
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(!shipPart.isInChain || !shipPart.validPos) {
+				SetReconstructButton(false);
+				return;
 			}
 		}
 	}
@@ -221,7 +226,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		}
 	}
 	void Update() {
-		if((player.transform.position - yardPosition).sqrMagnitude > 100)
+		if((player.transform.position - yardPosition).sqrMagnitude > 200)
 			CloseUI(false);
 	}
 
@@ -250,6 +255,15 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		}
 	}
 
+	public string GetCurrentJSON() {
+		EntityBlueprint blueprint = player.blueprint;
+		blueprint.parts = new List<EntityBlueprint.PartInfo>();
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			blueprint.parts.Add(part.info);
+		}
+		return JsonUtility.ToJson(blueprint);
+	}
+	
 	public void SetSearcherString(string searcher) {
 		searcherString = searcher.ToLower();
 		ChangeDisplayFactors();

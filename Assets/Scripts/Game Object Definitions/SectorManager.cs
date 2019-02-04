@@ -111,6 +111,7 @@ public class SectorManager : MonoBehaviour
                 plat.name = curSect.name + "Platform";
                 curSect.platform = plat;
                 current = curSect;
+                sectors = new List<Sector>();
                 Debug.Log("Success! File loaded from " + path);
                 loadSector();
                 return;
@@ -271,6 +272,9 @@ public class SectorManager : MonoBehaviour
                     case EntityBlueprint.IntendedType.Yard:
                         gObj.AddComponent<Yard>();
                         break;
+                    case EntityBlueprint.IntendedType.WeaponStation:
+                        gObj.AddComponent<WeaponStation>();
+                        break;
                     default:
                         break;
                 }
@@ -311,7 +315,8 @@ public class SectorManager : MonoBehaviour
             if(player) {
                 var playerComp = player.GetComponent<PlayerCore>();
                 battleZone.AddTarget(playerComp);
-                playerComp.SetCarrier(carriers[playerComp.faction]);
+                if(carriers.ContainsKey(playerComp.faction))
+                    playerComp.SetCarrier(carriers[playerComp.faction]);
             }
             for (int i = 0; i < current.targets.Length; i++)
             {
@@ -319,7 +324,8 @@ public class SectorManager : MonoBehaviour
                 {
                     // set the carrier of the shellcore to the associated faction's carrier
                     ShellCore shellcore = objects[current.targets[i]].GetComponent<ShellCore>();
-                    shellcore.SetCarrier(carriers[shellcore.faction]);
+                    if(carriers.ContainsKey(shellcore.faction))
+                        shellcore.SetCarrier(carriers[shellcore.faction]);
                 }
                 battleZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
             }

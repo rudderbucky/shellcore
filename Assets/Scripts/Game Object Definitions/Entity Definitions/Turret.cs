@@ -19,13 +19,11 @@ public class Turret : AirConstruct, IOwnable {
             entityBody.drag = 25f;
     }
 
-    protected override void OnDeath()
-    {
+    protected override void OnDestroy() {
         if(owner != null && !owner.Equals(null))
             owner.GetUnitsCommanding().Remove(this);
-        base.OnDeath();
+        base.OnDestroy();
     }
-
     public void SetOwner(IOwner owner)
     {
         this.owner = owner;

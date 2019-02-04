@@ -38,7 +38,8 @@ public class EntityBlueprint : ScriptableObject
         Drone,
         AirCarrier,
         GroundCarrier,
-        Yard
+        Yard,
+        WeaponStation
     }
 
     public IntendedType intendedType;

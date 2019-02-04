@@ -10,4 +10,14 @@ public class Yard : AirConstruct, IShipBuilder {
         category = EntityCategory.Station;
         base.Start();
     }
+
+    protected override void Update()
+    {
+        targeter.GetTarget(true);
+        if(!isDead)
+            foreach(WeaponAbility weapon in GetComponentsInChildren<WeaponAbility>()) {
+                weapon.Tick(null);
+            }
+        base.Update();
+    }
 }
