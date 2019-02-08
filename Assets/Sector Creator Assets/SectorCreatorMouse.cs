@@ -36,6 +36,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		public GameObject obj;
 		public ObjectTypes type;
 		public string assetID;
+		public string shellcoreJSON;
 		public string vendingID;
 		public bool isTarget;
 		public int faction;
@@ -69,7 +70,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 	int width;
 	PlaceableObject cursor;
 	Color currentColor = SectorColors.colors[0];
-	// Update is called once per frame
+	public SectorCreatorShellCoreEditor coreEditor;
+
 	void Start() {
 		for(int i = 0; i < placeables.Length; i++) {
 			placeables[i].placeablesIndex = i;
@@ -184,7 +186,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 	}
 
-	void UpdateColors() {
+	public void UpdateColors() {
 		if(GameObject.Find("Tile Holder"))
 			foreach(Transform tile in GameObject.Find("Tile Holder").transform) {
 				tile.GetComponent<SpriteRenderer>().color = currentColor;
@@ -247,7 +249,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 
 	void Update () {
 		windowEnabled = mainMenu.gameObject.activeSelf || sectorProps.gameObject.activeSelf || hotkeyList.gameObject.activeSelf
-		|| readFile.gameObject.activeSelf;
+		|| readFile.gameObject.activeSelf || coreEditor.gameObject.activeSelf;
 
 		Vector3 mousePos = Input.mousePosition;
 		mousePos.z -= Camera.main.transform.position.z;
@@ -261,6 +263,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 		if(Input.GetKeyDown("g") && (!windowEnabled || mainMenu.gameObject.activeSelf)) {
 			mainMenu.ToggleActive();
+			if(mainMenu.gameObject.activeSelf) coreEditor.gameObject.SetActive(false);
 		} else {
 			if(Input.GetKeyDown("g") && sectorProps.gameObject.activeSelf && !sectorProps.transform.Find("Sector Name").GetComponent<InputField>().isFocused) {
 				sectorProps.ToggleActive();
@@ -340,13 +343,18 @@ public class SectorCreatorMouse : MonoBehaviour {
 						if(GetIsFactable(cursor)) {
 							com.type = CommandTypes.ChangeFaction;
 							com.position = cursor.obj.transform.position;
-							objects.Remove(obj);
 							var newObj = obj;
-							newObj.faction = (obj.faction + 1) % numberOfFactions;
+							if(obj.assetID == "shellcore_blueprint") {
+								mainMenu.CloseUI();
+								coreEditor.Initialize(newObj, this);
+							} else {
+								newObj.faction = (obj.faction + 1) % numberOfFactions;
+								com.obj = newObj;
+								undoStack.Push(com);
+							}
+							objects.Remove(obj);
 							objects.Add(newObj);
 							UpdateColors();
-							com.obj = newObj;
-							undoStack.Push(com);
 						} else if(obj.type == ObjectTypes.Platform) {
 							objects.Remove(obj);
 							PlaceableObject newObj = obj;
@@ -518,8 +526,11 @@ public class SectorCreatorMouse : MonoBehaviour {
 				ent.vendingID = oj.vendingID;
 				if(oj.isTarget) targetIDS.Add(ent.ID);
 				ent.name = ent.assetID + ent.ID;
+				if(ent.assetID == "shellcore_blueprint") {
+					targetIDS.Add(ent.ID);
+					ent.blueprintJSON = oj.shellcoreJSON;
+				} else ent.blueprintJSON = "";
 				ents.Add(ent);
-				if(ent.assetID == "shellcore_blueprint") targetIDS.Add(ent.ID);
 			} else if (oj.type == ObjectTypes.Platform) {
 				int[] coordinates = new int[2];
 				coordinates[1] = Mathf.RoundToInt((oj.obj.transform.position.x - offset.x) / tileSize);
@@ -627,8 +638,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 				PlaceableObject obj = new PlaceableObject();
 				obj.pos = ent.position;
 				obj.faction = ent.faction;
+				obj.shellcoreJSON = ent.blueprintJSON;
 
-				// TODO: change this system once the shellcore editor is ready
 				obj.assetID = ent.assetID;
 				obj.type = ObjectTypes.Other;
 				obj.vendingID = ent.vendingID;

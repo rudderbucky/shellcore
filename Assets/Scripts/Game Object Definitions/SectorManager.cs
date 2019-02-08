@@ -201,6 +201,16 @@ public class SectorManager : MonoBehaviour
                     case EntityBlueprint.IntendedType.ShellCore:
                         {
                             ShellCore shellcore = gObj.AddComponent<ShellCore>();
+                            try {
+                                string json = current.entities[i].blueprintJSON;
+                                if(json != null && json != "") {
+                                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                                    JsonUtility.FromJsonOverwrite(json, blueprint);
+                                }
+                            } catch(System.Exception e) {
+                                Debug.Log(e.Message);
+                                blueprint = obj as EntityBlueprint;
+                            }
                             shellcore.sectorMngr = this;
                             break;
                         }

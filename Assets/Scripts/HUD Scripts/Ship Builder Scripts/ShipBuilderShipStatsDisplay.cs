@@ -15,7 +15,7 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 		float shipMass = 1;
 		float enginePower = 200;
 		foreach(ShipBuilderPart part in cursorScript.parts) {
-			if(part.info.abilityID == 13) enginePower += 100;
+			if(part.info.abilityID == 13) enginePower *= 1.25F;
 			PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(part.info.partID);
 			totalHealths[0] += blueprint.health / 2;
 			totalHealths[1] += blueprint.health / 4;

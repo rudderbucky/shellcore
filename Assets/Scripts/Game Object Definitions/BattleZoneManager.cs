@@ -66,6 +66,6 @@ public class BattleZoneManager : MonoBehaviour
 
     public static Entity[] getTargets()
     {
-        return targets.ToArray();
+        return targets != null ? targets.ToArray() : null;
     }
 }
