@@ -20,8 +20,10 @@ public class SectorManager : MonoBehaviour
     private List<IVendor> stations = new List<IVendor>();
     private BattleZoneManager battleZone;
     private Dictionary<string, GameObject> objects;
+    private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
+    private int uniqueIDInt;
 
     public int GetExtraCommandUnits(int faction) {
         stationsCount.Clear();
@@ -40,6 +42,7 @@ public class SectorManager : MonoBehaviour
     private void Awake()
     {
         objects = new Dictionary<string, GameObject>();
+        persistentObjects = new Dictionary<string, GameObject>();
         battleZone = gameObject.AddComponent<BattleZoneManager>();
         lpg = GetComponent<LandPlatformGenerator>();
         sectorBorders = new GameObject("SectorBorders").AddComponent<LineRenderer>();
@@ -108,6 +111,7 @@ public class SectorManager : MonoBehaviour
                 plat.name = curSect.name + "Platform";
                 curSect.platform = plat;
                 current = curSect;
+                sectors = new List<Sector>();
                 Debug.Log("Success! File loaded from " + path);
                 loadSector();
                 return;
@@ -136,6 +140,19 @@ public class SectorManager : MonoBehaviour
                 Destroy(obj.Value);
             }
         }
+
+        Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
+        foreach(var obj in persistentObjects)
+        {
+            if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
+                && obj.Value != player.gameObject)
+            {
+                Destroy(obj.Value);
+            } else tmp.Add(obj.Key, obj.Value);
+        }
+
+        persistentObjects = tmp;
+
         foreach(ShellPart part in strayParts) {
             if(part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part)) {
                 Destroy(part.gameObject);
@@ -156,6 +173,7 @@ public class SectorManager : MonoBehaviour
 
         //load new sector
         if(player) {
+            player.ResetPower();
             objects.Add("player", player.gameObject);
             player.sectorMngr = this;
             player.alerter.showMessage("ENTERING SECTOR: " + current.name);
@@ -183,6 +201,16 @@ public class SectorManager : MonoBehaviour
                     case EntityBlueprint.IntendedType.ShellCore:
                         {
                             ShellCore shellcore = gObj.AddComponent<ShellCore>();
+                            try {
+                                string json = current.entities[i].blueprintJSON;
+                                if(json != null && json != "") {
+                                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                                    JsonUtility.FromJsonOverwrite(json, blueprint);
+                                }
+                            } catch(System.Exception e) {
+                                Debug.Log(e.Message);
+                                blueprint = obj as EntityBlueprint;
+                            }
                             shellcore.sectorMngr = this;
                             break;
                         }
@@ -254,6 +282,9 @@ public class SectorManager : MonoBehaviour
                     case EntityBlueprint.IntendedType.Yard:
                         gObj.AddComponent<Yard>();
                         break;
+                    case EntityBlueprint.IntendedType.WeaponStation:
+                        gObj.AddComponent<WeaponStation>();
+                        break;
                     default:
                         break;
                 }
@@ -294,7 +325,8 @@ public class SectorManager : MonoBehaviour
             if(player) {
                 var playerComp = player.GetComponent<PlayerCore>();
                 battleZone.AddTarget(playerComp);
-                playerComp.SetCarrier(carriers[playerComp.faction]);
+                if(carriers.ContainsKey(playerComp.faction))
+                    playerComp.SetCarrier(carriers[playerComp.faction]);
             }
             for (int i = 0; i < current.targets.Length; i++)
             {
@@ -302,7 +334,8 @@ public class SectorManager : MonoBehaviour
                 {
                     // set the carrier of the shellcore to the associated faction's carrier
                     ShellCore shellcore = objects[current.targets[i]].GetComponent<ShellCore>();
-                    shellcore.SetCarrier(carriers[shellcore.faction]);
+                    if(carriers.ContainsKey(shellcore.faction))
+                        shellcore.SetCarrier(carriers[shellcore.faction]);
                 }
                 battleZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
             }
@@ -314,5 +347,9 @@ public class SectorManager : MonoBehaviour
         }
 
         if(info) info.showMessage("Entering sector '" + current.sectorName + "'");
+    }
+
+    public void InsertPersistentObject(string key, GameObject gameObject) {
+        persistentObjects.Add(key + uniqueIDInt++, gameObject);
     }
 }

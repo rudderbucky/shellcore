@@ -12,6 +12,7 @@ public class AirConstruct : Construct {
     {
         Terrain = TerrainType.Air;
         base.Start();
+        storedPos = transform.position;
     }
     /// <summary>
     /// Idle oscillation animation; smoother than the original ShellCore Command one!!!!
@@ -19,10 +20,16 @@ public class AirConstruct : Construct {
     /// </summary>
     private void Oscillator()
     {
-        timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
-        oscillatorVector = transform.position; // get the current aircraft position
-        oscillatorVector.y = oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + transform.position.x); // cool math stuff 
-        transform.position = oscillatorVector; // set the aircraft position
+        if(entityBody.velocity == Vector2.zero) {
+            timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
+            oscillatorVector = transform.position; // get the current aircraft position
+            oscillatorVector.y = Mathf.Min(oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + entityBody.position.x), storedPos.y); // cool math stuff 
+            transform.position = oscillatorVector; // set the aircraft position
+        } else 
+        {
+            storedPos = entityBody.position;
+            timePassed = 0;
+        }
     }
 	
 	// Update is called once per frame

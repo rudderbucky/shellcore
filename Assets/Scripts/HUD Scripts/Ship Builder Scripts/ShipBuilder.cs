@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShipBuilder : MonoBehaviour {
+public class ShipBuilder : MonoBehaviour, IWindow {
 	public GameObject SBPrefab;
 	public Vector3 yardPosition;
 	public Image shell;
@@ -11,7 +11,18 @@ public class ShipBuilder : MonoBehaviour {
 	public ShipBuilderCursorScript cursorScript;
 	public GameObject buttonPrefab;
 	public PlayerCore player;
-	public Transform viewportContents;
+	public Transform smallContents;
+	public Transform mediumContents;
+	public Transform largeContents;
+	private Transform[] contentsArray;
+	public GameObject smallText;
+	public GameObject mediumText;
+	public GameObject largeText;
+	public GameObject[] contentTexts;
+	private string searcherString;
+	private bool[] displayingTypes;
+	public Image reconstructImage;
+	public Text reconstructText;
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
 
 	public bool DecrementPartButton(EntityBlueprint.PartInfo info) {
@@ -30,7 +41,9 @@ public class ShipBuilder : MonoBehaviour {
 	public void DispatchPart(ShipBuilderPart part) {
 		var culledInfo = CullSpatialValues(part.info);
 		if(!partDict.ContainsKey(culledInfo)) {
-			partDict.Add(culledInfo, Instantiate(buttonPrefab, viewportContents).GetComponent<ShipBuilderInventoryScript>());
+			int size = ResourceManager.GetAsset<PartBlueprint>(part.info.partID).size;
+			partDict.Add(culledInfo, Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>());
+			contentTexts[size].SetActive(true);
 			partDict[culledInfo].part = culledInfo;
 			partDict[culledInfo].cursor = cursorScript;
 		}
@@ -39,23 +52,67 @@ public class ShipBuilder : MonoBehaviour {
 		Destroy(part.gameObject);
 	}
 
-	public bool IsInChain(ShipBuilderPart part) {
-		var x = part.rectTransform.rect;
-		x.center = part.rectTransform.anchoredPosition;
-		var shellRect = shell.rectTransform.rect;
-		if(x.Overlaps(shellRect)) return true;
-		else {
-			foreach(ShipBuilderPart shipPart in cursorScript.parts) {
-				if(shipPart.isInChain && part != shipPart) {
-					var y = shipPart.rectTransform.rect;
-					y.center = shipPart.rectTransform.anchoredPosition;
-					if(x.Overlaps(y) && shipPart.validPos) return true;
+	public static Bounds GetRect(RectTransform rectTransform) {
+		Bounds rect = RectTransformUtility.CalculateRelativeRectTransformBounds(rectTransform.parent, rectTransform);
+		rect.center = rectTransform.anchoredPosition;
+		rect.size = rect.size * 0.8F;
+		return rect;
+	}
+	public void SetReconstructButton(bool val) {
+		if(val) {
+			reconstructImage.color = reconstructText.color = Color.green;
+			reconstructText.text = "Reconstruct";
+		} else {
+			reconstructImage.color = reconstructText.color = Color.red;
+			reconstructText.text = "A part is in an invalid position!";
+		}
+	}
+	void UpdateChainHelper(ShipBuilderPart part) {
+		var x = GetRect(part.rectTransform);
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(!shipPart.isInChain) {
+				var y = GetRect(shipPart.rectTransform);
+				if(x.Intersects(y)) {
+					shipPart.isInChain = true;
+					UpdateChainHelper(shipPart);
 				}
 			}
-			return false;
+		}
+	}
+
+	public void UpdateChain() {
+		SetReconstructButton(true);
+		var shellRect = GetRect(shell.rectTransform);
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			shipPart.isInChain = false;
+			var x = GetRect(shipPart.rectTransform);
+			if(x.Intersects(shellRect)) {
+				bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
+				0.15F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
+				Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
+				0.15F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
+				shipPart.isInChain = !z;
+			}
+		}
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(shipPart.isInChain) UpdateChainHelper(shipPart);
+		}
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(!shipPart.isInChain || !shipPart.validPos) {
+				SetReconstructButton(false);
+				return;
+			}
 		}
 	}
 	public void Initialize() {
+		cursorScript.gameObject.SetActive(false);
+		searcherString = "";
+		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
+		contentTexts = new GameObject[] {smallText, mediumText, largeText};
+		foreach(GameObject obj in contentTexts) {
+			obj.SetActive(false);
+		}
+		displayingTypes = new bool[] {true, true, true, true, true};
 		player.SetIsInteracting(true);
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 		shell.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreShellSpriteID);
@@ -76,7 +133,9 @@ public class ShipBuilder : MonoBehaviour {
 		foreach(EntityBlueprint.PartInfo part in parts) {
 			if(!partDict.ContainsKey(part)) 
 			{
-				partDict.Add(part, Instantiate(buttonPrefab, viewportContents).GetComponent<ShipBuilderInventoryScript>());
+				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
+				partDict.Add(part, Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>());
+				contentTexts[size].SetActive(true);
 				partDict[part].part = part;
 				partDict[part].cursor = cursorScript;
 				partDict[part].IncrementCount();
@@ -86,7 +145,9 @@ public class ShipBuilder : MonoBehaviour {
 			var part = player.GetTractorTarget().GetComponent<ShellPart>().info;
 			part = CullSpatialValues(part);
 			if(!partDict.ContainsKey(part)) {
-				var button = Instantiate(buttonPrefab, viewportContents).GetComponent<ShipBuilderInventoryScript>();
+				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
+				var button = Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
+				contentTexts[size].SetActive(true);
 				button.cursor = cursorScript;
 				button.part = part;
 				button.IncrementCount();
@@ -95,8 +156,12 @@ public class ShipBuilder : MonoBehaviour {
 			player.cursave.partInventory.Add(part);
 			Destroy(player.GetTractorTarget().gameObject);
 		}
-
 		LoadBlueprint(player.blueprint);
+		cursorScript.gameObject.SetActive(true);
+	}
+
+	public void CloseUI() {
+		CloseUI(false);
 	}
 
 	public void CloseUI(bool validClose) {
@@ -125,6 +190,7 @@ public class ShipBuilder : MonoBehaviour {
 			p.cursorScript = cursorScript;
 			cursorScript.parts.Add(p);
 			p.info = part;
+			p.SetLastValidPos(part.location);
 		}
 	}
 
@@ -139,7 +205,7 @@ public class ShipBuilder : MonoBehaviour {
 		if(!invalidState) {
 			Export();
 			CloseUI(true);
-		} else CloseUI(false);
+		}
 	}
 
 	public void Export() {
@@ -160,7 +226,7 @@ public class ShipBuilder : MonoBehaviour {
 		}
 	}
 	void Update() {
-		if((player.transform.position - yardPosition).sqrMagnitude > 100)
+		if((player.transform.position - yardPosition).sqrMagnitude > 200)
 			CloseUI(false);
 	}
 
@@ -172,14 +238,38 @@ public class ShipBuilder : MonoBehaviour {
 		}
 		return null;
 	}
-	public void ChangeDisplayFactors(string searcher) {
-		searcher = searcher.ToLower();
+	public void ChangeDisplayFactors() {
+		foreach(GameObject obj in contentTexts) {
+			obj.SetActive(false);
+		}
 		foreach(ShipBuilderInventoryScript inv in partDict.Values) {
 			string partName = inv.part.partID.ToLower();
 			string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID).ToLower();
-			if(partName.Contains(searcher) || abilityName.Contains(searcher) || searcher == "") {
-				inv.gameObject.SetActive(true);
+			if(partName.Contains(searcherString) || abilityName.Contains(searcherString) || searcherString == "") {
+				if(displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(inv.part.abilityID)]) {
+					inv.gameObject.SetActive(true);
+					contentTexts[ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size].SetActive(true);
+				}
+				else inv.gameObject.SetActive(false);
 			} else inv.gameObject.SetActive(false);
 		}
+	}
+
+	public string GetCurrentJSON() {
+		EntityBlueprint blueprint = player.blueprint;
+		blueprint.parts = new List<EntityBlueprint.PartInfo>();
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			blueprint.parts.Add(part.info);
+		}
+		return JsonUtility.ToJson(blueprint);
+	}
+	
+	public void SetSearcherString(string searcher) {
+		searcherString = searcher.ToLower();
+		ChangeDisplayFactors();
+	}
+	public void UpdateDisplayingCategories(int type) {
+		displayingTypes[type] = !displayingTypes[type];
+		ChangeDisplayFactors();
 	}
 }

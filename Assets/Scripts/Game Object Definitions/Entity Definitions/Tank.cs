@@ -9,6 +9,11 @@ public class Tank : GroundCraft, IOwnable
     bool hasPath = false;
     IOwner owner;
 
+    protected override void OnDestroy() {
+        if(owner != null && !owner.Equals(null))
+            owner.GetUnitsCommanding().Remove(this);
+        base.OnDestroy();
+    }
     protected override void Start()
     {
         isDraggable = true;
@@ -92,12 +97,5 @@ public class Tank : GroundCraft, IOwnable
     {
         this.owner = owner;
         owner.GetUnitsCommanding().Add(this);
-    }
-
-    protected override void OnDeath()
-    {
-        if(owner != null && !(owner.Equals(null)))
-            owner.GetUnitsCommanding().Remove(this);
-        base.OnDeath();
     }
 }

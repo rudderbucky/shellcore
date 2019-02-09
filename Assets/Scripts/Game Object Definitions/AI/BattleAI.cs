@@ -304,6 +304,7 @@ public class BattleAI : AIModule
                         default:
                             break;
                     }
+                    shellcore.sectorMngr.InsertPersistentObject(vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.name, creation);
                     creation.GetComponent<Entity>().spawnPoint = AIData.vendors[i].transform.position;
                     shellcore.AddPower(-vendor.GetVendingBlueprint().items[itemIndex].cost);
 

@@ -9,11 +9,13 @@ using UnityEngine.SceneManagement;
 public class ShipBuilderCursorScript : MonoBehaviour {
 
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
+	public Canvas canvas;
 	public RectTransform grid;
 	ShipBuilderPart currentPart;
 	ShipBuilderPart lastPart;
 	public ShipBuilder builder;
 	public InputField field;
+	public InputField jsonField;
 	bool flipped;
 
 	public EntityBlueprint.PartInfo? GetCurrentInfo() {
@@ -35,11 +37,15 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
-		//builder.parts.Add(currentPart.info);
 		if(!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
 			builder.DispatchPart(currentPart);
-		} else lastPart = currentPart;
-		currentPart = null;
+		} else {
+			lastPart = currentPart;
+			currentPart = null;
+			if(lastPart.isInChain && lastPart.validPos) {
+				lastPart.SetLastValidPos(lastPart.info.location);
+			} else lastPart.Snapback();
+		}
 	}
 
 	public EntityBlueprint.PartInfo? GetPartCursorIsOn() {
@@ -72,13 +78,11 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		flipped = true;
 	}
 	void Update() {
-		foreach(ShipBuilderPart part in parts) {
-			part.isInChain = builder.IsInChain(part);
-		}
-		if(Input.GetKeyDown("c") && !field.isFocused) {
+		builder.UpdateChain();
+		if(Input.GetKeyDown("c") && !field.isFocused && !jsonField.isFocused) {
 			ClearAllParts();
 		}
-		transform.position = new Vector3(10 * ((int)Input.mousePosition.x / 10), 10 * ((int)Input.mousePosition.y / 10), 0);
+		transform.position = new Vector3(5 * ((int)Input.mousePosition.x / 5), 5 * ((int)Input.mousePosition.y / 5), 0);
 		if(rotateMode) {
 			RotateLastPart();
 			return;
@@ -94,10 +98,15 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 			}
 		} else if(Input.GetMouseButtonDown(0)) {
 			for(int i = parts.Count - 1; i >= 0; i--) {
-				if(RectTransformUtility.RectangleContainsScreenPoint(parts[i].rectTransform, transform.position)) {
+				Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);
+				bound.extents /= 1.5F;
+				var origPos = transform.position;
+				transform.position = Input.mousePosition;
+				if(bound.Contains(GetComponent<RectTransform>().anchoredPosition)) {
 					GrabPart(parts[i]);
 					break;
 				}
+				transform.position = origPos;
 			}
 		}
 	}

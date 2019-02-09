@@ -39,6 +39,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         this.carrier = carrier;
     }
 
+    public void ResetPower() {
+        totalPower = 0;
+    }
 
     public float GetPower()
     {
@@ -65,6 +68,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
             Destroy(targetGlow.gameObject);
     }
 
+    public SectorManager GetSectorManager() {
+        return sectorMngr;
+    }
     protected override void Start()
     {
         intrinsicCommandLimit = 3;
@@ -90,7 +96,14 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         if(ai)
         {
             ai.Init(this);
-            ai.setMode(AirCraftAI.AIMode.Battle);
+            if(sectorMngr.current.type == Sector.SectorType.BattleZone)
+            {
+                ai.setMode(AirCraftAI.AIMode.Battle);
+            }
+            else
+            {
+                ai.setMode(AirCraftAI.AIMode.Inactive);
+            }
             ai.allowRetreat = true;
         }
     }
@@ -155,7 +168,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * enginePower * 9F * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * enginePower * 24F * Time.fixedDeltaTime * rigidbody.mass / 2);
                 }
             }
         }

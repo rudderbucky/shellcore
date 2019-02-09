@@ -17,33 +17,45 @@ public class ShipBuilderPart : MonoBehaviour {
 	public ShipBuilderCursorScript cursorScript;
 	public bool isInChain;
 	public bool validPos;
-	public RectTransform isTooClose;
+	private Vector3? lastValidPos = null;
+
+	public void SetLastValidPos(Vector3? lastPos) {
+		lastValidPos = lastPos;
+	}
 	
+	public void Snapback() {
+		if(lastValidPos != null) info.location = (Vector3)lastValidPos;
+	}
 	void Awake() {
 		validPos = true;
 		image = GetComponent<Image>();
-		shooter = GetComponentsInChildren<Image>()[1];
+		GameObject shooterObj = new GameObject("shooter");
+		shooterObj.transform.SetParent(transform.parent);
+		shooter = shooterObj.AddComponent<Image>();
+		shooter.rectTransform.localScale = Vector3.one;
 		rectTransform = image.rectTransform;
-		isTooClose = (RectTransform)rectTransform.Find("TooCloseBound");
 	}
 
 	bool IsTooClose(ShipBuilderPart otherPart) {
-		var x = isTooClose.rect;
-		x.center = rectTransform.anchoredPosition;
-		var y = otherPart.rectTransform.rect;
-		y.center = otherPart.rectTransform.anchoredPosition;
 		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
-		0.2F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
+		0.28F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
 		Mathf.Abs(rectTransform.anchoredPosition.y - otherPart.rectTransform.anchoredPosition.y) <
-		0.2F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
+		0.28F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
 		return z;
 		//return y.Contains(x.center);
+	}
+	void OnDestroy() {
+		Destroy(shooter.gameObject);
 	}
 	void Update() {
 		image.enabled = true;
 		shooter.enabled = true;
-		if(AbilityUtilities.GetShooterByID(info.abilityID) != null)
+		if(AbilityUtilities.GetShooterByID(info.abilityID) != null) {
+			shooter.gameObject.transform.SetAsLastSibling();
+			shooter.rectTransform.anchoredPosition = GetComponent<RectTransform>().anchoredPosition;
 			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
+			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
+		}
 		else shooter.enabled = false;
 		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
 		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;

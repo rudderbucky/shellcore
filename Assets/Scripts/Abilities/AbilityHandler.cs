@@ -28,7 +28,8 @@ public class AbilityHandler : MonoBehaviour {
         Skills,
         Spawns,
         Weapons,
-        Passive
+        Passive,
+        None
     }
     
     public AbilityTypes currentVisibles;

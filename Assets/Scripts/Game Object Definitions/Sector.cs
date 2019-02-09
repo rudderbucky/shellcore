@@ -31,6 +31,7 @@ public class Sector : ScriptableObject
         public string ID;
         public int faction;
         public string assetID;
+        public string blueprintJSON;
         public string dialogueID;
         public string vendingID;
         public string pathID;

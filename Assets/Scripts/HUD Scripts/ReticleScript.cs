@@ -90,15 +90,18 @@ public class ReticleScript : MonoBehaviour {
                         outpostUI.blueprint = (entityTarget as IVendor).GetVendingBlueprint();
                         if ((entityTarget.transform.position - craft.transform.position).magnitude < outpostUI.blueprint.range)
                         {
+                            PlayerViewScript.SetCurrentWindow(outpostUI);
                             outpostUI.outpostPosition = entityTarget.transform.position;
                             outpostUI.player = craft;
                             outpostUI.openUI();
                         }
                     } else if(entityTarget as IShipBuilder != null && entityTarget.faction == craft.faction
-                    &&(entityTarget.transform.position - craft.transform.position).sqrMagnitude < 100) 
+                    &&(entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200) 
                     {
                         ShipBuilder builder = transform.parent.Find("Ship Builder").GetComponent<ShipBuilder>();
+                        PlayerViewScript.SetCurrentWindow(builder);
                         builder.gameObject.SetActive(true);
+                        builder.yardPosition = entityTarget.transform.position;
                         builder.Initialize();
                     }
                 }

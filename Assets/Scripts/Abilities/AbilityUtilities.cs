@@ -9,6 +9,31 @@ public class AbilityUtilities : MonoBehaviour {
 		return ResourceManager.GetAsset<Sprite>("AbilitySprite" + ID);
 	}
 
+	public static AbilityHandler.AbilityTypes GetAbilityTypeByID(int ID) {
+		switch(ID) {
+			case 10:
+				return AbilityHandler.AbilityTypes.Spawns;
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+				return AbilityHandler.AbilityTypes.Weapons;
+			case 1:
+			case 2:
+			case 11:
+			case 12:
+				return AbilityHandler.AbilityTypes.Skills;
+			case 13:
+				return AbilityHandler.AbilityTypes.Passive;
+			case 0:
+			default:
+				return AbilityHandler.AbilityTypes.None;
+		}
+		
+	}
 	public static string GetDescriptionByID(int ID) {
 		switch(ID) {
 			case 0:

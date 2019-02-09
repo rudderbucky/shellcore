@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public abstract class Craft : Entity
 {
-    public int enginePower; // craft's engine power, determines how fast it goes. Why is this an integer?
+    public float enginePower; // craft's engine power, determines how fast it goes.
     protected bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
 
@@ -73,7 +73,7 @@ public abstract class Craft : Entity
         ResourceManager.PlayClipByID("clip_respawn", transform.position);
     }
 
-    public int GetEnginePower() {
+    public float GetEnginePower() {
         return enginePower;
     }
 
