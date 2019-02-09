@@ -165,8 +165,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     {
         if (!target) // Don't grab energy when the craft is pulling something more important
         {
-
-            EnergySphereScript[] energies = FindObjectsOfType<EnergySphereScript>();
+            EnergySphereScript[] energies = AIData.energySpheres.ToArray();
 
             Transform closest = null;
             float closestD = float.MaxValue;

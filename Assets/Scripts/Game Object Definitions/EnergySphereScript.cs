@@ -6,6 +6,16 @@ public class EnergySphereScript : MonoBehaviour {
 
     // TODO: make undraggable if already being dragged
 
+    private void OnEnable()
+    {
+        AIData.energySpheres.Add(this);
+    }
+
+    private void OnDestroy()
+    {
+        AIData.energySpheres.Remove(this);
+    }
+
     float timer;
     private void Update()
     {

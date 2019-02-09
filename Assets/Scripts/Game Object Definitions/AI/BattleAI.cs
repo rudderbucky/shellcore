@@ -92,7 +92,7 @@ public class BattleAI : AIModule
             }
 
             // if population is nearly capped, attack
-            if (shellcore.GetTotalCommandLimit() < shellcore.GetUnitsCommanding().Count || shellcore.GetTractorTarget() != null) // TODO: OR if enemy base is weak
+            if (shellcore.GetTotalCommandLimit() < shellcore.GetUnitsCommanding().Count + 1 || /*shellcore.GetTractorTarget() != null*/ shellcore.GetPower() >= 200) // TODO: OR if enemy base is weak
             {
                 state = BattleState.Attack;
             }
@@ -138,7 +138,6 @@ public class BattleAI : AIModule
                 // ground attack location = own bunker location
                 // drag tanks from one platform to another "LandPlatformGenerator.getEnemiesOnPlatform(Vector2 platformLocation, int faction)"?
                 // how to react to different pressures on land and air?
-                // keep an offensive turret in tracktor beam, if possible
                 break;
             case BattleState.Defend:
                 // destroy enemy units around base, ignore everything outside siege range
@@ -148,6 +147,18 @@ public class BattleAI : AIModule
                 break;
             case BattleState.Collect:
                 // go from outpost to outpost, (also less fortified enemy outposts [count enemy units nearby {TODO}]) and collect energy
+                if(shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
+                {
+                    if(shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.3f)
+                    {
+                        state = BattleState.Attack;
+                    }
+                    else
+                    {
+                        shellcore.SetTractorTarget(null);
+                    }
+                }
+
                 if(findNewTarget || collectTarget == null)
                 {
                     // Find new target
@@ -191,7 +202,7 @@ public class BattleAI : AIModule
 
         for (int i = 0; i < AIData.vendors.Count; i++)
         {
-            if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 400f && AIData.vendors[i].faction == craft.faction)
+            if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 380f && AIData.vendors[i].faction == craft.faction)
             {
                 IVendor vendor = AIData.vendors[i] as IVendor;
 
@@ -199,28 +210,83 @@ public class BattleAI : AIModule
                     continue;
 
                 int itemIndex = -1;
-                for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+
+                if (state == BattleState.Attack)
                 {
-                    if (vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                    bool ownGroundExists = false;
+                    for (int j = 0; j < AIData.entities.Count; j++)
                     {
-                        if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
+                        if (AIData.entities[j].faction == craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
                         {
-                            continue;
+                            ownGroundExists = true;
+                            break;
                         }
+                    }
+                    if(!ownGroundExists && enemyGroundTargets(true))
+                    {
+                        // Attack & enemy holds all ground
+                        for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++) //TODO: refactor
+                        {
+                            if(vendor.GetVendingBlueprint().items[j].entityBlueprint.entityName.Equals("Torpedo Turret") && vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                            {
+                                itemIndex = j;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(shellcore.GetPower() >= 200)
+                        {
+                            for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+                            {
+                                if (vendor.GetVendingBlueprint().items[j].entityBlueprint.entityName.Equals("Missile Turret") && vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                                {
+                                    itemIndex = j;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+                            {
+                                if (vendor.GetVendingBlueprint().items[j].entityBlueprint.entityName.Equals("Defense Turret") && vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                                {
+                                    itemIndex = j;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if(itemIndex == -1)
+                {
+                    for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+                    {
+                        if (vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                        {
+                            if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
+                            {
+                                continue;
+                            }
 
-                        if (vendor.GetVendingBlueprint().items[j].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank && !enemyGroundTargets(true)) //TODO: get turret / tank attack category from somewhere else
-                            continue;
+                            if (vendor.GetVendingBlueprint().items[j].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank && !enemyGroundTargets(true)) //TODO: get turret / tank attack category from somewhere else
+                                continue;
 
-                        itemIndex = j;
+                            itemIndex = j;
+                        }
                     }
                 }
 
                 if(itemIndex != -1)
                 {
                     GameObject creation = new GameObject();
+                    creation.transform.position = AIData.vendors[i].transform.position;
                     switch (vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.intendedType)
                     {
                         case EntityBlueprint.IntendedType.Turret:
+                            creation.name = "Turret";
                             Turret tur = creation.AddComponent<Turret>();
                             tur.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
                             tur.SetOwner(shellcore);
@@ -228,6 +294,7 @@ public class BattleAI : AIModule
                             shellcore.SetTractorTarget(creation.GetComponent<Draggable>());
                             break;
                         case EntityBlueprint.IntendedType.Tank:
+                            creation.name = "Tank";
                             Tank tank = creation.AddComponent<Tank>();
                             tank.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
                             tank.enginePower = 250;
@@ -237,10 +304,9 @@ public class BattleAI : AIModule
                         default:
                             break;
                     }
-
-                    creation.transform.position = AIData.vendors[i].transform.position;
                     creation.GetComponent<Entity>().spawnPoint = AIData.vendors[i].transform.position;
                     shellcore.AddPower(-vendor.GetVendingBlueprint().items[itemIndex].cost);
+
                     break;
                 }
             }
