@@ -27,6 +27,8 @@ public class Missile : WeaponAbility {
     {
         if (targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not
         {
+            if(missilePrefab == null)
+                missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
             var missile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
             var script = missile.GetComponent<MissileScript>();
             script.SetTarget(targetingSystem.GetTarget());

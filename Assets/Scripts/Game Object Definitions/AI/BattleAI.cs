@@ -25,6 +25,8 @@ public class BattleAI : AIModule
     EnergyRock collectTarget = null;
     bool findNewTarget = false;
 
+    Draggable waitingDraggable;
+
     public override void Init()
     {
         carriers = new List<Entity>();
@@ -103,7 +105,14 @@ public class BattleAI : AIModule
                 {
                     collectTarget = null;
                 }
-                state = BattleState.Collect;
+                if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.3f)
+                {
+                    state = BattleState.Attack;
+                }
+                else
+                {
+                    state = BattleState.Collect;
+                }
             }
 
             nextStateCheckTime = Time.time + 1f;
@@ -134,7 +143,10 @@ public class BattleAI : AIModule
                     craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
                 }
                 //TODO: AI Attack:
-                // create torpedo turrets if no bunker is under control
+                // action sequences
+                // Use existing turrets:
+                // -Drag torpedo turrets to enemy bunkers
+                // -Drag siege turrets to outposts
                 // ground attack location = own bunker location
                 // drag tanks from one platform to another "LandPlatformGenerator.getEnemiesOnPlatform(Vector2 platformLocation, int faction)"?
                 // how to react to different pressures on land and air?
@@ -147,21 +159,9 @@ public class BattleAI : AIModule
                 break;
             case BattleState.Collect:
                 // go from outpost to outpost, (also less fortified enemy outposts [count enemy units nearby {TODO}]) and collect energy
-                if(shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
+                if (findNewTarget || collectTarget == null)
                 {
-                    if(shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.3f)
-                    {
-                        state = BattleState.Attack;
-                    }
-                    else
-                    {
-                        shellcore.SetTractorTarget(null);
-                    }
-                }
-
-                if(findNewTarget || collectTarget == null)
-                {
-                    // Find new target
+                     // Find new target
                     float minD = float.MaxValue;
                     EnergyRock nearest = null;
                     for (int i = 0; i < AIData.energyRocks.Count; i++)
@@ -200,115 +200,131 @@ public class BattleAI : AIModule
                 break;
         }
 
-        for (int i = 0; i < AIData.vendors.Count; i++)
+        // always collect energy
+        if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
         {
-            if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 380f && AIData.vendors[i].faction == craft.faction)
             {
-                IVendor vendor = AIData.vendors[i] as IVendor;
-
-                if (vendor.GetVendingBlueprint() == null)
-                    continue;
-
-                int itemIndex = -1;
-
-                if (state == BattleState.Attack)
+                for (int i = 0; i < AIData.energySpheres.Count; i++)
                 {
-                    bool ownGroundExists = false;
-                    for (int j = 0; j < AIData.entities.Count; j++)
+                    if ((AIData.energySpheres[i].transform.position - shellcore.transform.position).sqrMagnitude < 150)
                     {
-                        if (AIData.entities[j].faction == craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
-                        {
-                            ownGroundExists = true;
-                            break;
-                        }
+                        waitingDraggable = shellcore.GetTractorTarget();
+                        shellcore.SetTractorTarget(null);
+                        break;
                     }
-                    if(!ownGroundExists && enemyGroundTargets(true))
+                }
+            }
+        }
+        else if (shellcore.GetTractorTarget() == null && waitingDraggable != null)
+        {
+            bool energyNearby = false;
+            for (int i = 0; i < AIData.energySpheres.Count; i++)
+            {
+                if ((AIData.energySpheres[i].transform.position - shellcore.transform.position).sqrMagnitude < 150)
+                {
+                    energyNearby = true;
+                    break;
+                }
+            }
+            if (!energyNearby)
+            {
+                shellcore.SetTractorTarget(waitingDraggable);
+                waitingDraggable = null;
+            }
+        }
+
+        // always buy more turrets/tanks
+        if (shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+        {
+            for (int i = 0; i < AIData.vendors.Count; i++)
+            {
+                if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 380f && AIData.vendors[i].faction == craft.faction)
+                {
+                    IVendor vendor = AIData.vendors[i] as IVendor;
+
+                    if (vendor.GetVendingBlueprint() == null)
+                        continue;
+
+                    int itemIndex = -1;
+
+                    if (state == BattleState.Attack)
                     {
-                        // Attack & enemy holds all ground
-                        for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++) //TODO: refactor
+                        bool ownGroundExists = false;
+                        for (int j = 0; j < AIData.entities.Count; j++)
                         {
-                            if(vendor.GetVendingBlueprint().items[j].entityBlueprint.entityName.Equals("Torpedo Turret") && vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                            if (AIData.entities[j].faction == craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
                             {
-                                itemIndex = j;
+                                ownGroundExists = true;
                                 break;
                             }
                         }
-                    }
-                    else
-                    {
-                        if(shellcore.GetPower() >= 200)
+                        if (!ownGroundExists && enemyGroundTargets(true) && shellcore.GetPower() >= 150)
                         {
-                            for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
-                            {
-                                if (vendor.GetVendingBlueprint().items[j].entityBlueprint.entityName.Equals("Missile Turret") && vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
-                                {
-                                    itemIndex = j;
-                                    break;
-                                }
-                            }
+                            // Attack & enemy holds all ground
+                            itemIndex = vendor.GetVendingBlueprint().getItemIndex("Torpedo Turret");
                         }
                         else
                         {
-                            for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+                            if (shellcore.GetPower() >= 200)
                             {
-                                if (vendor.GetVendingBlueprint().items[j].entityBlueprint.entityName.Equals("Defense Turret") && vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
-                                {
-                                    itemIndex = j;
-                                    break;
-                                }
+                                itemIndex = vendor.GetVendingBlueprint().getItemIndex("Missile Turret");
+                            }
+                            else if(shellcore.GetPower() >= 100)
+                            {
+                                itemIndex = vendor.GetVendingBlueprint().getItemIndex("Defense Turret");
                             }
                         }
                     }
-                }
-                if(itemIndex == -1)
-                {
-                    for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+                    if (itemIndex == -1)
                     {
-                        if (vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                        for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
                         {
-                            if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
+                            if (vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
                             {
-                                continue;
+                                if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
+                                {
+                                    continue;
+                                }
+
+                                if (vendor.GetVendingBlueprint().items[j].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank && !enemyGroundTargets(true)) //TODO: get turret / tank attack category from somewhere else
+                                    continue;
+
+                                itemIndex = j;
                             }
-
-                            if (vendor.GetVendingBlueprint().items[j].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank && !enemyGroundTargets(true)) //TODO: get turret / tank attack category from somewhere else
-                                continue;
-
-                            itemIndex = j;
                         }
                     }
-                }
 
-                if(itemIndex != -1)
-                {
-                    GameObject creation = new GameObject();
-                    creation.transform.position = AIData.vendors[i].transform.position;
-                    switch (vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.intendedType)
+                    if (itemIndex != -1)
                     {
-                        case EntityBlueprint.IntendedType.Turret:
-                            creation.name = "Turret";
-                            Turret tur = creation.AddComponent<Turret>();
-                            tur.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
-                            tur.SetOwner(shellcore);
-                            tur.faction = craft.faction;
-                            shellcore.SetTractorTarget(creation.GetComponent<Draggable>());
-                            break;
-                        case EntityBlueprint.IntendedType.Tank:
-                            creation.name = "Tank";
-                            Tank tank = creation.AddComponent<Tank>();
-                            tank.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
-                            tank.enginePower = 250;
-                            tank.SetOwner(shellcore);
-                            tank.faction = craft.faction;
-                            break;
-                        default:
-                            break;
-                    }
-                    shellcore.sectorMngr.InsertPersistentObject(vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.name, creation);
-                    creation.GetComponent<Entity>().spawnPoint = AIData.vendors[i].transform.position;
-                    shellcore.AddPower(-vendor.GetVendingBlueprint().items[itemIndex].cost);
+                        GameObject creation = new GameObject();
+                        creation.transform.position = AIData.vendors[i].transform.position;
+                        switch (vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.intendedType)
+                        {
+                            case EntityBlueprint.IntendedType.Turret:
+                                creation.name = "Turret";
+                                Turret tur = creation.AddComponent<Turret>();
+                                tur.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
+                                tur.SetOwner(shellcore);
+                                tur.faction = craft.faction;
+                                shellcore.SetTractorTarget(creation.GetComponent<Draggable>());
+                                break;
+                            case EntityBlueprint.IntendedType.Tank:
+                                creation.name = "Tank";
+                                Tank tank = creation.AddComponent<Tank>();
+                                tank.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
+                                tank.enginePower = 250;
+                                tank.SetOwner(shellcore);
+                                tank.faction = craft.faction;
+                                break;
+                            default:
+                                break;
+                        }
+                        shellcore.sectorMngr.InsertPersistentObject(vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.name, creation);
+                        creation.GetComponent<Entity>().spawnPoint = AIData.vendors[i].transform.position;
+                        shellcore.AddPower(-vendor.GetVendingBlueprint().items[itemIndex].cost);
 
-                    break;
+                        break;
+                    }
                 }
             }
         }
