@@ -61,6 +61,10 @@ public class Bullet : WeaponAbility {
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
         // Create the Bullet from the Bullet Prefab
         Vector3 diff = targetPos - originPos;
+        if(bulletPrefab == null)
+        {
+            bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+        }
         var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
 

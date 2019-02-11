@@ -14,4 +14,16 @@ public class VendingBlueprint : ScriptableObject {
 
     public int range;
     public List<Item> items;
+
+    public int getItemIndex(string entityName)
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            if(items[i].entityBlueprint.entityName.Equals(entityName))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
