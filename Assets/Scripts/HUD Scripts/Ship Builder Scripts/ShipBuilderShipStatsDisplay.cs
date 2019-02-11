@@ -15,7 +15,23 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 		float shipMass = 1;
 		float enginePower = 200;
 		foreach(ShipBuilderPart part in cursorScript.parts) {
-			if(part.info.abilityID == 13) enginePower *= 1.25F;
+			switch(part.info.abilityID) {
+				case 13:
+					enginePower *= Mathf.Pow(1.1F, part.info.tier);
+					break;
+				case 17:
+					totalRegens[0] += 50 * part.info.tier;
+					break;
+				case 18:
+					totalHealths[0] += 250 * part.info.tier;
+					break;
+				case 19:
+					totalRegens[2] += 50 * part.info.tier;
+					break;
+				case 20:
+					totalHealths[2] += 250 * part.info.tier;
+					break;
+			}
 			PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(part.info.partID);
 			totalHealths[0] += blueprint.health / 2;
 			totalHealths[1] += blueprint.health / 4;

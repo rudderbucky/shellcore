@@ -12,6 +12,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 	public Text partStats;
 	Image image;
 	public Image abilityImage;
+	public Image abilityTier;
 	public Text abilityText;
 
 	public AbilityButtonScript buttonScript;
@@ -39,18 +40,25 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 		if(part != null) {
 			EntityBlueprint.PartInfo info = (EntityBlueprint.PartInfo)part;
 			if(info.abilityID != 0) {
+				if(info.tier != 0) {
+					abilityTier.gameObject.SetActive(true);
+					abilityTier.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + info.tier);
+					abilityTier.rectTransform.sizeDelta = abilityTier.sprite.bounds.size * 20;
+					abilityTier.color = new Color(1,1,1,0.4F);
+				} else abilityTier.gameObject.SetActive(false);
 				abilityImage.sprite = AbilityUtilities.GetAbilityImageByID(info.abilityID);
 				abilityImage.gameObject.SetActive(true);
-				abilityText.text = AbilityUtilities.GetAbilityNameByID(info.abilityID);
+				abilityText.text = AbilityUtilities.GetAbilityNameByID(info.abilityID) + (info.tier > 0 ? " " + info.tier : "");
 				abilityText.gameObject.SetActive(true);
 				abilityBox.gameObject.SetActive(true);
 
 				string description = "";
 
-				description += AbilityUtilities.GetAbilityNameByID(info.abilityID) + "\n";
-				description += AbilityUtilities.GetDescriptionByID(info.abilityID);
+				description += AbilityUtilities.GetAbilityNameByID(info.abilityID) + (info.tier > 0 ? " " + info.tier : "") + "\n";
+				description += AbilityUtilities.GetDescriptionByID(info.abilityID, info.tier);
 				buttonScript.abilityInfo = description;
 			} else {
+				abilityTier.gameObject.SetActive(false);
 				abilityBox.gameObject.SetActive(false);
 				abilityImage.gameObject.SetActive(false);
 				abilityText.gameObject.SetActive(false);
@@ -73,6 +81,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 			image.gameObject.SetActive(false);
 			partName.gameObject.SetActive(false);
 			partStats.gameObject.SetActive(false);
+			abilityTier.gameObject.SetActive(false);
 		}
 	}
 }

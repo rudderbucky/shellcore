@@ -36,6 +36,18 @@ public class ShipBuilderPart : MonoBehaviour {
 		rectTransform = image.rectTransform;
 	}
 
+	void Start() {
+		image.enabled = true;
+		shooter.enabled = true;
+		if(AbilityUtilities.GetShooterByID(info.abilityID) != null) {
+			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
+			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
+		}
+		else Destroy(shooter);
+		image.rectTransform.anchoredPosition = shooter.rectTransform.anchoredPosition = info.location * 100;
+		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
+		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
+	}
 	bool IsTooClose(ShipBuilderPart otherPart) {
 		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
 		0.28F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
@@ -45,20 +57,9 @@ public class ShipBuilderPart : MonoBehaviour {
 		//return y.Contains(x.center);
 	}
 	void OnDestroy() {
-		Destroy(shooter.gameObject);
+		if(shooter) Destroy(shooter.gameObject);
 	}
 	void Update() {
-		image.enabled = true;
-		shooter.enabled = true;
-		if(AbilityUtilities.GetShooterByID(info.abilityID) != null) {
-			shooter.gameObject.transform.SetAsLastSibling();
-			shooter.rectTransform.anchoredPosition = GetComponent<RectTransform>().anchoredPosition;
-			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
-			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
-		}
-		else shooter.enabled = false;
-		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
-		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
 		if(validPos) {
 			foreach(ShipBuilderPart part in cursorScript.parts) {
 				if(part != this && IsTooClose(part)) {
@@ -76,9 +77,14 @@ public class ShipBuilderPart : MonoBehaviour {
 			}
 			if(!stillTouching) validPos = true;
 		}
-		image.color = shooter.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
-
+		image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
 		image.rectTransform.anchoredPosition = info.location * 100;
+		if(shooter) 
+		{
+			shooter.color = image.color;
+			shooter.gameObject.transform.SetAsLastSibling();
+			shooter.rectTransform.anchoredPosition = info.location * 100;
+		}
 		image.rectTransform.localEulerAngles = new Vector3(0,0,info.rotation);
 		image.rectTransform.localScale = new Vector3(info.mirrored ? -1 : 1,1,1);
 	}

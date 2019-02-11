@@ -27,6 +27,10 @@ public class AbilityUtilities : MonoBehaviour {
 			case 12:
 				return AbilityHandler.AbilityTypes.Skills;
 			case 13:
+			case 17:
+			case 18:
+			case 19:
+			case 20:
 				return AbilityHandler.AbilityTypes.Passive;
 			case 0:
 			default:
@@ -34,7 +38,7 @@ public class AbilityUtilities : MonoBehaviour {
 		}
 		
 	}
-	public static string GetDescriptionByID(int ID) {
+	public static string GetDescriptionByID(int ID, int tier) {
 		switch(ID) {
 			case 0:
 				return "Does nothing.";
@@ -45,17 +49,17 @@ public class AbilityUtilities : MonoBehaviour {
 			case 3:
 				return "Projectile that deals " + 100 + " damage. \nStays with you no matter what.";
 			case 4:
-				return "Instant attack that deals " + 500 + " damage.";
+				return "Instant attack that deals " + 500 * tier + " damage.";
 			case 5:
-				return "Projectile that deals " + 450 + " damage.";
+				return "Projectile that deals " + 450 * tier + " damage.";
 			case 6:
-				return "Instant attack that deals " + 100 + " damage.";
+				return "Instant attack that deals " + 100 * tier + " damage.";
 			case 7:
-				return "Homing projectile that deals " + 1000 + " damage.";
+				return "Homing projectile that deals " + 1000 * tier + " damage.";
 			case 8:
-				return "Slow projectile that deals " + 500 + " damage to ground entities.";
+				return "Slow projectile that deals " + 500 * tier + " damage to ground entities.";
 			case 9:
-				return "Fast projectile that deals " + 50 + " damage. 50% pierces to core.";
+				return "Fast projectile that deals " + 50 * tier + " damage. 50% pierces to core.";
 			case 10:
 				return "Spawns a drone.";
 			case 11:
@@ -64,6 +68,14 @@ public class AbilityUtilities : MonoBehaviour {
 				return "Instantly heal 300 energy.";
 			case 13:
 				return "Passively increases speed.";
+			case 17:
+				return "Passively increases shell regen by "  + 50 * tier + " points.";
+			case 18:
+				return "Passively increases maximum shell by " + 250 * tier + " points.";
+			case 19:
+				return "Passively increases energy regen by " + 50 * tier + " points.";
+			case 20:
+				return "Passively increases maximum energy by " + 250 * tier + " points.";
 			default:
 				return "Description unset";
 		}
@@ -73,6 +85,10 @@ public class AbilityUtilities : MonoBehaviour {
 		switch(ID) {
 			case 0:
 			case 13:
+			case 17:
+			case 18:
+			case 19:
+			case 20:
 				return null;
 			case 4:
 				return "beamshooter_sprite";
@@ -124,11 +140,19 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Energy";
             case 13:
                 return "Speed";
+			case 17:
+				return "Shell Regen";
+			case 18:
+				return "Shell Max";
+			case 19:
+				return "Energy Regen";
+			case 20:
+				return "Energy Max";
             default:
                 return "Name unset";
         }
     }
-	public static Ability AddAbilityToGameObjectByID(GameObject obj, int ID, string data = null) {
+	public static Ability AddAbilityToGameObjectByID(GameObject obj, int ID, string data = null, int tier = 0) {
 		Ability ability = null;
 		switch(ID) {
 			case 1:
@@ -192,7 +216,24 @@ public class AbilityUtilities : MonoBehaviour {
 			case 16:
 				ability = obj.AddComponent<Harvester>();
 				break;
+			case 17:
+				ability = obj.AddComponent<ShellRegen>();
+				(ability as ShellRegen).index = 0;
+				break;
+			case 18:
+				ability = obj.AddComponent<ShellMax>();
+				(ability as ShellMax).index = 0;
+				break;
+			case 19:
+				ability = obj.AddComponent<ShellRegen>();
+				(ability as ShellRegen).index = 2;
+				break;
+			case 20:
+				ability = obj.AddComponent<ShellMax>();
+				(ability as ShellMax).index = 2;
+				break;
 		}
+		if(ability) ability.SetTier(tier);
 		return ability;
 	}
 }

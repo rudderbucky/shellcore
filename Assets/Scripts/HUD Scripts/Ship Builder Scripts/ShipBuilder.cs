@@ -36,6 +36,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		part.partID = x.partID;
 		part.secondaryData = x.secondaryData;
 		part.abilityID = x.abilityID;
+		part.tier = x.tier;
 		return part;
 	}
 	public void DispatchPart(ShipBuilderPart part) {
@@ -126,6 +127,17 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		List<EntityBlueprint.PartInfo> parts = player.GetInventory();
 
 		if(parts != null) {
+			if(parts.Count == 0) {
+				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
+				foreach(string name in ResourceManager.allPartNames) {
+					info.partID = name;
+					parts.Add(info);
+					info.partID = name;
+					parts.Add(info);
+					info.partID = name;
+					parts.Add(info);
+				}
+			}
 			for(int i = 0; i < parts.Count; i++) {
 				parts[i] = CullSpatialValues(parts[i]);
 			}

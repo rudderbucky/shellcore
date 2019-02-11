@@ -14,6 +14,7 @@ public class Beam : WeaponAbility {
     protected override void Awake()
     {
         base.Awake();
+        damage *= abilityTier;
         abilityName = "Beam";
         description = "Instant attack that deals " + damage + " damage.";
         // set instance fields (values hardcoded, this may change to being modular)

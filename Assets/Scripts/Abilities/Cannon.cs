@@ -25,6 +25,7 @@ public class Cannon : WeaponAbility {
 
     protected virtual void Start() {
         effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+        damage *= abilityTier;
     }
     /// <summary>
     /// Fires the cannon using the helper method

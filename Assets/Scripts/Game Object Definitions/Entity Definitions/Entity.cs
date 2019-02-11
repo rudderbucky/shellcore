@@ -190,7 +190,7 @@ public class Entity : MonoBehaviour {
 
                 //Add an ability to the part:
 
-                AbilityUtilities.AddAbilityToGameObjectByID(partObject, part.abilityID, part.secondaryData);
+                AbilityUtilities.AddAbilityToGameObjectByID(partObject, part.abilityID, part.secondaryData, part.tier);
                 partObject.transform.SetParent(transform, false);
                 partObject.transform.SetAsFirstSibling();
                 partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
@@ -562,5 +562,17 @@ public class Entity : MonoBehaviour {
             part.parent.children.Remove(part);
         }
         DominoHelper(part);
+    }
+
+    public float[] GetRegens() {
+        return regenRate;
+    }
+
+    public void SetRegens(float[] newRegen) {
+        regenRate = newRegen;
+    }
+
+    public void SetMaxHealth(float[] maxHealths) {
+        maxHealth = maxHealths;
     }
 }

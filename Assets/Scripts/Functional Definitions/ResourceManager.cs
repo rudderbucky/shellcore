@@ -28,7 +28,7 @@ public class ResourceManager : MonoBehaviour
     #endif
 
     //List<Resource> builtInResources;
-
+    public static List<string> allPartNames;
     public ResourcePack resourcePack;
 
     Dictionary<string, Object> resources;
@@ -41,6 +41,7 @@ public class ResourceManager : MonoBehaviour
 
     private void Awake()
     {
+        allPartNames = new List<string>();
         Instance = this;
         resources = new Dictionary<string, Object>();
 
@@ -92,6 +93,7 @@ public class ResourceManager : MonoBehaviour
                                 string partData = File.ReadAllText(Application.streamingAssetsPath + "\\" + names[1]);
                                 var partBlueprint = ScriptableObject.CreateInstance<PartBlueprint>();
                                 JsonUtility.FromJsonOverwrite(partData, partBlueprint);
+                                allPartNames.Add(names[0]);
                                 resources[names[0]] = partBlueprint;
                                 break;
                             case 2:

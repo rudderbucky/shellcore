@@ -12,15 +12,16 @@ public class AbilityHandler : MonoBehaviour {
     public Image abilityCDIndicator; // used to indicate if the ability is on cooldown
     public Image abilityGleam; // gleam for the ability
     public GameObject tooltipPrefab; // Prefab for showing information when mouse hovers over the ability button
-    public Image HUDbg;
+    public Image HUDbg; // the grey area in which the ability icons sit
     private bool initialized; // check for the update method
     private PlayerCore core; // the player
     private Ability[] abilities; // ability array of the core
-    private Image image; // image prefab
+    private Image image; // image prefab for the actual ability image
     private Image[] abilityImagesArray; // images of the abilities displayed on the GUI
     private GameObject[] abilityBackgroundArray; // all ability backgrounds displayed on the GUI
     private Image[] abilityCDIndicatorArray; // all ability cooldown indicators displayed on the GUI
     private Image[] abilityGleamArray; // all ability gleams displayed on the GUI
+    private Image[] abilityTierArray; // all ability tier images displayed on the GUI 
     private bool[] gleaming; // array to check whether an ability is currently gleaming
     private bool[] gleamed; // array to check whether an ability has already gleamed in the cycle
 
@@ -73,6 +74,7 @@ public class AbilityHandler : MonoBehaviour {
         abilityBackgroundArray = new GameObject[abilities.Length];
         abilityCDIndicatorArray = new Image[abilities.Length];
         abilityGleamArray = new Image[abilities.Length];
+        abilityTierArray = new Image[abilities.Length];
         gleaming = new bool[abilities.Length]; // initialize the boolean arrays
         gleamed = new bool[abilities.Length];
         for(int i = 0; i < gleamed.Length; i++) {
@@ -99,30 +101,53 @@ public class AbilityHandler : MonoBehaviour {
             // instantiate background image
             abilityBackgroundArray[i] = Instantiate(abilityBackground, pos, Quaternion.identity) as GameObject;
             abilityBackgroundArray[i].transform.SetParent(transform, false); // set parent (do not keep world position)
-            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = AbilityUtilities.GetAbilityNameByID(visibleAbilities[i].GetID());
+            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = AbilityUtilities.GetAbilityNameByID(visibleAbilities[i].GetID()) 
+             + (visibleAbilities[i].GetTier() > 0 ? " " + visibleAbilities[i].GetTier() : "");
             var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
             button.tooltipPrefab = tooltipPrefab;
             string description = "";
-            description += AbilityUtilities.GetAbilityNameByID(visibleAbilities[i].GetID()) + "\n";
+            description += AbilityUtilities.GetAbilityNameByID(visibleAbilities[i].GetID()) + (visibleAbilities[i].GetTier() > 0 ? " " + visibleAbilities[i].GetTier() : "") + "\n";
             if(visibleAbilities[i].GetEnergyCost() > 0)
                 description += "Energy cost: " + visibleAbilities[i].GetEnergyCost() + "\n";
             if (visibleAbilities[i].GetCDDuration() != 0)
             {
                 description += "Cooldown duration: " + visibleAbilities[i].GetCDDuration() + "\n";
             }
-            description += AbilityUtilities.GetDescriptionByID(visibleAbilities[i].GetID());
+            description += AbilityUtilities.GetDescriptionByID(visibleAbilities[i].GetID(), visibleAbilities[i].GetTier());
             button.abilityInfo = description;
 
+            CanvasGroup canvasg;
+
+            // instantiate ability tier
+            if(visibleAbilities[i].GetTier() > 0) {
+                Vector3 size = image.rectTransform.sizeDelta;
+                image.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + visibleAbilities[i].GetTier());
+                image.rectTransform.sizeDelta = image.sprite.bounds.size * 30;
+                Color origCol = image.color;
+                image.color = new Color(image.color.r, image.color.g, image.color.b, 0.4F);
+                abilityTierArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
+                image.color = origCol;
+                abilityTierArray[i].gameObject.SetActive(true);
+                canvasg = abilityTierArray[i].gameObject.AddComponent<CanvasGroup>(); 
+                // this is done for every image, it allows the buttons to be clicked
+                canvasg.blocksRaycasts = false;
+                canvasg.interactable = false;
+                image.rectTransform.sizeDelta = size;
+                // set parent (do not keep world position)
+                abilityTierArray[i].transform.SetParent(transform, false);
+            }
+            // instantiate ability image
             image.sprite = ResourceManager.GetAsset<Sprite>("AbilitySprite" + visibleAbilities[i].GetID());
             abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
             abilityImagesArray[i].gameObject.SetActive(true);
-            var canvasg = abilityImagesArray[i].gameObject.AddComponent<CanvasGroup>(); // this is done for every image, it allows the buttons to be clicked
+            canvasg = abilityImagesArray[i].gameObject.AddComponent<CanvasGroup>(); 
+            // this is done for every image, it allows the buttons to be clicked
             canvasg.blocksRaycasts = false;
             canvasg.interactable = false;
 
-            // instantiate ability image
-            abilityImagesArray[i].transform.SetParent(transform, false);
             // set parent (do not keep world position)
+            abilityImagesArray[i].transform.SetParent(transform, false);
+            
 
             abilityCDIndicatorArray[i] = Instantiate(abilityCDIndicator, pos, Quaternion.identity) as Image;
             canvasg = abilityCDIndicatorArray[i].gameObject.AddComponent<CanvasGroup>();

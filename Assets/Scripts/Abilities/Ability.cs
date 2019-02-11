@@ -38,6 +38,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     protected bool isEnabled = true; // if the ability is enabled
     protected bool isDestroyed = false; // has the part detached from the craft
     private Color originalIndicatorColor;
+    protected int abilityTier;
     public ShellPart part;
     public string abilityName = "Ability";
     protected string description = "Does things";
@@ -50,6 +51,14 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         isEnabled = input; // set is enabled
     }
 
+    public void SetTier(int abilityTier) {
+        if(abilityTier > 3 || abilityTier < 0) Debug.LogError("An ability tier was set out of bounds!" + "number: " + abilityTier);
+        this.abilityTier = abilityTier;
+    }
+
+    public int GetTier() {
+        return abilityTier;
+    }
     /// <summary>
     /// Getter method for isEnabled, will be used by the AbilityHandler
     /// </summary>

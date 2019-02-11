@@ -33,7 +33,7 @@ public class Missile : WeaponAbility {
             script.SetCategory(category);
             script.SetTerrain(terrain);
             script.faction = Core.faction;
-            script.SetDamage(damage);
+            script.SetDamage(damage * abilityTier);
             Destroy(missile, 7);
             isOnCD = true; // set on cooldown
             return true;
