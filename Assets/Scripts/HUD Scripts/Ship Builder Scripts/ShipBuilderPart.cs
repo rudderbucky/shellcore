@@ -17,6 +17,7 @@ public class ShipBuilderPart : MonoBehaviour {
 	public ShipBuilderCursorScript cursorScript;
 	public bool isInChain;
 	public bool validPos;
+	public bool highlighted;
 	private Vector3? lastValidPos = null;
 
 	public void SetLastValidPos(Vector3? lastPos) {
@@ -43,7 +44,6 @@ public class ShipBuilderPart : MonoBehaviour {
 			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
 			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
 		}
-		else Destroy(shooter);
 		image.rectTransform.anchoredPosition = shooter.rectTransform.anchoredPosition = info.location * 100;
 		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
 		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
@@ -77,13 +77,17 @@ public class ShipBuilderPart : MonoBehaviour {
 			}
 			if(!stillTouching) validPos = true;
 		}
-		image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
+		if(highlighted) image.color = (isInChain && validPos ? Color.white : Color.white - new Color(0,0,0,0.5F));
+		else image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
 		image.rectTransform.anchoredPosition = info.location * 100;
 		if(shooter) 
 		{
 			shooter.color = image.color;
 			shooter.gameObject.transform.SetAsLastSibling();
 			shooter.rectTransform.anchoredPosition = info.location * 100;
+			if(AbilityUtilities.GetShooterByID(info.abilityID) == null) {
+				Destroy(shooter.gameObject);
+			}
 		}
 		image.rectTransform.localEulerAngles = new Vector3(0,0,info.rotation);
 		image.rectTransform.localScale = new Vector3(info.mirrored ? -1 : 1,1,1);

@@ -12,9 +12,16 @@ public class SaveHandler : MonoBehaviour {
 		if(File.Exists(Application.persistentDataPath + "\\TestSave")) {
 			string json = File.ReadAllText(Application.persistentDataPath + "\\TestSave");
 			save = JsonUtility.FromJson<PlayerSave>(json);
-			Debug.Log(save.currentPlayerBlueprint);
-			if(save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "") 
+			player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+			player.blueprint.name = "Player Save Blueprint";
+			if(save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "") {
 				JsonUtility.FromJsonOverwrite(save.currentPlayerBlueprint, player.blueprint);
+			} else {
+				player.blueprint.baseRegen = new float[] {60,0,60};
+				player.blueprint.shellHealth = new float[] {1000,250,500};
+				player.blueprint.coreSpriteID = "core1_light";
+				player.blueprint.coreShellSpriteID = "core1_shell";
+			}
 			player.cursave = save;
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
@@ -24,6 +31,14 @@ public class SaveHandler : MonoBehaviour {
 			save.presetBlueprints = new string[5];
 			save.currentHealths = new float[] {1000,250,500};
 			save.partInventory = new List<EntityBlueprint.PartInfo>();
+
+			player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+			player.blueprint.name = "Player Save Blueprint";
+			player.blueprint.baseRegen = new float[] {60,0,60};
+			player.blueprint.shellHealth = new float[] {1000,250,500};
+			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
+			player.blueprint.coreSpriteID = "core1_light";
+			player.blueprint.coreShellSpriteID = "core1_shell";
 			player.cursave = save;
 		}
 	}

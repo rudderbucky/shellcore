@@ -109,6 +109,10 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 				transform.position = origPos;
 			}
 		}
+		foreach(ShipBuilderPart part in parts) {
+			if(part == currentPart || part == lastPart) part.highlighted = true;
+			else part.highlighted = false;
+		}
 	}
 }
 

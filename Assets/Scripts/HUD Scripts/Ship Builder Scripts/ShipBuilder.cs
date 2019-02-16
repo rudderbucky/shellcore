@@ -86,17 +86,29 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		var shellRect = GetRect(shell.rectTransform);
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			shipPart.isInChain = false;
-			var x = GetRect(shipPart.rectTransform);
-			if(x.Intersects(shellRect)) {
+			var partBounds = GetRect(shipPart.rectTransform);
+			if(partBounds.Intersects(shellRect)) {
 				bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
-				0.15F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
+				0.18F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
 				Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
-				0.15F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
+				0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
 				shipPart.isInChain = !z;
 			}
 		}
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(shipPart.isInChain) UpdateChainHelper(shipPart);
+		}
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) { 
+			// perform the same calculation again to falsify parts that are too close to the shell
+			// TODO: make this less st*pid
+			var partBounds = GetRect(shipPart.rectTransform);
+			if(partBounds.Intersects(shellRect)) {
+				bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
+				0.18F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
+				Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
+				0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
+				shipPart.isInChain = !z;
+			}
 		}
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(!shipPart.isInChain || !shipPart.validPos) {
