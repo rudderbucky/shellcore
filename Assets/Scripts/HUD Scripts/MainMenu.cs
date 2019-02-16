@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
     public void StartSectorCreator() {
         SceneManager.LoadScene("SectorCreator");
     }
-    public void StartGame()
+    public static void StartGame()
     {
         SceneManager.LoadScene("SampleScene");
     }

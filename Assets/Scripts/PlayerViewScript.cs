@@ -13,9 +13,10 @@ public class PlayerViewScript : MonoBehaviour {
 	public GameObject escapeMenu;
 	// Update is called once per frame
 	void Awake() {
+		Debug.Log(Application.persistentDataPath);
 		currentWindow = new Stack<IWindow>();
 		instance = this;
-		escapeMenu.SetActive(false);
+		if(escapeMenu) escapeMenu.SetActive(false);
 	}
 	void Update () {
 		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
@@ -27,7 +28,7 @@ public class PlayerViewScript : MonoBehaviour {
 					return;
 				} else currentWindow.Pop();
 			}
-			escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
+			if(escapeMenu) escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
 			if(transform.Find("Settings")) transform.Find("Settings").gameObject.SetActive(false);
 		}
 	}

@@ -9,8 +9,13 @@ public class SaveHandler : MonoBehaviour {
 	PlayerSave save;
 	// Use this for initialization
 	void Awake() {
-		if(File.Exists(Application.persistentDataPath + "\\TestSave")) {
-			string json = File.ReadAllText(Application.persistentDataPath + "\\TestSave");
+		string currentPath;
+		if(!File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) {
+			currentPath = Application.persistentDataPath + "\\TestSave";
+		}
+		else currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+		if(File.Exists(currentPath)) {
+			string json = File.ReadAllText(currentPath);
 			save = JsonUtility.FromJson<PlayerSave>(json);
 			player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 			player.blueprint.name = "Player Save Blueprint";
@@ -44,12 +49,13 @@ public class SaveHandler : MonoBehaviour {
 	}
 	
 	public void Save() {
+		string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
 		save.position = player.transform.position;
 		save.currentHealths = player.currentHealth;
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.name = "Test Save";
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
 		string saveJson = JsonUtility.ToJson(save);
-		File.WriteAllText(Application.persistentDataPath + "\\TestSave", saveJson);
+		File.WriteAllText(currentPath, saveJson);
 	}
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class PlayerSave {
+	// TODO: save timePlayed functionality
 	public string name;
 	public Vector2 position;
 	public float[] currentHealths;
@@ -11,4 +12,5 @@ public class PlayerSave {
 
 	public List<EntityBlueprint.PartInfo> partInventory;
 	public string[] presetBlueprints;
+	public float timePlayed;
 }
