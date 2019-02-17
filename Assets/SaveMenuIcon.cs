@@ -6,16 +6,18 @@ using System.IO;
 
 public class SaveMenuIcon : MonoBehaviour {
 
+	public SaveMenuHandler handler;
 	public PlayerSave save;
 	public string path;
 	public Text saveName;
 	public Text version;
 	public Text timePlayed;
+	public int index;
 
 	void Start() {
 		saveName.text = save.name;
-		version.text = "Current Version: Prototype v2.0.0";
-		timePlayed.text = "Time Played: " + save.timePlayed;
+		version.text = "Version: " + save.version;
+		timePlayed.text = "Time Played: " + (((int)save.timePlayed / 60 > 0) ? (int)save.timePlayed / 60 + " hours " : "") + (int)save.timePlayed % 60 + " minutes";
 	}
 
 	public void LoadSave() {
@@ -27,5 +29,9 @@ public class SaveMenuIcon : MonoBehaviour {
 			File.WriteAllText(current, path);
 		}
 		MainMenu.StartGame();
+	}
+
+	public void DeleteSave() {
+		handler.PromptDelete(index);
 	}
 }

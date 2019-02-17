@@ -120,6 +120,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 default:
                     break;
             }
+            creation.name = blueprint.items[index].entityBlueprint.name;
             player.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
             creation.transform.position = outpostPosition;
             creation.GetComponent<Entity>().spawnPoint = outpostPosition;

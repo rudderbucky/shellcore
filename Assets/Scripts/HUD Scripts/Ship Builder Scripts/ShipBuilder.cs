@@ -142,12 +142,16 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			if(parts.Count == 0) {
 				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
 				foreach(string name in ResourceManager.allPartNames) {
-					info.partID = name;
-					parts.Add(info);
-					info.partID = name;
-					parts.Add(info);
-					info.partID = name;
-					parts.Add(info);
+					for(int i = 0; i < 3; i++) 
+					{
+						info.partID = name;
+						info.abilityID = Random.Range(0,21);
+						if(info.abilityID >= 14 && info.abilityID <= 16) info.abilityID = 0;
+						if(info.abilityID == 10) info.secondaryData = "mini_drone_spawn";
+						if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
+						else info.tier = Random.Range(1, 4);
+						parts.Add(info);
+					}
 				}
 			}
 			for(int i = 0; i < parts.Count; i++) {

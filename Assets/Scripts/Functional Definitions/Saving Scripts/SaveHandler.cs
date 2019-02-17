@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-
+using UnityEngine.UI;
 public class SaveHandler : MonoBehaviour {
 
 	public PlayerCore player;
@@ -49,11 +49,11 @@ public class SaveHandler : MonoBehaviour {
 	}
 	
 	public void Save() {
+		save.timePlayed += Time.timeSinceLevelLoad / 60;
 		string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
 		save.position = player.transform.position;
 		save.currentHealths = player.currentHealth;
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
-		save.name = "Test Save";
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
 		string saveJson = JsonUtility.ToJson(save);
 		File.WriteAllText(currentPath, saveJson);

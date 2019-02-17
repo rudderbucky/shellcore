@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
 
 public class SaveMenuHandler : MonoBehaviour, IWindow {
 
@@ -11,6 +12,9 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 	public Transform contents;
 	public GameObject saveIconPrefab;
 	List<SaveMenuIcon> icons;
+	public InputField inputField;
+	int indexToDelete;
+	public GUIWindowScripts deletePrompt;
 
 	void Awake() {
 		saves = new List<PlayerSave>();
@@ -39,12 +43,18 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 	}
 
 	void Initialize() {
+		string curpath = null;
+		if(File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) 
+			curpath = File.ReadAllText(Application.persistentDataPath + "\\CurrentSavePath");
 		for(int i = 0; i < saves.Count; i++) {
 			SaveMenuIcon icon = Instantiate(saveIconPrefab, contents).GetComponent<SaveMenuIcon>();
 			icon.save = saves[i];
+			icon.index = i;
+			icon.handler = this;
 			icon.path = paths[i];
 			icons.Add(icon);
-			icon.transform.SetAsFirstSibling();
+			if(icon.path == curpath || i == 0) icon.transform.SetAsFirstSibling();
+			else icon.transform.SetSiblingIndex(1);
 		}
 	}
 
@@ -61,8 +71,32 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		icons.Clear();
 	}
 
-	public void AddSave(string name) {
-		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;;
+	public void OpenSavePrompt() {
+		inputField.transform.parent.gameObject.SetActive(true);
+	}
+
+	public void PromptDelete(int index) {
+		indexToDelete = index;
+		deletePrompt.ToggleActive();
+	}
+	public void DeleteSave() 
+	{
+		saves.RemoveAt(indexToDelete);
+		File.Delete(paths[indexToDelete]);
+		paths.RemoveAt(indexToDelete);
+		Destroy(icons[indexToDelete].gameObject);
+		icons.RemoveAt(indexToDelete);
+		deletePrompt.ToggleActive();
+		for(int i = 0; i < icons.Count; i++) {
+			icons[i].index = i;
+		}
+	}
+	public void AddSave() {
+		string currentVersion = "Prototype v2.0.0";
+		string name = inputField.text;
+		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
+		inputField.transform.parent.gameObject.SetActive(false);
+		if(name == "" || paths.Contains(path)) return;
 		PlayerSave save = new PlayerSave();
 		save.name = name;
 		save.timePlayed = 0;
@@ -78,12 +112,15 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		blueprint.coreSpriteID = "core1_light";
 		blueprint.coreShellSpriteID = "core1_shell";
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
+		save.version = currentVersion;
 		saves.Add(save);
 		paths.Add(path);
 
 		SaveMenuIcon icon = Instantiate(saveIconPrefab, contents).GetComponent<SaveMenuIcon>();
 		icon.save = save;
 		icon.path = path;
+		icon.index = icons.Count;
+		icon.handler = this;
 		icons.Add(icon);
 		icon.transform.SetAsFirstSibling();
 		File.WriteAllText(path, JsonUtility.ToJson(save));

@@ -45,7 +45,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 1:
 				return "Temporarily increases speed.";
 			case 2:
-				return "Instantly heal 300 shell.";
+				return "Instantly heal " + 300 * tier + " shell.";
 			case 3:
 				return "Projectile that deals " + 100 + " damage. \nStays with you no matter what.";
 			case 4:
@@ -63,9 +63,9 @@ public class AbilityUtilities : MonoBehaviour {
 			case 10:
 				return "Spawns a drone.";
 			case 11:
-				return "Instantly heal 300 core.";
+				return "Instantly heal " + 300 * tier + " core.";
 			case 12:
-				return "Instantly heal 300 energy.";
+				return "Instantly heal " + 100 * tier + " energy.";
 			case 13:
 				return "Passively increases speed.";
 			case 17:

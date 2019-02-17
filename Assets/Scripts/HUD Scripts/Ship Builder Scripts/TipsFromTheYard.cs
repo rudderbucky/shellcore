@@ -24,6 +24,7 @@ public class TipsFromTheYard : MonoBehaviour {
 		tipsList.Add("The hitboxes of parts in the ship builder are pretty much just rectangles! Use this to create some cool designs!");
 		tipsList.Add("If a part is not connected in a direct line of parts to the shell, it will detach, or 'domino'. Make sure your ship design prevents this from happening!");
 		tipsList.Add("You can hit 'escape' to close this window too! That way you can cycle through my infinite wisdom faster!");
+		tipsList.Add("You can create custom ShellCores in the Sector Creator using the JSON you get from this ship builder! Share your JSON with friends and dogfight against their ShellCores!");
 		colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
 	}
 	

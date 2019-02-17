@@ -14,6 +14,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 	public Image abilityImage;
 	public Image abilityTier;
 	public Text abilityText;
+	public RectTransform builderBG;
 
 	public AbilityButtonScript buttonScript;
 
@@ -30,7 +31,9 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 		else if(cursorScript.GetPartCursorIsOn() != null) {
 			part = cursorScript.GetPartCursorIsOn();
 		}
-		else if(builder.GetButtonPartCursorIsOn() != null) {
+		else if(RectTransformUtility.RectangleContainsScreenPoint(builderBG, Input.mousePosition) &&
+			!RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, Input.mousePosition) 
+			&& builder.GetButtonPartCursorIsOn() != null) {
 			part = builder.GetButtonPartCursorIsOn();
 		}
 		else if(cursorScript.GetLastInfo() != null) {
