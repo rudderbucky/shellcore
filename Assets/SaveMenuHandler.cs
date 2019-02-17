@@ -72,7 +72,7 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 	}
 
 	public void OpenSavePrompt() {
-		inputField.transform.parent.gameObject.SetActive(true);
+		inputField.transform.parent.GetComponent<GUIWindowScripts>().ToggleActive();
 	}
 
 	public void PromptDelete(int index) {
@@ -92,7 +92,7 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		}
 	}
 	public void AddSave() {
-		string currentVersion = "Prototype v2.0.0";
+		string currentVersion = "Prototype 2.0.0";
 		string name = inputField.text;
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
 		inputField.transform.parent.gameObject.SetActive(false);

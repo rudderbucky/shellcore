@@ -18,6 +18,6 @@ public class MainMenu : MonoBehaviour
 
     public void OpenSettings()
     {
-        if(settings) settings.SetActive(true);
+        if(settings) settings.GetComponent<GUIWindowScripts>().ToggleActive();
     }
 }

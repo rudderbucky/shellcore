@@ -13,7 +13,7 @@ public class TipsFromTheYard : MonoBehaviour {
 		text = GetComponent<Text>();
 		tipsList = new List<string>();
 		tipsList.Add("It's been " + (System.DateTime.UtcNow.Day - DaysSinceFeb3_2019) +  " days since we first started trying to find something to place here!");
-		tipsList.Add("You can press 'C' to clear all parts!");
+		tipsList.Add("You can press 'C' to clear all parts from the grid! All parts are technologically swept into your inventory!");
 		tipsList.Add("ShellCores that travel to havens through deadzones are clearly delusional!");
 		tipsList.Add("Reply hazy, try again later!");
 		tipsList.Add("RUN from the Type-PP homing missiles!");
