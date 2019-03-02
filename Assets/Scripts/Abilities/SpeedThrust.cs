@@ -31,7 +31,7 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        if(craft) craft.enginePower /= Mathf.Pow(1.25F, abilityTier); // bring the engine power back (will change to vary as Speed Thrust is tiered)
+        if(craft) craft.enginePower /= Mathf.Pow(1.2F, abilityTier); // bring the engine power back (will change to vary as Speed Thrust is tiered)
         ToggleIndicator();
     }
 
@@ -41,7 +41,7 @@ public class SpeedThrust : ActiveAbility
     protected override void Execute()
     {
         // adjust fields
-        if(craft) craft.enginePower *= Mathf.Pow(1.25F, abilityTier); // add 200 to engine power (will change to vary as Speed Thrust is tiered)
+        if(craft) craft.enginePower *= Mathf.Pow(1.2F, abilityTier); // add 200 to engine power (will change to vary as Speed Thrust is tiered)
         ResourceManager.PlayClipByID("clip_activateability", transform.position);
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown

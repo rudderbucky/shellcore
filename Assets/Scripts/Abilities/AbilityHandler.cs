@@ -280,11 +280,17 @@ public class AbilityHandler : MonoBehaviour {
                 } else abilities[i].Tick("");
             }
             if(core.GetIsDead() || core.GetIsInteracting()) return;
-            if(Input.GetKeyDown(KeyCode.E)) {
-                SetCurrentVisible((AbilityTypes)(Mathf.Min((int)currentVisibles + 1, 3)));
+            if(Input.GetKeyDown(KeyCode.Z)) {
+                SetCurrentVisible((AbilityTypes)(0));
             }
-            if(Input.GetKeyDown(KeyCode.Q)) {
-                SetCurrentVisible((AbilityTypes)(Mathf.Max((int)currentVisibles - 1, 0)));
+            if(Input.GetKeyDown(KeyCode.X)) {
+                SetCurrentVisible((AbilityTypes)(1));
+            }
+            if(Input.GetKeyDown(KeyCode.C)) {
+                SetCurrentVisible((AbilityTypes)(2));
+            }
+            if(Input.GetKeyDown(KeyCode.V)) {
+                SetCurrentVisible((AbilityTypes)(3));
             }
         }
 	}

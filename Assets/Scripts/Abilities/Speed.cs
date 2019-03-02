@@ -14,12 +14,12 @@ public class Speed : PassiveAbility {
 
     public override void SetDestroyed(bool input)
     {
-        if (input) (Core as Craft).enginePower /= Mathf.Pow(1.1F, abilityTier);
+        if (input) (Core as Craft).enginePower /= Mathf.Pow(1.15F, abilityTier);
         base.SetDestroyed(input);
     }
 
     protected override void Execute()
     {
-        (Core as Craft).enginePower *= Mathf.Pow(1.1F, abilityTier);
+        (Core as Craft).enginePower *= Mathf.Pow(1.15F, abilityTier);
     }
 }
