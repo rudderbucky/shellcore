@@ -35,20 +35,24 @@ public class AbilityHandler : MonoBehaviour {
     
     public AbilityTypes currentVisibles;
     public List<Ability> visibleAbilities = new List<Ability>();
+    Ability[] displayAbs;
 
     public void SetCurrentVisible(AbilityTypes type) {
         if(currentVisibles != type) {
             currentVisibles = type;
             Deinitialize();
-            Initialize(core);
+            if(displayAbs == null) Initialize(core);
+            else Initialize(core, displayAbs);
         }
     }
     /// <summary>
     /// Initialization of the ability handler that is tied to the player
     /// </summary>
-    public void Initialize(PlayerCore player) {
+    public void Initialize(PlayerCore player, Ability[] displayAbilities = null) {
         core = player;
-        abilities = core.GetAbilities(); // Get the core's ability array
+        if(displayAbilities == null) abilities = core.GetAbilities(); // Get the core's ability array
+        else abilities = displayAbilities;
+        displayAbs = displayAbilities;
         visibleAbilities.Clear();
         foreach (Ability ab in abilities) {
             switch(currentVisibles) {
@@ -178,7 +182,10 @@ public class AbilityHandler : MonoBehaviour {
         } else HUDbg.GetComponent<RectTransform>().sizeDelta = new Vector2(0, HUDbg.GetComponent<RectTransform>().sizeDelta.y);
 
         if (image) Destroy(image.gameObject);
-        initialized = true; // handler completely initialized, safe to update now
+        if(displayAbilities == null) initialized = true;
+        // handler completely initialized, safe to update now
+        // if display abilities were passed the handler must not update since it is merely representing
+        // some abilities
     }
 
     /// <summary>

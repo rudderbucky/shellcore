@@ -137,6 +137,8 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		core.preserveAspect = true;
 		core.rectTransform.sizeDelta = core.sprite.bounds.size * 110;
 		List<EntityBlueprint.PartInfo> parts = player.GetInventory();
+		cursorScript.player = player;
+		cursorScript.handler = player.GetAbilityHandler();
 
 		if(parts != null) {
 			if(parts.Count == 0) {
@@ -146,7 +148,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 					{
 						info.partID = name;
 						info.abilityID = Random.Range(0,21);
-						if(info.abilityID >= 14 && info.abilityID <= 16) info.abilityID = 0;
+						if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
 						if(info.abilityID == 10) info.secondaryData = "mini_drone_spawn";
 						if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
 						else info.tier = Random.Range(1, 4);
@@ -186,6 +188,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		}
 		LoadBlueprint(player.blueprint);
 		cursorScript.gameObject.SetActive(true);
+		cursorScript.UpdateHandler();
 	}
 
 	public void CloseUI() {
@@ -211,6 +214,11 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			Destroy(part.gameObject);
 		}
 		cursorScript.parts = new List<ShipBuilderPart>();
+		if(!validClose) {
+			AbilityHandler handler = player.GetAbilityHandler(); // reset handler to correct representation
+			handler.Deinitialize();
+			handler.Initialize(player);
+		}
 	}
 	public void LoadBlueprint(EntityBlueprint blueprint) {
 		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {

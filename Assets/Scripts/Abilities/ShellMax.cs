@@ -6,7 +6,7 @@ public class ShellMax : PassiveAbility {
 
 	public int index;
 
-	void Start() {
+	public void Initialize() {
 		ID = index + 18;
 	}
 	public override void SetDestroyed(bool input)

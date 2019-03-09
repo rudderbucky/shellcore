@@ -17,7 +17,13 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public InputField field;
 	public InputField jsonField;
 	bool flipped;
+	public AbilityHandler handler;
+	public PlayerCore player;
+	List<Ability> currentAbilities;
 
+	void OnEnable() {
+		currentAbilities = new List<Ability>();
+	}
 	public EntityBlueprint.PartInfo? GetCurrentInfo() {
 		if(!currentPart) return null;
 		return currentPart.info;
@@ -46,8 +52,28 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 				lastPart.SetLastValidPos(lastPart.info.location);
 			} else lastPart.Snapback();
 		}
+		UpdateHandler();
 	}
 
+	public void UpdateHandler() {
+		currentAbilities.Clear();
+		foreach(Ability ab in gameObject.GetComponentsInChildren<Ability>()) {
+			Destroy(ab);
+		}
+		foreach(ShipBuilderPart part in parts) {
+			if(part.info.abilityID != 0) {
+				Ability dispAb = AbilityUtilities.AddAbilityToGameObjectByID(gameObject, part.info.abilityID, 
+					part.info.secondaryData, part.info.tier);
+				currentAbilities.Insert(0, dispAb);
+			}
+		}
+		currentAbilities.Insert(0, gameObject.AddComponent<MainBullet>());
+		if(handler) 
+		{
+			handler.Deinitialize();
+			handler.Initialize(player, currentAbilities.ToArray());
+		}
+	}
 	public EntityBlueprint.PartInfo? GetPartCursorIsOn() {
 		foreach(ShipBuilderPart part in parts) {
 			if(RectTransformUtility.RectangleContainsScreenPoint(part.rectTransform, Input.mousePosition)) {
@@ -60,6 +86,7 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		while(parts.Count > 0) {
 			builder.DispatchPart(parts[0]);
 		}
+		UpdateHandler();
 	}
 	public bool rotateMode;
 	public void RotateLastPart() {

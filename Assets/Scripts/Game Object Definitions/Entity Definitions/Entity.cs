@@ -164,14 +164,6 @@ public class Entity : MonoBehaviour {
 
         abilities = new List<Ability>();
 
-        if (this as ShellCore)
-        {
-            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
-            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-            mainBullet.terrain = TerrainType.Air;
-            mainBullet.SetActive(true);
-            abilities.Add(mainBullet);
-        }
         entityName = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
         //For shellcores, create the tractor beam
@@ -233,9 +225,19 @@ public class Entity : MonoBehaviour {
                     
 
                 parts.Add(partObject.GetComponent<ShellPart>());
-                if(partObject.GetComponent<Ability>()) abilities.Add(partObject.GetComponent<Ability>());
+                if(partObject.GetComponent<Ability>()) abilities.Insert(0, partObject.GetComponent<Ability>());
             }
         }
+
+        if (this as ShellCore)
+        {
+            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
+            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+            mainBullet.terrain = TerrainType.Air;
+            mainBullet.SetActive(true);
+            abilities.Insert(0, mainBullet);
+        }
+
         Transform shellSprite = shell.transform;
         if(shellSprite)
         {
