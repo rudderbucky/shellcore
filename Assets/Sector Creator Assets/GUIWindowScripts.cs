@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IWindow {
 	void CloseUI();
+	bool GetActive();
 }
 public class GUIWindowScripts : MonoBehaviour, IWindow {
 
@@ -15,5 +16,9 @@ public class GUIWindowScripts : MonoBehaviour, IWindow {
 		bool active = gameObject.activeSelf;
 		gameObject.SetActive(!active);
 		if(gameObject.activeSelf) PlayerViewScript.SetCurrentWindow(this);
+	}
+
+	public bool GetActive() {
+		return gameObject.activeSelf;
 	}
 }

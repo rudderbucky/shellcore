@@ -222,7 +222,8 @@ public class AbilityHandler : MonoBehaviour {
         if (clicked)
         {
             visibleAbilities[index].Tick("activate");
-        } else visibleAbilities[index].Tick((index+1) < 10 ? (index + 1).ToString() : ""); // Tick the ability
+        } else visibleAbilities[index].Tick((index+1) < 10 && !Input.GetKey(KeyCode.LeftShift) ? 
+            (index + 1).ToString() : ""); // Tick the ability
 
         if (abilityGleamArray[index])
         {

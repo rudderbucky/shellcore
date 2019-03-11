@@ -23,6 +23,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	private bool[] displayingTypes;
 	public Image reconstructImage;
 	public Text reconstructText;
+	bool initialized;
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
 
 	public bool DecrementPartButton(EntityBlueprint.PartInfo info) {
@@ -118,6 +119,10 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		}
 	}
 	public void Initialize() {
+		if(initialized) CloseUI(false);
+		initialized = true;
+		GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
+		gameObject.SetActive(true);
 		cursorScript.gameObject.SetActive(false);
 		searcherString = "";
 		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
@@ -196,6 +201,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	}
 
 	public void CloseUI(bool validClose) {
+		initialized = false;
 		player.SetIsInteracting(false);
 		gameObject.SetActive(false);
 		if(validClose) {
@@ -307,5 +313,9 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	public void UpdateDisplayingCategories(int type) {
 		displayingTypes[type] = !displayingTypes[type];
 		ChangeDisplayFactors();
+	}
+
+	public bool GetActive() {
+		return gameObject.activeSelf;
 	}
 }

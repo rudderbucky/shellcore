@@ -24,6 +24,7 @@ public class AirConstruct : Construct {
             timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
             oscillatorVector = transform.position; // get the current aircraft position
             oscillatorVector.y = Mathf.Min(oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + entityBody.position.x), storedPos.y); // cool math stuff 
+            oscillatorVector.y = Mathf.Max(oscillatorVector.y, storedPos.y - 1); // more cool math stuff
             transform.position = oscillatorVector; // set the aircraft position
         } else 
         {

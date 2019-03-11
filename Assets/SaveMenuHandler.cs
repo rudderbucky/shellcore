@@ -125,4 +125,8 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		icon.transform.SetAsFirstSibling();
 		File.WriteAllText(path, JsonUtility.ToJson(save));
 	}
+
+	public bool GetActive() {
+		return gameObject.activeSelf;
+	}
 }

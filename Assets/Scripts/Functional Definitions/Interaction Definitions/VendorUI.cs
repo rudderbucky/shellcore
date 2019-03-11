@@ -22,6 +22,9 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     private Text costInfo;
     public int range;
     
+    public bool GetActive() {
+		return gameObject.activeSelf;
+	}
     public void openUI()
     {
         if(opened) CloseUI();
@@ -39,6 +42,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             buttonPrefab = ResourceManager.GetAsset<GameObject>("vendor_button");
         }
         UI = Instantiate(UIPrefab);
+        UI.GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
         background = UI.transform.Find("Background");
         Button close = background.transform.Find("Close").GetComponent<Button>();
         close.onClick.AddListener(CloseUI);
@@ -69,6 +73,11 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
             Image sr = buttons[i].transform.Find("Icon").GetComponent<Image>();
             sr.sprite = blueprint.items[i].icon;
+
+            Text[] texts = buttons[i].GetComponentsInChildren<Text>();
+            texts[0].text = i + 1 + "";
+            texts[1].text = blueprint.items[i].cost + "";
+            texts[1].color = Color.cyan;
         }
         opened = true;
     }
@@ -88,6 +97,13 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 {
                     buttons[i].GetComponent<Image>().color = new Color(0, 0, 0.4F);
                 } else buttons[i].GetComponent<Image>().color = Color.white;
+
+                if(Input.GetKey(KeyCode.LeftShift)) {
+                    if(Input.GetKey((1 + i).ToString())) 
+                    {
+                        onButtonPressed(i);
+                    }
+                }
             }
         } 
     }

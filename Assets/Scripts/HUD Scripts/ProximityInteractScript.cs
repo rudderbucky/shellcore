@@ -21,7 +21,6 @@ public class ProximityInteractScript : MonoBehaviour {
 			// activate ship builder
 			ShipBuilder builder = transform.parent.Find("Ship Builder").GetComponent<ShipBuilder>();
 			PlayerViewScript.SetCurrentWindow(builder);
-			builder.gameObject.SetActive(true);
 			builder.yardPosition = ent.transform.position;
 			builder.Initialize();
 		}
