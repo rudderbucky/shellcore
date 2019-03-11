@@ -12,16 +12,23 @@ public class PlayerViewScript : MonoBehaviour {
 		instance.currentWindow.Push(window);
 	}
 	public GameObject escapeMenu;
+	Canvas escapeCanvas;
 	// Update is called once per frame
 	void Awake() {
+		escapeCanvas = escapeMenu.GetComponentInChildren<Canvas>();
 		Debug.Log(Application.persistentDataPath);
 		currentWindow = new Stack<IWindow>();
 		instance = this;
 		if(escapeMenu) escapeMenu.SetActive(false);
 	}
 	void Update () {
+		escapeCanvas.sortingOrder = currentLayer + 1;
 		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
 			while(currentWindow.Count > 0) {
+				if(escapeMenu.activeSelf) {
+					escapeMenu.SetActive(false);
+					return;
+				}
 				bool shouldReturn = currentWindow.Peek().GetActive();
 				
 				if(shouldReturn) {

@@ -17,6 +17,7 @@ public class MapMakerScript : MonoBehaviour {
 			sect.transform.SetAsFirstSibling();
 			Image body = sect.GetComponentsInChildren<Image>()[1];
 			sect.color = sector.backgroundColor;
+			body.color = sect.color + Color.grey;
 			sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x, sector.bounds.y);
 			body.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h);
 		}

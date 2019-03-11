@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class SpeedThrust : ActiveAbility
 {
+    bool activated = false;
     Craft craft;
     protected override void Awake()
     {
@@ -31,7 +32,10 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        if(craft) craft.enginePower /= Mathf.Pow(1.2F, abilityTier); // bring the engine power back (will change to vary as Speed Thrust is tiered)
+        var enginePower = (Core as Craft).enginePower;
+        if(craft && activated) {
+            (Core as Craft).enginePower = Mathf.Pow(enginePower, 1/(abilityTier/6 + 1.15F));
+        } // bring the engine power back (will change to vary as Speed Thrust is tiered)
         ToggleIndicator();
     }
 
@@ -41,7 +45,14 @@ public class SpeedThrust : ActiveAbility
     protected override void Execute()
     {
         // adjust fields
-        if(craft) craft.enginePower *= Mathf.Pow(1.2F, abilityTier); // add 200 to engine power (will change to vary as Speed Thrust is tiered)
+        if(craft) {
+            var enginePower = (Core as Craft).enginePower;
+            if(enginePower <= 1000) {
+                activated = true;
+                (Core as Craft).enginePower = Mathf.Pow(enginePower, abilityTier/6 + 1.15F);
+            }
+            else activated = false;
+        } // change engine power
         ResourceManager.PlayClipByID("clip_activateability", transform.position);
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown

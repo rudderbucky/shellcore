@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class StatusMenu : MonoBehaviour, IWindow {
+	public PlayerCore player;
 	bool toggle = false;
 	public void CloseUI()
 	{
@@ -16,7 +17,7 @@ public class StatusMenu : MonoBehaviour, IWindow {
 	// Update is called once per frame
 	void Update () 
 	{
-		if(Input.GetKeyDown(KeyCode.E)) 
+		if(Input.GetKeyDown(KeyCode.E) && !player.GetIsInteracting()) 
 		{
 			toggle = !toggle;
 			if(toggle) 
