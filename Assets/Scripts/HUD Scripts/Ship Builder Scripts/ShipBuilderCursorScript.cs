@@ -20,8 +20,12 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public AbilityHandler handler;
 	public PlayerCore player;
 	List<Ability> currentAbilities;
+	public int buildCost;
+	public RectTransform playerInventory;
+	public RectTransform traderInventory;
 
 	void OnEnable() {
+		buildCost = 0;
 		currentAbilities = new List<Ability>();
 	}
 	public EntityBlueprint.PartInfo? GetCurrentInfo() {
@@ -43,8 +47,16 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
-		if(!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
-			builder.DispatchPart(currentPart);
+		if(RectTransformUtility.RectangleContainsScreenPoint(traderInventory, Input.mousePosition)) {
+			builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
+				? ShipBuilder.TransferMode.Sell : ShipBuilder.TransferMode.Return));
+		}
+		else if(RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
+			builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
+				? ShipBuilder.TransferMode.Return : ShipBuilder.TransferMode.Buy));
+		}
+		else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
+			builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
 		} else {
 			lastPart = currentPart;
 			currentPart = null;
@@ -84,7 +96,7 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	}
 	public void ClearAllParts() {
 		while(parts.Count > 0) {
-			builder.DispatchPart(parts[0]);
+			builder.DispatchPart(parts[0], ShipBuilder.TransferMode.Return);
 		}
 		UpdateHandler();
 	}

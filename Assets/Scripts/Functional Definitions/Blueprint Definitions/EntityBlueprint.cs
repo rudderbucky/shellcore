@@ -39,7 +39,9 @@ public class EntityBlueprint : ScriptableObject
         AirCarrier,
         GroundCarrier,
         Yard,
-        WeaponStation
+        WeaponStation,
+        Trader,
+        CoreUpgrader
     }
 
     public IntendedType intendedType;

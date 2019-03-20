@@ -37,13 +37,15 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 			totalHealths[1] += blueprint.health / 4;
 			shipMass += blueprint.mass;
 		}
-
+		string colorTag = "<color=white>";
+		if(cursorScript.buildCost > 0) colorTag = "<color=red>";
+		else if(cursorScript.buildCost < 0) colorTag = "<color=lime>";
 		display.text = "SHELL: " + totalHealths[0] + "\n"
 		+              "CORE: " + totalHealths[1] + "\n"
 		+              "ENERGY: " + totalHealths[2] + "\n"
 		+              "MASS: " + Mathf.RoundToInt(shipMass * 100) / 100F 
 		+ 			   "\nENGINE POWER: " + enginePower
-		+              "\nTOTAL VALUE: " + "\nX CREDITS";
+		+              "\nTOTAL BUILD COST: " + "\n" + colorTag + cursorScript.buildCost + " CREDITS</color>";
 		regenDisplay.text = "REGEN: " + totalRegens[0] + "\n\n" + "REGEN: " + totalRegens[2];
 	}
 }

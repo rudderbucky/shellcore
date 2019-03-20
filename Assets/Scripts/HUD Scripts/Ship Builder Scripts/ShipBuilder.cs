@@ -14,17 +14,29 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	public Transform smallContents;
 	public Transform mediumContents;
 	public Transform largeContents;
-	private Transform[] contentsArray;
+	public Transform traderSmallContents;
+	public Transform traderMediumContents;
+	public Transform traderLargeContents;
+	private Transform[] contentsArray; // holds scroll view sub-sections by part size
+	private Transform[] traderContentsArray;
 	public GameObject smallText;
 	public GameObject mediumText;
 	public GameObject largeText;
-	public GameObject[] contentTexts;
+	public GameObject traderSmallText;
+	public GameObject traderMediumText;
+	public GameObject traderLargeText;
+	private GameObject[] contentTexts;
+	private GameObject[] traderContentTexts;
+	public PresetButton[] presetButtons;
 	private string searcherString;
 	private bool[] displayingTypes;
 	public Image reconstructImage;
 	public Text reconstructText;
 	bool initialized;
+	public TipsFromTheYard tips;
+	public GameObject traderScrollView;
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
+	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
 
 	public bool DecrementPartButton(EntityBlueprint.PartInfo info) {
 		if(partDict.ContainsKey(CullSpatialValues(info)) && partDict[CullSpatialValues(info)].GetCount() > 0) {
@@ -32,24 +44,65 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			return true;
 		} else return false;
 	}
-	public static EntityBlueprint.PartInfo CullSpatialValues(EntityBlueprint.PartInfo x) {
+	public static EntityBlueprint.PartInfo CullSpatialValues(EntityBlueprint.PartInfo partToCull) {
 		var part = new EntityBlueprint.PartInfo();
-		part.partID = x.partID;
-		part.secondaryData = x.secondaryData;
-		part.abilityID = x.abilityID;
-		part.tier = x.tier;
+		part.partID = partToCull.partID;
+		part.secondaryData = partToCull.secondaryData;
+		part.abilityID = partToCull.abilityID;
+		part.tier = partToCull.tier;
 		return part;
 	}
-	public void DispatchPart(ShipBuilderPart part) {
+	public enum TransferMode {
+		Sell,
+		Return,
+		Buy
+	}
+	public void DispatchPart(ShipBuilderPart part, TransferMode transferMode) {
 		var culledInfo = CullSpatialValues(part.info);
-		if(!partDict.ContainsKey(culledInfo)) {
-			int size = ResourceManager.GetAsset<PartBlueprint>(part.info.partID).size;
-			partDict.Add(culledInfo, Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>());
-			contentTexts[size].SetActive(true);
-			partDict[culledInfo].part = culledInfo;
-			partDict[culledInfo].cursor = cursorScript;
+		Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> dict;
+		Transform[] dictContentsArray;
+		GameObject[] dictContentTexts;
+		switch(transferMode) {
+			case TransferMode.Sell:
+				cursorScript.buildCost -= ResourceManager.GetAsset<PartBlueprint>(part.info.partID).value;
+				dictContentsArray = traderContentsArray;
+				dict = traderPartDict;
+				dictContentTexts = traderContentTexts;
+				break;
+			case TransferMode.Buy:
+				dictContentsArray = contentsArray;
+				dict = partDict;
+				dictContentTexts = contentTexts;
+				break;
+			default: // transfer back to original inventory
+				if(part.mode == BuilderMode.Trader) cursorScript.buildCost 
+					-= ResourceManager.GetAsset<PartBlueprint>(part.info.partID).value;
+				dict = (part.mode == BuilderMode.Yard ? partDict : traderPartDict);
+				dictContentsArray = (part.mode == BuilderMode.Yard ? contentsArray : traderContentsArray);
+				dictContentTexts = (part.mode == BuilderMode.Yard ? contentTexts : traderContentTexts);
+				break;
 		}
-		partDict[culledInfo].IncrementCount();
+		if(!dict.ContainsKey(culledInfo)) {
+			int size = ResourceManager.GetAsset<PartBlueprint>(part.info.partID).size;
+			ShipBuilderInventoryScript dictInvButton = Instantiate(buttonPrefab, 
+				dictContentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
+			switch(transferMode) { // set the new button's transfer mode
+				case TransferMode.Buy:
+					dictInvButton.mode = BuilderMode.Yard;
+					break;
+				case TransferMode.Sell:
+					dictInvButton.mode = BuilderMode.Trader;
+					break;
+				case TransferMode.Return:
+					dictInvButton.mode = part.mode;
+					break;
+			}
+			dict.Add(culledInfo, dictInvButton);
+			dictContentTexts[size].SetActive(true);
+			dict[culledInfo].part = culledInfo;
+			dict[culledInfo].cursor = cursorScript;
+		}
+		dict[culledInfo].IncrementCount();
 		cursorScript.parts.Remove(part);
 		Destroy(part.gameObject);
 	}
@@ -60,13 +113,25 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		rect.size = rect.size * 0.8F;
 		return rect;
 	}
-	public void SetReconstructButton(bool val) {
-		if(val) {
-			reconstructImage.color = reconstructText.color = Color.green;
-			reconstructText.text = "Reconstruct";
-		} else {
-			reconstructImage.color = reconstructText.color = Color.red;
-			reconstructText.text = "A part is in an invalid position!";
+	private enum ReconstructButtonStatus {
+		Valid,
+		PartInvalidPosition,
+		NotEnoughCredits
+	}
+	private void SetReconstructButton(ReconstructButtonStatus status) {
+		switch(status) {
+			case ReconstructButtonStatus.Valid:
+				reconstructImage.color = reconstructText.color = Color.green;
+				reconstructText.text = "Reconstruct";
+				break;
+			case ReconstructButtonStatus.PartInvalidPosition:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "A part is in an invalid position!";
+				break;
+			case ReconstructButtonStatus.NotEnoughCredits:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "Not enough credits!";
+				break;
 		}
 	}
 	void UpdateChainHelper(ShipBuilderPart part) {
@@ -83,7 +148,8 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	}
 
 	public void UpdateChain() {
-		SetReconstructButton(true);
+		SetReconstructButton(cursorScript.buildCost > player.credits ? 
+			ReconstructButtonStatus.NotEnoughCredits : ReconstructButtonStatus.Valid);
 		var shellRect = GetRect(shell.rectTransform);
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			shipPart.isInChain = false;
@@ -113,26 +179,32 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		}
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(!shipPart.isInChain || !shipPart.validPos) {
-				SetReconstructButton(false);
+				SetReconstructButton(ReconstructButtonStatus.PartInvalidPosition);
 				return;
 			}
 		}
 	}
-	public void Initialize() {
-		if(initialized) CloseUI(false);
+	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null) {
+		if(initialized) CloseUI(false); // prevent initializing twice by closing UI if already initialized
 		initialized = true;
-		GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
+		GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
 		gameObject.SetActive(true);
 		cursorScript.gameObject.SetActive(false);
 		searcherString = "";
 		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
+		traderContentsArray = new Transform[] {traderSmallContents, traderMediumContents, traderLargeContents};
 		contentTexts = new GameObject[] {smallText, mediumText, largeText};
+		traderContentTexts = new GameObject[] {traderSmallText, traderMediumText, traderLargeText};
 		foreach(GameObject obj in contentTexts) {
 			obj.SetActive(false);
+		}
+		foreach(GameObject traderObj in traderContentTexts) {
+			traderObj.SetActive(false);
 		}
 		displayingTypes = new bool[] {true, true, true, true, true};
 		player.SetIsInteracting(true);
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
+		traderPartDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 		shell.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreShellSpriteID);
 		shell.color = FactionColors.colors[0];
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
@@ -144,6 +216,35 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		List<EntityBlueprint.PartInfo> parts = player.GetInventory();
 		cursorScript.player = player;
 		cursorScript.handler = player.GetAbilityHandler();
+
+		// hide the buttons and yard tips if interacting with a trader
+		foreach(PresetButton button in presetButtons) {
+			button.gameObject.SetActive(mode == BuilderMode.Yard);
+		}
+		tips.gameObject.SetActive(mode == BuilderMode.Yard);
+		traderScrollView.gameObject.SetActive(mode == BuilderMode.Trader);
+
+		traderInventory = new List<EntityBlueprint.PartInfo>();
+		EntityBlueprint.PartInfo info1 = new EntityBlueprint.PartInfo();
+		info1.partID = "BigWing1";
+		info1.abilityID = 1;
+		info1.tier = 2;
+		traderInventory.Add(info1);
+		if(traderInventory != null) {
+			foreach(EntityBlueprint.PartInfo info in traderInventory) {
+				if(!traderPartDict.ContainsKey(info)) {
+					int size = ResourceManager.GetAsset<PartBlueprint>(info.partID).size;
+					ShipBuilderInventoryScript traderInvButton = Instantiate(buttonPrefab, // instantiate part button for trader
+						traderContentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
+						traderContentTexts[size].SetActive(true);
+						traderInvButton.part = info1;
+						traderInvButton.cursor = cursorScript;
+						traderInvButton.mode = BuilderMode.Trader;
+					traderPartDict.Add(info, traderInvButton);
+					for(int i = 0; i < 500; i++) traderInvButton.IncrementCount();
+				}
+			}
+		}
 
 		if(parts != null) {
 			if(parts.Count == 0) {
@@ -169,11 +270,14 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			if(!partDict.ContainsKey(part)) 
 			{
 				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
-				partDict.Add(part, Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>());
+				ShipBuilderInventoryScript invButton = Instantiate(buttonPrefab, 
+					contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
+				partDict.Add(part, invButton);
 				contentTexts[size].SetActive(true);
-				partDict[part].part = part;
-				partDict[part].cursor = cursorScript;
-				partDict[part].IncrementCount();
+				invButton.part = part;
+				invButton.cursor = cursorScript;
+				invButton.IncrementCount();
+				invButton.mode = BuilderMode.Yard;
 			} else partDict[part].IncrementCount();
 		}
 		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
@@ -216,6 +320,9 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		foreach(ShipBuilderInventoryScript button in partDict.Values) {
 			Destroy(button.gameObject);
 		}
+		foreach(ShipBuilderInventoryScript traderButton in traderPartDict.Values) {
+			Destroy(traderButton.gameObject);
+		}
 		foreach(ShipBuilderPart part in cursorScript.parts) {
 			Destroy(part.gameObject);
 		}
@@ -237,6 +344,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	}
 
 	public void Deinitialize() {
+		if(cursorScript.buildCost > player.credits) return;
 		bool invalidState = false;
 		foreach(ShipBuilderPart part in cursorScript.parts) {
 			if(!part.validPos || !part.isInChain) {
@@ -251,6 +359,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	}
 
 	public void Export() {
+		player.credits -= cursorScript.buildCost;
 		player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		foreach(ShipBuilderPart part in cursorScript.parts) {
 			player.blueprint.parts.Add(part.info);
@@ -258,8 +367,9 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		player.Rebuild();
 	}
 
-	void Start() {
-		foreach(PresetButton button in GetComponentsInChildren<PresetButton>()) {
+	void Awake() {
+		presetButtons = GetComponentsInChildren<PresetButton>();
+		foreach(PresetButton button in presetButtons) {
 			button.SBPrefab = SBPrefab;
 			button.player = player;
 			button.cursorScript = cursorScript;
@@ -274,8 +384,15 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 
 	public EntityBlueprint.PartInfo? GetButtonPartCursorIsOn() {
 		foreach(ShipBuilderInventoryScript inv in partDict.Values) {
-			if(RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition) && inv.gameObject.activeSelf) {
+			if(RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition) 
+				&& inv.gameObject.activeSelf) {
 				return inv.part;
+			}
+		}
+		foreach(ShipBuilderInventoryScript traderInv in traderPartDict.Values) {
+			if(RectTransformUtility.RectangleContainsScreenPoint(traderInv.GetComponent<RectTransform>(), Input.mousePosition) 
+				&& traderInv.gameObject.activeSelf) {
+				return traderInv.part;
 			}
 		}
 		return null;

@@ -10,4 +10,5 @@ public class PartBlueprint : ScriptableObject
     public float mass;
     public int size;
     public bool detachible = true;
+    public int value = 200;
 }

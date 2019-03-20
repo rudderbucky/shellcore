@@ -15,7 +15,10 @@ public class GUIWindowScripts : MonoBehaviour, IWindow {
 	public void ToggleActive() {
 		bool active = gameObject.activeSelf;
 		gameObject.SetActive(!active);
-		if(gameObject.activeSelf) PlayerViewScript.SetCurrentWindow(this);
+		if(gameObject.activeSelf) {
+			GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
+			PlayerViewScript.SetCurrentWindow(this);
+		}
 	}
 
 	public bool GetActive() {

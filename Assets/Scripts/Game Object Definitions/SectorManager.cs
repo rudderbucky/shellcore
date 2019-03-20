@@ -131,6 +131,12 @@ public class SectorManager : MonoBehaviour
 
     void loadSector()
     {
+        // SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
+        // data.platformjson = JsonUtility.ToJson(current.platform);
+        // data.sectorjson = JsonUtility.ToJson(current);
+        // System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + "CenterSector", JsonUtility.ToJson(data));
+        // UnityEditor.AssetDatabase.CreateAsset(current, "Assets/CenterSectorNew.asset");
+        // UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/CenterSectorNewPlatform.asset");
         //unload previous sector
         foreach(var obj in objects)
         {
@@ -280,10 +286,21 @@ public class SectorManager : MonoBehaviour
                         gcarrier.sectorMngr = this;
                         break;
                     case EntityBlueprint.IntendedType.Yard:
-                        gObj.AddComponent<Yard>();
+                        Yard yard = gObj.AddComponent<Yard>();
+                        yard.mode = BuilderMode.Yard;
                         break;
                     case EntityBlueprint.IntendedType.WeaponStation:
                         gObj.AddComponent<WeaponStation>();
+                        break;
+                    case EntityBlueprint.IntendedType.CoreUpgrader:
+                        gObj.AddComponent<CoreUpgrader>();
+                        break;
+                    case EntityBlueprint.IntendedType.Trader:
+                        Yard trade = gObj.AddComponent<Yard>();
+                        if(current.entities[i].blueprintJSON != null)
+                            trade.inventory = JsonUtility.FromJson<List<EntityBlueprint.PartInfo>>
+                                (current.entities[i].blueprintJSON);
+                        trade.mode = BuilderMode.Trader;
                         break;
                     default:
                         break;

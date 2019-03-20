@@ -13,4 +13,5 @@ public class PlayerSave {
 	public List<EntityBlueprint.PartInfo> partInventory;
 	public string[] presetBlueprints;
 	public float timePlayed;
+	public int credits;
 }

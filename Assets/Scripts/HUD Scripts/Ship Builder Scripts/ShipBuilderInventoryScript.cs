@@ -12,6 +12,7 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
     public GameObject SBPrefab;
     public ShipBuilderCursorScript cursor;
     public Text val;
+    public BuilderMode mode;
     int count;
     Image image;
 
@@ -31,12 +32,14 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
     public void OnPointerDown(PointerEventData eventData)
     {
         if(count > 0) {
-            var x = Instantiate(SBPrefab, cursor.transform.parent);
-            x.GetComponent<ShipBuilderPart>().info = part;
-            x.GetComponent<ShipBuilderPart>().cursorScript = cursor;
-            cursor.parts.Add(x.GetComponent<ShipBuilderPart>());
-            cursor.GrabPart(x.GetComponent<ShipBuilderPart>());
+            var builderPart = Instantiate(SBPrefab, cursor.transform.parent).GetComponent<ShipBuilderPart>();
+            builderPart.info = part;
+            builderPart.cursorScript = cursor;
+            builderPart.mode = mode;
+            cursor.parts.Add(builderPart);
+            cursor.GrabPart(builderPart);
             count--;
+            if(mode == BuilderMode.Trader) cursor.buildCost += ResourceManager.GetAsset<PartBlueprint>(part.partID).value;
         }
     }
     public void IncrementCount() {

@@ -41,6 +41,7 @@ public class Entity : MonoBehaviour {
     public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
 
     public SectorManager sectorMngr;
+    private Entity lastDamagedBy;
 
     public string entityName;
     public enum TerrainType // terrain type of entity
@@ -274,6 +275,7 @@ public class Entity : MonoBehaviour {
             parts[i].Detach();
         }
 
+        if(lastDamagedBy as PlayerCore) (lastDamagedBy as PlayerCore).credits += 5;
         GameObject tmp = Instantiate(explosionCirclePrefab); // instantiate circle explosion
         tmp.SetActive(true);
         tmp.transform.SetParent(transform, false);
@@ -500,7 +502,8 @@ public class Entity : MonoBehaviour {
     /// </summary>
     /// <param name="amount">The amount of damage to do</param>
     /// <param name="shellPiercingFactor">The factor of damage that pierces through the shell into the core</param>
-    public void TakeDamage(float amount, float shellPiercingFactor) {
+    public void TakeDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) {
+        if(lastDamagedBy != this && amount > 0) this.lastDamagedBy = lastDamagedBy; // heals require this check
         if (amount > 0) SetIntoCombat();
         currentHealth[0] -= amount * (1 - shellPiercingFactor); // subtract amount from shell
         if (currentHealth[0] < 0) { // if shell has dipped below 0

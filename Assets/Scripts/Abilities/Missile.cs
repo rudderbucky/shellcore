@@ -31,6 +31,7 @@ public class Missile : WeaponAbility {
                 missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
             var missile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
             var script = missile.GetComponent<MissileScript>();
+            script.owner = GetComponentInParent<Entity>();
             script.SetTarget(targetingSystem.GetTarget());
             script.SetCategory(category);
             script.SetTerrain(terrain);

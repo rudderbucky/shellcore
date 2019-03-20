@@ -27,6 +27,7 @@ public class QuantityDisplayScript : MonoBehaviour {
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
             texts[1].text = player.GetPower() + "";
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
+            texts[5].text = player.credits + "";
             string description;
             if(player.GetTargetingSystem().GetTarget() && player.GetTargetingSystem().GetTarget().GetComponent<Entity>()) {
                 bg1.enabled = bg2.enabled = true;

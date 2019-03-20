@@ -101,7 +101,7 @@ public class ReticleScript : MonoBehaviour {
                         ShipBuilder builder = transform.parent.Find("Ship Builder").GetComponent<ShipBuilder>();
                         PlayerViewScript.SetCurrentWindow(builder);
                         builder.yardPosition = entityTarget.transform.position;
-                        builder.Initialize();
+                        builder.Initialize((entityTarget as IShipBuilder).GetBuilderMode(), (entityTarget as IShipBuilder).GetInventory());
                     }
                 }
 

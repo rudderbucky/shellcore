@@ -22,7 +22,7 @@ public class ProximityInteractScript : MonoBehaviour {
 			ShipBuilder builder = transform.parent.Find("Ship Builder").GetComponent<ShipBuilder>();
 			PlayerViewScript.SetCurrentWindow(builder);
 			builder.yardPosition = ent.transform.position;
-			builder.Initialize();
+			builder.Initialize((ent as IShipBuilder).GetBuilderMode(), (ent as IShipBuilder).GetInventory());
 		}
 	}
 	void Update() {
@@ -51,6 +51,7 @@ public class ProximityInteractScript : MonoBehaviour {
 					VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
 					outpostUI.blueprint = (closest as IVendor).GetVendingBlueprint();
 					// check if the player is close based on the vendor's custom range as well
+					// also this code sets the blueprint of the UI
 					if ((closest.transform.position - player.transform.position).magnitude < outpostUI.blueprint.range)
 					{
 						player.interactAlerter.showMessage("Press 'Q' to interact with " 
@@ -63,7 +64,8 @@ public class ProximityInteractScript : MonoBehaviour {
 				else if(closest as IShipBuilder != null && closest.faction == player.faction
 				&&(closest.transform.position - player.transform.position).sqrMagnitude < 200) // ship builder
 				{
-					player.interactAlerter.showMessage("Press 'Q' to interact with Yard");
+					BuilderMode mode = (closest as IShipBuilder).GetBuilderMode();
+					player.interactAlerter.showMessage("Press 'Q' to interact with " + (mode == BuilderMode.Yard ? "Yard" : "Trader"));
 					if(Input.GetKeyUp(KeyCode.Q)) {
 						ActivateInteraction(closest); // key received; activate interaction
 					}

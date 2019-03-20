@@ -13,6 +13,7 @@ public class PlayerCore : ShellCore {
     public PlayerSave cursave;
     public bool loaded;
     private bool isInteracting;
+    public int credits;
     
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
@@ -82,6 +83,7 @@ public class PlayerCore : ShellCore {
             if(parts[i].gameObject.name != "Shell Sprite")
                 Destroy(parts[i].gameObject);
         }
+        // UnityEditor.AssetDatabase.CreateAsset(blueprint, "Assets/Core Upgrades.asset");
         BuildEntity();
         hud.InitializeHUD(this);
     }

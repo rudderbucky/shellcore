@@ -18,6 +18,7 @@ public class ShipBuilderPart : MonoBehaviour {
 	public bool isInChain;
 	public bool validPos;
 	public bool highlighted;
+	public BuilderMode mode;
 	private Vector3? lastValidPos = null;
 
 	public void SetLastValidPos(Vector3? lastPos) {
@@ -54,7 +55,6 @@ public class ShipBuilderPart : MonoBehaviour {
 		Mathf.Abs(rectTransform.anchoredPosition.y - otherPart.rectTransform.anchoredPosition.y) <
 		0.28F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
 		return z;
-		//return y.Contains(x.center);
 	}
 	void OnDestroy() {
 		if(shooter) Destroy(shooter.gameObject);
