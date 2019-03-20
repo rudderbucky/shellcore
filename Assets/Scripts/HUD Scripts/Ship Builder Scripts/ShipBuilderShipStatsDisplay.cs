@@ -44,7 +44,7 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 		+              "CORE: " + totalHealths[1] + "\n"
 		+              "ENERGY: " + totalHealths[2] + "\n"
 		+              "MASS: " + Mathf.RoundToInt(shipMass * 100) / 100F 
-		+ 			   "\nENGINE POWER: " + enginePower
+		+ 			   "\nENGINE POWER: " + (int)enginePower
 		+              "\nTOTAL BUILD COST: " + "\n" + colorTag + cursorScript.buildCost + " CREDITS</color>";
 		regenDisplay.text = "REGEN: " + totalRegens[0] + "\n\n" + "REGEN: " + totalRegens[2];
 	}
