@@ -22,6 +22,6 @@ public class GUIWindowScripts : MonoBehaviour, IWindow {
 	}
 
 	public bool GetActive() {
-		return gameObject.activeSelf;
+		return gameObject ? gameObject.activeSelf : false;
 	}
 }

@@ -29,7 +29,7 @@ public class PlayerViewScript : MonoBehaviour {
 					escapeMenu.SetActive(false);
 					return;
 				}
-				bool shouldReturn = currentWindow.Peek().GetActive();
+				bool shouldReturn = currentWindow.Peek().Equals(null) ? false : currentWindow.Peek().GetActive();
 				
 				if(shouldReturn) {
 					currentWindow.Pop().CloseUI();

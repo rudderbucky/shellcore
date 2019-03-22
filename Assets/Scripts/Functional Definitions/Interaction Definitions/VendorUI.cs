@@ -42,6 +42,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             buttonPrefab = ResourceManager.GetAsset<GameObject>("vendor_button");
         }
         UI = Instantiate(UIPrefab);
+        PlayerViewScript.SetCurrentWindow(this);
         UI.GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
         background = UI.transform.Find("Background");
         Button close = background.transform.Find("Close").GetComponent<Button>();

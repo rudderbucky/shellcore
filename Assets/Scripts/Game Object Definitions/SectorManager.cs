@@ -249,14 +249,16 @@ public class SectorManager : MonoBehaviour
                         {
                             Bunker bunker = gObj.AddComponent<Bunker>();
                             stations.Add(bunker);
-                            bunker.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID);
+                            bunker.vendingBlueprint = blueprint.dialogue.vendingBlueprint 
+                                = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID);
                             break;
                         }
                     case EntityBlueprint.IntendedType.Outpost:
                         {
                             Outpost outpost = gObj.AddComponent<Outpost>();
                             stations.Add(outpost);
-                            outpost.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID);
+                            outpost.vendingBlueprint = blueprint.dialogue.vendingBlueprint
+                                 = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID);
                             break;
                         }
                     case EntityBlueprint.IntendedType.Tower:
@@ -297,10 +299,9 @@ public class SectorManager : MonoBehaviour
                         break;
                     case EntityBlueprint.IntendedType.Trader:
                         Yard trade = gObj.AddComponent<Yard>();
-                        if(current.entities[i].blueprintJSON != null)
-                            trade.inventory = JsonUtility.FromJson<List<EntityBlueprint.PartInfo>>
-                                (current.entities[i].blueprintJSON);
                         trade.mode = BuilderMode.Trader;
+                        blueprint.dialogue.traderInventory = 
+                            JsonUtility.FromJson<List<EntityBlueprint.PartInfo>>(current.entities[i].blueprintJSON);
                         break;
                     default:
                         break;
@@ -310,9 +311,16 @@ public class SectorManager : MonoBehaviour
                 entity.faction = current.entities[i].faction;
                 entity.spawnPoint = current.entities[i].position;
                 entity.blueprint = blueprint;
-                if (current.entities[i].dialogueID != "")
+
+                // TODO:
+                // I think we should move dialogue setting to BuildEntity() since each entity's
+                // dialogue should vary in the blueprint rather than using the resource manager
+                // since that allows for more custom dialogue using the sector creator
+                // (I already sort of did this but didn't remove the setting here)
+                if (current.entities[i].dialogueID != "") 
                 {
                     entity.dialogue = ResourceManager.GetAsset<Dialogue>(current.entities[i].dialogueID);
+
                 }
 
                 objects.Add(current.entities[i].ID, gObj);

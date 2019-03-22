@@ -76,6 +76,8 @@ public class Entity : MonoBehaviour {
         blueprint.shellHealth.CopyTo(maxHealth, 0);
         blueprint.baseRegen.CopyTo(regenRate, 0);
 
+        if(blueprint) this.dialogue = blueprint.dialogue;
+
         if (!GetComponent<SortingGroup>())
         {
             group = gameObject.AddComponent<SortingGroup>();

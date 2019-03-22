@@ -191,6 +191,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		//initialize window on screen
 		if(initialized) CloseUI(false); // prevent initializing twice by closing UI if already initialized
 		initialized = true;
+		PlayerViewScript.SetCurrentWindow(this);
 		GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
 		cursorScript.gameObject.SetActive(false);
 

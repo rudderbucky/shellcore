@@ -46,4 +46,5 @@ public class EntityBlueprint : ScriptableObject
 
     public IntendedType intendedType;
     public List<PartInfo> parts;
+    public Dialogue dialogue;
 }

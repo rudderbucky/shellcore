@@ -8,7 +8,7 @@ public class Beam : WeaponAbility {
     private Material material; // material used by the line renderer
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
-    private float damage = 500;
+    private float damage = 50000;
 
     protected override void Awake()
     {
@@ -48,7 +48,7 @@ public class Beam : WeaponAbility {
         {
             if(line.positionCount > 0 && ((line.GetPosition(1)-line.transform.position).sqrMagnitude 
                 > (line.GetPosition(0)-line.transform.position).sqrMagnitude)) {
-                line.SetPosition(0, line.GetPosition(0) + (line.GetPosition(1)-line.GetPosition(0)).normalized); 
+                line.SetPosition(0, line.GetPosition(0) + (line.GetPosition(1)-line.GetPosition(0)).normalized * 2); 
                 if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
             }
             else line.positionCount = 0;

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public interface IShipBuilder {
     BuilderMode GetBuilderMode();
-    List<EntityBlueprint.PartInfo> GetInventory();
 }
 
 public enum BuilderMode {
@@ -14,10 +13,6 @@ public enum BuilderMode {
 public class Yard : AirConstruct, IShipBuilder {
 
     public BuilderMode mode;
-    public List<EntityBlueprint.PartInfo> inventory;
-    public List<EntityBlueprint.PartInfo> GetInventory() {
-        return inventory;
-    }
     public BuilderMode GetBuilderMode() {
         return mode;
     }

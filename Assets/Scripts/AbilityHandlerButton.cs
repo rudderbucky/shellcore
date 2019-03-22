@@ -9,10 +9,6 @@ public class AbilityHandlerButton : MonoBehaviour, IPointerClickHandler {
 	public AbilityHandler handler;
     public void OnPointerClick(PointerEventData eventData)
     {
-        //foreach(AbilityHandlerButton button in transform.parent.GetComponentsInChildren<AbilityHandlerButton>()) {
-        //    button.GetComponent<Image>().color = Color.black;
-        //}
-        //GetComponent<Image>().color = new Color32((byte)32,(byte)32,(byte)32,(byte)255);
         handler.SetCurrentVisible(type);
     }
     void Update() {

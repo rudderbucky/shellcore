@@ -83,26 +83,7 @@ public class ReticleScript : MonoBehaviour {
                 if (targSys.GetTarget() == entityTarget.transform) //Interact with entity
                 {
                     if (entityTarget.dialogue as Dialogue)
-                        DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue);
-                    else if(entityTarget as IVendor != null && entityTarget.faction == craft.faction)
-                    {
-                        VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
-                        outpostUI.blueprint = (entityTarget as IVendor).GetVendingBlueprint();
-                        if ((entityTarget.transform.position - craft.transform.position).magnitude < outpostUI.blueprint.range)
-                        {
-                            PlayerViewScript.SetCurrentWindow(outpostUI);
-                            outpostUI.outpostPosition = entityTarget.transform.position;
-                            outpostUI.player = craft;
-                            outpostUI.openUI();
-                        }
-                    } else if(entityTarget as IShipBuilder != null && entityTarget.faction == craft.faction
-                    &&(entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200) 
-                    {
-                        ShipBuilder builder = transform.parent.Find("Ship Builder").GetComponent<ShipBuilder>();
-                        PlayerViewScript.SetCurrentWindow(builder);
-                        builder.yardPosition = entityTarget.transform.position;
-                        builder.Initialize((entityTarget as IShipBuilder).GetBuilderMode(), (entityTarget as IShipBuilder).GetInventory());
-                    }
+                        DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue, entityTarget.transform.position, craft);
                 }
 
                 targSys.SetTarget(entityTarget.transform); // set the target to the clicked craft's transform

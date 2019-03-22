@@ -10,12 +10,12 @@ public class DialogueSystem : MonoBehaviour
     public GameObject dialogueBoxPrefab;
     public GameObject dialogueButtonPrefab;
     public Font shellcorefont;
-
-    GameObject window;
-    RectTransform backgroud;
+    GUIWindowScripts window;
+    RectTransform background;
     Text textRenderer;
     GameObject[] buttons;
-
+    public ShipBuilder builder;
+    public VendorUI vendorUI;
     int characterCount = 0;
     float nextCharacterTime;
     public float timeBetweenCharacters = 0.02f;
@@ -40,9 +40,9 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    public static void StartDialogue(Dialogue dialogue)
+    public static void StartDialogue(Dialogue dialogue, Vector3? speakerPos = null, PlayerCore player = null)
     {
-        Instance.startDialogue(dialogue);
+        Instance.startDialogue(dialogue, speakerPos, player);
     }
 
     public static void ShowPopup(string text)
@@ -52,15 +52,16 @@ public class DialogueSystem : MonoBehaviour
 
     private void showPopup(string text)
     {
-        if (window)
+        if (window && window.GetActive())
             return;
-
+        if(window) endDialogue();
         //create window
-        window = Instantiate(dialogueBoxPrefab);
+        window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
+        window.ToggleActive();
         window.transform.SetSiblingIndex(0);
-        backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
-        backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
-        textRenderer = backgroud.transform.Find("Text").GetComponent<Text>();
+        background = window.transform.Find("Background").GetComponent<RectTransform>();
+        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
+        textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
         // change text
@@ -71,7 +72,7 @@ public class DialogueSystem : MonoBehaviour
 
         // ok button
         RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
-        button.SetParent(backgroud, false);
+        button.SetParent(background, false);
         button.anchoredPosition = new Vector2(0, 24);
         button.GetComponent<Button>().onClick.AddListener(endDialogue);
         button.Find("Text").GetComponent<Text>().text = "Ok";
@@ -80,27 +81,29 @@ public class DialogueSystem : MonoBehaviour
         buttons[0] = button.gameObject;
     }
 
-    private void startDialogue(Dialogue dialogue)
+    private void startDialogue(Dialogue dialogue, Vector3? speakerPos, PlayerCore player)
     {
-        if (window)
+        if (window && window.GetActive())
             return;
+        if(window) endDialogue();
 
         //create window
-        window = Instantiate(dialogueBoxPrefab);
-        backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
-        backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
-        textRenderer = backgroud.transform.Find("Text").GetComponent<Text>();
+        window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
+        window.ToggleActive();
+        background = window.transform.Find("Background").GetComponent<RectTransform>();
+        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
+        textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
-        next(dialogue, 0);
+        next(dialogue, 0, speakerPos, player);
     }
 
-    public static void Next(Dialogue dialogue, int ID)
+    public static void Next(Dialogue dialogue, int ID, Vector3? speakerPos, PlayerCore player)
     {
-        Instance.next(dialogue, ID);
+        Instance.next(dialogue, ID, speakerPos, player);
     }
 
-    public void next(Dialogue dialogue, int ID)
+    public void next(Dialogue dialogue, int ID, Vector3? speakerPos, PlayerCore player)
     {
         if(dialogue.nodes.Count == 0)
         {
@@ -133,13 +136,22 @@ public class DialogueSystem : MonoBehaviour
                 //Do nothing and continue after this check
                 break;
             case Dialogue.DialogueAction.Outpost:
+                if(((Vector3)speakerPos - player.transform.position).magnitude < dialogue.vendingBlueprint.range) {
+                    vendorUI.blueprint = dialogue.vendingBlueprint;
+                    vendorUI.outpostPosition = (Vector3)speakerPos;
+                    vendorUI.player = player;
+                    vendorUI.openUI();
+                }
+                endDialogue();
                 break;
             case Dialogue.DialogueAction.Shop:
-                //TODO: create shop
+			    builder.yardPosition = (Vector3)speakerPos;
+			    builder.Initialize(BuilderMode.Trader, dialogue.traderInventory);
                 endDialogue();
                 return;
             case Dialogue.DialogueAction.Yard:
-                //TODO: create yard
+			    builder.yardPosition = (Vector3)speakerPos;
+			    builder.Initialize(BuilderMode.Yard, null);
                 endDialogue();
                 return;
             case Dialogue.DialogueAction.Exit:
@@ -170,9 +182,9 @@ public class DialogueSystem : MonoBehaviour
             Dialogue.Node next = dialogue.nodes[nextIndex];
 
             RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
-            button.SetParent(backgroud, false);
+            button.SetParent(background, false);
             button.anchoredPosition = new Vector2(0, 24 + 16 * (current.nextNodes.Count - (i + 1)));
-            button.GetComponent<Button>().onClick.AddListener(()=> { Next(dialogue, nextIndex); });
+            button.GetComponent<Button>().onClick.AddListener(()=> { Next(dialogue, nextIndex, speakerPos, player); });
             button.Find("Text").GetComponent<Text>().text = next.buttonText;
 
             buttons[i] = button.gameObject;
@@ -193,6 +205,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void endDialogue()
     {
-        Destroy(window);
+        window.ToggleActive();
+        Destroy(window.gameObject);
     }
 }

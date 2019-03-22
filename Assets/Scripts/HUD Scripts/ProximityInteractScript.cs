@@ -7,23 +7,7 @@ public class ProximityInteractScript : MonoBehaviour {
 
 	void ActivateInteraction(Entity ent) { 
 		// TODO: perhaps make this a static ability so reticle scripts can use it as well
-		if(ent as IVendor != null) 
-		{
-			// activate vendor
-			VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
-			PlayerViewScript.SetCurrentWindow(outpostUI);
-			outpostUI.outpostPosition = ent.transform.position;
-			outpostUI.player = player;
-			outpostUI.openUI();
-		}
-		else if(ent as IShipBuilder != null) 
-		{
-			// activate ship builder
-			ShipBuilder builder = transform.parent.Find("Ship Builder").GetComponent<ShipBuilder>();
-			PlayerViewScript.SetCurrentWindow(builder);
-			builder.yardPosition = ent.transform.position;
-			builder.Initialize((ent as IShipBuilder).GetBuilderMode(), (ent as IShipBuilder).GetInventory());
-		}
+		DialogueSystem.StartDialogue(ent.dialogue, ent.transform.position, player);
 	}
 	void Update() {
 		if(player != null) 
