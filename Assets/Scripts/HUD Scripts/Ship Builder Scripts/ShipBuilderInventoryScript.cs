@@ -18,6 +18,7 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
 
     void Start() {
         val = GetComponentInChildren<Text>();
+        val.text = count + "";
         image = GetComponentsInChildren<Image>()[1];
         image.sprite = ResourceManager.GetAsset<Sprite>(part.partID + "_sprite");
         string shooterID = AbilityUtilities.GetShooterByID(part.abilityID);
@@ -39,6 +40,7 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
             cursor.parts.Add(builderPart);
             cursor.GrabPart(builderPart);
             count--;
+            cursor.buildValue += ResourceManager.GetAsset<PartBlueprint>(part.partID).value;
             if(mode == BuilderMode.Trader) cursor.buildCost += ResourceManager.GetAsset<PartBlueprint>(part.partID).value;
         }
     }

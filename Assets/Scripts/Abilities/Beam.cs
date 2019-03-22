@@ -8,16 +8,14 @@ public class Beam : WeaponAbility {
     private Material material; // material used by the line renderer
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
-    private Vector3 victimPos; // second position to render the beam to
     private float damage = 500;
 
     protected override void Awake()
     {
+        // set instance fields 
         base.Awake();
-        damage *= abilityTier;
         abilityName = "Beam";
         description = "Instant attack that deals " + damage + " damage.";
-        // set instance fields (values hardcoded, this may change to being modular)
         line = GetComponent<LineRenderer>() ? GetComponent<LineRenderer>() : gameObject.AddComponent<LineRenderer>();
         line.sortingLayerName = "Projectiles";
         line.material = material;
@@ -29,6 +27,7 @@ public class Beam : WeaponAbility {
         category = Entity.EntityCategory.All;
     }
     protected virtual void Start() {
+        damage *= abilityTier; // Thanks Abnormalities for finding this bug!
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
     }
     public void SetMaterial(Material material)
@@ -42,13 +41,21 @@ public class Beam : WeaponAbility {
         if (firing && timer < 0.2F) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
             line.SetPosition(0, line.transform.position); // draw and increment timer
-            line.SetPosition(1, victimPos);
+            line.SetPosition(1, targetingSystem.GetTarget().position);
             timer += Time.deltaTime;
         }
-        else
+        else if(firing && timer >= 0.2)
         {
-            firing = false; // reset drawing
+            if(line.positionCount > 0 && ((line.GetPosition(1)-line.transform.position).sqrMagnitude 
+                > (line.GetPosition(0)-line.transform.position).sqrMagnitude)) {
+                line.SetPosition(0, line.GetPosition(0) + (line.GetPosition(1)-line.GetPosition(0)).normalized); 
+                if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
+            }
+            else line.positionCount = 0;
+        } else 
+        {
             line.positionCount = 0;
+            firing = false;
         }
     }
 
@@ -59,7 +66,6 @@ public class Beam : WeaponAbility {
             ResourceManager.PlayClipByID("clip_beam", transform.position);
             targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(damage, 0, GetComponentInParent<Entity>()); // deal instant damage
             line.positionCount = 2; // render the beam line
-            this.victimPos = victimPos; // set the position to render the line to
             timer = 0; // start the timer
             isOnCD = true; // set booleans and return
             firing = true;

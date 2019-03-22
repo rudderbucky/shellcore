@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class ShipBuilderPartDisplay : MonoBehaviour {
 
 	public ShipBuilder builder;
+	public GameObject emptyInfoMarker;
 	public ShipBuilderCursorScript cursorScript;
 	public Text partName;
 	public Text partStats;
@@ -41,6 +42,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 		}
 
 		if(part != null) {
+			emptyInfoMarker.SetActive(false);
 			EntityBlueprint.PartInfo info = (EntityBlueprint.PartInfo)part;
 			if(info.abilityID != 0) {
 				if(info.tier != 0) {
@@ -71,13 +73,17 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 			partStats.gameObject.SetActive(true);
 			string partID = info.partID;
 			partName.text = partID;
-			float mass = ResourceManager.GetAsset<PartBlueprint>(partID).mass;
-			float health = ResourceManager.GetAsset<PartBlueprint>(partID).health;
-			partStats.text = "Part Shell: " + health / 2 + "\nPart Core: " + health / 4 + "\nPart Mass: " + mass;
+			var blueprint = ResourceManager.GetAsset<PartBlueprint>(partID);
+			float mass = blueprint.mass;
+			float health = blueprint.health;
+			int value = blueprint.value;
+			partStats.text = "Part Shell: " + health / 2 + "\nPart Core: " + health / 4 + "\nPart Mass: " + mass 
+				+ "\nPart Value: \n" + value + " Credits";
 			image.sprite = ResourceManager.GetAsset<Sprite>(partID + "_sprite");
 			image.rectTransform.sizeDelta = image.sprite.bounds.size * 50;
 			image.color = FactionColors.colors[0];
 		} else {
+			emptyInfoMarker.SetActive(true);
 			abilityBox.gameObject.SetActive(false);
 			abilityImage.gameObject.SetActive(false);
 			abilityText.gameObject.SetActive(false);

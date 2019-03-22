@@ -20,6 +20,7 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public AbilityHandler handler;
 	public PlayerCore player;
 	List<Ability> currentAbilities;
+	public int buildValue;
 	public int buildCost;
 	public RectTransform playerInventory;
 	public RectTransform traderInventory;
@@ -27,6 +28,11 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	void OnEnable() {
 		buildCost = 0;
 		currentAbilities = new List<Ability>();
+
+		buildValue = 0;
+		foreach(ShipBuilderPart part in parts) {
+			buildValue += ResourceManager.GetAsset<PartBlueprint>(part.info.partID).value;
+		}
 	}
 	public EntityBlueprint.PartInfo? GetCurrentInfo() {
 		if(!currentPart) return null;
@@ -47,7 +53,8 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
-		if(RectTransformUtility.RectangleContainsScreenPoint(traderInventory, Input.mousePosition)) {
+		if(traderInventory.gameObject.activeSelf &&
+			RectTransformUtility.RectangleContainsScreenPoint(traderInventory, Input.mousePosition)) {
 			builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
 				? ShipBuilder.TransferMode.Sell : ShipBuilder.TransferMode.Return));
 		}

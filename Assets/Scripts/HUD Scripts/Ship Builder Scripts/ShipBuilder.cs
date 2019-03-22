@@ -37,6 +37,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	public GameObject traderScrollView;
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
+	public BuilderMode mode;
 
 	public bool DecrementPartButton(EntityBlueprint.PartInfo info) {
 		if(partDict.ContainsKey(CullSpatialValues(info)) && partDict[CullSpatialValues(info)].GetCount() > 0) {
@@ -103,6 +104,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			dict[culledInfo].cursor = cursorScript;
 		}
 		dict[culledInfo].IncrementCount();
+		cursorScript.buildValue -= ResourceManager.GetAsset<PartBlueprint>(part.info.partID).value;
 		cursorScript.parts.Remove(part);
 		Destroy(part.gameObject);
 	}
@@ -185,11 +187,15 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		}
 	}
 	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null) {
+
+		//initialize window on screen
 		if(initialized) CloseUI(false); // prevent initializing twice by closing UI if already initialized
 		initialized = true;
 		GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
-		gameObject.SetActive(true);
 		cursorScript.gameObject.SetActive(false);
+
+		// set up actual stats
+		this.mode = mode;
 		searcherString = "";
 		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
 		traderContentsArray = new Transform[] {traderSmallContents, traderMediumContents, traderLargeContents};
@@ -296,6 +302,9 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			Destroy(player.GetTractorTarget().gameObject);
 		}
 		LoadBlueprint(player.blueprint);
+
+		// activate windows
+		gameObject.SetActive(true);
 		cursorScript.gameObject.SetActive(true);
 		cursorScript.UpdateHandler();
 	}
@@ -340,6 +349,8 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			cursorScript.parts.Add(p);
 			p.info = part;
 			p.SetLastValidPos(part.location);
+			p.isInChain = true;
+			p.validPos = true;
 		}
 	}
 

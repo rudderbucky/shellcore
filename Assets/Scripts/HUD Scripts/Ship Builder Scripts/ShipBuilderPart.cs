@@ -28,27 +28,51 @@ public class ShipBuilderPart : MonoBehaviour {
 	public void Snapback() {
 		if(lastValidPos != null) info.location = (Vector3)lastValidPos;
 	}
+
 	void Awake() {
 		validPos = true;
 		image = GetComponent<Image>();
 		GameObject shooterObj = new GameObject("shooter");
 		shooterObj.transform.SetParent(transform.parent);
 		shooter = shooterObj.AddComponent<Image>();
+		shooter.enabled = false;
 		shooter.rectTransform.localScale = Vector3.one;
 		rectTransform = image.rectTransform;
 	}
 
 	void Start() {
-		image.enabled = true;
-		shooter.enabled = true;
 		if(AbilityUtilities.GetShooterByID(info.abilityID) != null) {
 			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
 			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
+			shooter.enabled = true;
 		}
 		image.rectTransform.anchoredPosition = shooter.rectTransform.anchoredPosition = info.location * 100;
 		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
 		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
+		UpdateAppearance();
+		image.enabled = true;
 	}
+
+	void UpdateAppearance() {
+		// set colors
+		if(highlighted) image.color = (isInChain && validPos ? Color.white : Color.white - new Color(0,0,0,0.5F));
+		else image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
+		// set position
+		image.rectTransform.anchoredPosition = info.location * 100;
+		if(shooter) 
+		{
+			shooter.color = image.color;
+			shooter.gameObject.transform.SetAsLastSibling();
+			shooter.rectTransform.anchoredPosition = info.location * 100;
+			if(AbilityUtilities.GetShooterByID(info.abilityID) == null) {
+				Destroy(shooter.gameObject);
+			}
+		}
+		// set rotation and flipping
+		image.rectTransform.localEulerAngles = new Vector3(0,0,info.rotation);
+		image.rectTransform.localScale = new Vector3(info.mirrored ? -1 : 1,1,1);
+	}
+
 	bool IsTooClose(ShipBuilderPart otherPart) {
 		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
 		0.28F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
@@ -56,9 +80,11 @@ public class ShipBuilderPart : MonoBehaviour {
 		0.28F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
 		return z;
 	}
+	
 	void OnDestroy() {
 		if(shooter) Destroy(shooter.gameObject);
 	}
+
 	void Update() {
 		if(validPos) {
 			foreach(ShipBuilderPart part in cursorScript.parts) {
@@ -77,19 +103,6 @@ public class ShipBuilderPart : MonoBehaviour {
 			}
 			if(!stillTouching) validPos = true;
 		}
-		if(highlighted) image.color = (isInChain && validPos ? Color.white : Color.white - new Color(0,0,0,0.5F));
-		else image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
-		image.rectTransform.anchoredPosition = info.location * 100;
-		if(shooter) 
-		{
-			shooter.color = image.color;
-			shooter.gameObject.transform.SetAsLastSibling();
-			shooter.rectTransform.anchoredPosition = info.location * 100;
-			if(AbilityUtilities.GetShooterByID(info.abilityID) == null) {
-				Destroy(shooter.gameObject);
-			}
-		}
-		image.rectTransform.localEulerAngles = new Vector3(0,0,info.rotation);
-		image.rectTransform.localScale = new Vector3(info.mirrored ? -1 : 1,1,1);
+		UpdateAppearance();
 	}
 }
