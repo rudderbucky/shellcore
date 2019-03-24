@@ -83,9 +83,10 @@ public class DialogueSystem : MonoBehaviour
 
     private void startDialogue(Dialogue dialogue, Vector3? speakerPos, PlayerCore player)
     {
-        if (window && window.GetActive())
-            return;
         if(window) endDialogue();
+        // if (window && window.GetActive())
+        //    return;
+        // if(window) endDialogue();
 
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
@@ -143,16 +144,19 @@ public class DialogueSystem : MonoBehaviour
                     vendorUI.openUI();
                 }
                 endDialogue();
-                break;
+                ResourceManager.PlayClipByID(null);
+                return;
             case Dialogue.DialogueAction.Shop:
 			    builder.yardPosition = (Vector3)speakerPos;
 			    builder.Initialize(BuilderMode.Trader, dialogue.traderInventory);
                 endDialogue();
+                ResourceManager.PlayClipByID(null);
                 return;
             case Dialogue.DialogueAction.Yard:
 			    builder.yardPosition = (Vector3)speakerPos;
 			    builder.Initialize(BuilderMode.Yard, null);
                 endDialogue();
+                ResourceManager.PlayClipByID(null);
                 return;
             case Dialogue.DialogueAction.Exit:
                 endDialogue();
@@ -161,6 +165,7 @@ public class DialogueSystem : MonoBehaviour
                 break;
         }
 
+        ResourceManager.PlayClipByID("clip_typing");
         // change text
         text = current.text.Replace("<br>", "\n");
         characterCount = 0;
@@ -185,6 +190,7 @@ public class DialogueSystem : MonoBehaviour
             button.SetParent(background, false);
             button.anchoredPosition = new Vector2(0, 24 + 16 * (current.nextNodes.Count - (i + 1)));
             button.GetComponent<Button>().onClick.AddListener(()=> { Next(dialogue, nextIndex, speakerPos, player); });
+            button.GetComponent<Button>().onClick.AddListener(()=> { ResourceManager.PlayClipByID("clip_select", false); });
             button.Find("Text").GetComponent<Text>().text = next.buttonText;
 
             buttons[i] = button.gameObject;

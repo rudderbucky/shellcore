@@ -35,6 +35,7 @@ public class ResourceManager : MonoBehaviour
     public static ResourceManager Instance { get; private set; }
     public static float soundVolume = 1;
 
+    public AudioSource playerSource;
     public void ChangeSoundVolume(float newVol) {
         soundVolume = newVol;
     }
@@ -132,7 +133,15 @@ public class ResourceManager : MonoBehaviour
 
     
     public static void PlayClipByID(string ID, Vector3 pos) {
-        AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos, soundVolume);
+         AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos, soundVolume);
+    }
+
+    public static void PlayClipByID(string ID, bool clear=true) {
+        if(Instance.playerSource != null) {
+            if(clear) Instance.playerSource.Stop();
+            if(ID != null) Instance.playerSource.PlayOneShot(GetAsset<AudioClip>(ID), soundVolume);
+        }
+        // TODO: Add audio sources to places that need it
     }
     
     #if UNITY_EDITOR
@@ -231,6 +240,7 @@ public class ResourceManagerEditor : Editor
     SerializedProperty ObjectField;
     SerializedProperty segmentedBuiltIns;
     SerializedProperty resourcePack;
+    SerializedProperty playerSource;
     ResourceManager manager;
     private void OnEnable()
     {
@@ -240,6 +250,7 @@ public class ResourceManagerEditor : Editor
         resourcePack = serializedObject.FindProperty("resourcePack");
         IDField = serializedObject.FindProperty("fieldID");
         ObjectField = serializedObject.FindProperty("newObject");
+        playerSource = serializedObject.FindProperty("playerSource");
     }
 
     public override void OnInspectorGUI()
@@ -251,6 +262,9 @@ public class ResourceManagerEditor : Editor
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("The #1 choice for ALL ShellCore asset injections!");
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PropertyField(playerSource, new GUIContent("Player Audio Source: "));
         EditorGUILayout.EndHorizontal();
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(resourcePack, new GUIContent("Resource pack: "));

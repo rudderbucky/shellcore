@@ -33,6 +33,7 @@ public class SectorCreatorShellCoreEditor : MonoBehaviour, IWindow {
 	}
     public void CloseUI()
     {
+		ResourceManager.PlayClipByID("clip_back");
         window.SetActive(false);
     }
 }

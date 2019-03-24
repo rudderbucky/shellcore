@@ -27,9 +27,6 @@ public class Entity : MonoBehaviour {
     protected GameObject explosionCirclePrefab; // prefabs for death explosion
     protected GameObject explosionLinePrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
-    protected Sprite coreSprite; // sprites for shell and core
-    protected Sprite shellSprite;
-    protected Sprite minimapSprite; // sprite for minimap
     public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
     public EntityBlueprint blueprint; // blueprint of entity containing parts
@@ -108,7 +105,10 @@ public class Entity : MonoBehaviour {
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
             shell = part;
-        }
+        } else 
+            transform.Find("Shell Sprite").GetComponent<SpriteRenderer>().color 
+                = FactionColors.colors[faction]; // needed to reset outpost colors
+
         if (!explosionCirclePrefab)
         {
             explosionCirclePrefab = new GameObject("Explosion Circle");
@@ -143,7 +143,7 @@ public class Entity : MonoBehaviour {
             }
             else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
             renderer.sortingOrder = 101;
-        }
+        } else GetComponent<SpriteRenderer>().color = FactionColors.colors[faction]; // needed to reset outpost colors
         if (!GetComponent<Rigidbody2D>())
         {
             entityBody = gameObject.AddComponent<Rigidbody2D>();

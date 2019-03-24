@@ -11,7 +11,7 @@ public class BattleZoneManager : MonoBehaviour
     public void AlertPlayers(int faction, string message) {
         foreach(Entity target in targets) {
             if(target as PlayerCore && target.faction == faction) {
-                ((PlayerCore)target).alerter.showMessage(message, "clip_alert");
+                ((PlayerCore)target).alerter.showMessage(message, "clip_stationlost");
             }
         }
     }

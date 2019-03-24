@@ -225,9 +225,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		cursorScript.handler = player.GetAbilityHandler();
 
 		// hide the buttons and yard tips if interacting with a trader
-		foreach(PresetButton button in presetButtons) {
-			button.gameObject.SetActive(mode == BuilderMode.Yard);
-		}
+
 		tips.gameObject.SetActive(mode == BuilderMode.Yard);
 		traderScrollView.gameObject.SetActive(mode == BuilderMode.Trader);
 
@@ -306,6 +304,23 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 
 		// activate windows
 		gameObject.SetActive(true);
+
+		if(presetButtons == null || presetButtons.Length == 0) 
+		{
+			presetButtons = GetComponentsInChildren<PresetButton>();
+			foreach(PresetButton button in presetButtons) {
+				button.SBPrefab = SBPrefab;
+				button.player = player;
+				button.cursorScript = cursorScript;
+				button.builder = this;
+				button.Initialize();
+			}
+		}
+
+		foreach(PresetButton button in presetButtons) {
+			button.gameObject.SetActive(mode == BuilderMode.Yard);
+		}
+
 		cursorScript.gameObject.SetActive(true);
 		cursorScript.UpdateHandler();
 	}
@@ -315,6 +330,8 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 	}
 
 	public void CloseUI(bool validClose) {
+		if(!validClose) ResourceManager.PlayClipByID("clip_back");
+		else ResourceManager.PlayClipByID("clip_select");
 		initialized = false;
 		player.SetIsInteracting(false);
 		gameObject.SetActive(false);
@@ -379,16 +396,6 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		player.Rebuild();
 	}
 
-	void Awake() {
-		presetButtons = GetComponentsInChildren<PresetButton>();
-		foreach(PresetButton button in presetButtons) {
-			button.SBPrefab = SBPrefab;
-			button.player = player;
-			button.cursorScript = cursorScript;
-			button.builder = this;
-			button.Initialize();
-		}
-	}
 	void Update() {
 		if((player.transform.position - yardPosition).sqrMagnitude > 200)
 			CloseUI(false);

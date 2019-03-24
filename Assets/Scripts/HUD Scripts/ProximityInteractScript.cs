@@ -15,7 +15,7 @@ public class ProximityInteractScript : MonoBehaviour {
 			Entity closest = null; // get the closest entity
 			foreach(Entity ent in AIData.entities) {
 				// ignore non vendors or non yards
-				if(ent == player || !(ent as IVendor != null || ent as IShipBuilder != null)) continue;
+				if(ent == player || ent.dialogue == null) continue;
 				if(closest == null) closest = ent;
 				else if((ent.transform.position - player.transform.position).sqrMagnitude <= 
 					(closest.transform.position - player.transform.position).sqrMagnitude) 
@@ -28,8 +28,17 @@ public class ProximityInteractScript : MonoBehaviour {
 			{
 				player.interactAlerter.showMessage("");
 				return;
-			} 
-			// cannot interact; too far
+			}
+			else 
+			{ 
+				player.interactAlerter.showMessage("Press 'Q' to interact with " + closest.entityName);
+				if(Input.GetKeyUp(KeyCode.Q)) 
+				{
+					ActivateInteraction(closest); // key received; activate interaction
+				}
+			}
+			
+			/* // cannot interact; too far
 				if(closest as IVendor != null && closest.faction == player.faction) // vendor
 				{
 					VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
@@ -53,7 +62,7 @@ public class ProximityInteractScript : MonoBehaviour {
 					if(Input.GetKeyUp(KeyCode.Q)) {
 						ActivateInteraction(closest); // key received; activate interaction
 					}
-				} else player.interactAlerter.showMessage("");
+				} else player.interactAlerter.showMessage(""); */
 		}
 	}
 }

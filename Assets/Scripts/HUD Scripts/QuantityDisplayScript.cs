@@ -10,6 +10,8 @@ public class QuantityDisplayScript : MonoBehaviour {
     Text[] ob;
     public Image bg1;
     public Image bg2;
+    int lastCredits;
+    public CreditIncrementMarker marker;
 	// Use this for initialization
 	void Start () {
 	    ob = transform.parent.parent.Find("MinimapDisplay").GetComponentsInChildren<Text>();
@@ -24,6 +26,11 @@ public class QuantityDisplayScript : MonoBehaviour {
 	void Update () {
         if (initialized)
         {
+            if(lastCredits != player.credits) {
+                int diff = player.credits - lastCredits;
+                marker.DisplayText((diff > 0 ? "+" : "") + diff);
+            }
+            lastCredits = player.credits;
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
             texts[1].text = player.GetPower() + "";
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();

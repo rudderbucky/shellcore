@@ -64,6 +64,7 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		Initialize();
 	}
 	public void CloseUI() {
+		ResourceManager.PlayClipByID("clip_back");
 		gameObject.SetActive(false);
 		foreach(SaveMenuIcon icon in icons) {
 			Destroy(icon.gameObject);

@@ -15,6 +15,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
     public int number;
     Image image;
     Text text;
+    bool initialized;
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Input.GetKey(KeyCode.LeftShift))
@@ -70,20 +71,23 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
             && player.cursave.presetBlueprints[number - 1] != null)
             JsonUtility.FromJsonOverwrite(player.cursave.presetBlueprints[number - 1], blueprint);
         if (blueprint.parts == null) blueprint = null;
+        initialized = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!blueprint)
-        {
-            image.color = text.color = Color.gray;
-            text.text = " Create Preset " + number;
-        }
-        else
-        {
-            image.color = text.color = Color.green;
-            text.text = " Load Preset " + number;
+        if(initialized) {
+            if (!blueprint)
+            {
+                image.color = text.color = Color.gray;
+                text.text = " Create Preset " + number;
+            }
+            else
+            {
+                image.color = text.color = Color.green;
+                text.text = " Load Preset " + number;
+            }
         }
     }
 }

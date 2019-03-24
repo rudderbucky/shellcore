@@ -111,6 +111,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
     public void CloseUI()
     {
+        ResourceManager.PlayClipByID("clip_back");
         opened = false;
         Destroy(UI);
     }

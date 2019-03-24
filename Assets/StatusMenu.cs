@@ -7,11 +7,12 @@ public class StatusMenu : MonoBehaviour, IWindow {
 	bool toggle = false;
 	public void CloseUI()
 	{
-	for(int i = 0; i < transform.childCount; i++)
-	{
-		transform.GetChild(i).gameObject.SetActive(false);
-	}
-	toggle = false;
+		ResourceManager.PlayClipByID("clip_back");
+		for(int i = 0; i < transform.childCount; i++)
+		{
+			transform.GetChild(i).gameObject.SetActive(false);
+		}
+		toggle = false;
 	}
 
 	// Update is called once per frame
@@ -22,9 +23,10 @@ public class StatusMenu : MonoBehaviour, IWindow {
 			toggle = !toggle;
 			if(toggle) 
 			{
+				ResourceManager.PlayClipByID("clip_select");
 				PlayerViewScript.SetCurrentWindow(this);
 				GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
-			}
+			} else ResourceManager.PlayClipByID("clip_back");
 			for(int i = 0; i < transform.childCount; i++)
 			{
 				transform.GetChild(i).gameObject.SetActive(toggle);
@@ -33,6 +35,7 @@ public class StatusMenu : MonoBehaviour, IWindow {
 	}
 
 	public bool GetActive() {
+		ResourceManager.PlayClipByID("clip_back");
 		return toggle;
 	}
 }

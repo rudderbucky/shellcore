@@ -11,7 +11,6 @@ public class MapMakerScript : MonoBehaviour {
 	RectTransform indicator;
 	// Use this for initialization
 	void OnEnable() {
-		//indicator = (RectTransform)transform.GetChild(0);
 		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
 			Image sect = Instantiate(sectorPrefab, transform, false);
 			sect.transform.SetAsFirstSibling();

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerViewScript : MonoBehaviour {
 
+	public Transform player;
 	private Stack<IWindow> currentWindow;
 	private static PlayerViewScript instance;
 	public static int currentLayer = 0;
@@ -22,10 +23,9 @@ public class PlayerViewScript : MonoBehaviour {
 		if(escapeMenu) escapeMenu.SetActive(false);
 	}
 	void Update () {
-		if(escapeMenu) escapeCanvas.sortingOrder = currentLayer + 1;
 		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
 			while(currentWindow.Count > 0) {
-				if(escapeMenu && escapeMenu.activeSelf) {
+				if(escapeMenu && escapeMenu.activeSelf && !transform.Find("Settings").gameObject.activeSelf) {
 					escapeMenu.SetActive(false);
 					return;
 				}
@@ -36,8 +36,10 @@ public class PlayerViewScript : MonoBehaviour {
 					return;
 				} else currentWindow.Pop();
 			}
-			if(escapeMenu) escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
-			if(transform.Find("Settings")) transform.Find("Settings").gameObject.SetActive(false);
+			if(escapeMenu) {
+				escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
+				escapeCanvas.sortingOrder = currentLayer + 1;
+			}
 		}
 	}
 }
