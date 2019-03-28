@@ -149,8 +149,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         base.Awake(); // base awake
     }
 
-    protected void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
         if (target && !isDead) // Update tractor beam physics
         {
             Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();

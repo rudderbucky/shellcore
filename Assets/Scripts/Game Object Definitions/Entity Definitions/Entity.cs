@@ -582,4 +582,9 @@ public class Entity : MonoBehaviour {
     public void SetMaxHealth(float[] maxHealths) {
         maxHealth = maxHealths;
     }
+
+    protected virtual void FixedUpdate()
+    {
+        
+    }
 }
