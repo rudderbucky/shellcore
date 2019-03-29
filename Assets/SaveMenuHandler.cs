@@ -93,7 +93,7 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		}
 	}
 	public void AddSave() {
-		string currentVersion = "Prototype 2.0.0";
+		string currentVersion = "Prototype 2.1.0";
 		string name = inputField.text;
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
 		inputField.transform.parent.gameObject.SetActive(false);
