@@ -185,7 +185,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			}
 		}
 	}
-	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null) {
+	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null) {
 
 		//initialize window on screen
 		if(initialized) CloseUI(false); // prevent initializing twice by closing UI if already initialized
@@ -213,11 +213,15 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		traderPartDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 
 		// set shell sprite and color
-		shell.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreShellSpriteID);
+		if(!blueprint) blueprint = player.blueprint;
+		shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
 		shell.color = FactionColors.colors[0];
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
-		shell.rectTransform.anchoredPosition = shell.sprite.pivot - shell.rectTransform.sizeDelta / 2;
-		core.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreSpriteID);
+
+		// orient shell image so relative center stays the same regardless of shell tier
+		shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
+		core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
+		core.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
 		core.material = ResourceManager.GetAsset<Material>("material_color_swap");
 		core.color = FactionColors.colors[0];
 		core.preserveAspect = true;
@@ -232,19 +236,31 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		traderScrollView.gameObject.SetActive(mode == BuilderMode.Trader);
 
 		traderInventory = new List<EntityBlueprint.PartInfo>();
-		EntityBlueprint.PartInfo info1 = new EntityBlueprint.PartInfo();
-		info1.partID = "BigWing1";
-		info1.abilityID = 1;
-		info1.tier = 2;
-		traderInventory.Add(info1);
+
+		if(traderInventory.Count == 0) {
+			EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
+			foreach(string name in ResourceManager.allPartNames) {
+				for(int i = 0; i < 3; i++) 
+				{
+					info.partID = name;
+					info.abilityID = Random.Range(0,21);
+					if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
+					if(info.abilityID == 10) info.secondaryData = "mini_drone_spawn";
+					if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
+					else info.tier = Random.Range(1, 4);
+					traderInventory.Add(info);
+				}
+			}
+		}
+
 		if(traderInventory != null) {
-			foreach(EntityBlueprint.PartInfo info in traderInventory) {
+			foreach(EntityBlueprint.PartInfo info in traderInventory) { // TODO: cull values to prevent possible problems
 				if(!traderPartDict.ContainsKey(info)) {
 					int size = ResourceManager.GetAsset<PartBlueprint>(info.partID).size;
 					ShipBuilderInventoryScript traderInvButton = Instantiate(buttonPrefab, // instantiate part button for trader
 						traderContentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
 						traderContentTexts[size].SetActive(true);
-						traderInvButton.part = info1;
+						traderInvButton.part = info;
 						traderInvButton.cursor = cursorScript;
 						traderInvButton.mode = BuilderMode.Trader;
 					traderPartDict.Add(info, traderInvButton);
@@ -302,7 +318,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			player.cursave.partInventory.Add(part);
 			Destroy(player.GetTractorTarget().gameObject);
 		}
-		LoadBlueprint(player.blueprint);
+		LoadBlueprint(blueprint);
 
 		// activate windows
 		gameObject.SetActive(true);
@@ -374,6 +390,15 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		}
 	}
 
+	public InputField inField;
+	public void SetBlueprint() {
+		if(inField.text == "") return;
+		var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+		JsonUtility.FromJsonOverwrite(inField.text, blueprint);
+		if(!blueprint) return;
+		CloseUI(false);
+		Initialize(BuilderMode.Yard, null, blueprint);
+	}
 	public void Deinitialize() {
 		if(cursorScript.buildCost > player.credits) return;
 		bool invalidState = false;
