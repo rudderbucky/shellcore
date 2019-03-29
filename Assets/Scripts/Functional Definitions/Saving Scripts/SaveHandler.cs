@@ -25,7 +25,7 @@ public class SaveHandler : MonoBehaviour {
 				player.blueprint.baseRegen = new float[] {60,0,60};
 				player.blueprint.shellHealth = new float[] {1000,250,500};
 				player.blueprint.coreSpriteID = "core1_light";
-				player.blueprint.coreShellSpriteID = "core1_shell";
+				player.blueprint.coreShellSpriteID = "core3_shell";
 			}
 			player.cursave = save;
 			player.credits = save.credits;
@@ -44,7 +44,7 @@ public class SaveHandler : MonoBehaviour {
 			player.blueprint.shellHealth = new float[] {1000,250,500};
 			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 			player.blueprint.coreSpriteID = "core1_light";
-			player.blueprint.coreShellSpriteID = "core1_shell";
+			player.blueprint.coreShellSpriteID = "core3_shell";
 			player.cursave = save;
 		}
 	}

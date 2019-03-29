@@ -76,7 +76,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 			var blueprint = ResourceManager.GetAsset<PartBlueprint>(partID);
 			float mass = blueprint.mass;
 			float health = blueprint.health;
-			int value = blueprint.value;
+			int value = EntityBlueprint.GetPartValue(info);
 			partStats.text = "Part Shell: " + health / 2 + "\nPart Core: " + health / 4 + "\nPart Mass: " + mass 
 				+ "\nPart Value: \n" + value + " Credits";
 			image.sprite = ResourceManager.GetAsset<Sprite>(partID + "_sprite");

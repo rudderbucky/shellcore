@@ -23,7 +23,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     public int range;
     
     public bool GetActive() {
-		return gameObject.activeSelf;
+		return UI && UI.activeSelf;
 	}
     public void openUI()
     {

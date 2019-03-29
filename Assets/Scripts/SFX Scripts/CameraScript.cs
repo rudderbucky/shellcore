@@ -10,6 +10,7 @@ public class CameraScript : MonoBehaviour {
     // TODO: Arrow indicating target position from TargetingSystem if not on camera
     private PlayerCore core; // the target for the camera to follow
     private bool initialized;
+    public SFXHandler sFXHandler;
     public void Initialize(PlayerCore player)
     {
         core = player;
@@ -24,6 +25,7 @@ public class CameraScript : MonoBehaviour {
             goalPos.z = core.transform.position.z - 10; // maintain z axis difference
             transform.position = goalPos; // set position
         }
+        sFXHandler.Initialize();
     }
 
     private void LateUpdate()

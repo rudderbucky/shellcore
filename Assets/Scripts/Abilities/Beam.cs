@@ -8,7 +8,7 @@ public class Beam : WeaponAbility {
     private Material material; // material used by the line renderer
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
-    private float damage = 50000;
+    private float damage = 500;
 
     protected override void Awake()
     {
@@ -23,7 +23,7 @@ public class Beam : WeaponAbility {
         cooldownDuration = CDRemaining = 5;
         energyCost = 20;
         ID = 4;
-        range = 25;
+        range = 15;
         category = Entity.EntityCategory.All;
     }
     protected virtual void Start() {

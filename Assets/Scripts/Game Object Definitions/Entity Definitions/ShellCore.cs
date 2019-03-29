@@ -168,7 +168,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * enginePower * 24F * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 2400F * Time.fixedDeltaTime * rigidbody.mass / 2);
                 }
             }
         }
@@ -198,15 +198,21 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
         if (target && !isDead && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
         {
-            lineRenderer.positionCount = 2;
-            lineRenderer.sortingOrder = 103;
-            lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
+            if((target.transform.position - transform.position).sqrMagnitude > 600) 
+            {
+                SetTractorTarget(null); // break tractor if too far away
+            } else 
+            {
+                lineRenderer.positionCount = 2;
+                lineRenderer.sortingOrder = 103;
+                lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
 
-            coreGlow.gameObject.SetActive(true);
-            targetGlow.gameObject.SetActive(true);
+                coreGlow.gameObject.SetActive(true);
+                targetGlow.gameObject.SetActive(true);
 
-            coreGlow.transform.position = transform.position;
-            targetGlow.transform.position = target.transform.position;
+                coreGlow.transform.position = transform.position;
+                targetGlow.transform.position = target.transform.position;
+            }
         }
         else
         {

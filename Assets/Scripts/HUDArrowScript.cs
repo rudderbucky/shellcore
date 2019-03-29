@@ -9,6 +9,7 @@ public class HUDArrowScript : MonoBehaviour {
 	private SpriteRenderer spr;
 	public static bool active = false;
 	public bool init;
+	// TODO: fix bug where arrow is disabled initially even though it was enabled in the main menu
 	public void Initialize(PlayerCore player) {
 		if(active) {
 		spr = GetComponent<SpriteRenderer>();

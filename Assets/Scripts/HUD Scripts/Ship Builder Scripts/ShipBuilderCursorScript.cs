@@ -31,7 +31,7 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 
 		buildValue = 0;
 		foreach(ShipBuilderPart part in parts) {
-			buildValue += ResourceManager.GetAsset<PartBlueprint>(part.info.partID).value;
+			buildValue += EntityBlueprint.GetPartValue(part.info);
 		}
 	}
 	public EntityBlueprint.PartInfo? GetCurrentInfo() {

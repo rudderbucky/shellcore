@@ -65,7 +65,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		GameObject[] dictContentTexts;
 		switch(transferMode) {
 			case TransferMode.Sell:
-				cursorScript.buildCost -= ResourceManager.GetAsset<PartBlueprint>(part.info.partID).value;
+				cursorScript.buildCost -= EntityBlueprint.GetPartValue(part.info);
 				dictContentsArray = traderContentsArray;
 				dict = traderPartDict;
 				dictContentTexts = traderContentTexts;
@@ -76,8 +76,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 				dictContentTexts = contentTexts;
 				break;
 			default: // transfer back to original inventory
-				if(part.mode == BuilderMode.Trader) cursorScript.buildCost 
-					-= ResourceManager.GetAsset<PartBlueprint>(part.info.partID).value;
+				if(part.mode == BuilderMode.Trader) cursorScript.buildCost -= EntityBlueprint.GetPartValue(part.info);
 				dict = (part.mode == BuilderMode.Yard ? partDict : traderPartDict);
 				dictContentsArray = (part.mode == BuilderMode.Yard ? contentsArray : traderContentsArray);
 				dictContentTexts = (part.mode == BuilderMode.Yard ? contentTexts : traderContentTexts);
@@ -104,7 +103,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 			dict[culledInfo].cursor = cursorScript;
 		}
 		dict[culledInfo].IncrementCount();
-		cursorScript.buildValue -= ResourceManager.GetAsset<PartBlueprint>(part.info.partID).value;
+		cursorScript.buildValue -= EntityBlueprint.GetPartValue(part.info);
 		cursorScript.parts.Remove(part);
 		Destroy(part.gameObject);
 	}
@@ -212,9 +211,12 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		player.SetIsInteracting(true);
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 		traderPartDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
+
+		// set shell sprite and color
 		shell.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreShellSpriteID);
 		shell.color = FactionColors.colors[0];
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
+		shell.rectTransform.anchoredPosition = shell.sprite.pivot - shell.rectTransform.sizeDelta / 2;
 		core.sprite = ResourceManager.GetAsset<Sprite>(player.blueprint.coreSpriteID);
 		core.material = ResourceManager.GetAsset<Material>("material_color_swap");
 		core.color = FactionColors.colors[0];

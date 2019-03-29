@@ -80,9 +80,9 @@ public class ReticleScript : MonoBehaviour {
             if (entityTarget != null && !entityTarget.GetIsDead() && entityTarget != craft) 
                 // if it is not null, dead or the player itself
             {
-                if (targSys.GetTarget() == entityTarget.transform) //Interact with entity
+                if (!craft.GetIsInteracting() && targSys.GetTarget() == entityTarget.transform) //Interact with entity
                 {
-                    if (entityTarget.dialogue as Dialogue)
+                    if (entityTarget.dialogue as Dialogue && (entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200)
                         DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue, entityTarget.transform.position, craft);
                 }
 
@@ -176,7 +176,7 @@ public class ReticleScript : MonoBehaviour {
                     Draggable draggable = targSys.GetTarget().GetComponent<Draggable>();
 
                     // it's draggable if it's not an entity or it's a draggable entity with the same faction
-                    if (draggable 
+                    if (draggable && (targSys.GetTarget().position - craft.transform.position).sqrMagnitude <= 400
                     && (!targSys.GetTarget().GetComponent<Entity>() 
                     || targSys.GetTarget().GetComponent<Entity>().faction == craft.faction))
                     {

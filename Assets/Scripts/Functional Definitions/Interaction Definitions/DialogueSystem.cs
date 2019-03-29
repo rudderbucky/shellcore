@@ -20,7 +20,8 @@ public class DialogueSystem : MonoBehaviour
     float nextCharacterTime;
     public float timeBetweenCharacters = 0.02f;
     string text = "";
-
+    Transform playerTransform;
+    Vector3? speakerPos;
     private void Awake()
     {
         Instance = this;
@@ -28,6 +29,8 @@ public class DialogueSystem : MonoBehaviour
 
     private void Update()
     {
+        if(window && speakerPos != null && playerTransform && (playerTransform.position - ((Vector3)speakerPos)).sqrMagnitude > 200)
+            endDialogue();
         // Add text
         if(textRenderer && characterCount < text.Length)
         {
@@ -55,6 +58,7 @@ public class DialogueSystem : MonoBehaviour
         if (window && window.GetActive())
             return;
         if(window) endDialogue();
+        playerTransform = null;
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
         window.ToggleActive();
@@ -84,10 +88,8 @@ public class DialogueSystem : MonoBehaviour
     private void startDialogue(Dialogue dialogue, Vector3? speakerPos, PlayerCore player)
     {
         if(window) endDialogue();
-        // if (window && window.GetActive())
-        //    return;
-        // if(window) endDialogue();
-
+        playerTransform = player ? player.transform : null;
+        this.speakerPos = speakerPos;
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
         window.ToggleActive();

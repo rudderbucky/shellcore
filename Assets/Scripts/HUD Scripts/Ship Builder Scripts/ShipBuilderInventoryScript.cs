@@ -40,8 +40,8 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
             cursor.parts.Add(builderPart);
             cursor.GrabPart(builderPart);
             count--;
-            cursor.buildValue += ResourceManager.GetAsset<PartBlueprint>(part.partID).value;
-            if(mode == BuilderMode.Trader) cursor.buildCost += ResourceManager.GetAsset<PartBlueprint>(part.partID).value;
+            cursor.buildValue += EntityBlueprint.GetPartValue(part);
+            if(mode == BuilderMode.Trader) cursor.buildCost += EntityBlueprint.GetPartValue(part);
         }
     }
     public void IncrementCount() {

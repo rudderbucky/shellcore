@@ -111,7 +111,7 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		blueprint.shellHealth = new float[] {1000,250,500};
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		blueprint.coreSpriteID = "core1_light";
-		blueprint.coreShellSpriteID = "core1_shell";
+		blueprint.coreShellSpriteID = "core3_shell";
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
 		save.version = currentVersion;
 		saves.Add(save);

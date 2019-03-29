@@ -38,7 +38,7 @@ public class PlayerViewScript : MonoBehaviour {
 			}
 			if(escapeMenu) {
 				escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
-				escapeCanvas.sortingOrder = currentLayer + 1;
+				escapeCanvas.sortingOrder = ++currentLayer;
 			}
 		}
 	}
