@@ -16,7 +16,12 @@ public abstract class AirCraft : Craft
 
     protected override void Update() {
         base.Update(); // base update
-        Oscillator(); // call oscillator
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        Oscillator();
     }
 
     /// <summary>

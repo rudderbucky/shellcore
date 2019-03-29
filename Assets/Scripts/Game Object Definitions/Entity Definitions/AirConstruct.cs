@@ -36,6 +36,11 @@ public class AirConstruct : Construct {
 	// Update is called once per frame
 	protected override void Update () {
         base.Update();
-        Oscillator();
 	}
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        Oscillator();
+    }
 }
