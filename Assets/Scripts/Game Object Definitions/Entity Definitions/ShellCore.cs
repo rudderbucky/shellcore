@@ -177,7 +177,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected void TractorBeamUpdate()
     {
-        if (!target) // Don't grab energy when the craft is pulling something more important
+        if (!target && ai) // Don't grab energy automatically if not controlled by ai or when the craft is pulling something more important
         {
             EnergySphereScript[] energies = AIData.energySpheres.ToArray();
 
