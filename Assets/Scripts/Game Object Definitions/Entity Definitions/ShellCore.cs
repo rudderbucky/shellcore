@@ -19,6 +19,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     Transform targetGlow;
     Draggable target;
     protected float totalPower;
+	private float energyPickupTimer = 10.0f; // Energy pickup timer
+	protected float energyPickupSpeed = 10.0f; // Energy pickup rate scale for balancing. Can be overwritten by subclasses.
     protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore) TODO: move to shellcore
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
@@ -177,7 +179,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected void TractorBeamUpdate()
     {
-        if (!target && ai) // Don't grab energy automatically if not controlled by ai or when the craft is pulling something more important
+		this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
+        if ((!target) && (this.energyPickupTimer < 0)) // Grab energy automatically after a while when the craft is not pulling something more important
         {
             EnergySphereScript[] energies = AIData.energySpheres.ToArray();
 
@@ -195,6 +198,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
             }
             if (closest && closestD < 160 && GetTractorTarget() == null)
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
+			this.energyPickupTimer = 10.0f;
         }
 
         if (target && !isDead && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
