@@ -137,7 +137,7 @@ public abstract class Craft : Entity
     /// <param name="directionVector">vector given</param>
     protected virtual void CraftMover(Vector2 directionVector)
     {
-        RotateCraft(directionVector); // rotate craft
+        RotateCraft(directionVector / entityBody.mass); // rotate craft
         entityBody.AddForce(enginePower * directionVector); 
         // actual force applied to craft; independent of angle rotation
     }

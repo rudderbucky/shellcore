@@ -19,7 +19,7 @@ public class Laser : Bullet {
         prefabScale = Vector2.one;
         terrain = Entity.TerrainType.All;
         category = Entity.EntityCategory.Unit;
-        pierceFactor = 0.5F;
+        pierceFactor = 0.2F;
     }
 
     protected override void Start() {
