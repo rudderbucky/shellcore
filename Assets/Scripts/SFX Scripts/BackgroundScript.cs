@@ -116,14 +116,37 @@ public class BackgroundScript : MonoBehaviour {
             setColor(bgCol);
         }
     }
+    Color lastColor; // used like bgCol, just without the static attribute
     public void setColor(Color color)
     {
-        bgCol = color;
+        if(lastColor == Color.clear) {
+            lastColor = color;
+            foreach(GameObject tile in ingameTiles) {
+                tile.GetComponent<SpriteRenderer>().color = color;
+            }
+            return;
+        }
+
         if(active) {
             for(int i = 0; i < ingameTiles.Length; i++)
             {
-                ingameTiles[i].GetComponent<SpriteRenderer>().color = color;
+                var renderer = ingameTiles[i].GetComponent<SpriteRenderer>();
+                renderer.color = lastColor;
+                StartCoroutine(FadeColor(color, renderer));
+                //ingameTiles[i].GetComponent<SpriteRenderer>().color = color;
             }
+        }
+        bgCol = lastColor = color; 
+        // this entire method happens in 1 frame so these are updated even while the renderers are lerping
+    }
+
+    private IEnumerator FadeColor(Color newColor, SpriteRenderer renderer) {
+        float beginLerp = 0;
+        while(renderer.color != newColor) {
+            renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
+            beginLerp += 0.0125F;
+            if(beginLerp > 1) beginLerp = 1;
+            yield return null;
         }
     }
 }

@@ -19,7 +19,9 @@ public class Beam : WeaponAbility {
         line = GetComponent<LineRenderer>() ? GetComponent<LineRenderer>() : gameObject.AddComponent<LineRenderer>();
         line.sortingLayerName = "Projectiles";
         line.material = material;
-        line.startWidth = line.endWidth = 0.2F;
+        line.startWidth = line.endWidth = 0.15F;
+        line.endColor = new Color(0.8F,0.8F,1,0.9F);
+        line.startColor = new Color(0.2F, 0.2F, 1, 0.9F);
         cooldownDuration = CDRemaining = 5;
         energyCost = 20;
         ID = 4;
@@ -49,6 +51,10 @@ public class Beam : WeaponAbility {
             if(line.positionCount > 0 && ((line.GetPosition(1)-line.transform.position).sqrMagnitude 
                 > (line.GetPosition(0)-line.transform.position).sqrMagnitude)) {
                 line.SetPosition(0, line.GetPosition(0) + (line.GetPosition(1)-line.GetPosition(0)).normalized * 2); 
+                if((line.GetPosition(0)-line.transform.position).sqrMagnitude 
+                    > (line.GetPosition(1)-line.transform.position).sqrMagnitude) {
+                    line.SetPosition(0, line.GetPosition(1));
+                }
                 if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
             }
             else line.positionCount = 0;

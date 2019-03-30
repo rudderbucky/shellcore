@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StatusMenu : MonoBehaviour, IWindow {
 	public PlayerCore player;
+	public Text playerName;
 	bool toggle = false;
 	public void CloseUI()
 	{
@@ -14,7 +16,13 @@ public class StatusMenu : MonoBehaviour, IWindow {
 		}
 		toggle = false;
 	}
+	void Initialize() {
+		ResourceManager.PlayClipByID("clip_select");
+		PlayerViewScript.SetCurrentWindow(this);
+		GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
+		playerName.text = "<color=yellow>" + player.name + "</color>";
 
+	}
 	// Update is called once per frame
 	void Update () 
 	{
@@ -23,9 +31,7 @@ public class StatusMenu : MonoBehaviour, IWindow {
 			toggle = !toggle;
 			if(toggle) 
 			{
-				ResourceManager.PlayClipByID("clip_select");
-				PlayerViewScript.SetCurrentWindow(this);
-				GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
+				Initialize();
 			} else ResourceManager.PlayClipByID("clip_back");
 			for(int i = 0; i < transform.childCount; i++)
 			{
@@ -35,7 +41,6 @@ public class StatusMenu : MonoBehaviour, IWindow {
 	}
 
 	public bool GetActive() {
-		ResourceManager.PlayClipByID("clip_back");
 		return toggle;
 	}
 }

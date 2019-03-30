@@ -9,6 +9,7 @@ public class MapMakerScript : MonoBehaviour {
 	public SectorManager manager;
 	public Transform player;
 	RectTransform indicator;
+	int zoomoutFactor = 2;
 	// Use this for initialization
 	void OnEnable() {
 		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
@@ -17,13 +18,13 @@ public class MapMakerScript : MonoBehaviour {
 			Image body = sect.GetComponentsInChildren<Image>()[1];
 			sect.color = sector.backgroundColor;
 			body.color = sect.color + Color.grey;
-			sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x, sector.bounds.y);
-			body.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h);
+			sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x, sector.bounds.y) / zoomoutFactor;
+			body.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
 		}
 	}
 
 	void Update() {
-		GetComponent<RectTransform>().anchoredPosition = -player.transform.position;
+		GetComponent<RectTransform>().anchoredPosition = -player.transform.position / zoomoutFactor;
 	}
 	void OnDisable() {
 		for(int i = 0; i < transform.childCount; i++) {

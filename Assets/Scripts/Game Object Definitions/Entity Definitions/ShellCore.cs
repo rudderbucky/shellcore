@@ -169,7 +169,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 2400F * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * rigidbody.mass / 2);
                 }
             }
         }

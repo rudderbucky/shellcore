@@ -124,9 +124,9 @@ public class SectorManager : MonoBehaviour
     }
     private void Start()
     {
-                if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
-                background.setColor(SectorColors.colors[0]);
-                if(!jsonMode) loadSector();
+        if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
+        background.setColor(SectorColors.colors[4]);
+        if(!jsonMode) loadSector();
     }
 
     void loadSector()
