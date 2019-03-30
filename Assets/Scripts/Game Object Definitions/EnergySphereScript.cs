@@ -46,4 +46,5 @@ public class EnergySphereScript : MonoBehaviour {
             Destroy(gameObject);
         }
     }
+	
 }
