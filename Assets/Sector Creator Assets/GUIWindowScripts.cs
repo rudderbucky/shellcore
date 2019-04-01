@@ -11,18 +11,24 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
 	Vector2 mousePos;
 	bool selected;
-	public RectTransform container;
 	public virtual void CloseUI() {
-		ResourceManager.PlayClipByID("clip_back");
-		gameObject.SetActive(false);
+		if(transform.parent.gameObject.activeSelf) {
+			ResourceManager.PlayClipByID("clip_back");
+			transform.parent.gameObject.SetActive(false);
+		}
 	}
 
+	public virtual void Activate() {
+		gameObject.SetActive(true);
+		GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
+		PlayerViewScript.SetCurrentWindow(this);
+	}
 	public virtual void ToggleActive() {
-		bool active = gameObject.activeSelf;
+		bool active = transform.parent.gameObject.activeSelf;
 		if(active) CloseUI();
 		else {
-			gameObject.SetActive(true);
-			GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
+			transform.parent.gameObject.SetActive(true);
+			GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
 			PlayerViewScript.SetCurrentWindow(this);
 		}
 	}
@@ -31,20 +37,18 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 		return gameObject ? gameObject.activeSelf : false;
 	}
 
-    public void OnPointerDown(PointerEventData eventData) {
-		Debug.Log("hi");
-        mousePos = (Vector2)Input.mousePosition - container.anchoredPosition;
+	public virtual void OnPointerDown(PointerEventData eventData) {
+		mousePos = (Vector2)Input.mousePosition - GetComponent<RectTransform>().anchoredPosition;
 		selected = true;
-    }
+	}
 
 	public void OnPointerUp(PointerEventData eventData) {
-		Debug.Log("low");
 		selected = false;
 	}
 
-	void Update() {
+	protected virtual void Update() {
 		if(selected) {
-			container.anchoredPosition = (Vector2)Input.mousePosition - mousePos;
+			GetComponent<RectTransform>().anchoredPosition = (Vector2)Input.mousePosition - mousePos;
 		}
 	}
 }

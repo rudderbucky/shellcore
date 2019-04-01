@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class ShipBuilder : MonoBehaviour, IWindow {
+public class ShipBuilder : GUIWindowScripts {
 	public GameObject SBPrefab;
 	public Vector3 yardPosition;
 	public Image shell;
@@ -190,8 +191,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		//initialize window on screen
 		if(initialized) CloseUI(false); // prevent initializing twice by closing UI if already initialized
 		initialized = true;
-		PlayerViewScript.SetCurrentWindow(this);
-		GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
+		Activate();
 		cursorScript.gameObject.SetActive(false);
 
 		// set up actual stats
@@ -343,7 +343,7 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		cursorScript.UpdateHandler();
 	}
 
-	public void CloseUI() {
+	public override void CloseUI() {
 		CloseUI(false);
 	}
 
@@ -423,7 +423,8 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		player.Rebuild();
 	}
 
-	void Update() {
+	protected override void Update() {
+		base.Update();
 		if((player.transform.position - yardPosition).sqrMagnitude > 200)
 			CloseUI(false);
 	}
@@ -478,7 +479,12 @@ public class ShipBuilder : MonoBehaviour, IWindow {
 		ChangeDisplayFactors();
 	}
 
-	public bool GetActive() {
+	public override bool GetActive() {
 		return gameObject.activeSelf;
+	}
+
+	public override void OnPointerDown(PointerEventData eventData) {
+		if(RectTransformUtility.RectangleContainsScreenPoint(cursorScript.grid, Input.mousePosition)) return;
+		base.OnPointerDown(eventData);
 	}
 }

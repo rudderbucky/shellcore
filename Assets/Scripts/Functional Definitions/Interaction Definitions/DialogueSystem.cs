@@ -91,8 +91,8 @@ public class DialogueSystem : MonoBehaviour
         playerTransform = player ? player.transform : null;
         this.speakerPos = speakerPos;
         //create window
-        window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
-        window.ToggleActive();
+        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
@@ -214,6 +214,6 @@ public class DialogueSystem : MonoBehaviour
     private void endDialogue()
     {
         window.ToggleActive();
-        Destroy(window.gameObject);
+        Destroy(window.transform.root.gameObject);
     }
 }
