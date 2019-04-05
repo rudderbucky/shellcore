@@ -21,7 +21,7 @@ public class Beam : WeaponAbility {
         line.material = material;
         line.startWidth = line.endWidth = 0.15F;
         line.endColor = new Color(0.8F,0.8F,1,0.9F);
-        line.startColor = new Color(0.2F, 0.2F, 1, 0.9F);
+        line.startColor = new Color(0.5F, 0.5F, 1, 0.9F);
         cooldownDuration = CDRemaining = 5;
         energyCost = 20;
         ID = 4;
