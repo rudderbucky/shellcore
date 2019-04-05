@@ -34,7 +34,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 	}
 
 	public virtual bool GetActive() {
-		return gameObject ? gameObject.activeSelf : false;
+		return transform && transform.parent ? transform.parent.gameObject.activeSelf : false;
 	}
 
 	public virtual void OnPointerDown(PointerEventData eventData) {
