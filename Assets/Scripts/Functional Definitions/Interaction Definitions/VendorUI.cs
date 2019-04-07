@@ -42,9 +42,11 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             buttonPrefab = ResourceManager.GetAsset<GameObject>("vendor_button");
         }
         UI = Instantiate(UIPrefab);
-        PlayerViewScript.SetCurrentWindow(this);
-        UI.GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
-        background = UI.transform.Find("Background");
+        UI.GetComponentInChildren<GUIWindowScripts>().Activate();
+        // UI.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+        //PlayerViewScript.SetCurrentWindow(this);
+        //UI.GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
+        background = UI.transform.Find("Container").Find("Background");
         Button close = background.transform.Find("Close").GetComponent<Button>();
         close.onClick.AddListener(CloseUI);
         costInfo = background.transform.Find("Cost").GetComponent<Text>();
@@ -110,8 +112,8 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     }
 
     public void CloseUI()
-    {
-        ResourceManager.PlayClipByID("clip_back");
+    { 
+        UI.GetComponentInChildren<GUIWindowScripts>().CloseUI();
         opened = false;
         Destroy(UI);
     }

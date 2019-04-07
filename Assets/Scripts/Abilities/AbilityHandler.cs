@@ -126,6 +126,7 @@ public class AbilityHandler : MonoBehaviour {
             if(visibleAbilities[i].GetTier() > 0) {
                 Vector3 size = image.rectTransform.sizeDelta;
                 image.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + visibleAbilities[i].GetTier());
+                image.enabled = true;
                 image.rectTransform.sizeDelta = image.sprite.bounds.size * 30;
                 Color origCol = image.color;
                 image.color = new Color(image.color.r, image.color.g, image.color.b, 0.4F);
@@ -141,7 +142,8 @@ public class AbilityHandler : MonoBehaviour {
                 abilityTierArray[i].transform.SetParent(transform, false);
             }
             // instantiate ability image
-            image.sprite = ResourceManager.GetAsset<Sprite>("AbilitySprite" + visibleAbilities[i].GetID());
+            image.sprite = AbilityUtilities.GetAbilityImageByID(visibleAbilities[i].GetID());
+            image.enabled = true;
             abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
             abilityImagesArray[i].gameObject.SetActive(true);
             canvasg = abilityImagesArray[i].gameObject.AddComponent<CanvasGroup>(); 

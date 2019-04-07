@@ -16,7 +16,7 @@ public class HealthBarScript : MonoBehaviour {
     private bool initialized; // if this GUI component is initialized
     private bool[] gleaming; // if the bar is gleaming
     private bool[] gleamed; // if the bar has already gleamed in the cycle
-    private string[] names = new string[] {"SHELL: ", "CORE: ", "ENERGY: "};
+    private string[] names = new string[] {"SHELL ", "CORE ", "ENERGY "};
     private PlayerCore player; // associated player
 
     /// <summary>

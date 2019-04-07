@@ -198,7 +198,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
             }
             if (closest && closestD < 160 && GetTractorTarget() == null)
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
-			this.energyPickupTimer = 10.0f;
+			this.energyPickupTimer = 0.0f; // Can change this to a non-zero value to add the timing element back
         }
 
         if (target && !isDead && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
