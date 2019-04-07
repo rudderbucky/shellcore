@@ -20,7 +20,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     Draggable target;
     protected float totalPower;
 	private float energyPickupTimer = 10.0f; // Energy pickup timer
-	protected float energyPickupSpeed = 10.0f; // Energy pickup rate scale for balancing. Can be overwritten by subclasses.
+	protected float energyPickupSpeed = 61.0f; // Disabled for now D: (60*FixedDeltatime = 10) Energy pickup rate scale for future hard/easy gamemodes and AI balancing only.
     protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore) TODO: move to shellcore
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
