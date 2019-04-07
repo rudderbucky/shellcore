@@ -397,6 +397,7 @@ public class ShipBuilder : GUIWindowScripts {
 		JsonUtility.FromJsonOverwrite(inField.text, blueprint);
 		if(!blueprint) return;
 		CloseUI(false);
+		inField.text = "";
 		Initialize(BuilderMode.Yard, null, blueprint);
 	}
 	public void Deinitialize() {

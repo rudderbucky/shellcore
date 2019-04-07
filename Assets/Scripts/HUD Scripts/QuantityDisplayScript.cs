@@ -28,7 +28,7 @@ public class QuantityDisplayScript : MonoBehaviour {
         {
             if(lastCredits != player.credits) {
                 int diff = player.credits - lastCredits;
-                marker.DisplayText((diff > 0 ? "+" : "") + diff);
+                marker.DisplayText(diff);
             }
             lastCredits = player.credits;
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
