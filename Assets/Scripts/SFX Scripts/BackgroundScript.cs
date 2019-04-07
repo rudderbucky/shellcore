@@ -89,8 +89,7 @@ public class BackgroundScript : MonoBehaviour {
                     GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;
                     go.transform.SetParent(parent.transform, true);
                     // create the tile, no rotation desired
-                    go.GetComponent<SpriteRenderer>().color = new Color(0.5F, 0, 0);//new Color(0.039F, 0.188F, 0.184F);
-                    // change the color (will be changing this line later)
+                    
                     ingameTiles[count] = go; // assign to array
                     count++; // increment count
                     // I don't want the tiles to be a child of the object using this script 
@@ -119,6 +118,11 @@ public class BackgroundScript : MonoBehaviour {
     Color lastColor; // used like bgCol, just without the static attribute
     public void setColor(Color color)
     {
+        Camera.main.backgroundColor = color;
+        if(ingameTiles == null) {
+            bgCol = lastColor = color;
+            return;
+        }
         if(lastColor == Color.clear) {
             lastColor = color;
             foreach(GameObject tile in ingameTiles) {

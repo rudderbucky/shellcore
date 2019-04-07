@@ -3,28 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatusMenu : MonoBehaviour, IWindow {
+public class StatusMenu : GUIWindowScripts {
 	public PlayerCore player;
 	public Text playerName;
 	bool toggle = false;
-	public void CloseUI()
+	public override void CloseUI()
 	{
 		ResourceManager.PlayClipByID("clip_back");
 		for(int i = 0; i < transform.childCount; i++)
 		{
-			transform.GetChild(i).gameObject.SetActive(false);
+			transform.GetChild(0).gameObject.SetActive(false);
 		}
 		toggle = false;
 	}
 	void Initialize() {
 		ResourceManager.PlayClipByID("clip_select");
 		PlayerViewScript.SetCurrentWindow(this);
-		GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
+		GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
 		playerName.text = "<color=yellow>" + player.name + "</color>";
+		base.Activate();
 
 	}
 	// Update is called once per frame
-	void Update () 
+	protected override void Update () 
 	{
 		if(Input.GetKeyDown(KeyCode.E) && !player.GetIsInteracting()) 
 		{
@@ -35,12 +36,13 @@ public class StatusMenu : MonoBehaviour, IWindow {
 			} else ResourceManager.PlayClipByID("clip_back");
 			for(int i = 0; i < transform.childCount; i++)
 			{
-				transform.GetChild(i).gameObject.SetActive(toggle);
+				transform.GetChild(0).gameObject.SetActive(toggle);
 			}
 		}
+		base.Update();
 	}
 
-	public bool GetActive() {
+	public override bool GetActive() {
 		return toggle;
 	}
 }

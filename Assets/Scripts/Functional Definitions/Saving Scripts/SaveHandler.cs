@@ -25,7 +25,7 @@ public class SaveHandler : MonoBehaviour {
 				player.blueprint.baseRegen = new float[] {60,0,60};
 				player.blueprint.shellHealth = new float[] {1000,250,500};
 				player.blueprint.coreSpriteID = "core1_light";
-				player.blueprint.coreShellSpriteID = "core3_shell";
+				player.blueprint.coreShellSpriteID = "core1_shell";
 			}
 			player.cursave = save;
 			player.credits = save.credits;
@@ -44,7 +44,7 @@ public class SaveHandler : MonoBehaviour {
 			player.blueprint.shellHealth = new float[] {1000,250,500};
 			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 			player.blueprint.coreSpriteID = "core1_light";
-			player.blueprint.coreShellSpriteID = "core3_shell";
+			player.blueprint.coreShellSpriteID = "core1_shell";
 			player.cursave = save;
 		}
 	}
@@ -53,7 +53,6 @@ public class SaveHandler : MonoBehaviour {
 		save.timePlayed += Time.timeSinceLevelLoad / 60;
 		string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
 		save.position = player.transform.position;
-		save.shellID = player.blueprint.coreShellSpriteID;
 		save.currentHealths = player.currentHealth;
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);

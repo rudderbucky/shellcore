@@ -4,9 +4,8 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 
-public class SaveMenuHandler : MonoBehaviour, IWindow {
+public class SaveMenuHandler : GUIWindowScripts {
 
-	// TODO: save timePlayed functionality
 	List<PlayerSave> saves;
 	List<string> paths;
 	public Transform contents;
@@ -58,22 +57,21 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		}
 	}
 
-	public void OpenUI() {
-		PlayerViewScript.SetCurrentWindow(this);
-		gameObject.SetActive(true);
+	public override void Activate() {
+		base.Activate();
 		Initialize();
 	}
-	public void CloseUI() {
-		ResourceManager.PlayClipByID("clip_back");
-		gameObject.SetActive(false);
+
+	public override void CloseUI() {
 		foreach(SaveMenuIcon icon in icons) {
 			Destroy(icon.gameObject);
 		}
 		icons.Clear();
+		base.CloseUI();
 	}
 
 	public void OpenSavePrompt() {
-		inputField.transform.parent.GetComponent<GUIWindowScripts>().ToggleActive();
+		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
 	}
 
 	public void PromptDelete(int index) {
@@ -96,7 +94,7 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		string currentVersion = "Prototype 2.1.0";
 		string name = inputField.text;
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
-		inputField.transform.parent.gameObject.SetActive(false);
+		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
 		if(name == "" || paths.Contains(path)) return;
 		PlayerSave save = new PlayerSave();
 		save.name = name;
@@ -105,6 +103,8 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		save.currentHealths = new float[] {1000,250,500};
 		save.partInventory = new List<EntityBlueprint.PartInfo>();
 
+		// this section contains default information for a new save. Edit this to change how the default save
+		// is created.
 		EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 		blueprint.name = "Player Save Blueprint";
 		blueprint.baseRegen = new float[] {60,0,60};
@@ -125,9 +125,5 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		icons.Add(icon);
 		icon.transform.SetAsFirstSibling();
 		File.WriteAllText(path, JsonUtility.ToJson(save));
-	}
-
-	public bool GetActive() {
-		return gameObject.activeSelf;
 	}
 }
