@@ -19,7 +19,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 	}
 
 	public virtual void Activate() {
-		gameObject.SetActive(true);
+		transform.parent.gameObject.SetActive(true);
 		GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
 		PlayerViewScript.SetCurrentWindow(this);
 	}

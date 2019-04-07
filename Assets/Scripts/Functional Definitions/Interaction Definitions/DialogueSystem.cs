@@ -60,8 +60,8 @@ public class DialogueSystem : MonoBehaviour
         if(window) endDialogue();
         playerTransform = null;
         //create window
-        window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
-        window.ToggleActive();
+        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
