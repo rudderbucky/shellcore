@@ -11,10 +11,10 @@ public class CreditIncrementMarker : MonoBehaviour {
 		textComp = GetComponent<Text>();
 		pos = textComp.rectTransform.anchoredPosition;
 	}
-	public void DisplayText(string text) {
+	public void DisplayText(int num) {
 		textComp.rectTransform.anchoredPosition = pos;
-		textComp.color = textComp.color + new Color(0,0,0,1);
-		textComp.text = text;
+		textComp.color = (num > 0 ? new Color(0,1,0,1) : new Color(1,0,0,1));
+		textComp.text = (num > 0 ? "+" : "") + num;
 
 		StartCoroutine("Fade");
 	}

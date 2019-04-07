@@ -24,7 +24,7 @@ public class ProximityInteractScript : MonoBehaviour {
 					}
 			}
 
-			if(closest == null || (closest.transform.position - player.transform.position).sqrMagnitude >= 200) 
+			if(player.GetIsInteracting() || closest == null || (closest.transform.position - player.transform.position).sqrMagnitude >= 200) 
 			{
 				player.interactAlerter.showMessage("");
 				return;

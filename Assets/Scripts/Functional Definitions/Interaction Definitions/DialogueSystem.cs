@@ -18,7 +18,7 @@ public class DialogueSystem : MonoBehaviour
     public VendorUI vendorUI;
     int characterCount = 0;
     float nextCharacterTime;
-    public float timeBetweenCharacters = 0.02f;
+    public double timeBetweenCharacters = 0.0175d;
     string text = "";
     Transform playerTransform;
     Vector3? speakerPos;
@@ -37,7 +37,7 @@ public class DialogueSystem : MonoBehaviour
             if(Time.time > nextCharacterTime)
             {
                 characterCount++;
-                nextCharacterTime = Time.time + timeBetweenCharacters;
+                nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
                 textRenderer.text = text.Substring(0, characterCount);
             }
         }
@@ -60,8 +60,8 @@ public class DialogueSystem : MonoBehaviour
         if(window) endDialogue();
         playerTransform = null;
         //create window
-        window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
-        window.ToggleActive();
+        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
@@ -71,7 +71,7 @@ public class DialogueSystem : MonoBehaviour
         // change text
         this.text = text.Replace("<br>", "\n");
         characterCount = 0;
-        nextCharacterTime = Time.time + timeBetweenCharacters;
+        nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
         textRenderer.color = Color.white;
 
         // ok button
@@ -91,8 +91,8 @@ public class DialogueSystem : MonoBehaviour
         playerTransform = player ? player.transform : null;
         this.speakerPos = speakerPos;
         //create window
-        window = Instantiate(dialogueBoxPrefab).GetComponent<GUIWindowScripts>();
-        window.ToggleActive();
+        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
@@ -171,7 +171,7 @@ public class DialogueSystem : MonoBehaviour
         // change text
         text = current.text.Replace("<br>", "\n");
         characterCount = 0;
-        nextCharacterTime = Time.time + timeBetweenCharacters;
+        nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
         textRenderer.color = current.textColor;
 
         // create buttons
@@ -214,6 +214,6 @@ public class DialogueSystem : MonoBehaviour
     private void endDialogue()
     {
         window.ToggleActive();
-        Destroy(window.gameObject);
+        Destroy(window.transform.root.gameObject);
     }
 }
