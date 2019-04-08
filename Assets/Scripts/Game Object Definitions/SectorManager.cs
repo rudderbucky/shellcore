@@ -55,6 +55,7 @@ public class SectorManager : MonoBehaviour
 
     private void Update()
     {
+        if(jsonMode) player.SetIsInteracting(true);
         if(!jsonMode && player && (current == null || !current.bounds.contains(player.transform.position)))
         {
             // load sector
@@ -112,7 +113,10 @@ public class SectorManager : MonoBehaviour
                 curSect.platform = plat;
                 current = curSect;
                 sectors = new List<Sector>();
+                sectors.Add(curSect);
                 Debug.Log("Success! File loaded from " + path);
+                jsonMode = false;
+                player.SetIsInteracting(false);
                 loadSector();
                 return;
             } catch(System.Exception e) {
@@ -120,6 +124,7 @@ public class SectorManager : MonoBehaviour
             }
         } 
         jsonMode = false;
+        player.SetIsInteracting(false);
         loadSector();
     }
     private void Start()
