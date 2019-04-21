@@ -12,7 +12,7 @@ public class SecCrCamera : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		if(!mouse.windowEnabled) {
 			Vector3 mousePos = Input.mousePosition;
 			mousePos.z += 10;

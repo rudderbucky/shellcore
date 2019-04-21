@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems; // Required when using Event data.
 using UnityEngine.SceneManagement;
 
-
 public class ShipBuilderCursorScript : MonoBehaviour {
 
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
@@ -128,7 +127,11 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		if(Input.GetKeyDown("c") && !field.isFocused && !jsonField.isFocused) {
 			ClearAllParts();
 		}
-		transform.position = new Vector3(5 * ((int)Input.mousePosition.x / 5), 5 * ((int)Input.mousePosition.y / 5), 0);
+		System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / (int)y), z * ((int)x.y / (int)z), 0);
+		// var newOffset = roundToRatios(new Vector3(Screen.width / 2, Screen.height / 2, 0), 10, 10) -new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
+		var newOffset = roundToRatios(grid.position, 10, 10) -grid.position;
+		transform.position = roundToRatios(Input.mousePosition, 10, 10) - newOffset;
+		// TODO: Make this stuff less messy. Regardless, consistency achieved!
 		if(rotateMode) {
 			RotateLastPart();
 			return;

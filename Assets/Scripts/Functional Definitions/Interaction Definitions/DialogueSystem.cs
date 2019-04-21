@@ -43,9 +43,9 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    public static void StartDialogue(Dialogue dialogue, Vector3? speakerPos = null, PlayerCore player = null)
+    public static void StartDialogue(Dialogue dialogue, Entity speaker = null, PlayerCore player = null)
     {
-        Instance.startDialogue(dialogue, speakerPos, player);
+        Instance.startDialogue(dialogue, speaker, player);
     }
 
     public static void ShowPopup(string text)
@@ -85,11 +85,11 @@ public class DialogueSystem : MonoBehaviour
         buttons[0] = button.gameObject;
     }
 
-    private void startDialogue(Dialogue dialogue, Vector3? speakerPos, PlayerCore player)
+    private void startDialogue(Dialogue dialogue, Entity speaker, PlayerCore player)
     {
         if(window) endDialogue();
         playerTransform = player ? player.transform : null;
-        this.speakerPos = speakerPos;
+        speakerPos = speaker.transform.position;
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
@@ -98,15 +98,15 @@ public class DialogueSystem : MonoBehaviour
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
-        next(dialogue, 0, speakerPos, player);
+        next(dialogue, 0, speaker, player);
     }
 
-    public static void Next(Dialogue dialogue, int ID, Vector3? speakerPos, PlayerCore player)
+    public static void Next(Dialogue dialogue, int ID, Entity speaker, PlayerCore player)
     {
-        Instance.next(dialogue, ID, speakerPos, player);
+        Instance.next(dialogue, ID, speaker, player);
     }
 
-    public void next(Dialogue dialogue, int ID, Vector3? speakerPos, PlayerCore player)
+    public void next(Dialogue dialogue, int ID, Entity speaker, PlayerCore player)
     {
         if(dialogue.nodes.Count == 0)
         {
@@ -139,6 +139,11 @@ public class DialogueSystem : MonoBehaviour
                 //Do nothing and continue after this check
                 break;
             case Dialogue.DialogueAction.Outpost:
+                if(speaker.faction != player.faction) {
+                    endDialogue();
+                    ResourceManager.PlayClipByID(null);
+                    return;
+                }
                 if(((Vector3)speakerPos - player.transform.position).magnitude < dialogue.vendingBlueprint.range) {
                     vendorUI.blueprint = dialogue.vendingBlueprint;
                     vendorUI.outpostPosition = (Vector3)speakerPos;
@@ -191,7 +196,7 @@ public class DialogueSystem : MonoBehaviour
             RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
             button.SetParent(background, false);
             button.anchoredPosition = new Vector2(0, 24 + 16 * (current.nextNodes.Count - (i + 1)));
-            button.GetComponent<Button>().onClick.AddListener(()=> { Next(dialogue, nextIndex, speakerPos, player); });
+            button.GetComponent<Button>().onClick.AddListener(()=> { Next(dialogue, nextIndex, speaker, player); });
             button.GetComponent<Button>().onClick.AddListener(()=> { ResourceManager.PlayClipByID("clip_select", false); });
             button.Find("Text").GetComponent<Text>().text = next.buttonText;
 

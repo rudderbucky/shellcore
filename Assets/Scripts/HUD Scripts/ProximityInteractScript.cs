@@ -7,7 +7,7 @@ public class ProximityInteractScript : MonoBehaviour {
 
 	void ActivateInteraction(Entity ent) { 
 		// TODO: perhaps make this a static ability so reticle scripts can use it as well
-		DialogueSystem.StartDialogue(ent.dialogue, ent.transform.position, player);
+		DialogueSystem.StartDialogue(ent.dialogue, ent, player);
 	}
 	void Update() {
 		if(player != null) 

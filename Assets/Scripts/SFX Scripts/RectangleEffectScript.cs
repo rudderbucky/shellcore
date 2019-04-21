@@ -72,7 +72,7 @@ public class RectangleEffectScript : MonoBehaviour {
         Build();
     }
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
         if(active) {
             ParticleSystem.Particle[] particles = new ParticleSystem.Particle[25]; // constantly update particle array, room for optimization here

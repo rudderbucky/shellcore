@@ -249,7 +249,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 	}
 
-	void Update () {
+	void FixedUpdate() {
 		windowEnabled = mainMenu.transform.parent.gameObject.activeSelf || sectorProps.transform.parent.gameObject.activeSelf
 		|| hotkeyList.transform.parent.gameObject.activeSelf
 		|| readFile.transform.parent.gameObject.activeSelf || coreEditor.gameObject.activeSelf;
