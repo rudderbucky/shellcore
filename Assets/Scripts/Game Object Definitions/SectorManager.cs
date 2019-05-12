@@ -308,6 +308,8 @@ public class SectorManager : MonoBehaviour
                         blueprint.dialogue.traderInventory = 
                             JsonUtility.FromJson<List<EntityBlueprint.PartInfo>>(current.entities[i].blueprintJSON);
                         break;
+                    case EntityBlueprint.IntendedType.DroneWorkshop:
+                        break;
                     default:
                         break;
                 }

@@ -40,6 +40,37 @@ public class ShipBuilder : GUIWindowScripts {
 	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
 	public BuilderMode mode;
 
+	public bool ContainsParts(List<EntityBlueprint.PartInfo> parts) {
+		Dictionary<EntityBlueprint.PartInfo, int> counts = new Dictionary<EntityBlueprint.PartInfo, int>();
+		// get the part counts
+		foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
+			var p = CullSpatialValues(info);
+			if(!counts.ContainsKey(p)) {
+				counts.Add(p, partDict[p].GetCount());
+			}
+		}
+		foreach(ShipBuilderPart inf in cursorScript.parts) {
+			var p = CullSpatialValues(inf.info);
+			if(!counts.ContainsKey(p)) {
+				Debug.Log(p.partID);
+				counts.Add(p, 1);
+			} else counts[p]++;
+		}
+
+		foreach(EntityBlueprint.PartInfo part in parts) {
+			var p = CullSpatialValues(part);
+			if(!counts.ContainsKey(p)) {
+				Debug.Log("b");
+				return false;
+			}
+			else if(--counts[p] < 0) {
+				Debug.Log(p.partID + "x");
+				Debug.Log("c");
+				return false;
+			}
+		}
+		return true;
+	}
 	public bool DecrementPartButton(EntityBlueprint.PartInfo info) {
 		if(partDict.ContainsKey(CullSpatialValues(info)) && partDict[CullSpatialValues(info)].GetCount() > 0) {
 			partDict[CullSpatialValues(info)].DecrementCount();
@@ -337,6 +368,7 @@ public class ShipBuilder : GUIWindowScripts {
 
 		foreach(PresetButton button in presetButtons) {
 			button.gameObject.SetActive(mode == BuilderMode.Yard);
+			button.CheckValid();
 		}
 
 		cursorScript.gameObject.SetActive(true);

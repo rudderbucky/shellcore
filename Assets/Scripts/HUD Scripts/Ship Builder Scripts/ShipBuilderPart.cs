@@ -75,9 +75,9 @@ public class ShipBuilderPart : MonoBehaviour {
 
 	bool IsTooClose(ShipBuilderPart otherPart) {
 		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
-		0.28F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
+		0.20F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
 		Mathf.Abs(rectTransform.anchoredPosition.y - otherPart.rectTransform.anchoredPosition.y) <
-		0.28F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
+		0.20F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
 		return z;
 	}
 	

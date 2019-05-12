@@ -16,14 +16,18 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
     Image image;
     Text text;
     bool initialized;
+    bool valid;
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
             if (player.cursave.presetBlueprints != null) player.cursave.presetBlueprints[number - 1] = null;
             blueprint = null;
+            valid = true;
             return;
         }
+        if(!valid) return; // allow user to left shift out blueprint so return after that
+        // TODO: check if adding a part back into your inventory validates the preset
         if (!blueprint)
         {
             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -32,6 +36,10 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
             blueprint.parts = new List<EntityBlueprint.PartInfo>();
             foreach (ShipBuilderPart part in cursorScript.parts)
             {
+                if(!part.isInChain || !part.validPos) {
+                    blueprint = null;
+                    return;
+                }
                 blueprint.parts.Add(part.info);
             }
             if (player.cursave.presetBlueprints == null || (player.cursave.presetBlueprints != null 
@@ -74,10 +82,18 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
         initialized = true;
     }
 
+    public void CheckValid() {
+        if(blueprint && blueprint.parts != null && !builder.ContainsParts(blueprint.parts)) 
+        {   
+            valid = false;
+            image.color = text.color = Color.red;
+            text.text = " Inadequate parts! ";
+        } else valid = true;
+    }
     // Update is called once per frame
     void Update()
     {
-        if(initialized) {
+        if(initialized && valid) {
             if (!blueprint)
             {
                 image.color = text.color = Color.gray;
