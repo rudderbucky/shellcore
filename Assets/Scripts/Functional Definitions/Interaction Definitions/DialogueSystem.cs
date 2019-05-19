@@ -15,6 +15,7 @@ public class DialogueSystem : MonoBehaviour
     Text textRenderer;
     GameObject[] buttons;
     public ShipBuilder builder;
+    public DroneWorkshop workshop;
     public VendorUI vendorUI;
     int characterCount = 0;
     float nextCharacterTime;
@@ -167,6 +168,12 @@ public class DialogueSystem : MonoBehaviour
                 return;
             case Dialogue.DialogueAction.Exit:
                 endDialogue();
+                return;
+            case Dialogue.DialogueAction.Workshop:
+                workshop.yardPosition = (Vector3)speakerPos;
+                workshop.InitializeSelectionPhase();
+                endDialogue();
+                ResourceManager.PlayClipByID(null);
                 return;
             default:
                 break;

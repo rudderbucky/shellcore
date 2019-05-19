@@ -8,7 +8,8 @@ public interface IShipBuilder {
 
 public enum BuilderMode {
     Yard,
-    Trader
+    Trader,
+    Workshop
 }
 public class Yard : AirConstruct, IShipBuilder {
 

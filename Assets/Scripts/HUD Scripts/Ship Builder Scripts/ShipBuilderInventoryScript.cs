@@ -29,6 +29,7 @@ public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
         } else GetComponentsInChildren<Image>()[2].enabled = false;
         image.color = FactionColors.colors[0];
         image.GetComponent<RectTransform>().sizeDelta = image.sprite.bounds.size * 100;
+        // button border size is handled specifically by the grid layout components
     }
     public void OnPointerDown(PointerEventData eventData)
     {

@@ -18,7 +18,7 @@ public class ShipBuilder : GUIWindowScripts {
 	public Transform traderSmallContents;
 	public Transform traderMediumContents;
 	public Transform traderLargeContents;
-	private Transform[] contentsArray; // holds scroll view sub-sections by part size
+	protected Transform[] contentsArray; // holds scroll view sub-sections by part size
 	private Transform[] traderContentsArray;
 	public GameObject smallText;
 	public GameObject mediumText;
@@ -26,18 +26,18 @@ public class ShipBuilder : GUIWindowScripts {
 	public GameObject traderSmallText;
 	public GameObject traderMediumText;
 	public GameObject traderLargeText;
-	private GameObject[] contentTexts;
+	protected GameObject[] contentTexts;
 	private GameObject[] traderContentTexts;
-	public PresetButton[] presetButtons;
-	private string searcherString;
+	private PresetButton[] presetButtons;
+	protected string searcherString;
 	private bool[] displayingTypes;
 	public Image reconstructImage;
 	public Text reconstructText;
-	bool initialized;
+	protected bool initialized;
 	public TipsFromTheYard tips;
 	public GameObject traderScrollView;
-	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
-	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
+	protected Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
+	private Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
 	public BuilderMode mode;
 
 	public bool ContainsParts(List<EntityBlueprint.PartInfo> parts) {
