@@ -136,12 +136,6 @@ public class SectorManager : MonoBehaviour
 
     void loadSector()
     {
-        // SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
-        // data.platformjson = JsonUtility.ToJson(current.platform);
-        // data.sectorjson = JsonUtility.ToJson(current);
-        // System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + "CenterSector", JsonUtility.ToJson(data));
-        // UnityEditor.AssetDatabase.CreateAsset(current, "Assets/CenterSectorNew.asset");
-        // UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/CenterSectorNewPlatform.asset");
         //unload previous sector
         foreach(var obj in objects)
         {
@@ -155,8 +149,9 @@ public class SectorManager : MonoBehaviour
         Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
         foreach(var obj in persistentObjects)
         {
+            if(!obj.Value) continue;
             if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
-                && obj.Value != player.gameObject)
+                && obj.Value != player.gameObject && !player.GetUnitsCommanding().Contains(obj.Value.GetComponent<Drone>() as IOwnable))
             {
                 Destroy(obj.Value);
             } else tmp.Add(obj.Key, obj.Value);

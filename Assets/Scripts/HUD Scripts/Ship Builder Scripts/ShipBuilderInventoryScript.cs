@@ -7,14 +7,13 @@ using UnityEngine.SceneManagement;
 
 
 
-public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
-    public EntityBlueprint.PartInfo part;
+public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDownHandler {
+
     public GameObject SBPrefab;
     public ShipBuilderCursorScript cursor;
     public Text val;
     public BuilderMode mode;
     int count;
-    Image image;
 
     void Start() {
         val = GetComponentInChildren<Text>();

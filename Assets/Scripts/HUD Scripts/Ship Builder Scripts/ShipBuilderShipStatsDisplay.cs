@@ -38,7 +38,7 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 			shipMass += blueprint.mass;
 		}
 		string buildStat = "";
-		if(cursorScript.builder.mode == BuilderMode.Yard) {
+		if(cursorScript.builder.GetMode() == BuilderMode.Yard) {
 			buildStat = "\nTOTAL BUILD VALUE: \n" + cursorScript.buildValue + " CREDITS";
 		} else {	
 			string colorTag = "<color=white>";

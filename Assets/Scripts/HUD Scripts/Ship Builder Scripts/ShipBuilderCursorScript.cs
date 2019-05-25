@@ -5,6 +5,13 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems; // Required when using Event data.
 using UnityEngine.SceneManagement;
 
+public interface IBuilderInterface {
+	BuilderMode GetMode();
+	void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode);
+	void UpdateChain();
+	EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
+}
+
 public class ShipBuilderCursorScript : MonoBehaviour {
 
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
@@ -12,7 +19,7 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public RectTransform grid;
 	ShipBuilderPart currentPart;
 	ShipBuilderPart lastPart;
-	public ShipBuilder builder;
+	public IBuilderInterface builder;
 	public InputField field;
 	public InputField jsonField;
 	bool flipped;
@@ -23,6 +30,10 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public int buildCost;
 	public RectTransform playerInventory;
 	public RectTransform traderInventory;
+
+	public void SetBuilder(IBuilderInterface builder) {
+		this.builder = builder;
+	}
 
 	void OnEnable() {
 		buildCost = 0;

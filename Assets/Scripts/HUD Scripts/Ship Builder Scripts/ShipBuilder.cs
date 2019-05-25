@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ShipBuilder : GUIWindowScripts {
+public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public GameObject SBPrefab;
 	public Vector3 yardPosition;
 	public Image shell;
@@ -40,6 +40,9 @@ public class ShipBuilder : GUIWindowScripts {
 	private Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
 	public BuilderMode mode;
 
+	public BuilderMode GetMode() {
+		return mode;
+	}
 	public bool ContainsParts(List<EntityBlueprint.PartInfo> parts) {
 		Dictionary<EntityBlueprint.PartInfo, int> counts = new Dictionary<EntityBlueprint.PartInfo, int>();
 		// get the part counts
@@ -52,7 +55,6 @@ public class ShipBuilder : GUIWindowScripts {
 		foreach(ShipBuilderPart inf in cursorScript.parts) {
 			var p = CullSpatialValues(inf.info);
 			if(!counts.ContainsKey(p)) {
-				Debug.Log(p.partID);
 				counts.Add(p, 1);
 			} else counts[p]++;
 		}
@@ -60,12 +62,9 @@ public class ShipBuilder : GUIWindowScripts {
 		foreach(EntityBlueprint.PartInfo part in parts) {
 			var p = CullSpatialValues(part);
 			if(!counts.ContainsKey(p)) {
-				Debug.Log("b");
 				return false;
 			}
 			else if(--counts[p] < 0) {
-				Debug.Log(p.partID + "x");
-				Debug.Log("c");
 				return false;
 			}
 		}
@@ -224,6 +223,9 @@ public class ShipBuilder : GUIWindowScripts {
 		initialized = true;
 		Activate();
 		cursorScript.gameObject.SetActive(false);
+		cursorScript.SetBuilder(this);
+
+		GetComponentInChildren<ShipBuilderPartDisplay>().Initialize(this);
 
 		// set up actual stats
 		this.mode = mode;
@@ -276,7 +278,10 @@ public class ShipBuilder : GUIWindowScripts {
 					info.partID = name;
 					info.abilityID = Random.Range(0,21);
 					if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
-					if(info.abilityID == 10) info.secondaryData = "mini_drone_spawn";
+					if(info.abilityID == 10) {
+						DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 2));
+						info.secondaryData = JsonUtility.ToJson(data);
+					}
 					if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
 					else info.tier = Random.Range(1, 4);
 					traderInventory.Add(info);
@@ -309,7 +314,10 @@ public class ShipBuilder : GUIWindowScripts {
 						info.partID = name;
 						info.abilityID = Random.Range(0,21);
 						if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
-						if(info.abilityID == 10) info.secondaryData = "mini_drone_spawn";
+						if(info.abilityID == 10) {
+							DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 2));
+							info.secondaryData = JsonUtility.ToJson(data);
+						}
 						if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
 						else info.tier = Random.Range(1, 4);
 						parts.Add(info);
