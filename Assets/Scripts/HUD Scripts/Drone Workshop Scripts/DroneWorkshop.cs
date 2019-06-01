@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 enum DroneWorkshopPhase {
 	SelectionPhase,
@@ -21,11 +23,19 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	public GameObject mediumText;
 	public GameObject largeText;
 	public PlayerCore player;
-	protected Dictionary<EntityBlueprint.PartInfo, DWInventoryButton> partDict;
+	protected Dictionary<DWInventoryButton, EntityBlueprint.PartInfo> partDict;
 	public GameObject displayButtonPrefab;
 	public DWSelectionDisplayHandler selectionDisplay;
+	public GameObject selectionPhaseParent;
+	public GameObject buildPhaseParent;
+	public Image coreImage;
+	public Image shellImage;
+	public GameObject partPrefab;
 
     public void InitializeSelectionPhase() {
+
+		selectionPhaseParent.SetActive(true);
+		buildPhaseParent.SetActive(false);
         //initialize window on screen
 		if(initialized) CloseUI(false); // prevent initializing twice by closing UI if already initialized
 		initialized = true;
@@ -41,7 +51,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 
 		GetComponentInChildren<ShipBuilderPartDisplay>().Initialize(this);
 		player.SetIsInteracting(true);
-		partDict = new Dictionary<EntityBlueprint.PartInfo, DWInventoryButton>();
+		partDict = new Dictionary<DWInventoryButton, EntityBlueprint.PartInfo>();
 
 		// hide the buttons and yard tips if interacting with a trader
 
@@ -62,9 +72,10 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
 				var button = Instantiate(displayButtonPrefab, contentsArray[size]).GetComponent<DWInventoryButton>();
 				button.handler = selectionDisplay;
+				button.workshop = this;
 				contentTexts[size].SetActive(true);
 				button.part = part;
-				partDict.Add(part, button);
+				partDict.Add(button, part);
 			}
 			player.cursave.partInventory.Add(part);
 			Destroy(player.GetTractorTarget().gameObject);
@@ -82,14 +93,15 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 			DWInventoryButton invButton = Instantiate(displayButtonPrefab, 
 				contentsArray[size]).GetComponent<DWInventoryButton>();
 			invButton.handler = selectionDisplay;
-			partDict.Add(part, invButton);
+			invButton.workshop = this;
+			partDict.Add(invButton, part);
 			contentTexts[size].SetActive(true);
 			invButton.part = part;
 		}
 	}
     public BuilderMode GetMode()
     {
-        throw new System.NotImplementedException();
+        return BuilderMode.Yard;
     }
 
     public void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode)
@@ -101,18 +113,75 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		player.SetIsInteracting(false);
 		base.CloseUI();
 	}
+
+	public override void CloseUI() {
+		CloseUI(false);
+	}
+
     public void UpdateChain()
     {
-        throw new System.NotImplementedException();
+        
     }
 
 	public EntityBlueprint.PartInfo? GetButtonPartCursorIsOn() {
-		foreach(DWInventoryButton inv in partDict.Values) {
+		foreach(DWInventoryButton inv in partDict.Keys) {
 			if(RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition) 
 				&& inv.gameObject.activeSelf) {
 				return inv.part;
 			}
 		}
 		return null;
+	}
+
+	public static DroneSpawnData ParseDronePart(EntityBlueprint.PartInfo part) {
+		if(part.abilityID != 10) Debug.Log("Passed part is not a drone spawner!");
+		var data = ScriptableObject.CreateInstance<DroneSpawnData>();
+		JsonUtility.FromJsonOverwrite(part.secondaryData, data);
+		return data;
+	}
+	public void InitializeBuildPhase(EntityBlueprint blueprint) {
+		selectionPhaseParent.SetActive(false);
+		buildPhaseParent.SetActive(true);
+		cursorScript.gameObject.SetActive(true);
+		cursorScript.SetMode(BuilderMode.Workshop);
+		LoadBlueprint(blueprint);
+	}
+
+	public void LoadBlueprint(EntityBlueprint blueprint) {
+		shellImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
+		if(shellImage.sprite) {
+			shellImage.enabled = true;
+			shellImage.color = FactionColors.colors[0];
+			shellImage.rectTransform.sizeDelta = shellImage.sprite.bounds.size * 100;
+
+			// orient shell image so relative center stays the same regardless of shell tier
+			shellImage.rectTransform.anchoredPosition = -shellImage.sprite.pivot + shellImage.rectTransform.sizeDelta / 2;
+		} else shellImage.enabled = false;
+
+		coreImage.rectTransform.anchoredPosition = -shellImage.rectTransform.anchoredPosition;
+		coreImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+		if(coreImage.sprite) {
+			coreImage.material = ResourceManager.GetAsset<Material>("material_color_swap");
+			coreImage.color = FactionColors.colors[0];
+			coreImage.preserveAspect = true;
+			coreImage.rectTransform.sizeDelta = coreImage.sprite.bounds.size * 110;
+		} else coreImage.enabled = false;
+
+		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
+			var p = Instantiate(partPrefab, cursorScript.transform.parent).GetComponent<ShipBuilderPart>();
+			p.cursorScript = cursorScript;
+			cursorScript.parts.Add(p);
+			p.info = part;
+			p.SetLastValidPos(part.location);
+			p.isInChain = true;
+			p.validPos = true;
+			p.InitializeMode(BuilderMode.Workshop);
+		}
+	}
+	
+	/// prevent dragging the window if the mouse is on the grid
+	public override void OnPointerDown(PointerEventData eventData) {
+		if(RectTransformUtility.RectangleContainsScreenPoint(cursorScript.grid, Input.mousePosition)) return;
+		base.OnPointerDown(eventData);
 	}
 }

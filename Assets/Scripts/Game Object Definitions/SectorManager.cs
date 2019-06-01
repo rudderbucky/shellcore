@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
@@ -118,6 +120,9 @@ public class SectorManager : MonoBehaviour
                 jsonMode = false;
                 player.SetIsInteracting(false);
                 loadSector();
+                #if UNITY_EDITOR
+                    SaveSector(curSect, plat);
+                #endif
                 return;
             } catch(System.Exception e) {
                 Debug.Log(e);
@@ -127,6 +132,13 @@ public class SectorManager : MonoBehaviour
         player.SetIsInteracting(false);
         loadSector();
     }
+
+    #if UNITY_EDITOR
+    public void SaveSector(Sector sec, LandPlatform plat) {
+        AssetDatabase.CreateAsset(sec, "Assets/SavedSector.asset");
+        AssetDatabase.CreateAsset(plat, "Assets/SavedSectorPlatform.asset");
+    }
+    #endif
     private void Start()
     {
         if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
@@ -304,8 +316,7 @@ public class SectorManager : MonoBehaviour
                             JsonUtility.FromJson<List<EntityBlueprint.PartInfo>>(current.entities[i].blueprintJSON);
                         break;
                     case EntityBlueprint.IntendedType.DroneWorkshop:
-                        Yard workshop = gObj.AddComponent<Yard>();
-                        workshop.mode = BuilderMode.Workshop;
+                        DroneWorkshopEntity workshop = gObj.AddComponent<DroneWorkshopEntity>();
                         break;
                     default:
                         break;

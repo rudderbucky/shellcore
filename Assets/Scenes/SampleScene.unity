@@ -2556,6 +2556,11 @@ MonoBehaviour:
   displayButtonPrefab: {fileID: 7767061715383421403, guid: 62d1bfaa2c1ed31418928a7e463e1d2b,
     type: 3}
   selectionDisplay: {fileID: 389884323}
+  selectionPhaseParent: {fileID: 390696152}
+  buildPhaseParent: {fileID: 686176280}
+  coreImage: {fileID: 868891069}
+  shellImage: {fileID: 1969649784}
+  partPrefab: {fileID: 1765373141249224, guid: c3771e617c197b641b00015bf838081d, type: 3}
 --- !u!1 &365600342
 GameObject:
   m_ObjectHideFlags: 0
@@ -2811,7 +2816,7 @@ RectTransform:
   m_GameObject: {fileID: 389884321}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 390696153}
   m_RootOrder: 3
@@ -2835,7 +2840,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shell: {fileID: 192076636}
   core: {fileID: 347490628}
-  partPrefab: {fileID: 0}
+  partPrefab: {fileID: 8091560633884404769, guid: 38a8b63eeea43194bbd154697633171e,
+    type: 3}
 --- !u!1 &390479171
 GameObject:
   m_ObjectHideFlags: 0
@@ -6171,8 +6177,6 @@ MonoBehaviour:
     obj: {fileID: 11400000, guid: 4391d750dd6f4ab4e927dbe8296133a5, type: 2}
   - ID: part8_mini_drone
     obj: {fileID: 11400000, guid: c6e3fb03f12ab0449bcaf131270e3d9a, type: 2}
-  - ID: mini_drone_sprite
-    obj: {fileID: 21300000, guid: 3685ea036fd73c64e8bc337c1cbabd94, type: 3}
   - ID: bunker_blueprint
     obj: {fileID: 11400000, guid: c8801550469a3d143ad093fc12424db6, type: 2}
   - ID: bunker_vending_blueprint
@@ -6317,6 +6321,16 @@ MonoBehaviour:
     obj: {fileID: 8300000, guid: 5a53daf20a2ba0f41a3bcfbc6ac7257e, type: 3}
   - ID: clip_typing
     obj: {fileID: 8300000, guid: 8b88fe2b83775f64587ce6e53a2a911d, type: 3}
+  - ID: counter_drone_spawn
+    obj: {fileID: 11400000, guid: d255a164b0fe54f47bb6459909313c28, type: 2}
+  - ID: mini_drone_blueprint
+    obj: {fileID: 11400000, guid: a73d750b958bc2047a8c61ae337bf8ba, type: 2}
+  - ID: counter_drone_blueprint
+    obj: {fileID: 11400000, guid: fa0f57ca25dbe964b83c537778e5b101, type: 2}
+  - ID: droneworkshop_blueprint
+    obj: {fileID: 11400000, guid: 10765117184287b489053737bc515f1a, type: 2}
+  - ID: mini_drone_part_sprite
+    obj: {fileID: 21300000, guid: 3685ea036fd73c64e8bc337c1cbabd94, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
@@ -9720,8 +9734,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 83, y: -24.599998}
-  m_SizeDelta: {x: 160, y: 16}
+  m_AnchoredPosition: {x: 126.999985, y: -24.599998}
+  m_SizeDelta: {x: 248, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1218339354
 MonoBehaviour:
@@ -9756,7 +9770,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Medium Parts
+  m_Text: Medium Spawning Parts
 --- !u!222 &1218339355
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9878,8 +9892,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 83, y: -41.199997}
-  m_SizeDelta: {x: 160, y: 16}
+  m_AnchoredPosition: {x: 126.999985, y: -41.199997}
+  m_SizeDelta: {x: 248, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1241541159
 MonoBehaviour:
@@ -9914,7 +9928,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Large Parts
+  m_Text: Large Spawning Parts
 --- !u!222 &1241541160
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10496,6 +10510,7 @@ MonoBehaviour:
   cursorScript: {fileID: 1755223052}
   partName: {fileID: 505142681}
   partStats: {fileID: 1551445105}
+  image: {fileID: 1695852103}
   abilityImage: {fileID: 1962244573}
   abilityTier: {fileID: 73500090}
   abilityText: {fileID: 1025759638}
@@ -11044,58 +11059,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1433348497
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1433348499}
-  - component: {fileID: 1433348498}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1433348498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1433348497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5db0c653afed9df449ac7b90a36c4aed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shell: {fileID: 0}
-  currentHealth: []
-  faction: 0
-  blueprint: {fileID: 11400000, guid: 03cbbb006645bd141a878a3fc7bf46da, type: 2}
-  spawnPoint: {x: 0, y: 0, z: 0}
-  dialogue: {fileID: 0}
-  category: 3
-  sectorMngr: {fileID: 0}
-  entityName: 
---- !u!4 &1433348499
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1433348497}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -10, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1436317067
 GameObject:
   m_ObjectHideFlags: 0
@@ -11353,7 +11316,7 @@ Transform:
   - {fileID: 224035880472802623}
   - {fileID: 305617547}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1446804109
 MonoBehaviour:
@@ -11799,6 +11762,7 @@ MonoBehaviour:
   cursorScript: {fileID: 1755223052}
   partName: {fileID: 1708583462}
   partStats: {fileID: 1126801409}
+  image: {fileID: 717475411}
   abilityImage: {fileID: 1316914514}
   abilityTier: {fileID: 1132615396}
   abilityText: {fileID: 455559266}
@@ -11930,8 +11894,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 83, y: -8}
-  m_SizeDelta: {x: 160, y: 16}
+  m_AnchoredPosition: {x: 127, y: -8}
+  m_SizeDelta: {x: 248, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1492715643
 MonoBehaviour:
@@ -11966,7 +11930,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Small Parts
+  m_Text: Small Spawning Parts
 --- !u!222 &1492715644
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13935,7 +13899,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1530662579}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15445,10 +15409,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jsonMode: 1
   sectors:
-  - {fileID: 11400000, guid: 879408378c3dd274aa6664d1de24f740, type: 2}
+  - {fileID: 11400000, guid: cebc026cb3fa8bc4f8649e80aca041ec, type: 2}
   - {fileID: 11400000, guid: c381e686d1c019643898f125c1b2eafa, type: 2}
   player: {fileID: 1878101311}
-  current: {fileID: 11400000, guid: 879408378c3dd274aa6664d1de24f740, type: 2}
+  current: {fileID: 11400000, guid: cebc026cb3fa8bc4f8649e80aca041ec, type: 2}
   background: {fileID: 715925746}
   info: {fileID: 0}
   strayParts: []
@@ -16936,7 +16900,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 437186890}
   m_HandleRect: {fileID: 437186889}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -18316,6 +18280,7 @@ MonoBehaviour:
   cursorScript: {fileID: 1725152190506865365}
   partName: {fileID: 1725152189427993433}
   partStats: {fileID: 1725152189304011820}
+  image: {fileID: 1725152190492160038}
   abilityImage: {fileID: 1725152188892286774}
   abilityTier: {fileID: 1725152190613469736}
   abilityText: {fileID: 2122708345}

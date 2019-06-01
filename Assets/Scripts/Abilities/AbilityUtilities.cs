@@ -190,7 +190,6 @@ public class AbilityUtilities : MonoBehaviour {
 				ability = obj.AddComponent<Laser>();
 				break;
 			case 10:
-				Debug.Log("hi " + data);
 				ability = obj.AddComponent<SpawnDrone>();
 				((SpawnDrone)ability).spawnData = ScriptableObject.CreateInstance<DroneSpawnData>();
 				JsonUtility.FromJsonOverwrite(data, ((SpawnDrone)ability).spawnData);

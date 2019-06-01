@@ -9,7 +9,7 @@ public class ShipBuilderInventoryBase : MonoBehaviour
     public EntityBlueprint.PartInfo part;
     protected Image image;
 
-    void Start() {
+    protected virtual void Start() {
         image = GetComponentsInChildren<Image>()[1];
         image.sprite = ResourceManager.GetAsset<Sprite>(part.partID + "_sprite");
         string shooterID = AbilityUtilities.GetShooterByID(part.abilityID);

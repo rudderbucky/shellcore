@@ -11,7 +11,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 	public ShipBuilderCursorScript cursorScript;
 	public Text partName;
 	public Text partStats;
-	Image image;
+	public Image image;
 	public Image abilityImage;
 	public Image abilityTier;
 	public Text abilityText;
@@ -25,9 +25,9 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 	public void Initialize(IBuilderInterface inter) {
 		builder = inter;
 		initialized = true;
-		image = GetComponentInChildren<Image>();
 		image.type = Image.Type.Sliced;
 		abilityImage.type = Image.Type.Sliced;
+		abilityTier.type = Image.Type.Sliced;
 		SetInactive();
 	}
 
@@ -61,7 +61,6 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 			}
 
 			if(part != null) {
-				emptyInfoMarker.SetActive(false);
 				EntityBlueprint.PartInfo info = (EntityBlueprint.PartInfo)part;
 				if(info.abilityID != 0) {
 					if(info.tier != 0) {
@@ -87,6 +86,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 					abilityImage.gameObject.SetActive(false);
 					abilityText.gameObject.SetActive(false);
 				}
+				emptyInfoMarker.SetActive(false);
 				image.gameObject.SetActive(true);
 				partName.gameObject.SetActive(true);
 				partStats.gameObject.SetActive(true);

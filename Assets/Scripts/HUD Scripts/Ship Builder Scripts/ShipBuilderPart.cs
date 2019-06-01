@@ -8,18 +8,16 @@ using UnityEngine.EventSystems;
 	This class exists to streamline the process of displaying an image representation of a part, and storing actual data.
 	In other words, this class is made to reflect the current status of the embedded PartInfo in image form.
  */
-public class ShipBuilderPart : MonoBehaviour {
+public class ShipBuilderPart : DisplayPart {
 
-	Image image;
-	Image shooter;
 	public RectTransform rectTransform;
-	public EntityBlueprint.PartInfo info;
 	public ShipBuilderCursorScript cursorScript;
 	public bool isInChain;
 	public bool validPos;
 	public bool highlighted;
 	public BuilderMode mode;
 	private Vector3? lastValidPos = null;
+	private float closeConstant;
 
 	public void SetLastValidPos(Vector3? lastPos) {
 		lastValidPos = lastPos;
@@ -29,55 +27,30 @@ public class ShipBuilderPart : MonoBehaviour {
 		if(lastValidPos != null) info.location = (Vector3)lastValidPos;
 	}
 
-	void Awake() {
+	protected override void Awake() {
+		base.Awake();
 		validPos = true;
-		image = GetComponent<Image>();
-		GameObject shooterObj = new GameObject("shooter");
-		shooterObj.transform.SetParent(transform.parent);
-		shooter = shooterObj.AddComponent<Image>();
-		shooter.enabled = false;
-		shooter.rectTransform.localScale = Vector3.one;
 		rectTransform = image.rectTransform;
 	}
 
-	void Start() {
-		if(AbilityUtilities.GetShooterByID(info.abilityID) != null) {
-			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
-			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
-			shooter.enabled = true;
-		}
-		image.rectTransform.anchoredPosition = shooter.rectTransform.anchoredPosition = info.location * 100;
-		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
-		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
-		UpdateAppearance();
-		image.enabled = true;
+	public void InitializeMode(BuilderMode mode) {
+		this.mode = mode;
+		if(mode == BuilderMode.Workshop) closeConstant = 0.05F;
+		else closeConstant = 0.2F;
 	}
 
-	void UpdateAppearance() {
+	protected override void UpdateAppearance() {
 		// set colors
+		base.UpdateAppearance();
 		if(highlighted) image.color = (isInChain && validPos ? Color.white : Color.white - new Color(0,0,0,0.5F));
 		else image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
-		// set position
-		image.rectTransform.anchoredPosition = info.location * 100;
-		if(shooter) 
-		{
-			shooter.color = image.color;
-			shooter.gameObject.transform.SetAsLastSibling();
-			shooter.rectTransform.anchoredPosition = info.location * 100;
-			if(AbilityUtilities.GetShooterByID(info.abilityID) == null) {
-				Destroy(shooter.gameObject);
-			}
-		}
-		// set rotation and flipping
-		image.rectTransform.localEulerAngles = new Vector3(0,0,info.rotation);
-		image.rectTransform.localScale = new Vector3(info.mirrored ? -1 : 1,1,1);
 	}
 
 	bool IsTooClose(ShipBuilderPart otherPart) {
 		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
-		0.20F*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
+		closeConstant*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
 		Mathf.Abs(rectTransform.anchoredPosition.y - otherPart.rectTransform.anchoredPosition.y) <
-		0.20F*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
+		closeConstant*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
 		return z;
 	}
 	

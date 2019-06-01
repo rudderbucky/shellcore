@@ -96,6 +96,7 @@ public class AbilityHandler : MonoBehaviour {
             image.rectTransform.anchorMin = Vector2.zero;
             image.gameObject.SetActive(false);
         }
+        
         for (int i = 0; i < visibleAbilities.Count; i++)
         { // iterate through to display all the abilities
             if (visibleAbilities[i] == null) break;
@@ -124,7 +125,7 @@ public class AbilityHandler : MonoBehaviour {
 
             // instantiate ability tier
             if(visibleAbilities[i].GetTier() > 0) {
-                Vector3 size = image.rectTransform.sizeDelta;
+                Vector3 origSize = image.rectTransform.sizeDelta;
                 image.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + visibleAbilities[i].GetTier());
                 image.enabled = true;
                 image.rectTransform.sizeDelta = image.sprite.bounds.size * 30;
@@ -132,12 +133,12 @@ public class AbilityHandler : MonoBehaviour {
                 image.color = new Color(image.color.r, image.color.g, image.color.b, 0.4F);
                 abilityTierArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
                 image.color = origCol;
+                image.rectTransform.sizeDelta = origSize;
                 abilityTierArray[i].gameObject.SetActive(true);
                 canvasg = abilityTierArray[i].gameObject.AddComponent<CanvasGroup>(); 
                 // this is done for every image, it allows the buttons to be clicked
                 canvasg.blocksRaycasts = false;
                 canvasg.interactable = false;
-                image.rectTransform.sizeDelta = size;
                 // set parent (do not keep world position)
                 abilityTierArray[i].transform.SetParent(transform, false);
             }
