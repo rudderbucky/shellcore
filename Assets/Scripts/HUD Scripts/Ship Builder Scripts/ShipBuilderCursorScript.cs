@@ -79,16 +79,22 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 			}
 			else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
 				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
-			} else {
-				lastPart = currentPart;
-				currentPart = null;
-				if(lastPart.isInChain && lastPart.validPos) {
-					lastPart.SetLastValidPos(lastPart.info.location);
-				} else lastPart.Snapback();
-			}
+			} else PlaceCurrentPartInGrid();
+		else {
+			if(RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
+				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
+			} else PlaceCurrentPartInGrid();
+		}
 		UpdateHandler();
 	}
 
+	private void PlaceCurrentPartInGrid() {
+		lastPart = currentPart;
+		currentPart = null;
+		if(lastPart.isInChain && lastPart.validPos) {
+			lastPart.SetLastValidPos(lastPart.info.location);
+		} else lastPart.Snapback();
+	}
 	public void UpdateHandler() {
 		currentAbilities.Clear();
 		foreach(Ability ab in gameObject.GetComponentsInChildren<Ability>()) {

@@ -2561,6 +2561,14 @@ MonoBehaviour:
   coreImage: {fileID: 868891069}
   shellImage: {fileID: 1969649784}
   partPrefab: {fileID: 1765373141249224, guid: c3771e617c197b641b00015bf838081d, type: 3}
+  smallBuilderContents: {fileID: 156560502}
+  mediumBuilderContents: {fileID: 1808556350}
+  largeBuilderContents: {fileID: 989805462}
+  smallBuilderText: {fileID: 2072952174}
+  mediumBuilderText: {fileID: 1339686915}
+  largeBuilderText: {fileID: 390479171}
+  buttonPrefab: {fileID: 1886850028690094, guid: 28beeb98b359d7045b9f9cf38213e629,
+    type: 3}
 --- !u!1 &365600342
 GameObject:
   m_ObjectHideFlags: 0
@@ -7338,8 +7346,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: Deinitialize
+      - m_Target: {fileID: 354862416}
+        m_MethodName: Export
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14639,6 +14647,7 @@ MonoBehaviour:
   buildCost: 0
   playerInventory: {fileID: 1301780901}
   traderInventory: {fileID: 0}
+  cursorMode: 0
   rotateMode: 0
 --- !u!222 &1755223053
 CanvasRenderer:
@@ -23263,6 +23272,7 @@ MonoBehaviour:
   buildCost: 0
   playerInventory: {fileID: 1725152188931585661}
   traderInventory: {fileID: 1725152189706700945}
+  cursorMode: 0
   rotateMode: 0
 --- !u!1 &1725152190506865367
 GameObject:

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// TODO: If there are duplicate spawning parts this probably breaks since I haven't checked how that works, fix that
 enum DroneWorkshopPhase {
 	SelectionPhase,
 	BuildPhase
@@ -31,6 +32,15 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	public Image coreImage;
 	public Image shellImage;
 	public GameObject partPrefab;
+	public Transform smallBuilderContents;
+	public Transform mediumBuilderContents;
+	public Transform largeBuilderContents;
+	public GameObject smallBuilderText;
+	public GameObject mediumBuilderText;
+	public GameObject largeBuilderText;
+	public GameObject buttonPrefab;
+	protected Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> builderPartDict;
+	EntityBlueprint.PartInfo currentPart;
 
     public void InitializeSelectionPhase() {
 
@@ -62,8 +72,14 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 			}
 		}
 
-		AddParts(parts);
-		AddParts(player.blueprint.parts);
+		foreach(EntityBlueprint.PartInfo part in parts) {
+			if(part.abilityID == 10)
+				AddDronePart(part);
+		}
+		foreach(EntityBlueprint.PartInfo part in player.blueprint.parts) {
+			if(part.abilityID == 10)
+				AddDronePart(part);
+		}
 
 		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
 			var part = player.GetTractorTarget().GetComponent<ShellPart>().info;
@@ -86,18 +102,30 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		gameObject.SetActive(true);
 	}
 
-	public void AddParts(List<EntityBlueprint.PartInfo> parts) {
-		foreach(EntityBlueprint.PartInfo part in parts) {
-            if(part.abilityID != 10) continue;
+	// adds a DWInventoryButton, for SBInventoryButton use AddPart
+	public void AddDronePart(EntityBlueprint.PartInfo part) {
+		int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
+		DWInventoryButton invButton = Instantiate(displayButtonPrefab, 
+			contentsArray[size]).GetComponent<DWInventoryButton>();
+		invButton.handler = selectionDisplay;
+		invButton.workshop = this;
+		partDict.Add(invButton, part);
+		contentTexts[size].SetActive(true);
+		invButton.part = part;
+	}
+	private void AddPart(EntityBlueprint.PartInfo part) {
+		if(!builderPartDict.ContainsKey(part)) 
+		{
 			int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
-			DWInventoryButton invButton = Instantiate(displayButtonPrefab, 
-				contentsArray[size]).GetComponent<DWInventoryButton>();
-			invButton.handler = selectionDisplay;
-			invButton.workshop = this;
-			partDict.Add(invButton, part);
+			ShipBuilderInventoryScript invButton = Instantiate(buttonPrefab, 
+				contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
+			builderPartDict.Add(part, invButton);
 			contentTexts[size].SetActive(true);
 			invButton.part = part;
-		}
+			invButton.cursor = cursorScript;
+			invButton.IncrementCount();
+			invButton.mode = BuilderMode.Yard;
+		} else builderPartDict[part].IncrementCount();
 	}
     public BuilderMode GetMode()
     {
@@ -106,31 +134,83 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 
     public void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode)
     {
-        throw new System.NotImplementedException();
+        var culledInfo = ShipBuilder.CullSpatialValues(part.info);
+		if(!builderPartDict.ContainsKey(culledInfo)) {
+			int size = ResourceManager.GetAsset<PartBlueprint>(part.info.partID).size;
+			ShipBuilderInventoryScript builderPartDictInvButton = Instantiate(buttonPrefab, 
+				contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
+			builderPartDict.Add(culledInfo, builderPartDictInvButton);
+			contentTexts[size].SetActive(true);
+			builderPartDict[culledInfo].part = culledInfo;
+			builderPartDict[culledInfo].cursor = cursorScript;
+		}
+		builderPartDict[culledInfo].IncrementCount();
+		cursorScript.buildValue -= EntityBlueprint.GetPartValue(part.info);
+		cursorScript.parts.Remove(part);
+		Destroy(part.gameObject);
     }
 
 	public void CloseUI(bool val) {
 		player.SetIsInteracting(false);
 		base.CloseUI();
+		player.Rebuild();
 	}
 
 	public override void CloseUI() {
 		CloseUI(false);
 	}
-
-    public void UpdateChain()
-    {
-        
-    }
-
-	public EntityBlueprint.PartInfo? GetButtonPartCursorIsOn() {
-		foreach(DWInventoryButton inv in partDict.Keys) {
-			if(RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition) 
-				&& inv.gameObject.activeSelf) {
-				return inv.part;
+	void UpdateChainHelper(ShipBuilderPart part) {
+		var x = ShipBuilder.GetRect(part.rectTransform);
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(!shipPart.isInChain) {
+				var y = ShipBuilder.GetRect(shipPart.rectTransform);
+				if(x.Intersects(y)) {
+					shipPart.isInChain = true;
+					UpdateChainHelper(shipPart);
+				}
 			}
 		}
-		return null;
+	}
+
+	public void UpdateChain() {
+		var shellRect = ShipBuilder.GetRect(shellImage.rectTransform);
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			shipPart.isInChain = false;
+			var partBounds = ShipBuilder.GetRect(shipPart.rectTransform);
+			shipPart.isInChain = partBounds.Intersects(shellRect);
+		}
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(shipPart.isInChain) UpdateChainHelper(shipPart);
+		}
+		
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(!shipPart.isInChain || !shipPart.validPos) {
+				return;
+			}
+		}
+	}
+
+	public EntityBlueprint.PartInfo? GetButtonPartCursorIsOn() {
+		switch(phase) {
+			case DroneWorkshopPhase.SelectionPhase:
+				foreach(DWInventoryButton inv in partDict.Keys) {
+					if(RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition) 
+						&& inv.gameObject.activeSelf) {
+						return inv.part;
+					}
+				}
+				return null;
+			case DroneWorkshopPhase.BuildPhase:
+				foreach(ShipBuilderInventoryScript inv in builderPartDict.Values) {
+					if(RectTransformUtility.RectangleContainsScreenPoint(inv.GetComponent<RectTransform>(), Input.mousePosition) 
+						&& inv.gameObject.activeSelf) {
+						return inv.part;
+					}
+				}
+				return null;
+			default:
+				return null;		
+		}
 	}
 
 	public static DroneSpawnData ParseDronePart(EntityBlueprint.PartInfo part) {
@@ -139,12 +219,28 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		JsonUtility.FromJsonOverwrite(part.secondaryData, data);
 		return data;
 	}
-	public void InitializeBuildPhase(EntityBlueprint blueprint) {
+	public void InitializeBuildPhase(EntityBlueprint blueprint, EntityBlueprint.PartInfo currentPart) {
+		this.currentPart = currentPart;
 		selectionPhaseParent.SetActive(false);
 		buildPhaseParent.SetActive(true);
 		cursorScript.gameObject.SetActive(true);
 		cursorScript.SetMode(BuilderMode.Workshop);
 		LoadBlueprint(blueprint);
+
+		builderPartDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
+		contentsArray = new Transform[] {smallBuilderContents, mediumBuilderContents, largeBuilderContents};
+		contentTexts = new GameObject[] {smallBuilderText, mediumBuilderText, largeBuilderText};
+		foreach(GameObject obj in contentTexts) {
+			obj.SetActive(false);
+		}
+
+		foreach(EntityBlueprint.PartInfo part in player.GetInventory()) {
+			if(part.abilityID != 10 && ResourceManager.GetAsset<PartBlueprint>(part.partID).size == 0)
+				AddPart(part);
+		}
+
+		GetComponentInChildren<ShipBuilderPartDisplay>().Initialize(this);
+		phase = DroneWorkshopPhase.BuildPhase;
 	}
 
 	public void LoadBlueprint(EntityBlueprint blueprint) {
@@ -183,5 +279,20 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	public override void OnPointerDown(PointerEventData eventData) {
 		if(RectTransformUtility.RectangleContainsScreenPoint(cursorScript.grid, Input.mousePosition)) return;
 		base.OnPointerDown(eventData);
+	}
+
+	public void Export() {
+		var data = ParseDronePart(currentPart);
+		var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+        JsonUtility.FromJsonOverwrite(DroneWorkshop.ParseDronePart(currentPart).drone, blueprint);
+		blueprint.parts = new List<EntityBlueprint.PartInfo>();
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			blueprint.parts.Add(part.info);
+		}
+		data.drone = JsonUtility.ToJson(blueprint);
+		var index = player.GetInventory().FindIndex(x => x.Equals(currentPart));
+		currentPart.secondaryData = JsonUtility.ToJson(data);
+		player.GetInventory()[index] = currentPart;
+		CloseUI(true);
 	}
 }

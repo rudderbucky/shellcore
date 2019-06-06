@@ -25,6 +25,6 @@ public class DWInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler,
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        workshop.InitializeBuildPhase(blueprint);
+        workshop.InitializeBuildPhase(blueprint, part);
     }
 }
