@@ -82,7 +82,7 @@ namespace NodeEditorFramework
 		/// <summary>
 		/// Specifies if calculation should continue with the nodes connected to the outputs after the Calculation function returns success
 		/// </summary>
-		public virtual bool ContinueCalculation { get { return true; } }
+		public virtual bool ContinueCalculation { get { return false; } }
 
 		#endregion
 

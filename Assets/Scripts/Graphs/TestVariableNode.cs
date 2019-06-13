@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "TaskSystem/TestVariable", typeof(QuestGraph))]
+    [Node(false, "Conditions/TestVariable", typeof(QuestGraph))]
     public class TestVariableNode : Node
     {
         readonly string[] modes = new string[]
@@ -23,22 +23,19 @@ namespace NodeEditorFramework.Standard
         public override Vector2 DefaultSize { get { return new Vector2(200, 256); } }
 
         public override bool AllowRecursion { get { return true; } }
-        public override bool ContinueCalculation { get { return true; } }
 
         //Data
         string variableName;
         int value;
         int mode;
 
-        [ConnectionKnob("Input", Direction.Out, "Task", NodeSide.Left, 32)]
+        [ConnectionKnob("Input", Direction.In, "Task", NodeSide.Left, 32)]
         public ConnectionKnob inputLeft;
 
-        [ConnectionKnob("Comparison true", Direction.In, "Task", NodeSide.Right, 32)]
+        [ConnectionKnob("Comparison true", Direction.Out, "Task", NodeSide.Right, 32)]
         public ConnectionKnob outputTrue;
-        [ConnectionKnob("Comparison false", Direction.In, "Task", NodeSide.Right, 48)]
+        [ConnectionKnob("Comparison false", Direction.Out, "Task", NodeSide.Right, 48)]
         public ConnectionKnob outputFalse;
-
-        
 
         public override void NodeGUI()
         {
@@ -77,23 +74,5 @@ namespace NodeEditorFramework.Standard
                 TaskManager.Instance.setNode(ck.connection(0).body);
             }
         }
-    }
-
-    public class TaskConnection : ConnectionKnobStyle
-    {
-        public override string Identifier { get { return "Task"; } }
-        public override Color Color { get { return Color.green; } }
-    }
-
-    public class ConditionConnection : ConnectionKnobStyle
-    {
-        public override string Identifier { get { return "Condition"; } }
-        public override Color Color { get { return Color.red; } }
-    }
-
-    public class DialogConnection : ConnectionKnobStyle
-    {
-        public override string Identifier { get { return "Dialog"; } }
-        public override Color Color { get { return Color.cyan; } }
     }
 }

@@ -98,14 +98,14 @@ namespace NodeEditorFramework
 				toolbar = new GUIStyle(nodeSkin.box);
 				toolbar.normal.background = GUIToolbar;
 				toolbar.active.background = GUIToolbar;
-				toolbar.border = new RectOffset(0, 0, 1, 1);
+				toolbar.border = new RectOffset(0, 0, 0, 0);
 				toolbar.margin = new RectOffset(0, 0, 0, 0);
-				toolbar.padding = new RectOffset(10, 10, 1, 1);
+				toolbar.padding = new RectOffset(0, 0, 0, 0);
 
 				toolbarLabel = new GUIStyle(nodeSkin.box);
 				toolbarLabel.normal.background = GUIToolbarButton;
-				toolbarLabel.border = new RectOffset(2, 2, 0, 0);
-				toolbarLabel.margin = new RectOffset(-2, -2, 0, 0);
+				toolbarLabel.border = new RectOffset(3, 3, 3, 3);
+				toolbarLabel.margin = new RectOffset(0, 0, 0, 0);
 				toolbarLabel.padding = new RectOffset(6, 6, 4, 4);
 
 				toolbarButton = new GUIStyle(toolbarLabel);

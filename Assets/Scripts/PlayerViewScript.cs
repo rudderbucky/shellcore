@@ -13,7 +13,6 @@ public class PlayerViewScript : MonoBehaviour {
 	public GameObject escapeMenu;
 	// Update is called once per frame
 	void Awake() {
-		Debug.Log(Application.persistentDataPath);
 		currentWindow = new Stack<IWindow>();
 		instance = this;
 		if(escapeMenu) escapeMenu.SetActive(false);

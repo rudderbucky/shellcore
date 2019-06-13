@@ -333,7 +333,7 @@ namespace NodeEditorFramework
 
 		private void Setup (NodeSide nodeSide, float nodeSidePos) 
 		{
-			MaxConnectionCount = Direction == Direction.In? ConnectionCount.Single : ConnectionCount.Multi;
+			MaxConnectionCount = Direction == Direction.In? ConnectionCount.Multi : ConnectionCount.Single; //Swapped by Ormanus
 			NodeSide = nodeSide;
 			NodeSidePos = nodeSidePos;
 		}

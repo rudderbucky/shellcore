@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.QuestGraph">
+	<EditorStates>
+		<EditorState selected="" pan="-369.6,-112" zoom="1.2" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start" ID="-252732" type="StartNode" pos="-263,-121.5">
+			<Port ID="-252734" name="outputRight" dynamic="False" />
+		</Node>
+		<Node name="Test Trigger" ID="-252744" type="TestTrigger" pos="100.8,245.8">
+			<Port ID="-252746" name="outputRight" dynamic="False" />
+		</Node>
+		<Node name="Finish Task" ID="-252748" type="FinishTaskNode" pos="147,-87.10001">
+			<Port ID="-252750" name="inputLeft" dynamic="False" />
+			<Port ID="-252752" name="outputRight" dynamic="False" />
+			<Port ID="-252754" name="outputUp" dynamic="False" />
+			<Variable name="rewardGiverID" refID="705209285" />
+			<Variable name="rewardText" refID="1236300199" />
+		</Node>
+		<Node name="Finish Task" ID="-253998" type="FinishTaskNode" pos="828,-162.2">
+			<Port ID="-254000" name="inputLeft" dynamic="False" />
+			<Port ID="-254002" name="outputRight" dynamic="False" />
+			<Port ID="-254004" name="outputUp" dynamic="False" />
+		</Node>
+		<Node name="Conditions" ID="-252736" type="ConditionGroupNode" pos="531,-24.70001">
+			<Port ID="-252738" name="input" dynamic="False" />
+			<Port ID="-252740" name=" Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-252742" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Task</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-252734" port2ID="-252750" />
+		<Connection port1ID="-252746" port2ID="-252740" />
+		<Connection port1ID="-252752" port2ID="-252738" />
+		<Connection port1ID="-254000" port2ID="-252742" />
+	</Connections>
+	<Objects>
+		<Object refID="705209285" type="System.String">
+			<string>STATION_0</string>
+		</Object>
+		<Object refID="1236300199" type="System.String">
+			<string>Congratz!</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

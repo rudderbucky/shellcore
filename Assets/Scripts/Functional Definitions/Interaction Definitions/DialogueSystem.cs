@@ -45,12 +45,17 @@ public class DialogueSystem : MonoBehaviour
         Instance.startDialogue(dialogue);
     }
 
-    public static void ShowPopup(string text)
+    public static void ShowPopup(string text, Color color)
     {
-        Instance.showPopup(text);
+        Instance.showPopup(text, color);
     }
 
-    private void showPopup(string text)
+    public static void ShowPopup(string text)
+    {
+        Instance.showPopup(text, Color.white);
+    }
+
+    private void showPopup(string text, Color color)
     {
         if (window)
             return;
@@ -67,7 +72,7 @@ public class DialogueSystem : MonoBehaviour
         this.text = text.Replace("<br>", "\n");
         characterCount = 0;
         nextCharacterTime = Time.time + timeBetweenCharacters;
-        textRenderer.color = Color.white;
+        textRenderer.color = color;
 
         // ok button
         RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();

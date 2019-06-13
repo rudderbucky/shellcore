@@ -13,10 +13,7 @@ namespace NodeEditorFramework.Standard
 
         public override string Title { get { return "Start"; } }
 
-        public override bool AllowRecursion { get { return true; } }
-        public override bool ContinueCalculation { get { return true; } }
-
-        [ConnectionKnob("Output Right", Direction.In, "Task", NodeSide.Right)]
+        [ConnectionKnob("Output Right", Direction.Out, "Task", NodeSide.Right)]
         public ConnectionKnob outputRight;
     }
 }

@@ -347,6 +347,13 @@ namespace NodeEditorFramework.IO
 			// TODO: Need to handle asset references
 			// Because of runtime compability, always try to embed objects
 			// If that fails, try to find references to assets (e.g. for textures)
+
+            if(obj == null)
+            {
+                Debug.LogWarning("Field value == null; Remember to give default values to node fields.");
+                return null;
+            }
+
 			try
 			{ // Try to embed object
 				XmlSerializer serializer = new XmlSerializer(obj.GetType());

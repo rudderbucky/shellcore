@@ -12,26 +12,38 @@ public class TaskManager : MonoBehaviour
             Destroy(gameObject);
         }
         Instance = this;
+
+        startQuests();
     }
 
-    public List<Task> tasks;
+    List<Task> activeTasks;
 
     public NodeEditorFramework.Standard.QuestGraph[] questGraphs;
     private NodeEditorFramework.Node[] currentNodes;
 
-    public Task GetTask(string ID)
+    public Dictionary<string, int> taskVariables;
+
+    public void AddTask(Task t)
     {
-        for (int i = 0; i < tasks.Count; i++)
-        {
-            if(tasks[i].taskID == ID)
-            {
-                return tasks[i];
-            }
-        }
-        return null;
+        activeTasks.Add(t);
     }
 
-    public Dictionary<string, int> taskVariables;
+    public Task[] getTasks()
+    {
+        return activeTasks.ToArray();
+    }
+
+    public void endTask(string taskID)
+    {
+        for(int i = 0; i < activeTasks.Count; i++)
+        {
+            if(activeTasks[i].taskID == taskID)
+            {
+                activeTasks.RemoveAt(i);
+                break;
+            }
+        }
+    }
 
     public void SetTaskVariable(string name, int value)
     {
@@ -51,6 +63,7 @@ public class TaskManager : MonoBehaviour
     // Traverse quest graph
     public void startQuests()
     {
+        currentNodes = new NodeEditorFramework.Node[questGraphs.Length];
         for (int i = 0; i < questGraphs.Length; i++)
         {
             startQuestline(i);
@@ -75,6 +88,7 @@ public class TaskManager : MonoBehaviour
 
     public void setNode(NodeEditorFramework.Node node)
     {
+        //TODO: differentiate better between quests
         for(int i = 0; i < questGraphs.Length; i++)
         {
             if(questGraphs[i].nodes.Contains(node))

@@ -17,6 +17,7 @@ namespace NodeEditorFramework.Standard
 
 		public override void OnInspectorGUI () 
 		{
+            RTNE.canvasPath = EditorGUILayout.TextField("Default path", RTNE.canvasPath);
 			GUILayout.BeginHorizontal();
 			// Reference canvas
 			RTNE.canvas = EditorGUILayout.ObjectField ("Canvas", RTNE.canvas, typeof(NodeCanvas), true,

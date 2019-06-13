@@ -188,7 +188,7 @@ public class ResourceManager : MonoBehaviour
 
     public T getAsset<T>(string ID) where T : Object
     {
-        if (ID == "")
+        if (ID == "" || ID == null)
             return null;
 
         if (resources.ContainsKey(ID))

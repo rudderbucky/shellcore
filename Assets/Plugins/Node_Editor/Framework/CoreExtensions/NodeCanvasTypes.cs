@@ -58,6 +58,8 @@ namespace NodeEditorFramework
 		/// </summary>
 		public static NodeCanvasTypeData GetCanvasTypeData (string name)
 		{
+            //if (CanvasTypes == null)
+            //    FetchCanvasTypes();
 			return CanvasTypes.Values.FirstOrDefault ((NodeCanvasTypeData data) => data.CanvasType.FullName.Contains (name) || data.DisplayString.Contains (name) || name.Contains (data.DisplayString));
 		}
 
