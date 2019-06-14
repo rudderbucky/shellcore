@@ -4,7 +4,7 @@ using System;
 namespace NodeEditorFramework.Standard
 {
     [NodeCanvasType("Quest")]
-    public class QuestGraph : NodeCanvas
+    public class QuestCanvas : NodeCanvas
     {
         public override string canvasName { get { return "Quest Canvas"; } }
 

@@ -143,6 +143,14 @@ namespace NodeEditorFramework
 		/// </summary>
 		public virtual bool Calculate () { return true; }
 
+        /// <summary>
+        /// Executes the node's function.
+        /// Returns the index of the output knob to the next node. 
+        /// -1 if traversing should end or pause.
+        /// </summary>
+        /// <returns></returns>
+        public virtual int Traverse() { return 0; }
+
 		#endregion
 
 		#region Callbacks

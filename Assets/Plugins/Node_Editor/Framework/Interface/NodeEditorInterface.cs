@@ -46,7 +46,7 @@ namespace NodeEditorFramework.Standard
             //float curToolbarHeight = 0;
             if (GUILayout.Button("New", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
             {
-                NewNodeCanvas(typeof(QuestGraph));
+                NewNodeCanvas(typeof(QuestCanvas));
             }
             if (GUILayout.Button("Import", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
             {

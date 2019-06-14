@@ -15,5 +15,10 @@ namespace NodeEditorFramework.Standard
 
         [ConnectionKnob("Output Right", Direction.Out, "Task", NodeSide.Right)]
         public ConnectionKnob outputRight;
+
+        public override bool Calculate()
+        {
+            return true;
+        }
     }
 }

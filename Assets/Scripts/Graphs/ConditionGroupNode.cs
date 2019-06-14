@@ -30,6 +30,35 @@ namespace NodeEditorFramework.Standard
         public override bool AllowRecursion { get { return true; } }
         public override bool AutoLayout { get { return true; } }
 
+        public override int Traverse()
+        {
+            while (outputKnobs.Count > groupCount)
+            {
+                groups.Add(new ConditionGroup
+                {
+                    output = outputKnobs[groupCount],
+                    input = inputKnobs[groupCount + 1]
+                });
+                groupCount++;
+            }
+            // Importing doesn't fill group data. Do it here for now.
+            for (int i = 0; i < groups.Count; i++)
+            {
+                if (groups[i].input.connected())
+                {
+                    var connections = groups[i].input.connections;
+                    for (int j = 0; j < connections.Count; j++)
+                    {
+                        if (!(connections[j].body is ICondition))
+                            continue;
+                        ICondition condition = connections[j].body as ICondition;
+                        condition.Init(0);
+                    }
+                }
+            }
+            return -1; // Do not continue
+        }
+
         public override bool Calculate()
         {
             for(int i = 0; i < groups.Count; i++)
@@ -52,10 +81,11 @@ namespace NodeEditorFramework.Standard
                     if(completed == conditionCount)
                     {
                         // Continue to next node
+                        DeInit();
                         if(groups[i].output.connected())
                             TaskManager.Instance.setNode(groups[i].output.connections[0].body);
                         // Tell all condition nodes to unsub
-                        DeInit();
+                        Debug.Log("Task complete");
                         return true;
                     }
                 }
@@ -77,7 +107,7 @@ namespace NodeEditorFramework.Standard
             }
         }
 
-        ConnectionKnobAttribute inputAttribute = new ConnectionKnobAttribute(" Input", Direction.In, "Condition", ConnectionCount.Multi, NodeSide.Left);
+        ConnectionKnobAttribute inputAttribute = new ConnectionKnobAttribute("Input", Direction.In, "Condition", ConnectionCount.Multi, NodeSide.Left);
         ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Task", ConnectionCount.Multi, NodeSide.Right);
 
         public override void NodeGUI()

@@ -1,13 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NodeEditorFramework.Standard;
+using NodeEditorFramework.IO;
 
 public class TaskManager : MonoBehaviour
 {
     public static TaskManager Instance = null;
+
+    List<Task> activeTasks = new List<Task>();
+
+    public string[] questCanvasPaths;
+    private List<QuestCanvas> questCanvases;
+    private NodeEditorFramework.Node[] currentNodes;
+
+    public Dictionary<string, int> taskVariables;
+
     private void Awake()
     {
-        if(Instance != null)
+        if (Instance != null)
         {
             Destroy(gameObject);
         }
@@ -16,12 +27,13 @@ public class TaskManager : MonoBehaviour
         startQuests();
     }
 
-    List<Task> activeTasks;
-
-    public NodeEditorFramework.Standard.QuestGraph[] questGraphs;
-    private NodeEditorFramework.Node[] currentNodes;
-
-    public Dictionary<string, int> taskVariables;
+    private void Update() // TEMP - DELETE BEFORE COMMIT
+    {
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            TestCondition.TestTrigger.Invoke();
+        }
+    }
 
     public void AddTask(Task t)
     {
@@ -63,22 +75,77 @@ public class TaskManager : MonoBehaviour
     // Traverse quest graph
     public void startQuests()
     {
-        currentNodes = new NodeEditorFramework.Node[questGraphs.Length];
-        for (int i = 0; i < questGraphs.Length; i++)
+        questCanvases = new List<QuestCanvas>();
+        NodeEditorFramework.NodeCanvasManager.FetchCanvasTypes();
+        NodeEditorFramework.NodeTypes.FetchNodeTypes();
+        NodeEditorFramework.ConnectionPortManager.FetchNodeConnectionDeclarations();
+
+        var XMLImport = new XMLImportExport();
+
+        for (int i = 0; i < questCanvasPaths.Length; i++)
+        {
+            var canvas = XMLImport.Import(questCanvasPaths[i]) as QuestCanvas;
+            if (canvas != null)
+            {
+                questCanvases.Add(canvas);
+                foreach (NodeEditorFramework.Node node in canvas.nodes)
+                {
+                    NodeEditorFramework.ConnectionPortManager.UpdateConnectionPorts(node);
+                    foreach (NodeEditorFramework.ConnectionPort port in node.connectionPorts)
+                        port.Validate(node);
+                }
+            }
+        }
+
+
+
+        currentNodes = new NodeEditorFramework.Node[questCanvases.Count];
+        for (int i = 0; i < questCanvases.Count; i++)
         {
             startQuestline(i);
         }
     }
 
+    // COPIED FOR REFERENCE - DELETE BEFORE COMMIT
+
+//    private static void setupBaseFramework()
+//    {
+//        CheckEditorPath();
+
+//        // Init Resource system. Can be called anywhere else, too, if it's needed before.
+//        ResourceManager.SetDefaultResourcePath(editorPath + "Resources/");
+
+//        // Run fetching algorithms searching the script assemblies for Custom Nodes / Connection Types / NodeCanvas Types
+//        ConnectionPortStyles.FetchConnectionPortStyles();
+//        NodeTypes.FetchNodeTypes();
+//        NodeCanvasManager.FetchCanvasTypes();
+//        ConnectionPortManager.FetchNodeConnectionDeclarations();
+//        ImportExportManager.FetchIOFormats();
+
+//        // Setup Callback system
+//        NodeEditorCallbacks.SetupReceivers();
+//        NodeEditorCallbacks.IssueOnEditorStartUp();
+
+//        // Init input
+//        NodeEditorInputSystem.SetupInput();
+
+//#if UNITY_EDITOR
+//        UnityEditor.EditorApplication.update -= Update;
+//        UnityEditor.EditorApplication.update += Update;
+//#endif
+
+//        initiatedBase = true;
+//    }
+
     public void startQuestline(int index)
     {
         // If there's no current node, find root node
-        if(currentNodes[index] == null && questGraphs[index] != null)
+        if(currentNodes[index] == null && questCanvases[index] != null)
         {
             currentNodes[index] = findRoot(index);
             if(currentNodes[index] == null)
             {
-                questGraphs[index] = null;
+                questCanvases[index] = null;
                 return;
             }
             //Start quest
@@ -89,29 +156,42 @@ public class TaskManager : MonoBehaviour
     public void setNode(NodeEditorFramework.Node node)
     {
         //TODO: differentiate better between quests
-        for(int i = 0; i < questGraphs.Length; i++)
+        for(int i = 0; i < questCanvases.Count; i++)
         {
-            if(questGraphs[i].nodes.Contains(node))
+            if(questCanvases[i].nodes.Contains(node))
             {
                 currentNodes[i] = node;
                 break;
             }
         }
-        node.Calculate();
+        Traverse();
     }
 
     private NodeEditorFramework.Node findRoot(int index)
     {
-        for (int i = 0; i < questGraphs.Length; i++)
+        for (int i = 0; i < questCanvases.Count; i++)
         {
-            for (int j = 0; j < questGraphs[i].nodes.Count; j++)
+            for (int j = 0; j < questCanvases[i].nodes.Count; j++)
             {
-                if(questGraphs[i].nodes[j].GetID == "StartNode")
+                if(questCanvases[i].nodes[j].GetID == "StartNode")
                 {
-                    return questGraphs[i].nodes[j];
+                    return questCanvases[i].nodes[j];
                 }
             }
         }
         return null;
+    }
+
+    private void Traverse()
+    {
+        while(true)
+        {
+            int outputIndex = currentNodes[0].Traverse();
+            if (outputIndex == -1)
+                break;
+            if (!currentNodes[0].outputKnobs[outputIndex].connected())
+                break;
+            currentNodes[0] = currentNodes[0].outputKnobs[outputIndex].connections[0].body;
+        }
     }
 }

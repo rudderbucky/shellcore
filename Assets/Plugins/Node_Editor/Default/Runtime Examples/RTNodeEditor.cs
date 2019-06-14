@@ -59,13 +59,13 @@ namespace NodeEditorFramework.Standard
             NodeEditor.ReInit(false);
             if(System.IO.File.Exists(canvasPath))
             {
-                IO.XMLImportExport XMLIO = new IO.XMLImportExport();
-                canvas = XMLIO.Import(canvasPath);
+                IO.XMLImportExport XMLIE = new IO.XMLImportExport();
+                canvas = XMLIE.Import(canvasPath);
             }
             else
             {
                 Debug.Log("File doesn't exist!");
-                canvas = NodeCanvas.CreateCanvas(typeof(QuestGraph));
+                canvas = NodeCanvas.CreateCanvas(typeof(QuestCanvas));
             }
 
 			AssureSetup();

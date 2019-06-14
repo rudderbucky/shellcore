@@ -66,7 +66,7 @@ namespace NodeEditorFramework.Standard
 
         }
 
-        public override bool Calculate()
+        public override int Traverse()
         {
             Task task = new Task()
             {
@@ -83,7 +83,7 @@ namespace NodeEditorFramework.Standard
                 };
             }
             TaskManager.Instance.AddTask(task);
-            return true;
+            return 0;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace NodeEditorFramework.Standard
             rewardText = GUILayout.TextField(rewardText, GUILayout.Width(200f));
         }
 
-        public override bool Calculate()
+        public override int Traverse()
         {
             if (outputUp.connected())
             {
@@ -51,7 +51,7 @@ namespace NodeEditorFramework.Standard
                     TaskManager.Instance.endTask(taskID);
                 }
             }
-            return true;
+            return 0;
         }
     }
 }

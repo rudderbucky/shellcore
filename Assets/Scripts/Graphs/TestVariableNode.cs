@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Conditions/TestVariable", typeof(QuestGraph))]
+    [Node(false, "Conditions/TestVariable", typeof(QuestCanvas))]
     public class TestVariableNode : Node
     {
         readonly string[] modes = new string[]

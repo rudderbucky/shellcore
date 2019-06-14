@@ -2,7 +2,7 @@
 
 namespace NodeEditorFramework.Standard
 {
-	[Node (false, "Example/AllAround Node")]
+	[Node (false, "Example/AllAround Node", typeof(GraphCanvasType))]
 	public class AllAroundNode : Node 
 	{
 		public const string ID = "allaroundNode";
