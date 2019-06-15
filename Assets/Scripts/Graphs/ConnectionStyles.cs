@@ -5,7 +5,7 @@ namespace NodeEditorFramework.Standard
 
     public class TaskConnection : ConnectionKnobStyle
     {
-        public override string Identifier { get { return "Task"; } }
+        public override string Identifier { get { return "TaskFlow"; } }
         public override Color Color { get { return Color.green; } }
     }
 
@@ -27,9 +27,15 @@ namespace NodeEditorFramework.Standard
         public override Color Color { get { return Color.yellow; } }
     }
 
+    public class ActionConnection : ConnectionKnobStyle
+    {
+        public override string Identifier { get { return "Action"; } }
+        public override Color Color { get { return new Color(1.0f, 0.5f, 0f); } }
+    }
+
     public class EntityIDConnection : ConnectionKnobStyle
     {
-        public override string Identifier { get { return "ID"; } }
+        public override string Identifier { get { return "EntityID"; } }
         public override Color Color { get { return Color.blue; } }
     }
 }

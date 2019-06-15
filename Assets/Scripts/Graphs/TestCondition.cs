@@ -14,8 +14,8 @@ namespace NodeEditorFramework.Standard
         public override string GetID { get { return ID; } }
         public override string Title { get { return "Test Trigger"; } }
 
-        private ConditionState state;
-        public ConditionState State { get { return state; } set { state = value; } } // Can't be serialized -> field
+        public ConditionState state; // Property can't be serialized -> field
+        public ConditionState State { get { return state; } set { state = value; } }
 
         [ConnectionKnob("Output Right", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob outputRight;

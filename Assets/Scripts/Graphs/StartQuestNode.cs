@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "TaskSystem/Start")]
+    [Node(false, "Flow/Start")]
     public class StartQuestNode : Node
     {
         //Node things
@@ -13,12 +13,7 @@ namespace NodeEditorFramework.Standard
 
         public override string Title { get { return "Start"; } }
 
-        [ConnectionKnob("Output Right", Direction.Out, "Task", NodeSide.Right)]
+        [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputRight;
-
-        public override bool Calculate()
-        {
-            return true;
-        }
     }
 }

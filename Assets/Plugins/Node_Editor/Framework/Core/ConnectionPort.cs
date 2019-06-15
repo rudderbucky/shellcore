@@ -152,7 +152,10 @@ namespace NodeEditorFramework
 				return false; // Cannot connect inputs with anything other than outputs
 			if (direction == Direction.Out && port.direction != Direction.In)
 				return false; // Cannot connect outputs with anything other than inputs
-			
+
+            if (styleID != port.styleID)
+                return false; // Cannot connect two different styles
+
 			if (direction == Direction.Out) // Let inputs handle checks for recursion
 				return port.CanApplyConnection (this);
 

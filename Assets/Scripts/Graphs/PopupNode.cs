@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(true, "TaskSsytem/PopupNode")]
+    [Node(true, "Action/PopupNode")]
     public abstract class PopupNode : Node
     {
         public override string GetID { get { return "PopupNode"; } }
@@ -13,10 +13,10 @@ namespace NodeEditorFramework.Standard
 
         public override Vector2 DefaultSize { get { return new Vector2(200, 100); } }
 
-        [ConnectionKnob("Output", Direction.Out, "Task", NodeSide.Right)]
+        [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
 
-        [ConnectionKnob("Input", Direction.In, "Task", NodeSide.Left)]
+        [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
         public string text;

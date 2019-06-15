@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "TaskSystem/SetVariable")]
+    [Node(false, "Actions/SetVariable")]
     public class SetVariableNode : Node
     {
         //Node things
@@ -13,34 +13,75 @@ namespace NodeEditorFramework.Standard
         public override string GetID { get { return ID; } }
 
         public override string Title { get { return "Set Variable"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 140); } }
+        public override Vector2 DefaultSize { get { return new Vector2(200, 150); } }
 
         public override bool ContinueCalculation { get { return true; } }
 
         //Data
-        string variableName;
-        int value;
+        public string variableName;
+        public int value;
+        public bool action;
 
-        [ConnectionKnob("Input Left", Direction.In, "Task", NodeSide.Left, 20)]
-        public ConnectionKnob inputLeft;
+        ConnectionKnobAttribute flowIn = new ConnectionKnobAttribute("Input ", Direction.In, "TaskFlow", ConnectionCount.Multi, NodeSide.Left, 20);
+        ConnectionKnobAttribute flowOut = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
+        ConnectionKnobAttribute actionIn = new ConnectionKnobAttribute("Input ", Direction.In, "Action", ConnectionCount.Multi, NodeSide.Left, 20);
 
-        [ConnectionKnob("Output Right", Direction.Out, "Task", NodeSide.Right, 20)]
-        public ConnectionKnob outputRight;
+        //[ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
+        //public ConnectionKnob inputLeft;
+
+        //[ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right, 20)]
+        //public ConnectionKnob outputRight;
 
         public override void NodeGUI()
         {
-            inputLeft.DisplayLayout();
-            outputRight.DisplayLayout();
+            action = RTEditorGUI.Toggle(action, "Action");
+            if(action && outputKnobs.Count == 1)
+            {
+                DeleteConnectionPort(outputKnobs[0]);
+                DeleteConnectionPort(inputKnobs[0]);
+                CreateConnectionPort(actionIn);
+            }
+            else if(!action && outputKnobs.Count == 0 && inputKnobs.Count == 1)
+            {
+                DeleteConnectionPort(inputKnobs[0]);
+                CreateConnectionPort(flowIn);
+                CreateConnectionPort(flowOut);
+            }
+            else if(inputKnobs.Count == 0)
+            {
+                if(action)
+                {
+                    CreateConnectionPort(actionIn);
+                }
+                else
+                {
+                    CreateConnectionPort(flowIn);
+                    CreateConnectionPort(flowOut);
+                }
+            }
+
+            if (action)
+            {
+                inputKnobs[0].DisplayLayout();
+            }
+            else
+            {
+                GUILayout.BeginHorizontal();
+                inputKnobs[0].DisplayLayout();
+                outputKnobs[0].DisplayLayout();
+                GUILayout.EndHorizontal();
+            }
+
             GUILayout.Label("Variable Name:");
             variableName = GUILayout.TextField(variableName);
             GUILayout.Label("Value:");
             value = RTEditorGUI.IntField(value);
         }
 
-        public override bool Calculate()
+        public override int Traverse()
         {
             TaskManager.Instance.SetTaskVariable(variableName, value);
-            return true;
+            return 0;
         }
     }
 }

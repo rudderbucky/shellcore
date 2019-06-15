@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Conditions/TestVariable", typeof(QuestCanvas))]
+    [Node(false, "Flow/TestVariable", typeof(QuestCanvas))]
     public class TestVariableNode : Node
     {
         readonly string[] modes = new string[]
@@ -25,16 +25,16 @@ namespace NodeEditorFramework.Standard
         public override bool AllowRecursion { get { return true; } }
 
         //Data
-        string variableName;
-        int value;
-        int mode;
+        public string variableName;
+        public int value;
+        public int mode;
 
-        [ConnectionKnob("Input", Direction.In, "Task", NodeSide.Left, 32)]
+        [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left, 32)]
         public ConnectionKnob inputLeft;
 
-        [ConnectionKnob("Comparison true", Direction.Out, "Task", NodeSide.Right, 32)]
+        [ConnectionKnob("Comparison true", Direction.Out, "TaskFlow", NodeSide.Right, 32)]
         public ConnectionKnob outputTrue;
-        [ConnectionKnob("Comparison false", Direction.Out, "Task", NodeSide.Right, 48)]
+        [ConnectionKnob("Comparison false", Direction.Out, "TaskFlow", NodeSide.Right, 48)]
         public ConnectionKnob outputFalse;
 
         public override void NodeGUI()
@@ -52,26 +52,19 @@ namespace NodeEditorFramework.Standard
             value = RTEditorGUI.IntField(value);
 
             GUILayout.Label("Comparison mode:");
-            mode = GUILayout.SelectionGrid(mode, modes, 1, GUILayout.Width(128f));
+            mode = GUILayout.SelectionGrid(mode, modes, 1, GUILayout.Width(144f));
         }
 
-        public override bool Calculate()
+        public override int Traverse()
         {
             int i = TaskManager.Instance.GetTaskVariable(variableName);
             switch (mode)
             {
-                case 0: activateNode((i == value) ? outputTrue : outputFalse); break;
-                case 1: activateNode((i >  value) ? outputTrue : outputFalse); break;
-                case 2: activateNode((i <  value) ? outputTrue : outputFalse); break;
-            }
-            return true;
-        }
-        
-        void activateNode(ConnectionKnob ck)
-        {
-            if(ck.connected())
-            {
-                TaskManager.Instance.setNode(ck.connection(0).body);
+                case 0: return (i == value) ? 0 : 1;
+                case 1: return (i > value) ? 0 : 1;
+                case 2: return (i < value) ? 0 : 1;
+                default:
+                    return 0;
             }
         }
     }

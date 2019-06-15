@@ -16,31 +16,27 @@ namespace NodeEditorFramework.Standard
         };
 
         public delegate void VariableChangedDelegate(string variable);
-        public static VariableChangedDelegate OnUnitDestroyed;
+        public static VariableChangedDelegate OnVariableUpdate;
 
         public const string ID = "VariableConditionNode";
         public override string GetID { get { return ID; } }
 
         public override string Title { get { return "Variable condition"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 256); } }
+        public override Vector2 DefaultSize { get { return new Vector2(200, 200); } }
 
         private ConditionState state;
         public ConditionState State { get { return state; } set { state = value; } }
 
         //Data
-        string variableName;
-        int value;
-        int mode;
+        public string variableName;
+        public int value;
+        public int mode;
 
         [ConnectionKnob("Output Right", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob outputRight;
 
-        [ConnectionKnob("Input", Direction.In, "Task", NodeSide.Left, 32)]
-        public ConnectionKnob inputLeft;
-
         public override void NodeGUI()
         {
-            inputLeft.DisplayLayout();
             GUILayout.Label("Variable Name:");
             variableName = GUILayout.TextField(variableName);
             GUILayout.Label("Value:");
@@ -52,24 +48,62 @@ namespace NodeEditorFramework.Standard
 
         public void Init(int index)
         {
-            OnUnitDestroyed += OnVariableChange;
+            OnVariableUpdate += VariableUpdate;
+            int i = TaskManager.Instance.GetTaskVariable(variableName);
+            state = ConditionState.Listening;
+            switch (mode)
+            {
+                case 0:
+                    if (i == value)
+                    {
+                        state = ConditionState.Completed;
+                    }
+                    break;
+                case 1:
+                    if (i > value)
+                    {
+                        state = ConditionState.Completed;
+                    }
+                    break;
+                case 2:
+                    if (i < value)
+                    {
+                        state = ConditionState.Completed;
+                    }
+                    break;
+            }
         }
 
         public void DeInit()
         {
-            OnUnitDestroyed -= OnVariableChange;
+            OnVariableUpdate -= VariableUpdate;
         }
 
-        void OnVariableChange(string variable)
+        void VariableUpdate(string variable)
         {
             if (variableName == variable)
             {
                 int i = TaskManager.Instance.GetTaskVariable(variableName);
                 switch (mode)
                 {
-                    case 0: if (i == value) { outputRight.connection(0).body.Calculate(); } break;
-                    case 1: if (i > value) { outputRight.connection(0).body.Calculate(); } break;
-                    case 2: if (i < value) { outputRight.connection(0).body.Calculate(); } break;
+                    case 0: if (i == value)
+                        {
+                            state = ConditionState.Completed;
+                            outputRight.connection(0).body.Calculate();
+                        }
+                        break;
+                    case 1: if (i > value)
+                        {
+                            state = ConditionState.Completed;
+                            outputRight.connection(0).body.Calculate();
+                        }
+                        break;
+                    case 2: if (i < value)
+                        {
+                            state = ConditionState.Completed;
+                            outputRight.connection(0).body.Calculate();
+                        }
+                        break;
                 }
             }
         }

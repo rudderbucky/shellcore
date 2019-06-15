@@ -7,7 +7,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "TaskSystem/FinishTaskNode")]
+    [Node(false, "Tasks/FinishTaskNode")]
     public class FinishTaskNode : Node
     {
         //Node things
@@ -23,10 +23,10 @@ namespace NodeEditorFramework.Standard
 
         float height = 220f;
 
-        [ConnectionKnob("Input Left", Direction.In, "Task", NodeSide.Left, 20)]
+        [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
         public ConnectionKnob inputLeft;
 
-        [ConnectionKnob("Output Right", Direction.Out, "Task", NodeSide.Right, 20)]
+        [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right, 20)]
         public ConnectionKnob outputRight;
 
         [ConnectionKnob("Output Up", Direction.Out, "Complete", ConnectionCount.Single, NodeSide.Top, 100f)]
@@ -49,6 +49,7 @@ namespace NodeEditorFramework.Standard
                 {
                     string taskID = taskNode.taskID;
                     TaskManager.Instance.endTask(taskID);
+                    Debug.Log("Task complete!");
                 }
             }
             return 0;

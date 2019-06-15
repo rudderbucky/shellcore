@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Conditions/ConditionGroup")]
+    [Node(false, "Flow/ConditionGroup")]
     public class ConditionGroupNode : Node
     {
         [System.Serializable]
@@ -15,7 +15,7 @@ namespace NodeEditorFramework.Standard
             public ConnectionKnob input;
         }
 
-        [ConnectionKnob("Input Left", Direction.In, "Task", NodeSide.Left)]
+        [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
         List<ConditionGroup> groups = new List<ConditionGroup>();
@@ -32,6 +32,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            // Importing doesn't fill group data. Do it here for now.
             while (outputKnobs.Count > groupCount)
             {
                 groups.Add(new ConditionGroup
@@ -41,7 +42,6 @@ namespace NodeEditorFramework.Standard
                 });
                 groupCount++;
             }
-            // Importing doesn't fill group data. Do it here for now.
             for (int i = 0; i < groups.Count; i++)
             {
                 if (groups[i].input.connected())
@@ -56,7 +56,8 @@ namespace NodeEditorFramework.Standard
                     }
                 }
             }
-            return -1; // Do not continue
+            Calculate();
+            return -1;
         }
 
         public override bool Calculate()
@@ -67,11 +68,11 @@ namespace NodeEditorFramework.Standard
                 {
                     int completed = 0;
                     int conditionCount = 0;
-                    for(int j = 0; j < inputKnobs[i].connections.Count; j++)
+                    for(int j = 0; j < groups[i].input.connections.Count; j++)
                     {
-                        if (!(inputKnobs[i].connections[j].body is ICondition))
+                        if (!(groups[i].input.connections[j].body is ICondition))
                             continue;
-                        ICondition condition = inputKnobs[i].connections[j].body as ICondition;
+                        ICondition condition = groups[i].input.connections[j].body as ICondition;
                         conditionCount++;
                         if (condition.State == ConditionState.Completed)
                         {
@@ -80,12 +81,11 @@ namespace NodeEditorFramework.Standard
                     }
                     if(completed == conditionCount)
                     {
-                        // Continue to next node
+                        // Tell all condition nodes to unsub
                         DeInit();
+                        // Continue to next node
                         if(groups[i].output.connected())
                             TaskManager.Instance.setNode(groups[i].output.connections[0].body);
-                        // Tell all condition nodes to unsub
-                        Debug.Log("Task complete");
                         return true;
                     }
                 }
@@ -108,7 +108,7 @@ namespace NodeEditorFramework.Standard
         }
 
         ConnectionKnobAttribute inputAttribute = new ConnectionKnobAttribute("Input", Direction.In, "Condition", ConnectionCount.Multi, NodeSide.Left);
-        ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Task", ConnectionCount.Multi, NodeSide.Right);
+        ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right);
 
         public override void NodeGUI()
         {
@@ -132,6 +132,7 @@ namespace NodeEditorFramework.Standard
                     DeleteConnectionPort(groups[i].output);
                     groups.RemoveAt(i);
                     i--;
+                    GUILayout.EndHorizontal();
                     continue;
                 }
                 GUILayout.Label("Group " + i);
@@ -150,6 +151,7 @@ namespace NodeEditorFramework.Standard
                     output = CreateConnectionKnob(outputAttribute)
                 };
                 groups.Add(group);
+                groupCount++;
             }
             GUILayout.EndHorizontal();
         }

@@ -5,61 +5,62 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "TaskSystem/TimelineNode")]
+    [Node(false, "Flow/TimelineNode")]
     public class TimelineNode : Node
     {
         public const string ID = "TimelineNode";
         public override string GetID { get { return ID; } }
 
         public override string Title { get { return "Timeline"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, height); } }
 
-        float height = 100f;
+        public override bool AutoLayout { get { return true; } }
+        public override Vector2 MinSize { get { return new Vector2(180f, 64f); } }
 
-        List<int> times = new List<int>();
+        public List<int> times = new List<int>();
 
-        [ConnectionKnob("Input Left", Direction.In, "Task", NodeSide.Left, 20)]
+        [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
         public ConnectionKnob inputLeft;
 
-        [ConnectionKnob("Output Right", Direction.Out, "Task", NodeSide.Right, 20)]
+        [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right, 20)]
         public ConnectionKnob outputRight;
 
-        ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Task", ConnectionCount.Multi, NodeSide.Right);
+        ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Action", ConnectionCount.Single, NodeSide.Right);
 
         public override void NodeGUI()
         {
+            GUILayout.BeginVertical(GUILayout.MinWidth(300f));
             for (int i = 0; i < times.Count; i++)
             {
                 RTEditorGUI.Seperator();
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
-                    DeleteConnectionPort(outputKnobs[i]);
+                    DeleteConnectionPort(outputKnobs[i + 1]);
                     times.RemoveAt(i);
                     i--;
                     continue;
                 }
-                GUILayout.Label("Group " + i);
+                GUILayout.Label("Event " + i);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 times[i] = RTEditorGUI.IntField("Time:", times[i]);
-                outputKnobs[i].DisplayLayout();
+                outputKnobs[i + 1].DisplayLayout();
                 GUILayout.EndHorizontal();
             }
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
             {
                 CreateConnectionKnob(outputAttribute);
-                times.Add(times[times.Count - 1]);
+                times.Add(times.Count);
             }
             GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
         }
 
-        public override bool Calculate()
+        public override int Traverse()
         {
             TaskManager.Instance.StartCoroutine(timer());
-
-            return true;
+            return -1;
         }
 
         IEnumerator timer()
@@ -69,9 +70,15 @@ namespace NodeEditorFramework.Standard
             {
                 yield return new WaitForSeconds(times[i] - elapsed);
                 elapsed += times[i];
-                TaskManager.Instance.setNode(outputPorts[i].connection(i).body); 
-                //TODO: deactivate self (abstract function?)
+                if(outputPorts[i + 1].connected())
+                {
+                    for (int j = 0; j < outputPorts[i+1].connections.Count; j++)
+                    {
+                        outputPorts[i + 1].connections[j].body.Traverse();
+                    }
+                }
             }
+            TaskManager.Instance.setNode(outputRight);
         }
     }
 }

@@ -42,8 +42,15 @@ namespace NodeEditorFramework.IO
 					return data;
 			}
 			ObjectData objData = new ObjectData(obj);
-			objects.Add(objData.refID, objData);
-			return objData;
+            if(!objects.ContainsKey(objData.refID))
+            {
+                objects.Add(objData.refID, objData);
+			    return objData;
+            }
+            else
+            {
+                return objects[objData.refID];
+            }
 		}
 
 		public ObjectData FindObject(int refID)

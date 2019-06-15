@@ -14,7 +14,7 @@ public class TaskManager : MonoBehaviour
     private List<QuestCanvas> questCanvases;
     private NodeEditorFramework.Node[] currentNodes;
 
-    public Dictionary<string, int> taskVariables;
+    public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
 
     private void Awake()
     {
@@ -27,9 +27,9 @@ public class TaskManager : MonoBehaviour
         startQuests();
     }
 
-    private void Update() // TEMP - DELETE BEFORE COMMIT
+    private void Update() // TEMP - DELETE BEFORE RELEASE
     {
-        if(Input.GetKeyDown(KeyCode.T))
+        if(Input.GetKeyDown(KeyCode.T) && TestCondition.TestTrigger != null)
         {
             TestCondition.TestTrigger.Invoke();
         }
@@ -60,6 +60,8 @@ public class TaskManager : MonoBehaviour
     public void SetTaskVariable(string name, int value)
     {
         taskVariables[name] = value;
+        if (VariableConditionNode.OnVariableUpdate != null)
+            VariableConditionNode.OnVariableUpdate.Invoke(name);
     }
 
     public int GetTaskVariable(string name)
@@ -97,45 +99,12 @@ public class TaskManager : MonoBehaviour
             }
         }
 
-
-
         currentNodes = new NodeEditorFramework.Node[questCanvases.Count];
         for (int i = 0; i < questCanvases.Count; i++)
         {
             startQuestline(i);
         }
     }
-
-    // COPIED FOR REFERENCE - DELETE BEFORE COMMIT
-
-//    private static void setupBaseFramework()
-//    {
-//        CheckEditorPath();
-
-//        // Init Resource system. Can be called anywhere else, too, if it's needed before.
-//        ResourceManager.SetDefaultResourcePath(editorPath + "Resources/");
-
-//        // Run fetching algorithms searching the script assemblies for Custom Nodes / Connection Types / NodeCanvas Types
-//        ConnectionPortStyles.FetchConnectionPortStyles();
-//        NodeTypes.FetchNodeTypes();
-//        NodeCanvasManager.FetchCanvasTypes();
-//        ConnectionPortManager.FetchNodeConnectionDeclarations();
-//        ImportExportManager.FetchIOFormats();
-
-//        // Setup Callback system
-//        NodeEditorCallbacks.SetupReceivers();
-//        NodeEditorCallbacks.IssueOnEditorStartUp();
-
-//        // Init input
-//        NodeEditorInputSystem.SetupInput();
-
-//#if UNITY_EDITOR
-//        UnityEditor.EditorApplication.update -= Update;
-//        UnityEditor.EditorApplication.update += Update;
-//#endif
-
-//        initiatedBase = true;
-//    }
 
     public void startQuestline(int index)
     {
@@ -153,9 +122,17 @@ public class TaskManager : MonoBehaviour
         }
     }
 
+    public void setNode(NodeEditorFramework.ConnectionPort connection)
+    {
+        if(connection.connected())
+        {
+            setNode(connection.connections[0].body);
+        }
+    }
+
     public void setNode(NodeEditorFramework.Node node)
     {
-        //TODO: differentiate better between quests
+        //TODO: differentiate better between quests?
         for(int i = 0; i < questCanvases.Count; i++)
         {
             if(questCanvases[i].nodes.Contains(node))

@@ -26,10 +26,10 @@ namespace NodeEditorFramework.Standard
 
         float height = 220f;
 
-        [ConnectionKnob("Input Left", Direction.In, "Task", NodeSide.Left, 20)]
+        [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
         public ConnectionKnob inputLeft;
 
-        [ConnectionKnob("Output Right", Direction.Out, "Task", NodeSide.Right, 20)]
+        [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right, 20)]
         public ConnectionKnob outputRight;
 
         [ConnectionKnob("Input Up", Direction.In, "Complete", NodeSide.Top, 100f)]
