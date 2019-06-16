@@ -7,6 +7,10 @@ using UnityEditor;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
+    public delegate void SectorLoadDelegate(string sectorName);
+    public static SectorLoadDelegate OnSectorLoad;
+    public static SectorManager instance;
+
     public bool jsonMode;
     public List<Sector> sectors; //TODO: RM: load sectors from files (already done elsewhere; would it make sense to move it to RM?)
     public PlayerCore player;
@@ -41,6 +45,14 @@ public class SectorManager : MonoBehaviour
 
     private void Awake()
     {
+        if (instance != null)
+        {
+            Debug.LogWarning("There should be only one sector manager!");
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+
         objects = new Dictionary<string, GameObject>();
         persistentObjects = new Dictionary<string, GameObject>();
         battleZone = gameObject.AddComponent<BattleZoneManager>();
@@ -64,6 +76,8 @@ public class SectorManager : MonoBehaviour
                 {
                     current = sectors[i];
                     loadSector();
+                    if (OnSectorLoad != null)
+                        OnSectorLoad.Invoke(current.sectorName);
                     break;
                 }
             }

@@ -5,13 +5,13 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(true, "Action/PopupNode")]
-    public abstract class PopupNode : Node
+    [Node(false, "Actions/PopupNode")]
+    public class PopupNode : Node
     {
         public override string GetID { get { return "PopupNode"; } }
         public override string Title { get { return "Popup dialogue"; } }
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, 100); } }
+        public override Vector2 DefaultSize { get { return new Vector2(200, 150); } }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -20,7 +20,7 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob input;
 
         public string text;
-        public Color color;
+        public Color color = Color.white;
 
         public override void NodeGUI()
         {
@@ -43,10 +43,18 @@ namespace NodeEditorFramework.Standard
             color = new Color(r, g, b);
         }
 
-        public override bool Calculate()
+        public override int Traverse()
         {
+            DialogueSystem.OnDialogueEnd += OnDialogueEnd;
             DialogueSystem.ShowPopup(text, color);
-            return true;
+            Debug.Log("Popup");
+            return -1;
+        }
+
+        void OnDialogueEnd(int _)
+        {
+            DialogueSystem.OnDialogueEnd -= OnDialogueEnd;
+            TaskManager.Instance.setNode(output);
         }
     }
 }

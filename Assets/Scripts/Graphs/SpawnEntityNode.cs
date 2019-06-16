@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(true, "Actions/SpawnEntityNode")]
+    [Node(false, "Actions/SpawnEntityNode")]
     public abstract class SpawnEntityNode : Node
     {
         public override string GetID { get { return "SpawnEntityNode"; } }

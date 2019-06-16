@@ -76,6 +76,7 @@ namespace NodeEditorFramework.Standard
 
         public void DeInit()
         {
+            state = ConditionState.Uninitialized;
             OnVariableUpdate -= VariableUpdate;
         }
 

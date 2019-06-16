@@ -85,7 +85,7 @@ namespace NodeEditorFramework.Standard
                         DeInit();
                         // Continue to next node
                         if(groups[i].output.connected())
-                            TaskManager.Instance.setNode(groups[i].output.connections[0].body);
+                            TaskManager.Instance.setNode(groups[i].output);
                         return true;
                     }
                 }
@@ -93,7 +93,7 @@ namespace NodeEditorFramework.Standard
             return true;
         }
 
-        void DeInit()
+        public void DeInit()
         {
             for (int i = 0; i < groups.Count; i++)
             {

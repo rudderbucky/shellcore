@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using NodeEditorFramework.Utilities;
 
-//State: success, failure, ended?
-
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Tasks/FinishTaskNode")]

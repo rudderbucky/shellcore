@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace NodeEditorFramework.Standard
 {
@@ -18,14 +16,36 @@ namespace NodeEditorFramework.Standard
         public delegate void UnitDestryedDelegate(Entity entity);
         public static UnitDestryedDelegate OnUnitDestroyed;
 
-        public EntityBlueprint.IntendedType entityType;
+        public bool useID;
+        public ConnectionKnob IDInput;
+        public string EntityID;
+        public string tag;
         public int targetCount = 1;
         public int targetFaction = 1;
 
+
         int killCount;
 
-        [ConnectionKnob("Output Right", Direction.Out, "Condition", NodeSide.Right)]
-        public ConnectionKnob outputRight;
+        ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("ID Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
+
+        [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
+        public ConnectionKnob output;
+
+        public override void NodeGUI()
+        {
+            GUILayout.BeginHorizontal();
+            output.DisplayLayout();
+            if(useID)
+            {
+                IDInput.DisplayLayout();
+            }
+            GUILayout.EndHorizontal();
+
+            useID = RTEditorGUI.Toggle(useID, "Use ID input");
+
+            
+
+        }
 
         public void Init(int index)
         {
@@ -43,12 +63,12 @@ namespace NodeEditorFramework.Standard
 
         void updateState(Entity entity)
         {
-            if (entity.blueprint.intendedType == entityType)
+            if (entity.tag == tag)
             {
                 killCount++;
                 if (killCount == targetCount)
                 {
-                    outputRight.connection(0).body.Calculate();
+                    output.connection(0).body.Calculate();
                 }
             }
             state = ConditionState.Completed;

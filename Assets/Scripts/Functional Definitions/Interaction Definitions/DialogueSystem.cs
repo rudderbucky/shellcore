@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class DialogueSystem : MonoBehaviour
 {
     public static DialogueSystem Instance { get; private set; }
+
+    public delegate void DialogueDelegate(int answer);
+    public static DialogueDelegate OnDialogueEnd;
 
     public GameObject dialogueBoxPrefab;
     public GameObject dialogueButtonPrefab;
@@ -62,9 +66,10 @@ public class DialogueSystem : MonoBehaviour
 
         //create window
         window = Instantiate(dialogueBoxPrefab);
+        window.SetActive(true);
         window.transform.SetSiblingIndex(0);
         backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
-        backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
+        backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(()=> { endDialogue(); });
         textRenderer = backgroud.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
@@ -78,7 +83,7 @@ public class DialogueSystem : MonoBehaviour
         RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
         button.SetParent(backgroud, false);
         button.anchoredPosition = new Vector2(0, 24);
-        button.GetComponent<Button>().onClick.AddListener(endDialogue);
+        button.GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
         button.Find("Text").GetComponent<Text>().text = "Ok";
 
         buttons = new GameObject[1];
@@ -93,7 +98,7 @@ public class DialogueSystem : MonoBehaviour
         //create window
         window = Instantiate(dialogueBoxPrefab);
         backgroud = window.transform.Find("Background").GetComponent<RectTransform>();
-        backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(endDialogue);
+        backgroud.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
         textRenderer = backgroud.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
@@ -196,8 +201,10 @@ public class DialogueSystem : MonoBehaviour
         return -1;
     }
 
-    private void endDialogue()
+    private void endDialogue(int answer = -1)
     {
+        if (OnDialogueEnd != null)
+            OnDialogueEnd.Invoke(answer);
         Destroy(window);
     }
 }
