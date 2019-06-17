@@ -151,6 +151,22 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
     }
 
 	public void CloseUI(bool val) {
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			Destroy(part.gameObject);
+		}
+		cursorScript.parts.Clear();
+		if(partDict != null) {
+			foreach(DWInventoryButton but in partDict.Keys) {
+				Destroy(but.gameObject);
+			}
+			partDict = null;
+		}
+		if(builderPartDict != null) {
+			foreach(ShipBuilderInventoryScript inv in builderPartDict.Values) {
+				Destroy(inv.gameObject);
+			}
+			builderPartDict = null;
+		}
 		player.SetIsInteracting(false);
 		base.CloseUI();
 		player.Rebuild();
