@@ -318,13 +318,20 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 						info.abilityID = Random.Range(0,21);
 						if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
 						if(info.abilityID == 10) {
-							DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 2));
+							DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 8));
 							info.secondaryData = JsonUtility.ToJson(data);
 						}
 						if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
 						else info.tier = Random.Range(1, 4);
 						parts.Add(info);
 					}
+				}
+				for(int i = 0; i < 8; i++) {
+					info.partID = "SmallCenter1";
+					info.abilityID = 10;
+					info.tier = 0;
+					info.secondaryData = JsonUtility.ToJson(DroneUtilities.GetDefaultData((DroneType)i));
+					parts.Add(info);
 				}
 			}
 			for(int i = 0; i < parts.Count; i++) {
@@ -428,8 +435,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	#if UNITY_EDITOR
-	public void SaveBlueprint(EntityBlueprint blueprint) {
-		AssetDatabase.CreateAsset(blueprint, "Assets/Blueprints/Entities/Air Crafts/Shellcores/SavedPrint.asset");
+	public static void SaveBlueprint(EntityBlueprint blueprint) {
+		AssetDatabase.CreateAsset(blueprint, "Assets/Blueprints/Entities/Crafts/Air Crafts/Shellcores/SavedPrint.asset");
 	}
 	#endif
 	public InputField inField;

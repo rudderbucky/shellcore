@@ -190,6 +190,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 
 	public void UpdateChain() {
 		var shellRect = ShipBuilder.GetRect(shellImage.rectTransform);
+		shellRect.Expand(10);
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			shipPart.isInChain = false;
 			var partBounds = ShipBuilder.GetRect(shipPart.rectTransform);
@@ -310,5 +311,9 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		currentPart.secondaryData = JsonUtility.ToJson(data);
 		player.GetInventory()[index] = currentPart;
 		CloseUI(true);
+		#if UNITY_EDITOR
+		if(Input.GetKey(KeyCode.LeftShift)) 
+			ShipBuilder.SaveBlueprint(blueprint);
+		#endif
 	}
 }

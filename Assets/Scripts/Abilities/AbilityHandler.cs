@@ -143,7 +143,7 @@ public class AbilityHandler : MonoBehaviour {
                 abilityTierArray[i].transform.SetParent(transform, false);
             }
             // instantiate ability image
-            image.sprite = AbilityUtilities.GetAbilityImageByID(visibleAbilities[i].GetID());
+            image.sprite = AbilityUtilities.GetAbilityImage(visibleAbilities[i]);
             image.enabled = true;
             abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
             abilityImagesArray[i].gameObject.SetActive(true);

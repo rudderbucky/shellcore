@@ -72,7 +72,7 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 						abilityTier.rectTransform.sizeDelta = abilityTier.sprite.bounds.size * 20;
 						abilityTier.color = new Color(1,1,1,0.4F);
 					} else abilityTier.gameObject.SetActive(false);
-					abilityImage.sprite = AbilityUtilities.GetAbilityImageByID(info.abilityID);
+					abilityImage.sprite = AbilityUtilities.GetAbilityImageByID(info.abilityID, info.secondaryData);
 					abilityImage.gameObject.SetActive(true);
 					abilityText.text = AbilityUtilities.GetAbilityNameByID(info.abilityID) + (info.tier > 0 ? " " + info.tier : "");
 					abilityText.gameObject.SetActive(true);
