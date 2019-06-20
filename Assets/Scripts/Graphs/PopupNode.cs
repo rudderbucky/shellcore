@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Actions/PopupNode")]
+    [Node(false, "Dialogue/PopupNode")]
     public class PopupNode : Node
     {
         public override string GetID { get { return "PopupNode"; } }

@@ -22,6 +22,7 @@ namespace NodeEditorFramework.Standard
         public bool freeSector;
 
         float height = 40f;
+        Dictionary<string, int> savedVariables;
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
         public ConnectionKnob input;
@@ -52,7 +53,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                //TODO: save task system variables
+                savedVariables = new Dictionary<string, int>(TaskManager.Instance.taskVariables);
                 SectorManager.OnSectorLoad = SectorUpdate;
                 SectorUpdate(SectorManager.instance.current.sectorName);
                 return -1;
@@ -78,8 +79,7 @@ namespace NodeEditorFramework.Standard
                         cgn.DeInit();
                     }
 
-                    // TODO: restore saved variables
-
+                    TaskManager.Instance.taskVariables = savedVariables;
                     TaskManager.Instance.setNode(this);
                 }
             }

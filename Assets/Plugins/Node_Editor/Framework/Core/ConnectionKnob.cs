@@ -35,8 +35,8 @@ namespace NodeEditorFramework
 		{
 			base.Init (body, name);
 			direction = dir;
-            //maxConnectionCount = dir == Direction.In? ConnectionCount.Single : ConnectionCount.Multi; 
-            maxConnectionCount = ConnectionCount.Multi; 
+            maxConnectionCount = dir == Direction.In? ConnectionCount.Multi : ConnectionCount.Single; 
+            //maxConnectionCount = ConnectionCount.Multi; 
             side = dir == Direction.Out? NodeSide.Right : NodeSide.Left;
 			sidePosition = 0;
 		}
@@ -45,8 +45,8 @@ namespace NodeEditorFramework
 		{
 			base.Init (body, name);
 			direction = dir;
-            //maxConnectionCount = dir == Direction.In? ConnectionCount.Single : ConnectionCount.Multi; 
-            maxConnectionCount = ConnectionCount.Multi;
+            maxConnectionCount = dir == Direction.In? ConnectionCount.Multi : ConnectionCount.Single; 
+            //maxConnectionCount = ConnectionCount.Multi;
             side = nodeSide;
 			sidePosition = nodeSidePosition;
 		}

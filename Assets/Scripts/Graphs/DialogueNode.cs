@@ -6,7 +6,7 @@ using UnityEngine;
 namespace NodeEditorFramework.Standard
 {
     [Node(true, "Dialogue/DialogueNode")]
-    public abstract class DialogueNode : Node
+    public class DialogueNode : Node
     {
         public override string GetID { get { return "DialogueNode"; } }
         public override string Title { get { return "Dialogue"; } }
@@ -18,15 +18,15 @@ namespace NodeEditorFramework.Standard
 
         ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right);
 
-        Color speakerColor;
-        string speakerTitle;
-        string text;
-        List<string> answers = new List<string>();
+        public Color speakerColor;
+        public string speakerTitle;
+        public string text;
+        public List<string> answers = new List<string>();
 
         public override void NodeGUI()
         {
             GUILayout.Label("Title:");
-            speakerTitle = RTEditorGUI.TextField(speakerTitle);
+            speakerTitle = RTEditorGUI.TextField(speakerTitle, GUILayout.MinHeight(64f), GUILayout.MinWidth(200f));
             GUILayout.Label("Text:");
             text = GUILayout.TextArea( text);
             GUILayout.Label("Answers:");
@@ -54,6 +54,11 @@ namespace NodeEditorFramework.Standard
                 answers.Add("");
             }
             GUILayout.EndHorizontal();
+        }
+
+        public override int Traverse()
+        {
+            return -1;
         }
     }
 }

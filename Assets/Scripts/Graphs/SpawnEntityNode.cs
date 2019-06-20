@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Actions/SpawnEntityNode")]
+    [Node(false, "Actions/Spawn Entity")]
     public abstract class SpawnEntityNode : Node
     {
         public override string GetID { get { return "SpawnEntityNode"; } }
@@ -21,6 +21,8 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
+        public bool action; //TODO: copy & paste action mode
+        public string blueprintID;
         public string entityID;
         public string flagID;
         public Vector2 coordinates;
@@ -32,10 +34,12 @@ namespace NodeEditorFramework.Standard
             input.DisplayLayout();
             output.DisplayLayout();
             GUILayout.EndHorizontal();
+            GUILayout.Label("Blueprint ID:");
+            entityID = GUILayout.TextField(blueprintID);
             GUILayout.Label("Entity ID:");
             entityID = GUILayout.TextField(entityID);
 
-            if(useCoordinates = Utilities.RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
+            if (useCoordinates = Utilities.RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
             {
                 GUILayout.Label("Flag ID:");
                 flagID = GUILayout.TextField(flagID);
@@ -52,21 +56,24 @@ namespace NodeEditorFramework.Standard
             }
         }
 
-        public override bool Calculate()
+        public override int Traverse()
         {
             for (int i = 0; i < AIData.flags.Count; i++)
             {
                 if(AIData.flags[i].name == flagID)
                 {
-                    var blueprint = ResourceManager.GetAsset<EntityBlueprint>(entityID);
-                    Entity entity = new Entity();
-                    entity.blueprint = blueprint;
-                    entity.entityName = "ENTITY";
-                    entity.faction = 0;
-                    entity.spawnPoint = AIData.flags[i].transform.position;
+                    var blueprint = ResourceManager.GetAsset<EntityBlueprint>(blueprintID);
+                    if(blueprint)
+                    {
+                        Entity entity = new Entity();
+                        entity.blueprint = blueprint;
+                        entity.entityName = "ENTITY";
+                        entity.faction = 0;
+                        entity.spawnPoint = AIData.flags[i].transform.position;
+                    }
                 }
             }
-            return true;
+            return 0;
         }
     }
 }
