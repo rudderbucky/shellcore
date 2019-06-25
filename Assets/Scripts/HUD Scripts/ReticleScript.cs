@@ -33,7 +33,26 @@ public class ReticleScript : MonoBehaviour {
     /// </summary>
     private void FindTarget() {
 
-        // To say this needs despaghettification would be an understatement...
+        // TODO: To say this needs despaghettification would be an understatement...
+        /*
+         * IInteractable
+         * - bool Interact() - returns whether the interaction was successful
+         * - int getPriority() - returns interaction priority, for example: 
+         *   a component with quest dialogue would return high priority, while 
+         *   something that acts only as a target would return low priority
+         * 
+         * 
+         * This method:
+         *   Find all interactable objects in the pointer position, add to 'List'
+         *   compare GameObjects int List to those found in quest interaction overrides list
+         *      if there's a match : 
+         *          call the quest node's Calculate()
+         *          return;
+         *   Sort List by priority
+         *   Foreach (IInteractable interactable in List)
+         *      if(interactable.Interact())
+         *         break;
+         */
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits

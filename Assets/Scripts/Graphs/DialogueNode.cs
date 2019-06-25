@@ -16,12 +16,16 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left)]
         public ConnectionKnob input;
 
+        [ConnectionKnob("Cancel", Direction.Out, "Flow", NodeSide.Right)]
+        public ConnectionKnob cancel;
+
         ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right);
 
         public Color speakerColor;
         public string speakerTitle;
         public string text;
         public List<string> answers = new List<string>();
+        //TODO: list of outputs or some other way to distinguish between choices and cancel
 
         public override void NodeGUI()
         {
@@ -54,6 +58,7 @@ namespace NodeEditorFramework.Standard
                 answers.Add("");
             }
             GUILayout.EndHorizontal();
+            cancel.DisplayLayout();
         }
 
         public override int Traverse()

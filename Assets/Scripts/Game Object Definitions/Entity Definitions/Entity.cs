@@ -288,6 +288,8 @@ public class Entity : MonoBehaviour {
         if(GameObject.Find("SectorManager")) 
             GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
 
+        if(NodeEditorFramework.Standard.DestroyEntityCondition.OnUnitDestroyed != null)
+            NodeEditorFramework.Standard.DestroyEntityCondition.OnUnitDestroyed.Invoke(this);
     }
 
     protected virtual void PostDeath() 

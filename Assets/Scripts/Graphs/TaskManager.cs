@@ -8,6 +8,7 @@ using NodeEditorFramework;
 public class TaskManager : MonoBehaviour
 {
     public static TaskManager Instance = null;
+    public static List<string> interactionOverrides = new List<string>();
 
     List<Task> activeTasks = new List<Task>();
 

@@ -13,52 +13,42 @@ namespace NodeEditorFramework.Standard
 
         public override bool AutoLayout { get { return true; } }
 
-        [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left)]
+        [ConnectionKnob("Input Left", Direction.In, "Flow", NodeSide.Left)]
         public ConnectionKnob input;
 
-        ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right);
+        [ConnectionKnob("Output", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right)]
+        public ConnectionKnob output;
 
-        public Color speakerColor;
-        public string speakerTitle;
-        public string text;
-        public List<string> answers = new List<string>();
+        public bool SpeakToEntity;
+        public string EntityID;
 
         public override void NodeGUI()
         {
-            GUILayout.Label("Title:");
-            speakerTitle = RTEditorGUI.TextField(speakerTitle, GUILayout.MinHeight(64f), GUILayout.MinWidth(200f));
-            GUILayout.Label("Text:");
-            text = GUILayout.TextArea(text);
-            GUILayout.Label("Answers:");
-            for (int i = 0; i < outputKnobs.Count; i++)
+            SpeakToEntity = RTEditorGUI.Toggle(SpeakToEntity, "Speak to entity");
+            if(SpeakToEntity)
             {
-                RTEditorGUI.Seperator();
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
-                {
-                    DeleteConnectionPort(outputPorts[i]);
-                    answers.RemoveAt(i);
-                    i--;
-                    continue;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                answers[i] = RTEditorGUI.TextField(answers[i]);
-                outputKnobs[i].DisplayLayout();
-                GUILayout.EndHorizontal();
+                GUILayout.Label("EntityID");
+                EntityID = RTEditorGUI.TextField(EntityID);
             }
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
-            {
-                CreateConnectionKnob(outputAttribute);
-                answers.Add("");
-            }
-            GUILayout.EndHorizontal();
+        }
+
+        public override bool Calculate()
+        {
+            TaskManager.Instance.setNode(output);
+            return true;
         }
 
         public override int Traverse()
         {
-            return -1;
+            if(SpeakToEntity)
+            {
+                TaskManager.interactionOverrides.Add(EntityID);
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
