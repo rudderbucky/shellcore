@@ -33,7 +33,7 @@ public class AirCraftAI : MonoBehaviour
     public IOwner owner;
     private AIModule module;
 
-    private Entity aggroTarget; // Overrides curren't module's movement if aggression level allowes that
+    private Entity aggroTarget; // Overrides current module's movement if aggression level allowes that
     float aggroSearchTimer = 0f;
 
     public bool allowRetreat;

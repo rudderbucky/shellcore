@@ -4,11 +4,11 @@ using UnityEngine;
 
 public enum DroneType {
     Mini,
-    Counter,
-    Light,
     Worker,
     Strike,
+    Light,
     Gun,
+    Counter,
     Torpedo,
     Heavy
 }

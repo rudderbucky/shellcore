@@ -282,7 +282,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 					info.abilityID = Random.Range(0,21);
 					if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
 					if(info.abilityID == 10) {
-						DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 2));
+						DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 8));
 						info.secondaryData = JsonUtility.ToJson(data);
 					}
 					if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;

@@ -57,6 +57,7 @@ public class SpawnDrone : ActiveAbility
         drone.transform.position = part.transform.position;
         drone.spawnPoint = part.transform.position;
         drone.enginePower = 100;
+        drone.type = spawnData.type;
         drone.Init();
         drone.SetOwner(craft);
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);

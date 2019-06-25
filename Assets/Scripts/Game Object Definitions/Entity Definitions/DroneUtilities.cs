@@ -68,4 +68,19 @@ public class DroneUtilities : MonoBehaviour
                 return null;
         }
     }
+
+    public static WeaponDiversityType GetDiversityTypeByEntity(Entity ent) {
+        Drone drone = ent as Drone;
+        if(!drone) return WeaponDiversityType.None;
+        else switch(drone.type) {
+            case DroneType.Gun:
+                return WeaponDiversityType.Gun;
+            case DroneType.Strike:
+                return WeaponDiversityType.Strike;
+            case DroneType.Torpedo:
+                return WeaponDiversityType.Torpedo;
+            default:
+                return WeaponDiversityType.None;
+        }
+    }
 }

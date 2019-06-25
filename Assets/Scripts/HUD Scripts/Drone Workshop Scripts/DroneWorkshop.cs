@@ -41,6 +41,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	public GameObject buttonPrefab;
 	protected Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> builderPartDict;
 	EntityBlueprint.PartInfo currentPart;
+	public Image miniDroneShooter;
 
     public void InitializeSelectionPhase() {
 
@@ -236,13 +237,13 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		JsonUtility.FromJsonOverwrite(part.secondaryData, data);
 		return data;
 	}
-	public void InitializeBuildPhase(EntityBlueprint blueprint, EntityBlueprint.PartInfo currentPart) {
+	public void InitializeBuildPhase(EntityBlueprint blueprint, EntityBlueprint.PartInfo currentPart, DroneSpawnData data) {
 		this.currentPart = currentPart;
 		selectionPhaseParent.SetActive(false);
 		buildPhaseParent.SetActive(true);
 		cursorScript.gameObject.SetActive(true);
 		cursorScript.SetMode(BuilderMode.Workshop);
-		LoadBlueprint(blueprint);
+		LoadBlueprint(blueprint, data);
 
 		builderPartDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 		contentsArray = new Transform[] {smallBuilderContents, mediumBuilderContents, largeBuilderContents};
@@ -260,13 +261,13 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		phase = DroneWorkshopPhase.BuildPhase;
 	}
 
-	public void LoadBlueprint(EntityBlueprint blueprint) {
+	public void LoadBlueprint(EntityBlueprint blueprint, DroneSpawnData data) {
 		shellImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
 		if(shellImage.sprite) {
 			shellImage.enabled = true;
 			shellImage.color = FactionColors.colors[0];
 			shellImage.rectTransform.sizeDelta = shellImage.sprite.bounds.size * 100;
-
+			shellImage.type = Image.Type.Sliced;
 			// orient shell image so relative center stays the same regardless of shell tier
 			shellImage.rectTransform.anchoredPosition = -shellImage.sprite.pivot + shellImage.rectTransform.sizeDelta / 2;
 		} else shellImage.enabled = false;
@@ -274,12 +275,22 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		coreImage.rectTransform.anchoredPosition = -shellImage.rectTransform.anchoredPosition;
 		coreImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
 		if(coreImage.sprite) {
+			coreImage.enabled = true;
 			coreImage.material = ResourceManager.GetAsset<Material>("material_color_swap");
 			coreImage.color = FactionColors.colors[0];
 			coreImage.preserveAspect = true;
+			coreImage.type = Image.Type.Sliced;
 			coreImage.rectTransform.sizeDelta = coreImage.sprite.bounds.size * 110;
 		} else coreImage.enabled = false;
-
+		if(data.type == DroneType.Mini) {
+            miniDroneShooter.enabled = true;
+            miniDroneShooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
+            miniDroneShooter.color = FactionColors.colors[0];
+            miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
+            miniDroneShooter.type = Image.Type.Sliced;
+        } else {
+            miniDroneShooter.enabled = false;
+        }
 		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
 			var p = Instantiate(partPrefab, cursorScript.transform.parent).GetComponent<ShipBuilderPart>();
 			p.cursorScript = cursorScript;
