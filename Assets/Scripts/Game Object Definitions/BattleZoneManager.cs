@@ -6,6 +6,7 @@ public class BattleZoneManager : MonoBehaviour
 {
 
     static List<Entity> targets;
+    public string sectorName;
     bool playing;
 
     public void AlertPlayers(int faction, string message) {
@@ -45,6 +46,9 @@ public class BattleZoneManager : MonoBehaviour
                 foreach(Entity ent in targets) {
                     if(ent as PlayerCore && ent.faction == winningFaction) {
                         ResourceManager.PlayClipByID("clip_victory", ent.transform.position);
+
+                        if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
+                            NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
                     }
                 }
                 DialogueSystem.ShowPopup("Faction " + winningFaction + " won!");

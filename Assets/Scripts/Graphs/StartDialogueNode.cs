@@ -42,7 +42,7 @@ namespace NodeEditorFramework.Standard
         {
             if(SpeakToEntity)
             {
-                TaskManager.interactionOverrides.Add(EntityID);
+                TaskManager.interactionOverrides.Add(EntityID, ()=> { Calculate(); });
                 return -1;
             }
             else

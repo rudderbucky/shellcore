@@ -336,6 +336,7 @@ public class SectorManager : MonoBehaviour
         if (current.type == Sector.SectorType.BattleZone)
         {
             battleZone.enabled = true;
+            battleZone.sectorName = current.sectorName;
             if(player) {
                 var playerComp = player.GetComponent<PlayerCore>();
                 battleZone.AddTarget(playerComp);

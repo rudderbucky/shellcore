@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using NodeEditorFramework.Standard;
 using NodeEditorFramework.IO;
 using NodeEditorFramework;
@@ -8,13 +9,13 @@ using NodeEditorFramework;
 public class TaskManager : MonoBehaviour
 {
     public static TaskManager Instance = null;
-    public static List<string> interactionOverrides = new List<string>();
+    public static Dictionary<string, UnityAction> interactionOverrides = new Dictionary<string, UnityAction>();
 
     List<Task> activeTasks = new List<Task>();
 
     public string[] questCanvasPaths;
     private List<QuestCanvas> questCanvases;
-    private NodeEditorFramework.Node[] currentNodes;
+    private Node[] currentNodes;
 
     public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
 
@@ -104,7 +105,7 @@ public class TaskManager : MonoBehaviour
             }
         }
 
-        currentNodes = new NodeEditorFramework.Node[questCanvases.Count];
+        currentNodes = new Node[questCanvases.Count];
         for (int i = 0; i < questCanvases.Count; i++)
         {
             startQuestline(i);

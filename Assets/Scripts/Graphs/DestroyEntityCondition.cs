@@ -68,10 +68,10 @@ namespace NodeEditorFramework.Standard
                 killCount++;
                 if (killCount == targetCount)
                 {
+                    state = ConditionState.Completed;
                     output.connection(0).body.Calculate();
                 }
             }
-            state = ConditionState.Completed;
         }
     }
 }
