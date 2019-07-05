@@ -119,7 +119,7 @@ public class BattleAI : AIModule
         }
         if(pState != state)
         {
-            Debug.LogFormat("Faction {0} Shellcore changed state to: {1}", craft.faction, state);
+            //Debug.LogFormat("Faction {0} Shellcore changed state to: {1}", craft.faction, state);
         }
     }
 
@@ -181,7 +181,7 @@ public class BattleAI : AIModule
                     if (collectTarget != null)
                         findNewTarget = false;
 
-                    Debug.LogFormat("Faction {0} collect target: {1}", craft.faction, collectTarget);
+                    //Debug.LogFormat("Faction {0} collect target: {1}", craft.faction, collectTarget);
                 }
                 if(collectTarget != null)
                 {

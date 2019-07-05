@@ -190,7 +190,7 @@ public class SectorManager : MonoBehaviour
             player.ResetPower();
             objects.Add("player", player.gameObject);
             player.sectorMngr = this;
-            player.alerter.showMessage("ENTERING SECTOR: " + current.name);
+            player.alerter.showMessage("ENTERING SECTOR: " + current.sectorName);
         }
 
 

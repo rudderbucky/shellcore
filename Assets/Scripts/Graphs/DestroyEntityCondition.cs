@@ -17,7 +17,6 @@ namespace NodeEditorFramework.Standard
         public static UnitDestryedDelegate OnUnitDestroyed;
 
         public bool useID;
-        public ConnectionKnob IDInput;
         public string EntityID;
         public string tag;
         public int targetCount = 1;
@@ -26,7 +25,9 @@ namespace NodeEditorFramework.Standard
 
         int killCount;
 
-        ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("ID Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
+        [ConnectionKnob("ID Input", Direction.In, "EntityID", NodeSide.Left)]
+        public ConnectionKnob IDInput;
+        //ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("ID Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
 
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;

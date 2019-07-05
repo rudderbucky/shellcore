@@ -81,6 +81,7 @@ namespace NodeEditorFramework.Standard
                     }
                     if(completed == conditionCount)
                     {
+                        Debug.Log("All conditions passed!");
                         // Tell all condition nodes to unsub
                         DeInit();
                         // Continue to next node

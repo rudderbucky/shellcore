@@ -47,6 +47,7 @@ public class BattleZoneManager : MonoBehaviour
                     if(ent as PlayerCore && ent.faction == winningFaction) {
                         ResourceManager.PlayClipByID("clip_victory", ent.transform.position);
 
+                        Debug.Log(sectorName + " won!");
                         if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
                             NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
                     }
