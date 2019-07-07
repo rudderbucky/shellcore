@@ -26,7 +26,7 @@ namespace NodeEditorFramework.Standard
 
         float height = 220f;
 
-        [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
+        [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left, 20)]
         public ConnectionKnob inputLeft;
 
         [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right, 20)]
@@ -67,26 +67,35 @@ namespace NodeEditorFramework.Standard
             }
         }
 
+        public void OnClick(int index)
+        {
+            if(index != 0)
+            {
+                taskID = GetHashCode().ToString();
+                Task task = new Task()
+                {
+                    taskID = taskID,
+                    description = description,
+                    creditReward = creditReward,
+                };
+                if (partReward)
+                {
+                    task.partReward = new EntityBlueprint.PartInfo
+                    {
+                        partID = partID,
+                        abilityID = partAbilityID,
+                        tier = partTier
+                    };
+                }
+                TaskManager.Instance.AddTask(task);
+            }
+            TaskManager.Instance.setNode(outputRight);
+        }
+
         public override int Traverse()
         {
-            taskID = GetHashCode().ToString();
-            Task task = new Task()
-            {
-                taskID = taskID,
-                description = description,
-                creditReward = creditReward,
-            };
-            if(partReward)
-            {
-                task.partReward = new EntityBlueprint.PartInfo
-                {
-                    partID = partID,
-                    abilityID = partAbilityID,
-                    tier = partTier
-                };
-            }
-            TaskManager.Instance.AddTask(task);
-            return 0;
+            DialogueSystem.ShowTaskPrompt(this); //TODO: additional parameters
+            return -1;
         }
     }
 }

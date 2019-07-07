@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(true, "Dialogue/Start Dialogue")]
+    [Node(false, "Dialogue/Start Dialogue")]
     public class StartDialogueNode : Node
     {
         public override string GetID { get { return "StartDialogueNode"; } }
@@ -13,7 +13,7 @@ namespace NodeEditorFramework.Standard
 
         public override bool AutoLayout { get { return true; } }
 
-        [ConnectionKnob("Input Left", Direction.In, "Flow", NodeSide.Left)]
+        [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
         [ConnectionKnob("Output", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right)]
@@ -32,17 +32,26 @@ namespace NodeEditorFramework.Standard
             }
         }
 
-        public override bool Calculate()
-        {
-            TaskManager.Instance.setNode(output);
-            return true;
-        }
-
         public override int Traverse()
         {
+            Debug.Log("Start dialogue Entity ID: " + EntityID);
             if(SpeakToEntity)
             {
-                TaskManager.interactionOverrides.Add(EntityID, ()=> { Calculate(); });
+                if(TaskManager.interactionOverrides.ContainsKey(EntityID))
+                {
+                    TaskManager.interactionOverrides[EntityID] = () => {
+                        TaskManager.Instance.setNode(output);
+                        TaskManager.interactionOverrides.Remove(EntityID);
+                    };
+
+                }
+                else
+                {
+                    TaskManager.interactionOverrides.Add(EntityID, () => {
+                        TaskManager.Instance.setNode(output);
+                        TaskManager.interactionOverrides.Remove(EntityID);
+                    });
+                }
                 return -1;
             }
             else

@@ -35,6 +35,8 @@ namespace NodeEditorFramework.Standard
             GUILayout.BeginHorizontal();
             if(useIDInput)
             {
+                if(IDInput == null)
+                    IDInput = CreateConnectionKnob(IDInStyle);
                 IDInput.DisplayLayout();
             }
             output.DisplayLayout();
@@ -59,6 +61,9 @@ namespace NodeEditorFramework.Standard
 
         public void Init(int index)
         {
+            if (useIDInput && IDInput == null)
+                IDInput = CreateConnectionKnob(IDInStyle);
+
             killCount = 0;
             OnUnitDestroyed += updateState;
 

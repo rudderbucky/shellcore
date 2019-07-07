@@ -47,7 +47,6 @@ namespace NodeEditorFramework.Standard
         {
             DialogueSystem.OnDialogueEnd += OnDialogueEnd;
             DialogueSystem.ShowPopup(text, color);
-            Debug.Log("Popup");
             return -1;
         }
 

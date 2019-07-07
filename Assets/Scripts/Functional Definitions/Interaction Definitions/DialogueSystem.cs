@@ -95,6 +95,108 @@ public class DialogueSystem : MonoBehaviour
         buttons[0] = button.gameObject;
     }
 
+    public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null, PlayerCore player = null)
+    {
+        Instance.showDialogueNode(node, speaker, player);
+    }
+
+    private void showDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker, PlayerCore player)
+    {
+        if (window) endDialogue();
+        playerTransform = player ? player.transform : null;
+        //speakerPos = speaker.transform.position;
+        //create window
+        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
+        background = window.transform.Find("Background").GetComponent<RectTransform>();
+        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
+            endDialogue();
+            node.OnClick(0);
+            ResourceManager.PlayClipByID("clip_select", false);
+        });
+        textRenderer = background.transform.Find("Text").GetComponent<Text>();
+        textRenderer.font = shellcorefont;
+
+        ResourceManager.PlayClipByID("clip_typing");
+        // change text
+        text = node.text.Replace("<br>", "\n");
+        characterCount = 0;
+        nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
+        textRenderer.color = node.textColor;
+
+        // create buttons
+        buttons = new GameObject[node.outputKnobs.Count];
+
+        for (int i = 1; i < node.outputKnobs.Count; i++) // cancel is always first -> start from 1
+        {
+            RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
+            button.SetParent(background, false);
+            button.anchoredPosition = new Vector2(0, 24 + 16 * (node.outputKnobs.Count - (i)));
+            button.GetComponent<Button>().onClick.AddListener(() => {
+                endDialogue();
+                node.OnClick(i);
+                ResourceManager.PlayClipByID("clip_select", false);
+            });
+            button.Find("Text").GetComponent<Text>().text = node.answers[i - 1];
+
+            buttons[i] = button.gameObject;
+        }
+    }
+
+    public static void ShowTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker = null, PlayerCore player = null)
+    {
+        Instance.showTaskPrompt(node, speaker, player);
+    }
+
+    private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker, PlayerCore player) //TODO: reward part image
+    {
+        if (window) endDialogue();
+        playerTransform = player ? player.transform : null;
+        //speakerPos = speaker.transform.position;
+        //create window
+        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
+        background = window.transform.Find("Background").GetComponent<RectTransform>();
+        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
+            endDialogue();
+            node.OnClick(0);
+            ResourceManager.PlayClipByID("clip_select", false);
+        });
+        textRenderer = background.transform.Find("Text").GetComponent<Text>();
+        textRenderer.font = shellcorefont;
+
+        ResourceManager.PlayClipByID("clip_typing");
+        // change text
+        text = node.description.Replace("<br>", "\n");
+        characterCount = 0;
+        nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
+        textRenderer.color = Color.white; ;
+
+        // create buttons
+        buttons = new GameObject[2];
+
+        string[] answers =
+        {
+            "I'll do it!",
+            "I need some time to prepare"
+        };
+
+        for (int i = 0; i < answers.Length; i++)
+        {
+            RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
+            button.SetParent(background, false);
+            button.anchoredPosition = new Vector2(0, 24 + 16 * (node.outputKnobs.Count - (i)));
+            button.GetComponent<Button>().onClick.AddListener(() => {
+                endDialogue();
+                node.OnClick(i + 1);
+                ResourceManager.PlayClipByID("clip_select", false);
+            });
+            button.Find("Text").GetComponent<Text>().text = answers[i];
+
+            buttons[i] = button.gameObject;
+        }
+    }
+
     private void startDialogue(Dialogue dialogue, Entity speaker, PlayerCore player)
     {
         if(window) endDialogue();
@@ -206,8 +308,11 @@ public class DialogueSystem : MonoBehaviour
             RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
             button.SetParent(background, false);
             button.anchoredPosition = new Vector2(0, 24 + 16 * (current.nextNodes.Count - (i + 1)));
-            button.GetComponent<Button>().onClick.AddListener(()=> { Next(dialogue, nextIndex, speaker, player); });
-            button.GetComponent<Button>().onClick.AddListener(()=> { ResourceManager.PlayClipByID("clip_select", false); });
+            button.GetComponent<Button>().onClick.AddListener(()=> {
+                Next(dialogue, nextIndex, speaker, player);
+                ResourceManager.PlayClipByID("clip_select", false);
+            });
+            button.GetComponent<Button>().onClick.AddListener(()=> {  });
             button.Find("Text").GetComponent<Text>().text = next.buttonText;
 
             buttons[i] = button.gameObject;

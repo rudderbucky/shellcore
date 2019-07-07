@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(true, "Dialogue/DialogueNode")]
+    [Node(false, "Dialogue/DialogueNode")]
     public class DialogueNode : Node
     {
         public override string GetID { get { return "DialogueNode"; } }
@@ -21,7 +21,7 @@ namespace NodeEditorFramework.Standard
 
         ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right);
 
-        public Color speakerColor;
+        public Color textColor;
         public string speakerTitle;
         public string text;
         public List<string> answers = new List<string>();
@@ -61,8 +61,14 @@ namespace NodeEditorFramework.Standard
             cancel.DisplayLayout();
         }
 
+        public void OnClick(int index)
+        {
+            TaskManager.Instance.setNode(outputPorts[index]);
+        }
+
         public override int Traverse()
         {
+            DialogueSystem.ShowDialogueNode(this);
             return -1;
         }
     }

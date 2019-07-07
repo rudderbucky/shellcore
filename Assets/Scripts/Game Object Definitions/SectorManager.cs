@@ -77,8 +77,6 @@ public class SectorManager : MonoBehaviour
                 {
                     current = sectors[i];
                     loadSector();
-                    if (OnSectorLoad != null)
-                        OnSectorLoad.Invoke(current.sectorName);
                     break;
                 }
             }
@@ -202,16 +200,20 @@ public class SectorManager : MonoBehaviour
                 {
                     Bunker bunker = gObj.AddComponent<Bunker>();
                     stations.Add(bunker);
-                    bunker.vendingBlueprint = blueprint.dialogue.vendingBlueprint
-                        = ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
+                    bunker.vendingBlueprint =
+                        blueprint.dialogue != null
+                        ? blueprint.dialogue.vendingBlueprint
+                        : ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
                     break;
                 }
             case EntityBlueprint.IntendedType.Outpost:
                 {
                     Outpost outpost = gObj.AddComponent<Outpost>();
                     stations.Add(outpost);
-                    outpost.vendingBlueprint = blueprint.dialogue.vendingBlueprint
-                         = ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
+                    outpost.vendingBlueprint = 
+                        blueprint.dialogue != null 
+                        ? blueprint.dialogue.vendingBlueprint 
+                        : ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
                     break;
                 }
             case EntityBlueprint.IntendedType.Tower:
@@ -266,6 +268,7 @@ public class SectorManager : MonoBehaviour
         entity.faction = data.faction;
         entity.spawnPoint = data.position;
         entity.blueprint = blueprint;
+        entity.ID = data.ID;
 
         // TODO:
         // I think we should move dialogue setting to BuildEntity() since each entity's
@@ -275,7 +278,6 @@ public class SectorManager : MonoBehaviour
         if (data.dialogueID != "")
         {
             entity.dialogue = ResourceManager.GetAsset<Dialogue>(data.dialogueID);
-
         }
 
         objects.Add(data.ID, gObj);
@@ -346,15 +348,18 @@ public class SectorManager : MonoBehaviour
             if(obj is GameObject)
             {
                 GameObject gObj = Instantiate(obj as GameObject);
-                if(!gObj.GetComponent<EnergyRock>()) gObj.GetComponent<SpriteRenderer>().color = FactionColors.colors[current.entities[i].faction];
+                if(!gObj.GetComponent<EnergyRock>())
+                    gObj.GetComponent<SpriteRenderer>().color = FactionColors.colors[current.entities[i].faction];
+                if (gObj.GetComponent<Flag>())
+                    gObj.GetComponent<Flag>().ID = current.entities[i].ID;
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
+
                 objects.Add(current.entities[i].ID, gObj);
             }
             else if(obj is EntityBlueprint)
             {
-                EntityBlueprint blueprint = obj as EntityBlueprint;
-                SpawnEntity(blueprint, current.entities[i]);
+                SpawnEntity(obj as EntityBlueprint, current.entities[i]);
             }
         }
 
@@ -404,6 +409,8 @@ public class SectorManager : MonoBehaviour
         }
 
         if(info) info.showMessage("Entering sector '" + current.sectorName + "'");
+        if (OnSectorLoad != null)
+            OnSectorLoad.Invoke(current.sectorName);
     }
 
     public void InsertPersistentObject(string key, GameObject gameObject) {

@@ -66,9 +66,10 @@ namespace NodeEditorFramework.Standard
             {
                 for (int i = 0; i < AIData.flags.Count; i++)
                 {
-                    if (AIData.flags[i].name == flagID)
+                    if (AIData.flags[i].ID == flagID)
                     {
                         coords = AIData.flags[i].transform.position;
+                        break;
                     }
                 }
             }

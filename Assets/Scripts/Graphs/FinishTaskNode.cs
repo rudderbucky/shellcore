@@ -42,6 +42,7 @@ namespace NodeEditorFramework.Standard
         {
             if (outputUp.connected())
             {
+                //TODO: dialogue + reward
                 var taskNode = (outputUp.connection(0).body as StartTaskNode);
                 if(taskNode)
                 {

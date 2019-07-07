@@ -10,7 +10,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 	public Sector.SectorType type = Sector.SectorType.Neutral;
 	public enum ObjectTypes {
 		Other,
-		Platform
+		Platform,
+        Flag,
 	}
 
 	public enum CommandTypes {
@@ -43,6 +44,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		public int placeablesIndex;
 		public Vector3 pos;
 		public int rotation;
+        public string ID;
 	}
 
 	public struct SectorData {
@@ -216,7 +218,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 	}
 	bool GetIsFactable(PlaceableObject placeable) {
-		return !(placeable.type == ObjectTypes.Platform) && placeable.assetID != "energy_rock";
+		return !(placeable.type == ObjectTypes.Platform) && placeable.assetID != "energy_rock" && placeable.assetID != "flag";
 	}
 	void DeleteObject(){
 		Command com = new Command();
@@ -346,7 +348,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 							com.type = CommandTypes.ChangeFaction;
 							com.position = cursor.obj.transform.position;
 							var newObj = obj;
-							if(obj.assetID == "shellcore_blueprint") {
+							if(obj.type == ObjectTypes.Other) {
 								mainMenu.CloseUI();
 								coreEditor.Initialize(newObj, this);
 							} else {
@@ -366,6 +368,10 @@ public class SectorCreatorMouse : MonoBehaviour {
 							newObj.obj.transform.localEulerAngles = rot;
 							objects.Add(newObj);
 						}
+                        else if(obj.assetID == "flag")
+                        {
+                            coreEditor.Initialize(obj, this);
+                        }
 						else {
 							com.type = CommandTypes.Remove;
 							com.position = cursor.obj.transform.position;
@@ -521,7 +527,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		foreach(PlaceableObject oj in objects) {
 			if(oj.type != ObjectTypes.Platform) {
 				Sector.LevelEntity ent = new Sector.LevelEntity();
-				ent.ID = ID++ + "";
+				ent.ID = (oj.ID != null && oj.ID != "") ? oj.ID : ID++ + "";
 				ent.faction = oj.faction;
 				ent.position = oj.obj.transform.position;
 				ent.assetID = oj.assetID;
@@ -641,6 +647,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				obj.pos = ent.position;
 				obj.faction = ent.faction;
 				obj.shellcoreJSON = ent.blueprintJSON;
+                obj.ID = ent.ID;
 
 				obj.assetID = ent.assetID;
 				obj.type = ObjectTypes.Other;
