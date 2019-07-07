@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShellRegen : PassiveAbility {
 
 	public int index;
-	void Start() {
+	public void Initialize() {
 		ID = index + 17;
 	}
 	public override void SetDestroyed(bool input)

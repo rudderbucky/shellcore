@@ -219,18 +219,22 @@ public class AbilityUtilities : MonoBehaviour {
 			case 17:
 				ability = obj.AddComponent<ShellRegen>();
 				(ability as ShellRegen).index = 0;
+				(ability as ShellRegen).Initialize();
 				break;
 			case 18:
 				ability = obj.AddComponent<ShellMax>();
 				(ability as ShellMax).index = 0;
+				(ability as ShellMax).Initialize();
 				break;
 			case 19:
 				ability = obj.AddComponent<ShellRegen>();
 				(ability as ShellRegen).index = 2;
+				(ability as ShellRegen).Initialize();
 				break;
 			case 20:
 				ability = obj.AddComponent<ShellMax>();
 				(ability as ShellMax).index = 2;
+				(ability as ShellMax).Initialize();
 				break;
 		}
 		if(ability) ability.SetTier(tier);

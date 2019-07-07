@@ -20,6 +20,8 @@ public class Dialogue : ScriptableObject, IDialogueable
     }
 
     public List<Node> nodes;
+    public List<EntityBlueprint.PartInfo> traderInventory;
+    public VendingBlueprint vendingBlueprint;
 
     [System.Serializable]
     public struct Node

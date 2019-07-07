@@ -37,4 +37,8 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
 			// math for animation
 		} else rect.sizeDelta = new Vector2(190, 30);
 	}
+
+	void OnDisable() {
+		rect.sizeDelta = new Vector2(190, 30);
+	}
 }

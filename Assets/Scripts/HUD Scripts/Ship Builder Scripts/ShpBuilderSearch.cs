@@ -11,4 +11,8 @@ public class ShpBuilderSearch : MonoBehaviour {
 	void Start() {
 		input.onValueChanged.AddListener(delegate {builder.SetSearcherString(input.text); });
 	}
+
+	void OnDisable() {
+		input.text = "";
+	}
 }

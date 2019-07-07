@@ -6,12 +6,12 @@ public class EnergyRock : MonoBehaviour {
     public GameObject energySpherePrefab;
 
 
-    float maxTime = 4f;
+    float maxTime = 5f;
     float targetTime = 0f;
 
     private void Start()
     {
-        targetTime = Time.time + maxTime;
+        targetTime = Time.fixedTime + maxTime;
     }
 
     private void Awake()
@@ -25,8 +25,8 @@ public class EnergyRock : MonoBehaviour {
     }
 
     void Update () {
-        if (Time.time > targetTime) {
-            targetTime = Time.time + maxTime;
+        if (Time.fixedTime > targetTime) {
+            targetTime = Time.fixedTime + maxTime;
 
             var x = Instantiate(energySpherePrefab, null, false);
             x.GetComponent<SpriteRenderer>().sortingLayerID = 0;

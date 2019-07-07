@@ -39,9 +39,17 @@ public class EntityBlueprint : ScriptableObject
         AirCarrier,
         GroundCarrier,
         Yard,
-        WeaponStation
+        WeaponStation,
+        Trader,
+        CoreUpgrader,
+        DroneWorkshop
     }
 
     public IntendedType intendedType;
     public List<PartInfo> parts;
+    public Dialogue dialogue;
+
+    public static int GetPartValue(PartInfo info) {
+        return (int)ResourceManager.GetAsset<PartBlueprint>(info.partID).health + info.tier * 200 + (info.abilityID == 0 ? 0 : 300);
+    }
 }

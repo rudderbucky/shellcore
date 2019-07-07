@@ -4,9 +4,8 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 
-public class SaveMenuHandler : MonoBehaviour, IWindow {
+public class SaveMenuHandler : GUIWindowScripts {
 
-	// TODO: save timePlayed functionality
 	List<PlayerSave> saves;
 	List<string> paths;
 	public Transform contents;
@@ -58,21 +57,21 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		}
 	}
 
-	public void OpenUI() {
-		PlayerViewScript.SetCurrentWindow(this);
-		gameObject.SetActive(true);
+	public override void Activate() {
+		base.Activate();
 		Initialize();
 	}
-	public void CloseUI() {
-		gameObject.SetActive(false);
+
+	public override void CloseUI() {
 		foreach(SaveMenuIcon icon in icons) {
 			Destroy(icon.gameObject);
 		}
 		icons.Clear();
+		base.CloseUI();
 	}
 
 	public void OpenSavePrompt() {
-		inputField.transform.parent.GetComponent<GUIWindowScripts>().ToggleActive();
+		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
 	}
 
 	public void PromptDelete(int index) {
@@ -92,10 +91,10 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		}
 	}
 	public void AddSave() {
-		string currentVersion = "Prototype 2.0.0";
+		string currentVersion = "Prototype 2.1.1";
 		string name = inputField.text;
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
-		inputField.transform.parent.gameObject.SetActive(false);
+		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
 		if(name == "" || paths.Contains(path)) return;
 		PlayerSave save = new PlayerSave();
 		save.name = name;
@@ -104,13 +103,15 @@ public class SaveMenuHandler : MonoBehaviour, IWindow {
 		save.currentHealths = new float[] {1000,250,500};
 		save.partInventory = new List<EntityBlueprint.PartInfo>();
 
+		// this section contains default information for a new save. Edit this to change how the default save
+		// is created.
 		EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 		blueprint.name = "Player Save Blueprint";
 		blueprint.baseRegen = new float[] {60,0,60};
 		blueprint.shellHealth = new float[] {1000,250,500};
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		blueprint.coreSpriteID = "core1_light";
-		blueprint.coreShellSpriteID = "core1_shell";
+		blueprint.coreShellSpriteID = "core3_shell";
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
 		save.version = currentVersion;
 		saves.Add(save);

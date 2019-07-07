@@ -9,10 +9,15 @@ using UnityEngine;
 public class PlayerCore : ShellCore {
     public HUDScript hud;
     public InfoText alerter;
+    public InfoText interactAlerter;
     public PlayerSave cursave;
     public bool loaded;
     private bool isInteracting;
-    bool tagToReinitialize;
+    public int credits;
+    
+    public AbilityHandler GetAbilityHandler() {
+        return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
+    }
     public bool GetIsInteracting() {
         return isInteracting;
     }
@@ -78,6 +83,7 @@ public class PlayerCore : ShellCore {
             if(parts[i].gameObject.name != "Shell Sprite")
                 Destroy(parts[i].gameObject);
         }
+        // UnityEditor.AssetDatabase.CreateAsset(blueprint, "Assets/Core Upgrades.asset");
         BuildEntity();
         hud.InitializeHUD(this);
     }
@@ -85,6 +91,7 @@ public class PlayerCore : ShellCore {
     public void LoadSave(PlayerSave save)
     {
         transform.position = save.position;
+        name = save.name;
         positionBeforeOscillation = transform.position.y;
         if(save.currentHealths.Length < 3)
         {
@@ -105,8 +112,8 @@ public class PlayerCore : ShellCore {
     
 	// Update is called once per frame
 	protected override void Update () {
-        if(isInteracting) isImmobile = true;
-        else if(!isDead) isImmobile = false;
+        if((isInteracting) || (isDead)) isImmobile = true;
+        else isImmobile = false;
         // call methods
         if(group.sortingOrder < maxAirLayer) // player must always be above other entities
         {

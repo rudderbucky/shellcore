@@ -19,7 +19,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     Transform targetGlow;
     Draggable target;
     protected float totalPower;
-    protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore) TODO: move to shellcore
+	private float energyPickupTimer = 10.0f; // Energy pickup timer
+	protected float energyPickupSpeed = 61.0f; // Disabled for now D: (60*FixedDeltatime = 10) Energy pickup rate scale for future hard/easy gamemodes and AI balancing only.
+    protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore)
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
@@ -149,8 +151,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         base.Awake(); // base awake
     }
 
-    protected void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
         if (target && !isDead) // Update tractor beam physics
         {
             Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
@@ -168,7 +171,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * enginePower * 24F * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * rigidbody.mass / 2);
                 }
             }
         }
@@ -176,7 +179,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected void TractorBeamUpdate()
     {
-        if (!target) // Don't grab energy when the craft is pulling something more important
+		this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
+        if ((!target) && (this.energyPickupTimer < 0)) // Grab energy automatically after a while when the craft is not pulling something more important
         {
             EnergySphereScript[] energies = AIData.energySpheres.ToArray();
 
@@ -194,19 +198,26 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
             }
             if (closest && closestD < 160 && GetTractorTarget() == null)
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
+			this.energyPickupTimer = 0.0f; // Can change this to a non-zero value to add the timing element back
         }
 
         if (target && !isDead && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
         {
-            lineRenderer.positionCount = 2;
-            lineRenderer.sortingOrder = 103;
-            lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
+            if((target.transform.position - transform.position).sqrMagnitude > 600) 
+            {
+                SetTractorTarget(null); // break tractor if too far away
+            } else 
+            {
+                lineRenderer.positionCount = 2;
+                lineRenderer.sortingOrder = 103;
+                lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
 
-            coreGlow.gameObject.SetActive(true);
-            targetGlow.gameObject.SetActive(true);
+                coreGlow.gameObject.SetActive(true);
+                targetGlow.gameObject.SetActive(true);
 
-            coreGlow.transform.position = transform.position;
-            targetGlow.transform.position = target.transform.position;
+                coreGlow.transform.position = transform.position;
+                targetGlow.transform.position = target.transform.position;
+            }
         }
         else
         {

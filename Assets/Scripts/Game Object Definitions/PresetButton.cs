@@ -15,14 +15,19 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
     public int number;
     Image image;
     Text text;
+    bool initialized;
+    bool valid;
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
             if (player.cursave.presetBlueprints != null) player.cursave.presetBlueprints[number - 1] = null;
             blueprint = null;
+            valid = true;
             return;
         }
+        if(!valid) return; // allow user to left shift out blueprint so return after that
+        // TODO: check if adding a part back into your inventory validates the preset
         if (!blueprint)
         {
             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -31,9 +36,14 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
             blueprint.parts = new List<EntityBlueprint.PartInfo>();
             foreach (ShipBuilderPart part in cursorScript.parts)
             {
+                if(!part.isInChain || !part.validPos) {
+                    blueprint = null;
+                    return;
+                }
                 blueprint.parts.Add(part.info);
             }
-            if (player.cursave.presetBlueprints == null || (player.cursave.presetBlueprints != null && player.cursave.presetBlueprints.Length < 5))
+            if (player.cursave.presetBlueprints == null || (player.cursave.presetBlueprints != null 
+                && player.cursave.presetBlueprints.Length < 5))
             {
                 player.cursave.presetBlueprints = new string[5];
             }
@@ -65,23 +75,35 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
         image = GetComponent<Image>();
         text = GetComponentInChildren<Text>();
         blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-        if (player.cursave.presetBlueprints != null && player.cursave.presetBlueprints.Length >= number && player.cursave.presetBlueprints[number - 1] != null)
+        if (player.cursave.presetBlueprints != null && player.cursave.presetBlueprints.Length >= number 
+            && player.cursave.presetBlueprints[number - 1] != null)
             JsonUtility.FromJsonOverwrite(player.cursave.presetBlueprints[number - 1], blueprint);
         if (blueprint.parts == null) blueprint = null;
+        initialized = true;
     }
 
+    public void CheckValid() {
+        if(blueprint && blueprint.parts != null && !builder.ContainsParts(blueprint.parts)) 
+        {   
+            valid = false;
+            image.color = text.color = Color.red;
+            text.text = " Inadequate parts! ";
+        } else valid = true;
+    }
     // Update is called once per frame
     void Update()
     {
-        if (!blueprint)
-        {
-            image.color = text.color = Color.gray;
-            text.text = " Create Preset " + number;
-        }
-        else
-        {
-            image.color = text.color = Color.green;
-            text.text = " Load Preset " + number;
+        if(initialized && valid) {
+            if (!blueprint)
+            {
+                image.color = text.color = Color.gray;
+                text.text = " Create Preset " + number;
+            }
+            else
+            {
+                image.color = text.color = Color.green;
+                text.text = " Load Preset " + number;
+            }
         }
     }
 }

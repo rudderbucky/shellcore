@@ -35,20 +35,24 @@ public class AbilityHandler : MonoBehaviour {
     
     public AbilityTypes currentVisibles;
     public List<Ability> visibleAbilities = new List<Ability>();
+    Ability[] displayAbs;
 
     public void SetCurrentVisible(AbilityTypes type) {
         if(currentVisibles != type) {
             currentVisibles = type;
             Deinitialize();
-            Initialize(core);
+            if(displayAbs == null) Initialize(core);
+            else Initialize(core, displayAbs);
         }
     }
     /// <summary>
     /// Initialization of the ability handler that is tied to the player
     /// </summary>
-    public void Initialize(PlayerCore player) {
+    public void Initialize(PlayerCore player, Ability[] displayAbilities = null) {
         core = player;
-        abilities = core.GetAbilities(); // Get the core's ability array
+        if(displayAbilities == null) abilities = core.GetAbilities(); // Get the core's ability array
+        else abilities = displayAbilities;
+        displayAbs = displayAbilities;
         visibleAbilities.Clear();
         foreach (Ability ab in abilities) {
             switch(currentVisibles) {
@@ -122,6 +126,7 @@ public class AbilityHandler : MonoBehaviour {
             if(visibleAbilities[i].GetTier() > 0) {
                 Vector3 size = image.rectTransform.sizeDelta;
                 image.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + visibleAbilities[i].GetTier());
+                image.enabled = true;
                 image.rectTransform.sizeDelta = image.sprite.bounds.size * 30;
                 Color origCol = image.color;
                 image.color = new Color(image.color.r, image.color.g, image.color.b, 0.4F);
@@ -137,7 +142,8 @@ public class AbilityHandler : MonoBehaviour {
                 abilityTierArray[i].transform.SetParent(transform, false);
             }
             // instantiate ability image
-            image.sprite = ResourceManager.GetAsset<Sprite>("AbilitySprite" + visibleAbilities[i].GetID());
+            image.sprite = AbilityUtilities.GetAbilityImageByID(visibleAbilities[i].GetID());
+            image.enabled = true;
             abilityImagesArray[i] = Instantiate(image, pos, Quaternion.identity) as Image;
             abilityImagesArray[i].gameObject.SetActive(true);
             canvasg = abilityImagesArray[i].gameObject.AddComponent<CanvasGroup>(); 
@@ -178,7 +184,10 @@ public class AbilityHandler : MonoBehaviour {
         } else HUDbg.GetComponent<RectTransform>().sizeDelta = new Vector2(0, HUDbg.GetComponent<RectTransform>().sizeDelta.y);
 
         if (image) Destroy(image.gameObject);
-        initialized = true; // handler completely initialized, safe to update now
+        if(displayAbilities == null) initialized = true;
+        // handler completely initialized, safe to update now
+        // if display abilities were passed the handler must not update since it is merely representing
+        // some abilities
     }
 
     /// <summary>
@@ -215,7 +224,8 @@ public class AbilityHandler : MonoBehaviour {
         if (clicked)
         {
             visibleAbilities[index].Tick("activate");
-        } else visibleAbilities[index].Tick((index+1) < 10 ? (index + 1).ToString() : ""); // Tick the ability
+        } else visibleAbilities[index].Tick((index+1) < 10 && !Input.GetKey(KeyCode.LeftShift) ? 
+            (index + 1).ToString() : ""); // Tick the ability
 
         if (abilityGleamArray[index])
         {

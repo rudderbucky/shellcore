@@ -12,6 +12,7 @@ public class MissileScript : MonoBehaviour {
     public GameObject missileLinePrefab; // line rendering prefab for missiles
     private Transform target; // target of missile
     public int faction; // faction of projectile
+    public Entity owner; // owner of projectile
     private float damage; // damage missile projectile should deal
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
@@ -103,7 +104,7 @@ public class MissileScript : MonoBehaviour {
         {
             if (craft.faction != faction && CheckCategoryCompatibility(craft))
             {
-                craft.TakeDamage(damage, 0); // deal the damage to the target, no shell penetration
+                craft.TakeDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
                                                         // if the shell is low, damage the part
                 if (craft.GetHealth()[0] <= 0)
                 {

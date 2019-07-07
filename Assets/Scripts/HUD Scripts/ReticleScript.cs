@@ -99,30 +99,10 @@ public class ReticleScript : MonoBehaviour {
             if (entityTarget != null && !entityTarget.GetIsDead() && entityTarget != craft) 
                 // if it is not null, dead or the player itself
             {
-                if (targSys.GetTarget() == entityTarget.transform) //Interact with entity
+                if (!craft.GetIsInteracting() && targSys.GetTarget() == entityTarget.transform) //Interact with entity
                 {
-                    if (entityTarget.dialogue as Dialogue)
-                        DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue);
-                    else if(entityTarget as IVendor != null && entityTarget.faction == craft.faction)
-                    {
-                        VendorUI outpostUI = transform.parent.Find("Dialogue").GetComponent<VendorUI>();
-                        outpostUI.blueprint = (entityTarget as IVendor).GetVendingBlueprint();
-                        if ((entityTarget.transform.position - craft.transform.position).magnitude < outpostUI.blueprint.range)
-                        {
-                            PlayerViewScript.SetCurrentWindow(outpostUI);
-                            outpostUI.outpostPosition = entityTarget.transform.position;
-                            outpostUI.player = craft;
-                            outpostUI.openUI();
-                        }
-                    } else if(entityTarget as IShipBuilder != null && entityTarget.faction == craft.faction
-                    &&(entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200) 
-                    {
-                        ShipBuilder builder = transform.parent.Find("Ship Builder").GetComponent<ShipBuilder>();
-                        PlayerViewScript.SetCurrentWindow(builder);
-                        builder.gameObject.SetActive(true);
-                        builder.yardPosition = entityTarget.transform.position;
-                        builder.Initialize();
-                    }
+                    if (entityTarget.dialogue as Dialogue && (entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200)
+                        DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue, entityTarget, craft);
                 }
 
                 targSys.SetTarget(entityTarget.transform); // set the target to the clicked craft's transform
@@ -215,7 +195,7 @@ public class ReticleScript : MonoBehaviour {
                     Draggable draggable = targSys.GetTarget().GetComponent<Draggable>();
 
                     // it's draggable if it's not an entity or it's a draggable entity with the same faction
-                    if (draggable 
+                    if (draggable && (targSys.GetTarget().position - craft.transform.position).sqrMagnitude <= 400
                     && (!targSys.GetTarget().GetComponent<Entity>() 
                     || targSys.GetTarget().GetComponent<Entity>().faction == craft.faction))
                     {

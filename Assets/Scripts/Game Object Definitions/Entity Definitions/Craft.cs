@@ -10,6 +10,7 @@ public abstract class Craft : Entity
     public float enginePower; // craft's engine power, determines how fast it goes.
     protected bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
+    protected Vector2 physicsDirection = Vector2.zero;
 
     public void SetImmobile(bool val) {
         isImmobile = val;
@@ -86,7 +87,16 @@ public abstract class Craft : Entity
     {
         if (!isImmobile) // check for immobility
         {
-            CraftMover(direction); // if not immobile move craft
+            physicsDirection = direction;
+        }
+    }
+
+    protected override void FixedUpdate()
+    {
+        if(!isImmobile)
+        {
+            CraftMover(physicsDirection); // if not immobile move craft
+            physicsDirection = Vector2.zero;
         }
     }
 
@@ -127,7 +137,7 @@ public abstract class Craft : Entity
     /// <param name="directionVector">vector given</param>
     protected virtual void CraftMover(Vector2 directionVector)
     {
-        RotateCraft(directionVector); // rotate craft
+        RotateCraft(directionVector / entityBody.mass); // rotate craft
         entityBody.AddForce(enginePower * directionVector); 
         // actual force applied to craft; independent of angle rotation
     }

@@ -27,8 +27,13 @@ public class SectorCreatorShellCoreEditor : MonoBehaviour, IWindow {
 		mouse.UpdateColors();
 		CloseUI();
 	}
+
+	public bool GetActive() {
+		return gameObject.activeSelf;
+	}
     public void CloseUI()
     {
+		ResourceManager.PlayClipByID("clip_back");
         window.SetActive(false);
     }
 }

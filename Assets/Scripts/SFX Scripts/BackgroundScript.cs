@@ -89,8 +89,7 @@ public class BackgroundScript : MonoBehaviour {
                     GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;
                     go.transform.SetParent(parent.transform, true);
                     // create the tile, no rotation desired
-                    go.GetComponent<SpriteRenderer>().color = new Color(0.5F, 0, 0);//new Color(0.039F, 0.188F, 0.184F);
-                    // change the color (will be changing this line later)
+                    
                     ingameTiles[count] = go; // assign to array
                     count++; // increment count
                     // I don't want the tiles to be a child of the object using this script 
@@ -116,14 +115,42 @@ public class BackgroundScript : MonoBehaviour {
             setColor(bgCol);
         }
     }
+    Color lastColor; // used like bgCol, just without the static attribute
     public void setColor(Color color)
     {
-        bgCol = color;
+        Camera.main.backgroundColor = color;
+        if(ingameTiles == null) {
+            bgCol = lastColor = color;
+            return;
+        }
+        if(lastColor == Color.clear) {
+            lastColor = color;
+            foreach(GameObject tile in ingameTiles) {
+                tile.GetComponent<SpriteRenderer>().color = color;
+            }
+            return;
+        }
+
         if(active) {
             for(int i = 0; i < ingameTiles.Length; i++)
             {
-                ingameTiles[i].GetComponent<SpriteRenderer>().color = color;
+                var renderer = ingameTiles[i].GetComponent<SpriteRenderer>();
+                renderer.color = lastColor;
+                StartCoroutine(FadeColor(color, renderer));
+                //ingameTiles[i].GetComponent<SpriteRenderer>().color = color;
             }
+        }
+        bgCol = lastColor = color; 
+        // this entire method happens in 1 frame so these are updated even while the renderers are lerping
+    }
+
+    private IEnumerator FadeColor(Color newColor, SpriteRenderer renderer) {
+        float beginLerp = 0;
+        while(renderer.color != newColor) {
+            renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
+            beginLerp += 0.0125F;
+            if(beginLerp > 1) beginLerp = 1;
+            yield return null;
         }
     }
 }

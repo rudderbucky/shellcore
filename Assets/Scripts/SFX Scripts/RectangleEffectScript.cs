@@ -10,6 +10,7 @@ public class RectangleEffectScript : MonoBehaviour {
     public ParticleSystem partSys; // particle system that stores the particles
     private Vector3 displacement; // used to wrap particles around
 
+
     public static bool active = true;
     public void SetActive(bool act) {
         active = act;
@@ -25,8 +26,10 @@ public class RectangleEffectScript : MonoBehaviour {
         pos.z = 0;
         dimensions -= pos;
         // gets the dimensions of the screen the game is playing on in x and y values
-        sh.scale = new Vector3(dimensions[1]*2, dimensions[0]*2, 0); // WHY *2?????????
-        // scales up the emitters so that particles are uniformly emitted across the screen, I suspect the scale is halved for some reason
+        sh.scale = new Vector3(dimensions[1]*2, dimensions[0]*2, 0); 
+        // scales up the emitters so that particles are uniformly emitted across the screen, I suspect the scale is halved for some reason 
+        transform.position = Camera.main.GetComponent<RectTransform>().anchoredPosition;
+        transform.position -= new Vector3(0,0,transform.position.z);
         partSys.Emit(15);
     }
 
@@ -63,12 +66,13 @@ public class RectangleEffectScript : MonoBehaviour {
         }
     }
 
-    void OnEnable() {
+    public void Start() {
+        partSys.Clear();
         if(active)
         Build();
     }
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
         if(active) {
             ParticleSystem.Particle[] particles = new ParticleSystem.Particle[25]; // constantly update particle array, room for optimization here

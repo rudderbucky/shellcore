@@ -57,6 +57,6 @@ public class Cannon : WeaponAbility {
         if (effect) Destroy(effect);
         effect = Instantiate(effectPrefab, shooter, false);
         Destroy(effect, 0.1F);
-        target.TakeDamage(damage, 0);
+        target.TakeDamage(damage, 0, GetComponentInParent<Entity>());
     }
 }

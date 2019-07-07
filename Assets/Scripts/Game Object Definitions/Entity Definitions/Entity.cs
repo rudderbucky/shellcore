@@ -27,9 +27,6 @@ public class Entity : MonoBehaviour {
     protected GameObject explosionCirclePrefab; // prefabs for death explosion
     protected GameObject explosionLinePrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
-    protected Sprite coreSprite; // sprites for shell and core
-    protected Sprite shellSprite;
-    protected Sprite minimapSprite; // sprite for minimap
     public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
     public EntityBlueprint blueprint; // blueprint of entity containing parts
@@ -42,6 +39,7 @@ public class Entity : MonoBehaviour {
     public string ID; // used in tasks
 
     public SectorManager sectorMngr;
+    private Entity lastDamagedBy;
 
     public string entityName;
     public enum TerrainType // terrain type of entity
@@ -76,6 +74,8 @@ public class Entity : MonoBehaviour {
         blueprint.shellHealth.CopyTo(maxHealth, 0);
         blueprint.baseRegen.CopyTo(regenRate, 0);
 
+        if(blueprint) this.dialogue = blueprint.dialogue;
+
         if (!GetComponent<SortingGroup>())
         {
             group = gameObject.AddComponent<SortingGroup>();
@@ -106,7 +106,10 @@ public class Entity : MonoBehaviour {
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
             shell = part;
-        }
+        } else 
+            transform.Find("Shell Sprite").GetComponent<SpriteRenderer>().color 
+                = FactionColors.colors[faction]; // needed to reset outpost colors
+
         if (!explosionCirclePrefab)
         {
             explosionCirclePrefab = new GameObject("Explosion Circle");
@@ -141,7 +144,7 @@ public class Entity : MonoBehaviour {
             }
             else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
             renderer.sortingOrder = 101;
-        }
+        } else GetComponent<SpriteRenderer>().color = FactionColors.colors[faction]; // needed to reset outpost colors
         if (!GetComponent<Rigidbody2D>())
         {
             entityBody = gameObject.AddComponent<Rigidbody2D>();
@@ -165,14 +168,6 @@ public class Entity : MonoBehaviour {
 
         abilities = new List<Ability>();
 
-        if (this as ShellCore)
-        {
-            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
-            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-            mainBullet.terrain = TerrainType.Air;
-            mainBullet.SetActive(true);
-            abilities.Add(mainBullet);
-        }
         entityName = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
         //For shellcores, create the tractor beam
@@ -234,9 +229,19 @@ public class Entity : MonoBehaviour {
                     
 
                 parts.Add(partObject.GetComponent<ShellPart>());
-                if(partObject.GetComponent<Ability>()) abilities.Add(partObject.GetComponent<Ability>());
+                if(partObject.GetComponent<Ability>()) abilities.Insert(0, partObject.GetComponent<Ability>());
             }
         }
+
+        if (this as ShellCore)
+        {
+            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
+            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+            mainBullet.terrain = TerrainType.Air;
+            mainBullet.SetActive(true);
+            abilities.Insert(0, mainBullet);
+        }
+
         Transform shellSprite = shell.transform;
         if(shellSprite)
         {
@@ -273,6 +278,7 @@ public class Entity : MonoBehaviour {
             parts[i].Detach();
         }
 
+        if(lastDamagedBy as PlayerCore) (lastDamagedBy as PlayerCore).credits += 5;
         GameObject tmp = Instantiate(explosionCirclePrefab); // instantiate circle explosion
         tmp.SetActive(true);
         tmp.transform.SetParent(transform, false);
@@ -501,7 +507,8 @@ public class Entity : MonoBehaviour {
     /// </summary>
     /// <param name="amount">The amount of damage to do</param>
     /// <param name="shellPiercingFactor">The factor of damage that pierces through the shell into the core</param>
-    public void TakeDamage(float amount, float shellPiercingFactor) {
+    public void TakeDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) {
+        if(lastDamagedBy != this && amount > 0) this.lastDamagedBy = lastDamagedBy; // heals require this check
         if (amount > 0) SetIntoCombat();
         currentHealth[0] -= amount * (1 - shellPiercingFactor); // subtract amount from shell
         if (currentHealth[0] < 0) { // if shell has dipped below 0
@@ -577,5 +584,10 @@ public class Entity : MonoBehaviour {
 
     public void SetMaxHealth(float[] maxHealths) {
         maxHealth = maxHealths;
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        
     }
 }

@@ -71,6 +71,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 	PlaceableObject cursor;
 	Color currentColor = SectorColors.colors[0];
 	public SectorCreatorShellCoreEditor coreEditor;
+	public Transform sectorCenter;
 
 	void Start() {
 		for(int i = 0; i < placeables.Length; i++) {
@@ -81,10 +82,10 @@ public class SectorCreatorMouse : MonoBehaviour {
 		cursor = placeables[0];
 		cursor.obj = Instantiate(placeables[0].obj) as GameObject;
 		cursor.obj.transform.position = cursorOffset;
-		mainMenu = transform.Find("MenuBox").GetComponent<GUIWindowScripts>();
-		sectorProps = transform.Find("SectorProps").GetComponent<GUIWindowScripts>();
-		hotkeyList = transform.Find("Hotkey List").GetComponent<GUIWindowScripts>();
-		readFile = transform.Find("ReadFile").GetComponent<GUIWindowScripts>();
+		mainMenu = transform.Find("MenuBox").GetComponentInChildren<GUIWindowScripts>();
+		sectorProps = transform.Find("SectorProps").GetComponentInChildren<GUIWindowScripts>();
+		hotkeyList = transform.Find("Hotkey List").GetComponentInChildren<GUIWindowScripts>();
+		readFile = transform.Find("ReadFile").GetComponentInChildren<GUIWindowScripts>();
 		UpdateColors();
 	}
 
@@ -187,6 +188,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 	}
 
 	public void UpdateColors() {
+		sectorCenter.position = center;
 		if(GameObject.Find("Tile Holder"))
 			foreach(Transform tile in GameObject.Find("Tile Holder").transform) {
 				tile.GetComponent<SpriteRenderer>().color = currentColor;
@@ -247,10 +249,10 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 	}
 
-	void Update () {
-		windowEnabled = mainMenu.gameObject.activeSelf || sectorProps.gameObject.activeSelf || hotkeyList.gameObject.activeSelf
-		|| readFile.gameObject.activeSelf || coreEditor.gameObject.activeSelf;
-
+	void FixedUpdate() {
+		windowEnabled = mainMenu.transform.parent.gameObject.activeSelf || sectorProps.transform.parent.gameObject.activeSelf
+		|| hotkeyList.transform.parent.gameObject.activeSelf
+		|| readFile.transform.parent.gameObject.activeSelf || coreEditor.gameObject.activeSelf;
 		Vector3 mousePos = Input.mousePosition;
 		mousePos.z -= Camera.main.transform.position.z;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
@@ -394,11 +396,11 @@ public class SectorCreatorMouse : MonoBehaviour {
 	}
 
 	public void UpdateSector() {
-		int.TryParse(GameObject.Find("Beginning X").GetComponentsInChildren<Text>()[1].text, out x);
-		int.TryParse(GameObject.Find("Beginning Y").GetComponentsInChildren<Text>()[1].text, out y);
-		int.TryParse(GameObject.Find("Height").GetComponentsInChildren<Text>()[1].text, out height);
-		int.TryParse(GameObject.Find("Width").GetComponentsInChildren<Text>()[1].text, out width);
-		sctName = GameObject.Find("Sector Name").GetComponentsInChildren<Text>()[1].text;
+		int.TryParse(sectorProps.transform.Find("Beginning X").GetComponentsInChildren<Text>()[1].text, out x);
+		int.TryParse(sectorProps.transform.Find("Beginning Y").GetComponentsInChildren<Text>()[1].text, out y);
+		int.TryParse(sectorProps.transform.Find("Height").GetComponentsInChildren<Text>()[1].text, out height);
+		int.TryParse(sectorProps.transform.Find("Width").GetComponentsInChildren<Text>()[1].text, out width);
+		sctName = sectorProps.transform.Find("Sector Name").GetComponentsInChildren<Text>()[1].text;
 		center = new Vector3 {
 			x = this.x + (width / 2),
 			y = this.y + (height / 2),
@@ -411,7 +413,7 @@ public class SectorCreatorMouse : MonoBehaviour {
             new Vector3(x + width, y + height, 0),
             new Vector3(x, y + height, 0)
         });
-		int secVal = GameObject.Find("Sector Type").GetComponent<Dropdown>().value;
+		int secVal = sectorProps.transform.Find("Sector Type").GetComponent<Dropdown>().value;
 		type = (Sector.SectorType)secVal;
 		currentColor = SectorColors.colors[secVal];
 		UpdateColors();
@@ -585,12 +587,12 @@ public class SectorCreatorMouse : MonoBehaviour {
 			height = sectorDataWrapper.bounds.h;
 
 			sectorProps.ToggleActive();
-			GameObject.Find("Beginning X").GetComponentInChildren<InputField>().text = x + "";
-			GameObject.Find("Beginning Y").GetComponentInChildren<InputField>().text = "" + y;
-			GameObject.Find("Height").GetComponentInChildren<InputField>().text = "" + height;
-			GameObject.Find("Width").GetComponentInChildren<InputField>().text = "" + width;
-			GameObject.Find("Sector Name").GetComponentInChildren<InputField>().text = sctName;
-			GameObject.Find("Sector Type").GetComponent<Dropdown>().value = (int)sectorDataWrapper.type;
+			sectorProps.transform.Find("Beginning X").GetComponentInChildren<InputField>().text = x + "";
+			sectorProps.transform.Find("Beginning Y").GetComponentInChildren<InputField>().text = "" + y;
+			sectorProps.transform.Find("Height").GetComponentInChildren<InputField>().text = "" + height;
+			sectorProps.transform.Find("Width").GetComponentInChildren<InputField>().text = "" + width;
+			sectorProps.transform.Find("Sector Name").GetComponentInChildren<InputField>().text = sctName;
+			sectorProps.transform.Find("Sector Type").GetComponent<Dropdown>().value = (int)sectorDataWrapper.type;
 			sectorProps.ToggleActive();
 
 			var rend = GameObject.Find("SectorBorders").GetComponent<LineRenderer>();

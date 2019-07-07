@@ -16,7 +16,7 @@ public class HealthBarScript : MonoBehaviour {
     private bool initialized; // if this GUI component is initialized
     private bool[] gleaming; // if the bar is gleaming
     private bool[] gleamed; // if the bar has already gleamed in the cycle
-    private string[] names = new string[] {"SHELL: ", "CORE: ", "ENERGY: "};
+    private string[] names = new string[] {"SHELL ", "CORE ", "ENERGY "};
     private PlayerCore player; // associated player
 
     /// <summary>
@@ -29,7 +29,7 @@ public class HealthBarScript : MonoBehaviour {
         gleamArray = new UnityEngine.UI.Image[3];
         gleaming = new bool[barsArray.Length];
         gleamed = new bool[barsArray.Length];
-        Color[] colors = new Color[] { Color.green, new Color(0.7F,0.7F,0.7F), Color.cyan };
+        Color[] colors = new Color[] { Color.green, new Color(0.8F,0.8F,0.8F), new Color(0.4F,0.8F,1.0F) };
         for (int i = 0; i < barsArray.Length; i++) { // iterate through array
             barsArray[i] = Instantiate(inputBar).GetComponent<Image>(); // instantiate the image
             barsArray[i].fillAmount = 0; // initialize fill to 0 for cool animation

@@ -20,5 +20,6 @@ public struct SectorColors
         new Color(0, 0.5F, 0),
         new Color(0.5F, 0, 0),
         new Color(0.8F, 0, 0),
+        new Color(0.1F, 0.1F, 0.1F),
     };
 }

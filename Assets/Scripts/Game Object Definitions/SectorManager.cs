@@ -67,6 +67,7 @@ public class SectorManager : MonoBehaviour
 
     private void Update()
     {
+        if(jsonMode) player.SetIsInteracting(true);
         if(!jsonMode && player && (current == null || !current.bounds.contains(player.transform.position)))
         {
             // load sector
@@ -126,7 +127,10 @@ public class SectorManager : MonoBehaviour
                 curSect.platform = plat;
                 current = curSect;
                 sectors = new List<Sector>();
+                sectors.Add(curSect);
                 Debug.Log("Success! File loaded from " + path);
+                jsonMode = false;
+                player.SetIsInteracting(false);
                 loadSector();
                 return;
             } catch(System.Exception e) {
@@ -134,13 +138,14 @@ public class SectorManager : MonoBehaviour
             }
         } 
         jsonMode = false;
+        player.SetIsInteracting(false);
         loadSector();
     }
     private void Start()
     {
-                if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
-                background.setColor(SectorColors.colors[0]);
-                if(!jsonMode) loadSector();
+        if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
+        background.setColor(SectorColors.colors[4]);
+        if(!jsonMode) loadSector();
     }
 
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
@@ -165,6 +170,7 @@ public class SectorManager : MonoBehaviour
                         Debug.Log(e.Message);
                         //blueprint = obj as EntityBlueprint;
                     }
+                    shellcore.sectorMngr = this;
                     break;
                 }
             case EntityBlueprint.IntendedType.PlayerCore:
@@ -172,6 +178,7 @@ public class SectorManager : MonoBehaviour
                     if (player == null)
                     {
                         player = gObj.AddComponent<PlayerCore>();
+                        player.sectorMngr = this;
                     }
                     else
                     {
@@ -195,14 +202,16 @@ public class SectorManager : MonoBehaviour
                 {
                     Bunker bunker = gObj.AddComponent<Bunker>();
                     stations.Add(bunker);
-                    bunker.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
+                    bunker.vendingBlueprint = blueprint.dialogue.vendingBlueprint
+                        = ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
                     break;
                 }
             case EntityBlueprint.IntendedType.Outpost:
                 {
                     Outpost outpost = gObj.AddComponent<Outpost>();
                     stations.Add(outpost);
-                    outpost.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
+                    outpost.vendingBlueprint = blueprint.dialogue.vendingBlueprint
+                         = ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
                     break;
                 }
             case EntityBlueprint.IntendedType.Tower:
@@ -221,6 +230,7 @@ public class SectorManager : MonoBehaviour
                 {
                     carriers.Add(data.faction, carrier);
                 }
+                carrier.sectorMngr = this;
                 break;
             case EntityBlueprint.IntendedType.GroundCarrier:
                 GroundCarrier gcarrier = gObj.AddComponent<GroundCarrier>();
@@ -228,12 +238,25 @@ public class SectorManager : MonoBehaviour
                 {
                     carriers.Add(data.faction, gcarrier);
                 }
+                gcarrier.sectorMngr = this;
                 break;
             case EntityBlueprint.IntendedType.Yard:
-                gObj.AddComponent<Yard>();
+                Yard yard = gObj.AddComponent<Yard>();
+                yard.mode = BuilderMode.Yard;
                 break;
             case EntityBlueprint.IntendedType.WeaponStation:
                 gObj.AddComponent<WeaponStation>();
+                break;
+            case EntityBlueprint.IntendedType.CoreUpgrader:
+                gObj.AddComponent<CoreUpgrader>();
+                break;
+            case EntityBlueprint.IntendedType.Trader:
+                Yard trade = gObj.AddComponent<Yard>();
+                trade.mode = BuilderMode.Trader;
+                blueprint.dialogue.traderInventory =
+                    JsonUtility.FromJson<List<EntityBlueprint.PartInfo>>(data.blueprintJSON);
+                break;
+            case EntityBlueprint.IntendedType.DroneWorkshop:
                 break;
             default:
                 break;
@@ -243,9 +266,16 @@ public class SectorManager : MonoBehaviour
         entity.faction = data.faction;
         entity.spawnPoint = data.position;
         entity.blueprint = blueprint;
+
+        // TODO:
+        // I think we should move dialogue setting to BuildEntity() since each entity's
+        // dialogue should vary in the blueprint rather than using the resource manager
+        // since that allows for more custom dialogue using the sector creator
+        // (I already sort of did this but didn't remove the setting here)
         if (data.dialogueID != "")
         {
             entity.dialogue = ResourceManager.GetAsset<Dialogue>(data.dialogueID);
+
         }
 
         objects.Add(data.ID, gObj);
@@ -254,6 +284,12 @@ public class SectorManager : MonoBehaviour
 
     void loadSector()
     {
+        // SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
+        // data.platformjson = JsonUtility.ToJson(current.platform);
+        // data.sectorjson = JsonUtility.ToJson(current);
+        // System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + "CenterSector", JsonUtility.ToJson(data));
+        // UnityEditor.AssetDatabase.CreateAsset(current, "Assets/CenterSectorNew.asset");
+        // UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/CenterSectorNewPlatform.asset");
         //unload previous sector
         foreach(var obj in objects)
         {

@@ -3,9 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IShipBuilder {
+    BuilderMode GetBuilderMode();
+}
 
+public enum BuilderMode {
+    Yard,
+    Trader
 }
 public class Yard : AirConstruct, IShipBuilder {
+
+    public BuilderMode mode;
+    public BuilderMode GetBuilderMode() {
+        return mode;
+    }
+
     protected override void Start() {
         category = EntityCategory.Station;
         base.Start();

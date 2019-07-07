@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Speed : PassiveAbility {
 
+    private bool activated;
     protected override void Awake()
     {
         ID = 13;
@@ -14,12 +15,21 @@ public class Speed : PassiveAbility {
 
     public override void SetDestroyed(bool input)
     {
-        if (input) (Core as Craft).enginePower /= Mathf.Pow(1.15F, abilityTier);
+        var enginePower = (Core as Craft).enginePower;
+        if (input && activated) 
+        {
+            (Core as Craft).enginePower = Mathf.Pow(enginePower, 1/(abilityTier/6 + 1.1F));
+        }
         base.SetDestroyed(input);
     }
 
     protected override void Execute()
     {
-        (Core as Craft).enginePower *= Mathf.Pow(1.15F, abilityTier);
+        var enginePower = (Core as Craft).enginePower;
+        if(enginePower <= 1000) {
+            activated = true;
+            (Core as Craft).enginePower = Mathf.Pow(enginePower, abilityTier/6 + 1.1F);
+        } 
+        else activated = false;
     }
 }

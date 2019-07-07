@@ -9,6 +9,7 @@ public class BulletScript : MonoBehaviour {
 
     private float damage; // damage of the spawned bullet
     private int faction;
+    public Entity owner;
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
     private float pierceFactor = 0;
@@ -54,7 +55,7 @@ public class BulletScript : MonoBehaviour {
         {
             if (craft.faction != faction && CheckCategoryCompatibility(craft))
             {
-                craft.TakeDamage(damage, pierceFactor); // deal the damage to the target, no shell penetration
+                craft.TakeDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration
                                              // if the shell is low, damage the part
                 if (craft.GetHealth()[0] <= 0)
                 {
