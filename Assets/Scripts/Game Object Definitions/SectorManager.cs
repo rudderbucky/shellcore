@@ -143,6 +143,115 @@ public class SectorManager : MonoBehaviour
                 if(!jsonMode) loadSector();
     }
 
+    public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
+    {
+        GameObject gObj = new GameObject(data.name);
+        switch (blueprint.intendedType)
+        {
+            case EntityBlueprint.IntendedType.ShellCore:
+                {
+                    ShellCore shellcore = gObj.AddComponent<ShellCore>();
+                    try
+                    {
+                        string json = data.blueprintJSON;
+                        if (json != null && json != "")
+                        {
+                            blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                            JsonUtility.FromJsonOverwrite(json, blueprint);
+                        }
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.Log(e.Message);
+                        //blueprint = obj as EntityBlueprint;
+                    }
+                    break;
+                }
+            case EntityBlueprint.IntendedType.PlayerCore:
+                {
+                    if (player == null)
+                    {
+                        player = gObj.AddComponent<PlayerCore>();
+                    }
+                    else
+                    {
+                        Destroy(gObj);
+                        return null;
+                    }
+
+                    break;
+                }
+            case EntityBlueprint.IntendedType.Turret:
+                {
+                    gObj.AddComponent<Turret>();
+                    break;
+                }
+            case EntityBlueprint.IntendedType.Tank:
+                {
+                    gObj.AddComponent<Tank>();
+                    break;
+                }
+            case EntityBlueprint.IntendedType.Bunker:
+                {
+                    Bunker bunker = gObj.AddComponent<Bunker>();
+                    stations.Add(bunker);
+                    bunker.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
+                    break;
+                }
+            case EntityBlueprint.IntendedType.Outpost:
+                {
+                    Outpost outpost = gObj.AddComponent<Outpost>();
+                    stations.Add(outpost);
+                    outpost.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
+                    break;
+                }
+            case EntityBlueprint.IntendedType.Tower:
+                {
+                    break;
+                }
+            case EntityBlueprint.IntendedType.Drone:
+                {
+                    Drone drone = gObj.AddComponent<Drone>();
+                    drone.path = ResourceManager.GetAsset<Path>(data.pathID);
+                    break;
+                }
+            case EntityBlueprint.IntendedType.AirCarrier:
+                AirCarrier carrier = gObj.AddComponent<AirCarrier>();
+                if (!carriers.ContainsKey(data.faction))
+                {
+                    carriers.Add(data.faction, carrier);
+                }
+                break;
+            case EntityBlueprint.IntendedType.GroundCarrier:
+                GroundCarrier gcarrier = gObj.AddComponent<GroundCarrier>();
+                if (!carriers.ContainsKey(data.faction))
+                {
+                    carriers.Add(data.faction, gcarrier);
+                }
+                break;
+            case EntityBlueprint.IntendedType.Yard:
+                gObj.AddComponent<Yard>();
+                break;
+            case EntityBlueprint.IntendedType.WeaponStation:
+                gObj.AddComponent<WeaponStation>();
+                break;
+            default:
+                break;
+        }
+        Entity entity = gObj.GetComponent<Entity>();
+        entity.sectorMngr = this;
+        entity.faction = data.faction;
+        entity.spawnPoint = data.position;
+        entity.blueprint = blueprint;
+        if (data.dialogueID != "")
+        {
+            entity.dialogue = ResourceManager.GetAsset<Dialogue>(data.dialogueID);
+        }
+
+        objects.Add(data.ID, gObj);
+        return entity;
+    }
+
     void loadSector()
     {
         //unload previous sector
@@ -208,111 +317,8 @@ public class SectorManager : MonoBehaviour
             }
             else if(obj is EntityBlueprint)
             {
-                GameObject gObj = new GameObject(current.entities[i].name);
                 EntityBlueprint blueprint = obj as EntityBlueprint;
-                switch (blueprint.intendedType)
-                {
-                    case EntityBlueprint.IntendedType.ShellCore:
-                        {
-                            ShellCore shellcore = gObj.AddComponent<ShellCore>();
-                            try {
-                                string json = current.entities[i].blueprintJSON;
-                                if(json != null && json != "") {
-                                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                                    JsonUtility.FromJsonOverwrite(json, blueprint);
-                                }
-                            } catch(System.Exception e) {
-                                Debug.Log(e.Message);
-                                blueprint = obj as EntityBlueprint;
-                            }
-                            shellcore.sectorMngr = this;
-                            break;
-                        }
-                    case EntityBlueprint.IntendedType.PlayerCore:
-                        {
-                            if (player == null)
-                            {
-                                player = gObj.AddComponent<PlayerCore>();
-                                player.sectorMngr = this;
-                            }
-                            else
-                            {
-                                Destroy(gObj);
-                                continue;
-                            }
-
-                            break;
-                        }
-                    case EntityBlueprint.IntendedType.Turret:
-                        {
-                            gObj.AddComponent<Turret>();
-                            break;
-                        }
-                    case EntityBlueprint.IntendedType.Tank:
-                        {
-                            gObj.AddComponent<Tank>();
-                            break;
-                        }
-                    case EntityBlueprint.IntendedType.Bunker:
-                        {
-                            Bunker bunker = gObj.AddComponent<Bunker>();
-                            stations.Add(bunker);
-                            bunker.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID);
-                            break;
-                        }
-                    case EntityBlueprint.IntendedType.Outpost:
-                        {
-                            Outpost outpost = gObj.AddComponent<Outpost>();
-                            stations.Add(outpost);
-                            outpost.vendingBlueprint = ResourceManager.GetAsset<VendingBlueprint>(current.entities[i].vendingID);
-                            break;
-                        }
-                    case EntityBlueprint.IntendedType.Tower:
-                        {
-                            break;
-                        }
-                    case EntityBlueprint.IntendedType.Drone:
-                        {
-                            Drone drone = gObj.AddComponent<Drone>();
-                            drone.path = ResourceManager.GetAsset<Path>(current.entities[i].pathID);
-                            break;
-                        }
-                    case EntityBlueprint.IntendedType.AirCarrier:
-                        AirCarrier carrier = gObj.AddComponent<AirCarrier>();
-                        if(!carriers.ContainsKey(current.entities[i].faction))
-                        {
-                            carriers.Add(current.entities[i].faction, carrier);
-                        }
-                        carrier.sectorMngr = this;
-                        break;
-                    case EntityBlueprint.IntendedType.GroundCarrier:
-                        GroundCarrier gcarrier = gObj.AddComponent<GroundCarrier>();
-                        if(!carriers.ContainsKey(current.entities[i].faction))
-                        {
-                            carriers.Add(current.entities[i].faction, gcarrier);
-                        }
-                        gcarrier.sectorMngr = this;
-                        break;
-                    case EntityBlueprint.IntendedType.Yard:
-                        gObj.AddComponent<Yard>();
-                        break;
-                    case EntityBlueprint.IntendedType.WeaponStation:
-                        gObj.AddComponent<WeaponStation>();
-                        break;
-                    default:
-                        break;
-                }
-                Entity entity = gObj.GetComponent<Entity>();
-                entity.sectorMngr = this;
-                entity.faction = current.entities[i].faction;
-                entity.spawnPoint = current.entities[i].position;
-                entity.blueprint = blueprint;
-                if (current.entities[i].dialogueID != "")
-                {
-                    entity.dialogue = ResourceManager.GetAsset<Dialogue>(current.entities[i].dialogueID);
-                }
-
-                objects.Add(current.entities[i].ID, gObj);
+                SpawnEntity(blueprint, current.entities[i]);
             }
         }
 

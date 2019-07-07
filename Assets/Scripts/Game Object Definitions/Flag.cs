@@ -2,6 +2,8 @@
 
 public class Flag : MonoBehaviour
 {
+    public string ID;
+
     private void OnEnable()
     {
         AIData.flags.Add(this);

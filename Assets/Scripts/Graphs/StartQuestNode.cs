@@ -12,6 +12,7 @@ namespace NodeEditorFramework.Standard
         public override string GetID { get { return ID; } }
 
         public override string Title { get { return "Start"; } }
+        public override Vector2 DefaultSize { get { return new Vector2(128, 64); } }
 
         [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputRight;

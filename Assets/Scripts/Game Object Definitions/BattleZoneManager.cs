@@ -18,7 +18,7 @@ public class BattleZoneManager : MonoBehaviour
     }
     public void UpdateCounters()
     {
-        if (playing)
+        if (playing && enabled)
         {
             Dictionary<int, int> alive = new Dictionary<int, int>();
 

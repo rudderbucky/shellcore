@@ -3,7 +3,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "TaskSystem/StartTask")]
+    [Node(false, "Tasks/StartTask")]
     public class StartTaskNode : Node
     {
         //Node things
@@ -37,39 +37,42 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
-            GUILayout.Label("Task ID:");
-            taskID = GUILayout.TextField(taskID, GUILayout.Width(200f));
+            //GUILayout.Label("Task ID:");
+            //taskID = GUILayout.TextField(taskID, GUILayout.Width(200f));
+            height = 0f;
             GUILayout.Label("Task giver ID");
             taskGiverID = GUILayout.TextField(taskGiverID, GUILayout.Width(200f));
             GUILayout.Label("Description");
             description = GUILayout.TextArea(description, GUILayout.Width(200f));
+            height += GUI.skin.textArea.CalcHeight(new GUIContent(description), 200f);
             GUILayout.Label("Credit reward");
             creditReward = RTEditorGUI.IntField(creditReward, GUILayout.Width(200f));
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));
             if(partReward)
             {
-                height = 300f;
+                height += 300f;
                 GUILayout.Label("Part ID:");
-                partID = GUILayout.TextField(partID);
+                partID = GUILayout.TextField(partID, GUILayout.Width(200f));
                 if (ResourceManager.Instance && ResourceManager.GetAsset<Sprite>(partID) != null)
                 {
                     GUILayout.Label(ResourceManager.GetAsset<Sprite>(partID).texture, GUILayout.Width(200f));
-                    height = 500f;
+                    height += 200f;
                 }
                 partAbilityID = RTEditorGUI.IntField("Ability ID", partAbilityID, GUILayout.Width(200f));
                 partTier = RTEditorGUI.IntField("Part tier", partTier, GUILayout.Width(200f));
             }
             else
             {
-                height = 220f;
+                height += 220f;
             }
-
         }
 
         public override int Traverse()
         {
+            taskID = GetHashCode().ToString();
             Task task = new Task()
             {
+                taskID = taskID,
                 description = description,
                 creditReward = creditReward,
             };
