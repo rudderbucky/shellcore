@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DWSelectionDisplayHandler : MonoBehaviour
+public class DWSelectionDisplayHandler : MonoBehaviour, IShipStatsDatabase
 {
     public Image shell;
     public Image core;
     public Image miniDroneShooter;
     public GameObject partPrefab;
+    private List<DisplayPart> parts = new List<DisplayPart>();
+    private int buildValue = 0;
+    public ShipBuilderShipStatsDisplay statsDisplay;
+    public Text droneDesc;
     void Awake() {
+        statsDisplay.statsDatabase = this;
         ClearDisplay();
     }
     public void AssignDisplay(EntityBlueprint blueprint, DroneSpawnData data) {
         ClearDisplay();
+        statsDisplay.gameObject.SetActive(true);
+        droneDesc.enabled = true;
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         if(shell.sprite) {
             shell.enabled = true;
@@ -41,16 +48,44 @@ public class DWSelectionDisplayHandler : MonoBehaviour
         }
         foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
             DisplayPart basePart = Instantiate(partPrefab, transform, false).GetComponent<DisplayPart>();
+            parts.Add(basePart);
             basePart.info = part;
         }
+        foreach(DisplayPart part in parts) {
+			buildValue += EntityBlueprint.GetPartValue(part.info);
+		}
     }
 
     public void ClearDisplay() {
+        statsDisplay.gameObject.SetActive(false);
+        droneDesc.enabled = false;
+        buildValue = 0;
+        parts.Clear();
         shell.enabled = false;
         core.enabled = false;
         miniDroneShooter.enabled = false;
         for(int i = 0; i < transform.childCount; i++) {
             Destroy(transform.GetChild(i).gameObject);
         }
+    }
+
+    public List<DisplayPart> GetParts()
+    {
+        return parts;
+    }
+
+    public BuilderMode GetMode()
+    {
+        return BuilderMode.Yard;
+    }
+
+    public int GetBuildValue()
+    {
+        return buildValue;
+    }
+
+    public int GetBuildCost()
+    {
+        return 0;
     }
 }

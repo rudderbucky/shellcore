@@ -12,7 +12,7 @@ public interface IBuilderInterface {
 	EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
 }
 
-public class ShipBuilderCursorScript : MonoBehaviour {
+public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
 	public Canvas canvas;
@@ -185,5 +185,25 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 			else part.highlighted = false;
 		}
 	}
+
+    public List<DisplayPart> GetParts()
+    {
+        return parts.ConvertAll(x => x as DisplayPart);
+    }
+
+    public BuilderMode GetMode()
+    {
+        return cursorMode;
+    }
+
+    public int GetBuildValue()
+    {
+        return buildValue;
+    }
+
+    public int GetBuildCost()
+    {
+        return buildCost;
+    }
 }
 

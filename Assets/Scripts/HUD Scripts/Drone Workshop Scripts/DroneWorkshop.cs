@@ -241,8 +241,6 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		this.currentPart = currentPart;
 		selectionPhaseParent.SetActive(false);
 		buildPhaseParent.SetActive(true);
-		cursorScript.gameObject.SetActive(true);
-		cursorScript.SetMode(BuilderMode.Workshop);
 		LoadBlueprint(blueprint, data);
 
 		builderPartDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
@@ -259,6 +257,9 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 
 		GetComponentInChildren<ShipBuilderPartDisplay>().Initialize(this);
 		phase = DroneWorkshopPhase.BuildPhase;
+
+		cursorScript.gameObject.SetActive(true);
+		cursorScript.SetMode(BuilderMode.Workshop);
 	}
 
 	public void LoadBlueprint(EntityBlueprint blueprint, DroneSpawnData data) {
@@ -280,15 +281,17 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 			coreImage.color = FactionColors.colors[0];
 			coreImage.preserveAspect = true;
 			coreImage.type = Image.Type.Sliced;
-			coreImage.rectTransform.sizeDelta = coreImage.sprite.bounds.size * 110;
+			coreImage.rectTransform.sizeDelta = coreImage.sprite.bounds.size * 100;
 		} else coreImage.enabled = false;
 		if(data.type == DroneType.Mini) {
+			miniDroneShooter.gameObject.SetActive(true);
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
             miniDroneShooter.color = FactionColors.colors[0];
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;
         } else {
+			miniDroneShooter.gameObject.SetActive(false);
             miniDroneShooter.enabled = false;
         }
 		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
