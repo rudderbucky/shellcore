@@ -1329,8 +1329,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 541.13, y: 74.485}
-  m_SizeDelta: {x: 316.54, y: 149}
+  m_AnchoredPosition: {x: 541.13, y: 103.7}
+  m_SizeDelta: {x: 316.5, y: 207.4}
   m_Pivot: {x: 0.50000006, y: 0.5}
 --- !u!114 &159066285
 MonoBehaviour:
@@ -1372,6 +1372,8 @@ MonoBehaviour:
     PART LIMIT: TEST
 
     SPAWNING COOLDOWN: TEST
+
+    SPAWNING DELAY: TEST
 
     SPAWNING ENERGY COST: TEST'
 --- !u!222 &159066286
@@ -2659,6 +2661,8 @@ MonoBehaviour:
   buttonPrefab: {fileID: 1886850028690094, guid: 28beeb98b359d7045b9f9cf38213e629,
     type: 3}
   miniDroneShooter: {fileID: 498564349}
+  reconstructImage: {fileID: 957477011}
+  reconstructText: {fileID: 457542911}
 --- !u!1 &365600342
 GameObject:
   m_ObjectHideFlags: 0
@@ -7664,7 +7668,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 354862416}
-        m_MethodName: Export
+        m_MethodName: Deinitialize
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10212,7 +10216,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 126.999985, y: -24.599998}
+  m_AnchoredPosition: {x: 127, y: -24.599998}
   m_SizeDelta: {x: 248, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1218339354
@@ -10370,7 +10374,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 126.999985, y: -41.199997}
+  m_AnchoredPosition: {x: 127, y: -41.199997}
   m_SizeDelta: {x: 248, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1241541159
@@ -13722,11 +13726,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 224035879600292394, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_RootOrder
@@ -13822,13 +13821,10 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+    - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
-      propertyPath: m_Text
-      value: 'Settings:
-
-
-'
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224749461034504562, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
@@ -13874,6 +13870,14 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Settings:
+
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 9159509489203113411, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
@@ -16098,12 +16102,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_Text
-      value: "Current Ship JSON: \n(Copy and paste this if you want to share your
-        ship/use it in the sector creator)"
-      objectReference: {fileID: 0}
     - target: {fileID: 224749461034504562, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -16123,6 +16121,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: CloseUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_Text
+      value: "Current Ship JSON: \n(Copy and paste this if you want to share your
+        ship/use it in the sector creator)"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1db7935a54b01634a952418d692ea5be, type: 3}
@@ -16486,11 +16490,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 224035879600292394, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_RootOrder
@@ -16601,11 +16600,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+    - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
-      propertyPath: m_Text
-      value: "Set ship JSON: \nPaste ship JSON into this box to get the data into
-        the Ship Builder."
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224749461034504562, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
@@ -16631,6 +16629,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: CloseUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_Text
+      value: "Set ship JSON: \nPaste ship JSON into this box to get the data into
+        the Ship Builder."
       objectReference: {fileID: 0}
     - target: {fileID: 9159509489203113411, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}

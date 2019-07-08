@@ -42,7 +42,31 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	protected Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> builderPartDict;
 	EntityBlueprint.PartInfo currentPart;
 	public Image miniDroneShooter;
+	public Image reconstructImage;
+	public Text reconstructText;
+	private DroneSpawnData currentData;
 
+	private enum ReconstructButtonStatus {
+		Valid,
+		PartInvalidPosition,
+		PastPartLimit
+	}
+	private void SetReconstructButton(ReconstructButtonStatus status) {
+		switch(status) {
+			case ReconstructButtonStatus.Valid:
+				reconstructImage.color = reconstructText.color = Color.green;
+				reconstructText.text = "Reconstruct";
+				break;
+			case ReconstructButtonStatus.PartInvalidPosition:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "A part is in an invalid position!";
+				break;
+			case ReconstructButtonStatus.PastPartLimit:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "Core cannot handle so many parts!";
+				break;
+		}
+	}
     public void InitializeSelectionPhase() {
 
 		selectionPhaseParent.SetActive(true);
@@ -190,6 +214,8 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	}
 
 	public void UpdateChain() {
+		SetReconstructButton(cursorScript.parts.Count > DroneUtilities.GetPartLimit(currentData.type) ? 
+			ReconstructButtonStatus.PastPartLimit : ReconstructButtonStatus.Valid);
 		var shellRect = ShipBuilder.GetRect(shellImage.rectTransform);
 		shellRect.Expand(10);
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
@@ -203,6 +229,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(!shipPart.isInChain || !shipPart.validPos) {
+				SetReconstructButton(ReconstructButtonStatus.PartInvalidPosition);
 				return;
 			}
 		}
@@ -238,6 +265,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		return data;
 	}
 	public void InitializeBuildPhase(EntityBlueprint blueprint, EntityBlueprint.PartInfo currentPart, DroneSpawnData data) {
+		this.currentData = data;
 		this.currentPart = currentPart;
 		selectionPhaseParent.SetActive(false);
 		buildPhaseParent.SetActive(true);
@@ -312,7 +340,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		base.OnPointerDown(eventData);
 	}
 
-	public void Export() {
+	private void Export() {
 		var data = ParseDronePart(currentPart);
 		var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
         JsonUtility.FromJsonOverwrite(DroneWorkshop.ParseDronePart(currentPart).drone, blueprint);
@@ -329,5 +357,19 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		if(Input.GetKey(KeyCode.LeftShift)) 
 			ShipBuilder.SaveBlueprint(blueprint);
 		#endif
+	}
+	public void Deinitialize() {
+		if(cursorScript.parts.Count > DroneUtilities.GetPartLimit(currentData.type)) return;
+		bool invalidState = false;
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			if(!part.validPos || !part.isInChain) {
+				invalidState = true;
+				break;
+			}
+		}
+		if(!invalidState) {
+			Export();
+			CloseUI(true);
+		}
 	}
 }

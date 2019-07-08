@@ -6,43 +6,47 @@ using UnityEngine.UI;
 public class DroneUtilities : MonoBehaviour
 {
     public static DroneSpawnData GetDefaultData(DroneType type) {
+        DroneSpawnData data;
         // pretty much the same thing repeated multiple times so that if one part ever becomes different it doesn't break
         switch(type) {
             case DroneType.Mini:
-                var mini = ResourceManager.GetAsset<DroneSpawnData>("mini_drone_spawn");
-                mini.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("mini_drone_blueprint"));
-                return mini;
+                data = ResourceManager.GetAsset<DroneSpawnData>("mini_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("mini_drone_blueprint"));
+                break;
             case DroneType.Counter:
-                var counter = ResourceManager.GetAsset<DroneSpawnData>("counter_drone_spawn");
-                counter.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("counter_drone_blueprint"));
-                return counter;
+                data = ResourceManager.GetAsset<DroneSpawnData>("counter_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("counter_drone_blueprint"));
+                break;
             case DroneType.Light:
-                var light = ResourceManager.GetAsset<DroneSpawnData>("light_drone_spawn");
-                light.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("light_drone_blueprint"));
-                return light;
+                data = ResourceManager.GetAsset<DroneSpawnData>("light_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("light_drone_blueprint"));
+                break;
             case DroneType.Strike:
-                var strike = ResourceManager.GetAsset<DroneSpawnData>("strike_drone_spawn");
-                strike.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("strike_drone_blueprint"));
-                return strike;
+                data = ResourceManager.GetAsset<DroneSpawnData>("strike_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("strike_drone_blueprint"));
+                break;
             case DroneType.Worker:
-                var worker = ResourceManager.GetAsset<DroneSpawnData>("worker_drone_spawn");
-                worker.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("worker_drone_blueprint"));
-                return worker;
+                data = ResourceManager.GetAsset<DroneSpawnData>("worker_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("worker_drone_blueprint"));
+                break;
             case DroneType.Gun:
-                var gun = ResourceManager.GetAsset<DroneSpawnData>("gun_drone_spawn");
-                gun.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("gun_drone_blueprint"));
-                return gun;
+                data = ResourceManager.GetAsset<DroneSpawnData>("gun_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("gun_drone_blueprint"));
+                break;
             case DroneType.Torpedo:
-                var torpedo = ResourceManager.GetAsset<DroneSpawnData>("torpedo_drone_spawn");
-                torpedo.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("torpedo_drone_blueprint"));
-                return torpedo;
+                data = ResourceManager.GetAsset<DroneSpawnData>("torpedo_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("torpedo_drone_blueprint"));
+                break;
             case DroneType.Heavy:
-                var heavy = ResourceManager.GetAsset<DroneSpawnData>("heavy_drone_spawn");
-                heavy.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("heavy_drone_blueprint"));
-                return heavy;
+                data = ResourceManager.GetAsset<DroneSpawnData>("heavy_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("heavy_drone_blueprint"));
+                break;
             default:
                 return null;
         }
+        data.cooldown = GetCooldown(type);
+        data.energyCost = GetEnergyCost(type);
+        return data;
     }
 
     public static Sprite GetAbilitySpriteBySpawnData(DroneSpawnData data) {
@@ -81,6 +85,105 @@ public class DroneUtilities : MonoBehaviour
                 return WeaponDiversityType.Torpedo;
             default:
                 return WeaponDiversityType.None;
+        }
+    }
+
+    public static string GetUniqueCharacteristic(DroneType type) {
+        switch(type) {
+            case DroneType.Mini:
+                return "FREE CANNON.\n";
+            case DroneType.Worker:
+                return "COLLECTS DIFFERENT OBJECTS.\n";
+            case DroneType.Strike:
+                return "60% WEAPON ENERGY USAGE.\n";
+            case DroneType.Light:
+                return "60% LIGHTER THAN USUAL.\n";
+            case DroneType.Gun:
+                return "WEAPONS COOLDOWN 66% FASTER.\n";
+            case DroneType.Counter:
+                return "75% MORE WEAPON DAMAGE AGAINST DRONES.";
+            case DroneType.Torpedo:
+                return "WEAPONS ATTACK ONLY GROUND ENTITIES.";
+            case DroneType.Heavy:
+                return "REGENERATES 20 CORE PER SECOND.\n";
+            default:
+                return "";       
+        }
+    }
+
+    public static int GetPartLimit(DroneType type) {
+        switch(type) {
+            case DroneType.Mini:
+            case DroneType.Worker:
+                return 2;
+            case DroneType.Strike:
+            case DroneType.Light:
+            case DroneType.Counter:
+            case DroneType.Gun:
+                return 4;
+            case DroneType.Torpedo:
+                return 6;
+            case DroneType.Heavy:
+                return 8;
+            default:
+                return 0;
+        }
+    }
+
+    public static int GetEnergyCost(DroneType type) {
+        switch(type) {
+            case DroneType.Mini:
+            case DroneType.Worker:
+                return 100;
+            case DroneType.Strike:
+            case DroneType.Light:
+            case DroneType.Counter:
+            case DroneType.Gun:
+                return 150;
+            case DroneType.Torpedo:
+                return 200;
+            case DroneType.Heavy:
+                return 400;
+            default:
+                return 0;
+        }
+    }
+
+    public static int GetCooldown(DroneType type) {
+        switch(type) {
+            case DroneType.Mini:
+            case DroneType.Worker:
+                return 10;
+            case DroneType.Strike:
+            case DroneType.Light:
+            case DroneType.Counter:
+            case DroneType.Gun:
+                return 15;
+            case DroneType.Torpedo:
+                return 20;
+            case DroneType.Heavy:
+                return 30;
+            default:
+                return 0;
+        }
+    }
+
+    public static int GetDelay(DroneType type) {
+        switch(type) {
+            case DroneType.Mini:
+            case DroneType.Worker:
+                return 2;
+            case DroneType.Strike:
+            case DroneType.Light:
+            case DroneType.Counter:
+            case DroneType.Gun:
+                return 3;
+            case DroneType.Torpedo:
+                return 5;
+            case DroneType.Heavy:
+                return 8;
+            default:
+                return 0;
         }
     }
 }

@@ -21,6 +21,13 @@ public class DWSelectionDisplayHandler : MonoBehaviour, IShipStatsDatabase
         ClearDisplay();
         statsDisplay.gameObject.SetActive(true);
         droneDesc.enabled = true;
+        droneDesc.text = ("DRONE TYPE: " + data.type).ToUpper()
+                     + "\nUNIQUE CHARACTERISTIC:\n" + "<color=lime>"
+                      + DroneUtilities.GetUniqueCharacteristic(data.type) + "</color>"
+                     + "\nPART LIMIT: " + DroneUtilities.GetPartLimit(data.type)
+                     + "\nSPAWNING COOLDOWN: " + DroneUtilities.GetCooldown(data.type)
+                     + "\nSPAWNING DELAY: " + DroneUtilities.GetDelay(data.type)
+                     + "\nSPAWNING ENERGY COST: " + DroneUtilities.GetEnergyCost(data.type);
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         if(shell.sprite) {
             shell.enabled = true;
