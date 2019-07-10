@@ -358,8 +358,11 @@ namespace NodeEditorFramework.IO
 			{ // Try to embed object
 				XmlSerializer serializer = new XmlSerializer(obj.GetType());
 				XPathNavigator navigator = parent.CreateNavigator();
-				using (XmlWriter writer = navigator.AppendChild())
-					serializer.Serialize(writer, obj);
+                using (XmlWriter writer = navigator.AppendChild())
+                {
+                    writer.WriteWhitespace("");
+                    serializer.Serialize(writer, obj);
+                }
 				return (XmlElement)parent.LastChild;
 			}
 			catch (Exception)
