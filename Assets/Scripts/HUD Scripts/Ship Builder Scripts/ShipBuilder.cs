@@ -145,7 +145,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public static Bounds GetRect(RectTransform rectTransform) {
 		Bounds rect = RectTransformUtility.CalculateRelativeRectTransformBounds(rectTransform.parent, rectTransform);
 		rect.center = rectTransform.anchoredPosition;
-		rect.size = rect.size * 0.8F;
+		rect.size = rect.size * 1F;
 		return rect;
 	}
 	private enum ReconstructButtonStatus {
@@ -474,6 +474,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			player.blueprint.parts.Add(part.info);
 		}
 		player.Rebuild();
+		#if UNITY_EDITOR
+			if(Input.GetKey(KeyCode.LeftShift)) 
+				SaveBlueprint(player.blueprint);
+		#endif
 	}
 
 	protected override void Update() {

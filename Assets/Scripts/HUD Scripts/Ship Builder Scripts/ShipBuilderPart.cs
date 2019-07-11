@@ -17,7 +17,6 @@ public class ShipBuilderPart : DisplayPart {
 	public bool highlighted;
 	public BuilderMode mode;
 	private Vector3? lastValidPos = null;
-	private float closeConstant;
 
 	public void SetLastValidPos(Vector3? lastPos) {
 		lastValidPos = lastPos;
@@ -35,8 +34,6 @@ public class ShipBuilderPart : DisplayPart {
 
 	public void InitializeMode(BuilderMode mode) {
 		this.mode = mode;
-		if(mode == BuilderMode.Workshop) closeConstant = 0.05F;
-		else closeConstant = 0.2F;
 	}
 
 	protected override void UpdateAppearance() {
@@ -47,11 +44,11 @@ public class ShipBuilderPart : DisplayPart {
 	}
 
 	bool IsTooClose(ShipBuilderPart otherPart) {
-		bool z = Mathf.Abs(rectTransform.anchoredPosition.x - otherPart.rectTransform.anchoredPosition.x) <
-		closeConstant*(rectTransform.sizeDelta.x + otherPart.rectTransform.sizeDelta.x) &&
-		Mathf.Abs(rectTransform.anchoredPosition.y - otherPart.rectTransform.anchoredPosition.y) <
-		closeConstant*(rectTransform.sizeDelta.y + otherPart.rectTransform.sizeDelta.y);
-		return z;
+		var rect1 = ShipBuilder.GetRect(rectTransform);
+		var rect2 = ShipBuilder.GetRect(otherPart.rectTransform);
+		rect1.Expand(-0.995F * rect1.extents);
+		rect2.Expand(-0.995F * rect2.extents);
+		return rect1.Intersects(rect2);
 	}
 	
 	void OnDestroy() {
