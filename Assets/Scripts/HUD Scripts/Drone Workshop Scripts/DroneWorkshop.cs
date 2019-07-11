@@ -349,9 +349,14 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 			blueprint.parts.Add(part.info);
 		}
 		data.drone = JsonUtility.ToJson(blueprint);
-		var index = player.GetInventory().FindIndex(x => x.Equals(currentPart));
+		var list = player.GetInventory();
+		var index = list.FindIndex(x => x.Equals(currentPart));
+		if(index == -1) {
+			list = player.blueprint.parts;
+			index = list.FindIndex(x => x.Equals(currentPart));
+		}
 		currentPart.secondaryData = JsonUtility.ToJson(data);
-		player.GetInventory()[index] = currentPart;
+		list[index] = currentPart;
 		CloseUI(true);
 		#if UNITY_EDITOR
 		if(Input.GetKey(KeyCode.LeftShift)) 
