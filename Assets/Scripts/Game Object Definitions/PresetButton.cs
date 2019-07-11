@@ -82,28 +82,35 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
         initialized = true;
     }
 
+    void CheckEmpty() {
+        if (!blueprint)
+        {
+            image.color = text.color = Color.gray;
+            text.text = " Create Preset " + number;
+        }
+        else
+        {
+            image.color = text.color = Color.green;
+            text.text = " Load Preset " + number;
+        }
+    }
+
     public void CheckValid() {
         if(blueprint && blueprint.parts != null && !builder.ContainsParts(blueprint.parts)) 
         {   
             valid = false;
             image.color = text.color = Color.red;
             text.text = " Inadequate parts! ";
-        } else valid = true;
+        } else {
+            valid = true;
+            CheckEmpty();
+        }
     }
     // Update is called once per frame
     void Update()
     {
         if(initialized && valid) {
-            if (!blueprint)
-            {
-                image.color = text.color = Color.gray;
-                text.text = " Create Preset " + number;
-            }
-            else
-            {
-                image.color = text.color = Color.green;
-                text.text = " Load Preset " + number;
-            }
+            CheckEmpty();
         }
     }
 }

@@ -2,6 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum WeaponDiversityType {
+    Strike,
+    Gun,
+    
+    Torpedo,
+    None
+}
+
+
 /// <summary>
 /// Every ability that is used explicitly to attack other crafts is a weapon ability. 
 /// These all have a respective range at which they are effective as well.
@@ -14,10 +23,12 @@ public abstract class WeaponAbility : ActiveAbility {
     protected WeaponTargetingSystem targetingSystem;
     public Entity.TerrainType terrain = Entity.TerrainType.Unset;
     public Entity.EntityCategory category = Entity.EntityCategory.All;
+    public WeaponDiversityType type = WeaponDiversityType.None;
 
     public bool CheckCategoryCompatibility(Entity entity)
     {
-        return (category == Entity.EntityCategory.All || category == entity.category)
+        if(type == WeaponDiversityType.Torpedo) return entity.Terrain == Entity.TerrainType.Ground;
+        else return (category == Entity.EntityCategory.All || category == entity.category)
             && (terrain == Entity.TerrainType.All || terrain == entity.Terrain);
     }
 
@@ -28,10 +39,20 @@ public abstract class WeaponAbility : ActiveAbility {
 
     protected override void Awake()
     {
+        switch(type) {
+            case WeaponDiversityType.Strike:
+                energyCost *= 0.6F;
+                break;
+            case WeaponDiversityType.Gun:
+                cooldownDuration *= 0.6F;
+                break;
+            default:
+                break;
+        }
         isActive = true; // initialize abilities to be active
         targetingSystem = new WeaponTargetingSystem();
         targetingSystem.ability = this;
-        abilityName = "Weapon Ability";
+        if(abilityName == null) abilityName = "Weapon Ability";
     }
 
     /// <summary>

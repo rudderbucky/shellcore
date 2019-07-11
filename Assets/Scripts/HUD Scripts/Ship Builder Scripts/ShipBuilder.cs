@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
-public class ShipBuilder : GUIWindowScripts {
+public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public GameObject SBPrefab;
 	public Vector3 yardPosition;
 	public Image shell;
@@ -18,7 +21,7 @@ public class ShipBuilder : GUIWindowScripts {
 	public Transform traderSmallContents;
 	public Transform traderMediumContents;
 	public Transform traderLargeContents;
-	private Transform[] contentsArray; // holds scroll view sub-sections by part size
+	protected Transform[] contentsArray; // holds scroll view sub-sections by part size
 	private Transform[] traderContentsArray;
 	public GameObject smallText;
 	public GameObject mediumText;
@@ -26,20 +29,23 @@ public class ShipBuilder : GUIWindowScripts {
 	public GameObject traderSmallText;
 	public GameObject traderMediumText;
 	public GameObject traderLargeText;
-	private GameObject[] contentTexts;
+	protected GameObject[] contentTexts;
 	private GameObject[] traderContentTexts;
-	public PresetButton[] presetButtons;
-	private string searcherString;
+	private PresetButton[] presetButtons;
+	protected string searcherString;
 	private bool[] displayingTypes;
 	public Image reconstructImage;
 	public Text reconstructText;
-	bool initialized;
+	protected bool initialized;
 	public TipsFromTheYard tips;
 	public GameObject traderScrollView;
-	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
-	Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
+	protected Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
+	private Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
 	public BuilderMode mode;
 
+	public BuilderMode GetMode() {
+		return mode;
+	}
 	public bool ContainsParts(List<EntityBlueprint.PartInfo> parts) {
 		Dictionary<EntityBlueprint.PartInfo, int> counts = new Dictionary<EntityBlueprint.PartInfo, int>();
 		// get the part counts
@@ -52,7 +58,6 @@ public class ShipBuilder : GUIWindowScripts {
 		foreach(ShipBuilderPart inf in cursorScript.parts) {
 			var p = CullSpatialValues(inf.info);
 			if(!counts.ContainsKey(p)) {
-				Debug.Log(p.partID);
 				counts.Add(p, 1);
 			} else counts[p]++;
 		}
@@ -60,12 +65,9 @@ public class ShipBuilder : GUIWindowScripts {
 		foreach(EntityBlueprint.PartInfo part in parts) {
 			var p = CullSpatialValues(part);
 			if(!counts.ContainsKey(p)) {
-				Debug.Log("b");
 				return false;
 			}
 			else if(--counts[p] < 0) {
-				Debug.Log(p.partID + "x");
-				Debug.Log("c");
 				return false;
 			}
 		}
@@ -224,6 +226,9 @@ public class ShipBuilder : GUIWindowScripts {
 		initialized = true;
 		Activate();
 		cursorScript.gameObject.SetActive(false);
+		cursorScript.SetBuilder(this);
+
+		GetComponentInChildren<ShipBuilderPartDisplay>().Initialize(this);
 
 		// set up actual stats
 		this.mode = mode;
@@ -276,7 +281,10 @@ public class ShipBuilder : GUIWindowScripts {
 					info.partID = name;
 					info.abilityID = Random.Range(0,21);
 					if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
-					if(info.abilityID == 10) info.secondaryData = "mini_drone_spawn";
+					if(info.abilityID == 10) {
+						DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 8));
+						info.secondaryData = JsonUtility.ToJson(data);
+					}
 					if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
 					else info.tier = Random.Range(1, 4);
 					traderInventory.Add(info);
@@ -309,11 +317,21 @@ public class ShipBuilder : GUIWindowScripts {
 						info.partID = name;
 						info.abilityID = Random.Range(0,21);
 						if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
-						if(info.abilityID == 10) info.secondaryData = "mini_drone_spawn";
+						if(info.abilityID == 10) {
+							DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 8));
+							info.secondaryData = JsonUtility.ToJson(data);
+						}
 						if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
 						else info.tier = Random.Range(1, 4);
 						parts.Add(info);
 					}
+				}
+				for(int i = 0; i < 8; i++) {
+					info.partID = "SmallCenter1";
+					info.abilityID = 10;
+					info.tier = 0;
+					info.secondaryData = JsonUtility.ToJson(DroneUtilities.GetDefaultData((DroneType)i));
+					parts.Add(info);
 				}
 			}
 			for(int i = 0; i < parts.Count; i++) {
@@ -321,31 +339,11 @@ public class ShipBuilder : GUIWindowScripts {
 			}
 		}
 		foreach(EntityBlueprint.PartInfo part in parts) {
-			if(!partDict.ContainsKey(part)) 
-			{
-				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
-				ShipBuilderInventoryScript invButton = Instantiate(buttonPrefab, 
-					contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
-				partDict.Add(part, invButton);
-				contentTexts[size].SetActive(true);
-				invButton.part = part;
-				invButton.cursor = cursorScript;
-				invButton.IncrementCount();
-				invButton.mode = BuilderMode.Yard;
-			} else partDict[part].IncrementCount();
+			AddPart(part);
 		}
 		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
 			var part = player.GetTractorTarget().GetComponent<ShellPart>().info;
-			part = CullSpatialValues(part);
-			if(!partDict.ContainsKey(part)) {
-				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
-				var button = Instantiate(buttonPrefab, contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
-				contentTexts[size].SetActive(true);
-				button.cursor = cursorScript;
-				button.part = part;
-				button.IncrementCount();
-				partDict.Add(part, button);
-			} else partDict[part].IncrementCount();
+			AddPart(part);
 			player.cursave.partInventory.Add(part);
 			Destroy(player.GetTractorTarget().gameObject);
 		}
@@ -375,6 +373,20 @@ public class ShipBuilder : GUIWindowScripts {
 		cursorScript.UpdateHandler();
 	}
 
+	private void AddPart(EntityBlueprint.PartInfo part) {
+		if(!partDict.ContainsKey(part)) 
+		{
+			int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
+			ShipBuilderInventoryScript invButton = Instantiate(buttonPrefab, 
+				contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
+			partDict.Add(part, invButton);
+			contentTexts[size].SetActive(true);
+			invButton.part = part;
+			invButton.cursor = cursorScript;
+			invButton.IncrementCount();
+			invButton.mode = BuilderMode.Yard;
+		} else partDict[part].IncrementCount();
+	}
 	public override void CloseUI() {
 		CloseUI(false);
 	}
@@ -422,6 +434,11 @@ public class ShipBuilder : GUIWindowScripts {
 		}
 	}
 
+	#if UNITY_EDITOR
+	public static void SaveBlueprint(EntityBlueprint blueprint) {
+		AssetDatabase.CreateAsset(blueprint, "Assets/Blueprints/Entities/Crafts/Air Crafts/Shellcores/SavedPrint.asset");
+	}
+	#endif
 	public InputField inField;
 	public void SetBlueprint() {
 		if(inField.text == "") return;
@@ -431,6 +448,9 @@ public class ShipBuilder : GUIWindowScripts {
 		CloseUI(false);
 		inField.text = "";
 		Initialize(BuilderMode.Yard, null, blueprint);
+		#if UNITY_EDITOR
+			SaveBlueprint(blueprint); // creates an asset of that blueprint for later use
+		#endif
 	}
 	public void Deinitialize() {
 		if(cursorScript.buildCost > player.credits) return;
@@ -516,6 +536,7 @@ public class ShipBuilder : GUIWindowScripts {
 		return gameObject.activeSelf;
 	}
 
+	/// prevent dragging the window if the mouse is on the grid
 	public override void OnPointerDown(PointerEventData eventData) {
 		if(RectTransformUtility.RectangleContainsScreenPoint(cursorScript.grid, Input.mousePosition)) return;
 		base.OnPointerDown(eventData);

@@ -16,7 +16,8 @@ public class Dialogue : ScriptableObject, IDialogueable
         Outpost,
         Shop,
         Yard,
-        Exit
+        Exit,
+        Workshop
     }
 
     public List<Node> nodes;

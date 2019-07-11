@@ -33,18 +33,18 @@ class PathEditor : Editor
     private void OnEnable()
     {
         waypoints = serializedObject.FindProperty("waypoints");
-        SceneView.onSceneGUIDelegate += OnSceneGUI;
+        SceneView.duringSceneGui += OnSceneGUI;
         path = target as Path;
     }
 
     private void OnDisable()
     {
-        SceneView.onSceneGUIDelegate -= OnSceneGUI;
+        SceneView.duringSceneGui -= OnSceneGUI;
     }
 
     private void OnDestroy()
     {
-        SceneView.onSceneGUIDelegate -= OnSceneGUI;
+        SceneView.duringSceneGui -= OnSceneGUI;
     }
 
     public override void OnInspectorGUI()

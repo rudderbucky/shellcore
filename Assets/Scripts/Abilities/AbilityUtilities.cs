@@ -4,8 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 public class AbilityUtilities : MonoBehaviour {
 
-	public static Sprite GetAbilityImageByID(int ID) {
+	public static Sprite GetAbilityImageByID(int ID, string secondaryData) {
 		if(ID == 0) return null;
+		if(ID == 10) {
+			DroneSpawnData data = ScriptableObject.CreateInstance<DroneSpawnData>();
+			JsonUtility.FromJsonOverwrite(secondaryData, data);
+			return DroneUtilities.GetAbilitySpriteBySpawnData(data);
+		}
+		return ResourceManager.GetAsset<Sprite>("AbilitySprite" + ID);
+	}
+
+	public static Sprite GetAbilityImage(Ability ability) {
+		var ID = ability.GetID();
+		if(ID == 0) return null;
+		if(ID == 10) {
+			return DroneUtilities.GetAbilitySpriteBySpawnData((ability as SpawnDrone).spawnData);
+		}
 		return ResourceManager.GetAsset<Sprite>("AbilitySprite" + ID);
 	}
 
@@ -191,7 +205,8 @@ public class AbilityUtilities : MonoBehaviour {
 				break;
 			case 10:
 				ability = obj.AddComponent<SpawnDrone>();
-				((SpawnDrone)ability).spawnData = ResourceManager.GetAsset<DroneSpawnData>(data);
+				((SpawnDrone)ability).spawnData = ScriptableObject.CreateInstance<DroneSpawnData>();
+				JsonUtility.FromJsonOverwrite(data, ((SpawnDrone)ability).spawnData);
 				((SpawnDrone)ability).Init();
 				break;
 			case 11:

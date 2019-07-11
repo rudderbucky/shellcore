@@ -14,7 +14,7 @@ public class Drone : AirCraft, IOwnable {
     private float time;
     private float initialzangle;
     private bool initialized = false;
-
+    public DroneType type;
     public Path path;
 
     public IOwner GetOwner()

@@ -155,6 +155,7 @@ public class ShellPart : MonoBehaviour {
     /// </summary>
     void Blink() {
         spriteRenderer.enabled = Time.time % 0.25F > 0.125F; // math stuff that blinks the part
+        if(shooter) shooter.GetComponent<SpriteRenderer>().enabled = spriteRenderer.enabled;
     }
 
 	// Update is called once per frame
@@ -182,7 +183,10 @@ public class ShellPart : MonoBehaviour {
                 if (name != "Shell Sprite")
                 {
                     Destroy(gameObject);
-                } else spriteRenderer.enabled = false; // disable sprite renderer
+                } else {
+                    spriteRenderer.enabled = false; // disable sprite renderer
+                    if(shooter) shooter.SetActive(false);
+                }
             }
         }
         else

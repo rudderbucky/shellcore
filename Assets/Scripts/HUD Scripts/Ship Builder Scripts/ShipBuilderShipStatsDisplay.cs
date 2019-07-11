@@ -2,19 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+public interface IShipStatsDatabase {
+	List<DisplayPart> GetParts();
+	BuilderMode GetMode();
+	int GetBuildValue();
+	int GetBuildCost();
+}
 public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 
 	public ShipBuilderCursorScript cursorScript;
+	public IShipStatsDatabase statsDatabase;
 	public Text display;
 	public Text regenDisplay;
 	
+	void Start() {
+		if(statsDatabase == null) statsDatabase = cursorScript;
+	}
 	// Update is called once per frame
 	void Update () {
 		float[] totalHealths = new float[] {1000,250,500};
 		float[] totalRegens = new float[] {60,0,60};
 		float shipMass = 1;
 		float enginePower = 200;
-		foreach(ShipBuilderPart part in cursorScript.parts) {
+		foreach(DisplayPart part in statsDatabase.GetParts()) {
 			switch(part.info.abilityID) {
 				case 13:
 					enginePower *= Mathf.Pow(1.1F, part.info.tier);
@@ -38,13 +49,13 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 			shipMass += blueprint.mass;
 		}
 		string buildStat = "";
-		if(cursorScript.builder.mode == BuilderMode.Yard) {
-			buildStat = "\nTOTAL BUILD VALUE: \n" + cursorScript.buildValue + " CREDITS";
+		if(statsDatabase.GetMode() == BuilderMode.Yard || statsDatabase.GetMode() == BuilderMode.Workshop) {
+			buildStat = "\nTOTAL BUILD VALUE: \n" + statsDatabase.GetBuildValue() + " CREDITS";
 		} else {	
 			string colorTag = "<color=white>";
 			if(cursorScript.buildCost > 0) colorTag = "<color=red>";
 			else if(cursorScript.buildCost < 0) colorTag = "<color=lime>";
-			buildStat = "\nTOTAL BUILD COST: " + "\n" + colorTag + cursorScript.buildCost + " CREDITS</color>";
+			buildStat = "\nTOTAL BUILD COST: " + "\n" + colorTag + statsDatabase.GetBuildCost() + " CREDITS</color>";
 		}
 		display.text = "SHELL: " + totalHealths[0] + "\n"
 		+              "CORE: " + totalHealths[1] + "\n"

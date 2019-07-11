@@ -18,6 +18,7 @@ public interface IOwner
 public class SpawnDrone : ActiveAbility
 {
     public DroneSpawnData spawnData;
+    EntityBlueprint blueprint;
     IOwner craft;
     public void Init()
     {
@@ -27,6 +28,9 @@ public class SpawnDrone : ActiveAbility
         activeDuration = spawnData.delay; 
         activeTimeRemaining = activeDuration;
         energyCost = spawnData.energyCost;
+        // create blueprint from string json in spawn data
+        blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+        JsonUtility.FromJsonOverwrite(spawnData.drone, blueprint);
     }
 
     protected override void Awake()
@@ -46,13 +50,14 @@ public class SpawnDrone : ActiveAbility
     protected override void Deactivate()
     {
         // Spawn the drone
-        GameObject go = new GameObject(spawnData.drone.name);
+        GameObject go = new GameObject(blueprint.name);
         Drone drone = go.AddComponent<Drone>();
-        drone.blueprint = spawnData.drone;
+        drone.blueprint = blueprint;
         drone.faction = craft.GetFaction();
         drone.transform.position = part.transform.position;
         drone.spawnPoint = part.transform.position;
         drone.enginePower = 100;
+        drone.type = spawnData.type;
         drone.Init();
         drone.SetOwner(craft);
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);

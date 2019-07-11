@@ -7,28 +7,19 @@ using UnityEngine.SceneManagement;
 
 
 
-public class ShipBuilderInventoryScript : MonoBehaviour, IPointerDownHandler {
-    public EntityBlueprint.PartInfo part;
+public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDownHandler {
+
     public GameObject SBPrefab;
     public ShipBuilderCursorScript cursor;
     public Text val;
     public BuilderMode mode;
     int count;
-    Image image;
 
-    void Start() {
+    protected override void Start() {
         val = GetComponentInChildren<Text>();
         val.text = count + "";
-        image = GetComponentsInChildren<Image>()[1];
-        image.sprite = ResourceManager.GetAsset<Sprite>(part.partID + "_sprite");
-        string shooterID = AbilityUtilities.GetShooterByID(part.abilityID);
-        if(shooterID != null) {
-            GetComponentsInChildren<Image>()[2].sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-            GetComponentsInChildren<Image>()[2].color = FactionColors.colors[0];
-            GetComponentsInChildren<Image>()[2].rectTransform.sizeDelta = GetComponentsInChildren<Image>()[2].sprite.bounds.size * 100;
-        } else GetComponentsInChildren<Image>()[2].enabled = false;
-        image.color = FactionColors.colors[0];
-        image.GetComponent<RectTransform>().sizeDelta = image.sprite.bounds.size * 100;
+        base.Start();
+        // button border size is handled specifically by the grid layout components
     }
     public void OnPointerDown(PointerEventData eventData)
     {

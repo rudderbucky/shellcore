@@ -5,14 +5,21 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems; // Required when using Event data.
 using UnityEngine.SceneManagement;
 
-public class ShipBuilderCursorScript : MonoBehaviour {
+public interface IBuilderInterface {
+	BuilderMode GetMode();
+	void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode);
+	void UpdateChain();
+	EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
+}
+
+public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
 	public Canvas canvas;
 	public RectTransform grid;
 	ShipBuilderPart currentPart;
 	ShipBuilderPart lastPart;
-	public ShipBuilder builder;
+	public IBuilderInterface builder;
 	public InputField field;
 	public InputField jsonField;
 	bool flipped;
@@ -23,6 +30,14 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 	public int buildCost;
 	public RectTransform playerInventory;
 	public RectTransform traderInventory;
+	public BuilderMode cursorMode = BuilderMode.Yard;
+
+	public void SetMode(BuilderMode mode) {
+		cursorMode = mode;
+	}
+	public void SetBuilder(IBuilderInterface builder) {
+		this.builder = builder;
+	}
 
 	void OnEnable() {
 		buildCost = 0;
@@ -52,27 +67,34 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
-		if(traderInventory.gameObject.activeSelf &&
-			RectTransformUtility.RectangleContainsScreenPoint(traderInventory, Input.mousePosition)) {
-			builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
-				? ShipBuilder.TransferMode.Sell : ShipBuilder.TransferMode.Return));
-		}
-		else if(RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
-			builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
-				? ShipBuilder.TransferMode.Return : ShipBuilder.TransferMode.Buy));
-		}
-		else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
-			builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
-		} else {
-			lastPart = currentPart;
-			currentPart = null;
-			if(lastPart.isInChain && lastPart.validPos) {
-				lastPart.SetLastValidPos(lastPart.info.location);
-			} else lastPart.Snapback();
+		if(cursorMode != BuilderMode.Workshop)
+			if(traderInventory.gameObject.activeSelf && 
+				RectTransformUtility.RectangleContainsScreenPoint(traderInventory, Input.mousePosition)) {
+				builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
+					? ShipBuilder.TransferMode.Sell : ShipBuilder.TransferMode.Return));
+			}
+			else if(RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
+				builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
+					? ShipBuilder.TransferMode.Return : ShipBuilder.TransferMode.Buy));
+			}
+			else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
+				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
+			} else PlaceCurrentPartInGrid();
+		else {
+			if(RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
+				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
+			} else PlaceCurrentPartInGrid();
 		}
 		UpdateHandler();
 	}
 
+	private void PlaceCurrentPartInGrid() {
+		lastPart = currentPart;
+		currentPart = null;
+		if(lastPart.isInChain && lastPart.validPos) {
+			lastPart.SetLastValidPos(lastPart.info.location);
+		} else lastPart.Snapback();
+	}
 	public void UpdateHandler() {
 		currentAbilities.Clear();
 		foreach(Ability ab in gameObject.GetComponentsInChildren<Ability>()) {
@@ -123,14 +145,14 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 		flipped = true;
 	}
 	void Update() {
+		int baseMoveSize = cursorMode == BuilderMode.Yard ? 10 : 5;
 		builder.UpdateChain();
 		if(Input.GetKeyDown("c") && !field.isFocused && !jsonField.isFocused) {
 			ClearAllParts();
 		}
 		System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / (int)y), z * ((int)x.y / (int)z), 0);
-		// var newOffset = roundToRatios(new Vector3(Screen.width / 2, Screen.height / 2, 0), 10, 10) -new Vector3((float)Screen.width / 2, (float)Screen.height / 2, 0);
-		var newOffset = roundToRatios(grid.position, 10, 10) -grid.position;
-		transform.position = roundToRatios(Input.mousePosition, 10, 10) - newOffset;
+		var newOffset = roundToRatios(grid.position, baseMoveSize, baseMoveSize) -grid.position;
+		transform.position = roundToRatios(Input.mousePosition, baseMoveSize, baseMoveSize) - newOffset;
 		// TODO: Make this stuff less messy. Regardless, consistency achieved!
 		if(rotateMode) {
 			RotateLastPart();
@@ -163,5 +185,25 @@ public class ShipBuilderCursorScript : MonoBehaviour {
 			else part.highlighted = false;
 		}
 	}
+
+    public List<DisplayPart> GetParts()
+    {
+        return parts.ConvertAll(x => x as DisplayPart);
+    }
+
+    public BuilderMode GetMode()
+    {
+        return cursorMode;
+    }
+
+    public int GetBuildValue()
+    {
+        return buildValue;
+    }
+
+    public int GetBuildCost()
+    {
+        return buildCost;
+    }
 }
 

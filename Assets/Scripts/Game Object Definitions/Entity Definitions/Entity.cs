@@ -170,6 +170,8 @@ public class Entity : MonoBehaviour {
 
         entityName = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
+
+        var isLightDrone = this as Drone && (this as Drone).type == DroneType.Light; // used for light drone weight reduction
         //For shellcores, create the tractor beam
         // Create shell parts
         if (blueprint != null)
@@ -186,7 +188,10 @@ public class Entity : MonoBehaviour {
 
                 //Add an ability to the part:
 
-                AbilityUtilities.AddAbilityToGameObjectByID(partObject, part.abilityID, part.secondaryData, part.tier);
+                WeaponAbility ab = AbilityUtilities.AddAbilityToGameObjectByID(partObject, part.abilityID, part.secondaryData, part.tier) as WeaponAbility;
+                if(ab) { // add weapon diversity
+                    ab.type = DroneUtilities.GetDiversityTypeByEntity(this);
+                }
                 partObject.transform.SetParent(transform, false);
                 partObject.transform.SetAsFirstSibling();
                 partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
@@ -197,7 +202,7 @@ public class Entity : MonoBehaviour {
                 tmp.x = part.mirrored ? -1 : 1;
                 partObject.transform.localScale = tmp;
                 sr.sortingOrder = i + 2;
-                entityBody.mass += partBlueprint.mass;
+                entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
 
@@ -242,6 +247,28 @@ public class Entity : MonoBehaviour {
             abilities.Insert(0, mainBullet);
         }
 
+        // unique abilities for mini and worker drones here
+        if(this as Drone) {
+            Drone drone = this as Drone;
+            switch(drone.type) {
+                case DroneType.Mini:
+                    var shellObj = transform.Find("Shell Sprite").gameObject;
+                    Ability ab = AbilityUtilities.AddAbilityToGameObjectByID(shellObj, 6, null, 1);
+                    var shooter = new GameObject("Shooter");
+                    shooter.transform.SetParent(shellObj.transform);
+                    shooter.transform.localPosition = Vector3.zero;
+                    var shooterSprite = shooter.AddComponent<SpriteRenderer>();
+                    shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
+                    shooterSprite.sortingOrder = 500;
+                    shellObj.GetComponent<ShellPart>().shooter = shooter;
+                    (ab as WeaponAbility).terrain = TerrainType.Air;
+                    abilities.Insert(0, ab);
+                    break;
+                default:
+                    break;
+            }
+        }
+
         Transform shellSprite = shell.transform;
         if(shellSprite)
         {
@@ -273,7 +300,7 @@ public class Entity : MonoBehaviour {
         {
             if((parts[i] != shell) && Random.value < 0.3f && !(this as PlayerCore)) {
                 parts[i].SetCollectible(true);
-                if(sectorMngr) sectorMngr.strayParts.Add(parts[i]);
+                if(sectorMngr) AIData.strayParts.Add(parts[i]);
             }
             parts[i].Detach();
         }
@@ -508,6 +535,10 @@ public class Entity : MonoBehaviour {
     /// <param name="amount">The amount of damage to do</param>
     /// <param name="shellPiercingFactor">The factor of damage that pierces through the shell into the core</param>
     public void TakeDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) {
+
+        // counter drone fighting another drone, multiply damage accordingly
+        if(this as Drone && lastDamagedBy as Drone && (lastDamagedBy as Drone).type == DroneType.Counter)
+            amount *= 1.75F;
         if(lastDamagedBy != this && amount > 0) this.lastDamagedBy = lastDamagedBy; // heals require this check
         if (amount > 0) SetIntoCombat();
         currentHealth[0] -= amount * (1 - shellPiercingFactor); // subtract amount from shell
