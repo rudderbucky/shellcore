@@ -259,6 +259,8 @@ public class SectorManager : MonoBehaviour
                     JsonUtility.FromJson<List<EntityBlueprint.PartInfo>>(data.blueprintJSON);
                 break;
             case EntityBlueprint.IntendedType.DroneWorkshop:
+                Yard workshop = gObj.AddComponent<Yard>();
+                workshop.mode = BuilderMode.Workshop;
                 break;
             default:
                 break;

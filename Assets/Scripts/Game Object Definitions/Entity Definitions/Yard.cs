@@ -11,6 +11,7 @@ public enum BuilderMode {
     Trader,
     Workshop
 }
+
 public class Yard : AirConstruct, IShipBuilder {
 
     public BuilderMode mode;
