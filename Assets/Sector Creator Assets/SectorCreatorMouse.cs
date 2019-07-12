@@ -284,7 +284,9 @@ public class SectorCreatorMouse : MonoBehaviour {
 			}
 		}
 
-        if(Input.GetKeyDown("t"))
+        if(Input.GetKeyDown("t") && 
+            !sectorProps.transform.Find("Sector Name").GetComponent<InputField>().isFocused &&
+            !readFile.transform.Find("JSONPath").GetComponent<InputField>().isFocused)
         {
             nodeEditor.ToggleActive();
         }
@@ -542,7 +544,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				ent.assetID = oj.assetID;
 				ent.vendingID = oj.vendingID;
 				if(oj.isTarget) targetIDS.Add(ent.ID);
-				ent.name = ent.assetID + ent.ID;
+                ent.name = oj.obj.name;
 				if(ent.assetID == "shellcore_blueprint") {
 					targetIDS.Add(ent.ID);
 					ent.blueprintJSON = oj.shellcoreJSON;
@@ -669,6 +671,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				}
 
 				obj.obj = Instantiate(placeables[obj.placeablesIndex].obj, obj.pos, Quaternion.identity);
+                obj.obj.name = ent.name;
 				
 				if(GetIsFactable(obj)) {
 					foreach(SpriteRenderer renderer in obj.obj.GetComponentsInChildren<SpriteRenderer>()) {

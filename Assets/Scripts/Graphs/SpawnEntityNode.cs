@@ -15,7 +15,7 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
 
-        [ConnectionKnob("ID Out", Direction.Out, "EntityID", NodeSide.Right)]
+        [ConnectionKnob("Name Out", Direction.Out, "EntityID", NodeSide.Right)]
         public ConnectionKnob IDOut;
 
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
@@ -23,9 +23,9 @@ namespace NodeEditorFramework.Standard
 
         public bool action; //TODO: copy & paste action mode
         public string blueprintID;
-        public string entityID;
+        public string entityName;
         public int faction;
-        public string flagID;
+        public string flagName;
         public Vector2 coordinates;
         public bool useCoordinates;
 
@@ -37,8 +37,8 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             GUILayout.Label("Blueprint ID:");
             blueprintID = GUILayout.TextField(blueprintID);
-            GUILayout.Label("Entity ID:");
-            entityID = GUILayout.TextField(entityID);
+            GUILayout.Label("Entity Name:");
+            entityName = GUILayout.TextField(entityName);
             GUILayout.Label("Faction number:");
             faction = Utilities.RTEditorGUI.IntField(faction);
 
@@ -54,8 +54,8 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                GUILayout.Label("Flag ID:");
-                flagID = GUILayout.TextField(flagID);
+                GUILayout.Label("Flag Name:");
+                flagName = GUILayout.TextField(flagName);
             }
         }
 
@@ -66,7 +66,7 @@ namespace NodeEditorFramework.Standard
             {
                 for (int i = 0; i < AIData.flags.Count; i++)
                 {
-                    if (AIData.flags[i].ID == flagID)
+                    if (AIData.flags[i].name == flagName)
                     {
                         coords = AIData.flags[i].transform.position;
                         break;
@@ -79,12 +79,12 @@ namespace NodeEditorFramework.Standard
                 Sector.LevelEntity entityData = new Sector.LevelEntity
                 {
                     faction = faction,
-                    name = "New Entity",
+                    name = entityName,
                     position = coords,
-                    ID = entityID + GetHashCode()
+                    ID = "",
                 };
                 var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
-                entity.ID = entityID;
+                entity.name = entityName;
             }
             else
             {

@@ -23,37 +23,36 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob output;
 
         public bool SpeakToEntity;
-        public string EntityID;
+        public string EntityName;
 
         public override void NodeGUI()
         {
             SpeakToEntity = RTEditorGUI.Toggle(SpeakToEntity, "Speak to entity");
             if(SpeakToEntity)
             {
-                GUILayout.Label("EntityID");
-                EntityID = RTEditorGUI.TextField(EntityID);
+                GUILayout.Label("Entity Name");
+                EntityName = RTEditorGUI.TextField(EntityName);
             }
         }
 
         public override int Traverse()
         {
-            Debug.Log("Start dialogue Entity ID: " + EntityID);
             dialogueStartNode = this;
             if (SpeakToEntity)
             {
-                if(TaskManager.interactionOverrides.ContainsKey(EntityID))
+                if(TaskManager.interactionOverrides.ContainsKey(EntityName))
                 {
-                    TaskManager.interactionOverrides[EntityID] = () => {
+                    TaskManager.interactionOverrides[EntityName] = () => {
                         TaskManager.Instance.setNode(output);
-                        TaskManager.interactionOverrides.Remove(EntityID);
+                        TaskManager.interactionOverrides.Remove(EntityName);
                     };
 
                 }
                 else
                 {
-                    TaskManager.interactionOverrides.Add(EntityID, () => {
+                    TaskManager.interactionOverrides.Add(EntityName, () => {
                         TaskManager.Instance.setNode(output);
-                        TaskManager.interactionOverrides.Remove(EntityID);
+                        TaskManager.interactionOverrides.Remove(EntityName);
                     });
                 }
                 return -1;

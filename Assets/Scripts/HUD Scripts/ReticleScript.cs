@@ -102,9 +102,9 @@ public class ReticleScript : MonoBehaviour {
                 if (!craft.GetIsInteracting() && targSys.GetTarget() == entityTarget.transform 
                     && (entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200) //Interact with entity
                 {
-                    if(TaskManager.interactionOverrides.ContainsKey(entityTarget.ID)) //If there's a task overriding the default dialogue, use that
+                    if(TaskManager.interactionOverrides.ContainsKey(entityTarget.name)) //If there's a task overriding the default dialogue, use that
                     {
-                        TaskManager.interactionOverrides[entityTarget.ID].Invoke();
+                        TaskManager.interactionOverrides[entityTarget.name].Invoke();
                     }
                     else if (entityTarget.dialogue as Dialogue)
                         DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue, entityTarget, craft);

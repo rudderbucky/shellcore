@@ -18,14 +18,14 @@ namespace NodeEditorFramework.Standard
         public static UnitDestryedDelegate OnUnitDestroyed;
 
         public bool useIDInput;
-        public string targetID;
+        public string targetName;
         public int targetCount = 1;
         public int targetFaction = 1;
         public ConnectionKnob IDInput;
 
         int killCount;
 
-        ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("ID Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
+        ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("Name Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
 
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
@@ -47,7 +47,7 @@ namespace NodeEditorFramework.Standard
             output.DisplayLayout();
             GUILayout.EndHorizontal();
 
-            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use ID input");
+            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use Name input");
             if (GUI.changed)
             {
                 if (useIDInput)
@@ -57,8 +57,8 @@ namespace NodeEditorFramework.Standard
             }
             if (!useIDInput)
             {
-                GUILayout.Label("Target ID");
-                targetID = GUILayout.TextField(targetID);
+                GUILayout.Label("Target Name");
+                targetName = GUILayout.TextField(targetName);
             }
             targetCount = RTEditorGUI.IntField("Count: ", targetCount);
             targetFaction = RTEditorGUI.IntField("Faction: ", targetFaction);
@@ -78,11 +78,11 @@ namespace NodeEditorFramework.Standard
             {
                 if(IDInput.connected())
                 {
-                    targetID = (IDInput.connections[0].body as SpawnEntityNode).entityID;
+                    targetName = (IDInput.connections[0].body as SpawnEntityNode).entityName;
                 }
                 else
                 {
-                    Debug.LogWarning("ID Input not connected!");
+                    Debug.LogWarning("Name Input not connected!");
                 }
             }
         }
@@ -95,8 +95,16 @@ namespace NodeEditorFramework.Standard
 
         void updateState(Entity entity)
         {
-            if (entity.ID == targetID)
+            if (entity.name == targetName)
             {
+                if(targetFaction != 0)
+                {
+                    SectorManager.instance.player.alerter.showMessage("ENEMIES DESTROYED: " + killCount + " / " + targetCount, "clip_victory");
+                }
+                else
+                {
+                    SectorManager.instance.player.alerter.showMessage("ALLIES DEAD: " + killCount + " / " + targetCount, "clip_alert");
+                }
                 killCount++;
                 if (killCount == targetCount)
                 {

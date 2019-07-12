@@ -27,7 +27,7 @@ public class SectorCreatorShellCoreEditor : MonoBehaviour, IWindow {
             JSONField.text = currentCore.shellcoreJSON;
         if (core.type != SectorCreatorMouse.ObjectTypes.Flag)
             factionDropdown.value = currentCore.faction;
-        IDField.text = core.ID;
+        IDField.text = core.obj.name;
     }
 
 	public void SetValues() {
@@ -36,7 +36,7 @@ public class SectorCreatorShellCoreEditor : MonoBehaviour, IWindow {
             newObj.faction = factionDropdown.value;
         if(shellcore)
 		    newObj.shellcoreJSON = JSONField.text;
-        newObj.ID = IDField.text;
+        newObj.obj.name = IDField.text;
         mouse.objects.Remove(currentCore);
 		mouse.objects.Add(newObj);
 		mouse.UpdateColors();

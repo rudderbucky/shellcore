@@ -16,7 +16,7 @@ namespace NodeEditorFramework.Standard
         public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
 
         //Task related
-        public string rewardGiverID;
+        public string rewardGiverName;
         public string rewardText;
 
         float height = 220f;
@@ -33,7 +33,7 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             GUILayout.Label("Reward giver ID:");
-            rewardGiverID = GUILayout.TextField(rewardGiverID, GUILayout.Width(200f));
+            rewardGiverName = GUILayout.TextField(rewardGiverName, GUILayout.Width(200f));
             GUILayout.Label("Reward text:");
             rewardText = GUILayout.TextField(rewardText, GUILayout.Width(200f));
         }
@@ -54,25 +54,33 @@ namespace NodeEditorFramework.Standard
                     string taskID = taskNode.taskID;
                     TaskManager.Instance.endTask(taskID);
                     Debug.Log("Task complete!");
-                    SectorManager.instance.player.credits += taskNode.creditReward; //Find a better way to get the player?
+                    SectorManager.instance.player.credits += taskNode.creditReward;
+                    SectorManager.instance.player.cursave.partInventory.Add(
+                        new EntityBlueprint.PartInfo
+                        {
+                            partID = taskNode.partID,
+                            abilityID = taskNode.partAbilityID,
+                            tier = taskNode.partTier
+                        });
                 }
             }
         }
 
         public override int Traverse()
         {
-            if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
+            SectorManager.instance.player.alerter.showMessage("TASK COMPLETE!", "clip_victory");
+            if (TaskManager.interactionOverrides.ContainsKey(rewardGiverName))
             {
-                TaskManager.interactionOverrides[rewardGiverID] = () => {
+                TaskManager.interactionOverrides[rewardGiverName] = () => {
                     OnDialogue();
-                    TaskManager.interactionOverrides.Remove(rewardGiverID);
+                    TaskManager.interactionOverrides.Remove(rewardGiverName);
                 };
             }
             else
             {
-                TaskManager.interactionOverrides.Add(rewardGiverID, () => {
+                TaskManager.interactionOverrides.Add(rewardGiverName, () => {
                     OnDialogue();
-                    TaskManager.interactionOverrides.Remove(rewardGiverID);
+                    TaskManager.interactionOverrides.Remove(rewardGiverName);
                 });
             }
             return -1;

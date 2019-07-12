@@ -12,6 +12,7 @@ public class DialogueSystem : MonoBehaviour
     public static DialogueDelegate OnDialogueEnd;
 
     public GameObject dialogueBoxPrefab;
+    public GameObject taskDialogueBoxPrefab;
     public GameObject dialogueButtonPrefab;
     public Font shellcorefont;
     GUIWindowScripts window;
@@ -75,7 +76,10 @@ public class DialogueSystem : MonoBehaviour
         window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
-        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(()=> { endDialogue(); });
+        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(()=> {
+            endDialogue();
+            ResourceManager.PlayClipByID("clip_select", false);
+        });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
@@ -94,6 +98,7 @@ public class DialogueSystem : MonoBehaviour
 
         buttons = new GameObject[1];
         buttons[0] = button.gameObject;
+        ResourceManager.PlayClipByID("clip_typing");
     }
 
     public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null, PlayerCore player = null)
@@ -154,7 +159,7 @@ public class DialogueSystem : MonoBehaviour
         playerTransform = player ? player.transform : null;
         //speakerPos = speaker.transform.position;
         //create window
-        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window = Instantiate(taskDialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
@@ -166,18 +171,61 @@ public class DialogueSystem : MonoBehaviour
 
         ResourceManager.PlayClipByID("clip_typing");
         // change text
-        text = node.description.Replace("<br>", "\n");
+        text = node.dialogueText.Replace("<br>", "\n");
         characterCount = 0;
         nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
-        textRenderer.color = Color.white; ;
+        textRenderer.color = Color.white;
 
+        // Objective list
+        var objectiveList = background.transform.Find("ObjectiveList").GetComponent<Text>();
+        objectiveList.text = node.objectiveList;
+
+        // Part reward
+        if(node.partReward)
+        {
+            // Part image:
+            PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(node.partID);
+            if(!blueprint)
+            {
+                Debug.LogWarning("Part reward of Start Task node not found!");
+            }
+            var partImage = background.transform.Find("Part").GetComponent<Image>();
+            partImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
+            partImage.color = Color.green;
+
+            // Ability image:
+            if(node.partAbilityID > 0)
+            {
+                var backgroudBox = background.transform.Find("backgroundbox");
+                var abilityIcon = backgroudBox.Find("Ability").GetComponent<Image>();
+                var tierIcon = backgroudBox.Find("Tier").GetComponent<Image>();
+                var type = backgroudBox.Find("Type").GetComponent<Text>();
+                var abilityTooltip = backgroudBox.GetComponent<AbilityButtonScript>();
+
+                abilityIcon.sprite = AbilityUtilities.GetAbilityImageByID(node.partAbilityID, null);
+                tierIcon.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + Mathf.Clamp(node.partTier, 1, 3));
+                type.text = AbilityUtilities.GetAbilityNameByID(node.partAbilityID);
+                string description = "";
+                description += AbilityUtilities.GetAbilityNameByID(node.partAbilityID) + (node.partTier > 0 ? " " + node.partTier : "") + "\n";
+                description += AbilityUtilities.GetDescriptionByID(node.partAbilityID, node.partTier);
+                abilityTooltip.abilityInfo = description;
+            }
+            else
+            {
+                background.transform.Find("backgroundbox").gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            background.transform.Find("Part").GetComponent<Image>().enabled = false;
+        }
         // create buttons
         buttons = new GameObject[2];
 
         string[] answers =
         {
             "I need some time to prepare",
-            "I'll do it!"
+            "I'm on my way"
         };
 
         for (int i = 0; i < answers.Length; i++)
@@ -341,7 +389,6 @@ public class DialogueSystem : MonoBehaviour
     {
         window.ToggleActive();
         Destroy(window.transform.root.gameObject);
-        Debug.Log(answer);
         if (OnDialogueEnd != null)
             OnDialogueEnd.Invoke(answer);
     }

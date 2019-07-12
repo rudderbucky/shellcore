@@ -210,6 +210,13 @@ public class ResourceManager : MonoBehaviour
             Debug.LogWarning("Resource ID " + ID + " not found");
         return null;
     }
+
+    public bool resourceExists(string ID)
+    {
+        if (ID == "" || ID == null)
+            return false;
+        return resources.ContainsKey(ID);
+    }
 }
 
 #if UNITY_EDITOR

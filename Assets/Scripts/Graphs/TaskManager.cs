@@ -73,7 +73,7 @@ public class TaskManager : MonoBehaviour
 
         for(int i = 0; i < activeTasks.Count; i++)
         {
-            taskList += activeTasks[i].description + "\n\n";
+            taskList += activeTasks[i].objectived + "\n\n";
         }
 
         taskDescriptions.text = taskList;

@@ -270,6 +270,11 @@ public class SectorManager : MonoBehaviour
         entity.faction = data.faction;
         entity.spawnPoint = data.position;
         entity.blueprint = blueprint;
+
+        if(data.ID == "" || data.ID == null)
+        {
+            data.ID = objects.Count.ToString();
+        }
         entity.ID = data.ID;
 
         // TODO:
@@ -358,8 +363,6 @@ public class SectorManager : MonoBehaviour
                 GameObject gObj = Instantiate(obj as GameObject);
                 if(!gObj.GetComponent<EnergyRock>())
                     gObj.GetComponent<SpriteRenderer>().color = FactionColors.colors[current.entities[i].faction];
-                if (gObj.GetComponent<Flag>())
-                    gObj.GetComponent<Flag>().ID = current.entities[i].ID;
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
 

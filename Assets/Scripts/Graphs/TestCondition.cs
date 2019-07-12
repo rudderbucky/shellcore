@@ -34,6 +34,7 @@ namespace NodeEditorFramework.Standard
 
         public void Trigger()
         {
+            SectorManager.instance.player.alerter.showMessage("TEST INPUT DETECTED!", "clip_explosion");
             State = ConditionState.Completed;
             connectionKnobs[0].connection(0).body.Calculate();
         }

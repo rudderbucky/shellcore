@@ -15,14 +15,16 @@ namespace NodeEditorFramework.Standard
 
         //Task related
         public string taskID = "";
-        public string description = "";
+        public string dialogueText = "";
+        public string objectiveList = "";
         public int creditReward = 100;
         //public EntityBlueprint.PartInfo partReward;
         public bool partReward = false;
         public string partID = "";
         public int partAbilityID = 0;
         public int partTier = 1;
-        public string taskGiverID = "";
+
+        Texture2D partTexture;
 
         float height = 220f;
 
@@ -45,30 +47,55 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             outputDecline.DisplayLayout();
             height = 0f;
-            GUILayout.Label("Task giver ID");
-            taskGiverID = GUILayout.TextField(taskGiverID, GUILayout.Width(200f));
-            GUILayout.Label("Description");
-            description = GUILayout.TextArea(description, GUILayout.Width(200f));
-            height += GUI.skin.textArea.CalcHeight(new GUIContent(description), 200f);
-            GUILayout.Label("Credit reward");
+            GUILayout.Label("Dialogue:");
+            dialogueText = GUILayout.TextArea(dialogueText, GUILayout.Width(200f));
+            height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 200f);
+            GUILayout.Label("Objective list:");
+            objectiveList = GUILayout.TextArea(objectiveList, GUILayout.Width(200f));
+            height += GUI.skin.textArea.CalcHeight(new GUIContent(objectiveList), 200f);
+            GUILayout.Label("Credit reward:");
             creditReward = RTEditorGUI.IntField(creditReward, GUILayout.Width(200f));
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));
             if(partReward)
             {
-                height += 300f;
+                height += 264f;
                 GUILayout.Label("Part ID:");
                 partID = GUILayout.TextField(partID, GUILayout.Width(200f));
-                if (ResourceManager.Instance && ResourceManager.GetAsset<Sprite>(partID) != null)
+                if (ResourceManager.Instance && partID != null && GUI.changed)
                 {
-                    GUILayout.Label(ResourceManager.GetAsset<Sprite>(partID).texture, GUILayout.Width(200f));
-                    height += 200f;
+                    PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(partID);
+                    if(partBlueprint != null)
+                    {
+                        partTexture = ResourceManager.GetAsset<Sprite>(partBlueprint.spriteID).texture;
+                    }
+                    else
+                    {
+                        partTexture = null;
+                    }
+                }
+                if(partTexture != null)
+                {
+                    GUILayout.Label(partTexture);
+                    height += partTexture.height + 8f;
+                }
+                else
+                {
+                    NodeEditorGUI.nodeSkin.label.normal.textColor = Color.red;
+                    GUILayout.Label("<Part not found>");
+                    NodeEditorGUI.nodeSkin.label.normal.textColor = NodeEditorGUI.NE_TextColor;
                 }
                 partAbilityID = RTEditorGUI.IntField("Ability ID", partAbilityID, GUILayout.Width(200f));
+                string abilityName = AbilityUtilities.GetAbilityNameByID(partAbilityID);
+                if (abilityName != "Name unset")
+                {
+                    GUILayout.Label("Ability: " + abilityName);
+                    height += 24f;
+                }
                 partTier = RTEditorGUI.IntField("Part tier", partTier, GUILayout.Width(200f));
             }
             else
             {
-                height += 220f;
+                height += 160f;
             }
         }
 
@@ -81,7 +108,7 @@ namespace NodeEditorFramework.Standard
                 Task task = new Task()
                 {
                     taskID = taskID,
-                    description = description,
+                    objectived = objectiveList,
                     creditReward = creditReward,
                 };
                 if (partReward)

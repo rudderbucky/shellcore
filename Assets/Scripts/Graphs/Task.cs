@@ -7,7 +7,7 @@ using UnityEngine;
 public class Task
 {
     public string taskID;
-    public string description;
+    public string objectived;
     public float creditReward;
     public EntityBlueprint.PartInfo partReward;
     public string taskGiverID;
