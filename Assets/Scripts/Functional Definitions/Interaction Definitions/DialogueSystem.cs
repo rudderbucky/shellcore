@@ -191,6 +191,7 @@ public class DialogueSystem : MonoBehaviour
             }
             var partImage = background.transform.Find("Part").GetComponent<Image>();
             partImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
+            partImage.rectTransform.sizeDelta = partImage.sprite.bounds.size * 45;
             partImage.color = Color.green;
 
             // Ability image:
