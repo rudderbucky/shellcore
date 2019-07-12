@@ -12,6 +12,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		Other,
 		Platform,
         Flag,
+        Decoration,
 	}
 
 	public enum CommandTypes {

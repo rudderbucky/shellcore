@@ -8,10 +8,13 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Dialogue/Start Dialogue")]
     public class StartDialogueNode : Node
     {
+        public static Node dialogueStartNode;
+
         public override string GetID { get { return "StartDialogueNode"; } }
         public override string Title { get { return "Start Dialogue"; } }
 
         public override bool AutoLayout { get { return true; } }
+        public override bool AllowRecursion { get { return true; } }
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
@@ -32,10 +35,12 @@ namespace NodeEditorFramework.Standard
             }
         }
 
+        //TODO: override "Q"
         public override int Traverse()
         {
             Debug.Log("Start dialogue Entity ID: " + EntityID);
-            if(SpeakToEntity)
+            dialogueStartNode = this;
+            if (SpeakToEntity)
             {
                 if(TaskManager.interactionOverrides.ContainsKey(EntityID))
                 {

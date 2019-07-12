@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &9154033251518043086
+--- !u!1 &7349641265514595844
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9154033251518043088}
-  - component: {fileID: 9154033251518043087}
+  - component: {fileID: 7349641265514595846}
+  - component: {fileID: 7349641265514595845}
   m_Layer: 0
   m_Name: ResourceManager
   m_TagString: Untagged
@@ -17,13 +17,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9154033251518043088
+--- !u!4 &7349641265514595846
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9154033251518043086}
+  m_GameObject: {fileID: 7349641265514595844}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,13 +31,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9154033251518043087
+--- !u!114 &7349641265514595845
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9154033251518043086}
+  m_GameObject: {fileID: 7349641265514595844}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1b12a1e6d8e1ab4dac7aa2868da59b4, type: 3}
@@ -164,14 +164,10 @@ MonoBehaviour:
     obj: {fileID: 1946733961936512, guid: e2f1ad04662d01f42951659664b2cb4a, type: 3}
   - ID: outpost_vending_blueprint
     obj: {fileID: 11400000, guid: 69becd6272f699747bc6bcc61f03bb00, type: 2}
-  - ID: mini_drone_part
-    obj: {fileID: 11400000, guid: 07db7f82b1818fa42abd9883b41d61ca, type: 2}
   - ID: mini_drone_spawn
     obj: {fileID: 11400000, guid: 4391d750dd6f4ab4e927dbe8296133a5, type: 2}
   - ID: part8_mini_drone
     obj: {fileID: 11400000, guid: c6e3fb03f12ab0449bcaf131270e3d9a, type: 2}
-  - ID: mini_drone_sprite
-    obj: {fileID: 21300000, guid: 3685ea036fd73c64e8bc337c1cbabd94, type: 3}
   - ID: bunker_blueprint
     obj: {fileID: 11400000, guid: c8801550469a3d143ad093fc12424db6, type: 2}
   - ID: bunker_vending_blueprint
@@ -316,6 +312,60 @@ MonoBehaviour:
     obj: {fileID: 8300000, guid: 5a53daf20a2ba0f41a3bcfbc6ac7257e, type: 3}
   - ID: clip_typing
     obj: {fileID: 8300000, guid: 8b88fe2b83775f64587ce6e53a2a911d, type: 3}
+  - ID: counter_drone_spawn
+    obj: {fileID: 11400000, guid: d255a164b0fe54f47bb6459909313c28, type: 2}
+  - ID: mini_drone_blueprint
+    obj: {fileID: 11400000, guid: a73d750b958bc2047a8c61ae337bf8ba, type: 2}
+  - ID: counter_drone_blueprint
+    obj: {fileID: 11400000, guid: fa0f57ca25dbe964b83c537778e5b101, type: 2}
+  - ID: droneworkshop_blueprint
+    obj: {fileID: 11400000, guid: 10765117184287b489053737bc515f1a, type: 2}
+  - ID: mini_drone_core_sprite
+    obj: {fileID: 21300000, guid: 3685ea036fd73c64e8bc337c1cbabd94, type: 3}
+  - ID: mini_drone_part
+    obj: {fileID: 11400000, guid: 07db7f82b1818fa42abd9883b41d61ca, type: 2}
+  - ID: mini_drone_ability
+    obj: {fileID: 21300000, guid: b6eaed6b876b944489f5042c7306f558, type: 3}
+  - ID: counter_drone_ability
+    obj: {fileID: 21300000, guid: 679d7d3e7575b7942a893b4345e70204, type: 3}
+  - ID: light_drone_ability
+    obj: {fileID: 21300000, guid: b632f9fc9bb74fe4ba82e2801571f192, type: 3}
+  - ID: light_drone_spawn
+    obj: {fileID: 11400000, guid: 22aac77422faa5d4eae9101c5754ecf6, type: 2}
+  - ID: light_drone_blueprint
+    obj: {fileID: 11400000, guid: d465068dfc2255040ae46a9b086dac86, type: 2}
+  - ID: strike_drone_ability
+    obj: {fileID: 21300000, guid: 2b7b45d65b42b2a4da9f5ec36586bc39, type: 3}
+  - ID: strike_drone_blueprint
+    obj: {fileID: 11400000, guid: 9adced17b0359bb4382d2fb44e1bbcbd, type: 2}
+  - ID: strike_drone_spawn
+    obj: {fileID: 11400000, guid: 1ea5e6891a0489f44a46ab9d8f16ee2c, type: 2}
+  - ID: worker_drone_shell_sprite
+    obj: {fileID: 21300000, guid: dd9c0ba3f8210ea42bd18e7eabbc3a85, type: 3}
+  - ID: worker_drone_ability
+    obj: {fileID: 21300000, guid: b876bccca778c3942bfc36f04aa1574b, type: 3}
+  - ID: worker_drone_blueprint
+    obj: {fileID: 11400000, guid: ca179460bd33b124faaa3494e0e480e2, type: 2}
+  - ID: worker_drone_spawn
+    obj: {fileID: 11400000, guid: f1382d360f2c7a94f88a63cb316495e7, type: 2}
+  - ID: gun_drone_spawn
+    obj: {fileID: 11400000, guid: 9103b766cbc50d54aa0baf1aae7554a3, type: 2}
+  - ID: torpedo_drone_spawn
+    obj: {fileID: 11400000, guid: fc1c478122710a245941eddd3e93d377, type: 2}
+  - ID: heavy_drone_spawn
+    obj: {fileID: 11400000, guid: 7483f2fb9371038439d6e567186d33e0, type: 2}
+  - ID: gun_drone_blueprint
+    obj: {fileID: 11400000, guid: e5729e8a38bf7bb4da2c6222034f3597, type: 2}
+  - ID: torpedo_drone_blueprint
+    obj: {fileID: 11400000, guid: 37b504fb3aabcc841801261dd7c3678b, type: 2}
+  - ID: heavy_drone_blueprint
+    obj: {fileID: 11400000, guid: 14d62815e3973ce4ba4a4cec1e1d6d9c, type: 2}
+  - ID: gun_drone_ability
+    obj: {fileID: 21300000, guid: ca94a00aa6aa06545b8f9000f4e69fbc, type: 3}
+  - ID: torpedo_drone_ability
+    obj: {fileID: 21300000, guid: 3188f00b063c9a148a1d2d769b92a7a7, type: 3}
+  - ID: heavy_drone_ability
+    obj: {fileID: 21300000, guid: 34eac9f646e1258458ed6898ba79655d, type: 3}
   - ID: flag
     obj: {fileID: 8807193267525037569, guid: 5f87bb8d7c70167478a528100d1f40ea, type: 3}
   fieldID: 

@@ -38,20 +38,42 @@ namespace NodeEditorFramework.Standard
             rewardText = GUILayout.TextField(rewardText, GUILayout.Width(200f));
         }
 
-        public override int Traverse()
+        public void OnDialogue()
         {
             if (outputUp.connected())
             {
                 //TODO: dialogue + reward
+                DialogueSystem.ShowPopup(rewardText);
                 var taskNode = (outputUp.connection(0).body as StartTaskNode);
-                if(taskNode)
+                if (taskNode)
                 {
                     string taskID = taskNode.taskID;
                     TaskManager.Instance.endTask(taskID);
                     Debug.Log("Task complete!");
+                    TaskManager.Instance.setNode(outputRight);
+                    SectorManager.instance.player.credits += taskNode.creditReward; //Find a better way to get the player?
                 }
             }
-            return 0;
+        }
+
+        public override int Traverse()
+        {
+            if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
+            {
+                TaskManager.interactionOverrides[rewardGiverID] = () => {
+                    OnDialogue();
+                    TaskManager.interactionOverrides.Remove(rewardGiverID);
+                };
+
+            }
+            else
+            {
+                TaskManager.interactionOverrides.Add(rewardGiverID, () => {
+                    OnDialogue();
+                    TaskManager.interactionOverrides.Remove(rewardGiverID);
+                });
+            }
+            return -1;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using NodeEditorFramework.Standard;
 using NodeEditorFramework.IO;
@@ -14,6 +15,7 @@ public class TaskManager : MonoBehaviour
     List<Task> activeTasks = new List<Task>();
 
     public string[] questCanvasPaths;
+    public Text taskDescriptions;
     private List<QuestCanvas> questCanvases;
     private Node[] currentNodes;
 
@@ -44,6 +46,7 @@ public class TaskManager : MonoBehaviour
     public void AddTask(Task t)
     {
         activeTasks.Add(t);
+        updateTaskList();
     }
 
     public Task[] getTasks()
@@ -58,9 +61,22 @@ public class TaskManager : MonoBehaviour
             if(activeTasks[i].taskID == taskID)
             {
                 activeTasks.RemoveAt(i);
+                updateTaskList();
                 break;
             }
         }
+    }
+
+    void updateTaskList()
+    {
+        string taskList = "Current tasks:\n\n";
+
+        for(int i = 0; i < activeTasks.Count; i++)
+        {
+            taskList += activeTasks[i].description + "\n\n";
+        }
+
+        taskDescriptions.text = taskList;
     }
 
     public void SetTaskVariable(string name, int value)
@@ -143,7 +159,7 @@ public class TaskManager : MonoBehaviour
 
     public void setNode(Node node)
     {
-        //TODO: differentiate better between quests?
+        //TODO: Traverser object for each canvas
         for(int i = 0; i < questCanvases.Count; i++)
         {
             if(questCanvases[i].nodes.Contains(node))
