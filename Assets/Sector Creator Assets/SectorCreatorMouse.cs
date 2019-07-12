@@ -64,7 +64,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 	GUIWindowScripts sectorProps;
 	GUIWindowScripts hotkeyList;
 	GUIWindowScripts readFile;
-	public GUIWindowScripts successBox;
+	GUIWindowScripts nodeEditor;
+    public GUIWindowScripts successBox;
 	int cursorCount = 0;
 	string sctName;
 	int x;
@@ -89,7 +90,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 		sectorProps = transform.Find("SectorProps").GetComponentInChildren<GUIWindowScripts>();
 		hotkeyList = transform.Find("Hotkey List").GetComponentInChildren<GUIWindowScripts>();
 		readFile = transform.Find("ReadFile").GetComponentInChildren<GUIWindowScripts>();
-		UpdateColors();
+		nodeEditor = transform.Find("NodeEditor").GetComponentInChildren<GUIWindowScripts>();
+        UpdateColors();
 	}
 
 	public void Undo() {
@@ -255,7 +257,8 @@ public class SectorCreatorMouse : MonoBehaviour {
 	void FixedUpdate() {
 		windowEnabled = mainMenu.transform.parent.gameObject.activeSelf || sectorProps.transform.parent.gameObject.activeSelf
 		|| hotkeyList.transform.parent.gameObject.activeSelf
-		|| readFile.transform.parent.gameObject.activeSelf || coreEditor.gameObject.activeSelf;
+		|| readFile.transform.parent.gameObject.activeSelf || coreEditor.gameObject.activeSelf
+        || nodeEditor.transform.parent.gameObject.activeSelf;
 		Vector3 mousePos = Input.mousePosition;
 		mousePos.z -= Camera.main.transform.position.z;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
@@ -280,6 +283,11 @@ public class SectorCreatorMouse : MonoBehaviour {
 				readFile.ToggleActive();
 			}
 		}
+
+        if(Input.GetKeyDown("t"))
+        {
+            nodeEditor.ToggleActive();
+        }
 
 		if(!windowEnabled) {
 			if(Input.GetKeyDown("space")) {
