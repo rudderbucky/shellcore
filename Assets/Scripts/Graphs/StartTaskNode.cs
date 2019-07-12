@@ -122,6 +122,7 @@ namespace NodeEditorFramework.Standard
                 }
                 TaskManager.Instance.AddTask(task);
                 TaskManager.Instance.setNode(outputAccept);
+                TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityName);
             }
             else
             {

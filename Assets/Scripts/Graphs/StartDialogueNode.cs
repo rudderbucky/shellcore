@@ -8,7 +8,7 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Dialogue/Start Dialogue")]
     public class StartDialogueNode : Node
     {
-        public static Node dialogueStartNode;
+        public static StartDialogueNode dialogueStartNode;
 
         public override string GetID { get { return "StartDialogueNode"; } }
         public override string Title { get { return "Start Dialogue"; } }
@@ -44,7 +44,6 @@ namespace NodeEditorFramework.Standard
                 {
                     TaskManager.interactionOverrides[EntityName] = () => {
                         TaskManager.Instance.setNode(output);
-                        TaskManager.interactionOverrides.Remove(EntityName);
                     };
 
                 }
@@ -52,7 +51,6 @@ namespace NodeEditorFramework.Standard
                 {
                     TaskManager.interactionOverrides.Add(EntityName, () => {
                         TaskManager.Instance.setNode(output);
-                        TaskManager.interactionOverrides.Remove(EntityName);
                     });
                 }
                 return -1;

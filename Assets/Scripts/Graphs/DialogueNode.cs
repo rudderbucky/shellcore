@@ -65,7 +65,10 @@ namespace NodeEditorFramework.Standard
             if(outputPorts[index].connected())
                 TaskManager.Instance.setNode(outputPorts[index]);
             else
+            {
                 TaskManager.Instance.setNode(StartDialogueNode.dialogueStartNode);
+            }
+
         }
 
         public override int Traverse()
