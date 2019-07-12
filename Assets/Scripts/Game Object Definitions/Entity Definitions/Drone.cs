@@ -29,11 +29,10 @@ public class Drone : AirCraft, IOwnable {
         owner.GetUnitsCommanding().Add(this);
     }
 
-    protected override void OnDeath()
-    {
-        if(owner != null && !(owner.Equals(null)))
+    protected override void OnDestroy() {
+        if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
             owner.GetUnitsCommanding().Remove(this);
-        base.OnDeath();
+        base.OnDestroy();
     }
 
     public AirCraftAI getAI()
