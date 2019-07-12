@@ -8,13 +8,18 @@ public class Flag : MonoBehaviour
 
     private void OnEnable()
     {
-        AIData.flags.Add(this);
-        Debug.Log("Added flag!");
+        if (SceneManager.GetActiveScene().name != "SectorCreator")
+        {
+            AIData.flags.Add(this);
+        }
     }
 
     private void OnDisable()
     {
-        AIData.flags.Remove(this);
+        if (SceneManager.GetActiveScene().name != "SectorCreator")
+        {
+            AIData.flags.Remove(this);
+        }
     }
 
     private void Start()

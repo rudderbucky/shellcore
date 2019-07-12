@@ -26,19 +26,24 @@ namespace NodeEditorFramework.Standard
 
         float height = 220f;
 
-        [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left, 20)]
+        [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left)]
         public ConnectionKnob inputLeft;
 
-        [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right, 20)]
-        public ConnectionKnob outputRight;
+        [ConnectionKnob("Output Accept", Direction.Out, "TaskFlow", NodeSide.Right)]
+        public ConnectionKnob outputAccept;
+        [ConnectionKnob("Output Decline", Direction.Out, "TaskFlow", NodeSide.Right)]
+        public ConnectionKnob outputDecline;
 
         [ConnectionKnob("Input Up", Direction.In, "Complete", NodeSide.Top, 100f)]
         public ConnectionKnob inputUp;
 
         public override void NodeGUI()
         {
-            //GUILayout.Label("Task ID:");
-            //taskID = GUILayout.TextField(taskID, GUILayout.Width(200f));
+            GUILayout.BeginHorizontal();
+            inputLeft.DisplayLayout();
+            outputAccept.DisplayLayout();
+            GUILayout.EndHorizontal();
+            outputDecline.DisplayLayout();
             height = 0f;
             GUILayout.Label("Task giver ID");
             taskGiverID = GUILayout.TextField(taskGiverID, GUILayout.Width(200f));
@@ -88,13 +93,20 @@ namespace NodeEditorFramework.Standard
                     };
                 }
                 TaskManager.Instance.AddTask(task);
+                TaskManager.Instance.setNode(outputAccept);
             }
-            TaskManager.Instance.setNode(outputRight);
+            else
+            {
+                if (outputDecline.connected())
+                    TaskManager.Instance.setNode(outputDecline);
+                else
+                    TaskManager.Instance.setNode(StartDialogueNode.dialogueStartNode);
+            }
         }
 
         public override int Traverse()
         {
-            DialogueSystem.ShowTaskPrompt(this); //TODO: additional parameters
+            DialogueSystem.ShowTaskPrompt(this); 
             return -1;
         }
     }

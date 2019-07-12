@@ -126,19 +126,20 @@ public class DialogueSystem : MonoBehaviour
         textRenderer.color = node.textColor;
 
         // create buttons
-        buttons = new GameObject[node.outputKnobs.Count];
-
-        for (int i = 1; i < node.outputKnobs.Count; i++) // cancel is always first -> start from 1
+        buttons = new GameObject[node.answers.Count];
+        
+        for (int i = 0; i < node.answers.Count; i++)
         {
             RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
             button.SetParent(background, false);
-            button.anchoredPosition = new Vector2(0, 24 + 16 * (node.outputKnobs.Count - (i)));
+            button.anchoredPosition = new Vector2(0, 24 + 16 * (node.answers.Count - (i + 1)));
+            int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
                 endDialogue();
-                node.OnClick(i);
+                node.OnClick(index + 1); // cancel is always first -> start from 1
                 ResourceManager.PlayClipByID("clip_select", false);
             });
-            button.Find("Text").GetComponent<Text>().text = node.answers[i - 1];
+            button.Find("Text").GetComponent<Text>().text = node.answers[i];
 
             buttons[i] = button.gameObject;
         }
@@ -178,18 +179,20 @@ public class DialogueSystem : MonoBehaviour
 
         string[] answers =
         {
-            "I'll do it!",
-            "I need some time to prepare"
+            "I need some time to prepare",
+            "I'll do it!"
         };
 
         for (int i = 0; i < answers.Length; i++)
         {
+            //TODO: createButton()
             RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
             button.SetParent(background, false);
-            button.anchoredPosition = new Vector2(0, 24 + 16 * (node.outputKnobs.Count - (i)));
+            button.anchoredPosition = new Vector2(0, 24 + 16 * i/*(node.outputKnobs.Count - (i + 1))*/);
+            int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
                 endDialogue();
-                node.OnClick(i + 1);
+                node.OnClick(index);
                 ResourceManager.PlayClipByID("clip_select", false);
             });
             button.Find("Text").GetComponent<Text>().text = answers[i];
