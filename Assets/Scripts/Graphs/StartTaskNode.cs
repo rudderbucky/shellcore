@@ -74,7 +74,8 @@ namespace NodeEditorFramework.Standard
 
         public void OnClick(int index)
         {
-            if(index != 0)
+            DialogueSystem.OnDialogueEnd -= OnClick;
+            if (index != 0)
             {
                 taskID = GetHashCode().ToString();
                 Task task = new Task()
@@ -106,7 +107,8 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            DialogueSystem.ShowTaskPrompt(this); 
+            DialogueSystem.ShowTaskPrompt(this);
+            DialogueSystem.OnDialogueEnd += OnClick;
             return -1;
         }
     }

@@ -61,6 +61,7 @@ namespace NodeEditorFramework.Standard
 
         public void OnClick(int index)
         {
+            DialogueSystem.OnDialogueEnd -= OnClick;
             if(outputPorts[index].connected())
                 TaskManager.Instance.setNode(outputPorts[index]);
             else
@@ -70,6 +71,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             DialogueSystem.ShowDialogueNode(this);
+            DialogueSystem.OnDialogueEnd += OnClick;
             return -1;
         }
     }

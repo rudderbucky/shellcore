@@ -40,17 +40,20 @@ namespace NodeEditorFramework.Standard
 
         public void OnDialogue()
         {
+            DialogueSystem.ShowPopup(rewardText);
+            DialogueSystem.OnDialogueEnd = (int _) =>
+            {
+                TaskManager.Instance.setNode(outputRight);
+                DialogueSystem.OnDialogueEnd = null;
+            };
             if (outputUp.connected())
             {
-                //TODO: dialogue + reward
-                DialogueSystem.ShowPopup(rewardText);
                 var taskNode = (outputUp.connection(0).body as StartTaskNode);
                 if (taskNode)
                 {
                     string taskID = taskNode.taskID;
                     TaskManager.Instance.endTask(taskID);
                     Debug.Log("Task complete!");
-                    TaskManager.Instance.setNode(outputRight);
                     SectorManager.instance.player.credits += taskNode.creditReward; //Find a better way to get the player?
                 }
             }
@@ -64,7 +67,6 @@ namespace NodeEditorFramework.Standard
                     OnDialogue();
                     TaskManager.interactionOverrides.Remove(rewardGiverID);
                 };
-
             }
             else
             {

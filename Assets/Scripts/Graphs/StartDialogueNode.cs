@@ -35,7 +35,6 @@ namespace NodeEditorFramework.Standard
             }
         }
 
-        //TODO: override "Q"
         public override int Traverse()
         {
             Debug.Log("Start dialogue Entity ID: " + EntityID);

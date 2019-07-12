@@ -5,9 +5,14 @@ using UnityEngine;
 public class ProximityInteractScript : MonoBehaviour {
 	public PlayerCore player;
 
-	void ActivateInteraction(Entity ent) { 
-		// TODO: perhaps make this a static ability so reticle scripts can use it as well
-		DialogueSystem.StartDialogue(ent.dialogue, ent, player);
+	void ActivateInteraction(Entity ent) {
+        // TODO: perhaps make this a static ability so reticle scripts can use it as well
+        if (TaskManager.interactionOverrides.ContainsKey(ent.ID))
+        {
+            TaskManager.interactionOverrides[ent.ID].Invoke();
+        }
+        else
+            DialogueSystem.StartDialogue(ent.dialogue, ent, player);
 	}
 	void Update() {
 		if(player != null) 

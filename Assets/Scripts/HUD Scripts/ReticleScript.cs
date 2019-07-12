@@ -99,13 +99,14 @@ public class ReticleScript : MonoBehaviour {
             if (entityTarget != null && !entityTarget.GetIsDead() && entityTarget != craft) 
                 // if it is not null, dead or the player itself
             {
-                if (!craft.GetIsInteracting() && targSys.GetTarget() == entityTarget.transform) //Interact with entity
+                if (!craft.GetIsInteracting() && targSys.GetTarget() == entityTarget.transform 
+                    && (entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200) //Interact with entity
                 {
-                    if(TaskManager.interactionOverrides.ContainsKey(entityTarget.ID))
+                    if(TaskManager.interactionOverrides.ContainsKey(entityTarget.ID)) //If there's a task overriding the default dialogue, use that
                     {
                         TaskManager.interactionOverrides[entityTarget.ID].Invoke();
                     }
-                    else if (entityTarget.dialogue as Dialogue && (entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200)
+                    else if (entityTarget.dialogue as Dialogue)
                         DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue, entityTarget, craft);
                 }
 

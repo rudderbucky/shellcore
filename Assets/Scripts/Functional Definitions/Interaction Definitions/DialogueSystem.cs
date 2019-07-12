@@ -103,7 +103,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void showDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker, PlayerCore player)
     {
-        if (window) endDialogue();
+        if (window) endDialogue(0);
         playerTransform = player ? player.transform : null;
         //speakerPos = speaker.transform.position;
         //create window
@@ -111,8 +111,7 @@ public class DialogueSystem : MonoBehaviour
         window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
-            endDialogue();
-            node.OnClick(0);
+            endDialogue(0);
             ResourceManager.PlayClipByID("clip_select", false);
         });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
@@ -135,8 +134,7 @@ public class DialogueSystem : MonoBehaviour
             button.anchoredPosition = new Vector2(0, 24 + 16 * (node.answers.Count - (i + 1)));
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
-                endDialogue();
-                node.OnClick(index + 1); // cancel is always first -> start from 1
+                endDialogue(index + 1);// cancel is always first -> start from 1
                 ResourceManager.PlayClipByID("clip_select", false);
             });
             button.Find("Text").GetComponent<Text>().text = node.answers[i];
@@ -152,7 +150,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker, PlayerCore player) //TODO: reward part image
     {
-        if (window) endDialogue();
+        if (window) endDialogue(0);
         playerTransform = player ? player.transform : null;
         //speakerPos = speaker.transform.position;
         //create window
@@ -160,8 +158,7 @@ public class DialogueSystem : MonoBehaviour
         window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
-            endDialogue();
-            node.OnClick(0);
+            endDialogue(0);
             ResourceManager.PlayClipByID("clip_select", false);
         });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
@@ -191,8 +188,7 @@ public class DialogueSystem : MonoBehaviour
             button.anchoredPosition = new Vector2(0, 24 + 16 * i/*(node.outputKnobs.Count - (i + 1))*/);
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
-                endDialogue();
-                node.OnClick(index);
+                endDialogue(index);
                 ResourceManager.PlayClipByID("clip_select", false);
             });
             button.Find("Text").GetComponent<Text>().text = answers[i];
@@ -341,11 +337,12 @@ public class DialogueSystem : MonoBehaviour
         return -1;
     }
 
-    private void endDialogue(int answer = -1)
+    private void endDialogue(int answer = 0)
     {
-        if (OnDialogueEnd != null)
-            OnDialogueEnd.Invoke(answer);
         window.ToggleActive();
         Destroy(window.transform.root.gameObject);
+        Debug.Log(answer);
+        if (OnDialogueEnd != null)
+            OnDialogueEnd.Invoke(answer);
     }
 }
