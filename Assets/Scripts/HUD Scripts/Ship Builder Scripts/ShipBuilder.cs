@@ -477,7 +477,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		#if UNITY_EDITOR
 			if(Input.GetKey(KeyCode.LeftShift)) 
 				SaveBlueprint(player.blueprint);
-		#endif
+        #endif
+        NodeEditorFramework.Standard.UsePartCondition.OnPlayerReconstruct.Invoke();
 	}
 
 	protected override void Update() {

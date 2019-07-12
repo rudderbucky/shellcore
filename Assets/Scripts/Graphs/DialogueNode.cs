@@ -61,7 +61,6 @@ namespace NodeEditorFramework.Standard
 
         public void OnClick(int index)
         {
-            Debug.Log(index);
             if(outputPorts[index].connected())
                 TaskManager.Instance.setNode(outputPorts[index]);
             else
