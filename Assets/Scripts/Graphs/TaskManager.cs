@@ -108,7 +108,8 @@ public class TaskManager : MonoBehaviour
 
         for (int i = 0; i < questCanvasPaths.Length; i++)
         {
-            var canvas = XMLImport.Import(questCanvasPaths[i]) as QuestCanvas;
+            string finalPath = System.IO.Path.Combine("Assets/StreamingAssets/", questCanvasPaths[i]);
+            var canvas = XMLImport.Import(finalPath) as QuestCanvas;
             if (canvas != null)
             {
                 questCanvases.Add(canvas);

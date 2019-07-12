@@ -16,6 +16,8 @@ namespace NodeEditorFramework.Standard
 		private NodeEditorUserCache canvasCache;
 		private NodeEditorInterface editorInterface;
 
+        string finalPath;
+
 		// GUI rects
 		public bool screenSize = false;
 		public Rect specifiedRootRect = new Rect(0, 0, 1000, 500);
@@ -56,11 +58,13 @@ namespace NodeEditorFramework.Standard
 
 		private void NormalReInit()
 		{
+            finalPath = System.IO.Path.Combine("Assets/StreamingAssets/", canvasPath);
+
             NodeEditor.ReInit(false);
-            if(System.IO.File.Exists(canvasPath))
+            if(System.IO.File.Exists(finalPath))
             {
                 IO.XMLImportExport XMLIE = new IO.XMLImportExport();
-                canvas = XMLIE.Import(canvasPath);
+                canvas = XMLIE.Import(finalPath);
             }
             else
             {

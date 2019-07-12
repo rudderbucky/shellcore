@@ -40,7 +40,7 @@ namespace NodeEditorFramework.IO
 		/// <summary>
 		/// Folder for runtime IO operations relative to the game folder.
 		/// </summary>
-		public virtual string RuntimeIOPath { get { return "Files/NodeEditor/"; } }
+		public virtual string RuntimeIOPath { get { return "Assets/StreaminAssets/"; } }
 
 #if !UNITY_EDITOR
 		private string fileSelection = "";
