@@ -58,7 +58,7 @@ namespace NodeEditorFramework.Standard
 
 		private void NormalReInit()
 		{
-            finalPath = System.IO.Path.Combine("Assets/StreamingAssets/", canvasPath);
+            finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, canvasPath);
 
             NodeEditor.ReInit(false);
             if(System.IO.File.Exists(finalPath))

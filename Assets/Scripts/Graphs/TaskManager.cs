@@ -62,6 +62,7 @@ public class TaskManager : MonoBehaviour
             {
                 activeTasks.RemoveAt(i);
                 updateTaskList();
+                Debug.Log("Task removed.");
                 break;
             }
         }
@@ -108,7 +109,7 @@ public class TaskManager : MonoBehaviour
 
         for (int i = 0; i < questCanvasPaths.Length; i++)
         {
-            string finalPath = System.IO.Path.Combine("Assets/StreamingAssets/", questCanvasPaths[i]);
+            string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
             var canvas = XMLImport.Import(finalPath) as QuestCanvas;
             if (canvas != null)
             {
