@@ -288,12 +288,18 @@ public class SectorManager : MonoBehaviour
 
     void loadSector()
     {
-        // SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
-        // data.platformjson = JsonUtility.ToJson(current.platform);
-        // data.sectorjson = JsonUtility.ToJson(current);
-        // System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + "CenterSector", JsonUtility.ToJson(data));
-        // UnityEditor.AssetDatabase.CreateAsset(current, "Assets/CenterSectorNew.asset");
-        // UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/CenterSectorNewPlatform.asset");
+        #if UNITY_EDITOR
+        if(Input.GetKey(KeyCode.LeftShift)) {
+            SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
+            data.platformjson = JsonUtility.ToJson(current.platform);
+            data.sectorjson = JsonUtility.ToJson(current);
+            current.name = "SavedSector";
+            current.platform.name = "SavedSectorPlatform";
+            UnityEditor.AssetDatabase.CreateAsset(current, "Assets/SavedSector.asset");
+            UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/SavedSectorPlatform.asset");
+        }
+        #endif
+
         //unload previous sector
         foreach(var obj in objects)
         {

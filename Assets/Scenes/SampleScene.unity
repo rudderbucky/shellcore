@@ -3389,6 +3389,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1480356425}
     m_Modifications:
+    - target: {fileID: 1359306048926548, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
+      propertyPath: m_Name
+      value: backgroundbox
+      objectReference: {fileID: 0}
     - target: {fileID: 224165014314293038, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3498,10 +3502,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 1359306048926548, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
-      propertyPath: m_Name
-      value: backgroundbox
       objectReference: {fileID: 0}
     - target: {fileID: 224075952535106802, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}
@@ -8575,6 +8575,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1315020440}
     m_Modifications:
+    - target: {fileID: 1359306048926548, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
+      propertyPath: m_Name
+      value: backgroundbox
+      objectReference: {fileID: 0}
     - target: {fileID: 224165014314293038, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8684,10 +8688,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 1359306048926548, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
-      propertyPath: m_Name
-      value: backgroundbox
       objectReference: {fileID: 0}
     - target: {fileID: 224075952535106802, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}
@@ -13870,14 +13870,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_Text
-      value: 'Settings:
-
-
-'
-      objectReference: {fileID: 0}
     - target: {fileID: 224749461034504562, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -13922,6 +13914,14 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Settings:
+
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
@@ -16001,10 +16001,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jsonMode: 1
   sectors:
-  - {fileID: 11400000, guid: cebc026cb3fa8bc4f8649e80aca041ec, type: 2}
+  - {fileID: 0}
   - {fileID: 11400000, guid: c381e686d1c019643898f125c1b2eafa, type: 2}
   player: {fileID: 1878101311}
-  current: {fileID: 11400000, guid: cebc026cb3fa8bc4f8649e80aca041ec, type: 2}
+  current: {fileID: 11400000, guid: 68329fa3054d4c24e9c87e4e9223e2f5, type: 2}
   background: {fileID: 715925746}
   info: {fileID: 0}
   strayParts: []
@@ -16034,7 +16034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe3e9e76f2cc59441a4e21397681f8bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blueprint: {fileID: 0}
+  blueprint: {fileID: 11400000, guid: d2d56f6741fdf2547ba9de9e722cfea3, type: 2}
 --- !u!114 &1863658739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16213,12 +16213,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_Text
-      value: "Current Ship JSON: \n(Copy and paste this if you want to share your
-        ship/use it in the sector creator)"
-      objectReference: {fileID: 0}
     - target: {fileID: 224749461034504562, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -16238,6 +16232,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: CloseUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_Text
+      value: "Current Ship JSON: \n(Copy and paste this if you want to share your
+        ship/use it in the sector creator)"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1db7935a54b01634a952418d692ea5be, type: 3}
@@ -16714,12 +16714,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_Text
-      value: "Set ship JSON: \nPaste ship JSON into this box to get the data into
-        the Ship Builder."
-      objectReference: {fileID: 0}
     - target: {fileID: 224749461034504562, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -16744,6 +16738,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: CloseUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_Text
+      value: "Set ship JSON: \nPaste ship JSON into this box to get the data into
+        the Ship Builder."
       objectReference: {fileID: 0}
     - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
@@ -19403,6 +19403,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1725152188990678809}
     m_Modifications:
+    - target: {fileID: 1359306048926548, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
+      propertyPath: m_Name
+      value: backgroundbox
+      objectReference: {fileID: 0}
     - target: {fileID: 224165014314293038, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -19512,10 +19516,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 1359306048926548, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
-      propertyPath: m_Name
-      value: backgroundbox
       objectReference: {fileID: 0}
     - target: {fileID: 224075952535106802, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}

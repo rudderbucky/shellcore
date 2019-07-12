@@ -536,7 +536,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 		foreach(PlaceableObject oj in objects) {
 			if(oj.type != ObjectTypes.Platform) {
 				Sector.LevelEntity ent = new Sector.LevelEntity();
-				ent.ID = (oj.ID != null && oj.ID != "") ? oj.ID : ID++ + "";
+				ent.ID = ID++ + "";
 				ent.faction = oj.faction;
 				ent.position = oj.obj.transform.position;
 				ent.assetID = oj.assetID;
