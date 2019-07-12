@@ -429,8 +429,9 @@ public class Entity : MonoBehaviour {
             }
         }
         else { // not dead, continue normal state changing
-            // regenerate shell and energy
+            // regenerate
             RegenHealth(ref currentHealth[0], regenRate[0], maxHealth[0]); 
+            RegenHealth(ref currentHealth[1], regenRate[1], maxHealth[1]);
             RegenHealth(ref currentHealth[2], regenRate[2], maxHealth[2]);
 
             // check if busy state changing is due
