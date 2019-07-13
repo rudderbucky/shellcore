@@ -139,8 +139,6 @@ public class DialogueSystem : MonoBehaviour
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
                 endDialogue(index + 1);// cancel is always first -> start from 1
-                ResourceManager.PlayClipByID(null);
-                ResourceManager.PlayClipByID("clip_select", false);
             });
             button.Find("Text").GetComponent<Text>().text = node.answers[i];
 
@@ -168,7 +166,9 @@ public class DialogueSystem : MonoBehaviour
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
-        ResourceManager.PlayClipByID("clip_typing");
+        ResourceManager.PlayClipByID("clip_select"); // task button cannot create a noise because it launches endDialogue()
+                                                     // so cover for its noise here
+        ResourceManager.PlayClipByID("clip_typing", false);
         // change text
         text = node.dialogueText.Replace("<br>", "\n");
         characterCount = 0;
@@ -240,9 +240,9 @@ public class DialogueSystem : MonoBehaviour
             button.anchoredPosition = new Vector2(0, 24 + 16 * i/*(node.outputKnobs.Count - (i + 1))*/);
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
-                endDialogue(index);
                 ResourceManager.PlayClipByID(null);
                 ResourceManager.PlayClipByID("clip_select", false);
+                endDialogue(index);
             });
             button.Find("Text").GetComponent<Text>().text = answers[i];
 
