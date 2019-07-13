@@ -164,6 +164,7 @@ public class DialogueSystem : MonoBehaviour
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
             endDialogue(0);
+            ResourceManager.PlayClipByID(null); // clear the quitting noise
             ResourceManager.PlayClipByID("clip_select", false);
         });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
@@ -242,6 +243,7 @@ public class DialogueSystem : MonoBehaviour
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
                 endDialogue(index);
+                ResourceManager.PlayClipByID(null);
                 ResourceManager.PlayClipByID("clip_select", false);
             });
             button.Find("Text").GetComponent<Text>().text = answers[i];

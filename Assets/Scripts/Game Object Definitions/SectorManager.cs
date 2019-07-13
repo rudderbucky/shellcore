@@ -17,8 +17,6 @@ public class SectorManager : MonoBehaviour
     public Sector current;
     public BackgroundScript background;
     public InfoText info;
-    public List<ShellPart> strayParts = new List<ShellPart>();
-
     private Dictionary<int, int> stationsCount = new Dictionary<int, int>();
     private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
     private List<IVendor> stations = new List<IVendor>();
@@ -327,17 +325,17 @@ public class SectorManager : MonoBehaviour
 
         persistentObjects = tmp;
 
-        foreach(ShellPart part in strayParts) {
+        foreach(ShellPart part in AIData.strayParts) {
             if(part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part)) {
                 Destroy(part.gameObject);
             }
         }
-        strayParts.Clear(); 
+        AIData.strayParts.Clear(); 
 
         // Add the player's tractored part back so it gets deleted if the player doesn't tractor it through
         // to another sector
         if((player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()))
-            strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
+            AIData.strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
         objects.Clear();
 
         // reset stations and carriers
