@@ -8,6 +8,7 @@ public class Task
 {
     public string taskID;
     public string objectived;
+    public string dialogue;
     public float creditReward;
     public EntityBlueprint.PartInfo partReward;
     public string taskGiverID;

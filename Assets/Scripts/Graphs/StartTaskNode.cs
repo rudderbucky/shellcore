@@ -112,6 +112,7 @@ namespace NodeEditorFramework.Standard
                     taskID = taskID,
                     objectived = objectiveList,
                     creditReward = creditReward,
+                    dialogue = dialogueText
                 };
                 if (partReward)
                 {

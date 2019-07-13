@@ -15,7 +15,6 @@ public class TaskManager : MonoBehaviour
     List<Task> activeTasks = new List<Task>();
 
     public string[] questCanvasPaths;
-    public Text taskDescriptions;
     private List<QuestCanvas> questCanvases;
     private Node[] currentNodes;
 
@@ -70,14 +69,11 @@ public class TaskManager : MonoBehaviour
 
     void updateTaskList()
     {
-        string taskList = "Current tasks:\n\n";
-
+        StatusMenu.taskInfo.Clear();
         for(int i = 0; i < activeTasks.Count; i++)
         {
-            taskList += activeTasks[i].objectived + "\n\n";
+            StatusMenu.taskInfo.Add(activeTasks[i].dialogue, activeTasks[i].objectived);
         }
-
-        taskDescriptions.text = taskList;
     }
 
     public void SetTaskVariable(string name, int value)
