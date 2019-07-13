@@ -126,6 +126,8 @@ public class TractorBeam : MonoBehaviour
 
     public void SetTractorTarget(Draggable newTarget)
     {
+        if(newTarget && newTarget.GetComponent<ShellPart>()) AIData.strayParts.Remove(newTarget.GetComponent<ShellPart>());
+        else if(!newTarget && target && target.GetComponent<ShellPart>()) AIData.strayParts.Add(target.GetComponent<ShellPart>());
         if (newTarget && (newTarget.transform.position - transform.position).sqrMagnitude > 400)
             return;
         lineRenderer.enabled = (newTarget != null);

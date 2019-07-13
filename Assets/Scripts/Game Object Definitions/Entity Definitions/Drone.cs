@@ -33,6 +33,7 @@ public class Drone : AirCraft, IOwnable {
         if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
             owner.GetUnitsCommanding().Remove(this);
         base.OnDestroy();
+        if(GetComponentInChildren<TractorBeam>()) GetComponentInChildren<TractorBeam>().SetTractorTarget(null);
     }
 
     public AirCraftAI getAI()

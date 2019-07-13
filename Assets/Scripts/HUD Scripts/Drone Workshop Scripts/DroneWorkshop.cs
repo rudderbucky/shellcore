@@ -106,22 +106,33 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 				AddDronePart(part);
 		}
 
+		var partsToAdd = new List<ShellPart>();
+		foreach(Drone ent in player.GetUnitsCommanding()) {
+			var target = ent.GetComponentInChildren<TractorBeam>().GetTractorTarget();
+			if(target && target.GetComponent<ShellPart>()) {
+				partsToAdd.Add(target.GetComponent<ShellPart>());
+			}
+		}
+
 		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
-			var part = player.GetTractorTarget().GetComponent<ShellPart>().info;
-			part = ShipBuilder.CullSpatialValues(part);
-			if(part.abilityID == 10) {
-				int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
+			partsToAdd.Add(player.GetTractorTarget().GetComponent<ShellPart>());
+		}
+
+		foreach(ShellPart part in partsToAdd) {
+			var info = part.info;
+			info = ShipBuilder.CullSpatialValues(info);
+			if(info.abilityID == 10) {
+				int size = ResourceManager.GetAsset<PartBlueprint>(info.partID).size;
 				var button = Instantiate(displayButtonPrefab, contentsArray[size]).GetComponent<DWInventoryButton>();
 				button.handler = selectionDisplay;
 				button.workshop = this;
 				contentTexts[size].SetActive(true);
-				button.part = part;
-				partDict.Add(button, part);
+				button.part = info;
+				partDict.Add(button, info);
 			}
-			player.cursave.partInventory.Add(part);
-			Destroy(player.GetTractorTarget().gameObject);
+			player.cursave.partInventory.Add(info);
+			Destroy(part.gameObject);
 		}
-
 		phase = DroneWorkshopPhase.SelectionPhase;
 		// activate windows
 		gameObject.SetActive(true);

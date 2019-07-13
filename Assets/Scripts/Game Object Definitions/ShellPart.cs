@@ -175,6 +175,7 @@ public class ShellPart : MonoBehaviour {
                 // add "Draggable" component so that shellcores can grab the part
                 if (!draggable) draggable = gameObject.AddComponent<Draggable>();
                 spriteRenderer.enabled = true;
+                if(shooter) shooter.GetComponent<SpriteRenderer>().enabled = true;
                 spriteRenderer.sortingOrder = 0;
                 transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
 

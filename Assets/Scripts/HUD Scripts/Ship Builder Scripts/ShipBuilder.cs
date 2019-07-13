@@ -341,11 +341,25 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		foreach(EntityBlueprint.PartInfo part in parts) {
 			AddPart(part);
 		}
+
+		var partsToAdd = new List<ShellPart>();
+		foreach(Drone ent in player.GetUnitsCommanding()) {
+			var target = ent.GetComponentInChildren<TractorBeam>().GetTractorTarget();
+			if(target && target.GetComponent<ShellPart>()) {
+				partsToAdd.Add(target.GetComponent<ShellPart>());
+			}
+		}
+
 		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
-			var part = player.GetTractorTarget().GetComponent<ShellPart>().info;
-			AddPart(part);
-			player.cursave.partInventory.Add(part);
-			Destroy(player.GetTractorTarget().gameObject);
+			partsToAdd.Add(player.GetTractorTarget().GetComponent<ShellPart>());;
+		}
+
+		foreach(ShellPart part in partsToAdd) {
+			var info = part.info;
+			info = ShipBuilder.CullSpatialValues(info);
+			AddPart(info);
+			player.cursave.partInventory.Add(info);
+			Destroy(part.gameObject);
 		}
 		LoadBlueprint(blueprint);
 

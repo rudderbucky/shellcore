@@ -138,7 +138,6 @@ public class ResourceManager : MonoBehaviour
 
     public static void PlayClipByID(string ID, bool clear=true) {
         if(Instance.playerSource != null) {
-            Debug.Log(ID);
             if(clear) Instance.playerSource.Stop();
             if(ID != null) Instance.playerSource.PlayOneShot(GetAsset<AudioClip>(ID), soundVolume);
             // can pass null just to clear the sound buffer
