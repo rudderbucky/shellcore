@@ -173,7 +173,7 @@ public class DialogueSystem : MonoBehaviour
         text = node.dialogueText.Replace("<br>", "\n");
         characterCount = 0;
         nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
-        textRenderer.color = Color.white;
+        textRenderer.color = node.dialogueColor;
 
         // Objective list
         var objectiveList = background.transform.Find("ObjectiveList").GetComponent<Text>();

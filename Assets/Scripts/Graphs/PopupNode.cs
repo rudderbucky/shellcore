@@ -33,13 +33,11 @@ namespace NodeEditorFramework.Standard
 
             GUILayout.Label("Color:");
             float r, g, b;
-
             GUILayout.BeginHorizontal();
             r = RTEditorGUI.FloatField(color.r);
             g = RTEditorGUI.FloatField(color.g);
             b = RTEditorGUI.FloatField(color.b);
             GUILayout.EndHorizontal();
-
             color = new Color(r, g, b);
         }
 

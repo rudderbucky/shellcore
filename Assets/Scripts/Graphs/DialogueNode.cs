@@ -31,6 +31,15 @@ namespace NodeEditorFramework.Standard
         {
             GUILayout.Label("Text:");
             text = GUILayout.TextArea( text);
+            GUILayout.Label("Text Color:");
+            float r, g, b;
+            GUILayout.BeginHorizontal();
+            r = RTEditorGUI.FloatField(textColor.r);
+            g = RTEditorGUI.FloatField(textColor.g);
+            b = RTEditorGUI.FloatField(textColor.b);
+            GUILayout.EndHorizontal();
+            textColor = new Color(r, g, b);
+
             GUILayout.Label("Answers:");
             for (int i = 0; i < answers.Count; i++)
             {

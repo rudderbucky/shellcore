@@ -16,6 +16,7 @@ namespace NodeEditorFramework.Standard
         //Task related
         public string taskID = "";
         public string dialogueText = "";
+        public Color dialogueColor = Color.white;
         public string objectiveList = "";
         public int creditReward = 100;
         //public EntityBlueprint.PartInfo partReward;
@@ -47,10 +48,18 @@ namespace NodeEditorFramework.Standard
             outputAccept.DisplayLayout();
             GUILayout.EndHorizontal();
             outputDecline.DisplayLayout();
-            height = 20f;
+            height = 60f;
             GUILayout.Label("Dialogue:");
             dialogueText = GUILayout.TextArea(dialogueText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 200f);
+            GUILayout.Label("Dialogue Color:");
+            float r, g, b;
+            GUILayout.BeginHorizontal();
+            r = RTEditorGUI.FloatField(dialogueColor.r);
+            g = RTEditorGUI.FloatField(dialogueColor.g);
+            b = RTEditorGUI.FloatField(dialogueColor.b);
+            GUILayout.EndHorizontal();
+            dialogueColor = new Color(r, g, b);
             GUILayout.Label("Objective list:");
             objectiveList = GUILayout.TextArea(objectiveList, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(objectiveList), 200f);
