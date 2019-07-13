@@ -18,6 +18,7 @@ namespace NodeEditorFramework.Standard
         //Task related
         public string rewardGiverName;
         public string rewardText;
+        public Color textColor = Color.white;
 
         float height = 0f;
 
@@ -32,12 +33,20 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
-            height = 160f;
-            GUILayout.Label("Reward giver ID:");
+            height = 180f;
+            GUILayout.Label("Reward giver name:");
             rewardGiverName = GUILayout.TextField(rewardGiverName, GUILayout.Width(200f));
             GUILayout.Label("Reward text:");
             rewardText = GUILayout.TextArea(rewardText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
+            GUILayout.Label("Text Color:");
+            float r, g, b;
+            GUILayout.BeginHorizontal();
+            r = RTEditorGUI.FloatField(textColor.r);
+            g = RTEditorGUI.FloatField(textColor.g);
+            b = RTEditorGUI.FloatField(textColor.b);
+            GUILayout.EndHorizontal();
+            textColor = new Color(r, g, b);
         }
 
         public void OnDialogue()
@@ -57,13 +66,16 @@ namespace NodeEditorFramework.Standard
                     TaskManager.Instance.endTask(taskID);
                     Debug.Log("Task complete!");
                     SectorManager.instance.player.credits += taskNode.creditReward;
-                    SectorManager.instance.player.cursave.partInventory.Add(
-                        new EntityBlueprint.PartInfo
-                        {
-                            partID = taskNode.partID,
-                            abilityID = taskNode.partAbilityID,
-                            tier = taskNode.partTier
-                        });
+                    if(taskNode.partReward)
+                    {
+                        SectorManager.instance.player.cursave.partInventory.Add(
+                            new EntityBlueprint.PartInfo
+                            {
+                                partID = taskNode.partID,
+                                abilityID = taskNode.partAbilityID,
+                                tier = taskNode.partTier
+                            });
+                    }
                 }
             }
         }
