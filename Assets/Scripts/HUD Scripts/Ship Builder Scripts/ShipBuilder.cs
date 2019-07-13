@@ -343,7 +343,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 
 		var partsToAdd = new List<ShellPart>();
-		foreach(Drone ent in player.GetUnitsCommanding()) {
+		foreach(Entity ent in player.GetUnitsCommanding()) {
+			if(!(ent as Drone)) continue;
 			var target = ent.GetComponentInChildren<TractorBeam>().GetTractorTarget();
 			if(target && target.GetComponent<ShellPart>()) {
 				partsToAdd.Add(target.GetComponent<ShellPart>());
