@@ -8,7 +8,8 @@ public class AirCraftAI : MonoBehaviour
         Follow,
         Path,
         Battle,
-        Inactive
+        Inactive,
+        Tractor,
     }
 
     enum AIState
@@ -45,6 +46,7 @@ public class AirCraftAI : MonoBehaviour
 
     public void setMode(AIMode mode)
     {
+        Debug.Log("Mode set! (try to reduce these, the AI is initialized each time)");
         if (mode == this.mode)
             return;
 
@@ -64,10 +66,13 @@ public class AirCraftAI : MonoBehaviour
             case AIMode.Inactive:
                 module = null;
                 break;
+            case AIMode.Tractor:
+                module = new TractorAI();
+                break;
             default:
                 break;
         }
-        if(module != null)
+        if (module != null)
         {
             module.craft = craft;
             module.owner = owner;
