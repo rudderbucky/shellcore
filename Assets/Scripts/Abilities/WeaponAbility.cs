@@ -19,7 +19,7 @@ public enum WeaponDiversityType {
 public abstract class WeaponAbility : ActiveAbility {
 
     protected float range; // the range of the ability
-
+    protected float damage;
     protected WeaponTargetingSystem targetingSystem;
     public Entity.TerrainType terrain = Entity.TerrainType.Unset;
     public Entity.EntityCategory category = Entity.EntityCategory.All;
@@ -39,6 +39,14 @@ public abstract class WeaponAbility : ActiveAbility {
 
     protected override void Awake()
     {
+        isActive = true; // initialize abilities to be active
+        targetingSystem = new WeaponTargetingSystem();
+        targetingSystem.ability = this;
+        if(abilityName == null) abilityName = "Weapon Ability";
+    }
+
+    protected virtual void Start() {
+        if(abilityTier != 0) damage *= abilityTier;
         switch(type) {
             case WeaponDiversityType.Strike:
                 energyCost *= 0.6F;
@@ -49,12 +57,8 @@ public abstract class WeaponAbility : ActiveAbility {
             default:
                 break;
         }
-        isActive = true; // initialize abilities to be active
-        targetingSystem = new WeaponTargetingSystem();
-        targetingSystem.ability = this;
-        if(abilityName == null) abilityName = "Weapon Ability";
     }
-
+    
     /// <summary>
     /// Get the range of the weapon ability
     /// </summary>

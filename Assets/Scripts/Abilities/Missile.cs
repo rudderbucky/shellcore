@@ -5,7 +5,6 @@ using UnityEngine;
 public class Missile : WeaponAbility {
 
     public GameObject missilePrefab;
-    float damage;
     protected override void Awake()
     {
         base.Awake();
@@ -20,8 +19,9 @@ public class Missile : WeaponAbility {
         category = Entity.EntityCategory.All;
     }
 
-    protected virtual void Start() {
+    protected override void Start() {
         missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
+        base.Start();
     }
     protected override bool Execute(Vector3 victimPos)
     {

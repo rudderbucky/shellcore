@@ -9,7 +9,6 @@ public class Bullet : WeaponAbility {
     public GameObject bulletPrefab; // the prefabbed sprite for a bullet with a BulletScript
     protected float bulletSpeed; // the speed of the bullet
     protected float survivalTime; // the time the bullet takes to delete itself
-    protected float damage; // damage of the bullet
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
 
@@ -32,8 +31,9 @@ public class Bullet : WeaponAbility {
         category = Entity.EntityCategory.All;
     }
 
-    protected virtual void Start() {
+    protected override void Start() {
         bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+        base.Start();
     }
 
     /// <summary>

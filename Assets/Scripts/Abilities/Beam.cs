@@ -8,7 +8,6 @@ public class Beam : WeaponAbility {
     private Material material; // material used by the line renderer
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
-    private float damage = 500;
 
     protected override void Awake()
     {
@@ -23,14 +22,15 @@ public class Beam : WeaponAbility {
         line.endColor = new Color(0.8F,0.8F,1,0.9F);
         line.startColor = new Color(0.5F, 0.5F, 1, 0.9F);
         cooldownDuration = CDRemaining = 5;
+        damage = 500;
         energyCost = 20;
         ID = 4;
         range = 15;
         category = Entity.EntityCategory.All;
     }
-    protected virtual void Start() {
-        damage *= abilityTier; // Thanks Abnormalities for finding this bug!
+    protected override void Start() {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
+        base.Start();
     }
     public void SetMaterial(Material material)
     {

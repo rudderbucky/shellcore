@@ -7,7 +7,6 @@ public class Cannon : WeaponAbility {
     public GameObject effectPrefab;
     public GameObject effect;
     public Entity target;
-    private float damage;
 
     protected override void Awake()
     {
@@ -23,9 +22,9 @@ public class Cannon : WeaponAbility {
         category = Entity.EntityCategory.All;
     }
 
-    protected virtual void Start() {
+    protected override void Start() {
         effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
-        damage *= abilityTier;
+        base.Start();
     }
     /// <summary>
     /// Fires the cannon using the helper method

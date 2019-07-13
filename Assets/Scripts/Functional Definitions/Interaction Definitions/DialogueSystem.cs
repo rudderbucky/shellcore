@@ -219,6 +219,7 @@ public class DialogueSystem : MonoBehaviour
         else
         {
             background.transform.Find("Part").GetComponent<Image>().enabled = false;
+            background.transform.Find("backgroundbox").gameObject.SetActive(false);
         }
         // create buttons
         buttons = new GameObject[2];

@@ -96,7 +96,8 @@ namespace NodeEditorFramework.Standard
         void updateState(Entity entity)
         {
             if (entity.name == targetName)
-            {
+            {   
+                killCount++;
                 if(targetFaction != 0)
                 {
                     SectorManager.instance.player.alerter.showMessage("ENEMIES DESTROYED: " + killCount + " / " + targetCount, "clip_victory");
@@ -105,7 +106,6 @@ namespace NodeEditorFramework.Standard
                 {
                     SectorManager.instance.player.alerter.showMessage("ALLIES DEAD: " + killCount + " / " + targetCount, "clip_alert");
                 }
-                killCount++;
                 if (killCount == targetCount)
                 {
                     state = ConditionState.Completed;

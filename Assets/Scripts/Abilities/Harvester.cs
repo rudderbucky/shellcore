@@ -12,7 +12,7 @@ public class Harvester : WeaponAbility, IHarvester {
     public ShellCore owner;
     private TractorBeam tractor;
 
-    protected void Start()
+    protected override void Start()
     {
         ID = 16;
 
