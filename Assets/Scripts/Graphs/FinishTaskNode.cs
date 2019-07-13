@@ -68,7 +68,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            SectorManager.instance.player.alerter.showMessage("TASK COMPLETE!", "clip_victory");
+            SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
             if (TaskManager.interactionOverrides.ContainsKey(rewardGiverName))
             {
                 TaskManager.interactionOverrides[rewardGiverName] = () => {

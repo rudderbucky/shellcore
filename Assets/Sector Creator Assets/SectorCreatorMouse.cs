@@ -254,11 +254,14 @@ public class SectorCreatorMouse : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate() {
+	private void CalculateWindowEnabled() {
 		windowEnabled = mainMenu.transform.parent.gameObject.activeSelf || sectorProps.transform.parent.gameObject.activeSelf
 		|| hotkeyList.transform.parent.gameObject.activeSelf
 		|| readFile.transform.parent.gameObject.activeSelf || coreEditor.gameObject.activeSelf
         || nodeEditor.transform.parent.gameObject.activeSelf;
+	}
+	void FixedUpdate() {
+		CalculateWindowEnabled();
 		Vector3 mousePos = Input.mousePosition;
 		mousePos.z -= Camera.main.transform.position.z;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
@@ -269,11 +272,11 @@ public class SectorCreatorMouse : MonoBehaviour {
 			mousePos.x = 0.5F * tileSize * Mathf.RoundToInt((mousePos.x) / (0.5F * tileSize));
 			mousePos.y = 0.5F * tileSize * Mathf.RoundToInt((mousePos.y) / (0.5F * tileSize));
 		}
-		if(Input.GetKeyDown("g") && (!windowEnabled || mainMenu.gameObject.activeSelf)) {
+		if(Input.GetKeyDown("g") && !windowEnabled) {
 			mainMenu.ToggleActive();
 			if(mainMenu.gameObject.activeSelf) coreEditor.gameObject.SetActive(false);
 		} else {
-			if(Input.GetKeyDown("g") && sectorProps.gameObject.activeSelf && !sectorProps.transform.Find("Sector Name").GetComponent<InputField>().isFocused) {
+			/*if(Input.GetKeyDown("g") && sectorProps.gameObject.activeSelf && !sectorProps.transform.Find("Sector Name").GetComponent<InputField>().isFocused) {
 				sectorProps.ToggleActive();
 			}
 			if(Input.GetKeyDown("g") && hotkeyList.gameObject.activeSelf) {
@@ -281,12 +284,11 @@ public class SectorCreatorMouse : MonoBehaviour {
 			}
 			if(Input.GetKeyDown("g") && readFile.gameObject.activeSelf && !readFile.transform.Find("JSONPath").GetComponent<InputField>().isFocused) {
 				readFile.ToggleActive();
-			}
+			}*/
 		}
 
         if(Input.GetKeyDown("t") && 
-            !sectorProps.transform.Find("Sector Name").GetComponent<InputField>().isFocused &&
-            !readFile.transform.Find("JSONPath").GetComponent<InputField>().isFocused)
+            (!windowEnabled || nodeEditor.transform.parent.gameObject.activeSelf))
         {
             nodeEditor.ToggleActive();
         }
