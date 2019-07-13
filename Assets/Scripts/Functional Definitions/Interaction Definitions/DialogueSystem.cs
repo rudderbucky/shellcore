@@ -180,6 +180,9 @@ public class DialogueSystem : MonoBehaviour
         var objectiveList = background.transform.Find("ObjectiveList").GetComponent<Text>();
         objectiveList.text = node.objectiveList;
 
+        background.transform.Find("Credit Reward Text").GetComponent<Text>().text =
+        "Credit reward: " + node.creditReward;
+
         // Part reward
         if(node.partReward)
         {
