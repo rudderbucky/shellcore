@@ -6,6 +6,8 @@ public class Outpost : AirConstruct, IVendor {
 
     public VendingBlueprint vendingBlueprint;
 
+    BattleZoneManager BZManager;
+
     public VendingBlueprint GetVendingBlueprint()
     {
         return vendingBlueprint;
@@ -15,6 +17,7 @@ public class Outpost : AirConstruct, IVendor {
     {
         category = EntityCategory.Station;
         base.Start();
+        BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
     }
     protected override void Awake()
     {
@@ -62,8 +65,11 @@ public class Outpost : AirConstruct, IVendor {
             RemovePart(parts[i]);
         }
         targeter.SetTarget(null);
-        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
-        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().AlertPlayers(otherFaction, "WARNING: Outpost lost!");
+        if(sectorMngr.current.type == Sector.SectorType.BattleZone)
+        {
+            BZManager.UpdateCounters();
+            BZManager.AlertPlayers(otherFaction, "WARNING: Outpost lost!");
+        }
         Start();
     }
 }

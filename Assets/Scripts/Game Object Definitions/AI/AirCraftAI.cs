@@ -120,7 +120,7 @@ public class AirCraftAI : MonoBehaviour
 
     private void Update()
     {
-        if (!craft.GetIsDead() && module != null)
+        if (!craft.GetIsDead())
         {
             foreach (Ability a in craft.GetAbilities())
             {
@@ -129,8 +129,7 @@ public class AirCraftAI : MonoBehaviour
                     (a as WeaponAbility).Tick("");
                 }
             }
-
-            if(aggression != AIAggression.KeepMoving && aggroSearchTimer < Time.time)
+            if (aggression != AIAggression.KeepMoving && aggroSearchTimer < Time.time)
             {
                 // find target, stop or follow, give up if it's outside range
                 Entity target = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, craft.Terrain);
@@ -143,121 +142,125 @@ public class AirCraftAI : MonoBehaviour
                 aggroSearchTimer = Time.time + 1f;
             }
 
-            if (state == AIState.Active)
+            if (aggroTarget)
             {
-                module.StateTick();
-
-                if (aggroTarget == null)
+                if (aggroTarget.GetIsDead())
                 {
-                    module.ActionTick();
-
-                    if (allowRetreat)
-                    {
-                        // check if retreat necessary
-                        if (craft.GetHealth()[0] < 0.1f * craft.GetMaxHealth()[0])
-                        {
-                            state = AIState.Retreating;
-                            Debug.LogFormat("Faction {0} retreating!", craft.faction);
-                        }
-                    }
+                    aggroTarget = null;
+                    aggroSearchTimer = 0f;
                 }
                 else
                 {
-                    if(aggroTarget.GetIsDead())
+                    switch (aggression)
                     {
-                        aggroTarget = null;
-                        aggroSearchTimer = 0f;
-                    }
-                    else
-                    {
-                        switch (aggression)
-                        {
-                            case AIAggression.FollowInRange:
-                                // Follow
-                                Vector3 delta = aggroTarget.transform.position - craft.transform.position;
-                                float dist = delta.sqrMagnitude;
-                                if(dist < 1000f)
+                        case AIAggression.FollowInRange:
+                            // Follow
+                            Vector3 delta = aggroTarget.transform.position - craft.transform.position;
+                            float dist = delta.sqrMagnitude;
+                            if (dist < 1000f)
+                            {
+                                if (dist > 16f)
                                 {
-                                    if (dist > 16f)
-                                    {
-                                        craft.MoveCraft(delta.normalized);
-                                    }
+                                    craft.MoveCraft(delta.normalized);
                                 }
-                                else
-                                {
-                                    aggroTarget = null;
-                                }
-                                break;
-                            case AIAggression.StopToAttack:
-                                // Don't move
-                                break;
-                            case AIAggression.KeepMoving:
-                                // Back to module's movement
+                            }
+                            else
+                            {
                                 aggroTarget = null;
-                                break;
-                            default:
-                                break;
-                        }
-
+                            }
+                            break;
+                        case AIAggression.StopToAttack:
+                            // Don't move
+                            break;
+                        case AIAggression.KeepMoving:
+                            // Back to module's movement
+                            aggroTarget = null;
+                            break;
+                        default:
+                            break;
                     }
+
                 }
             }
-            else if (state == AIState.Retreating)
+
+            if (module != null)
             {
-                if ((!retreatTargetFound && retreatSearchTimer < Time.time) || retreatSearchTimer < Time.time)
+                if (state == AIState.Active)
                 {
-                    Entity enemy = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, Entity.TerrainType.All);
-                    if (enemy && (enemy.transform.position - craft.transform.position).sqrMagnitude < 1600f)
+                    module.StateTick();
+
+                    if (aggroTarget == null)
                     {
-                        retreatTarget = (craft.transform.position - enemy.transform.position).normalized * 20f;
-                        retreatTargetFound = true;
-                        Debug.Log("retreat target found!");
+                        module.ActionTick();
+
+                        if (allowRetreat)
+                        {
+                            // check if retreat necessary
+                            if (craft.GetHealth()[0] < 0.1f * craft.GetMaxHealth()[0])
+                            {
+                                state = AIState.Retreating;
+                                Debug.LogFormat("Faction {0} retreating!", craft.faction);
+                            }
+                        }
                     }
-                    else
-                        retreatTargetFound = false;
-                    retreatSearchTimer = Time.time + 1.0f;
                 }
-                else if(retreatTargetFound)
+                else if (state == AIState.Retreating)
                 {
-                    Vector2 delta = retreatTarget - (Vector2)craft.transform.position;
-                    if (delta.sqrMagnitude > 4f)
+                    if ((!retreatTargetFound && retreatSearchTimer < Time.time) || retreatSearchTimer < Time.time)
                     {
-                        craft.MoveCraft(delta.normalized);
+                        Entity enemy = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, Entity.TerrainType.All);
+                        if (enemy && (enemy.transform.position - craft.transform.position).sqrMagnitude < 1600f)
+                        {
+                            retreatTarget = (craft.transform.position - enemy.transform.position).normalized * 20f;
+                            retreatTargetFound = true;
+                            Debug.Log("retreat target found!");
+                        }
+                        else
+                            retreatTargetFound = false;
+                        retreatSearchTimer = Time.time + 1.0f;
+                    }
+                    else if (retreatTargetFound)
+                    {
+                        Vector2 delta = retreatTarget - (Vector2)craft.transform.position;
+                        if (delta.sqrMagnitude > 4f)
+                        {
+                            craft.MoveCraft(delta.normalized);
+                        }
+                        else
+                        {
+                            retreatSearchTimer = Time.time;
+                        }
                     }
                     else
                     {
-                        retreatSearchTimer = Time.time;
+                        Vector2 delta = craft.spawnPoint - craft.transform.position;
+                        if (delta.sqrMagnitude > 4f)
+                        {
+                            craft.MoveCraft(delta.normalized);
+                        }
                     }
+
+                    // check if retreat necessary anymore
+                    if (craft.GetHealth()[0] > 0.1f * craft.GetMaxHealth()[0])
+                    {
+                        state = AIState.Active;
+                        Debug.LogFormat("Faction {0} stopped retreating!", craft.faction);
+                    }
+
                 }
                 else
                 {
-                    Vector2 delta = craft.spawnPoint - craft.transform.position;
-                    if (delta.sqrMagnitude > 4f)
+                    if (state == AIState.Inactive)
                     {
-                        craft.MoveCraft(delta.normalized);
+                        module.Init();
+                        state = AIState.Active;
                     }
                 }
-
-                // check if retreat necessary anymore
-                if (craft.GetHealth()[0] > 0.1f * craft.GetMaxHealth()[0])
-                {
-                    state = AIState.Active;
-                    Debug.LogFormat("Faction {0} stopped retreating!", craft.faction);
-                }
-
             }
-            else
-            {
-                if(state == AIState.Inactive)
-                {
-                    module.Init();
-                    state = AIState.Active;
-                }
-            }
-        }
-        else
-        {
-            state = AIState.Inactive;
+            //else
+            //{
+            //    state = AIState.Inactive;
+            //}
         }
     }
 
