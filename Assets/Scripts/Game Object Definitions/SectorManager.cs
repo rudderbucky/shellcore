@@ -317,7 +317,8 @@ public class SectorManager : MonoBehaviour
         foreach(var obj in persistentObjects)
         {
             if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
-                && obj.Value != player.gameObject)
+                && obj.Value != player.gameObject && !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable)
+                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) < 100))
             {
                 Destroy(obj.Value);
             } else tmp.Add(obj.Key, obj.Value);
