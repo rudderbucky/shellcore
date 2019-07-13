@@ -34,14 +34,6 @@ public class TaskManager : MonoBehaviour
         startQuests();
     }
 
-    private void Update() // TEMP - DELETE BEFORE FINAL RELEASE
-    {
-        if(Input.GetKeyDown(KeyCode.T) && TestCondition.TestTrigger != null)
-        {
-            TestCondition.TestTrigger.Invoke();
-        }
-    }
-
     public void AddTask(Task t)
     {
         activeTasks.Add(t);
@@ -69,11 +61,7 @@ public class TaskManager : MonoBehaviour
 
     void updateTaskList()
     {
-        StatusMenu.taskInfo.Clear();
-        for(int i = 0; i < activeTasks.Count; i++)
-        {
-            StatusMenu.taskInfo.Add(activeTasks[i].dialogue, activeTasks[i].objectived);
-        }
+        StatusMenu.taskInfo = getTasks();
     }
 
     public void SetTaskVariable(string name, int value)

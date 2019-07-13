@@ -7,7 +7,7 @@ public class StatusMenu : GUIWindowScripts {
 	public PlayerCore player;
 	public Text playerName;
 	bool toggle = false;
-	public static Dictionary<string, string> taskInfo = new Dictionary<string, string>();
+	public static Task[] taskInfo = new Task[0];
 	public override void CloseUI()
 	{
 		ResourceManager.PlayClipByID("clip_back");
