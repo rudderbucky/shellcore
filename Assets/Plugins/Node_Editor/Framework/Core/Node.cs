@@ -92,7 +92,7 @@ namespace NodeEditorFramework
 		/// <summary>
 		/// Initializes the node with Inputs/Outputs and other data if necessary.
 		/// </summary>
-		protected virtual void OnCreate() {}
+		public virtual void OnCreate() {}
 		
 		/// <summary>
 		/// Draws the Node GUI including all controls and potentially Input/Output labels.

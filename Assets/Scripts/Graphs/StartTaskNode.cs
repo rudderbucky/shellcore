@@ -24,6 +24,7 @@ namespace NodeEditorFramework.Standard
         public int partAbilityID = 0;
         public int partTier = 1;
 
+        bool init = false;
         Texture2D partTexture;
 
         float height = 220f;
@@ -46,7 +47,7 @@ namespace NodeEditorFramework.Standard
             outputAccept.DisplayLayout();
             GUILayout.EndHorizontal();
             outputDecline.DisplayLayout();
-            height = 0f;
+            height = 20f;
             GUILayout.Label("Dialogue:");
             dialogueText = GUILayout.TextArea(dialogueText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 200f);
@@ -61,8 +62,9 @@ namespace NodeEditorFramework.Standard
                 height += 264f;
                 GUILayout.Label("Part ID:");
                 partID = GUILayout.TextField(partID, GUILayout.Width(200f));
-                if (ResourceManager.Instance && partID != null && GUI.changed)
+                if ((ResourceManager.Instance && partID != null && GUI.changed) || !init)
                 {
+                    init = true;
                     PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(partID);
                     if(partBlueprint != null)
                     {

@@ -227,6 +227,8 @@ namespace NodeEditorFramework.IO
 					if (field != null)
 						field.SetValue(node, varData.refObject != null ? varData.refObject.data : varData.value);
 				}
+
+                node.OnCreate();
 			}
 
 			foreach (ConnectionData conData in canvasData.connections)

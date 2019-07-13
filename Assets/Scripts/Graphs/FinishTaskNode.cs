@@ -19,7 +19,7 @@ namespace NodeEditorFramework.Standard
         public string rewardGiverName;
         public string rewardText;
 
-        float height = 220f;
+        float height = 0f;
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
         public ConnectionKnob inputLeft;
@@ -32,10 +32,12 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
+            height = 160f;
             GUILayout.Label("Reward giver ID:");
             rewardGiverName = GUILayout.TextField(rewardGiverName, GUILayout.Width(200f));
             GUILayout.Label("Reward text:");
-            rewardText = GUILayout.TextField(rewardText, GUILayout.Width(200f));
+            rewardText = GUILayout.TextArea(rewardText, GUILayout.Width(200f));
+            height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
         }
 
         public void OnDialogue()
