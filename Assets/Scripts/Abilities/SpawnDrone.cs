@@ -67,7 +67,15 @@ public class SpawnDrone : ActiveAbility
         }
         else
         {
-            drone.getAI().follow(craft.GetTransform());
+            if(drone.type != DroneType.Worker)
+            {
+                drone.getAI().follow(craft.GetTransform());
+            }
+            else
+            {
+                drone.getAI().setMode(AirCraftAI.AIMode.Tractor);
+                drone.getAI().owner = craft;
+            }
         }
 
         ToggleIndicator();

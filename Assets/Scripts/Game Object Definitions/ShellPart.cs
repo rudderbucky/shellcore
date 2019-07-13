@@ -103,6 +103,8 @@ public class ShellPart : MonoBehaviour {
 
     void OnDestroy() {
         if(parent) parent.children.Remove(this);
+        if(AIData.strayParts.Contains(this))
+            AIData.strayParts.Remove(this);
     }
     public void Awake()
     {
