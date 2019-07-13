@@ -78,7 +78,7 @@ public class DialogueSystem : MonoBehaviour
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(()=> {
             endDialogue();
-            ResourceManager.PlayClipByID("clip_select", false);
+            // ResourceManager.PlayClipByID("clip_select", false);
         });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
@@ -117,7 +117,6 @@ public class DialogueSystem : MonoBehaviour
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
             endDialogue(0);
-            ResourceManager.PlayClipByID("clip_select", false);
         });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
@@ -140,6 +139,7 @@ public class DialogueSystem : MonoBehaviour
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
                 endDialogue(index + 1);// cancel is always first -> start from 1
+                ResourceManager.PlayClipByID(null);
                 ResourceManager.PlayClipByID("clip_select", false);
             });
             button.Find("Text").GetComponent<Text>().text = node.answers[i];
@@ -164,8 +164,6 @@ public class DialogueSystem : MonoBehaviour
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
             endDialogue(0);
-            ResourceManager.PlayClipByID(null); // clear the quitting noise
-            ResourceManager.PlayClipByID("clip_select", false);
         });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
@@ -371,8 +369,13 @@ public class DialogueSystem : MonoBehaviour
             button.anchoredPosition = new Vector2(0, 24 + 16 * (current.nextNodes.Count - (i + 1)));
             button.GetComponent<Button>().onClick.AddListener(()=> {
                 Next(dialogue, nextIndex, speaker, player);
-                ResourceManager.PlayClipByID("clip_select", false);
             });
+            if(dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit) {
+                button.GetComponent<Button>().onClick.AddListener(()=> {
+                    ResourceManager.PlayClipByID("clip_select", false); 
+                    // need condition to ensure no sound clashes occur
+                });
+            }
             button.GetComponent<Button>().onClick.AddListener(()=> {  });
             button.Find("Text").GetComponent<Text>().text = next.buttonText;
 
