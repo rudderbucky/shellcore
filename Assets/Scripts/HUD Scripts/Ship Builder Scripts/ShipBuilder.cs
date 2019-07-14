@@ -528,7 +528,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		foreach(ShipBuilderInventoryScript inv in partDict.Values) {
 			string partName = inv.part.partID.ToLower();
-			string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID).ToLower();
+			string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID, inv.part.secondaryData).ToLower();
 			if(partName.Contains(searcherString) || abilityName.Contains(searcherString) || searcherString == "") {
 				if(displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(inv.part.abilityID)]) {
 					inv.gameObject.SetActive(true);

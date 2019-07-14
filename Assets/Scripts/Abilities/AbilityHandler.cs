@@ -106,19 +106,19 @@ public class AbilityHandler : MonoBehaviour {
             // instantiate background image
             abilityBackgroundArray[i] = Instantiate(abilityBackground, pos, Quaternion.identity) as GameObject;
             abilityBackgroundArray[i].transform.SetParent(transform, false); // set parent (do not keep world position)
-            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = AbilityUtilities.GetAbilityNameByID(visibleAbilities[i].GetID()) 
+            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = AbilityUtilities.GetAbilityName(visibleAbilities[i]) 
              + (visibleAbilities[i].GetTier() > 0 ? " " + visibleAbilities[i].GetTier() : "");
             var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
             button.tooltipPrefab = tooltipPrefab;
             string description = "";
-            description += AbilityUtilities.GetAbilityNameByID(visibleAbilities[i].GetID()) + (visibleAbilities[i].GetTier() > 0 ? " " + visibleAbilities[i].GetTier() : "") + "\n";
+            description += AbilityUtilities.GetAbilityName(visibleAbilities[i]) + (visibleAbilities[i].GetTier() > 0 ? " " + visibleAbilities[i].GetTier() : "") + "\n";
             if(visibleAbilities[i].GetEnergyCost() > 0)
                 description += "Energy cost: " + visibleAbilities[i].GetEnergyCost() + "\n";
             if (visibleAbilities[i].GetCDDuration() != 0)
             {
                 description += "Cooldown duration: " + visibleAbilities[i].GetCDDuration() + "\n";
             }
-            description += AbilityUtilities.GetDescriptionByID(visibleAbilities[i].GetID(), visibleAbilities[i].GetTier());
+            description += AbilityUtilities.GetDescription(visibleAbilities[i]);
             button.abilityInfo = description;
 
             CanvasGroup canvasg;

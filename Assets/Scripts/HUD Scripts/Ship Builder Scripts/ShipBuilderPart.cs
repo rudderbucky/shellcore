@@ -44,10 +44,11 @@ public class ShipBuilderPart : DisplayPart {
 	}
 
 	bool IsTooClose(ShipBuilderPart otherPart) {
+		var closeConstant = mode == BuilderMode.Workshop ? -1.5F : -1F;
 		var rect1 = ShipBuilder.GetRect(rectTransform);
 		var rect2 = ShipBuilder.GetRect(otherPart.rectTransform);
-		rect1.Expand(-0.995F * rect1.extents);
-		rect2.Expand(-0.995F * rect2.extents);
+		rect1.Expand(closeConstant * rect1.extents);
+		rect2.Expand(closeConstant * rect2.extents);
 		return rect1.Intersects(rect2);
 	}
 	

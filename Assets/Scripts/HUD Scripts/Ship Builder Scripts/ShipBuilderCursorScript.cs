@@ -10,6 +10,7 @@ public interface IBuilderInterface {
 	void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode);
 	void UpdateChain();
 	EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
+	void SetSearcherString(string text);
 }
 
 public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {

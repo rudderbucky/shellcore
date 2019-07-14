@@ -186,4 +186,50 @@ public class DroneUtilities : MonoBehaviour
                 return 0;
         }
     }
+
+    public static string GetAbilityNameByType(DroneType type) {
+        switch(type) {
+            case DroneType.Mini:
+                return "Mini Drone";
+            case DroneType.Worker:
+                return "Worker Drone";
+            case DroneType.Strike:
+                return "Strike Drone";
+            case DroneType.Counter:
+                return "Counter Drone";
+            case DroneType.Gun:
+                return "Gun Drone";
+            case DroneType.Torpedo:
+                return "Torpedo Drone";
+            case DroneType.Light:
+                return "Light Drone";
+            case DroneType.Heavy:
+                return "Heavy Drone";
+            default:
+                return "Spawn Drone";    
+        }
+    }
+
+    public static string GetDescriptionByType(DroneType type) {
+        switch(type) {
+            case DroneType.Mini:
+                return "Spawns a Mini Drone, which have free cannons.";
+            case DroneType.Worker:
+                return "Spawns a Worker Drone, which can collect various objects for you.";
+            case DroneType.Strike:
+                return "Spawns a Strike Drone, their weapons use less energy.";
+            case DroneType.Counter:
+                return "Spawns a Counter Drone, they deal much more damage against other drones.";
+            case DroneType.Gun:
+                return "Spawns a Gun Drone, their weapons cooldown faster.";
+            case DroneType.Torpedo:
+                return "Spawns a Torpedo Drone, all of their weapons attack only ground entities.";
+            case DroneType.Light:
+                return "Spawns a Light Drone, they are lighter than usual.";
+            case DroneType.Heavy:
+                return "Spawns a Heavy Drone, they regenerate their core.";
+            default:
+                return "Spawns a drone.";
+        }
+    }
 }

@@ -96,7 +96,7 @@ namespace NodeEditorFramework.Standard
                     NodeEditorGUI.nodeSkin.label.normal.textColor = NodeEditorGUI.NE_TextColor;
                 }
                 partAbilityID = RTEditorGUI.IntField("Ability ID", partAbilityID, GUILayout.Width(200f));
-                string abilityName = AbilityUtilities.GetAbilityNameByID(partAbilityID);
+                string abilityName = AbilityUtilities.GetAbilityNameByID(partAbilityID, null);
                 if (abilityName != "Name unset")
                 {
                     GUILayout.Label("Ability: " + abilityName);

@@ -207,10 +207,10 @@ public class DialogueSystem : MonoBehaviour
 
                 abilityIcon.sprite = AbilityUtilities.GetAbilityImageByID(node.partAbilityID, null);
                 tierIcon.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + Mathf.Clamp(node.partTier, 1, 3));
-                type.text = AbilityUtilities.GetAbilityNameByID(node.partAbilityID);
+                type.text = AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null);
                 string description = "";
-                description += AbilityUtilities.GetAbilityNameByID(node.partAbilityID) + (node.partTier > 0 ? " " + node.partTier : "") + "\n";
-                description += AbilityUtilities.GetDescriptionByID(node.partAbilityID, node.partTier);
+                description += AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null) + (node.partTier > 0 ? " " + node.partTier : "") + "\n";
+                description += AbilityUtilities.GetDescriptionByID(node.partAbilityID, node.partTier, null);
                 abilityTooltip.abilityInfo = description;
             }
             else

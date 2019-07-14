@@ -5,10 +5,12 @@ using UnityEngine.UI;
 
 public class ShpBuilderSearch : MonoBehaviour {
 
-	public ShipBuilder builder;
+	public GameObject builderInterfaceContainer;
+	IBuilderInterface builder;
 	public InputField input;
 
 	void Start() {
+		builder = builderInterfaceContainer.GetComponent<IBuilderInterface>();
 		input.onValueChanged.AddListener(delegate {builder.SetSearcherString(input.text); });
 	}
 

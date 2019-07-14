@@ -45,6 +45,8 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	public Image reconstructImage;
 	public Text reconstructText;
 	private DroneSpawnData currentData;
+	private string searcherString;
+	private bool[] displayingTypes;
 
 	private enum ReconstructButtonStatus {
 		Valid,
@@ -68,7 +70,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		}
 	}
     public void InitializeSelectionPhase() {
-
+		searcherString = "";
 		selectionPhaseParent.SetActive(true);
 		buildPhaseParent.SetActive(false);
         //initialize window on screen
@@ -277,6 +279,8 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		return data;
 	}
 	public void InitializeBuildPhase(EntityBlueprint blueprint, EntityBlueprint.PartInfo currentPart, DroneSpawnData data) {
+		searcherString = "";
+		displayingTypes = new bool[] {true, false, true, true, true};
 		this.currentData = data;
 		this.currentPart = currentPart;
 		selectionPhaseParent.SetActive(false);
@@ -387,6 +391,43 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		if(!invalidState) {
 			Export();
 			CloseUI(true);
+		}
+	}
+
+	public void SetSearcherString(string searcher) {
+		searcherString = searcher.ToLower();
+		ChangeDisplayFactors();
+	}
+	public void UpdateDisplayingCategories(int type) {
+		displayingTypes[type] = !displayingTypes[type];
+		ChangeDisplayFactors();
+	}
+	public void ChangeDisplayFactors() {
+		foreach(GameObject obj in contentTexts) {
+			obj.SetActive(false);
+		}
+
+		if(phase == DroneWorkshopPhase.BuildPhase) {
+			foreach(ShipBuilderInventoryScript inv in builderPartDict.Values) {
+				string partName = inv.part.partID.ToLower();
+				string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID, inv.part.secondaryData).ToLower();
+				if(partName.Contains(searcherString) || abilityName.Contains(searcherString) || searcherString == "") {
+					if(displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(inv.part.abilityID)]) {
+						inv.gameObject.SetActive(true);
+						contentTexts[ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size].SetActive(true);
+					}
+					else inv.gameObject.SetActive(false);
+				} else inv.gameObject.SetActive(false);
+			}
+		} else {
+			foreach(DWInventoryButton inv in partDict.Keys) {
+				string partName = inv.part.partID.ToLower();
+				string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID, inv.part.secondaryData).ToLower();
+				if(partName.Contains(searcherString) || abilityName.Contains(searcherString) || searcherString == "") {
+					inv.gameObject.SetActive(true);
+					contentTexts[ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size].SetActive(true);
+				} else inv.gameObject.SetActive(false);
+			}
 		}
 	}
 }

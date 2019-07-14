@@ -74,14 +74,14 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 					} else abilityTier.gameObject.SetActive(false);
 					abilityImage.sprite = AbilityUtilities.GetAbilityImageByID(info.abilityID, info.secondaryData);
 					abilityImage.gameObject.SetActive(true);
-					abilityText.text = AbilityUtilities.GetAbilityNameByID(info.abilityID) + (info.tier > 0 ? " " + info.tier : "");
+					abilityText.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, info.secondaryData) + (info.tier > 0 ? " " + info.tier : "");
 					abilityText.gameObject.SetActive(true);
 					abilityBox.gameObject.SetActive(true);
 
 					string description = "";
 
-					description += AbilityUtilities.GetAbilityNameByID(info.abilityID) + (info.tier > 0 ? " " + info.tier : "") + "\n";
-					description += AbilityUtilities.GetDescriptionByID(info.abilityID, info.tier);
+					description += AbilityUtilities.GetAbilityNameByID(info.abilityID, info.secondaryData) + (info.tier > 0 ? " " + info.tier : "") + "\n";
+					description += AbilityUtilities.GetDescriptionByID(info.abilityID, info.tier, info.secondaryData);
 					buttonScript.abilityInfo = description;
 				} else {
 					abilityTier.gameObject.SetActive(false);
