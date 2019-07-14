@@ -345,10 +345,15 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		var partsToAdd = new List<ShellPart>();
 		foreach(Entity ent in player.GetUnitsCommanding()) {
 			if(!(ent as Drone)) continue;
-			var target = ent.GetComponentInChildren<TractorBeam>().GetTractorTarget();
-			if(target && target.GetComponent<ShellPart>()) {
-				partsToAdd.Add(target.GetComponent<ShellPart>());
-			}
+            var beam = ent.GetComponentInChildren<TractorBeam>();
+            if(beam)
+            {
+                var target = beam.GetTractorTarget();
+                if (target && target.GetComponent<ShellPart>())
+                {
+                    partsToAdd.Add(target.GetComponent<ShellPart>());
+                }
+            }
 		}
 
 		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
