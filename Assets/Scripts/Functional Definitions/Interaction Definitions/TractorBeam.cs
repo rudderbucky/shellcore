@@ -27,6 +27,7 @@ public class TractorBeam : MonoBehaviour
             tractorMaterial = ResourceManager.GetAsset<Material>("tractor_material");
         if(!coreGlow)
             coreGlow = Instantiate(glowPrefab, null, true).transform;
+        if(owner as Drone) coreGlow.localScale *= 0.5F;
         if (!targetGlow)
             targetGlow = Instantiate(glowPrefab, null, true).transform;
 

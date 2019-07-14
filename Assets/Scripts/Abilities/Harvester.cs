@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IHarvester : ITractorer
+public interface IHarvester
 {
     void AddPower(float power);
 }

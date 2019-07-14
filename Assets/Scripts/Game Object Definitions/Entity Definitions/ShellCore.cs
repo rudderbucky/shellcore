@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ITractorer
-{
-
-}
 /// <summary>
 /// All "human-like" craft are considered ShellCores. These crafts are intelligent and all air-borne. This includes player ShellCores.
 /// </summary>

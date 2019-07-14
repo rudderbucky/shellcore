@@ -10,6 +10,7 @@ public interface IOwner
     List<IOwnable> GetUnitsCommanding();
     int GetTotalCommandLimit();
     SectorManager GetSectorManager();
+    Draggable GetTractorTarget(); 
 }
 
 /// <summary>

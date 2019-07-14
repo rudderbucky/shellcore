@@ -56,6 +56,7 @@ public class TractorAI : AIModule
             {
                 float d = (AIData.strayParts[i].transform.position - craft.transform.position).sqrMagnitude;
                 Draggable target = AIData.strayParts[i].GetComponent<Draggable>();
+                if(target == owner.GetTractorTarget()) continue;
                 if (d < dist && target && !target.dragging)
                 {
                     dist = d;
@@ -66,7 +67,7 @@ public class TractorAI : AIModule
             {
                 beam.SetTractorTarget(part);
             }
-        }
+        } else if (beam.GetTractorTarget() == owner.GetTractorTarget()) beam.SetTractorTarget(null);
     }
 
     public override void StateTick()

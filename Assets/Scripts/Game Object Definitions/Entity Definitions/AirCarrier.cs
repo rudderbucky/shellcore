@@ -69,4 +69,8 @@ public class AirCarrier : AirConstruct, ICarrier {
             base.Update();
         }
     }
+
+    public Draggable GetTractorTarget() {
+        return null;
+    }
 }

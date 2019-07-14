@@ -62,4 +62,8 @@ public class GroundCarrier : GroundConstruct, ICarrier {
             base.Update();
         }
     }
+
+    public Draggable GetTractorTarget() {
+        return null;
+    }
 }
