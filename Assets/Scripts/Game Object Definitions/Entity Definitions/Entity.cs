@@ -614,8 +614,9 @@ public class Entity : MonoBehaviour {
         regenRate = newRegen;
     }
 
-    public void SetMaxHealth(float[] maxHealths) {
+    public void SetMaxHealth(float[] maxHealths, bool healToMaxHealth) {
         maxHealth = maxHealths;
+        if(healToMaxHealth) maxHealth.CopyTo(currentHealth, 0);
     }
 
     protected virtual void FixedUpdate()
