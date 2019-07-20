@@ -51,7 +51,7 @@ namespace NodeEditorFramework.Standard
 
         public void OnDialogue()
         {
-            DialogueSystem.ShowPopup(rewardText);
+            DialogueSystem.ShowPopup(rewardText, textColor);
             DialogueSystem.OnDialogueEnd = (int _) =>
             {
                 TaskManager.Instance.setNode(outputRight);
