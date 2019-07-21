@@ -50,7 +50,8 @@ public class ShellPart : MonoBehaviour {
 
     public bool IsAdjacent(ShellPart part)
     {
-        return GetComponent<Collider2D>().bounds.Intersects(part.GetComponent<Collider2D>().bounds);
+        Debug.Log(part + " " + this);
+        return part.GetComponent<SpriteRenderer>().bounds.Intersects(GetComponent<SpriteRenderer>().bounds);
     }
 
     /// <summary>
@@ -203,6 +204,7 @@ public class ShellPart : MonoBehaviour {
     /// </summary>
     /// <param name="damage">damage to deal</param>
     public void TakeDamage(float damage) {
+        if(!detachible) craft.TakeCoreDamage(damage); // undetachible = core part
         currentHealth -= damage;
         if (currentHealth <= 0 && detachible) {
             craft.RemovePart(this);

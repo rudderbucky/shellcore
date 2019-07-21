@@ -70,7 +70,10 @@ public class Beam : WeaponAbility {
         if (targetingSystem.GetTarget()) // check and get the weapon target
         {
             ResourceManager.PlayClipByID("clip_beam", transform.position);
-            targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(damage, 0, GetComponentInParent<Entity>()); // deal instant damage
+            var residue = targetingSystem.GetTarget().GetComponent<Entity>().TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
+            // deal instant damage
+
+            targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
             line.positionCount = 2; // render the beam line
             timer = 0; // start the timer
             isOnCD = true; // set booleans and return

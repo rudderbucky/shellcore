@@ -106,7 +106,8 @@ public class SectorManager : MonoBehaviour
             Debug.Log("worked");
             jsonMode = false;
             return;
-            } catch(System.Exception){
+            } catch(System.Exception e){
+                Debug.Log(e);
             };
         }
         else if(System.IO.File.Exists(path)) {
@@ -133,6 +134,7 @@ public class SectorManager : MonoBehaviour
                 Debug.Log(e);
             }
         } 
+        Debug.Log("Could not find valid sector in that path");
         jsonMode = false;
         player.SetIsInteracting(false);
         loadSector();

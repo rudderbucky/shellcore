@@ -55,15 +55,14 @@ public class BulletScript : MonoBehaviour {
         {
             if (craft.faction != faction && CheckCategoryCompatibility(craft))
             {
-                craft.TakeDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration
-                                             // if the shell is low, damage the part
-                if (craft.GetHealth()[0] <= 0)
+                var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration
+                                             
+                // if the shell is low, damage the part
+
+                ShellPart part = collision.transform.GetComponent<ShellPart>();
+                if (part)
                 {
-                    ShellPart part = collision.transform.GetComponent<ShellPart>();
-                    if (part)
-                    {
-                        part.TakeDamage(damage); // damage the part
-                    }
+                    part.TakeDamage(residue); // damage the part
                 }
                 damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
