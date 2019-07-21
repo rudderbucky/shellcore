@@ -50,7 +50,6 @@ public class ShellPart : MonoBehaviour {
 
     public bool IsAdjacent(ShellPart part)
     {
-        Debug.Log(part + " " + this);
         return part.GetComponent<SpriteRenderer>().bounds.Intersects(GetComponent<SpriteRenderer>().bounds);
     }
 

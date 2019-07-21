@@ -577,7 +577,7 @@ public class Entity : MonoBehaviour {
             part.children.Clear();
 
             // attach all core-connected parts to the shell as well
-            if(part.GetComponent<SpriteRenderer>().bounds.Intersects(GetComponent<SpriteRenderer>().bounds)) {
+            if(part.IsAdjacent(shell)) {
                 part.parent = shell;
                 shell.children.Add(part);
             }

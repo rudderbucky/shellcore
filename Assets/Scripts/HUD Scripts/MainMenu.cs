@@ -20,4 +20,8 @@ public class MainMenu : MonoBehaviour
     {
         if(settings) settings.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
     }
+
+    public void Quit() {
+        Application.Quit();
+    }
 }
