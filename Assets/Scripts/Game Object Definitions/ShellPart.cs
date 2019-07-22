@@ -145,11 +145,11 @@ public class ShellPart : MonoBehaviour {
                 {
                     Vector3 targeterPos = targ.position;
                     Vector3 diff = targeterPos - shooter.transform.position;
-                    shooter.transform.eulerAngles = new Vector3(0, 0, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 90);
+                    shooter.transform.eulerAngles = new Vector3(0, 0, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) - 90);
                 }
-                else shooter.transform.eulerAngles = new Vector3(0, 0, 180);
+                else shooter.transform.eulerAngles = new Vector3(0, 0, 0);
             }
-            else shooter.transform.eulerAngles = new Vector3(0,0,180);
+            else shooter.transform.eulerAngles = new Vector3(0,0,0);
         }
     }
     /// <summary>
