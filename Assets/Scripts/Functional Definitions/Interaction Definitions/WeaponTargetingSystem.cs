@@ -19,10 +19,10 @@ public class WeaponTargetingSystem {
     {
         Transform tmp = ability.Core.GetTargetingSystem().GetTarget(); // get the core's target if it has one
 
-        if (tmp && tmp.GetComponent<Entity>()
-            && !tmp.GetComponent<Entity>().GetIsDead()
-            && tmp.GetComponent<Entity>().faction != ability.Core.faction 
-            && ability.CheckCategoryCompatibility(tmp.GetComponent<Entity>())) // check if target is compatible
+        if (tmp && tmp.GetComponent<IDamageable>() != null
+            && !tmp.GetComponent<IDamageable>().GetIsDead()
+            && tmp.GetComponent<IDamageable>().GetFaction() != ability.Core.faction 
+            && ability.CheckCategoryCompatibility(tmp.GetComponent<IDamageable>())) // check if target is compatible
         {
             target = tmp;
             return target; // if the manual target is compatible it overrides everything

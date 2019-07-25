@@ -343,6 +343,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 
 		var partsToAdd = new List<ShellPart>();
+		var shards = player.shards;
+
 		foreach(Entity ent in player.GetUnitsCommanding()) {
 			if(!(ent as Drone)) continue;
             var beam = ent.GetComponentInChildren<TractorBeam>();
@@ -352,13 +354,24 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
                 if (target && target.GetComponent<ShellPart>())
                 {
                     partsToAdd.Add(target.GetComponent<ShellPart>());
-                }
+                } else if(target.GetComponent<Shard>()) {
+					shards++;
+					Destroy(target.gameObject);
+				}
             }
 		}
 
 		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
 			partsToAdd.Add(player.GetTractorTarget().GetComponent<ShellPart>());;
+		} else if(player.GetTractorTarget().GetComponent<Shard>()) {
+			shards++;
+			Destroy(player.GetTractorTarget().gameObject);
 		}
+		if(shards != player.shards) {
+			player.shards = shards;
+			ShardCountScript.DisplayCount(shards);
+		}
+
 
 		foreach(ShellPart part in partsToAdd) {
 			var info = part.info;

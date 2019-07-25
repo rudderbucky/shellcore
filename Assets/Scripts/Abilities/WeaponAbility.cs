@@ -25,11 +25,11 @@ public abstract class WeaponAbility : ActiveAbility {
     public Entity.EntityCategory category = Entity.EntityCategory.All;
     public WeaponDiversityType type = WeaponDiversityType.None;
 
-    public bool CheckCategoryCompatibility(Entity entity)
+    public bool CheckCategoryCompatibility(IDamageable entity)
     {
-        if(type == WeaponDiversityType.Torpedo) return entity.Terrain == Entity.TerrainType.Ground;
-        else return (category == Entity.EntityCategory.All || category == entity.category)
-            && (terrain == Entity.TerrainType.All || terrain == entity.Terrain);
+        if(type == WeaponDiversityType.Torpedo) return entity.GetTerrain() == Entity.TerrainType.Ground;
+        else return (category == Entity.EntityCategory.All || category == entity.GetCategory())
+            && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
     }
 
     public Transform GetTarget()
@@ -105,13 +105,13 @@ public abstract class WeaponAbility : ActiveAbility {
         else if (isActive && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
         {
             Transform target = targetingSystem.GetTarget(true);
-            if (target && target.GetComponent<Entity>()) { // check if there is a target
+            if (target && target.GetComponent<IDamageable>() != null) { // check if there is a target
                 Core.SetIntoCombat(); // now in combat
                 Transform targetEntity = target;
-                Entity tmp = targetEntity.GetComponent<Entity>();
+                IDamageable tmp = targetEntity.GetComponent<IDamageable>();
 
                 if (Vector2.Distance(Core.transform.position, targetEntity.position) <= GetRange()
-                    && tmp.faction != Core.faction)
+                    && tmp.GetFaction() != Core.faction)
                     // check if in range
                 {
                     bool success = Execute(targetEntity.position); // execute ability using the position to fire

@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// The base class of every "being" in the game.
 /// </summary>
-public class Entity : MonoBehaviour {
+public class Entity : MonoBehaviour, IDamageable {
 
     public ShellPart shell;
     protected static int maxAirLayer = 1; // the maximum sorting group layer of all entities
@@ -631,5 +631,34 @@ public class Entity : MonoBehaviour {
     protected virtual void FixedUpdate()
     {
         
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+
+    public Dialogue GetDialogue()
+    {
+        return dialogue;
+    }
+
+    public string GetName() {
+        return name;
+    }
+
+    public int GetFaction()
+    {
+        return faction;
+    }
+
+    public TerrainType GetTerrain()
+    {
+        return terrain;
+    }
+
+    public EntityCategory GetCategory()
+    {
+        return category;
     }
 }

@@ -14,7 +14,8 @@ public class PlayerCore : ShellCore {
     public bool loaded;
     private bool isInteracting;
     public int credits;
-    
+    public int shards;
+
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
     }

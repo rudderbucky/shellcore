@@ -126,15 +126,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         return tractor.GetTractorTarget();
     }
 
-    public int GetFaction()
-    {
-        return faction;
-    }
-
-    public Transform GetTransform()
-    {
-        return transform;
-    }
 
     public List<IOwnable> GetUnitsCommanding()
     {

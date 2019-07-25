@@ -14,7 +14,8 @@ public class DrawCircleScript : MonoBehaviour {
     public bool respawnMode;
     private float xrad = 3F; // for respawns
     private float yrad = 3F;
-
+    public float timeMin = 0.5F;
+    public Color color = new Color(1, 1, 1);
     public void Initialize()
     {
         initialized = true;
@@ -63,14 +64,14 @@ public class DrawCircleScript : MonoBehaviour {
                 CreatePoints(xrad, yrad);
             } else {
                 timer += Time.deltaTime; // increment time
-                if (timer > 0.5F && timer < 1.25F) // time to draw
+                if (timer > timeMin && timer < timeMin + 0.75F) // time to draw
                 {
-                    CreatePoints(speed * (timer - 0.5F), speed * (timer - 0.5F)); // draw the circle
+                    CreatePoints(speed * (timer - timeMin), speed * (timer - timeMin)); // draw the circle
                 }
                 else
                 {
-                    line.startColor = new Color(1, 1, 1, 0); // set to transparent
-                    line.endColor = new Color(1, 1, 1, 0); // set to transparent
+                    line.startColor = new Color(color.r, color.g, color.b, 0); // set to transparent
+                    line.endColor = new Color(color.r, color.g, color.b, 0); // set to transparent
                 }
             }
         }
@@ -84,8 +85,8 @@ public class DrawCircleScript : MonoBehaviour {
     void CreatePoints(float xradius, float yradius)
     {
         alpha -= 4*Time.deltaTime; // decrease alpha
-        line.startColor = new Color(1, 1, 1, alpha); // change transparency
-        line.endColor = new Color(1, 1, 1, alpha);
+        line.startColor = new Color(color.r, color.g, color.b, alpha); // change transparency
+        line.endColor = new Color(color.r, color.g, color.b, alpha);
         // declare some storage fields
         float x;
         float y;

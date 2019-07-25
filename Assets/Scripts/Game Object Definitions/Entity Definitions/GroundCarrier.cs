@@ -15,10 +15,7 @@ public class GroundCarrier : GroundConstruct, ICarrier {
     {
         return initialized;
     }
-    public int GetFaction()
-    {
-        return faction;
-    }
+
     public Vector3 GetSpawnPoint()
     {
         var tmp = transform.position;
@@ -30,11 +27,6 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         category = EntityCategory.Station;
         base.Start();
         initialized = true;
-    }
-
-    public Transform GetTransform()
-    {
-        return transform;
     }
 
     public List<IOwnable> GetUnitsCommanding()

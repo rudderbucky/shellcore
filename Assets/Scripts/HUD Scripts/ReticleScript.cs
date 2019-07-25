@@ -57,8 +57,6 @@ public class ReticleScript : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
 
-        // TODO: add an explicit owner check in IOwnable as well as GetOwner()
-
         if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Drone>() && targSys.GetTarget().GetComponent<Drone>().GetOwner().Equals(craft)
             && (hits.Length == 0 || hits[0].transform != targSys.GetTarget()))
         {
@@ -94,25 +92,25 @@ public class ReticleScript : MonoBehaviour {
             }
 
 
-            Entity entityTarget = hits[0].transform.gameObject.GetComponent<Entity>();
+            ITargetable curTarg = hits[0].transform.gameObject.GetComponent<ITargetable>();
             // grab the first one's craft component, others don't matter
-            if (entityTarget != null && !entityTarget.GetIsDead() && entityTarget != craft) 
+            if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft) 
                 // if it is not null, dead or the player itself
             {
-                if (!craft.GetIsInteracting() && targSys.GetTarget() == entityTarget.transform 
-                    && (entityTarget.transform.position - craft.transform.position).sqrMagnitude < 200) //Interact with entity
+                if (!craft.GetIsInteracting() && targSys.GetTarget() == curTarg.GetTransform()
+                    && (curTarg.GetTransform().position - craft.transform.position).sqrMagnitude < 200) //Interact with entity
                 {
-                    if(TaskManager.interactionOverrides.ContainsKey(entityTarget.name)) //If there's a task overriding the default dialogue, use that
+                    if(TaskManager.interactionOverrides.ContainsKey(curTarg.GetName())) //If there's a task overriding the default dialogue, use that
                     {
-                        TaskManager.interactionOverrides[entityTarget.name].Invoke();
+                        TaskManager.interactionOverrides[curTarg.GetName()].Invoke();
                     }
-                    else if (entityTarget.dialogue as Dialogue)
-                        DialogueSystem.StartDialogue(entityTarget.dialogue as Dialogue, entityTarget, craft);
+                    else if (curTarg.GetDialogue() as Dialogue)
+                        DialogueSystem.StartDialogue(curTarg.GetDialogue() as Dialogue, curTarg as Entity, craft);
                 }
 
-                targSys.SetTarget(entityTarget.transform); // set the target to the clicked craft's transform
-                Vector3 targSize = entityTarget.GetComponent<SpriteRenderer>().bounds.size * 2.5F; // adjust the size of the reticle
-                float followedSize = Mathf.Max(targSize.x + 1, targSize.y + 1); // grab the maximum bounded size of the target
+                targSys.SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
+                Vector3 targSize = curTarg.GetTransform().GetComponent<SpriteRenderer>().bounds.size; // adjust the size of the reticle
+                float followedSize = Mathf.Max(targSize.x + 1.5F, targSize.y + 1.5F); // grab the maximum bounded size of the target
                 GetComponent<SpriteRenderer>().size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
                 return; // Return so that the next check doesn't happen
             }
@@ -134,13 +132,13 @@ public class ReticleScript : MonoBehaviour {
             transform.position = target.position; // update reticle position
             GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
 
-            Entity targetCraft = target.GetComponent<Entity>(); // if target is an entity
-            if (targetCraft)
+            ITargetable targetCraft = target.GetComponent<ITargetable>(); // if target is an entity
+            if (targetCraft != null)
             {
                 // show craft related information
 
                 shellimage.GetComponentInChildren<SpriteRenderer>().enabled = true;
-                shellimage.GetComponentInChildren<SpriteRenderer>().color = FactionColors.colors[targSys.GetTarget().GetComponent<Entity>().faction];
+                shellimage.GetComponentInChildren<SpriteRenderer>().color = FactionColors.colors[targSys.GetTarget().GetComponent<ITargetable>().GetFaction()];
                 coreimage.GetComponentInChildren<SpriteRenderer>().enabled = true;
 
                 float[] targHealth = targetCraft.GetHealth(); // get the target current health
@@ -183,9 +181,9 @@ public class ReticleScript : MonoBehaviour {
             }
             if (targSys.GetTarget() != null) // check if the reticle should update
             {
-                Entity targetCraft = targSys.GetTarget().GetComponent<Entity>();
+                ITargetable targetCraft = targSys.GetTarget().GetComponent<ITargetable>();
 
-                if (targetCraft && targetCraft.GetIsDead()) { 
+                if (targetCraft != null && targetCraft.GetIsDead()) { 
                     // check if the target craft is dead
                     targSys.SetTarget(null); // if so remove the target lock
                 }
