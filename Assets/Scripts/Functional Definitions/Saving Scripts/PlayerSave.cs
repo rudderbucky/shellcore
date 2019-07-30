@@ -14,4 +14,6 @@ public class PlayerSave {
 	public string[] presetBlueprints;
 	public float timePlayed;
 	public int credits;
+	public int[] abilityCaps;
+	public int shards;
 }

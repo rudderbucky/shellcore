@@ -12,6 +12,7 @@ public class Shard : MonoBehaviour
     private bool rotationDirection = true;
     private float rotationOffset;
     private bool hasDetached; // is the part detached
+    public int tier;
     public void SetCollectible(bool collectible) {
         this.collectible = collectible;
     }

@@ -25,12 +25,23 @@ public class ShardRock : MonoBehaviour, IDamageable
     public bool dead = false;
     private GameObject explosionCirclePrefab;
     public Sprite[] shardSprites;
+    public Sprite[] tierSprites;
     public GameObject shard;
+    public int tier = 1;
     public void Start() {
         BuildRock();
     }
 
+    private Color[] rockColors = new Color[] {
+        new Color32((byte)51, (byte)153, (byte)204, (byte)255),
+        new Color32((byte)153, (byte)204, (byte)51, (byte)255),
+        new Color32((byte)204, (byte)51, (byte)153, (byte)255),
+    };
+
     private void BuildRock() {
+        var rend = GetComponent<SpriteRenderer>();
+        rend.sprite = tierSprites[tier];
+        rend.color = Color.white;
         if (!explosionCirclePrefab)
         {
             explosionCirclePrefab = new GameObject("Explosion Circle");
@@ -40,7 +51,7 @@ public class ShardRock : MonoBehaviour, IDamageable
             var script = explosionCirclePrefab.AddComponent<DrawCircleScript>();
             script.timeMin = 0F;
             explosionCirclePrefab.SetActive(false);
-            script.color = new Color32(0, (byte)163, (byte)255, (byte)255);
+            script.color = rockColors[tier];
         }
     }
 
@@ -104,12 +115,14 @@ public class ShardRock : MonoBehaviour, IDamageable
         Destroy(tmp, 1); // destroy explosions after 1 second
         for(int i = 0; i < 3; i++) {
             var rend = Instantiate(shard, null, false).GetComponent<SpriteRenderer>();
-            rend.color = GetComponent<SpriteRenderer>().color;
+            rend.color = rockColors[tier];
             rend.transform.position = transform.position;   
             rend.sprite = shardSprites[Random.Range(0, 3)];
             rend.gameObject.AddComponent<Draggable>();
-            rend.GetComponent<Shard>().Detach();
-            rend.GetComponent<Shard>().SetCollectible(i == 0);
+            var shardComp = rend.GetComponent<Shard>();
+            shardComp.Detach();
+            shardComp.SetCollectible(i == 0);
+            shardComp.tier = tier;
         }
     }
     void Update() {

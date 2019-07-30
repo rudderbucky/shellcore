@@ -277,11 +277,6 @@ public class SectorManager : MonoBehaviour
         }
         entity.ID = data.ID;
 
-        // TODO:
-        // I think we should move dialogue setting to BuildEntity() since each entity's
-        // dialogue should vary in the blueprint rather than using the resource manager
-        // since that allows for more custom dialogue using the sector creator
-        // (I already sort of did this but didn't remove the setting here)
         if (data.dialogueID != "")
         {
             entity.dialogue = ResourceManager.GetAsset<Dialogue>(data.dialogueID);
@@ -300,6 +295,10 @@ public class SectorManager : MonoBehaviour
             data.sectorjson = JsonUtility.ToJson(current);
             current.name = "SavedSector";
             current.platform.name = "SavedSectorPlatform";
+            // var x = JsonUtility.ToJson(data);
+		    // string path = Application.streamingAssetsPath + "\\Sectors\\" + "SavedSector";
+		    // System.IO.File.WriteAllText(path, x);
+		    // System.IO.Path.ChangeExtension(path, ".json");            
             UnityEditor.AssetDatabase.CreateAsset(current, "Assets/SavedSector.asset");
             UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/SavedSectorPlatform.asset");
         }
@@ -366,7 +365,9 @@ public class SectorManager : MonoBehaviour
                     gObj.GetComponent<SpriteRenderer>().color = FactionColors.colors[current.entities[i].faction];
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
-
+                if(gObj.GetComponent<ShardRock>()) {
+                    gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].vendingID);
+                }
                 objects.Add(current.entities[i].ID, gObj);
             }
             else if(obj is EntityBlueprint)

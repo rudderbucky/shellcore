@@ -28,6 +28,7 @@ public class DialogueSystem : MonoBehaviour
     string text = "";
     Transform playerTransform;
     Vector3? speakerPos;
+    public CoreUpgraderScript upgraderScript;
     private void Awake()
     {
         Instance = this;
@@ -336,6 +337,11 @@ public class DialogueSystem : MonoBehaviour
             case Dialogue.DialogueAction.Workshop:
                 workshop.yardPosition = (Vector3)speakerPos;
                 workshop.InitializeSelectionPhase();
+                endDialogue();
+                ResourceManager.PlayClipByID(null);
+                return;
+            case Dialogue.DialogueAction.Upgrader:
+                upgraderScript.initialize();
                 endDialogue();
                 ResourceManager.PlayClipByID(null);
                 return;

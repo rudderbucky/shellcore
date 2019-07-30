@@ -27,6 +27,8 @@ public class SaveHandler : MonoBehaviour {
 				player.blueprint.coreSpriteID = "core1_light";
 				player.blueprint.coreShellSpriteID = "core1_shell";
 			}
+			player.abilityCaps = save.abilityCaps;
+			player.shards = save.shards;
 			player.cursave = save;
 			player.credits = save.credits;
 			if(save.presetBlueprints.Length != 5) {
@@ -46,6 +48,7 @@ public class SaveHandler : MonoBehaviour {
 			player.blueprint.coreSpriteID = "core1_light";
 			player.blueprint.coreShellSpriteID = "core1_shell";
 			player.cursave = save;
+			player.abilityCaps = new int[] {10, 10, 10, 10};
 		}
 	}
 	
@@ -57,6 +60,8 @@ public class SaveHandler : MonoBehaviour {
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
 		save.credits = player.credits;
+		save.abilityCaps = player.abilityCaps;
+		save.shards = player.shards;
 		string saveJson = JsonUtility.ToJson(save);
 		File.WriteAllText(currentPath, saveJson);
 	}
