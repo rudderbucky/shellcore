@@ -139,7 +139,7 @@ public class DialogueSystem : MonoBehaviour
             button.anchoredPosition = new Vector2(0, 24 + 16 * (node.answers.Count - (i + 1)));
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
-                endDialogue(index + 1);// cancel is always first -> start from 1
+                endDialogue(index + 1, index != 0);// cancel is always first -> start from 1
             });
             button.Find("Text").GetComponent<Text>().text = node.answers[i];
 
@@ -154,7 +154,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker, PlayerCore player) //TODO: reward part image
     {
-        if (window) endDialogue(0);
+        if (window) endDialogue(0, false);
         playerTransform = player ? player.transform : null;
         //speakerPos = speaker.transform.position;
         //create window
@@ -167,7 +167,7 @@ public class DialogueSystem : MonoBehaviour
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
-        ResourceManager.PlayClipByID("clip_select"); // task button cannot create a noise because it launches endDialogue()
+        ResourceManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
                                                      // so cover for its noise here
         ResourceManager.PlayClipByID("clip_typing", false);
         // change text
@@ -183,6 +183,8 @@ public class DialogueSystem : MonoBehaviour
         background.transform.Find("Credit Reward Text").GetComponent<Text>().text =
         "Credit reward: " + node.creditReward;
 
+        background.transform.Find("Reputation Reward Text").GetComponent<Text>().text =
+        "Reputation reward: " + node.reputationReward;
         // Part reward
         if(node.partReward)
         {
@@ -241,9 +243,11 @@ public class DialogueSystem : MonoBehaviour
             button.anchoredPosition = new Vector2(0, 24 + 16 * i/*(node.outputKnobs.Count - (i + 1))*/);
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
-                ResourceManager.PlayClipByID(null);
-                ResourceManager.PlayClipByID("clip_select", false);
-                endDialogue(index);
+                if(index == 1) 
+                { 
+                    SectorManager.instance.player.alerter.showMessage("New Task", "clip_victory");
+                    endDialogue(index, false);
+                } else endDialogue(index, true);
             });
             button.Find("Text").GetComponent<Text>().text = answers[i];
 
@@ -277,7 +281,7 @@ public class DialogueSystem : MonoBehaviour
         if(dialogue.nodes.Count == 0)
         {
             Debug.LogWarning("Empty dialogue: " + dialogue.name);
-            endDialogue();
+            endDialogue(0, false);
             return;
         }
 
@@ -306,8 +310,7 @@ public class DialogueSystem : MonoBehaviour
                 break;
             case Dialogue.DialogueAction.Outpost:
                 if(speaker.faction != player.faction) {
-                    endDialogue();
-                    ResourceManager.PlayClipByID(null);
+                    endDialogue(0, false);
                     return;
                 }
                 if(((Vector3)speakerPos - player.transform.position).magnitude < dialogue.vendingBlueprint.range) {
@@ -316,34 +319,29 @@ public class DialogueSystem : MonoBehaviour
                     vendorUI.player = player;
                     vendorUI.openUI();
                 }
-                endDialogue();
-                ResourceManager.PlayClipByID(null);
+                endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Shop:
 			    builder.yardPosition = (Vector3)speakerPos;
 			    builder.Initialize(BuilderMode.Trader, dialogue.traderInventory);
-                endDialogue();
-                ResourceManager.PlayClipByID(null);
+                endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Yard:
 			    builder.yardPosition = (Vector3)speakerPos;
 			    builder.Initialize(BuilderMode.Yard, null);
-                endDialogue();
-                ResourceManager.PlayClipByID(null);
+                endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Exit:
-                endDialogue();
+                endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Workshop:
                 workshop.yardPosition = (Vector3)speakerPos;
                 workshop.InitializeSelectionPhase();
-                endDialogue();
-                ResourceManager.PlayClipByID(null);
+                endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Upgrader:
                 upgraderScript.initialize();
-                endDialogue();
-                ResourceManager.PlayClipByID(null);
+                endDialogue(0, false);
                 return;
             default:
                 break;
@@ -378,7 +376,7 @@ public class DialogueSystem : MonoBehaviour
             });
             if(dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit) {
                 button.GetComponent<Button>().onClick.AddListener(()=> {
-                    ResourceManager.PlayClipByID("clip_select", false); 
+                    ResourceManager.PlayClipByID("clip_select", true); 
                     // need condition to ensure no sound clashes occur
                 });
             }
@@ -401,8 +399,9 @@ public class DialogueSystem : MonoBehaviour
         return -1;
     }
 
-    private void endDialogue(int answer = 0)
+    private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
+        window.playSoundOnClose = soundOnClose;
         window.ToggleActive();
         Destroy(window.transform.root.gameObject);
         if (OnDialogueEnd != null)

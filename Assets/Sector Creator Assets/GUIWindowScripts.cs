@@ -11,9 +11,10 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
 	Vector2 mousePos;
 	bool selected;
+	public bool playSoundOnClose = true;
 	public virtual void CloseUI() {
 		if(transform.parent.gameObject.activeSelf) {
-			ResourceManager.PlayClipByID("clip_back");
+			if(playSoundOnClose) ResourceManager.PlayClipByID("clip_back", true);
 			transform.parent.gameObject.SetActive(false);
 		}
 	}

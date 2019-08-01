@@ -86,26 +86,27 @@ public class SectorManager : MonoBehaviour
         GameObject.Find("Path Input").transform.parent.gameObject.SetActive(false);
         if(System.IO.Directory.Exists(path)) {
             try {
-            string[] files = Directory.GetFiles(path);
-            current = null;
-            sectors = new List<Sector>();
-            foreach (string file in files)
-            {
-                string sectorjson = System.IO.File.ReadAllText(file);
-                SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
-                Debug.Log("Platform JSON: " + data.platformjson);
-                Debug.Log("Sector JSON: " + data.sectorjson);
-                Sector curSect = ScriptableObject.CreateInstance<Sector>();
-                JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
-                LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
-                JsonUtility.FromJsonOverwrite(data.platformjson, plat);
-                plat.name = curSect.name + "Platform";
-                curSect.platform = plat;
-                sectors.Add(curSect);
-            }
-            Debug.Log("worked");
-            jsonMode = false;
-            return;
+                string[] files = Directory.GetFiles(path);
+                current = null;
+                sectors = new List<Sector>();
+                foreach (string file in files)
+                {
+                    string sectorjson = System.IO.File.ReadAllText(file);
+                    SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                    Debug.Log("Platform JSON: " + data.platformjson);
+                    Debug.Log("Sector JSON: " + data.sectorjson);
+                    Sector curSect = ScriptableObject.CreateInstance<Sector>();
+                    JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
+                    LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                    JsonUtility.FromJsonOverwrite(data.platformjson, plat);
+                    plat.name = curSect.name + "Platform";
+                    curSect.platform = plat;
+                    sectors.Add(curSect);
+                }
+                player.SetIsInteracting(false);
+                Debug.Log("worked");
+                jsonMode = false;
+                return;
             } catch(System.Exception e){
                 Debug.Log(e);
             };
@@ -350,7 +351,7 @@ public class SectorManager : MonoBehaviour
             player.ResetPower();
             objects.Add("player", player.gameObject);
             player.sectorMngr = this;
-            player.alerter.showMessage("ENTERING SECTOR: " + current.sectorName);
+            player.alerter.showMessage("Entering sector: " + current.sectorName);
         }
 
 

@@ -25,7 +25,7 @@ public class Missile : WeaponAbility {
     }
     protected override bool Execute(Vector3 victimPos)
     {
-        if (targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not
+        if (targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponent<IDamageable>() != null) // check if there is actually a target, do not fire if there is not
         {
             if(missilePrefab == null)
                 missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");

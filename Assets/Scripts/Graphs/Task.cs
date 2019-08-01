@@ -13,4 +13,5 @@ public class Task
     public float creditReward;
     public EntityBlueprint.PartInfo partReward;
     public string taskGiverID;
+    public int reputationReward;
 }

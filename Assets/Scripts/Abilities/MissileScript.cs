@@ -91,18 +91,18 @@ public class MissileScript : MonoBehaviour {
         this.category = category;
     }
 
-    public bool CheckCategoryCompatibility(Entity entity)
+    public bool CheckCategoryCompatibility(IDamageable entity)
     {
-        return (category == Entity.EntityCategory.All || category == entity.category) && (terrain == Entity.TerrainType.All || terrain == entity.Terrain);
+        return (category == Entity.EntityCategory.All || category == entity.GetCategory()) && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
-        var craft = hit.GetComponent<Entity>(); // check if it has a craft component
+        var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
         if (craft != null) // check if the component was obtained
         {
-            if (craft.faction != faction && CheckCategoryCompatibility(craft))
+            if (craft.GetFaction() != faction && CheckCategoryCompatibility(craft))
             {
                 var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
                                                         // if the shell is low, damage the part

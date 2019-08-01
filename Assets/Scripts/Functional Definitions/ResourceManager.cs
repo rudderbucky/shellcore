@@ -136,10 +136,11 @@ public class ResourceManager : MonoBehaviour
          AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos, soundVolume);
     }
 
-    public static void PlayClipByID(string ID, bool clear=true) {
+    // Plays the clip directly on the player
+    public static void PlayClipByID(string ID, bool clear=false) {
         if(Instance.playerSource != null) {
             if(clear) Instance.playerSource.Stop();
-            if(ID != null) Instance.playerSource.PlayOneShot(GetAsset<AudioClip>(ID), soundVolume);
+            if(ID != null) Instance.playerSource.PlayOneShot(GetAsset<AudioClip>(ID), soundVolume / 4);
             // can pass null just to clear the sound buffer
         }
         // TODO: Add audio sources to places that need it

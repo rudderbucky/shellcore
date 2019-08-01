@@ -9,6 +9,19 @@ using UnityEngine.UI;
 /// </summary>
 public class HUDScript : MonoBehaviour {
 
+    private bool initialized;
+    private void InitializeConstantHUD(PlayerCore player) {
+        Camera.main.GetComponent<CameraScript>().Initialize(player);
+        GetComponentInChildren<ReticleScript>().Initialize(player);
+        GetComponentInChildren<QuantityDisplayScript>().Initialize(player);
+        GetComponentInChildren<InfoText>().player = player.transform;
+        InfoText[] infos = GetComponentsInChildren<InfoText>();
+        player.alerter = infos[0];
+        player.interactAlerter = infos[1];
+        GetComponentInChildren<ProximityInteractScript>().player = player;        
+        if(GetComponentInChildren<HUDArrowScript>()) GetComponentInChildren<HUDArrowScript>().Initialize(player);
+        GetComponentInChildren<MinimapArrowScript>().Initialize(player);
+    }
     /// <summary>
     /// Initializes the HUD
     /// </summary>
@@ -16,16 +29,8 @@ public class HUDScript : MonoBehaviour {
         // Initialize all HUD elements
         GetComponentInChildren<HealthBarScript>().Initialize(player);
         GetComponentInChildren<AbilityHandler>().Initialize(player);
-        GetComponentInChildren<ReticleScript>().Initialize(player);
-        GetComponentInChildren<QuantityDisplayScript>().Initialize(player);
-        GetComponentInChildren<InfoText>().player = player.transform;
-        InfoText[] infos = GetComponentsInChildren<InfoText>();
-        player.alerter = infos[0];
-        player.interactAlerter = infos[1];
-        GetComponentInChildren<ProximityInteractScript>().player = player;
-        Camera.main.GetComponent<CameraScript>().Initialize(player);
-        if(GetComponentInChildren<HUDArrowScript>()) GetComponentInChildren<HUDArrowScript>().Initialize(player);
-        GetComponentInChildren<MinimapArrowScript>().Initialize(player);
+        if(!initialized) InitializeConstantHUD(player);
+        initialized = true;
         // GetComponentInChildren<FadeUIScript>().Initialize(player); temporarily removed due to implementation difficulties
     }
 

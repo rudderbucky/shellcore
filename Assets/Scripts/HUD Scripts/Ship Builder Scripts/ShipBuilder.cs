@@ -157,7 +157,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		PastSpawnsLimit,
 		PastWeaponsLimit,
 		PastPassivesLimit,
-		PastPartLimit
+		PartTooHeavy
 	}
 	private void SetReconstructButton(ReconstructButtonStatus status) {
 		switch(status) {
@@ -189,9 +189,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				reconstructImage.color = reconstructText.color = Color.red;
 				reconstructText.text = "Too many Passives!";
 				break;
-			case ReconstructButtonStatus.PastPartLimit:
+			case ReconstructButtonStatus.PartTooHeavy:
 				reconstructImage.color = reconstructText.color = Color.red;
-				reconstructText.text = "Core cannot handle more!";				
+				reconstructText.text = "A part is too heavy for your core!";				
 				break;
 		}
 	}
@@ -212,6 +212,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		SetReconstructButton(cursorScript.buildCost > player.credits ? 
 			ReconstructButtonStatus.NotEnoughCredits : ReconstructButtonStatus.Valid);
 		var shellRect = GetRect(shell.rectTransform);
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			shipPart.isInChain = false;
 			var partBounds = GetRect(shipPart.rectTransform);
@@ -223,9 +224,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				shipPart.isInChain = !z;
 			}
 		}
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(shipPart.isInChain) UpdateChainHelper(shipPart);
 		}
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) { 
 			// perform the same calculation again to falsify parts that are too close to the shell
 			// TODO: make this less st*pid
@@ -238,6 +241,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				shipPart.isInChain = !z;
 			}
 		}
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(!shipPart.isInChain || !shipPart.validPos) {
 				SetReconstructButton(ReconstructButtonStatus.PartInvalidPosition);
@@ -245,7 +249,19 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			}
 		}
 
+		CheckPartSizes();
 		CheckAbilityCaps();
+	}
+
+	private bool CheckPartSizes() {
+		int maxTier = CoreUpgraderScript.GetPartTierLimit(player.blueprint.coreShellSpriteID);
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(ResourceManager.GetAsset<PartBlueprint>(shipPart.info.partID).size > maxTier) {
+				SetReconstructButton(ReconstructButtonStatus.PartTooHeavy);
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private bool CheckAbilityCaps() {
@@ -256,8 +272,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			currentAbilitynumbers[type]++;
 		}
 
+		var extras = CoreUpgraderScript.GetExtraAbilities(player.blueprint.coreShellSpriteID);
+
 		for(int i = 0; i < 4; i++) {
-			if(currentAbilitynumbers[i] > abilityLimits[i]) {
+			if(currentAbilitynumbers[i] > abilityLimits[i] + extras[i]) {
 				SetReconstructButton((ReconstructButtonStatus)(3 + i));
 				return false;
 			}
@@ -277,6 +295,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		// set up actual stats
 		this.mode = mode;
+		cursorScript.SetMode(mode);
 		searcherString = "";
 		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
 		traderContentsArray = new Transform[] {traderSmallContents, traderMediumContents, traderLargeContents};
@@ -537,6 +556,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public void Deinitialize() {
 		if(cursorScript.buildCost > player.credits) return;
 		if(!CheckAbilityCaps()) return;
+		if(!CheckPartSizes()) return;
 		bool invalidState = false;
 		foreach(ShipBuilderPart part in cursorScript.parts) {
 			if(!part.validPos || !part.isInChain) {

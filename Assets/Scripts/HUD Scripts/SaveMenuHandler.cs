@@ -113,7 +113,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		blueprint.coreSpriteID = "core1_light";
 		blueprint.coreShellSpriteID = "core1_shell";
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
-		save.abilityCaps = new int[] {10, 10, 10, 10};
+		save.abilityCaps = new int[] {10, 3, 10, 10};
 		save.shards = 0;
 		save.version = currentVersion;
 

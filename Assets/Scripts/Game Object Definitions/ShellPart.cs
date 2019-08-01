@@ -140,8 +140,8 @@ public class ShellPart : MonoBehaviour {
             var targ = GetComponent<WeaponAbility>().GetTarget();
             if (targ != null)
             {
-                var targEntity = targ.GetComponent<Entity>();
-                if (targEntity && targEntity.faction != craft.faction)
+                var targEntity = targ.GetComponent<IDamageable>();
+                if (targEntity != null && targEntity.GetFaction() != craft.faction)
                 {
                     Vector3 targeterPos = targ.position;
                     Vector3 diff = targeterPos - shooter.transform.position;
