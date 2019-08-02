@@ -28,15 +28,17 @@ public class Cannon : WeaponAbility {
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if(!effectPrefab) effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
-        if (targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not
-        {
-            ResourceManager.PlayClipByID("clip_cannon", transform.position);
-            FireCannon(targetingSystem.GetTarget().GetComponent<Entity>()); // fire if there is
-            isOnCD = true; // set on cooldown
-            return true;
-        }
-        return false;
+        if(Core.RequestGCD()) {
+            if(!effectPrefab) effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+            if (targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not
+            {
+                ResourceManager.PlayClipByID("clip_cannon", transform.position);
+                FireCannon(targetingSystem.GetTarget().GetComponent<Entity>()); // fire if there is
+                isOnCD = true; // set on cooldown
+                return true;
+            }
+            return false;
+        } return false;
     }
 
     protected void Update()

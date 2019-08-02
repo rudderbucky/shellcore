@@ -51,6 +51,7 @@ public class ShardRock : MonoBehaviour, IDamageable
             var script = explosionCirclePrefab.AddComponent<DrawCircleScript>();
             script.timeMin = 0F;
             explosionCirclePrefab.SetActive(false);
+            script.SetStartColor(rockColors[tier]);
             script.color = rockColors[tier];
         }
     }
@@ -118,7 +119,7 @@ public class ShardRock : MonoBehaviour, IDamageable
             rend.color = rockColors[tier];
             rend.transform.position = transform.position;   
             rend.sprite = shardSprites[Random.Range(0, 3)];
-            rend.gameObject.AddComponent<Draggable>();
+            if(i == 0) rend.gameObject.AddComponent<Draggable>();
             var shardComp = rend.GetComponent<Shard>();
             shardComp.Detach();
             shardComp.SetCollectible(i == 0);

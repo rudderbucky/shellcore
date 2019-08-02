@@ -162,6 +162,10 @@ public class SectorManager : MonoBehaviour
                         {
                             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                             JsonUtility.FromJsonOverwrite(json, blueprint);
+                            blueprint.entityName = data.name;
+                            if(data.name == "Clearly Delusional")
+                                blueprint.dialogue = ResourceManager.GetAsset<Dialogue>("default_dialogue");
+                            // hack for now, TODO: implement JSON dialogue
                         }
                     }
                     catch (System.Exception e)

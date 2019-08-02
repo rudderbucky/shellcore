@@ -31,7 +31,7 @@ public class Entity : MonoBehaviour, IDamageable {
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
     public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
-    public Dialogue dialogue; // dialogue of entity TODO: maybe move to shellcore
+    public Dialogue dialogue; // dialogue of entity
     protected bool isDraggable; // is the entity draggable?
     protected Draggable draggable; // associated draggable
     private bool initialized; // is the entity safe to call update() on?
@@ -42,6 +42,10 @@ public class Entity : MonoBehaviour, IDamageable {
     private Entity lastDamagedBy;
 
     public string entityName;
+
+    private float weaponGCD = 0.18F; // weapon global cooldown
+    private float weaponGCDTimer;
+
     public enum TerrainType // terrain type of entity
     {
         Ground,
@@ -436,6 +440,9 @@ public class Entity : MonoBehaviour, IDamageable {
             RegenHealth(ref currentHealth[1], regenRate[1], maxHealth[1]);
             RegenHealth(ref currentHealth[2], regenRate[2], maxHealth[2]);
 
+            if(weaponGCDTimer < weaponGCD) {
+                weaponGCDTimer += Time.deltaTime; // tick GCD timer
+            }
             // check if busy state changing is due
             if (busyTimer > 5)
             {
@@ -450,6 +457,17 @@ public class Entity : MonoBehaviour, IDamageable {
             }
             else combatTimer += Time.deltaTime; // otherwise continue ticking timer
         }
+    }
+
+    /// <summary>
+    /// Request weapon global cooldown (used by weapon abilities)
+    /// </summary>
+    public bool RequestGCD() {
+        if(weaponGCDTimer >= weaponGCD) {
+            weaponGCDTimer = 0;
+            return true;
+        }
+        return false;
     }
 
     public virtual void RemovePart(ShellPart part)

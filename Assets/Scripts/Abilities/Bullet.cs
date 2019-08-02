@@ -42,11 +42,14 @@ public class Bullet : WeaponAbility {
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if (targetingSystem.GetTarget()) // check if there is actually a target, do not fire if there is not
-        {
-            FireBullet(victimPos); // fire if there is
-            isOnCD = true; // set on cooldown
-            return true;
+        if(Core.RequestGCD()) {
+            if (targetingSystem.GetTarget()) // check if there is actually a target, do not fire if there is not
+            {
+                FireBullet(victimPos); // fire if there is
+                isOnCD = true; // set on cooldown
+                return true;
+            }
+            return false;
         }
         return false;
     }

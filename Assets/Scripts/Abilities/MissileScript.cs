@@ -104,7 +104,7 @@ public class MissileScript : MonoBehaviour {
     {
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
-        if (craft != null) // check if the component was obtained
+        if (craft != null && !craft.GetIsDead()) // check if the component was obtained
         {
             if (craft.GetFaction() != faction && CheckCategoryCompatibility(craft))
             {
@@ -124,7 +124,7 @@ public class MissileScript : MonoBehaviour {
     }
     public void OnDestroy() {
         if(!worked) {
-            vector = target.position - transform.position;
+            vector = target && transform ? (target.position - transform.position) : Vector3.zero;
             var miss = Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, 
                 Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg)).GetComponent<ParticleSystem>();
         }

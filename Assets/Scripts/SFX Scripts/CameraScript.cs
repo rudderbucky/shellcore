@@ -34,11 +34,15 @@ public class CameraScript : MonoBehaviour {
         {
             if (core.IsMoving()) // lock camera
             {
-                Vector3 goalPos = core.transform.position; // update vector
-                goalPos.z = core.transform.position.z - 10; // maintain z axis difference
-                transform.position = goalPos; // set position
+                Focus();
             }
 
         }
+    }
+
+    public void Focus() {
+        Vector3 goalPos = core.transform.position; // update vector
+        goalPos.z = core.transform.position.z - 10; // maintain z axis difference
+        transform.position = goalPos; // set position
     }
 }

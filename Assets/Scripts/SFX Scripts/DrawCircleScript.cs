@@ -74,7 +74,7 @@ public class DrawCircleScript : MonoBehaviour {
                 }
                 else
                 {
-                    line.startColor = new Color(color.r, color.g, color.b, 0); // set to transparent
+                    line.startColor -= new Color(0, 0, 0, 1); // set to transparent
                     line.endColor = new Color(color.r, color.g, color.b, 0); // set to transparent
                 }
             }
@@ -89,6 +89,7 @@ public class DrawCircleScript : MonoBehaviour {
     void CreatePoints(float xradius, float yradius)
     {
         alpha -= 4*Time.deltaTime; // decrease alpha
+        line.startColor = new Color(line.startColor.r, line.startColor.g, line.startColor.b, alpha);
         line.endColor = new Color(color.r, color.g, color.b, alpha);
         // declare some storage fields
         float x;

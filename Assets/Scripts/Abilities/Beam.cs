@@ -68,23 +68,25 @@ public class Beam : WeaponAbility {
 
     protected override bool Execute(Vector3 victimPos)
     {
-        if(!beamHitPrefab) beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
-        if (targetingSystem.GetTarget()) // check and get the weapon target
-        {
-            ResourceManager.PlayClipByID("clip_beam", transform.position);
-            var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
-            // deal instant damage
+        if(Core.RequestGCD()) {
+            if(!beamHitPrefab) beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+            if (targetingSystem.GetTarget()) // check and get the weapon target
+            {
+                ResourceManager.PlayClipByID("clip_beam", transform.position);
+                var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
+                // deal instant damage
 
-            if(targetingSystem.GetTarget().GetComponent<Entity>())
-                targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
-            line.positionCount = 2; // render the beam line
-            timer = 0; // start the timer
-            isOnCD = true; // set booleans and return
-            firing = true;
+                if(targetingSystem.GetTarget().GetComponent<Entity>())
+                    targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
+                line.positionCount = 2; // render the beam line
+                timer = 0; // start the timer
+                isOnCD = true; // set booleans and return
+                firing = true;
 
-            Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
-            return true;
-        }
-        return false;
+                Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
+                return true;
+            }
+            return false;
+        } return false;
     }
 }

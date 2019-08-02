@@ -30,6 +30,7 @@ public class HUDScript : MonoBehaviour {
         GetComponentInChildren<HealthBarScript>().Initialize(player);
         GetComponentInChildren<AbilityHandler>().Initialize(player);
         if(!initialized) InitializeConstantHUD(player);
+        Camera.main.GetComponent<CameraScript>().Focus();
         initialized = true;
         // GetComponentInChildren<FadeUIScript>().Initialize(player); temporarily removed due to implementation difficulties
     }

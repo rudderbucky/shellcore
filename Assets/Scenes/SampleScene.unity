@@ -938,9 +938,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 0.8
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
@@ -6811,7 +6811,7 @@ MonoBehaviour:
   - ID: carrier_blueprint
     obj: {fileID: 11400000, guid: 05612ec0affc87a49bdfb25a24278977, type: 2}
   - ID: shellcore_blueprint
-    obj: {fileID: 11400000, guid: 6bbe4cc748a191643a1e0b053d11abb1, type: 2}
+    obj: {fileID: 11400000, guid: c285da2309c0ede4d9bab08c54b7167a, type: 2}
   - ID: outpost_blueprint
     obj: {fileID: 11400000, guid: a3a4d511b5becee4e961b6f1cbc3d24f, type: 2}
   - ID: energy_rock
@@ -6827,7 +6827,7 @@ MonoBehaviour:
   - ID: bunker_vending_blueprint
     obj: {fileID: 11400000, guid: 8a416ef974a215c4197b5a269040a75b, type: 2}
   - ID: demo_enemy_shellcore
-    obj: {fileID: 11400000, guid: 03cbbb006645bd141a878a3fc7bf46da, type: 2}
+    obj: {fileID: 11400000, guid: 8b9cce9b8a5c1d545b7eb9b9bd135b26, type: 2}
   - ID: clip_respawn
     obj: {fileID: 8300000, guid: fcdc02c551db0b94d898de488f45a1fa, type: 3}
   - ID: 4 Entry
@@ -7040,6 +7040,14 @@ MonoBehaviour:
     obj: {fileID: 21300000, guid: 989903e44fcddd74db6af9b2f3b7fb37, type: 3}
   - ID: core4captain_shell
     obj: {fileID: 21300000, guid: cdd827848c1befb48862aa32c215619f, type: 3}
+  - ID: clip_bullet2
+    obj: {fileID: 8300000, guid: 948453a7d3fede640a66fed67337b142, type: 3}
+  - ID: weapon_hit_particle
+    obj: {fileID: 1502281276678149486, guid: 1042cc1ecdd8e644fbf1602a91dac5c9, type: 3}
+  - ID: default_dialogue
+    obj: {fileID: 11400000, guid: 41454ead34a8695408df3b27c69ea450, type: 2}
+  - ID: AbilitySprite21
+    obj: {fileID: 21300000, guid: 43fab78f243aa6b42982485a036833ee, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
@@ -15247,11 +15255,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 224035879600292394, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_RootOrder
@@ -15369,6 +15372,11 @@ PrefabInstance:
 
 
 '
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114773807705464322, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}

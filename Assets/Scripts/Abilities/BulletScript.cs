@@ -56,7 +56,7 @@ public class BulletScript : MonoBehaviour {
     {
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
-        if (craft != null) // check if the component was obtained
+        if (craft != null && !craft.GetIsDead()) // check if the component was obtained
         {
             if (craft.GetFaction() != faction && CheckCategoryCompatibility(craft))
             {

@@ -332,7 +332,7 @@ public class DialogueSystem : MonoBehaviour
                 endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Exit:
-                endDialogue(0, false);
+                endDialogue(0, true);
                 return;
             case Dialogue.DialogueAction.Workshop:
                 workshop.yardPosition = (Vector3)speakerPos;

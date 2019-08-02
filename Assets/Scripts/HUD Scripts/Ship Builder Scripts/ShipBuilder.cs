@@ -380,13 +380,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 					for(int i = 0; i < 3; i++) 
 					{
 						info.partID = name;
-						info.abilityID = Random.Range(0,21);
+						info.abilityID = Random.Range(0,22);
 						if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
 						if(info.abilityID == 10) {
 							DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 8));
 							info.secondaryData = JsonUtility.ToJson(data);
 						}
-						if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
+						if(info.abilityID == 0 || info.abilityID == 10 || info.abilityID == 21) info.tier = 0;
 						else info.tier = Random.Range(1, 4);
 						parts.Add(info);
 					}
