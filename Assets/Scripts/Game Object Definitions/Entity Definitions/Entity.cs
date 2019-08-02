@@ -118,7 +118,7 @@ public class Entity : MonoBehaviour, IDamageable {
             explosionCirclePrefab.transform.SetParent(transform, false);
             LineRenderer lineRenderer = explosionCirclePrefab.AddComponent<LineRenderer>();
             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
-            explosionCirclePrefab.AddComponent<DrawCircleScript>();
+            explosionCirclePrefab.AddComponent<DrawCircleScript>().SetStartColor(FactionColors.colors[faction]);
             explosionCirclePrefab.SetActive(false);
         }
         if (!explosionLinePrefab)
@@ -127,7 +127,7 @@ public class Entity : MonoBehaviour, IDamageable {
             explosionLinePrefab.transform.SetParent(transform, false);
             LineRenderer lineRenderer = explosionLinePrefab.AddComponent<LineRenderer>();
             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
-            explosionLinePrefab.AddComponent<DrawLineScript>();
+            explosionLinePrefab.AddComponent<DrawLineScript>().SetStartColor(FactionColors.colors[faction]);
             explosionLinePrefab.SetActive(false);
         }
         if (!GetComponent<SpriteRenderer>())

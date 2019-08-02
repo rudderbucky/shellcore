@@ -21,6 +21,7 @@ public class MainBullet : Bullet {
         damage = 100;
         description = "Projectile that deals " + damage + " damage. \nStays with you no matter what.";
         abilityName = "Main Bullet";
+        bulletSound = "clip_bullet";
     }
 
 }

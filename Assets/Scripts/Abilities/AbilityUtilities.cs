@@ -119,7 +119,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 8:
 				return "Slow projectile that deals " + 500 * ability.GetTier() + " damage to ground entities.";
 			case 9:
-				return "Fast projectile that deals " + 50 * ability.GetTier() + " damage. 50% pierces to core.";
+				return "Fast projectile that deals " + 50 * ability.GetTier() + " damage. 18% pierces to core.";
 			case 10:
 				return DroneUtilities.GetDescriptionByType((ability as SpawnDrone).spawnData.type);
 			case 11:

@@ -7,12 +7,17 @@ using UnityEngine;
 /// </summary>
 public class BulletScript : MonoBehaviour {
 
+    public bool missParticles = false;
+    public GameObject hitPrefab;
+    public GameObject missPrefab;
     private float damage; // damage of the spawned bullet
     private int faction;
     public Entity owner;
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
     private float pierceFactor = 0;
+    Vector2 vector;
+    bool worked = false;
 
     /// <summary>
     /// Sets the damage value of the spawned buller
@@ -65,8 +70,23 @@ public class BulletScript : MonoBehaviour {
                     part.TakeDamage(residue); // damage the part
                 }
                 damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
+                worked = true;
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
         }
+    }
+
+    public void OnDestroy() {
+        if(!worked && missParticles) Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg));
+        else if(worked) Instantiate(hitPrefab, transform.position, Quaternion.identity);
+
+        if(transform.GetComponentInChildren<TrailRenderer>()) {
+            transform.GetComponentInChildren<TrailRenderer>().autodestruct = true;
+            transform.DetachChildren();
+        }
+    }
+
+    void Start() {
+        vector = GetComponent<Rigidbody2D>().velocity;
     }
 }

@@ -8,6 +8,7 @@ public class Beam : WeaponAbility {
     private Material material; // material used by the line renderer
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
+    public GameObject beamHitPrefab;
 
     protected override void Awake()
     {
@@ -67,6 +68,7 @@ public class Beam : WeaponAbility {
 
     protected override bool Execute(Vector3 victimPos)
     {
+        if(!beamHitPrefab) beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
         if (targetingSystem.GetTarget()) // check and get the weapon target
         {
             ResourceManager.PlayClipByID("clip_beam", transform.position);
@@ -79,6 +81,8 @@ public class Beam : WeaponAbility {
             timer = 0; // start the timer
             isOnCD = true; // set booleans and return
             firing = true;
+
+            Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
             return true;
         }
         return false;

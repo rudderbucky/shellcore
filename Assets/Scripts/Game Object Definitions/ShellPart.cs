@@ -29,6 +29,9 @@ public class ShellPart : MonoBehaviour {
 
     public EntityBlueprint.PartInfo info;
 
+    public bool GetDetached() {
+        return hasDetached;
+    }
     public int GetFaction()
     {
         return faction;

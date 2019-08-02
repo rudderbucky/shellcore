@@ -31,10 +31,14 @@ public class DrawCircleScript : MonoBehaviour {
             line = GetComponent<LineRenderer>();
             line.useWorldSpace = false;
             line.positionCount = 21;
-            line.startColor = line.endColor = Color.white;
+            line.endColor = Color.white;
             line.startWidth = line.endWidth = 0.25F;
             CreatePoints(xrad, yrad); // create the circle's initial position
         }
+    }
+
+    public void SetStartColor(Color color) {
+        GetComponent<LineRenderer>().startColor = color;
     }
 
     private void Start()
@@ -85,7 +89,6 @@ public class DrawCircleScript : MonoBehaviour {
     void CreatePoints(float xradius, float yradius)
     {
         alpha -= 4*Time.deltaTime; // decrease alpha
-        line.startColor = new Color(color.r, color.g, color.b, alpha); // change transparency
         line.endColor = new Color(color.r, color.g, color.b, alpha);
         // declare some storage fields
         float x;
