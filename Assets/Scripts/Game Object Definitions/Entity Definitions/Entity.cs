@@ -43,7 +43,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
     public string entityName;
 
-    private float weaponGCD = 0.18F; // weapon global cooldown
+    private float weaponGCD = 0.1F; // weapon global cooldown
     private float weaponGCDTimer;
 
     public enum TerrainType // terrain type of entity

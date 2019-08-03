@@ -14,6 +14,7 @@ public class CoreUpgraderScript : GUIWindowScripts
     public RectTransform reputationBar;
     public Text repText;
     public Transform optionHolder;
+    public Text regenText;
 
     public void initialize() {
         instance = this;
@@ -41,9 +42,12 @@ public class CoreUpgraderScript : GUIWindowScripts
         // reputation display
         var repReq = GetReputationRequirement(player.blueprint.coreShellSpriteID);
         if(repReq > 0) {
+            var regens = GetNextRegens(player.blueprint.coreShellSpriteID);
+            regenText.text = "Next tier Regeneration\nSHELL: " + regens[0] + "   ENERGY: " + regens[2];
             reputationBar.sizeDelta = new Vector2(Mathf.Min(player.reputation * 800 / repReq, 800), 30);
             repText.text = "Reputation: " + player.reputation + "/" + repReq;
         } else {
+            regenText.gameObject.SetActive(false);
             reputationBar.sizeDelta = new Vector2(800, 30);
             repText.text = "Core fully upgraded!";
         }
@@ -183,6 +187,36 @@ public class CoreUpgraderScript : GUIWindowScripts
                 return new int[] {0, 0, 3, 3};
             default:
                 return new int[] {0, 0, 0, 0};
+        }
+    }
+
+    public static float[] GetRegens(string coreName) {
+        switch(coreName) {
+            case "core2_shell":
+                return new float[] {90, 0, 90};
+            case "core3skills_shell":
+            case "core3weapons_shell":
+                return new float[] {120, 0, 120};
+            case "core4commando_shell":
+            case "core4elite_shell":
+            case "core4captain_shell":
+            case "core4admiral_shell":
+                return new float[] {150, 0, 150};
+            default:
+                return new float[] {60, 0, 60};
+        }
+    }
+    public static float[] GetNextRegens(string coreName) {
+        switch(coreName) {
+            case "core1_shell":
+                return new float[] {90, 0, 90};
+            case "core2_shell":
+                return new float[] {120, 0, 120};
+            case "core3skills_shell":
+            case "core3weapons_shell":
+                return new float[] {150, 0, 150};
+            default:
+                return new float[] {0, 0, 0};
         }
     }
 }

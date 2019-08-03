@@ -18,6 +18,7 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
     {
         if(player.reputation >= repCost) {
             player.blueprint.coreShellSpriteID = coreID;
+            player.blueprint.baseRegen = CoreUpgraderScript.GetRegens(coreID);
             player.Rebuild();
             CoreUpgraderScript.DrawScreen();
         } else Debug.Log("Not enough reputation!" + player.reputation + " " + repCost);
