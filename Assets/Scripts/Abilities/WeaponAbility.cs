@@ -110,8 +110,7 @@ public abstract class WeaponAbility : ActiveAbility {
                 Transform targetEntity = target;
                 IDamageable tmp = targetEntity.GetComponent<IDamageable>();
 
-                if (Vector2.Distance(Core.transform.position, targetEntity.position) <= GetRange()
-                    && tmp.GetFaction() != Core.faction)
+                if (DistanceCheck(targetEntity) && tmp.GetFaction() != Core.faction)
                     // check if in range
                 {
                     bool success = Execute(targetEntity.position); // execute ability using the position to fire
@@ -120,6 +119,10 @@ public abstract class WeaponAbility : ActiveAbility {
                 }
             }
         }
+    }
+
+    protected virtual bool DistanceCheck(Transform targetEntity) {
+        return Vector2.Distance(transform.position, targetEntity.position) <= GetRange();
     }
 
     /// <summary>

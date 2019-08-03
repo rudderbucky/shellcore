@@ -44,7 +44,8 @@ public class Beam : WeaponAbility {
         if (firing && timer < 0.2F) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
             line.SetPosition(0, line.transform.position); // draw and increment timer
-            line.SetPosition(1, targetingSystem.GetTarget().position);
+            if(nextTargetPart) line.SetPosition(1, partPos);
+            else line.SetPosition(1, targetingSystem.GetTarget().position);
             timer += Time.deltaTime;
         }
         else if(firing && timer >= 0.2)
@@ -56,7 +57,8 @@ public class Beam : WeaponAbility {
                     > (line.GetPosition(1)-line.transform.position).sqrMagnitude) {
                     line.SetPosition(0, line.GetPosition(1));
                 }
-                if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
+                if(nextTargetPart) line.SetPosition(1, partPos);
+                else if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
             }
             else line.positionCount = 0;
         } else 
@@ -76,8 +78,12 @@ public class Beam : WeaponAbility {
                 var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
                 // deal instant damage
 
-                if(targetingSystem.GetTarget().GetComponent<Entity>())
-                    targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
+                if(nextTargetPart) {
+                    nextTargetPart.TakeDamage(residue);
+                    victimPos = partPos = nextTargetPart.transform.position;
+                }
+                // if(targetingSystem.GetTarget().GetComponent<Entity>())
+                //   targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
                 line.positionCount = 2; // render the beam line
                 timer = 0; // start the timer
                 isOnCD = true; // set booleans and return
@@ -88,5 +94,25 @@ public class Beam : WeaponAbility {
             }
             return false;
         } return false;
+    }
+
+    ShellPart nextTargetPart;
+    Vector2 partPos;
+
+    protected override bool DistanceCheck(Transform targetEntity) {
+        var parts = targetEntity.GetComponentsInChildren<ShellPart>();
+        if(parts.Length == 0) return base.DistanceCheck(targetEntity);
+        else {
+            float closestD = range;
+            nextTargetPart = null;
+            foreach(var part in parts) {
+                var distance = Vector2.Distance(part.transform.position, transform.position);
+                if(distance < closestD) {
+                    closestD = distance;
+                    nextTargetPart = part;
+                }
+            }
+            return nextTargetPart;
+        }
     }
 }
