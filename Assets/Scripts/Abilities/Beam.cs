@@ -41,14 +41,14 @@ public class Beam : WeaponAbility {
 
     void Update()
     {
-        if (firing && timer < 0.2F) // timer for drawing the beam, past the set timer float value and it stops being drawn
+        if (firing && timer < 0.1F) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
             line.SetPosition(0, line.transform.position); // draw and increment timer
             if(nextTargetPart) line.SetPosition(1, partPos);
             else line.SetPosition(1, targetingSystem.GetTarget().position);
             timer += Time.deltaTime;
         }
-        else if(firing && timer >= 0.2)
+        else if(firing && timer >= 0.1F)
         {
             if(line.positionCount > 0 && ((line.GetPosition(1)-line.transform.position).sqrMagnitude 
                 > (line.GetPosition(0)-line.transform.position).sqrMagnitude)) {
