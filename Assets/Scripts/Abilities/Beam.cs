@@ -24,7 +24,7 @@ public class Beam : WeaponAbility {
         line.startColor = new Color(0.5F, 0.5F, 1, 0.9F);
         cooldownDuration = CDRemaining = 5;
         damage = 500;
-        energyCost = 20;
+        energyCost = 100;
         ID = 4;
         range = 15;
         category = Entity.EntityCategory.All;
