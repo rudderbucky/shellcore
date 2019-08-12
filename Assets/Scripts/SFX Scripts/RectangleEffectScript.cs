@@ -30,7 +30,7 @@ public class RectangleEffectScript : MonoBehaviour {
         // scales up the emitters so that particles are uniformly emitted across the screen, I suspect the scale is halved for some reason 
         transform.position = Camera.main.GetComponent<RectTransform>().anchoredPosition;
         transform.position -= new Vector3(0,0,transform.position.z);
-        partSys.Emit(15);
+        partSys.Emit(25);
     }
 
     /// <summary>
