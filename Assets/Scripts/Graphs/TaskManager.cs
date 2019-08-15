@@ -99,6 +99,8 @@ public class TaskManager : MonoBehaviour
 
     void initCanvases()
     {
+        if (initialized)
+            return;
         questCanvases = new List<QuestCanvas>();
         NodeCanvasManager.FetchCanvasTypes();
         NodeTypes.FetchNodeTypes();
@@ -121,22 +123,20 @@ public class TaskManager : MonoBehaviour
                 }
             }
         }
-
+        currentNodes = new Node[questCanvases.Count];
         initialized = true;
     }
 
     // Traverse quest graph
     public void startQuests()
     {
-        if (initialized)
-            return;
-
         initCanvases();
-
-        currentNodes = new Node[questCanvases.Count];
-        for (int i = 0; i < questCanvases.Count; i++)
+        if(lastTaskNodeID == null || lastTaskNodeID == "")
         {
-            startQuestline(i);
+            for (int i = 0; i < questCanvases.Count; i++)
+            {
+                startQuestline(i);
+            }
         }
     }
 
@@ -171,6 +171,7 @@ public class TaskManager : MonoBehaviour
 
     public void setNode(string ID)
     {
+        initCanvases();
         for (int i = 0; i < questCanvases[0].nodes.Count; i++)
         {
             if(questCanvases[0].nodes[i].GetID() == ID)

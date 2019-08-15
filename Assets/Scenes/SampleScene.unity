@@ -3950,6 +3950,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114101150391026218, guid: 97ec2bf38629ec84daacdab7be647f77,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 224075952535106802, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -3969,11 +3974,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 32.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114101150391026218, guid: 97ec2bf38629ec84daacdab7be647f77,
-        type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
@@ -9832,6 +9832,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114101150391026218, guid: 97ec2bf38629ec84daacdab7be647f77,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 224075952535106802, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -9851,11 +9856,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 32.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114101150391026218, guid: 97ec2bf38629ec84daacdab7be647f77,
-        type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
@@ -15336,6 +15336,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224035879600292394, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_RootOrder
@@ -15446,19 +15451,6 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_Text
-      value: 'Settings:
-
-
-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 8207976509933570618, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 114773807705464322, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -15488,6 +15480,14 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Settings:
+
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 9159509489203113411, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
@@ -17303,6 +17303,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questCanvasPaths:
   - DefaultQuest.xml
+  lastTaskNodeID: 
 --- !u!4 &1821469134
 Transform:
   m_ObjectHideFlags: 0
@@ -17822,6 +17823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1878101311}
+  taskManager: {fileID: 1821469133}
 --- !u!114 &1878101311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17860,6 +17862,10 @@ MonoBehaviour:
     presetBlueprints: []
     timePlayed: 0
     credits: 0
+    lastTaskNodeID: 
+    taskVariableNames: []
+    taskVariableValues: 
+    activeTaskIDs: []
     abilityCaps: 
     shards: 0
   loaded: 0
@@ -18002,12 +18008,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 150
       objectReference: {fileID: 0}
-    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
-        type: 3}
-      propertyPath: m_Text
-      value: "Current Ship JSON: \n(Copy and paste this if you want to share your
-        ship/use it in the sector creator)"
-      objectReference: {fileID: 0}
     - target: {fileID: 114773807705464322, guid: 1db7935a54b01634a952418d692ea5be,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -18017,6 +18017,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: CloseUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 114208071816305392, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_Text
+      value: "Current Ship JSON: \n(Copy and paste this if you want to share your
+        ship/use it in the sector creator)"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1db7935a54b01634a952418d692ea5be, type: 3}
@@ -21566,6 +21572,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114101150391026218, guid: 97ec2bf38629ec84daacdab7be647f77,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 224075952535106802, guid: 97ec2bf38629ec84daacdab7be647f77,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -21585,11 +21596,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 32.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114101150391026218, guid: 97ec2bf38629ec84daacdab7be647f77,
-        type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97ec2bf38629ec84daacdab7be647f77, type: 3}
