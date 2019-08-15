@@ -23,7 +23,7 @@ namespace NodeEditorFramework.Standard
 
         //Node things
         public const string ID = "ConditionGroupNode";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Conditions"; } }
 

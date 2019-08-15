@@ -7,7 +7,7 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Actions/Spawn Entity")]
     public class SpawnEntityNode : Node
     {
-        public override string GetID { get { return "SpawnEntityNode"; } }
+        public override string GetName { get { return "SpawnEntityNode"; } }
         public override string Title { get { return "Spawn Entity"; } }
 
         public override Vector2 DefaultSize { get { return new Vector2(200, 240); } }

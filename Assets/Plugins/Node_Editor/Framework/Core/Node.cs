@@ -44,14 +44,19 @@ namespace NodeEditorFramework
 		/// <summary>
 		/// Gets the ID of the Node
 		/// </summary>
-		public abstract string GetID { get; }
+		public abstract string GetName { get; }
+
+        public string GetID()
+        {
+            return GetName + Mathf.FloorToInt(position.x) + "_" + Mathf.FloorToInt(position.y);
+        }
 
 		/// <summary>
 		/// Specifies the node title.
 		/// </summary>
 		public virtual string Title { get { 
 			#if UNITY_EDITOR
-				return UnityEditor.ObjectNames.NicifyVariableName (GetID);
+				return UnityEditor.ObjectNames.NicifyVariableName (GetName);
 			#else
 				return name;
 			#endif

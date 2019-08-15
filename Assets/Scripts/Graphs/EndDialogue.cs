@@ -8,7 +8,7 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Dialogue/End Dialogue")]
     public class EndDialogue : Node
     {
-        public override string GetID { get { return "EndDialogue"; } }
+        public override string GetName { get { return "EndDialogue"; } }
         public override string Title { get { return "Dialogue"; } }
 
         public override Vector2 MinSize { get { return new Vector2(200f, 100f); } }

@@ -13,7 +13,7 @@ namespace NodeEditorFramework.Standard
 
         //Node things
         public const string ID = "SectorLimiterNode";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Sector Limiter"; } }
         public override Vector2 DefaultSize { get { return new Vector2(208, height); } }

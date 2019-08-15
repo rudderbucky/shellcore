@@ -89,7 +89,7 @@ namespace NodeEditorFramework
 		{
 			List<ConnectionPort> declaredConnectionPorts = new List<ConnectionPort> ();
 			ConnectionPortDeclaration[] portDecls;
-			if (nodePortDeclarations.TryGetValue (node.GetID, out portDecls))
+			if (nodePortDeclarations.TryGetValue (node.GetName, out portDecls))
 			{
 				for (int i = 0; i < portDecls.Length; i++)
 				{ // Iterate over each connection port and yield it's declaration

@@ -88,7 +88,7 @@ namespace NodeEditorFramework
 				convertedCanvas.editorStates = canvas.editorStates;
 				for (int i = 0; i < convertedCanvas.nodes.Count; i++)
 				{
-					if (!CheckCanvasCompability (convertedCanvas.nodes[i].GetID, newType))
+					if (!CheckCanvasCompability (convertedCanvas.nodes[i].GetName, newType))
 					{ // Check if nodes is even compatible with the canvas, if not delete it
 						convertedCanvas.nodes[i].Delete ();
 						i--;

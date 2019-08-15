@@ -28,7 +28,7 @@ namespace NodeEditorFramework.Standard
 		{
 			if (Traversal == null)
 				Traversal = new GraphTraversal (this);
-			if (rootNode == null && (rootNode = nodes.Find ((Node n) => n.GetID == rootNodeID) as RootGraphNode) == null)
+			if (rootNode == null && (rootNode = nodes.Find ((Node n) => n.GetName == rootNodeID) as RootGraphNode) == null)
 				rootNode = Node.Create (rootNodeID, Vector2.zero) as RootGraphNode;
 		}
 
@@ -36,7 +36,7 @@ namespace NodeEditorFramework.Standard
 		{
 			//Debug.Log ("Check can add node " + nodeID);
 			if (nodeID == rootNodeID)
-				return !nodes.Exists ((Node n) => n.GetID == rootNodeID);
+				return !nodes.Exists ((Node n) => n.GetName == rootNodeID);
 			return true;
 		}
 	}

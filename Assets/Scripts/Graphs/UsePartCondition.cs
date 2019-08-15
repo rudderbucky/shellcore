@@ -11,7 +11,7 @@ namespace NodeEditorFramework.Standard
         public static UnityEvent OnPlayerReconstruct = new UnityEvent();
 
         public const string ID = "PartCondition";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
         public override string Title { get { return "Use Part"; } }
         public override Vector2 DefaultSize { get { return new Vector2(200, 120); } }
 

@@ -8,7 +8,7 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Dialogue/PopupNode")]
     public class PopupNode : Node
     {
-        public override string GetID { get { return "PopupNode"; } }
+        public override string GetName { get { return "PopupNode"; } }
         public override string Title { get { return "Popup dialogue"; } }
 
         public override Vector2 DefaultSize { get { return new Vector2(200, 150); } }

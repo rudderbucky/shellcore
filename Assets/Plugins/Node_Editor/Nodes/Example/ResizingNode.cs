@@ -8,7 +8,7 @@ namespace NodeEditorFramework.Standard
 	public class ResizingNode : Node
 	{
 		public const string ID = "resizingNode";
-		public override string GetID { get { return ID; } }
+		public override string GetName { get { return ID; } }
 
 		public override string Title { get { return "Resizing Node"; } }
 		public override Vector2 MinSize { get { return new Vector2(200, 10); } }

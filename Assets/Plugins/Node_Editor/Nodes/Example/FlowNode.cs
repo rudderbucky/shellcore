@@ -8,7 +8,7 @@ namespace NodeEditorFramework.Standard
 	public class FlowNode : Node 
 	{
 		public const string ID = "flowNode";
-		public override string GetID { get { return ID; } }
+		public override string GetName { get { return ID; } }
 
 		public override string Title { get { return "Flow Node"; } }
 		public override Vector2 DefaultSize { get { return new Vector2 (200, 180); } }

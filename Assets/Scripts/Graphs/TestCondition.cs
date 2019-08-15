@@ -11,7 +11,7 @@ namespace NodeEditorFramework.Standard
         public static UnityEvent TestTrigger = new UnityEvent();
 
         public const string ID = "TestTrigger";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
         public override string Title { get { return "Test Trigger"; } }
 
         public ConditionState state; // Property can't be serialized -> field

@@ -8,13 +8,16 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "StartTaskNode";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Start Task"; } }
         public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
 
         //Task related
-        public string taskID = "";
+        public string taskID
+        {
+            get { return GetHashCode().ToString(); }
+        }
         public string dialogueText = "";
         public Color dialogueColor = Color.white;
         public string objectiveList = "";
@@ -115,27 +118,7 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.OnDialogueEnd -= OnClick;
             if (index != 0)
             {
-                taskID = GetHashCode().ToString();
-                Task task = new Task()
-                {
-                    taskID = taskID,
-                    objectived = objectiveList,
-                    creditReward = creditReward,
-                    dialogue = dialogueText,
-                    dialogueColor = dialogueColor
-                };
-                if (partReward)
-                {
-                    task.partReward = new EntityBlueprint.PartInfo
-                    {
-                        partID = partID,
-                        abilityID = partAbilityID,
-                        tier = partTier
-                    };
-                }
-                TaskManager.Instance.AddTask(task);
-                TaskManager.Instance.setNode(outputAccept);
-                TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityName);
+                StartTask();
             }
             else
             {
@@ -151,6 +134,30 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.ShowTaskPrompt(this);
             DialogueSystem.OnDialogueEnd += OnClick;
             return -1;
+        }
+
+        public void StartTask()
+        {
+            Task task = new Task()
+            {
+                taskID = taskID,
+                objectived = objectiveList,
+                creditReward = creditReward,
+                dialogue = dialogueText,
+                dialogueColor = dialogueColor
+            };
+            if (partReward)
+            {
+                task.partReward = new EntityBlueprint.PartInfo
+                {
+                    partID = partID,
+                    abilityID = partAbilityID,
+                    tier = partTier
+                };
+            }
+            TaskManager.Instance.AddTask(task);
+            TaskManager.Instance.setNode(outputAccept);
+            TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityName);
         }
     }
 }

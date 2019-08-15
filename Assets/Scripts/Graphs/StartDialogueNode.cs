@@ -10,7 +10,7 @@ namespace NodeEditorFramework.Standard
     {
         public static StartDialogueNode dialogueStartNode;
 
-        public override string GetID { get { return "StartDialogueNode"; } }
+        public override string GetName { get { return "StartDialogueNode"; } }
         public override string Title { get { return "Start Dialogue"; } }
 
         public override bool AutoLayout { get { return true; } }

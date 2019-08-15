@@ -8,7 +8,7 @@ namespace NodeEditorFramework.Standard
 	public class InputNode : Node
 	{
 		public const string ID = "inputNode";
-		public override string GetID { get { return ID; } }
+		public override string GetName { get { return ID; } }
 
 		public override string Title { get { return "Input Node"; } }
 		public override Vector2 DefaultSize { get { return new Vector2(200, 50); } }

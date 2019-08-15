@@ -10,7 +10,7 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "FinishTaskNode";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Finish Task"; } }
         public override Vector2 DefaultSize { get { return new Vector2(208, height); } }

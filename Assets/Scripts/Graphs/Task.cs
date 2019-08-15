@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NodeEditorFramework.Utilities;
-using UnityEngine.Events;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Task
 {

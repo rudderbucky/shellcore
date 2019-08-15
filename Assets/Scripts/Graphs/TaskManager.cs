@@ -20,6 +20,10 @@ public class TaskManager : MonoBehaviour
 
     public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
 
+    bool initialized = false;
+
+    public string lastTaskNodeID;
+
     private void Awake()
     {
         if (Instance != null)
@@ -38,6 +42,18 @@ public class TaskManager : MonoBehaviour
     {
         activeTasks.Add(t);
         updateTaskList();
+    }
+
+    public void ActivateTask(string ID)
+    {
+        for (int i = 0; i < questCanvases[0].nodes.Count; i++)
+        {
+            var node = questCanvases[0].nodes[i] as StartTaskNode;
+            if (node && node.taskID == ID)
+            {
+                node.StartTask();
+            }
+        }
     }
 
     public Task[] getTasks()
@@ -81,8 +97,7 @@ public class TaskManager : MonoBehaviour
         return 0;
     }
 
-    // Traverse quest graph
-    public void startQuests()
+    void initCanvases()
     {
         questCanvases = new List<QuestCanvas>();
         NodeCanvasManager.FetchCanvasTypes();
@@ -106,6 +121,17 @@ public class TaskManager : MonoBehaviour
                 }
             }
         }
+
+        initialized = true;
+    }
+
+    // Traverse quest graph
+    public void startQuests()
+    {
+        if (initialized)
+            return;
+
+        initCanvases();
 
         currentNodes = new Node[questCanvases.Count];
         for (int i = 0; i < questCanvases.Count; i++)
@@ -143,9 +169,20 @@ public class TaskManager : MonoBehaviour
         }
     }
 
+    public void setNode(string ID)
+    {
+        for (int i = 0; i < questCanvases[0].nodes.Count; i++)
+        {
+            if(questCanvases[0].nodes[i].GetID() == ID)
+            {
+                setNode(questCanvases[0].nodes[i]);
+            }
+        }
+    }
+
     public void setNode(Node node)
     {
-        //TODO: Traverser object for each canvas
+        //TODO: Traverser object for each canvas, multiple simultaneous quests
         for(int i = 0; i < questCanvases.Count; i++)
         {
             if(questCanvases[i].nodes.Contains(node))
@@ -154,6 +191,7 @@ public class TaskManager : MonoBehaviour
                 break;
             }
         }
+        lastTaskNodeID = currentNodes[0].GetID();
         Traverse();
     }
 
@@ -163,7 +201,7 @@ public class TaskManager : MonoBehaviour
         {
             for (int j = 0; j < questCanvases[i].nodes.Count; j++)
             {
-                if(questCanvases[i].nodes[j].GetID == "StartNode")
+                if(questCanvases[i].nodes[j].GetName == "StartNode")
                 {
                     return questCanvases[i].nodes[j];
                 }

@@ -7,7 +7,7 @@ namespace NodeEditorFramework.Standard
 	public class CalcNode : Node 
 	{
 		public const string ID = "calcNode";
-		public override string GetID { get { return ID; } }
+		public override string GetName { get { return ID; } }
 
 		public override string Title { get { return "Calc Node"; } }
 		public override Vector2 DefaultSize { get { return new Vector2 (200, 100); } }

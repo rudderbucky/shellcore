@@ -7,7 +7,7 @@ namespace NodeEditorFramework.Standard
     public class DestroyEntityCondition : Node, ICondition
     {
         public const string ID = "DestroyEntities";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
         public override string Title { get { return "Destroy Entities"; } }
         public override Vector2 DefaultSize { get { return new Vector2(200, 142); } }
 

@@ -33,7 +33,7 @@ namespace NodeEditorFramework
 					if (IDField == null || attr == null)
 					{ // Cannot read ID from const field or need to read Title because of missing attribute -> Create sample to read from properties
 						Node sample = (Node)ScriptableObject.CreateInstance(type);
-						ID = sample.GetID;
+						ID = sample.GetName;
 						Title = sample.Title;
 						UnityEngine.Object.DestroyImmediate(sample);
 					}

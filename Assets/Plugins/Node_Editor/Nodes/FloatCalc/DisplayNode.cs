@@ -6,7 +6,7 @@ namespace NodeEditorFramework.Standard
 	public class DisplayNode : Node 
 	{
 		public const string ID = "displayNode";
-		public override string GetID { get { return ID; } }
+		public override string GetName { get { return ID; } }
 
 		public override string Title { get { return "Display Node"; } }
 		public override Vector2 DefaultSize { get { return new Vector2 (150, 50); } }

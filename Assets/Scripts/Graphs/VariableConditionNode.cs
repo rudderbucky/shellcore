@@ -19,7 +19,7 @@ namespace NodeEditorFramework.Standard
         public static VariableChangedDelegate OnVariableUpdate;
 
         public const string ID = "VariableConditionNode";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Variable condition"; } }
         public override Vector2 DefaultSize { get { return new Vector2(200, 200); } }

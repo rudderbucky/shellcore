@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class SaveHandler : MonoBehaviour {
 
 	public PlayerCore player;
+    public TaskManager taskManager;
 	PlayerSave save;
-	// Use this for initialization
+
 	void Awake() {
 		string currentPath;
 		if(!File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) {
@@ -15,6 +16,7 @@ public class SaveHandler : MonoBehaviour {
 		}
 		else currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
 		if(File.Exists(currentPath)) {
+            // Load
 			string json = File.ReadAllText(currentPath);
 			save = JsonUtility.FromJson<PlayerSave>(json);
 			player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -32,6 +34,19 @@ public class SaveHandler : MonoBehaviour {
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
+
+            // tasks
+            taskManager.setNode(save.lastTaskNodeID);
+            for (int i = 0; i < save.activeTaskIDs.Length; i++)
+            {
+                taskManager.ActivateTask(save.activeTaskIDs[i]);
+            }
+
+            for (int i = 0; i < save.taskVariableNames.Length; i++)
+            {
+                taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
+            }
+
 		} else {
 			save = new PlayerSave();
 			save.presetBlueprints = new string[5];
@@ -57,7 +72,29 @@ public class SaveHandler : MonoBehaviour {
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
 		save.credits = player.credits;
-		string saveJson = JsonUtility.ToJson(save);
+
+        // tasks
+        save.lastTaskNodeID = taskManager.lastTaskNodeID;
+        string[] keys = new string[taskManager.taskVariables.Count];
+        int[] values = new int[taskManager.taskVariables.Count];
+        int index = 0;
+        foreach (var pair in taskManager.taskVariables)
+        {
+            keys[index] = pair.Key;
+            values[index] = pair.Value;
+            index++;
+        }
+        save.taskVariableNames = keys;
+        save.taskVariableValues = values;
+
+        var tasks = taskManager.getTasks();
+        string[] taskIDs = new string[tasks.Length];
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            taskIDs[i] = tasks[i].taskID;
+        }
+
+        string saveJson = JsonUtility.ToJson(save);
 		File.WriteAllText(currentPath, saveJson);
 	}
 }

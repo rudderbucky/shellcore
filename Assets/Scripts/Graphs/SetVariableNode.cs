@@ -10,7 +10,7 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "SetVariableNode";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Set Variable"; } }
         public override Vector2 DefaultSize { get { return new Vector2(200, 150); } }

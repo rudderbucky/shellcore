@@ -9,7 +9,7 @@ namespace NodeEditorFramework.Standard
     public class TimelineNode : Node
     {
         public const string ID = "TimelineNode";
-        public override string GetID { get { return ID; } }
+        public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Timeline"; } }
 
