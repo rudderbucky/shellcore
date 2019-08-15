@@ -86,27 +86,29 @@ public class SectorManager : MonoBehaviour
         GameObject.Find("Path Input").transform.parent.gameObject.SetActive(false);
         if(System.IO.Directory.Exists(path)) {
             try {
-            string[] files = Directory.GetFiles(path);
-            current = null;
-            sectors = new List<Sector>();
-            foreach (string file in files)
-            {
-                string sectorjson = System.IO.File.ReadAllText(file);
-                SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
-                Debug.Log("Platform JSON: " + data.platformjson);
-                Debug.Log("Sector JSON: " + data.sectorjson);
-                Sector curSect = ScriptableObject.CreateInstance<Sector>();
-                JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
-                LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
-                JsonUtility.FromJsonOverwrite(data.platformjson, plat);
-                plat.name = curSect.name + "Platform";
-                curSect.platform = plat;
-                sectors.Add(curSect);
-            }
-            Debug.Log("worked");
-            jsonMode = false;
-            return;
-            } catch(System.Exception){
+                string[] files = Directory.GetFiles(path);
+                current = null;
+                sectors = new List<Sector>();
+                foreach (string file in files)
+                {
+                    string sectorjson = System.IO.File.ReadAllText(file);
+                    SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                    Debug.Log("Platform JSON: " + data.platformjson);
+                    Debug.Log("Sector JSON: " + data.sectorjson);
+                    Sector curSect = ScriptableObject.CreateInstance<Sector>();
+                    JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
+                    LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                    JsonUtility.FromJsonOverwrite(data.platformjson, plat);
+                    plat.name = curSect.name + "Platform";
+                    curSect.platform = plat;
+                    sectors.Add(curSect);
+                }
+                player.SetIsInteracting(false);
+                Debug.Log("worked");
+                jsonMode = false;
+                return;
+            } catch(System.Exception e){
+                Debug.Log(e);
             };
         }
         else if(System.IO.File.Exists(path)) {
@@ -133,6 +135,7 @@ public class SectorManager : MonoBehaviour
                 Debug.Log(e);
             }
         } 
+        Debug.Log("Could not find valid sector in that path");
         jsonMode = false;
         player.SetIsInteracting(false);
         loadSector();
@@ -159,6 +162,10 @@ public class SectorManager : MonoBehaviour
                         {
                             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                             JsonUtility.FromJsonOverwrite(json, blueprint);
+                            blueprint.entityName = data.name;
+                            if(data.name == "Clearly Delusional")
+                                blueprint.dialogue = ResourceManager.GetAsset<Dialogue>("default_dialogue");
+                            // hack for now, TODO: implement JSON dialogue
                         }
                     }
                     catch (System.Exception e)
@@ -275,11 +282,6 @@ public class SectorManager : MonoBehaviour
         }
         entity.ID = data.ID;
 
-        // TODO:
-        // I think we should move dialogue setting to BuildEntity() since each entity's
-        // dialogue should vary in the blueprint rather than using the resource manager
-        // since that allows for more custom dialogue using the sector creator
-        // (I already sort of did this but didn't remove the setting here)
         if (data.dialogueID != "")
         {
             entity.dialogue = ResourceManager.GetAsset<Dialogue>(data.dialogueID);
@@ -298,6 +300,10 @@ public class SectorManager : MonoBehaviour
             data.sectorjson = JsonUtility.ToJson(current);
             current.name = "SavedSector";
             current.platform.name = "SavedSectorPlatform";
+            // var x = JsonUtility.ToJson(data);
+		    // string path = Application.streamingAssetsPath + "\\Sectors\\" + "SavedSector";
+		    // System.IO.File.WriteAllText(path, x);
+		    // System.IO.Path.ChangeExtension(path, ".json");            
             UnityEditor.AssetDatabase.CreateAsset(current, "Assets/SavedSector.asset");
             UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/SavedSectorPlatform.asset");
         }
@@ -349,7 +355,7 @@ public class SectorManager : MonoBehaviour
             player.ResetPower();
             objects.Add("player", player.gameObject);
             player.sectorMngr = this;
-            player.alerter.showMessage("ENTERING SECTOR: " + current.sectorName);
+            player.alerter.showMessage("Entering sector: " + current.sectorName);
         }
 
 
@@ -364,7 +370,9 @@ public class SectorManager : MonoBehaviour
                     gObj.GetComponent<SpriteRenderer>().color = FactionColors.colors[current.entities[i].faction];
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
-
+                if(gObj.GetComponent<ShardRock>()) {
+                    gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].vendingID);
+                }
                 objects.Add(current.entities[i].ID, gObj);
             }
             else if(obj is EntityBlueprint)

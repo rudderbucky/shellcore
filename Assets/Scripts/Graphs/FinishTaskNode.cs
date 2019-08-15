@@ -51,7 +51,7 @@ namespace NodeEditorFramework.Standard
 
         public void OnDialogue()
         {
-            DialogueSystem.ShowPopup(rewardText);
+            DialogueSystem.ShowPopup(rewardText, textColor);
             DialogueSystem.OnDialogueEnd = (int _) =>
             {
                 TaskManager.Instance.setNode(outputRight);
@@ -66,6 +66,7 @@ namespace NodeEditorFramework.Standard
                     TaskManager.Instance.endTask(taskID);
                     Debug.Log("Task complete!");
                     SectorManager.instance.player.credits += taskNode.creditReward;
+                    SectorManager.instance.player.reputation += taskNode.reputationReward;
                     if(taskNode.partReward)
                     {
                         SectorManager.instance.player.cursave.partInventory.Add(

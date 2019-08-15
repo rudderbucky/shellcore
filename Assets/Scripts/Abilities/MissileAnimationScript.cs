@@ -21,6 +21,8 @@ public class MissileAnimationScript : MonoBehaviour {
         line.startWidth = 0;
         line.positionCount = 2;
         line.useWorldSpace = false;
+        line.startColor = new Color32((byte)0, (byte)112, (byte)247, (byte)230);
+        line.endColor = new Color32((byte)201, (byte)255, (byte)247, (byte)230);
         iteration = 0;
         timer = 0;
         initialPos = Vector3.zero;
@@ -43,7 +45,7 @@ public class MissileAnimationScript : MonoBehaviour {
                     Start();
                     break;
                 default:
-                    if (timer < 0.05F) // time to project
+                    if (timer < 0.032F) // time to project
                     {
                         DrawLine(speed * timer, iteration, startAngle, initialPos); // project out the line
                     }

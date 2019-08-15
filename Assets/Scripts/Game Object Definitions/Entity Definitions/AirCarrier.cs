@@ -19,10 +19,7 @@ public class AirCarrier : AirConstruct, ICarrier {
     {
         return initialized;
     }
-    public int GetFaction()
-    {
-        return faction;
-    }
+
     public Vector3 GetSpawnPoint()
     {
         var tmp = transform.position;
@@ -36,10 +33,6 @@ public class AirCarrier : AirConstruct, ICarrier {
         initialized = true;
     }
 
-    public Transform GetTransform()
-    {
-        return transform;
-    }
 
     public List<IOwnable> GetUnitsCommanding()
     {

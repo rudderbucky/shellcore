@@ -16,6 +16,10 @@ public class MissileScript : MonoBehaviour {
     private float damage; // damage missile projectile should deal
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
+    private bool worked = false;
+    private Vector2 vector;
+    public GameObject hitPrefab;
+    public GameObject missPrefab;
 
     // Use this for initialization
     void Start () {
@@ -91,32 +95,44 @@ public class MissileScript : MonoBehaviour {
         this.category = category;
     }
 
-    public bool CheckCategoryCompatibility(Entity entity)
+    public bool CheckCategoryCompatibility(IDamageable entity)
     {
-        return (category == Entity.EntityCategory.All || category == entity.category) && (terrain == Entity.TerrainType.All || terrain == entity.Terrain);
+        return (category == Entity.EntityCategory.All || category == entity.GetCategory()) && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
-        var craft = hit.GetComponent<Entity>(); // check if it has a craft component
-        if (craft != null) // check if the component was obtained
+        var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
+        if (craft != null && !craft.GetIsDead()) // check if the component was obtained
         {
-            if (craft.faction != faction && CheckCategoryCompatibility(craft))
+            if (craft.GetFaction() != faction && CheckCategoryCompatibility(craft))
             {
-                craft.TakeDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
+                var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
                                                         // if the shell is low, damage the part
-                if (craft.GetHealth()[0] <= 0)
+
+                ShellPart part = collision.transform.GetComponent<ShellPart>();
+                if (part)
                 {
-                    ShellPart part = collision.transform.GetComponent<ShellPart>();
-                    if (part)
-                    {
-                        part.TakeDamage(damage); // damage the part
-                    }
+                    part.TakeDamage(residue); // damage the part
                 }
                 damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
+                worked = true;
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
+        }
+    }
+    public void OnDestroy() {
+        if(!worked) {
+            vector = target && transform ? (target.position - transform.position) : Vector3.zero;
+            var miss = Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, 
+                Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg)).GetComponent<ParticleSystem>();
+        }
+        else Instantiate(hitPrefab, transform.position, Quaternion.identity);
+
+        if(transform.GetComponentInChildren<TrailRenderer>()) {
+            transform.GetComponentInChildren<TrailRenderer>().autodestruct = true;
+            transform.DetachChildren();
         }
     }
 }

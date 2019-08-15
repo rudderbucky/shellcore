@@ -6,8 +6,6 @@ using UnityEngine;
 /// Class used for the targeting of crafts for weapon abilities
 /// </summary>
 public class TargetingSystem {
-    // TODO: Change transform to Vector3, and check if a core is dead by raycasting, 
-    // and constantly update the position of the targeting system
 
     private Transform target; // the transform of the target
     public Transform parent; // parent object

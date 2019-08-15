@@ -8,6 +8,7 @@ public class Beam : WeaponAbility {
     private Material material; // material used by the line renderer
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
+    public GameObject beamHitPrefab;
 
     protected override void Awake()
     {
@@ -23,7 +24,7 @@ public class Beam : WeaponAbility {
         line.startColor = new Color(0.5F, 0.5F, 1, 0.9F);
         cooldownDuration = CDRemaining = 5;
         damage = 500;
-        energyCost = 20;
+        energyCost = 100;
         ID = 4;
         range = 15;
         category = Entity.EntityCategory.All;
@@ -40,13 +41,14 @@ public class Beam : WeaponAbility {
 
     void Update()
     {
-        if (firing && timer < 0.2F) // timer for drawing the beam, past the set timer float value and it stops being drawn
+        if (firing && timer < 0.1F) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
             line.SetPosition(0, line.transform.position); // draw and increment timer
-            line.SetPosition(1, targetingSystem.GetTarget().position);
+            if(nextTargetPart) line.SetPosition(1, partPos);
+            else line.SetPosition(1, targetingSystem.GetTarget().position);
             timer += Time.deltaTime;
         }
-        else if(firing && timer >= 0.2)
+        else if(firing && timer >= 0.1F)
         {
             if(line.positionCount > 0 && ((line.GetPosition(1)-line.transform.position).sqrMagnitude 
                 > (line.GetPosition(0)-line.transform.position).sqrMagnitude)) {
@@ -55,7 +57,8 @@ public class Beam : WeaponAbility {
                     > (line.GetPosition(1)-line.transform.position).sqrMagnitude) {
                     line.SetPosition(0, line.GetPosition(1));
                 }
-                if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
+                if(nextTargetPart) line.SetPosition(1, partPos);
+                else if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
             }
             else line.positionCount = 0;
         } else 
@@ -67,16 +70,49 @@ public class Beam : WeaponAbility {
 
     protected override bool Execute(Vector3 victimPos)
     {
-        if (targetingSystem.GetTarget()) // check and get the weapon target
-        {
-            ResourceManager.PlayClipByID("clip_beam", transform.position);
-            targetingSystem.GetTarget().GetComponent<Entity>().TakeDamage(damage, 0, GetComponentInParent<Entity>()); // deal instant damage
-            line.positionCount = 2; // render the beam line
-            timer = 0; // start the timer
-            isOnCD = true; // set booleans and return
-            firing = true;
-            return true;
+        if(Core.RequestGCD()) {
+            if(!beamHitPrefab) beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+            if (targetingSystem.GetTarget()) // check and get the weapon target
+            {
+                ResourceManager.PlayClipByID("clip_beam", transform.position);
+                var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
+                // deal instant damage
+
+                if(nextTargetPart) {
+                    nextTargetPart.TakeDamage(residue);
+                    victimPos = partPos = nextTargetPart.transform.position;
+                }
+                // if(targetingSystem.GetTarget().GetComponent<Entity>())
+                //   targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
+                line.positionCount = 2; // render the beam line
+                timer = 0; // start the timer
+                isOnCD = true; // set booleans and return
+                firing = true;
+
+                Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
+                return true;
+            }
+            return false;
+        } return false;
+    }
+
+    ShellPart nextTargetPart;
+    Vector2 partPos;
+
+    protected override bool DistanceCheck(Transform targetEntity) {
+        var parts = targetEntity.GetComponentsInChildren<ShellPart>();
+        if(parts.Length == 0) return base.DistanceCheck(targetEntity);
+        else {
+            float closestD = range;
+            nextTargetPart = null;
+            foreach(var part in parts) {
+                var distance = Vector2.Distance(part.transform.position, transform.position);
+                if(distance < closestD) {
+                    closestD = distance;
+                    nextTargetPart = part;
+                }
+            }
+            return nextTargetPart;
         }
-        return false;
     }
 }

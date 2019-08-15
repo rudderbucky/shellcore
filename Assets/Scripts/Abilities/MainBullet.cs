@@ -17,10 +17,11 @@ public class MainBullet : Bullet {
         ID = 3;
         cooldownDuration = 0.4F;
         CDRemaining = cooldownDuration;
-        energyCost = 50;
-        damage = 100;
+        energyCost = 10;
+        damage = 150;
         description = "Projectile that deals " + damage + " damage. \nStays with you no matter what.";
         abilityName = "Main Bullet";
+        bulletSound = "clip_bullet";
     }
 
 }

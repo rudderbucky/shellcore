@@ -27,6 +27,7 @@ namespace NodeEditorFramework.Standard
         public string partID = "";
         public int partAbilityID = 0;
         public int partTier = 1;
+        public int reputationReward = 0;
 
         bool init = false;
         Texture2D partTexture;
@@ -51,7 +52,7 @@ namespace NodeEditorFramework.Standard
             outputAccept.DisplayLayout();
             GUILayout.EndHorizontal();
             outputDecline.DisplayLayout();
-            height = 60f;
+            height = 110f;
             GUILayout.Label("Dialogue:");
             dialogueText = GUILayout.TextArea(dialogueText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 200f);
@@ -68,6 +69,8 @@ namespace NodeEditorFramework.Standard
             height += GUI.skin.textArea.CalcHeight(new GUIContent(objectiveList), 200f);
             GUILayout.Label("Credit reward:");
             creditReward = RTEditorGUI.IntField(creditReward, GUILayout.Width(200f));
+            GUILayout.Label("Reputation reward:");
+            reputationReward = RTEditorGUI.IntField(reputationReward, GUILayout.Width(200f));
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));
             if(partReward)
             {
@@ -144,7 +147,8 @@ namespace NodeEditorFramework.Standard
                 objectived = objectiveList,
                 creditReward = creditReward,
                 dialogue = dialogueText,
-                dialogueColor = dialogueColor
+                dialogueColor = dialogueColor,
+                reputationReward = reputationReward,
             };
             if (partReward)
             {

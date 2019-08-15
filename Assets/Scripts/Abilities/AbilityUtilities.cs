@@ -45,6 +45,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 18:
 			case 19:
 			case 20:
+			case 21:
 				return AbilityHandler.AbilityTypes.Passive;
 			case 0:
 			default:
@@ -73,7 +74,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 8:
 				return "Slow projectile that deals " + 500 * tier + " damage to ground entities.";
 			case 9:
-				return "Fast projectile that deals " + 50 * tier + " damage. 50% pierces to core.";
+				return "Fast projectile that deals " + 50 * tier + " damage. 18% pierces to core.";
 			case 10:
 				if(secondaryData == null) return "Spawns a drone.";			
 				DroneSpawnData data = ScriptableObject.CreateInstance<DroneSpawnData>();
@@ -93,6 +94,8 @@ public class AbilityUtilities : MonoBehaviour {
 				return "Passively increases energy regen by " + 50 * tier + " points.";
 			case 20:
 				return "Passively increases maximum energy by " + 250 * tier + " points.";
+			case 21:
+				return "Passively increases the maximum allowed number of controlled units by 3.";
 			default:
 				return "Description unset";
 		}
@@ -100,44 +103,10 @@ public class AbilityUtilities : MonoBehaviour {
 
 	public static string GetDescription(Ability ability) {
 		switch(ability.GetID()) {
-			case 0:
-				return "Does nothing.";
-			case 1:
-				return "Temporarily increases speed.";
-			case 2:
-				return "Instantly heal " + 300 * ability.GetTier() + " shell.";
-			case 3:
-				return "Projectile that deals " + 100 + " damage. \nStays with you no matter what.";
-			case 4:
-				return "Instant attack that deals " + 500 * ability.GetTier() + " damage.";
-			case 5:
-				return "Projectile that deals " + 450 * ability.GetTier() + " damage.";
-			case 6:
-				return "Instant attack that deals " + 100 * ability.GetTier() + " damage.";
-			case 7:
-				return "Homing projectile that deals " + 1000 * ability.GetTier() + " damage.";
-			case 8:
-				return "Slow projectile that deals " + 500 * ability.GetTier() + " damage to ground entities.";
-			case 9:
-				return "Fast projectile that deals " + 50 * ability.GetTier() + " damage. 50% pierces to core.";
 			case 10:
 				return DroneUtilities.GetDescriptionByType((ability as SpawnDrone).spawnData.type);
-			case 11:
-				return "Instantly heal " + 300 * ability.GetTier() + " core.";
-			case 12:
-				return "Instantly heal " + 100 * ability.GetTier() + " energy.";
-			case 13:
-				return "Passively increases speed.";
-			case 17:
-				return "Passively increases shell regen by "  + 50 * ability.GetTier() + " points.";
-			case 18:
-				return "Passively increases maximum shell by " + 250 * ability.GetTier() + " points.";
-			case 19:
-				return "Passively increases energy regen by " + 50 * ability.GetTier() + " points.";
-			case 20:
-				return "Passively increases maximum energy by " + 250 * ability.GetTier() + " points.";
 			default:
-				return "Description unset";
+				return GetDescriptionByID(ability.GetID(), ability.GetTier(), "");
 		}
 	}
 	public static string GetShooterByID(int ID, string data = null) {
@@ -148,6 +117,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 18:
 			case 19:
 			case 20:
+			case 21:
 				return null;
 			case 4:
 				return "beamshooter_sprite";
@@ -210,50 +180,18 @@ public class AbilityUtilities : MonoBehaviour {
 				return "Energy Regen";
 			case 20:
 				return "Energy Max";
+			case 21:
+				return "Command";
             default:
                 return "Name unset";
         }
     }
 	public static string GetAbilityName(Ability ability) {
         switch(ability.GetID()) {
-			case 0:
-				return "None";
-            case 1:
-                return "Speed Thrust";
-            case 2:
-                return "Shell Boost";
-            case 3:
-                return "Main Bullet";
-            case 4:
-                return "Beam";
-            case 5:
-                return "Bullet";
-            case 6:
-                return "Cannon";
-            case 7:
-                return "Missile";
-            case 8:
-                return "Torpedo";
-            case 9:
-                return "Laser";
             case 10:
 				return DroneUtilities.GetAbilityNameByType((ability as SpawnDrone).spawnData.type);
-            case 11:
-                return "Core Heal";
-            case 12:
-                return "Energy";
-            case 13:
-                return "Speed";
-			case 17:
-				return "Shell Regen";
-			case 18:
-				return "Shell Max";
-			case 19:
-				return "Energy Regen";
-			case 20:
-				return "Energy Max";
             default:
-                return "Name unset";
+                return GetAbilityNameByID(ability.GetID(), "");
         }
     }
 	public static Ability AddAbilityToGameObjectByID(GameObject obj, int ID, string data = null, int tier = 0) {
@@ -340,6 +278,9 @@ public class AbilityUtilities : MonoBehaviour {
 				ability = obj.AddComponent<ShellMax>();
 				(ability as ShellMax).index = 2;
 				(ability as ShellMax).Initialize();
+				break;
+			case 21:
+				ability = obj.AddComponent<Command>();
 				break;
 		}
 		if(ability) ability.SetTier(tier);

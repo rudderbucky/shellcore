@@ -18,7 +18,7 @@ public class InfoText : MonoBehaviour
     {
         timer = 0;
         if(soundID != null) {
-            ResourceManager.PlayClipByID(soundID, player.position);
+            ResourceManager.PlayClipByID(soundID, true);
         }
         text.text = message;
         text.color = Color.white;

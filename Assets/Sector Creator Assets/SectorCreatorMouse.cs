@@ -550,7 +550,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				if(ent.assetID == "shellcore_blueprint") {
 					targetIDS.Add(ent.ID);
 					ent.blueprintJSON = oj.shellcoreJSON;
-				} else ent.blueprintJSON = "";
+				}
 				ents.Add(ent);
 			} else if (oj.type == ObjectTypes.Platform) {
 				int[] coordinates = new int[2];

@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// The base class of every "being" in the game.
 /// </summary>
-public class Entity : MonoBehaviour {
+public class Entity : MonoBehaviour, IDamageable {
 
     public ShellPart shell;
     protected static int maxAirLayer = 1; // the maximum sorting group layer of all entities
@@ -31,7 +31,7 @@ public class Entity : MonoBehaviour {
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
     public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
-    public Dialogue dialogue; // dialogue of entity TODO: maybe move to shellcore
+    public Dialogue dialogue; // dialogue of entity
     protected bool isDraggable; // is the entity draggable?
     protected Draggable draggable; // associated draggable
     private bool initialized; // is the entity safe to call update() on?
@@ -42,6 +42,10 @@ public class Entity : MonoBehaviour {
     private Entity lastDamagedBy;
 
     public string entityName;
+
+    private float weaponGCD = 0.1F; // weapon global cooldown
+    private float weaponGCDTimer;
+
     public enum TerrainType // terrain type of entity
     {
         Ground,
@@ -106,9 +110,11 @@ public class Entity : MonoBehaviour {
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
             shell = part;
-        } else 
-            transform.Find("Shell Sprite").GetComponent<SpriteRenderer>().color 
-                = FactionColors.colors[faction]; // needed to reset outpost colors
+        } else {
+            var renderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
+            renderer.color = FactionColors.colors[faction]; // needed to reset outpost colors
+            renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
+        }
 
         if (!explosionCirclePrefab)
         {
@@ -116,7 +122,7 @@ public class Entity : MonoBehaviour {
             explosionCirclePrefab.transform.SetParent(transform, false);
             LineRenderer lineRenderer = explosionCirclePrefab.AddComponent<LineRenderer>();
             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
-            explosionCirclePrefab.AddComponent<DrawCircleScript>();
+            explosionCirclePrefab.AddComponent<DrawCircleScript>().SetStartColor(FactionColors.colors[faction]);
             explosionCirclePrefab.SetActive(false);
         }
         if (!explosionLinePrefab)
@@ -125,7 +131,7 @@ public class Entity : MonoBehaviour {
             explosionLinePrefab.transform.SetParent(transform, false);
             LineRenderer lineRenderer = explosionLinePrefab.AddComponent<LineRenderer>();
             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
-            explosionLinePrefab.AddComponent<DrawLineScript>();
+            explosionLinePrefab.AddComponent<DrawLineScript>().SetStartColor(FactionColors.colors[faction]);
             explosionLinePrefab.SetActive(false);
         }
         if (!GetComponent<SpriteRenderer>())
@@ -238,14 +244,14 @@ public class Entity : MonoBehaviour {
             }
         }
 
-        if (this as ShellCore)
+        if (this as ShellCore && !gameObject.GetComponentInChildren<MainBullet>())
         {
             MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
             mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
             mainBullet.terrain = TerrainType.Air;
             mainBullet.SetActive(true);
             abilities.Insert(0, mainBullet);
-        }
+        } else abilities.Insert(0, gameObject.GetComponentInChildren<MainBullet>());
 
         // unique abilities for mini and worker drones here
         if(this as Drone) {
@@ -434,6 +440,9 @@ public class Entity : MonoBehaviour {
             RegenHealth(ref currentHealth[1], regenRate[1], maxHealth[1]);
             RegenHealth(ref currentHealth[2], regenRate[2], maxHealth[2]);
 
+            if(weaponGCDTimer < weaponGCD) {
+                weaponGCDTimer += Time.deltaTime; // tick GCD timer
+            }
             // check if busy state changing is due
             if (busyTimer > 5)
             {
@@ -448,6 +457,17 @@ public class Entity : MonoBehaviour {
             }
             else combatTimer += Time.deltaTime; // otherwise continue ticking timer
         }
+    }
+
+    /// <summary>
+    /// Request weapon global cooldown (used by weapon abilities)
+    /// </summary>
+    public bool RequestGCD() {
+        if(weaponGCDTimer >= weaponGCD) {
+            weaponGCDTimer = 0;
+            return true;
+        }
+        return false;
     }
 
     public virtual void RemovePart(ShellPart part)
@@ -531,25 +551,32 @@ public class Entity : MonoBehaviour {
     }
 
     /// <summary>
-    /// Removes health from the shell and/or core based on the passed piercing factor and current health
+    /// Take shell damage, return residual damage to apply to core or parts
     /// </summary>
-    /// <param name="amount">The amount of damage to do</param>
-    /// <param name="shellPiercingFactor">The factor of damage that pierces through the shell into the core</param>
-    public void TakeDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) {
+    public float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) {
 
         // counter drone fighting another drone, multiply damage accordingly
         if(this as Drone && lastDamagedBy as Drone && (lastDamagedBy as Drone).type == DroneType.Counter)
             amount *= 1.75F;
         if(lastDamagedBy != this && amount > 0) this.lastDamagedBy = lastDamagedBy; // heals require this check
         if (amount > 0) SetIntoCombat();
+        float residue = shellPiercingFactor * amount; // get initial residual damage
         currentHealth[0] -= amount * (1 - shellPiercingFactor); // subtract amount from shell
         if (currentHealth[0] < 0) { // if shell has dipped below 0
-            currentHealth[1] += currentHealth[0]; // remove excess from core
+            residue -= currentHealth[0]; // add residue
             currentHealth[0] = 0; // set shell to zero
         }
-        currentHealth[1] -= amount * shellPiercingFactor; // remove the rest of the damage from the core
+        currentHealth[0] = currentHealth[0] > maxHealth[0] ? maxHealth[0] : currentHealth[0]; 
+        // reset health if beyond max
+        return residue;
+    }
+
+    /// <summary>
+    /// Take core damage.
+    /// </summary>
+    public void TakeCoreDamage(float amount) {
+        currentHealth[1] -= amount;
         if (currentHealth[1] < 0) currentHealth[1] = 0;
-        currentHealth[0] = currentHealth[0] > maxHealth[0] ? maxHealth[0] : currentHealth[0];
         currentHealth[1] = currentHealth[1] > maxHealth[1] ? maxHealth[1] : currentHealth[1];
     }
 
@@ -563,13 +590,14 @@ public class Entity : MonoBehaviour {
     }
 
     private void ConnectedTreeCreator() {
+        shell.children.Clear();
         foreach(ShellPart part in parts) 
         {
-            part.children.Clear();
             if(part == shell) continue;
+            part.children.Clear();
 
             // attach all core-connected parts to the shell as well
-            if(part.GetComponent<SpriteRenderer>().bounds.Intersects(GetComponent<SpriteRenderer>().bounds)) {
+            if(part.IsAdjacent(shell)) {
                 part.parent = shell;
                 shell.children.Add(part);
             }
@@ -578,14 +606,15 @@ public class Entity : MonoBehaviour {
     }
 
     private void ConnectedTreeHelper(ShellPart parent) {
-        foreach(ShellPart part in parts) 
-        {
-            if(part.parent != null || part == parent || part == shell) continue;
-            if(part.IsAdjacent(parent)) {
-                part.parent = parent;
-                parent.children.Add(part);
+        if(parent != shell)
+            foreach(ShellPart part in parts) 
+            {
+                if(part.parent || part == parent || part == shell) continue;
+                if(part.IsAdjacent(parent)) {
+                    part.parent = parent;
+                    parent.children.Add(part);
+                }
             }
-        }
         foreach(ShellPart part in parent.children) {
             ConnectedTreeHelper(part);
         }
@@ -614,12 +643,42 @@ public class Entity : MonoBehaviour {
         regenRate = newRegen;
     }
 
-    public void SetMaxHealth(float[] maxHealths) {
+    public void SetMaxHealth(float[] maxHealths, bool healToMaxHealth) {
         maxHealth = maxHealths;
+        if(healToMaxHealth) maxHealth.CopyTo(currentHealth, 0);
     }
 
     protected virtual void FixedUpdate()
     {
         
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+
+    public Dialogue GetDialogue()
+    {
+        return dialogue;
+    }
+
+    public string GetName() {
+        return name;
+    }
+
+    public int GetFaction()
+    {
+        return faction;
+    }
+
+    public TerrainType GetTerrain()
+    {
+        return terrain;
+    }
+
+    public EntityCategory GetCategory()
+    {
+        return category;
     }
 }

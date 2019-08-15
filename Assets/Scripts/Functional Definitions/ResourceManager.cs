@@ -86,7 +86,7 @@ public class ResourceManager : MonoBehaviour
                                 //load sprite
                                 Texture2D texture = new Texture2D(2, 2);
                                 texture.LoadImage(File.ReadAllBytes(Application.streamingAssetsPath + "\\" + names[1]));
-                                texture.filterMode = FilterMode.Trilinear;
+                                //texture.filterMode = FilterMode.Trilinear;
                                 resources[names[0]] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                                 break;
                             case 1:
@@ -136,10 +136,11 @@ public class ResourceManager : MonoBehaviour
          AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos, soundVolume);
     }
 
-    public static void PlayClipByID(string ID, bool clear=true) {
+    // Plays the clip directly on the player
+    public static void PlayClipByID(string ID, bool clear=false) {
         if(Instance.playerSource != null) {
             if(clear) Instance.playerSource.Stop();
-            if(ID != null) Instance.playerSource.PlayOneShot(GetAsset<AudioClip>(ID), soundVolume);
+            if(ID != null) Instance.playerSource.PlayOneShot(GetAsset<AudioClip>(ID), soundVolume / 4);
             // can pass null just to clear the sound buffer
         }
         // TODO: Add audio sources to places that need it

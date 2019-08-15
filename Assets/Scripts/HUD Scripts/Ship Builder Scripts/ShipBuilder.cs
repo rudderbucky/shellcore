@@ -42,6 +42,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	protected Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
 	private Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
 	public BuilderMode mode;
+	private int[] abilityLimits;
 
 	public BuilderMode GetMode() {
 		return mode;
@@ -151,7 +152,12 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	private enum ReconstructButtonStatus {
 		Valid,
 		PartInvalidPosition,
-		NotEnoughCredits
+		NotEnoughCredits,
+		PastSkillsLimit,
+		PastSpawnsLimit,
+		PastWeaponsLimit,
+		PastPassivesLimit,
+		PartTooHeavy
 	}
 	private void SetReconstructButton(ReconstructButtonStatus status) {
 		switch(status) {
@@ -166,6 +172,26 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			case ReconstructButtonStatus.NotEnoughCredits:
 				reconstructImage.color = reconstructText.color = Color.red;
 				reconstructText.text = "Not enough credits!";
+				break;
+			case ReconstructButtonStatus.PastSkillsLimit:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "Too many Skills!";
+				break;
+			case ReconstructButtonStatus.PastSpawnsLimit:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "Too many Spawns!";
+				break;
+			case ReconstructButtonStatus.PastWeaponsLimit:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "Too many Weapons!";
+				break;
+			case ReconstructButtonStatus.PastPassivesLimit:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "Too many Passives!";
+				break;
+			case ReconstructButtonStatus.PartTooHeavy:
+				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.text = "A part is too heavy for your core!";				
 				break;
 		}
 	}
@@ -186,6 +212,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		SetReconstructButton(cursorScript.buildCost > player.credits ? 
 			ReconstructButtonStatus.NotEnoughCredits : ReconstructButtonStatus.Valid);
 		var shellRect = GetRect(shell.rectTransform);
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			shipPart.isInChain = false;
 			var partBounds = GetRect(shipPart.rectTransform);
@@ -197,9 +224,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				shipPart.isInChain = !z;
 			}
 		}
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(shipPart.isInChain) UpdateChainHelper(shipPart);
 		}
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) { 
 			// perform the same calculation again to falsify parts that are too close to the shell
 			// TODO: make this less st*pid
@@ -212,12 +241,46 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				shipPart.isInChain = !z;
 			}
 		}
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(!shipPart.isInChain || !shipPart.validPos) {
 				SetReconstructButton(ReconstructButtonStatus.PartInvalidPosition);
 				return;
 			}
 		}
+
+		CheckPartSizes();
+		CheckAbilityCaps();
+	}
+
+	private bool CheckPartSizes() {
+		int maxTier = CoreUpgraderScript.GetPartTierLimit(player.blueprint.coreShellSpriteID);
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			if(ResourceManager.GetAsset<PartBlueprint>(shipPart.info.partID).size > maxTier) {
+				SetReconstructButton(ReconstructButtonStatus.PartTooHeavy);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private bool CheckAbilityCaps() {
+		var currentAbilitynumbers = new int[] {0, 0, 0, 0, 0};
+
+		foreach(ShipBuilderPart shipBuilderPart in cursorScript.parts) {
+			var type = (int)AbilityUtilities.GetAbilityTypeByID(shipBuilderPart.info.abilityID);
+			currentAbilitynumbers[type]++;
+		}
+
+		var extras = CoreUpgraderScript.GetExtraAbilities(player.blueprint.coreShellSpriteID);
+
+		for(int i = 0; i < 4; i++) {
+			if(currentAbilitynumbers[i] > abilityLimits[i] + extras[i]) {
+				SetReconstructButton((ReconstructButtonStatus)(3 + i));
+				return false;
+			}
+		}
+		return true;
 	}
 	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null) {
 
@@ -232,6 +295,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		// set up actual stats
 		this.mode = mode;
+		cursorScript.SetMode(mode);
 		searcherString = "";
 		contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
 		traderContentsArray = new Transform[] {traderSmallContents, traderMediumContents, traderLargeContents};
@@ -265,6 +329,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		List<EntityBlueprint.PartInfo> parts = player.GetInventory();
 		cursorScript.player = player;
 		cursorScript.handler = player.GetAbilityHandler();
+		abilityLimits = player.abilityCaps;
 
 		// hide the buttons and yard tips if interacting with a trader
 
@@ -315,13 +380,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 					for(int i = 0; i < 3; i++) 
 					{
 						info.partID = name;
-						info.abilityID = Random.Range(0,21);
+						info.abilityID = Random.Range(0,22);
 						if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
 						if(info.abilityID == 10) {
 							DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 8));
 							info.secondaryData = JsonUtility.ToJson(data);
 						}
-						if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
+						if(info.abilityID == 0 || info.abilityID == 10 || info.abilityID == 21) info.tier = 0;
 						else info.tier = Random.Range(1, 4);
 						parts.Add(info);
 					}
@@ -343,6 +408,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 
 		var partsToAdd = new List<ShellPart>();
+		var initialShards = player.shards;
+
 		foreach(Entity ent in player.GetUnitsCommanding()) {
 			if(!(ent as Drone)) continue;
             var beam = ent.GetComponentInChildren<TractorBeam>();
@@ -352,12 +419,23 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
                 if (target && target.GetComponent<ShellPart>())
                 {
                     partsToAdd.Add(target.GetComponent<ShellPart>());
-                }
+                } else if(target && target.GetComponent<Shard>()) {
+					AddShard(target.GetComponent<Shard>());
+					Destroy(target.gameObject);
+				}
             }
 		}
 
-		if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()) {
-			partsToAdd.Add(player.GetTractorTarget().GetComponent<ShellPart>());;
+		var playerTarget = player.GetTractorTarget();
+		if(playerTarget && playerTarget.GetComponent<ShellPart>()) {
+			partsToAdd.Add(playerTarget.GetComponent<ShellPart>());;
+		} else if(playerTarget && playerTarget.GetComponent<Shard>()) {
+			AddShard(playerTarget.GetComponent<Shard>());
+			Destroy(playerTarget.gameObject);
+		}
+
+		if(initialShards != player.shards) {
+			ShardCountScript.DisplayCount(player.shards);
 		}
 
 		foreach(ShellPart part in partsToAdd) {
@@ -392,7 +470,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		cursorScript.gameObject.SetActive(true);
 		cursorScript.UpdateHandler();
 	}
-
+    public void AddShard(Shard shard) {
+        var tiers = new int[] {1, 5, 20};
+        player.shards += tiers[shard.tier];
+    }
 	private void AddPart(EntityBlueprint.PartInfo part) {
 		if(!partDict.ContainsKey(part)) 
 		{
@@ -474,6 +555,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 	public void Deinitialize() {
 		if(cursorScript.buildCost > player.credits) return;
+		if(!CheckAbilityCaps()) return;
+		if(!CheckPartSizes()) return;
 		bool invalidState = false;
 		foreach(ShipBuilderPart part in cursorScript.parts) {
 			if(!part.validPos || !part.isInChain) {

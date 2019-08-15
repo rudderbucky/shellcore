@@ -56,7 +56,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     }
     protected override void Start()
     {
-        intrinsicCommandLimit = 3;
+        intrinsicCommandLimit = 0;
         if ((carrier != null && !carrier.Equals(null)) && carrier.GetIsInitialized())
         {
             spawnPoint = carrier.GetSpawnPoint();
@@ -126,15 +126,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         return tractor.GetTractorTarget();
     }
 
-    public int GetFaction()
-    {
-        return faction;
-    }
-
-    public Transform GetTransform()
-    {
-        return transform;
-    }
 
     public List<IOwnable> GetUnitsCommanding()
     {

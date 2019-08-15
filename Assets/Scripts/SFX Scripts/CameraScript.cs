@@ -14,6 +14,7 @@ public class CameraScript : MonoBehaviour {
     public void Initialize(PlayerCore player)
     {
         core = player;
+        if(!initialized) sFXHandler.Initialize();
         initialized = true;
         Start();
     }
@@ -25,7 +26,6 @@ public class CameraScript : MonoBehaviour {
             goalPos.z = core.transform.position.z - 10; // maintain z axis difference
             transform.position = goalPos; // set position
         }
-        sFXHandler.Initialize();
     }
 
     private void LateUpdate()
@@ -34,11 +34,15 @@ public class CameraScript : MonoBehaviour {
         {
             if (core.IsMoving()) // lock camera
             {
-                Vector3 goalPos = core.transform.position; // update vector
-                goalPos.z = core.transform.position.z - 10; // maintain z axis difference
-                transform.position = goalPos; // set position
+                Focus();
             }
 
         }
+    }
+
+    public void Focus() {
+        Vector3 goalPos = core.transform.position; // update vector
+        goalPos.z = core.transform.position.z - 10; // maintain z axis difference
+        transform.position = goalPos; // set position
     }
 }

@@ -18,4 +18,6 @@ public class PlayerSave {
     public string[] taskVariableNames;
     public int[] taskVariableValues;
     public string[] activeTaskIDs;
+	public int[] abilityCaps;
+	public int shards;
 }

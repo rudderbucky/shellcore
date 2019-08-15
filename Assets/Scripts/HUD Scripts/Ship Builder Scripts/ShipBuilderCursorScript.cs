@@ -146,7 +146,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		flipped = true;
 	}
 	void Update() {
-		int baseMoveSize = cursorMode == BuilderMode.Yard ? 10 : 5;
+		int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
 		builder.UpdateChain();
 		if(Input.GetKeyDown("c") && !field.isFocused && !jsonField.isFocused) {
 			ClearAllParts();

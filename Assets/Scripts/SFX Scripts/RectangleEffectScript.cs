@@ -30,7 +30,7 @@ public class RectangleEffectScript : MonoBehaviour {
         // scales up the emitters so that particles are uniformly emitted across the screen, I suspect the scale is halved for some reason 
         transform.position = Camera.main.GetComponent<RectTransform>().anchoredPosition;
         transform.position -= new Vector3(0,0,transform.position.z);
-        partSys.Emit(15);
+        partSys.Emit(25);
     }
 
     /// <summary>
@@ -59,9 +59,10 @@ public class RectangleEffectScript : MonoBehaviour {
         Vector3 relativeCameraPos = Camera.main.WorldToScreenPoint(particle.position);
         // grab the screen position of the particle
         if (relativeCameraPos[dimension] < 0 || relativeCameraPos[dimension] > limit) {
-            // if the particle is passed the screen limits wrap it around
+            // if the particle is past the screen limits wrap it around
             displacement = relativeCameraPos;
-            displacement[dimension] = Mathf.Abs(displacement[dimension] - limit);
+            displacement[dimension] = relativeCameraPos[dimension] < 0 ? displacement[dimension] + limit : displacement[dimension] - limit; 
+            //Mathf.Abs(displacement[dimension] - limit);
             particle.position = Camera.main.ScreenToWorldPoint(displacement);
         }
     }

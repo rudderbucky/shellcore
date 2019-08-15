@@ -23,6 +23,10 @@ public class DrawLineScript : MonoBehaviour {
         line.useWorldSpace = false;
     }
 
+    public void SetStartColor(Color color) {
+        GetComponent<LineRenderer>().startColor = color;
+    }
+
     public void Initialize()
     {
         initialized = true;
@@ -85,7 +89,6 @@ public class DrawLineScript : MonoBehaviour {
         line.endWidth += 2 * Time.deltaTime;
         // widen the end of the line to help create a 3D effect
 
-        line.startColor = new Color(1, 1, 1, 1);
         line.endColor = new Color(1, 1, 1, 1 - 4 * timer);
         // make the front less opaque to create a god-ray like effect
 
