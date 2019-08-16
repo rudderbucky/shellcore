@@ -36,7 +36,7 @@ public class CameraScript : MonoBehaviour {
             {
                 Focus();
             }
-
+            ProximityInteractScript.Focus();
         }
     }
 

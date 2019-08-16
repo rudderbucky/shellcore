@@ -9,7 +9,6 @@ using UnityEngine;
 public class PlayerCore : ShellCore {
     public HUDScript hud;
     public InfoText alerter;
-    public InfoText interactAlerter;
     public PlayerSave cursave;
     public bool loaded;
     private bool isInteracting;

@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class ProximityInteractScript : MonoBehaviour {
 	public PlayerCore player;
+	public RectTransform interactIndicator;
+	Entity closest;
+	Entity lastEnt;
+	static ProximityInteractScript instance;
 
+	void Awake() {
+		instance = this;
+	}
 	void ActivateInteraction(Entity ent) {
         // TODO: perhaps make this a static ability so reticle scripts can use it as well
         if (TaskManager.interactionOverrides.ContainsKey(ent.name))
@@ -17,10 +24,12 @@ public class ProximityInteractScript : MonoBehaviour {
 	void Update() {
 		if(player != null) 
 		{
-			Entity closest = null; // get the closest entity
+			closest = null; // get the closest entity
 			foreach(Entity ent in AIData.entities) {
 				// ignore non vendors or non yards
-				if(ent == player || ent.dialogue == null) continue;
+				// TODO: Fix this so it doesn't work for specific entities in other factions (eg outposts/bunkers)
+				// instead of the blanket faction fix that is employed currently
+				if(ent == player || ent.dialogue == null || ent.faction != player.faction) continue;
 				if(closest == null) closest = ent;
 				else if((ent.transform.position - player.transform.position).sqrMagnitude <= 
 					(closest.transform.position - player.transform.position).sqrMagnitude) 
@@ -28,15 +37,33 @@ public class ProximityInteractScript : MonoBehaviour {
 						closest = ent;
 					}
 			}
+		}
+	}
 
+	public static void Focus() {
+		instance.focus();
+	}
+	void focus() {
+		if(player != null) {
 			if(player.GetIsInteracting() || closest == null || (closest.transform.position - player.transform.position).sqrMagnitude >= 200) 
 			{
-				player.interactAlerter.showMessage("");
+				interactIndicator.localScale = new Vector3(1,0,1);
+				interactIndicator.gameObject.SetActive(false);
 				return;
 			}
 			else 
 			{ 
-				player.interactAlerter.showMessage("Press 'Q' to interact with " + closest.entityName);
+				// interact indicator image and animation
+				interactIndicator.gameObject.SetActive(true);
+				var y = interactIndicator.localScale.y;
+				if(lastEnt != closest) {
+					lastEnt = closest;
+					interactIndicator.localScale = new Vector3(1,0,1);	
+				}
+				if(y < 1) {
+					interactIndicator.localScale = new Vector3(1, Mathf.Min(1, y + 0.1F), 1);
+				}
+				interactIndicator.anchoredPosition = Camera.main.WorldToScreenPoint(closest.transform.position) + new Vector3(0, 50);
 				if(Input.GetKeyUp(KeyCode.Q)) 
 				{
 					ActivateInteraction(closest); // key received; activate interaction
