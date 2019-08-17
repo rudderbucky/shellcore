@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public interface IVendor
 {
@@ -20,6 +21,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     private bool opened;
     private GameObject[] buttons;
     private Text costInfo;
+    private Text nameInfo;
     public int range;
     
     public bool GetActive() {
@@ -43,15 +45,15 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         }
         UI = Instantiate(UIPrefab);
         UI.GetComponentInChildren<GUIWindowScripts>().Activate();
-        // UI.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
-        //PlayerViewScript.SetCurrentWindow(this);
-        //UI.GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
+
         background = UI.transform.Find("Container").Find("Background");
         Button close = background.transform.Find("Close").GetComponent<Button>();
         close.onClick.AddListener(CloseUI);
         costInfo = background.transform.Find("Cost").GetComponent<Text>();
+        nameInfo = background.transform.Find("Name").GetComponent<Text>();
         costInfo.text = "";
         range = blueprint.range;
+
 
         buttons = new GameObject[blueprint.items.Count];
         for (int i = 0; i < blueprint.items.Count; i++)
@@ -61,7 +63,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
             RectTransform rt = buttons[i].GetComponent<RectTransform>();
             rt.SetParent(background, false);
-            rt.anchoredPosition = new Vector2(16 + i * 64, -16 + (i > 6 ? 96 : 0));
+            rt.anchoredPosition = new Vector2(185 + (i % 5) * 64, -40 - (i > 4 ? 64 : 0));
 
             Button button = buttons[i].GetComponent<Button>();
             button.onClick.AddListener(() => { onButtonPressed(index); });
@@ -71,8 +73,11 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             if(player.GetPower() < blueprint.items[i].cost) 
                 buttons[i].GetComponent<Image>().color = new Color(0,0,0.4F);
 
-            vendorUIButton.text = blueprint.items[i].entityBlueprint.name + ": " + blueprint.items[i].cost;
+            vendorUIButton.blueprint = blueprint.items[i].entityBlueprint;
+            vendorUIButton.text = "POWER COST: <color=cyan>" + blueprint.items[i].cost + "</color>";
             vendorUIButton.costInfo = costInfo;
+            vendorUIButton.nameInfo = nameInfo;
+            vendorUIButton.handler = UI.GetComponentInChildren<SelectionDisplayHandler>();
 
             Image sr = buttons[i].transform.Find("Icon").GetComponent<Image>();
             sr.sprite = blueprint.items[i].icon;

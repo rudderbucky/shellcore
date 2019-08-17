@@ -145,6 +145,7 @@ public class SectorManager : MonoBehaviour
         if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
         background.setColor(SectorColors.colors[4]);
         if(!jsonMode) loadSector();
+        TaskManager.StartQuests();
     }
 
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
@@ -341,7 +342,7 @@ public class SectorManager : MonoBehaviour
 
         // Add the player's tractored part back so it gets deleted if the player doesn't tractor it through
         // to another sector
-        if((player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>()))
+        if((player && player.GetTractorTarget() != null && player.GetTractorTarget().GetComponent<ShellPart>()))
             AIData.strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
         objects.Clear();
 
@@ -355,7 +356,7 @@ public class SectorManager : MonoBehaviour
             player.ResetPower();
             objects.Add("player", player.gameObject);
             player.sectorMngr = this;
-            player.alerter.showMessage("Entering sector: " + current.sectorName);
+            if(player.alerter) player.alerter.showMessage("Entering sector: " + current.sectorName);
         }
 
 
@@ -433,5 +434,12 @@ public class SectorManager : MonoBehaviour
 
     public void InsertPersistentObject(string key, GameObject gameObject) {
         persistentObjects.Add(key + uniqueIDInt++, gameObject);
+    }
+
+    public GameObject GetObject(string name) {
+        foreach(var obj in objects.Values) {
+            if(obj.name == name) return obj;
+        }
+        return null;
     }
 }

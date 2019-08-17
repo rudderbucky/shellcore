@@ -24,6 +24,12 @@ public class TaskManager : MonoBehaviour
 
     public string lastTaskNodeID;
 
+    public static string speakerName;
+
+    public static Entity GetSpeaker() {
+        return SectorManager.instance.GetObject(speakerName).GetComponent<Entity>();
+    }
+
     private void Awake()
     {
         if (Instance != null)
@@ -33,11 +39,9 @@ public class TaskManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
-    {
-        startQuests();
+    public static void StartQuests() {
+        Instance.startQuests();
     }
-
     public void AddTask(Task t)
     {
         activeTasks.Add(t);

@@ -123,7 +123,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public Draggable GetTractorTarget()
     {
-        return tractor.GetTractorTarget();
+        return tractor ? tractor.GetTractorTarget() : null;
     }
 
 
