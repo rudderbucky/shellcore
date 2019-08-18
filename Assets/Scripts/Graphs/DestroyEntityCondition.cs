@@ -69,6 +69,8 @@ namespace NodeEditorFramework.Standard
             if (useIDInput && IDInput == null)
                 IDInput = inputKnobs[0];
 
+            Debug.Log("Init");
+
             killCount = 0;
             OnUnitDestroyed += updateState;
 
@@ -96,7 +98,8 @@ namespace NodeEditorFramework.Standard
         void updateState(Entity entity)
         {
             if (entity.name == targetName)
-            {   
+            {
+                Debug.Log("[" + Time.frameCount + "]" + entity.name + ": ID: " + entity.ID + " EntityName:" + entity.entityName);
                 killCount++;
                 if(targetFaction != 0)
                 {

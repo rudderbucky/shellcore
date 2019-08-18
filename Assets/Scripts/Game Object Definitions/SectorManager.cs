@@ -157,7 +157,7 @@ public class SectorManager : MonoBehaviour
         jsonMode = false;
         player.SetIsInteracting(false);
         loadSector();
-        //sectorLoaded = true;
+        sectorLoaded = true;
     }
 
     private void Start()
@@ -412,7 +412,7 @@ public class SectorManager : MonoBehaviour
 
         //sector color
         background.setColor(current.backgroundColor);
-        Camera.main.backgroundColor = current.backgroundColor / 2F;
+        //Camera.main.backgroundColor = current.backgroundColor / 2F;
         //sector borders
         sectorBorders.enabled = true;
         sectorBorders.SetPositions(new Vector3[]{
