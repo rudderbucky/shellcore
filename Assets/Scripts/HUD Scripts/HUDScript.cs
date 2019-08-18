@@ -26,6 +26,8 @@ public class HUDScript : MonoBehaviour {
     /// </summary>
     public void InitializeHUD(PlayerCore player) {
         // Initialize all HUD elements
+        if (initialized)
+            DeinitializeHUD();
         GetComponentInChildren<HealthBarScript>().Initialize(player);
         GetComponentInChildren<AbilityHandler>().Initialize(player);
         if(!initialized) InitializeConstantHUD(player);
@@ -41,5 +43,6 @@ public class HUDScript : MonoBehaviour {
         // Deinitialize all deinitializable HUD elements
         GetComponentInChildren<HealthBarScript>().Deinitialize();
         GetComponentInChildren<AbilityHandler>().Deinitialize();
+        initialized = false;
     }
 }

@@ -85,7 +85,7 @@ public class PlayerCore : ShellCore {
 
     public void Rebuild() {
         if (!initialized)
-        Awake();
+            Awake();
         initialized = true;
         hud.DeinitializeHUD();
         for(int i = 0; i < parts.Count; i++) {
