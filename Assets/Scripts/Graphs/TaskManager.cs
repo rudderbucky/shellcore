@@ -129,6 +129,13 @@ public class TaskManager : MonoBehaviour
                 }
             }
         }
+
+        // reset all static condition variables
+        SectorLimiterNode.LimitedSector = "";
+        DestroyEntityCondition.OnUnitDestroyed = null;
+        UsePartCondition.OnPlayerReconstruct = null;
+        WinBattleCondition.OnBattleWin = null;
+
         currentNodes = new Node[questCanvases.Count];
         initialized = true;
     }
