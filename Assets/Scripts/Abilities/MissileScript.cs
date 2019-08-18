@@ -16,7 +16,6 @@ public class MissileScript : MonoBehaviour {
     private float damage; // damage missile projectile should deal
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
-    private bool worked = false;
     private Vector2 vector;
     public GameObject hitPrefab;
     public GameObject missPrefab;
@@ -117,7 +116,6 @@ public class MissileScript : MonoBehaviour {
                     part.TakeDamage(residue); // damage the part
                 }
                 damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
-                worked = true;
                 Instantiate(hitPrefab, transform.position, Quaternion.identity);
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }

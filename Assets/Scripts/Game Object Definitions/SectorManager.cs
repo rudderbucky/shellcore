@@ -28,6 +28,7 @@ public class SectorManager : MonoBehaviour
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
     private int uniqueIDInt;
+    private bool sectorLoaded = false;
 
     public int GetExtraCommandUnits(int faction) {
         stationsCount.Clear();
@@ -43,7 +44,7 @@ public class SectorManager : MonoBehaviour
         return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0; 
     }
 
-    private void Awake()
+    public void Initialize()
     {
         if (instance != null)
         {
@@ -63,6 +64,7 @@ public class SectorManager : MonoBehaviour
         sectorBorders.startWidth = 0.1f;
         sectorBorders.endWidth = 0.1f;
         sectorBorders.loop = true;
+        OnSectorLoad = null;
     }
 
     private void Update()
@@ -155,15 +157,18 @@ public class SectorManager : MonoBehaviour
         jsonMode = false;
         player.SetIsInteracting(false);
         loadSector();
+        //sectorLoaded = true;
     }
 
     private void Start()
     {
         if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
-        background.setColor(SectorColors.colors[4]);
-        if(!jsonMode) loadSector();
-        if(TaskManager.Instance)
-            TaskManager.StartQuests();
+
+        if(!sectorLoaded)
+        {
+            background.setColor(SectorColors.colors[4]);
+            if (!jsonMode) loadSector();
+        }
     }
 
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
@@ -185,6 +190,7 @@ public class SectorManager : MonoBehaviour
                             if(data.name == "Clearly Delusional")
                                 blueprint.dialogue = ResourceManager.GetAsset<Dialogue>("default_dialogue");
                             // hack for now, TODO: implement JSON dialogue
+                            // also TODO: dialogue editor (or allow multiple starting points in quest graphs to create multiple permanent "dialogue overrides")
                         }
                     }
                     catch (System.Exception e)

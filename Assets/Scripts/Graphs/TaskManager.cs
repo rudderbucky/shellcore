@@ -31,13 +31,14 @@ public class TaskManager : MonoBehaviour
         return speakerObj?.GetComponent<Entity>();
     }
 
-    private void Awake()
+    public void Initialize()
     {
         if (Instance != null)
         {
             Destroy(gameObject);
         }
         Instance = this;
+        initCanvases();
     }
 
     public static void StartQuests() {
@@ -135,13 +136,16 @@ public class TaskManager : MonoBehaviour
     // Traverse quest graph
     public void startQuests()
     {
-        initCanvases();
         if(lastTaskNodeID == null || lastTaskNodeID == "")
         {
             for (int i = 0; i < questCanvases.Count; i++)
             {
                 startQuestline(i);
             }
+        }
+        else
+        {
+            Traverse();
         }
     }
 
@@ -168,7 +172,7 @@ public class TaskManager : MonoBehaviour
 
     public void setNode(ConnectionPort connection)
     {
-        if(connection.connected())
+        if (connection.connected())
         {
             setNode(connection.connections[0].body);
         }
@@ -176,7 +180,6 @@ public class TaskManager : MonoBehaviour
 
     public void setNode(string ID)
     {
-        initCanvases();
         for (int i = 0; i < questCanvases[0].nodes.Count; i++)
         {
             if(questCanvases[0].nodes[i].GetID() == ID)
@@ -189,17 +192,17 @@ public class TaskManager : MonoBehaviour
     public void setNode(Node node)
     {
         //TODO: Traverser object for each canvas, multiple simultaneous quests
-        initCanvases();
         for (int i = 0; i < questCanvases.Count; i++)
         {
             if(questCanvases[i].nodes.Contains(node))
             {
                 currentNodes[i] = node;
+                lastTaskNodeID = currentNodes[0].GetID();
                 break;
             }
         }
-        lastTaskNodeID = currentNodes[0].GetID();
-        Traverse();
+        if(SystemLoader.AllLoaded)
+            Traverse();
     }
 
     private Node findRoot(int index)
@@ -221,6 +224,8 @@ public class TaskManager : MonoBehaviour
     {
         while(true)
         {
+            if (currentNodes == null)
+                return;
             int outputIndex = currentNodes[0].Traverse();
             if (outputIndex == -1)
                 break;

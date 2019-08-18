@@ -77,7 +77,7 @@ namespace NodeEditorFramework.Standard
                 height += 264f;
                 GUILayout.Label("Part ID:");
                 partID = GUILayout.TextField(partID, GUILayout.Width(200f));
-                if ((ResourceManager.Instance && partID != null && GUI.changed) || !init)
+                if (ResourceManager.Instance != null && partID != null && (GUI.changed || !init))
                 {
                     init = true;
                     PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(partID);

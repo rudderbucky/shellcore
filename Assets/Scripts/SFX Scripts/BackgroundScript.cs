@@ -118,7 +118,7 @@ public class BackgroundScript : MonoBehaviour {
     Color lastColor; // used like bgCol, just without the static attribute
     public void setColor(Color color)
     {
-        Camera.main.backgroundColor = color;
+        Camera.main.backgroundColor = color; // TODO: set this only once!
         if(ingameTiles == null) {
             bgCol = lastColor = color;
             return;
@@ -149,7 +149,12 @@ public class BackgroundScript : MonoBehaviour {
         while(renderer.color != newColor) {
             renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
             beginLerp += 0.0125F;
-            if(beginLerp > 1) beginLerp = 1;
+            if (beginLerp > 1)
+            {
+                beginLerp = 1;
+                renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
+                break;
+            }
             yield return null;
         }
     }
