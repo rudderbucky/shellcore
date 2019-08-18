@@ -53,6 +53,7 @@ namespace NodeEditorFramework.Standard
                         TaskManager.Instance.setNode(output);
                     });
                 }
+                TaskManager.speakerName = EntityName;
                 return -1;
             }
             else

@@ -14,6 +14,8 @@ public class DialogueSystem : MonoBehaviour
     public GameObject dialogueBoxPrefab;
     public GameObject taskDialogueBoxPrefab;
     public GameObject dialogueButtonPrefab;
+
+    public GameObject battleResultsBoxPrefab;
     public Font shellcorefont;
     GUIWindowScripts window;
     RectTransform background;
@@ -36,7 +38,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void Update()
     {
-        if(window && speakerPos != null && playerTransform && (playerTransform.position - ((Vector3)speakerPos)).sqrMagnitude > 200)
+        if(window && speakerPos != null && playerTransform && (playerTransform.position - ((Vector3)speakerPos)).sqrMagnitude > 100)
             endDialogue();
         // Add text
         if(textRenderer && characterCount < text.Length)
@@ -55,9 +57,9 @@ public class DialogueSystem : MonoBehaviour
         Instance.startDialogue(dialogue, speaker, player);
     }
 
-    public static void ShowPopup(string text, Color color)
+    public static void ShowPopup(string text, Color color, Entity speaker = null)
     {
-        Instance.showPopup(text, color);
+        Instance.showPopup(text, color, speaker);
     }
 
     public static void ShowPopup(string text)
@@ -65,7 +67,7 @@ public class DialogueSystem : MonoBehaviour
         Instance.showPopup(text, Color.white);
     }
 
-    private void showPopup(string text, Color color)
+    private void showPopup(string text, Color color, Entity speaker = null)
     {
         if (window && window.GetActive())
             return;
@@ -84,6 +86,12 @@ public class DialogueSystem : MonoBehaviour
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
+        // radio image 
+        if(speaker) {
+            window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
+            window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+        }
+
         // change text
         this.text = text.Replace("<br>", "\n");
         characterCount = 0;
@@ -100,6 +108,23 @@ public class DialogueSystem : MonoBehaviour
         buttons = new GameObject[1];
         buttons[0] = button.gameObject;
         ResourceManager.PlayClipByID("clip_typing");
+    }
+
+    public static void ShowBattleResults(bool victory) {
+        Instance.showBattleResults(victory);
+    }
+
+    private void showBattleResults(bool victory) {
+        if(window) endDialogue(0);
+        speakerPos = null;
+        
+        //create window
+        window = Instantiate(battleResultsBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
+        window.transform.SetSiblingIndex(0);
+
+        if(victory) window.transform.Find("Victory").gameObject.SetActive(true);
+        else window.transform.Find("Defeat").gameObject.SetActive(true);
     }
 
     public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null, PlayerCore player = null)
@@ -122,6 +147,10 @@ public class DialogueSystem : MonoBehaviour
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
+        // radio image 
+        window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
+        window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+
         ResourceManager.PlayClipByID("clip_typing");
         // change text
         text = node.text.Replace("<br>", "\n");
@@ -136,7 +165,7 @@ public class DialogueSystem : MonoBehaviour
         {
             RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
             button.SetParent(background, false);
-            button.anchoredPosition = new Vector2(0, 24 + 16 * (node.answers.Count - (i + 1)));
+            button.anchoredPosition = new Vector2(0, 24 + 24 * (node.answers.Count - (i + 1)));
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
                 endDialogue(index + 1, index != 0);// cancel is always first -> start from 1
@@ -226,6 +255,7 @@ public class DialogueSystem : MonoBehaviour
             background.transform.Find("Part").GetComponent<Image>().enabled = false;
             background.transform.Find("backgroundbox").gameObject.SetActive(false);
         }
+
         // create buttons
         buttons = new GameObject[2];
 
@@ -240,7 +270,7 @@ public class DialogueSystem : MonoBehaviour
             //TODO: createButton()
             RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
             button.SetParent(background, false);
-            button.anchoredPosition = new Vector2(0, 24 + 16 * i/*(node.outputKnobs.Count - (i + 1))*/);
+            button.anchoredPosition = new Vector2(0, 24 + 24 * i/*(node.outputKnobs.Count - (i + 1))*/);
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
                 if(index == 1) 
@@ -309,8 +339,8 @@ public class DialogueSystem : MonoBehaviour
                 //Do nothing and continue after this check
                 break;
             case Dialogue.DialogueAction.Outpost:
+                endDialogue(0, false);
                 if(speaker.faction != player.faction) {
-                    endDialogue(0, false);
                     return;
                 }
                 if(((Vector3)speakerPos - player.transform.position).magnitude < dialogue.vendingBlueprint.range) {
@@ -346,6 +376,10 @@ public class DialogueSystem : MonoBehaviour
             default:
                 break;
         }
+
+        // radio image 
+        window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
+        window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
 
         ResourceManager.PlayClipByID("clip_typing");
         // change text

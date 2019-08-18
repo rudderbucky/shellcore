@@ -45,4 +45,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     {
         clicked = true;
     }
+
+    public void OnDisable() {
+        OnPointerExit(null);
+    }
 }

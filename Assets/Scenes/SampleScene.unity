@@ -9407,6 +9407,8 @@ MonoBehaviour:
   player: {fileID: 0}
   outpostPosition: {x: 0, y: 0, z: 0}
   range: 0
+  tooltipPrefab: {fileID: 1488837556019592, guid: 415e283b683408a41913b01ebeaee6e1,
+    type: 3}
 --- !u!1 &1002703763
 GameObject:
   m_ObjectHideFlags: 0
@@ -11533,6 +11535,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   interactIndicator: {fileID: 103150000}
+  vendorUI: {fileID: 992697192}
 --- !u!1 &1195854653
 GameObject:
   m_ObjectHideFlags: 0
@@ -13672,7 +13675,7 @@ RectTransform:
   - {fileID: 2021176326}
   - {fileID: 562966085}
   m_Father: {fileID: 1885681988}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -15770,6 +15773,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224515975082114590, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.800003
+      objectReference: {fileID: 0}
+    - target: {fileID: 224515975082114590, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.5899963
+      objectReference: {fileID: 0}
+    - target: {fileID: 4833983221221893225, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5928083118703764802, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1db7935a54b01634a952418d692ea5be, type: 3}
@@ -18047,7 +18070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3494f0f28514148b907a1abf49dee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonMode: 1
+  jsonMode: 0
   sectors:
   - {fileID: 11400000, guid: ec6863ab82c12b943a46718797ba0f35, type: 2}
   - {fileID: 11400000, guid: c381e686d1c019643898f125c1b2eafa, type: 2}
@@ -18123,7 +18146,6 @@ MonoBehaviour:
   intrinsicCommandLimit: 0
   hud: {fileID: 123063170}
   alerter: {fileID: 0}
-  interactAlerter: {fileID: 0}
   cursave:
     name: 
     position: {x: 0, y: 0}
@@ -18295,6 +18317,36 @@ PrefabInstance:
       propertyPath: m_Text
       value: "Current Ship JSON: \n(Copy and paste this if you want to share your
         ship/use it in the sector creator)"
+      objectReference: {fileID: 0}
+    - target: {fileID: 224515975082114590, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.800003
+      objectReference: {fileID: 0}
+    - target: {fileID: 224515975082114590, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.5899963
+      objectReference: {fileID: 0}
+    - target: {fileID: 224515975082114590, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224589425798538894, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3548776478722305364, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 882432051548563958, guid: 1db7935a54b01634a952418d692ea5be,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1db7935a54b01634a952418d692ea5be, type: 3}
@@ -27791,6 +27843,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TemporaryJSONLoader
+      objectReference: {fileID: 0}
+    - target: {fileID: 8808476380573179840, guid: 1dd6c2ea206daae48b2691f5666a949e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8728867389089152546, guid: 1dd6c2ea206daae48b2691f5666a949e,
         type: 3}
