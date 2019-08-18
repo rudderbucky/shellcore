@@ -14,6 +14,8 @@ public class DialogueSystem : MonoBehaviour
     public GameObject dialogueBoxPrefab;
     public GameObject taskDialogueBoxPrefab;
     public GameObject dialogueButtonPrefab;
+
+    public GameObject battleResultsBoxPrefab;
     public Font shellcorefont;
     GUIWindowScripts window;
     RectTransform background;
@@ -36,7 +38,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void Update()
     {
-        if(window && speakerPos != null && playerTransform && (playerTransform.position - ((Vector3)speakerPos)).sqrMagnitude > 200)
+        if(window && speakerPos != null && playerTransform && (playerTransform.position - ((Vector3)speakerPos)).sqrMagnitude > 100)
             endDialogue();
         // Add text
         if(textRenderer && characterCount < text.Length)
@@ -106,6 +108,23 @@ public class DialogueSystem : MonoBehaviour
         buttons = new GameObject[1];
         buttons[0] = button.gameObject;
         ResourceManager.PlayClipByID("clip_typing");
+    }
+
+    public static void ShowBattleResults(bool victory) {
+        Instance.showBattleResults(victory);
+    }
+
+    private void showBattleResults(bool victory) {
+        if(window) endDialogue(0);
+        speakerPos = null;
+        
+        //create window
+        window = Instantiate(battleResultsBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
+        window.transform.SetSiblingIndex(0);
+
+        if(victory) window.transform.Find("Victory").gameObject.SetActive(true);
+        else window.transform.Find("Defeat").gameObject.SetActive(true);
     }
 
     public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null, PlayerCore player = null)

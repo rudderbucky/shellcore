@@ -23,6 +23,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     private Text costInfo;
     private Text nameInfo;
     public int range;
+    public GameObject tooltipPrefab;
     
     public bool GetActive() {
 		return UI && UI.activeSelf;
@@ -74,7 +75,9 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 buttons[i].GetComponent<Image>().color = new Color(0,0,0.4F);
 
             vendorUIButton.blueprint = blueprint.items[i].entityBlueprint;
-            vendorUIButton.text = "POWER COST: <color=cyan>" + blueprint.items[i].cost + "</color>";
+            vendorUIButton.costText = "POWER COST: <color=cyan>" + blueprint.items[i].cost + "</color>";
+            vendorUIButton.descriptionText = blueprint.items[i].description;
+            vendorUIButton.tooltipPrefab = tooltipPrefab;
             vendorUIButton.costInfo = costInfo;
             vendorUIButton.nameInfo = nameInfo;
             vendorUIButton.handler = UI.GetComponentInChildren<SelectionDisplayHandler>();
@@ -94,7 +97,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     {
         if (opened)
         {
-            if((outpostPosition - player.transform.position).magnitude > range)
+            if((outpostPosition - player.transform.position).sqrMagnitude > range)
             {
                 Debug.Log("Player moved out of the vendor range");
                 CloseUI();
@@ -107,7 +110,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 } else buttons[i].GetComponent<Image>().color = Color.white;
 
                 if(Input.GetKey(KeyCode.LeftShift)) {
-                    if(Input.GetKey((1 + i).ToString())) 
+                    if(Input.GetKeyDown((1 + i).ToString())) 
                     {
                         onButtonPressed(i);
                     }
@@ -151,7 +154,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             creation.GetComponent<Entity>().spawnPoint = outpostPosition;
             player.SetTractorTarget(creation.GetComponent<Draggable>());
             player.AddPower(-blueprint.items[index].cost);
-            CloseUI();
+            if(GetActive()) CloseUI();
         }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ProximityInteractScript : MonoBehaviour {
 	public PlayerCore player;
 	public RectTransform interactIndicator;
+	public VendorUI vendorUI;
 	Entity closest;
 	Entity lastEnt;
 	static ProximityInteractScript instance;
@@ -37,6 +38,25 @@ public class ProximityInteractScript : MonoBehaviour {
 						closest = ent;
 					}
 			}
+
+			if(closest as IVendor != null && !vendorUI.GetActive()) {
+				var blueprint = (closest as IVendor).GetVendingBlueprint();
+				var range = blueprint.range;
+
+				if((closest.transform.position - player.transform.position).sqrMagnitude <= range)
+					for (int i = 0; i < blueprint.items.Count; i++)
+					{
+						if(Input.GetKey(KeyCode.LeftShift)) {
+							if(Input.GetKeyDown((1 + i).ToString())) 
+							{
+								vendorUI.player = player;
+								vendorUI.blueprint = blueprint;
+								vendorUI.outpostPosition = closest.transform.position;
+								vendorUI.onButtonPressed(i);
+							}
+						}
+					}
+			}
 		}
 	}
 
@@ -45,7 +65,7 @@ public class ProximityInteractScript : MonoBehaviour {
 	}
 	void focus() {
 		if(player != null) {
-			if(player.GetIsInteracting() || closest == null || (closest.transform.position - player.transform.position).sqrMagnitude >= 200) 
+			if(player.GetIsInteracting() || closest == null || (closest.transform.position - player.transform.position).sqrMagnitude >= 100) 
 			{
 				interactIndicator.localScale = new Vector3(1,0,1);
 				interactIndicator.gameObject.SetActive(false);

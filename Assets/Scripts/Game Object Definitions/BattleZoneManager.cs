@@ -44,15 +44,19 @@ public class BattleZoneManager : MonoBehaviour
                         winningFaction = pair.Key;
                 }
                 foreach(Entity ent in targets) {
-                    if(ent as PlayerCore && ent.faction == winningFaction) {
-                        ResourceManager.PlayClipByID("clip_victory", ent.transform.position);
+                    if(ent as PlayerCore) {
+                        if(ent.faction == winningFaction) {
+                            ResourceManager.PlayClipByID("clip_victory");
+                            //ResourceManager.PlayClipByID("clip_victory", ent.transform.position);
 
-                        Debug.Log(sectorName + " won!");
-                        if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
-                            NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
+                            Debug.Log("Faction " + winningFaction + " won!");
+                            if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
+                                NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
+                        }
+                        else ResourceManager.PlayClipByID("clip_alert");
                     }
                 }
-                DialogueSystem.ShowPopup("Faction " + winningFaction + " won!");
+                DialogueSystem.ShowBattleResults(winningFaction == 0);
                 playing = false;
             }
         }
