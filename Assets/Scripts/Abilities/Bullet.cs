@@ -85,6 +85,6 @@ public class Bullet : WeaponAbility {
         bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos) * bulletSpeed;
 
         // Destroy the bullet after survival time
-        Destroy(bullet, survivalTime);
+        script.StartSurvivalTimer(survivalTime);
     }
 }

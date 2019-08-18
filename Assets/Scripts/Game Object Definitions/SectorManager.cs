@@ -17,6 +17,8 @@ public class SectorManager : MonoBehaviour
     public Sector current;
     public BackgroundScript background;
     public InfoText info;
+    [HideInInspector]
+    public string resourcePath = "";
     private Dictionary<int, int> stationsCount = new Dictionary<int, int>();
     private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
     private List<IVendor> stations = new List<IVendor>();
@@ -84,8 +86,16 @@ public class SectorManager : MonoBehaviour
     public void TryGettingJSON() {
         string path = GameObject.Find("Path Input").GetComponent<UnityEngine.UI.InputField>().text;
         GameObject.Find("Path Input").transform.parent.gameObject.SetActive(false);
-        if(System.IO.Directory.Exists(path)) {
-            try {
+        LoadSectorFile(path);
+    }
+
+    public void LoadSectorFile(string path)
+    {
+        resourcePath = path;
+        if (System.IO.Directory.Exists(path))
+        {
+            try
+            {
                 string[] files = Directory.GetFiles(path);
                 current = null;
                 sectors = new List<Sector>();
@@ -107,12 +117,16 @@ public class SectorManager : MonoBehaviour
                 Debug.Log("worked");
                 jsonMode = false;
                 return;
-            } catch(System.Exception e){
+            }
+            catch (System.Exception e)
+            {
                 Debug.Log(e);
             };
         }
-        else if(System.IO.File.Exists(path)) {
-            try {
+        else if (System.IO.File.Exists(path))
+        {
+            try
+            {
                 string sectorjson = System.IO.File.ReadAllText(path);
                 SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                 Debug.Log("Platform JSON: " + data.platformjson);
@@ -131,15 +145,18 @@ public class SectorManager : MonoBehaviour
                 player.SetIsInteracting(false);
                 loadSector();
                 return;
-            } catch(System.Exception e) {
+            }
+            catch (System.Exception e)
+            {
                 Debug.Log(e);
             }
-        } 
+        }
         Debug.Log("Could not find valid sector in that path");
         jsonMode = false;
         player.SetIsInteracting(false);
         loadSector();
     }
+
     private void Start()
     {
         if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");

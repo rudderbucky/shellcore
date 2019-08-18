@@ -9,7 +9,7 @@ namespace NodeEditorFramework.Standard
     public class SectorLimiterNode : Node
     {
         public static string LimitedSector;
-        public static Node StartPoint;
+        public static SectorLimiterNode StartPoint;
 
         //Node things
         public const string ID = "SectorLimiterNode";
@@ -40,6 +40,10 @@ namespace NodeEditorFramework.Standard
                 GUILayout.Label("Sector Name:");
                 sectorName = GUILayout.TextField(sectorName, GUILayout.Width(200f));
             }
+            else
+            {
+                sectorName = "";
+            }
         }
 
         public override int Traverse()
@@ -49,12 +53,14 @@ namespace NodeEditorFramework.Standard
             if(sectorName == "" || freeSector)
             {
                 SectorManager.OnSectorLoad = null;
+                StartPoint = null;
                 return 0;
             }
             else
             {
                 savedVariables = new Dictionary<string, int>(TaskManager.Instance.taskVariables);
                 SectorManager.OnSectorLoad = SectorUpdate;
+                StartPoint = this;
                 SectorUpdate(SectorManager.instance.current.sectorName);
                 return -1;
             }
@@ -83,6 +89,11 @@ namespace NodeEditorFramework.Standard
                     TaskManager.Instance.setNode(this);
                 }
             }
+        }
+
+        public Dictionary<string,int> GetVariables()
+        {
+            return savedVariables;
         }
     }
 }

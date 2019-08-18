@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerSave {
 	
 	public string name;
+    public string resourcePath;
 	public Vector2 position;
 	public float[] currentHealths;
 	public string currentPlayerBlueprint;

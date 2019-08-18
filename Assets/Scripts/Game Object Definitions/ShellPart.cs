@@ -68,7 +68,7 @@ public class ShellPart : MonoBehaviour {
         } else holder = GameObject.Find("Part Holder");
 
 
-        GameObject obj = new GameObject(blueprint.name);
+        GameObject obj = new GameObject("Part_" + blueprint.name);
         obj.transform.SetParent(holder.transform);
 
         //Part sprite
