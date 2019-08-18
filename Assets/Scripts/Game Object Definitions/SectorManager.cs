@@ -162,7 +162,8 @@ public class SectorManager : MonoBehaviour
         if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
         background.setColor(SectorColors.colors[4]);
         if(!jsonMode) loadSector();
-        TaskManager.StartQuests();
+        if(TaskManager.Instance)
+            TaskManager.StartQuests();
     }
 
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
@@ -454,9 +455,20 @@ public class SectorManager : MonoBehaviour
     }
 
     public GameObject GetObject(string name) {
-        foreach(var obj in objects.Values) {
-            if(obj.name == name) return obj;
+        Debug.Log("Getting object: '" + name + "'");
+        foreach(var pair in objects) {
+            if(pair.Value == null)
+            {
+                continue;
+            }
+            if(pair.Value.name == name) return pair.Value;
         }
         return null;
+    }
+
+    public void RemoveObject(string name)
+    {
+        if(objects.ContainsKey(name))
+            objects.Remove(name);
     }
 }

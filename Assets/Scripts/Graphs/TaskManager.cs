@@ -27,7 +27,8 @@ public class TaskManager : MonoBehaviour
     public static string speakerName;
 
     public static Entity GetSpeaker() {
-        return SectorManager.instance.GetObject(speakerName).GetComponent<Entity>();
+        var speakerObj = SectorManager.instance.GetObject(speakerName);
+        return speakerObj?.GetComponent<Entity>();
     }
 
     private void Awake()
@@ -188,7 +189,8 @@ public class TaskManager : MonoBehaviour
     public void setNode(Node node)
     {
         //TODO: Traverser object for each canvas, multiple simultaneous quests
-        for(int i = 0; i < questCanvases.Count; i++)
+        initCanvases();
+        for (int i = 0; i < questCanvases.Count; i++)
         {
             if(questCanvases[i].nodes.Contains(node))
             {

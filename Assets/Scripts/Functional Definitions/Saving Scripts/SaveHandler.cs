@@ -36,7 +36,7 @@ public class SaveHandler : MonoBehaviour {
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
-            //SectorManager.instance.LoadSectorFile(save.resourcePath);
+            SectorManager.instance.LoadSectorFile(save.resourcePath);
 
             // tasks
             taskManager.setNode(save.lastTaskNodeID);
