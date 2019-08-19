@@ -14,8 +14,8 @@ namespace NodeEditorFramework.Standard
         private ConditionState state;
         public ConditionState State { get { return state; } set { state = value; } }
 
-        public delegate void UnitDestryedDelegate(Entity entity);
-        public static UnitDestryedDelegate OnUnitDestroyed;
+        public delegate void UnitDestroyedDelegate(Entity entity);
+        public static UnitDestroyedDelegate OnUnitDestroyed;
 
         public bool useIDInput;
         public string targetName;

@@ -108,13 +108,6 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 {
                     buttons[i].GetComponent<Image>().color = new Color(0, 0, 0.4F);
                 } else buttons[i].GetComponent<Image>().color = Color.white;
-
-                if(Input.GetKey(KeyCode.LeftShift)) {
-                    if(Input.GetKeyDown((1 + i).ToString())) 
-                    {
-                        onButtonPressed(i);
-                    }
-                }
             }
         } 
     }

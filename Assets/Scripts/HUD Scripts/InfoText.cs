@@ -9,7 +9,7 @@ public class InfoText : MonoBehaviour
     public Transform player;
     float timer;
 
-    private void Start()
+    private void Awake()
     {
         text.color = Color.clear;
     }

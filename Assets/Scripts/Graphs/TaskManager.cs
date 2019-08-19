@@ -81,7 +81,7 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    void updateTaskList()
+    public void updateTaskList()
     {
         StatusMenu.taskInfo = getTasks();
     }
@@ -133,7 +133,7 @@ public class TaskManager : MonoBehaviour
         // reset all static condition variables
         SectorLimiterNode.LimitedSector = "";
         DestroyEntityCondition.OnUnitDestroyed = null;
-        UsePartCondition.OnPlayerReconstruct = null;
+        UsePartCondition.OnPlayerReconstruct = new UnityEvent();
         WinBattleCondition.OnBattleWin = null;
 
         currentNodes = new Node[questCanvases.Count];

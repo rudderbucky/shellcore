@@ -39,7 +39,7 @@ public class ProximityInteractScript : MonoBehaviour {
 					}
 			}
 
-			if(closest as IVendor != null && !vendorUI.GetActive()) {
+			if(closest as IVendor != null) {
 				var blueprint = (closest as IVendor).GetVendingBlueprint();
 				var range = blueprint.range;
 

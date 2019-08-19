@@ -54,7 +54,6 @@ public class SaveHandler : MonoBehaviour {
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
-
 		} else {
 			save = new PlayerSave();
 			save.presetBlueprints = new string[5];
