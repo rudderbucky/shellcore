@@ -15,7 +15,7 @@ public class Missile : WeaponAbility {
         cooldownDuration = 5F;
         CDRemaining = cooldownDuration;
         range = 20;
-        energyCost = 25;
+        energyCost = 125;
         category = Entity.EntityCategory.All;
     }
 
