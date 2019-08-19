@@ -40,7 +40,8 @@ namespace NodeEditorFramework.Standard
             dialogueStartNode = this;
             if (SpeakToEntity)
             {
-                if(TaskManager.interactionOverrides.ContainsKey(EntityName))
+                TaskManager.speakerName = EntityName;
+                if (TaskManager.interactionOverrides.ContainsKey(EntityName))
                 {
                     TaskManager.interactionOverrides[EntityName] = () => {
                         TaskManager.Instance.setNode(output);
@@ -53,7 +54,6 @@ namespace NodeEditorFramework.Standard
                         TaskManager.Instance.setNode(output);
                     });
                 }
-                TaskManager.speakerName = EntityName;
                 return -1;
             }
             else

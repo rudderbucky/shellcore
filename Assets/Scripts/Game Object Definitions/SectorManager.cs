@@ -17,6 +17,8 @@ public class SectorManager : MonoBehaviour
     public Sector current;
     public BackgroundScript background;
     public InfoText info;
+    [HideInInspector]
+    public string resourcePath = "";
     private Dictionary<int, int> stationsCount = new Dictionary<int, int>();
     private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
     private List<IVendor> stations = new List<IVendor>();
@@ -26,6 +28,7 @@ public class SectorManager : MonoBehaviour
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
     private int uniqueIDInt;
+    private bool sectorLoaded = false;
 
     public int GetExtraCommandUnits(int faction) {
         stationsCount.Clear();
@@ -41,7 +44,7 @@ public class SectorManager : MonoBehaviour
         return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0; 
     }
 
-    private void Awake()
+    public void Initialize()
     {
         if (instance != null)
         {
@@ -61,6 +64,7 @@ public class SectorManager : MonoBehaviour
         sectorBorders.startWidth = 0.1f;
         sectorBorders.endWidth = 0.1f;
         sectorBorders.loop = true;
+        OnSectorLoad = null;
     }
 
     private void Update()
@@ -84,8 +88,16 @@ public class SectorManager : MonoBehaviour
     public void TryGettingJSON() {
         string path = GameObject.Find("Path Input").GetComponent<UnityEngine.UI.InputField>().text;
         GameObject.Find("Path Input").transform.parent.gameObject.SetActive(false);
-        if(System.IO.Directory.Exists(path)) {
-            try {
+        LoadSectorFile(path);
+    }
+
+    public void LoadSectorFile(string path)
+    {
+        resourcePath = path;
+        if (System.IO.Directory.Exists(path))
+        {
+            try
+            {
                 string[] files = Directory.GetFiles(path);
                 current = null;
                 sectors = new List<Sector>();
@@ -107,12 +119,16 @@ public class SectorManager : MonoBehaviour
                 Debug.Log("worked");
                 jsonMode = false;
                 return;
-            } catch(System.Exception e){
+            }
+            catch (System.Exception e)
+            {
                 Debug.Log(e);
             };
         }
-        else if(System.IO.File.Exists(path)) {
-            try {
+        else if (System.IO.File.Exists(path))
+        {
+            try
+            {
                 string sectorjson = System.IO.File.ReadAllText(path);
                 SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                 Debug.Log("Platform JSON: " + data.platformjson);
@@ -131,21 +147,28 @@ public class SectorManager : MonoBehaviour
                 player.SetIsInteracting(false);
                 loadSector();
                 return;
-            } catch(System.Exception e) {
+            }
+            catch (System.Exception e)
+            {
                 Debug.Log(e);
             }
-        } 
+        }
         Debug.Log("Could not find valid sector in that path");
         jsonMode = false;
         player.SetIsInteracting(false);
         loadSector();
+        sectorLoaded = true;
     }
+
     private void Start()
     {
         if(ResourceManager.Instance)sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
-        background.setColor(SectorColors.colors[4]);
-        if(!jsonMode) loadSector();
-        TaskManager.StartQuests();
+
+        if(!sectorLoaded)
+        {
+            background.setColor(SectorColors.colors[4]);
+            if (!jsonMode) loadSector();
+        }
     }
 
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
@@ -167,6 +190,7 @@ public class SectorManager : MonoBehaviour
                             if(data.name == "Clearly Delusional")
                                 blueprint.dialogue = ResourceManager.GetAsset<Dialogue>("default_dialogue");
                             // hack for now, TODO: implement JSON dialogue
+                            // also TODO: dialogue editor (or allow multiple starting points in quest graphs to create multiple permanent "dialogue overrides")
                         }
                     }
                     catch (System.Exception e)
@@ -388,7 +412,7 @@ public class SectorManager : MonoBehaviour
 
         //sector color
         background.setColor(current.backgroundColor);
-        Camera.main.backgroundColor = current.backgroundColor / 2F;
+        //Camera.main.backgroundColor = current.backgroundColor / 2F;
         //sector borders
         sectorBorders.enabled = true;
         sectorBorders.SetPositions(new Vector3[]{
@@ -437,9 +461,20 @@ public class SectorManager : MonoBehaviour
     }
 
     public GameObject GetObject(string name) {
-        foreach(var obj in objects.Values) {
-            if(obj.name == name) return obj;
+        Debug.Log("Getting object: '" + name + "'");
+        foreach(var pair in objects) {
+            if(pair.Value == null)
+            {
+                continue;
+            }
+            if(pair.Value.name == name) return pair.Value;
         }
         return null;
+    }
+
+    public void RemoveObject(string name)
+    {
+        if(objects.ContainsKey(name))
+            objects.Remove(name);
     }
 }

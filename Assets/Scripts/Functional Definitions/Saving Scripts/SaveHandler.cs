@@ -9,7 +9,7 @@ public class SaveHandler : MonoBehaviour {
     public TaskManager taskManager;
 	PlayerSave save;
 
-	void Awake() {
+	public void Initialize() {
 		string currentPath;
 		if(!File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) {
 			currentPath = Application.persistentDataPath + "\\TestSave";
@@ -36,6 +36,12 @@ public class SaveHandler : MonoBehaviour {
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
+
+            player.Rebuild();
+            Camera.main.GetComponent<CameraScript>().Initialize(player);
+            GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
+
+            SectorManager.instance.LoadSectorFile(save.resourcePath);
 
             // tasks
             taskManager.setNode(save.lastTaskNodeID);
@@ -77,9 +83,18 @@ public class SaveHandler : MonoBehaviour {
 		save.credits = player.credits;
         save.abilityCaps = player.abilityCaps;
         save.shards = player.shards;
+        save.resourcePath = SectorManager.instance.resourcePath;
 
         // tasks
-        save.lastTaskNodeID = taskManager.lastTaskNodeID;
+        var limiterNode = NodeEditorFramework.Standard.SectorLimiterNode.StartPoint;
+        if (limiterNode != null)
+            Debug.Log("limiter found!");
+
+        save.lastTaskNodeID = limiterNode == null ? taskManager.lastTaskNodeID : limiterNode.GetID();
+
+        Dictionary<string, int> variables = limiterNode == null
+            ? taskManager.taskVariables
+            : limiterNode.GetVariables();
         string[] keys = new string[taskManager.taskVariables.Count];
         int[] values = new int[taskManager.taskVariables.Count];
         int index = 0;
@@ -98,6 +113,7 @@ public class SaveHandler : MonoBehaviour {
         {
             taskIDs[i] = tasks[i].taskID;
         }
+
 		string saveJson = JsonUtility.ToJson(save);
 		File.WriteAllText(currentPath, saveJson);
 	}

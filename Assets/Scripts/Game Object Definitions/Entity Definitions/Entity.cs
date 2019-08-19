@@ -367,6 +367,7 @@ public class Entity : MonoBehaviour, IDamageable {
         AIData.entities.Remove(this);
         if (this is IVendor)
             AIData.vendors.Remove(this);
+        SectorManager.instance.RemoveObject(name);
     }
 
     virtual protected void Start()

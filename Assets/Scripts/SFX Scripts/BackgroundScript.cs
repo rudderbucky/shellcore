@@ -105,9 +105,11 @@ public class BackgroundScript : MonoBehaviour {
             TileUpdate(ingameTiles); // tile update called on tile array
     }
 
-    void Awake() {
+    public void Initialize()
+    {
         Build();
     }
+
     public void Restart() {
         if(active) {
             if(GameObject.Find("Tile Holder")) Destroy(GameObject.Find("Tile Holder"));
@@ -115,17 +117,18 @@ public class BackgroundScript : MonoBehaviour {
             setColor(bgCol);
         }
     }
+
     Color lastColor; // used like bgCol, just without the static attribute
     public void setColor(Color color)
     {
-        Camera.main.backgroundColor = color;
+        Camera.main.backgroundColor = color / 2F;
         if(ingameTiles == null) {
             bgCol = lastColor = color;
             return;
         }
         if(lastColor == Color.clear) {
             lastColor = color;
-            foreach(GameObject tile in ingameTiles) {
+            foreach (GameObject tile in ingameTiles) {
                 tile.GetComponent<SpriteRenderer>().color = color;
             }
             return;
@@ -149,7 +152,12 @@ public class BackgroundScript : MonoBehaviour {
         while(renderer.color != newColor) {
             renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
             beginLerp += 0.0125F;
-            if(beginLerp > 1) beginLerp = 1;
+            if (beginLerp > 1)
+            {
+                beginLerp = 1;
+                renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
+                break;
+            }
             yield return null;
         }
     }

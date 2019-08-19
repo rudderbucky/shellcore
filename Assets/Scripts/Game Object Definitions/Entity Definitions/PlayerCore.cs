@@ -17,6 +17,8 @@ public class PlayerCore : ShellCore {
     public int[] abilityCaps;
     public int reputation;
 
+    private bool initialized = false;
+
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
     }
@@ -60,7 +62,9 @@ public class PlayerCore : ShellCore {
 
     protected override void Awake()
     {
-        base.Awake();
+        if (!initialized)
+            base.Awake();
+        initialized = true;
     }
     // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
     protected override void Start () {
@@ -80,6 +84,9 @@ public class PlayerCore : ShellCore {
 	}
 
     public void Rebuild() {
+        if (!initialized)
+            Awake();
+        initialized = true;
         hud.DeinitializeHUD();
         for(int i = 0; i < parts.Count; i++) {
             if(parts[i].gameObject.name != "Shell Sprite")

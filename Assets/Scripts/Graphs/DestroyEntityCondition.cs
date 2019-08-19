@@ -96,7 +96,7 @@ namespace NodeEditorFramework.Standard
         void updateState(Entity entity)
         {
             if (entity.name == targetName)
-            {   
+            {
                 killCount++;
                 if(targetFaction != 0)
                 {

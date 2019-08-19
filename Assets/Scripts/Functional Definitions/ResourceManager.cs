@@ -40,7 +40,7 @@ public class ResourceManager : MonoBehaviour
         soundVolume = newVol;
     }
 
-    private void Awake()
+    public void Initialize()
     {
         allPartNames = new List<string>();
         Instance = this;

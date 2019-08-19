@@ -92,10 +92,10 @@ public class SaveMenuHandler : GUIWindowScripts {
 	}
 	public void AddSave() {
 		string currentVersion = "Prototype 3.0.1";
-		string name = inputField.text;
+		string name = inputField.text.Trim();
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
 		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
-		if(name == "" || paths.Contains(path)) return;
+		if(name == "" || paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1) return;
 		PlayerSave save = new PlayerSave();
 		save.name = name;
 		save.timePlayed = 0;

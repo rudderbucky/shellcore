@@ -16,7 +16,6 @@ public class MissileScript : MonoBehaviour {
     private float damage; // damage missile projectile should deal
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
-    private bool worked = false;
     private Vector2 vector;
     public GameObject hitPrefab;
     public GameObject missPrefab;
@@ -117,22 +116,29 @@ public class MissileScript : MonoBehaviour {
                     part.TakeDamage(residue); // damage the part
                 }
                 damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
-                worked = true;
+                Instantiate(hitPrefab, transform.position, Quaternion.identity);
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
         }
     }
     public void OnDestroy() {
-        if(!worked) {
-            vector = target && transform ? (target.position - transform.position) : Vector3.zero;
-            var miss = Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, 
-                Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg)).GetComponent<ParticleSystem>();
-        }
-        else Instantiate(hitPrefab, transform.position, Quaternion.identity);
-
         if(transform.GetComponentInChildren<TrailRenderer>()) {
             transform.GetComponentInChildren<TrailRenderer>().autodestruct = true;
             transform.DetachChildren();
         }
+    }
+
+    public void StartSurvivalTimer(float time)
+    {
+        StartCoroutine(DestroyTimer(time));
+    }
+
+    IEnumerator DestroyTimer(float time)
+    {
+        yield return new WaitForSeconds(time);
+        vector = target && transform ? (target.position - transform.position) : Vector3.zero;
+        Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0,
+                Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg));
+        Destroy(gameObject);
     }
 }
