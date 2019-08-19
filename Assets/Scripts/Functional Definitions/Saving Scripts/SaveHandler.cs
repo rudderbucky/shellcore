@@ -112,6 +112,7 @@ public class SaveHandler : MonoBehaviour {
         {
             taskIDs[i] = tasks[i].taskID;
         }
+        save.activeTaskIDs = taskIDs;
 
 		string saveJson = JsonUtility.ToJson(save);
 		File.WriteAllText(currentPath, saveJson);

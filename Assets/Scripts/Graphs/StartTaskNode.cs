@@ -16,7 +16,7 @@ namespace NodeEditorFramework.Standard
         //Task related
         public string taskID
         {
-            get { return GetHashCode().ToString(); }
+            get { return "Task_" + GetID(); }
         }
         public string dialogueText = "";
         public Color dialogueColor = Color.white;
@@ -121,7 +121,9 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.OnDialogueEnd -= OnClick;
             if (index != 0)
             {
+                TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityName);
                 StartTask();
+                TaskManager.Instance.setNode(outputAccept);
             }
             else
             {
@@ -160,8 +162,6 @@ namespace NodeEditorFramework.Standard
                 };
             }
             TaskManager.Instance.AddTask(task);
-            TaskManager.Instance.setNode(outputAccept);
-            TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityName);
         }
     }
 }
