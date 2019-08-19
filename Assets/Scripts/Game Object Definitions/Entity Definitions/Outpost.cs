@@ -71,5 +71,9 @@ public class Outpost : AirConstruct, IVendor {
             BZManager.AlertPlayers(otherFaction, "WARNING: Outpost lost!");
         }
         Start();
+        foreach(var part in parts)
+        {
+            part.Start();
+        }
     }
 }
