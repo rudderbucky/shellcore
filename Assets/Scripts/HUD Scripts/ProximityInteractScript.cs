@@ -49,9 +49,7 @@ public class ProximityInteractScript : MonoBehaviour {
 						if(Input.GetKey(KeyCode.LeftShift)) {
 							if(Input.GetKeyDown((1 + i).ToString())) 
 							{
-								vendorUI.player = player;
-								vendorUI.blueprint = blueprint;
-								vendorUI.outpostPosition = closest.transform.position;
+                    			vendorUI.SetVendor(closest as IVendor, player);
 								vendorUI.onButtonPressed(i);
 							}
 						}

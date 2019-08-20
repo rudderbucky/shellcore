@@ -76,4 +76,8 @@ public class Outpost : AirConstruct, IVendor {
             part.Start();
         }
     }
+
+    public Vector3 GetPosition() {
+        return transform.position;
+    }
 }

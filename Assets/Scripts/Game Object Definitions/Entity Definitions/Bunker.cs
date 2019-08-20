@@ -62,4 +62,8 @@ public class Bunker : GroundConstruct, IVendor {
     {
         return vendingBlueprint;
     }
+
+    public Vector3 GetPosition() {
+        return transform.position;
+    }
 }

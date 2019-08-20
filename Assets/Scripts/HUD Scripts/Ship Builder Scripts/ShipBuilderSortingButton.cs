@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems; // Required when using Event data.
-using UnityEngine.SceneManagement;
 
-public class ShipBuilderSortingButton : MonoBehaviour, IPointerClickHandler
+public class ShipBuilderSortingButton : MonoBehaviour
 {
 	Button button;
 	Text text;
@@ -17,8 +15,8 @@ public class ShipBuilderSortingButton : MonoBehaviour, IPointerClickHandler
 	void OnEnable() {
 		if(button) button.image.color = text.color = Color.green;
 	}
-    public void OnPointerClick(PointerEventData eventData)
-    {
+
+	public void ChangeColor() {
         button.image.color = text.color = button.image.color == Color.gray ? Color.green : Color.gray;
-    }
+	}
 }

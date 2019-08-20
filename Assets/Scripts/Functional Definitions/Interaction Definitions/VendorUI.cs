@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 public interface IVendor
 {
     VendingBlueprint GetVendingBlueprint();
+    int GetFaction();
+    Vector3 GetPosition();
 }
 
 public class VendorUI : MonoBehaviour, IDialogueable, IWindow
@@ -15,7 +17,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     public GameObject UIPrefab;
     public GameObject buttonPrefab;
     public PlayerCore player;
-    public Vector3 outpostPosition;
+    private IVendor vendor;
     private GameObject UI;
     private Transform background;
     private bool opened;
@@ -93,11 +95,27 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         opened = true;
     }
 
+    public void SetVendor(IVendor vendor, PlayerCore player) {
+        this.player = player;
+        this.vendor = vendor;
+        blueprint = vendor.GetVendingBlueprint();
+    }
+
+    private void ClearVendor() {
+        this.player = null;
+        this.vendor = null;
+        this.blueprint = null;
+    }
+
     private void Update()
     {
         if (opened)
         {
-            if((outpostPosition - player.transform.position).sqrMagnitude > range)
+            if(vendor.GetFaction() != player.faction) {
+                Debug.Log("Vendor faction changed");
+                CloseUI();
+            }
+            if((vendor.GetPosition() - player.transform.position).sqrMagnitude > range)
             {
                 Debug.Log("Player moved out of the vendor range");
                 CloseUI();
@@ -117,12 +135,14 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         UI.GetComponentInChildren<GUIWindowScripts>().CloseUI();
         opened = false;
         Destroy(UI);
+        ClearVendor();
     }
 
     public void onButtonPressed(int index)
     {
         // TODO: this is invalid for non ownable items, so must be changed later on
-        if (player.GetPower() >= blueprint.items[index].cost && player.unitsCommanding.Count < player.GetTotalCommandLimit())
+        if (player.GetPower() >= blueprint.items[index].cost && player.faction == vendor.GetFaction()
+            && player.unitsCommanding.Count < player.GetTotalCommandLimit())
         {
             GameObject creation = new GameObject();
             switch(blueprint.items[index].entityBlueprint.intendedType)
@@ -143,11 +163,12 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             }
             creation.name = blueprint.items[index].entityBlueprint.name;
             player.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
-            creation.transform.position = outpostPosition;
-            creation.GetComponent<Entity>().spawnPoint = outpostPosition;
+            creation.transform.position = vendor.GetPosition();
+            creation.GetComponent<Entity>().spawnPoint = vendor.GetPosition();
             player.SetTractorTarget(creation.GetComponent<Draggable>());
             player.AddPower(-blueprint.items[index].cost);
             if(GetActive()) CloseUI();
+            ClearVendor();
         }
     }
 }

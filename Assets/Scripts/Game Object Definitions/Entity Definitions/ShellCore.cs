@@ -8,7 +8,7 @@ using UnityEngine;
 public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected ICarrier carrier;
-   protected float totalPower;
+    protected float totalPower;
     protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore)
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
@@ -56,7 +56,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     }
     protected override void Start()
     {
-        intrinsicCommandLimit = 0;
         if ((carrier != null && !carrier.Equals(null)) && carrier.GetIsInitialized())
         {
             spawnPoint = carrier.GetSpawnPoint();
@@ -98,6 +97,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected override void BuildEntity()
     {
+        intrinsicCommandLimit = 0;
         if(!tractor) {
             tractor = gameObject.AddComponent<TractorBeam>();
             tractor.owner = this;

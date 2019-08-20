@@ -344,9 +344,7 @@ public class DialogueSystem : MonoBehaviour
                     return;
                 }
                 if(((Vector3)speakerPos - player.transform.position).magnitude < dialogue.vendingBlueprint.range) {
-                    vendorUI.blueprint = dialogue.vendingBlueprint;
-                    vendorUI.outpostPosition = (Vector3)speakerPos;
-                    vendorUI.player = player;
+                    vendorUI.SetVendor(speaker as IVendor, player);
                     vendorUI.openUI();
                 }
                 endDialogue(0, false);
