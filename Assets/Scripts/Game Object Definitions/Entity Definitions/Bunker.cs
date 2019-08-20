@@ -52,6 +52,10 @@ public class Bunker : GroundConstruct, IVendor {
         GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().AlertPlayers(oldFaction, "WARNING: Bunker lost!");
         GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
         Start();
+        foreach (var part in parts)
+        {
+            part.Start();
+        }
     }
 
     public VendingBlueprint GetVendingBlueprint()
