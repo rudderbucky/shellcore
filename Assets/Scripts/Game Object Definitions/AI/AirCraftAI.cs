@@ -84,9 +84,16 @@ public class AirCraftAI : MonoBehaviour
 
     public void follow(Transform t = null)
     {
-        setMode(AIMode.Follow);
-        (module as FollowAI).followTarget = t;
-        module.Init();
+        if (craft is Drone && (craft as Drone).type == DroneType.Worker)
+        {
+            (module as TractorAI).Follow(t);
+        }
+        else
+        {
+            setMode(AIMode.Follow);
+            (module as FollowAI).followTarget = t;
+            module.Init();
+        }
     }
 
     public AIMode getMode()
@@ -96,8 +103,16 @@ public class AirCraftAI : MonoBehaviour
 
     public void moveToPosition(Vector2 pos)
     {
-        setMode(AIMode.Path);
-        (module as PathAI).MoveToPosition(pos);
+        if(craft is Drone && (craft as Drone).type == DroneType.Worker)
+        {
+            (module as TractorAI).GoTo(pos);
+        }
+        else
+        {
+            setMode(AIMode.Path);
+            (module as PathAI).MoveToPosition(pos);
+        }
+
     }
 
     public void setPath(Path path)

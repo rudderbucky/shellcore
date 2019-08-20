@@ -38,6 +38,13 @@ public class Shard : MonoBehaviour
         spriteRenderer.enabled = Time.time % 0.25F > 0.125F; // math stuff that blinks the part
     }
 
+    private void OnDestroy()
+    {
+        Debug.Log("Removing shard... Draggable: " + draggable);
+        if(AIData.rockFragments.Contains(draggable))
+            AIData.rockFragments.Remove(draggable);
+    }
+
     void Update() {
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)
         {
@@ -50,11 +57,14 @@ public class Shard : MonoBehaviour
             {
                 rigid.drag = 20;
                 // add "Draggable" component so that shellcores can grab the part
-                if (!draggable) draggable = gameObject.AddComponent<Draggable>();
+                if (!draggable)
+                {
+                    draggable = gameObject.AddComponent<Draggable>();
+                    AIData.rockFragments.Add(draggable);
+                }
                 spriteRenderer.enabled = true;
                 spriteRenderer.sortingOrder = 0;
                 transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
-
                 //rigid.angularVelocity = rigid.angularVelocity > 0 ? 200 : -200;
             } else Destroy(gameObject);
         }

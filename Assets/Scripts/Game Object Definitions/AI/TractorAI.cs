@@ -5,9 +5,26 @@ using UnityEngine;
 public class TractorAI : AIModule
 {
     // Follow mode:
-    public Transform followTarget;
+    Transform followTarget;
     TractorBeam beam;
     float beamUpdateTimer = 0.5f;
+
+    //Path mode:
+    Vector2 targetPosition;
+
+    bool followingPlayer = true;
+
+    public void Follow(Transform target)
+    {
+        followTarget = target;
+        followingPlayer = true;
+    }
+
+    public void GoTo(Vector2 pos)
+    {
+        targetPosition = pos;
+        followingPlayer = false;
+    }
 
     public override void Init()
     {
@@ -20,25 +37,35 @@ public class TractorAI : AIModule
 
     public override void ActionTick()
     {
-        Transform target;
-        if(owner != null)
+        if(followingPlayer)
         {
-            target = owner.GetTransform();
+            Transform target;
+            if(owner != null)
+            {
+                target = owner.GetTransform();
+            }
+            else
+            {
+                target = followTarget;
+            }
+            if (target != null)
+            {
+                Vector2 direction = (target.position - craft.transform.position).magnitude > 5 ? target.position - craft.transform.position : Vector3.zero;
+                craft.MoveCraft(direction.normalized);
+            }
         }
         else
         {
-            target = followTarget;
+            Vector2 direction = targetPosition - (Vector2)craft.transform.position;
+            if (direction.magnitude > 1f)
+            {
+                craft.MoveCraft(direction.normalized);
+            }
         }
-        if (target != null)
-        {
-            Vector2 direction = (target.position - craft.transform.position).magnitude > 5 ? target.position - craft.transform.position : Vector3.zero;
-            craft.MoveCraft(direction.normalized);
-        }
-
         if (beamUpdateTimer > 0f)
         {
             beamUpdateTimer -= Time.deltaTime;
-            if(beamUpdateTimer <= 0f)
+            if (beamUpdateTimer <= 0f)
             {
                 beamUpdateTimer += 0.5f;
                 updateBeam();
@@ -57,6 +84,17 @@ public class TractorAI : AIModule
                 float d = (AIData.strayParts[i].transform.position - craft.transform.position).sqrMagnitude;
                 Draggable target = AIData.strayParts[i].GetComponent<Draggable>();
                 if(target == owner.GetTractorTarget()) continue;
+                if (d < dist && target && !target.dragging)
+                {
+                    dist = d;
+                    part = target;
+                }
+            }
+            for (int i = 0; i < AIData.rockFragments.Count; i++)
+            {
+                float d = (AIData.rockFragments[i].transform.position - craft.transform.position).sqrMagnitude;
+                Draggable target = AIData.rockFragments[i].GetComponent<Draggable>();
+                if (target == owner.GetTractorTarget()) continue;
                 if (d < dist && target && !target.dragging)
                 {
                     dist = d;
