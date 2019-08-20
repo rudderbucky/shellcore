@@ -114,11 +114,13 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             if(vendor.GetFaction() != player.faction) {
                 Debug.Log("Vendor faction changed");
                 CloseUI();
+                return;
             }
             if((vendor.GetPosition() - player.transform.position).sqrMagnitude > range)
             {
                 Debug.Log("Player moved out of the vendor range");
                 CloseUI();
+                return;
             }
             for (int i = 0; i < blueprint.items.Count; i++)
             {
