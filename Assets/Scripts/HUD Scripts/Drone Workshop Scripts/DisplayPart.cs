@@ -24,6 +24,7 @@ public class DisplayPart : MonoBehaviour
 			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
 			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
 			shooter.enabled = true;
+			shooter.raycastTarget = false;
 		}
 		image.rectTransform.anchoredPosition = shooter.rectTransform.anchoredPosition = info.location * 100;
 		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");

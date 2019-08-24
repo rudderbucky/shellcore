@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 	This class exists to streamline the process of displaying an image representation of a part, and storing actual data.
 	In other words, this class is made to reflect the current status of the embedded PartInfo in image form.
  */
-public class ShipBuilderPart : DisplayPart {
+public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHandler {
 
 	public RectTransform rectTransform;
 	public ShipBuilderCursorScript cursorScript;
@@ -39,8 +39,19 @@ public class ShipBuilderPart : DisplayPart {
 	protected override void UpdateAppearance() {
 		// set colors
 		base.UpdateAppearance();
-		if(highlighted) image.color = (isInChain && validPos ? Color.white : Color.white - new Color(0,0,0,0.5F));
-		else image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
+		if(highlighted) {
+			if(isInChain && validPos) {
+				image.material = ResourceManager.GetAsset<Material>("material_outline");
+				image.color = FactionColors.colors[0];
+			} else {
+				image.color = FactionColors.colors[0] - new Color(0,0,0,0.5F);
+				image.material = null;
+			}
+		} 
+		else {
+			image.color = (isInChain && validPos ? FactionColors.colors[0] : FactionColors.colors[0] - new Color(0,0,0,0.5F));
+			image.material = null;
+		}
 	}
 
 	bool IsTooClose(ShipBuilderPart otherPart) {
@@ -76,4 +87,14 @@ public class ShipBuilderPart : DisplayPart {
 		}
 		UpdateAppearance();
 	}
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        highlighted = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        highlighted = false;
+    }
 }

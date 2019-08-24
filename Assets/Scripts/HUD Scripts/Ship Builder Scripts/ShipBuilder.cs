@@ -43,6 +43,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	private Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
 	public BuilderMode mode;
 	private int[] abilityLimits;
+	public SelectionDisplayHandler displayHandler;
+	public GameObject currentPartHandler;
 
 	public BuilderMode GetMode() {
 		return mode;
@@ -458,6 +460,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				button.player = player;
 				button.cursorScript = cursorScript;
 				button.builder = this;
+				button.displayHandler = displayHandler;
+				button.currentPartHandler = currentPartHandler;
 				button.Initialize();
 			}
 		}

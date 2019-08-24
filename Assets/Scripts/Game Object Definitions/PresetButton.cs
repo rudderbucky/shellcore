@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems; // Required when using Event data.
 using UnityEngine.SceneManagement;
-public class PresetButton : MonoBehaviour, IPointerClickHandler
+public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
 
     public GameObject SBPrefab;
@@ -17,6 +17,9 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
     Text text;
     bool initialized;
     bool valid;
+    public SelectionDisplayHandler displayHandler;
+    public GameObject currentPartHandler;
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Input.GetKey(KeyCode.LeftShift))
@@ -65,6 +68,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
             blueprint.parts.CopyTo(x);
             player.blueprint.parts = new List<EntityBlueprint.PartInfo>(x);
             builder.CloseUI(true);
+            OnPointerExit(null);
             player.Rebuild();
         }
     }
@@ -111,6 +115,24 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler
     {
         if(initialized && valid) {
             CheckEmpty();
+        }
+    }
+
+    // TODO: The assigndisplay may use an outdated core (since the player can save a preset, then core upgrade)
+    // fix that eventually
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if(blueprint && valid) {
+            currentPartHandler.SetActive(false);
+            displayHandler.AssignDisplay(blueprint, null);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if(blueprint && valid) {
+            currentPartHandler.SetActive(true);
+            displayHandler.ClearDisplay();
         }
     }
 }

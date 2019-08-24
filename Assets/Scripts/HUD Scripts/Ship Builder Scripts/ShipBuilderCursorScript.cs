@@ -169,6 +169,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				PlaceCurrentPart();
 			}
 		} else if(Input.GetMouseButtonDown(0)) {
+			lastPart = null;
 			for(int i = parts.Count - 1; i >= 0; i--) {
 				Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);
 				bound.extents /= 1.5F;
@@ -180,10 +181,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				}
 				transform.position = origPos;
 			}
-		}
-		foreach(ShipBuilderPart part in parts) {
-			if(part == currentPart || part == lastPart) part.highlighted = true;
-			else part.highlighted = false;
 		}
 	}
 

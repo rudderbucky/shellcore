@@ -48,19 +48,8 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 		
 		if(initialized) {
 			EntityBlueprint.PartInfo? part = null;
-			if(cursorScript.GetCurrentInfo() != null) {
-				part = cursorScript.GetCurrentInfo();
-			}
-			else if(cursorScript.GetPartCursorIsOn() != null) {
+			if(cursorScript.GetPartCursorIsOn() != null) {
 				part = cursorScript.GetPartCursorIsOn();
-			}
-			else if(RectTransformUtility.RectangleContainsScreenPoint(builderBG, Input.mousePosition) &&
-				!RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, Input.mousePosition) 
-				&& builder.GetButtonPartCursorIsOn() != null) {
-				part = builder.GetButtonPartCursorIsOn();
-			}
-			else if(cursorScript.GetLastInfo() != null) {
-				part = cursorScript.GetLastInfo();
 			}
 
 			if(part != null) {

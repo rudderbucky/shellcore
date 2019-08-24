@@ -1,12 +1,10 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Custom/Outline" {
+﻿Shader "Custom/Outline" {
     Properties {
-        _MainTex ("Base (RGB)", 2D) = "white" {}
+        _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1, 1, 1, 1)
     }
     SubShader {
-        Tags {"Queue"="Transparent" "RenderType"="Transparent"}
+
         Cull Off
         Blend One OneMinusSrcAlpha
        
@@ -18,16 +16,24 @@ Shader "Custom/Outline" {
             #include "UnityCG.cginc"
  
             sampler2D _MainTex;
- 
+
+            struct appdata {
+                float4 vertex : POSITION;
+                fixed4 color : COLOR;
+                half2 texcoord : TEXCOORD0;
+            };
+
             struct v2f {
                 float4 pos : SV_POSITION;
                 half2 uv : TEXCOORD0;
+                fixed4 color : COLOR;
             };
  
-            v2f vert(appdata_base v) {
+            v2f vert(appdata v) {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = v.texcoord;
+                o.color = v.color;
                 return o;
             }
  
@@ -38,15 +44,13 @@ Shader "Custom/Outline" {
             {
                 half4 c = tex2D(_MainTex, i.uv);
 
-                //float t = (sin(_Time * 100.0f) + 1.0f) * 0.2f;
-
-                //c.rgb = lerp(c.rgb, _Color, t);
+                c *= i.color;
                 c.rgb *= c.a;
                 half4 outlineC = _Color;
                 outlineC.a *= ceil(c.a);
                 outlineC.rgb *= outlineC.a;
  				
-				fixed2 texelSize = _MainTex_TexelSize * 5.0f;
+				fixed2 texelSize = _MainTex_TexelSize * 9.0f;
 
                 fixed alpha_up = tex2D(_MainTex, i.uv + fixed2(0, texelSize.y)).a;
                 fixed alpha_down = tex2D(_MainTex, i.uv - fixed2(0, texelSize.y)).a;
@@ -60,9 +64,7 @@ Shader "Custom/Outline" {
  		    
                 return lerp(outlineC, c, ceil(alpha_up * alpha_down * alpha_right * alpha_left));
             }
- 
             ENDCG
         }
     }
-    FallBack "Diffuse"
 }
