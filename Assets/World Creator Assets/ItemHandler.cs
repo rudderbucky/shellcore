@@ -44,10 +44,21 @@ public class ItemHandler : MonoBehaviour
 
     [HideInInspector]
     public string text;
+
     #endif
 
-
-
+    public GameObject buttonPrefab;
+    public Transform viewContent;
+    public WorldCreatorCursor cursor;
+    void Start() {
+        GenerateItemList();
+        for(int i = 0; i < itemPack.items.Count; i++) {
+            var ib = Instantiate(buttonPrefab, viewContent, false).GetComponent<ItemButtonScript>();
+            ib.item = itemPack.items[i];
+            ib.itemIndex = i;
+            ib.cursor = cursor;
+        }
+    }
 }
 
 #if UNITY_EDITOR
@@ -60,6 +71,9 @@ public class ItemHandlerEditor : Editor
     Object objRef;
     Item placeholder;
     int mode;
+    SerializedProperty buttonPrefab;
+    SerializedProperty cursor;
+    SerializedProperty viewContent;
     private void OnEnable() {
         objRef = new Object();
         placeholder = new Item();
@@ -67,6 +81,9 @@ public class ItemHandlerEditor : Editor
         handler.GenerateItemList();
         builtIns = serializedObject.FindProperty("items");
         pack = serializedObject.FindProperty("itemPack");
+        buttonPrefab = serializedObject.FindProperty("buttonPrefab");
+        cursor = serializedObject.FindProperty("cursor");
+        viewContent = serializedObject.FindProperty("viewContent");
     }
     public override void OnInspectorGUI() {
         serializedObject.Update();
@@ -127,6 +144,16 @@ public class ItemHandlerEditor : Editor
         
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PropertyField(builtIns, new GUIContent("Built-ins by type"), true);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        handler.cursor = EditorGUILayout.ObjectField("Cursor:", handler.cursor, typeof(WorldCreatorCursor), true) as WorldCreatorCursor;
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        handler.buttonPrefab = EditorGUILayout.ObjectField("Button Prefab:", handler.buttonPrefab, typeof(GameObject), true) as GameObject;
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        handler.viewContent = EditorGUILayout.ObjectField("Content Transform:", handler.viewContent, typeof(Transform), true) as Transform;
         EditorGUILayout.EndHorizontal();
 
         serializedObject.ApplyModifiedProperties();
