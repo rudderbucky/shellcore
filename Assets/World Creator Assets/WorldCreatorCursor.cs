@@ -7,32 +7,105 @@ public class WorldCreatorCursor : MonoBehaviour
 {
     public ItemHandler handler;
     Item current;
-    GameObject cursorObj;
-    // Start is called before the first frame update
 	private float tileSize = 5F;
 	Vector2 cursorOffset = new Vector2(2.5F, 2.5F);
-
+    public int currentIndex;
+    int maxIndex;
     public EventSystem system;
+    List<Item> placedItems = new List<Item>();
+    public ItemPropertyDisplay propertyDisplay;
 
+    void Start() {
+        maxIndex = handler.itemPack.items.Count;
+    }
     // Update is called once per frame
     void Update() {
-		Vector3 mousePos = Input.mousePosition;
+        if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
+        else if(Input.mouseScrollDelta.y > 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
+		
+		current.pos = CalcPos(current);
+        if(current.obj) {
+            current.obj.transform.position = current.pos;
+        }
+
+        Item underCursor = new Item();
+        if(GetItemUnderCursor() != null) 
+        {
+            underCursor = (Item)GetItemUnderCursor();
+            if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject() && current.obj) 
+            {
+                if(((Item)underCursor).type == current.type)
+                    propertyDisplay.DisplayProperties(underCursor);
+                else Add(CopyCurrent());
+            } 
+            else if(Input.GetKeyUp(KeyCode.R) && !system.IsPointerOverGameObject()) 
+            {
+                if(underCursor.type == ItemType.Platform) 
+                {
+                    Rotate((Item)underCursor);
+                }
+            }
+            else if(Input.GetMouseButtonUp(1) && !system.IsPointerOverGameObject()) 
+            {
+                Remove((Item)underCursor);
+            }
+        } 
+        else 
+        {
+            if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject() && current.obj) 
+            {
+                Add(CopyCurrent());
+            } 
+        }
+    }
+
+    Item? GetItemUnderCursor() {
+        foreach(Item itemObj in placedItems) {
+            if(itemObj.pos == current.pos) {
+                return itemObj;
+            }
+        }
+        return null;
+    }
+
+    void Remove(Item item) {
+        placedItems.Remove(item);
+        Destroy(item.obj);
+        propertyDisplay.Hide();
+    }
+
+    void Add(Item item) {
+        placedItems.Insert(0, item);
+        propertyDisplay.Hide();
+    }
+
+    void Rotate(Item item) {
+        item.obj.transform.Rotate(0, 0, 90);
+    }
+    public Vector2 CalcPos(Item item) {
+        Vector3 mousePos = Input.mousePosition;
 		mousePos.z -= Camera.main.transform.position.z;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-		if(current.type == ItemType.Platform) {
+        if(item.type == ItemType.Platform) {
 			mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x / 2> 0 ? 0.5F : -0.5F));
 			mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y / 2> 0 ? 0.5F : -0.5F));
 		} else {
 			mousePos.x = 0.5F * tileSize * Mathf.RoundToInt((mousePos.x) / (0.5F * tileSize));
 			mousePos.y = 0.5F * tileSize * Mathf.RoundToInt((mousePos.y) / (0.5F * tileSize));
 		}
-        if(cursorObj) cursorObj.transform.position = mousePos;
-        if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject()) Instantiate(cursorObj);
+        return mousePos;
     }
 
-    public void SetCurrent(Item item) {
-        current = item;
-        if(cursorObj) Destroy(cursorObj);
-        cursorObj = Instantiate(current.obj);
+    public Item CopyCurrent() {
+        var copy = handler.CopyItem(current);
+        copy.obj.transform.position = copy.pos;
+        return copy;
+    }
+    public void SetCurrent(int index) {
+        if(current.obj) Destroy(current.obj);
+        currentIndex = index;
+        current = handler.GetItemByIndex(index);
+        current.pos = CalcPos(current);
+        current.obj.transform.position = current.pos;
     }
 }

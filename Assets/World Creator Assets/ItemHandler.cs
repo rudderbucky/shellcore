@@ -59,6 +59,34 @@ public class ItemHandler : MonoBehaviour
             ib.cursor = cursor;
         }
     }
+
+    public Item GetItemByIndex(int index) {
+        return CopyItem(index);
+    }
+
+    // soft copy of seeded items
+    public Item CopyItem(int index) {
+        var toCopy = itemPack.items[index];
+        Item item = new Item();
+        item.assetID = toCopy.assetID;
+        item.isTarget = toCopy.isTarget;
+        item.type = toCopy.type;
+        item.shellcoreJSON = toCopy.shellcoreJSON;
+        item.obj = Instantiate(toCopy.obj);
+        return item;
+    }
+
+    // hard copy
+    public Item CopyItem(Item toCopy) {
+        Item item = new Item();
+        item.assetID = toCopy.assetID;
+        item.isTarget = toCopy.isTarget;
+        item.type = toCopy.type;
+        item.shellcoreJSON = toCopy.shellcoreJSON;
+        item.pos = toCopy.pos;
+        item.obj = Instantiate(toCopy.obj);
+        return item;
+    }
 }
 
 #if UNITY_EDITOR
