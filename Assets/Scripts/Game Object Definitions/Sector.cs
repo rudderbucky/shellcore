@@ -43,7 +43,9 @@ public class Sector : ScriptableObject
         Neutral,
         Haven,
         BattleZone,
-        DangerZone
+        DangerZone,
+        Capitol,
+        DarkNeutral
     }
 
     public string sectorName;

@@ -10,13 +10,14 @@ public class WorldCreatorCursor : MonoBehaviour
 	private float tileSize = 10F;
     
     public GameObject borderPrefab;
-    LineRenderer testSectorBorder;
+    SectorWCWrapper currentSector;
 	Vector2 cursorOffset = new Vector2(5F, 5F);
     public int currentIndex;
     int maxIndex;
     public EventSystem system;
     List<Item> placedItems = new List<Item>();
     public ItemPropertyDisplay propertyDisplay;
+    public SectorPropertyDisplay sectorPropertyDisplay;
 
     void Start() {
         SetCurrent(0);
@@ -33,6 +34,8 @@ public class WorldCreatorCursor : MonoBehaviour
             current.obj.transform.position = current.pos;
         }
 
+        VisualizeMouseInSector();
+
         if(Input.GetKey(KeyCode.Z)) 
         {
             current.obj.SetActive(false);
@@ -40,33 +43,47 @@ public class WorldCreatorCursor : MonoBehaviour
         }
         else 
         {
-            // check if mouse is in a sector
-            foreach(LineRenderer renderer in renderers) 
-            {
-                if(CheckMouseContainsSector(renderer)) 
-                {
-                    if(renderer.sortingOrder < sortLayerNum) 
-                        renderer.sortingOrder = ++sortLayerNum;
-                    renderer.startColor = renderer.endColor = Color.green;
-                } else renderer.startColor = renderer.endColor = Color.white;
-            }
-
             // revert or destroy pending sector if it exists
-            if(testSectorBorder)
+            if(currentSector != null)
                 if(lastSectorPos != null) {
                     for(int i = 0; i < 4; i++) {
-                        testSectorBorder.SetPosition(i, lastSectorPos[i]);
+                        currentSector.renderer.SetPosition(i, lastSectorPos[i]);
                     }
-                    testSectorBorder = null;
+                    SyncSectorCoords(currentSector);
+                    currentSector = null;
                     lastSectorPos = null;
-                } else Destroy(testSectorBorder.gameObject);
+                } else 
+                {
+                    sectors.Remove(currentSector);
+                    currentSector = null;
+                }
 
             current.obj.SetActive(true);
             PollItems();
-        }
-        
+        }    
     }
 
+    void SyncSectorCoords(SectorWCWrapper wrapper) 
+    {
+        wrapper.sector.bounds.x = (int)wrapper.renderer.GetPosition(0).x;
+        wrapper.sector.bounds.y = (int)wrapper.renderer.GetPosition(0).y;
+        wrapper.sector.bounds.w = (int)wrapper.renderer.GetPosition(2).x - (int)wrapper.renderer.GetPosition(0).x;
+        wrapper.sector.bounds.h = (int)wrapper.renderer.GetPosition(2).y - (int)wrapper.renderer.GetPosition(0).y;
+    }
+
+    // check if mouse is in a sector
+    void VisualizeMouseInSector() {
+        foreach(SectorWCWrapper sector in sectors) 
+        {
+            var renderer = sector.renderer;
+            if(CheckMouseContainsSector(renderer)) 
+            {
+                if(renderer.sortingOrder < sortLayerNum) 
+                    renderer.sortingOrder = ++sortLayerNum;
+                renderer.startColor = renderer.endColor = Color.green;
+            } else renderer.startColor = renderer.endColor = Color.white;
+        }
+    }
     void PollItems() {
         if(GetItemUnderCursor() != null) 
         {
@@ -101,60 +118,97 @@ public class WorldCreatorCursor : MonoBehaviour
 
     Vector3 origPos = new Vector3();
     Vector3[] lastSectorPos = null;
-    List<LineRenderer> renderers = new List<LineRenderer>();
+
+    class SectorWCWrapper 
+    {
+        public LineRenderer renderer;
+        public Sector sector;
+    }
+
+    List<SectorWCWrapper> sectors = new List<SectorWCWrapper>();
     void PollSectors() 
     {
         if(Input.GetMouseButtonDown(0)) 
         {
-            foreach(LineRenderer renderer in renderers)
+            foreach(SectorWCWrapper sector in sectors)
             {
+                LineRenderer renderer = sector.renderer;
                 if(CheckMouseContainsSector(renderer)) 
                 {
+                    if(Input.GetKey(KeyCode.LeftShift)) {
+                        sectorPropertyDisplay.DisplayProperties(sector.sector);
+                        return;
+                    }
+
                     origPos = renderer.GetPosition(0);
                     lastSectorPos = new Vector3[4];
-                    for(int i = 0; i < 4; i++) {
+                    for(int i = 0; i < 4; i++) 
+                    {
                         lastSectorPos[i] = renderer.GetPosition(i);
                     }
-                    testSectorBorder = renderer;
+                    renderer.SetPosition(0, origPos);
+                    currentSector = sector;
                 }
             }
-            if(!testSectorBorder) {
-                testSectorBorder = Instantiate(borderPrefab).GetComponent<LineRenderer>();
+            if(currentSector == null) {
+                currentSector = new SectorWCWrapper();
+                currentSector.sector = ScriptableObject.CreateInstance<Sector>();
+                var renderer = currentSector.renderer = Instantiate(borderPrefab).GetComponent<LineRenderer>();
+                renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = currentSector.sector;
                 lastSectorPos = null;
                 origPos = CalcSectorPos();
-                testSectorBorder.SetPosition(0, origPos);
-                testSectorBorder.SetPosition(1, origPos);
-                testSectorBorder.SetPosition(2, origPos);
-                testSectorBorder.SetPosition(3, origPos);
+                renderer.SetPosition(0, origPos);
+                renderer.SetPosition(1, origPos);
+                renderer.SetPosition(2, origPos);
+                renderer.SetPosition(3, origPos);
+                SyncSectorCoords(currentSector);
             }
         }
-        else if(testSectorBorder && Input.GetMouseButtonUp(0)) 
+        else if(currentSector != null && Input.GetMouseButtonUp(0)) 
         {
-            if(!CheckForSectorOverlap(testSectorBorder) && CheckSectorSize(testSectorBorder)) 
+            if(!CheckForSectorOverlap(currentSector.renderer) && CheckSectorSize(currentSector.renderer)) 
             {
-                renderers.Add(testSectorBorder);
+                sectors.Add(currentSector);
             } else if(lastSectorPos != null) {
                 for(int i = 0; i < 4; i++) {
-                    testSectorBorder.SetPosition(i, lastSectorPos[i]);
+                    currentSector.renderer.SetPosition(i, lastSectorPos[i]);
                 }
+                SyncSectorCoords(currentSector);
                 lastSectorPos = null;
-            } else Destroy(testSectorBorder.gameObject);
-            testSectorBorder = null; // reset reference
+            } else Destroy(currentSector.renderer.gameObject);
+            currentSector = null; // reset reference
         }
-        else if(testSectorBorder && Input.GetMouseButton(0))
+        else if(currentSector != null && Input.GetMouseButton(0))
         {
-            testSectorBorder.SetPosition(1, new Vector3(origPos.x, CalcSectorPos().y, 0));
-            testSectorBorder.SetPosition(2, CalcSectorPos());
-            testSectorBorder.SetPosition(3, new Vector3(CalcSectorPos().x, origPos.y, 0));
+            var renderer = currentSector.renderer;
+            renderer.SetPosition(1, new Vector3(origPos.x, CalcSectorPos().y, 0));
+            renderer.SetPosition(2, CalcSectorPos());
+            renderer.SetPosition(3, new Vector3(CalcSectorPos().x, origPos.y, 0));
 
             // check for overlap
-            testSectorBorder.startColor = testSectorBorder.endColor = Color.white;
-            if(CheckForSectorOverlap(testSectorBorder)) 
+            renderer.startColor = renderer.endColor = Color.white;
+            if(CheckForSectorOverlap(renderer)) 
             {
-                if(testSectorBorder.sortingOrder < sortLayerNum)
-                    testSectorBorder.sortingOrder = ++sortLayerNum;
-                testSectorBorder.startColor = testSectorBorder.endColor = Color.red;
+                if(renderer.sortingOrder < sortLayerNum)
+                    renderer.sortingOrder = ++sortLayerNum;
+                renderer.startColor = renderer.endColor = Color.red;
             }
+        }
+        else if(Input.GetMouseButtonUp(1)) 
+        {
+            foreach(SectorWCWrapper sector in sectors) 
+            {
+                var renderer = sector.renderer;
+                if(CheckMouseContainsSector(renderer))
+                {
+                    Destroy(renderer.gameObject);
+                    if(sectors.Contains(sector)) {
+                        sectors.Remove(sector);
+                        return;
+                    }
+                }
+            }
+            currentSector = null;
         }
     }
 
@@ -172,15 +226,16 @@ public class WorldCreatorCursor : MonoBehaviour
         return renderer.bounds.Contains(GetMousePos()); 
     }
 
-    bool CheckForSectorOverlap(LineRenderer testSectorBorder) 
+    bool CheckForSectorOverlap(LineRenderer checkRenderer) 
     {
-        foreach(LineRenderer renderer in renderers) 
+        foreach(SectorWCWrapper sector in sectors) 
         {
-            if(renderer != testSectorBorder) 
+            var renderer = sector.renderer;
+            if(renderer != checkRenderer) 
             {
                 Bounds rendBounds = renderer.bounds;
                 rendBounds.Expand(-cursorOffset);
-                if(rendBounds.Intersects(testSectorBorder.bounds)) 
+                if(rendBounds.Intersects(checkRenderer.bounds)) 
                 {
                     return true;
                 }
