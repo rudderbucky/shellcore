@@ -7,8 +7,9 @@ public class WorldCreatorCursor : MonoBehaviour
 {
     public ItemHandler handler;
     Item current;
-	private float tileSize = 5F;
-	Vector2 cursorOffset = new Vector2(2.5F, 2.5F);
+	private float tileSize = 10F;
+    public LineRenderer testSectorBorder;
+	Vector2 cursorOffset = new Vector2(5F, 5F);
     public int currentIndex;
     int maxIndex;
     public EventSystem system;
@@ -23,14 +24,29 @@ public class WorldCreatorCursor : MonoBehaviour
         if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
         else if(Input.mouseScrollDelta.y > 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
 		
+        SetCurrent(0);
 		current.pos = CalcPos(current);
         if(current.obj) {
             current.obj.transform.position = current.pos;
         }
+        
+        if(Input.GetKey(KeyCode.Z)) 
+        {
+            current.obj.SetActive(false);
+            PollSectors();
+        }
+        else 
+        {
+            current.obj.SetActive(true);
+            PollItems();
+        }
+        
+    }
 
-        Item underCursor = new Item();
+    void PollItems() {
         if(GetItemUnderCursor() != null) 
         {
+            Item underCursor = new Item();
             underCursor = (Item)GetItemUnderCursor();
             if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject() && current.obj) 
             {
@@ -57,6 +73,24 @@ public class WorldCreatorCursor : MonoBehaviour
                 Add(CopyCurrent());
             } 
         }
+    }
+
+    Vector3 origPos = new Vector3();
+    void PollSectors() {
+        if(Input.GetKeyDown(KeyCode.Z)) {
+            origPos = CalcSectorPos();
+            testSectorBorder.SetPosition(0, origPos);
+            testSectorBorder.SetPosition(1, origPos);
+            testSectorBorder.SetPosition(2, origPos);
+            testSectorBorder.SetPosition(3, origPos);
+        }
+        else 
+        {
+            testSectorBorder.SetPosition(1, new Vector3(origPos.x, CalcSectorPos().y, 0));
+            testSectorBorder.SetPosition(2, CalcSectorPos());
+            testSectorBorder.SetPosition(3, new Vector3(CalcSectorPos().x, origPos.y, 0));
+        }
+
     }
 
     Item? GetItemUnderCursor() {
@@ -93,6 +127,15 @@ public class WorldCreatorCursor : MonoBehaviour
 			mousePos.x = 0.5F * tileSize * Mathf.RoundToInt((mousePos.x) / (0.5F * tileSize));
 			mousePos.y = 0.5F * tileSize * Mathf.RoundToInt((mousePos.y) / (0.5F * tileSize));
 		}
+        return mousePos;
+    }
+
+    public Vector2 CalcSectorPos() {
+                Vector3 mousePos = Input.mousePosition;
+		mousePos.z -= Camera.main.transform.position.z;
+		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        mousePos.x = tileSize * (int)((mousePos.x) / tileSize + (mousePos.x / 2> 0 ? 0.5F : -0.5F));
+        mousePos.y = tileSize * (int)((mousePos.y) / tileSize + (mousePos.y / 2> 0 ? 0.5F : -0.5F));
         return mousePos;
     }
 
