@@ -9,7 +9,6 @@ public class ItemButtonScript : MonoBehaviour
     public int itemIndex;
     public WorldCreatorCursor cursor;
     public Text text;
-
     Image image;
 
     void Start() {

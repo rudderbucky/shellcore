@@ -9,28 +9,45 @@ public class SectorPropertyDisplay : MonoBehaviour
     Vector2 sectorCenter;
     public Dropdown type;
     public InputField sectorName;
+    public InputField x;
+    public InputField y;
+    public InputField w;
+    public InputField h;
+
+
 
     void Start() {
         if(!rectTransform) rectTransform = GetComponent<RectTransform>();
         Hide();
     }
 
+
+    Vector2 mousePos;
     public void DisplayProperties(Sector sector) {
         currentSector = sector;
-        sectorCenter = new Vector2(currentSector.bounds.x + currentSector.bounds.h / 2, currentSector.bounds.y + currentSector.bounds.w / 2);
         gameObject.SetActive(true);
-        var pos = Camera.main.WorldToScreenPoint(sectorCenter);
+        mousePos = WorldCreatorCursor.GetMousePos();
+        var pos = Camera.main.WorldToScreenPoint(mousePos);
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
 
         type.value = (int)sector.type;
         sectorName.text = sector.name;
+        x.text = currentSector.bounds.x + "";
+        y.text = currentSector.bounds.y + "";
+        w.text = currentSector.bounds.w + "";
+        h.text = currentSector.bounds.h + "";
     }
 
     void Update() {
-        var pos = Camera.main.WorldToScreenPoint(sectorCenter);
+        var pos = Camera.main.WorldToScreenPoint(mousePos);
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
+
+        x.text = currentSector.bounds.x + "";
+        y.text = currentSector.bounds.y + "";
+        w.text = currentSector.bounds.w + "";
+        h.text = currentSector.bounds.h + "";
     }
     public void UpdateType() 
     {
@@ -39,7 +56,7 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void UpdateName() 
     {
-        currentSector.name = sectorName.text;
+        currentSector.sectorName = sectorName.text;
     }
 
     public void Hide() {

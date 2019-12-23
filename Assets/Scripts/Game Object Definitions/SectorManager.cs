@@ -103,6 +103,7 @@ public class SectorManager : MonoBehaviour
                 sectors = new List<Sector>();
                 foreach (string file in files)
                 {
+                    if(file.Contains(".meta")) continue;
                     string sectorjson = System.IO.File.ReadAllText(file);
                     SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                     Debug.Log("Platform JSON: " + data.platformjson);

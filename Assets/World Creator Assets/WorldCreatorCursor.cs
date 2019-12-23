@@ -7,7 +7,7 @@ public class WorldCreatorCursor : MonoBehaviour
 {
     public ItemHandler handler;
     Item current;
-	private float tileSize = 10F;
+	public readonly float tileSize = 10F;
     
     public GameObject borderPrefab;
     SectorWCWrapper currentSector;
@@ -15,7 +15,7 @@ public class WorldCreatorCursor : MonoBehaviour
     public int currentIndex;
     int maxIndex;
     public EventSystem system;
-    List<Item> placedItems = new List<Item>();
+    public List<Item> placedItems = new List<Item>();
     public ItemPropertyDisplay propertyDisplay;
     public SectorPropertyDisplay sectorPropertyDisplay;
 
@@ -45,6 +45,7 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             // revert or destroy pending sector if it exists
             if(currentSector != null)
+            {
                 if(lastSectorPos != null) {
                     for(int i = 0; i < 4; i++) {
                         currentSector.renderer.SetPosition(i, lastSectorPos[i]);
@@ -55,8 +56,11 @@ public class WorldCreatorCursor : MonoBehaviour
                 } else 
                 {
                     sectors.Remove(currentSector);
+                    Destroy(currentSector.renderer.gameObject);
                     currentSector = null;
                 }
+            }
+
 
             current.obj.SetActive(true);
             PollItems();
@@ -65,10 +69,11 @@ public class WorldCreatorCursor : MonoBehaviour
 
     void SyncSectorCoords(SectorWCWrapper wrapper) 
     {
-        wrapper.sector.bounds.x = (int)wrapper.renderer.GetPosition(0).x;
-        wrapper.sector.bounds.y = (int)wrapper.renderer.GetPosition(0).y;
-        wrapper.sector.bounds.w = (int)wrapper.renderer.GetPosition(2).x - (int)wrapper.renderer.GetPosition(0).x;
-        wrapper.sector.bounds.h = (int)wrapper.renderer.GetPosition(2).y - (int)wrapper.renderer.GetPosition(0).y;
+        wrapper.sector.bounds.x = Mathf.Min((int)wrapper.renderer.GetPosition(0).x, (int)wrapper.renderer.GetPosition(2).x);
+        wrapper.sector.bounds.y = Mathf.Min((int)wrapper.renderer.GetPosition(0).y, (int)wrapper.renderer.GetPosition(2).y);
+        wrapper.sector.bounds.w = Mathf.Abs((int)wrapper.renderer.GetPosition(2).x - (int)wrapper.renderer.GetPosition(0).x);
+        wrapper.sector.bounds.h = Mathf.Abs((int)wrapper.renderer.GetPosition(2).y - (int)wrapper.renderer.GetPosition(0).y);
+        
     }
 
     // check if mouse is in a sector
@@ -119,13 +124,13 @@ public class WorldCreatorCursor : MonoBehaviour
     Vector3 origPos = new Vector3();
     Vector3[] lastSectorPos = null;
 
-    class SectorWCWrapper 
+    public class SectorWCWrapper 
     {
         public LineRenderer renderer;
         public Sector sector;
     }
 
-    List<SectorWCWrapper> sectors = new List<SectorWCWrapper>();
+    public List<SectorWCWrapper> sectors = new List<SectorWCWrapper>();
     void PollSectors() 
     {
         if(Input.GetMouseButtonDown(0)) 
@@ -148,6 +153,7 @@ public class WorldCreatorCursor : MonoBehaviour
                     }
                     renderer.SetPosition(0, origPos);
                     currentSector = sector;
+                    break;
                 }
             }
             if(currentSector == null) {
@@ -168,14 +174,18 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             if(!CheckForSectorOverlap(currentSector.renderer) && CheckSectorSize(currentSector.renderer)) 
             {
-                sectors.Add(currentSector);
-            } else if(lastSectorPos != null) {
+                if(lastSectorPos == null) sectors.Add(currentSector);
+            } else if(lastSectorPos != null) { // invalid position for current sector
                 for(int i = 0; i < 4; i++) {
                     currentSector.renderer.SetPosition(i, lastSectorPos[i]);
                 }
                 SyncSectorCoords(currentSector);
                 lastSectorPos = null;
-            } else Destroy(currentSector.renderer.gameObject);
+            } else  // delete sector
+            {
+                Destroy(currentSector.renderer.gameObject);
+                if(sectors.Contains(currentSector)) sectors.Remove(currentSector);
+            }
             currentSector = null; // reset reference
         }
         else if(currentSector != null && Input.GetMouseButton(0))
@@ -184,7 +194,7 @@ public class WorldCreatorCursor : MonoBehaviour
             renderer.SetPosition(1, new Vector3(origPos.x, CalcSectorPos().y, 0));
             renderer.SetPosition(2, CalcSectorPos());
             renderer.SetPosition(3, new Vector3(CalcSectorPos().x, origPos.y, 0));
-
+            SyncSectorCoords(currentSector);
             // check for overlap
             renderer.startColor = renderer.endColor = Color.white;
             if(CheckForSectorOverlap(renderer)) 
@@ -202,13 +212,14 @@ public class WorldCreatorCursor : MonoBehaviour
                 if(CheckMouseContainsSector(renderer))
                 {
                     Destroy(renderer.gameObject);
-                    if(sectors.Contains(sector)) {
+                    if(sectors.Contains(sector)) 
+                    {
                         sectors.Remove(sector);
+                        currentSector = null;
                         return;
                     }
                 }
             }
-            currentSector = null;
         }
     }
 
@@ -279,7 +290,7 @@ public class WorldCreatorCursor : MonoBehaviour
         return mousePos;
     }
 
-    public Vector2 GetMousePos() {
+    public static Vector2 GetMousePos() {
         Vector3 mousePos = Input.mousePosition;
 		mousePos.z -= Camera.main.transform.position.z;
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
