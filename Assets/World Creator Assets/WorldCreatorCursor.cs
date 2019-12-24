@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class WorldCreatorCursor : MonoBehaviour
 {
@@ -11,13 +12,22 @@ public class WorldCreatorCursor : MonoBehaviour
     
     public GameObject borderPrefab;
     SectorWCWrapper currentSector;
-	Vector2 cursorOffset = new Vector2(5F, 5F);
+	public readonly Vector2 cursorOffset = new Vector2(5F, 5F);
     public int currentIndex;
     int maxIndex;
     public EventSystem system;
     public List<Item> placedItems = new List<Item>();
     public ItemPropertyDisplay propertyDisplay;
     public SectorPropertyDisplay sectorPropertyDisplay;
+    
+    public enum WCCursorMode {
+        Item,
+        Sector,
+        Control
+    }
+
+    WCCursorMode mode = WCCursorMode.Item;
+    public Text modeText;
 
     void Start() {
         SetCurrent(0);
@@ -36,37 +46,65 @@ public class WorldCreatorCursor : MonoBehaviour
 
         VisualizeMouseInSector();
 
-        if(Input.GetKey(KeyCode.Z)) 
+        if(Input.GetKeyDown(KeyCode.Z)) 
         {
-            current.obj.SetActive(false);
-            PollSectors();
+            mode = (WCCursorMode)(((int)mode + 1) % 3);
         }
-        else 
+
+        var modeColors = new Color[]
         {
-            // revert or destroy pending sector if it exists
-            if(currentSector != null)
-            {
-                if(lastSectorPos != null) {
-                    for(int i = 0; i < 4; i++) {
-                        currentSector.renderer.SetPosition(i, lastSectorPos[i]);
-                    }
-                    SyncSectorCoords(currentSector);
-                    currentSector = null;
-                    lastSectorPos = null;
-                } else 
-                {
-                    sectors.Remove(currentSector);
-                    Destroy(currentSector.renderer.gameObject);
-                    currentSector = null;
-                }
-            }
+            new Color32(28, 42, 63, 255),
+            new Color32(63, 28, 42, 255),
+            new Color32(42, 63, 28, 255),
+        };
 
+        switch(mode)
+        {
+            case WCCursorMode.Item:
+                RemovePendingSector();
+                current.obj.SetActive(true);
+                modeText.text = "Item Mode";
+                PollItems();
+                break;
+            case WCCursorMode.Sector:
+                current.obj.SetActive(false);
+                modeText.text = "Sector Mode";
+                if(!system.IsPointerOverGameObject()) 
+                    PollSectors();
+                break;
+            case WCCursorMode.Control:
+                RemovePendingSector();
+                current.obj.SetActive(false);
+                modeText.text = "Control Mode";
+                break;
+            default:
+                break;
+        }
 
-            current.obj.SetActive(true);
-            PollItems();
-        }    
+        modeText.color = Camera.main.backgroundColor = modeColors[(int)mode];
+        modeText.color += Color.gray;   
     }
 
+    // revert or destroy pending sector if it exists        
+    void RemovePendingSector()
+    {
+        if(currentSector != null)
+        {
+            if(lastSectorPos != null) {
+                for(int i = 0; i < 4; i++) {
+                    currentSector.renderer.SetPosition(i, lastSectorPos[i]);
+                }
+                SyncSectorCoords(currentSector);
+                currentSector = null;
+                lastSectorPos = null;
+            } else 
+            {
+                sectors.Remove(currentSector);
+                Destroy(currentSector.renderer.gameObject);
+                currentSector = null;
+            }
+        }
+    }
     void SyncSectorCoords(SectorWCWrapper wrapper) 
     {
         wrapper.sector.bounds.x = Mathf.Min((int)wrapper.renderer.GetPosition(0).x, (int)wrapper.renderer.GetPosition(2).x);

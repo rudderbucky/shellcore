@@ -11,9 +11,11 @@ public class WCGeneratorHandler : MonoBehaviour
 	}
     public WorldCreatorCursor cursor;
     List<Sector> sectors = new List<Sector>();
-
+    public GameObject sectorPrefab;
+    public ItemHandler itemHandler;
     public InputField worldName;
-    void WriteWorld() 
+    public InputField worldReadPath;
+    public void WriteWorld() 
     {
         string wName = worldName.text;
         if(wName == null || wName == "")
@@ -22,6 +24,7 @@ public class WCGeneratorHandler : MonoBehaviour
             return;
         }
 
+        sectors = new List<Sector>();
         var items = cursor.placedItems;
         var wrappers = cursor.sectors;
         foreach(var wrapper in wrappers) 
@@ -54,6 +57,15 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
         // set up items and platforms
+        int ID = 0;
+        Dictionary<Sector, List<Sector.LevelEntity>> sectEnts = new Dictionary<Sector, List<Sector.LevelEntity>>();
+        Dictionary<Sector, List<string>> sectTargetIDS = new Dictionary<Sector, List<string>>();
+        foreach(var sector in sectors)
+        {
+            sectEnts.Add(sector, new List<Sector.LevelEntity>());
+            sectTargetIDS.Add(sector, new List<string>());
+        }
+
         foreach(var item in items)
         {
             Sector container = GetSurroundingSector(item.pos);
@@ -70,6 +82,19 @@ public class WCGeneratorHandler : MonoBehaviour
                     container.platform.rotations[index.Item1 * container.platform.columns + index.Item2] = ((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4;
                     break;
                 case ItemType.Other:
+                    Sector.LevelEntity ent = new Sector.LevelEntity();
+                    ent.ID = ID++ + "";
+                    ent.faction = item.faction;
+                    ent.position = item.pos;
+                    ent.assetID = item.assetID;
+                    ent.vendingID = item.vendingID;
+                    if(item.isTarget) sectTargetIDS[container].Add(ent.ID);
+                    ent.name = item.obj.name;
+                    if(ent.assetID == "shellcore_blueprint") {
+                        sectTargetIDS[container].Add(ent.ID);
+                        ent.blueprintJSON = item.shellcoreJSON;
+                    }
+                    sectEnts[container].Add(ent);
                     break;
                 default:
                     break;
@@ -118,8 +143,8 @@ public class WCGeneratorHandler : MonoBehaviour
                 sector.sectorName = intermediateName;
             }
 
-            //sct.entities = ents.ToArray();
-            //sct.targets = targetIDS.ToArray();
+            sector.entities = sectEnts[sector].ToArray();
+            sector.targets = sectTargetIDS[sector].ToArray();
             sector.backgroundColor = SectorColors.colors[(int)sector.type];
 
             SectorData data = new SectorData();
@@ -138,14 +163,6 @@ public class WCGeneratorHandler : MonoBehaviour
 		Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + wName);
     }
 
-    void Update() 
-    {
-        if(Input.GetKeyUp(KeyCode.X))
-        {
-            WriteWorld();
-        }
-    }
-
     Sector GetSurroundingSector(Vector2 pos) {
         foreach(var sector in sectors)
         {
@@ -161,8 +178,95 @@ public class WCGeneratorHandler : MonoBehaviour
 
         return (row, col);
     }
-    void ReadWorld() 
-    {
 
+    public void ReadWorldFromField()
+    {
+        string path = worldReadPath.text;
+        ReadWorld(path);
+    }
+    public void ReadWorld(string path) 
+    {
+        if (System.IO.Directory.Exists(path))
+        {
+            try
+            {
+                string[] files = System.IO.Directory.GetFiles(path);
+
+                cursor.placedItems = new List<Item>();
+                cursor.sectors = new List<WorldCreatorCursor.SectorWCWrapper>();
+                
+                foreach (string file in files)
+                {
+                    if(file.Contains(".meta")) continue;
+                    string sectorjson = System.IO.File.ReadAllText(file);
+                    SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                    Debug.Log("Platform JSON: " + data.platformjson);
+                    Debug.Log("Sector JSON: " + data.sectorjson);
+                    Sector curSect = ScriptableObject.CreateInstance<Sector>();
+                    JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
+                    LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                    JsonUtility.FromJsonOverwrite(data.platformjson, plat);
+                    plat.name = curSect.name + "Platform";
+                    curSect.platform = plat;
+                    LineRenderer renderer = Instantiate(sectorPrefab).GetComponent<LineRenderer>();
+                    renderer.SetPositions(new Vector3[] 
+                        {
+                            new Vector2(curSect.bounds.x, curSect.bounds.y),
+                            new Vector2(curSect.bounds.x, curSect.bounds.y + curSect.bounds.h),
+                            new Vector2(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y + curSect.bounds.h),
+                            new Vector2(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y)
+                        }
+                    );
+                    var wrapper = new WorldCreatorCursor.SectorWCWrapper();
+                    wrapper.sector = curSect;
+                    wrapper.renderer = renderer;
+                    wrapper.renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = wrapper.sector;
+                    cursor.sectors.Add(wrapper);
+
+                    foreach(Sector.LevelEntity ent in curSect.entities)
+                    {
+                        foreach(Item item in itemHandler.itemPack.items)
+                        {
+                            if(ent.assetID == item.assetID)
+                            {
+                                Item copy = itemHandler.CopyItem(item);
+                                copy.faction = ent.faction;
+                                copy.ID = ent.ID;
+                                copy.name = ent.name;
+                                copy.pos = copy.obj.transform.position = ent.position;
+                                copy.vendingID = ent.vendingID;
+                                cursor.placedItems.Add(copy);
+                            }
+                        }
+                    }
+
+                    for(int i = 0; i < plat.rows; i++)
+                    {
+                        for(int j = 0; j < plat.columns; j++)
+                        {
+                            int placeablesIndex = plat.tilemap[plat.columns * i + j];
+                            foreach(Item item in itemHandler.itemPack.items)
+                            {
+                                if(item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
+                                {
+                                    Item copy = itemHandler.CopyItem(item);
+                                    copy.pos = copy.obj.transform.position 
+                                        = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize, -cursor.cursorOffset.y + curSect.bounds.y + curSect.bounds.h - i * cursor.tileSize);
+                                    copy.rotation = plat.rotations[plat.columns * i + j];
+                                    copy.obj.transform.RotateAround(copy.pos, Vector3.forward, 90 * copy.rotation);
+                                    cursor.placedItems.Add(copy);
+                                }
+                            }
+                        }
+                    }
+                }
+                Debug.Log("worked");
+                return;
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e);
+            };
+        }
     }
 }

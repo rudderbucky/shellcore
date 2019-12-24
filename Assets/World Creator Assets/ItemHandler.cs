@@ -19,6 +19,7 @@ public enum ItemType {
 public struct Item {
     	public GameObject obj;
         public ItemType type;
+        public string name;
 		public string assetID;
 		public string shellcoreJSON;
 		public string vendingID;
@@ -139,6 +140,10 @@ public class ItemHandlerEditor : Editor
                 placeholder.type = (ItemType)EditorGUILayout.EnumPopup("Item type: ", placeholder.type);
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
+                placeholder.name = EditorGUILayout.TextField("Asset Name:", placeholder.name) as string;
+                //placeholder.vendingID = EditorGUILayout.TextField("Vending Blueprint ID:", IDField.stringValue) as string;
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
                 placeholder.assetID = EditorGUILayout.TextField("Asset ID:", placeholder.assetID) as string;
                 // placeholder.assetID = EditorGUILayout.TextField("Asset ID:", IDField.stringValue) as string;
                 EditorGUILayout.EndHorizontal();
@@ -163,6 +168,14 @@ public class ItemHandlerEditor : Editor
                 if(GUILayout.Button("Add Item")) {
                     if(handler.itemPack) {
                         handler.itemPack.items.Add(placeholder);
+                        ExportData();
+                    }
+                };
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                GUI.SetNextControlName("update");
+                if(GUILayout.Button("Force Update Item Pack")) {
+                    if(handler.itemPack) {
                         ExportData();
                     }
                 };

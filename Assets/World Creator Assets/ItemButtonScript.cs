@@ -13,7 +13,7 @@ public class ItemButtonScript : MonoBehaviour
 
     void Start() {
         image = GetComponent<Image>();
-        text.text = item.assetID;
+        text.text = item.name;
     }
 
     public void SetCursorItem() {
