@@ -7,6 +7,7 @@ public class WorldCreatorSectorRepScript : MonoBehaviour
     SpriteRenderer sprite;
     LineRenderer rend;
     public Sector sector;
+    public Transform center;
     void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
@@ -18,7 +19,7 @@ public class WorldCreatorSectorRepScript : MonoBehaviour
 
     void Update() 
     {
-        transform.position = rend.bounds.center;
+        transform.position = center.position = rend.bounds.center;
         transform.localScale = rend.bounds.size;
         ChangeColor();
     }

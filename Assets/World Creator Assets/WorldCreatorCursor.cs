@@ -76,6 +76,8 @@ public class WorldCreatorCursor : MonoBehaviour
                 RemovePendingSector();
                 current.obj.SetActive(false);
                 modeText.text = "Control Mode";
+                if(!system.IsPointerOverGameObject()) 
+                    PollControls();
                 break;
             default:
                 break;
@@ -83,6 +85,13 @@ public class WorldCreatorCursor : MonoBehaviour
 
         modeText.color = Camera.main.backgroundColor = modeColors[(int)mode];
         modeText.color += Color.gray;   
+    }
+
+    public GUIWindowScripts taskInterface;
+    void PollControls()
+    {
+        if(Input.GetKeyUp(KeyCode.T))
+            taskInterface.ToggleActive();
     }
 
     // revert or destroy pending sector if it exists        
@@ -275,6 +284,14 @@ public class WorldCreatorCursor : MonoBehaviour
         return renderer.bounds.Contains(GetMousePos()); 
     }
 
+    public Vector2 GetSectorCenter() 
+    {
+        foreach(var sector in sectors)
+        {
+            if(CheckMouseContainsSector(sector.renderer)) return sector.renderer.bounds.center;
+        }
+        return Vector2.zero;
+    }
     bool CheckForSectorOverlap(LineRenderer checkRenderer) 
     {
         foreach(SectorWCWrapper sector in sectors) 
