@@ -139,9 +139,9 @@ public class AirCraftAI : MonoBehaviour
         {
             foreach (Ability a in craft.GetAbilities())
             {
-                if (a && a is WeaponAbility)
+                if (a && a is WeaponAbility || a is PassiveAbility)
                 {
-                    (a as WeaponAbility).Tick("");
+                    a.Tick("");
                 }
             }
             if (aggression != AIAggression.KeepMoving && aggroSearchTimer < Time.time)
