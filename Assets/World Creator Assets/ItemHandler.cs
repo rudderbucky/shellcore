@@ -35,19 +35,18 @@ public class ItemHandler : MonoBehaviour
 {
     #if UNITY_EDITOR
 
+    [HideInInspector]
+    public string text;
+
+    #endif
+    
     public void GenerateItemList() {
         if(!itemPack) items = new List<Item>();
         else items = itemPack.items;
     }
 
-    public ItemPack itemPack;
     public List<Item> items;
-
-    [HideInInspector]
-    public string text;
-
-    #endif
-
+    public ItemPack itemPack;
     public GameObject buttonPrefab;
     public Transform viewContent;
     public WorldCreatorCursor cursor;

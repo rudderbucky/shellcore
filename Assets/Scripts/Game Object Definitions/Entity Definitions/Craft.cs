@@ -40,6 +40,8 @@ public abstract class Craft : Entity
 
     protected override void Update()
     {
+        if(instantiatedRespawnPrefab) // graphics code, should update position in Update instead of FixedUpdate
+            instantiatedRespawnPrefab.position = transform.position;
         base.Update();
     }
 
@@ -67,10 +69,14 @@ public abstract class Craft : Entity
     protected override void Start() {
         base.Start();
         category = EntityCategory.Unit;
+        /*
         var circle = Instantiate(explosionCirclePrefab, transform, false);
         circle.SetActive(true);
         circle.GetComponent<DrawCircleScript>().Initialize();
         circle.GetComponent<DrawCircleScript>().SetRespawnMode(true);
+        */
+        instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
+        instantiatedRespawnPrefab.position = transform.position;
         ResourceManager.PlayClipByID("clip_respawn", transform.position);
     }
 
@@ -91,6 +97,7 @@ public abstract class Craft : Entity
         }
     }
 
+    Transform instantiatedRespawnPrefab;
     protected override void FixedUpdate()
     {
         if(!isImmobile)

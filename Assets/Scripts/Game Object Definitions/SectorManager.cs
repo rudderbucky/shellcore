@@ -167,7 +167,7 @@ public class SectorManager : MonoBehaviour
 
         if(!sectorLoaded)
         {
-            background.setColor(SectorColors.colors[4]);
+            background.setColor(SectorColors.colors[5]);
             if (!jsonMode) loadSector();
         }
     }
