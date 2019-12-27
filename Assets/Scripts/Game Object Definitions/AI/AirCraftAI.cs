@@ -26,7 +26,7 @@ public class AirCraftAI : MonoBehaviour
         KeepMoving
     }
 
-    private AIMode mode;
+    private AIMode mode = AIMode.Inactive;
     private AIState state;
 
     public AIAggression aggression;
@@ -46,7 +46,7 @@ public class AirCraftAI : MonoBehaviour
 
     public void setMode(AIMode mode)
     {
-        Debug.Log("Mode set! (try to reduce these, the AI is initialized each time)");
+        Debug.Log("Mode (" + mode + ") set! (try to reduce these, the AI is initialized each time)");
         if (mode == this.mode)
             return;
 

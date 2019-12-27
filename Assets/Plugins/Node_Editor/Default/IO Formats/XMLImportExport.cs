@@ -350,7 +350,7 @@ namespace NodeEditorFramework.IO
 
             if(obj == null)
             {
-                Debug.LogWarning("Field value == null; Remember to give default values to node fields.");
+                Debug.LogWarning("Field value == null; Remember to give default values to node fields. obj type: " + obj.GetType());
                 return null;
             }
 

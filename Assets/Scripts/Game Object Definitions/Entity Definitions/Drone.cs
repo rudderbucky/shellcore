@@ -10,7 +10,6 @@ public interface IOwnable
 public class Drone : AirCraft, IOwnable {
 
     private IOwner owner;
-    private AirCraftAI ai;
     private float time;
     private float initialzangle;
     private bool initialized = false;
