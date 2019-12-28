@@ -110,39 +110,16 @@ public class WCGeneratorHandler : MonoBehaviour
 
         foreach(var sector in sectors)
         {
-            var intermediateName = "";
-            if(sector.sectorName != null && sector.sectorName != "")
+            if(sector.sectorName == null || sector.sectorName == "")
             {
-                intermediateName = sector.sectorName;
-            }
-            else
-            {
-                int x = sector.bounds.x - minX;
-                int y = maxY - sector.bounds.y;
-                string typeRep;
-                switch(sector.type)
-                {
-                    case Sector.SectorType.BattleZone:
-                        typeRep = "Battle Zone";
-                        break;
-                    case Sector.SectorType.DangerZone:
-                        typeRep = "Danger Zone";
-                        break;
-                    case Sector.SectorType.Haven:
-                        typeRep = "Haven";
-                        break;
-                    case Sector.SectorType.Capitol:
-                        typeRep = "Capitol";
-                        break;
-                    default:
-                        typeRep = "Sector";
-                        break;
-                } 
-
-                intermediateName = typeRep + " " + x + "-" + y;
-                sector.sectorName = intermediateName;
+                sector.sectorName = GetDefaultName(sector, minX, maxY);
             }
 
+            if(sector.hasMusic && (sector.musicID == null || sector.musicID == ""))
+            {
+                sector.musicID = GetDefaultMusic(sector);
+            }
+            
             sector.entities = sectEnts[sector].ToArray();
             sector.targets = sectTargetIDS[sector].ToArray();
             sector.backgroundColor = SectorColors.colors[(int)sector.type];
@@ -153,14 +130,52 @@ public class WCGeneratorHandler : MonoBehaviour
 
             string output = JsonUtility.ToJson(data);
 
-            string path = Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + intermediateName;
+            string path = Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + sector.sectorName;
             System.IO.File.WriteAllText(path, output);
             System.IO.Path.ChangeExtension(path, ".json");
         }
 
-
-
 		Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + wName);
+    }
+
+    string GetDefaultName(Sector sector, int minX, int maxY)
+    {
+        int x = sector.bounds.x - minX;
+        int y = maxY - sector.bounds.y;
+        string typeRep;
+        switch(sector.type)
+        {
+            case Sector.SectorType.BattleZone:
+                typeRep = "Battle Zone";
+                break;
+            case Sector.SectorType.DangerZone:
+                typeRep = "Danger Zone";
+                break;
+            case Sector.SectorType.Haven:
+                typeRep = "Haven";
+                break;
+            case Sector.SectorType.Capitol:
+                typeRep = "Capitol";
+                break;
+            default:
+                typeRep = "Sector";
+                break;
+        } 
+
+        return typeRep + " " + x + "-" + y;
+    }
+
+    string GetDefaultMusic(Sector sector)
+    {
+        switch(sector.type)
+        {
+            case Sector.SectorType.BattleZone:
+                return "music_fast";
+            case Sector.SectorType.Capitol:
+                return "music_funktify"; // Funktify made by Mr Spastic, website - http://www.mrspastic.com
+            default:
+                return "music_overworld";
+        } 
     }
 
     Sector GetSurroundingSector(Vector2 pos) {

@@ -55,4 +55,6 @@ public class Sector : ScriptableObject
     public LevelEntity[] entities;
     public LandPlatform platform;
     public string[] targets;
+    public bool hasMusic;
+    public string musicID;
 }

@@ -91,7 +91,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		}
 	}
 	public void AddSave() {
-		string currentVersion = "Prototype 4.0.0";
+		string currentVersion = "Alpha 0.0.0";
 		string name = inputField.text.Trim();
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
 		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
