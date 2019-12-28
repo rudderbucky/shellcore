@@ -19,19 +19,52 @@ public class WorldCreatorCursor : MonoBehaviour
     public List<Item> placedItems = new List<Item>();
     public ItemPropertyDisplay propertyDisplay;
     public SectorPropertyDisplay sectorPropertyDisplay;
-    
-    public enum WCCursorMode {
+
+    public delegate void SelectEntityDelegate(string EntityID);
+    public static SelectEntityDelegate selectEntity;
+
+    public delegate void FinishPathDelegate(NodeEditorFramework.Standard.PathData path);
+    public static FinishPathDelegate finishPath;
+
+    public static WorldCreatorCursor instance;
+
+    WCPathCreator pathCreator;
+
+    int cursorModeCount;
+
+    public enum WCCursorMode
+    {
         Item,
         Sector,
-        Control
+        Control,
+        SelectEntity,
+        DrawPath
     }
+
+    readonly Color[] modeColors = new Color[]
+        {
+            new Color32(28, 42, 63, 255),
+            new Color32(63, 28, 42, 255),
+            new Color32(42, 63, 28, 255),
+            new Color32(42, 64, 64, 255),
+            new Color32(42, 64, 64, 255),
+        };
 
     WCCursorMode mode = WCCursorMode.Item;
     public Text modeText;
 
+    private void Awake()
+    {
+        if (instance != null)
+            Debug.LogError("Too many WorldCreatorCursor instances!");
+        instance = this;
+        cursorModeCount = System.Enum.GetValues(typeof(WCCursorMode)).Length;
+    }
+
     void Start() {
         SetCurrent(0);
         maxIndex = handler.itemPack.items.Count;
+        pathCreator = gameObject.AddComponent<WCPathCreator>();
     }
     // Update is called once per frame
     static int sortLayerNum = 1;
@@ -46,19 +79,12 @@ public class WorldCreatorCursor : MonoBehaviour
 
         VisualizeMouseInSector();
 
-        if(Input.GetKeyDown(KeyCode.Z)) 
+        if(Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
         {
             mode = (WCCursorMode)(((int)mode + 1) % 3);
         }
 
-        var modeColors = new Color[]
-        {
-            new Color32(28, 42, 63, 255),
-            new Color32(63, 28, 42, 255),
-            new Color32(42, 63, 28, 255),
-        };
-
-        switch(mode)
+        switch (mode)
         {
             case WCCursorMode.Item:
                 RemovePendingSector();
@@ -69,22 +95,32 @@ public class WorldCreatorCursor : MonoBehaviour
             case WCCursorMode.Sector:
                 current.obj.SetActive(false);
                 modeText.text = "Sector Mode";
-                if(!system.IsPointerOverGameObject()) 
+                if (!system.IsPointerOverGameObject())
                     PollSectors();
                 break;
             case WCCursorMode.Control:
                 RemovePendingSector();
                 current.obj.SetActive(false);
                 modeText.text = "Control Mode";
-                if(!system.IsPointerOverGameObject()) 
+                if (!system.IsPointerOverGameObject())
                     PollControls();
+                break;
+            case WCCursorMode.SelectEntity:
+                modeText.text = "Select Entity Mode"; // change only when mode changes?
+                current.obj.SetActive(false); // same
+                PollEntitySelection();
+                break;
+            case WCCursorMode.DrawPath:
+                modeText.text = "Draw Path Mode";
+                current.obj.SetActive(false);
+                pathCreator.PollPathDrawing();
                 break;
             default:
                 break;
         }
 
         modeText.color = Camera.main.backgroundColor = modeColors[(int)mode];
-        modeText.color += Color.gray;   
+        modeText.color += Color.gray;
     }
 
     public GUIWindowScripts taskInterface;
@@ -270,6 +306,46 @@ public class WorldCreatorCursor : MonoBehaviour
         }
     }
 
+    public void EntitySelection()
+    {
+        taskInterface.CloseUI();
+        mode = WCCursorMode.SelectEntity;
+    }
+
+    void PollEntitySelection()
+    {
+        if (Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject())
+        {
+            var item = GetItemUnderCursor();
+            if (item != null)
+            {
+                Item underCursor = new Item();
+                underCursor = item.Value;
+
+                Debug.Log("under cursor: " + item);
+                Debug.Log("under cursor name: " + item.Value.name);
+                Debug.Log("under cursor ID: " + item.Value.ID);
+                Debug.Log("under cursor assetID: " + item.Value.assetID);
+
+                if (underCursor.type == ItemType.Other)
+                {
+                    taskInterface.Activate();
+                    mode = WCCursorMode.Control;
+                    selectEntity.Invoke(underCursor.name);
+                }
+            }
+        }
+    }
+
+    public void pathDrawing(NodeEditorFramework.Standard.PathData path = null)
+    {
+        pathCreator.Clear();
+        pathCreator.SetPath(path);
+
+        taskInterface.CloseUI();
+        mode = WCCursorMode.DrawPath;
+    }
+
     ///
     /// Returns true if the sector being checked is not a line
     ///
@@ -369,5 +445,10 @@ public class WorldCreatorCursor : MonoBehaviour
         current = handler.GetItemByIndex(index);
         current.pos = CalcPos(current);
         current.obj.transform.position = current.pos;
+    }
+
+    public void SetMode(WCCursorMode mode)
+    {
+        this.mode = mode;
     }
 }

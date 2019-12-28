@@ -115,6 +115,29 @@ public class AirCraftAI : MonoBehaviour
 
     }
 
+    public void setPath(NodeEditorFramework.Standard.PathData data)
+    {
+        Path path = ScriptableObject.CreateInstance<Path>();
+        path.waypoints = new List<Path.Node>();
+
+        if (data != null && data.waypoints != null)
+        {
+            for (int i = 0; i < data.waypoints.Count; i++)
+            {
+                path.waypoints.Add(new Path.Node()
+                {
+                    ID = data.waypoints[i].ID,
+                    position = data.waypoints[i].position,
+                    children = data.waypoints[i].children
+                });
+            }
+        }
+
+        setMode(AIMode.Path);
+        (module as PathAI).setPath(path);
+        if (module != null) module.Init();
+    }
+
     public void setPath(Path path)
     {
         setMode(AIMode.Path);

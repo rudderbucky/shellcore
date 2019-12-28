@@ -13,8 +13,6 @@ namespace NodeEditorFramework.Standard
         public override bool AllowRecursion { get { return true; } }
         public override bool AutoLayout { get { return true; } }
 
-        //public override Vector2 DefaultSize { get { return new Vector2(200, 240); } }
-
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
 
@@ -25,8 +23,7 @@ namespace NodeEditorFramework.Standard
         public bool useIDInput;
         public bool useCoordinates;
         public string entityName = "";
-        public List<string> flagNames;
-        public List<Vector2Int> coordinates;
+        public PathData path = null;
         public bool pathLoop = false;
 
         public ConnectionKnob IDInput;
@@ -65,106 +62,45 @@ namespace NodeEditorFramework.Standard
             {
                 GUILayout.Label("Entity Name");
                 entityName = GUILayout.TextField(entityName);
+                if (WorldCreatorCursor.instance != null)
+                {
+                    if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                    {
+                        WorldCreatorCursor.selectEntity += SetEntityName;
+                        WorldCreatorCursor.instance.EntitySelection();
+                    }
+                }
             }
 
             RTEditorGUI.Seperator();
-            pathLoop = RTEditorGUI.Toggle(pathLoop, "Loop path");
-            useCoordinates = RTEditorGUI.Toggle(useCoordinates, "Use coordinates");
 
-            if (flagNames == null)
-                flagNames = new List<string>();
-            if (coordinates == null)
-                coordinates = new List<Vector2Int>();
-
-
-            if(useCoordinates)
+            if (GUILayout.Button("Draw Path", GUILayout.ExpandWidth(false)))
             {
-                GUILayout.Label("Coordinates:");
-                for (int i = 0; i < coordinates.Count; i++)
+                if (path == null)
                 {
-                    GUILayout.BeginHorizontal();
-                    coordinates[i] = new Vector2Int(
-                        RTEditorGUI.IntField(coordinates[i].x),
-                        RTEditorGUI.IntField(coordinates[i].y));
-
-                    if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
-                    {
-                        coordinates.RemoveAt(i);
-                        i--;
-                        GUILayout.EndHorizontal();
-                        continue;
-                    }
-                    GUILayout.EndHorizontal();
+                    path = new PathData();
+                    path.waypoints = new List<PathData.Node>();
                 }
+                WorldCreatorCursor.finishPath += SetPath;
+                WorldCreatorCursor.instance.pathDrawing(path);
             }
-            else
-            {
-                GUILayout.Label("Waypoint names:");
-                for (int i = 0; i < flagNames.Count; i++)
-                {
-                    GUILayout.BeginHorizontal();
-                    flagNames[i] = GUILayout.TextField(flagNames[i]);
+        }
 
-                    if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
-                    {
-                        flagNames.RemoveAt(i);
-                        i--;
-                        GUILayout.EndHorizontal();
-                        continue;
-                    }
-                    GUILayout.EndHorizontal();
-                }
-            }
+        void SetEntityName(string newName)
+        {
+            Debug.Log("selected " + newName + "!");
 
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
-            {
-                if (useCoordinates)
-                    coordinates.Add(Vector2Int.zero);
-                else
-                    flagNames.Add("flag");
-            }
-            GUILayout.EndHorizontal();
+            entityName = newName;
+            WorldCreatorCursor.selectEntity -= SetEntityName;
+        }
 
+        void SetPath(PathData path)
+        {
+            this.path = path;
         }
 
         public override int Traverse()
         {
-            Path path = CreateInstance<Path>();
-            path.waypoints = new List<Path.Node>();
-            int count = useCoordinates ? coordinates.Count : flagNames.Count;
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 pos = Vector3.zero;
-                if (useCoordinates)
-                {
-                    pos = new Vector3(coordinates[i].x, coordinates[i].y);
-                }
-                else
-                {
-                    for (int j = 0; j < AIData.flags.Count; j++)
-                    {
-                        if (AIData.flags[j].name == flagNames[i])
-                        {
-                            pos = AIData.flags[j].transform.position;
-                            break;
-                        }
-                    }
-                }
-
-                int child = i + 1;
-                if (i >= count - 1)
-                    child = pathLoop ? 0 : -1;
-                path.waypoints.Add(
-                        new Path.Node()
-                        {
-                            position = pos,
-                            ID = i,
-                            children = new int[] { child }
-                        }
-                    );
-            }
-
             if (useIDInput)
             {
                 if (useIDInput && IDInput == null)

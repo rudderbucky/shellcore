@@ -73,6 +73,7 @@ public class ItemHandler : MonoBehaviour
         item.type = toCopy.type;
         item.shellcoreJSON = toCopy.shellcoreJSON;
         item.placeablesIndex = toCopy.placeablesIndex;
+        item.name = toCopy.name;
         item.obj = Instantiate(toCopy.obj);
         return item;
     }
@@ -86,6 +87,7 @@ public class ItemHandler : MonoBehaviour
         item.shellcoreJSON = toCopy.shellcoreJSON;
         item.placeablesIndex = toCopy.placeablesIndex;
         item.pos = toCopy.pos;
+        item.name = toCopy.name;
         item.obj = Instantiate(toCopy.obj);
         return item;
     }

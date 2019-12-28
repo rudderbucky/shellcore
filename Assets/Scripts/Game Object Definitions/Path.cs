@@ -10,11 +10,11 @@ using UnityEditor;
 public class Path : ScriptableObject
 {
     [System.Serializable]
-    public struct Node
+    public class Node
     {
         public Vector2 position;
         public int ID;
-        public int[] children;
+        public List<int> children;
     }
     public List<Node> waypoints;
 }
@@ -103,7 +103,7 @@ class PathEditor : Editor
                 };
             }
 
-            for (int j = 0; j < path.waypoints[i].children.Length; j++)
+            for (int j = 0; j < path.waypoints[i].children.Count; j++)
             {
                 int childID = getWaypointByID(path.waypoints[i].children[j]);
                 if(childID != -1)
