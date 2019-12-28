@@ -9,6 +9,8 @@ public class SectorPropertyDisplay : MonoBehaviour
     Vector2 sectorCenter;
     public Dropdown type;
     public InputField sectorName;
+    public InputField sectorMusicID;
+    public Toggle sectorMusicBool;
     public InputField x;
     public InputField y;
     public InputField w;
@@ -33,6 +35,9 @@ public class SectorPropertyDisplay : MonoBehaviour
 
         type.value = (int)sector.type;
         sectorName.text = sector.name;
+        sectorMusicBool.isOn = sector.hasMusic;
+        sectorMusicID.text = sector.musicID;
+
         x.text = currentSector.bounds.x + "";
         y.text = currentSector.bounds.y + "";
         w.text = currentSector.bounds.w + "";
@@ -57,6 +62,16 @@ public class SectorPropertyDisplay : MonoBehaviour
     public void UpdateName() 
     {
         currentSector.sectorName = sectorName.text;
+    }
+
+    public void UpdateMusic() 
+    {
+        currentSector.musicID = sectorMusicID.text;
+    }
+
+    public void UpdateMusicBool()
+    {
+        currentSector.hasMusic = sectorMusicBool.isOn;
     }
 
     public void Hide() {

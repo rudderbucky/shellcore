@@ -452,9 +452,24 @@ public class SectorManager : MonoBehaviour
             battleZone.enabled = false;
         }
 
+        // music
+        PlayCurrentSectorMusic();
+
         if(info) info.showMessage("Entering sector '" + current.sectorName + "'");
         if (OnSectorLoad != null)
             OnSectorLoad.Invoke(current.sectorName);
+    }
+
+    public void PlayCurrentSectorMusic() 
+    {
+        if(current.hasMusic)
+        {
+            ResourceManager.PlayMusic(current.musicID);
+        }
+        else 
+        {
+            ResourceManager.StopMusic();
+        }
     }
 
     public void InsertPersistentObject(string key, GameObject gameObject) {

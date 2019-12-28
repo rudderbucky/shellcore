@@ -7437,13 +7437,20 @@ MonoBehaviour:
   - ID: New Junction
     obj: {fileID: 1630319593119418, guid: 2068df6531447e644869179e642c0834, type: 3}
   - ID: death_explosion
-    obj: {fileID: 1434466773896717165, guid: f30015ed72c124b43ab7a0cc4beed22d, type: 3}
+    obj: {fileID: 947862042715752439, guid: ab5afd37c3ca4454486591b077b2e268, type: 3}
   - ID: respawn_implosion
     obj: {fileID: 6116675112884078166, guid: 31f35b76b9ffd334cb4f5987dde3e111, type: 3}
+  - ID: music_funktify
+    obj: {fileID: 8300000, guid: 5164a43e40edaa34fad87e568af21c29, type: 3}
+  - ID: music_fast
+    obj: {fileID: 8300000, guid: 267e39d04b3a0ad42a44dd027c4af44e, type: 3}
+  - ID: music_overworld
+    obj: {fileID: 8300000, guid: d96db938ece21cc4ebe5f0df84b84c93, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
   playerSource: {fileID: 2068204860}
+  playerMusicSource: {fileID: 2077949625}
 --- !u!4 &751104752
 Transform:
   m_ObjectHideFlags: 0
@@ -20443,6 +20450,7 @@ GameObject:
   - component: {fileID: 2077949623}
   - component: {fileID: 2077949622}
   - component: {fileID: 2077949626}
+  - component: {fileID: 2077949625}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -20495,6 +20503,102 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2077949621}
   m_Enabled: 1
+--- !u!82 &2077949625
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077949621}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 267e39d04b3a0ad42a44dd027c4af44e, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!223 &2077949626
 Canvas:
   m_ObjectHideFlags: 0
