@@ -146,6 +146,7 @@ public class SectorManager : MonoBehaviour
                 player.SetIsInteracting(false);
                 Debug.Log("worked");
                 jsonMode = false;
+                sectorLoaded = true;
                 return;
             }
             catch (System.Exception e)
@@ -172,6 +173,7 @@ public class SectorManager : MonoBehaviour
                 sectors.Add(curSect);
                 Debug.Log("Success! File loaded from " + path);
                 jsonMode = false;
+                sectorLoaded = true;
                 player.SetIsInteracting(false);
                 loadSector();
                 return;
@@ -195,7 +197,7 @@ public class SectorManager : MonoBehaviour
         if(!sectorLoaded)
         {
             background.setColor(SectorColors.colors[5]);
-            // if (!jsonMode) loadSector();
+            if(!jsonMode) loadSector();
         }
     }
 
@@ -368,7 +370,20 @@ public class SectorManager : MonoBehaviour
             if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
                 && obj.Value != player.gameObject)
             {
-                Destroy(obj.Value);
+                var skipTag = false;
+                if(obj.Value.GetComponentInChildren<Entity>())
+                {
+                    foreach(var ch in characters)
+                    {
+                        if(obj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
+                        {
+                            skipTag = true;
+                            break;
+                        }
+                    }
+                }
+                if(!skipTag)
+                    Destroy(obj.Value);
             }
         }
 
@@ -414,6 +429,28 @@ public class SectorManager : MonoBehaviour
 
         for(int i = 0; i < current.entities.Length; i++)
         {
+            foreach(var ch in characters)
+            {
+                if(ch.ID == current.entities[i].ID)
+                {
+                    var skipTag = false;
+                    foreach(var oj in objects)
+                    {
+                        if(oj.Value.GetComponentInChildren<Entity>() && oj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
+                        {
+                            skipTag = true;
+                            break;
+                        }
+                    }
+
+                    if(skipTag) continue;
+                    var print = ScriptableObject.CreateInstance<EntityBlueprint>();
+                    JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
+                    print.intendedType = EntityBlueprint.IntendedType.ShellCore;
+                    SpawnEntity(print, current.entities[i]);
+                    continue;
+                }
+            }
             Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
 
             if(obj is GameObject)

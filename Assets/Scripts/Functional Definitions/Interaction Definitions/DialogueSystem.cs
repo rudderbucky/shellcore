@@ -446,6 +446,9 @@ public class DialogueSystem : MonoBehaviour
         window.ToggleActive();
         Destroy(window.transform.root.gameObject);
         if (OnDialogueEnd != null)
+        {
+            Debug.Log(OnDialogueEnd);
             OnDialogueEnd.Invoke(answer);
+        }
     }
 }
