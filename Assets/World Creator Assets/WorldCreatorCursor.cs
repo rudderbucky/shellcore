@@ -52,6 +52,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
     WCCursorMode mode = WCCursorMode.Item;
     public Text modeText;
+    public List<WorldData.CharacterData> characters = new List<WorldData.CharacterData>();
 
     private void Awake()
     {
@@ -321,12 +322,12 @@ public class WorldCreatorCursor : MonoBehaviour
             if (item != null)
             {
                 Item underCursor = new Item();
-                underCursor = item.Value;
+                underCursor = item;
 
                 Debug.Log("under cursor: " + item);
-                Debug.Log("under cursor name: " + item.Value.name);
-                Debug.Log("under cursor ID: " + item.Value.ID);
-                Debug.Log("under cursor assetID: " + item.Value.assetID);
+                Debug.Log("under cursor name: " + item.name);
+                Debug.Log("under cursor ID: " + item.ID);
+                Debug.Log("under cursor assetID: " + item.assetID);
 
                 if (underCursor.type == ItemType.Other)
                 {
@@ -387,7 +388,7 @@ public class WorldCreatorCursor : MonoBehaviour
         return false;
     }
 
-    Item? GetItemUnderCursor() {
+    Item GetItemUnderCursor() {
         foreach(Item itemObj in placedItems) {
             if(itemObj.pos == current.pos) {
                 return itemObj;
@@ -441,7 +442,7 @@ public class WorldCreatorCursor : MonoBehaviour
         return copy;
     }
     public void SetCurrent(int index) {
-        if(current.obj) Destroy(current.obj);
+        if(current != null && current.obj) Destroy(current.obj);
         currentIndex = index;
         current = handler.GetItemByIndex(index);
         current.pos = CalcPos(current);

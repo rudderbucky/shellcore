@@ -141,5 +141,10 @@ namespace NodeEditorFramework.Standard
 			// END ROOT: End Overlay GUI and draw popups
 			OverlayGUI.EndOverlayGUI();
 		}
+		public void ExportData(string path)
+		{
+			editorInterface.ExportData(path);
+		}
+	
 	}
 }

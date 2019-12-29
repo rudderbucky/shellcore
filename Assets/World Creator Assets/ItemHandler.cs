@@ -16,7 +16,7 @@ public enum ItemType {
 /// The base type of object that is placeable in the world.
 /// </summary>
 [System.Serializable]
-public struct Item {
+public class Item {
     	public GameObject obj;
         public ItemType type;
         public string name;

@@ -15,6 +15,8 @@ public class WCGeneratorHandler : MonoBehaviour
     public ItemHandler itemHandler;
     public InputField worldName;
     public InputField worldReadPath;
+    public WCCharacterHandler characterHandler;
+    public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
     public void WriteWorld() 
     {
         string wName = worldName.text;
@@ -110,8 +112,10 @@ public class WCGeneratorHandler : MonoBehaviour
 
         // create world data
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+        wdata.defaultCharacters = cursor.characters.ToArray();
         string wdjson = JsonUtility.ToJson(wdata);
-        System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + wName + ".worlddata", wdjson);
+        System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + wName + ".worlddata", wdjson);
+        nodeEditor.ExportData(Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + wName + ".taskdata");        
 
         foreach(var sector in sectors)
         {
@@ -135,9 +139,8 @@ public class WCGeneratorHandler : MonoBehaviour
 
             string output = JsonUtility.ToJson(data);
 
-            string path = Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + sector.sectorName;
+            string path = Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + sector.sectorName + ".json";
             System.IO.File.WriteAllText(path, output);
-            System.IO.Path.ChangeExtension(path, ".json");
         }
 
 		Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + wName);
@@ -218,6 +221,22 @@ public class WCGeneratorHandler : MonoBehaviour
                 foreach (string file in files)
                 {
                     if(file.Contains(".meta")) continue;
+                    
+                    // parse world data
+                    if(file.Contains(".worlddata"))
+                    {
+                        string worlddatajson = System.IO.File.ReadAllText(file);
+                        WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+                        JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
+
+                        // add characters into character handler
+                        foreach(var ch in wdata.defaultCharacters)
+                        {
+                            characterHandler.AddCharacter(ch);
+                        }
+                        continue;
+                    }
+
                     string sectorjson = System.IO.File.ReadAllText(file);
                     SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                     Debug.Log("Platform JSON: " + data.platformjson);

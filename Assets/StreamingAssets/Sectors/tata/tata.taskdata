@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.QuestCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="0,0" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start" ID="-78788" type="StartNode" pos="-596.25,-172">
+			<Port ID="-78790" name="outputRight" dynamic="False" />
+		</Node>
+		<Node name="Dialogue" ID="-78810" type="EndDialogue" pos="291.25,-107">
+			<Port ID="-78812" name="input" dynamic="False" />
+			<Port ID="-78814" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+		</Node>
+		<Node name="Start Dialogue" ID="-78794" type="StartDialogueNode" pos="-288.75,-115.75">
+			<Port ID="-78796" name="input" dynamic="False" />
+			<Port ID="-78798" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">false</boolean>
+		</Node>
+		<Node name="Dialogue" ID="-78802" type="DialogueNode" pos="-11.25,-104.5">
+			<Port ID="-78804" name="input" dynamic="False" />
+			<Port ID="-78806" name="cancel" dynamic="False" />
+			<Port ID="-78820" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">176</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1273338924" />
+			<Variable name="answers" refID="-1593471232" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-78790" port2ID="-78796" />
+		<Connection port1ID="-78812" port2ID="-78820" />
+		<Connection port1ID="-78798" port2ID="-78804" />
+	</Connections>
+	<Objects>
+		<Object refID="-1273338924" type="System.String">
+			<string>hey</string>
+		</Object>
+		<Object refID="-1593471232" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>hi</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

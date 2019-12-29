@@ -46,6 +46,7 @@ public class SectorManager : MonoBehaviour
         return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0; 
     }
 
+    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\tata";
     public void Initialize()
     {
         if (instance != null)
@@ -67,6 +68,9 @@ public class SectorManager : MonoBehaviour
         sectorBorders.endWidth = 0.1f;
         sectorBorders.loop = true;
         OnSectorLoad = null;
+
+        if(jsonMode) LoadSectorFile(jsonPath);
+        jsonMode = false;
     }
 
     private void Update()
@@ -93,6 +97,7 @@ public class SectorManager : MonoBehaviour
         LoadSectorFile(path);
     }
 
+    public TaskManager taskManager;
     public void LoadSectorFile(string path)
     {
         resourcePath = path;
@@ -111,11 +116,18 @@ public class SectorManager : MonoBehaviour
                     if(file.Contains(".worlddata"))
                     {
                         string worlddatajson = System.IO.File.ReadAllText(file);
-                        WorldData wdata = JsonUtility.FromJson<WorldData>(worlddatajson);
+                        WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+                        JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
                         spawnPoint = wdata.initialSpawn;
                         if(player.cursave == null || player.cursave.timePlayed == 0)
                             player.transform.position = spawnPoint;
                         if(characters == null) characters = wdata.defaultCharacters;
+                        continue;
+                    }
+
+                    if(file.Contains(".taskdata"))
+                    {
+                        taskManager.SetCanvasPath(file);
                         continue;
                     }
 
@@ -183,7 +195,7 @@ public class SectorManager : MonoBehaviour
         if(!sectorLoaded)
         {
             background.setColor(SectorColors.colors[5]);
-            if (!jsonMode) loadSector();
+            // if (!jsonMode) loadSector();
         }
     }
 

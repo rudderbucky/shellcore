@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ItemPropertyDisplay : MonoBehaviour
 {
     public RectTransform rectTransform;
+    public Dropdown factionDropdown;
     Item currentItem;
 
     void Start() {
@@ -22,6 +24,11 @@ public class ItemPropertyDisplay : MonoBehaviour
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
+    }
+
+    public void UpdateFaction() {
+        currentItem.faction = factionDropdown.value;
+        Debug.Log("updated faction: " + currentItem.faction );
     }
 
     public void Hide() {

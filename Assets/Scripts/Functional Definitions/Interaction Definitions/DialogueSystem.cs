@@ -148,8 +148,17 @@ public class DialogueSystem : MonoBehaviour
         textRenderer.font = shellcorefont;
 
         // radio image 
-        window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
-        window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+        if(speaker)
+        {
+            window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
+            window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+        }
+        else 
+        {
+            window.GetComponentInChildren<SelectionDisplayHandler>().gameObject.SetActive(false);
+            window.transform.Find("Name").GetComponent<Text>().text = "Unknown Speaker";
+        }
+
 
         ResourceManager.PlayClipByID("clip_typing");
         // change text

@@ -101,7 +101,8 @@ public class PlayerCore : ShellCore {
     {
         if(save.timePlayed != 0) 
         {
-            sectorMngr.characters = save.characters;
+            if(save.characters != null)
+                sectorMngr.characters = save.characters;
             transform.position = save.position;
         }
 

@@ -5,11 +5,14 @@ using UnityEngine;
 // Extra data stored for world logic
 public class WorldData : ScriptableObject
 {
+    [System.Serializable]
     public class CharacterData {
         public string ID;
+        public string name;
         public string blueprintJSON;
+        public bool partyMember;
     }
-    
+
     // Characters are special entities linked to the storyline of which there can only be one
     // spawned at a time in the entire world. Party members are an example though
     // not all characters are party members. Characters may be spawned independently of sector entities.
