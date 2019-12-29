@@ -29,6 +29,8 @@ public class SectorManager : MonoBehaviour
     private LineRenderer sectorBorders;
     private int uniqueIDInt;
     private bool sectorLoaded = false;
+    public Vector2 spawnPoint;
+    public WorldData.CharacterData[] characters;
 
     public int GetExtraCommandUnits(int faction) {
         stationsCount.Clear();
@@ -104,6 +106,19 @@ public class SectorManager : MonoBehaviour
                 foreach (string file in files)
                 {
                     if(file.Contains(".meta")) continue;
+
+                    // parse world data
+                    if(file.Contains(".worlddata"))
+                    {
+                        string worlddatajson = System.IO.File.ReadAllText(file);
+                        WorldData wdata = JsonUtility.FromJson<WorldData>(worlddatajson);
+                        spawnPoint = wdata.initialSpawn;
+                        if(player.cursave == null || player.cursave.timePlayed == 0)
+                            player.transform.position = spawnPoint;
+                        if(characters == null) characters = wdata.defaultCharacters;
+                        continue;
+                    }
+
                     string sectorjson = System.IO.File.ReadAllText(file);
                     SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                     Debug.Log("Platform JSON: " + data.platformjson);

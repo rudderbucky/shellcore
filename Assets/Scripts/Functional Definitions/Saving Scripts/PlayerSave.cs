@@ -21,4 +21,5 @@ public class PlayerSave {
     public string[] activeTaskIDs;
 	public int[] abilityCaps;
 	public int shards;
+	public WorldData.CharacterData[] characters;
 }

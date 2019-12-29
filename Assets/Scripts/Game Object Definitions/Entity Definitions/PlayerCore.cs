@@ -99,7 +99,12 @@ public class PlayerCore : ShellCore {
 
     public void LoadSave(PlayerSave save)
     {
-        transform.position = save.position;
+        if(save.timePlayed != 0) 
+        {
+            sectorMngr.characters = save.characters;
+            transform.position = save.position;
+        }
+
         name = save.name;
         positionBeforeOscillation = transform.position.y;
         if(save.currentHealths.Length < 3)

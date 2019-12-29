@@ -108,6 +108,11 @@ public class WCGeneratorHandler : MonoBehaviour
 
 		System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\" + wName);
 
+        // create world data
+        WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+        string wdjson = JsonUtility.ToJson(wdata);
+        System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + wName + ".worlddata", wdjson);
+
         foreach(var sector in sectors)
         {
             if(sector.sectorName == null || sector.sectorName == "")
