@@ -22,6 +22,7 @@ public class WCPathCreator : MonoBehaviour
         mr = gameObject.AddComponent<MeshRenderer>();
         mf = gameObject.AddComponent<MeshFilter>();
         lines = new Mesh();
+        mr.sortingOrder = 10;
     }
 
     private void Start()
@@ -368,6 +369,8 @@ public class WCPathCreator : MonoBehaviour
         {
             for (int i = 0; i < data.waypoints.Count; i++)
             {
+                if (IDCount < data.waypoints[i].ID)
+                    IDCount = data.waypoints[i].ID + 1;
                 pathNodes.Add(new Path.Node()
                 {
                     ID = data.waypoints[i].ID,

@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Actions/Set Path")]
+    [Node(false, "AI/Set Path")]
     public class SetPathNode : Node
     {
         public override string GetName { get { return "SetPathNode"; } }

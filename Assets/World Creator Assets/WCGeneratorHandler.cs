@@ -237,6 +237,13 @@ public class WCGeneratorHandler : MonoBehaviour
                         continue;
                     }
 
+                    if(file.Contains(".taskdata"))
+                    {
+                        nodeEditor.canvasPath = file;
+                        nodeEditor.NormalReInit();
+                        continue;
+                    }
+
                     string sectorjson = System.IO.File.ReadAllText(file);
                     SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                     Debug.Log("Platform JSON: " + data.platformjson);
