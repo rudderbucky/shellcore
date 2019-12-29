@@ -21,7 +21,6 @@ namespace NodeEditorFramework.Standard
 
         //public bool action; //TODO: action input
         public bool useIDInput;
-        public bool useCoordinates;
         public string entityName = "";
         public PathData path = null;
         public bool pathLoop = false;
