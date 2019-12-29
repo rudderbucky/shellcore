@@ -19,7 +19,7 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
-        //public bool action;
+        //public bool action; //TODO: action input
         public bool useIDInput;
         public bool useCoordinates;
         public string entityName = "";
@@ -41,10 +41,10 @@ namespace NodeEditorFramework.Standard
             {
                 if (IDInput == null)
                 {
-                    if (inputKnobs.Count == 0)
+                    if (inputKnobs.Count == 1)
                         IDInput = CreateConnectionKnob(IDInStyle);
                     else
-                        IDInput = inputKnobs[0];
+                        IDInput = inputKnobs[1];
                 }
                 IDInput.DisplayLayout();
             }
