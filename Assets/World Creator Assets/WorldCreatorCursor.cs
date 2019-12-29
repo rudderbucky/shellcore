@@ -337,6 +337,12 @@ public class WorldCreatorCursor : MonoBehaviour
                 }
             }
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            taskInterface.Activate();
+            mode = WCCursorMode.Control;
+            selectEntity.Invoke("");
+        }
     }
 
     public void pathDrawing(NodeEditorFramework.Standard.PathData path = null)

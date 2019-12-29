@@ -23,7 +23,6 @@ namespace NodeEditorFramework.Standard
         public bool useIDInput;
         public string entityName = "";
         public PathData path = null;
-        public bool pathLoop = false;
 
         public ConnectionKnob IDInput;
 
@@ -49,7 +48,7 @@ namespace NodeEditorFramework.Standard
             }
             GUILayout.EndHorizontal();
 
-            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use Name input", GUILayout.MinWidth(400));
+            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use Name Input", GUILayout.MinWidth(400));
             if (GUI.changed)
             {
                 if (useIDInput)

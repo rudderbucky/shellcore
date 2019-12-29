@@ -185,6 +185,7 @@ public class Entity : MonoBehaviour, IDamageable {
         abilities = new List<Ability>();
 
         entityName = blueprint.entityName;
+        name = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
 
         var isLightDrone = this as Drone && (this as Drone).type == DroneType.Light; // used for light drone weight reduction
