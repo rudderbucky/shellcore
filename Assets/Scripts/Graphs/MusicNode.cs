@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Dialogue/Set Music")]
+    [Node(false, "Actions/Set Music")]
     public class MusicNode : Node
     {
         public override string GetName { get { return "MusicNode"; } }
@@ -19,7 +19,9 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
-        public string musicID;
+        public string musicID = "";
+        public bool defaultMusic = false;
+        //public bool action = false; //TODO: action input
 
         public override void NodeGUI()
         {
@@ -27,14 +29,36 @@ namespace NodeEditorFramework.Standard
             input.DisplayLayout();
             output.DisplayLayout();
             GUILayout.EndHorizontal();
-            GUILayout.Label("Music ID:");
-            musicID = GUILayout.TextArea(musicID);
+            defaultMusic = GUILayout.Toggle(defaultMusic, "Default music");
+            if (!defaultMusic)
+            {
+                GUILayout.Label("Music ID:");
+                musicID = GUILayout.TextArea(musicID);
+            }
         }
 
         public override int Traverse()
         {
-            // TODO: background music
-            return -1;
+            if (defaultMusic)
+            {
+                
+                ResourceManager.musicOverrideID = null;
+                if (!SectorManager.instance.current.hasMusic || SectorManager.instance.current.musicID == "")
+                {
+                    Debug.Log("Jazz music stops.");
+                    ResourceManager.StopMusic();
+                }
+                else
+                {
+                    ResourceManager.PlayMusic(SectorManager.instance.current.musicID);
+                }
+            }
+            else
+            {
+                ResourceManager.musicOverrideID = musicID;
+                ResourceManager.PlayMusic(musicID);
+            }
+            return 0;
         }
     }
 }
