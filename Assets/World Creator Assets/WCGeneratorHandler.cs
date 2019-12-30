@@ -17,6 +17,7 @@ public class WCGeneratorHandler : MonoBehaviour
     public InputField worldReadPath;
     public WCCharacterHandler characterHandler;
     public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
+    public Item characterItem;
     public void WriteWorld() 
     {
         string wName = worldName.text;
@@ -84,20 +85,32 @@ public class WCGeneratorHandler : MonoBehaviour
                     container.platform.rotations[index.Item1 * container.platform.columns + index.Item2] = ((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4;
                     break;
                 case ItemType.Other:
+                case ItemType.Decoration:
                     Sector.LevelEntity ent = new Sector.LevelEntity();
-                    ent.ID = ID++ + "";
+                    if(cursor.characters.TrueForAll((WorldData.CharacterData x) => {return x.ID != item.ID;})) 
+                    {
+                        Debug.Log(item.ID + " is not a character.");
+                        ent.ID = ID++ + "";
+                        ent.name = item.obj.name;
+                    }
+                    else 
+                    {
+                        // TODO: adjust faction
+                        Debug.Log("Character found. Adjusting ID and name");
+                        ent.ID = item.ID;
+                        ent.name = item.name;
+                    }
                     ent.faction = item.faction;
                     ent.position = item.pos;
                     ent.assetID = item.assetID;
                     ent.vendingID = item.vendingID;
                     if(item.isTarget) sectTargetIDS[container].Add(ent.ID);
-                    ent.name = item.obj.name;
                     if(ent.assetID == "shellcore_blueprint") {
                         sectTargetIDS[container].Add(ent.ID);
                         ent.blueprintJSON = item.shellcoreJSON;
                     }
                     sectEnts[container].Add(ent);
-                    break;
+                    break;   
                 default:
                     break;
             }
@@ -107,11 +120,21 @@ public class WCGeneratorHandler : MonoBehaviour
 		if(!System.IO.Directory.Exists(Application.streamingAssetsPath + "\\Sectors\\")) {
 			System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\");
 		}
+        
+        if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\Sectors\\" + wName))
+        {
+            string[] files = System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\Sectors\\" + wName);
+            foreach(var file in files)
+            {
+                System.IO.File.Delete(file);
+            }
+        }
 
 		System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\" + wName);
 
         // create world data
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+        wdata.initialSpawn = cursor.spawnPoint.position;
         wdata.defaultCharacters = cursor.characters.ToArray();
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + wName + ".worlddata", wdjson);
@@ -139,7 +162,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
             string output = JsonUtility.ToJson(data);
 
-            string path = Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + sector.sectorName + ".json";
+            string path = Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + sector.sectorName + ".json";                
             System.IO.File.WriteAllText(path, output);
         }
 
@@ -229,6 +252,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
 
+                        cursor.spawnPoint.position = wdata.initialSpawn;
                         // add characters into character handler
                         foreach(var ch in wdata.defaultCharacters)
                         {
@@ -273,7 +297,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     {
                         foreach(Item item in itemHandler.itemPack.items)
                         {
-                            if(ent.assetID == item.assetID)
+                            if(ent.assetID == item.assetID && ent.assetID != "")
                             {
                                 Item copy = itemHandler.CopyItem(item);
                                 copy.faction = ent.faction;
@@ -282,7 +306,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 copy.pos = copy.obj.transform.position = ent.position;
                                 copy.vendingID = ent.vendingID;
                                 cursor.placedItems.Add(copy);
-                            }
+                            }              
                         }
                     }
 
@@ -306,6 +330,26 @@ public class WCGeneratorHandler : MonoBehaviour
                         }
                     }
                 }
+
+                // now create the character items
+                foreach(var sector in cursor.sectors)
+                {
+                    foreach(var ent in sector.sector.entities)
+                    {
+                        if(cursor.characters.Exists((WorldData.CharacterData x) => {return x.ID == ent.ID;})) 
+                        {
+                            Debug.Log("Character found. Creating new item.");
+                            Item copy = itemHandler.CopyItem(characterItem);
+                            copy.faction = ent.faction;
+                            copy.ID = ent.ID;
+                            copy.name = ent.name;
+                            copy.pos = copy.obj.transform.position = ent.position;
+                            copy.vendingID = ent.vendingID;
+                            cursor.placedItems.Add(copy);
+                        }
+                    }
+                }
+
                 Debug.Log("worked");
                 return;
             }

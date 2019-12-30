@@ -67,6 +67,7 @@ public class DialogueSystem : MonoBehaviour
         Instance.showPopup(text, Color.white);
     }
 
+    public GameObject popupBoxPrefab;
     private void showPopup(string text, Color color, Entity speaker = null)
     {
         if (window && window.GetActive())
@@ -75,7 +76,10 @@ public class DialogueSystem : MonoBehaviour
         playerTransform = null;
         //create window
 
-        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        if(!speaker)
+            window = Instantiate(popupBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        else 
+            window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
@@ -94,8 +98,16 @@ public class DialogueSystem : MonoBehaviour
 
         // change text
         this.text = text.Replace("<br>", "\n");
-        characterCount = 0;
-        nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
+        if(speaker)
+        {
+            characterCount = 0;
+            nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
+        } else 
+        {
+            textRenderer.text = this.text;
+            characterCount = text.Length;
+        }
+
         textRenderer.color = color;
 
         // ok button
@@ -107,7 +119,8 @@ public class DialogueSystem : MonoBehaviour
 
         buttons = new GameObject[1];
         buttons[0] = button.gameObject;
-        ResourceManager.PlayClipByID("clip_typing");
+        if(speaker)
+            ResourceManager.PlayClipByID("clip_typing");
     }
 
     public static void ShowBattleResults(bool victory) {
@@ -159,8 +172,8 @@ public class DialogueSystem : MonoBehaviour
             window.transform.Find("Name").GetComponent<Text>().text = "Unknown Speaker";
         }
 
-
-        ResourceManager.PlayClipByID("clip_typing");
+        if(speaker)
+            ResourceManager.PlayClipByID("clip_typing");
         // change text
         text = node.text.Replace("<br>", "\n");
         characterCount = 0;

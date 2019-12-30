@@ -9,7 +9,7 @@ public class WorldCreatorCamera : MonoBehaviour
         transform.position += Input.GetAxis("Horizontal") * Vector3.right;
         transform.position += Input.GetAxis("Vertical") * Vector3.up;
 
-        if(Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.z >= -30) 
+        if(Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.z >= -150) 
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 5);
         }

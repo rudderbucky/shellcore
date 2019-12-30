@@ -8,6 +8,7 @@ public class CharacterButtonScript : MonoBehaviour
     public WorldData.CharacterData character;
     public WorldCreatorCursor cursor;
     public Text text;
+    public GameObject itemObj;
     void Start()
     {
         text.text = character.name;
@@ -20,6 +21,13 @@ public class CharacterButtonScript : MonoBehaviour
             Remove();
             return;
         }
+        Item item = new Item();
+        item.ID = character.ID;
+        item.name = character.name;
+        item.type = ItemType.Other;
+        item.obj = Instantiate(itemObj);
+
+        cursor.SetCurrent(item);
     }
 
     public void Remove()

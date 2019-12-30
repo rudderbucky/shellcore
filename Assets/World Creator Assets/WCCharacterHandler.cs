@@ -48,7 +48,8 @@ public class WCCharacterHandler : MonoBehaviour
         cursor.characters.Add(currentData);
         var button = Instantiate(buttonPrefab, content).GetComponentInChildren<CharacterButtonScript>();
         button.character = currentData;
-        
+        button.cursor = cursor;
+
         currentData = new WorldData.CharacterData();
         charID.text = charName.text = charBlueprint.text = "";
         charPartyMember.isOn = false;

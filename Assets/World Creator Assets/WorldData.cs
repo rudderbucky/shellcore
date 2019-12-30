@@ -11,6 +11,7 @@ public class WorldData : ScriptableObject
         public string name;
         public string blueprintJSON;
         public bool partyMember;
+        public int faction;
     }
 
     // Characters are special entities linked to the storyline of which there can only be one

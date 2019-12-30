@@ -70,9 +70,6 @@ public class WorldCreatorCursor : MonoBehaviour
     // Update is called once per frame
     static int sortLayerNum = 1;
     void Update() {
-        if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
-        else if(Input.mouseScrollDelta.y > 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
-		
 		current.pos = CalcPos(current);
         if(current.obj) {
             current.obj.transform.position = current.pos;
@@ -124,9 +121,25 @@ public class WorldCreatorCursor : MonoBehaviour
         modeText.color += Color.gray;
     }
 
+    public Transform spawnPoint;
+    bool changingSpawnPoint = false;
     public GUIWindowScripts taskInterface;
     void PollControls()
     {
+        if(Input.GetMouseButtonUp(0))
+        {
+            if(changingSpawnPoint) changingSpawnPoint = false;
+            else if(spawnPoint.GetComponent<SpriteRenderer>().bounds.Contains(GetMousePos()))
+            {
+                changingSpawnPoint = true;
+            }
+        }
+
+        if(changingSpawnPoint)
+        {
+            spawnPoint.position = CalcSpawnPos();
+        }
+
         if(Input.GetKeyUp(KeyCode.T))
             taskInterface.ToggleActive();
     }
@@ -174,9 +187,12 @@ public class WorldCreatorCursor : MonoBehaviour
         }
     }
     void PollItems() {
+        if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
+            else if(Input.mouseScrollDelta.y > 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
+		
         if(GetItemUnderCursor() != null) 
         {
-            Item underCursor = new Item();
+            Item underCursor;
             underCursor = (Item)GetItemUnderCursor();
             if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject() && current.obj) 
             {
@@ -435,22 +451,41 @@ public class WorldCreatorCursor : MonoBehaviour
 		mousePos = Camera.main.ScreenToWorldPoint(mousePos);
         return mousePos;
     }
-    public Vector2 CalcSectorPos() {
+    public Vector2 CalcSectorPos() 
+    {
         Vector3 mousePos = GetMousePos();
         mousePos.x = tileSize * (int)((mousePos.x) / tileSize + (mousePos.x / 2> 0 ? 0.5F : -0.5F));
         mousePos.y = tileSize * (int)((mousePos.y) / tileSize + (mousePos.y / 2> 0 ? 0.5F : -0.5F));
         return mousePos;
     }
 
-    public Item CopyCurrent() {
+    public Vector2 CalcSpawnPos()
+    {
+        Vector3 mousePos = GetMousePos();
+        mousePos.x = 0.5F * tileSize * Mathf.RoundToInt((mousePos.x) / (0.5F * tileSize));
+        mousePos.y = 0.5F * tileSize * Mathf.RoundToInt((mousePos.y) / (0.5F * tileSize));
+        return mousePos;
+    }
+
+    public Item CopyCurrent() 
+    {
         var copy = handler.CopyItem(current);
         copy.obj.transform.position = copy.pos;
         return copy;
     }
-    public void SetCurrent(int index) {
+    public void SetCurrent(int index) 
+    {
         if(current != null && current.obj) Destroy(current.obj);
         currentIndex = index;
         current = handler.GetItemByIndex(index);
+        current.pos = CalcPos(current);
+        current.obj.transform.position = current.pos;
+    }
+
+    public void SetCurrent(Item item)
+    {
+        if(current != null && current.obj) Destroy(current.obj);
+        current = item;
         current.pos = CalcPos(current);
         current.obj.transform.position = current.pos;
     }

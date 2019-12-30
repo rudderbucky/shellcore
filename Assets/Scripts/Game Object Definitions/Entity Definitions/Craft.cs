@@ -18,7 +18,7 @@ public abstract class Craft : Entity
 
     protected override void BuildEntity()
     {
-        enginePower = 200;
+        enginePower = 125;
         base.BuildEntity();
     }
 

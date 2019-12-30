@@ -30,7 +30,7 @@ public class SectorManager : MonoBehaviour
     private int uniqueIDInt;
     private bool sectorLoaded = false;
     public Vector2 spawnPoint;
-    public WorldData.CharacterData[] characters;
+    public WorldData.CharacterData[] characters; // Unity initializes public arrays, remember!
 
     public int GetExtraCommandUnits(int faction) {
         stationsCount.Clear();
@@ -46,7 +46,7 @@ public class SectorManager : MonoBehaviour
         return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0; 
     }
 
-    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\tata";
+    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\testchars";
     public void Initialize()
     {
         if (instance != null)
@@ -73,6 +73,8 @@ public class SectorManager : MonoBehaviour
         jsonMode = false;
     }
 
+    private float dangerZoneTimer;
+    public GameObject damagePrefab;
     private void Update()
     {
         if(jsonMode) player.SetIsInteracting(true);
@@ -88,6 +90,21 @@ public class SectorManager : MonoBehaviour
                     break;
                 }
             }
+        }
+
+        // deadzone damage
+        if(current && current.type == Sector.SectorType.DangerZone)
+        {
+            if(dangerZoneTimer >= 5)
+            {
+                dangerZoneTimer = 0;
+                Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
+                player.TakeCoreDamage(0.2F * player.GetMaxHealth()[1]);
+                player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
+            } else dangerZoneTimer += Time.deltaTime;
+        } else
+        {
+            dangerZoneTimer = 0;
         }
     }
 
@@ -120,8 +137,8 @@ public class SectorManager : MonoBehaviour
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
                         spawnPoint = wdata.initialSpawn;
                         if(player.cursave == null || player.cursave.timePlayed == 0)
-                            player.transform.position = spawnPoint;
-                        if(characters == null) characters = wdata.defaultCharacters;
+                            player.transform.position = player.spawnPoint = spawnPoint;
+                        if(characters == null || characters.Length == 0) characters = wdata.defaultCharacters;
                         continue;
                     }
 
@@ -211,17 +228,19 @@ public class SectorManager : MonoBehaviour
                     ShellCore shellcore = gObj.AddComponent<ShellCore>();
                     try
                     {
+                        // Check if data has blueprint JSON, if it does override the current blueprint
                         string json = data.blueprintJSON;
                         if (json != null && json != "")
                         {
                             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                             JsonUtility.FromJsonOverwrite(json, blueprint);
+                            Debug.Log(data.name);
                             blueprint.entityName = data.name;
                             if(data.name == "Clearly Delusional")
                                 blueprint.dialogue = ResourceManager.GetAsset<Dialogue>("default_dialogue");
                             // hack for now, TODO: implement JSON dialogue
                             // also TODO: dialogue editor (or allow multiple starting points in quest graphs to create multiple permanent "dialogue overrides")
-                        }
+                        } else shellcore.entityName = blueprint.entityName = data.name;
                     }
                     catch (System.Exception e)
                     {
@@ -365,6 +384,7 @@ public class SectorManager : MonoBehaviour
         #endif
 
         //unload previous sector
+        var characterObjects = new Dictionary<string, GameObject>();
         foreach(var obj in objects)
         {
             if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
@@ -384,6 +404,7 @@ public class SectorManager : MonoBehaviour
                 }
                 if(!skipTag)
                     Destroy(obj.Value);
+                else characterObjects.Add(obj.Key, obj.Value);
             }
         }
 
@@ -411,7 +432,7 @@ public class SectorManager : MonoBehaviour
         // to another sector
         if((player && player.GetTractorTarget() != null && player.GetTractorTarget().GetComponent<ShellPart>()))
             AIData.strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
-        objects.Clear();
+        objects = characterObjects;
 
         // reset stations and carriers
 
@@ -429,6 +450,7 @@ public class SectorManager : MonoBehaviour
 
         for(int i = 0; i < current.entities.Length; i++)
         {
+            // check if it is a character
             foreach(var ch in characters)
             {
                 if(ch.ID == current.entities[i].ID)
@@ -447,6 +469,8 @@ public class SectorManager : MonoBehaviour
                     var print = ScriptableObject.CreateInstance<EntityBlueprint>();
                     JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
                     print.intendedType = EntityBlueprint.IntendedType.ShellCore;
+                    current.entities[i].name = ch.name;
+                    current.entities[i].faction = ch.faction;
                     SpawnEntity(print, current.entities[i]);
                     continue;
                 }
@@ -487,34 +511,42 @@ public class SectorManager : MonoBehaviour
             new Vector3(current.bounds.x, current.bounds.y + current.bounds.h, 0)
         });
 
-        //battle zone things
-        if (current.type == Sector.SectorType.BattleZone)
+        battleZone.enabled = false;
+        // sector type things
+        switch(current.type)
         {
-            battleZone.enabled = true;
-            battleZone.sectorName = current.sectorName;
-            if(player) {
-                var playerComp = player.GetComponent<PlayerCore>();
-                battleZone.AddTarget(playerComp);
-                if(carriers.ContainsKey(playerComp.faction))
-                    playerComp.SetCarrier(carriers[playerComp.faction]);
-            }
-            for (int i = 0; i < current.targets.Length; i++)
-            {
-                if(objects[current.targets[i]].GetComponent<ShellCore>())
-                {
-                    // set the carrier of the shellcore to the associated faction's carrier
-                    ShellCore shellcore = objects[current.targets[i]].GetComponent<ShellCore>();
-                    if(carriers.ContainsKey(shellcore.faction))
-                        shellcore.SetCarrier(carriers[shellcore.faction]);
+            case Sector.SectorType.BattleZone:
+                //battle zone things
+                battleZone.enabled = true;
+                battleZone.sectorName = current.sectorName;
+                if(player) {
+                    var playerComp = player.GetComponent<PlayerCore>();
+                    battleZone.AddTarget(playerComp);
+                    if(carriers.ContainsKey(playerComp.faction))
+                        playerComp.SetCarrier(carriers[playerComp.faction]);
                 }
-                battleZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
-            }
-            battleZone.UpdateCounters();
+                for (int i = 0; i < current.targets.Length; i++)
+                {
+                    if(objects[current.targets[i]].GetComponent<ShellCore>())
+                    {
+                        // set the carrier of the shellcore to the associated faction's carrier
+                        ShellCore shellcore = objects[current.targets[i]].GetComponent<ShellCore>();
+                        if(carriers.ContainsKey(shellcore.faction))
+                            shellcore.SetCarrier(carriers[shellcore.faction]);
+                    }
+                    battleZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
+                }
+                battleZone.UpdateCounters();
+                break;
+            case Sector.SectorType.Haven:
+            case Sector.SectorType.Capitol:
+                player.spawnPoint = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y + current.bounds.h / 2);
+                break;
+            default:
+                break;
         }
-        else
-        {
-            battleZone.enabled = false;
-        }
+
+
 
         // music
         PlayCurrentSectorMusic();

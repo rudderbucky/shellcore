@@ -3317,6 +3317,86 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 439558051}
   m_CullTransparentMesh: 0
+--- !u!1 &444380862
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 444380864}
+  - component: {fileID: 444380863}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!212 &444380863
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444380862}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 1952170871
+  m_SortingLayer: 2
+  m_SortingOrder: 200
+  m_Sprite: {fileID: 21300000, guid: 75c0f498470ab7449b8b77fe5dc45381, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &444380864
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444380862}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &457443350
 GameObject:
   m_ObjectHideFlags: 0
@@ -3623,6 +3703,18 @@ MonoBehaviour:
     shellcoreJSON: 
     vendingID: 
     isTarget: 1
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+    ID: 
+  - obj: {fileID: 1146272079168228, guid: 1c91994c103394b429f0c0dfe88ce1ef, type: 3}
+    type: 3
+    name: Jump Gate
+    assetID: core_gate
+    shellcoreJSON: 
+    vendingID: 
+    isTarget: 0
     faction: 0
     placeablesIndex: 0
     pos: {x: 0, y: 0, z: 0}
@@ -4012,6 +4104,8 @@ MonoBehaviour:
     obj: {fileID: 8300000, guid: 267e39d04b3a0ad42a44dd027c4af44e, type: 3}
   - ID: music_overworld
     obj: {fileID: 8300000, guid: d96db938ece21cc4ebe5f0df84b84c93, type: 3}
+  - ID: music_blue1
+    obj: {fileID: 8300000, guid: 8341f95721ab1e34cbe8ca6d2bfce428, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
@@ -4976,14 +5070,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2046175388}
         m_MethodName: AddCharacter
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
@@ -10248,6 +10342,19 @@ MonoBehaviour:
   worldReadPath: {fileID: 2115972258}
   characterHandler: {fileID: 2046175388}
   nodeEditor: {fileID: 1295128524}
+  characterItem:
+    obj: {fileID: 1555845416231088, guid: f5d45e5048c0ce94ca853fdcdcacf060, type: 3}
+    type: 0
+    name: 
+    assetID: 
+    shellcoreJSON: 
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+    ID: 
 --- !u!4 &1511145237
 Transform:
   m_ObjectHideFlags: 0
@@ -13958,6 +14065,7 @@ MonoBehaviour:
   sectorPropertyDisplay: {fileID: 1450865101}
   modeText: {fileID: 1288189855}
   characters: []
+  spawnPoint: {fileID: 444380864}
   taskInterface: {fileID: 7198219662996043835}
 --- !u!4 &2091568001
 Transform:

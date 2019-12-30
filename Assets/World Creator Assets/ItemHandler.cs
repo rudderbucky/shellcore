@@ -81,6 +81,7 @@ public class ItemHandler : MonoBehaviour
     // hard copy
     public Item CopyItem(Item toCopy) {
         Item item = new Item();
+        item.ID = toCopy.ID;
         item.assetID = toCopy.assetID;
         item.isTarget = toCopy.isTarget;
         item.type = toCopy.type;

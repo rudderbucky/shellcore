@@ -376,6 +376,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 
 		if(parts != null) {
+			/*
 			if(parts.Count == 0) {
 				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
 				foreach(string name in ResourceManager.allPartNames) {
@@ -400,7 +401,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 					info.secondaryData = JsonUtility.ToJson(DroneUtilities.GetDefaultData((DroneType)i));
 					parts.Add(info);
 				}
-			}
+			}*/
+			
 			for(int i = 0; i < parts.Count; i++) {
 				parts[i] = CullSpatialValues(parts[i]);
 			}

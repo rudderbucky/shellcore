@@ -75,7 +75,7 @@ public class SaveHandler : MonoBehaviour {
 	public void Save() {
 		save.timePlayed += Time.timeSinceLevelLoad / 60;
 		string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
-		save.position = player.transform.position;
+		save.position = player.spawnPoint;
 		save.currentHealths = player.currentHealth;
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
