@@ -282,8 +282,8 @@ public class WCGeneratorHandler : MonoBehaviour
                     renderer.SetPositions(new Vector3[] 
                         {
                             new Vector2(curSect.bounds.x, curSect.bounds.y),
-                            new Vector2(curSect.bounds.x, curSect.bounds.y + curSect.bounds.h),
-                            new Vector2(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y + curSect.bounds.h),
+                            new Vector2(curSect.bounds.x, curSect.bounds.y - curSect.bounds.h),
+                            new Vector2(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y - curSect.bounds.h),
                             new Vector2(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y)
                         }
                     );

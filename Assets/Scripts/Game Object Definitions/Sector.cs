@@ -17,7 +17,7 @@ public struct IntRect
 
     public bool contains(Vector2 position)
     {
-        return position.x > x && position.x < x + w && position.y > y && position.y < y + h;
+        return position.x > x && position.x < x + w && position.y < y && position.y > y - h;
     }
 }
 

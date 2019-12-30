@@ -173,8 +173,8 @@ public class SectorManager : MonoBehaviour
                     border.SetPositions(new Vector3[]{
                         new Vector3(curSect.bounds.x, curSect.bounds.y, 0),
                         new Vector3(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y, 0),
-                        new Vector3(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y + curSect.bounds.h, 0),
-                        new Vector3(curSect.bounds.x, curSect.bounds.y + curSect.bounds.h, 0)
+                        new Vector3(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y - curSect.bounds.h, 0),
+                        new Vector3(curSect.bounds.x, curSect.bounds.y - curSect.bounds.h, 0)
                     });
                     minimapSectorBorders.Add(border);
 
@@ -530,8 +530,8 @@ public class SectorManager : MonoBehaviour
         sectorBorders.SetPositions(new Vector3[]{
             new Vector3(current.bounds.x, current.bounds.y, 0),
             new Vector3(current.bounds.x + current.bounds.w, current.bounds.y, 0),
-            new Vector3(current.bounds.x + current.bounds.w, current.bounds.y + current.bounds.h, 0),
-            new Vector3(current.bounds.x, current.bounds.y + current.bounds.h, 0)
+            new Vector3(current.bounds.x + current.bounds.w, current.bounds.y - current.bounds.h, 0),
+            new Vector3(current.bounds.x, current.bounds.y - current.bounds.h, 0)
         });
 
         battleZone.enabled = false;
@@ -563,7 +563,7 @@ public class SectorManager : MonoBehaviour
                 break;
             case Sector.SectorType.Haven:
             case Sector.SectorType.Capitol:
-                player.spawnPoint = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y + current.bounds.h / 2);
+                player.spawnPoint = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
                 break;
             default:
                 break;

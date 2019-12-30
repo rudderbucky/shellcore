@@ -34,7 +34,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         rectTransform.anchoredPosition = pos;
 
         type.value = (int)sector.type;
-        sectorName.text = sector.name;
+        sectorName.text = sector.sectorName;
         sectorMusicBool.isOn = sector.hasMusic;
         sectorMusicID.text = sector.musicID;
 
