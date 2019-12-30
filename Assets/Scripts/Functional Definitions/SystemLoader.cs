@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class SystemLoader : MonoBehaviour
@@ -31,6 +33,12 @@ public class SystemLoader : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(DelayedStart());
+    }
+
+    IEnumerator DelayedStart()
+    {
+        yield return null;
         if (TaskManager.Instance)
             TaskManager.StartQuests();
     }
