@@ -22,4 +22,5 @@ public class PlayerSave {
 	public int[] abilityCaps;
 	public int shards;
 	public WorldData.CharacterData[] characters;
+	public List<string> sectorsSeen;
 }

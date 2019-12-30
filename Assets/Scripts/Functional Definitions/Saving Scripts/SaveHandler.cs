@@ -84,7 +84,7 @@ public class SaveHandler : MonoBehaviour {
         save.shards = player.shards;
         save.resourcePath = SectorManager.instance.resourcePath;
 		save.characters = SectorManager.instance.characters;
-
+		
         // tasks
         var limiterNode = NodeEditorFramework.Standard.SectorLimiterNode.StartPoint;
         if (limiterNode != null)

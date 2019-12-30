@@ -102,12 +102,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		save.presetBlueprints = new string[5];
 		save.currentHealths = new float[] {1000,250,500};
 		save.partInventory = new List<EntityBlueprint.PartInfo>();
-		EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
-
-		// add the tutorial part
-		part.abilityID = 1;
-		part.partID = "SmallCenter5";
-		save.partInventory.Add(part);
+		save.sectorsSeen = new List<string>();
 
 		// this section contains default information for a new save. Edit this to change how the default save
 		// is created.

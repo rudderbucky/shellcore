@@ -27,6 +27,7 @@ public class SectorManager : MonoBehaviour
     private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
+    private List<LineRenderer> minimapSectorBorders;
     private int uniqueIDInt;
     private bool sectorLoaded = false;
     public Vector2 spawnPoint;
@@ -125,6 +126,7 @@ public class SectorManager : MonoBehaviour
                 string[] files = Directory.GetFiles(path);
                 current = null;
                 sectors = new List<Sector>();
+                minimapSectorBorders = new List<LineRenderer>();
                 foreach (string file in files)
                 {
                     if(file.Contains(".meta")) continue;
@@ -158,6 +160,24 @@ public class SectorManager : MonoBehaviour
                     JsonUtility.FromJsonOverwrite(data.platformjson, plat);
                     plat.name = curSect.name + "Platform";
                     curSect.platform = plat;
+
+                    // render the borders on the minimap
+                    var border = new GameObject("MinimapSectorBorder - " + curSect.sectorName).AddComponent<LineRenderer>();
+                    border.material = ResourceManager.GetAsset<Material>("white_material");
+                    border.gameObject.layer = 8;
+                    border.enabled = true;
+                    border.positionCount = 4;
+                    border.startWidth = 0.5f;
+                    border.endWidth = 0.5f;
+                    border.loop = true;
+                    border.SetPositions(new Vector3[]{
+                        new Vector3(curSect.bounds.x, curSect.bounds.y, 0),
+                        new Vector3(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y, 0),
+                        new Vector3(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y + curSect.bounds.h, 0),
+                        new Vector3(curSect.bounds.x, curSect.bounds.y + curSect.bounds.h, 0)
+                    });
+                    minimapSectorBorders.Add(border);
+
                     sectors.Add(curSect);
                 }
                 player.SetIsInteracting(false);
@@ -441,6 +461,9 @@ public class SectorManager : MonoBehaviour
 
         //load new sector
         if(player) {
+            // player has seen this sector now
+            if(!player.cursave.sectorsSeen.Contains(current.sectorName))
+                player.cursave.sectorsSeen.Add(current.sectorName);
             player.ResetPower();
             objects.Add("player", player.gameObject);
             player.sectorMngr = this;
