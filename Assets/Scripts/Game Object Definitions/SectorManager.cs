@@ -528,7 +528,7 @@ public class SectorManager : MonoBehaviour
         background.setColor(current.backgroundColor);
         //Camera.main.backgroundColor = current.backgroundColor / 2F;
         //sector borders
-        minimapSectorBorders[current].enabled = true;
+        if(minimapSectorBorders != null && minimapSectorBorders.ContainsKey(current)) minimapSectorBorders[current].enabled = true;
         sectorBorders.enabled = true;
         sectorBorders.SetPositions(new Vector3[]{
             new Vector3(current.bounds.x, current.bounds.y, 0),

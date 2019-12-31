@@ -25,6 +25,7 @@ public class TipsFromTheYard : MonoBehaviour {
 		tipsList.Add("If a part is not connected in a direct line of parts to the shell, it will detach, or 'domino'. Make sure your ship design prevents this from happening!");
 		tipsList.Add("You can hit 'escape' to close this window too! That way you can cycle through my infinite wisdom faster!");
 		tipsList.Add("You can create custom ShellCores in the Sector Creator using the JSON you get from this ship builder! Share your JSON with friends and dogfight against their ShellCores!");
+		tipsList.Add("If you double click the Status Menu map it switches from a draggable map to a minimap-style scroll (and vice versa)!");
 		colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
 	}
 	

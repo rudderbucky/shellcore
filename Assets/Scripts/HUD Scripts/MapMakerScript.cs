@@ -68,14 +68,12 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
 			if(playerCore.cursave.sectorsSeen.Contains(sector.sectorName))
 			{
-				Debug.Log(player.GetComponent<PlayerCore>().cursave.sectorsSeen.Count);
 				Image sect = Instantiate(sectorPrefab, transform, false);
 				sect.transform.SetAsFirstSibling();
 				Image body = sect.GetComponentsInChildren<Image>()[1];
 				sect.color = sector.backgroundColor - new Color(0.2F, 0.2F, 0.2F, 0);
 				body.color = sect.color + 0.75F * Color.white;
 				sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x - minX, -maxY + sector.bounds.y) / zoomoutFactor;
-				Debug.Log(sector.bounds.w + " " +sector.bounds.h);
 				body.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
 			}
 		}
