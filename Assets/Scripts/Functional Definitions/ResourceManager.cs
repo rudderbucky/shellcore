@@ -40,6 +40,8 @@ public class ResourceManager : MonoBehaviour
     public void ChangeSoundVolume(float newVol) {
         soundVolume = newVol;
         Instance.playerSource.volume = Instance.playerMusicSource.volume = soundVolume;
+        if(playerSource.GetComponentInChildren<PlayerCore>()) 
+            playerSource.GetComponentInChildren<PlayerCore>().cursave.soundVolume = soundVolume;
     }
 
     public void Initialize()

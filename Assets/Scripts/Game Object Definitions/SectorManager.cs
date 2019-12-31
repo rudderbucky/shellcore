@@ -323,7 +323,7 @@ public class SectorManager : MonoBehaviour
             case EntityBlueprint.IntendedType.Drone:
                 {
                     Drone drone = gObj.AddComponent<Drone>();
-                    drone.path = ResourceManager.GetAsset<Path>(data.pathID);
+                    //drone.path = ResourceManager.GetAsset<Path>(data.pathID);
                     break;
                 }
             case EntityBlueprint.IntendedType.AirCarrier:

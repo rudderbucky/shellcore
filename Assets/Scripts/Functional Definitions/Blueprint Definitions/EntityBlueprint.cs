@@ -52,4 +52,7 @@ public class EntityBlueprint : ScriptableObject
     public static int GetPartValue(PartInfo info) {
         return (int)ResourceManager.GetAsset<PartBlueprint>(info.partID).health + info.tier * 200 + (info.abilityID == 0 ? 0 : 300);
     }
+
+    public bool useCustomDroneType = false;
+    public DroneType customDroneType;
 }
