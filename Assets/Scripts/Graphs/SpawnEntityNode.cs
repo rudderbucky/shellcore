@@ -21,7 +21,7 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
-        public bool action; //TODO: copy & paste action mode
+        public bool action;
         public string blueprintID;
         public string entityName;
         public int faction;

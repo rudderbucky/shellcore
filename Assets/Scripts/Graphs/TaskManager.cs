@@ -41,6 +41,13 @@ public class TaskManager : MonoBehaviour
         initCanvases();
     }
 
+    // TODO: add ability to set multiple paths
+    public void SetCanvasPath(string path)
+    {
+        Debug.Log("Found Path");
+        questCanvasPaths = new string[] {path};
+    }
+
     public static void StartQuests() {
         Instance.startQuests();
     }
@@ -117,7 +124,9 @@ public class TaskManager : MonoBehaviour
         for (int i = 0; i < questCanvasPaths.Length; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
+            Debug.Log(finalPath);
             var canvas = XMLImport.Import(finalPath) as QuestCanvas;
+            Debug.Log(canvas);
             if (canvas != null)
             {
                 questCanvases.Add(canvas);
@@ -129,6 +138,8 @@ public class TaskManager : MonoBehaviour
                 }
             }
         }
+
+        Debug.Log(questCanvases.Count);
 
         // reset all static condition variables
         SectorLimiterNode.LimitedSector = "";

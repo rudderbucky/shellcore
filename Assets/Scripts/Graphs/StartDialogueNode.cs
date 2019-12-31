@@ -31,7 +31,15 @@ namespace NodeEditorFramework.Standard
             if(SpeakToEntity)
             {
                 GUILayout.Label("Entity Name");
-                EntityName = RTEditorGUI.TextField(EntityName);
+                EntityName = GUILayout.TextField(EntityName);
+                if (WorldCreatorCursor.instance != null)
+                {
+                    if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                    {
+                        WorldCreatorCursor.selectEntity += SetEntityName;
+                        WorldCreatorCursor.instance.EntitySelection();
+                    }
+                }
             }
         }
 
@@ -60,6 +68,14 @@ namespace NodeEditorFramework.Standard
             {
                 return 0;
             }
+        }
+
+        void SetEntityName(string newName)
+        {
+            Debug.Log("selected " + newName + "!");
+
+            EntityName = newName;
+            WorldCreatorCursor.selectEntity -= SetEntityName;
         }
     }
 }

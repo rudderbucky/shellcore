@@ -62,6 +62,7 @@ public class PlayerCore : ShellCore {
 
     protected override void Awake()
     {
+        entityName = "player";
         if (!initialized)
             base.Awake();
         initialized = true;
@@ -99,8 +100,15 @@ public class PlayerCore : ShellCore {
 
     public void LoadSave(PlayerSave save)
     {
-        transform.position = save.position;
-        name = save.name;
+        if(save.timePlayed != 0) 
+        {
+            Debug.Log("test");
+            if(save.characters != null && save.characters.Length != 0)
+                SectorManager.instance.characters = save.characters;
+            transform.position = save.position;
+        }
+
+        name = "player";
         positionBeforeOscillation = transform.position.y;
         if(save.currentHealths.Length < 3)
         {

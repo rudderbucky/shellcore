@@ -13,6 +13,7 @@ public abstract class AirCraft : Craft
     private Vector2 oscillatorVector; // vector used to oscillate the aircraft during idle time
     protected float positionBeforeOscillation; // used for oscillation y-coordination resetting
     private Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
+    protected AirCraftAI ai; // AI agent that controls this aircraft
 
     protected override void Update() {
         base.Update(); // base update
@@ -88,5 +89,15 @@ public abstract class AirCraft : Craft
         oscillatorVector.y = Mathf.Min(oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + entityBody.position.x), positionBeforeOscillation); // cool math stuff
         oscillatorVector.y = Mathf.Max(oscillatorVector.y, positionBeforeOscillation - 1); // more cool math stuff
         entityBody.position = oscillatorVector; // set the aircraft position
+    }
+
+    public AirCraftAI GetAI()
+    {
+        if (ai == null && !(this is PlayerCore))
+        {
+            ai = gameObject.AddComponent<AirCraftAI>();
+            ai.Init(this);
+        }
+        return ai;
     }
 }

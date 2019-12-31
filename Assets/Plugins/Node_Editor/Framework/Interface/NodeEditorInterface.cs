@@ -35,6 +35,12 @@ namespace NodeEditorFramework.Standard
 				ShowNotificationAction(message);
 		}
 
+		public void ExportData(string path)
+		{
+			IOFormat = ImportExportManager.ParseFormat("XML");
+			ImportExportManager.ExportCanvas(canvasCache.nodeCanvas, IOFormat, new string[] {path});
+		}
+
 #region GUI
 
 		public void DrawToolbarGUI(Rect rect)

@@ -76,7 +76,7 @@ namespace NodeEditorFramework
 		/// <summary>
 		/// Specifies the minimum size the node can have if no content is present.
 		/// </summary>
-		public virtual Vector2 MinSize { get { return new Vector2(100, 50); } }
+		public virtual Vector2 MinSize { get { return new Vector2(150, 50); } }
 
 		/// <summary>
 		/// Specifies if this node handles recursive node loops on the canvas.

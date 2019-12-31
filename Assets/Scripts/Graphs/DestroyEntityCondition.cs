@@ -59,9 +59,25 @@ namespace NodeEditorFramework.Standard
             {
                 GUILayout.Label("Target Name");
                 targetName = GUILayout.TextField(targetName);
+                if (WorldCreatorCursor.instance != null)
+                {
+                    if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                    {
+                        WorldCreatorCursor.selectEntity += SetEntityName;
+                        WorldCreatorCursor.instance.EntitySelection();
+                    }
+                }
             }
             targetCount = RTEditorGUI.IntField("Count: ", targetCount);
             targetFaction = RTEditorGUI.IntField("Faction: ", targetFaction);
+        }
+
+        void SetEntityName(string newName)
+        {
+            Debug.Log("selected " + newName + "!");
+
+            targetName = newName;
+            WorldCreatorCursor.selectEntity -= SetEntityName;
         }
 
         public void Init(int index)

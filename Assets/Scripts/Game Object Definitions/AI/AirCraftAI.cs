@@ -26,7 +26,7 @@ public class AirCraftAI : MonoBehaviour
         KeepMoving
     }
 
-    private AIMode mode;
+    private AIMode mode = AIMode.Inactive;
     private AIState state;
 
     public AIAggression aggression;
@@ -46,7 +46,7 @@ public class AirCraftAI : MonoBehaviour
 
     public void setMode(AIMode mode)
     {
-        Debug.Log("Mode set! (try to reduce these, the AI is initialized each time)");
+        Debug.Log("Mode (" + mode + ") set! (try to reduce these, the AI is initialized each time)");
         if (mode == this.mode)
             return;
 
@@ -113,6 +113,29 @@ public class AirCraftAI : MonoBehaviour
             (module as PathAI).MoveToPosition(pos);
         }
 
+    }
+
+    public void setPath(NodeEditorFramework.Standard.PathData data)
+    {
+        Path path = ScriptableObject.CreateInstance<Path>();
+        path.waypoints = new List<Path.Node>();
+
+        if (data != null && data.waypoints != null)
+        {
+            for (int i = 0; i < data.waypoints.Count; i++)
+            {
+                path.waypoints.Add(new Path.Node()
+                {
+                    ID = data.waypoints[i].ID,
+                    position = data.waypoints[i].position,
+                    children = data.waypoints[i].children
+                });
+            }
+        }
+
+        setMode(AIMode.Path);
+        (module as PathAI).setPath(path);
+        if (module != null) module.Init();
     }
 
     public void setPath(Path path)

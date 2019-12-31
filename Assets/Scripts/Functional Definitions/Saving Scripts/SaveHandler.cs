@@ -41,7 +41,7 @@ public class SaveHandler : MonoBehaviour {
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
 
-            SectorManager.instance.LoadSectorFile(save.resourcePath);
+            //SectorManager.instance.LoadSectorFile(save.resourcePath);
 
             // tasks
             taskManager.setNode(save.lastTaskNodeID);
@@ -54,6 +54,8 @@ public class SaveHandler : MonoBehaviour {
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
+
+			ResourceManager.Instance.ChangeSoundVolume(save.soundVolume);
 		} else {
 			save = new PlayerSave();
 			save.presetBlueprints = new string[5];
@@ -75,7 +77,7 @@ public class SaveHandler : MonoBehaviour {
 	public void Save() {
 		save.timePlayed += Time.timeSinceLevelLoad / 60;
 		string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
-		save.position = player.transform.position;
+		save.position = player.spawnPoint;
 		save.currentHealths = player.currentHealth;
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
@@ -83,7 +85,8 @@ public class SaveHandler : MonoBehaviour {
         save.abilityCaps = player.abilityCaps;
         save.shards = player.shards;
         save.resourcePath = SectorManager.instance.resourcePath;
-
+		save.characters = SectorManager.instance.characters;
+		
         // tasks
         var limiterNode = NodeEditorFramework.Standard.SectorLimiterNode.StartPoint;
         if (limiterNode != null)

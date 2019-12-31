@@ -6,7 +6,7 @@ public class Flag : MonoBehaviour
 {
     private void OnEnable()
     {
-        if (SceneManager.GetActiveScene().name != "SectorCreator")
+        if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
         {
             AIData.flags.Add(this);
         }
@@ -14,7 +14,7 @@ public class Flag : MonoBehaviour
 
     private void OnDisable()
     {
-        if (SceneManager.GetActiveScene().name != "SectorCreator")
+        if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
         {
             AIData.flags.Remove(this);
         }
@@ -22,7 +22,7 @@ public class Flag : MonoBehaviour
 
     private void Start()
     {
-        if(SceneManager.GetActiveScene().name != "SectorCreator")
+        if(SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
         {
             GetComponent<SpriteRenderer>().enabled = false;
         }

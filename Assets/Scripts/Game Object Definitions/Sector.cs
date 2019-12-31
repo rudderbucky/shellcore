@@ -17,7 +17,7 @@ public struct IntRect
 
     public bool contains(Vector2 position)
     {
-        return position.x > x && position.x < x + w && position.y > y && position.y < y + h;
+        return position.x > x && position.x < x + w && position.y < y && position.y > y - h;
     }
 }
 
@@ -43,7 +43,9 @@ public class Sector : ScriptableObject
         Neutral,
         Haven,
         BattleZone,
-        DangerZone
+        DangerZone,
+        Capitol,
+        DarkNeutral
     }
 
     public string sectorName;
@@ -53,4 +55,6 @@ public class Sector : ScriptableObject
     public LevelEntity[] entities;
     public LandPlatform platform;
     public string[] targets;
+    public bool hasMusic;
+    public string musicID;
 }

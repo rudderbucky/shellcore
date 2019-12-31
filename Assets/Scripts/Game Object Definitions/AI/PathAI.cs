@@ -138,7 +138,7 @@ public class PathAI : AIModule
                     //Debug.Log("ID " + (nodes.Count - i - 1) + "'s child: " + (nodes.Count - j - 1));
                 }
             }
-            node.children = children.ToArray();
+            node.children = children;
             path.waypoints.Add(node);
             //Debug.Log("Created a node (index " + nodes[i].index + ") @ " + node.position + " with ID " + node.ID + " and " + children.Count + "children.");
         }
@@ -157,9 +157,9 @@ public class PathAI : AIModule
         {
             if (path.waypoints[i].ID == waypointID)
             {
-                if (path.waypoints[i].children.Length > 0)
+                if (path.waypoints[i].children.Count > 0)
                 {
-                    waypointID = path.waypoints[i].children[Random.Range(0, path.waypoints[i].children.Length)];
+                    waypointID = path.waypoints[i].children[Random.Range(0, path.waypoints[i].children.Count)];
                     for (int j = 0; j < path.waypoints.Count; j++)
                     {
                         if (path.waypoints[j].ID == waypointID)

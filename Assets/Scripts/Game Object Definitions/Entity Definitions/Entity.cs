@@ -26,6 +26,8 @@ public class Entity : MonoBehaviour, IDamageable {
     protected float deathTimer; // the time since the entity last died;
     protected GameObject explosionCirclePrefab; // prefabs for death explosion
     protected GameObject explosionLinePrefab;
+    protected GameObject respawnImplosionPrefab;
+    protected GameObject deathExplosionPrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
     public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
@@ -74,6 +76,11 @@ public class Entity : MonoBehaviour, IDamageable {
         if (!blueprint) Debug.Log(this + " does not have a blueprint! EVERY constructed entity should have one!");
 
         // Remove possible old parts from list
+        foreach(var part in parts)
+        {
+            if(part && part.gameObject && part.gameObject.name != "Shell Sprite")
+                Destroy(part.gameObject);
+        }
         parts.Clear();
         blueprint.shellHealth.CopyTo(maxHealth, 0);
         blueprint.baseRegen.CopyTo(regenRate, 0);
@@ -134,6 +141,14 @@ public class Entity : MonoBehaviour, IDamageable {
             explosionLinePrefab.AddComponent<DrawLineScript>().SetStartColor(FactionColors.colors[faction]);
             explosionLinePrefab.SetActive(false);
         }
+        if (!deathExplosionPrefab)
+        {
+            deathExplosionPrefab = ResourceManager.GetAsset<GameObject>("death_explosion");
+        }
+        if (!respawnImplosionPrefab)
+        {
+            respawnImplosionPrefab = ResourceManager.GetAsset<GameObject>("respawn_implosion");
+        }
         if (!GetComponent<SpriteRenderer>())
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
@@ -175,6 +190,7 @@ public class Entity : MonoBehaviour, IDamageable {
         abilities = new List<Ability>();
 
         entityName = blueprint.entityName;
+        name = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
 
         var isLightDrone = this as Drone && (this as Drone).type == DroneType.Light; // used for light drone weight reduction
@@ -304,7 +320,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            if((parts[i] != shell) && Random.value < 0.3f && !(this as PlayerCore)) {
+            if((parts[i] != shell) && Random.value < 0.08f && !(this as PlayerCore)) {
                 parts[i].SetCollectible(true);
                 if(sectorMngr) AIData.strayParts.Add(parts[i]);
             }
@@ -312,6 +328,9 @@ public class Entity : MonoBehaviour, IDamageable {
         }
 
         if(lastDamagedBy as PlayerCore) (lastDamagedBy as PlayerCore).credits += 5;
+
+        GameObject deathExplosion = Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
+        /*
         GameObject tmp = Instantiate(explosionCirclePrefab); // instantiate circle explosion
         tmp.SetActive(true);
         tmp.transform.SetParent(transform, false);
@@ -324,6 +343,7 @@ public class Entity : MonoBehaviour, IDamageable {
             tmp.GetComponent<DrawLineScript>().Initialize();
             Destroy(tmp, 2); // destroy explosions after 2 seconds
         }
+        */
 
         if(GameObject.Find("SectorManager")) 
             GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
@@ -420,10 +440,10 @@ public class Entity : MonoBehaviour, IDamageable {
         DeathHandler();
         if (isDead) // if the craft is dead
         {
+            GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
             deathTimer += Time.deltaTime; // add time since last frame
             if (deathTimer >= 0.5F) 
             {
-                GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
                 if(this as PlayerCore && (deathTimer > 2)) {
                     ((PlayerCore)this).alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
                     + ((5 - deathTimer) > 1 ? "s." : "."));

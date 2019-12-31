@@ -36,6 +36,14 @@ namespace NodeEditorFramework.Standard
             height = 180f;
             GUILayout.Label("Reward giver name:");
             rewardGiverName = GUILayout.TextField(rewardGiverName, GUILayout.Width(200f));
+            if (WorldCreatorCursor.instance != null)
+            {
+                if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                {
+                    WorldCreatorCursor.selectEntity += SetEntityName;
+                    WorldCreatorCursor.instance.EntitySelection();
+                }
+            }
             GUILayout.Label("Reward text:");
             rewardText = GUILayout.TextArea(rewardText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
@@ -47,6 +55,14 @@ namespace NodeEditorFramework.Standard
             b = RTEditorGUI.FloatField(textColor.b);
             GUILayout.EndHorizontal();
             textColor = new Color(r, g, b);
+        }
+
+        void SetEntityName(string newName)
+        {
+            Debug.Log("selected " + newName + "!");
+
+            rewardGiverName = newName;
+            WorldCreatorCursor.selectEntity -= SetEntityName;
         }
 
         public void OnDialogue()

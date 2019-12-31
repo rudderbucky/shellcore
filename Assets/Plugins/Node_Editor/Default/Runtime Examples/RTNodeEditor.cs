@@ -45,7 +45,7 @@ namespace NodeEditorFramework.Standard
             rectTransform = GetComponent<RectTransform>();
 
 
-            NormalReInit();
+            //NormalReInit();
 		}
 
 		private void Update () 
@@ -56,7 +56,7 @@ namespace NodeEditorFramework.Standard
 
 		}
 
-		private void NormalReInit()
+		public void NormalReInit()
 		{
             finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, canvasPath);
 
@@ -141,5 +141,10 @@ namespace NodeEditorFramework.Standard
 			// END ROOT: End Overlay GUI and draw popups
 			OverlayGUI.EndOverlayGUI();
 		}
+		public void ExportData(string path)
+		{
+			editorInterface.ExportData(path);
+		}
+	
 	}
 }

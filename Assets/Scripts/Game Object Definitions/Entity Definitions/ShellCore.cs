@@ -13,7 +13,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
-    private AirCraftAI ai;
     private TractorBeam tractor;
 
     public int GetTotalCommandLimit()
@@ -68,7 +67,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         {
             ai = gameObject.AddComponent<AirCraftAI>();
         }
-        if(ai)
+        if(ai && ai.getMode() == AirCraftAI.AIMode.Inactive)
         {
             ai.Init(this);
             if(sectorMngr.current.type == Sector.SectorType.BattleZone)

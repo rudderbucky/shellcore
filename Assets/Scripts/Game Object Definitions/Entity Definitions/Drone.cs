@@ -10,7 +10,6 @@ public interface IOwnable
 public class Drone : AirCraft, IOwnable {
 
     private IOwner owner;
-    private AirCraftAI ai;
     private float time;
     private float initialzangle;
     private bool initialized = false;
@@ -43,6 +42,8 @@ public class Drone : AirCraft, IOwnable {
 
     protected override void Start()
     {
+        if(blueprint.useCustomDroneType)
+            type = blueprint.customDroneType;
         if (!initialized)
             Init();
     }
@@ -53,11 +54,12 @@ public class Drone : AirCraft, IOwnable {
         base.Start();
         ai = gameObject.AddComponent<AirCraftAI>();
         ai.Init(this, owner);
-        ai.aggression = AirCraftAI.AIAggression.KeepMoving;
+        //ai.aggression = AirCraftAI.AIAggression.KeepMoving;
         ai.allowRetreat = false;
-        ai.setPath(path);
+        //ai.setPath(path);
         //ai.setMode(AirCraftAI.AIMode.Path);
         initialized = true;
+        enginePower = 200;
     }
 
     public void CommandMovement(Vector3 pos)

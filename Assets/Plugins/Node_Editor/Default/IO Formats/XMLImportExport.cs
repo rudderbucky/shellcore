@@ -312,6 +312,10 @@ namespace NodeEditorFramework.IO
 				return null;
 			}
 			object fieldValue = field.GetValue(obj);
+            if (fieldValue == null)
+            {
+                Debug.LogWarning("Field value == null; Remember to give default values to node fields. obj type: " + field.FieldType);
+            }
 			XmlElement serializedValue = SerializeObjectToXML(parent, fieldValue);
 			if (serializedValue != null)
 			{
@@ -350,7 +354,7 @@ namespace NodeEditorFramework.IO
 
             if(obj == null)
             {
-                Debug.LogWarning("Field value == null; Remember to give default values to node fields.");
+                //Debug.LogWarning("Field value == null; Remember to give default values to node fields. ");
                 return null;
             }
 

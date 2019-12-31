@@ -91,7 +91,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		}
 	}
 	public void AddSave() {
-		string currentVersion = "Prototype 4.0.0";
+		string currentVersion = "Alpha 0.0.0";
 		string name = inputField.text.Trim();
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
 		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
@@ -102,6 +102,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		save.presetBlueprints = new string[5];
 		save.currentHealths = new float[] {1000,250,500};
 		save.partInventory = new List<EntityBlueprint.PartInfo>();
+		save.sectorsSeen = new List<string>();
 
 		// this section contains default information for a new save. Edit this to change how the default save
 		// is created.
