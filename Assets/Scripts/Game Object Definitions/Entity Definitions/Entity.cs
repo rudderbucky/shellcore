@@ -76,6 +76,11 @@ public class Entity : MonoBehaviour, IDamageable {
         if (!blueprint) Debug.Log(this + " does not have a blueprint! EVERY constructed entity should have one!");
 
         // Remove possible old parts from list
+        foreach(var part in parts)
+        {
+            if(part && part.gameObject && part.gameObject.name != "Shell Sprite")
+                Destroy(part.gameObject);
+        }
         parts.Clear();
         blueprint.shellHealth.CopyTo(maxHealth, 0);
         blueprint.baseRegen.CopyTo(regenRate, 0);
