@@ -27,7 +27,7 @@ public class SectorManager : MonoBehaviour
     private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
-    private List<LineRenderer> minimapSectorBorders;
+    private Dictionary<Sector, LineRenderer> minimapSectorBorders;
     private int uniqueIDInt;
     private bool sectorLoaded = false;
     public Vector2 spawnPoint;
@@ -127,7 +127,7 @@ public class SectorManager : MonoBehaviour
                 string[] files = Directory.GetFiles(path);
                 current = null;
                 sectors = new List<Sector>();
-                minimapSectorBorders = new List<LineRenderer>();
+                minimapSectorBorders = new Dictionary<Sector, LineRenderer>();
                 foreach (string file in files)
                 {
                     if(file.Contains(".meta")) continue;
@@ -177,7 +177,8 @@ public class SectorManager : MonoBehaviour
                         new Vector3(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y - curSect.bounds.h, 0),
                         new Vector3(curSect.bounds.x, curSect.bounds.y - curSect.bounds.h, 0)
                     });
-                    minimapSectorBorders.Add(border);
+                    if(!player.cursave.sectorsSeen.Contains(curSect.sectorName)) border.enabled = false;
+                    minimapSectorBorders.Add(curSect, border);
 
                     sectors.Add(curSect);
                 }
@@ -527,6 +528,7 @@ public class SectorManager : MonoBehaviour
         background.setColor(current.backgroundColor);
         //Camera.main.backgroundColor = current.backgroundColor / 2F;
         //sector borders
+        minimapSectorBorders[current].enabled = true;
         sectorBorders.enabled = true;
         sectorBorders.SetPositions(new Vector3[]{
             new Vector3(current.bounds.x, current.bounds.y, 0),
