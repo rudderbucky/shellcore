@@ -66,7 +66,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		}
 
 		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
-			if(true)//playerCore.cursave.sectorsSeen.Contains(sector.sectorName))
+			if(playerCore.cursave.sectorsSeen.Contains(sector.sectorName))
 			{
 				Debug.Log(player.GetComponent<PlayerCore>().cursave.sectorsSeen.Count);
 				Image sect = Instantiate(sectorPrefab, transform, false);

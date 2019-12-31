@@ -86,6 +86,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     break;
                 case ItemType.Other:
                 case ItemType.Decoration:
+                case ItemType.Flag:
                     Sector.LevelEntity ent = new Sector.LevelEntity();
                     if(cursor.characters.TrueForAll((WorldData.CharacterData x) => {return x.ID != item.ID;})) 
                     {
@@ -105,9 +106,15 @@ public class WCGeneratorHandler : MonoBehaviour
                     ent.assetID = item.assetID;
                     ent.vendingID = item.vendingID;
                     if(item.isTarget) sectTargetIDS[container].Add(ent.ID);
-                    if(ent.assetID == "shellcore_blueprint") {
+                    if(ent.assetID == "shellcore_blueprint") 
+                    {
                         sectTargetIDS[container].Add(ent.ID);
                         ent.blueprintJSON = item.shellcoreJSON;
+                        ent.name = item.name;
+                    }
+                    if(ent.assetID == "flag")
+                    {
+                        ent.name = item.name;
                     }
                     sectEnts[container].Add(ent);
                     break;   
@@ -305,6 +312,8 @@ public class WCGeneratorHandler : MonoBehaviour
                                 copy.name = ent.name;
                                 copy.pos = copy.obj.transform.position = ent.position;
                                 copy.vendingID = ent.vendingID;
+                                copy.shellcoreJSON = ent.blueprintJSON;
+                                Debug.Log(copy.shellcoreJSON);
                                 cursor.placedItems.Add(copy);
                             }              
                         }

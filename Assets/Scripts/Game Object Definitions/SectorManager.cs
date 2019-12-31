@@ -47,7 +47,7 @@ public class SectorManager : MonoBehaviour
         return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0; 
     }
 
-    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\testchars";
+    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main";
     public void Initialize()
     {
         if (instance != null)
@@ -100,6 +100,7 @@ public class SectorManager : MonoBehaviour
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
+                player.TakeShellDamage(0.2F * player.GetMaxHealth()[0], 0, null);
                 player.TakeCoreDamage(0.2F * player.GetMaxHealth()[1]);
                 player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
             } else dangerZoneTimer += Time.deltaTime;
@@ -411,7 +412,7 @@ public class SectorManager : MonoBehaviour
                 && obj.Value != player.gameObject)
             {
                 var skipTag = false;
-                if(obj.Value.GetComponentInChildren<Entity>())
+                if(obj.Value && obj.Value.GetComponentInChildren<Entity>())
                 {
                     foreach(var ch in characters)
                     {

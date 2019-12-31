@@ -27,7 +27,7 @@ public class WorldCreatorCursor : MonoBehaviour
     public static FinishPathDelegate finishPath;
 
     public static WorldCreatorCursor instance;
-
+    public ShipBuilder shipBuilder;
     WCPathCreator pathCreator;
 
     int cursorModeCount;
@@ -186,7 +186,15 @@ public class WorldCreatorCursor : MonoBehaviour
             } else renderer.startColor = renderer.endColor = Color.white;
         }
     }
+
+    public int flagID = 0;
     void PollItems() {
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            shipBuilder.Initialize(BuilderMode.Yard);
+            shipBuilder.Activate();
+        }
+
         if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
             else if(Input.mouseScrollDelta.y > 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
 		

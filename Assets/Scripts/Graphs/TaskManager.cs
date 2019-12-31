@@ -200,7 +200,6 @@ public class TaskManager : MonoBehaviour
     {
         for (int i = 0; i < questCanvases[0].nodes.Count; i++)
         {
-            Debug.Log(questCanvases[0] + " " +  questCanvases[0].nodes + " " + questCanvases[0].nodes[i]);
             if(questCanvases[0].nodes[i].GetID() == ID)
             {
                 setNode(questCanvases[0].nodes[i]);
