@@ -35,7 +35,7 @@ public class HealthBarScript : MonoBehaviour {
             barsArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
             barsArray[i].color = colors[i];
             Vector3 tmp = barsArray[i].transform.position;
-            tmp.y -= 12*i;
+            tmp.y -= 24*i;
             barsArray[i].transform.position = tmp;
             barsArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
 
@@ -47,7 +47,7 @@ public class HealthBarScript : MonoBehaviour {
             }
             gleamArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
             tmp = gleamArray[i].transform.position;
-            tmp.y -= 12*i;
+            tmp.y -= 24*i;
             gleamArray[i].transform.position = tmp;
             gleamArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
         }

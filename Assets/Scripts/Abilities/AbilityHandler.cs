@@ -84,14 +84,14 @@ public class AbilityHandler : MonoBehaviour {
         for(int i = 0; i < gleamed.Length; i++) {
             gleamed[i] = true;
         }
-        float tileSpacing = abilityBackground.GetComponent<Image>().sprite.bounds.size.x * 15; // Used to space out the abilities on the GUI
+        float tileSpacing = abilityBackground.GetComponent<Image>().sprite.bounds.size.x * 30; // Used to space out the abilities on the GUI
         abilityCDIndicator.fillAmount = 0; // make the cooldown indicator's fill initially 0
         abilityGleam.color = Color.clear;  // start the gleam as clear
         
         if (!image)
         {
             image = new GameObject().AddComponent<Image>();
-            image.transform.localScale = new Vector3(0.25F, 0.25F, 0.25F);
+            image.transform.localScale = new Vector3(0.5F, 0.5F, 0.5F);
             image.rectTransform.anchorMax = Vector2.zero;
             image.rectTransform.anchorMin = Vector2.zero;
             image.gameObject.SetActive(false);
@@ -176,7 +176,7 @@ public class AbilityHandler : MonoBehaviour {
         if(visibleAbilities.Count > 0)
         {
             var y = HUDbg.GetComponent<RectTransform>().anchoredPosition;
-            y.x = abilityGleamArray[0].rectTransform.anchoredPosition.x - 0.5F * tileSpacing;
+            y.x = abilityGleamArray[0].rectTransform.anchoredPosition.x - 1F * tileSpacing;
             HUDbg.GetComponent<RectTransform>().anchoredPosition = y;
 
             var x = HUDbg.GetComponent<RectTransform>().sizeDelta;

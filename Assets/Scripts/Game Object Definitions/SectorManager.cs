@@ -166,7 +166,6 @@ public class SectorManager : MonoBehaviour
                     var border = new GameObject("MinimapSectorBorder - " + curSect.sectorName).AddComponent<LineRenderer>();
                     border.material = ResourceManager.GetAsset<Material>("white_material");
                     border.gameObject.layer = 8;
-                    border.enabled = true;
                     border.positionCount = 4;
                     border.startWidth = 0.5f;
                     border.endWidth = 0.5f;
@@ -177,7 +176,8 @@ public class SectorManager : MonoBehaviour
                         new Vector3(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y - curSect.bounds.h, 0),
                         new Vector3(curSect.bounds.x, curSect.bounds.y - curSect.bounds.h, 0)
                     });
-                    if(!player.cursave.sectorsSeen.Contains(curSect.sectorName)) border.enabled = false;
+                    border.enabled = player.cursave.sectorsSeen.Contains(curSect.sectorName);
+                    Debug.Log(player.cursave.sectorsSeen.Count);
                     minimapSectorBorders.Add(curSect, border);
 
                     sectors.Add(curSect);
@@ -528,7 +528,12 @@ public class SectorManager : MonoBehaviour
         background.setColor(current.backgroundColor);
         //Camera.main.backgroundColor = current.backgroundColor / 2F;
         //sector borders
-        if(minimapSectorBorders != null && minimapSectorBorders.ContainsKey(current)) minimapSectorBorders[current].enabled = true;
+        foreach(var sector in sectors)
+        {
+            minimapSectorBorders[sector].enabled = minimapSectorBorders != null 
+                && minimapSectorBorders.ContainsKey(sector) && player.cursave.sectorsSeen.Contains(sector.sectorName);
+        }
+
         sectorBorders.enabled = true;
         sectorBorders.SetPositions(new Vector3[]{
             new Vector3(current.bounds.x, current.bounds.y, 0),

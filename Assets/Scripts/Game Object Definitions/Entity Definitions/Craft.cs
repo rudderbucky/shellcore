@@ -145,7 +145,7 @@ public abstract class Craft : Entity
     protected virtual void CraftMover(Vector2 directionVector)
     {
         RotateCraft(directionVector / entityBody.mass); // rotate craft
-        entityBody.AddForce(enginePower * directionVector); 
+        entityBody.AddForce(Mathf.Min(enginePower, 300 * entityBody.mass) * directionVector); // max acceleration: 300 m/s^2
         // actual force applied to craft; independent of angle rotation
     }
 

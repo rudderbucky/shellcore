@@ -155,6 +155,9 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / (int)y), z * ((int)x.y / (int)z), 0);
 		var newOffset = roundToRatios(grid.position, baseMoveSize, baseMoveSize) -grid.position;
 		transform.position = roundToRatios(Input.mousePosition, baseMoveSize, baseMoveSize) - newOffset;
+		var oldPos = GetComponent<RectTransform>().anchoredPosition;
+		GetComponent<RectTransform>().anchoredPosition = new Vector2(Mathf.Round(oldPos.x / 10) * 10, Mathf.Round(oldPos.y / 10) * 10);
+		// round to nearest 0.1
 		// TODO: Make this stuff less messy. Regardless, consistency achieved!
 		if(rotateMode) {
 			RotateLastPart();

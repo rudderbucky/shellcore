@@ -14,7 +14,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	public Font shellcoreFont;
 	public Sprite gridSprite;
 	RectTransform indicator;
-	int zoomoutFactor = 2;
+	int zoomoutFactor = 4;
 	int sectorCount = 0;
 	int minX = int.MaxValue;
 	int maxY = int.MinValue;
@@ -26,8 +26,9 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	}
 
 	// I have barely any idea why these constants are their values, but it works with these
-	int const1 = 75;
-	int const2 = 100;
+	int const1 = 150;
+	int const2 = 200;
+	int const4 = 200;
 
 	// this is an arbitrary number, sets the size of the grid
 	int const3 = 2000;
@@ -49,12 +50,12 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			textx.font = texty.font = shellcoreFont;
 			textx.transform.SetParent(transform,false);
 			texty.transform.SetParent(transform,false);
-			textx.rectTransform.anchoredPosition = new Vector2(i * 100 + 100, const1) / zoomoutFactor;
-			texty.rectTransform.anchoredPosition = new Vector2(const2, -i * 100 - 100) / zoomoutFactor;
+			textx.rectTransform.anchoredPosition = new Vector2(i * 200 + const4, const1) / zoomoutFactor;
+			texty.rectTransform.anchoredPosition = new Vector2(const2, -i * 200 - const4) / zoomoutFactor;
 			textx.rectTransform.localScale = texty.rectTransform.localScale = Vector3.one;
 			textx.alignment = TextAnchor.LowerLeft;
 			texty.alignment = TextAnchor.UpperLeft;
-			textx.text = texty.text = i * 100 + "";
+			textx.text = texty.text = i * 200 + "";
 			textx.color = texty.color = img.color + Color.gray;
 
 		}
@@ -110,7 +111,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		{
 			canvas.anchorMin = new Vector2(0, 1);
 			canvas.anchorMax = new Vector2(0, 1);
-			greenBox.anchoredPosition = new Vector2(canvas.sizeDelta.x, -canvas.sizeDelta.y) / zoomoutFactor;
+			greenBox.anchoredPosition = new Vector2(canvas.sizeDelta.x, -canvas.sizeDelta.y) / 2;
 			canvas.anchoredPosition = new Vector2(-player.position.x + minX, maxY - player.position.y) / zoomoutFactor + greenBox.anchoredPosition;
 		}
 
