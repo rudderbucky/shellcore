@@ -530,7 +530,7 @@ public class SectorManager : MonoBehaviour
         //sector borders
         foreach(var sector in sectors)
         {
-            minimapSectorBorders[sector].enabled = minimapSectorBorders != null 
+            if(minimapSectorBorders != null && minimapSectorBorders[sector]) minimapSectorBorders[sector].enabled = minimapSectorBorders != null 
                 && minimapSectorBorders.ContainsKey(sector) && player.cursave.sectorsSeen.Contains(sector.sectorName);
         }
 

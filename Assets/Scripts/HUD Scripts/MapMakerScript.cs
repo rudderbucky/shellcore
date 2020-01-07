@@ -56,6 +56,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			textx.alignment = TextAnchor.LowerLeft;
 			texty.alignment = TextAnchor.UpperLeft;
 			textx.text = texty.text = i * 200 + "";
+			textx.fontSize = texty.fontSize = 12;
 			textx.color = texty.color = img.color + Color.gray;
 
 		}

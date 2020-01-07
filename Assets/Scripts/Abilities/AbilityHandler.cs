@@ -106,7 +106,7 @@ public class AbilityHandler : MonoBehaviour {
             // instantiate background image
             abilityBackgroundArray[i] = Instantiate(abilityBackground, pos, Quaternion.identity) as GameObject;
             abilityBackgroundArray[i].transform.SetParent(transform, false); // set parent (do not keep world position)
-            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = AbilityUtilities.GetAbilityName(visibleAbilities[i]) 
+            abilityBackgroundArray[i].GetComponentInChildren<Text>().text = AbilityUtilities.GetAbilityName(visibleAbilities[i]).ToUpper() 
              + (visibleAbilities[i].GetTier() > 0 ? " " + visibleAbilities[i].GetTier() : "");
             var button = abilityBackgroundArray[i].GetComponent<AbilityButtonScript>();
             button.tooltipPrefab = tooltipPrefab;
