@@ -31,6 +31,6 @@ public class TipsFromTheYard : MonoBehaviour {
 	
 	void OnEnable() {
 		text.color = colors[Random.Range(0, 4)];
-		text.text = "Tips from the Yard:\n" + tipsList[Random.Range(0, tipsList.Count)];
+		text.text = "TIPS FROM THE YARD:\n" + tipsList[Random.Range(0, tipsList.Count)].ToUpper();
 	}
 }

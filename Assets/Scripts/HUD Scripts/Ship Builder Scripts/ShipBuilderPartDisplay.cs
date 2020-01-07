@@ -88,8 +88,8 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 				float mass = blueprint.mass;
 				float health = blueprint.health;
 				int value = EntityBlueprint.GetPartValue(info);
-				partStats.text = "Part Shell: " + health / 2 + "\nPart Core: " + health / 4 + "\nPart Mass: " + mass 
-					+ "\nPart Value: \n" + value + " Credits";
+				partStats.text = "PART SHELL: " + health / 2 + "\nPART CORE: " + health / 4 + "\nPART MASS: " + mass 
+					+ "\nPART VALUE: \n" + value + " CREDITS";
 				image.sprite = ResourceManager.GetAsset<Sprite>(partID + "_sprite");
 				image.rectTransform.sizeDelta = image.sprite.bounds.size * 50;
 				image.color = FactionColors.colors[0];

@@ -167,35 +167,35 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		switch(status) {
 			case ReconstructButtonStatus.Valid:
 				reconstructImage.color = reconstructText.color = Color.green;
-				reconstructText.text = "Reconstruct";
+				reconstructText.text = "RECONSTRUCT";
 				break;
 			case ReconstructButtonStatus.PartInvalidPosition:
 				reconstructImage.color = reconstructText.color = Color.red;
-				reconstructText.text = "A part is in an invalid position!";
+				reconstructText.text = "A PART IS IN AN INVALID POSITION";
 				break;
 			case ReconstructButtonStatus.NotEnoughCredits:
 				reconstructImage.color = reconstructText.color = Color.red;
-				reconstructText.text = "Not enough credits!";
+				reconstructText.text = "NOT ENOUGH CREDITS";
 				break;
 			case ReconstructButtonStatus.PastSkillsLimit:
 				reconstructImage.color = reconstructText.color = Color.red;
-				reconstructText.text = "Too many Skills!";
+				reconstructText.text = "TOO MANY SKILLS";
 				break;
 			case ReconstructButtonStatus.PastSpawnsLimit:
 				reconstructImage.color = reconstructText.color = Color.red;
-				reconstructText.text = "Too many Spawns!";
+				reconstructText.text = "TOO MANY SPAWNS";
 				break;
 			case ReconstructButtonStatus.PastWeaponsLimit:
 				reconstructImage.color = reconstructText.color = Color.red;
-				reconstructText.text = "Too many Weapons!";
+				reconstructText.text = "TOO MANY WEAPONS";
 				break;
 			case ReconstructButtonStatus.PastPassivesLimit:
 				reconstructImage.color = reconstructText.color = Color.red;
-				reconstructText.text = "Too many Passives!";
+				reconstructText.text = "TOO MANY PASSIVES";
 				break;
 			case ReconstructButtonStatus.PartTooHeavy:
 				reconstructImage.color = reconstructText.color = Color.red;
-				reconstructText.text = "A part is too heavy for your core!";				
+				reconstructText.text = "A PART IS TOO HEAVY FOR YOUR CORE";				
 				break;
 		}
 	}
@@ -342,7 +342,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		core.material = ResourceManager.GetAsset<Material>("material_color_swap");
 		core.color = FactionColors.colors[0];
 		core.preserveAspect = true;
-		core.rectTransform.sizeDelta = core.sprite.bounds.size * 110;
+		core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
 		List<EntityBlueprint.PartInfo> parts = new List<EntityBlueprint.PartInfo>();
 		if(!editorMode)
 		{
