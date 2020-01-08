@@ -59,10 +59,12 @@ public class BackgroundScript : MonoBehaviour {
         }
     }
 
+    Rect pixelRect;
     // Use this for initialization
     void Build()
     {
         if(active) {
+            pixelRect = Camera.main.pixelRect;
             if(transform.Find("Tile Holder")) Destroy(transform.Find("Tile Holder").gameObject);
             mcamera = Camera.main.transform;
             tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
@@ -101,8 +103,13 @@ public class BackgroundScript : MonoBehaviour {
     // Update is called once per frame
     void LateUpdate()
     {
-        if(active)
+        if(active) {
+            if(Camera.main.pixelRect != pixelRect)
+            {
+                Restart();
+            } 
             TileUpdate(ingameTiles); // tile update called on tile array
+        }
     }
 
     public void Initialize()
@@ -127,7 +134,7 @@ public class BackgroundScript : MonoBehaviour {
             return;
         }
         if(lastColor == Color.clear) {
-            lastColor = color;
+            bgCol = lastColor = color;
             foreach (GameObject tile in ingameTiles) {
                 tile.GetComponent<SpriteRenderer>().color = color;
             }
@@ -143,6 +150,7 @@ public class BackgroundScript : MonoBehaviour {
                 //ingameTiles[i].GetComponent<SpriteRenderer>().color = color;
             }
         }
+
         bgCol = lastColor = color; 
         // this entire method happens in 1 frame so these are updated even while the renderers are lerping
     }

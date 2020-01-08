@@ -139,8 +139,6 @@ public class TaskManager : MonoBehaviour
             }
         }
 
-        Debug.Log(questCanvases.Count);
-
         // reset all static condition variables
         SectorLimiterNode.LimitedSector = "";
         DestroyEntityCondition.OnUnitDestroyed = null;

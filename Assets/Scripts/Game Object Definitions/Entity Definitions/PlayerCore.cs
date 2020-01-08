@@ -102,7 +102,6 @@ public class PlayerCore : ShellCore {
     {
         if(save.timePlayed != 0) 
         {
-            Debug.Log("test");
             if(save.characters != null && save.characters.Length != 0)
                 SectorManager.instance.characters = save.characters;
             transform.position = save.position;
