@@ -74,7 +74,7 @@ public class Beam : WeaponAbility {
             if(!beamHitPrefab) beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
             if (targetingSystem.GetTarget()) // check and get the weapon target
             {
-                ResourceManager.PlayClipByID("clip_beam", transform.position);
+                AudioManager.PlayClipByID("clip_beam", transform.position);
                 var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
                 // deal instant damage
 

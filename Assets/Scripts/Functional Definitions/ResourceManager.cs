@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Audio;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -37,12 +38,6 @@ public class ResourceManager : MonoBehaviour
 
     public AudioSource playerSource;
     public AudioSource playerMusicSource;
-    public void ChangeSoundVolume(float newVol) {
-        soundVolume = newVol;
-        Instance.playerSource.volume = Instance.playerMusicSource.volume = soundVolume;
-        if(playerSource.GetComponentInChildren<PlayerCore>()) 
-            playerSource.GetComponentInChildren<PlayerCore>().cursave.soundVolume = soundVolume;
-    }
 
     public void Initialize()
     {
@@ -133,49 +128,6 @@ public class ResourceManager : MonoBehaviour
                     }
                 }
             }
-        }
-    }
-
-    
-    public static void PlayClipByID(string ID, Vector3 pos) {
-         AudioSource.PlayClipAtPoint(GetAsset<AudioClip>(ID), pos, 1 * soundVolume);
-    }
-
-    // Plays the clip directly on the player
-    public static void PlayClipByID(string ID, bool clear=false) {
-        if(Instance.playerSource != null) {
-            if(clear) Instance.playerSource.Stop();
-            if(ID != null) Instance.playerSource.PlayOneShot(GetAsset<AudioClip>(ID), 1F * soundVolume);
-            // can pass null just to clear the sound buffer
-        }
-        // TODO: Add audio sources to places that need it
-    }
-    
-    // change this ID to override sector music
-    public static string musicOverrideID;
-
-    // Use for OST
-    public static void PlayMusic(string ID, bool loop=true)
-    {
-        if(Instance.playerMusicSource != null)
-        {
-            Instance.playerMusicSource.loop = loop;
-            var clip = GetAsset<AudioClip>(musicOverrideID != null ? musicOverrideID : ID);
-            if(Instance.playerMusicSource.clip != clip)
-            {
-                Instance.playerMusicSource.clip = clip;
-                Instance.playerMusicSource.Play();
-            }
-        }
-    }
-
-    public static void StopMusic()
-    {
-        if(Instance.playerMusicSource != null && musicOverrideID == null) // ensure no override
-        {
-            Instance.playerMusicSource.Stop();
-
-            Instance.playerMusicSource.clip = null; // clear song
         }
     }
 
@@ -284,6 +236,7 @@ public class ResourceManagerEditor : Editor
     SerializedProperty resourcePack;
     SerializedProperty playerSource;
     SerializedProperty playerMusicSource;
+    SerializedProperty masterVolume;
     ResourceManager manager;
     private void OnEnable()
     {
@@ -293,8 +246,6 @@ public class ResourceManagerEditor : Editor
         resourcePack = serializedObject.FindProperty("resourcePack");
         IDField = serializedObject.FindProperty("fieldID");
         ObjectField = serializedObject.FindProperty("newObject");
-        playerSource = serializedObject.FindProperty("playerSource");
-        playerMusicSource = serializedObject.FindProperty("playerMusicSource");
     }
 
     public override void OnInspectorGUI()
@@ -306,12 +257,6 @@ public class ResourceManagerEditor : Editor
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("The #1 choice for ALL ShellCore asset injections!");
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.PropertyField(playerSource, new GUIContent("Player Audio Source: "));
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.PropertyField(playerMusicSource, new GUIContent("Player Music Source: "));
         EditorGUILayout.EndHorizontal();
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(resourcePack, new GUIContent("Resource pack: "));

@@ -591,11 +591,11 @@ public class SectorManager : MonoBehaviour
     {
         if(current.hasMusic)
         {
-            ResourceManager.PlayMusic(current.musicID);
+            AudioManager.PlayMusic(current.musicID);
         }
         else 
         {
-            ResourceManager.StopMusic();
+            AudioManager.StopMusic();
         }
     }
 

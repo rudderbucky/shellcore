@@ -53,7 +53,7 @@ public class SpeedThrust : ActiveAbility
             }
             else activated = false;
         } // change engine power
-        ResourceManager.PlayClipByID("clip_activateability", transform.position);
+        AudioManager.PlayClipByID("clip_activateability", transform.position);
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
         ToggleIndicator();

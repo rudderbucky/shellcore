@@ -554,8 +554,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	public void CloseUI(bool validClose) {
-		if(!validClose) ResourceManager.PlayClipByID("clip_back");
-		else ResourceManager.PlayClipByID("clip_select");
+		if(!validClose) AudioManager.PlayClipByID("clip_back");
+		else AudioManager.PlayClipByID("clip_select");
 		initialized = false;
 		player.SetIsInteracting(false);
 		gameObject.SetActive(false);

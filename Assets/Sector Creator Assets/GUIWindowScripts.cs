@@ -14,7 +14,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 	public bool playSoundOnClose = true;
 	public virtual void CloseUI() {
 		if(transform.parent.gameObject.activeSelf) {
-			if(playSoundOnClose) ResourceManager.PlayClipByID("clip_back", true);
+			if(playSoundOnClose) AudioManager.PlayClipByID("clip_back", true);
 			transform.parent.gameObject.SetActive(false);
 		}
 	}

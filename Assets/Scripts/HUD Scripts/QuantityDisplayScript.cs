@@ -41,11 +41,11 @@ public class QuantityDisplayScript : MonoBehaviour {
                 bg1.color = new Color32((byte)255,(byte)255,(byte)255,(byte)216);
                 bg2.color = new Color32(0,0,0,(byte)216);
                 Entity ent = player.GetTargetingSystem().GetTarget().GetComponent<Entity>();
-                description = ent.Terrain + " ";
-                description += ent.category;
+                description = (ent.Terrain + " ").ToUpper();
+                description += (ent.category + "").ToUpper();
                 ob[2].text = ent.entityName;
-                ob[0].text = description;
-                ob[1].text = "Distance: " + (int)(ent.transform.position - player.transform.position).magnitude;
+                ob[0].text = description.ToUpper();
+                ob[1].text = "Distance: ".ToUpper() + (int)(ent.transform.position - player.transform.position).magnitude;
                 ob[0].color = ob[1].color = ob[2].color = FactionColors.colors[ent.faction];
             } else {
                 ob[0].text = ob[1].text = ob[2].text = "";

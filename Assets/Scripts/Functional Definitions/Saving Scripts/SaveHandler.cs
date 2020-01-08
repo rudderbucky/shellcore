@@ -54,8 +54,6 @@ public class SaveHandler : MonoBehaviour {
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
-
-			ResourceManager.Instance.ChangeSoundVolume(save.soundVolume);
 		} else {
 			save = new PlayerSave();
 			save.presetBlueprints = new string[5];

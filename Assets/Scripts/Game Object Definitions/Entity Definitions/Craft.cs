@@ -77,7 +77,7 @@ public abstract class Craft : Entity
         */
         instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
         instantiatedRespawnPrefab.position = transform.position;
-        ResourceManager.PlayClipByID("clip_respawn", transform.position);
+        AudioManager.PlayClipByID("clip_respawn", transform.position);
     }
 
     public float GetEnginePower() {

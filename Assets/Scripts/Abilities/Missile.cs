@@ -28,7 +28,7 @@ public class Missile : WeaponAbility {
         if(Core.RequestGCD()) {
             if (targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponent<IDamageable>() != null) // check if there is actually a target, do not fire if there is not
             {
-                ResourceManager.PlayClipByID("clip_bullet2", transform.position);
+                AudioManager.PlayClipByID("clip_bullet2", transform.position);
                 if(missilePrefab == null)
                     missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
                 var missile = Instantiate(missilePrefab, transform.position, Quaternion.identity);

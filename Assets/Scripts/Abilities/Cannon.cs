@@ -32,7 +32,7 @@ public class Cannon : WeaponAbility {
             if(!effectPrefab) effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
             if (targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not
             {
-                ResourceManager.PlayClipByID("clip_cannon", transform.position);
+                AudioManager.PlayClipByID("clip_cannon", transform.position);
                 FireCannon(targetingSystem.GetTarget().GetComponent<Entity>()); // fire if there is
                 isOnCD = true; // set on cooldown
                 return true;

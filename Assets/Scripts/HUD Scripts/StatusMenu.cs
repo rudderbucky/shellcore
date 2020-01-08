@@ -10,7 +10,7 @@ public class StatusMenu : GUIWindowScripts {
 	public static Task[] taskInfo = new Task[0];
 	public override void CloseUI()
 	{
-		ResourceManager.PlayClipByID("clip_back");
+		AudioManager.PlayClipByID("clip_back");
 		for(int i = 0; i < transform.childCount; i++)
 		{
 			transform.GetChild(0).gameObject.SetActive(false);
@@ -18,7 +18,7 @@ public class StatusMenu : GUIWindowScripts {
 		toggle = false;
 	}
 	void Initialize() {
-		ResourceManager.PlayClipByID("clip_select");
+		AudioManager.PlayClipByID("clip_select");
 		PlayerViewScript.SetCurrentWindow(this);
 		GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
 		playerName.text = "<color=yellow>" + player.cursave.name + "</color>";
@@ -34,7 +34,7 @@ public class StatusMenu : GUIWindowScripts {
 			if(toggle) 
 			{
 				Initialize();
-			} else ResourceManager.PlayClipByID("clip_back");
+			} else AudioManager.PlayClipByID("clip_back");
 			for(int i = 0; i < transform.childCount; i++)
 			{
 				transform.GetChild(0).gameObject.SetActive(toggle);

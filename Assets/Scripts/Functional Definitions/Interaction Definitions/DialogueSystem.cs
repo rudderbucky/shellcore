@@ -120,7 +120,7 @@ public class DialogueSystem : MonoBehaviour
         buttons = new GameObject[1];
         buttons[0] = button.gameObject;
         if(speaker)
-            ResourceManager.PlayClipByID("clip_typing");
+            AudioManager.PlayClipByID("clip_typing");
     }
 
     public static void ShowBattleResults(bool victory) {
@@ -173,7 +173,7 @@ public class DialogueSystem : MonoBehaviour
         }
 
         if(speaker)
-            ResourceManager.PlayClipByID("clip_typing");
+            AudioManager.PlayClipByID("clip_typing");
         // change text
         text = node.text.Replace("<br>", "\n");
         characterCount = 0;
@@ -218,9 +218,9 @@ public class DialogueSystem : MonoBehaviour
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
-        ResourceManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
+        AudioManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
                                                      // so cover for its noise here
-        ResourceManager.PlayClipByID("clip_typing", false);
+        AudioManager.PlayClipByID("clip_typing", false);
         // change text
         text = node.dialogueText.Replace("<br>", "\n");
         characterCount = 0;
@@ -401,7 +401,7 @@ public class DialogueSystem : MonoBehaviour
         window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
         window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
 
-        ResourceManager.PlayClipByID("clip_typing");
+        AudioManager.PlayClipByID("clip_typing");
         // change text
         text = current.text.Replace("<br>", "\n");
         characterCount = 0;
@@ -430,7 +430,7 @@ public class DialogueSystem : MonoBehaviour
             });
             if(dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit) {
                 button.GetComponent<Button>().onClick.AddListener(()=> {
-                    ResourceManager.PlayClipByID("clip_select", true); 
+                    AudioManager.PlayClipByID("clip_select", true); 
                     // need condition to ensure no sound clashes occur
                 });
             }

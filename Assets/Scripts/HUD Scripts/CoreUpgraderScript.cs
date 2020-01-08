@@ -31,7 +31,7 @@ public class CoreUpgraderScript : GUIWindowScripts
         ShardCountScript.StickySlideOut();
         player.SetIsInteracting(false);
         gameObject.SetActive(false);
-        ResourceManager.PlayClipByID("clip_back");
+        AudioManager.PlayClipByID("clip_back");
     }	
     
     public static void DrawScreen() {

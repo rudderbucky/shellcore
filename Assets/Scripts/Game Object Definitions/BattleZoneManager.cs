@@ -46,14 +46,14 @@ public class BattleZoneManager : MonoBehaviour
                 foreach(Entity ent in targets) {
                     if(ent as PlayerCore) {
                         if(ent.faction == winningFaction) {
-                            ResourceManager.PlayClipByID("clip_victory");
+                            AudioManager.PlayClipByID("clip_victory");
                             //ResourceManager.PlayClipByID("clip_victory", ent.transform.position);
 
                             Debug.Log("Faction " + winningFaction + " won!");
                             if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
                                 NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
                         }
-                        else ResourceManager.PlayClipByID("clip_alert");
+                        else AudioManager.PlayClipByID("clip_alert");
                     }
                 }
                 DialogueSystem.ShowBattleResults(winningFaction == 0);

@@ -42,21 +42,21 @@ namespace NodeEditorFramework.Standard
             if (defaultMusic)
             {
                 
-                ResourceManager.musicOverrideID = null;
+                AudioManager.musicOverrideID = null;
                 if (!SectorManager.instance.current.hasMusic || SectorManager.instance.current.musicID == "")
                 {
                     Debug.Log("Jazz music stops.");
-                    ResourceManager.StopMusic();
+                    AudioManager.StopMusic();
                 }
                 else
                 {
-                    ResourceManager.PlayMusic(SectorManager.instance.current.musicID);
+                    AudioManager.PlayMusic(SectorManager.instance.current.musicID);
                 }
             }
             else
             {
-                ResourceManager.musicOverrideID = musicID;
-                ResourceManager.PlayMusic(musicID);
+                AudioManager.musicOverrideID = musicID;
+                AudioManager.PlayMusic(musicID);
             }
             return 0;
         }

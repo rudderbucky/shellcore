@@ -23,5 +23,4 @@ public class PlayerSave {
 	public int shards;
 	public WorldData.CharacterData[] characters;
 	public List<string> sectorsSeen;
-	public float soundVolume = 1;
 }

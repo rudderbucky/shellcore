@@ -41,7 +41,7 @@ public class EnergySphereScript : MonoBehaviour {
     {
         if (collision.GetComponent<IHarvester>() != null)
         {
-            ResourceManager.PlayClipByID("clip_powerup", transform.position);
+            AudioManager.PlayClipByID("clip_powerup", transform.position);
             collision.GetComponent<IHarvester>().AddPower(20);
             Destroy(gameObject);
         }

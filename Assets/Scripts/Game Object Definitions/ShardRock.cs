@@ -108,7 +108,7 @@ public class ShardRock : MonoBehaviour, IDamageable
         foreach(SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>()) {
             renderer.enabled = false;
         }
-        ResourceManager.PlayClipByID("clip_explosion1", transform.position);
+        AudioManager.PlayClipByID("clip_explosion1", transform.position);
         GameObject tmp = Instantiate(explosionCirclePrefab); // instantiate circle explosion
         tmp.SetActive(true);
         tmp.transform.SetParent(transform, false);

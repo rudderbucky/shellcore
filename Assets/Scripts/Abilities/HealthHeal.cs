@@ -58,7 +58,7 @@ public class HealthHeal : Ability
     {
         if (Core.GetHealth()[(int)type] < Core.GetMaxHealth()[(int)type]) 
         {
-            ResourceManager.PlayClipByID("clip_healeffect", transform.position);
+            AudioManager.PlayClipByID("clip_healeffect", transform.position);
             switch (type)
             {
                 case HealingType.core:
