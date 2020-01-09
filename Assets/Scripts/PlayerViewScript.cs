@@ -32,7 +32,10 @@ public class PlayerViewScript : MonoBehaviour {
 				bool shouldReturn = currentWindow.Peek().Equals(null) ? false : currentWindow.Peek().GetActive();
 				
 				if(shouldReturn) {
-					currentWindow.Pop().CloseUI();
+					var window = currentWindow.Pop();
+					window.CloseUI();
+					if(window.GetOnCancelled() != null) 
+						window.GetOnCancelled().Invoke();
 					return;
 				} else currentWindow.Pop();
 			}

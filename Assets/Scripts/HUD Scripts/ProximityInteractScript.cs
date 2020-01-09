@@ -27,10 +27,7 @@ public class ProximityInteractScript : MonoBehaviour {
 		{
 			closest = null; // get the closest entity
 			foreach(Entity ent in AIData.entities) {
-				// ignore non vendors or non yards
-				// TODO: Fix this so it doesn't work for specific entities in other factions (eg outposts/bunkers)
-				// instead of the blanket faction fix that is employed currently
-				if(ent == player || ent.dialogue == null || ent.faction != player.faction || ent.GetIsDead() || ent == null) continue;
+				if(ent == player || ent == null || ent.GetIsDead() || !ent.GetInteractible()) continue;
 				if(closest == null) closest = ent;
 				else if((ent.transform.position - player.transform.position).sqrMagnitude <= 
 					(closest.transform.position - player.transform.position).sqrMagnitude) 

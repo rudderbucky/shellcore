@@ -18,7 +18,6 @@ public class HUDScript : MonoBehaviour {
         InfoText[] infos = GetComponentsInChildren<InfoText>();
         player.alerter = infos[0];
         GetComponentInChildren<ProximityInteractScript>().player = player;        
-        if(GetComponentInChildren<HUDArrowScript>()) GetComponentInChildren<HUDArrowScript>().Initialize(player);
         GetComponentInChildren<MinimapArrowScript>().Initialize(player);
     }
     /// <summary>

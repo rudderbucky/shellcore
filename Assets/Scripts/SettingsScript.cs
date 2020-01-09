@@ -17,9 +17,10 @@ public class SettingsScript : MonoBehaviour {
 	public Toggle windowedMode;
 
 	void Start() {
-		HUDArrowScriptToggle.isOn = HUDArrowScript.active;
-		BackgroundScriptToggle.isOn = BackgroundScript.active;
-		RectangleEffectScriptToggle.isOn = RectangleEffectScript.active;
+		// get playerpref values and configure toggles and sliders based on them
+		HUDArrowScriptToggle.isOn = PlayerPrefs.GetString("HUDArrowScript_active", "False") == "True";
+		BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
+		RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";;
 		masterSoundSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.75f);
 		musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
 		soundSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
@@ -65,5 +66,23 @@ public class SettingsScript : MonoBehaviour {
 		#else
 		Screen.SetResolution(resolutions[index].Item1, resolutions[index].Item2, Screen.fullScreenMode, 0);
 		#endif
+	}
+
+	public void ChangeHUDArrowScriptActive(bool val)
+	{
+		PlayerPrefs.SetString("HUDArrowScript_active", val + "");
+		HUDArrowScript.SetActive(val);
+	}
+
+	public void ChangeBackgroundScriptActive(bool val)
+	{
+		PlayerPrefs.SetString("BackgroundScript_active", val + "");
+		BackgroundScript.SetActive(val);
+	}
+
+	public void ChangeRectangleEffectScriptActive(bool val)
+	{
+		PlayerPrefs.SetString("RectangleEffectScript_active", val + "");
+		RectangleEffectScript.SetActive(val);
 	}
 }

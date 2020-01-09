@@ -99,6 +99,7 @@ public class ReticleScript : MonoBehaviour {
             if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft) 
                 // if it is not null, dead or the player itself
             {
+                // TODO: synchronize this with the proximity script
                 if (!craft.GetIsInteracting() && targSys.GetTarget() == curTarg.GetTransform()
                     && (curTarg.GetTransform().position - craft.transform.position).sqrMagnitude < 100) //Interact with entity
                 {

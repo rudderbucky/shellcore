@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class SectorCreatorShellCoreEditor : MonoBehaviour, IWindow {
@@ -50,5 +51,10 @@ public class SectorCreatorShellCoreEditor : MonoBehaviour, IWindow {
     {
 		AudioManager.PlayClipByID("clip_back");
         window.SetActive(false);
+    }
+
+    public UnityEvent GetOnCancelled()
+    {
+        return null;
     }
 }

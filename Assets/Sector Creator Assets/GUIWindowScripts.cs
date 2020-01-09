@@ -2,16 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems; // Required when using Event data.
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 public interface IWindow {
 	void CloseUI();
 	bool GetActive();
+	UnityEvent GetOnCancelled();
 }
 public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPointerUpHandler {
 
 	Vector2 mousePos;
 	bool selected;
 	public bool playSoundOnClose = true;
+	public UnityEvent OnCancelled = new UnityEvent();
+
+	public UnityEvent GetOnCancelled()
+	{
+		return OnCancelled;
+	}
 	public virtual void CloseUI() {
 		if(transform.parent.gameObject.activeSelf) {
 			if(playSoundOnClose) AudioManager.PlayClipByID("clip_back", true);

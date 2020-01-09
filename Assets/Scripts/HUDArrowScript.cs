@@ -6,25 +6,33 @@ using UnityEngine.Rendering;
 public class HUDArrowScript : MonoBehaviour {
 
 	public PlayerCore player;
-	private SpriteRenderer spr;
+	public SpriteRenderer spr;
 	public static bool active = false;
+	static HUDArrowScript instance;
 	public bool init;
 	// TODO: fix bug where arrow is disabled initially even though it was enabled in the main menu
 	public void Initialize(PlayerCore player) {
 		if(active) {
-		spr = GetComponent<SpriteRenderer>();
-		this.player = player;
-		init = true;
+			this.player = player;
+			init = true;
 		}
 	}
+
+	void Awake()
+	{
+		instance = this;
+		active = PlayerPrefs.GetString("HUDArrowScript_active", "False") == "True";
+		Initialize(player);
+	}
 	
-	public void SetActive(bool act) {
+	public static void SetActive(bool act) {
 		active = act;
+		if(instance && act && instance.player) instance.Initialize(instance.player);
 	}
 	// Update is called once per frame
 	void Update () {
 		if(player) {
-			if(player.GetTargetingSystem().GetTarget()) {
+			if(active && player.GetTargetingSystem().GetTarget()) {
 				Vector3 targpos = player.GetTargetingSystem().GetTarget().position;
 				Vector3 viewpos = Camera.main.WorldToViewportPoint(targpos);
 				if(viewpos.x > 1 || viewpos.x < 0 || viewpos.y < 0 || viewpos.y > 1) {

@@ -9,10 +9,14 @@ public class RectangleEffectScript : MonoBehaviour {
 
     public ParticleSystem partSys; // particle system that stores the particles
     private Vector3 displacement; // used to wrap particles around
-
-
     public static bool active = true;
-    public void SetActive(bool act) {
+    bool built = false;
+
+    void Awake()
+    {
+        active = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";
+    }
+    public static void SetActive(bool act) {
         active = act;
     }
 
@@ -31,6 +35,7 @@ public class RectangleEffectScript : MonoBehaviour {
         transform.position = Camera.main.GetComponent<RectTransform>().anchoredPosition;
         transform.position -= new Vector3(0,0,transform.position.z);
         partSys.Emit(25);
+        built = true;
     }
 
     /// <summary>
@@ -76,10 +81,15 @@ public class RectangleEffectScript : MonoBehaviour {
     void FixedUpdate()
     {
         if(active) {
+            if(!built) Build();
             ParticleSystem.Particle[] particles = new ParticleSystem.Particle[25]; // constantly update particle array, room for optimization here
             partSys.GetParticles(particles); // get particles
             ParticleUpdate(particles);
             partSys.SetParticles(particles, 25); // set particles
+        } else 
+        {
+            built = false;
+            if(partSys) partSys.Clear();
         }
     }
 }

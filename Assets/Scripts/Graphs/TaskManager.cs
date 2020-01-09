@@ -26,6 +26,14 @@ public class TaskManager : MonoBehaviour
 
     public static string speakerName;
 
+    // objective locations for visualization of tasks in the main map and minimap
+    public class ObjectiveLocation 
+    {
+        public Vector2 location;
+        public bool exactLocation;
+    }
+
+    public static List<ObjectiveLocation> objectiveLocations = new List<ObjectiveLocation>();
     public static Entity GetSpeaker() {
         var speakerObj = SectorManager.instance.GetObject(speakerName);
         return speakerObj?.GetComponent<Entity>();

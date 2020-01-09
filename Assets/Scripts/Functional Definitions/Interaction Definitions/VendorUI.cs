@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public interface IVendor
@@ -172,5 +173,10 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             if(GetActive()) CloseUI();
             ClearVendor();
         }
+    }
+
+    public UnityEvent GetOnCancelled()
+    {
+        return null;
     }
 }

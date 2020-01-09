@@ -16,9 +16,17 @@ public class BackgroundScript : MonoBehaviour {
     private GameObject[] ingameTiles; // array of generated tiles
     public static bool active = true;
     public static Color bgCol;
-    
-    public void SetActive(bool act) {
+    private static BackgroundScript instance;
+
+    public void Awake()
+    {
+        instance = this;
+        active = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
+    }
+
+    public static void SetActive(bool act) {
         active = act;
+        if(instance) instance.Restart();
     }
 
     /// <summary>
@@ -118,8 +126,8 @@ public class BackgroundScript : MonoBehaviour {
     }
 
     public void Restart() {
+        if(GameObject.Find("Tile Holder")) Destroy(GameObject.Find("Tile Holder"));
         if(active) {
-            if(GameObject.Find("Tile Holder")) Destroy(GameObject.Find("Tile Holder"));
             Build();
             setColor(bgCol);
         }

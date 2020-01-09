@@ -67,6 +67,23 @@ public class Entity : MonoBehaviour, IDamageable {
     TerrainType terrain = TerrainType.Unset;
     public TerrainType Terrain { get { return terrain; } protected set { terrain = value; } }
 
+    // boolean used to check if proximity and reticle interactions should trigger for this entity
+    private bool interactible = false;
+    
+    public void UpdateInteractible()
+    {
+        interactible = GetDialogue() && (faction == 0); 
+
+        // this is an implication, not a biconditional; interactibility is not necessarily false if there is no
+        // task override. Hence the if statement is needed here
+        if(TaskManager.interactionOverrides.ContainsKey(name)) interactible = true;
+    }
+
+    public bool GetInteractible()
+    {
+        return interactible;
+    }
+
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
     /// </summary>
@@ -291,6 +308,9 @@ public class Entity : MonoBehaviour, IDamageable {
             }
         }
 
+        // check to see if the entity is interactible
+        if(dialogue && faction == 0) interactible = true;
+
         Transform shellSprite = shell.transform;
         if(shellSprite)
         {
@@ -310,7 +330,8 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Helper method for death animation and state changing
     /// </summary>
     protected virtual void OnDeath() {
-        // set death and immobility
+        // set death, interactibility and immobility
+        interactible = false;
         isDead = true;
         SetIntoCombat();
         deathTimer = 0; // reset death timer
@@ -438,6 +459,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// </summary>
     protected void TickState() {
         DeathHandler();
+        UpdateInteractible();
         if (isDead) // if the craft is dead
         {
             GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite

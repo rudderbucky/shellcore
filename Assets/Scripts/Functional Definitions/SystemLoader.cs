@@ -19,8 +19,6 @@ public class SystemLoader : MonoBehaviour
 
         if (resourceManager)
             resourceManager.Initialize();
-        if (backgroundScript)
-            backgroundScript.Initialize();
         if (sectorManager)
             sectorManager.Initialize();
         if (taskManager)

@@ -12,6 +12,5 @@ public class SFXHandler : MonoBehaviour {
 	public void Initialize() {
 		rect1.Start();
 		rect2.Start();
-		if(player) hUDArrow.Initialize(player);
 	}
 }

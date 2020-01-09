@@ -87,6 +87,7 @@ public class DialogueSystem : MonoBehaviour
             endDialogue();
             // ResourceManager.PlayClipByID("clip_select", false);
         });
+        window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
@@ -157,6 +158,7 @@ public class DialogueSystem : MonoBehaviour
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
             endDialogue(0);
         });
+        window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
@@ -215,6 +217,7 @@ public class DialogueSystem : MonoBehaviour
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
             endDialogue(0);
         });
+        window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
@@ -261,7 +264,7 @@ public class DialogueSystem : MonoBehaviour
 
                 abilityIcon.sprite = AbilityUtilities.GetAbilityImageByID(node.partAbilityID, null);
                 tierIcon.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + Mathf.Clamp(node.partTier, 1, 3));
-                type.text = AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null);
+                type.text = AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null) + (node.partTier > 0 ? " " + node.partTier : "");
                 string description = "";
                 description += AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null) + (node.partTier > 0 ? " " + node.partTier : "") + "\n";
                 description += AbilityUtilities.GetDescriptionByID(node.partAbilityID, node.partTier, null);
@@ -317,6 +320,7 @@ public class DialogueSystem : MonoBehaviour
         window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
+        window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
@@ -456,7 +460,7 @@ public class DialogueSystem : MonoBehaviour
     private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
         window.playSoundOnClose = soundOnClose;
-        window.ToggleActive();
+        window.CloseUI();
         Destroy(window.transform.root.gameObject);
         if (OnDialogueEnd != null)
         {
