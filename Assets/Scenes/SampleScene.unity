@@ -2451,6 +2451,8 @@ MonoBehaviour:
   player: {fileID: 2068204864}
   shellcoreFont: {fileID: 12800000, guid: 4208356bba9571349a1eb00b0488f178, type: 3}
   gridSprite: {fileID: 21300000, guid: 5d62b644968ff3a499148343d990a485, type: 3}
+  mapArrowPrefab: {fileID: 994863818515969349, guid: 1ba56e163e8d8674d9a0e6d8e408a7a5,
+    type: 3}
 --- !u!222 &293411815
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2634,7 +2636,7 @@ Transform:
   - {fileID: 992697191}
   - {fileID: 618609700}
   - {fileID: 1885682535}
-  - {fileID: 845882947}
+  - {fileID: 1483899758}
   - {fileID: 1725152188931272534}
   - {fileID: 130642047}
   - {fileID: 1243930055}
@@ -2976,6 +2978,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playSoundOnClose: 1
+  OnCancelled:
+    m_PersistentCalls:
+      m_Calls: []
   yardPosition: {x: 0, y: 0, z: 0}
   cursorScript: {fileID: 1755223052}
   smallContents: {fileID: 1374824259}
@@ -7315,101 +7320,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 791875252}
   m_CullTransparentMesh: 0
---- !u!1 &845882946
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 845882947}
-  - component: {fileID: 845882948}
-  - component: {fileID: 845882949}
-  m_Layer: 8
-  m_Name: Minimap Distance Marker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &845882947
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 845882946}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 8, y: 8, z: 8}
-  m_Children: []
-  m_Father: {fileID: 305617547}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &845882948
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 845882946}
-  m_Enabled: 0
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RenderingLayerMask: 4294967295
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 461a906e8fb6d6d44a77b03729b55822, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 0.55, y: 0.41}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
---- !u!114 &845882949
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 845882946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c5eebb24d4ced04ba594262c7781089, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minicam: {fileID: 49778933}
 --- !u!1 &846613836
 GameObject:
   m_ObjectHideFlags: 0
@@ -10489,6 +10399,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playSoundOnClose: 1
+  OnCancelled:
+    m_PersistentCalls:
+      m_Calls: []
   player: {fileID: 1878101311}
   playerName: {fileID: 2011220757}
 --- !u!1 &1163400261
@@ -12390,6 +12303,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playSoundOnClose: 1
+  OnCancelled:
+    m_PersistentCalls:
+      m_Calls: []
   player: {fileID: 1878101311}
   optionPrefab: {fileID: 3893183569616339346, guid: ca05020d5e1929c47b38049a5c0b8e27,
     type: 3}
@@ -13425,6 +13341,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1480356424}
   m_CullTransparentMesh: 0
+--- !u!1 &1483899757
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1483899758}
+  - component: {fileID: 1483899759}
+  m_Layer: 8
+  m_Name: Minimap Markers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1483899758
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483899757}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 305617547}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1483899759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483899757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5eebb24d4ced04ba594262c7781089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minicam: {fileID: 49778933}
+  arrowPrefab: {fileID: 848204332458699838, guid: 9fc5277df0d80d64992c77b42c170bea,
+    type: 3}
 --- !u!1 &1486611425
 GameObject:
   m_ObjectHideFlags: 0
@@ -16828,6 +16790,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playSoundOnClose: 1
+  OnCancelled:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!224 &1885682460
 RectTransform:
   m_ObjectHideFlags: 0

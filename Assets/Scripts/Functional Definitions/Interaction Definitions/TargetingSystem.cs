@@ -42,6 +42,7 @@ public class TargetingSystem {
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
+                if(!AIData.entities[i]) continue;
                 if (AIData.entities[i].transform == parent)
                     continue;
                 if (parent.GetComponent<Entity>().faction == AIData.entities[i].faction)

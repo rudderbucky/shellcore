@@ -61,6 +61,7 @@ namespace NodeEditorFramework.Standard
                 savedVariables = new Dictionary<string, int>(TaskManager.Instance.taskVariables);
                 SectorManager.OnSectorLoad = SectorUpdate;
                 StartPoint = this;
+                TryAddObjective();
                 SectorUpdate(SectorManager.instance.current.sectorName);
                 return -1;
             }
@@ -94,6 +95,18 @@ namespace NodeEditorFramework.Standard
         public Dictionary<string,int> GetVariables()
         {
             return savedVariables;
+        }
+
+        void TryAddObjective()
+        {
+            var bounds = SectorManager.GetSectorByName(sectorName).bounds;
+            TaskManager.objectiveLocations.Clear();
+            TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation
+            (
+                new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2), 
+                true
+            ));
+            MapMakerScript.DrawObjectiveLocations();
         }
     }
 }

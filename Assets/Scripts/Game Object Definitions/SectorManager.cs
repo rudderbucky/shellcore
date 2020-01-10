@@ -33,6 +33,17 @@ public class SectorManager : MonoBehaviour
     public Vector2 spawnPoint;
     public WorldData.CharacterData[] characters; // Unity initializes public arrays, remember!
 
+    public static Sector GetSectorByName(string sectorName) 
+    {
+        foreach(var sector in instance.sectors)
+        {
+            if(sector.sectorName == sectorName) return sector;
+        }
+
+        // TODO: handle a null return (not supposed to ever happen)
+        return null;
+    }
+
     public int GetExtraCommandUnits(int faction) {
         stationsCount.Clear();
         foreach(IVendor vendor in stations)
@@ -366,7 +377,13 @@ public class SectorManager : MonoBehaviour
             default:
                 break;
         }
+
         Entity entity = gObj.GetComponent<Entity>();
+        // TODO: These lines should perhaps be moved somewhere inside Entity itself, they need to run before even Awake is called
+        if(!AIData.entities.Contains(entity))
+        {
+            AIData.entities.Add(entity);
+        }
         entity.sectorMngr = this;
         entity.faction = data.faction;
         entity.spawnPoint = data.position;
@@ -422,6 +439,10 @@ public class SectorManager : MonoBehaviour
                             skipTag = true;
                             break;
                         }
+                    }
+                    if(!skipTag && AIData.entities.Contains(obj.Value.GetComponentInChildren<Entity>()))
+                    {
+                        AIData.entities.Remove(obj.Value.GetComponentInChildren<Entity>());
                     }
                 }
                 if(!skipTag)

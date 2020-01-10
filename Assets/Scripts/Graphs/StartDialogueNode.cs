@@ -49,6 +49,7 @@ namespace NodeEditorFramework.Standard
             if (SpeakToEntity)
             {
                 TaskManager.speakerName = EntityName;
+                TryAddObjective();
                 if (TaskManager.interactionOverrides.ContainsKey(EntityName))
                 {
                     TaskManager.interactionOverrides[EntityName] = () => {
@@ -76,6 +77,25 @@ namespace NodeEditorFramework.Standard
 
             EntityName = newName;
             WorldCreatorCursor.selectEntity -= SetEntityName;
+        }
+
+        void TryAddObjective()
+        {
+            foreach(var ent in AIData.entities)
+            {
+                if(!ent) continue;
+                if(ent.entityName == EntityName)
+                {
+                    TaskManager.objectiveLocations.Clear();
+                    TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation(
+                        ent.transform.position,
+                        true,
+                        ent
+                    ));
+                    MapMakerScript.DrawObjectiveLocations();
+                    break;
+                }
+            }
         }
     }
 }

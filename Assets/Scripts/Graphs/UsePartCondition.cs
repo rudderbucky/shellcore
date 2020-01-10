@@ -32,16 +32,25 @@ namespace NodeEditorFramework.Standard
             abilityID = Utilities.RTEditorGUI.IntField("Ability ID: ", abilityID);
         }
 
+        TaskManager.ObjectiveLocation objectiveLocation;
+
         public void Init(int index)
         {
             OnPlayerReconstruct.AddListener(CheckParts);
             State = ConditionState.Listening;
+            TryAddObjective(true);
         }
 
         public void DeInit()
         {
             OnPlayerReconstruct.RemoveListener(CheckParts);
             State = ConditionState.Uninitialized;
+
+            if(TaskManager.objectiveLocations.Contains(objectiveLocation))
+            {
+                TaskManager.objectiveLocations.Remove(objectiveLocation);
+                MapMakerScript.DrawObjectiveLocations();
+            }
         }
 
         public void CheckParts()
@@ -54,6 +63,25 @@ namespace NodeEditorFramework.Standard
                 {
                     State = ConditionState.Completed;
                     connectionKnobs[0].connection(0).body.Calculate();
+                }
+            }
+        }
+
+        void TryAddObjective(bool clear)
+        {
+            foreach(var ent in AIData.entities)
+            {
+                // TODO: Disambiguate name and entityName
+                if(ent.name == "Yard" || ent.entityName == "Yard")
+                {
+                    if(clear) TaskManager.objectiveLocations.Clear();
+                    objectiveLocation = new TaskManager.ObjectiveLocation(
+                        ent.transform.position,
+                        true,
+                        ent
+                    );
+                    TaskManager.objectiveLocations.Add(objectiveLocation);
+                    MapMakerScript.DrawObjectiveLocations();
                 }
             }
         }

@@ -92,15 +92,17 @@ public class WCGeneratorHandler : MonoBehaviour
                     {
                         Debug.Log(item.ID + " is not a character.");
                         ent.ID = ID++ + "";
-                        ent.name = item.obj.name;
                     }
                     else 
                     {
                         // TODO: adjust faction
                         Debug.Log("Character found. Adjusting ID and name");
                         ent.ID = item.ID;
-                        ent.name = item.name;
                     }
+                    // you can choose to give any object a custom name
+                    if(item.name != null && item.name != "")
+                        ent.name = item.name;
+                    else ent.name = item.obj.name;
                     ent.faction = item.faction;
                     ent.position = item.pos;
                     ent.assetID = item.assetID;
@@ -110,12 +112,8 @@ public class WCGeneratorHandler : MonoBehaviour
                     {
                         sectTargetIDS[container].Add(ent.ID);
                         ent.blueprintJSON = item.shellcoreJSON;
-                        ent.name = item.name;
                     }
-                    if(ent.assetID == "flag")
-                    {
-                        ent.name = item.name;
-                    }
+
                     sectEnts[container].Add(ent);
                     break;   
                 default:

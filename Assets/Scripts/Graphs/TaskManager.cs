@@ -31,6 +31,13 @@ public class TaskManager : MonoBehaviour
     {
         public Vector2 location;
         public bool exactLocation;
+        public Entity followEntity;
+        public ObjectiveLocation(Vector2 location, bool exactLocation, Entity followEntity = null)
+        {
+            this.location = location;
+            this.exactLocation = exactLocation;
+            this.followEntity = followEntity;
+        }
     }
 
     public static List<ObjectiveLocation> objectiveLocations = new List<ObjectiveLocation>();
@@ -47,6 +54,17 @@ public class TaskManager : MonoBehaviour
         }
         Instance = this;
         initCanvases();
+    }
+
+    void Update()
+    {
+        foreach(var loc in objectiveLocations)
+        {
+            if(loc.followEntity)
+            {
+                loc.location = loc.followEntity.transform.position;
+            }
+        }
     }
 
     // TODO: add ability to set multiple paths

@@ -18,9 +18,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	int sectorCount = 0;
 	int minX = int.MaxValue;
 	int maxY = int.MinValue;
+	public GameObject mapArrowPrefab;
 	// Use this for initialization
+	static MapMakerScript instance;
+
 	void OnEnable() 
 	{
+		instance = this;
 		playerCore = player.GetComponent<PlayerCore>();
 		Draw();
 	}
@@ -32,6 +36,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
 	// this is an arbitrary number, sets the size of the grid
 	int const3 = 2000;
+
+	Dictionary<TaskManager.ObjectiveLocation, RectTransform> arrows = new Dictionary<TaskManager.ObjectiveLocation, RectTransform>();
 	void Draw()
 	{
 		Image img = new GameObject().AddComponent<Image>();
@@ -79,6 +85,32 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				body.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
 			}
 		}
+
+		// draw objective locations
+		DrawObjectiveLocations();
+	}
+
+	// Draw arrows signifying objective locations. Do not constantly call this method.
+	public static void DrawObjectiveLocations()
+	{
+		if(instance)
+		{
+			// clear the dictionary, then recreate the arrows
+			foreach(var rectTransform in instance.arrows.Values)
+			{
+				if(rectTransform && rectTransform.gameObject) Destroy(rectTransform.gameObject);
+			}
+			instance.arrows.Clear();
+
+			foreach(var loc in TaskManager.objectiveLocations)
+			{
+				var arrow = Instantiate(instance.mapArrowPrefab, instance.transform, false);
+				instance.arrows.Add(loc, arrow.GetComponent<RectTransform>());
+				arrow.GetComponent<RectTransform>().anchoredPosition = 
+					new Vector2(loc.location.x - instance.minX, loc.location.y - instance.maxY) / instance.zoomoutFactor;
+			}
+		}
+		
 	}
 
 	RectTransform canvas;
@@ -116,6 +148,10 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			canvas.anchoredPosition = new Vector2(-player.position.x + minX, maxY - player.position.y) / zoomoutFactor + greenBox.anchoredPosition;
 		}
 
+		foreach(var objective in arrows.Keys)
+		{
+			arrows[objective].anchoredPosition = new Vector2(objective.location.x - minX, objective.location.y - maxY) / zoomoutFactor;
+		}
 	}
 
 	void PollFollowPlayer()

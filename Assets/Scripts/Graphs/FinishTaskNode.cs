@@ -115,7 +115,27 @@ namespace NodeEditorFramework.Standard
                     TaskManager.interactionOverrides.Remove(rewardGiverName);
                 });
             }
+            TaskManager.speakerName = rewardGiverName;
+            TryAddObjective();
+
             return -1;
         }
+
+        void TryAddObjective()
+		{
+            {
+                if(!ent) continue;
+                if(ent.entityName == rewardGiverName || ent.name == rewardGiverName)
+                {
+                    TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation(
+                        ent.transform.position,
+                        true,
+                        ent
+                    ));
+                    MapMakerScript.DrawObjectiveLocations();
+                    break;
+                }
+            }
+		}
     }
 }

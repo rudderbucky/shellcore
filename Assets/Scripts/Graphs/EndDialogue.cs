@@ -49,6 +49,16 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            foreach(var objectiveLocation in TaskManager.objectiveLocations)
+            {
+                if(objectiveLocation.followEntity.entityName == StartDialogueNode.dialogueStartNode.EntityName)
+                {
+                    TaskManager.objectiveLocations.Remove(objectiveLocation);
+                    MapMakerScript.DrawObjectiveLocations();
+                    break;
+                }
+            }
+
             if(jumpToStart)
             {
                 TaskManager.Instance.setNode(StartDialogueNode.dialogueStartNode);

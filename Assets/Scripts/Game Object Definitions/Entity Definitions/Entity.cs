@@ -398,14 +398,19 @@ public class Entity : MonoBehaviour, IDamageable {
                 "it should be added automatically by setting isDraggable to true!");
         }
 
-        AIData.entities.Add(this);
+        if(!AIData.entities.Contains(this)) 
+        {
+            AIData.entities.Add(this);
+        }
+           
         if(this is IVendor)
             AIData.vendors.Add(this);
     }
 
     protected virtual void OnDestroy()
     {
-        AIData.entities.Remove(this);
+        if(AIData.entities.Contains(this))
+            AIData.entities.Remove(this);
         if (this is IVendor)
             AIData.vendors.Remove(this);
         SectorManager.instance.RemoveObject(name);
