@@ -92,7 +92,7 @@ namespace NodeEditorFramework.Standard
                         true,
                         ent
                     ));
-                    MapMakerScript.DrawObjectiveLocations();
+                    TaskManager.DrawObjectiveLocations();
                     break;
                 }
             }

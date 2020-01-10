@@ -54,7 +54,7 @@ namespace NodeEditorFramework.Standard
                 if(objectiveLocation.followEntity.entityName == StartDialogueNode.dialogueStartNode.EntityName)
                 {
                     TaskManager.objectiveLocations.Remove(objectiveLocation);
-                    MapMakerScript.DrawObjectiveLocations();
+                    TaskManager.DrawObjectiveLocations();
                     break;
                 }
             }

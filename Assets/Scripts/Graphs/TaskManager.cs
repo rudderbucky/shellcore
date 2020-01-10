@@ -276,4 +276,10 @@ public class TaskManager : MonoBehaviour
             currentNodes[0] = currentNodes[0].outputKnobs[outputIndex].connections[0].body;
         }
     }
+
+    public static void DrawObjectiveLocations()
+    {
+        MapMakerScript.DrawObjectiveLocations();
+        MinimapArrowScript.DrawObjectiveLocations();
+    }
 }

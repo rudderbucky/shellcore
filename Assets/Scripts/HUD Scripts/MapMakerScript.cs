@@ -105,6 +105,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			foreach(var loc in TaskManager.objectiveLocations)
 			{
 				var arrow = Instantiate(instance.mapArrowPrefab, instance.transform, false);
+				arrow.GetComponent<Image>().color = Color.red + Color.green / 2;
 				instance.arrows.Add(loc, arrow.GetComponent<RectTransform>());
 				arrow.GetComponent<RectTransform>().anchoredPosition = 
 					new Vector2(loc.location.x - instance.minX, loc.location.y - instance.maxY) / instance.zoomoutFactor;

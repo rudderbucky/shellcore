@@ -49,7 +49,7 @@ namespace NodeEditorFramework.Standard
             if(TaskManager.objectiveLocations.Contains(objectiveLocation))
             {
                 TaskManager.objectiveLocations.Remove(objectiveLocation);
-                MapMakerScript.DrawObjectiveLocations();
+                TaskManager.DrawObjectiveLocations();
             }
         }
 
@@ -81,7 +81,7 @@ namespace NodeEditorFramework.Standard
                         ent
                     );
                     TaskManager.objectiveLocations.Add(objectiveLocation);
-                    MapMakerScript.DrawObjectiveLocations();
+                    TaskManager.DrawObjectiveLocations();
                 }
             }
         }

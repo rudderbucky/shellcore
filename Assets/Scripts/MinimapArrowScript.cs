@@ -33,8 +33,10 @@ public class MinimapArrowScript : MonoBehaviour {
 			foreach(var loc in TaskManager.objectiveLocations)
 			{
 				var arrow = Instantiate(instance.arrowPrefab, instance.transform, false);
-				instance.arrows.Add(loc, arrow.GetComponent<Transform>());
-				
+				arrow.GetComponent<SpriteRenderer>().color = Color.red + Color.green / 2; // orange
+				arrow.GetComponent<SpriteRenderer>().enabled = true;
+				instance.arrows.Add(loc, arrow.transform);
+				instance.UpdatePosition(arrow.transform, loc.location);
 			}
 		}
 	}
@@ -51,6 +53,9 @@ public class MinimapArrowScript : MonoBehaviour {
 		// demarcates whether the position is off the minimap screent
 		bool xlim = false;
 		bool ylim = false;
+
+		// revert the arrow to default rotation if neither xlim nor ylim was marked is true
+		arrow.transform.eulerAngles = new Vector3(0,0,180);
 
 		// viewport coordinates have their left and right edges at 0 and 1 respectively, beyond that is outside the viewport
 		// if it is outside the viewport we need to adjust the arrow's rotation and position it on the edge, which is being done here
@@ -75,7 +80,7 @@ public class MinimapArrowScript : MonoBehaviour {
 			arrow.transform.eulerAngles = new Vector3(0,0,180);
 			ylim = true;
 		} else arrowpos.y = realPos.y;
-		
+
 		// set the arrow's position, return whether a viewport limit was reached (player target marker uses this)
 		arrow.transform.position = arrowpos;
 		return (xlim || ylim);
@@ -95,6 +100,11 @@ public class MinimapArrowScript : MonoBehaviour {
 		else
 		{
 			playerTargetArrow.GetComponent<SpriteRenderer>().enabled = false;
+		}
+
+		foreach(var loc in arrows.Keys)
+		{
+			UpdatePosition(arrows[loc], loc.location);
 		}
 	}
 }

@@ -128,12 +128,13 @@ namespace NodeEditorFramework.Standard
                 if(!ent) continue;
                 if(ent.entityName == rewardGiverName || ent.name == rewardGiverName)
                 {
+                    TaskManager.objectiveLocations.Clear();
                     TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,
                         ent
                     ));
-                    MapMakerScript.DrawObjectiveLocations();
+                    TaskManager.DrawObjectiveLocations();
                     break;
                 }
             }

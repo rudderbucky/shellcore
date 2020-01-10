@@ -106,7 +106,7 @@ namespace NodeEditorFramework.Standard
                 new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2), 
                 true
             ));
-            MapMakerScript.DrawObjectiveLocations();
+            TaskManager.DrawObjectiveLocations();
         }
     }
 }
