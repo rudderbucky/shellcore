@@ -123,6 +123,7 @@ namespace NodeEditorFramework.Standard
 
         void TryAddObjective()
 		{
+            foreach(var ent in AIData.entities)
             {
                 if(!ent) continue;
                 if(ent.entityName == rewardGiverName || ent.name == rewardGiverName)
