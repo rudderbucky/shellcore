@@ -103,7 +103,19 @@ public class PlayerCore : ShellCore {
         if(save.timePlayed != 0) 
         {
             if(save.characters != null && save.characters.Length != 0)
-                SectorManager.instance.characters = save.characters;
+            {
+                // use the save's characters combined with any new characters in the Sector Manager character set
+                var sectoManagerChars = new List<WorldData.CharacterData>(SectorManager.instance.characters);
+                var newChars = new List<WorldData.CharacterData>(save.characters);
+                foreach(var ch in sectoManagerChars)
+                {
+                    if(newChars.TrueForAll(c => c.ID != ch.ID))
+                    {
+                        newChars.Add(ch);
+                    }
+                }
+                SectorManager.instance.characters = newChars.ToArray();
+            }
             transform.position = save.position;
         }
 

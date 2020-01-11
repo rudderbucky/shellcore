@@ -73,6 +73,27 @@ namespace NodeEditorFramework.Standard
                     }
                 }
             }
+
+            foreach(var data in SectorManager.instance.characters)
+            {
+                if(data.name == entityName)
+                {
+                    Debug.Log("Spawn Entity name given matches with a character name! Spawning character...");
+                    var characterBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                    JsonUtility.FromJsonOverwrite(data.blueprintJSON, characterBlueprint);
+                    Sector.LevelEntity entityData = new Sector.LevelEntity
+                    {
+                        faction = data.faction,
+                        name = data.name,
+                        position = coords,
+                        ID = data.ID,
+                    };
+                    SectorManager.instance.SpawnEntity(characterBlueprint, entityData);
+                    return 0;
+                }
+            }
+
+            Debug.Log("Spawn Entity name ( " + entityName + " ) does not correspond with a character. Performing normal operations.");
             var blueprint = ResourceManager.GetAsset<EntityBlueprint>(blueprintID);
             if (blueprint)
             {

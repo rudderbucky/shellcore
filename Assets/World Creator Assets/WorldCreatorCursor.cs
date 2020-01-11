@@ -75,6 +75,8 @@ public class WorldCreatorCursor : MonoBehaviour
             current.obj.transform.position = current.pos;
         }
 
+        UpdateEntityAppearances();
+
         VisualizeMouseInSector();
 
         if(Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
@@ -121,6 +123,19 @@ public class WorldCreatorCursor : MonoBehaviour
         modeText.color += Color.gray;
     }
 
+    void UpdateEntityAppearances()
+    {
+        foreach(var item in placedItems)
+        {
+            if(item.type == ItemType.Other)
+            {
+                foreach(var rend in item.obj.GetComponentsInChildren<SpriteRenderer>())
+                {
+                    rend.color = FactionColors.colors[item.faction];
+                }
+            }
+        }
+    }
     public Transform spawnPoint;
     bool changingSpawnPoint = false;
     public GUIWindowScripts taskInterface;

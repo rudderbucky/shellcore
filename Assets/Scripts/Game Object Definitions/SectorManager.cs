@@ -153,6 +153,21 @@ public class SectorManager : MonoBehaviour
                         if(player.cursave == null || player.cursave.timePlayed == 0)
                             player.transform.position = player.spawnPoint = spawnPoint;
                         if(characters == null || characters.Length == 0) characters = wdata.defaultCharacters;
+                        else
+                        {
+                            // if there were added characters into the map since the last save, they must be added
+                            // into the existing data
+                            List<WorldData.CharacterData> charList = new List<WorldData.CharacterData>(characters);
+                            foreach(var defaultChar in wdata.defaultCharacters)
+                            {
+                                Debug.Log(defaultChar.ID);
+                                if(!charList.TrueForAll(ch => ch.ID != defaultChar.ID))
+                                {
+                                    charList.Add(defaultChar);
+                                }
+                            }
+                            characters = charList.ToArray();
+                        }
                         continue;
                     }
 
