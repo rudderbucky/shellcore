@@ -11,7 +11,9 @@ namespace NodeEditorFramework.Standard
         public override string GetName { get { return "PopupNode"; } }
         public override string Title { get { return "Popup dialogue"; } }
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, 150); } }
+        float height = 0f;
+
+        public override Vector2 DefaultSize { get { return new Vector2(200, height); } }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -24,12 +26,14 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
+            height = 150f;
             GUILayout.BeginHorizontal();
             input.DisplayLayout();
             output.DisplayLayout();
             GUILayout.EndHorizontal();
             GUILayout.Label("Text:");
             text = GUILayout.TextArea(text);
+            height += GUI.skin.textArea.CalcHeight(new GUIContent(text), 200f);
 
             GUILayout.Label("Color:");
             float r, g, b;
