@@ -25,7 +25,6 @@ public class WorldCreatorCursor : MonoBehaviour
 
     public delegate void FinishPathDelegate(NodeEditorFramework.Standard.PathData path);
     public static FinishPathDelegate finishPath;
-
     public static WorldCreatorCursor instance;
     public ShipBuilder shipBuilder;
     WCPathCreator pathCreator;
@@ -202,12 +201,17 @@ public class WorldCreatorCursor : MonoBehaviour
         }
     }
 
+    public void ActivateShipBuilder()
+    {
+        instance.shipBuilder.Initialize(BuilderMode.Yard);
+        instance.shipBuilder.Activate();
+    }
+
     public int flagID = 0;
     void PollItems() {
         if(Input.GetKeyDown(KeyCode.B))
         {
-            shipBuilder.Initialize(BuilderMode.Yard);
-            shipBuilder.Activate();
+            ActivateShipBuilder();
         }
 
         if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);

@@ -47,6 +47,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public GameObject currentPartHandler;
 	public bool editorMode;
 	public Text titleText;
+	public GameObject editorModeButtons;
+	public static WorldData.CharacterData currentCharacter;
 
 	public BuilderMode GetMode() {
 		return mode;
@@ -167,7 +169,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		switch(status) {
 			case ReconstructButtonStatus.Valid:
 				reconstructImage.color = reconstructText.color = Color.green;
-				reconstructText.text = "RECONSTRUCT";
+				reconstructText.text = editorMode ? "RECONSTRUCT" : "CONFIRM CHARACTER BLUEPRINT";
 				break;
 			case ReconstructButtonStatus.PartInvalidPosition:
 				reconstructImage.color = reconstructText.color = Color.red;
@@ -478,6 +480,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		if(!editorMode)
 		{
+			if(editorModeButtons) editorModeButtons.SetActive(false);
 			if(presetButtons == null || presetButtons.Length == 0) 
 			{
 				presetButtons = GetComponentsInChildren<PresetButton>();
@@ -503,6 +506,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			foreach(PresetButton button in presetButtons) {
 				button.gameObject.SetActive(false);
 			}	
+
+			editorModeButtons.SetActive(true);
 		}
 
 		// set title text
@@ -559,7 +564,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		initialized = false;
 		if(player) player.SetIsInteracting(false);
 		gameObject.SetActive(false);
-		if(validClose) {
+		if(!editorMode && validClose) {
 			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
 			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
 				if(partDict[info].GetCount() > 0) {
@@ -578,7 +583,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			Destroy(part.gameObject);
 		}
 		cursorScript.parts = new List<ShipBuilderPart>();
-		if(!validClose) {
+		if(!editorMode && !validClose) {
 			AbilityHandler handler = player.GetAbilityHandler(); // reset handler to correct representation
 			handler.Deinitialize();
 			handler.Initialize(player);
@@ -597,9 +602,30 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	#if UNITY_EDITOR
-	public static void SaveBlueprint(EntityBlueprint blueprint) {
-		AssetDatabase.CreateAsset(blueprint, "Assets/Blueprints/Entities/Crafts/Air Crafts/Shellcores/SavedPrint.asset");
+	public static void SaveBlueprint(EntityBlueprint blueprint = null, string fileName = null, string json = null) {
+		if(fileName != null) 
+			System.IO.File.WriteAllText(fileName, json);
+		else
+			AssetDatabase.CreateAsset(blueprint, "Assets\\SavedPrint.asset");
 	}
+
+	public void LoadBlueprint(string json) {
+		EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+		JsonUtility.FromJsonOverwrite(json, blueprint);
+		LoadBlueprint(blueprint);
+	}
+
+	public void SavePrintWithPrompt() {
+		var path = UnityEditor.EditorUtility.SaveFilePanel("Save Blueprint", Application.streamingAssetsPath + "\\Entities", 
+			"DefaultPrint", "json");
+		SaveBlueprint(null, path, GetCurrentJSON());
+	}
+
+	public void LoadPrintWithPrompt() {
+		var path = UnityEditor.EditorUtility.OpenFilePanel("Load Blueprint", Application.streamingAssetsPath + "\\Entities", "json");
+		LoadBlueprint(System.IO.File.ReadAllText(path));
+	}
+
 	#endif
 	public InputField inField;
 	public void SetBlueprint() {
@@ -632,17 +658,29 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	public void Export() {
-		player.credits -= cursorScript.buildCost;
-		player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
-		foreach(ShipBuilderPart part in cursorScript.parts) {
-			player.blueprint.parts.Add(part.info);
+		if(!editorMode)
+		{
+			player.credits -= cursorScript.buildCost;
+			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
+			foreach(ShipBuilderPart part in cursorScript.parts) {
+				player.blueprint.parts.Add(part.info);
+			}
+			player.Rebuild();
 		}
-		player.Rebuild();
+
 		#if UNITY_EDITOR
-			if(Input.GetKey(KeyCode.LeftShift)) 
-				SaveBlueprint(player.blueprint);
-        #endif
-        NodeEditorFramework.Standard.UsePartCondition.OnPlayerReconstruct.Invoke();
+		if(editorMode && currentCharacter != null) 
+		{
+			currentCharacter.blueprintJSON = GetCurrentJSON();
+			WCCharacterHandler.ReflectData();
+			
+			// null character so another change doesn't accidentally happen
+			currentCharacter = null;
+		}
+			
+		#endif
+        
+		NodeEditorFramework.Standard.UsePartCondition.OnPlayerReconstruct.Invoke();
 	}
 
 	protected override void Update() {

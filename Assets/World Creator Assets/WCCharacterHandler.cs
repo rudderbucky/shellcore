@@ -73,7 +73,12 @@ public class WCCharacterHandler : MonoBehaviour
         UpdateCharPartyMember();
     }
 
-    public void ReflectData()
+    public static void ReflectData()
+    {
+        instance.reflectData();
+    }
+
+    public void reflectData()
     {
         charID.text = currentData.ID;
         charName.text = currentData.name;
@@ -96,5 +101,11 @@ public class WCCharacterHandler : MonoBehaviour
     {
         currentData = data;
         ReflectData();
+    }
+
+    public void EditCurrentBlueprint()
+    {
+        ShipBuilder.currentCharacter = currentData;
+        cursor.ActivateShipBuilder();
     }
 }

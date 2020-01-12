@@ -19,12 +19,11 @@ public class WCGeneratorHandler : MonoBehaviour
     public WCCharacterHandler characterHandler;
     public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
     public Item characterItem;
-    public void WriteWorld() 
+    public void WriteWorld(string path) 
     {
-        string wName = worldName.text;
-        if(wName == null || wName == "")
+        if(path == null || path == "")
         {
-            Debug.Log("Name your damn world!");
+            Debug.Log("Path your damn world!");
             return;
         }
 
@@ -123,28 +122,28 @@ public class WCGeneratorHandler : MonoBehaviour
         }
         
         // write all sectors into a file
-		if(!System.IO.Directory.Exists(Application.streamingAssetsPath + "\\Sectors\\")) {
-			System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\");
+		if(!System.IO.Directory.Exists(path)) {
+			System.IO.Directory.CreateDirectory(path);
 		}
         
-        if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\Sectors\\" + wName))
+        if(System.IO.Directory.Exists(path))
         {
-            string[] files = System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\Sectors\\" + wName);
+            string[] files = System.IO.Directory.GetFiles(path);
             foreach(var file in files)
             {
                 System.IO.File.Delete(file);
             }
         }
 
-		System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\" + wName);
+		System.IO.Directory.CreateDirectory(path);
 
         // create world data
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         wdata.initialSpawn = cursor.spawnPoint.position;
         wdata.defaultCharacters = cursor.characters.ToArray();
         string wdjson = JsonUtility.ToJson(wdata);
-        System.IO.File.WriteAllText(Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + wName + ".worlddata", wdjson);
-        nodeEditor.ExportData(Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + wName + ".taskdata");        
+        System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
+        nodeEditor.ExportData(path + "\\world.taskdata");        
 
         foreach(var sector in sectors)
         {
@@ -168,11 +167,11 @@ public class WCGeneratorHandler : MonoBehaviour
 
             string output = JsonUtility.ToJson(data);
 
-            string path = Application.streamingAssetsPath + "\\Sectors\\" + wName + "\\" + sector.sectorName + ".json";                
-            System.IO.File.WriteAllText(path, output);
+            string sectorPath = path + "\\" + sector.sectorName + ".json";                
+            System.IO.File.WriteAllText(sectorPath, output);
         }
 
-		Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + wName);
+		Debug.Log("JSON written to location: " + path);
     }
 
     string GetDefaultName(Sector sector, int minX, int maxY)
@@ -229,6 +228,24 @@ public class WCGeneratorHandler : MonoBehaviour
         int col = ((int)pos.x - sector.bounds.x) / (int)cursor.tileSize;
 
         return (row, col);
+    }
+
+    public void WriteWorldFromEditorPrompt()
+    {
+        #if UNITY_EDITOR
+            var str = UnityEditor.EditorUtility.SaveFolderPanel(
+            "Write World (You must create the folder you want to save into) ", 
+            Application.streamingAssetsPath + "\\Sectors", "DefaultWorldName");
+            WriteWorld(str);
+        #endif
+    }
+
+    public void ReadWorldFromEditorPrompt()
+    {
+        #if UNITY_EDITOR
+        var str = UnityEditor.EditorUtility.OpenFolderPanel("Read World (Folder)", Application.streamingAssetsPath + "\\Sectors", "");
+        ReadWorld(str);
+        #endif
     }
 
     public void ReadWorldFromField()
