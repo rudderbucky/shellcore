@@ -35,4 +35,9 @@ public class CharacterButtonScript : MonoBehaviour
         if(cursor.characters.Contains(character)) cursor.characters.Remove(character);
         Destroy(gameObject);
     }
+
+    public void EditCharacter()
+    {
+        WCCharacterHandler.EditCharacter(character);
+    }
 }

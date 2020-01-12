@@ -62,7 +62,7 @@ public class PlayerCore : ShellCore {
 
     protected override void Awake()
     {
-        entityName = "player";
+        name = entityName = "player";
         if (!initialized)
             base.Awake();
         initialized = true;
@@ -82,6 +82,9 @@ public class PlayerCore : ShellCore {
             LoadSave(cursave);
             loaded = true;
         }
+
+        // the player needs a predictable name for task interactions, so its object will always be called this
+        name = entityName = "player";
 	}
 
     public void Rebuild() {
@@ -119,7 +122,7 @@ public class PlayerCore : ShellCore {
             transform.position = save.position;
         }
 
-        name = "player";
+        name = entityName = "player";
         positionBeforeOscillation = transform.position.y;
         if(save.currentHealths.Length < 3)
         {

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class WCCharacterHandler : MonoBehaviour
 {
+    public static WCCharacterHandler instance;
     public WorldCreatorCursor cursor;
     public GameObject buttonPrefab;
     public InputField charID;
@@ -35,20 +36,25 @@ public class WCCharacterHandler : MonoBehaviour
         currentData.partyMember = charPartyMember.isOn;
     }
 
+    void Awake()
+    {
+        instance = this;
+    }
+
     public void AddCharacter(bool updateFields=true)
     {
         if(updateFields)
         {
-            UpdateCharID();
-            UpdateCharName();
-            UpdateCharBlueprint();
-            UpdateCharPartyMember();
+            UpdateFields();
         }
 
-        cursor.characters.Add(currentData);
-        var button = Instantiate(buttonPrefab, content).GetComponentInChildren<CharacterButtonScript>();
-        button.character = currentData;
-        button.cursor = cursor;
+        if(!cursor.characters.Contains(currentData))
+        {
+            cursor.characters.Add(currentData);
+            var button = Instantiate(buttonPrefab, content).GetComponentInChildren<CharacterButtonScript>();
+            button.character = currentData;
+            button.cursor = cursor;
+        }
 
         currentData = new WorldData.CharacterData();
         charID.text = charName.text = charBlueprint.text = "";
@@ -59,9 +65,36 @@ public class WCCharacterHandler : MonoBehaviour
         UpdateCharPartyMember();
     }
 
+    public void UpdateFields()
+    {
+        UpdateCharID();
+        UpdateCharName();
+        UpdateCharBlueprint();
+        UpdateCharPartyMember();
+    }
+
+    public void ReflectData()
+    {
+        charID.text = currentData.ID;
+        charName.text = currentData.name;
+        charBlueprint.text = currentData.blueprintJSON;
+        charPartyMember.isOn = currentData.partyMember;
+    }
+
     public void AddCharacter(WorldData.CharacterData data)
     {
         currentData = data;
         AddCharacter(false);
+    }
+
+    public static void EditCharacter(WorldData.CharacterData data)
+    {
+        instance.editCharacter(data);
+    }
+
+    private void editCharacter(WorldData.CharacterData data)
+    {
+        currentData = data;
+        ReflectData();
     }
 }

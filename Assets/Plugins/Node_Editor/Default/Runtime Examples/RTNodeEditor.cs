@@ -84,7 +84,7 @@ namespace NodeEditorFramework.Standard
 				canvasCache = new NodeEditorUserCache();
 				if (canvas != null)
 					canvasCache.SetCanvas(NodeEditorSaveManager.CreateWorkingCopy(canvas));
-				else if (!string.IsNullOrEmpty (loadSceneName))
+				else if (!string.IsNullOrEmpty(loadSceneName))
 					canvasCache.LoadSceneNodeCanvas(loadSceneName);
 			}
 			canvasCache.AssureCanvas();

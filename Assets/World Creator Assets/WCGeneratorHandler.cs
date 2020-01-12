@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class WCGeneratorHandler : MonoBehaviour
 {
-    public struct SectorData {
+    public struct SectorData 
+    {
 		public string sectorjson;
 		public string platformjson;
 	}
@@ -364,6 +365,7 @@ public class WCGeneratorHandler : MonoBehaviour
             {
                 Debug.Log(e);
             };
+            Input.ResetInputAxes(); // clear the copy paste ctrl press if there was one
         }
     }
 }

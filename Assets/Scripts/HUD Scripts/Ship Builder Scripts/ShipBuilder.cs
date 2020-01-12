@@ -557,7 +557,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		if(!validClose) AudioManager.PlayClipByID("clip_back");
 		else AudioManager.PlayClipByID("clip_select");
 		initialized = false;
-		player.SetIsInteracting(false);
+		if(player) player.SetIsInteracting(false);
 		gameObject.SetActive(false);
 		if(validClose) {
 			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
