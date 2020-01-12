@@ -49,6 +49,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public Text titleText;
 	public GameObject editorModeButtons;
 	public static WorldData.CharacterData currentCharacter;
+	public GameObject editorModeAddPartSection;
 
 	public BuilderMode GetMode() {
 		return mode;
@@ -356,6 +357,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		else
 		{
+			/*
 			if(parts.Count == 0) {
 				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
 				foreach(string name in ResourceManager.allPartNames) {
@@ -375,7 +377,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 						parts.Add(info);
 					}
 				}
-			}
+			}*/
 		}
 
 		
@@ -541,8 +543,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
         player.shards += tiers[shard.tier];
     }
 	private void AddPart(EntityBlueprint.PartInfo part) {
-		if(!partDict.ContainsKey(part)) 
-		{
+		if(!partDict.ContainsKey(part)) {
 			int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
 			ShipBuilderInventoryScript invButton = Instantiate(buttonPrefab, 
 				contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
@@ -553,7 +554,35 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			invButton.IncrementCount();
 			invButton.mode = BuilderMode.Yard;
 		} else partDict[part].IncrementCount();
+		
+		if(editorMode) {
+			for(int i = 0; i < 100; i++)
+				partDict[part].IncrementCount();
+		}
 	}
+	
+	public void AddPartByEditorSection() {
+		var part = new EntityBlueprint.PartInfo();
+		if(int.TryParse(editorModeAddPartSection.transform.Find("Ability ID").GetComponent<InputField>().text, out part.abilityID)
+			&& int.TryParse(editorModeAddPartSection.transform.Find("Ability Tier").GetComponent<InputField>().text, out part.tier)) {
+			
+			var x = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
+			if(ResourceManager.allPartNames.Contains(x)) {
+				part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
+				AddPart(part);
+			}
+
+		}
+	}
+
+	public void ChangePartImage(string id) {
+		if(ResourceManager.allPartNames.Contains(id)) {
+			var im = editorModeAddPartSection.transform.Find("Part Image").GetComponent<Image>();
+			im.sprite = ResourceManager.GetAsset<Sprite>(id + "_sprite");
+			im.rectTransform.sizeDelta = im.sprite.bounds.size * 50	;
+		}
+	}
+
 	public override void CloseUI() {
 		CloseUI(false);
 	}

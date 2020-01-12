@@ -209,7 +209,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
     public int flagID = 0;
     void PollItems() {
-        if(Input.GetKeyDown(KeyCode.B))
+        if(Input.GetKeyDown(KeyCode.B) && !system.IsPointerOverGameObject())
         {
             ActivateShipBuilder();
         }
