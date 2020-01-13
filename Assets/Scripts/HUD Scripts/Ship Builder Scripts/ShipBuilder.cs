@@ -170,7 +170,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		switch(status) {
 			case ReconstructButtonStatus.Valid:
 				reconstructImage.color = reconstructText.color = Color.green;
-				reconstructText.text = editorMode ? "RECONSTRUCT" : "CONFIRM CHARACTER BLUEPRINT";
+				reconstructText.text = !editorMode ? "RECONSTRUCT" : "CONFIRM CHARACTER BLUEPRINT";
 				break;
 			case ReconstructButtonStatus.PartInvalidPosition:
 				reconstructImage.color = reconstructText.color = Color.red;
@@ -554,7 +554,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			invButton.IncrementCount();
 			invButton.mode = BuilderMode.Yard;
 		} else partDict[part].IncrementCount();
-		
+
 		if(editorMode) {
 			for(int i = 0; i < 100; i++)
 				partDict[part].IncrementCount();

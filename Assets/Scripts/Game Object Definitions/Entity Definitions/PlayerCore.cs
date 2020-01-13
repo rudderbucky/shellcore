@@ -98,6 +98,9 @@ public class PlayerCore : ShellCore {
         }
         // UnityEditor.AssetDatabase.CreateAsset(blueprint, "Assets/Core Upgrades.asset");
         BuildEntity();
+        
+        // the player needs a predictable name for task interactions, so its object will always be called this
+        name = entityName = "player";
         hud.InitializeHUD(this);
     }
 
