@@ -53,7 +53,7 @@ namespace NodeEditorFramework
 			if (canvasType != null && canvasType.IsSubclassOf (typeof(NodeCanvas)))
 				canvas = ScriptableObject.CreateInstance (canvasType) as NodeCanvas;
 			else
-				canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.CalculationCanvasType>();
+				canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.QuestCanvas>();
 			canvas.name = canvas.saveName = "New " + canvas.canvasName;
 
 			NodeEditor.BeginEditingCanvas (canvas);
@@ -93,17 +93,16 @@ namespace NodeEditorFramework
 		protected internal virtual void CopyScriptableObjects (System.Func<ScriptableObject, ScriptableObject> replaceSO) {}
 
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// Trigger traversal of the whole canvas
-		/// </summary>
-		public void TraverseAll ()
+        /// <summary>
+        /// Empty method!
+        /// </summary>
+        public void TraverseAll ()
 		{
-			if (Traversal != null)
-				Traversal.TraverseAll ();
+
 		}
 
 		/// <summary>

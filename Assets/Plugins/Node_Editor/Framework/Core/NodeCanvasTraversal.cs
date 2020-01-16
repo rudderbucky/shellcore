@@ -6,8 +6,9 @@ namespace NodeEditorFramework
 	public abstract class NodeCanvasTraversal
 	{
 		public NodeCanvas nodeCanvas;
+        public Node currentNode = null;
 
-		public NodeCanvasTraversal (NodeCanvas canvas)
+        public NodeCanvasTraversal (NodeCanvas canvas)
 		{
 			nodeCanvas = canvas;
 		}
@@ -15,7 +16,7 @@ namespace NodeEditorFramework
 		public virtual void OnLoadCanvas () { }
 		public virtual void OnSaveCanvas () { }
 
-		public abstract void TraverseAll ();
+		public abstract void SetNode (Node node);
 		public virtual void OnChange (Node node) {}
 	}
 }

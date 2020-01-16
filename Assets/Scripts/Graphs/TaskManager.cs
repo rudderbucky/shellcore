@@ -1,30 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using NodeEditorFramework.Standard;
 using NodeEditorFramework.IO;
 using NodeEditorFramework;
+using System;
 
 public class TaskManager : MonoBehaviour
 {
     public static TaskManager Instance = null;
     public static Dictionary<string, UnityAction> interactionOverrides = new Dictionary<string, UnityAction>();
 
-    List<Task> activeTasks = new List<Task>();
-
-    public string[] questCanvasPaths;
-    private List<QuestCanvas> questCanvases;
-    private Node[] currentNodes;
-
-    public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
+    public List<string> questCanvasPaths;
+    public SaveHandler saveHandler;
 
     bool initialized = false;
-
-    public string lastTaskNodeID;
-
-    public static string speakerName;
+    public List<Traverser> traversers;
+    List<Task> activeTasks = new List<Task>();
+    public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
 
     // objective locations for visualization of tasks in the main map and minimap
     public class ObjectiveLocation 
@@ -41,6 +35,9 @@ public class TaskManager : MonoBehaviour
     }
 
     public static List<ObjectiveLocation> objectiveLocations = new List<ObjectiveLocation>();
+
+    // Move to Dialogue System?
+    public static string speakerName;
     public static Entity GetSpeaker() {
         var speakerObj = SectorManager.instance.GetObject(speakerName);
         return speakerObj?.GetComponent<Entity>();
@@ -54,6 +51,7 @@ public class TaskManager : MonoBehaviour
         }
         Instance = this;
         initCanvases();
+        questCanvasPaths = new List<string>();
     }
 
     void Update()
@@ -71,7 +69,7 @@ public class TaskManager : MonoBehaviour
     public void SetCanvasPath(string path)
     {
         Debug.Log("Found Path");
-        questCanvasPaths = new string[] {path};
+        questCanvasPaths.Add(path);
     }
 
     public static void StartQuests() {
@@ -83,15 +81,11 @@ public class TaskManager : MonoBehaviour
         updateTaskList();
     }
 
-    public void ActivateTask(string ID)
+    public void ActivateTask(string ID) // TODO: select canvas
     {
-        for (int i = 0; i < questCanvases[0].nodes.Count; i++)
+        for (int i = 0; i < traversers.Count; i++)
         {
-            var node = questCanvases[0].nodes[i] as StartTaskNode;
-            if (node && node.taskID == ID)
-            {
-                node.StartTask();
-            }
+            traversers[i].ActivateTask(ID);
         }
     }
 
@@ -140,28 +134,22 @@ public class TaskManager : MonoBehaviour
     {
         if (initialized)
             return;
-        questCanvases = new List<QuestCanvas>();
+        traversers = new List<Traverser>();
         NodeCanvasManager.FetchCanvasTypes();
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
 
         var XMLImport = new XMLImportExport();
 
-        for (int i = 0; i < questCanvasPaths.Length; i++)
+        for (int i = 0; i < questCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
-            Debug.Log(finalPath);
+            Debug.Log("Canvas path [" + i + "] = " + finalPath);
             var canvas = XMLImport.Import(finalPath) as QuestCanvas;
             Debug.Log(canvas);
             if (canvas != null)
             {
-                questCanvases.Add(canvas);
-                foreach (Node node in canvas.nodes)
-                {
-                    ConnectionPortManager.UpdateConnectionPorts(node);
-                    foreach (ConnectionPort port in node.connectionPorts)
-                        port.Validate(node);
-                }
+                traversers.Add(new Traverser(canvas));
             }
         }
 
@@ -171,115 +159,66 @@ public class TaskManager : MonoBehaviour
         UsePartCondition.OnPlayerReconstruct = new UnityEvent();
         WinBattleCondition.OnBattleWin = null;
 
-        currentNodes = new Node[questCanvases.Count];
         initialized = true;
     }
 
     // Traverse quest graph
     public void startQuests()
     {
-        if(lastTaskNodeID == null || lastTaskNodeID == "")
+        for (int i = 0; i < traversers.Count; i++)
         {
-            for (int i = 0; i < questCanvases.Count; i++)
-            {
-                startQuestline(i);
-            }
-        }
-        else
-        {
-            Traverse();
-        }
-    }
-
-    public Node GetCurrentNode()
-    {
-        return currentNodes[0];
-    }
-
-    public void startQuestline(int index)
-    {
-        // If there's no current node, find root node
-        if(currentNodes[index] == null && questCanvases[index] != null)
-        {
-            currentNodes[index] = findRoot(index);
-            if(currentNodes[index] == null)
-            {
-                questCanvases[index] = null;
-                return;
-            }
-            //Start quest
-            setNode(currentNodes[index]);
+            traversers[i].StartQuest();
         }
     }
 
     public void setNode(ConnectionPort connection)
     {
+        // Get canvas
         if (connection.connected())
         {
             setNode(connection.connections[0].body);
         }
     }
 
-    public void setNode(string ID)
+    public void setNode(NodeCanvas canvas, string ID)
     {
-        for (int i = 0; i < questCanvases[0].nodes.Count; i++)
+        for (int i = 0; i < canvas.nodes.Count; i++)
         {
-            if(questCanvases[0].nodes[i].GetID() == ID)
+            if(canvas.nodes[i].GetID() == ID)
             {
-                setNode(questCanvases[0].nodes[i]);
+                setNode(canvas.nodes[i]);
             }
         }
     }
 
     public void setNode(Node node)
     {
-        //TODO: Traverser object for each canvas, multiple simultaneous quests
-        for (int i = 0; i < questCanvases.Count; i++)
-        {
-            if(questCanvases[i].nodes.Contains(node))
-            {
-                currentNodes[i] = node;
-                lastTaskNodeID = currentNodes[0].GetID();
-                break;
-            }
-        }
-        if(SystemLoader.AllLoaded)
-            Traverse();
-    }
-
-    private Node findRoot(int index)
-    {
-        for (int i = 0; i < questCanvases.Count; i++)
-        {
-            for (int j = 0; j < questCanvases[i].nodes.Count; j++)
-            {
-                if(questCanvases[i].nodes[j].GetName == "StartNode")
-                {
-                    return questCanvases[i].nodes[j];
-                }
-            }
-        }
-        return null;
-    }
-
-    private void Traverse()
-    {
-        while(true)
-        {
-            if (currentNodes == null)
-                return;
-            int outputIndex = currentNodes[0].Traverse();
-            if (outputIndex == -1)
-                break;
-            if (!currentNodes[0].outputKnobs[outputIndex].connected())
-                break;
-            currentNodes[0] = currentNodes[0].outputKnobs[outputIndex].connections[0].body;
-        }
+        NodeCanvas canvas = node.Canvas;
+        Debug.Log("Node: " + node.name + " Canvas: " + node.Canvas);
+        canvas.Traversal.SetNode(node);
     }
 
     public static void DrawObjectiveLocations()
     {
         MapMakerScript.DrawObjectiveLocations();
         MinimapArrowScript.DrawObjectiveLocations();
+    }
+
+    public void LoadCheckpoint(string name)
+    {
+        for (int i = 0; i < traversers.Count; i++)
+        {
+            traversers[i].nodeCanvas.nodes.Find((x) => { return (x is CheckpointNode && (x as CheckpointNode).checkpointName == name); });
+        }
+    }
+
+    public void AutoSave()
+    {
+        saveHandler.Save();
+    }
+
+    public void RemoveTraverser(Traverser traverser)
+    {
+        traversers.Remove(traverser);
     }
 }

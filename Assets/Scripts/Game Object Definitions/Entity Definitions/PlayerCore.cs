@@ -149,5 +149,10 @@ public class PlayerCore : ShellCore {
         }
         base.Update(); // base update
         MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            NodeEditorFramework.Standard.TestCondition.TestTrigger.Invoke();
+        }
 	}
 }
