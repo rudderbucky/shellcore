@@ -9,7 +9,7 @@ namespace NodeEditorFramework.Standard
     public class SectorLimiterNode : Node
     {
         public static string LimitedSector;
-        public static SectorLimiterNode StartPoint;
+        //public static SectorLimiterNode StartPoint;
 
         //Node things
         public const string ID = "SectorLimiterNode";
@@ -53,14 +53,14 @@ namespace NodeEditorFramework.Standard
             if(sectorName == "" || freeSector)
             {
                 SectorManager.OnSectorLoad = null;
-                StartPoint = null;
+                (Canvas.Traversal as Traverser).limiterStart = null;
                 return 0;
             }
             else
             {
                 savedVariables = new Dictionary<string, int>(TaskManager.Instance.taskVariables);
                 SectorManager.OnSectorLoad = SectorUpdate;
-                StartPoint = this;
+                (Canvas.Traversal as Traverser).limiterStart = this;
                 TryAddObjective();
                 SectorUpdate(SectorManager.instance.current.sectorName);
                 return -1;
@@ -75,7 +75,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                Node current = TaskManager.Instance.GetCurrentNode();
+                Node current = Canvas.Traversal.currentNode;
                 if (current != this)
                 {
                     if (current is TimelineNode)

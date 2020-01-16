@@ -36,15 +36,21 @@ public class SaveHandler : MonoBehaviour {
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
+            player.spawnPoint = save.position;
 
             player.Rebuild();
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
 
+
             //SectorManager.instance.LoadSectorFile(save.resourcePath);
 
             // tasks
-            taskManager.setNode(save.lastTaskNodeID);
+            for (int i = 0; i < save.checkpointNames.Length; i++)
+            {
+                taskManager.traversers[i].activateCheckpoint(save.checkpointNames[i]);
+            }
+
             for (int i = 0; i < save.activeTaskIDs.Length; i++)
             {
                 taskManager.ActivateTask(save.activeTaskIDs[i]);
@@ -84,17 +90,16 @@ public class SaveHandler : MonoBehaviour {
         save.shards = player.shards;
         save.resourcePath = SectorManager.instance.resourcePath;
 		save.characters = SectorManager.instance.characters;
-		
+
         // tasks
-        var limiterNode = NodeEditorFramework.Standard.SectorLimiterNode.StartPoint;
-        if (limiterNode != null)
-            Debug.Log("limiter found!");
+        save.checkpointNames = new string[taskManager.traversers.Count];
 
-        save.lastTaskNodeID = limiterNode == null ? taskManager.lastTaskNodeID : limiterNode.GetID();
+        for (int i = 0; i < save.checkpointNames.Length; i++)
+        {
+            save.checkpointNames[i] = taskManager.traversers[i].lastCheckpointName;
+        }
 
-        Dictionary<string, int> variables = limiterNode == null
-            ? taskManager.taskVariables
-            : limiterNode.GetVariables();
+        Dictionary<string, int> variables = taskManager.taskVariables;
         string[] keys = new string[taskManager.taskVariables.Count];
         int[] values = new int[taskManager.taskVariables.Count];
         int index = 0;

@@ -15,7 +15,7 @@ public class PlayerSave {
 	public string[] presetBlueprints;
 	public float timePlayed;
 	public int credits;
-    public string lastTaskNodeID;
+    public string[] checkpointNames;
     public string[] taskVariableNames;
     public int[] taskVariableValues;
     public string[] activeTaskIDs;

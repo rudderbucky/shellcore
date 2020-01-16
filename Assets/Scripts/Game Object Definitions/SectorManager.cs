@@ -500,7 +500,10 @@ public class SectorManager : MonoBehaviour
         //load new sector
         if(player) {
             // player has seen this sector now
-            if(!player.cursave.sectorsSeen.Contains(current.sectorName))
+            if (player.cursave.sectorsSeen == null)
+                player.cursave.sectorsSeen = new List<string>();
+
+            if (!player.cursave.sectorsSeen.Contains(current.sectorName))
                 player.cursave.sectorsSeen.Add(current.sectorName);
             player.ResetPower();
             objects.Add("player", player.gameObject);

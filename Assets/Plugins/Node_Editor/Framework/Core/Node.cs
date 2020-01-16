@@ -38,13 +38,15 @@ namespace NodeEditorFramework
 		// Style
 		public Color backgroundColor = Color.white;
 
+        public NodeCanvas Canvas;// { get; set; }
 
-		#region Properties and Settings
 
-		/// <summary>
-		/// Gets the ID of the Node
-		/// </summary>
-		public abstract string GetName { get; }
+        #region Properties and Settings
+
+        /// <summary>
+        /// Gets the ID of the Node
+        /// </summary>
+        public abstract string GetName { get; }
 
         public string GetID()
         {
@@ -216,6 +218,7 @@ namespace NodeEditorFramework
 			node.name = node.Title;
 			node.autoSize = node.DefaultSize;
 			node.position = pos;
+            node.Canvas = hostCanvas;
 			ConnectionPortManager.UpdateConnectionPorts (node);
 			if (init)
 				node.OnCreate();
@@ -247,11 +250,11 @@ namespace NodeEditorFramework
 		/// </summary>
 		public void Delete (bool silent = false) 
 		{
-			if (!NodeEditor.curNodeCanvas.nodes.Contains (this))
-				throw new UnityException ("The Node " + name + " does not exist on the Canvas " + NodeEditor.curNodeCanvas.name + "!");
+			if (!Canvas.nodes.Contains (this))
+				throw new UnityException ("The Node " + name + " does not exist on the Canvas " + Canvas.name + "!");
 			if (!silent)
 				NodeEditorCallbacks.IssueOnDeleteNode (this);
-			NodeEditor.curNodeCanvas.nodes.Remove (this);
+            Canvas.nodes.Remove (this);
 			for (int i = 0; i < connectionPorts.Count; i++) 
 			{
 				connectionPorts[i].ClearConnections (silent);
@@ -259,7 +262,7 @@ namespace NodeEditorFramework
 			}
 			DestroyImmediate (this, true);
 			if (!silent)
-				NodeEditor.curNodeCanvas.Validate ();
+                Canvas.Validate ();
 		}
 
 		#endregion

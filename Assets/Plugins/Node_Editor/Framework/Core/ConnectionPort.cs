@@ -199,7 +199,7 @@ namespace NodeEditorFramework
 				port.body.OnAddConnection (port, this);
 				body.OnAddConnection (this, port);
 				NodeEditorCallbacks.IssueOnAddConnection (this, port);
-				NodeEditor.curNodeCanvas.OnNodeChange(direction == Direction.In? port.body : body);
+				body.Canvas.OnNodeChange(direction == Direction.In? port.body : body);
 			}
 		}
 
@@ -227,7 +227,7 @@ namespace NodeEditorFramework
 			port.connections.Remove (this);
 			connections.Remove (port);
 
-			if (!silent) NodeEditor.curNodeCanvas.OnNodeChange (body);
+            if (!silent) body.Canvas.OnNodeChange (body);
 		}
 
 		#endregion
