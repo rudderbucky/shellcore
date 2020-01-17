@@ -136,7 +136,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            DialogueSystem.ShowTaskPrompt(this);
+            DialogueSystem.ShowTaskPrompt(this, TaskManager.GetSpeaker());
             DialogueSystem.OnDialogueEnd += OnClick;
             return -1;
         }

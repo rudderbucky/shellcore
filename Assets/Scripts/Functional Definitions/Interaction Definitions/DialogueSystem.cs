@@ -28,7 +28,7 @@ public class DialogueSystem : MonoBehaviour
     float nextCharacterTime;
     public double timeBetweenCharacters = 0.0175d;
     string text = "";
-    Transform playerTransform;
+    public PlayerCore player;
     Vector3? speakerPos;
     public CoreUpgraderScript upgraderScript;
     private void Awake()
@@ -38,7 +38,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void Update()
     {
-        if(window && speakerPos != null && playerTransform && (playerTransform.position - ((Vector3)speakerPos)).sqrMagnitude > 100)
+        if(window && speakerPos != null && player && (player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100)
             endDialogue();
         // Add text
         if(textRenderer && characterCount < text.Length)
@@ -52,9 +52,9 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    public static void StartDialogue(Dialogue dialogue, Entity speaker = null, PlayerCore player = null)
+    public static void StartDialogue(Dialogue dialogue, Entity speaker = null)
     {
-        Instance.startDialogue(dialogue, speaker, player);
+        Instance.startDialogue(dialogue, speaker);
     }
 
     public static void ShowPopup(string text, Color color, Entity speaker = null)
@@ -73,13 +73,17 @@ public class DialogueSystem : MonoBehaviour
         if (window && window.GetActive())
             return;
         if(window) endDialogue();
-        playerTransform = null;
         //create window
+        speakerPos = null;
 
         if(!speaker)
             window = Instantiate(popupBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         else 
+        {
             window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+            speakerPos = speaker.transform.position;
+        }
+
         window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
@@ -141,15 +145,14 @@ public class DialogueSystem : MonoBehaviour
         else window.transform.Find("Defeat").gameObject.SetActive(true);
     }
 
-    public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null, PlayerCore player = null)
+    public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null)
     {
-        Instance.showDialogueNode(node, speaker, player);
+        Instance.showDialogueNode(node, speaker);
     }
 
-    private void showDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker, PlayerCore player)
+    private void showDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker)
     {
         if (window) endDialogue(0);
-        playerTransform = player ? player.transform : null;
         //speakerPos = speaker.transform.position;
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
@@ -200,15 +203,14 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    public static void ShowTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker = null, PlayerCore player = null)
+    public static void ShowTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker = null)
     {
-        Instance.showTaskPrompt(node, speaker, player);
+        Instance.showTaskPrompt(node, speaker);
     }
 
-    private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker, PlayerCore player) //TODO: reward part image
+    private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker) //TODO: reward part image
     {
         if (window) endDialogue(0, false);
-        playerTransform = player ? player.transform : null;
         //speakerPos = speaker.transform.position;
         //create window
         window = Instantiate(taskDialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
@@ -229,6 +231,9 @@ public class DialogueSystem : MonoBehaviour
         characterCount = 0;
         nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
         textRenderer.color = node.dialogueColor;
+
+        // update speakerPos
+        if(speaker) speakerPos = speaker.transform.position;
 
         // Objective list
         var objectiveList = background.transform.Find("ObjectiveList").GetComponent<Text>();
@@ -310,10 +315,9 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    private void startDialogue(Dialogue dialogue, Entity speaker, PlayerCore player)
+    private void startDialogue(Dialogue dialogue, Entity speaker)
     {
         if(window) endDialogue();
-        playerTransform = player ? player.transform : null;
         speakerPos = speaker.transform.position;
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
@@ -324,15 +328,15 @@ public class DialogueSystem : MonoBehaviour
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
-        next(dialogue, 0, speaker, player);
+        next(dialogue, 0, speaker);
     }
 
-    public static void Next(Dialogue dialogue, int ID, Entity speaker, PlayerCore player)
+    public static void Next(Dialogue dialogue, int ID, Entity speaker)
     {
-        Instance.next(dialogue, ID, speaker, player);
+        Instance.next(dialogue, ID, speaker);
     }
 
-    public void next(Dialogue dialogue, int ID, Entity speaker, PlayerCore player)
+    public void next(Dialogue dialogue, int ID, Entity speaker)
     {
         if(dialogue.nodes.Count == 0)
         {
@@ -430,7 +434,7 @@ public class DialogueSystem : MonoBehaviour
             button.SetParent(background, false);
             button.anchoredPosition = new Vector2(0, 24 + 16 * (current.nextNodes.Count - (i + 1)));
             button.GetComponent<Button>().onClick.AddListener(()=> {
-                Next(dialogue, nextIndex, speaker, player);
+                Next(dialogue, nextIndex, speaker);
             });
             if(dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit) {
                 button.GetComponent<Button>().onClick.AddListener(()=> {

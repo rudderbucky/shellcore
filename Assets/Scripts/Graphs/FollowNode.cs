@@ -217,14 +217,7 @@ namespace NodeEditorFramework.Standard
 
             if (!stopFollowing)
             {
-                Entity target = null;
-                for (int i = 0; i < AIData.entities.Count; i++)
-                {
-                    if (AIData.entities[i].name == targetName)
-                    {
-                        target = AIData.entities[i];
-                    }
-                }
+                Entity target = SectorManager.instance.GetObject(targetName).GetComponent<Entity>();
                 if (target != null)
                 {
                     for (int i = 0; i < AIData.entities.Count; i++)

@@ -108,7 +108,7 @@ public class ReticleScript : MonoBehaviour {
                         TaskManager.interactionOverrides[curTarg.GetName()].Invoke();
                     }
                     else if (curTarg.GetDialogue() as Dialogue)
-                        DialogueSystem.StartDialogue(curTarg.GetDialogue() as Dialogue, curTarg as Entity, craft);
+                        DialogueSystem.StartDialogue(curTarg.GetDialogue() as Dialogue, curTarg as Entity);
                 }
 
                 targSys.SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform

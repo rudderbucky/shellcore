@@ -20,7 +20,7 @@ public class ProximityInteractScript : MonoBehaviour {
             TaskManager.interactionOverrides[ent.name].Invoke();
         }
         else
-            DialogueSystem.StartDialogue(ent.dialogue, ent, player);
+            DialogueSystem.StartDialogue(ent.dialogue, ent);
 	}
 	void Update() {
 		if(player != null) 
