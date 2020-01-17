@@ -9,7 +9,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     protected ICarrier carrier;
     protected float totalPower;
-    protected GameObject bulletPrefab; // prefab for main bullet (should be moved to shellcore)
+    protected GameObject bulletPrefab; // prefab for main bullet
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 

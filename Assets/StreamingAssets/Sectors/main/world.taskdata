@@ -1,0 +1,994 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.QuestCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-12531.75,-839.5" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Set Music" ID="-179310" type="MusicNode" pos="-402.5,80.5">
+			<Port ID="-179312" name="output" dynamic="False" />
+			<Port ID="-179314" name="input" dynamic="False" />
+			<Variable name="musicID" refID="507508009" />
+			<boolean name="defaultMusic">false</boolean>
+		</Node>
+		<Node name="Conditions" ID="-179316" type="ConditionGroupNode" pos="2913.75,539.25">
+			<Port ID="-179318" name="input" dynamic="False" />
+			<Port ID="-179320" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179322" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Start Dialogue" ID="-179324" type="StartDialogueNode" pos="1018.75,395.5">
+			<Port ID="-179326" name="input" dynamic="False" />
+			<Port ID="-179328" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityName" refID="-728445878" />
+		</Node>
+		<Node name="Set Path" ID="-179330" type="SetPathNode" pos="1512,708.5">
+			<Port ID="-179332" name="output" dynamic="False" />
+			<Port ID="-179334" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<Variable name="entityName" refID="-728445878" />
+			<Variable name="path" refID="-1391980288" />
+		</Node>
+		<Node name="Popup dialogue" ID="-179336" type="PopupNode" pos="1212.25,125.75">
+			<Port ID="-179338" name="output" dynamic="False" />
+			<Port ID="-179340" name="input" dynamic="False" />
+			<Variable name="text" refID="-1759747631" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Sector Limiter" ID="-179342" type="SectorLimiterNode" pos="1756.75,806.25">
+			<Port ID="-179344" name="input" dynamic="False" />
+			<Port ID="-179346" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="371857150" />
+			<boolean name="freeSector">true</boolean>
+		</Node>
+		<Node name="Sector Limiter" ID="-179348" type="SectorLimiterNode" pos="1552.5,534.25">
+			<Port ID="-179350" name="input" dynamic="False" />
+			<Port ID="-179352" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-7346903" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+		<Node name="Start Dialogue" ID="-179362" type="StartDialogueNode" pos="3538.75,557.25">
+			<Port ID="-179364" name="input" dynamic="False" />
+			<Port ID="-179366" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityName" refID="-1461482845" />
+		</Node>
+		<Node name="Start Task" ID="-179368" type="StartTaskNode" pos="2397.5,438">
+			<Port ID="-179370" name="inputLeft" dynamic="False" />
+			<Port ID="-179372" name="outputAccept" dynamic="False" />
+			<Port ID="-179374" name="outputDecline" dynamic="False" />
+			<Port ID="-179376" name="inputUp" dynamic="False" />
+			<Variable name="dialogueText" refID="-365196367" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="objectiveList" refID="1126788497" />
+			<int name="creditReward">50</int>
+			<boolean name="partReward">false</boolean>
+			<Variable name="partID" refID="371857150" />
+			<int name="partAbilityID">0</int>
+			<int name="partTier">1</int>
+			<int name="reputationReward">0</int>
+		</Node>
+		<Node name="Start Task" ID="-179378" type="StartTaskNode" pos="1226.25,491.75">
+			<Port ID="-179380" name="inputLeft" dynamic="False" />
+			<Port ID="-179382" name="outputAccept" dynamic="False" />
+			<Port ID="-179384" name="outputDecline" dynamic="False" />
+			<Port ID="-179386" name="inputUp" dynamic="False" />
+			<Variable name="dialogueText" refID="1612742838" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="objectiveList" refID="-951698716" />
+			<int name="creditReward">0</int>
+			<boolean name="partReward">true</boolean>
+			<Variable name="partID" refID="1144206901" />
+			<int name="partAbilityID">1</int>
+			<int name="partTier">1</int>
+			<int name="reputationReward">0</int>
+		</Node>
+		<Node name="Set Music" ID="-179388" type="MusicNode" pos="973.75,-88.25">
+			<Port ID="-179390" name="output" dynamic="False" />
+			<Port ID="-179392" name="input" dynamic="False" />
+			<Variable name="musicID" refID="371857150" />
+			<boolean name="defaultMusic">true</boolean>
+		</Node>
+		<Node name="Dialogue" ID="-179394" type="EndDialogue" pos="737.5,94.25">
+			<Port ID="-179396" name="input" dynamic="False" />
+			<Port ID="-179398" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+		</Node>
+		<Node name="Dialogue" ID="-179400" type="DialogueNode" pos="160,50">
+			<Port ID="-179402" name="input" dynamic="False" />
+			<Port ID="-179404" name="cancel" dynamic="False" />
+			<Port ID="-179406" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">202</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179408" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">257</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0.36</r>
+				<g>0.537</g>
+				<b>0.9</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1845576293" />
+			<Variable name="answers" refID="1185255296" />
+		</Node>
+		<Node name="Dialogue" ID="-179410" type="DialogueNode" pos="410,20">
+			<Port ID="-179412" name="input" dynamic="False" />
+			<Port ID="-179414" name="cancel" dynamic="False" />
+			<Port ID="-179416" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">176</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179418" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">231</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0.36</r>
+				<g>0.537</g>
+				<b>0.9</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1623555996" />
+			<Variable name="answers" refID="-1017335680" />
+		</Node>
+		<Node name="Sector Limiter" ID="-179420" type="SectorLimiterNode" pos="4170,490">
+			<Port ID="-179422" name="input" dynamic="False" />
+			<Port ID="-179424" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-958226365" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+		<Node name="Popup dialogue" ID="-179426" type="PopupNode" pos="2680,420">
+			<Port ID="-179428" name="output" dynamic="False" />
+			<Port ID="-179430" name="input" dynamic="False" />
+			<Variable name="text" refID="808418022" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Popup dialogue" ID="-179432" type="PopupNode" pos="4058,741.125">
+			<Port ID="-179434" name="output" dynamic="False" />
+			<Port ID="-179436" name="input" dynamic="False" />
+			<Variable name="text" refID="1322691659" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Start Task" ID="-179438" type="StartTaskNode" pos="3790,530">
+			<Port ID="-179440" name="inputLeft" dynamic="False" />
+			<Port ID="-179442" name="outputAccept" dynamic="False" />
+			<Port ID="-179444" name="outputDecline" dynamic="False" />
+			<Port ID="-179446" name="inputUp" dynamic="False" />
+			<Variable name="dialogueText" refID="-2037134491" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="objectiveList" refID="1019405605" />
+			<int name="creditReward">100</int>
+			<boolean name="partReward">false</boolean>
+			<Variable name="partID" refID="371857150" />
+			<int name="partAbilityID">0</int>
+			<int name="partTier">1</int>
+			<int name="reputationReward">0</int>
+		</Node>
+		<Node name="Use Part" ID="-179448" type="PartCondition" pos="6113,1148.625">
+			<Port ID="-179450" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<Variable name="partID" refID="-153210479" />
+			<int name="abilityID">5</int>
+		</Node>
+		<Node name="Popup dialogue" ID="-179452" type="PopupNode" pos="5925.5,728.625">
+			<Port ID="-179454" name="output" dynamic="False" />
+			<Port ID="-179456" name="input" dynamic="False" />
+			<Variable name="text" refID="-135741097" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Use Part" ID="-179458" type="PartCondition" pos="6318,1244.875">
+			<Port ID="-179460" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<Variable name="partID" refID="250074048" />
+			<int name="abilityID">18</int>
+		</Node>
+		<Node name="Sector Limiter" ID="-179462" type="SectorLimiterNode" pos="6296.75,862.375">
+			<Port ID="-179464" name="input" dynamic="False" />
+			<Port ID="-179466" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1072544043" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+		<Node name="Sector Limiter" ID="-179468" type="SectorLimiterNode" pos="6578,859.875">
+			<Port ID="-179470" name="input" dynamic="False" />
+			<Port ID="-179472" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="371857150" />
+			<boolean name="freeSector">true</boolean>
+		</Node>
+		<Node name="Sector Limiter" ID="-179474" type="SectorLimiterNode" pos="7374.25,918.625">
+			<Port ID="-179476" name="input" dynamic="False" />
+			<Port ID="-179478" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="371857150" />
+			<boolean name="freeSector">true</boolean>
+		</Node>
+		<Node name="Sector Limiter" ID="-179480" type="SectorLimiterNode" pos="7126.75,827.375">
+			<Port ID="-179482" name="input" dynamic="False" />
+			<Port ID="-179484" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-7346903" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+		<Node name="Start Dialogue" ID="-179486" type="StartDialogueNode" pos="8006.75,866.125">
+			<Port ID="-179488" name="input" dynamic="False" />
+			<Port ID="-179490" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityName" refID="-1461482845" />
+		</Node>
+		<Node name="Use Part" ID="-179500" type="PartCondition" pos="2672.5,726.75">
+			<Port ID="-179502" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<Variable name="partID" refID="1144206901" />
+			<int name="abilityID">1</int>
+		</Node>
+		<Node name="Use Part" ID="-179504" type="PartCondition" pos="6523,1331.125">
+			<Port ID="-179506" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<Variable name="partID" refID="250074048" />
+			<int name="abilityID">1</int>
+		</Node>
+		<Node name="Start Task" ID="-179508" type="StartTaskNode" pos="5675,710">
+			<Port ID="-179510" name="inputLeft" dynamic="False" />
+			<Port ID="-179512" name="outputAccept" dynamic="False" />
+			<Port ID="-179514" name="outputDecline" dynamic="False" />
+			<Port ID="-179516" name="inputUp" dynamic="False" />
+			<Variable name="dialogueText" refID="-275064832" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="objectiveList" refID="-1989125480" />
+			<int name="creditReward">150</int>
+			<boolean name="partReward">false</boolean>
+			<Variable name="partID" refID="371857150" />
+			<int name="partAbilityID">0</int>
+			<int name="partTier">1</int>
+			<int name="reputationReward">5</int>
+		</Node>
+		<Node name="Destroy Entities" ID="-179532" type="DestroyEntities" pos="4287,802.25">
+			<Port ID="-179534" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<Variable name="targetName" refID="-931914094" />
+			<int name="targetCount">5</int>
+			<int name="targetFaction">1</int>
+		</Node>
+		<Node name="Conditions" ID="-179536" type="ConditionGroupNode" pos="4465.75,549.75">
+			<Port ID="-179538" name="input" dynamic="False" />
+			<Port ID="-179540" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179542" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Sector Limiter" ID="-179544" type="SectorLimiterNode" pos="4696.75,582.375">
+			<Port ID="-179546" name="input" dynamic="False" />
+			<Port ID="-179548" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-7346903" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+		<Node name="Sector Limiter" ID="-179550" type="SectorLimiterNode" pos="4901.75,826.125">
+			<Port ID="-179552" name="input" dynamic="False" />
+			<Port ID="-179554" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="371857150" />
+			<boolean name="freeSector">true</boolean>
+		</Node>
+		<Node name="Conditions" ID="-179556" type="ConditionGroupNode" pos="6829.25,974.875">
+			<Port ID="-179558" name="input" dynamic="False" />
+			<Port ID="-179560" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179562" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179564" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179566" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179568" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179570" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Check Entity" ID="-179572" type="CheckEntityCondition" pos="10433,1151.125">
+			<Port ID="-179574" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<Variable name="entityName" refID="626421550" />
+		</Node>
+		<Node name="Dialogue" ID="-179576" type="EndDialogue" pos="10118,983.625">
+			<Port ID="-179578" name="input" dynamic="False" />
+			<Port ID="-179580" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+		</Node>
+		<Node name="Dialogue" ID="-179582" type="DialogueNode" pos="9766.75,1101.125">
+			<Port ID="-179584" name="input" dynamic="False" />
+			<Port ID="-179586" name="cancel" dynamic="False" />
+			<Port ID="-179588" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">189</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1279961031" />
+			<Variable name="answers" refID="-1584110592" />
+		</Node>
+		<Node name="Start Dialogue" ID="-179590" type="StartDialogueNode" pos="9564.25,1101.125">
+			<Port ID="-179592" name="input" dynamic="False" />
+			<Port ID="-179594" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityName" refID="626421550" />
+		</Node>
+		<Node name="Sector Limiter" ID="-179596" type="SectorLimiterNode" pos="9053,1161.125">
+			<Port ID="-179598" name="input" dynamic="False" />
+			<Port ID="-179600" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="371857150" />
+			<boolean name="freeSector">true</boolean>
+		</Node>
+		<Node name="Sector Limiter" ID="-179602" type="SectorLimiterNode" pos="8785.5,1018.625">
+			<Port ID="-179604" name="input" dynamic="False" />
+			<Port ID="-179606" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1884743055" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+		<Node name="Popup dialogue" ID="-179608" type="PopupNode" pos="8550,920">
+			<Port ID="-179610" name="output" dynamic="False" />
+			<Port ID="-179612" name="input" dynamic="False" />
+			<Variable name="text" refID="-701895174" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Sector Limiter" ID="-179614" type="SectorLimiterNode" pos="10726.75,863.625">
+			<Port ID="-179616" name="input" dynamic="False" />
+			<Port ID="-179618" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-7346903" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+		<Node name="AI Follow" ID="-179620" type="AIFollowNode" pos="10481.75,831.125">
+			<Port ID="-179622" name="output" dynamic="False" />
+			<Port ID="-179624" name="input" dynamic="False" />
+			<Variable name="followerName" refID="626421550" />
+			<Variable name="targetName" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+		</Node>
+		<Node name="Conditions" ID="-179634" type="ConditionGroupNode" pos="11054.25,953.625">
+			<Port ID="-179636" name="input" dynamic="False" />
+			<Port ID="-179638" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-179640" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Sector Limiter" ID="-179642" type="SectorLimiterNode" pos="11344.25,936.125">
+			<Port ID="-179644" name="input" dynamic="False" />
+			<Port ID="-179646" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="371857150" />
+			<boolean name="freeSector">true</boolean>
+		</Node>
+		<Node name="Start Task" ID="-179654" type="StartTaskNode" pos="8248,818.625">
+			<Port ID="-179656" name="inputLeft" dynamic="False" />
+			<Port ID="-179658" name="outputAccept" dynamic="False" />
+			<Port ID="-179660" name="outputDecline" dynamic="False" />
+			<Port ID="-179662" name="inputUp" dynamic="False" />
+			<Variable name="dialogueText" refID="-825983645" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="objectiveList" refID="-313174356" />
+			<int name="creditReward">200</int>
+			<boolean name="partReward">true</boolean>
+			<Variable name="partID" refID="384692014" />
+			<int name="partAbilityID">18</int>
+			<int name="partTier">1</int>
+			<int name="reputationReward">10</int>
+		</Node>
+		<Node name="Start Dialogue" ID="-179664" type="StartDialogueNode" pos="-83.75,43">
+			<Port ID="-179666" name="input" dynamic="False" />
+			<Port ID="-179668" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">false</boolean>
+			<Variable name="EntityName" refID="371857150" />
+		</Node>
+		<Node name="Spawn Entity" ID="-179670" type="SpawnEntityNode" pos="-747.5,81.25">
+			<Port ID="-179672" name="output" dynamic="False" />
+			<Port ID="-179674" name="IDOut" dynamic="False" />
+			<Port ID="-179676" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprintID" refID="1947253782" />
+			<Variable name="entityName" refID="-728445878" />
+			<int name="faction">0</int>
+			<Variable name="flagName" refID="-1592150170" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+		</Node>
+		<Node name="Start" ID="-179678" type="StartNode" pos="-985,76.75">
+			<Port ID="-179680" name="outputRight" dynamic="False" />
+		</Node>
+		<Node name="Set Path" ID="-179682" type="SetPathNode" pos="1481.75,213.75">
+			<Port ID="-179684" name="output" dynamic="False" />
+			<Port ID="-179686" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<Variable name="entityName" refID="-728445878" />
+			<Variable name="path" refID="-1938795520" />
+		</Node>
+		<Node name="Spawn Entity" ID="-179688" type="SpawnEntityNode" pos="9300,1070">
+			<Port ID="-179690" name="output" dynamic="False" />
+			<Port ID="-179692" name="IDOut" dynamic="False" />
+			<Port ID="-179694" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprintID" refID="1947253782" />
+			<Variable name="entityName" refID="626421550" />
+			<int name="faction">0</int>
+			<Variable name="flagName" refID="896495582" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+		</Node>
+		<Node name="Start Dialogue" ID="-179696" type="StartDialogueNode" pos="2296.25,168">
+			<Port ID="-179698" name="input" dynamic="False" />
+			<Port ID="-179700" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityName" refID="-1461482845" />
+		</Node>
+		<Node name="Finish Task" ID="-179702" type="FinishTaskNode" pos="2003.75,655">
+			<Port ID="-179704" name="inputLeft" dynamic="False" />
+			<Port ID="-179706" name="outputRight" dynamic="False" />
+			<Port ID="-179708" name="outputUp" dynamic="False" />
+			<Variable name="rewardGiverName" refID="-1461482845" />
+			<Variable name="rewardText" refID="469661149" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Finish Task" ID="-179354" type="FinishTaskNode" pos="3190,580">
+			<Port ID="-179356" name="inputLeft" dynamic="False" />
+			<Port ID="-179358" name="outputRight" dynamic="False" />
+			<Port ID="-179360" name="outputUp" dynamic="False" />
+			<Variable name="rewardGiverName" refID="-1461482845" />
+			<Variable name="rewardText" refID="-366131408" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Finish Task" ID="-179492" type="FinishTaskNode" pos="7680,780">
+			<Port ID="-179494" name="inputLeft" dynamic="False" />
+			<Port ID="-179496" name="outputRight" dynamic="False" />
+			<Port ID="-179498" name="outputUp" dynamic="False" />
+			<Variable name="rewardGiverName" refID="-1461482845" />
+			<Variable name="rewardText" refID="-1224072378" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Checkpoint" ID="-179710" type="CheckpointNode" pos="2050,300">
+			<Port ID="-179712" name="input" dynamic="False" />
+			<Port ID="-179714" name="output" dynamic="False" />
+			<Variable name="checkpointName" refID="899726334" />
+		</Node>
+		<Node name="Checkpoint" ID="-179836" type="CheckpointNode" pos="3410,400">
+			<Port ID="-179838" name="input" dynamic="False" />
+			<Port ID="-179840" name="output" dynamic="False" />
+			<Variable name="checkpointName" refID="686355553" />
+		</Node>
+		<Node name="Checkpoint" ID="-179910" type="CheckpointNode" pos="5506.75,531.125">
+			<Port ID="-179912" name="input" dynamic="False" />
+			<Port ID="-179914" name="output" dynamic="False" />
+			<Variable name="checkpointName" refID="-1336033733" />
+		</Node>
+		<Node name="Start Dialogue" ID="-179518" type="StartDialogueNode" pos="5445.5,743.625">
+			<Port ID="-179520" name="input" dynamic="False" />
+			<Port ID="-179522" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityName" refID="-1461482845" />
+		</Node>
+		<Node name="Finish Task" ID="-179524" type="FinishTaskNode" pos="5168.75,669">
+			<Port ID="-179526" name="inputLeft" dynamic="False" />
+			<Port ID="-179528" name="outputRight" dynamic="False" />
+			<Port ID="-179530" name="outputUp" dynamic="False" />
+			<Variable name="rewardGiverName" refID="-1461482845" />
+			<Variable name="rewardText" refID="844367783" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Checkpoint" ID="-179876" type="CheckpointNode" pos="7990,580">
+			<Port ID="-179878" name="input" dynamic="False" />
+			<Port ID="-179880" name="output" dynamic="False" />
+			<Variable name="checkpointName" refID="551194642" />
+		</Node>
+		<Node name="Checkpoint" ID="-179934" type="CheckpointNode" pos="11975.5,716.125">
+			<Port ID="-179936" name="input" dynamic="False" />
+			<Port ID="-179938" name="output" dynamic="False" />
+			<Variable name="checkpointName" refID="1866313436" />
+		</Node>
+		<Node name="Finish Task" ID="-179626" type="FinishTaskNode" pos="11719.25,848.625">
+			<Port ID="-179628" name="inputLeft" dynamic="False" />
+			<Port ID="-179630" name="outputRight" dynamic="False" />
+			<Port ID="-179632" name="outputUp" dynamic="False" />
+			<Variable name="rewardGiverName" refID="-1461482845" />
+			<Variable name="rewardText" refID="728495143" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="AI Follow" ID="-179648" type="AIFollowNode" pos="12298,868.625">
+			<Port ID="-179650" name="output" dynamic="False" />
+			<Port ID="-179652" name="input" dynamic="False" />
+			<Variable name="followerName" refID="626421550" />
+			<Variable name="targetName" refID="371857150" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">true</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-179312" port2ID="-179666" />
+		<Connection port1ID="-179314" port2ID="-179672" />
+		<Connection port1ID="-179318" port2ID="-179428" />
+		<Connection port1ID="-179320" port2ID="-179502" />
+		<Connection port1ID="-179322" port2ID="-179356" />
+		<Connection port1ID="-179326" port2ID="-179684" />
+		<Connection port1ID="-179328" port2ID="-179380" />
+		<Connection port1ID="-179332" port2ID="-179350" />
+		<Connection port1ID="-179334" port2ID="-179382" />
+		<Connection port1ID="-179338" port2ID="-179686" />
+		<Connection port1ID="-179340" port2ID="-179390" />
+		<Connection port1ID="-179344" port2ID="-179352" />
+		<Connection port1ID="-179346" port2ID="-179704" />
+		<Connection port1ID="-179364" port2ID="-179840" />
+		<Connection port1ID="-179366" port2ID="-179440" />
+		<Connection port1ID="-179370" port2ID="-179700" />
+		<Connection port1ID="-179372" port2ID="-179430" />
+		<Connection port1ID="-179376" port2ID="-179360" />
+		<Connection port1ID="-179386" port2ID="-179708" />
+		<Connection port1ID="-179392" port2ID="-179398" />
+		<Connection port1ID="-179396" port2ID="-179416" />
+		<Connection port1ID="-179396" port2ID="-179418" />
+		<Connection port1ID="-179402" port2ID="-179668" />
+		<Connection port1ID="-179404" port2ID="-179666" />
+		<Connection port1ID="-179406" port2ID="-179412" />
+		<Connection port1ID="-179408" port2ID="-179412" />
+		<Connection port1ID="-179414" port2ID="-179666" />
+		<Connection port1ID="-179422" port2ID="-179434" />
+		<Connection port1ID="-179424" port2ID="-179538" />
+		<Connection port1ID="-179436" port2ID="-179442" />
+		<Connection port1ID="-179446" port2ID="-179530" />
+		<Connection port1ID="-179450" port2ID="-179560" />
+		<Connection port1ID="-179454" port2ID="-179464" />
+		<Connection port1ID="-179456" port2ID="-179512" />
+		<Connection port1ID="-179460" port2ID="-179564" />
+		<Connection port1ID="-179466" port2ID="-179470" />
+		<Connection port1ID="-179472" port2ID="-179558" />
+		<Connection port1ID="-179476" port2ID="-179484" />
+		<Connection port1ID="-179478" port2ID="-179494" />
+		<Connection port1ID="-179482" port2ID="-179562" />
+		<Connection port1ID="-179482" port2ID="-179566" />
+		<Connection port1ID="-179482" port2ID="-179570" />
+		<Connection port1ID="-179488" port2ID="-179880" />
+		<Connection port1ID="-179490" port2ID="-179656" />
+		<Connection port1ID="-179506" port2ID="-179568" />
+		<Connection port1ID="-179510" port2ID="-179522" />
+		<Connection port1ID="-179516" port2ID="-179498" />
+		<Connection port1ID="-179534" port2ID="-179540" />
+		<Connection port1ID="-179542" port2ID="-179546" />
+		<Connection port1ID="-179548" port2ID="-179552" />
+		<Connection port1ID="-179554" port2ID="-179526" />
+		<Connection port1ID="-179574" port2ID="-179638" />
+		<Connection port1ID="-179578" port2ID="-179588" />
+		<Connection port1ID="-179580" port2ID="-179624" />
+		<Connection port1ID="-179584" port2ID="-179594" />
+		<Connection port1ID="-179592" port2ID="-179690" />
+		<Connection port1ID="-179598" port2ID="-179606" />
+		<Connection port1ID="-179600" port2ID="-179694" />
+		<Connection port1ID="-179604" port2ID="-179610" />
+		<Connection port1ID="-179612" port2ID="-179658" />
+		<Connection port1ID="-179616" port2ID="-179622" />
+		<Connection port1ID="-179618" port2ID="-179636" />
+		<Connection port1ID="-179640" port2ID="-179644" />
+		<Connection port1ID="-179646" port2ID="-179628" />
+		<Connection port1ID="-179662" port2ID="-179632" />
+		<Connection port1ID="-179676" port2ID="-179680" />
+		<Connection port1ID="-179698" port2ID="-179714" />
+		<Connection port1ID="-179706" port2ID="-179712" />
+		<Connection port1ID="-179358" port2ID="-179838" />
+		<Connection port1ID="-179496" port2ID="-179878" />
+		<Connection port1ID="-179912" port2ID="-179528" />
+		<Connection port1ID="-179914" port2ID="-179520" />
+		<Connection port1ID="-179936" port2ID="-179630" />
+		<Connection port1ID="-179938" port2ID="-179652" />
+	</Connections>
+	<Objects>
+		<Object refID="507508009" type="System.String">
+			<string>music_blue1</string>
+		</Object>
+		<Object refID="-728445878" type="System.String">
+			<string>Sukrat</string>
+		</Object>
+		<Object refID="-1391980288" type="NodeEditorFramework.Standard.PathData">
+			<PathData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<waypoints>
+					<Node>
+						<position>
+							<x>258.448059</x>
+							<y>96.72742</y>
+						</position>
+						<ID>0</ID>
+						<children>
+							<int>15</int>
+						</children>
+					</Node>
+					<Node>
+						<position>
+							<x>271.498077</x>
+							<y>131.31601</y>
+						</position>
+						<ID>15</ID>
+						<children />
+					</Node>
+				</waypoints>
+			</PathData>
+		</Object>
+		<Object refID="-1759747631" type="System.String">
+			<string>Use W-A-S-D to move. 
+
+Click on a target to select it, and click twice to interact. Begin dialogue with the NPC (a ShellCore) beside you.</string>
+		</Object>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="-7346903" type="System.String">
+			<string>Haven 1</string>
+		</Object>
+		<Object refID="-1461482845" type="System.String">
+			<string>Mission Control</string>
+		</Object>
+		<Object refID="-365196367" type="System.String">
+			<string>Your Core is vulnerable, and your Shell is still weak. First of all, you should get a Shell Part from the Yard to the right and attach it to your Core.</string>
+		</Object>
+		<Object refID="1126788497" type="System.String">
+			<string>- Get a shell part from the yard.
+- Attach it to your ship.
+- Return for your reward.</string>
+		</Object>
+		<Object refID="1612742838" type="System.String">
+			<string>Good day, Newborn! Our Spawning Grounds are fraught with danger. Follow me to reach an area that is secure for our kind.</string>
+		</Object>
+		<Object refID="-951698716" type="System.String">
+			<string>- Get to the safe sector at the top of the Spawning Grounds.</string>
+		</Object>
+		<Object refID="1144206901" type="System.String">
+			<string>SmallCenter5</string>
+		</Object>
+		<Object refID="1845576293" type="System.String">
+			<string>Fear not, Newborn. For we have been one in the beginning, and we will be one in the end.</string>
+		</Object>
+		<Object refID="1185255296" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Who are you?</string>
+				<string>What are you talking about?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1623555996" type="System.String">
+			<string>...</string>
+		</Object>
+		<Object refID="-1017335680" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Who are you?</string>
+				<string>What are you talking about?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-958226365" type="System.String">
+			<string>Sector 460-150</string>
+		</Object>
+		<Object refID="808418022" type="System.String">
+			<string>The orange Task Arrow on your minimap indicates your current objective. If the objective's exact location is unknown, a question mark will be shown.</string>
+		</Object>
+		<Object refID="1322691659" type="System.String">
+			<string>Double click certain objects like turrets to activate your Tractor Beam, which will pull them with you as you move.
+
+Double click it again to release the beam.</string>
+		</Object>
+		<Object refID="-2037134491" type="System.String">
+			<string>It's time to collect some combat experience. Head east and destroy 5 infected Strike Drones. Take one of the nearby Defense turrets with you for protection.</string>
+		</Object>
+		<Object refID="1019405605" type="System.String">
+			<string>- Head to Sector 460-150 and destroy 5 Strike Drones.
+
+- (Optional) Take a Defense Turret with you.</string>
+		</Object>
+		<Object refID="-153210479" type="System.String">
+			<string>SmallWing1</string>
+		</Object>
+		<Object refID="-135741097" type="System.String">
+			<string>Your Tractor Beam allows you to transport objects through sector boundaries, where they would normally be destroyed. Use this to your advantage.</string>
+		</Object>
+		<Object refID="250074048" type="System.String">
+			<string>SmallWing2</string>
+		</Object>
+		<Object refID="-1072544043" type="System.String">
+			<string>Sector 150-150</string>
+		</Object>
+		<Object refID="-275064832" type="System.String">
+			<string>Further growth is essential for survival. Head west and salvage a part of an infected Crimson ShellCore, then bring it to the Yard and attach it to your shell like you did before.</string>
+		</Object>
+		<Object refID="-1989125480" type="System.String">
+			<string>- Head to Sector 150-150 and collect a part from an enemy ShellCore.
+
+- Use your tractor beam to carry it to the Yard.
+
+- Attach it to your shell and report back.</string>
+		</Object>
+		<Object refID="-931914094" type="System.String">
+			<string>Strike Drone</string>
+		</Object>
+		<Object refID="626421550" type="System.String">
+			<string>Aristu</string>
+		</Object>
+		<Object refID="1279961031" type="System.String">
+			<string>Wh-where am I? What's going on? Get me out of here!</string>
+		</Object>
+		<Object refID="-1584110592" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Follow me!</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1884743055" type="System.String">
+			<string>Spawning Grounds</string>
+		</Object>
+		<Object refID="-701895174" type="System.String">
+			<string>You can select certain allies, then select yourself to make them follow, or the world to make them move.
+
+Your drones can always be controlled. Other entities, only if they agree to it.</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+		<Object refID="-825983645" type="System.String">
+			<string>You are now ready for intermediate-level tasks - your first mission! But before you move on, I have one last favor to ask of you. Return to the Spawning Grounds once more and lead another Newborn to me, just like you were led here.</string>
+		</Object>
+		<Object refID="-313174356" type="System.String">
+			<string>- Return to the Spawning Grounds and find the Uninfected Newborn.
+
+- Return with it for your reward.</string>
+		</Object>
+		<Object refID="384692014" type="System.String">
+			<string>SmallCenter2</string>
+		</Object>
+		<Object refID="1947253782" type="System.String">
+			<string>{}</string>
+		</Object>
+		<Object refID="-1592150170" type="System.String">
+			<string>Flag_sukratspawnpoint0</string>
+		</Object>
+		<Object refID="-1938795520" type="NodeEditorFramework.Standard.PathData">
+			<PathData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<waypoints>
+					<Node>
+						<position>
+							<x>259.951538</x>
+							<y>-135.0488</y>
+						</position>
+						<ID>0</ID>
+						<children>
+							<int>9</int>
+						</children>
+					</Node>
+					<Node>
+						<position>
+							<x>259.8836</x>
+							<y>-142.705078</y>
+						</position>
+						<ID>9</ID>
+						<children />
+					</Node>
+				</waypoints>
+			</PathData>
+		</Object>
+		<Object refID="896495582" type="System.String">
+			<string>Flag_aristuspawnpoint0</string>
+		</Object>
+		<Object refID="469661149" type="System.String">
+			<string>Welcome, Newborn. Glad you could make it. I will act as your mentor from now on. Speak to me when you are ready.</string>
+		</Object>
+		<Object refID="-366131408" type="System.String">
+			<string>Good work. Your enhanced Shell offers more protection as well as Speed Thrust, an ability that grants temporary additional speed when used.</string>
+		</Object>
+		<Object refID="-1224072378" type="System.String">
+			<string>Well done. Get more parts if you want to, but their weight will slow you down. Make sure your shell configuration is always up to the task.</string>
+		</Object>
+		<Object refID="899726334" type="System.String">
+			<string>escape-to-safety</string>
+		</Object>
+		<Object refID="686355553" type="System.String">
+			<string>build-your-ship</string>
+		</Object>
+		<Object refID="-1336033733" type="System.String">
+			<string>combat-introduction</string>
+		</Object>
+		<Object refID="844367783" type="System.String">
+			<string>Impressive! I see you have a lot of potential, but this was only the beginning.</string>
+		</Object>
+		<Object refID="551194642" type="System.String">
+			<string>part-stealer</string>
+		</Object>
+		<Object refID="1866313436" type="System.String">
+			<string>rescue-to-safety</string>
+		</Object>
+		<Object refID="728495143" type="System.String">
+			<string>Thank you. The birth of Newborns in our Spawning Grounds is rather rare, but we try our best to prevent the Uninfected from giving them a hard time.
+
+(End of story as of version Alpha 1.0.0, thank you for playing ShellCore Command Remastered!)</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

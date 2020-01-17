@@ -90,8 +90,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public static EntityBlueprint.PartInfo CullSpatialValues(EntityBlueprint.PartInfo partToCull) {
 		var part = new EntityBlueprint.PartInfo();
 		part.partID = partToCull.partID;
-		part.secondaryData = partToCull.secondaryData;
 		part.abilityID = partToCull.abilityID;
+		if(part.abilityID == 10) part.secondaryData = partToCull.secondaryData;
 		part.tier = partToCull.tier;
 		return part;
 	}

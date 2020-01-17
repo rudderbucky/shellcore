@@ -203,7 +203,6 @@ public class SectorManager : MonoBehaviour
                         new Vector3(curSect.bounds.x, curSect.bounds.y - curSect.bounds.h, 0)
                     });
                     border.enabled = player.cursave.sectorsSeen.Contains(curSect.sectorName);
-                    Debug.Log(player.cursave.sectorsSeen.Count);
                     minimapSectorBorders.Add(curSect, border);
 
                     sectors.Add(curSect);

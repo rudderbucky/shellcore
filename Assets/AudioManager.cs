@@ -15,7 +15,7 @@ public class AudioManager : MonoBehaviour
     void Awake() 
     {
         instance = this;
-        ChangeMasterVolume(PlayerPrefs.GetFloat("MasterVolume", 0.75F));
+        ChangeMasterVolume(PlayerPrefs.GetFloat("MasterVolume", 0.5F));
         ChangeMusicVolume(PlayerPrefs.GetFloat("MusicVolume", 1));
         ChangeSoundEffectsVolume(PlayerPrefs.GetFloat("SFXVolume", 1));
     }

@@ -15,17 +15,15 @@ public class SectorPropertyDisplay : MonoBehaviour
     public InputField y;
     public InputField w;
     public InputField h;
+    Vector2 mousePos;
 
-
-
-    void Start() {
+    void Start() 
+    {
         if(!rectTransform) rectTransform = GetComponent<RectTransform>();
-        Hide();
     }
 
-
-    Vector2 mousePos;
     public void DisplayProperties(Sector sector) {
+        if(!rectTransform) rectTransform = GetComponent<RectTransform>();
         currentSector = sector;
         gameObject.SetActive(true);
         mousePos = WorldCreatorCursor.GetMousePos();

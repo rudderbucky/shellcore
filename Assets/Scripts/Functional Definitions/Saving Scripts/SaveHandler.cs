@@ -36,7 +36,7 @@ public class SaveHandler : MonoBehaviour {
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
-            player.spawnPoint = save.position;
+            if(save.timePlayed != 0) player.spawnPoint = save.position;
 
             player.Rebuild();
             Camera.main.GetComponent<CameraScript>().Initialize(player);

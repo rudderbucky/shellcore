@@ -16,8 +16,8 @@ public class ItemPropertyDisplay : MonoBehaviour
     void Start() 
     {
         if(!rectTransform) rectTransform = GetComponent<RectTransform>();
-        Hide();
     }
+
     void Update() 
     {
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);

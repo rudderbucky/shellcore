@@ -21,7 +21,7 @@ public class SettingsScript : MonoBehaviour {
 		HUDArrowScriptToggle.isOn = PlayerPrefs.GetString("HUDArrowScript_active", "False") == "True";
 		BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
 		RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";;
-		masterSoundSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.75f);
+		masterSoundSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
 		musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
 		soundSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
 		windowedMode.isOn = (Screen.fullScreenMode == FullScreenMode.Windowed || Screen.fullScreenMode == FullScreenMode.MaximizedWindow);
