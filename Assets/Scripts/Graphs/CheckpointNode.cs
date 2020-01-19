@@ -35,7 +35,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             (Canvas.Traversal as Traverser).lastCheckpointName = checkpointName;
-            TaskManager.Instance.AutoSave();
+            TaskManager.Instance.AttemptAutoSave();
             return 0;
         }
     }

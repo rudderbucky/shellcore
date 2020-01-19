@@ -17,8 +17,6 @@ public class PlayerCore : ShellCore {
     public int[] abilityCaps;
     public int reputation;
 
-    private bool initialized = false;
-
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
     }

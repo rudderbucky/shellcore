@@ -31,9 +31,17 @@ public class DialogueSystem : MonoBehaviour
     public PlayerCore player;
     Vector3? speakerPos;
     public CoreUpgraderScript upgraderScript;
+
+    public enum DialogueStyle
+    {
+        Remastered,
+        Original
+    }
+    public static DialogueStyle dialogueStyle;
     private void Awake()
     {
         Instance = this;
+        dialogueStyle = (DialogueStyle)PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0); 
     }
 
     private void Update()
@@ -84,6 +92,7 @@ public class DialogueSystem : MonoBehaviour
             speakerPos = speaker.transform.position;
         }
 
+        DialogueViewTransitionIn(speaker);
         window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
@@ -155,6 +164,7 @@ public class DialogueSystem : MonoBehaviour
         if (window) endDialogue(0);
         //speakerPos = speaker.transform.position;
         //create window
+        speakerPos = null;
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
@@ -164,6 +174,8 @@ public class DialogueSystem : MonoBehaviour
         window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
+
+        DialogueViewTransitionIn(speaker);
 
         // radio image 
         if(speaker)
@@ -176,6 +188,9 @@ public class DialogueSystem : MonoBehaviour
             window.GetComponentInChildren<SelectionDisplayHandler>().gameObject.SetActive(false);
             window.transform.Find("Name").GetComponent<Text>().text = "Unknown Speaker";
         }
+
+        // update speakerPos
+        if(speaker) speakerPos = speaker.transform.position;
 
         if(speaker)
             AudioManager.PlayClipByID("clip_typing");
@@ -213,6 +228,8 @@ public class DialogueSystem : MonoBehaviour
         if (window) endDialogue(0, false);
         //speakerPos = speaker.transform.position;
         //create window
+
+        speakerPos = null;
         window = Instantiate(taskDialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
@@ -222,6 +239,8 @@ public class DialogueSystem : MonoBehaviour
         window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
+
+        DialogueViewTransitionIn(speaker);
 
         AudioManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
                                                      // so cover for its noise here
@@ -322,6 +341,9 @@ public class DialogueSystem : MonoBehaviour
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
+
+        DialogueViewTransitionIn(speaker);
+
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
         window.OnCancelled.AddListener(() => { endDialogue(); });
@@ -463,6 +485,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
+        DialogueViewTransitionOut();
         window.playSoundOnClose = soundOnClose;
         window.CloseUI();
         Destroy(window.transform.root.gameObject);
@@ -471,5 +494,91 @@ public class DialogueSystem : MonoBehaviour
             Debug.Log(OnDialogueEnd);
             OnDialogueEnd.Invoke(answer);
         }
+    }
+
+    // black bars
+    public RectTransform blackBarTop;
+    public RectTransform blackBarBottom;
+    public CanvasGroup hudGroup;
+    private enum DialogueState
+    {
+        In,
+        Out,
+        Idle
+    }
+    private DialogueState currentState = DialogueState.Idle;
+    private void DialogueViewTransitionIn(Entity speaker = null)
+    {
+        currentState = DialogueState.In;
+        var windowRect = window.GetComponent<RectTransform>();
+        switch(dialogueStyle)
+        {
+            case DialogueStyle.Original:
+                windowRect.anchorMin = windowRect.anchorMax = new Vector2(0.5F, 0.5F);
+                windowRect.anchoredPosition = new Vector2(0, 0);
+                break;
+            case DialogueStyle.Remastered:
+            default:
+                if(speaker && player)
+                {
+                    if(player.transform.position.y <= speaker.transform.position.y)
+                    {
+                        windowRect.anchorMin = new Vector2(0, 0);
+                        windowRect.anchorMax = new Vector2(1, 0);
+                        windowRect.anchoredPosition = new Vector2(0, 200);
+                    }
+                    else
+                    {
+                        windowRect.anchorMin = new Vector2(0, 1);
+                        windowRect.anchorMax = new Vector2(1, 1);
+                        windowRect.anchoredPosition = new Vector2(0, -200);
+                    }
+
+                }
+                StartCoroutine("BarFadeIn");
+                break;
+        }
+        
+    }
+    IEnumerator BarFadeIn()
+    {
+        blackBarTop.gameObject.SetActive(true);
+        blackBarBottom.gameObject.SetActive(true);
+
+        float count = blackBarBottom.anchoredPosition.y;
+        while(count < blackBarBottom.sizeDelta.y)
+        {
+            if(currentState != DialogueState.In) break;
+            count += 0.1F * blackBarBottom.sizeDelta.y;
+            hudGroup.alpha -= 0.1F;
+            blackBarTop.anchoredPosition = new Vector2(0, -count);
+            blackBarBottom.anchoredPosition = new Vector2(0, count);
+            yield return new WaitForSeconds(0.0025F);
+        }
+        if(currentState == DialogueState.In) currentState = DialogueState.Idle;
+    }
+
+    IEnumerator BarFadeOut()
+    {
+        blackBarTop.gameObject.SetActive(true);
+        blackBarBottom.gameObject.SetActive(true);
+
+        float count = blackBarBottom.anchoredPosition.y;
+        while(count > 0)
+        {
+            if(currentState != DialogueState.Out) break;
+            count -= 0.1F * blackBarBottom.sizeDelta.y;
+            hudGroup.alpha += 0.1F;
+            blackBarTop.anchoredPosition = new Vector2(0, -count);
+            blackBarBottom.anchoredPosition = new Vector2(0, count);
+            yield return new WaitForSeconds(0.0025F);
+        }
+        if(currentState == DialogueState.Out) currentState = DialogueState.Idle;
+    }
+
+    private void DialogueViewTransitionOut()
+    {
+        currentState = DialogueState.Out;
+        StartCoroutine("BarFadeOut");
     }
 }

@@ -13,7 +13,6 @@ public class AirCarrier : AirConstruct, ICarrier {
 
     int intrinsicCommandLimit = 0;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
-    private bool initialized;
 
     public bool GetIsInitialized()
     {

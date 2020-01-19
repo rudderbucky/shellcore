@@ -15,6 +15,8 @@ public class SettingsScript : MonoBehaviour {
 	public (int, int)[] resolutions = new (int, int)[] {(1024, 768), (1366, 768), (1920, 1080), (3840, 2160)};
 	public Dropdown windowResolution;
 	public Toggle windowedMode;
+	public Dropdown dialogueStyle;
+	public Toggle taskManagerAutoSaveEnabled;
 
 	void Start() {
 		// get playerpref values and configure toggles and sliders based on them
@@ -24,6 +26,8 @@ public class SettingsScript : MonoBehaviour {
 		masterSoundSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
 		musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
 		soundSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
+		dialogueStyle.value = PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0);
+		taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
 		windowedMode.isOn = (Screen.fullScreenMode == FullScreenMode.Windowed || Screen.fullScreenMode == FullScreenMode.MaximizedWindow);
 		windowResolution.value = FindResolution();
 	}
@@ -84,5 +88,17 @@ public class SettingsScript : MonoBehaviour {
 	{
 		PlayerPrefs.SetString("RectangleEffectScript_active", val + "");
 		RectangleEffectScript.SetActive(val);
+	}
+
+	public void ChangeDialogueSystemDialogueStyle(int val)
+	{
+		PlayerPrefs.SetInt("DialogueSystem_dialogueStyle", val);
+		DialogueSystem.dialogueStyle = (DialogueSystem.DialogueStyle)val;
+	}
+
+	public void ChangeTaskManagerAutoSaveEnabled(bool val)
+	{
+		PlayerPrefs.SetString("TaskManager_autoSaveEnabled", val + "");
+		TaskManager.autoSaveEnabled = val;
 	}
 }

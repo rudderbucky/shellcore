@@ -7,7 +7,7 @@ public class PlayerViewScript : MonoBehaviour {
 	public Transform player;
 	private Stack<IWindow> currentWindow;
 	private static PlayerViewScript instance;
-	public static int currentLayer = 0;
+	public static int currentLayer = 2;
 
 	public static void SetCurrentWindow(IWindow window) {
 		instance.currentWindow.Push(window);

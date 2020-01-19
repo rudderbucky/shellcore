@@ -115,7 +115,6 @@ namespace NodeEditorFramework.Standard
                     TaskManager.interactionOverrides.Remove(rewardGiverName);
                 });
             }
-            TaskManager.speakerName = rewardGiverName;
             TryAddObjective();
 
             return -1;

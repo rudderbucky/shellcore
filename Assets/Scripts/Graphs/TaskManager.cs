@@ -19,6 +19,7 @@ public class TaskManager : MonoBehaviour
     public List<Traverser> traversers;
     List<Task> activeTasks = new List<Task>();
     public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
+    public static bool autoSaveEnabled;
 
     // objective locations for visualization of tasks in the main map and minimap
     public class ObjectiveLocation 
@@ -52,6 +53,7 @@ public class TaskManager : MonoBehaviour
         Instance = this;
         initCanvases();
         questCanvasPaths = new List<string>();
+        autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
     }
 
     void Update()
@@ -212,9 +214,9 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    public void AutoSave()
+    public void AttemptAutoSave()
     {
-        saveHandler.Save();
+        if(autoSaveEnabled) saveHandler.Save();
     }
 
     public void RemoveTraverser(Traverser traverser)
