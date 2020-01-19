@@ -38,7 +38,7 @@ public class TaskManager : MonoBehaviour
     public static List<ObjectiveLocation> objectiveLocations = new List<ObjectiveLocation>();
 
     // Move to Dialogue System?
-    public static string speakerName;
+    public static string speakerName = null;
     public static Entity GetSpeaker() {
         var speakerObj = SectorManager.instance.GetObject(speakerName);
         return speakerObj?.GetComponent<Entity>();
@@ -51,6 +51,8 @@ public class TaskManager : MonoBehaviour
             Destroy(gameObject);
         }
         Instance = this;
+        objectiveLocations = new List<ObjectiveLocation>();
+        speakerName = null;
         initCanvases();
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
@@ -208,6 +210,7 @@ public class TaskManager : MonoBehaviour
 
     public void LoadCheckpoint(string name)
     {
+        Debug.Log("name");
         for (int i = 0; i < traversers.Count; i++)
         {
             traversers[i].nodeCanvas.nodes.Find((x) => { return (x is CheckpointNode && (x as CheckpointNode).checkpointName == name); });

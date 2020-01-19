@@ -67,6 +67,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
+                TaskManager.speakerName = null;
                 return 0;
             }
         }

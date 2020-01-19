@@ -27,10 +27,10 @@ public class SaveMenuIcon : MonoBehaviour {
 		shellImage.color = coreImage.color = FactionColors.colors[0];
 		saveName.text = save.name;
 		version.text = "Version: " + save.version;
-		if(save.version.Contains("Prototype"))
+		if(save.version.Contains("Prototype") || save.version.Contains("Alpha 0.0.0"))
 		{
 			version.color = Color.red;
-			version.text += " - Outdated, will not work!";
+			version.text += " - Unsupported Version!";
 		}
 		timePlayed.text = "Time Played: " + (((int)save.timePlayed / 60 > 0) ? (int)save.timePlayed / 60 + " hours " : "") + (int)save.timePlayed % 60 + " minutes";
 	}

@@ -22,7 +22,7 @@ public class SettingsScript : MonoBehaviour {
 		// get playerpref values and configure toggles and sliders based on them
 		HUDArrowScriptToggle.isOn = PlayerPrefs.GetString("HUDArrowScript_active", "False") == "True";
 		BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
-		RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";;
+		RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";
 		masterSoundSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
 		musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
 		soundSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
@@ -39,6 +39,18 @@ public class SettingsScript : MonoBehaviour {
 			if(resolutions[i].Item1 == Screen.width) return i;
 		}
 		return -1;
+	}
+
+	public void SaveSettings()
+	{
+		ChangeMasterVolume(masterSoundSlider.value);
+		ChangeMusicVolume(musicSlider.value);
+		ChangeSoundEffectsVolume(soundSlider.value);
+		ChangeHUDArrowScriptActive(HUDArrowScriptToggle.isOn);
+		ChangeBackgroundScriptActive(BackgroundScriptToggle.isOn);
+		ChangeRectangleEffectScriptActive(RectangleEffectScriptToggle.isOn);
+		ChangeTaskManagerAutoSaveEnabled(taskManagerAutoSaveEnabled.isOn);
+		ChangeDialogueSystemDialogueStyle(dialogueStyle.value);
 	}
 
 	public void ChangeMasterVolume(float newVol)

@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
     
     // change this ID to override sector music
     public static string musicOverrideID;
-    void Awake() 
+    void Start() 
     {
         instance = this;
         ChangeMasterVolume(PlayerPrefs.GetFloat("MasterVolume", 0.5F));

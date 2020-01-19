@@ -437,7 +437,7 @@ public class SectorManager : MonoBehaviour
         #endif
 
         //unload previous sector
-        var characterObjects = new Dictionary<string, GameObject>();
+        var remainingObjects = new Dictionary<string, GameObject>();
         foreach(var obj in objects)
         {
             if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
@@ -461,8 +461,8 @@ public class SectorManager : MonoBehaviour
                 }
                 if(!skipTag)
                     Destroy(obj.Value);
-                else characterObjects.Add(obj.Key, obj.Value);
-            }
+                else remainingObjects.Add(obj.Key, obj.Value);
+            } else remainingObjects.Add(obj.Key, obj.Value); // add to persistent objects since the object list should start only with characters
         }
 
         Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
@@ -489,7 +489,7 @@ public class SectorManager : MonoBehaviour
         // to another sector
         if((player && player.GetTractorTarget() != null && player.GetTractorTarget().GetComponent<ShellPart>()))
             AIData.strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
-        objects = characterObjects;
+        objects = remainingObjects;
 
         // reset stations and carriers
 
@@ -505,7 +505,7 @@ public class SectorManager : MonoBehaviour
             if (!player.cursave.sectorsSeen.Contains(current.sectorName))
                 player.cursave.sectorsSeen.Add(current.sectorName);
             player.ResetPower();
-            objects.Add("player", player.gameObject);
+            if(!objects.ContainsKey("player")) objects.Add("player", player.gameObject);
             player.sectorMngr = this;
             if(player.alerter) player.alerter.showMessage("Entering sector: " + current.sectorName);
         }

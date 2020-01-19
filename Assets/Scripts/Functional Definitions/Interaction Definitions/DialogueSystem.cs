@@ -29,7 +29,7 @@ public class DialogueSystem : MonoBehaviour
     public double timeBetweenCharacters = 0.0175d;
     string text = "";
     public PlayerCore player;
-    Vector3? speakerPos;
+    Vector3? speakerPos = null;
     public CoreUpgraderScript upgraderScript;
 
     public enum DialogueStyle
@@ -47,7 +47,9 @@ public class DialogueSystem : MonoBehaviour
     private void Update()
     {
         if(window && speakerPos != null && player && (player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100)
+        {
             endDialogue();
+        }
         // Add text
         if(textRenderer && characterCount < text.Length)
         {
@@ -92,7 +94,6 @@ public class DialogueSystem : MonoBehaviour
             speakerPos = speaker.transform.position;
         }
 
-        DialogueViewTransitionIn(speaker);
         window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
@@ -106,6 +107,7 @@ public class DialogueSystem : MonoBehaviour
 
         // radio image 
         if(speaker) {
+            DialogueViewTransitionIn(speaker);
             window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
             window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
         }
@@ -191,6 +193,7 @@ public class DialogueSystem : MonoBehaviour
 
         // update speakerPos
         if(speaker) speakerPos = speaker.transform.position;
+        Debug.Log(speakerPos + " " + speaker);
 
         if(speaker)
             AudioManager.PlayClipByID("clip_typing");
@@ -323,7 +326,8 @@ public class DialogueSystem : MonoBehaviour
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
                 if(index == 1) 
-                { 
+                {
+                    DialogueViewTransitionOut(); 
                     SectorManager.instance.player.alerter.showMessage("New Task", "clip_victory");
                     endDialogue(index, false);
                 } else endDialogue(index, true);
@@ -485,7 +489,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
-        DialogueViewTransitionOut();
+        if(answer == 0) DialogueViewTransitionOut();
         window.playSoundOnClose = soundOnClose;
         window.CloseUI();
         Destroy(window.transform.root.gameObject);
