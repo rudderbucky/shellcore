@@ -403,7 +403,7 @@ public class SectorManager : MonoBehaviour
         entity.spawnPoint = data.position;
         entity.blueprint = blueprint;
 
-        if(data.ID == "" || data.ID == null)
+        if(data.ID == "" || data.ID == null || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
         {
             data.ID = objects.Count.ToString();
         }
@@ -414,7 +414,7 @@ public class SectorManager : MonoBehaviour
             entity.dialogue = ResourceManager.GetAsset<Dialogue>(data.dialogueID);
         }
 
-        objects.Add(data.ID, gObj);
+        if(!objects.ContainsKey(data.ID)) objects.Add(data.ID, gObj);
         return entity;
     }
 

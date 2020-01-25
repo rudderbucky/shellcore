@@ -36,4 +36,12 @@ public class MainMenu : MonoBehaviour
             + "Special thanks to Flashbacker"
         );
     }
+
+    void Update()
+    {
+        if(Input.GetKeyUp(KeyCode.B))
+        {
+            SceneManager.LoadScene("WorldCreator");
+        }
+    }
 }

@@ -580,7 +580,7 @@ public class DialogueSystem : MonoBehaviour
         if(currentState == DialogueState.Out) currentState = DialogueState.Idle;
     }
 
-    private void DialogueViewTransitionOut()
+    public void DialogueViewTransitionOut()
     {
         currentState = DialogueState.Out;
         StartCoroutine("BarFadeOut");

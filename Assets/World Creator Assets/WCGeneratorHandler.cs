@@ -233,10 +233,10 @@ public class WCGeneratorHandler : MonoBehaviour
     public void WriteWorldFromEditorPrompt()
     {
         #if UNITY_EDITOR
-            var str = UnityEditor.EditorUtility.SaveFolderPanel(
-            "Write World (You must create the folder you want to save into) ", 
-            Application.streamingAssetsPath + "\\Sectors", "DefaultWorldName");
-            WriteWorld(str);
+        var str = UnityEditor.EditorUtility.SaveFolderPanel(
+        "Write World (You must create the folder you want to save into) ", 
+        Application.streamingAssetsPath + "\\Sectors", "DefaultWorldName");
+        WriteWorld(str);
         #endif
     }
 
