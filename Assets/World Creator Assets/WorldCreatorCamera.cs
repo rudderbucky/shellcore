@@ -14,8 +14,8 @@ public class WorldCreatorCamera : MonoBehaviour
         group.interactable = (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0);
         if(!system.IsPointerOverGameObject())
         {
-            transform.position += Input.GetAxis("Horizontal") * Vector3.right;
-            transform.position += Input.GetAxis("Vertical") * Vector3.up;
+            transform.position += Input.GetAxis("Horizontal") * new Vector3(1 + Mathf.Abs(transform.position.z + 10) / 4, 0, 0);;
+            transform.position += Input.GetAxis("Vertical") * new Vector3(0, 1 + Mathf.Abs(transform.position.z + 10) / 4, 0);
 
             if(Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.z >= -150) 
             {
