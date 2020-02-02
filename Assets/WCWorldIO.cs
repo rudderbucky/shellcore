@@ -27,10 +27,16 @@ public class WCWorldIO : MonoBehaviour
 
     public void TestWorld()
     {
-        string path = Application.streamingAssetsPath + "\\Sectors\\testingworld";
-        generatorHandler.WriteWorld(path);
-        SectorManager.testJsonPath = path;
-        SceneManager.LoadScene("SampleScene");
+        var savePath = Application.persistentDataPath + "\\Saves\\TestSave";
+        if(File.Exists(savePath)) 
+            File.Delete(savePath);
+        SaveMenuHandler.CreateSave("TestSave");
+        var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+        if(generatorHandler.WriteWorld(path))
+        {
+            SectorManager.testJsonPath = path;
+            SaveMenuIcon.LoadSaveByPath(savePath, false);
+        }
     }
 
     public void ShowWriteMode()
@@ -48,7 +54,8 @@ public class WCWorldIO : MonoBehaviour
         this.mode = mode;
         foreach(var dir in Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors"))
         {
-            AddButton(dir);
+            if(!dir.Contains("TestWorld"))
+                AddButton(dir);
         }
 
     }

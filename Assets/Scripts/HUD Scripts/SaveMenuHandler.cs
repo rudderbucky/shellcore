@@ -26,6 +26,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 			string[] files = Directory.GetFiles(path);
 			foreach(string file in files) 
 			{
+				if(file.Contains("TestSave")) continue;
 				try 
 				{
 					string savejson = File.ReadAllText(file);
@@ -91,11 +92,29 @@ public class SaveMenuHandler : GUIWindowScripts {
 		}
 	}
 	public void AddSave() {
-		string currentVersion = "Alpha 1.0.1";
 		string name = inputField.text.Trim();
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
 		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
-		if(name == "" || paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1) return;
+		if(name == "" || name == "TestSave" ||
+			paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1) return;
+
+		var save = CreateSave(name);
+
+		saves.Add(save);
+		paths.Add(path);
+
+		SaveMenuIcon icon = Instantiate(saveIconPrefab, contents).GetComponent<SaveMenuIcon>();
+		icon.save = save;
+		icon.path = path;
+		icon.index = icons.Count;
+		icon.handler = this;
+		icons.Add(icon);
+		icon.transform.SetAsFirstSibling();
+	}
+
+	public static PlayerSave CreateSave(string name)
+	{
+		string currentVersion = "Alpha 1.0.1";
 		PlayerSave save = new PlayerSave();
 		save.name = name;
 		save.timePlayed = 0;
@@ -117,17 +136,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		save.abilityCaps = new int[] {10, 3, 10, 10};
 		save.shards = 0;
 		save.version = currentVersion;
-
-		saves.Add(save);
-		paths.Add(path);
-
-		SaveMenuIcon icon = Instantiate(saveIconPrefab, contents).GetComponent<SaveMenuIcon>();
-		icon.save = save;
-		icon.path = path;
-		icon.index = icons.Count;
-		icon.handler = this;
-		icons.Add(icon);
-		icon.transform.SetAsFirstSibling();
-		File.WriteAllText(path, JsonUtility.ToJson(save));
-	}
+		File.WriteAllText(Application.persistentDataPath + "\\Saves" + "\\" + name, JsonUtility.ToJson(save));
+		return save;
+	} 
 }

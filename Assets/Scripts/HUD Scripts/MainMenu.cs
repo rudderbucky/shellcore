@@ -11,9 +11,9 @@ public class MainMenu : MonoBehaviour
     public void StartSectorCreator() {
         SceneManager.LoadScene("SectorCreator");
     }
-    public static void StartGame()
+    public static void StartGame(bool nullifyTestJsonPath = false)
     {
-        SectorManager.testJsonPath = null;
+        if(nullifyTestJsonPath) SectorManager.testJsonPath = null;
         SceneManager.LoadScene("SampleScene");
     }
 
@@ -38,11 +38,9 @@ public class MainMenu : MonoBehaviour
         );
     }
 
-    void Update()
+    public void StartWorldCreator()
     {
-        if(Input.GetKeyUp(KeyCode.B))
-        {
-            SceneManager.LoadScene("WorldCreator");
-        }
+        WCGeneratorHandler.DeleteTestWorld();
+        SceneManager.LoadScene("WorldCreator");
     }
 }

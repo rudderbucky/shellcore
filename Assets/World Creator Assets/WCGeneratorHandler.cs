@@ -19,12 +19,36 @@ public class WCGeneratorHandler : MonoBehaviour
     public WCCharacterHandler characterHandler;
     public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
     public Item characterItem;
-    public void WriteWorld(string path) 
+
+    private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+    void Start()
+    {
+        if(System.IO.Directory.Exists(testPath))
+        {
+            ReadWorld(testPath);
+            DeleteTestWorld();
+        }
+    }
+
+    public static void DeleteTestWorld()
+    {
+        if(System.IO.Directory.Exists(testPath))
+        {
+            foreach(var file in System.IO.Directory.GetFiles(testPath))
+            {
+                System.IO.File.Delete(file);
+            }
+            System.IO.Directory.Delete(testPath);
+        }
+    }
+
+
+    public bool WriteWorld(string path) 
     {
         if(path == null || path == "")
         {
             Debug.Log("Path your damn world!");
-            return;
+            return false;
         }
 
         sectors = new List<Sector>();
@@ -75,7 +99,7 @@ public class WCGeneratorHandler : MonoBehaviour
             if(container == null)
             {
                 Debug.Log("No container for item. Abort.");
-                return;
+                return false;
             }
             switch(item.type)
             {
@@ -172,6 +196,7 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
 		Debug.Log("JSON written to location: " + path);
+        return true;
     }
 
     string GetDefaultName(Sector sector, int minX, int maxY)
@@ -224,9 +249,10 @@ public class WCGeneratorHandler : MonoBehaviour
 
     (int, int) GetPlatformIndices(Sector sector, Vector2 pos) 
     {
-        int row = sector.platform.rows - 1 - ((int)pos.y - sector.bounds.y) / (int)cursor.tileSize;
+        Debug.Log(pos + " " + (sector.bounds.y - (int)pos.y) / (int)cursor.tileSize);
+        int row = (sector.bounds.y - (int)pos.y) / (int)cursor.tileSize;
         int col = ((int)pos.x - sector.bounds.x) / (int)cursor.tileSize;
-
+        Debug.Log((row, col));
         return (row, col);
     }
 
@@ -346,7 +372,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 {
                                     Item copy = itemHandler.CopyItem(item);
                                     copy.pos = copy.obj.transform.position 
-                                        = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize, -cursor.cursorOffset.y + curSect.bounds.y + curSect.bounds.h - i * cursor.tileSize);
+                                        = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize, -cursor.cursorOffset.y + curSect.bounds.y - i * cursor.tileSize);
                                     copy.rotation = plat.rotations[plat.columns * i + j];
                                     copy.obj.transform.RotateAround(copy.pos, Vector3.forward, 90 * copy.rotation);
                                     cursor.placedItems.Add(copy);

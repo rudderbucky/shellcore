@@ -82,6 +82,7 @@ public class SectorManager : MonoBehaviour
         sectorBorders.loop = true;
         OnSectorLoad = null;
 
+        Debug.Log(testJsonPath);
         if(jsonMode) LoadSectorFile(testJsonPath == null ? jsonPath : testJsonPath);
         jsonMode = false;
     }
@@ -561,7 +562,7 @@ public class SectorManager : MonoBehaviour
 
         //land platforms
         lpg.SetColor(current.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
-        lpg.BuildTiles(current.platform, new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y + current.bounds.h / 2));
+        lpg.BuildTiles(current.platform, new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2));
 
         //sector color
         background.setColor(current.backgroundColor);

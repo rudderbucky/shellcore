@@ -36,6 +36,14 @@ public class SaveMenuIcon : MonoBehaviour {
 	}
 
 	public void LoadSave() {
+		LoadSaveByPath(path, true);
+	}
+
+	public void DeleteSave() {
+		handler.PromptDelete(index);
+	}
+
+	public static void LoadSaveByPath(string path, bool nullifyTestJsonPath) {
 		string current = Application.persistentDataPath + "\\CurrentSavePath";
 		if(!File.Exists(current)) File.WriteAllText(current, path);
 		else 
@@ -43,10 +51,6 @@ public class SaveMenuIcon : MonoBehaviour {
 			File.Delete(current);
 			File.WriteAllText(current, path);
 		}
-		MainMenu.StartGame();
-	}
-
-	public void DeleteSave() {
-		handler.PromptDelete(index);
+		MainMenu.StartGame(nullifyTestJsonPath);
 	}
 }
