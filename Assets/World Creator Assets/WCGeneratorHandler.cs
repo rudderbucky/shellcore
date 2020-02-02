@@ -183,7 +183,7 @@ public class WCGeneratorHandler : MonoBehaviour
             
             sector.entities = sectEnts[sector].ToArray();
             sector.targets = sectTargetIDS[sector].ToArray();
-            sector.backgroundColor = SectorColors.colors[(int)sector.type];
+            // sector.backgroundColor = SectorColors.colors[(int)sector.type];
 
             SectorData data = new SectorData();
             data.sectorjson = JsonUtility.ToJson(sector);

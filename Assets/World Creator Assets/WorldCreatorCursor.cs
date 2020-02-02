@@ -287,6 +287,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 currentSector = new SectorWCWrapper();
                 currentSector.sector = ScriptableObject.CreateInstance<Sector>();
                 currentSector.sector.hasMusic = true; // sectors have music by default in WC
+                currentSector.sector.backgroundColor = SectorColors.colors[0];
                 var renderer = currentSector.renderer = Instantiate(borderPrefab).GetComponent<LineRenderer>();
                 renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = currentSector.sector;
                 lastSectorPos = null;

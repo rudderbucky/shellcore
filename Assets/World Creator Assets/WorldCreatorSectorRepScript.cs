@@ -26,6 +26,6 @@ public class WorldCreatorSectorRepScript : MonoBehaviour
 
     void ChangeColor() 
     {
-        if(sector) sprite.color = SectorColors.colors[(int)sector.type];
+        if(sector) sprite.color = sector.backgroundColor;
     }
 }

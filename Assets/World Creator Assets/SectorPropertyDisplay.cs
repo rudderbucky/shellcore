@@ -15,6 +15,10 @@ public class SectorPropertyDisplay : MonoBehaviour
     public InputField y;
     public InputField w;
     public InputField h;
+    public InputField colorR;
+    public InputField colorG;
+    public InputField colorB;
+    
     Vector2 mousePos;
 
     void Start() 
@@ -40,6 +44,9 @@ public class SectorPropertyDisplay : MonoBehaviour
         y.text = currentSector.bounds.y + "";
         w.text = currentSector.bounds.w + "";
         h.text = currentSector.bounds.h + "";
+        colorR.text = currentSector.backgroundColor.r + "";
+        colorG.text = currentSector.backgroundColor.g + "";
+        colorB.text = currentSector.backgroundColor.b + "";
     }
 
     void Update() {
@@ -55,6 +62,10 @@ public class SectorPropertyDisplay : MonoBehaviour
     public void UpdateType() 
     {
         currentSector.type = (Sector.SectorType)type.value;
+        currentSector.backgroundColor = SectorColors.colors[type.value];
+        colorR.text = currentSector.backgroundColor.r + "";
+        colorG.text = currentSector.backgroundColor.g + "";
+        colorB.text = currentSector.backgroundColor.b + "";
     }
 
     public void UpdateName() 
@@ -70,6 +81,11 @@ public class SectorPropertyDisplay : MonoBehaviour
     public void UpdateMusicBool()
     {
         currentSector.hasMusic = sectorMusicBool.isOn;
+    }
+
+    public void UpdateColor()
+    {
+        currentSector.backgroundColor = new Color(float.Parse(colorR.text), float.Parse(colorG.text), float.Parse(colorB.text), 1);
     }
 
     public void Hide() {
