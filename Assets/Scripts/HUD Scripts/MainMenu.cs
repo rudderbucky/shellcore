@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
     }
     public static void StartGame()
     {
+        SectorManager.testJsonPath = null;
         SceneManager.LoadScene("SampleScene");
     }
 

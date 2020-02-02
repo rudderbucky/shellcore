@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class WCWorldIO : MonoBehaviour
 {
@@ -22,6 +23,14 @@ public class WCWorldIO : MonoBehaviour
     public void ShowReadMode()
     {
         Show(IOMode.Read);
+    }
+
+    public void TestWorld()
+    {
+        string path = Application.streamingAssetsPath + "\\Sectors\\testingworld";
+        generatorHandler.WriteWorld(path);
+        SectorManager.testJsonPath = path;
+        SceneManager.LoadScene("SampleScene");
     }
 
     public void ShowWriteMode()

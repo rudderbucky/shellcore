@@ -11,7 +11,12 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
 	RectTransform rect; // used for animation
     public void OnPointerClick(PointerEventData eventData)
     {
-			if(name == "MainMenuButton") SceneManager.LoadScene("MainMenu");
+			if(name == "MainMenuButton") 
+			{
+				if(SectorManager.testJsonPath == null)
+				SceneManager.LoadScene("MainMenu");
+				else SceneManager.LoadScene("WorldCreator");
+			}
     }
 
     public void OnPointerEnter(PointerEventData eventData)

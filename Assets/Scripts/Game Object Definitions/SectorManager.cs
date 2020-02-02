@@ -58,6 +58,7 @@ public class SectorManager : MonoBehaviour
         return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0; 
     }
 
+    public static string testJsonPath = null;
     string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main";
     public void Initialize()
     {
@@ -81,7 +82,7 @@ public class SectorManager : MonoBehaviour
         sectorBorders.loop = true;
         OnSectorLoad = null;
 
-        if(jsonMode) LoadSectorFile(jsonPath);
+        if(jsonMode) LoadSectorFile(testJsonPath == null ? jsonPath : testJsonPath);
         jsonMode = false;
     }
 

@@ -21,11 +21,13 @@ public class PlayerViewScript : MonoBehaviour {
 		currentWindow = new Stack<IWindow>();
 		instance = this;
 		if(escapeMenu) escapeMenu.SetActive(false);
+		Time.timeScale = 1;
 	}
 	void Update () {
 		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
 			while(currentWindow.Count > 0) {
 				if(escapeMenu && escapeMenu.activeSelf && !transform.Find("Settings").gameObject.activeSelf) {
+					Time.timeScale = 1;
 					escapeMenu.SetActive(false);
 					return;
 				}
@@ -42,6 +44,8 @@ public class PlayerViewScript : MonoBehaviour {
 			if(escapeMenu) {
 				escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
 				escapeCanvas.sortingOrder = ++currentLayer;
+				if(escapeMenu.activeSelf) Time.timeScale = 0; 
+				else Time.timeScale = 1;
 			}
 		}
 	}

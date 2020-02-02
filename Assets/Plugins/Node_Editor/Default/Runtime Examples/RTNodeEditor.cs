@@ -143,6 +143,7 @@ namespace NodeEditorFramework.Standard
 		}
 		public void ExportData(string path)
 		{
+			if(editorInterface == null) NormalReInit();
 			editorInterface.ExportData(path);
 		}
 	
