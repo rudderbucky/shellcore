@@ -50,6 +50,7 @@ public class DialogueSystem : MonoBehaviour
         {
             endDialogue();
         }
+
         // Add text
         if(textRenderer && characterCount < text.Length)
         {
@@ -60,6 +61,8 @@ public class DialogueSystem : MonoBehaviour
                 textRenderer.text = text.Substring(0, characterCount);
             }
         }
+
+        PassiveDialogueHandler();
     }
 
     public static void StartDialogue(Dialogue dialogue, Entity speaker = null)
@@ -584,5 +587,72 @@ public class DialogueSystem : MonoBehaviour
     {
         currentState = DialogueState.Out;
         StartCoroutine("BarFadeOut");
+    }
+
+    public RectTransform passiveDialogueRect;
+    public Text passiveDialogueText;
+    private DialogueState passiveDialogueState = DialogueState.Out;
+
+    public void SlidePassiveDialogueIn()
+    {
+        passiveDialogueState = DialogueState.In;
+        StartCoroutine("SlideDialogueIn");
+    }
+
+    public void SlidePassiveDialogueOut()
+    {
+        passiveDialogueState = DialogueState.Out;
+        StartCoroutine("SlideDialogueOut");
+    }
+
+    IEnumerator SlideDialogueIn()
+    {
+        float count = passiveDialogueRect.sizeDelta.y;
+        while(count > 0)
+        {
+            if(passiveDialogueState != DialogueState.In) break;
+            count -= 5F;
+            passiveDialogueRect.anchoredPosition += 5 * Vector2.up;
+            yield return new WaitForSeconds(0.0025F);
+        }
+    }
+
+    IEnumerator SlideDialogueOut()
+    {
+        float count = passiveDialogueRect.sizeDelta.y;
+        while(count > 0)
+        {
+            if(passiveDialogueState != DialogueState.Out) break;
+            count -= 5F;
+            passiveDialogueRect.anchoredPosition -= 5 * Vector2.up;
+            yield return new WaitForSeconds(0.0025F);
+        }
+        passiveDialogueText.text = "";
+    }
+
+    public void PushPassiveDialogue(string text)
+    {
+        if(passiveDialogueState != DialogueState.In) SlidePassiveDialogueIn();
+        passiveMessages.Enqueue(text);
+    }
+
+    Queue<string> passiveMessages = new Queue<string>();
+    float queueTimer = 0;
+    void PassiveDialogueHandler()
+    {
+        queueTimer -= Time.deltaTime;
+        if(passiveMessages.Count > 0)
+        {
+            if(queueTimer <= 0)
+            {
+                queueTimer = 3;
+                passiveDialogueText.text += "\n" + passiveMessages.Dequeue();
+            }
+        }
+        else if(queueTimer <= -2 && passiveDialogueState != DialogueState.Out)
+        {
+            SlidePassiveDialogueOut();
+        }
+
     }
 }
