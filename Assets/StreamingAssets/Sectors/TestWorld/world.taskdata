@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.QuestCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="0,0" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start" ID="-8692" type="StartNode" pos="-632.5,-174.625">
+			<Port ID="-8694" name="outputRight" dynamic="False" />
+		</Node>
+		<Node name="Start Cutscene" ID="-8696" type="StartCutsceneNode" pos="-456.25,-142.125">
+			<Port ID="-8698" name="inputLeft" dynamic="False" />
+			<Port ID="-8700" name="outputRight" dynamic="False" />
+			<Port ID="-8702" name="inputUp" dynamic="False" />
+		</Node>
+		<Node name="Rotate Craft" ID="-8704" type="RotateCraftNode" pos="-167.5,-139.625">
+			<Port ID="-8706" name="output" dynamic="False" />
+			<Port ID="-8708" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">false</boolean>
+			<Variable name="entityName" refID="-871206010" />
+			<Variable name="targetEntityName" refID="1875821083" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-8694" port2ID="-8698" />
+		<Connection port1ID="-8700" port2ID="-8708" />
+	</Connections>
+	<Objects>
+		<Object refID="-871206010" type="System.String">
+			<string>test</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

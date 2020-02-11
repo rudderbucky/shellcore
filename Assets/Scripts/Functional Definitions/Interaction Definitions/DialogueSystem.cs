@@ -542,11 +542,18 @@ public class DialogueSystem : MonoBehaviour
                     }
 
                 }
-                StartCoroutine("BarFadeIn");
+                FadeBarIn();
                 break;
         }
         
     }
+
+    public void FadeBarIn()
+    {
+        currentState = DialogueState.In;
+        StartCoroutine("BarFadeIn");
+    }
+
     IEnumerator BarFadeIn()
     {
         blackBarTop.gameObject.SetActive(true);

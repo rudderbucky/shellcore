@@ -16,6 +16,7 @@ public class PlayerCore : ShellCore {
     public int shards;
     public int[] abilityCaps;
     public int reputation;
+    public static PlayerCore Instance;
 
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
@@ -60,6 +61,7 @@ public class PlayerCore : ShellCore {
 
     protected override void Awake()
     {
+        Instance = this;
         name = entityName = "player";
         if (!initialized)
             base.Awake();

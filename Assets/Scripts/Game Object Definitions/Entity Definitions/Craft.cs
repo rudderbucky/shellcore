@@ -111,7 +111,7 @@ public abstract class Craft : Entity
     /// Rotates the craft to the passed vector
     /// </summary>
     /// <param name="directionVector">direction vector to rotate the craft to</param>
-    protected void RotateCraft(Vector2 directionVector) {
+    public void RotateCraft(Vector2 directionVector) {
 
         //no need to do anything if there's no movement
         if (directionVector == Vector2.zero)

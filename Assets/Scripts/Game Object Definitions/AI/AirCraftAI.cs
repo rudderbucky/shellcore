@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AirCraftAI : MonoBehaviour
@@ -10,6 +11,7 @@ public class AirCraftAI : MonoBehaviour
         Battle,
         Inactive,
         Tractor,
+        Player
     }
 
     enum AIState
@@ -156,9 +158,31 @@ public class AirCraftAI : MonoBehaviour
         this.craft = craft;
     }
 
+    public void RotateTo(Vector2 targetVector)
+    {
+        this.targetVector = targetVector;
+        StartCoroutine("RotateCoroutine");
+    }
+
+    private Vector2 targetVector;
+    IEnumerator RotateCoroutine()
+    {
+        float targetAngle = Mathf.Atan2(targetVector.y, targetVector.x) * Mathf.Rad2Deg;
+        float craftAngle = Mathf.Atan2(craft.transform.up.y, craft.transform.up.x) * Mathf.Rad2Deg;
+
+        float delta = Mathf.Abs(Mathf.DeltaAngle(targetAngle - craftAngle, 90));
+        if(delta > 0.0001F) 
+        {
+            craft.RotateCraft(targetVector);
+            yield return null;
+        }
+
+        targetVector = Vector2.zero;
+    }
+
     private void Update()
     {
-        if (!craft.GetIsDead())
+        if (mode != AIMode.Player && !craft.GetIsDead())
         {
             foreach (Ability a in craft.GetAbilities())
             {
