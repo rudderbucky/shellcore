@@ -38,4 +38,10 @@ namespace NodeEditorFramework.Standard
         public override string Identifier { get { return "EntityID"; } }
         public override Color Color { get { return Color.blue; } }
     }
+
+    public class CutsceneConnection : ConnectionKnobStyle
+    {
+        public override string Identifier { get { return "CutsceneComplete"; } }
+        public override Color Color { get { return new Color(0.2f, 0.5f, 1f); } }
+    }
 }

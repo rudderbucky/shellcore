@@ -167,16 +167,14 @@ public class AirCraftAI : MonoBehaviour
     private Vector2 targetVector;
     IEnumerator RotateCoroutine()
     {
-        float targetAngle = Mathf.Atan2(targetVector.y, targetVector.x) * Mathf.Rad2Deg;
-        float craftAngle = Mathf.Atan2(craft.transform.up.y, craft.transform.up.x) * Mathf.Rad2Deg;
-
-        float delta = Mathf.Abs(Mathf.DeltaAngle(targetAngle - craftAngle, 90));
-        if(delta > 0.0001F) 
+        Vector2 normalizedTarget = targetVector.normalized;
+        float delta = Mathf.Abs(Vector2.Dot(craft.transform.up, normalizedTarget) - 1f);
+        while (delta > 0.0001F) 
         {
             craft.RotateCraft(targetVector);
+            delta = Mathf.Abs(Vector2.Dot(craft.transform.up, normalizedTarget) - 1f);
             yield return null;
         }
-
         targetVector = Vector2.zero;
     }
 
