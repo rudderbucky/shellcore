@@ -144,15 +144,14 @@ public class PlayerCore : ShellCore {
     
 	// Update is called once per frame
 	protected override void Update () {
-        if((isInteracting) || (isDead)) isImmobile = true;
-        else isImmobile = false;
+        isImmobile = isDead;
         // call methods
         if(group.sortingOrder < maxAirLayer) // player must always be above other entities
         {
             group.sortingOrder = ++maxAirLayer;
         }
         base.Update(); // base update
-        MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+        if(!isInteracting) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
 
         if (Input.GetKeyDown(KeyCode.T))
         {

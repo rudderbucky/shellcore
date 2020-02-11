@@ -169,35 +169,35 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	private void SetReconstructButton(ReconstructButtonStatus status) {
 		switch(status) {
 			case ReconstructButtonStatus.Valid:
-				reconstructImage.color = reconstructText.color = Color.green;
+				reconstructText.color = Color.green;
 				reconstructText.text = !editorMode ? "RECONSTRUCT" : "CONFIRM CHARACTER BLUEPRINT";
 				break;
 			case ReconstructButtonStatus.PartInvalidPosition:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "A PART IS IN AN INVALID POSITION";
 				break;
 			case ReconstructButtonStatus.NotEnoughCredits:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "NOT ENOUGH CREDITS";
 				break;
 			case ReconstructButtonStatus.PastSkillsLimit:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "TOO MANY SKILLS";
 				break;
 			case ReconstructButtonStatus.PastSpawnsLimit:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "TOO MANY SPAWNS";
 				break;
 			case ReconstructButtonStatus.PastWeaponsLimit:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "TOO MANY WEAPONS";
 				break;
 			case ReconstructButtonStatus.PastPassivesLimit:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "TOO MANY PASSIVES";
 				break;
 			case ReconstructButtonStatus.PartTooHeavy:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "A PART IS TOO HEAVY FOR YOUR CORE";				
 				break;
 		}

@@ -89,12 +89,12 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     void CheckEmpty() {
         if (!blueprint)
         {
-            image.color = text.color = Color.gray;
+            text.color = Color.gray;
             text.text = " CREATE PRESET " + number;
         }
         else
         {
-            image.color = text.color = Color.green;
+            text.color = Color.green;
             text.text = " LOAD PRESET " + number;
         }
     }
@@ -103,7 +103,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         if(blueprint && blueprint.parts != null && !builder.ContainsParts(blueprint.parts)) 
         {   
             valid = false;
-            image.color = text.color = Color.red;
+            text.color = Color.red;
             text.text = " INADEQUATE PARTS ";
         } else {
             valid = true;

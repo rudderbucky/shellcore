@@ -10,13 +10,13 @@ public class ShipBuilderSortingButton : MonoBehaviour
 	void Start() {
 		button = GetComponent<Button>();
 		text = GetComponentInChildren<Text>();
-		button.image.color = text.color = Color.green;
+		text.color = Color.green;
 	}
 	void OnEnable() {
-		if(button) button.image.color = text.color = Color.green;
+		if(button) text.color = Color.green;
 	}
 
 	public void ChangeColor() {
-        button.image.color = text.color = button.image.color == Color.gray ? Color.green : Color.gray;
+        text.color = text.color == Color.gray ? Color.green : Color.gray;
 	}
 }

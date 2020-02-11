@@ -611,8 +611,8 @@ public class DialogueSystem : MonoBehaviour
         while(count > 0)
         {
             if(passiveDialogueState != DialogueState.In) break;
-            count -= 5F;
-            passiveDialogueRect.anchoredPosition += 5 * Vector2.up;
+            count -= 10F;
+            passiveDialogueRect.anchoredPosition += 10 * Vector2.up;
             yield return new WaitForSeconds(0.0025F);
         }
     }
@@ -623,8 +623,8 @@ public class DialogueSystem : MonoBehaviour
         while(count > 0)
         {
             if(passiveDialogueState != DialogueState.Out) break;
-            count -= 5F;
-            passiveDialogueRect.anchoredPosition -= 5 * Vector2.up;
+            count -= 10F;
+            passiveDialogueRect.anchoredPosition -= 10 * Vector2.up;
             yield return new WaitForSeconds(0.0025F);
         }
         passiveDialogueText.text = "";
