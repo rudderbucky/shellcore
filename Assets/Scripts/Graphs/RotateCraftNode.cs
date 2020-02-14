@@ -162,10 +162,34 @@ namespace NodeEditorFramework.Standard
             {
                 Vector2 targetVector = target.transform.position - entity.transform.position; 
                 //calculate difference of angles and compare them to find the correct turning direction
-                entity.GetAI().RotateTo(targetVector);   
+                if (!(entity is PlayerCore))
+                {
+                    entity.GetAI().RotateTo(targetVector);   
+                }
+                else
+                {
+                    entity.StartCoroutine(rotatePlayer(targetVector));
+                }
             }
 
             return 0;
+        }
+
+        IEnumerator rotatePlayer(Vector2 targetVector)
+        {
+            var player = (entity as PlayerCore);
+            player.SetIsInteracting(false);
+
+            Vector2 normalizedTarget = targetVector.normalized;
+            float delta = Mathf.Abs(Vector2.Dot(player.transform.up, normalizedTarget) - 1f);
+            while (delta > 0.0001F)
+            {
+                player.RotateCraft(targetVector);
+                delta = Mathf.Abs(Vector2.Dot(player.transform.up, normalizedTarget) - 1f);
+                yield return null;
+            }
+
+            player.SetIsInteracting(true);
         }
     }
 }
