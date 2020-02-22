@@ -31,6 +31,7 @@ public class DialogueSystem : MonoBehaviour
     public PlayerCore player;
     Vector3? speakerPos = null;
     public CoreUpgraderScript upgraderScript;
+    public static bool isInCutscene;
 
     public enum DialogueStyle
     {
@@ -100,10 +101,11 @@ public class DialogueSystem : MonoBehaviour
         window.Activate();
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
-        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(()=> {
+        var exit = background.transform.Find("Exit");
+        exit.GetComponent<Button>().onClick.AddListener(() => {
             endDialogue();
-            // ResourceManager.PlayClipByID("clip_select", false);
         });
+        if(isInCutscene) exit.gameObject.SetActive(false);
         window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
@@ -173,9 +175,11 @@ public class DialogueSystem : MonoBehaviour
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
-        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
+        var exit = background.transform.Find("Exit");
+        exit.GetComponent<Button>().onClick.AddListener(() => {
             endDialogue(0);
         });
+        if(isInCutscene) exit.gameObject.SetActive(false);
         window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
@@ -239,9 +243,11 @@ public class DialogueSystem : MonoBehaviour
         window = Instantiate(taskDialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
         background = window.transform.Find("Background").GetComponent<RectTransform>();
-        background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => {
+        var exit = background.transform.Find("Exit");
+        exit.GetComponent<Button>().onClick.AddListener(() => {
             endDialogue(0);
         });
+        if(isInCutscene) exit.gameObject.SetActive(false);
         window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;

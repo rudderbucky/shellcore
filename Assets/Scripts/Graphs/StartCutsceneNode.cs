@@ -34,6 +34,7 @@ namespace NodeEditorFramework.Standard
         {
             PlayerCore.Instance.SetIsInteracting(true); 
             DialogueSystem.Instance.FadeBarIn();
+            DialogueSystem.isInCutscene = true;
             return 0;
         }
     }

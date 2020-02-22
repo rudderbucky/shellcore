@@ -32,7 +32,9 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            return -1;
+            DialogueSystem.isInCutscene = false;
+            PlayerCore.Instance.SetIsInteracting(false);
+            return 0;
         }
     }
 }
