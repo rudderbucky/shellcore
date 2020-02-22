@@ -164,7 +164,7 @@ namespace NodeEditorFramework.Standard
                 //calculate difference of angles and compare them to find the correct turning direction
                 if (!(entity is PlayerCore))
                 {
-                    entity.GetAI().RotateTo(targetVector, () );   
+                    entity.GetAI().RotateTo(targetVector, continueTraversing);   
                 }
                 else
                 {
