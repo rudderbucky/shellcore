@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AirCraftAI : MonoBehaviour
 {
@@ -117,7 +118,7 @@ public class AirCraftAI : MonoBehaviour
 
     }
 
-    public void setPath(NodeEditorFramework.Standard.PathData data)
+    public void setPath(NodeEditorFramework.Standard.PathData data, UnityAction OnPathEnd = null)
     {
         Path path = ScriptableObject.CreateInstance<Path>();
         path.waypoints = new List<Path.Node>();
@@ -137,6 +138,7 @@ public class AirCraftAI : MonoBehaviour
 
         setMode(AIMode.Path);
         (module as PathAI).setPath(path);
+        (module as PathAI).OnPathEnd = OnPathEnd;
         if (module != null) module.Init();
     }
 
@@ -158,14 +160,14 @@ public class AirCraftAI : MonoBehaviour
         this.craft = craft;
     }
 
-    public void RotateTo(Vector2 targetVector)
+    public void RotateTo(Vector2 targetVector, UnityAction OnRotateEnd = null)
     {
         this.targetVector = targetVector;
-        StartCoroutine("RotateCoroutine");
+        StartCoroutine(RotateCoroutine(OnRotateEnd));
     }
 
     private Vector2 targetVector;
-    IEnumerator RotateCoroutine()
+    IEnumerator RotateCoroutine(UnityAction OnEnd)
     {
         Vector2 normalizedTarget = targetVector.normalized;
         float delta = Mathf.Abs(Vector2.Dot(craft.transform.up, normalizedTarget) - 1f);
@@ -176,6 +178,9 @@ public class AirCraftAI : MonoBehaviour
             yield return null;
         }
         targetVector = Vector2.zero;
+
+        if (OnEnd != null)
+            OnEnd.Invoke();
     }
 
     private void Update()

@@ -164,7 +164,7 @@ namespace NodeEditorFramework.Standard
                 //calculate difference of angles and compare them to find the correct turning direction
                 if (!(entity is PlayerCore))
                 {
-                    entity.GetAI().RotateTo(targetVector);   
+                    entity.GetAI().RotateTo(targetVector, () );   
                 }
                 else
                 {
@@ -172,7 +172,12 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
-            return 0;
+            return -1;
+        }
+
+        private void continueTraversing()
+        {
+            TaskManager.Instance.setNode(output);
         }
 
         IEnumerator rotatePlayer(Vector2 targetVector)
@@ -190,6 +195,8 @@ namespace NodeEditorFramework.Standard
             }
 
             player.SetIsInteracting(true);
+
+            continueTraversing();
         }
     }
 }

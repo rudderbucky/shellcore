@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PathAI : AIModule
 {
@@ -12,6 +13,7 @@ public class PathAI : AIModule
 
     private Path path;
     public Vector2 currentTargetPos;
+    public UnityAction OnPathEnd;
     int waypointID = 0;
 
     public PathAI(Path path = null)
@@ -54,7 +56,9 @@ public class PathAI : AIModule
         }
         else
         {
-            
+            ai.setMode(AirCraftAI.AIMode.Inactive);
+            if (OnPathEnd != null)
+                OnPathEnd.Invoke();
         }
     }
 

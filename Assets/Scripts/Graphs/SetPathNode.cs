@@ -120,10 +120,59 @@ namespace NodeEditorFramework.Standard
             {
                 if (AIData.entities[i].name == entityName && AIData.entities[i] is AirCraft)
                 {
-                    (AIData.entities[i] as AirCraft).GetAI().setPath(path);
+                    if (AIData.entities[i] is PlayerCore)
+                    {
+                        AIData.entities[i].StartCoroutine(pathPlayer(AIData.entities[i] as PlayerCore));
+                    }
+                    else
+                    {
+                        (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
+                    }
                 }
             }
-            return 0;
+            return -1;
+        }
+
+        private void continueTraversing()
+        {
+            TaskManager.Instance.setNode(output);
+        }
+
+        IEnumerator pathPlayer(PlayerCore player)
+        {
+            player.SetIsInteracting(false);
+            PathData.Node current = GetNode(0);
+
+            while (current != null)
+            {
+                Vector2 delta = current.position - (Vector2)player.transform.position;
+                player.MoveCraft(delta.normalized);
+                if (delta.sqrMagnitude < 0.1f)
+                {
+                    if (current.children.Count > 0)
+                    {
+                        int next = Random.Range(0, current.children.Count);
+                        current = GetNode(current.children[next]);
+                    }
+                    else
+                        current = null;
+                }
+                yield return null;
+            }
+
+            player.SetIsInteracting(true);
+
+            continueTraversing();
+        }
+
+        PathData.Node GetNode(int ID)
+        {
+            for (int i = 0; i < path.waypoints.Count; i++)
+            {
+                if (path.waypoints[i].ID == ID)
+                    return path.waypoints[i];
+            }
+            return null;
         }
     }
 }
