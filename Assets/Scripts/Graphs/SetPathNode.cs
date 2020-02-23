@@ -22,6 +22,7 @@ namespace NodeEditorFramework.Standard
         //public bool action; //TODO: action input
         public bool useIDInput;
         public string entityName = "";
+        public bool asynchronous;
         public PathData path = null;
 
         public ConnectionKnob IDInput;
@@ -71,6 +72,8 @@ namespace NodeEditorFramework.Standard
             }
 
             RTEditorGUI.Seperator();
+
+            asynchronous = RTEditorGUI.Toggle(asynchronous, "Asynchronous Mode", GUILayout.MinWidth(400));
 
             if (GUILayout.Button("Draw Path", GUILayout.ExpandWidth(false)))
             {
@@ -126,11 +129,12 @@ namespace NodeEditorFramework.Standard
                     }
                     else
                     {
-                        (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
+                        if(!asynchronous) (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
+                        else (AIData.entities[i] as AirCraft).GetAI().setPath(path);
                     }
                 }
             }
-            return -1;
+            return asynchronous ? 0 : -1;
         }
 
         private void continueTraversing()
@@ -162,7 +166,7 @@ namespace NodeEditorFramework.Standard
 
             player.SetIsInteracting(true);
 
-            continueTraversing();
+            if(!asynchronous) continueTraversing();
         }
 
         PathData.Node GetNode(int ID)

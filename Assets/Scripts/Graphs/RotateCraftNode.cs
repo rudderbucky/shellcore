@@ -100,7 +100,7 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
-            asynchronous = RTEditorGUI.Toggle(asynchronous, "Asynchronous Mode (Unfinished, don't select)", GUILayout.MinWidth(400));
+            asynchronous = RTEditorGUI.Toggle(asynchronous, "Asynchronous Mode", GUILayout.MinWidth(400));
 
             RTEditorGUI.Seperator();
         }
@@ -158,21 +158,18 @@ namespace NodeEditorFramework.Standard
                 return 0;
             }
 
-            if(!asynchronous)
+            Vector2 targetVector = target.transform.position - entity.transform.position; 
+            //calculate difference of angles and compare them to find the correct turning direction
+            if (!(entity is PlayerCore))
             {
-                Vector2 targetVector = target.transform.position - entity.transform.position; 
-                //calculate difference of angles and compare them to find the correct turning direction
-                if (!(entity is PlayerCore))
-                {
-                    entity.GetAI().RotateTo(targetVector, continueTraversing);   
-                }
-                else
-                {
-                    entity.StartCoroutine(rotatePlayer(targetVector));
-                }
+                if(!asynchronous) entity.GetAI().RotateTo(targetVector, continueTraversing);   
+                else entity.GetAI().RotateTo(targetVector);
             }
-
-            return -1;
+            else
+            {
+                entity.StartCoroutine(rotatePlayer(targetVector));
+            }
+            return asynchronous ? 0 : -1;
         }
 
         private void continueTraversing()
@@ -196,7 +193,7 @@ namespace NodeEditorFramework.Standard
 
             player.SetIsInteracting(true);
 
-            continueTraversing();
+            if(!asynchronous) continueTraversing();
         }
     }
 }

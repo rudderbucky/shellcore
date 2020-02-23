@@ -598,8 +598,11 @@ public class DialogueSystem : MonoBehaviour
 
     public void DialogueViewTransitionOut()
     {
-        currentState = DialogueState.Out;
-        StartCoroutine("BarFadeOut");
+        if(!isInCutscene)
+        {
+            currentState = DialogueState.Out;
+            StartCoroutine("BarFadeOut");
+        }
     }
 
     public RectTransform passiveDialogueRect;
