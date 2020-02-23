@@ -34,6 +34,7 @@ namespace NodeEditorFramework.Standard
         {
             DialogueSystem.isInCutscene = false;
             PlayerCore.Instance.SetIsInteracting(false);
+            DialogueSystem.Instance.DialogueViewTransitionOut();
             return 0;
         }
     }

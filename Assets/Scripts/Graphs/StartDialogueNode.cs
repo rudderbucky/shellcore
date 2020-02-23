@@ -24,6 +24,7 @@ namespace NodeEditorFramework.Standard
 
         public bool SpeakToEntity;
         public string EntityName;
+        public bool forceStart;
 
         public override void NodeGUI()
         {
@@ -40,6 +41,8 @@ namespace NodeEditorFramework.Standard
                         WorldCreatorCursor.instance.EntitySelection();
                     }
                 }
+
+                forceStart = RTEditorGUI.Toggle(forceStart, "Force dialogue start");
             }
         }
 
@@ -63,7 +66,7 @@ namespace NodeEditorFramework.Standard
                         TaskManager.Instance.setNode(output);
                     });
                 }
-                return -1;
+                return forceStart ? 0 : -1;
             }
             else
             {
