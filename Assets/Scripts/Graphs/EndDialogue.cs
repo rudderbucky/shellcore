@@ -9,7 +9,7 @@ namespace NodeEditorFramework.Standard
     public class EndDialogue : Node
     {
         public override string GetName { get { return "EndDialogue"; } }
-        public override string Title { get { return "Dialogue"; } }
+        public override string Title { get { return "End Dialogue"; } }
 
         public override Vector2 MinSize { get { return new Vector2(200f, 100f); } }
         public override bool AutoLayout { get { return true; } }

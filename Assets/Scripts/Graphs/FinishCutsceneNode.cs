@@ -4,7 +4,7 @@ using NodeEditorFramework.Utilities;
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Cutscenes/FinishCutscene")]
-    public class FinishCutscene : Node
+    public class FinishCutsceneNode : Node
     {
         //Node things
         public const string ID = "FinishCutsceneNode";

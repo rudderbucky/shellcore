@@ -432,7 +432,7 @@ namespace NodeEditorFramework
 				// Replace node and additional ScriptableObjects with their copies
 				Node clonedNode = nodeCanvas.nodes[nodeCnt] = ReplaceSO (allSOs, clonedSOs, node);
 				clonedNode.CopyScriptableObjects (copySOs);
-                //clonedNode.Canvas = nodeCanvas;
+                clonedNode.Canvas = nodeCanvas;
 
 				// Replace ConnectionPorts
 				foreach (ConnectionPortDeclaration portDecl in ConnectionPortManager.GetPortDeclarationEnumerator(clonedNode, true))
