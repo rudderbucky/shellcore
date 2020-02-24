@@ -358,6 +358,17 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		else
 		{
 			/*
+			for(int i = 0; i < 8; i++) 
+			{
+				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
+				info.partID = "SmallCenter1";
+				info.abilityID = 10;
+				DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)i);
+				info.secondaryData = JsonUtility.ToJson(data);
+				if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
+				parts.Add(info);
+			}
+			
 			if(parts.Count == 0) {
 				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
 				foreach(string name in ResourceManager.allPartNames) {
@@ -381,14 +392,19 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 
 		
-
+		var traderInv = new List<EntityBlueprint.PartInfo>();
+		foreach(var part in traderInventory)
+		{
+			traderInv.Add(CullSpatialValues(part));
+		}
+		traderInventory = traderInv;
+		
 		// hide the buttons and yard tips if interacting with a trader
 
 		tips.gameObject.SetActive(mode == BuilderMode.Yard);
 		traderScrollView.gameObject.SetActive(mode == BuilderMode.Trader);
 
-		traderInventory = new List<EntityBlueprint.PartInfo>();
-
+		/*
 		if(traderInventory.Count == 0) {
 			EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
 			foreach(string name in ResourceManager.allPartNames) {
@@ -407,6 +423,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				}
 			}
 		}
+		*/
 
 		if(traderInventory != null) {
 			foreach(EntityBlueprint.PartInfo info in traderInventory) { // TODO: cull values to prevent possible problems
@@ -719,7 +736,26 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			if((player.transform.position - yardPosition).sqrMagnitude > 200)
 				CloseUI(false);
 		}
+
+		if(Input.GetKeyDown(KeyCode.H))
+		{
+			TraderInventory trader = new TraderInventory();
+			trader.parts = new List<EntityBlueprint.PartInfo>();
+			foreach(var part in partDict.Keys)
+			{
+				Debug.Log("a");
+				trader.parts.Add(CullSpatialValues(part));
+			}
+			Debug.Log(JsonUtility.ToJson(trader));
+		}
+
 	}
+
+    [System.Serializable]
+    public struct TraderInventory
+    {
+        public List<EntityBlueprint.PartInfo> parts;
+    }
 
 	public EntityBlueprint.PartInfo? GetButtonPartCursorIsOn() {
 		foreach(ShipBuilderInventoryScript inv in partDict.Values) {

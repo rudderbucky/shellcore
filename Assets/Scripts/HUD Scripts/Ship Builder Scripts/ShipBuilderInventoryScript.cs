@@ -23,6 +23,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDown
     }
     public void OnPointerDown(PointerEventData eventData)
     {
+        if(Input.GetKey(KeyCode.LeftShift)) Debug.Log(part.secondaryData);
         if(count > 0) {
             var builderPart = Instantiate(SBPrefab, cursor.transform.parent).GetComponent<ShipBuilderPart>();
             builderPart.info = part;

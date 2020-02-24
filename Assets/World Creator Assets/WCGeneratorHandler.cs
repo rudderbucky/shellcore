@@ -137,6 +137,10 @@ public class WCGeneratorHandler : MonoBehaviour
                         sectTargetIDS[container].Add(ent.ID);
                         ent.blueprintJSON = item.shellcoreJSON;
                     }
+                    if(ent.assetID == "trader_blueprint")
+                    {
+                        ent.blueprintJSON = item.shellcoreJSON;
+                    }
 
                     sectEnts[container].Add(ent);
                     break;   

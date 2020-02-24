@@ -12,7 +12,6 @@ public class AirCraftAI : MonoBehaviour
         Battle,
         Inactive,
         Tractor,
-        Player
     }
 
     enum AIState
@@ -185,7 +184,7 @@ public class AirCraftAI : MonoBehaviour
 
     private void Update()
     {
-        if (mode != AIMode.Player && !craft.GetIsDead())
+        if (!craft.GetIsDead())
         {
             foreach (Ability a in craft.GetAbilities())
             {

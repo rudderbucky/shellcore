@@ -25,6 +25,28 @@ public class Drone : AirCraft, IOwnable {
         this.owner = owner;
         ai.owner = owner;
         owner.GetUnitsCommanding().Add(this);
+        if(owner as AirCarrier) 
+        {
+            // GET THE DRONES TO MOVE
+            ai.setMode(AirCraftAI.AIMode.Path);
+            var path = ScriptableObject.CreateInstance<Path>();
+            path.waypoints = new List<Path.Node>();
+            var vec = Vector2.zero;
+            foreach(var ent in BattleZoneManager.getTargets())
+            {
+                if(ent is ICarrier && ent.faction != owner.GetFaction())
+                {
+                    vec = ent.transform.position;
+                }
+            }
+            // TODO: jank, fix this eventually
+            var node = new Path.Node();
+            node.position = vec;
+            node.ID = 0;
+            node.children = new List<int>();
+            if(vec != Vector2.zero) path.waypoints.Add(node);
+            ai.setPath(path);
+        }
     }
 
     protected override void OnDestroy() {

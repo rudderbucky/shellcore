@@ -384,7 +384,7 @@ public class SectorManager : MonoBehaviour
                 Yard trade = gObj.AddComponent<Yard>();
                 trade.mode = BuilderMode.Trader;
                 blueprint.dialogue.traderInventory =
-                    JsonUtility.FromJson<List<EntityBlueprint.PartInfo>>(data.blueprintJSON);
+                    JsonUtility.FromJson<ShipBuilder.TraderInventory>(data.blueprintJSON).parts;
                 break;
             case EntityBlueprint.IntendedType.DroneWorkshop:
                 Yard workshop = gObj.AddComponent<Yard>();

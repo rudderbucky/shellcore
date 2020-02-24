@@ -341,7 +341,8 @@ public class Entity : MonoBehaviour, IDamageable {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            if((parts[i] != shell) && Random.value < 0.08f && !(this as PlayerCore)) {
+            if(faction != 0 && (parts[i] != shell) && Random.value < 0.08f && !(this as PlayerCore) && this as ShellCore && 
+                ((this as ShellCore).GetCarrier() == null)) {
                 parts[i].SetCollectible(true);
                 if(sectorMngr) AIData.strayParts.Add(parts[i]);
             }

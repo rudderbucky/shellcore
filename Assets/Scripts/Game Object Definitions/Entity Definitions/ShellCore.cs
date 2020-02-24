@@ -29,6 +29,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         this.carrier = carrier;
     }
 
+    public ICarrier GetCarrier()
+    {
+        return carrier;
+    }
+
     public void ResetPower() {
         totalPower = 0;
     }
