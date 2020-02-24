@@ -50,6 +50,8 @@ public class SpawnDrone : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
+        AudioManager.PlayClipByID("clip_respawn", transform.position);
+
         // Spawn the drone
         GameObject go = new GameObject(blueprint.name);
         Drone drone = go.AddComponent<Drone>();
