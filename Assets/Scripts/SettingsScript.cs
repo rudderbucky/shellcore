@@ -12,7 +12,7 @@ public class SettingsScript : MonoBehaviour {
 	public Toggle BackgroundScriptToggle;
 	public Toggle RectangleEffectScriptToggle;
 
-	public (int, int)[] resolutions = new (int, int)[] {(1024, 768), (1366, 768), (1920, 1080), (3840, 2160)};
+	public (int, int)[] resolutions = new (int, int)[] {(1024, 768), (1366, 768), (1600, 900), (1920, 1080), (3840, 2160)};
 	public Dropdown windowResolution;
 	public Toggle windowedMode;
 	public Dropdown dialogueStyle;

@@ -20,6 +20,11 @@ public class WCWorldIO : MonoBehaviour
 
     IOMode mode = IOMode.Read;
 
+    public void Quit()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void ShowReadMode()
     {
         Show(IOMode.Read);

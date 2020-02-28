@@ -18,7 +18,7 @@ public class Speed : PassiveAbility {
         var enginePower = (Core as Craft).enginePower;
         if (input && activated) 
         {
-            (Core as Craft).enginePower -= 20F * abilityTier; //Mathf.Pow(enginePower, 1/(abilityTier/6 + 1.1F));
+            (Core as Craft).enginePower -= 50F * abilityTier; //Mathf.Pow(enginePower, 1/(abilityTier/6 + 1.1F));
         }
         base.SetDestroyed(input);
     }
@@ -28,7 +28,7 @@ public class Speed : PassiveAbility {
         var enginePower = (Core as Craft).enginePower;
         if(enginePower <= 1000) {
             activated = true;
-            (Core as Craft).enginePower += 20F * abilityTier;
+            (Core as Craft).enginePower += 50F * abilityTier;
         } 
         else activated = false;
     }

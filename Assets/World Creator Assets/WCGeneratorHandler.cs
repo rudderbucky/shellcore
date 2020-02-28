@@ -51,6 +51,11 @@ public class WCGeneratorHandler : MonoBehaviour
             return false;
         }
 
+        #if UNITY_EDITOR
+        #else
+        if(path.Contains("main")) return false;
+        #endif
+
         sectors = new List<Sector>();
         var items = cursor.placedItems;
         var wrappers = cursor.sectors;

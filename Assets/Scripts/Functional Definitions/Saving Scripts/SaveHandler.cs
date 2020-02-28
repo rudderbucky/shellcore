@@ -90,7 +90,8 @@ public class SaveHandler : MonoBehaviour {
         save.shards = player.shards;
         save.resourcePath = SectorManager.instance.resourcePath;
 		save.characters = SectorManager.instance.characters;
-
+		save.version = VersionNumberScript.version;
+		
         // tasks
         save.checkpointNames = new string[taskManager.traversers.Count];
 

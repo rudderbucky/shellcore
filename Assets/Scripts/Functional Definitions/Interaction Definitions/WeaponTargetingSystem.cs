@@ -17,6 +17,8 @@ public class WeaponTargetingSystem {
     /// <returns>The target of the targeting system</returns>
     public Transform GetTarget(bool findNew = false)
     {
+        if(DialogueSystem.isInCutscene) return null; // TODO: remove the hack and prevent weapons from firing somehow else
+
         Transform tmp = ability.Core.GetTargetingSystem().GetTarget(); // get the core's target if it has one
 
         if (tmp && tmp.GetComponent<IDamageable>() != null

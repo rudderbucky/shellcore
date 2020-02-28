@@ -391,13 +391,15 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			}*/
 		}
 
-		
-		var traderInv = new List<EntityBlueprint.PartInfo>();
-		foreach(var part in traderInventory)
+		if(mode == BuilderMode.Trader)
 		{
-			traderInv.Add(CullSpatialValues(part));
+			var traderInv = new List<EntityBlueprint.PartInfo>();
+			foreach(var part in traderInventory)
+			{
+				traderInv.Add(CullSpatialValues(part));
+			}
+			traderInventory = traderInv;
 		}
-		traderInventory = traderInv;
 		
 		// hide the buttons and yard tips if interacting with a trader
 

@@ -114,7 +114,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 
 	public static PlayerSave CreateSave(string name)
 	{
-		string currentVersion = "Alpha 1.0.1";
+		string currentVersion = VersionNumberScript.version;
 		PlayerSave save = new PlayerSave();
 		save.name = name;
 		save.timePlayed = 0;
