@@ -74,7 +74,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		}
 
 		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
-			if(playerCore.cursave.sectorsSeen.Contains(sector.sectorName))
+			if(SectorManager.testJsonPath != null || playerCore.cursave.sectorsSeen.Contains(sector.sectorName))
 			{
 				Image sect = Instantiate(sectorPrefab, transform, false);
 				sect.transform.SetAsFirstSibling();
@@ -83,12 +83,15 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				body.color = sect.color + 0.75F * Color.white;
 				sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x - minX, -maxY + sector.bounds.y) / zoomoutFactor;
 				body.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
+				sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2)));
 			}
 		}
 
 		// draw objective locations
 		DrawObjectiveLocations();
 	}
+
+	private List<(Image, Vector3)> sectorImages = new List<(Image, Vector3)>();
 
 	// Draw arrows signifying objective locations. Do not constantly call this method.
 	public static void DrawObjectiveLocations()
@@ -175,6 +178,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		for(int i = 0; i < transform.childCount; i++) {
 			Destroy(transform.GetChild(i).gameObject); // destroy stray children
 		}
+		sectorImages.Clear();
 	}
 	void OnDisable() {
 		Destroy();
@@ -221,5 +225,18 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			timer = 0;
 			clickedOnce = true;
 		}
+
+		if(SectorManager.testJsonPath != null)
+			foreach(var sect in sectorImages)
+			{
+				var pos = sect.Item1.rectTransform.position;
+				var sizeDelta = sect.Item1.rectTransform.sizeDelta;
+				var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
+				if(newRect.Contains(eventData.position))
+				{
+					Debug.Log("click");
+					player.GetComponent<AirCraft>().Warp(sect.Item2);
+				}
+			}
     }
 }

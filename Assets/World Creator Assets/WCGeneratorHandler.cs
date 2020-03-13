@@ -21,14 +21,6 @@ public class WCGeneratorHandler : MonoBehaviour
     public Item characterItem;
 
     private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
-    void Start()
-    {
-        if(System.IO.Directory.Exists(testPath))
-        {
-            ReadWorld(testPath);
-            DeleteTestWorld();
-        }
-    }
 
     public static void DeleteTestWorld()
     {

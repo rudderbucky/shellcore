@@ -258,6 +258,26 @@ public class WorldCreatorCursor : MonoBehaviour
     }
 
     public List<SectorWCWrapper> sectors = new List<SectorWCWrapper>();
+
+    public void Clear()
+    {
+        WCGeneratorHandler.DeleteTestWorld();
+        while(placedItems.Count > 0)
+        {
+            Remove(placedItems[0]);
+        }
+        while(sectors.Count > 0)
+        {
+            RemoveSector(sectors[0]);
+        }
+    }
+
+    void RemoveSector(SectorWCWrapper sector)
+    {
+        Destroy(sector.renderer.gameObject);
+        if(sectors.Contains(sector)) sectors.Remove(sector);
+    }
+
     void PollSectors() 
     {
         if(Input.GetMouseButtonDown(0)) 
@@ -312,8 +332,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 lastSectorPos = null;
             } else  // delete sector
             {
-                Destroy(currentSector.renderer.gameObject);
-                if(sectors.Contains(currentSector)) sectors.Remove(currentSector);
+                RemoveSector(currentSector);
             }
             currentSector = null; // reset reference
         }

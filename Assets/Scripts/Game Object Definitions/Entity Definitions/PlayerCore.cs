@@ -160,4 +160,10 @@ public class PlayerCore : ShellCore {
             NodeEditorFramework.Standard.TestCondition.TestTrigger.Invoke();
         }
 	}
+
+    public override void Warp(Vector3 point)
+    {
+        base.Warp(point);
+        CameraScript.instance.Focus();
+    }
 }

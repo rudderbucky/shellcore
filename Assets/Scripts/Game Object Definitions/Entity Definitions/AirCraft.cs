@@ -100,4 +100,12 @@ public abstract class AirCraft : Craft
         }
         return ai;
     }
+
+    public virtual void Warp(Vector3 point)
+    {
+        transform.position = point;
+        oscillatorVector = point;
+        storedPos = point;
+        positionBeforeOscillation = point.y;
+    }
 }

@@ -11,6 +11,9 @@ public class WCWorldIO : MonoBehaviour
     public WCGeneratorHandler generatorHandler;
     public GameObject buttonPrefab;
     public Transform content;
+    public InputField blueprintField;
+    public InputField checkpointField;
+    
 
     enum IOMode
     {
@@ -30,12 +33,20 @@ public class WCWorldIO : MonoBehaviour
         Show(IOMode.Read);
     }
 
+    void Start()
+    {
+
+        var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+        if(Directory.Exists(path)) 
+            generatorHandler.ReadWorld(path);
+    }
+
     public void TestWorld()
     {
         var savePath = Application.persistentDataPath + "\\Saves\\TestSave";
         if(File.Exists(savePath)) 
             File.Delete(savePath);
-        SaveMenuHandler.CreateSave("TestSave");
+        SaveMenuHandler.CreateSave("TestSave", checkpointField.text, blueprintField.text);
         var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
         if(generatorHandler.WriteWorld(path))
         {
@@ -49,13 +60,15 @@ public class WCWorldIO : MonoBehaviour
         Show(IOMode.Write);
     }
 
+    public GameObject window;
     public GameObject newWorldStack;
     public InputField field;
     void Show(IOMode mode)
     {
         gameObject.SetActive(true);
+        window.SetActive(true);
         newWorldStack.SetActive(mode == IOMode.Write); 
-       DestroyAllButtons();
+        DestroyAllButtons();
         this.mode = mode;
         foreach(var dir in Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors"))
         {
@@ -97,5 +110,6 @@ public class WCWorldIO : MonoBehaviour
     {
         DestroyAllButtons();
         gameObject.SetActive(false);
+        window.SetActive(false);
     }
 }

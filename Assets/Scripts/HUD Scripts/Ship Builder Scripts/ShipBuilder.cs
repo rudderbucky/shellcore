@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -294,7 +295,12 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null) {
 
-		//initialize window on screen
+		// set editor mode if testing
+		if(SectorManager.testJsonPath != null && !Input.GetKey(KeyCode.LeftShift))
+			editorMode = true;
+		else if(SceneManager.GetActiveScene().name != "WorldCreator") editorMode = false;
+
+		// initialize window on screen
 		if(initialized) CloseUI(false); // prevent initializing twice by closing UI if already initialized
 		initialized = true;
 		Activate();
@@ -318,7 +324,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			traderObj.SetActive(false);
 		}
 		displayingTypes = new bool[] {true, true, true, true, true};
-		if(!editorMode)
+		if(player)
 			player.SetIsInteracting(true);
 		partDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
 		traderPartDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
@@ -585,6 +591,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		if(int.TryParse(editorModeAddPartSection.transform.Find("Ability ID").GetComponent<InputField>().text, out part.abilityID)
 			&& int.TryParse(editorModeAddPartSection.transform.Find("Ability Tier").GetComponent<InputField>().text, out part.tier)) {
 			
+				var secondaryData = editorModeAddPartSection.transform.Find("Secondary Data").GetComponent<InputField>().text;
+				part.secondaryData = secondaryData != null ? secondaryData : "";
+
 			var x = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
 			if(ResourceManager.allPartNames.Contains(x)) {
 				part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
@@ -706,7 +715,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	public void Export() {
-		if(!editorMode)
+		if(player)
 		{
 			player.credits -= cursorScript.buildCost;
 			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
