@@ -8,6 +8,7 @@ public class PlayerViewScript : MonoBehaviour {
 	private Stack<IWindow> currentWindow;
 	private static PlayerViewScript instance;
 	public static int currentLayer = 2;
+	public static bool paused;
 
 	public static void SetCurrentWindow(IWindow window) {
 		instance.currentWindow.Push(window);
@@ -46,6 +47,7 @@ public class PlayerViewScript : MonoBehaviour {
 			}
 			if(escapeMenu) {
 				escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
+				paused = escapeMenu.activeSelf;
 				escapeCanvas.sortingOrder = ++currentLayer;
 				if(escapeMenu.activeSelf) Time.timeScale = 0; 
 				else Time.timeScale = 1;

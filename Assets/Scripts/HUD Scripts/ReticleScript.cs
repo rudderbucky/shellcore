@@ -259,8 +259,22 @@ public class ReticleScript : MonoBehaviour {
         targSys.RemoveSecondaryTarget(ent);
     }
 
+    public void RemoveSecondaryTarget((Entity, Transform) tuple)
+    {
+        if(secondariesByObject.Contains(tuple)) 
+            secondariesByObject.Remove(tuple);
+        targSys.RemoveSecondaryTarget(tuple.Item1);
+        Destroy(tuple.Item2.gameObject);
+
+    }
+
     public void ClearSecondaryTargets()
     {
+        while(secondariesByObject.Count > 0)
+        {
+            RemoveSecondaryTarget(secondariesByObject[0]);
+        }
+
         targSys.ClearSecondaryTargets();
     }
 }

@@ -74,7 +74,8 @@ public class TargetingSystem {
 
     public void RemoveSecondaryTarget(Entity ent)
     {
-        secondaryTargets.Remove(ent);
+        if(secondaryTargets.Contains(ent))
+            secondaryTargets.Remove(ent);
     }
 
     public void ClearSecondaryTargets()
