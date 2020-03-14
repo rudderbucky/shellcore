@@ -64,4 +64,21 @@ public class TargetingSystem {
 
         return target; // get target
     }
+
+    private List<Entity> secondaryTargets = new List<Entity>();
+
+    public void AddSecondaryTarget(Entity ent)
+    {
+        secondaryTargets.Add(ent);
+    }
+
+    public void RemoveSecondaryTarget(Entity ent)
+    {
+        secondaryTargets.Remove(ent);
+    }
+
+    public void ClearSecondaryTargets()
+    {
+        secondaryTargets.Clear();
+    }
 }
