@@ -26,6 +26,10 @@ public class SelectionBoxScript : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
         {
+            if(!eventSystem.IsPointerOverGameObject())
+            {
+                reticleScript.FindTarget();
+            }
             reticleScript.ClearSecondaryTargets();
 
             // Get reference point of selection box for drawing

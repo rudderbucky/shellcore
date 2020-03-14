@@ -7,16 +7,12 @@ public class QuantityDisplayScript : MonoBehaviour {
 
     private PlayerCore player;
     private bool initialized;
-    Text[] ob;
-    public Image bg1;
-    public Image bg2;
+    public GameObject targetInfo;
+    public GameObject secondaryTargetInfoPrefab;
     int lastCredits;
     public CreditIncrementMarker marker;
 	// Use this for initialization
-	void Start () {
-	    ob = transform.parent.parent.Find("MinimapDisplay").GetComponentsInChildren<Text>();
-	}
-	
+
     public void Initialize(PlayerCore player)
     {
         this.player = player;
@@ -35,22 +31,57 @@ public class QuantityDisplayScript : MonoBehaviour {
             texts[1].text = player.GetPower() + "";
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
             texts[5].text = player.credits + "";
-            string description;
-            if(player.GetTargetingSystem().GetTarget() && player.GetTargetingSystem().GetTarget().GetComponent<Entity>()) {
-                bg1.enabled = bg2.enabled = true;
-                bg1.color = new Color32((byte)255,(byte)255,(byte)255,(byte)216);
-                bg2.color = new Color32(0,0,0,(byte)216);
-                Entity ent = player.GetTargetingSystem().GetTarget().GetComponent<Entity>();
-                description = (ent.Terrain + " ");
-                description += (ent.category + "");
-                ob[2].text = ent.entityName;
-                ob[0].text = description;
-                ob[1].text = "Distance: " + (int)(ent.transform.position - player.transform.position).magnitude;
-                ob[0].color = ob[1].color = ob[2].color = FactionColors.colors[ent.faction];
-            } else {
-                ob[0].text = ob[1].text = ob[2].text = "";
-                bg1.enabled = bg2.enabled = false;
-                }
+
+            UpdatePrimaryTargetInfo();
+
+            foreach(var infos in secondaryInfosByEntity)
+            {
+                UpdateInfo(infos.Key, infos.Value);
+            }
         }
 	}
+
+    private Dictionary<Entity, GameObject> secondaryInfosByEntity = new Dictionary<Entity, GameObject>();
+    public Transform content;
+    public void AddEntityInfo(Entity entity)
+    {
+        var secondary = Instantiate(secondaryTargetInfoPrefab, content);
+        secondaryInfosByEntity.Add(entity, secondary);
+    }
+
+    public void RemoveEntityInfo(Entity entity)
+    {
+        if(secondaryInfosByEntity.ContainsKey(entity))
+        {
+            Destroy(secondaryInfosByEntity[entity]);
+            secondaryInfosByEntity.Remove(entity);
+        }
+    }
+
+    public void UpdatePrimaryTargetInfo()
+    {
+        var targ = player.GetTargetingSystem().GetTarget();
+        UpdateInfo(targ ? targ.GetComponent<Entity>() : null, targetInfo);
+    }
+
+    public void UpdateInfo(Entity entity, GameObject targetInfo)
+    {
+        string description;
+        var targetName = targetInfo.transform.Find("Target Name").GetComponent<Text>();
+        var targetDesc = targetInfo.transform.Find("Name").GetComponent<Text>();
+        var targetDist = targetInfo.transform.Find("Distance").GetComponent<Text>();
+
+        if(entity) {
+            targetInfo.SetActive(true);
+            description = (entity.Terrain + " ");
+            description += (entity.category + "");
+            targetName.text = entity.entityName;
+            targetDesc.text = description;
+            targetDist.text = "Distance: " + (int)(entity.transform.position - player.transform.position).magnitude;
+            targetName.color = targetDesc.color = targetDist.color = FactionColors.colors[entity.faction];
+        } else {
+            targetName.text = targetDesc.text = targetDist.text = "";
+            targetInfo.SetActive(false);
+        }
+    }
 }

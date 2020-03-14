@@ -15,6 +15,7 @@ public class ReticleScript : MonoBehaviour {
     private Transform shellimage; // the image representations of the target's shell and core health
     private Transform coreimage;
     public EventSystem system;
+    public QuantityDisplayScript quantityDisplay;
 
     /// <summary>
     /// Initializes the reticle
@@ -31,7 +32,7 @@ public class ReticleScript : MonoBehaviour {
     /// <summary>
     /// Finds a target to assign to the player at the given mouse position
     /// </summary>
-    private void FindTarget() {
+    public void FindTarget() {
 
         // TODO: To say this needs despaghettification would be an understatement...
         // despaghettified a little :)
@@ -103,6 +104,7 @@ public class ReticleScript : MonoBehaviour {
         else {
             targSys.SetTarget(null); // otherwise set the target to null
         }
+        quantityDisplay.UpdatePrimaryTargetInfo();
     }
 
     /// <summary>
@@ -130,10 +132,6 @@ public class ReticleScript : MonoBehaviour {
                 SetSecondaryReticleTransform(tuple.Item1, tuple.Item2);
             }
 
-            if (Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject()) // mouse click, scan for target
-            {
-                FindTarget(); // find target
-            }
             if (targSys.GetTarget() != null) // check if the reticle should update
             {
                 ITargetable targetCraft = targSys.GetTarget().GetComponent<ITargetable>();
@@ -172,7 +170,7 @@ public class ReticleScript : MonoBehaviour {
             reticle.transform.position = ent.transform.position; // update reticle position
             reticle.GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
         }
-        else RemoveSecondaryTarget(ent);
+        else RemoveSecondaryTarget((ent, reticle));
 
         var shellimage = reticle.Find("Target Shell");
         var coreimage = reticle.Find("Target Core");
@@ -251,12 +249,8 @@ public class ReticleScript : MonoBehaviour {
         var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform);
         AdjustReticleBounds(reticle.GetComponent<SpriteRenderer>(), ent.transform);
         secondariesByObject.Add((ent, reticle.transform));
+        quantityDisplay.AddEntityInfo(ent);
         targSys.AddSecondaryTarget(ent);
-    }
-
-    public void RemoveSecondaryTarget(Entity ent)
-    {
-        targSys.RemoveSecondaryTarget(ent);
     }
 
     public void RemoveSecondaryTarget((Entity, Transform) tuple)
@@ -264,6 +258,7 @@ public class ReticleScript : MonoBehaviour {
         if(secondariesByObject.Contains(tuple)) 
             secondariesByObject.Remove(tuple);
         targSys.RemoveSecondaryTarget(tuple.Item1);
+        quantityDisplay.RemoveEntityInfo(tuple.Item1);
         Destroy(tuple.Item2.gameObject);
 
     }
