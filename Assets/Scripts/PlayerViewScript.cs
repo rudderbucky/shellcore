@@ -24,6 +24,7 @@ public class PlayerViewScript : MonoBehaviour {
 		currentWindow = new Stack<IWindow>();
 		instance = this;
 		if(escapeMenu) escapeMenu.SetActive(false);
+		paused = false;
 		Time.timeScale = 1;
 	}
 	void Update () {

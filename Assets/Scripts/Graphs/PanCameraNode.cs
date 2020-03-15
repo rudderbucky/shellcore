@@ -72,14 +72,12 @@ namespace NodeEditorFramework.Standard
             }
             if(endPanning)
             {
-                Debug.Log("Hello");
                 CameraScript.panning = false;
                 CameraScript.instance.Focus();
                 return 0;
             }
             else
             {
-                Debug.Log("Hello again");
                 CameraScript.velocityFactor = velocityFactor;
                 coords.z = -CameraScript.zLevel;
                 CameraScript.panning = true;

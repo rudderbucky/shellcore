@@ -356,7 +356,6 @@ public class WCGeneratorHandler : MonoBehaviour
                                 copy.pos = copy.obj.transform.position = ent.position;
                                 copy.vendingID = ent.vendingID;
                                 copy.shellcoreJSON = ent.blueprintJSON;
-                                Debug.Log(copy.shellcoreJSON);
                                 cursor.placedItems.Add(copy);
                             }              
                         }

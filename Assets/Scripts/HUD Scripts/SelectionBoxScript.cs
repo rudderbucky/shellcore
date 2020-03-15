@@ -33,6 +33,7 @@ public class SelectionBoxScript : MonoBehaviour
     {
         if(PlayerCore.Instance.GetIsInteracting() || DialogueSystem.isInCutscene || PlayerViewScript.paused) 
         {
+            // Debug.Log(PlayerCore.Instance.GetIsInteracting() + " " + DialogueSystem.isInCutscene + " " + PlayerViewScript.paused);
             image.enabled = false;
             return;
         }

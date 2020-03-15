@@ -28,11 +28,10 @@ namespace NodeEditorFramework.Standard
         public int partAbilityID = 0;
         public int partTier = 1;
         public int reputationReward = 0;
-
         bool init = false;
         Texture2D partTexture;
-
         float height = 220f;
+        public bool forceTask = false;
 
         [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left)]
         public ConnectionKnob inputLeft;
@@ -114,6 +113,8 @@ namespace NodeEditorFramework.Standard
             {
                 height += 160f;
             }
+            forceTask = Utilities.RTEditorGUI.Toggle(forceTask, "Force Task Acceptance");
+            height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 50f);
         }
 
         public void OnClick(int index)
@@ -136,9 +137,18 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            DialogueSystem.ShowTaskPrompt(this, TaskManager.GetSpeaker());
-            DialogueSystem.OnDialogueEnd += OnClick;
-            return -1;
+            Debug.Log("Force Task: " + forceTask);
+            if(!forceTask)
+            {
+                DialogueSystem.ShowTaskPrompt(this, TaskManager.GetSpeaker());
+                DialogueSystem.OnDialogueEnd += OnClick;
+                return -1;
+            }
+            else
+            {
+                StartTask();
+                return 0;
+            }
         }
 
         public void StartTask()

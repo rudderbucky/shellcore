@@ -51,7 +51,8 @@ namespace NodeEditorFramework.Standard
         {
             foreach(var objectiveLocation in TaskManager.objectiveLocations)
             {
-                if(objectiveLocation.followEntity.entityName == StartDialogueNode.dialogueStartNode.EntityName)
+                if(StartDialogueNode.dialogueStartNode && objectiveLocation.followEntity &&
+                    objectiveLocation.followEntity.entityName == StartDialogueNode.dialogueStartNode.EntityName)
                 {
                     TaskManager.objectiveLocations.Remove(objectiveLocation);
                     TaskManager.DrawObjectiveLocations();
