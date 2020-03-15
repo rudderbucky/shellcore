@@ -17,6 +17,7 @@ public class SettingsScript : MonoBehaviour {
 	public Toggle windowedMode;
 	public Dropdown dialogueStyle;
 	public Toggle taskManagerAutoSaveEnabled;
+	public Toggle simpleMouseMovementToggle;
 
 	void Start() {
 		// get playerpref values and configure toggles and sliders based on them
@@ -28,6 +29,7 @@ public class SettingsScript : MonoBehaviour {
 		soundSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
 		dialogueStyle.value = PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0);
 		taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
+		simpleMouseMovementToggle.isOn = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
 		windowedMode.isOn = (Screen.fullScreenMode == FullScreenMode.Windowed || Screen.fullScreenMode == FullScreenMode.MaximizedWindow);
 		windowResolution.value = FindResolution();
 	}
@@ -51,6 +53,7 @@ public class SettingsScript : MonoBehaviour {
 		ChangeRectangleEffectScriptActive(RectangleEffectScriptToggle.isOn);
 		ChangeTaskManagerAutoSaveEnabled(taskManagerAutoSaveEnabled.isOn);
 		ChangeDialogueSystemDialogueStyle(dialogueStyle.value);
+		ChangeSimpleMouseMovementEnabled(simpleMouseMovementToggle.isOn);
 	}
 
 	public void ChangeMasterVolume(float newVol)
@@ -112,5 +115,11 @@ public class SettingsScript : MonoBehaviour {
 	{
 		PlayerPrefs.SetString("TaskManager_autoSaveEnabled", val + "");
 		TaskManager.autoSaveEnabled = val;
+	}
+
+	public void ChangeSimpleMouseMovementEnabled(bool val)
+	{
+		PlayerPrefs.SetString("SelectionBoxScript_simpleMouseMovement", val + "");
+		SelectionBoxScript.simpleMouseMovement = val;
 	}
 }

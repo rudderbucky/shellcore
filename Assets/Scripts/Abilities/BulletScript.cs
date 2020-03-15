@@ -60,10 +60,11 @@ public class BulletScript : MonoBehaviour {
             if (craft.GetFaction() != faction && CheckCategoryCompatibility(craft))
             {
                 var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration
-                                             
+                Debug.Log("Bullet damage: " + residue);                             
                 // if the shell is low, damage the part
 
                 ShellPart part = collision.transform.GetComponent<ShellPart>();
+                Debug.Log("Part: " + part);
                 if (part)
                 {
                     part.TakeDamage(residue); // damage the part

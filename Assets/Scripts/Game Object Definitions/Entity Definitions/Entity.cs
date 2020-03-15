@@ -190,11 +190,18 @@ public class Entity : MonoBehaviour, IDamageable {
             entityBody.drag = 10;
             entityBody.angularDrag = 100;
         }
+        /*
         if (!GetComponent<Collider2D>())
         {
             hitbox = gameObject.AddComponent<PolygonCollider2D>();
             hitbox.isTrigger = true;
-        }        
+
+            // Disable collider if no sprite
+            if(!GetComponent<SpriteRenderer>().sprite) hitbox.enabled = false; 
+        }
+        // Another collider disable check
+        else if(!GetComponent<SpriteRenderer>().sprite) GetComponent<Collider2D>().enabled = false;
+        */
         if(!transform.Find("Minimap Image"))
         {
             GameObject childObject = new GameObject("Minimap Image");
@@ -244,6 +251,10 @@ public class Entity : MonoBehaviour, IDamageable {
                 entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
+
+                // Disable collider if no sprite
+                if(!partObject.GetComponent<SpriteRenderer>().sprite && partObject.GetComponent<Collider2D>()) 
+                    partObject.GetComponent<Collider2D>().enabled = false;
 
                 string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
                 // Add shooter

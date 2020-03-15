@@ -23,6 +23,12 @@ public class SelectionBoxScript : MonoBehaviour
     private Vector2 lastPosition;
 
     private bool dronesChecked = false;
+    public static bool simpleMouseMovement = true;
+
+    void Awake()
+    {
+        simpleMouseMovement = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
+    }
     void Update()
     {
         if(PlayerCore.Instance.GetIsInteracting() || DialogueSystem.isInCutscene || PlayerViewScript.paused) 
@@ -90,7 +96,9 @@ public class SelectionBoxScript : MonoBehaviour
             }
         }
         else if(!dronesChecked && Input.GetMouseButtonUp(0) 
-            && !eventSystem.IsPointerOverGameObject() && !PlayerCore.Instance.GetTargetingSystem().GetTarget())
+            && !PlayerCore.Instance.GetIsDead() && 
+                !eventSystem.IsPointerOverGameObject() && !PlayerCore.Instance.GetTargetingSystem().GetTarget()
+                && (Input.GetKey(KeyCode.LeftShift) || simpleMouseMovement))
         {
             var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0,0,10));
             var renderer = Instantiate(movementReticlePrefab, mouseWorldPos, Quaternion.identity).GetComponent<SpriteRenderer>();
@@ -101,7 +109,8 @@ public class SelectionBoxScript : MonoBehaviour
             node.position = mouseWorldPos;
             node.ID = nodeID++;
 
-            if(currentPathData == null)
+            if(currentPathData == null
+                || (!Input.GetKey(KeyCode.LeftShift) && !eventSystem.IsPointerOverGameObject() && simpleMouseMovement))
             {
                 foreach(var rend in reticleRenderersByNode.Values) 
                     if(rend) Destroy(rend.gameObject);
@@ -140,10 +149,15 @@ public class SelectionBoxScript : MonoBehaviour
 
         while (current != null)
         {
-            if(PlayerCore.getDirectionalInput() != Vector2.zero){
-                foreach(var renderer in reticleRenderersByNode.Values) 
+            if(PlayerCore.getDirectionalInput() != Vector2.zero || (!currentPathData.waypoints.Contains(current))){
+                if((!currentPathData.waypoints.Contains(current)))
+                    yield break;
+                else
+                {
+                    foreach(var renderer in reticleRenderersByNode.Values) 
                     if(renderer) Destroy(renderer.gameObject);
-                reticleRenderersByNode.Clear();
+                    reticleRenderersByNode.Clear();
+                }
                 break;
             } 
 
