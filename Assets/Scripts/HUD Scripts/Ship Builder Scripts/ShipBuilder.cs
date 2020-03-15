@@ -216,40 +216,39 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 	}
 
+	public bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart)
+	{
+		var shellRect = GetRect(shell.rectTransform);
+
+		var partBounds = GetRect(shipPart.rectTransform);
+		if(partBounds.Intersects(shellRect)) {
+			bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
+			0.18F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
+			Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
+			0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
+			shipPart.isInChain = !z;
+			return z;
+		}
+		return false;
+	}
+
 	public void UpdateChain() {
 		if(!editorMode)
 			SetReconstructButton(cursorScript.buildCost > player.credits ? 
 				ReconstructButtonStatus.NotEnoughCredits : ReconstructButtonStatus.Valid);
 		else SetReconstructButton(ReconstructButtonStatus.Valid);
-		var shellRect = GetRect(shell.rectTransform);
 
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			shipPart.isInChain = false;
-			var partBounds = GetRect(shipPart.rectTransform);
-			if(partBounds.Intersects(shellRect)) {
-				bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
-				0.18F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
-				Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
-				0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
-				shipPart.isInChain = !z;
-			}
+			CheckPartIntersectsWithShell(shipPart);
 		}
 
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(shipPart.isInChain) UpdateChainHelper(shipPart);
 		}
 
-		foreach(ShipBuilderPart shipPart in cursorScript.parts) { 
-			// perform the same calculation again to falsify parts that are too close to the shell
-			// TODO: make this less st*pid
-			var partBounds = GetRect(shipPart.rectTransform);
-			if(partBounds.Intersects(shellRect)) {
-				bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
-				0.18F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
-				Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
-				0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
-				shipPart.isInChain = !z;
-			}
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			CheckPartIntersectsWithShell(shipPart);
 		}
 
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
@@ -293,6 +292,36 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		return true;
 	}
+
+	static Dictionary<string, List<(string, int)>> originsofParts = new Dictionary<string, List<(string, int)>>();
+
+	static void AddOriginToDictionary(ShellPart part)
+	{
+		if(!originsofParts.ContainsKey(part.droppedSectorName))
+		{
+			var list = new List<(string, int)>();
+			list.Add((part.info.partID, part.info.abilityID));
+			originsofParts.Add(part.droppedSectorName, list);
+		} else originsofParts[part.droppedSectorName].Add((part.info.partID, part.info.abilityID));
+	}
+
+	public static bool CheckForOrigin(string sectorName, (string, int) tuple)
+	{
+		if(originsofParts.ContainsKey(sectorName))
+		{
+			return originsofParts[sectorName].Contains(tuple);
+		} 
+		else return false;
+	}
+
+	public static void RemoveOrigin(string sectorName, (string, int) tuple)
+	{
+		if(originsofParts.ContainsKey(sectorName))
+		{
+			if(originsofParts[sectorName].Contains(tuple)) originsofParts[sectorName].Remove(tuple);
+		}
+	}
+
 	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null) {
 
 		// set editor mode if testing
@@ -473,6 +502,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 					if (target && target.GetComponent<ShellPart>())
 					{
 						partsToAdd.Add(target.GetComponent<ShellPart>());
+						AddOriginToDictionary(target.GetComponent<ShellPart>());
+
 					} else if(target && target.GetComponent<Shard>()) {
 						AddShard(target.GetComponent<Shard>());
 						Destroy(target.gameObject);
@@ -482,7 +513,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 			var playerTarget = player.GetTractorTarget();
 			if(playerTarget && playerTarget.GetComponent<ShellPart>()) {
-				partsToAdd.Add(playerTarget.GetComponent<ShellPart>());;
+				partsToAdd.Add(playerTarget.GetComponent<ShellPart>());
+				AddOriginToDictionary(playerTarget.GetComponent<ShellPart>());
 			} else if(playerTarget && playerTarget.GetComponent<Shard>()) {
 				AddShard(playerTarget.GetComponent<Shard>());
 				Destroy(playerTarget.gameObject);

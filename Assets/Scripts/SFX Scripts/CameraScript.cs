@@ -17,6 +17,8 @@ public class CameraScript : MonoBehaviour {
     public static Vector3 target;
     public static float velocityFactor;
 
+    public static float zLevel = 10;
+
     public void Initialize(PlayerCore player)
     {
         core = player;
@@ -30,7 +32,7 @@ public class CameraScript : MonoBehaviour {
         if (core)
         {
             Vector3 goalPos = core.transform.position; // update vector
-            goalPos.z = core.transform.position.z - 10; // maintain z axis difference
+            goalPos.z = -zLevel;
             transform.position = goalPos; // set position
         }
     }
@@ -39,6 +41,15 @@ public class CameraScript : MonoBehaviour {
     {
      if(initialized)
         {
+            if(Input.GetAxis("Mouse ScrollWheel") < 0f) 
+            { 
+                zLevel = Mathf.Min(10, zLevel + 0.5F);
+            }
+            else if(Input.GetAxis("Mouse ScrollWheel") > 0f) 
+            {
+                zLevel = Mathf.Max(5, zLevel - 0.5F);
+            }    
+
             if(panning) Pan();
             else if (core.IsMoving()) // lock camera
             {
@@ -50,15 +61,15 @@ public class CameraScript : MonoBehaviour {
 
     public void Focus() {
         Vector3 goalPos = core.transform.position; // update vector
-        goalPos.z = core.transform.position.z - 10; // maintain z axis difference
+        goalPos.z = -zLevel;
         transform.position = goalPos; // set position
     }
 
     public void Pan() {
-        var vec = (target - transform.position).normalized;
-        transform.position += vec * velocityFactor;
-        var vec2 = (target - transform.position).normalized;
-        if(vec2 != vec) transform.position = target;
+        var vec = ((Vector2)target - (Vector2)transform.position).normalized;
+        transform.position += (Vector3)vec * velocityFactor;
+        var vec2 = ((Vector2)target - (Vector2)transform.position).normalized;
+        if(vec2 != vec) transform.position = new Vector3(target.x, target.y, -zLevel);
 
         if(transform.position == target)
         {

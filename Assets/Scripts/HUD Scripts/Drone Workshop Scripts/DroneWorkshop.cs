@@ -430,4 +430,26 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 			}
 		}
 	}
+
+	// TODO: Test this when the Drone Workshop is added into the game
+	public bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart)
+	{
+		/*
+		var shellRect = GetRect(shell.rectTransform);
+
+		shipPart.isInChain = false;
+		var partBounds = GetRect(shipPart.rectTransform);
+		if(partBounds.Intersects(shellRect)) {
+			bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
+			0.18F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
+			Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
+			0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
+			shipPart.isInChain = !z;
+			return z;
+		}
+		return false;
+		*/
+		Debug.LogError("You need to create this method for the Drone Workshop!");
+		return false;
+	}
 }

@@ -11,6 +11,7 @@ public interface IBuilderInterface {
 	void UpdateChain();
 	EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
 	void SetSearcherString(string text);
+	bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart);
 }
 
 public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
@@ -80,7 +81,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			}
 			else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
 				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
-			} else PlaceCurrentPartInGrid();
+			} 
+			else if(builder.CheckPartIntersectsWithShell(currentPart) && currentPart.GetLastValidPos() == null) {
+				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
+			}
+			else PlaceCurrentPartInGrid();
 		else {
 			if(RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
 				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
@@ -94,7 +99,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		currentPart = null;
 		if(lastPart.isInChain && lastPart.validPos) {
 			lastPart.SetLastValidPos(lastPart.info.location);
-		} else if(Input.GetKey(KeyCode.LeftShift)) lastPart.Snapback();
+		} 
+		else if(Input.GetKey(KeyCode.LeftShift) || builder.CheckPartIntersectsWithShell(lastPart) )
+		{				
+			lastPart.Snapback();
+		} 
 	}
 	public void UpdateHandler() {
 		currentAbilities.Clear();

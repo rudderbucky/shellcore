@@ -210,7 +210,7 @@ public class ReticleScript : MonoBehaviour {
         {
             if (hits.Length == 0 ||  hits[0].transform != craft.transform) {
                 var pos = Input.mousePosition;
-                pos.z = 10;
+                pos.z = CameraScript.zLevel;
                 possibleDrone.GetComponent<Drone>().CommandMovement(Camera.main.ScreenToWorldPoint(pos));
                 targSys.SetTarget(null);
             } else if (hits[0].transform == craft.transform)

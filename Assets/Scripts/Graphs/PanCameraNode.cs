@@ -81,7 +81,7 @@ namespace NodeEditorFramework.Standard
             {
                 Debug.Log("Hello again");
                 CameraScript.velocityFactor = velocityFactor;
-                coords.z = -10;
+                coords.z = -CameraScript.zLevel;
                 CameraScript.panning = true;
                 CameraScript.target = coords;
                 if(!asynchronous) CameraScript.callback = continueTraversing;

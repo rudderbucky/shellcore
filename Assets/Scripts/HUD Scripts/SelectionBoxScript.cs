@@ -78,12 +78,12 @@ public class SelectionBoxScript : MonoBehaviour
             {
                 // Grab the rect of the selection box
                 Vector2 boxStart = 
-                    Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, 10));
+                    Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, CameraScript.zLevel));
                 Vector2 boxExtents = 
                     Camera.main.ScreenToWorldPoint(
                         new Vector3((1 - 2 * pivotVec.x) * sizeVec.x + startPoint.x, 
                         (1 - 2 * pivotVec.y) * sizeVec.y + startPoint.y, 
-                        10));
+                        CameraScript.zLevel));
                 Rect finalBox = Rect.MinMaxRect(
                     Mathf.Min(boxStart.x, boxExtents.x),
                     Mathf.Min(boxStart.y, boxExtents.y),
@@ -105,9 +105,9 @@ public class SelectionBoxScript : MonoBehaviour
         else if(!dronesChecked && Input.GetMouseButtonUp(0) 
             && !PlayerCore.Instance.GetIsDead() && 
                 !eventSystem.IsPointerOverGameObject() && !PlayerCore.Instance.GetTargetingSystem().GetTarget()
-                && (Input.GetKey(KeyCode.LeftShift) || simpleMouseMovement))
+                && (Input.GetKey(KeyCode.LeftShift) || simpleMouseMovement) && !DialogueSystem.isInCutscene)
         {
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0,0,10));
+            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0,0,CameraScript.zLevel));
             var renderer = Instantiate(movementReticlePrefab, mouseWorldPos, Quaternion.identity).GetComponent<SpriteRenderer>();
             renderer.color = new Color32((byte)100, (byte)100, (byte)100, (byte)255);
 

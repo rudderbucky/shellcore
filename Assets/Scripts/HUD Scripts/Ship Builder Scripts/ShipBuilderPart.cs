@@ -21,6 +21,10 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 	public void SetLastValidPos(Vector3? lastPos) {
 		lastValidPos = lastPos;
 	}
+
+	public Vector3? GetLastValidPos() {
+		return lastValidPos;
+	}
 	
 	public void Snapback() {
 		if(lastValidPos != null) info.location = (Vector3)lastValidPos;

@@ -29,6 +29,8 @@ public class ShellPart : MonoBehaviour {
 
     public EntityBlueprint.PartInfo info;
 
+    public string droppedSectorName;
+
     public bool GetDetached() {
         return hasDetached;
     }
@@ -102,6 +104,7 @@ public class ShellPart : MonoBehaviour {
         rotationDirection = (Random.Range(0, 2) == 0);
         gameObject.layer = 9;
         rotationOffset = Random.Range(0f, 360f);
+        droppedSectorName = SectorManager.instance.current.sectorName;
     }
 
     void OnDestroy() {

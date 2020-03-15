@@ -121,6 +121,12 @@ public class AbilityHandler : MonoBehaviour {
             description += AbilityUtilities.GetDescription(visibleAbilities[i]);
             button.abilityInfo = description;
 
+            // add hotkey if present
+            if(i + 1 < 10 && currentVisibles != AbilityTypes.Passive)
+            {
+                abilityBackgroundArray[i].transform.Find("Hotkey").gameObject.SetActive(true);
+                abilityBackgroundArray[i].transform.Find("Hotkey").GetComponentInChildren<Text>().text = i + 1 + "";
+            }
             CanvasGroup canvasg;
 
             // instantiate ability tier

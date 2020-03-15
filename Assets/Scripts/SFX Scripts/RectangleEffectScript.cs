@@ -43,11 +43,14 @@ public class RectangleEffectScript : MonoBehaviour {
     /// </summary>
     /// <param name="particles">array of particles in the field</param>
     private void ParticleUpdate(ParticleSystem.Particle[] particles) {
+        var oldZ = Camera.main.transform.position.z;
+        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -10);
         for (int i = 0; i < particles.Length; i++) // update all particles
         {
             ParticleWrapper(ref particles[i], 0); // call particle wrapper for both dimensions
             ParticleWrapper(ref particles[i], 1);
         }
+        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, oldZ);
     }
 
     /// <summary>

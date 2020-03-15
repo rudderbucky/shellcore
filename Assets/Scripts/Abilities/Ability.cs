@@ -29,7 +29,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
             core = value;
         }
     }
-    protected int ID; // Image ID, perhaps also ability ID if that were ever to be useful
+    protected int ID; // Image ID, perhaps also ability ID if that were ever to be useful (it was)
     protected float cooldownDuration; // cooldown of the ability
     protected float energyCost; // energy cost of the ability
     protected float CDRemaining; // amount of time remaining on cooldown
@@ -232,6 +232,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
             if(glowPrefab) glowPrefab.SetActive(!glowPrefab.activeSelf);
             yield return new WaitForSeconds(0.125F);
         }
+        indicator.GetComponent<SpriteRenderer>().color = originalIndicatorColor;
     }
 
     /// <summary>

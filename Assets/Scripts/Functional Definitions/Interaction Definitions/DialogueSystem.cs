@@ -177,7 +177,7 @@ public class DialogueSystem : MonoBehaviour
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         var exit = background.transform.Find("Exit");
         exit.GetComponent<Button>().onClick.AddListener(() => {
-            endDialogue(0);
+            endDialogue(0, false);
         });
         if(isInCutscene) exit.gameObject.SetActive(false);
         window.OnCancelled.AddListener(() => { endDialogue(); });
@@ -200,7 +200,6 @@ public class DialogueSystem : MonoBehaviour
 
         // update speakerPos
         if(speaker) speakerPos = speaker.transform.position;
-        Debug.Log(speakerPos + " " + speaker);
 
         if(speaker)
             AudioManager.PlayClipByID("clip_typing");
@@ -220,7 +219,8 @@ public class DialogueSystem : MonoBehaviour
             button.anchoredPosition = new Vector2(0, 24 + 24 * (node.answers.Count - (i + 1)));
             int index = i;
             button.GetComponent<Button>().onClick.AddListener(() => {
-                endDialogue(index + 1, index != 0);// cancel is always first -> start from 1
+                AudioManager.PlayClipByID("clip_select", true);
+                endDialogue(index + 1, false);// cancel is always first -> start from 1
             });
             button.Find("Text").GetComponent<Text>().text = node.answers[i];
 
@@ -401,7 +401,7 @@ public class DialogueSystem : MonoBehaviour
         switch (current.action)
         {
             case Dialogue.DialogueAction.None:
-                //Do nothing and continue after this check
+                AudioManager.PlayClipByID("clip_typing", true);
                 break;
             case Dialogue.DialogueAction.Outpost:
                 endDialogue(0, false);
@@ -444,7 +444,6 @@ public class DialogueSystem : MonoBehaviour
         window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
         window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
 
-        AudioManager.PlayClipByID("clip_typing");
         // change text
         text = current.text.Replace("<br>", "\n");
         characterCount = 0;
@@ -477,7 +476,7 @@ public class DialogueSystem : MonoBehaviour
                     // need condition to ensure no sound clashes occur
                 });
             }
-            button.GetComponent<Button>().onClick.AddListener(()=> {  });
+            // button.GetComponent<Button>().onClick.AddListener(()=> {  });
             button.Find("Text").GetComponent<Text>().text = next.buttonText;
 
             buttons[i] = button.gameObject;
