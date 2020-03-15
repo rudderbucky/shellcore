@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using NodeEditorFramework.Standard;
 
 ///<summary>
-/// The box for selecting multiple entities from the overworld
+/// The box for selecting multiple entities from the overworld, this method handles overworld clicks for now
 ///</summary>
 public class SelectionBoxScript : MonoBehaviour
 {
@@ -35,6 +35,13 @@ public class SelectionBoxScript : MonoBehaviour
         {
             image.enabled = false;
             return;
+        }
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            if(PlayerCore.Instance.GetTargetingSystem().GetSecondaryTargets().Count > 0)
+                reticleScript.ClearSecondaryTargets();
+            else PlayerCore.Instance.GetTargetingSystem().SetTarget(null);
         }
 
         if(Input.GetMouseButtonDown(0))

@@ -836,4 +836,22 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		if(RectTransformUtility.RectangleContainsScreenPoint(cursorScript.grid, Input.mousePosition)) return;
 		base.OnPointerDown(eventData);
 	}
+
+	public EntityBlueprint.PartInfo? RequestInventoryMouseOverInfo()
+	{
+		foreach(var part in partDict) {
+			if(RectTransformUtility.RectangleContainsScreenPoint(part.Value.GetComponent<RectTransform>(), Input.mousePosition)) {
+				return part.Key;
+			}
+		}
+
+		if(traderPartDict != null)
+			foreach(var part in traderPartDict) {
+				if(RectTransformUtility.RectangleContainsScreenPoint(part.Value.GetComponent<RectTransform>(), Input.mousePosition)) {
+					return part.Key;
+				}
+			}
+
+		return null;
+	}
 }

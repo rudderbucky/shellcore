@@ -35,7 +35,7 @@ public class TractorBeam : MonoBehaviour
         targetGlow.gameObject.SetActive(false);
 
         GameObject childObject = new GameObject();
-        childObject.transform.SetParent(transform, false);
+        // childObject.transform.SetParent(transform, false);
         lineRenderer = childObject.AddComponent<LineRenderer>();
         lineRenderer.material = tractorMaterial;
         lineRenderer.startWidth = 0.1F;
@@ -43,6 +43,7 @@ public class TractorBeam : MonoBehaviour
         lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
         lineRenderer.sortingOrder = 1;
+        lineRenderer.sortingLayerName = "Projectiles";
         childObject.name = "TractorBeam";
         initialized = true;
     }

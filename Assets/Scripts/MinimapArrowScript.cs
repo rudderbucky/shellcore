@@ -14,7 +14,7 @@ public class MinimapArrowScript : MonoBehaviour {
 	public void Initialize(PlayerCore player) {
 		this.player = player;
 		instance = this;
-		playerTargetArrow = Instantiate(arrowPrefab, transform, false).transform;
+		if(!playerTargetArrow) playerTargetArrow = Instantiate(arrowPrefab, transform, false).transform;
 		playerTargetArrow.GetComponent<SpriteRenderer>().color = Color.cyan;
 	}
 

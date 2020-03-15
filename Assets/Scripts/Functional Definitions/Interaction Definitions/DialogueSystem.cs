@@ -588,7 +588,7 @@ public class DialogueSystem : MonoBehaviour
         {
             if(currentState != DialogueState.Out) break;
             count -= 0.1F * blackBarBottom.sizeDelta.y;
-            hudGroup.alpha += 0.1F;
+            if(!PlayerViewScript.hidingHUD) hudGroup.alpha += 0.1F;
             blackBarTop.anchoredPosition = new Vector2(0, -count);
             blackBarBottom.anchoredPosition = new Vector2(0, count);
             yield return new WaitForSeconds(0.0025F);

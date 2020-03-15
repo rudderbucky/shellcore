@@ -13,7 +13,7 @@ public class ShellMax : PassiveAbility {
     {
         float[] maxHealths = Core.GetMaxHealth();
 		maxHealths[index] -= 250 * abilityTier;
-		Core.SetMaxHealth(maxHealths, true);
+		Core.SetMaxHealth(maxHealths, false);
         base.SetDestroyed(input);
     }
 

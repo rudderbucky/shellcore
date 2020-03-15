@@ -36,7 +36,7 @@ public class SpeedThrust : ActiveAbility
         if(craft && activated) {
             (Core as Craft).enginePower -= 100F * abilityTier;
         } // bring the engine power back (will change to vary as Speed Thrust is tiered)
-        ToggleIndicator();
+        ToggleIndicator(true);
     }
 
     /// <summary>
@@ -56,6 +56,6 @@ public class SpeedThrust : ActiveAbility
         AudioManager.PlayClipByID("clip_activateability", transform.position);
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
-        ToggleIndicator();
+        ToggleIndicator(true);
     }
 }

@@ -94,7 +94,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		currentPart = null;
 		if(lastPart.isInChain && lastPart.validPos) {
 			lastPart.SetLastValidPos(lastPart.info.location);
-		} else lastPart.Snapback();
+		} else if(Input.GetKey(KeyCode.LeftShift)) lastPart.Snapback();
 	}
 	public void UpdateHandler() {
 		currentAbilities.Clear();
@@ -120,6 +120,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			if(RectTransformUtility.RectangleContainsScreenPoint(part.rectTransform, Input.mousePosition)) {
 				return part.info;
 			}
+		}
+
+		if(builder as ShipBuilder)
+		{
+			return (builder as ShipBuilder).RequestInventoryMouseOverInfo();
 		}
 		return null;
 	}

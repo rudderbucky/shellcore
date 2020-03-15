@@ -48,7 +48,7 @@ public class AirCraftAI : MonoBehaviour
 
     public void setMode(AIMode mode)
     {
-        Debug.Log("Mode (" + mode + ") set! (try to reduce these, the AI is initialized each time)");
+        // Debug.Log("Mode (" + mode + ") set! (try to reduce these, the AI is initialized each time)");
         if (mode == this.mode)
             return;
 

@@ -39,10 +39,11 @@ public class EnergySphereScript : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<IHarvester>() != null)
+        if ((collision.gameObject.name == "Shell Sprite" && collision.GetComponentInParent<IHarvester>() != null)
+            || collision.GetComponent<Harvester>() != null)
         {
             AudioManager.PlayClipByID("clip_powerup", transform.position);
-            collision.GetComponent<IHarvester>().AddPower(20);
+            collision.GetComponentInParent<IHarvester>().AddPower(20);
             Destroy(gameObject);
         }
     }

@@ -207,7 +207,23 @@ public class Entity : MonoBehaviour, IDamageable {
             GameObject childObject = new GameObject("Minimap Image");
             childObject.transform.SetParent(transform, false);
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
-            renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+            if(category == EntityCategory.Station)
+            {
+                if(this as Outpost)
+                {
+                    renderer.sprite = ResourceManager.GetAsset<Sprite>("outpost_minimap_sprite");
+                }
+                else if(this as Bunker)
+                {
+                    renderer.sprite = ResourceManager.GetAsset<Sprite>("bunker_minimap_sprite");                   
+                }
+                else
+                {
+                    renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+                } 
+                renderer.transform.localScale = new Vector3(3.5F, 3.5F, 3.5F);
+            }
+            else renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
         }
 
@@ -252,10 +268,6 @@ public class Entity : MonoBehaviour, IDamageable {
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
 
-                // Disable collider if no sprite
-                if(!partObject.GetComponent<SpriteRenderer>().sprite && partObject.GetComponent<Collider2D>()) 
-                    partObject.GetComponent<Collider2D>().enabled = false;
-
                 string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
                 // Add shooter
                 if (shooterID != null)
@@ -285,6 +297,11 @@ public class Entity : MonoBehaviour, IDamageable {
 
                 parts.Add(partObject.GetComponent<ShellPart>());
                 if(partObject.GetComponent<Ability>()) abilities.Insert(0, partObject.GetComponent<Ability>());
+
+                // Disable collider if no sprite
+                if(!(partObject.GetComponent<SpriteRenderer>() && partObject.GetComponent<SpriteRenderer>().sprite)
+                    && partObject.GetComponent<Collider2D>() && !partObject.GetComponent<Harvester>()) 
+                    partObject.GetComponent<Collider2D>().enabled = false;
             }
         }
 

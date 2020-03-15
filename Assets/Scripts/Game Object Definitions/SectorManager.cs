@@ -77,8 +77,8 @@ public class SectorManager : MonoBehaviour
         sectorBorders = new GameObject("SectorBorders").AddComponent<LineRenderer>();
         sectorBorders.enabled = false;
         sectorBorders.positionCount = 4;
-        sectorBorders.startWidth = 0.1f;
-        sectorBorders.endWidth = 0.1f;
+        sectorBorders.startWidth = 0.15f;
+        sectorBorders.endWidth = 0.15f;
         sectorBorders.loop = true;
         OnSectorLoad = null;
 
@@ -181,8 +181,8 @@ public class SectorManager : MonoBehaviour
 
                     string sectorjson = System.IO.File.ReadAllText(file);
                     SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
-                    Debug.Log("Platform JSON: " + data.platformjson);
-                    Debug.Log("Sector JSON: " + data.sectorjson);
+                    // Debug.Log("Platform JSON: " + data.platformjson);
+                    // Debug.Log("Sector JSON: " + data.sectorjson);
                     Sector curSect = ScriptableObject.CreateInstance<Sector>();
                     JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
                     LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
@@ -205,6 +205,7 @@ public class SectorManager : MonoBehaviour
                         new Vector3(curSect.bounds.x, curSect.bounds.y - curSect.bounds.h, 0)
                     });
                     border.enabled = player.cursave.sectorsSeen.Contains(curSect.sectorName);
+                    border.startColor = border.endColor = new Color32((byte)135, (byte)135, (byte)135, (byte)255);
                     minimapSectorBorders.Add(curSect, border);
 
                     sectors.Add(curSect);
@@ -581,7 +582,7 @@ public class SectorManager : MonoBehaviour
             new Vector3(current.bounds.x + current.bounds.w, current.bounds.y - current.bounds.h, 0),
             new Vector3(current.bounds.x, current.bounds.y - current.bounds.h, 0)
         });
-
+        sectorBorders.startColor = sectorBorders.endColor = new Color32((byte)85, (byte)100, (byte)85, (byte)255);
         battleZone.enabled = false;
         // sector type things
         switch(current.type)

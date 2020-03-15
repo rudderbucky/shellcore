@@ -10,6 +10,8 @@ public class PlayerViewScript : MonoBehaviour {
 	public static int currentLayer = 2;
 	public static bool paused;
 
+	public static bool hidingHUD;
+
 	public static void SetCurrentWindow(IWindow window) {
 		instance.currentWindow.Push(window);
 	}
@@ -25,6 +27,12 @@ public class PlayerViewScript : MonoBehaviour {
 		Time.timeScale = 1;
 	}
 	void Update () {
+		if(DialogueSystem.Instance && DialogueSystem.Instance.hudGroup && Input.GetKeyDown(KeyCode.F1))
+		{
+			hidingHUD = !hidingHUD;
+			DialogueSystem.Instance.hudGroup.alpha = 1 - DialogueSystem.Instance.hudGroup.alpha;
+		}
+			
 		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
 			while(currentWindow.Count > 0) {
 				if(DialogueSystem.isInCutscene) break; // just go straight to escape menu, in cutscenes you can't escape dialogue

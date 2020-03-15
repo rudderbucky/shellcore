@@ -159,7 +159,7 @@ public class ShellPart : MonoBehaviour {
     /// Makes the part blink like in the original game
     /// </summary>
     void Blink() {
-        spriteRenderer.enabled = Time.time % 0.25F > 0.125F; // math stuff that blinks the part
+        spriteRenderer.enabled = Time.time % 0.125F > 0.0625F; // math stuff that blinks the part
         if(shooter) shooter.GetComponent<SpriteRenderer>().enabled = spriteRenderer.enabled;
     }
 

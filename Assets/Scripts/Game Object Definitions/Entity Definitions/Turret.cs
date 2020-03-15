@@ -13,7 +13,7 @@ public class Turret : AirConstruct, IOwnable {
     }
     protected override void Start()
     {
-        Debug.Log("Doughnut activated!");
+        if(Random.Range(0, 100) == 99) Debug.Log("Doughnut activated!");
         base.Start();
         if (entityBody)
             entityBody.drag = 25f;

@@ -31,6 +31,7 @@ public class Beam : WeaponAbility {
     }
     protected override void Start() {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
+        particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
         base.Start();
     }
     public void SetMaterial(Material material)
@@ -43,6 +44,7 @@ public class Beam : WeaponAbility {
     {
         if (firing && timer < 0.1F) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
+            line.startWidth = line.endWidth = 0.15F;
             line.SetPosition(0, line.transform.position); // draw and increment timer
             if(nextTargetPart) line.SetPosition(1, partPos);
             else line.SetPosition(1, targetingSystem.GetTarget().position);
@@ -50,6 +52,7 @@ public class Beam : WeaponAbility {
         }
         else if(firing && timer >= 0.1F)
         {
+            /*
             if(line.positionCount > 0 && ((line.GetPosition(1)-line.transform.position).sqrMagnitude 
                 > (line.GetPosition(0)-line.transform.position).sqrMagnitude)) {
                 line.SetPosition(0, line.GetPosition(0) + (line.GetPosition(1)-line.GetPosition(0)).normalized * 2); 
@@ -60,7 +63,17 @@ public class Beam : WeaponAbility {
                 if(nextTargetPart) line.SetPosition(1, partPos);
                 else if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
             }
-            else line.positionCount = 0;
+            else line.positionCount = 0;*/
+            if(line.startWidth > 0)
+            {
+                line.startWidth -= 0.01F;
+                line.endWidth -= 0.01F;
+            }
+            if(line.startWidth < 0)
+            {
+                line.startWidth = line.endWidth = 0;
+            }
+
         } else 
         {
             line.positionCount = 0;
@@ -90,10 +103,26 @@ public class Beam : WeaponAbility {
                 firing = true;
 
                 Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
+                InstantiateParticles(victimPos);
                 return true;
             }
             return false;
         } return false;
+    }
+
+    public GameObject particlePrefab;
+
+    private void InstantiateParticles(Vector3 victimPos)
+    {
+        Vector3 distance = victimPos - transform.position;
+        Vector3 distanceNormalized = distance.normalized;
+        Vector3 currentPos = transform.position;
+
+        while((currentPos - transform.position).sqrMagnitude < distance.sqrMagnitude)
+        {
+            Instantiate(particlePrefab, (Vector2)currentPos, Quaternion.identity);
+            currentPos += distanceNormalized * 0.8F;
+        }
     }
 
     ShellPart nextTargetPart;

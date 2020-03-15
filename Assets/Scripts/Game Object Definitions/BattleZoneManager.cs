@@ -9,6 +9,11 @@ public class BattleZoneManager : MonoBehaviour
     public string sectorName;
     bool playing;
 
+    void OnEnable()
+    {
+        targets = new List<Entity>();
+    }
+
     public void AlertPlayers(int faction, string message) {
         foreach(Entity target in targets) {
             if(target as PlayerCore && target.faction == faction) {

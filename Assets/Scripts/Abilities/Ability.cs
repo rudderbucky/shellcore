@@ -203,20 +203,37 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         }
     }
 
-    virtual protected void ToggleIndicator()
+    private bool blinking;
+    virtual protected void ToggleIndicator(bool blink = false)
     {
         var indicator = transform.Find("Shooter");
         GameObject glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
         glowPrefab = Instantiate(glowPrefab, transform, false);
-        glowPrefab.transform.localScale = new Vector3(0.5F,0.5F,1);
+        glowPrefab.transform.localScale = new Vector3(0.75F,0.75F,1);
         glowPrefab.GetComponent<SpriteRenderer>().color = new Color(1,1,1,0.5F);
         Destroy(glowPrefab, GetActiveTimeRemaining());
         originalIndicatorColor = FactionColors.colors[Core.faction];
         if (indicator)
         {
-            indicator.GetComponent<SpriteRenderer>().color = indicator.GetComponent<SpriteRenderer>().color == Color.cyan ? originalIndicatorColor : Color.cyan;
+            if(blink)
+            {
+                blinking = !blinking;
+                if(blinking) StartCoroutine(Blinker(indicator, glowPrefab));
+            }
+            else indicator.GetComponent<SpriteRenderer>().color = indicator.GetComponent<SpriteRenderer>().color == Color.cyan ? originalIndicatorColor : Color.cyan;
         }
     }
+
+    IEnumerator Blinker(Transform indicator, GameObject glowPrefab)
+    {
+        while(blinking)
+        {
+            indicator.GetComponent<SpriteRenderer>().color = indicator.GetComponent<SpriteRenderer>().color == Color.cyan ? originalIndicatorColor : Color.cyan;
+            if(glowPrefab) glowPrefab.SetActive(!glowPrefab.activeSelf);
+            yield return new WaitForSeconds(0.125F);
+        }
+    }
+
     /// <summary>
     /// Used to activate whatever effect the ability has, almost always overriden
     /// </summary>

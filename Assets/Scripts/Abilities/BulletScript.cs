@@ -53,18 +53,17 @@ public class BulletScript : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        //TODO: Make this collision avoid hitting the core collider which may mess up the part damage calculation a bit  (for missiles as well)
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
         if (craft != null && !craft.GetIsDead()) // check if the component was obtained
         {
             if (craft.GetFaction() != faction && CheckCategoryCompatibility(craft))
             {
-                var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration
-                Debug.Log("Bullet damage: " + residue);                             
+                var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration  
+                                    
                 // if the shell is low, damage the part
-
                 ShellPart part = collision.transform.GetComponent<ShellPart>();
-                Debug.Log("Part: " + part);
                 if (part)
                 {
                     part.TakeDamage(residue); // damage the part
