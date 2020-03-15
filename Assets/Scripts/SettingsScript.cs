@@ -122,4 +122,12 @@ public class SettingsScript : MonoBehaviour {
 		PlayerPrefs.SetString("SelectionBoxScript_simpleMouseMovement", val + "");
 		SelectionBoxScript.simpleMouseMovement = val;
 	}
+
+    // Volume slider updates without having to save
+	public void Update()
+	{
+		ChangeMasterVolume(masterSoundSlider.value);
+		ChangeMusicVolume(musicSlider.value);
+		ChangeSoundEffectsVolume(soundSlider.value);
+	}
 }
