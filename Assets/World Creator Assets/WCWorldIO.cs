@@ -35,7 +35,8 @@ public class WCWorldIO : MonoBehaviour
 
     void Start()
     {
-
+        blueprintField.text = PlayerPrefs.GetString("WorldCreator_playerBlueprintField", "");
+        checkpointField.text = PlayerPrefs.GetString("WorldCreator_playerCheckpointField", "");
         var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
         if(Directory.Exists(path)) 
             generatorHandler.ReadWorld(path);
@@ -46,6 +47,8 @@ public class WCWorldIO : MonoBehaviour
         var savePath = Application.persistentDataPath + "\\Saves\\TestSave";
         if(File.Exists(savePath)) 
             File.Delete(savePath);
+        PlayerPrefs.SetString("WorldCreator_playerBlueprintField", blueprintField.text);
+        PlayerPrefs.SetString("WorldCreator_playerCheckpointField", checkpointField.text);
         SaveMenuHandler.CreateSave("TestSave", checkpointField.text, blueprintField.text);
         var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
         if(generatorHandler.WriteWorld(path))

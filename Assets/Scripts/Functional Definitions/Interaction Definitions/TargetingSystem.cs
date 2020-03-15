@@ -78,6 +78,11 @@ public class TargetingSystem {
             secondaryTargets.Remove(ent);
     }
 
+    public List<Entity> GetSecondaryTargets()
+    {
+        return secondaryTargets;
+    }
+
     public void ClearSecondaryTargets()
     {
         secondaryTargets.Clear();

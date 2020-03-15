@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class ReticleScript : MonoBehaviour {
 
+    public Sprite[] shapeArray;
     private PlayerCore craft; // the player the reticle is assigned to
     private TargetingSystem targSys; // the targeting system of the player
     private bool initialized; // if the reticle has been initialized
@@ -16,6 +17,11 @@ public class ReticleScript : MonoBehaviour {
     private Transform coreimage;
     public EventSystem system;
     public QuantityDisplayScript quantityDisplay;
+    public static ReticleScript instance;
+    void Awake()
+    {
+        instance = this;
+    }
 
     /// <summary>
     /// Initializes the reticle
@@ -31,8 +37,9 @@ public class ReticleScript : MonoBehaviour {
 
     /// <summary>
     /// Finds a target to assign to the player at the given mouse position
+    /// Returns whether there was a drone interaction or not
     /// </summary>
-    public void FindTarget() {
+    public bool FindTarget() {
 
         // TODO: To say this needs despaghettification would be an understatement...
         // despaghettified a little :)
@@ -58,8 +65,15 @@ public class ReticleScript : MonoBehaviour {
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
+        bool droneInteraction = false;
 
-        if (!DroneCheck(targSys.GetTarget(), hits) && hits.Length != 0) // check if there are actually any hits
+        foreach(var ent in targSys.GetSecondaryTargets())
+            droneInteraction = DroneCheck(ent.transform, hits) || droneInteraction;
+
+        var primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits);
+        droneInteraction = droneInteraction || primaryDroneInteraction;
+
+        if (!primaryDroneInteraction && hits.Length != 0) // check if there are actually any hits
         {
             Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
 
@@ -74,7 +88,7 @@ public class ReticleScript : MonoBehaviour {
                 }
                 targSys.SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
                 AdjustReticleBounds(GetComponent<SpriteRenderer>(), draggableTarget.transform);
-                return; // Return so that the next check doesn't happen
+                return droneInteraction; // Return so that the next check doesn't happen
             }
 
 
@@ -97,14 +111,16 @@ public class ReticleScript : MonoBehaviour {
 
                 targSys.SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
                 AdjustReticleBounds(GetComponent<SpriteRenderer>(), curTarg.GetTransform());
-                return; // Return so that the next check doesn't happen
+                return droneInteraction; // Return so that the next check doesn't happen
             }
             targSys.SetTarget(null); // otherwise set the target to null
         }
         else {
             targSys.SetTarget(null); // otherwise set the target to null
         }
-        quantityDisplay.UpdatePrimaryTargetInfo();
+
+        // quantityDisplay.UpdatePrimaryTargetInfo();
+        return droneInteraction;
     }
 
     /// <summary>
@@ -127,9 +143,12 @@ public class ReticleScript : MonoBehaviour {
 	void Update () {
         if (initialized) // check if it is safe to update
         {
-            foreach(var tuple in secondariesByObject)
+            var index = 0;
+            while(index < secondariesByObject.Count)
             {
-                SetSecondaryReticleTransform(tuple.Item1, tuple.Item2);
+                var oldCount = secondariesByObject.Count;
+                SetSecondaryReticleTransform(secondariesByObject[index].Item1, secondariesByObject[index].Item2);
+                if(oldCount == secondariesByObject.Count) index++;
             }
 
             if (targSys.GetTarget() != null) // check if the reticle should update
@@ -165,10 +184,13 @@ public class ReticleScript : MonoBehaviour {
 
     private void SetSecondaryReticleTransform(Entity ent, Transform reticle)
     {
-        if(ent != null)
+        if(ent != null && !ent.GetIsDead())
         {
             reticle.transform.position = ent.transform.position; // update reticle position
             reticle.GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
+            reticle.Find("Shape Marker").GetComponent<SpriteRenderer>().enabled = true;
+            reticle.Find("Shape Marker").GetComponent<SpriteRenderer>().sprite = shapeArray[secondariesByObject.IndexOf((ent, reticle))];
+            reticle.Find("Shape Marker").GetComponent<SpriteRenderer>().color = new Color32((byte)0, (byte)150, (byte)250, (byte)255);
         }
         else RemoveSecondaryTarget((ent, reticle));
 
@@ -205,6 +227,10 @@ public class ReticleScript : MonoBehaviour {
         Vector3 targSize = ent.GetComponent<SpriteRenderer>().bounds.size; // adjust the size of the reticle
         float followedSize = Mathf.Max(targSize.x + 1.5F, targSize.y + 1.5F); // grab the maximum bounded size of the target
         renderer.size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
+        if(renderer.transform.Find("Shape Marker"))
+        {
+            renderer.transform.Find("Shape Marker").localPosition = new Vector3(followedSize / 2 + 0.5F, followedSize / 2 - 0.25F, 0);
+        }
     }
 
     private void UpdateReticleHealths(Transform shellHealth, Transform coreHealth, ITargetable targetCraft)
@@ -242,15 +268,38 @@ public class ReticleScript : MonoBehaviour {
     }
 
     public GameObject secondaryReticlePrefab;
-    private List<(Entity, Transform)> secondariesByObject = new List<(Entity, Transform)>();
+    public List<(Entity, Transform)> secondariesByObject = new List<(Entity, Transform)>();
 
     public void AddSecondaryTarget(Entity ent)
     {
-        var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform);
+        var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
         AdjustReticleBounds(reticle.GetComponent<SpriteRenderer>(), ent.transform);
         secondariesByObject.Add((ent, reticle.transform));
         quantityDisplay.AddEntityInfo(ent);
         targSys.AddSecondaryTarget(ent);
+    }
+
+    public int GetTargetIndex(Entity target)
+    {
+        var x = 0;
+        foreach(var tuple in secondariesByObject)
+        {
+            if(tuple.Item1 == target) return x;
+            x++;
+        }
+        return -1;
+    }
+
+    private void RemoveSecondaryTarget(Entity entity)
+    {
+        foreach(var secondary in secondariesByObject)
+        {
+            if(secondary.Item1 == entity)
+            {
+                RemoveSecondaryTarget(secondary);
+                break;
+            }
+        }
     }
 
     public void RemoveSecondaryTarget((Entity, Transform) tuple)
