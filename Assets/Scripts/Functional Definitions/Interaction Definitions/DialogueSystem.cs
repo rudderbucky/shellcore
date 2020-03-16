@@ -39,6 +39,12 @@ public class DialogueSystem : MonoBehaviour
         Original
     }
     public static DialogueStyle dialogueStyle;
+
+    public bool IsWindowActive()
+    {
+        return window;
+    }
+    
     private void Awake()
     {
         Instance = this;

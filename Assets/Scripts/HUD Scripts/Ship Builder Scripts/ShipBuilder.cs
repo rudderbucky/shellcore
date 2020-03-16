@@ -780,7 +780,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				CloseUI(false);
 		}
 
-		if(Input.GetKeyDown(KeyCode.H))
+		if(editorMode && Input.GetKeyDown(KeyCode.H))
 		{
 			TraderInventory trader = new TraderInventory();
 			trader.parts = new List<EntityBlueprint.PartInfo>();
@@ -792,6 +792,23 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			Debug.Log(JsonUtility.ToJson(trader));
 		}
 
+		if(editorMode && Input.GetKeyDown(KeyCode.X))
+		{
+			shell.sprite = ResourceManager.GetAsset<Sprite>("core3_shell");
+			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+			shell.color = FactionColors.colors[0];
+			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
+
+			// orient shell image so relative center stays the same regardless of shell tier
+			shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
+			core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
+			
+			core.material = ResourceManager.GetAsset<Material>("material_color_swap");
+			core.color = FactionColors.colors[0];
+			core.preserveAspect = true;
+			core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
+		}
+		
 	}
 
     [System.Serializable]

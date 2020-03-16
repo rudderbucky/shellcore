@@ -10,6 +10,7 @@ public enum ItemType {
 		Platform,
         Flag,
         Decoration,
+        BackgroundDecoration
 }
 
 /// <summary>
@@ -50,6 +51,7 @@ public class ItemHandler : MonoBehaviour
     public GameObject buttonPrefab;
     public Transform viewContent;
     public WorldCreatorCursor cursor;
+    public static ItemHandler instance;
     void Start() {
         GenerateItemList();
         for(int i = 0; i < itemPack.items.Count; i++) {
@@ -58,6 +60,7 @@ public class ItemHandler : MonoBehaviour
             ib.itemIndex = i;
             ib.cursor = cursor;
         }
+        instance = this;
     }
 
     public Item GetItemByIndex(int index) {

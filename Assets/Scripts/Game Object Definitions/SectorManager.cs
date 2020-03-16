@@ -121,6 +121,26 @@ public class SectorManager : MonoBehaviour
         {
             dangerZoneTimer = 0;
         }
+
+        // update background spawns
+        for(int i = 0; i < bgSpawns.Count; i++)
+        {
+            var key = bgSpawns[i];
+            timersBySpawn[key] -= Time.deltaTime;
+            if(timersBySpawn[key] <= 0)
+            {
+                timersBySpawn[key] = key.Item3;
+
+                if(!DialogueSystem.isInCutscene)
+                {
+                    var spawnPoint = player.transform.position + Quaternion.Euler(0, 0, Random.Range(0, 360)) * new Vector3(key.Item4, 0, 0);
+                    key.Item2.position = spawnPoint;
+                    key.Item2.ID = "";
+                    SpawnEntity(key.Item1, key.Item2);
+                    AudioManager.PlayClipByID("clip_respawn", spawnPoint);
+                }
+            }
+        }
     }
 
     public void TryGettingJSON() {
@@ -421,6 +441,8 @@ public class SectorManager : MonoBehaviour
         return entity;
     }
 
+    List<(EntityBlueprint, Sector.LevelEntity, int, float)> bgSpawns = new List<(EntityBlueprint, Sector.LevelEntity, int, float)>();
+    Dictionary<(EntityBlueprint, Sector.LevelEntity, int, float), float> timersBySpawn = new Dictionary<(EntityBlueprint, Sector.LevelEntity, int, float), float>();
     void loadSector()
     {
         #if UNITY_EDITOR
@@ -498,6 +520,10 @@ public class SectorManager : MonoBehaviour
 
         stations.Clear();
         carriers.Clear();
+
+        // reset background spawns
+        timersBySpawn.Clear();
+        bgSpawns.Clear();
 
         //load new sector
         if(player) {
@@ -618,7 +644,24 @@ public class SectorManager : MonoBehaviour
                 break;
         }
 
-
+        // background spawns
+        foreach(var bgSpawn in current.backgroundSpawns)
+        {
+            if(bgSpawn.entity.assetID == "shellcore_blueprint")
+            {
+                EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                JsonUtility.FromJsonOverwrite(bgSpawn.entity.blueprintJSON, blueprint);
+                bgSpawns.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
+                timersBySpawn.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius), bgSpawn.timePerSpawn);
+            }
+            else 
+            {
+                var key = (ResourceManager.GetAsset<EntityBlueprint>(bgSpawn.entity.assetID), 
+                    bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius);
+                bgSpawns.Add(key);
+                timersBySpawn.Add(key, bgSpawn.timePerSpawn);
+            }
+        }
 
         // music
         PlayCurrentSectorMusic();

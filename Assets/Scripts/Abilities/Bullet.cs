@@ -19,7 +19,7 @@ public class Bullet : WeaponAbility {
         // hardcoded values here
         description = "Projectile that deals " + damage + " damage.";
         abilityName = "Bullet";
-        bulletSpeed = 15;
+        bulletSpeed = 25;
         survivalTime = 0.5F;
         range = bulletSpeed * survivalTime;
         ID = 5;
@@ -58,7 +58,7 @@ public class Bullet : WeaponAbility {
     /// Helper method for Execute() that creates a bullet and modifies it to be shot
     /// </summary>
     /// <param name="targetPos">The position to fire the bullet to</param>
-    void FireBullet(Vector3 targetPos)
+    protected virtual void FireBullet(Vector3 targetPos)
     {
         AudioManager.PlayClipByID(bulletSound, transform.position);
         Vector3 originPos = part ? part.transform.position : Core.transform.position;

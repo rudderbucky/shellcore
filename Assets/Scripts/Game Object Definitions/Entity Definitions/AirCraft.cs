@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Crafts that are air-borne are known as aircrafts. These crafts bob up and down in the air when they are not moving, and can't normally attack
+/// Crafts that are air-borne are known as Aircrafts. These crafts bob up and down in the air when they are not moving, and can't normally attack
 /// ground-based targets.
 /// </summary>
 public abstract class AirCraft : Craft

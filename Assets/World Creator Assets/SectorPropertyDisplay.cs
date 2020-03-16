@@ -18,7 +18,9 @@ public class SectorPropertyDisplay : MonoBehaviour
     public InputField colorR;
     public InputField colorG;
     public InputField colorB;
-    
+    public GameObject bgSpawnInputFieldPrefab;
+    public List<InputField> bgSpawnInputFields = new List<InputField>();
+    public Transform scrollContents;
     Vector2 mousePos;
 
     void Start() 
@@ -47,6 +49,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         colorR.text = currentSector.backgroundColor.r + "";
         colorG.text = currentSector.backgroundColor.g + "";
         colorB.text = currentSector.backgroundColor.b + "";
+        UpdateBGSpawns();
     }
 
     void Update() {
@@ -88,7 +91,93 @@ public class SectorPropertyDisplay : MonoBehaviour
         currentSector.backgroundColor = new Color(float.Parse(colorR.text), float.Parse(colorG.text), float.Parse(colorB.text), 1);
     }
 
-    public void Hide() {
+    public void Hide() 
+    {
         gameObject.SetActive(false);
+    }
+
+    public void AddBGSpawn(string text = null) 
+    {
+        var field = Instantiate(bgSpawnInputFieldPrefab, scrollContents).GetComponentInChildren<InputField>();
+        bgSpawnInputFields.Add(field);
+        field.text = text;
+    }
+
+    public void ClearBGSpawns() 
+    {
+        foreach(var field in bgSpawnInputFields)
+        {
+            Destroy(field.transform.parent.gameObject);
+        }
+        bgSpawnInputFields.Clear();
+    }
+
+    public void TryParseBGSpawns()
+    {
+        List<Sector.LevelEntity> levelEntities = new List<Sector.LevelEntity>();
+        foreach(var field in bgSpawnInputFields)
+        {
+            if(field.text == null || field.text == "") continue;
+            var item = ItemHandler.instance.items.Find((it) => {return it.assetID == field.text;});
+
+            if(item != null)
+            {
+                Sector.LevelEntity ent = new Sector.LevelEntity();
+
+                // you can choose to give any object a custom name
+                if(item.name != null && item.name != "")
+                    ent.name = item.name;
+                else ent.name = item.obj.name;
+                ent.faction = 1; // maybe change this later
+                ent.assetID = item.assetID;
+                levelEntities.Add(ent);
+            }
+            else
+            {
+                try
+                {
+                    EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                    JsonUtility.FromJsonOverwrite(field.text, blueprint);
+                    blueprint.intendedType = EntityBlueprint.IntendedType.ShellCore; // for good measure :)
+
+                    Sector.LevelEntity ent = new Sector.LevelEntity();
+                    ent.name = blueprint.entityName;
+                    ent.assetID = "shellcore_blueprint";
+                    ent.blueprintJSON = JsonUtility.ToJson(blueprint);
+                    ent.faction = 1; // maybe change this later
+                    levelEntities.Add(ent);
+                } 
+                catch(System.Exception e)
+                {
+                    Debug.LogWarning(e);
+                    continue;
+                }
+            }
+        }
+
+        currentSector.backgroundSpawns = new Sector.BackgroundSpawn[levelEntities.Count];
+        var i = 0;
+        foreach(var ent in levelEntities)
+        {
+            currentSector.backgroundSpawns[i].entity = ent;
+            currentSector.backgroundSpawns[i].timePerSpawn = 8;
+            currentSector.backgroundSpawns[i].radius = 15;
+        }
+
+        UpdateBGSpawns();
+    }
+
+    public void UpdateBGSpawns()
+    {
+        ClearBGSpawns();
+        foreach(var bgSpawn in currentSector.backgroundSpawns)
+        {
+            if(bgSpawn.entity.assetID != "shellcore_blueprint" 
+                && ItemHandler.instance.items.Exists((item) => {return item.assetID == bgSpawn.entity.assetID;}))
+            {
+                AddBGSpawn(bgSpawn.entity.assetID);
+            }
+            else AddBGSpawn(bgSpawn.entity.blueprintJSON);
+        }
     }
 }

@@ -24,7 +24,8 @@ public class WeaponTargetingSystem {
         if (tmp && tmp.GetComponent<IDamageable>() != null
             && !tmp.GetComponent<IDamageable>().GetIsDead()
             && tmp.GetComponent<IDamageable>().GetFaction() != ability.Core.faction 
-            && ability.CheckCategoryCompatibility(tmp.GetComponent<IDamageable>())) // check if target is compatible
+            && ability.CheckCategoryCompatibility(tmp.GetComponent<IDamageable>())
+            && (tmp.position - ability.transform.position).magnitude <= ability.GetRange()) // check if target is compatible
         {
             target = tmp;
             return target; // if the manual target is compatible it overrides everything

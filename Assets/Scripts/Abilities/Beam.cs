@@ -26,7 +26,7 @@ public class Beam : WeaponAbility {
         damage = 500;
         energyCost = 100;
         ID = 4;
-        range = 15;
+        range = 12;
         category = Entity.EntityCategory.All;
     }
     protected override void Start() {

@@ -57,4 +57,13 @@ public class Sector : ScriptableObject
     public string[] targets;
     public bool hasMusic;
     public string musicID;
+    
+    [System.Serializable]
+    public struct BackgroundSpawn
+    {
+        public LevelEntity entity;
+        public int timePerSpawn;
+        public float radius;
+    }
+    public BackgroundSpawn[] backgroundSpawns;
 }

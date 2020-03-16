@@ -30,8 +30,11 @@ public class PlayerViewScript : MonoBehaviour {
 	void Update () {
 		if(DialogueSystem.Instance && DialogueSystem.Instance.hudGroup && Input.GetKeyDown(KeyCode.F1))
 		{
-			hidingHUD = !hidingHUD;
-			DialogueSystem.Instance.hudGroup.alpha = 1 - DialogueSystem.Instance.hudGroup.alpha;
+			if(!DialogueSystem.isInCutscene && !DialogueSystem.Instance.IsWindowActive())
+			{
+				hidingHUD = !hidingHUD;
+				DialogueSystem.Instance.hudGroup.alpha = 1 - DialogueSystem.Instance.hudGroup.alpha;
+			}
 		}
 			
 		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
