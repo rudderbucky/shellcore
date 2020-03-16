@@ -29,14 +29,9 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             height = 50f;
-            // GUILayout.Label("Fail Task Node");
-        }
-
-        void SetEntityName(string newName)
-        {
-            Debug.Log("selected " + newName + "!");
-
-            WorldCreatorCursor.selectEntity -= SetEntityName;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("");
+            GUILayout.EndHorizontal();
         }
 
         public override int Traverse()

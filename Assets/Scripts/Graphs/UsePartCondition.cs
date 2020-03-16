@@ -58,14 +58,14 @@ namespace NodeEditorFramework.Standard
 
         public void CheckParts()
         {
-            if(sectorName != "" && ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
+            if(sectorName == "" || ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
             {
                 var parts = SectorManager.instance.player.blueprint.parts;
                 for (int i = 0; i < parts.Count; i++)
                 {
                     if(parts[i].partID == partID && parts[i].abilityID == abilityID)
                     {
-                        ShipBuilder.RemoveOrigin(sectorName, (partID, abilityID));
+                        if(sectorName != "") ShipBuilder.RemoveOrigin(sectorName, (partID, abilityID));
                         State = ConditionState.Completed;
                         connectionKnobs[0].connection(0).body.Calculate();
                     }

@@ -103,6 +103,8 @@ namespace NodeEditorFramework.Standard
             }
         }
 
+        // TODO: Force failed deinit if you pass through some node, this is required for the game since if Aristu dies later and this node is initialized
+        // I have no idea what that does
         public void DeInit()
         {
             OnUnitDestroyed -= updateState;

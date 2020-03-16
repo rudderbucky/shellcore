@@ -25,6 +25,10 @@ namespace NodeEditorFramework.Standard
         public bool SpeakToEntity;
         public string EntityName;
         public bool forceStart;
+        public string originSector;
+        public ConnectionKnob flowOutput;
+        ConnectionKnobAttribute flowInStyle = new ConnectionKnobAttribute("ContinueAsync", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
+        public bool allowAfterSpeaking;
 
         public override void NodeGUI()
         {
@@ -43,6 +47,15 @@ namespace NodeEditorFramework.Standard
                 }
 
                 forceStart = RTEditorGUI.Toggle(forceStart, "Force dialogue start");
+                allowAfterSpeaking = RTEditorGUI.Toggle(allowAfterSpeaking, "Allow passing async");
+
+                if (GUI.changed)
+                {
+                if (allowAfterSpeaking)
+                    flowOutput = CreateConnectionKnob(flowInStyle);
+                else
+                    DeleteConnectionPort(flowOutput);
+                }
             }
         }
 
@@ -66,7 +79,17 @@ namespace NodeEditorFramework.Standard
                         TaskManager.Instance.setNode(output);
                     });
                 }
-                return forceStart ? 0 : -1;
+
+                if(!allowAfterSpeaking)
+                    return forceStart ? 0 : -1;
+                else
+                {
+                    if(flowOutput == null)
+                        flowOutput = outputKnobs[1];
+                    TaskManager.Instance.setNode(flowOutput);
+                    Debug.Log(flowOutput.name);
+                    return 0;
+                }
             }
             else
             {
