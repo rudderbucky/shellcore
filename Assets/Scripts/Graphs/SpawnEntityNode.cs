@@ -79,6 +79,16 @@ namespace NodeEditorFramework.Standard
                 if(data.name == entityName)
                 {
                     Debug.Log("Spawn Entity name given matches with a character name! Spawning character...");
+                    
+                    foreach(var oj in AIData.entities)
+                    {
+                        if(oj && oj.name == data.name)
+                        {
+                            Debug.Log("Character already found. Not spawning.");
+                            return 0;
+                        }
+                    }
+
                     var characterBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                     JsonUtility.FromJsonOverwrite(data.blueprintJSON, characterBlueprint);
                     Sector.LevelEntity entityData = new Sector.LevelEntity
