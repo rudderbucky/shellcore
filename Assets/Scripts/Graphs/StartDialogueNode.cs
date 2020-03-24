@@ -23,7 +23,7 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob output;
 
         public bool SpeakToEntity;
-        public string EntityName;
+        public string EntityID;
         public bool forceStart;
         public string originSector;
         public ConnectionKnob flowOutput;
@@ -35,13 +35,13 @@ namespace NodeEditorFramework.Standard
             SpeakToEntity = RTEditorGUI.Toggle(SpeakToEntity, "Speak to entity");
             if(SpeakToEntity)
             {
-                GUILayout.Label("Entity Name");
-                EntityName = GUILayout.TextField(EntityName);
+                GUILayout.Label("Entity ID");
+                EntityID = GUILayout.TextField(EntityID);
                 if (WorldCreatorCursor.instance != null)
                 {
                     if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                     {
-                        WorldCreatorCursor.selectEntity += SetEntityName;
+                        WorldCreatorCursor.selectEntity += SetEntityID;
                         WorldCreatorCursor.instance.EntitySelection();
                     }
                 }
@@ -64,18 +64,18 @@ namespace NodeEditorFramework.Standard
             dialogueStartNode = this;
             if (SpeakToEntity)
             {
-                TaskManager.speakerName = EntityName;
+                TaskManager.speakerID = EntityID;
                 TryAddObjective();
-                if (TaskManager.interactionOverrides.ContainsKey(EntityName))
+                if (TaskManager.interactionOverrides.ContainsKey(EntityID))
                 {
-                    TaskManager.interactionOverrides[EntityName] = () => {
+                    TaskManager.interactionOverrides[EntityID] = () => {
                         TaskManager.Instance.setNode(output);
                     };
 
                 }
                 else
                 {
-                    TaskManager.interactionOverrides.Add(EntityName, () => {
+                    TaskManager.interactionOverrides.Add(EntityID, () => {
                         TaskManager.Instance.setNode(output);
                     });
                 }
@@ -93,17 +93,17 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                TaskManager.speakerName = null;
+                TaskManager.speakerID = null;
                 return 0;
             }
         }
 
-        void SetEntityName(string newName)
+        void SetEntityID(string newID)
         {
-            Debug.Log("selected " + newName + "!");
+            Debug.Log("selected " + newID + "!");
 
-            EntityName = newName;
-            WorldCreatorCursor.selectEntity -= SetEntityName;
+            EntityID = newID;
+            WorldCreatorCursor.selectEntity -= SetEntityID;
         }
 
         void TryAddObjective()
@@ -111,7 +111,7 @@ namespace NodeEditorFramework.Standard
             foreach(var ent in AIData.entities)
             {
                 if(!ent) continue;
-                if(ent.entityName == EntityName)
+                if(ent.ID == EntityID)
                 {
                     TaskManager.objectiveLocations.Clear();
                     TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation(

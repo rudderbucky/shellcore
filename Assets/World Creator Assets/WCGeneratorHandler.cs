@@ -39,7 +39,7 @@ public class WCGeneratorHandler : MonoBehaviour
     {
         if(path == null || path == "")
         {
-            Debug.Log("Path your damn world!");
+            Debug.LogError("Path your damn world! Abort.");
             return false;
         }
 
@@ -90,12 +90,13 @@ public class WCGeneratorHandler : MonoBehaviour
             sectTargetIDS.Add(sector, new List<string>());
         }
 
+        Dictionary<string, string> itemSectorsByID = new Dictionary<string, string>();
         foreach(var item in items)
         {
             Sector container = GetSurroundingSector(item.pos);
             if(container == null)
             {
-                Debug.Log("No container for item. Abort.");
+                Debug.LogError("No container for item. Abort.");
                 return false;
             }
             switch(item.type)
@@ -111,8 +112,25 @@ public class WCGeneratorHandler : MonoBehaviour
                     Sector.LevelEntity ent = new Sector.LevelEntity();
                     if(cursor.characters.TrueForAll((WorldData.CharacterData x) => {return x.ID != item.ID;})) 
                     {
-                        Debug.Log(item.ID + " is not a character.");
-                        ent.ID = ID++ + "";
+                        Debug.Log(item.ID + " is not a character. " + ID);
+                        int test;
+                        if(item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
+                        {
+                            ent.ID = ID++ + "";
+                        }
+                        else 
+                        {
+                            ent.ID = item.ID;
+                            if(itemSectorsByID.ContainsKey(ent.ID))
+                            {
+                                Debug.LogError("Two items in sectors " + container.sectorName + " and " 
+                                    + itemSectorsByID[ent.ID] + " were issued the same custom ID. Abort.");
+                                return false;
+                            }
+                            else itemSectorsByID.Add(ent.ID, container.sectorName);
+                        }
+
+                        Debug.Log(container.sectorName + " " + ent.ID);
                     }
                     else 
                     {

@@ -9,6 +9,7 @@ public interface ITargetable {
     Dialogue GetDialogue();
     bool GetIsDead();
     string GetName();
+    string GetID();
     int GetFaction();
 }
 
@@ -128,5 +129,10 @@ public class ShardRock : MonoBehaviour, IDamageable
     }
     void Update() {
         if(currentHealths[0] <= 0 && !dead) OnDeath();
+    }
+
+    public string GetID()
+    {
+        return -1 + "";
     }
 }

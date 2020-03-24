@@ -23,8 +23,8 @@ namespace NodeEditorFramework.Standard
         public bool useIDInput;
         public bool useIDInputTarget;
         public bool asynchronous;
-        public string entityName = "";
-        public string targetEntityName = "";
+        public string entityID = "";
+        public string targetEntityID = "";
 
         public ConnectionKnob IDInput;
 
@@ -63,13 +63,13 @@ namespace NodeEditorFramework.Standard
             }
             if (!useIDInput)
             {
-                GUILayout.Label("Entity Name");
-                entityName = GUILayout.TextField(entityName);
+                GUILayout.Label("Entity ID");
+                entityID = GUILayout.TextField(entityID);
                 if (WorldCreatorCursor.instance != null)
                 {
                     if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                     {
-                        WorldCreatorCursor.selectEntity += SetEntityName;
+                        WorldCreatorCursor.selectEntity += SetEntityID;
                         WorldCreatorCursor.instance.EntitySelection();
                     }
                 }
@@ -88,13 +88,13 @@ namespace NodeEditorFramework.Standard
             }
             if (!useIDInputTarget)
             {
-                GUILayout.Label("Entity Name");
-                targetEntityName = GUILayout.TextField(targetEntityName);
+                GUILayout.Label("Entity ID");
+                targetEntityID = GUILayout.TextField(targetEntityID);
                 if (WorldCreatorCursor.instance != null)
                 {
                     if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                     {
-                        WorldCreatorCursor.selectEntity += SetTargetName;
+                        WorldCreatorCursor.selectEntity += SetTargetID;
                         WorldCreatorCursor.instance.EntitySelection();
                     }
                 }
@@ -105,20 +105,20 @@ namespace NodeEditorFramework.Standard
             RTEditorGUI.Seperator();
         }
 
-        void SetEntityName(string newName)
+        void SetEntityID(string ID)
         {
-            Debug.Log("selected " + newName + "!");
+            Debug.Log("selected ID " + ID + "!");
 
-            entityName = newName;
-            WorldCreatorCursor.selectEntity -= SetEntityName;
+            entityID = ID;
+            WorldCreatorCursor.selectEntity -= SetEntityID;
         }
 
-        void SetTargetName(string newName)
+        void SetTargetID(string ID)
         {
-            Debug.Log("selected " + newName + "!");
+            Debug.Log("selected ID " + ID + "!");
 
-            targetEntityName = newName;
-            WorldCreatorCursor.selectEntity -= SetTargetName;
+            targetEntityID = ID;
+            WorldCreatorCursor.selectEntity -= SetTargetID;
         }
 
         AirCraft entity = null;
@@ -132,7 +132,7 @@ namespace NodeEditorFramework.Standard
 
                 if (IDInput.connected())
                 {
-                    entityName = (IDInput.connections[0].body as SpawnEntityNode).entityName;
+                    entityID = (IDInput.connections[0].body as SpawnEntityNode).entityID;
                 }
                 else
                 {
@@ -140,15 +140,15 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
-            Debug.Log("Entity name: " + entityName);
-            Debug.Log("Target name: " +targetEntityName);
+            Debug.Log("Entity ID: " + entityID);
+            Debug.Log("Target ID: " + targetEntityID);
 
             if(!(target && entity)) // room for improvement but probably unecessary
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i].name == entityName && AIData.entities[i] is AirCraft)
+                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
                     entity = AIData.entities[i] as AirCraft;
-                if (AIData.entities[i].name == targetEntityName && AIData.entities[i] is AirCraft)
+                if (AIData.entities[i].ID == targetEntityID && AIData.entities[i] is AirCraft)
                     target = AIData.entities[i];
             }
 

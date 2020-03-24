@@ -10,7 +10,7 @@ namespace NodeEditorFramework.Standard
         public override string GetName { get { return "SpawnEntityNode"; } }
         public override string Title { get { return "Spawn Entity"; } }
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, 240); } }
+        public override Vector2 DefaultSize { get { return new Vector2(200, 350); } }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -22,12 +22,14 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob input;
 
         public bool action;
-        public string blueprintID;
+        public string blueprint;
         public string entityName;
         public int faction;
         public string flagName;
         public Vector2 coordinates;
         public bool useCoordinates;
+        public bool issueID;
+        public string entityID;
 
         public override void NodeGUI()
         {
@@ -35,8 +37,12 @@ namespace NodeEditorFramework.Standard
             input.DisplayLayout();
             output.DisplayLayout();
             GUILayout.EndHorizontal();
-            GUILayout.Label("Blueprint ID:");
-            blueprintID = GUILayout.TextField(blueprintID);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Note: Using the name of a character will spawn the " +
+                "character, rendering the blueprint, faction and entity ID fields obsolete.");
+            GUILayout.EndHorizontal();
+            GUILayout.Label("Blueprint:");
+            blueprint = GUILayout.TextField(blueprint);
             GUILayout.Label("Entity Name:");
             entityName = GUILayout.TextField(entityName);
             GUILayout.Label("Faction number:");
@@ -56,6 +62,14 @@ namespace NodeEditorFramework.Standard
             {
                 GUILayout.Label("Flag Name:");
                 flagName = GUILayout.TextField(flagName);
+            }
+
+            if (issueID = Utilities.RTEditorGUI.Toggle(issueID, "Issue ID"))
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Entity ID:");
+                entityID = GUILayout.TextField(entityID);
+                GUILayout.EndHorizontal();
             }
         }
 
@@ -104,7 +118,7 @@ namespace NodeEditorFramework.Standard
             }
 
             Debug.Log("Spawn Entity name ( " + entityName + " ) does not correspond with a character. Performing normal operations.");
-            var blueprint = ResourceManager.GetAsset<EntityBlueprint>(blueprintID);
+            var blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
             if (blueprint)
             {
                 Sector.LevelEntity entityData = new Sector.LevelEntity
@@ -112,7 +126,7 @@ namespace NodeEditorFramework.Standard
                     faction = faction,
                     name = entityName,
                     position = coords,
-                    ID = "",
+                    ID = issueID ? entityID : "",
                 };
                 var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
                 entity.name = entityName;

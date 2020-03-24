@@ -9,6 +9,7 @@ public class ItemPropertyDisplay : MonoBehaviour
     public Dropdown factionDropdown;
     public InputField jsonField;
     public InputField nameField;
+    public InputField idField;
     public Text assetName;
     public Text assetType;
     Item currentItem;
@@ -36,6 +37,7 @@ public class ItemPropertyDisplay : MonoBehaviour
         assetType.text = currentItem.type + "";
         jsonField.text = currentItem.shellcoreJSON;
         nameField.text = currentItem.name;
+        idField.text = currentItem.ID;
     }
 
     public void UpdateFaction() 
@@ -52,6 +54,7 @@ public class ItemPropertyDisplay : MonoBehaviour
     public void UpdateName()
     {
         currentItem.name = nameField.text;
+        currentItem.ID = idField.text;
     }
 
     public void Hide() {

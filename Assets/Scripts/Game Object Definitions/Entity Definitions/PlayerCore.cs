@@ -65,6 +65,7 @@ public class PlayerCore : ShellCore {
         name = entityName = "player";
         if (!initialized)
             base.Awake();
+        ID = "player";
         initialized = true;
     }
     // Use this for initialization (overrides the other start methods so is always called even by parent method calls)

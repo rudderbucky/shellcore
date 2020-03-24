@@ -18,14 +18,14 @@ namespace NodeEditorFramework.Standard
         public static UnitDestroyedDelegate OnUnitDestroyed;
 
         public bool useIDInput;
-        public string targetName;
+        public string targetID;
         public int targetCount = 1;
         public int targetFaction = 1;
         public ConnectionKnob IDInput;
 
         int killCount;
 
-        ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("Name Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
+        ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("ID Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
 
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
@@ -47,7 +47,7 @@ namespace NodeEditorFramework.Standard
             output.DisplayLayout();
             GUILayout.EndHorizontal();
 
-            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use Name input");
+            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use ID input");
             if (GUI.changed)
             {
                 if (useIDInput)
@@ -57,13 +57,13 @@ namespace NodeEditorFramework.Standard
             }
             if (!useIDInput)
             {
-                GUILayout.Label("Target Name");
-                targetName = GUILayout.TextField(targetName);
+                GUILayout.Label("Target ID");
+                targetID = GUILayout.TextField(targetID);
                 if (WorldCreatorCursor.instance != null)
                 {
                     if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                     {
-                        WorldCreatorCursor.selectEntity += SetEntityName;
+                        WorldCreatorCursor.selectEntity += SetEntityID;
                         WorldCreatorCursor.instance.EntitySelection();
                     }
                 }
@@ -72,12 +72,12 @@ namespace NodeEditorFramework.Standard
             targetFaction = RTEditorGUI.IntField("Faction: ", targetFaction);
         }
 
-        void SetEntityName(string newName)
+        void SetEntityID(string ID)
         {
-            Debug.Log("selected " + newName + "!");
+            Debug.Log("selected ID " + ID + "!");
 
-            targetName = newName;
-            WorldCreatorCursor.selectEntity -= SetEntityName;
+            targetID = ID;
+            WorldCreatorCursor.selectEntity -= SetEntityID;
         }
 
         public void Init(int index)
@@ -94,7 +94,7 @@ namespace NodeEditorFramework.Standard
             {
                 if(IDInput.connected())
                 {
-                    targetName = (IDInput.connections[0].body as SpawnEntityNode).entityName;
+                    targetID = (IDInput.connections[0].body as SpawnEntityNode).entityID;
                 }
                 else
                 {
@@ -113,7 +113,7 @@ namespace NodeEditorFramework.Standard
 
         void updateState(Entity entity)
         {
-            if (entity.name == targetName)
+            if (entity.ID == targetID)
             {
                 killCount++;
                 if(targetFaction != 0)

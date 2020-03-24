@@ -19,8 +19,8 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
-        public string followerName = "";
-        public string targetName = "";
+        public string followerID = "";
+        public string targetID = "";
 
         public bool useFollowerInput;
         public bool useTargetInput;
@@ -97,7 +97,7 @@ namespace NodeEditorFramework.Standard
             }
 
 
-            useFollowerInput = RTEditorGUI.Toggle(useFollowerInput, "Get follower name from input", GUILayout.MinWidth(400));
+            useFollowerInput = RTEditorGUI.Toggle(useFollowerInput, "Get follower ID from input", GUILayout.MinWidth(400));
             if (GUI.changed)
             {
                 if (useFollowerInput && FollowerInput == null)
@@ -113,13 +113,13 @@ namespace NodeEditorFramework.Standard
             }
             if (!useFollowerInput)
             {
-                GUILayout.Label("Follower Name");
-                followerName = GUILayout.TextField(followerName);
+                GUILayout.Label("Follower ID");
+                followerID = GUILayout.TextField(followerID);
                 if (WorldCreatorCursor.instance != null)
                 {
                     if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                     {
-                        WorldCreatorCursor.selectEntity += SetFollowerName;
+                        WorldCreatorCursor.selectEntity += SetFollowerID;
                         WorldCreatorCursor.instance.EntitySelection();
                     }
                 }
@@ -129,7 +129,7 @@ namespace NodeEditorFramework.Standard
             {
                 RTEditorGUI.Seperator();
 
-                useTargetInput = RTEditorGUI.Toggle(useTargetInput, "Get target name from input", GUILayout.MinWidth(400));
+                useTargetInput = RTEditorGUI.Toggle(useTargetInput, "Get target ID from input", GUILayout.MinWidth(400));
                 if (GUI.changed)
                 {
                     if (useTargetInput && TargetInput == null)
@@ -145,13 +145,13 @@ namespace NodeEditorFramework.Standard
                 }
                 if (!useTargetInput)
                 {
-                    GUILayout.Label("Target Name");
-                    targetName = GUILayout.TextField(targetName);
+                    GUILayout.Label("Target ID");
+                    targetID = GUILayout.TextField(targetID);
                     if (WorldCreatorCursor.instance != null)
                     {
                         if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                         {
-                            WorldCreatorCursor.selectEntity += SetTargetName;
+                            WorldCreatorCursor.selectEntity += SetTargetID;
                             WorldCreatorCursor.instance.EntitySelection();
                         }
                     }
@@ -159,21 +159,21 @@ namespace NodeEditorFramework.Standard
             }
         }
 
-        void SetFollowerName(string newName)
+        void SetFollowerID(string ID)
         {
-            Debug.Log("selected " + newName + "!");
+            Debug.Log("selected ID " + ID + "!");
 
-            followerName = newName;
-            WorldCreatorCursor.selectEntity -= SetFollowerName;
+            followerID = ID;
+            WorldCreatorCursor.selectEntity -= SetFollowerID;
         }
 
 
-        void SetTargetName(string newName)
+        void SetTargetID(string ID)
         {
-            Debug.Log("selected " + newName + "!");
+            Debug.Log("selected ID " + ID + "!");
 
-            targetName = newName;
-            WorldCreatorCursor.selectEntity -= SetTargetName;
+            followerID = ID;
+            WorldCreatorCursor.selectEntity -= SetTargetID;
         }
 
         public override int Traverse()
@@ -187,7 +187,7 @@ namespace NodeEditorFramework.Standard
 
                 if (FollowerInput.connected())
                 {
-                    followerName = (FollowerInput.connections[0].body as SpawnEntityNode).entityName;
+                    followerID = (FollowerInput.connections[0].body as SpawnEntityNode).entityID;
                 }
                 else
                 {
@@ -204,7 +204,7 @@ namespace NodeEditorFramework.Standard
 
                 if (TargetInput.connected())
                 {
-                    targetName = (TargetInput.connections[0].body as SpawnEntityNode).entityName;
+                    targetID = (TargetInput.connections[0].body as SpawnEntityNode).entityID;
                 }
                 else
                 {
@@ -212,17 +212,17 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
-            Debug.Log("Follower name: " + followerName);
-            Debug.Log("Target name: " + targetName);
+            Debug.Log("Follower ID: " + followerID);
+            Debug.Log("Target ID: " + targetID);
 
             if (!stopFollowing)
             {
-                Entity target = SectorManager.instance.GetObject(targetName).GetComponent<Entity>();
+                Entity target = SectorManager.instance.GetEntity(targetID);
                 if (target != null)
                 {
                     for (int i = 0; i < AIData.entities.Count; i++)
                     {
-                        if (AIData.entities[i].name == followerName && AIData.entities[i] is AirCraft)
+                        if (AIData.entities[i].ID == followerID && AIData.entities[i] is AirCraft)
                         {
                             (AIData.entities[i] as AirCraft).GetAI().follow(target.transform);
                             Debug.Log("Follow...");
@@ -238,7 +238,7 @@ namespace NodeEditorFramework.Standard
             {
                 for (int i = 0; i < AIData.entities.Count; i++)
                 {
-                    if (AIData.entities[i].name == followerName && AIData.entities[i] is AirCraft)
+                    if (AIData.entities[i].ID == followerID && AIData.entities[i] is AirCraft)
                     {
                         (AIData.entities[i] as AirCraft).GetAI().follow(null);
                     }

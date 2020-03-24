@@ -17,7 +17,7 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Output Right", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
 
-        public string entityName;
+        public string entityID;
         bool rangeCheck;
         int distanceFromPlayer;
 
@@ -25,8 +25,8 @@ namespace NodeEditorFramework.Standard
          public override void NodeGUI()
         {
             output.DisplayLayout();
-            GUILayout.Label("Entity Name:");
-            entityName = RTEditorGUI.TextField(entityName);
+            GUILayout.Label("Entity ID:");
+            entityID = RTEditorGUI.TextField(entityID);
             rangeCheck = RTEditorGUI.Toggle(rangeCheck, "Range check", GUILayout.Width(200f));
             if(rangeCheck)
             {
@@ -42,12 +42,12 @@ namespace NodeEditorFramework.Standard
         public void Init(int index)
         {
             // TODO: Disambiguate name and entityName
-            var possibleMatches = AIData.entities.FindAll(ent => ent.name == entityName || ent.entityName == entityName && !ent.GetIsDead());
+            var possibleMatches = AIData.entities.FindAll(ent => ent.ID == entityID && !ent.GetIsDead());
             foreach(var match in possibleMatches)
             {
                 if(rangeCheck)
                 {
-                    var player = AIData.entities.Find(ent => ent.name == "player" || ent.entityName == "player");
+                    var player = AIData.entities.Find(ent => ent.ID == "player");
                     if((player.transform.position - match.transform.position).sqrMagnitude > distanceFromPlayer) continue;
                 }
                 State = ConditionState.Completed;

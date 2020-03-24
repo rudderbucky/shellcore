@@ -644,24 +644,25 @@ public class SectorManager : MonoBehaviour
                 break;
         }
 
-        // background spawns
-        foreach(var bgSpawn in current.backgroundSpawns)
-        {
-            if(bgSpawn.entity.assetID == "shellcore_blueprint")
+        if(current.backgroundSpawns != null)
+            // background spawns
+            foreach(var bgSpawn in current.backgroundSpawns)
             {
-                EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                JsonUtility.FromJsonOverwrite(bgSpawn.entity.blueprintJSON, blueprint);
-                bgSpawns.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
-                timersBySpawn.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius), bgSpawn.timePerSpawn);
+                if(bgSpawn.entity.assetID == "shellcore_blueprint")
+                {
+                    EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                    JsonUtility.FromJsonOverwrite(bgSpawn.entity.blueprintJSON, blueprint);
+                    bgSpawns.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
+                    timersBySpawn.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius), bgSpawn.timePerSpawn);
+                }
+                else 
+                {
+                    var key = (ResourceManager.GetAsset<EntityBlueprint>(bgSpawn.entity.assetID), 
+                        bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius);
+                    bgSpawns.Add(key);
+                    timersBySpawn.Add(key, bgSpawn.timePerSpawn);
+                }
             }
-            else 
-            {
-                var key = (ResourceManager.GetAsset<EntityBlueprint>(bgSpawn.entity.assetID), 
-                    bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius);
-                bgSpawns.Add(key);
-                timersBySpawn.Add(key, bgSpawn.timePerSpawn);
-            }
-        }
 
         // music
         PlayCurrentSectorMusic();
@@ -695,6 +696,19 @@ public class SectorManager : MonoBehaviour
                 continue;
             }
             if(pair.Value.name == name) return pair.Value;
+        }
+        return null;
+    }
+
+    public Entity GetEntity(string ID)
+    {
+        Debug.Log("Getting entity with ID: '" + ID + "'");
+        foreach(var pair in objects) {
+            if(pair.Value == null)
+            {
+                continue;
+            }
+            if(pair.Value.GetComponent<Entity>()?.ID == ID) return pair.Value.GetComponent<Entity>();
         }
         return null;
     }

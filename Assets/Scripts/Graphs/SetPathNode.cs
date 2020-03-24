@@ -21,7 +21,7 @@ namespace NodeEditorFramework.Standard
 
         //public bool action; //TODO: action input
         public bool useIDInput;
-        public string entityName = "";
+        public string entityID = "";
         public bool asynchronous;
         public PathData path = null;
 
@@ -49,7 +49,7 @@ namespace NodeEditorFramework.Standard
             }
             GUILayout.EndHorizontal();
 
-            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use Name Input", GUILayout.MinWidth(400));
+            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use ID Input", GUILayout.MinWidth(400));
             if (GUI.changed)
             {
                 if (useIDInput)
@@ -59,13 +59,13 @@ namespace NodeEditorFramework.Standard
             }
             if (!useIDInput)
             {
-                GUILayout.Label("Entity Name");
-                entityName = GUILayout.TextField(entityName);
+                GUILayout.Label("Entity ID");
+                entityID = GUILayout.TextField(entityID);
                 if (WorldCreatorCursor.instance != null)
                 {
                     if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                     {
-                        WorldCreatorCursor.selectEntity += SetEntityName;
+                        WorldCreatorCursor.selectEntity += SetEntityID;
                         WorldCreatorCursor.instance.EntitySelection();
                     }
                 }
@@ -87,12 +87,12 @@ namespace NodeEditorFramework.Standard
             }
         }
 
-        void SetEntityName(string newName)
+        void SetEntityID(string ID)
         {
-            Debug.Log("selected " + newName + "!");
+            Debug.Log("selected " + ID + "!");
 
-            entityName = newName;
-            WorldCreatorCursor.selectEntity -= SetEntityName;
+            entityID = ID;
+            WorldCreatorCursor.selectEntity -= SetEntityID;
         }
 
         void SetPath(PathData path)
@@ -109,19 +109,19 @@ namespace NodeEditorFramework.Standard
 
                 if (IDInput.connected())
                 {
-                    entityName = (IDInput.connections[0].body as SpawnEntityNode).entityName;
+                    entityID = (IDInput.connections[0].body as SpawnEntityNode).entityID;
                 }
                 else
                 {
-                    Debug.LogWarning("Name Input not connected!");
+                    Debug.LogWarning("ID Input not connected!");
                 }
             }
 
-            Debug.Log("Entity name: " + entityName);
+            Debug.Log("Entity ID: " + entityID);
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i].name == entityName && AIData.entities[i] is AirCraft)
+                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
                 {
                     if (AIData.entities[i] is PlayerCore)
                     {

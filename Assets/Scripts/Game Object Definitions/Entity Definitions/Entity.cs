@@ -76,7 +76,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
         // this is an implication, not a biconditional; interactibility is not necessarily false if there is no
         // task override. Hence the if statement is needed here
-        if(TaskManager.interactionOverrides.ContainsKey(name)) interactible = true;
+        if(ID != null && TaskManager.interactionOverrides.ContainsKey(ID)) interactible = true;
     }
 
     public bool GetInteractible()
@@ -728,6 +728,11 @@ public class Entity : MonoBehaviour, IDamageable {
     protected virtual void FixedUpdate()
     {
         
+    }
+
+    public string GetID()
+    {
+        return ID;
     }
 
     public Transform GetTransform()

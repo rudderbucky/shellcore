@@ -16,7 +16,7 @@ namespace NodeEditorFramework.Standard
         public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
 
         //Task related
-        public string rewardGiverName;
+        public string rewardGiverID;
         public string rewardText;
         public Color textColor = Color.white;
 
@@ -34,13 +34,13 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             height = 180f;
-            GUILayout.Label("Reward giver name:");
-            rewardGiverName = GUILayout.TextField(rewardGiverName, GUILayout.Width(200f));
+            GUILayout.Label("Reward giver ID:");
+            rewardGiverID = GUILayout.TextField(rewardGiverID, GUILayout.Width(200f));
             if (WorldCreatorCursor.instance != null)
             {
                 if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                 {
-                    WorldCreatorCursor.selectEntity += SetEntityName;
+                    WorldCreatorCursor.selectEntity += SetEntityID;
                     WorldCreatorCursor.instance.EntitySelection();
                 }
             }
@@ -57,17 +57,17 @@ namespace NodeEditorFramework.Standard
             textColor = new Color(r, g, b);
         }
 
-        void SetEntityName(string newName)
+        void SetEntityID(string ID)
         {
-            Debug.Log("selected " + newName + "!");
+            Debug.Log("selected ID " + ID + "!");
 
-            rewardGiverName = newName;
-            WorldCreatorCursor.selectEntity -= SetEntityName;
+            rewardGiverID = ID;
+            WorldCreatorCursor.selectEntity -= SetEntityID;
         }
 
         public void OnDialogue()
         {
-            DialogueSystem.ShowPopup(rewardText, textColor, SectorManager.instance.GetObject(rewardGiverName).GetComponent<Entity>());
+            DialogueSystem.ShowPopup(rewardText, textColor, SectorManager.instance.GetEntity(rewardGiverID));
             DialogueSystem.OnDialogueEnd = (int _) =>
             {
                 TaskManager.Instance.setNode(outputRight);
@@ -100,19 +100,19 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
-            TaskManager.speakerName = rewardGiverName;
-            if (TaskManager.interactionOverrides.ContainsKey(rewardGiverName))
+            TaskManager.speakerID = rewardGiverID;
+            if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
             {
-                TaskManager.interactionOverrides[rewardGiverName] = () => {
+                TaskManager.interactionOverrides[rewardGiverID] = () => {
                     OnDialogue();
-                    TaskManager.interactionOverrides.Remove(rewardGiverName);
+                    TaskManager.interactionOverrides.Remove(rewardGiverID);
                 };
             }
             else
             {
-                TaskManager.interactionOverrides.Add(rewardGiverName, () => {
+                TaskManager.interactionOverrides.Add(rewardGiverID, () => {
                     OnDialogue();
-                    TaskManager.interactionOverrides.Remove(rewardGiverName);
+                    TaskManager.interactionOverrides.Remove(rewardGiverID);
                 });
             }
             TryAddObjective();
@@ -125,7 +125,7 @@ namespace NodeEditorFramework.Standard
             foreach(var ent in AIData.entities)
             {
                 if(!ent) continue;
-                if(ent.entityName == rewardGiverName || ent.name == rewardGiverName)
+                if(ent.ID == rewardGiverID)
                 {
                     TaskManager.objectiveLocations.Clear();
                     TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation(

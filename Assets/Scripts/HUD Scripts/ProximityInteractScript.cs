@@ -15,9 +15,9 @@ public class ProximityInteractScript : MonoBehaviour {
 	}
 	void ActivateInteraction(Entity ent) {
         // TODO: perhaps make this a static ability so reticle scripts can use it as well
-        if (TaskManager.interactionOverrides.ContainsKey(ent.name))
+        if (TaskManager.interactionOverrides.ContainsKey(ent.ID))
         {
-            TaskManager.interactionOverrides[ent.name].Invoke();
+            TaskManager.interactionOverrides[ent.ID].Invoke();
         }
         else
             DialogueSystem.StartDialogue(ent.dialogue, ent);

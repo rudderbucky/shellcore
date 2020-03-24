@@ -38,10 +38,10 @@ public class TaskManager : MonoBehaviour
     public static List<ObjectiveLocation> objectiveLocations = new List<ObjectiveLocation>();
 
     // Move to Dialogue System?
-    public static string speakerName = null;
+    public static string speakerID = null;
     public static Entity GetSpeaker() {
-        var speakerObj = SectorManager.instance.GetObject(speakerName);
-        return speakerObj?.GetComponent<Entity>();
+        var speakerObj = SectorManager.instance.GetEntity(speakerID);
+        return speakerObj;
     }
 
     public void Initialize()
@@ -52,7 +52,7 @@ public class TaskManager : MonoBehaviour
         }
         Instance = this;
         objectiveLocations = new List<ObjectiveLocation>();
-        speakerName = null;
+        speakerID = null;
         initCanvases();
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";

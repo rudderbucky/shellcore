@@ -52,7 +52,7 @@ namespace NodeEditorFramework.Standard
             foreach(var objectiveLocation in TaskManager.objectiveLocations)
             {
                 if(StartDialogueNode.dialogueStartNode && objectiveLocation.followEntity &&
-                    objectiveLocation.followEntity.entityName == StartDialogueNode.dialogueStartNode.EntityName)
+                    objectiveLocation.followEntity.ID == StartDialogueNode.dialogueStartNode.EntityID)
                 {
                     TaskManager.objectiveLocations.Remove(objectiveLocation);
                     TaskManager.DrawObjectiveLocations();
@@ -67,9 +67,9 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                if(StartDialogueNode.dialogueStartNode.EntityName != null)
+                if(StartDialogueNode.dialogueStartNode.EntityID != null)
                 {
-                    TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityName);
+                    TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityID);
                     DialogueSystem.Instance.DialogueViewTransitionOut();
                 }
 

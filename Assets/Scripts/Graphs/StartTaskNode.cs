@@ -122,7 +122,7 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.OnDialogueEnd -= OnClick;
             if (index != 0)
             {
-                TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityName);
+                TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityID);
                 StartTask();
                 TaskManager.Instance.setNode(outputAccept);
             }
