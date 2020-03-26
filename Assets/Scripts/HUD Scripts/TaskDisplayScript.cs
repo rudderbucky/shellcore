@@ -26,34 +26,35 @@ public class TaskDisplayScript : MonoBehaviour
 
 	public GameObject missionButtonPrefab;
     public GameObject missionObjectivePrefab;
+    public Transform[] rankTexts;
 	public Transform[] missionListContents;
     public Transform missionObjectivesContents;
 
     void OnEnable() {
         instance = this;
-        Activate();
+        Initialize();
     }
 
-    public static void Activate() {
-        var test = new Mission();
-        test.rank = "C";
-        test.name = "Tutorial Circuit";
-        test.status = Mission.MissionStatus.Inactive;
-        test.prerequisites = new List<string>() {"None"};
-        test.tasks = new List<Task>();
-        var task = new Task();
-        task.dialogueColor = Color.green;
-        task.dialogue = "You are testing. Cool!";
-        task.objectived = "-Test the Mission System";
+    public static void Initialize() {
+        instance.rankHeader.transform.parent.gameObject.SetActive(false);
+        foreach(var content in instance.missionListContents)
+        {
+            for(int i = 0; i < content.childCount; i++)
+            {
+                Destroy(content.GetChild(i).gameObject);
+            }
+        }
 
-        var task2 = new Task();
-        task2.dialogueColor = Color.green;
-        task2.dialogue = "You are testing again. Cooler!";
-        task2.objectived = "-Test the Mission System again";
-
-        test.tasks.Add(task);
-        test.tasks.Add(task2);
-        AddMission(test);
+        instance.ClearMissionObjectivesSpace();
+        loadedMissions.Clear();
+        foreach(var mission in PlayerCore.Instance.cursave.missions)
+        {
+            AddMission(mission);
+        }
+        for(int i = 0; i < instance.missionListContents.Length; i++)
+        {
+            instance.rankTexts[i].gameObject.SetActive(instance.missionListContents[i].childCount != 0);
+        }
     }
 
     public static List<Mission> loadedMissions = new List<Mission>();
@@ -84,7 +85,7 @@ public class TaskDisplayScript : MonoBehaviour
     public static void ShowMission(Mission mission)
     {
         instance.ClearMissionObjectivesSpace();
-        instance.nameAndPrerequisitesHeader.text = mission.name + "\n\nPrequisites:\n";
+        instance.nameAndPrerequisitesHeader.text = mission.name + "\n\nEntrypoint:\n" + mission.entryPoint + "\n\nPrequisites:\n";
         instance.rankHeader.text = mission.rank;
         instance.rankHeader.transform.parent.gameObject.SetActive(true);
         instance.rankHeader.color = rankColorsByString[mission.rank];
@@ -108,6 +109,7 @@ public class TaskDisplayScript : MonoBehaviour
                 obj.GetComponent<Image>().color /= 1.5F; 
             }
         }
+        Canvas.ForceUpdateCanvases();
     }
 
     public void ClearMissionObjectivesSpace()

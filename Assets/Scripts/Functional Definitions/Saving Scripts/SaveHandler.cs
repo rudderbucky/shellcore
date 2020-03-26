@@ -48,7 +48,8 @@ public class SaveHandler : MonoBehaviour {
             // tasks
             for (int i = 0; i < save.checkpointNames.Length; i++)
             {
-                taskManager.traversers[i].activateCheckpoint(save.checkpointNames[i]);
+				if(i < taskManager.traversers.Count && i < save.checkpointNames.Length)
+                	taskManager.traversers[i].activateCheckpoint(save.checkpointNames[i]);
             }
 
             for (int i = 0; i < save.activeTaskIDs.Length; i++)

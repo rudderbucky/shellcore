@@ -52,13 +52,27 @@ public class AudioManager : MonoBehaviour
     public static void PlayClipByID(string ID, bool clear=false) {
         if(ResourceManager.Instance.playerSource != null) {
             if(clear) ResourceManager.Instance.playerSource.Stop();
-            if(ID != null) ResourceManager.Instance.playerSource.PlayOneShot(ResourceManager.GetAsset<AudioClip>(ID), 1F);
+            if(ID != null) 
+            {
+                var clip = ResourceManager.GetAsset<AudioClip>(ID);
+                ResourceManager.Instance.playerSource.PlayOneShot(clip, 1F);
+            }
             // can pass null just to clear the sound buffer
         }
         // TODO: Add audio sources to places that need it
     }
 
-    // Use for OST
+    // Use for Soundtrack
+    public static void OverrideMusicTemporarily(string ID)
+    {
+        var curClip = ResourceManager.Instance.playerMusicSource.clip;
+        ResourceManager.Instance.playerMusicSource.Stop();
+        var newClip = ResourceManager.GetAsset<AudioClip>(ID);
+        ResourceManager.Instance.playerMusicSource.PlayOneShot(newClip);
+        // TODO: Maybe continue the main music instead of restarting it but mute it somehow?
+        ResourceManager.Instance.playerMusicSource.PlayDelayed(newClip.length + 5F);
+    }
+    
     public static void PlayMusic(string ID, bool loop=true)
     {
         if(ResourceManager.Instance.playerMusicSource != null)

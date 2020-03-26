@@ -93,7 +93,14 @@ namespace NodeEditorFramework.Standard
                 }
 
                 if(!allowAfterSpeaking)
-                    return forceStart ? 0 : -1;
+                {
+                    if(forceStart)
+                    {
+                        TaskManager.speakerID = EntityID;
+                        return 0;
+                    }
+                   else return -1;
+                }
                 else
                 {
                     if(flowOutput == null)

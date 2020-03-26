@@ -63,9 +63,9 @@ public class Traverser : NodeCanvasTraversal
         }
     }
 
-    private Node findRoot()
+    public Node findRoot()
     {
-        var startNodeName = nodeCanvas as QuestCanvas ? "StartNode" : "StartDialogueNode";
+        var startNodeName = nodeCanvas as QuestCanvas ? "StartMissionNode" : "StartDialogueNode";
         for (int j = 0; j < nodeCanvas.nodes.Count; j++)
         {
             if (nodeCanvas.nodes[j].GetName == startNodeName)
@@ -78,6 +78,8 @@ public class Traverser : NodeCanvasTraversal
 
     public void activateCheckpoint(string CPName)
     {
+        (nodeCanvas as QuestCanvas).missionName = (findRoot() as StartMissionNode).missionName;
+        if(CPName == (nodeCanvas as QuestCanvas).missionName + "_complete") return; // TODO: accomodate this in the save repairer when you need tor
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
             var node = nodeCanvas.nodes[i];
@@ -85,6 +87,12 @@ public class Traverser : NodeCanvasTraversal
             {
                 SetNode(node);
             }
+            else if (node is StartTaskNode && ((nodeCanvas as QuestCanvas).missionName + "_" + (node as StartTaskNode).taskID) == CPName)
+            {
+                (node as StartTaskNode).forceTask = true;
+                SetNode(node);
+            }
+            Debug.Log((nodeCanvas as QuestCanvas).missionName + "_" + (node as StartTaskNode)?.taskID + " " + CPName);
         }
     }
 

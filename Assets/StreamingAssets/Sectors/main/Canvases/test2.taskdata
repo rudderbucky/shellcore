@@ -1,29 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.QuestCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="307.5,110" zoom="1" />
+		<EditorState selected="" pan="-413.75,143.75" zoom="1" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Start" ID="-733598" type="StartNode" pos="-1330,-332.125">
-			<Port ID="-733600" name="outputRight" dynamic="False" />
-		</Node>
-		<Node name="Finish Task" ID="-733608" type="FinishTaskNode" pos="50,-270">
-			<Port ID="-733610" name="inputLeft" dynamic="False" />
-			<Port ID="-733612" name="outputRight" dynamic="False" />
-			<Port ID="-733614" name="outputUp" dynamic="False" />
-			<Variable name="rewardGiverID" refID="-1121577521" />
-			<Variable name="rewardText" refID="2039134566" />
-			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
-				<r>1</r>
-				<g>1</g>
-				<b>1</b>
-				<a>1</a>
-			</Color>
-		</Node>
-		<Node name="End Dialogue" ID="-733632" type="EndDialogue" pos="-17.5,39.125">
-			<Port ID="-733634" name="input" dynamic="False" />
-			<Port ID="-733592" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="End Dialogue" ID="-245468" type="EndDialogue" pos="-17.5,39.125">
+			<Port ID="-245470" name="input" dynamic="False" />
+			<Port ID="-245454" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">TaskFlow</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -33,10 +17,10 @@
 			</Port>
 			<boolean name="jumpToStart">false</boolean>
 		</Node>
-		<Node name="Dialogue" ID="-733636" type="DialogueNode" pos="-296.25,-150.875">
-			<Port ID="-733638" name="input" dynamic="False" />
-			<Port ID="-733640" name="cancel" dynamic="False" />
-			<Port ID="-733594" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="-245472" type="DialogueNode" pos="-296.25,-150.875">
+			<Port ID="-245474" name="input" dynamic="False" />
+			<Port ID="-245476" name="cancel" dynamic="False" />
+			<Port ID="-245456" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -51,13 +35,13 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="-683604848" />
-			<Variable name="answers" refID="-167410304" />
+			<Variable name="answers" refID="-1752295424" />
 		</Node>
-		<Node name="Start Task" ID="-733616" type="StartTaskNode" pos="-585,-309.625">
-			<Port ID="-733618" name="inputLeft" dynamic="False" />
-			<Port ID="-733620" name="outputAccept" dynamic="False" />
-			<Port ID="-733622" name="outputDecline" dynamic="False" />
-			<Port ID="-733624" name="inputUp" dynamic="False" />
+		<Node name="Start Task" ID="-245478" type="StartTaskNode" pos="-585,-309.625">
+			<Port ID="-245480" name="inputLeft" dynamic="False" />
+			<Port ID="-245482" name="outputAccept" dynamic="False" />
+			<Port ID="-245484" name="outputDecline" dynamic="False" />
+			<Port ID="-245486" name="inputUp" dynamic="False" />
 			<Variable name="dialogueText" refID="339800351" />
 			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
 				<r>0</r>
@@ -74,43 +58,60 @@
 			<int name="reputationReward">0</int>
 			<boolean name="forceTask">false</boolean>
 		</Node>
-		<Node name="Start Dialogue" ID="-733602" type="StartDialogueNode" pos="-800,-300">
-			<Port ID="-733604" name="input" dynamic="False" />
-			<Port ID="-733606" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="-245488" type="StartDialogueNode" pos="-800,-300">
+			<Port ID="-245490" name="input" dynamic="False" />
+			<Port ID="-245492" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="-1121577521" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
 		</Node>
-		<Node name="Start Dialogue" ID="-733626" type="StartDialogueNode" pos="-240,-270">
-			<Port ID="-733628" name="input" dynamic="False" />
-			<Port ID="-733630" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="-245494" type="StartDialogueNode" pos="-240,-270">
+			<Port ID="-245496" name="input" dynamic="False" />
+			<Port ID="-245498" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="-1121577521" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
+		</Node>
+		<Node name="Start Mission" ID="-245500" type="StartMissionNode" pos="-1307.5,-319.625">
+			<Port ID="-245502" name="outputRight" dynamic="False" />
+			<Variable name="missionName" refID="-1143039751" />
+			<Variable name="rank" refID="372029408" />
+			<Variable name="prerequisites" refID="-294976128" />
+		</Node>
+		<Node name="Finish Mission" ID="-245516" type="FinishMissionNode" pos="408.75,-242.125">
+			<Port ID="-245518" name="inputLeft" dynamic="False" />
+		</Node>
+		<Node name="Finish Task" ID="-245460" type="FinishTaskNode" pos="50,-270">
+			<Port ID="-245462" name="inputLeft" dynamic="False" />
+			<Port ID="-245464" name="outputRight" dynamic="False" />
+			<Port ID="-245466" name="outputUp" dynamic="False" />
+			<Variable name="rewardGiverID" refID="-1121577521" />
+			<Variable name="rewardText" refID="2039134566" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
 		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="-733600" port2ID="-733604" />
-		<Connection port1ID="-733610" port2ID="-733592" />
-		<Connection port1ID="-733614" port2ID="-733624" />
-		<Connection port1ID="-733634" port2ID="-733594" />
-		<Connection port1ID="-733638" port2ID="-733630" />
-		<Connection port1ID="-733618" port2ID="-733606" />
-		<Connection port1ID="-733620" port2ID="-733628" />
+		<Connection port1ID="-245470" port2ID="-245456" />
+		<Connection port1ID="-245454" port2ID="-245462" />
+		<Connection port1ID="-245474" port2ID="-245498" />
+		<Connection port1ID="-245480" port2ID="-245492" />
+		<Connection port1ID="-245482" port2ID="-245496" />
+		<Connection port1ID="-245486" port2ID="-245466" />
+		<Connection port1ID="-245490" port2ID="-245502" />
+		<Connection port1ID="-245518" port2ID="-245464" />
 	</Connections>
 	<Objects>
-		<Object refID="-1121577521" type="System.String">
-			<string>haven1-infectionexplainer</string>
-		</Object>
-		<Object refID="2039134566" type="System.String">
-			<string>COOL!</string>
-		</Object>
 		<Object refID="-683604848" type="System.String">
 			<string>Test.</string>
 		</Object>
-		<Object refID="-167410304" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="-1752295424" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>Ok</string>
 			</ArrayOfString>
@@ -123,6 +124,23 @@
 		</Object>
 		<Object refID="371857150" type="System.String">
 			<string />
+		</Object>
+		<Object refID="-1121577521" type="System.String">
+			<string>haven1-infectionexplainer</string>
+		</Object>
+		<Object refID="-1143039751" type="System.String">
+			<string>Testing Circuit</string>
+		</Object>
+		<Object refID="372029408" type="System.String">
+			<string>B</string>
+		</Object>
+		<Object refID="-294976128" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>None</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="2039134566" type="System.String">
+			<string>COOL!</string>
 		</Object>
 	</Objects>
 </NodeCanvas>

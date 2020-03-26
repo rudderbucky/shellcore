@@ -26,6 +26,14 @@ public class WCGeneratorHandler : MonoBehaviour
     {
         if(System.IO.Directory.Exists(testPath))
         {
+            foreach(var dir in System.IO.Directory.GetDirectories(testPath))
+            {
+                foreach(var file in System.IO.Directory.GetFiles(dir))
+                {
+                    System.IO.File.Delete(file);
+                }
+            }
+
             foreach(var file in System.IO.Directory.GetFiles(testPath))
             {
                 System.IO.File.Delete(file);

@@ -199,8 +199,29 @@ public class DialogueSystem : MonoBehaviour
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
-        if(victory) window.transform.Find("Victory").gameObject.SetActive(true);
-        else window.transform.Find("Defeat").gameObject.SetActive(true);
+        if(victory) window.transform.Find("Victory").GetComponent<Text>().text = "<color=lime>VICTORY!</color>";
+        else window.transform.Find("Victory").GetComponent<Text>().text = "<color=red>DEFEAT</color>";
+
+    }
+
+    public GameObject missionCompleteBoxPrefab;
+    public static void ShowMissionComplete(Mission mission, string rewardsText) {
+        Instance.showMissionComplete(mission, rewardsText);
+    }
+
+    private void showMissionComplete(Mission mission, string rewardsText) {
+        // if(window) endDialogue(0);
+        speakerPos = null;
+        
+        //create window
+        window = Instantiate(missionCompleteBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
+        window.transform.SetSiblingIndex(0);
+
+        window.transform.Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper();
+        window.transform.Find("Rank").GetComponent<Text>().text = mission.rank.ToUpper();
+        window.transform.Find("Rank").GetComponent<Text>().color = TaskDisplayScript.rankColorsByString[mission.rank];
+        window.transform.Find("Rewards").GetComponent<Text>().text = rewardsText;
     }
 
     public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null)

@@ -30,6 +30,7 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
 
+        public bool nameMode;
         public override void NodeGUI()
         {
             GUILayout.BeginHorizontal();
@@ -47,24 +48,32 @@ namespace NodeEditorFramework.Standard
             output.DisplayLayout();
             GUILayout.EndHorizontal();
 
-            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use ID input");
-            if (GUI.changed)
+            if(nameMode = RTEditorGUI.Toggle(nameMode, "Name Mode"))
             {
-                if (useIDInput)
-                    IDInput = CreateConnectionKnob(IDInStyle);
-                else
-                    DeleteConnectionPort(IDInput);
-            }
-            if (!useIDInput)
-            {
-                GUILayout.Label("Target ID");
+                GUILayout.Label("Target Name");
                 targetID = GUILayout.TextField(targetID);
-                if (WorldCreatorCursor.instance != null)
+            }
+            else
+            {
+                useIDInput = RTEditorGUI.Toggle(useIDInput, "Use ID input");
+                if (GUI.changed)
                 {
-                    if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                    if (useIDInput)
+                        IDInput = CreateConnectionKnob(IDInStyle);
+                    else
+                        DeleteConnectionPort(IDInput);
+                }
+                if (!useIDInput)
+                {
+                    GUILayout.Label("Target ID");
+                    targetID = GUILayout.TextField(targetID);
+                    if (WorldCreatorCursor.instance != null)
                     {
-                        WorldCreatorCursor.selectEntity += SetEntityID;
-                        WorldCreatorCursor.instance.EntitySelection();
+                        if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                        {
+                            WorldCreatorCursor.selectEntity += SetEntityID;
+                            WorldCreatorCursor.instance.EntitySelection();
+                        }
                     }
                 }
             }
@@ -113,7 +122,7 @@ namespace NodeEditorFramework.Standard
 
         void updateState(Entity entity)
         {
-            if (entity.ID == targetID)
+            if ((!nameMode && entity.ID == targetID) || (nameMode && (entity.entityName == targetID || entity.name == targetID)))
             {
                 killCount++;
                 if(targetFaction != 0)

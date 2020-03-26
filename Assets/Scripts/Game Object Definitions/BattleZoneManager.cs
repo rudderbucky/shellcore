@@ -58,7 +58,7 @@ public class BattleZoneManager : MonoBehaviour
                             if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
                                 NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
                         }
-                        else AudioManager.PlayClipByID("clip_alert");
+                        else AudioManager.PlayClipByID("clip_fail");
                     }
                 }
                 DialogueSystem.ShowBattleResults(winningFaction == 0);

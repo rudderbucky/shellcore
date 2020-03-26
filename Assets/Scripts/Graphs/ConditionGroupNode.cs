@@ -32,7 +32,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            // Importing doesn't fill group data. Do it here for now.
+            // Importing doesn't fill group data. Do it here for now. TODO: Fix
             while (outputKnobs.Count > groupCount)
             {
                 groups.Add(new ConditionGroup

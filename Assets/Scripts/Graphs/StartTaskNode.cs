@@ -171,7 +171,17 @@ namespace NodeEditorFramework.Standard
                     tier = partTier
                 };
             }
-            TaskManager.Instance.AddTask(task);
+
+            // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
+            var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
+            if(mission != null)
+            {
+                mission.status = Mission.MissionStatus.Ongoing;
+                if(!mission.tasks.Exists((x) => x.dialogue == task.dialogue)) mission.tasks.Add(task);
+            }
+
+            (Canvas.Traversal as Traverser).lastCheckpointName = (Canvas as QuestCanvas).missionName + "_" + taskID;
+            TaskManager.Instance.AttemptAutoSave();
         }
     }
 }

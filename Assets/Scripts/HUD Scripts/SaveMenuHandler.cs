@@ -122,6 +122,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		save.currentHealths = new float[] {1000,250,500};
 		save.partInventory = new List<EntityBlueprint.PartInfo>();
 		save.sectorsSeen = new List<string>();
+		save.missions = new List<Mission>();
 
 		// this section contains default information for a new save. Edit this to change how the default save
 		// is created.
@@ -132,7 +133,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		blueprint.coreSpriteID = "core1_light";
 		blueprint.coreShellSpriteID = "core1_shell";
-		if(checkpointName != null && checkpointName != "") save.checkpointNames = new string[] {checkpointName};
+		if(checkpointName != null && checkpointName != "") save.checkpointNames = new string[] {checkpointName, checkpointName, checkpointName, checkpointName, checkpointName};
 		if(blueprintField != null && blueprintField != "") JsonUtility.FromJsonOverwrite(blueprintField, blueprint);
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
 		save.abilityCaps = new int[] {10, 3, 10, 10};

@@ -173,6 +173,10 @@ public class TaskManager : MonoBehaviour
         for (int i = 0; i < traversers.Count; i++)
         {
             traversers[i].StartQuest();
+            if(traversers[i].nodeCanvas as QuestCanvas)
+            {
+                (traversers[i].findRoot() as StartMissionNode).TryAddMission();
+            }
         }
     }
 

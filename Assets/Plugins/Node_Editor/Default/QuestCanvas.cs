@@ -7,6 +7,7 @@ namespace NodeEditorFramework.Standard
     public class QuestCanvas : NodeCanvas
     {
         public override string canvasName { get { return "Quest Canvas"; } }
+        public string missionName;
 
         protected override void OnCreate()
         {
