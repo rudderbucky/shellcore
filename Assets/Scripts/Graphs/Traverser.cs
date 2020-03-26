@@ -50,7 +50,7 @@ public class Traverser : NodeCanvasTraversal
         if (currentNode == null && nodeCanvas != null)
         {
             currentNode = findRoot();
-            Debug.Log("Root found");
+            Debug.Log("Root found for canvas " + nodeCanvas.canvasName + ":" + currentNode);
             if (currentNode == null)
             {
                 nodeCanvas = null;
@@ -65,7 +65,7 @@ public class Traverser : NodeCanvasTraversal
 
     private Node findRoot()
     {
-        var startNodeName = nodeCanvas as QuestCanvas ? "StartMissionNode" : "StartDialogueNode";
+        var startNodeName = nodeCanvas as QuestCanvas ? "StartNode" : "StartDialogueNode";
         for (int j = 0; j < nodeCanvas.nodes.Count; j++)
         {
             if (nodeCanvas.nodes[j].GetName == startNodeName)
@@ -105,5 +105,6 @@ public class Traverser : NodeCanvasTraversal
         currentNode = node;
         if (SystemLoader.AllLoaded)
             Traverse();
+        else Debug.LogWarning("Traverser failed to traverse because system failed to load. Abort.");
     }
 }

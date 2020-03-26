@@ -171,6 +171,16 @@ public class WCGeneratorHandler : MonoBehaviour
         
         if(System.IO.Directory.Exists(path))
         {
+            string[] directories = System.IO.Directory.GetDirectories(path);
+            foreach(var dir in directories)
+            {
+                foreach(var f in System.IO.Directory.GetFiles(dir))
+                {
+                    System.IO.File.Delete(f);
+                }
+                System.IO.Directory.Delete(dir);
+            }
+
             string[] files = System.IO.Directory.GetFiles(path);
             foreach(var file in files)
             {
@@ -186,7 +196,10 @@ public class WCGeneratorHandler : MonoBehaviour
         wdata.defaultCharacters = cursor.characters.ToArray();
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
-        nodeEditor.ExportData(path + "\\world.taskdata");        
+
+        if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+            System.IO.Directory.Move(Application.streamingAssetsPath + "\\CanvasPlaceholder", path + "\\Canvases");
+        else System.IO.Directory.CreateDirectory(path + "\\Canvases");
 
         foreach(var sector in sectors)
         {
@@ -304,6 +317,24 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             try
             {
+                // copying canvases
+                if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+                {
+                    foreach(var placeholderCanvas in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+                    {
+                        System.IO.File.Delete(placeholderCanvas);
+                    }
+                }
+                else System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\CanvasPlaceholder");
+
+                string[] canvasFiles = System.IO.Directory.GetFiles(path + "\\Canvases");
+                foreach(string canvasFile in canvasFiles)
+                {
+                    System.IO.File.Copy(canvasFile, Application.streamingAssetsPath + "\\CanvasPlaceholder\\" + System.IO.Path.GetFileName(canvasFile));
+                }
+
+
+                // reading sectors
                 string[] files = System.IO.Directory.GetFiles(path);
 
                 cursor.placedItems = new List<Item>();
@@ -329,10 +360,8 @@ public class WCGeneratorHandler : MonoBehaviour
                         continue;
                     }
 
-                    if(file.Contains(".taskdata"))
+                    if(file.Contains(".taskdata") || file.Contains(".dialoguedata"))
                     {
-                        nodeEditor.canvasPath = file;
-                        nodeEditor.NormalReInit();
                         continue;
                     }
 
@@ -419,7 +448,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
                 }
 
-                ImportExportFormat.RuntimeIOPath = path;
+                ImportExportFormat.RuntimeIOPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
                 Debug.Log("worked");
                 return;
             }

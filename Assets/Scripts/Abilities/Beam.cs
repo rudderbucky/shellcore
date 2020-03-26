@@ -47,7 +47,8 @@ public class Beam : WeaponAbility {
             line.startWidth = line.endWidth = 0.15F;
             line.SetPosition(0, line.transform.position); // draw and increment timer
             if(nextTargetPart) line.SetPosition(1, partPos);
-            else line.SetPosition(1, targetingSystem.GetTarget().position);
+            else if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
+            else line.SetPosition(1, line.transform.position); // TODO: Fix
             timer += Time.deltaTime;
         }
         else if(firing && timer >= 0.1F)

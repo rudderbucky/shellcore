@@ -62,11 +62,21 @@ namespace NodeEditorFramework.IO
 				// Find save files
 				Debug.Log(RuntimeIOPath);
 				DirectoryInfo dir = Directory.CreateDirectory(RuntimeIOPath);
-				FileInfo[] files = dir.GetFiles("*.taskdata");
+				FileInfo[] taskdata = dir.GetFiles("*.taskdata");
+				FileInfo[] dialoguedata = dir.GetFiles("*.dialoguedata");
+				var files = new List<FileInfo>();
+				files.AddRange(taskdata);
+				files.AddRange(dialoguedata);
 				// Fill save file selection menu
 				GenericMenu fileSelectionMenu = new GenericMenu(false);
 				foreach (FileInfo file in files)
-					fileSelectionMenu.AddItem(new GUIContent(file.Name), false, () => fileSelection = Path.GetFileNameWithoutExtension(file.Name));
+					fileSelectionMenu.AddItem(new GUIContent(file.Name), false, () => 
+					{
+						if(file.Name.Contains("taskdata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Mission;
+						if(file.Name.Contains("dialoguedata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Dialogue;
+						fileSelection = Path.GetFileNameWithoutExtension(file.Name);
+						NodeEditorGUI.Init();
+					});
 				fileSelectionMenu.DropDown(fileSelectionMenuRect);
 				fileSelectionMenuRect.height = 500;
 			}
@@ -121,13 +131,14 @@ namespace NodeEditorFramework.IO
 		/// </summary>
 		public virtual bool? ExportLocationArgsGUI (string canvasName, ref object[] locationArgs)
 		{
-			GUILayout.Label("Export canvas to " + FormatIdentifier);
+			GUILayout.Label("Export canvas ");
 
 			// File save field
 			GUILayout.BeginHorizontal();
+			var ext = (NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? ".taskdata" : ".dialoguedata");
 			// GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(false));
 			fileSelection = GUILayout.TextField(fileSelection, GUILayout.ExpandWidth(true));
-			GUILayout.Label("." + FormatExtension, GUILayout.ExpandWidth (false));
+			GUILayout.Label(ext, GUILayout.ExpandWidth (false));
 			GUILayout.EndHorizontal();
 
 			// Finish operation buttons
@@ -139,7 +150,7 @@ namespace NodeEditorFramework.IO
 				if (string.IsNullOrEmpty(fileSelection))
 					return false;
 				fileSelection = Path.GetFileNameWithoutExtension(fileSelection);
-				locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection + "." + FormatExtension };
+				locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection + ext};
 				return true;
 			}
 			GUILayout.EndHorizontal();

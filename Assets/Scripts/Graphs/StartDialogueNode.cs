@@ -27,6 +27,7 @@ namespace NodeEditorFramework.Standard
         public bool forceStart;
         public string originSector;
         public ConnectionKnob flowOutput;
+        ConnectionKnobAttribute inputInStyle = new ConnectionKnobAttribute("Input Left", Direction.In, "TaskFlow", NodeSide.Left);
         ConnectionKnobAttribute flowInStyle = new ConnectionKnobAttribute("ContinueAsync", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
         public bool allowAfterSpeaking;
 
@@ -36,6 +37,10 @@ namespace NodeEditorFramework.Standard
             {
                 DeleteConnectionPort(input);
                 input = null;
+            } 
+            else if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission && input == null)
+            {
+                input = CreateConnectionKnob(inputInStyle);
             }
             SpeakToEntity = RTEditorGUI.Toggle(SpeakToEntity, "Speak to entity");
             if(SpeakToEntity)
@@ -69,11 +74,12 @@ namespace NodeEditorFramework.Standard
             dialogueStartNode = this;
             if (SpeakToEntity)
             {
-                TaskManager.speakerID = EntityID;
+                TaskManager.speakerIDList.Add(EntityID);
                 TryAddObjective();
                 if (TaskManager.interactionOverrides.ContainsKey(EntityID))
                 {
                     TaskManager.interactionOverrides[EntityID] = () => {
+                        TaskManager.speakerID = EntityID;
                         TaskManager.Instance.setNode(output);
                     };
 
@@ -81,6 +87,7 @@ namespace NodeEditorFramework.Standard
                 else
                 {
                     TaskManager.interactionOverrides.Add(EntityID, () => {
+                        TaskManager.speakerID = EntityID;
                         TaskManager.Instance.setNode(output);
                     });
                 }
@@ -98,7 +105,6 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                TaskManager.speakerID = null;
                 return 0;
             }
         }

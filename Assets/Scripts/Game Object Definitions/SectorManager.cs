@@ -157,6 +157,20 @@ public class SectorManager : MonoBehaviour
         {
             try
             {
+                // canvas handling
+                foreach(var canvas in Directory.GetFiles(path + "\\Canvases"))
+                {
+                    if(canvas.Contains(".meta")) continue;
+                    
+                    if(canvas.Contains(".taskdata"))
+                    {
+                        taskManager.SetCanvasPath(canvas);
+                        continue;
+                    }
+                }
+
+
+                // sector and world handling
                 string[] files = Directory.GetFiles(path);
                 current = null;
                 sectors = new List<Sector>();
@@ -190,12 +204,6 @@ public class SectorManager : MonoBehaviour
                             }
                             characters = charList.ToArray();
                         }
-                        continue;
-                    }
-
-                    if(file.Contains(".taskdata"))
-                    {
-                        taskManager.SetCanvasPath(file);
                         continue;
                     }
 

@@ -72,7 +72,6 @@ namespace NodeEditorFramework.Standard
                     TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityID);
                     DialogueSystem.Instance.DialogueViewTransitionOut();
                 }
-
                 return 0;
             }
         }

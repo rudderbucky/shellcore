@@ -46,7 +46,7 @@ namespace NodeEditorFramework.Standard
 		public void DrawToolbarGUI(Rect rect)
 		{
 			rect.height = toolbarHeight;
-            rect.width = 150f;
+            rect.width = 200f;
 			GUILayout.BeginArea (rect, NodeEditorGUI.toolbar);
 			GUILayout.BeginHorizontal();
             //float curToolbarHeight = 0;
@@ -56,7 +56,7 @@ namespace NodeEditorFramework.Standard
             }
             if (GUILayout.Button("Import", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
             {
-                IOFormat = ImportExportManager.ParseFormat("taskdata");
+                IOFormat = ImportExportManager.ParseFormat("XML");
                 if (IOFormat.RequiresLocationGUI)
                 {
                     ImportLocationGUI = IOFormat.ImportLocationArgsGUI;
@@ -77,6 +77,12 @@ namespace NodeEditorFramework.Standard
                 }
                 else if (IOFormat.ExportLocationArgsSelection(canvasCache.nodeCanvas.saveName, out IOLocationArgs))
                     ImportExportManager.ExportCanvas(canvasCache.nodeCanvas, IOFormat, IOLocationArgs);
+            }
+			if (GUILayout.Button(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? "Mission" : "Dialogue", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
+            {
+				NodeEditorGUI.state = NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? 
+					NodeEditorGUI.NodeEditorState.Dialogue : NodeEditorGUI.NodeEditorState.Mission;
+				NodeEditorGUI.Init();
             }
             GUI.backgroundColor = Color.white;
 			GUILayout.EndHorizontal();

@@ -39,6 +39,7 @@ public class TaskManager : MonoBehaviour
 
     // Move to Dialogue System?
     public static string speakerID = null;
+    public static List<string> speakerIDList = new List<string>();
     public static Entity GetSpeaker() {
         var speakerObj = SectorManager.instance.GetEntity(speakerID);
         return speakerObj;

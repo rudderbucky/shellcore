@@ -100,7 +100,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
-            TaskManager.speakerID = rewardGiverID;
+            TaskManager.speakerIDList.Add(rewardGiverID);
             if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
             {
                 TaskManager.interactionOverrides[rewardGiverID] = () => {
