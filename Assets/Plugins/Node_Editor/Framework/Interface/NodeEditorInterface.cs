@@ -18,7 +18,7 @@ namespace NodeEditorFramework.Standard
 
 		// Modal Panel
 		public bool showModalPanel;
-		public Rect modalPanelRect = new Rect(20, 50, 250, 70);
+		public Rect modalPanelRect = new Rect(20, 50, 250, 150);
 		public Action modalPanelContent;
 
 		// IO Format modal panel
@@ -56,7 +56,7 @@ namespace NodeEditorFramework.Standard
             }
             if (GUILayout.Button("Import", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
             {
-                IOFormat = ImportExportManager.ParseFormat("XML");
+                IOFormat = ImportExportManager.ParseFormat("taskdata");
                 if (IOFormat.RequiresLocationGUI)
                 {
                     ImportLocationGUI = IOFormat.ImportLocationArgsGUI;

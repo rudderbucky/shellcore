@@ -36,9 +36,14 @@ namespace NodeEditorFramework.IO
 		/// </summary>
 		public static ImportExportFormat ParseFormat (string IOformat)
 		{
+			// TODO: Fix this hack, I have no goddamn clue how this stuff works
+			var format = IOformat;
+			if(IOformat == "taskdata" || IOformat == "dialoguedata") format = "XML";
 			ImportExportFormat formatter;
-			if (IOFormats.TryGetValue (IOformat, out formatter))
+			if (IOFormats.TryGetValue (format, out formatter))
+			{
 				return formatter;
+			}
 			else
 				throw new ArgumentException ("Unknown format '" + IOformat + "'");
 		}

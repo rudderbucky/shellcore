@@ -42,12 +42,31 @@ namespace NodeEditorFramework
 		public static GUIStyle toolbarDropdown;
 		public static GUIStyle toolbarButton;
 
+		public enum NodeEditorState
+		{
+			Mission,
+			Dialogue
+		}
+
+		public static NodeEditorState state = NodeEditorState.Mission;
 		public static bool Init ()
 		{
 			// Textures
 			Background = ResourceManager.LoadTexture ("Textures/background.png");
 			AALineTex = ResourceManager.LoadTexture ("Textures/AALine.png");
-			GUIBox = ResourceManager.LoadTexture ("Textures/NE_Box.png");
+			switch(state)
+			{
+				case NodeEditorState.Mission:
+					GUIBox = ResourceManager.LoadTexture ("Textures/NE_MissionCanvasBox.png");
+					NE_LightColor = new Color (0.0f, 0.4f, 0.0f);
+					NE_TextColor = new Color(0.0f, 0.8f, 0.0f);
+					break;
+				case NodeEditorState.Dialogue:
+					GUIBox = ResourceManager.LoadTexture ("Textures/NE_DialogueCanvasBox.png");
+					NE_LightColor = new Color (0.0f, 0.4f, 0.4f);
+					NE_TextColor = new Color(0.0f, 0.8f, 0.8f);
+					break;
+			}
 			GUIButton = ResourceManager.LoadTexture ("Textures/NE_Button.png");
 			//GUIBoxSelection = ResourceManager.LoadTexture("Textures/BoxSelection.png");
 			GUIToolbar = ResourceManager.LoadTexture("Textures/NE_Toolbar.png");

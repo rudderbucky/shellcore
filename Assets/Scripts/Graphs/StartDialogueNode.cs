@@ -32,6 +32,11 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
+            if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Dialogue) 
+            {
+                DeleteConnectionPort(input);
+                input = null;
+            }
             SpeakToEntity = RTEditorGUI.Toggle(SpeakToEntity, "Speak to entity");
             if(SpeakToEntity)
             {

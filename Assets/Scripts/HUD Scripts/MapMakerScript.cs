@@ -35,7 +35,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	int const4 = 200;
 
 	// this is an arbitrary number, sets the size of the grid
-	int const3 = 2000;
+	int const3 = 4000;
 
 	Dictionary<TaskManager.ObjectiveLocation, RectTransform> arrows = new Dictionary<TaskManager.ObjectiveLocation, RectTransform>();
 	void Draw()
@@ -49,7 +49,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		img.sprite = gridSprite;
 		img.type = Image.Type.Tiled;
 		img.color = new Color32(100, 100, 100, 255);
-		for(int i = 0; i < 20; i++)
+		for(int i = 0; i < 21; i++)
 		{
 			Text textx = new GameObject().AddComponent<Text>();
 			Text texty = new GameObject().AddComponent<Text>();
@@ -142,7 +142,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
 		if(!followPlayerMode)
 		{
-			PollFollowPlayer();
+			PollMouseFollow();
 		}
 		else
 		{
@@ -158,7 +158,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		}
 	}
 
-	void PollFollowPlayer()
+	void PollMouseFollow()
 	{
 		canvas.anchorMin = new Vector2(0,1);
 		canvas.anchorMax = new Vector2(0,1);
@@ -169,7 +169,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			var width = canvas.sizeDelta.x;
 			canvas.anchoredPosition = anchor + (Vector2)Input.mousePosition - mousePos;
 			canvas.anchoredPosition = new Vector2(Mathf.Min(canvas.anchoredPosition.x, 0), Mathf.Max(canvas.anchoredPosition.y, 0));
-			canvas.anchoredPosition = new Vector2(Mathf.Max(canvas.anchoredPosition.x, -((const3 - width)/zoomoutFactor - const1) / zoomoutFactor), Mathf.Min(canvas.anchoredPosition.y, ((const3 - width)/zoomoutFactor - const1) / zoomoutFactor));
+			canvas.anchoredPosition = new Vector2(Mathf.Max(canvas.anchoredPosition.x, -((const3 - width)/zoomoutFactor - const1) / zoomoutFactor), Mathf.Min(canvas.anchoredPosition.y, (1400 + (const3 - width)/zoomoutFactor - const1) / zoomoutFactor));
 		}
 		greenBox.anchoredPosition =  canvas.anchoredPosition + playerPos / zoomoutFactor;
 	}

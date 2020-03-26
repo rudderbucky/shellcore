@@ -65,9 +65,10 @@ public class Traverser : NodeCanvasTraversal
 
     private Node findRoot()
     {
+        var startNodeName = nodeCanvas as QuestCanvas ? "StartMissionNode" : "StartDialogueNode";
         for (int j = 0; j < nodeCanvas.nodes.Count; j++)
         {
-            if (nodeCanvas.nodes[j].GetName == "StartNode")
+            if (nodeCanvas.nodes[j].GetName == startNodeName)
             {
                 return nodeCanvas.nodes[j];
             }

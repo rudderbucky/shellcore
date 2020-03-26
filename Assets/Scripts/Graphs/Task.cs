@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
+[System.Serializable]
 public class Task
 {
     public string taskID;
@@ -10,4 +13,21 @@ public class Task
     public EntityBlueprint.PartInfo partReward;
     public string taskGiverID;
     public int reputationReward;
+}
+
+[System.Serializable]
+public class Mission
+{
+    public string name;
+    public string rank;
+    public enum MissionStatus
+    {
+        Inactive,
+        Ongoing,
+        Complete
+    }
+
+    public MissionStatus status;
+    public List<string> prerequisites;
+    public List<Task> tasks;
 }

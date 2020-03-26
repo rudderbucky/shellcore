@@ -83,7 +83,7 @@ namespace NodeEditorFramework.Utilities
 		/// <summary>
 		/// Loads a texture in the resources folder in both the editor and at runtime and manages it in a memory for later use.
 		/// If you don't wan't to optimise memory, just use LoadResource instead
-		/// It's adviced to prepare the texPath using the function before to create a uniform 'path format', because textures are compared through their paths
+		/// It's advised to prepare the texPath using the function before to create a uniform 'path format', because textures are compared through their paths
 		/// </summary>
 		public static Texture2D LoadTexture (string texPath)
 		{
@@ -105,7 +105,7 @@ namespace NodeEditorFramework.Utilities
 
 		/// <summary>
 		/// Loads up a texture tinted with col, and manages it in a memory for later use.
-		/// It's adviced to prepare the texPath using the function before to create a uniform 'path format', because textures are compared through their paths
+		/// It's advised to prepare the texPath using the function before to create a uniform 'path format', because textures are compared through their paths
 		/// </summary>
 		public static Texture2D GetTintedTexture(string texPath, Color col)
 		{

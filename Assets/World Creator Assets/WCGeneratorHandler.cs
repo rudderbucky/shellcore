@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using NodeEditorFramework.IO;
 public class WCGeneratorHandler : MonoBehaviour
 {
     public struct SectorData 
@@ -419,6 +419,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
                 }
 
+                ImportExportFormat.RuntimeIOPath = path;
                 Debug.Log("worked");
                 return;
             }

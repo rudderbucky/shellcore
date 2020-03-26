@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using NodeEditorFramework.Utilities;
 
@@ -29,23 +31,19 @@ namespace NodeEditorFramework.IO
 		/// If true, the Import-/ExportLocationArgsGUI functions are called, else Import-/ExportLocationArgsSelection
 		/// </summary>
 		public virtual bool RequiresLocationGUI { get {
-#if UNITY_EDITOR
-				return false; // In the editor, use file browser seletion
-#else
+
 				return true; // At runtime, use GUI to select a file in a fixed folder
-#endif
+
 			}
 		}
 
 		/// <summary>
 		/// Folder for runtime IO operations relative to the game folder.
 		/// </summary>
-		public virtual string RuntimeIOPath { get { return "Assets/StreaminAssets/"; } }
+		public static string RuntimeIOPath;
 
-#if !UNITY_EDITOR
 		private string fileSelection = "";
 		private Rect fileSelectionMenuRect;
-#endif
 
 		/// <summary>
 		/// Called only if RequiresLocationGUI is true.
@@ -55,29 +53,28 @@ namespace NodeEditorFramework.IO
 		/// </summary>
 		public virtual bool? ImportLocationArgsGUI (ref object[] locationArgs)
 		{
-#if UNITY_EDITOR
-			return ImportLocationArgsSelection (out locationArgs);
-#else
-			GUILayout.Label("Import canvas from " + FormatIdentifier);
+
+			GUILayout.Label("Import canvas " + FormatIdentifier);
 			GUILayout.BeginHorizontal();
-			GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(false));
-			if (GUILayout.Button(string.IsNullOrEmpty(fileSelection)? "Select..." : fileSelection + "." + FormatExtension, GUILayout.ExpandWidth(true)))
+			//GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(true));
+			if (GUILayout.Button(string.IsNullOrEmpty(fileSelection)? "Select..." : fileSelection + ".taskdata", GUILayout.ExpandWidth(true)))
 			{
 				// Find save files
+				Debug.Log(RuntimeIOPath);
 				DirectoryInfo dir = Directory.CreateDirectory(RuntimeIOPath);
-				FileInfo[] files = dir.GetFiles("*." + FormatExtension);
+				FileInfo[] files = dir.GetFiles("*.taskdata");
 				// Fill save file selection menu
 				GenericMenu fileSelectionMenu = new GenericMenu(false);
 				foreach (FileInfo file in files)
 					fileSelectionMenu.AddItem(new GUIContent(file.Name), false, () => fileSelection = Path.GetFileNameWithoutExtension(file.Name));
 				fileSelectionMenu.DropDown(fileSelectionMenuRect);
+				fileSelectionMenuRect.height = 500;
 			}
 			if (Event.current.type == EventType.Repaint)
 			{
 				Rect popupPos = GUILayoutUtility.GetLastRect();
-				fileSelectionMenuRect = new Rect(popupPos.x + 2, popupPos.yMax + 2, popupPos.width - 4, 0);
+				fileSelectionMenuRect = new Rect(popupPos.x + 2, popupPos.yMax + 2, popupPos.width - 4, 500);
 			}
-			GUILayout.EndHorizontal();
 
 			// Finish operation buttons
 			GUILayout.BeginHorizontal();
@@ -85,16 +82,18 @@ namespace NodeEditorFramework.IO
 				return false;
 			if (GUILayout.Button("Import"))
 			{
-				if (string.IsNullOrEmpty(fileSelection) || !File.Exists(RuntimeIOPath + fileSelection + "." + FormatExtension))
+				if (string.IsNullOrEmpty(fileSelection) || !File.Exists(RuntimeIOPath + "\\" + fileSelection + ".taskdata"))
+				{
+					Debug.Log(RuntimeIOPath + fileSelection + ".taskdata");
 					return false;
+				}
 				fileSelection = Path.GetFileNameWithoutExtension(fileSelection);
-				locationArgs = new object[] { RuntimeIOPath + fileSelection + "." + FormatExtension };
+				locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection + ".taskdata" };
 				return true;
 			}
 			GUILayout.EndHorizontal();
 
 			return null;
-#endif
 		}
 
 		/// <summary>
@@ -122,14 +121,11 @@ namespace NodeEditorFramework.IO
 		/// </summary>
 		public virtual bool? ExportLocationArgsGUI (string canvasName, ref object[] locationArgs)
 		{
-#if UNITY_EDITOR
-			return ExportLocationArgsSelection(canvasName, out locationArgs);
-#else
 			GUILayout.Label("Export canvas to " + FormatIdentifier);
 
 			// File save field
 			GUILayout.BeginHorizontal();
-			GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(false));
+			// GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(false));
 			fileSelection = GUILayout.TextField(fileSelection, GUILayout.ExpandWidth(true));
 			GUILayout.Label("." + FormatExtension, GUILayout.ExpandWidth (false));
 			GUILayout.EndHorizontal();
@@ -143,13 +139,12 @@ namespace NodeEditorFramework.IO
 				if (string.IsNullOrEmpty(fileSelection))
 					return false;
 				fileSelection = Path.GetFileNameWithoutExtension(fileSelection);
-				locationArgs = new object[] { RuntimeIOPath + fileSelection + "." + FormatExtension };
+				locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection + "." + FormatExtension };
 				return true;
 			}
 			GUILayout.EndHorizontal();
 
 			return null;
-#endif
 		}
 
 		/// <summary>

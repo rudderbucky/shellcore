@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using NodeEditorFramework.Standard;
+using NodeEditorFramework.IO;
+using NodeEditorFramework;
 
 public class DialogueSystem : MonoBehaviour
 {
@@ -49,6 +52,39 @@ public class DialogueSystem : MonoBehaviour
     {
         Instance = this;
         dialogueStyle = (DialogueStyle)PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0); 
+    }
+
+    public static List<string> dialogueCanvasPaths = new List<string>();
+    private static List<Traverser> traversers;
+    private static bool initialized = false;
+    public static void InitCanvases()
+    {
+        traversers = new List<Traverser>();
+        NodeCanvasManager.FetchCanvasTypes();
+        NodeTypes.FetchNodeTypes();
+        ConnectionPortManager.FetchNodeConnectionDeclarations();
+
+        var XMLImport = new XMLImportExport();
+
+        for (int i = 0; i < dialogueCanvasPaths.Count; i++)
+        {
+            string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, dialogueCanvasPaths[i]);
+            Debug.Log("Canvas path [" + i + "] = " + finalPath);
+            var canvas = XMLImport.Import(finalPath) as QuestCanvas;
+            Debug.Log(canvas);
+            if (canvas != null)
+            {
+                traversers.Add(new Traverser(canvas));
+            }
+        }
+
+        // reset all static condition variables
+        SectorLimiterNode.LimitedSector = "";
+        DestroyEntityCondition.OnUnitDestroyed = null;
+        UsePartCondition.OnPlayerReconstruct = new UnityEvent();
+        WinBattleCondition.OnBattleWin = null;
+
+        initialized = true;
     }
 
     private void Update()

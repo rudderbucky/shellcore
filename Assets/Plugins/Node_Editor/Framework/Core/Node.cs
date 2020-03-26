@@ -597,7 +597,7 @@ namespace NodeEditorFramework
 
 		public void DeleteConnectionPort(ConnectionPort dynamicPort)
 		{
-			dynamicPort.ClearConnections ();
+			dynamicPort?.ClearConnections ();
 			dynamicConnectionPorts.Remove(dynamicPort);
 			DestroyImmediate(dynamicPort);
 			ConnectionPortManager.UpdateRepresentativePortLists(this);
