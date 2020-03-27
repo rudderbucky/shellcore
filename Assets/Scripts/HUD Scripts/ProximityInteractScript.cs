@@ -19,7 +19,11 @@ public class ProximityInteractScript : MonoBehaviour {
         {
             TaskManager.interactionOverrides[ent.ID].Peek().Invoke();
         }
-        else DialogueSystem.StartDialogue(ent.dialogue, ent);
+        else if (DialogueSystem.interactionOverrides.ContainsKey(ent.ID) && DialogueSystem.interactionOverrides[ent.ID].Count > 0)
+        {
+            DialogueSystem.interactionOverrides[ent.ID].Peek().Invoke();
+        }
+		else DialogueSystem.StartDialogue(ent.dialogue, ent);
 	}
 	void Update() {
 		if(player != null) 

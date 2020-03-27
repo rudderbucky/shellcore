@@ -7,7 +7,16 @@ using NodeEditorFramework.IO;
 using NodeEditorFramework;
 using System;
 
-public class TaskManager : MonoBehaviour
+public interface IDialogueOverrideHandler
+{
+    List<string> GetSpeakerIDList();
+    Dictionary<string, Stack<UnityAction>> GetInteractionOverrides();
+    void SetNode(ConnectionPort node);
+    void SetNode(Node node);
+    void SetSpeakerID(string ID); 
+}
+
+public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 {
     public static TaskManager Instance = null;
     public static Dictionary<string, Stack<UnityAction>> interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
@@ -16,7 +25,7 @@ public class TaskManager : MonoBehaviour
     public SaveHandler saveHandler;
 
     bool initialized = false;
-    public List<Traverser> traversers;
+    public List<MissionTraverser> traversers;
     List<Task> activeTasks = new List<Task>();
     public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
     public static bool autoSaveEnabled;
@@ -139,7 +148,7 @@ public class TaskManager : MonoBehaviour
     {
         if (initialized)
             return;
-        traversers = new List<Traverser>();
+        traversers = new List<MissionTraverser>();
         NodeCanvasManager.FetchCanvasTypes();
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
@@ -154,7 +163,7 @@ public class TaskManager : MonoBehaviour
             Debug.Log(canvas);
             if (canvas != null)
             {
-                traversers.Add(new Traverser(canvas));
+                traversers.Add(new MissionTraverser(canvas));
             }
         }
 
@@ -173,10 +182,7 @@ public class TaskManager : MonoBehaviour
         for (int i = 0; i < traversers.Count; i++)
         {
             traversers[i].StartQuest();
-            if(traversers[i].nodeCanvas as QuestCanvas)
-            {
-                (traversers[i].findRoot() as StartMissionNode).TryAddMission();
-            }
+            traversers[i].findRoot().TryAddMission();
         }
     }
 
@@ -227,8 +233,33 @@ public class TaskManager : MonoBehaviour
         if(autoSaveEnabled) saveHandler.Save();
     }
 
-    public void RemoveTraverser(Traverser traverser)
+    public void RemoveTraverser(MissionTraverser traverser)
     {
         traversers.Remove(traverser);
+    }
+
+    public List<string> GetSpeakerIDList()
+    {
+        return speakerIDList;
+    }
+
+    public Dictionary<string, Stack<UnityAction>> GetInteractionOverrides()
+    {
+        return interactionOverrides;
+    }
+
+    public void SetNode(ConnectionPort node)
+    {
+        setNode(node);
+    }
+
+    public void SetSpeakerID(string ID)
+    {
+        speakerID = ID;
+    }
+
+    public void SetNode(Node node)
+    {
+        setNode(node);
     }
 }

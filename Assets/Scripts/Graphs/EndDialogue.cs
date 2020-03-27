@@ -21,13 +21,22 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob input;
         public ConnectionKnob output;
 
-        public bool jumpToStart = false; //Unnecessary, because unconnected dialogue ports go to start automatically. TODO: determine the fate of this functionality
+        public bool jumpToStart = false; // This is now necessary :)
 
         public override void NodeGUI()
         {
+            if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Dialogue && outputKnobs.Count > 0) 
+            {
+                DeleteConnectionPort(outputKnobs[0]);
+                output = null;
+            } 
+            else if((NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission) && (output == null))
+            {
+                output = CreateConnectionKnob(OutStyle);
+            }
             GUILayout.BeginHorizontal();
             input.DisplayLayout();
-            if(!jumpToStart)
+            if(!jumpToStart && (NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission))
             {
                 if (output == null)
                 {
@@ -49,31 +58,37 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            foreach(var objectiveLocation in TaskManager.objectiveLocations)
-            {
-                if(StartDialogueNode.dialogueStartNode && objectiveLocation.followEntity &&
-                    objectiveLocation.followEntity.ID == StartDialogueNode.dialogueStartNode.EntityID)
+            IDialogueOverrideHandler handler = null;
+            if(StartDialogueNode.dialogueStartNode.canvasState == NodeEditorGUI.NodeEditorState.Mission)
+                handler = TaskManager.Instance;
+            else handler = DialogueSystem.Instance;
+            
+            if(handler as TaskManager)
+                foreach(var objectiveLocation in TaskManager.objectiveLocations)
                 {
-                    TaskManager.objectiveLocations.Remove(objectiveLocation);
-                    TaskManager.DrawObjectiveLocations();
-                    break;
+                    if(StartDialogueNode.dialogueStartNode && objectiveLocation.followEntity &&
+                        objectiveLocation.followEntity.ID == StartDialogueNode.dialogueStartNode.EntityID)
+                    {
+                        TaskManager.objectiveLocations.Remove(objectiveLocation);
+                        TaskManager.DrawObjectiveLocations();
+                        break;
+                    }
                 }
-            }
 
             if(jumpToStart)
             {
-                TaskManager.Instance.setNode(StartDialogueNode.dialogueStartNode);
+                handler.SetNode(StartDialogueNode.dialogueStartNode);
                 return -1;
             }
             else
             {
                 if(StartDialogueNode.dialogueStartNode.EntityID != null)
                 {
-                    TaskManager.interactionOverrides[StartDialogueNode.dialogueStartNode.EntityID].Pop();
+                    handler.GetInteractionOverrides()[StartDialogueNode.dialogueStartNode.EntityID].Pop();
                     DialogueSystem.Instance.DialogueViewTransitionOut();
                     StartDialogueNode.dialogueStartNode = null;
                 }
-                return 0;
+                return outputKnobs.Count > 0 ? 0 : -1;
             }
         }
     }

@@ -53,7 +53,9 @@ namespace NodeEditorFramework
 			if (canvasType != null && canvasType.IsSubclassOf (typeof(NodeCanvas)))
 				canvas = ScriptableObject.CreateInstance (canvasType) as NodeCanvas;
 			else
-				canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.QuestCanvas>();
+				if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission)
+					canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.QuestCanvas>();
+				else canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.DialogueCanvas>();
 			canvas.name = canvas.saveName = "New " + canvas.canvasName;
 
 			NodeEditor.BeginEditingCanvas (canvas);

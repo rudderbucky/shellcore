@@ -115,6 +115,7 @@ public class TaskDisplayScript : MonoBehaviour
             var obj = Instantiate(instance.missionObjectivePrefab, instance.missionObjectivesContents, false);
             var strings = obj.GetComponentsInChildren<Text>();
             strings[0].text = "Congratulations, Mission Complete!";
+            strings[1].text = "";
             strings[0].color = Color.green;
         }
 

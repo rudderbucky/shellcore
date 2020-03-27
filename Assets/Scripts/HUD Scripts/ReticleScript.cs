@@ -107,6 +107,11 @@ public class ReticleScript : MonoBehaviour {
                     {
                         TaskManager.interactionOverrides[curTarg.GetID()].Peek().Invoke();
                     }
+                    else if (DialogueSystem.interactionOverrides.ContainsKey(curTarg.GetID()) 
+                        && DialogueSystem.interactionOverrides[curTarg.GetID()].Count > 0)
+                    {
+                        DialogueSystem.interactionOverrides[curTarg.GetID()].Peek().Invoke();
+                    }
                     else if (curTarg.GetDialogue() as Dialogue)
                         DialogueSystem.StartDialogue(curTarg.GetDialogue() as Dialogue, curTarg as Entity);
                 }

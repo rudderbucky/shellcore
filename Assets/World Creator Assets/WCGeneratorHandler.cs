@@ -32,6 +32,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 {
                     System.IO.File.Delete(file);
                 }
+                System.IO.Directory.Delete(dir);
             }
 
             foreach(var file in System.IO.Directory.GetFiles(testPath))

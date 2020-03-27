@@ -74,10 +74,13 @@ public class Entity : MonoBehaviour, IDamageable {
     {
         interactible = GetDialogue() && (faction == 0); 
 
-        // this is an implication, not a biconditional; interactibility is not necessarily false if there is no
-        // task override. Hence the if statement is needed here
+        // These are implications, not a biconditional; interactibility is not necessarily false if there is no
+        // task override. Hence the if statements are needed here
         if(ID != null && TaskManager.interactionOverrides.ContainsKey(ID) 
             && TaskManager.interactionOverrides[ID].Count > 0) interactible = true;
+
+        if(ID != null && DialogueSystem.interactionOverrides.ContainsKey(ID) 
+            && DialogueSystem.interactionOverrides[ID].Count > 0) interactible = true;
     }
 
     public bool GetInteractible()

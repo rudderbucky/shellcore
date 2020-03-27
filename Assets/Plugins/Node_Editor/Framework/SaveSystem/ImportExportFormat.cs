@@ -57,7 +57,7 @@ namespace NodeEditorFramework.IO
 			GUILayout.Label("Import canvas " + FormatIdentifier);
 			GUILayout.BeginHorizontal();
 			//GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(true));
-			if (GUILayout.Button(string.IsNullOrEmpty(fileSelection)? "Select..." : fileSelection + ".taskdata", GUILayout.ExpandWidth(true)))
+			if (GUILayout.Button(string.IsNullOrEmpty(fileSelection)? "Select..." : fileSelection, GUILayout.ExpandWidth(true)))
 			{
 				// Find save files
 				Debug.Log(RuntimeIOPath);
@@ -74,7 +74,7 @@ namespace NodeEditorFramework.IO
 					{
 						if(file.Name.Contains("taskdata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Mission;
 						if(file.Name.Contains("dialoguedata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Dialogue;
-						fileSelection = Path.GetFileNameWithoutExtension(file.Name);
+						fileSelection = Path.GetFileName(file.Name);
 						NodeEditorGUI.Init();
 					});
 				fileSelectionMenu.DropDown(fileSelectionMenuRect);
@@ -92,13 +92,13 @@ namespace NodeEditorFramework.IO
 				return false;
 			if (GUILayout.Button("Import"))
 			{
-				if (string.IsNullOrEmpty(fileSelection) || !File.Exists(RuntimeIOPath + "\\" + fileSelection + ".taskdata"))
+				if (string.IsNullOrEmpty(fileSelection) || !File.Exists(RuntimeIOPath + "\\" + fileSelection))
 				{
-					Debug.Log(RuntimeIOPath + fileSelection + ".taskdata");
+					Debug.Log(RuntimeIOPath + "\\" + fileSelection);
 					return false;
 				}
-				fileSelection = Path.GetFileNameWithoutExtension(fileSelection);
-				locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection + ".taskdata" };
+				fileSelection = Path.GetFileName(fileSelection);
+				locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection };
 				return true;
 			}
 			GUILayout.EndHorizontal();
@@ -137,7 +137,7 @@ namespace NodeEditorFramework.IO
 			GUILayout.BeginHorizontal();
 			var ext = (NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? ".taskdata" : ".dialoguedata");
 			// GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(false));
-			fileSelection = GUILayout.TextField(fileSelection, GUILayout.ExpandWidth(true));
+			fileSelection = GUILayout.TextField(Path.GetFileNameWithoutExtension(fileSelection), GUILayout.ExpandWidth(true));
 			GUILayout.Label(ext, GUILayout.ExpandWidth (false));
 			GUILayout.EndHorizontal();
 

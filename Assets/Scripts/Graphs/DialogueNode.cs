@@ -82,7 +82,9 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            DialogueSystem.ShowDialogueNode(this, TaskManager.GetSpeaker());
+            if(StartDialogueNode.dialogueStartNode.canvasState == NodeEditorGUI.NodeEditorState.Mission)
+                DialogueSystem.ShowDialogueNode(this, TaskManager.GetSpeaker());
+            else DialogueSystem.ShowDialogueNode(this, DialogueSystem.GetSpeaker());
             DialogueSystem.OnDialogueEnd += OnClick;
             return -1;
         }

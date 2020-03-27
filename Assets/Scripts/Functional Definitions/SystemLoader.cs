@@ -23,6 +23,8 @@ public class SystemLoader : MonoBehaviour
             sectorManager.Initialize();
         if (taskManager)
             taskManager.Initialize();
+        if (DialogueSystem.Instance)
+            DialogueSystem.InitCanvases();
         if (saveHandler)
             saveHandler.Initialize();
 
@@ -39,5 +41,7 @@ public class SystemLoader : MonoBehaviour
         yield return null;
         if (TaskManager.Instance)
             TaskManager.StartQuests();
+        if (DialogueSystem.Instance)
+            DialogueSystem.StartQuests();
     }
 }

@@ -7,7 +7,7 @@ using NodeEditorFramework.Standard;
 using NodeEditorFramework.IO;
 using NodeEditorFramework;
 
-public class DialogueSystem : MonoBehaviour
+public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 {
     public static DialogueSystem Instance { get; private set; }
 
@@ -55,11 +55,15 @@ public class DialogueSystem : MonoBehaviour
     }
 
     public static List<string> dialogueCanvasPaths = new List<string>();
-    private static List<Traverser> traversers;
+    public static List<string> speakerIDList = new List<string>();
+    public static Dictionary<string, Stack<UnityAction>> interactionOverrides;
+    private static List<DialogueTraverser> traversers;
+    public static string speakerID;
     private static bool initialized = false;
     public static void InitCanvases()
     {
-        traversers = new List<Traverser>();
+        interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
+        traversers = new List<DialogueTraverser>();
         NodeCanvasManager.FetchCanvasTypes();
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
@@ -69,22 +73,29 @@ public class DialogueSystem : MonoBehaviour
         for (int i = 0; i < dialogueCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, dialogueCanvasPaths[i]);
-            Debug.Log("Canvas path [" + i + "] = " + finalPath);
-            var canvas = XMLImport.Import(finalPath) as QuestCanvas;
+            Debug.Log("Dialogue Canvas path [" + i + "] = " + finalPath);
+            var canvas = XMLImport.Import(finalPath) as DialogueCanvas;
             Debug.Log(canvas);
             if (canvas != null)
             {
-                traversers.Add(new Traverser(canvas));
+                traversers.Add(new DialogueTraverser(canvas));
             }
         }
 
-        // reset all static condition variables
-        SectorLimiterNode.LimitedSector = "";
-        DestroyEntityCondition.OnUnitDestroyed = null;
-        UsePartCondition.OnPlayerReconstruct = new UnityEvent();
-        WinBattleCondition.OnBattleWin = null;
-
         initialized = true;
+    }
+
+    public static void StartQuests() {
+        Instance.startQuests();
+    }
+
+    // Traverse quest graph
+    public void startQuests()
+    {
+        for (int i = 0; i < traversers.Count; i++)
+        {
+            traversers[i].StartQuest();
+        }
     }
 
     private void Update()
@@ -732,5 +743,41 @@ public class DialogueSystem : MonoBehaviour
             SlidePassiveDialogueOut();
         }
 
+    }
+
+    public List<string> GetSpeakerIDList()
+    {
+        return speakerIDList;
+    }
+
+    public Dictionary<string, Stack<UnityAction>> GetInteractionOverrides()
+    {
+        return interactionOverrides;
+    }
+
+    public void SetNode(ConnectionPort node)
+    {
+        TaskManager.Instance.setNode(node);
+    }
+
+    public void SetNode(Node node)
+    {
+        TaskManager.Instance.setNode(node);
+    }
+
+    public void SetSpeakerID(string ID)
+    {
+        speakerID = ID;
+    }
+
+    public void SetCanvasPath(string path)
+    {
+        Debug.Log("Found Dialogue Path " + dialogueCanvasPaths.Count);
+        dialogueCanvasPaths.Add(path);
+    }
+
+    public static Entity GetSpeaker() {
+        var speakerObj = SectorManager.instance.GetEntity(speakerID);
+        return speakerObj;
     }
 }

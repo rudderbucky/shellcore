@@ -52,11 +52,6 @@ public class SaveHandler : MonoBehaviour {
                 	taskManager.traversers[i].activateCheckpoint(save.checkpointNames[i]);
             }
 
-            for (int i = 0; i < save.activeTaskIDs.Length; i++)
-            {
-                taskManager.ActivateTask(save.activeTaskIDs[i]);
-            }
-
             for (int i = 0; i < save.taskVariableNames.Length; i++)
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);

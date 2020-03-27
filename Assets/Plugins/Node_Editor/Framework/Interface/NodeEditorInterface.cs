@@ -52,7 +52,9 @@ namespace NodeEditorFramework.Standard
             //float curToolbarHeight = 0;
             if (GUILayout.Button("New", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
             {
-                NewNodeCanvas(typeof(QuestCanvas));
+                if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission)
+					NewNodeCanvas(typeof(QuestCanvas));
+				else NewNodeCanvas(typeof(DialogueCanvas));
             }
             if (GUILayout.Button("Import", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
             {

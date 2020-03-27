@@ -30,6 +30,7 @@ namespace NodeEditorFramework.Standard
         ConnectionKnobAttribute inputInStyle = new ConnectionKnobAttribute("Input Left", Direction.In, "TaskFlow", NodeSide.Left);
         ConnectionKnobAttribute flowInStyle = new ConnectionKnobAttribute("ContinueAsync", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
         public bool allowAfterSpeaking;
+        public NodeEditorGUI.NodeEditorState canvasState;
 
         public override void NodeGUI()
         {
@@ -67,21 +68,27 @@ namespace NodeEditorFramework.Standard
                     DeleteConnectionPort(flowOutput);
                 }
             }
+            canvasState = NodeEditorGUI.state;
         }
 
         public override int Traverse()
         {
             dialogueStartNode = this;
+            IDialogueOverrideHandler handler = null;
+            if(canvasState == NodeEditorGUI.NodeEditorState.Mission)
+                handler = TaskManager.Instance;
+            else handler = DialogueSystem.Instance;
+
             if (SpeakToEntity)
             {
-                TaskManager.speakerIDList.Add(EntityID);
+                handler.GetSpeakerIDList().Add(EntityID);
                 TryAddObjective();
-                if (TaskManager.interactionOverrides.ContainsKey(EntityID))
+                if (handler.GetInteractionOverrides().ContainsKey(EntityID))
                 {
-                    TaskManager.interactionOverrides[EntityID].Push(() => {
+                    handler.GetInteractionOverrides()[EntityID].Push(() => {
                         dialogueStartNode = this;
-                        TaskManager.speakerID = EntityID;
-                        TaskManager.Instance.setNode(output);
+                        handler.SetSpeakerID(EntityID);
+                        handler.SetNode(output);
                     });
 
                 }
@@ -90,17 +97,17 @@ namespace NodeEditorFramework.Standard
                     var stack = new Stack<UnityEngine.Events.UnityAction>();
                     stack.Push(() => {
                             dialogueStartNode = this;
-                            TaskManager.speakerID = EntityID;
-                            TaskManager.Instance.setNode(output);
+                            handler.SetSpeakerID(EntityID);
+                            handler.SetNode(output);
                         });
-                    TaskManager.interactionOverrides.Add(EntityID, stack);
+                    handler.GetInteractionOverrides().Add(EntityID, stack);
                 }
 
                 if(!allowAfterSpeaking)
                 {
                     if(forceStart)
                     {
-                        TaskManager.speakerID = EntityID;
+                        handler.SetSpeakerID(EntityID);
                         return 0;
                     }
                    else return -1;
@@ -109,7 +116,7 @@ namespace NodeEditorFramework.Standard
                 {
                     if(flowOutput == null)
                         flowOutput = outputKnobs[1];
-                    TaskManager.Instance.setNode(flowOutput);
+                    handler.SetNode(flowOutput);
                     Debug.Log(flowOutput.name);
                     return 0;
                 }

@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="172.5,-16" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-425884" type="StartDialogueNode" pos="-798.75,-178.75">
+			<Port ID="-441348" name="input" dynamic="False" />
+			<Port ID="-425888" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1121577521" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="canvasState">Dialogue</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-425896" type="EndDialogue" pos="-236.25,9.125">
+			<Port ID="-425898" name="input" dynamic="False" />
+			<Port ID="-441346" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+		</Node>
+		<Node name="Dialogue" ID="-425890" type="DialogueNode" pos="-602.5,-175.875">
+			<Port ID="-425892" name="input" dynamic="False" />
+			<Port ID="-425894" name="cancel" dynamic="False" />
+			<Port ID="-425878" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">241</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-801607440" />
+			<Variable name="answers" refID="-1052239872" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-425888" port2ID="-425892" />
+		<Connection port1ID="-425898" port2ID="-425878" />
+	</Connections>
+	<Objects>
+		<Object refID="-1121577521" type="System.String">
+			<string>haven1-infectionexplainer</string>
+		</Object>
+		<Object refID="-801607440" type="System.String">
+			<string>We still don't know what caused the 'Infection'. All we know is that it started after some of us entered the Core Sectors of this world. Ever since, we've been under attack and their numbers just keep rising and rising.</string>
+		</Object>
+		<Object refID="-1052239872" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>
