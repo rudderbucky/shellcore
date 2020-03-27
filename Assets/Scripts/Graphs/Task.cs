@@ -31,4 +31,6 @@ public class Mission
     public MissionStatus status;
     public List<string> prerequisites;
     public List<Task> tasks;
+    public string prerequisitesUnsatisifedText;
+    public Color textColor;
 }

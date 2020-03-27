@@ -78,18 +78,22 @@ namespace NodeEditorFramework.Standard
                 TryAddObjective();
                 if (TaskManager.interactionOverrides.ContainsKey(EntityID))
                 {
-                    TaskManager.interactionOverrides[EntityID] = () => {
+                    TaskManager.interactionOverrides[EntityID].Push(() => {
+                        dialogueStartNode = this;
                         TaskManager.speakerID = EntityID;
                         TaskManager.Instance.setNode(output);
-                    };
+                    });
 
                 }
                 else
                 {
-                    TaskManager.interactionOverrides.Add(EntityID, () => {
-                        TaskManager.speakerID = EntityID;
-                        TaskManager.Instance.setNode(output);
-                    });
+                    var stack = new Stack<UnityEngine.Events.UnityAction>();
+                    stack.Push(() => {
+                            dialogueStartNode = this;
+                            TaskManager.speakerID = EntityID;
+                            TaskManager.Instance.setNode(output);
+                        });
+                    TaskManager.interactionOverrides.Add(EntityID, stack);
                 }
 
                 if(!allowAfterSpeaking)

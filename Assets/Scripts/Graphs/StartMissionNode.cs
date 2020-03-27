@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using NodeEditorFramework.Utilities;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +22,9 @@ namespace NodeEditorFramework.Standard
         public string rank;
         public string entryPoint;
         public List<string> prerequisites = new List<string>();
-        float height = 125f;
+        public string prerequisitesUnsatisifedText;
+        public Color textColor;
+        float height = 400f;
         public override void NodeGUI()
         {
            
@@ -36,6 +39,8 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Label("Entry Point Hint:");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
             entryPoint = GUILayout.TextArea(entryPoint, GUILayout.Width(100f));
             GUILayout.EndHorizontal();
 
@@ -64,6 +69,20 @@ namespace NodeEditorFramework.Standard
                 height += 50;
             }
             GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Dialogue to show if prerequisites unsatisfied:");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            prerequisitesUnsatisifedText = GUILayout.TextArea(prerequisitesUnsatisifedText, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            GUILayout.EndHorizontal();
+            GUILayout.Label("Dialogue Text Color:");
+            float r, g, b;
+            GUILayout.BeginHorizontal();
+            r = RTEditorGUI.FloatField(textColor.r);
+            g = RTEditorGUI.FloatField(textColor.g);
+            b = RTEditorGUI.FloatField(textColor.b);
+            GUILayout.EndHorizontal();
+            textColor = new Color(r, g, b);
         }
 
         public override int Traverse()
@@ -83,6 +102,8 @@ namespace NodeEditorFramework.Standard
                 mission.status = Mission.MissionStatus.Inactive;
                 mission.tasks = new List<Task>();
                 mission.entryPoint = entryPoint;
+                mission.prerequisitesUnsatisifedText = prerequisitesUnsatisifedText;
+                mission.textColor = textColor;
                 PlayerCore.Instance.cursave.missions.Add(mission);
             }
 

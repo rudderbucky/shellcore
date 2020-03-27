@@ -69,8 +69,9 @@ namespace NodeEditorFramework.Standard
             {
                 if(StartDialogueNode.dialogueStartNode.EntityID != null)
                 {
-                    TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityID);
+                    TaskManager.interactionOverrides[StartDialogueNode.dialogueStartNode.EntityID].Pop();
                     DialogueSystem.Instance.DialogueViewTransitionOut();
+                    StartDialogueNode.dialogueStartNode = null;
                 }
                 return 0;
             }

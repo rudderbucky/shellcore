@@ -36,9 +36,12 @@ public class Traverser : NodeCanvasTraversal
         }
     }
 
+    string CPName;
     public void StartQuest()
     {
         // If the quest has been started, continue
+        (nodeCanvas as QuestCanvas).missionName = (findRoot() as StartMissionNode).missionName;
+        if(CPName == ((nodeCanvas as QuestCanvas).missionName + "_complete")) return;
         if (currentNode != null)
         {
             Debug.Log("Continuing quest from " + currentNode.GetName);
@@ -78,8 +81,8 @@ public class Traverser : NodeCanvasTraversal
 
     public void activateCheckpoint(string CPName)
     {
+        this.CPName = CPName;
         (nodeCanvas as QuestCanvas).missionName = (findRoot() as StartMissionNode).missionName;
-        if(CPName == (nodeCanvas as QuestCanvas).missionName + "_complete") return; // TODO: accomodate this in the save repairer when you need tor
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
             var node = nodeCanvas.nodes[i];

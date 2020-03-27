@@ -1,11 +1,21 @@
 ﻿using UnityEngine;
 using NodeEditorFramework.Utilities;
+using System.Collections.Generic;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Tasks/StartTask")]
     public class StartTaskNode : Node
     {
+        /*
+
+    * TODO: GIVE TASKS CUSTOM NAMES
+    *
+    *
+    *
+    *
+    *
+    */
         //Node things
         public const string ID = "StartTaskNode";
         public override string GetName { get { return ID; } }
@@ -122,7 +132,8 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.OnDialogueEnd -= OnClick;
             if (index != 0)
             {
-                TaskManager.interactionOverrides.Remove(StartDialogueNode.dialogueStartNode.EntityID);
+                TaskManager.interactionOverrides[StartDialogueNode.dialogueStartNode.EntityID].Pop();
+                StartDialogueNode.dialogueStartNode = null;
                 StartTask();
                 TaskManager.Instance.setNode(outputAccept);
             }
@@ -140,6 +151,40 @@ namespace NodeEditorFramework.Standard
             Debug.Log("Force Task: " + forceTask);
             if(!forceTask)
             {
+                // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
+                var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
+                if(mission != null)
+                {
+                    foreach(var prereq in mission.prerequisites)
+                    {
+                        if(prereq == "None") continue;
+                        if(PlayerCore.Instance.cursave.missions.Find((x) => x.name == prereq).status != Mission.MissionStatus.Complete)
+                        {
+                            Dialogue dialogue = new Dialogue();
+                            dialogue.nodes = new List<Dialogue.Node>();
+                            var node = new Dialogue.Node();
+                            node.ID = 0;
+                            node.text = mission.prerequisitesUnsatisifedText;
+                            node.textColor = mission.textColor;
+                            node.nextNodes = new List<int>() {1};
+
+                            var node1 = new Dialogue.Node();
+                            node1.ID = 1;
+                            node1.action = Dialogue.DialogueAction.Exit;
+                            node1.buttonText = "Okay..."; // TODO: diversify?
+                            dialogue.nodes.Add(node);
+                            dialogue.nodes.Add(node1);
+                            DialogueSystem.StartDialogue(dialogue, TaskManager.GetSpeaker());
+                            if(StartDialogueNode.dialogueStartNode.EntityID != null)
+                            {
+                                TaskManager.interactionOverrides[StartDialogueNode.dialogueStartNode.EntityID].Pop();
+                            }
+                            TaskManager.Instance.setNode(StartDialogueNode.dialogueStartNode);
+                            return -1;
+                        }
+                    }
+                }
+
                 DialogueSystem.ShowTaskPrompt(this, TaskManager.GetSpeaker());
                 DialogueSystem.OnDialogueEnd += OnClick;
                 return -1;

@@ -102,13 +102,22 @@ public class TaskDisplayScript : MonoBehaviour
             strings[1].text = task.objectived;
             strings[0].color = task.dialogueColor;
 
-            if(task != mission.tasks[mission.tasks.Count - 1])
+            if(task != mission.tasks[mission.tasks.Count - 1] || mission.status == Mission.MissionStatus.Complete)
             {
                 strings[0].color /= 1.5F;
                 strings[1].color /= 1.5F;
                 obj.GetComponent<Image>().color /= 1.5F; 
             }
         }
+        
+        if(mission.status == Mission.MissionStatus.Complete)
+        {
+            var obj = Instantiate(instance.missionObjectivePrefab, instance.missionObjectivesContents, false);
+            var strings = obj.GetComponentsInChildren<Text>();
+            strings[0].text = "Congratulations, Mission Complete!";
+            strings[0].color = Color.green;
+        }
+
         Canvas.ForceUpdateCanvases();
     }
 

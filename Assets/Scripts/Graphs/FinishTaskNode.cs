@@ -103,17 +103,19 @@ namespace NodeEditorFramework.Standard
             TaskManager.speakerIDList.Add(rewardGiverID);
             if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
             {
-                TaskManager.interactionOverrides[rewardGiverID] = () => {
+                TaskManager.interactionOverrides[rewardGiverID].Push(() => {
                     OnDialogue();
-                    TaskManager.interactionOverrides.Remove(rewardGiverID);
-                };
+                    TaskManager.interactionOverrides[rewardGiverID].Pop();
+                });
             }
             else
             {
-                TaskManager.interactionOverrides.Add(rewardGiverID, () => {
-                    OnDialogue();
-                    TaskManager.interactionOverrides.Remove(rewardGiverID);
-                });
+                var stack = new Stack<UnityEngine.Events.UnityAction>();
+                stack.Push(() => {
+                        OnDialogue();
+                        TaskManager.interactionOverrides[rewardGiverID].Pop();
+                    });
+                TaskManager.interactionOverrides.Add(rewardGiverID, stack);
             }
             TryAddObjective();
 

@@ -10,7 +10,7 @@ using System;
 public class TaskManager : MonoBehaviour
 {
     public static TaskManager Instance = null;
-    public static Dictionary<string, UnityAction> interactionOverrides = new Dictionary<string, UnityAction>();
+    public static Dictionary<string, Stack<UnityAction>> interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
 
     public List<string> questCanvasPaths;
     public SaveHandler saveHandler;
