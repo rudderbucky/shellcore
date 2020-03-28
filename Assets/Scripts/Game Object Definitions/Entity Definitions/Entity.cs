@@ -70,17 +70,21 @@ public class Entity : MonoBehaviour, IDamageable {
     // boolean used to check if proximity and reticle interactions should trigger for this entity
     private bool interactible = false;
     
+    // prevents interaction while entities are in paths
+    public bool isPathing = false;
     public void UpdateInteractible()
     {
         interactible = GetDialogue() && (faction == 0); 
 
-        // These are implications, not a biconditional; interactibility is not necessarily false if there is no
-        // task override. Hence the if statements are needed here
+        // These are implications, not a biconditional; interactibility is not necessarily true/false if there are no
+        // task overrides or pathing set up. Hence the if statements are needed here
         if(ID != null && TaskManager.interactionOverrides.ContainsKey(ID) 
             && TaskManager.interactionOverrides[ID].Count > 0) interactible = true;
 
         if(ID != null && DialogueSystem.interactionOverrides.ContainsKey(ID) 
             && DialogueSystem.interactionOverrides[ID].Count > 0) interactible = true;
+
+        if(isPathing || DialogueSystem.isInCutscene) interactible = false;
     }
 
     public bool GetInteractible()
@@ -544,6 +548,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Request weapon global cooldown (used by weapon abilities)
     /// </summary>
     public bool RequestGCD() {
+        if(DialogueSystem.isInCutscene) return false; // Entities should be controlled entirely by the cutscene, i.e. no siccing!
         if(weaponGCDTimer >= weaponGCD) {
             weaponGCDTimer = 0;
             return true;

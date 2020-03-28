@@ -67,9 +67,14 @@ public class TargetingSystem {
 
     private List<Entity> secondaryTargets = new List<Entity>();
 
-    public void AddSecondaryTarget(Entity ent)
+    public bool AddSecondaryTarget(Entity ent)
     {
-        secondaryTargets.Add(ent);
+        if(!secondaryTargets.Contains(ent))
+        {
+            secondaryTargets.Add(ent);
+            return true;
+        }
+        return false;
     }
 
     public void RemoveSecondaryTarget(Entity ent)

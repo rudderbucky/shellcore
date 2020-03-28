@@ -132,8 +132,8 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.OnDialogueEnd -= OnClick;
             if (index != 0)
             {
-                TaskManager.interactionOverrides[StartDialogueNode.dialogueStartNode.EntityID].Pop();
-                StartDialogueNode.dialogueStartNode = null;
+                TaskManager.interactionOverrides[StartDialogueNode.missionCanvasNode.EntityID].Pop();
+                StartDialogueNode.missionCanvasNode = null;
                 StartTask();
                 TaskManager.Instance.setNode(outputAccept);
             }
@@ -142,7 +142,7 @@ namespace NodeEditorFramework.Standard
                 if (outputDecline.connected())
                     TaskManager.Instance.setNode(outputDecline);
                 else
-                    TaskManager.Instance.setNode(StartDialogueNode.dialogueStartNode);
+                    TaskManager.Instance.setNode(StartDialogueNode.missionCanvasNode);
             }
         }
 
@@ -160,7 +160,7 @@ namespace NodeEditorFramework.Standard
                         if(prereq == "None") continue;
                         if(PlayerCore.Instance.cursave.missions.Find((x) => x.name == prereq).status != Mission.MissionStatus.Complete)
                         {
-                            Dialogue dialogue = new Dialogue();
+                            Dialogue dialogue = ScriptableObject.CreateInstance<Dialogue>();
                             dialogue.nodes = new List<Dialogue.Node>();
                             var node = new Dialogue.Node();
                             node.ID = 0;
@@ -175,11 +175,11 @@ namespace NodeEditorFramework.Standard
                             dialogue.nodes.Add(node);
                             dialogue.nodes.Add(node1);
                             DialogueSystem.StartDialogue(dialogue, TaskManager.GetSpeaker());
-                            if(StartDialogueNode.dialogueStartNode.EntityID != null)
+                            if(StartDialogueNode.missionCanvasNode.EntityID != null)
                             {
-                                TaskManager.interactionOverrides[StartDialogueNode.dialogueStartNode.EntityID].Pop();
+                                TaskManager.interactionOverrides[StartDialogueNode.missionCanvasNode.EntityID].Pop();
                             }
-                            TaskManager.Instance.setNode(StartDialogueNode.dialogueStartNode);
+                            TaskManager.Instance.setNode(StartDialogueNode.missionCanvasNode);
                             return -1;
                         }
                     }
@@ -191,6 +191,12 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
+                if(StartDialogueNode.missionCanvasNode && StartDialogueNode.missionCanvasNode.EntityID != null
+                    && TaskManager.interactionOverrides.ContainsKey(StartDialogueNode.missionCanvasNode.EntityID))
+                {
+                    TaskManager.interactionOverrides[StartDialogueNode.missionCanvasNode.EntityID].Pop();
+                }
+                StartDialogueNode.missionCanvasNode = null;
                 StartTask();
                 return 0;
             }

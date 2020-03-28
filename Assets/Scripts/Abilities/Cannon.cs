@@ -14,8 +14,8 @@ public class Cannon : WeaponAbility {
         abilityName = "Cannon";
         description = "Instant attack that deals " + damage + " damage.";
         ID = 6;
-        damage = 100;
-        cooldownDuration = 1F;
+        damage = 200;
+        cooldownDuration = 2F;
         CDRemaining = cooldownDuration;
         range = 10;
         energyCost = 10;

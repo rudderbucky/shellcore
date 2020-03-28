@@ -57,4 +57,40 @@ public class MissionTraverser : Traverser
             }
         }
     }
+
+    public override void SetNode(Node node)
+    {
+        if(node is StartDialogueNode)
+        {
+            StartDialogueNode.missionCanvasNode = node as StartDialogueNode;
+        }
+        if(node is DialogueNode)
+            (node as DialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
+        if(node is EndDialogue)
+            (node as EndDialogue).state = NodeEditorGUI.NodeEditorState.Mission;
+        base.SetNode(node);
+    }
+
+    protected override void Traverse()
+    {
+        while (true)
+        {
+            if(currentNode is StartDialogueNode)
+            {
+                StartDialogueNode.missionCanvasNode = currentNode as StartDialogueNode;
+            }
+            if(currentNode is DialogueNode)
+                (currentNode as DialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
+            if(currentNode is EndDialogue)
+                (currentNode as EndDialogue).state = NodeEditorGUI.NodeEditorState.Mission;
+            if (currentNode == null)
+                return;
+            int outputIndex = currentNode.Traverse();
+            if (outputIndex == -1)
+                break;
+            if (!currentNode.outputKnobs[outputIndex].connected())
+                break;
+            currentNode = currentNode.outputKnobs[outputIndex].connections[0].body;
+        }
+    }
 }

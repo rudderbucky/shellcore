@@ -22,7 +22,7 @@ public class Traverser : NodeCanvasTraversal
         }
     }
 
-    void Traverse()
+    protected virtual void Traverse()
     {
         while (true)
         {

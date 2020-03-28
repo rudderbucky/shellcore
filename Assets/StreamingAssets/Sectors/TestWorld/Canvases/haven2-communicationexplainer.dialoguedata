@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="0,0" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-766980" type="StartDialogueNode" pos="-781.25,-50">
+			<Port ID="-767016" name="input" dynamic="False" />
+			<Port ID="-766984" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-607126561" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="canvasState">Dialogue</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-766990" type="DialogueNode" pos="-482.5,-53.375">
+			<Port ID="-766992" name="input" dynamic="False" />
+			<Port ID="-766994" name="cancel" dynamic="False" />
+			<Port ID="-766972" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">241</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-766974" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">296</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="539038956" />
+			<Variable name="answers" refID="-86342400" />
+		</Node>
+		<Node name="Dialogue" ID="-766996" type="DialogueNode" pos="-178.75,-57.125">
+			<Port ID="-766998" name="input" dynamic="False" />
+			<Port ID="-767000" name="cancel" dynamic="False" />
+			<Port ID="-766976" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">202</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="544087304" />
+			<Variable name="answers" refID="1157540736" />
+		</Node>
+		<Node name="End Dialogue" ID="-767002" type="EndDialogue" pos="116.25,115.375">
+			<Port ID="-767004" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+		</Node>
+		<Node name="End Dialogue" ID="-766986" type="EndDialogue" pos="-195,232.875">
+			<Port ID="-766988" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-766984" port2ID="-766992" />
+		<Connection port1ID="-766972" port2ID="-766998" />
+		<Connection port1ID="-766974" port2ID="-766988" />
+		<Connection port1ID="-766976" port2ID="-767004" />
+	</Connections>
+	<Objects>
+		<Object refID="-607126561" type="System.String">
+			<string>haven2-communicationexplainer</string>
+		</Object>
+		<Object refID="539038956" type="System.String">
+			<string>I haven't heard of anyone who has ever been able to communicate with the Infected. Their organization as a world-wide menace, however, betrays an ability to communicate. At least among themselves.</string>
+		</Object>
+		<Object refID="-86342400" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Why not?</string>
+				<string>Hm...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="544087304" type="System.String">
+			<string>No idea, nothing seems to be received on our end. I'm sure it's the same for them with us.</string>
+		</Object>
+		<Object refID="1157540736" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

@@ -11,11 +11,13 @@ public class ShipBuilderJSONButton : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData)
     {
-		if(!builder.editorMode) 
+		#if UNITY_EDITOR
+			Debug.Log(builder.GetCurrentJSON());
+		#endif
+		if(window)
 		{
 			window.ToggleActive();
 			field.text = builder.GetCurrentJSON();
 		}
-		else Debug.Log(builder.GetCurrentJSON());
     }
 }

@@ -129,6 +129,7 @@ namespace NodeEditorFramework.Standard
                     }
                     else
                     {
+                        AIData.entities[i].isPathing = false; // override any previous paths given to it immediately
                         if(!asynchronous) (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
                         else (AIData.entities[i] as AirCraft).GetAI().setPath(path);
                     }

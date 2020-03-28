@@ -119,6 +119,7 @@ public class AirCraftAI : MonoBehaviour
 
     public void setPath(NodeEditorFramework.Standard.PathData data, UnityAction OnPathEnd = null)
     {
+        craft.isPathing = true;
         Path path = ScriptableObject.CreateInstance<Path>();
         path.waypoints = new List<Path.Node>();
 
@@ -137,6 +138,15 @@ public class AirCraftAI : MonoBehaviour
 
         setMode(AIMode.Path);
         (module as PathAI).setPath(path);
+        if(OnPathEnd == null) OnPathEnd = new UnityAction(() => craft.isPathing = false);
+        else 
+        {
+            var OldOnPathEnd = OnPathEnd;
+            OnPathEnd = new UnityAction(() => {
+                OldOnPathEnd.Invoke();
+                craft.isPathing = false;
+            });
+        }
         (module as PathAI).OnPathEnd = OnPathEnd;
         if (module != null) module.Init();
     }
@@ -193,7 +203,9 @@ public class AirCraftAI : MonoBehaviour
                     a.Tick("");
                 }
             }
-            if (aggression != AIAggression.KeepMoving && aggroSearchTimer < Time.time)
+            
+            // shouldn't tick if dead or in cutscene, give control to the cutscene
+            if (aggression != AIAggression.KeepMoving && aggroSearchTimer < Time.time && !DialogueSystem.isInCutscene)
             {
                 // find target, stop or follow, give up if it's outside range
                 Entity target = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, craft.Terrain);
@@ -206,7 +218,7 @@ public class AirCraftAI : MonoBehaviour
                 aggroSearchTimer = Time.time + 1f;
             }
 
-            if (aggroTarget)
+            if (aggroTarget && !DialogueSystem.isInCutscene) // shouldn't tick if dead or in cutscene, give control to the cutscene
             {
                 if (aggroTarget.GetIsDead())
                 {

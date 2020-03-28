@@ -23,6 +23,7 @@ public class DevConsoleScript : MonoBehaviour
 
         stackTrace = stackTrace.Trim("\n".ToCharArray());
         if(textBox) textBox.text += "\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>";
+        // Application.logMessageReceived -= HandleLog;
     }
 
     void Update()

@@ -32,7 +32,7 @@ public class SectorManager : MonoBehaviour
     private bool sectorLoaded = false;
     public Vector2 spawnPoint;
     public WorldData.CharacterData[] characters; // Unity initializes public arrays, remember!
-
+    public DialogueSystem dialogueSystem;
     public static Sector GetSectorByName(string sectorName) 
     {
         foreach(var sector in instance.sectors)
@@ -170,7 +170,7 @@ public class SectorManager : MonoBehaviour
 
                     if(canvas.Contains(".dialoguedata"))
                     {
-                        DialogueSystem.Instance.SetCanvasPath(canvas);
+                        dialogueSystem.SetCanvasPath(canvas);
                         continue;
                     }
                 }

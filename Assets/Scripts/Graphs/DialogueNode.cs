@@ -27,6 +27,7 @@ namespace NodeEditorFramework.Standard
         public string text;
         public List<string> answers = new List<string>();
 
+        public NodeEditorGUI.NodeEditorState state;
         public override void NodeGUI()
         {
             GUILayout.Label("Text:");
@@ -75,14 +76,15 @@ namespace NodeEditorFramework.Standard
                 TaskManager.Instance.setNode(outputPorts[index]);
             else
             {
-                TaskManager.Instance.setNode(StartDialogueNode.dialogueStartNode);
+                TaskManager.Instance.setNode(state == NodeEditorGUI.NodeEditorState.Mission 
+                    ? StartDialogueNode.missionCanvasNode : StartDialogueNode.dialogueCanvasNode);
             }
 
         }
 
         public override int Traverse()
         {
-            if(StartDialogueNode.dialogueStartNode.canvasState == NodeEditorGUI.NodeEditorState.Mission)
+            if(state == NodeEditorGUI.NodeEditorState.Mission)
                 DialogueSystem.ShowDialogueNode(this, TaskManager.GetSpeaker());
             else DialogueSystem.ShowDialogueNode(this, DialogueSystem.GetSpeaker());
             DialogueSystem.OnDialogueEnd += OnClick;

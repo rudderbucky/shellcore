@@ -18,7 +18,6 @@ public class PlayerSave {
     public string[] checkpointNames;
     public string[] taskVariableNames;
     public int[] taskVariableValues;
-    public string[] activeTaskIDs;
 	public int[] abilityCaps;
 	public int shards;
 	public WorldData.CharacterData[] characters;

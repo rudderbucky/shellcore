@@ -56,7 +56,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public static List<string> dialogueCanvasPaths = new List<string>();
     public static List<string> speakerIDList = new List<string>();
-    public static Dictionary<string, Stack<UnityAction>> interactionOverrides;
+    public static Dictionary<string, Stack<UnityAction>> interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
     private static List<DialogueTraverser> traversers;
     public static string speakerID;
     private static bool initialized = false;
@@ -73,7 +73,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         for (int i = 0; i < dialogueCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, dialogueCanvasPaths[i]);
-            Debug.Log("Dialogue Canvas path [" + i + "] = " + finalPath);
+            Debug.LogWarning("Dialogue Canvas path [" + i + "] = " + finalPath);
             var canvas = XMLImport.Import(finalPath) as DialogueCanvas;
             Debug.Log(canvas);
             if (canvas != null)
@@ -83,6 +83,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         initialized = true;
+    }
+
+    public static bool GetInitialized()
+    {
+        return initialized;
     }
 
     public static void StartQuests() {

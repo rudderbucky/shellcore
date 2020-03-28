@@ -73,6 +73,19 @@ public class WCCharacterHandler : MonoBehaviour
         UpdateCharPartyMember();
     }
 
+    public static void ReflectButtonData()
+    {
+        for(int i = 0; i < instance.content.childCount; i++)
+        {
+            Destroy(instance.content.GetChild(i).gameObject);
+        }
+        
+        foreach(var ch in instance.cursor.characters)
+        {
+            instance.AddCharacter(ch);
+        }
+    }
+
     public static void ReflectData()
     {
         instance.reflectData();

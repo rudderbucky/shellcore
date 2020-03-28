@@ -95,11 +95,12 @@ public class ReticleScript : MonoBehaviour {
             ITargetable curTarg = hits[0].transform.gameObject.GetComponent<ITargetable>();
             // grab the first one's craft component, others don't matter
             if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft) 
-                // if it is not null, dead or the player itself
+                // if it is not null, dead or the player itself and is interactible
             {
                 // TODO: synchronize this with the proximity script
                 if (!craft.GetIsInteracting() && targSys.GetTarget() == curTarg.GetTransform()
-                    && (curTarg.GetTransform().position - craft.transform.position).sqrMagnitude < 100) //Interact with entity
+                    && (curTarg.GetTransform().position - craft.transform.position).sqrMagnitude < 100 
+                        && (curTarg as Entity).GetInteractible()) //Interact with entity
                 {
                     //If there's a task overriding the default dialogue, use that
                     if(TaskManager.interactionOverrides.ContainsKey(curTarg.GetID()) 
@@ -279,11 +280,14 @@ public class ReticleScript : MonoBehaviour {
 
     public void AddSecondaryTarget(Entity ent)
     {
-        var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
-        AdjustReticleBounds(reticle.GetComponent<SpriteRenderer>(), ent.transform);
-        secondariesByObject.Add((ent, reticle.transform));
-        quantityDisplay.AddEntityInfo(ent);
-        targSys.AddSecondaryTarget(ent);
+        var success = targSys.AddSecondaryTarget(ent);
+        if(success)
+        {
+            var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
+            AdjustReticleBounds(reticle.GetComponent<SpriteRenderer>(), ent.transform);
+            secondariesByObject.Add((ent, reticle.transform));
+            quantityDisplay.AddEntityInfo(ent);
+        }
     }
 
     public int GetTargetIndex(Entity target)

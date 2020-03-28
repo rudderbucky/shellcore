@@ -1,40 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="172.5,-16" zoom="1" />
+		<EditorState selected="" pan="-58.75,7.75" zoom="1" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Start Dialogue" ID="-425884" type="StartDialogueNode" pos="-798.75,-178.75">
-			<Port ID="-441348" name="input" dynamic="False" />
-			<Port ID="-425888" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="-691946" type="StartDialogueNode" pos="-798.75,-178.75">
+			<Port ID="-692018" name="input" dynamic="False" />
+			<Port ID="-691950" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="-1121577521" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
 			<NodeEditorState name="canvasState">Dialogue</NodeEditorState>
 		</Node>
-		<Node name="End Dialogue" ID="-425896" type="EndDialogue" pos="-236.25,9.125">
-			<Port ID="-425898" name="input" dynamic="False" />
-			<Port ID="-441346" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">TaskFlow</string>
-				<Direction name="direction">Out</Direction>
-				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
-				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">0</float>
-				<float name="sideOffset">0</float>
-			</Port>
+		<Node name="End Dialogue" ID="-691952" type="EndDialogue" pos="-198.75,90.375">
+			<Port ID="-691954" name="input" dynamic="False" />
 			<boolean name="jumpToStart">false</boolean>
 		</Node>
-		<Node name="Dialogue" ID="-425890" type="DialogueNode" pos="-602.5,-175.875">
-			<Port ID="-425892" name="input" dynamic="False" />
-			<Port ID="-425894" name="cancel" dynamic="False" />
-			<Port ID="-425878" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="-691956" type="DialogueNode" pos="-602.5,-175.875">
+			<Port ID="-691958" name="input" dynamic="False" />
+			<Port ID="-691960" name="cancel" dynamic="False" />
+			<Port ID="-691942" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
 				<NodeSide name="side">Right</NodeSide>
 				<float name="sidePosition">241</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-691970" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">296</float>
 				<float name="sideOffset">0</float>
 			</Port>
 			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
@@ -44,12 +44,38 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="-801607440" />
-			<Variable name="answers" refID="-1052239872" />
+			<Variable name="answers" refID="-1955108736" />
+		</Node>
+		<Node name="Dialogue" ID="-691980" type="DialogueNode" pos="-198.75,-243.625">
+			<Port ID="-691982" name="input" dynamic="False" />
+			<Port ID="-691984" name="cancel" dynamic="False" />
+			<Port ID="-691992" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">228</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1736522723" />
+			<Variable name="answers" refID="-1546494080" />
+		</Node>
+		<Node name="End Dialogue" ID="-692000" type="EndDialogue" pos="87.5,-44.875">
+			<Port ID="-692002" name="input" dynamic="False" />
+			<boolean name="jumpToStart">false</boolean>
 		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="-425888" port2ID="-425892" />
-		<Connection port1ID="-425898" port2ID="-425878" />
+		<Connection port1ID="-691950" port2ID="-691958" />
+		<Connection port1ID="-691954" port2ID="-691970" />
+		<Connection port1ID="-691942" port2ID="-691982" />
+		<Connection port1ID="-691992" port2ID="-692002" />
 	</Connections>
 	<Objects>
 		<Object refID="-1121577521" type="System.String">
@@ -58,9 +84,18 @@
 		<Object refID="-801607440" type="System.String">
 			<string>We still don't know what caused the 'Infection'. All we know is that it started after some of us entered the Core Sectors of this world. Ever since, we've been under attack and their numbers just keep rising and rising.</string>
 		</Object>
-		<Object refID="-1052239872" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="-1955108736" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Core Sectors?</string>
 				<string>...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1736522723" type="System.String">
+			<string>Apparently, at the very origin of our existence. I've heard rumors of other realms of sectors as well - what I do know is that this realm is known as the Standard Sectors.</string>
+		</Object>
+		<Object refID="-1546494080" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Huh.</string>
 			</ArrayOfString>
 		</Object>
 	</Objects>

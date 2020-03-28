@@ -79,6 +79,15 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
+    public static bool TraversersContainCheckpoint(string checkpointName)
+    {
+        foreach(var traverser in Instance.traversers)
+        {
+            if(traverser.lastCheckpointName == checkpointName) return true;
+        }
+        return false;
+    }
+
     // TODO: add ability to set multiple paths
     public void SetCanvasPath(string path)
     {
@@ -179,6 +188,13 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     // Traverse quest graph
     public void startQuests()
     {
+        // tasks
+        for (int i = 0; i < PlayerCore.Instance.cursave.checkpointNames.Length; i++)
+        {
+            if(i < traversers.Count && i < PlayerCore.Instance.cursave.checkpointNames.Length)
+                traversers[i].activateCheckpoint(PlayerCore.Instance.cursave.checkpointNames[i]);
+        }
+
         for (int i = 0; i < traversers.Count; i++)
         {
             traversers[i].StartQuest();
@@ -210,7 +226,10 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     {
         NodeCanvas canvas = node.Canvas;
         Debug.Log("Node: " + node.name + " Canvas: " + node.Canvas);
-        canvas.Traversal.SetNode(node);
+        if(node.Canvas is QuestCanvas)
+            (canvas.Traversal as MissionTraverser).SetNode(node);
+        else
+            (canvas.Traversal as DialogueTraverser).SetNode(node);
     }
 
     public static void DrawObjectiveLocations()

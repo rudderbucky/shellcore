@@ -12,6 +12,14 @@ public class PlayerViewScript : MonoBehaviour {
 
 	public static bool hidingHUD;
 
+	public static bool GetIsWindowActive()
+	{
+		foreach(var window in instance.currentWindow)
+		{
+			if(window != null && !window.Equals(null) && window.GetActive()) return true;
+		}
+		return false;
+	}
 	public static void SetCurrentWindow(IWindow window) {
 		instance.currentWindow.Push(window);
 	}

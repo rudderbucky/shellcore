@@ -8,7 +8,8 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Dialogue/Start Dialogue")]
     public class StartDialogueNode : Node
     {
-        public static StartDialogueNode dialogueStartNode;
+        public static StartDialogueNode missionCanvasNode;
+        public static StartDialogueNode dialogueCanvasNode;
 
         public override string GetName { get { return "StartDialogueNode"; } }
         public override string Title { get { return "Start Dialogue"; } }
@@ -30,7 +31,6 @@ namespace NodeEditorFramework.Standard
         ConnectionKnobAttribute inputInStyle = new ConnectionKnobAttribute("Input Left", Direction.In, "TaskFlow", NodeSide.Left);
         ConnectionKnobAttribute flowInStyle = new ConnectionKnobAttribute("ContinueAsync", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
         public bool allowAfterSpeaking;
-        public NodeEditorGUI.NodeEditorState canvasState;
 
         public override void NodeGUI()
         {
@@ -68,25 +68,26 @@ namespace NodeEditorFramework.Standard
                     DeleteConnectionPort(flowOutput);
                 }
             }
-            canvasState = NodeEditorGUI.state;
         }
 
         public override int Traverse()
         {
-            dialogueStartNode = this;
             IDialogueOverrideHandler handler = null;
-            if(canvasState == NodeEditorGUI.NodeEditorState.Mission)
+            var missionNode = this == missionCanvasNode;
+            if(missionNode)
                 handler = TaskManager.Instance;
             else handler = DialogueSystem.Instance;
 
             if (SpeakToEntity)
             {
+                Debug.Log(EntityID);
                 handler.GetSpeakerIDList().Add(EntityID);
                 TryAddObjective();
                 if (handler.GetInteractionOverrides().ContainsKey(EntityID))
                 {
                     handler.GetInteractionOverrides()[EntityID].Push(() => {
-                        dialogueStartNode = this;
+                        if(missionNode) missionCanvasNode = this;
+                        else dialogueCanvasNode = this;
                         handler.SetSpeakerID(EntityID);
                         handler.SetNode(output);
                     });
@@ -96,7 +97,8 @@ namespace NodeEditorFramework.Standard
                 {
                     var stack = new Stack<UnityEngine.Events.UnityAction>();
                     stack.Push(() => {
-                            dialogueStartNode = this;
+                            if(missionNode) missionCanvasNode = this;
+                            else dialogueCanvasNode = this;
                             handler.SetSpeakerID(EntityID);
                             handler.SetNode(output);
                         });

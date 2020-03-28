@@ -13,4 +13,40 @@ public class DialogueTraverser : Traverser
         nodeCanvas = canvas;
         startNodeName = "StartDialogueNode";
     }
+
+    public override void SetNode(Node node)
+    {
+        if(node is StartDialogueNode)
+        {
+            StartDialogueNode.dialogueCanvasNode = node as StartDialogueNode;
+        }
+        if(node as DialogueNode)
+            (node as DialogueNode).state = NodeEditorGUI.NodeEditorState.Dialogue;
+        if(node as EndDialogue)
+            (node as EndDialogue).state = NodeEditorGUI.NodeEditorState.Dialogue;
+        base.SetNode(node);
+    }
+
+    protected override void Traverse()
+    {
+        while (true)
+        {
+            if(currentNode is StartDialogueNode)
+            {
+                StartDialogueNode.dialogueCanvasNode = currentNode as StartDialogueNode;
+            }
+            if(currentNode as DialogueNode)
+                (currentNode as DialogueNode).state = NodeEditorGUI.NodeEditorState.Dialogue;
+            if(currentNode as EndDialogue)
+                (currentNode as EndDialogue).state = NodeEditorGUI.NodeEditorState.Dialogue;
+            if (currentNode == null)
+                return;
+            int outputIndex = currentNode.Traverse();
+            if (outputIndex == -1)
+                break;
+            if (!currentNode.outputKnobs[outputIndex].connected())
+                break;
+            currentNode = currentNode.outputKnobs[outputIndex].connections[0].body;
+        }
+    }
 }

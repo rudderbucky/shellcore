@@ -170,7 +170,12 @@ public class ShellPart : MonoBehaviour {
 	void Update () {
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)
         {
-            Blink(); // blink
+            if(name != "Shell Sprite" && spriteRenderer.sprite) Blink(); // blink
+            else
+            {
+                spriteRenderer.enabled = false; // disable sprite renderer
+                if(shooter) shooter.SetActive(false);                
+            }
             //rigid.rotation = rigid.rotation + (rotationDirection ? 1f : -1.0f) * 360f * Time.deltaTime;
             transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
         }

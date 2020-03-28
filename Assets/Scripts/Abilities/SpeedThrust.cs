@@ -16,9 +16,9 @@ public class SpeedThrust : ActiveAbility
         abilityName = "Speed Thrust";
         description = "Temporarily increases speed.";
         ID = 1;
-        cooldownDuration = 5;
+        cooldownDuration = 10;
         CDRemaining = cooldownDuration;
-        activeDuration = 3;
+        activeDuration = 5;
         activeTimeRemaining = activeDuration;
         energyCost = 50;
     }

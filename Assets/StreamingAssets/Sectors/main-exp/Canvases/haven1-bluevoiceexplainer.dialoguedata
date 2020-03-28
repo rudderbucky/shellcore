@@ -1,28 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="37.25,-23" zoom="0.8" />
+		<EditorState selected="" pan="-184,-95.5" zoom="1" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Start Dialogue" ID="-514914" type="StartDialogueNode" pos="-640,-70">
-			<Port ID="-547554" name="input" dynamic="False" />
-			<Port ID="-514918" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="-691820" type="StartDialogueNode" pos="-640,-70">
+			<Port ID="-691926" name="input" dynamic="False" />
+			<Port ID="-691824" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="886191054" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
 			<NodeEditorState name="canvasState">Dialogue</NodeEditorState>
 		</Node>
-		<Node name="Dialogue" ID="-514924" type="DialogueNode" pos="-402.5,-79.625">
-			<Port ID="-514926" name="input" dynamic="False" />
-			<Port ID="-514928" name="cancel" dynamic="False" />
-			<Port ID="-514910" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="End Dialogue" ID="-691832" type="EndDialogue" pos="-10.75,189.125">
+			<Port ID="-691834" name="input" dynamic="False" />
+			<boolean name="jumpToStart">false</boolean>
+		</Node>
+		<Node name="Dialogue" ID="-691826" type="DialogueNode" pos="-402.5,-79.625">
+			<Port ID="-691828" name="input" dynamic="False" />
+			<Port ID="-691830" name="cancel" dynamic="False" />
+			<Port ID="-691814" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
 				<NodeSide name="side">Right</NodeSide>
 				<float name="sidePosition">241</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-691840" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">296</float>
 				<float name="sideOffset">0</float>
 			</Port>
 			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
@@ -32,24 +44,38 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="1831204130" />
-			<Variable name="answers" refID="1357932928" />
+			<Variable name="answers" refID="1642811904" />
 		</Node>
-		<Node name="End Dialogue" ID="-514920" type="EndDialogue" pos="-62,14.125">
-			<Port ID="-514922" name="input" dynamic="False" />
-			<Port ID="-547552" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">TaskFlow</string>
+		<Node name="End Dialogue" ID="-691888" type="EndDialogue" pos="272.75,103.375">
+			<Port ID="-691890" name="input" dynamic="False" />
+			<boolean name="jumpToStart">false</boolean>
+		</Node>
+		<Node name="Dialogue" ID="-691856" type="DialogueNode" pos="-11,-80.375">
+			<Port ID="-691858" name="input" dynamic="False" />
+			<Port ID="-691860" name="cancel" dynamic="False" />
+			<Port ID="-691880" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
 				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">0</float>
+				<float name="sidePosition">189</float>
 				<float name="sideOffset">0</float>
 			</Port>
-			<boolean name="jumpToStart">false</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1264498935" />
+			<Variable name="answers" refID="64698624" />
 		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="-514918" port2ID="-514926" />
-		<Connection port1ID="-514910" port2ID="-514922" />
+		<Connection port1ID="-691824" port2ID="-691828" />
+		<Connection port1ID="-691834" port2ID="-691840" />
+		<Connection port1ID="-691814" port2ID="-691858" />
+		<Connection port1ID="-691890" port2ID="-691880" />
 	</Connections>
 	<Objects>
 		<Object refID="886191054" type="System.String">
@@ -58,9 +84,18 @@
 		<Object refID="1831204130" type="System.String">
 			<string>You heard a voice at the Spawning Grounds? I do not know of anyone else who has noticed anything like that. However, I have heard that sometimes, newborns imagine things when they awake.</string>
 		</Object>
-		<Object refID="1357932928" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="1642811904" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Heard from where?</string>
 				<string>...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1264498935" type="System.String">
+			<string>Uhm... You wouldn't know them, they're stationed in another Haven.</string>
+		</Object>
+		<Object refID="64698624" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Okay...</string>
 			</ArrayOfString>
 		</Object>
 	</Objects>

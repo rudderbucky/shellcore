@@ -22,6 +22,7 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob output;
 
         public bool jumpToStart = false; // This is now necessary :)
+        public NodeEditorGUI.NodeEditorState state;
 
         public override void NodeGUI()
         {
@@ -59,34 +60,43 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             IDialogueOverrideHandler handler = null;
-            if(StartDialogueNode.dialogueStartNode.canvasState == NodeEditorGUI.NodeEditorState.Mission)
+            if(state == NodeEditorGUI.NodeEditorState.Mission)
                 handler = TaskManager.Instance;
             else handler = DialogueSystem.Instance;
             
+            // Debug.Log(handler as DialogueSystem + "sdjhgndfgikuhtdukhntdouhntdh " + StartDialogueNode.dialogueStartNode.EntityID);
+
             if(handler as TaskManager)
                 foreach(var objectiveLocation in TaskManager.objectiveLocations)
                 {
-                    if(StartDialogueNode.dialogueStartNode && objectiveLocation.followEntity &&
-                        objectiveLocation.followEntity.ID == StartDialogueNode.dialogueStartNode.EntityID)
+                    if(objectiveLocation.followEntity &&
+                        objectiveLocation.followEntity.ID == StartDialogueNode.missionCanvasNode?.EntityID)
                     {
                         TaskManager.objectiveLocations.Remove(objectiveLocation);
                         TaskManager.DrawObjectiveLocations();
                         break;
                     }
                 }
+            
+            var node = state == NodeEditorGUI.NodeEditorState.Mission 
+                ? StartDialogueNode.missionCanvasNode : StartDialogueNode.dialogueCanvasNode;
 
             if(jumpToStart)
             {
-                handler.SetNode(StartDialogueNode.dialogueStartNode);
+                handler.SetNode(node);
+                handler.GetInteractionOverrides()[node.EntityID].Pop();
+                if(handler is DialogueSystem) DialogueSystem.Instance.DialogueViewTransitionOut();
                 return -1;
             }
             else
             {
-                if(StartDialogueNode.dialogueStartNode.EntityID != null)
+                Debug.Log(state);
+                if(node.EntityID != null)
                 {
-                    handler.GetInteractionOverrides()[StartDialogueNode.dialogueStartNode.EntityID].Pop();
+                    handler.GetInteractionOverrides()[node.EntityID].Pop();
                     DialogueSystem.Instance.DialogueViewTransitionOut();
-                    StartDialogueNode.dialogueStartNode = null;
+                    if(node == StartDialogueNode.missionCanvasNode) StartDialogueNode.missionCanvasNode = null;
+                    else StartDialogueNode.dialogueCanvasNode = null;
                 }
                 return outputKnobs.Count > 0 ? 0 : -1;
             }

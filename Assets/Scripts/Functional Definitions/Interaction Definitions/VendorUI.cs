@@ -33,7 +33,14 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 	}
     public void openUI()
     {
-        if(opened) CloseUI();
+        if(opened) 
+        {
+            var vendor = this.vendor;
+            var player = this.player;
+            CloseUI();
+            SetVendor(vendor, player);
+        }
+        
         if (!blueprint)
         {
             Debug.Log("No blueprint!");

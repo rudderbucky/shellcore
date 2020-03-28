@@ -45,13 +45,6 @@ public class SaveHandler : MonoBehaviour {
 
             //SectorManager.instance.LoadSectorFile(save.resourcePath);
 
-            // tasks
-            for (int i = 0; i < save.checkpointNames.Length; i++)
-            {
-				if(i < taskManager.traversers.Count && i < save.checkpointNames.Length)
-                	taskManager.traversers[i].activateCheckpoint(save.checkpointNames[i]);
-            }
-
             for (int i = 0; i < save.taskVariableNames.Length; i++)
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
@@ -108,14 +101,6 @@ public class SaveHandler : MonoBehaviour {
         }
         save.taskVariableNames = keys;
         save.taskVariableValues = values;
-
-        var tasks = taskManager.getTasks();
-        string[] taskIDs = new string[tasks.Length];
-        for (int i = 0; i < tasks.Length; i++)
-        {
-            taskIDs[i] = tasks[i].taskID;
-        }
-        save.activeTaskIDs = taskIDs;
 
 		string saveJson = JsonUtility.ToJson(save);
 		File.WriteAllText(currentPath, saveJson);

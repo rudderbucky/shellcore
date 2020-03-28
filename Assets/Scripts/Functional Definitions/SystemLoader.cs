@@ -10,7 +10,8 @@ public class SystemLoader : MonoBehaviour
     public TaskManager taskManager;
     public SectorManager sectorManager;
     public BackgroundScript backgroundScript;
-    
+    public DialogueSystem dialogueSystem;
+
     public static bool AllLoaded;
 
     private void Awake()
@@ -23,7 +24,7 @@ public class SystemLoader : MonoBehaviour
             sectorManager.Initialize();
         if (taskManager)
             taskManager.Initialize();
-        if (DialogueSystem.Instance)
+        if (dialogueSystem)
             DialogueSystem.InitCanvases();
         if (saveHandler)
             saveHandler.Initialize();
@@ -41,7 +42,7 @@ public class SystemLoader : MonoBehaviour
         yield return null;
         if (TaskManager.Instance)
             TaskManager.StartQuests();
-        if (DialogueSystem.Instance)
+        if (DialogueSystem.Instance && DialogueSystem.GetInitialized())
             DialogueSystem.StartQuests();
     }
 }
