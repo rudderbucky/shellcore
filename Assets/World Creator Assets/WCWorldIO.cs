@@ -4,11 +4,13 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class WCWorldIO : MonoBehaviour
 {
 
     public WCGeneratorHandler generatorHandler;
+    public ShipBuilder builder;
     public GameObject buttonPrefab;
     public Transform content;
     public InputField blueprintField;
@@ -18,7 +20,9 @@ public class WCWorldIO : MonoBehaviour
     enum IOMode
     {
         Read,
-        Write
+        Write,
+        ReadShipJSON,
+        WriteShipJSON
     }
 
     IOMode mode = IOMode.Read;
@@ -28,6 +32,16 @@ public class WCWorldIO : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
+    public void ShowShipReadMode()
+    {
+        Show(IOMode.ReadShipJSON);
+    }
+
+    public void ShowShipWriteMode()
+    {
+        Show(IOMode.WriteShipJSON);
+    }
+
     public void ShowReadMode()
     {
         Show(IOMode.Read);
@@ -35,11 +49,14 @@ public class WCWorldIO : MonoBehaviour
 
     void Start()
     {
-        blueprintField.text = PlayerPrefs.GetString("WorldCreator_playerBlueprintField", "");
-        checkpointField.text = PlayerPrefs.GetString("WorldCreator_playerCheckpointField", "");
-        var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
-        if(Directory.Exists(path)) 
-            generatorHandler.ReadWorld(path);
+        if(SceneManager.GetActiveScene().name == "WorldCreator")
+        {
+            blueprintField.text = PlayerPrefs.GetString("WorldCreator_playerBlueprintField", "");
+            checkpointField.text = PlayerPrefs.GetString("WorldCreator_playerCheckpointField", "");
+            var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+            if(Directory.Exists(path)) 
+                generatorHandler.ReadWorld(path);
+        }
     }
 
     public void TestWorld()
@@ -70,36 +87,67 @@ public class WCWorldIO : MonoBehaviour
     {
         gameObject.SetActive(true);
         window.SetActive(true);
-        newWorldStack.SetActive(mode == IOMode.Write); 
+        newWorldStack.SetActive(mode == IOMode.Write || mode == IOMode.WriteShipJSON); 
         DestroyAllButtons();
         this.mode = mode;
-        foreach(var dir in Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors"))
+        var directories = mode == IOMode.Read || mode == IOMode.Write ? Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors")
+            : Directory.GetFiles(Application.streamingAssetsPath + "\\Entities");
+        foreach(var dir in directories)
         {
-            if(!dir.Contains("TestWorld"))
-                AddButton(dir);
+            if(!dir.Contains("TestWorld") && !dir.Contains("meta"))
+                AddButton(dir, new UnityEngine.Events.UnityAction(() => {
+                    switch(mode)
+                    {
+                        case IOMode.Read:
+                            generatorHandler.ReadWorld(dir);
+                            break;
+                        case IOMode.Write:
+                            generatorHandler.WriteWorld(dir);
+                            break;
+                        case IOMode.ReadShipJSON:
+                            builder.LoadBlueprint(System.IO.File.ReadAllText(dir));
+                            break;
+                        case IOMode.WriteShipJSON:
+                            ShipBuilder.SaveBlueprint(null, dir, builder.GetCurrentJSON());
+                            break;
+                    }
+                    Hide();
+                }));
         }
 
     }
 
-    void AddButton(string name)
+    void AddButton(string name, UnityAction action)
     {
         var button = Instantiate(buttonPrefab, content).GetComponent<Button>();
-        button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
-            if(mode == IOMode.Write)
-                generatorHandler.WriteWorld(name);
-            else generatorHandler.ReadWorld(name);
-            Hide();
-        }));
-        var extraLength = (Application.streamingAssetsPath + "\\Sectors\\").Length;
-        button.GetComponentInChildren<Text>().text = name.Substring(extraLength);
+        button.onClick.AddListener(action);
+        button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name);
     }
     
     public void AddButtonFromField()
     {
-        var path = Application.streamingAssetsPath + "\\Sectors\\" + field.text;
-        if(!Directory.Exists(path)) Directory.CreateDirectory(path);
-        AddButton(path);
-    }
+        var path = mode == IOMode.Read || mode == IOMode.Write ? Application.streamingAssetsPath + "\\Sectors\\" + field.text
+            : Application.streamingAssetsPath + "\\Entities\\" + field.text;
+        if(!Directory.Exists(path) && (mode == IOMode.Read || mode == IOMode.Write)) Directory.CreateDirectory(path);
+        AddButton(path, new UnityEngine.Events.UnityAction(() => {
+            switch(mode)
+            {
+                case IOMode.Read:
+                    generatorHandler.ReadWorld(path);
+                    break;
+                case IOMode.Write:
+                    generatorHandler.WriteWorld(path);
+                    break;
+                case IOMode.ReadShipJSON:
+                    builder.LoadBlueprint(System.IO.File.ReadAllText(path));
+                    break;
+                case IOMode.WriteShipJSON:
+                    ShipBuilder.SaveBlueprint(null, path, builder.GetCurrentJSON());
+                    break;
+            }
+            Hide();
+        }));
+}
 
     void DestroyAllButtons()
     {

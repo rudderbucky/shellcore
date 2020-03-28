@@ -225,7 +225,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     public void setNode(Node node)
     {
         NodeCanvas canvas = node.Canvas;
-        Debug.Log("Node: " + node.name + " Canvas: " + node.Canvas);
+        // Debug.Log("Node: " + node.name + " Canvas: " + node.Canvas);
         if(node.Canvas is QuestCanvas)
             (canvas.Traversal as MissionTraverser).SetNode(node);
         else

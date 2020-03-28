@@ -109,7 +109,7 @@ public class SectorManager : MonoBehaviour
         // deadzone damage
         if(current && current.type == Sector.SectorType.DangerZone)
         {
-            if(dangerZoneTimer >= 5)
+            if(dangerZoneTimer >= 5 && !player.GetIsDead())
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
@@ -716,7 +716,7 @@ public class SectorManager : MonoBehaviour
 
     public Entity GetEntity(string ID)
     {
-        Debug.Log("Getting entity with ID: '" + ID + "'");
+        // Debug.Log("Getting entity with ID: '" + ID + "'");
         foreach(var pair in objects) {
             if(pair.Value == null)
             {

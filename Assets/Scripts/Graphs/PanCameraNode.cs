@@ -73,7 +73,7 @@ namespace NodeEditorFramework.Standard
             if(endPanning)
             {
                 CameraScript.panning = false;
-                CameraScript.instance.Focus();
+                CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
                 return 0;
             }
             else

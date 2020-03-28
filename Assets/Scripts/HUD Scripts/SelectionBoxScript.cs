@@ -45,6 +45,9 @@ public class SelectionBoxScript : MonoBehaviour
 
         if(!PlayerViewScript.GetIsWindowActive())
         {
+            if(!Input.GetMouseButton(0))
+                image.enabled = false;
+                
             if(Input.GetMouseButtonDown(1))
             {
                 if(PlayerCore.Instance.GetTargetingSystem().GetSecondaryTargets().Count > 0)

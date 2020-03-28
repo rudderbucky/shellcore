@@ -11,7 +11,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
     
     // change this ID to override sector music
-    public static string musicOverrideID;
+    public static string musicOverrideID = null;
     void Start() 
     {
         instance = this;

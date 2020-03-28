@@ -74,20 +74,24 @@ public class Traverser : NodeCanvasTraversal
         return null;
     }
 
-    public virtual void activateCheckpoint(string CPName)
+    public virtual bool activateCheckpoint(string CPName)
     {
+        if(CPName == null || CPName == "") return false;
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
             var node = nodeCanvas.nodes[i];
             if (node is CheckpointNode && (node as CheckpointNode).checkpointName == CPName)
             {
-                SetNode(node);
+                currentNode = node;
+                return true;
             }
         }
+        return false;
     }
 
     public override void SetNode(Node node)
     {
+        // Debug.Log(currentNode + " Setting Node");
         currentNode = node;
         if (SystemLoader.AllLoaded)
             Traverse();

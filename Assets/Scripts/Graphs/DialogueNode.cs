@@ -71,6 +71,7 @@ namespace NodeEditorFramework.Standard
 
         public void OnClick(int index)
         {
+            DialogueSystem.OnDialogueCancel -= OnCancel;
             DialogueSystem.OnDialogueEnd -= OnClick;
             if(outputPorts[index].connected())
                 TaskManager.Instance.setNode(outputPorts[index]);
@@ -82,12 +83,40 @@ namespace NodeEditorFramework.Standard
 
         }
 
+        public void OnCancel()
+        {
+            DialogueSystem.OnDialogueCancel -= OnCancel;
+            DialogueSystem.OnDialogueEnd -= OnClick;
+            if(cancel.connected())
+            {
+                IDialogueOverrideHandler handler = null;
+                if(state == NodeEditorGUI.NodeEditorState.Mission)
+                    handler = TaskManager.Instance;
+                else handler = DialogueSystem.Instance;
+
+                var node = state == NodeEditorGUI.NodeEditorState.Mission 
+                    ? StartDialogueNode.missionCanvasNode : StartDialogueNode.dialogueCanvasNode;
+                Debug.Log(node?.EntityID + " " + StartDialogueNode.missionCanvasNode?.EntityID);
+                if(node && node.EntityID != null && node.EntityID != "")
+                {
+                    handler.GetInteractionOverrides()[node.EntityID].Pop();
+                    // DialogueSystem.Instance.DialogueViewTransitionOut();
+                    if(node == StartDialogueNode.missionCanvasNode) StartDialogueNode.missionCanvasNode = null;
+                    else StartDialogueNode.dialogueCanvasNode = null;
+                }
+
+                TaskManager.Instance.setNode(cancel.connection(0));
+            }
+                
+        }
+
         public override int Traverse()
         {
             if(state == NodeEditorGUI.NodeEditorState.Mission)
                 DialogueSystem.ShowDialogueNode(this, TaskManager.GetSpeaker());
             else DialogueSystem.ShowDialogueNode(this, DialogueSystem.GetSpeaker());
             DialogueSystem.OnDialogueEnd += OnClick;
+            DialogueSystem.OnDialogueCancel += OnCancel;
             return -1;
         }
     }

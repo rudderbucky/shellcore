@@ -165,6 +165,6 @@ public class PlayerCore : ShellCore {
     public override void Warp(Vector3 point)
     {
         base.Warp(point);
-        CameraScript.instance.Focus();
+        CameraScript.instance.Focus(transform.position);
     }
 }

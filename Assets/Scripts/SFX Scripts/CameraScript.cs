@@ -44,23 +44,25 @@ public class CameraScript : MonoBehaviour {
             if(Input.GetAxis("Mouse ScrollWheel") < 0f) 
             { 
                 zLevel = Mathf.Min(10, zLevel + 0.5F);
+                Focus(transform.position);
             }
             else if(Input.GetAxis("Mouse ScrollWheel") > 0f) 
             {
                 zLevel = Mathf.Max(5, zLevel - 0.5F);
+                Focus(transform.position);
             }    
 
             if(panning) Pan();
             else if (core.IsMoving()) // lock camera
             {
-                Focus();
+                Focus(core.transform.position);
             }
             ProximityInteractScript.Focus();
         }
     }
 
-    public void Focus() {
-        Vector3 goalPos = core.transform.position; // update vector
+    public void Focus(Vector3 pos) {
+        Vector3 goalPos = pos; // update vector
         goalPos.z = -zLevel;
         transform.position = goalPos; // set position
     }

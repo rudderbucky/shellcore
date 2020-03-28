@@ -38,6 +38,7 @@ namespace NodeEditorFramework.Standard
         public int partAbilityID = 0;
         public int partTier = 1;
         public int reputationReward = 0;
+        public string taskName = "";
         bool init = false;
         Texture2D partTexture;
         float height = 220f;
@@ -62,6 +63,10 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             outputDecline.DisplayLayout();
             height = 110f;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Task Name:");
+            taskName = GUILayout.TextArea(taskName, GUILayout.Width(200f));
+            GUILayout.EndHorizontal();
             GUILayout.Label("Dialogue:");
             dialogueText = GUILayout.TextArea(dialogueText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 200f);
@@ -157,7 +162,7 @@ namespace NodeEditorFramework.Standard
                 {
                     foreach(var prereq in mission.prerequisites)
                     {
-                        if(prereq == "None") continue;
+                        if(prereq == "None.") continue;
                         if(PlayerCore.Instance.cursave.missions.Find((x) => x.name == prereq).status != Mission.MissionStatus.Complete)
                         {
                             Dialogue dialogue = ScriptableObject.CreateInstance<Dialogue>();
@@ -171,7 +176,7 @@ namespace NodeEditorFramework.Standard
                             var node1 = new Dialogue.Node();
                             node1.ID = 1;
                             node1.action = Dialogue.DialogueAction.Exit;
-                            node1.buttonText = "Okay..."; // TODO: diversify?
+                            node1.buttonText = "Okay..."; // TODO: allow customizing in World Creator?
                             dialogue.nodes.Add(node);
                             dialogue.nodes.Add(node1);
                             DialogueSystem.StartDialogue(dialogue, TaskManager.GetSpeaker());
@@ -231,7 +236,7 @@ namespace NodeEditorFramework.Standard
                 if(!mission.tasks.Exists((x) => x.dialogue == task.dialogue)) mission.tasks.Add(task);
             }
 
-            (Canvas.Traversal as Traverser).lastCheckpointName = (Canvas as QuestCanvas).missionName + "_" + taskID;
+            (Canvas.Traversal as Traverser).lastCheckpointName = taskName;
             TaskManager.Instance.AttemptAutoSave();
         }
     }

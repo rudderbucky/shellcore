@@ -13,6 +13,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public delegate void DialogueDelegate(int answer);
     public static DialogueDelegate OnDialogueEnd;
+    public delegate void CancelDelegate();
+    public static CancelDelegate OnDialogueCancel;
 
     public GameObject dialogueBoxPrefab;
     public GameObject taskDialogueBoxPrefab;
@@ -73,7 +75,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         for (int i = 0; i < dialogueCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, dialogueCanvasPaths[i]);
-            Debug.LogWarning("Dialogue Canvas path [" + i + "] = " + finalPath);
+            Debug.Log("Dialogue Canvas path [" + i + "] = " + finalPath);
             var canvas = XMLImport.Import(finalPath) as DialogueCanvas;
             Debug.Log(canvas);
             if (canvas != null)
@@ -142,9 +144,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public GameObject popupBoxPrefab;
     private void showPopup(string text, Color color, Entity speaker = null)
     {
-        if (window && window.GetActive())
-            return;
-        if(window) endDialogue();
+        if(window) Destroy(window.transform.parent.gameObject);
         //create window
         speakerPos = null;
 
@@ -247,7 +247,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void showDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker)
     {
-        if (window) endDialogue(0);
+        if (window) Destroy(window.transform.parent.gameObject);
         //speakerPos = speaker.transform.position;
         //create window
         speakerPos = null;
@@ -262,7 +262,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
-
         DialogueViewTransitionIn(speaker);
 
         // radio image 
@@ -297,6 +296,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             button.SetParent(background, false);
             button.anchoredPosition = new Vector2(0, 24 + 24 * (node.answers.Count - (i + 1)));
             int index = i;
+            Debug.Log(i + "test");
             button.GetComponent<Button>().onClick.AddListener(() => {
                 AudioManager.PlayClipByID("clip_select", true);
                 endDialogue(index + 1, false);// cancel is always first -> start from 1
@@ -576,13 +576,19 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
-        if(answer == 0) DialogueViewTransitionOut();
+        // strange behavior here when tasks are checkpointed, look into this when bugs arise
+        if(answer == 0) 
+        {
+            if(OnDialogueCancel != null)
+                OnDialogueCancel.Invoke();
+            DialogueViewTransitionOut();
+        }
         window.playSoundOnClose = soundOnClose;
         window.CloseUI();
         Destroy(window.transform.root.gameObject);
         if (OnDialogueEnd != null)
         {
-            Debug.Log(OnDialogueEnd);
+            // Debug.Log(OnDialogueEnd);
             OnDialogueEnd.Invoke(answer);
         }
     }

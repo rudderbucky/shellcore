@@ -106,6 +106,15 @@ namespace NodeEditorFramework.Standard
                 mission.textColor = textColor;
                 PlayerCore.Instance.cursave.missions.Add(mission);
             }
+            else
+            {
+                var mission = PlayerCore.Instance.cursave.missions.Find((x) => {return x.name == missionName;});
+                mission.rank = rank;
+                mission.prerequisites = prerequisites;
+                mission.entryPoint = entryPoint;
+                mission.prerequisitesUnsatisifedText = prerequisitesUnsatisifedText;
+                mission.textColor = textColor;
+            }
 
             // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
             (Canvas as QuestCanvas).missionName = missionName;

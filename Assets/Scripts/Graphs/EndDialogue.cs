@@ -90,14 +90,15 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                Debug.Log(state);
-                if(node.EntityID != null)
+                Debug.Log(node?.EntityID + " " + StartDialogueNode.missionCanvasNode?.EntityID);
+                if(node && node.EntityID != null && node.EntityID != "")
                 {
                     handler.GetInteractionOverrides()[node.EntityID].Pop();
                     DialogueSystem.Instance.DialogueViewTransitionOut();
                     if(node == StartDialogueNode.missionCanvasNode) StartDialogueNode.missionCanvasNode = null;
                     else StartDialogueNode.dialogueCanvasNode = null;
                 }
+
                 return outputKnobs.Count > 0 ? 0 : -1;
             }
         }

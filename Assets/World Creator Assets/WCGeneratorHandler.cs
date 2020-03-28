@@ -376,8 +376,8 @@ public class WCGeneratorHandler : MonoBehaviour
 
                     string sectorjson = System.IO.File.ReadAllText(file);
                     SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
-                    Debug.Log("Platform JSON: " + data.platformjson);
-                    Debug.Log("Sector JSON: " + data.sectorjson);
+                    // Debug.Log("Platform JSON: " + data.platformjson);
+                    // Debug.Log("Sector JSON: " + data.sectorjson);
                     Sector curSect = ScriptableObject.CreateInstance<Sector>();
                     JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
                     LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
@@ -458,7 +458,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 }
 
                 ImportExportFormat.RuntimeIOPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
-                Debug.Log("worked");
+                Debug.Log("World loaded");
                 return;
             }
             catch (System.Exception e)

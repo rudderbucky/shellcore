@@ -16,6 +16,7 @@ public class DialogueTraverser : Traverser
 
     public override void SetNode(Node node)
     {
+        Debug.Log("Dialogue Canvas " + nodeCanvas + " now setting node: " + node);
         if(node is StartDialogueNode)
         {
             StartDialogueNode.dialogueCanvasNode = node as StartDialogueNode;
@@ -31,6 +32,7 @@ public class DialogueTraverser : Traverser
     {
         while (true)
         {
+            Debug.Log("Dialogue Canvas " +  nodeCanvas + " now traversing: " + currentNode);
             if(currentNode is StartDialogueNode)
             {
                 StartDialogueNode.dialogueCanvasNode = currentNode as StartDialogueNode;

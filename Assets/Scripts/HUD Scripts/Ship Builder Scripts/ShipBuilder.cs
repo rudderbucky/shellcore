@@ -51,6 +51,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public GameObject editorModeButtons;
 	public static WorldData.CharacterData currentCharacter;
 	public GameObject editorModeAddPartSection;
+	public ShipBuilder instance;
 
 	public BuilderMode GetMode() {
 		return mode;
@@ -689,13 +690,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			p.validPos = true;
 		}
 	}
-
-	#if UNITY_EDITOR
 	public static void SaveBlueprint(EntityBlueprint blueprint = null, string fileName = null, string json = null) {
 		if(fileName != null) 
 			System.IO.File.WriteAllText(fileName, json);
+		#if UNITY_EDITOR
 		else
 			AssetDatabase.CreateAsset(blueprint, "Assets\\SavedPrint.asset");
+		#endif
 	}
 
 	public void LoadBlueprint(string json) {
@@ -704,6 +705,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		LoadBlueprint(blueprint);
 	}
 
+
+
+	#if UNITY_EDITOR
 	public void SavePrintWithPrompt() {
 		var path = UnityEditor.EditorUtility.SaveFilePanel("Save Blueprint", Application.streamingAssetsPath + "\\Entities", 
 			"DefaultPrint", "json");
@@ -853,7 +857,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();	
 		if(!editorMode)
 		{
-			blueprint = player.blueprint;
+			blueprint.coreShellSpriteID = player.blueprint.coreShellSpriteID;
+			blueprint.coreSpriteID = player.blueprint.coreSpriteID;
 		}
 		else
 		{

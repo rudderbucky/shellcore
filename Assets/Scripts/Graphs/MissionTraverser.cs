@@ -24,21 +24,24 @@ public class MissionTraverser : Traverser
         if(currentNode == null) TaskManager.Instance.RemoveTraverser(this);
     }
 
-    public override void activateCheckpoint(string CPName)
+    public override bool activateCheckpoint(string CPName)
     {
+        if(CPName == null || CPName == "") return false;
         this.CPName = CPName;
         nodeCanvas.missionName = findRoot().missionName;
-        base.activateCheckpoint(CPName);
+        if(base.activateCheckpoint(CPName)) return true;
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
             var node = nodeCanvas.nodes[i];
-            if (node is StartTaskNode && (nodeCanvas.missionName + "_" + (node as StartTaskNode).taskID) == CPName)
+            if (node is StartTaskNode && (node as StartTaskNode).taskName == CPName)
             {
                 (node as StartTaskNode).forceTask = true;
-                SetNode(node);
+                currentNode = node;
+                return true;
             }
-            Debug.Log(nodeCanvas.missionName + "_" + (node as StartTaskNode)?.taskID + " " + CPName);
         }
+        Debug.LogWarning("Could not find checkpoint: " + CPName);
+        return false;
     }
 
     public new StartMissionNode findRoot()
@@ -60,6 +63,7 @@ public class MissionTraverser : Traverser
 
     public override void SetNode(Node node)
     {
+        Debug.Log("Mission Canvas " + nodeCanvas.missionName + " now setting node: " + node);
         if(node is StartDialogueNode)
         {
             StartDialogueNode.missionCanvasNode = node as StartDialogueNode;
@@ -75,6 +79,7 @@ public class MissionTraverser : Traverser
     {
         while (true)
         {
+            Debug.Log("Mission Canvas " +  nodeCanvas.missionName + " now traversing: " + currentNode);
             if(currentNode is StartDialogueNode)
             {
                 StartDialogueNode.missionCanvasNode = currentNode as StartDialogueNode;

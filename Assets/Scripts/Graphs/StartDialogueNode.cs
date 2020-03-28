@@ -8,8 +8,8 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Dialogue/Start Dialogue")]
     public class StartDialogueNode : Node
     {
-        public static StartDialogueNode missionCanvasNode;
-        public static StartDialogueNode dialogueCanvasNode;
+        public static StartDialogueNode missionCanvasNode = null;
+        public static StartDialogueNode dialogueCanvasNode = null;
 
         public override string GetName { get { return "StartDialogueNode"; } }
         public override string Title { get { return "Start Dialogue"; } }
@@ -91,6 +91,7 @@ namespace NodeEditorFramework.Standard
                         handler.SetSpeakerID(EntityID);
                         handler.SetNode(output);
                     });
+                    Debug.Log("called");
 
                 }
                 else

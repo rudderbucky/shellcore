@@ -46,7 +46,13 @@ public class QuantityDisplayScript : MonoBehaviour {
     public void AddEntityInfo(Entity entity)
     {
         var secondary = Instantiate(secondaryTargetInfoPrefab, content);
-        secondaryInfosByEntity.Add(entity, secondary);
+        if(!secondaryInfosByEntity.ContainsKey(entity))
+            secondaryInfosByEntity.Add(entity, secondary);
+        else
+        {
+            if(secondaryInfosByEntity[entity]) Destroy(secondaryInfosByEntity[entity].gameObject);
+            secondaryInfosByEntity[entity] = secondary;
+        }
     }
 
     public void RemoveEntityInfo(Entity entity)
