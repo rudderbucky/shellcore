@@ -296,7 +296,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             button.SetParent(background, false);
             button.anchoredPosition = new Vector2(0, 24 + 24 * (node.answers.Count - (i + 1)));
             int index = i;
-            Debug.Log(i + "test");
+            // Debug.Log(i + "test");
             button.GetComponent<Button>().onClick.AddListener(() => {
                 AudioManager.PlayClipByID("clip_select", true);
                 endDialogue(index + 1, false);// cancel is always first -> start from 1
@@ -401,8 +401,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         string[] answers =
         {
-            "I need some time to prepare",
-            "I'm on my way"
+            node.declineResponse,
+            node.acceptResponse
         };
 
         for (int i = 0; i < answers.Length; i++)
@@ -450,6 +450,23 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         Instance.next(dialogue, ID, speaker);
     }
 
+    public void OpenBuilder(Vector3 speakerPos)
+    {
+        builder.yardPosition = (Vector3)speakerPos;
+        builder.Initialize(BuilderMode.Yard, null);
+    }
+
+    public void OpenTrader(Vector3 speakerPos, List<EntityBlueprint.PartInfo> traderInventory)
+    {
+        builder.yardPosition = (Vector3)speakerPos;
+        builder.Initialize(BuilderMode.Trader, traderInventory);
+    }
+
+    public void OpenWorkshop()
+    {
+        Debug.LogWarning("Nice try!");
+    }
+
     public void next(Dialogue dialogue, int ID, Entity speaker)
     {
         if(dialogue.nodes.Count == 0)
@@ -494,13 +511,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Shop:
-			    builder.yardPosition = (Vector3)speakerPos;
-			    builder.Initialize(BuilderMode.Trader, dialogue.traderInventory);
+                OpenTrader((Vector3)speakerPos, dialogue.traderInventory);
                 endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Yard:
-			    builder.yardPosition = (Vector3)speakerPos;
-			    builder.Initialize(BuilderMode.Yard, null);
+                OpenBuilder((Vector3)speakerPos);
                 endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Exit:

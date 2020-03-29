@@ -49,18 +49,17 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             LimitedSector = sectorName ?? "";
+            Debug.Log(LimitedSector);
 
             if(sectorName == "" || freeSector)
             {
-                SectorManager.OnSectorLoad = null;
-                (Canvas.Traversal as Traverser).limiterStart = null;
+                (Canvas.Traversal as MissionTraverser).traverserLimiterDelegate = null;
                 return 0;
             }
             else
             {
                 savedVariables = new Dictionary<string, int>(TaskManager.Instance.taskVariables);
-                SectorManager.OnSectorLoad = SectorUpdate;
-                (Canvas.Traversal as Traverser).limiterStart = this;
+                (Canvas.Traversal as MissionTraverser).traverserLimiterDelegate = SectorUpdate;
                 TryAddObjective();
                 SectorUpdate(SectorManager.instance.current.sectorName);
                 return -1;
@@ -71,6 +70,7 @@ namespace NodeEditorFramework.Standard
         {
             if(name == sectorName)
             {
+                (Canvas.Traversal as MissionTraverser).traverserLimiterDelegate = null;
                 TaskManager.Instance.setNode(output);
             }
             else
@@ -85,7 +85,6 @@ namespace NodeEditorFramework.Standard
                         var cgn = current as ConditionGroupNode;
                         cgn.DeInit();
                     }
-
                     TaskManager.Instance.taskVariables = savedVariables;
                     TaskManager.Instance.setNode(this);
                 }

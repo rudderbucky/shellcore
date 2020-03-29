@@ -39,7 +39,7 @@ public class Missile : WeaponAbility {
                 script.SetTerrain(terrain);
                 script.faction = Core.faction;
                 script.SetDamage(damage * abilityTier);
-                script.StartSurvivalTimer(7);
+                script.StartSurvivalTimer(4);
                 isOnCD = true; // set on cooldown
                 return true;
             }

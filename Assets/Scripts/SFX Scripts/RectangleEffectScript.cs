@@ -11,10 +11,13 @@ public class RectangleEffectScript : MonoBehaviour {
     private Vector3 displacement; // used to wrap particles around
     public static bool active = true;
     bool built = false;
+    public static List<RectangleEffectScript> instances = new List<RectangleEffectScript>();
 
     void Awake()
     {
         active = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";
+        instances = instances.FindAll((i) => i.partSys);
+        instances.Add(this);
     }
     public static void SetActive(bool act) {
         active = act;
@@ -60,18 +63,15 @@ public class RectangleEffectScript : MonoBehaviour {
     /// <param name="dimension">the dimension (0 is x, 1 is y)</param>
     private void ParticleWrapper(ref ParticleSystem.Particle particle, int dimension)
     {
-        float limit; // wrapping limit
-        limit = dimension == 0 ? Camera.main.pixelWidth : Camera.main.pixelHeight; 
-        // get the limit based on dimension
-
-        Vector3 relativeCameraPos = Camera.main.WorldToScreenPoint(particle.position);
+        Vector3 relativeCameraPos = Camera.main.WorldToViewportPoint(particle.position);
         // grab the screen position of the particle
-        if (relativeCameraPos[dimension] < 0 || relativeCameraPos[dimension] > limit) {
+        if (relativeCameraPos[dimension] < -0.05F || relativeCameraPos[dimension] > 1.05F) {
             // if the particle is past the screen limits wrap it around
             displacement = relativeCameraPos;
-            displacement[dimension] = relativeCameraPos[dimension] < 0 ? displacement[dimension] + limit : displacement[dimension] - limit; 
+            displacement[dimension] = relativeCameraPos[dimension] < -0.05F ? 1F
+                : 0F;
             //Mathf.Abs(displacement[dimension] - limit);
-            particle.position = Camera.main.ScreenToWorldPoint(displacement);
+            particle.position = Camera.main.ViewportToWorldPoint(displacement);
         }
     }
 

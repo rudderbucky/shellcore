@@ -49,7 +49,7 @@ public class SpeedThrust : ActiveAbility
             var enginePower = (Core as Craft).enginePower;
             if(enginePower <= 1000) {
                 activated = true;
-                (Core as Craft).enginePower += 100F * abilityTier;
+                (Core as Craft).enginePower += 100F * Mathf.Pow(abilityTier, 1.5F);
             }
             else activated = false;
         } // change engine power

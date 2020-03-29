@@ -41,7 +41,7 @@ public class Entity : MonoBehaviour, IDamageable {
     public string ID; // used in tasks
 
     public SectorManager sectorMngr;
-    private Entity lastDamagedBy;
+    protected Entity lastDamagedBy;
 
     public string entityName;
 
@@ -215,7 +215,7 @@ public class Entity : MonoBehaviour, IDamageable {
             GameObject childObject = new GameObject("Minimap Image");
             childObject.transform.SetParent(transform, false);
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
-            if(category == EntityCategory.Station)
+            if(category == EntityCategory.Station && !(this is Turret))
             {
                 if(this as Outpost)
                 {

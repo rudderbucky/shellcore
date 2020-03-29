@@ -16,13 +16,13 @@ public class MinimapLockRotationScript : MonoBehaviour {
         gameObject.layer = 8;
         sprRenderer = GetComponent<SpriteRenderer>();
         sprRenderer.enabled = true; // enable sprite renderer
-        Color factionColor = FactionColors.colors[GetComponentInParent<Entity>().faction];
+        Color factionColor;
+        if(GetComponentInParent<Entity>())
+            factionColor = FactionColors.colors[GetComponentInParent<Entity>().faction];
+        else factionColor = new Color32(0, 163, 255, 255);
         sprRenderer.color = factionColor; // adjust minimap color to that
     }
 
-    private void Start()
-    {
-    }
     // Update is called once per frame
     void Update () {
 

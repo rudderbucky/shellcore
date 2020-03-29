@@ -5,11 +5,13 @@ using UnityEngine;
 public class Bunker : GroundConstruct, IVendor {
 
     public VendingBlueprint vendingBlueprint;
+    BattleZoneManager BZManager;
 
     protected override void Start()
     {
         category = EntityCategory.Station;
         base.Start();
+        BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
     }
 
     public override void RemovePart(ShellPart part)
@@ -42,15 +44,18 @@ public class Bunker : GroundConstruct, IVendor {
 
     protected override void OnDeath()
     {
-        int oldFaction = faction;
-        faction = faction == 1 ? 0 : 1;
+        int otherFaction = faction;
+        faction = lastDamagedBy.faction;
         for (int i = 0; i < parts.Count; i++)
         {
             RemovePart(parts[i]);
         }
         targeter.SetTarget(null);
-        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().AlertPlayers(oldFaction, "WARNING: Bunker lost!");
-        GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
+        if(sectorMngr.current.type == Sector.SectorType.BattleZone)
+        {
+            BZManager.UpdateCounters();
+            BZManager.AlertPlayers(otherFaction, "WARNING: Outpost lost!");
+        }
         Start();
         foreach (var part in parts)
         {

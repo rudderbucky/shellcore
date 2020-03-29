@@ -166,5 +166,9 @@ public class PlayerCore : ShellCore {
     {
         base.Warp(point);
         CameraScript.instance.Focus(transform.position);
+        foreach(var instance in RectangleEffectScript.instances)
+        {
+            instance.Start();
+        }
     }
 }

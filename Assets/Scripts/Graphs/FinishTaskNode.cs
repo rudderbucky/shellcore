@@ -99,6 +99,16 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            // Pop the pending text
+            if (outputUp.connected())
+            {
+                var taskNode = (outputUp.connection(0).body as StartTaskNode);
+                if (taskNode && taskNode.entityIDforConfirmedResponse != null && taskNode.entityIDforConfirmedResponse != "")
+                {
+                    TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse].Pop();
+                }
+            }
+
             SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
             TaskManager.speakerIDList.Add(rewardGiverID);
             if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))

@@ -121,7 +121,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     Sector.LevelEntity ent = new Sector.LevelEntity();
                     if(cursor.characters.TrueForAll((WorldData.CharacterData x) => {return x.ID != item.ID;})) 
                     {
-                        Debug.Log(item.ID + " is not a character. " + ID);
+                        // Debug.Log(item.ID + " is not a character. " + ID);
                         int test;
                         if(item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
                         {
@@ -139,7 +139,7 @@ public class WCGeneratorHandler : MonoBehaviour
                             else itemSectorsByID.Add(ent.ID, container.sectorName);
                         }
 
-                        Debug.Log(container.sectorName + " " + ent.ID);
+                        // Debug.Log(container.sectorName + " " + ent.ID);
                     }
                     else 
                     {

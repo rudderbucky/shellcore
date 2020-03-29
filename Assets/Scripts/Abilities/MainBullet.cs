@@ -13,7 +13,7 @@ public class MainBullet : Bullet {
         base.Awake(); // base awake
         // hardcoded values here
         bulletSpeed = 50;
-        survivalTime = 0.3F;
+        survivalTime = 0.2F;
         range = bulletSpeed * survivalTime;
         ID = 3;
         cooldownDuration = 0.4F;

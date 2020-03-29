@@ -34,6 +34,10 @@ public class CameraScript : MonoBehaviour {
             Vector3 goalPos = core.transform.position; // update vector
             goalPos.z = -zLevel;
             transform.position = goalPos; // set position
+            foreach(var rect in RectangleEffectScript.instances) 
+            {
+                if(rect) rect.Start();
+            }
         }
     }
 

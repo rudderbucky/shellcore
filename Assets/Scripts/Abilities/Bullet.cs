@@ -19,7 +19,7 @@ public class Bullet : WeaponAbility {
         // hardcoded values here
         description = "Projectile that deals " + damage + " damage.";
         abilityName = "Bullet";
-        bulletSpeed = 25;
+        bulletSpeed = 20;
         survivalTime = 0.5F;
         range = bulletSpeed * survivalTime;
         ID = 5;

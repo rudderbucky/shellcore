@@ -8,7 +8,7 @@ public struct FactionColors
     {
         new Color(0f, 1f, 0f, 1F),
         new Color(1f, 0, 0, 1F),
-        new Color(0f, 0f, 1f, 1F),
+        new Color32(218, 165, 32, 255),
     };
 }
 

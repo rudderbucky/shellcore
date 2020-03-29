@@ -120,8 +120,8 @@ namespace NodeEditorFramework.Standard
                     if(flowOutput == null)
                         flowOutput = outputKnobs[1];
                     handler.SetNode(flowOutput);
-                    Debug.Log(flowOutput.name);
-                    return 0;
+                    Debug.Log("Start Dialogue: async pass to: " + flowOutput.connections[0].body);
+                    return -1;
                 }
             }
             else

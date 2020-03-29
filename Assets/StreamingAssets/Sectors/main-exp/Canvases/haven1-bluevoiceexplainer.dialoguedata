@@ -1,27 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="-184,-95.5" zoom="1" />
+		<EditorState selected="" pan="-182.75,-95.5" zoom="1" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Start Dialogue" ID="-691820" type="StartDialogueNode" pos="-640,-70">
-			<Port ID="-691926" name="input" dynamic="False" />
-			<Port ID="-691824" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="-26922" type="StartDialogueNode" pos="-640,-70">
+			<Port ID="-26950" name="input" dynamic="False" />
+			<Port ID="-26926" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="886191054" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
-			<NodeEditorState name="canvasState">Dialogue</NodeEditorState>
 		</Node>
-		<Node name="End Dialogue" ID="-691832" type="EndDialogue" pos="-10.75,189.125">
-			<Port ID="-691834" name="input" dynamic="False" />
-			<boolean name="jumpToStart">false</boolean>
-		</Node>
-		<Node name="Dialogue" ID="-691826" type="DialogueNode" pos="-402.5,-79.625">
-			<Port ID="-691828" name="input" dynamic="False" />
-			<Port ID="-691830" name="cancel" dynamic="False" />
-			<Port ID="-691814" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="-26928" type="DialogueNode" pos="-402.5,-79.625">
+			<Port ID="-26930" name="input" dynamic="False" />
+			<Port ID="-26932" name="cancel" dynamic="False" />
+			<Port ID="-26914" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -29,7 +24,7 @@
 				<float name="sidePosition">241</float>
 				<float name="sideOffset">0</float>
 			</Port>
-			<Port ID="-691840" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+			<Port ID="-26916" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -44,16 +39,13 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="1831204130" />
-			<Variable name="answers" refID="1642811904" />
+			<Variable name="answers" refID="-303646464" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="End Dialogue" ID="-691888" type="EndDialogue" pos="272.75,103.375">
-			<Port ID="-691890" name="input" dynamic="False" />
-			<boolean name="jumpToStart">false</boolean>
-		</Node>
-		<Node name="Dialogue" ID="-691856" type="DialogueNode" pos="-11,-80.375">
-			<Port ID="-691858" name="input" dynamic="False" />
-			<Port ID="-691860" name="cancel" dynamic="False" />
-			<Port ID="-691880" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="-26934" type="DialogueNode" pos="-11,-80.375">
+			<Port ID="-26936" name="input" dynamic="False" />
+			<Port ID="-26938" name="cancel" dynamic="False" />
+			<Port ID="-26918" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -68,14 +60,25 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="-1264498935" />
-			<Variable name="answers" refID="64698624" />
+			<Variable name="answers" refID="359422720" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-26940" type="EndDialogue" pos="272.75,103.375">
+			<Port ID="-26942" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-26944" type="EndDialogue" pos="-10.75,189.125">
+			<Port ID="-26946" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="-691824" port2ID="-691828" />
-		<Connection port1ID="-691834" port2ID="-691840" />
-		<Connection port1ID="-691814" port2ID="-691858" />
-		<Connection port1ID="-691890" port2ID="-691880" />
+		<Connection port1ID="-26926" port2ID="-26930" />
+		<Connection port1ID="-26914" port2ID="-26936" />
+		<Connection port1ID="-26916" port2ID="-26946" />
+		<Connection port1ID="-26918" port2ID="-26942" />
 	</Connections>
 	<Objects>
 		<Object refID="886191054" type="System.String">
@@ -84,7 +87,7 @@
 		<Object refID="1831204130" type="System.String">
 			<string>You heard a voice at the Spawning Grounds? I do not know of anyone else who has noticed anything like that. However, I have heard that sometimes, newborns imagine things when they awake.</string>
 		</Object>
-		<Object refID="1642811904" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="-303646464" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>Heard from where?</string>
 				<string>...</string>
@@ -93,7 +96,7 @@
 		<Object refID="-1264498935" type="System.String">
 			<string>Uhm... You wouldn't know them, they're stationed in another Haven.</string>
 		</Object>
-		<Object refID="64698624" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="359422720" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>Okay...</string>
 			</ArrayOfString>

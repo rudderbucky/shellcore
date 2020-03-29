@@ -22,6 +22,9 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob output;
 
         public bool jumpToStart = false; // This is now necessary :)
+        public bool openBuilder = false;
+        public bool openTrader = false;
+        public string traderJSON = null;
         public NodeEditorGUI.NodeEditorState state;
 
         public override void NodeGUI()
@@ -54,6 +57,16 @@ namespace NodeEditorFramework.Standard
             {
                 DeleteConnectionPort(outputKnobs[0]);
                 output = null;
+            }
+            GUILayout.BeginHorizontal();
+            openBuilder = RTEditorGUI.Toggle(openBuilder, "Open Yard");
+            GUILayout.EndHorizontal();
+            if(openTrader = RTEditorGUI.Toggle(openTrader, "Open Trader"))
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Trader Inventory JSON");
+                traderJSON = GUILayout.TextArea(traderJSON);
+                GUILayout.EndHorizontal();
             }
         }
 
@@ -97,6 +110,17 @@ namespace NodeEditorFramework.Standard
                     DialogueSystem.Instance.DialogueViewTransitionOut();
                     if(node == StartDialogueNode.missionCanvasNode) StartDialogueNode.missionCanvasNode = null;
                     else StartDialogueNode.dialogueCanvasNode = null;
+                }
+
+                if(openBuilder)
+                {
+                    DialogueSystem.Instance.OpenBuilder(SectorManager.instance.GetEntity(node.EntityID).transform.position);
+                }
+
+                if(openTrader)
+                {
+                    DialogueSystem.Instance.OpenTrader(SectorManager.instance.GetEntity(node.EntityID).transform.position, 
+                        JsonUtility.FromJson<ShipBuilder.TraderInventory>(traderJSON).parts);
                 }
 
                 return outputKnobs.Count > 0 ? 0 : -1;

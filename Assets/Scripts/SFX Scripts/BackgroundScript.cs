@@ -10,7 +10,7 @@ public class BackgroundScript : MonoBehaviour {
     private Vector3 instancedPos; // vector that stores the position of a generated tile
     public int gridWidth; // grid width
     public int gridHeight; // grid height
-    public int gridDepth; // grid depth
+    public static int gridDepth = 15; // grid depth
     public Transform mcamera; // mcamera to follow
     private Vector3 displacement; // displacement between tile and mcamera
     private GameObject[] ingameTiles; // array of generated tiles
@@ -98,6 +98,7 @@ public class BackgroundScript : MonoBehaviour {
                     // the position of the tile
                     GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;
                     go.transform.SetParent(parent.transform, true);
+                    go.transform.localScale = new Vector3(Random.Range(0, 1) > 0.5F ? 1 : -1, 1, 1);
                     // create the tile, no rotation desired
                     
                     ingameTiles[count] = go; // assign to array

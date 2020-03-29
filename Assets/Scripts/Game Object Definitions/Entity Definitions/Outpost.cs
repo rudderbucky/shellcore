@@ -56,9 +56,8 @@ public class Outpost : AirConstruct, IVendor {
 
         // this won't trigger PostDeath() since that only gets called if the timer ticks to a value
         // the timer doesn't tick unless isDead is set to true
-
         int otherFaction = faction;
-        faction = faction == 1 ? 0 : 1;
+        faction = lastDamagedBy.faction;
         
         for (int i = 0; i < parts.Count; i++)
         {

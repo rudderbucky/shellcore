@@ -48,9 +48,10 @@ namespace NodeEditorFramework.Standard
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
-                    DeleteConnectionPort(outputPorts[i]);
+                    DeleteConnectionPort(outputPorts[i+1]);
                     answers.RemoveAt(i);
                     i--;
+                    if(i == -1) break;
                     continue;
                 }
                 GUILayout.EndHorizontal();

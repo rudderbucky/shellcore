@@ -22,11 +22,11 @@ public class Beam : WeaponAbility {
         line.startWidth = line.endWidth = 0.15F;
         line.endColor = new Color(0.8F,0.8F,1,0.9F);
         line.startColor = new Color(0.5F, 0.5F, 1, 0.9F);
-        cooldownDuration = CDRemaining = 5;
-        damage = 500;
+        cooldownDuration = CDRemaining = 3;
+        damage = 525;
         energyCost = 100;
         ID = 4;
-        range = 12;
+        range = 8;
         category = Entity.EntityCategory.All;
     }
     protected override void Start() {

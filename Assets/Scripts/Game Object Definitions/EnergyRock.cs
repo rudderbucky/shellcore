@@ -12,6 +12,15 @@ public class EnergyRock : MonoBehaviour {
     private void Start()
     {
         targetTime = Time.fixedTime + maxTime;
+        if(!transform.Find("Minimap Image"))
+        {
+            GameObject childObject = new GameObject("Minimap Image");
+            childObject.transform.SetParent(transform, false);
+            SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
+            renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+            renderer.transform.localScale = new Vector3(2F, 2F, 2F);
+            childObject.AddComponent<MinimapLockRotationScript>().Initialize();
+        }
     }
 
     private void Awake()

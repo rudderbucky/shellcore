@@ -4,11 +4,14 @@ using NodeEditorFramework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MissionTraverser : Traverser
 {
     string CPName;
     new QuestCanvas nodeCanvas;
+
+    public SectorManager.SectorLoadDelegate traverserLimiterDelegate;
     public MissionTraverser(QuestCanvas canvas) : base(canvas)
     {
         nodeCanvas = canvas;
@@ -19,13 +22,27 @@ public class MissionTraverser : Traverser
     {
         // If the quest has been started, continue
         nodeCanvas.missionName = findRoot().missionName;
-        if(CPName == (nodeCanvas.missionName + "_complete")) return;
+        if(CPName == (nodeCanvas.missionName + "_complete")) 
+        {
+            return;
+        }
         base.StartQuest();
+        SectorManager.OnSectorLoad += ((val) => {if(traverserLimiterDelegate != null) traverserLimiterDelegate.Invoke(val);});
         if(currentNode == null) TaskManager.Instance.RemoveTraverser(this);
     }
 
     public override bool activateCheckpoint(string CPName)
     {
+        // If the quest has been started, continue
+        nodeCanvas.missionName = findRoot().missionName;
+        if(CPName == (nodeCanvas.missionName + "_complete")) 
+        {
+            this.CPName = CPName;
+            Debug.Log("Mission: " + nodeCanvas.missionName + " already complete. Not activating checkpoint or starting.");
+            PlayerCore.Instance.cursave.missions.Find((mission) => mission.name == nodeCanvas.missionName).status 
+                = Mission.MissionStatus.Complete;
+            return true;
+        }
         if(CPName == null || CPName == "") return false;
         this.CPName = CPName;
         nodeCanvas.missionName = findRoot().missionName;
@@ -40,7 +57,7 @@ public class MissionTraverser : Traverser
                 return true;
             }
         }
-        Debug.LogWarning("Could not find checkpoint: " + CPName);
+        Debug.LogWarning("Could not find checkpoint: " + CPName + " " + nodeCanvas.missionName);
         return false;
     }
 

@@ -188,6 +188,11 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     // Traverse quest graph
     public void startQuests()
     {
+        for(int i = 0; i < traversers.Count; i++)
+        {
+            traversers[i].findRoot().TryAddMission();
+        }
+
         // tasks
         for (int i = 0; i < PlayerCore.Instance.cursave.checkpointNames.Length; i++)
         {
@@ -198,7 +203,6 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         for (int i = 0; i < traversers.Count; i++)
         {
             traversers[i].StartQuest();
-            traversers[i].findRoot().TryAddMission();
         }
     }
 

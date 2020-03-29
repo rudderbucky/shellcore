@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class Traverser : NodeCanvasTraversal
 {
-    public SectorLimiterNode limiterStart;
     public string lastCheckpointName;
     protected string startNodeName;
 

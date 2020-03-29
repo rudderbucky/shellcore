@@ -34,14 +34,18 @@ namespace NodeEditorFramework.Standard
         public int creditReward = 100;
         //public EntityBlueprint.PartInfo partReward;
         public bool partReward = false;
+        public string entityIDforConfirmedResponse;
         public string partID = "";
         public int partAbilityID = 0;
         public int partTier = 1;
         public int reputationReward = 0;
         public string taskName = "";
+        public string acceptResponse;
+        public string declineResponse;
+        public string taskConfirmedDialogue;
         bool init = false;
         Texture2D partTexture;
-        float height = 220f;
+        float height = 270f;
         public bool forceTask = false;
 
         [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left)]
@@ -62,9 +66,9 @@ namespace NodeEditorFramework.Standard
             outputAccept.DisplayLayout();
             GUILayout.EndHorizontal();
             outputDecline.DisplayLayout();
-            height = 110f;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Task Name:");
+            height = 270f;
             taskName = GUILayout.TextArea(taskName, GUILayout.Width(200f));
             GUILayout.EndHorizontal();
             GUILayout.Label("Dialogue:");
@@ -78,6 +82,18 @@ namespace NodeEditorFramework.Standard
             b = RTEditorGUI.FloatField(dialogueColor.b);
             GUILayout.EndHorizontal();
             dialogueColor = new Color(r, g, b);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Accept Player Response:");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            acceptResponse = GUILayout.TextArea(acceptResponse, GUILayout.Width(200f));
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Decline Player Response:");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            declineResponse = GUILayout.TextArea(declineResponse, GUILayout.Width(200f));
+            GUILayout.EndHorizontal();
             GUILayout.Label("Objective list:");
             objectiveList = GUILayout.TextArea(objectiveList, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(objectiveList), 200f);
@@ -130,6 +146,17 @@ namespace NodeEditorFramework.Standard
             }
             forceTask = Utilities.RTEditorGUI.Toggle(forceTask, "Force Task Acceptance");
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 50f);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Entity ID for Confirmed Dialogue");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            entityIDforConfirmedResponse = GUILayout.TextField(entityIDforConfirmedResponse);
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("Task Confirmed Dialogue:");
+            taskConfirmedDialogue = GUILayout.TextArea(taskConfirmedDialogue, GUILayout.Width(200f));
+            height += GUI.skin.textArea.CalcHeight(new GUIContent(taskConfirmedDialogue), 200f);
         }
 
         public void OnClick(int index)
@@ -151,9 +178,29 @@ namespace NodeEditorFramework.Standard
             }
         }
 
+        public void OnConfirmed()
+        {
+            Dialogue dialogue = ScriptableObject.CreateInstance<Dialogue>();
+            dialogue.nodes = new List<Dialogue.Node>();
+            var node = new Dialogue.Node();
+            node.ID = 0;
+            node.text = taskConfirmedDialogue;
+            node.textColor = dialogueColor;
+            node.nextNodes = new List<int>() {1};
+
+            var node1 = new Dialogue.Node();
+            node1.ID = 1;
+            node1.action = Dialogue.DialogueAction.Exit;
+            node1.buttonText = "Alright."; // TODO: allow customizing in World Creator?
+            dialogue.nodes.Add(node);
+            dialogue.nodes.Add(node1);
+            TaskManager.speakerID = entityIDforConfirmedResponse;
+            DialogueSystem.StartDialogue(dialogue, TaskManager.GetSpeaker());
+        }
+
         public override int Traverse()
         {
-            Debug.Log("Force Task: " + forceTask);
+            Debug.Log("Force Task: " + forceTask + " Entity ID: " + entityIDforConfirmedResponse);
             if(!forceTask)
             {
                 // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
@@ -238,6 +285,22 @@ namespace NodeEditorFramework.Standard
 
             (Canvas.Traversal as Traverser).lastCheckpointName = taskName;
             TaskManager.Instance.AttemptAutoSave();
+
+            Debug.Log("Task started, Entity ID:  " + dialogueText + " " + entityIDforConfirmedResponse);
+
+            if(entityIDforConfirmedResponse != null && entityIDforConfirmedResponse != "")
+            {
+                if(TaskManager.interactionOverrides.ContainsKey(entityIDforConfirmedResponse))
+                {
+                    TaskManager.interactionOverrides[entityIDforConfirmedResponse].Push(() => OnConfirmed());
+                }
+                else 
+                {
+                    var stack = new Stack<UnityEngine.Events.UnityAction>();
+                    stack.Push(() => OnConfirmed());
+                    TaskManager.interactionOverrides.Add(entityIDforConfirmedResponse, stack);
+                }
+            }
         }
     }
 }

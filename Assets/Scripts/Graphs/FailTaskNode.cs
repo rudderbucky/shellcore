@@ -42,6 +42,7 @@ namespace NodeEditorFramework.Standard
                 var taskNode = (outputUp.connection(0).body as StartTaskNode);
                 if (taskNode)
                 {
+                    taskNode.forceTask = false; // you shouldn't force tasks you can fail
                     string taskID = taskNode.taskID;
                     TaskManager.Instance.endTask(taskID);
                 }
