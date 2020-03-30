@@ -156,10 +156,14 @@ public class PlayerCore : ShellCore {
         base.Update(); // base update
         if(!isInteracting) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
 
+        #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.T))
         {
-            NodeEditorFramework.Standard.TestCondition.TestTrigger.Invoke();
+            enginePower = 1000;
+            GetComponentInChildren<MainBullet>().SetDamage(10000);
+            // NodeEditorFramework.Standard.TestCondition.TestTrigger.Invoke();
         }
+        #endif
 	}
 
     public override void Warp(Vector3 point)

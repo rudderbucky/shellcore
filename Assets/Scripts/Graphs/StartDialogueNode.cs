@@ -32,6 +32,8 @@ namespace NodeEditorFramework.Standard
         ConnectionKnobAttribute flowInStyle = new ConnectionKnobAttribute("ContinueAsync", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
         public bool allowAfterSpeaking;
 
+        public NodeEditorGUI.NodeEditorState state;
+
         public override void NodeGUI()
         {
             if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Dialogue) 
@@ -73,8 +75,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             IDialogueOverrideHandler handler = null;
-            var missionNode = this == missionCanvasNode;
-            if(missionNode)
+            if(state == NodeEditorGUI.NodeEditorState.Mission)
                 handler = TaskManager.Instance;
             else handler = DialogueSystem.Instance;
 
@@ -86,7 +87,7 @@ namespace NodeEditorFramework.Standard
                 if (handler.GetInteractionOverrides().ContainsKey(EntityID))
                 {
                     handler.GetInteractionOverrides()[EntityID].Push(() => {
-                        if(missionNode) missionCanvasNode = this;
+                        if(handler as TaskManager) missionCanvasNode = this;
                         else dialogueCanvasNode = this;
                         handler.SetSpeakerID(EntityID);
                         handler.SetNode(output);
@@ -98,12 +99,13 @@ namespace NodeEditorFramework.Standard
                 {
                     var stack = new Stack<UnityEngine.Events.UnityAction>();
                     stack.Push(() => {
-                            if(missionNode) missionCanvasNode = this;
+                            if(handler as TaskManager) missionCanvasNode = this;
                             else dialogueCanvasNode = this;
                             handler.SetSpeakerID(EntityID);
                             handler.SetNode(output);
                         });
                     handler.GetInteractionOverrides().Add(EntityID, stack);
+                    Debug.Log("called1 " + handler.GetInteractionOverrides()[EntityID].Count + " " + TaskManager.speakerID);
                 }
 
                 if(!allowAfterSpeaking)

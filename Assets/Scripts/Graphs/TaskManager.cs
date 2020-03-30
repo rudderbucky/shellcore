@@ -66,6 +66,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         initCanvases();
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
+        interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
     }
 
     void Update()

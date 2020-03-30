@@ -8,7 +8,6 @@ using UnityEngine.Events;
 
 public class MissionTraverser : Traverser
 {
-    string CPName;
     new QuestCanvas nodeCanvas;
 
     public SectorManager.SectorLoadDelegate traverserLimiterDelegate;
@@ -22,10 +21,11 @@ public class MissionTraverser : Traverser
     {
         // If the quest has been started, continue
         nodeCanvas.missionName = findRoot().missionName;
-        if(CPName == (nodeCanvas.missionName + "_complete")) 
+        if(lastCheckpointName == (nodeCanvas.missionName + "_complete")) 
         {
             return;
         }
+        Debug.Log(lastCheckpointName + nodeCanvas.missionName);
         base.StartQuest();
         SectorManager.OnSectorLoad += ((val) => {if(traverserLimiterDelegate != null) traverserLimiterDelegate.Invoke(val);});
         if(currentNode == null) TaskManager.Instance.RemoveTraverser(this);
@@ -34,17 +34,16 @@ public class MissionTraverser : Traverser
     public override bool activateCheckpoint(string CPName)
     {
         // If the quest has been started, continue
+        lastCheckpointName = CPName;
         nodeCanvas.missionName = findRoot().missionName;
         if(CPName == (nodeCanvas.missionName + "_complete")) 
         {
-            this.CPName = CPName;
             Debug.Log("Mission: " + nodeCanvas.missionName + " already complete. Not activating checkpoint or starting.");
             PlayerCore.Instance.cursave.missions.Find((mission) => mission.name == nodeCanvas.missionName).status 
                 = Mission.MissionStatus.Complete;
             return true;
         }
         if(CPName == null || CPName == "") return false;
-        this.CPName = CPName;
         nodeCanvas.missionName = findRoot().missionName;
         if(base.activateCheckpoint(CPName)) return true;
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
@@ -83,7 +82,7 @@ public class MissionTraverser : Traverser
         Debug.Log("Mission Canvas " + nodeCanvas.missionName + " now setting node: " + node);
         if(node is StartDialogueNode)
         {
-            StartDialogueNode.missionCanvasNode = node as StartDialogueNode;
+            (node as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
         }
         if(node is DialogueNode)
             (node as DialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
@@ -99,7 +98,7 @@ public class MissionTraverser : Traverser
             Debug.Log("Mission Canvas " +  nodeCanvas.missionName + " now traversing: " + currentNode);
             if(currentNode is StartDialogueNode)
             {
-                StartDialogueNode.missionCanvasNode = currentNode as StartDialogueNode;
+                (currentNode as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
             }
             if(currentNode is DialogueNode)
                 (currentNode as DialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;

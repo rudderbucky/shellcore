@@ -74,6 +74,7 @@ namespace NodeEditorFramework.Standard
             {
                 CameraScript.panning = false;
                 CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
+                foreach(var rect in RectangleEffectScript.instances) if(rect) rect.Start();
                 return 0;
             }
             else

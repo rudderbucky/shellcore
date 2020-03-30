@@ -113,17 +113,22 @@ namespace NodeEditorFramework.Standard
             TaskManager.speakerIDList.Add(rewardGiverID);
             if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
             {
+                Debug.Log("Contains key");
                 TaskManager.interactionOverrides[rewardGiverID].Push(() => {
-                    OnDialogue();
+                    Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                     TaskManager.interactionOverrides[rewardGiverID].Pop();
+                    OnDialogue();
+                    Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                 });
             }
             else
             {
                 var stack = new Stack<UnityEngine.Events.UnityAction>();
                 stack.Push(() => {
-                        OnDialogue();
+                        Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                         TaskManager.interactionOverrides[rewardGiverID].Pop();
+                        OnDialogue();
+                        Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                     });
                 TaskManager.interactionOverrides.Add(rewardGiverID, stack);
             }

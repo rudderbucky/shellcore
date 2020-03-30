@@ -19,7 +19,7 @@ public class DialogueTraverser : Traverser
         Debug.Log("Dialogue Canvas " + nodeCanvas + " now setting node: " + node);
         if(node is StartDialogueNode)
         {
-            StartDialogueNode.dialogueCanvasNode = node as StartDialogueNode;
+            (node as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Dialogue;
         }
         if(node as DialogueNode)
             (node as DialogueNode).state = NodeEditorGUI.NodeEditorState.Dialogue;
@@ -35,7 +35,7 @@ public class DialogueTraverser : Traverser
             Debug.Log("Dialogue Canvas " +  nodeCanvas + " now traversing: " + currentNode);
             if(currentNode is StartDialogueNode)
             {
-                StartDialogueNode.dialogueCanvasNode = currentNode as StartDialogueNode;
+                (currentNode as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Dialogue;
             }
             if(currentNode as DialogueNode)
                 (currentNode as DialogueNode).state = NodeEditorGUI.NodeEditorState.Dialogue;

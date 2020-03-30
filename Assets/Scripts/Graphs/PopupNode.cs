@@ -47,14 +47,14 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            DialogueSystem.OnDialogueEnd += OnDialogueEnd;
+            // DialogueSystem.OnDialogueEnd += OnDialogueEnd;
             DialogueSystem.ShowPopup(text, color);
-            return -1;
+            return 0;
         }
 
         void OnDialogueEnd(int _)
         {
-            DialogueSystem.OnDialogueEnd -= OnDialogueEnd;
+            // DialogueSystem.OnDialogueEnd -= OnDialogueEnd;
             TaskManager.Instance.setNode(output);
         }
     }
