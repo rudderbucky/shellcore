@@ -19,6 +19,8 @@ public class SaveMenuHandler : GUIWindowScripts {
 	public static float? migratedTimePlayed = null;
 	public static List<string> migrationVersions = new List<string>() 
 	{
+		"Alpha 1.0.0",
+		"Alpha 2.0.0",
 		"Alpha 2.1.0"
 	};
 	void Awake() {
@@ -146,7 +148,14 @@ public class SaveMenuHandler : GUIWindowScripts {
 
 	public void BackupSave(PlayerSave save)
 	{
-		string path = Application.persistentDataPath + "\\Saves\\" + save.name + " - Backup";
+		string origPath = Application.persistentDataPath + "\\Saves\\" + save.name + " - Backup";
+		string path = origPath + " ";
+		int i = 1;
+		while(File.Exists(path + i))
+		{
+			i++;
+		}
+		path = path + i;
 		File.WriteAllText(path, JsonUtility.ToJson(save));
 
 		saves.Add(save);

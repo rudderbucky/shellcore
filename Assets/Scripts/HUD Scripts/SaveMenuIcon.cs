@@ -27,7 +27,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		shellImage.sprite = ResourceManager.GetAsset<Sprite>(print.coreShellSpriteID);
 		shellImage.rectTransform.sizeDelta = shellImage.sprite.bounds.size * 50;
 		coreImage.material = ResourceManager.GetAsset<Material>("material_color_swap");
-		coreImage.rectTransform.anchoredPosition = shellImage.sprite.pivot / 2 - shellImage.rectTransform.sizeDelta / 2;
+		// coreImage.rectTransform.anchoredPosition = shellImage.sprite.pivot / 2 - shellImage.rectTransform.sizeDelta / 2;
 		shellImage.color = coreImage.color = FactionColors.colors[0];
 		saveName.text = save.name;
 		version.text = "Version: " + save.version;

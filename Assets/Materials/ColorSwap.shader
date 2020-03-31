@@ -37,6 +37,18 @@ Shader "Sprites/ColorSwap"
             "CanUseSpriteAtlas"="True"
         }
 
+        // required for UI.Mask
+        Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp] 
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+        ColorMask [_ColorMask]
+         
+
         Cull Off
         Lighting Off
         ZWrite Off
