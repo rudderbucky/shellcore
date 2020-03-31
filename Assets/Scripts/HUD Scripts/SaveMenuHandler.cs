@@ -13,8 +13,14 @@ public class SaveMenuHandler : GUIWindowScripts {
 	List<SaveMenuIcon> icons;
 	public InputField inputField;
 	int indexToDelete;
+	int indexToMigrate;
 	public GUIWindowScripts deletePrompt;
-
+	public GUIWindowScripts migratePrompt;
+	public static float? migratedTimePlayed = null;
+	public static List<string> migrationVersions = new List<string>() 
+	{
+		"Alpha 2.1.0"
+	};
 	void Awake() {
 		saves = new List<PlayerSave>();
 		paths = new List<string>();
@@ -34,8 +40,9 @@ public class SaveMenuHandler : GUIWindowScripts {
 					saves.Add(save);
 					paths.Add(file);
 					
-				} catch(System.Exception) 
+				} catch(System.Exception e) 
 				{
+					Debug.LogError(e);
 					continue;
 				}
 			}
@@ -79,6 +86,31 @@ public class SaveMenuHandler : GUIWindowScripts {
 		indexToDelete = index;
 		deletePrompt.ToggleActive();
 	}
+
+	public void PromptMigrate(int index) {
+		switch(saves[index].version)
+		{
+			case "Alpha 2.1.0":
+				indexToMigrate = index;
+				migratePrompt.ToggleActive();
+				break;
+			default:
+				break;
+		}
+	}
+
+	public void Migrate()
+	{
+		var save = saves[indexToMigrate];
+		save.version = VersionNumberScript.version;
+		save.checkpointNames = new string[0];
+		save.reputation = 0;
+		migratedTimePlayed = save.timePlayed;
+		save.timePlayed = 0;
+		File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
+		SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+	}
+
 	public void DeleteSave() 
 	{
 		saves.RemoveAt(indexToDelete);
@@ -111,6 +143,24 @@ public class SaveMenuHandler : GUIWindowScripts {
 		icons.Add(icon);
 		icon.transform.SetAsFirstSibling();
 	}
+
+	public void BackupSave(PlayerSave save)
+	{
+		string path = Application.persistentDataPath + "\\Saves\\" + save.name + " - Backup";
+		File.WriteAllText(path, JsonUtility.ToJson(save));
+
+		saves.Add(save);
+		paths.Add(path);
+
+		SaveMenuIcon icon = Instantiate(saveIconPrefab, contents).GetComponent<SaveMenuIcon>();
+		icon.save = save;
+		icon.path = path;
+		icon.index = icons.Count;
+		icon.handler = this;
+		icons.Add(icon);
+		icon.transform.SetSiblingIndex(icon.transform.parent.childCount - 2);
+	}
+
 
 	public static PlayerSave CreateSave(string name, string checkpointName = null, string blueprintField = null)
 	{

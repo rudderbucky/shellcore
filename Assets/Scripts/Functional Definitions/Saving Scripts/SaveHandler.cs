@@ -33,9 +33,11 @@ public class SaveHandler : MonoBehaviour {
 			player.shards = save.shards;
 			player.cursave = save;
 			player.credits = save.credits;
+			player.reputation = save.reputation;
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
+
             if(save.timePlayed != 0) player.spawnPoint = save.position;
 
             player.Rebuild();
@@ -69,6 +71,11 @@ public class SaveHandler : MonoBehaviour {
 	
 	public void Save() {
 		save.timePlayed += Time.timeSinceLevelLoad / 60;
+		if(SaveMenuHandler.migratedTimePlayed != null)
+		{
+			save.timePlayed += (int)SaveMenuHandler.migratedTimePlayed;
+			SaveMenuHandler.migratedTimePlayed = null;
+		} 
 		string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
 		save.position = player.spawnPoint;
 		save.currentHealths = player.currentHealth;
@@ -101,6 +108,7 @@ public class SaveHandler : MonoBehaviour {
         }
         save.taskVariableNames = keys;
         save.taskVariableValues = values;
+		save.reputation = player.reputation;
 
 		string saveJson = JsonUtility.ToJson(save);
 		File.WriteAllText(currentPath, saveJson);

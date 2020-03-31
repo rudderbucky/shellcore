@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.EventSystems;
 
-public class SaveMenuIcon : MonoBehaviour {
+public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+{
 
 	public SaveMenuHandler handler;
 	public PlayerSave save;
@@ -16,8 +18,10 @@ public class SaveMenuIcon : MonoBehaviour {
 	public Image shellImage;
 	public Image coreImage;
 
+	float origPos;
 
 	void Start() {
+		origPos = saveName.rectTransform.anchoredPosition.x;
 		EntityBlueprint print = ScriptableObject.CreateInstance<EntityBlueprint>();
 		JsonUtility.FromJsonOverwrite(save.currentPlayerBlueprint, print);
 		shellImage.sprite = ResourceManager.GetAsset<Sprite>(print.coreShellSpriteID);
@@ -32,11 +36,22 @@ public class SaveMenuIcon : MonoBehaviour {
 			version.color = Color.red;
 			version.text += " - Unsupported Version!";
 		}
+		if(SaveMenuHandler.migrationVersions.Exists((v) => save.version == v))
+		{
+			version.color = 0.5F * Color.green + Color.red;
+			version.text += " - Click save to attempt migration";
+		}
 		timePlayed.text = "Time Played: " + (((int)save.timePlayed / 60 > 0) ? (int)save.timePlayed / 60 + " hours " : "") + (int)save.timePlayed % 60 + " minutes";
 	}
 
 	public void LoadSave() {
-		LoadSaveByPath(path, true);
+		if(!SaveMenuHandler.migrationVersions.Exists((v) => save.version == v))
+			LoadSaveByPath(path, true);
+		else handler.PromptMigrate(index);
+	}
+
+	public void BackupSave() {
+		handler.BackupSave(save);
 	}
 
 	public void DeleteSave() {
@@ -53,4 +68,41 @@ public class SaveMenuIcon : MonoBehaviour {
 		}
 		MainMenu.StartGame(nullifyTestJsonPath);
 	}
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        StopCoroutine(MoveOut());
+		StartCoroutine(MoveIn());
+    }
+
+	IEnumerator MoveOut()
+	{
+		int counter = 0;
+		while(counter < 50 && saveName.rectTransform.anchoredPosition.x < origPos + 50)
+		{
+			saveName.rectTransform.anchoredPosition += new Vector2(5, 0);
+			counter += 5;
+			yield return new WaitForFixedUpdate();
+		}
+		if(saveName.rectTransform.anchoredPosition.x > origPos + 50)
+			saveName.rectTransform.anchoredPosition = new Vector2(origPos + 50, saveName.rectTransform.anchoredPosition.y);
+	}
+
+	IEnumerator MoveIn()
+	{
+		int counter = 0;
+		while(counter < 50 && saveName.rectTransform.anchoredPosition.x > origPos)
+		{
+			saveName.rectTransform.anchoredPosition -= new Vector2(5, 0);
+			counter += 5;
+			yield return new WaitForFixedUpdate();
+		}
+		saveName.rectTransform.anchoredPosition = new Vector2(origPos, saveName.rectTransform.anchoredPosition.y);
+	}
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        StopCoroutine(MoveIn());
+		StartCoroutine(MoveOut());
+    }
 }

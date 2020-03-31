@@ -23,4 +23,5 @@ public class PlayerSave {
 	public WorldData.CharacterData[] characters;
 	public List<string> sectorsSeen;
 	public List<Mission> missions;
+	public int reputation;
 }

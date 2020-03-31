@@ -34,7 +34,7 @@ public class SpeedThrust : ActiveAbility
     {
         var enginePower = (Core as Craft).enginePower;
         if(craft && activated) {
-            (Core as Craft).enginePower -= 100F * abilityTier;
+            (Core as Craft).enginePower -= 100F * Mathf.Pow(abilityTier, 1.5F);
         } // bring the engine power back (will change to vary as Speed Thrust is tiered)
         ToggleIndicator(true);
     }

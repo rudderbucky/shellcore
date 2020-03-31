@@ -112,6 +112,8 @@ namespace NodeEditorFramework.Standard
                 {
                     if(forceStart)
                     {
+                        if(handler as TaskManager) missionCanvasNode = this;
+                        else dialogueCanvasNode = this;
                         handler.SetSpeakerID(EntityID);
                         return 0;
                     }
