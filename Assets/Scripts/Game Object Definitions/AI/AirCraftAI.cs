@@ -192,6 +192,8 @@ public class AirCraftAI : MonoBehaviour
             OnEnd.Invoke();
     }
 
+    Vector3 delta = Vector3.zero;
+    float timer = 0.3F;
     private void Update()
     {
         if (!craft.GetIsDead())
@@ -228,11 +230,18 @@ public class AirCraftAI : MonoBehaviour
                 }
                 else
                 {
+                    if(craft as Drone && Input.GetKey(KeyCode.D)) Debug.Log(aggroTarget);
                     switch (aggression)
                     {
                         case AIAggression.FollowInRange:
-                            // Follow
-                            Vector3 delta = aggroTarget.transform.position - craft.transform.position;
+                            var aggroPos = aggroTarget.transform.position;
+                            if(timer >= 0.3F)
+                            {
+                                timer = 0;
+                                delta = (aggroPos - craft.transform.position).magnitude > 3 ? aggroPos - craft.transform.position
+                                    + new Vector3(Random.Range(-1F, 1F), Random.Range(-1F, 1F)) : Vector3.zero;
+                            }
+                            else timer += Time.deltaTime;
                             float dist = delta.sqrMagnitude;
                             if (dist < 1000f)
                             {
