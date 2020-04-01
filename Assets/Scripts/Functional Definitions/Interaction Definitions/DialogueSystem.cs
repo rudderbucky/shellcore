@@ -36,7 +36,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public PlayerCore player;
     Vector3? speakerPos = null;
     public CoreUpgraderScript upgraderScript;
-    public static bool isInCutscene;
+    public static bool isInCutscene = false;
 
     public enum DialogueStyle
     {

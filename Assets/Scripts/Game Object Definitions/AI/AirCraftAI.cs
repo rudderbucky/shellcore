@@ -218,7 +218,8 @@ public class AirCraftAI : MonoBehaviour
                 aggroSearchTimer = Time.time + 1f;
             }
 
-            if (aggroTarget && !DialogueSystem.isInCutscene) // shouldn't tick if dead or in cutscene, give control to the cutscene
+            // shouldn't tick if dead or in cutscene, give control to the cutscene
+            if (aggroTarget && aggroTarget.faction != craft.faction && !DialogueSystem.isInCutscene) 
             {
                 if (aggroTarget.GetIsDead())
                 {
@@ -257,6 +258,11 @@ public class AirCraftAI : MonoBehaviour
                     }
 
                 }
+            }
+            else
+            {
+                aggroTarget = null;
+                aggroSearchTimer = 0f;
             }
 
             if (module != null)
