@@ -88,6 +88,8 @@ public class Drone : AirCraft, IOwnable {
         ai.moveToPosition(pos);
     }
 
+    private AirCraftAI.AIMode lastMode;
+
     protected override void Update()
     {
         base.Update();
@@ -95,6 +97,7 @@ public class Drone : AirCraft, IOwnable {
         {
             if (time != 0)
             {
+                ai.setMode(lastMode);
                 time = 0;
             }
         } else
@@ -103,6 +106,7 @@ public class Drone : AirCraft, IOwnable {
             {
                 time = Time.time;
                 initialzangle = transform.localEulerAngles.z;
+                lastMode = ai.getMode();
             }
             ai.setMode(AirCraftAI.AIMode.Inactive);
             transform.localEulerAngles = new Vector3(0, 0, initialzangle + (Time.time - time) * -180f);

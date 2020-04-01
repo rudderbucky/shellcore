@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Scripts for camera
@@ -18,6 +19,7 @@ public class CameraScript : MonoBehaviour {
     public static float velocityFactor;
 
     public static float zLevel = 10;
+    public EventSystem eventSystem;
 
     public void Initialize(PlayerCore player)
     {
@@ -45,15 +47,18 @@ public class CameraScript : MonoBehaviour {
     {
      if(initialized)
         {
-            if(Input.GetAxis("Mouse ScrollWheel") < 0f) 
-            { 
-                zLevel = Mathf.Min(10, zLevel + 0.5F);
-                Focus(transform.position);
-            }
-            else if(Input.GetAxis("Mouse ScrollWheel") > 0f) 
+            if(eventSystem && !eventSystem.IsPointerOverGameObject())
             {
-                zLevel = Mathf.Max(5, zLevel - 0.5F);
-                Focus(transform.position);
+                if(Input.GetAxis("Mouse ScrollWheel") < 0f) 
+                { 
+                    zLevel = Mathf.Min(10, zLevel + 0.5F);
+                    Focus(transform.position);
+                }
+                else if(Input.GetAxis("Mouse ScrollWheel") > 0f) 
+                {
+                    zLevel = Mathf.Max(5, zLevel - 0.5F);
+                    Focus(transform.position);
+                }
             }    
 
             if(panning) Pan();

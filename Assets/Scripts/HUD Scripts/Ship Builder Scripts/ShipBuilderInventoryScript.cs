@@ -23,7 +23,13 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDown
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(Input.GetKey(KeyCode.LeftShift)) Debug.Log(part.secondaryData);
+        if(Input.GetKey(KeyCode.LeftShift)) 
+        {
+            #if UNITY_EDITOR
+            Debug.Log(part.secondaryData);
+            #endif
+        }
+
         if(count > 0) {
             var builderPart = Instantiate(SBPrefab, cursor.transform.parent).GetComponent<ShipBuilderPart>();
             builderPart.info = part;
@@ -34,6 +40,12 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDown
             count--;
             cursor.buildValue += EntityBlueprint.GetPartValue(part);
             if(mode == BuilderMode.Trader) cursor.buildCost += EntityBlueprint.GetPartValue(part);
+
+            if(Input.GetKey(KeyCode.LeftShift)) 
+            {
+                if(mode == BuilderMode.Yard && cursor.builder.GetMode() == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Sell);
+                else if(mode == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Buy);
+            }
         }
     }
     public void IncrementCount() {

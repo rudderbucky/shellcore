@@ -78,7 +78,7 @@ public class TractorAI : AIModule
         if(beam.GetTractorTarget() == null)
         {
             Draggable part = null;
-            float dist = 400f; //Max distance of new tractor beam
+            float dist = TractorBeam.maxRangeSquared; //Max distance of new tractor beam
             for (int i = 0; i < AIData.strayParts.Count; i++)
             {
                 float d = (AIData.strayParts[i].transform.position - craft.transform.position).sqrMagnitude;

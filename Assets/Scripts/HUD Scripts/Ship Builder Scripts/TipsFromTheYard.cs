@@ -27,6 +27,8 @@ public class TipsFromTheYard : MonoBehaviour {
 		tipsList.Add("You can hit 'escape' to close this window too! That way you can cycle through my infinite wisdom faster!");
 		tipsList.Add("You can create custom ShellCores in the Sector Creator using the JSON you get from this ship builder! Share your JSON with friends and dogfight against their ShellCores!");
 		tipsList.Add("If you double click the Status Menu map it switches from a draggable map to a minimap-style scroll (and vice versa)!");
+		tipsList.Add("You can shift-click part buttons to instantly buy/sell them!");
+		tipsList.Add("You can press tab to cycle through your selected targets!");
 		colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
 	}
 	

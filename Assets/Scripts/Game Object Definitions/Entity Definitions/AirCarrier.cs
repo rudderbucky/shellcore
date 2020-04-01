@@ -54,10 +54,25 @@ public class AirCarrier : AirConstruct, ICarrier {
     {
         if (initialized)
         {
+            var enemyTargetFound = false;
+            if(BattleZoneManager.getTargets() != null)
+            {
+                foreach(var target in BattleZoneManager.getTargets())
+                {
+                    if(target.faction != faction && !target.GetIsDead())
+                    {
+                        enemyTargetFound = true;
+                        break;
+                    }
+                }
+            } 
+
             foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
             {
-                active.Tick("activate");
+                if(!(active is SpawnDrone) || enemyTargetFound) active.Tick("activate");
             }
+
+
             base.Update();
         }
     }

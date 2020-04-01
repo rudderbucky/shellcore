@@ -76,8 +76,8 @@ public class QuantityDisplayScript : MonoBehaviour {
         var targetName = targetInfo.transform.Find("Target Name").GetComponent<Text>();
         var targetDesc = targetInfo.transform.Find("Name").GetComponent<Text>();
         var targetDist = targetInfo.transform.Find("Distance").GetComponent<Text>();
-        Image targetShape = null;
-        if(targetInfo.transform.Find("Shape")) targetShape = targetInfo.transform.Find("Shape").GetComponent<Image>();
+        Text targetNumber = null;
+        if(targetInfo.transform.Find("Number")) targetNumber = targetInfo.transform.Find("Number").GetComponent<Text>();
 
         if(entity) {
             targetInfo.SetActive(true);
@@ -87,11 +87,10 @@ public class QuantityDisplayScript : MonoBehaviour {
             targetDesc.text = description;
             targetDist.text = "Distance: " + (int)(entity.transform.position - player.transform.position).magnitude;
             targetName.color = targetDesc.color = targetDist.color = FactionColors.colors[entity.faction];
-            if(targetShape) 
+            if(targetNumber) 
             {
-                targetShape.color = targetName.color;
-                targetShape.sprite = ReticleScript.instance.shapeArray[ReticleScript.instance.GetTargetIndex(entity)];
-                targetShape.SetNativeSize();
+                targetNumber.color = targetName.color;
+                targetNumber.text = ReticleScript.instance.GetTargetIndex(entity) + 1 + "";
                 // targetShape.rectTransform.sizeDelta = targetShape.rectTransform.sizeDelta / 1.25F;
             }
         } else {

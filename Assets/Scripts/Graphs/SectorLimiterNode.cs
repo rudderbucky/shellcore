@@ -70,7 +70,6 @@ namespace NodeEditorFramework.Standard
         {
             if(name == sectorName)
             {
-                (Canvas.Traversal as MissionTraverser).traverserLimiterDelegate = null;
                 TaskManager.Instance.setNode(output);
             }
             else

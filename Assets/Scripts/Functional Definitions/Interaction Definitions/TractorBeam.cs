@@ -5,6 +5,7 @@ using UnityEngine;
 // Tractor beam wrapper class.
 public class TractorBeam : MonoBehaviour
 {
+    public static readonly int maxRangeSquared = 225;
     protected LineRenderer lineRenderer;
     public GameObject glowPrefab;
     public Material tractorMaterial;
@@ -130,7 +131,7 @@ public class TractorBeam : MonoBehaviour
     {
         if(newTarget && newTarget.GetComponent<ShellPart>()) AIData.strayParts.Remove(newTarget.GetComponent<ShellPart>());
         else if(!newTarget && target && target.GetComponent<ShellPart>()) AIData.strayParts.Add(target.GetComponent<ShellPart>());
-        if (newTarget && (newTarget.transform.position - transform.position).sqrMagnitude > 400)
+        if (newTarget && (newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared)
             return;
         lineRenderer.enabled = (newTarget != null);
         if(target)

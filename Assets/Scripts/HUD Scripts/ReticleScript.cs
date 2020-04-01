@@ -86,8 +86,7 @@ public class ReticleScript : MonoBehaviour {
                     PlayerCore player = craft.GetComponent<PlayerCore>();
                     player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
                 }
-                targSys.SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
-                AdjustReticleBounds(GetComponent<SpriteRenderer>(), draggableTarget.transform);
+                SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
                 return droneInteraction; // Return so that the next check doesn't happen
             }
 
@@ -117,8 +116,7 @@ public class ReticleScript : MonoBehaviour {
                         DialogueSystem.StartDialogue(curTarg.GetDialogue() as Dialogue, curTarg as Entity);
                 }
 
-                targSys.SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
-                AdjustReticleBounds(GetComponent<SpriteRenderer>(), curTarg.GetTransform());
+                SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
                 return droneInteraction; // Return so that the next check doesn't happen
             }
             targSys.SetTarget(null); // otherwise set the target to null
@@ -129,6 +127,12 @@ public class ReticleScript : MonoBehaviour {
 
         // quantityDisplay.UpdatePrimaryTargetInfo();
         return droneInteraction;
+    }
+
+    public void SetTarget(Transform target)
+    {
+        targSys.SetTarget(target); // set the target to the transform
+        AdjustReticleBounds(GetComponent<SpriteRenderer>(), target);
     }
 
     /// <summary>
@@ -155,7 +159,7 @@ public class ReticleScript : MonoBehaviour {
             while(index < secondariesByObject.Count)
             {
                 var oldCount = secondariesByObject.Count;
-                SetSecondaryReticleTransform(secondariesByObject[index].Item1, secondariesByObject[index].Item2);
+                SetSecondaryReticleTransform(secondariesByObject[index].Item1, secondariesByObject[index].Item2, index + 1);
                 if(oldCount == secondariesByObject.Count) index++;
             }
 
@@ -190,15 +194,16 @@ public class ReticleScript : MonoBehaviour {
         }
 	}
 
-    private void SetSecondaryReticleTransform(Entity ent, Transform reticle)
+    private void SetSecondaryReticleTransform(Entity ent, Transform reticle, int count)
     {
         if(ent != null && !ent.GetIsDead())
         {
             reticle.transform.position = ent.transform.position; // update reticle position
             reticle.GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
-            reticle.Find("Shape Marker").GetComponent<SpriteRenderer>().enabled = true;
-            reticle.Find("Shape Marker").GetComponent<SpriteRenderer>().sprite = shapeArray[secondariesByObject.IndexOf((ent, reticle))];
-            reticle.Find("Shape Marker").GetComponent<SpriteRenderer>().color = new Color32((byte)0, (byte)150, (byte)250, (byte)255);
+            reticle.Find("Number Marker").GetComponent<MeshRenderer>().enabled = true;
+            reticle.Find("Number Marker").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
+            reticle.Find("Number Marker").GetComponent<TextMesh>().text = count + "";
+            reticle.Find("Number Marker").GetComponent<TextMesh>().color = new Color32((byte)0, (byte)150, (byte)250, (byte)255);
         }
         else RemoveSecondaryTarget((ent, reticle));
 
@@ -235,9 +240,9 @@ public class ReticleScript : MonoBehaviour {
         Vector3 targSize = ent.GetComponent<SpriteRenderer>().bounds.size; // adjust the size of the reticle
         float followedSize = Mathf.Max(targSize.x + 1.5F, targSize.y + 1.5F); // grab the maximum bounded size of the target
         renderer.size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
-        if(renderer.transform.Find("Shape Marker"))
+        if(renderer.transform.Find("Number Marker"))
         {
-            renderer.transform.Find("Shape Marker").localPosition = new Vector3(followedSize / 2 + 0.5F, followedSize / 2 - 0.25F, 0);
+            renderer.transform.Find("Number Marker").localPosition = new Vector3(followedSize / 2 + 0.1F, followedSize / 2 + 0.05F, 0);
         }
     }
 
@@ -301,7 +306,7 @@ public class ReticleScript : MonoBehaviour {
         return -1;
     }
 
-    private void RemoveSecondaryTarget(Entity entity)
+    public void RemoveSecondaryTarget(Entity entity)
     {
         foreach(var secondary in secondariesByObject)
         {
