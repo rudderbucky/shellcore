@@ -33,4 +33,5 @@ public class Mission
     public List<Task> tasks;
     public string prerequisitesUnsatisifedText;
     public Color textColor;
+    public string checkpoint;
 }

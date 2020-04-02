@@ -418,8 +418,16 @@ public class SectorManager : MonoBehaviour
             case EntityBlueprint.IntendedType.Trader:
                 Yard trade = gObj.AddComponent<Yard>();
                 trade.mode = BuilderMode.Trader;
-                blueprint.dialogue.traderInventory =
-                    JsonUtility.FromJson<ShipBuilder.TraderInventory>(data.blueprintJSON).parts;
+                try
+                {
+                    blueprint.dialogue.traderInventory =
+                        JsonUtility.FromJson<ShipBuilder.TraderInventory>(data.blueprintJSON).parts;
+                }
+                catch(System.Exception e)
+                {
+                    Debug.LogError(e);
+                    blueprint.dialogue.traderInventory = new List<EntityBlueprint.PartInfo>();
+                }
                 break;
             case EntityBlueprint.IntendedType.DroneWorkshop:
                 Yard workshop = gObj.AddComponent<Yard>();

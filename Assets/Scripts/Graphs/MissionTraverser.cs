@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 public class MissionTraverser : Traverser
 {
-    new QuestCanvas nodeCanvas;
+    public new QuestCanvas nodeCanvas;
 
     public SectorManager.SectorLoadDelegate traverserLimiterDelegate;
     public MissionTraverser(QuestCanvas canvas) : base(canvas)

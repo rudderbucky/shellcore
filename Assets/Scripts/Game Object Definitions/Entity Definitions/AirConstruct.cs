@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Constructs in the air
+/// </summary>
 public class AirConstruct : Construct {
 
     private float timePassed; // float that stores the time passed since the last aircraft movement, used for idle oscillation and perhaps more down the line

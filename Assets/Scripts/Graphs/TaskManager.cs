@@ -192,13 +192,15 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         for(int i = 0; i < traversers.Count; i++)
         {
             traversers[i].findRoot().TryAddMission();
+            Debug.LogWarning(traversers[i].nodeCanvas.missionName);
         }
 
         // tasks
-        for (int i = 0; i < PlayerCore.Instance.cursave.checkpointNames.Length; i++)
+        var missions = PlayerCore.Instance.cursave.missions;
+        foreach(var mission in missions)
         {
-            if(i < traversers.Count && i < PlayerCore.Instance.cursave.checkpointNames.Length)
-                traversers[i].activateCheckpoint(PlayerCore.Instance.cursave.checkpointNames[i]);
+            if(traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))
+                traversers.Find((t) => t.nodeCanvas.missionName == mission.name).activateCheckpoint(mission.checkpoint);
         }
 
         for (int i = 0; i < traversers.Count; i++)

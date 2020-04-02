@@ -24,12 +24,15 @@ public class Outpost : AirConstruct, IVendor {
         base.Awake();
     }
 
-    public override void RemovePart(ShellPart part) {
+    public override void RemovePart(ShellPart part) 
+    {
         if (part)
+        {
             if (part.gameObject.name != "Shell Sprite")
             {
                 Destroy(part.gameObject);
             }
+        }
     }
 
     protected override void Update()

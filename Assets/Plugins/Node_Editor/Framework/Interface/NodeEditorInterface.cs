@@ -84,6 +84,7 @@ namespace NodeEditorFramework.Standard
             {
 				NodeEditorGUI.state = NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? 
 					NodeEditorGUI.NodeEditorState.Dialogue : NodeEditorGUI.NodeEditorState.Mission;
+				NewNodeCanvas(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? typeof(QuestCanvas) : typeof(DialogueCanvas));
 				NodeEditorGUI.Init();
             }
             GUI.backgroundColor = Color.white;

@@ -88,12 +88,13 @@ public class SaveHandler : MonoBehaviour {
 		save.characters = SectorManager.instance.characters;
 		save.version = VersionNumberScript.version;
 		
-        // tasks
-        save.checkpointNames = new string[taskManager.traversers.Count];
-
-        for (int i = 0; i < save.checkpointNames.Length; i++)
+		
+        for (int i = 0; i < taskManager.traversers.Count; i++)
         {
-            save.checkpointNames[i] = taskManager.traversers[i].lastCheckpointName;
+			var traverser = taskManager.traversers[i];
+			var missionName = traverser.nodeCanvas.missionName;
+			var lastCheckpoint = traverser.lastCheckpointName;
+            save.missions.Find((m) => m.name == traverser.nodeCanvas.missionName).checkpoint = lastCheckpoint;
         }
 
         Dictionary<string, int> variables = taskManager.taskVariables;

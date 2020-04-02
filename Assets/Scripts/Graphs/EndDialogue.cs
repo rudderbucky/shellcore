@@ -98,7 +98,7 @@ namespace NodeEditorFramework.Standard
             {
                 handler.SetNode(node);
                 handler.GetInteractionOverrides()[node.EntityID].Pop();
-                if(handler is DialogueSystem) DialogueSystem.Instance.DialogueViewTransitionOut();
+                if(handler is DialogueSystem || (!output || !output.connected())) DialogueSystem.Instance.DialogueViewTransitionOut();
                 return -1;
             }
             else

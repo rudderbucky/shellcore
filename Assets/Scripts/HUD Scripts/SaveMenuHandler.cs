@@ -105,7 +105,6 @@ public class SaveMenuHandler : GUIWindowScripts {
 	{
 		var save = saves[indexToMigrate];
 		save.version = VersionNumberScript.version;
-		save.checkpointNames = new string[0];
 		save.reputation = 0;
 		migratedTimePlayed = save.timePlayed;
 		save.timePlayed = 0;
@@ -192,7 +191,6 @@ public class SaveMenuHandler : GUIWindowScripts {
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		blueprint.coreSpriteID = "core1_light";
 		blueprint.coreShellSpriteID = "core1_shell";
-		if(checkpointName != null && checkpointName != "") save.checkpointNames = new string[] {checkpointName, checkpointName, checkpointName, checkpointName, checkpointName};
 		if(blueprintField != null && blueprintField != "") JsonUtility.FromJsonOverwrite(blueprintField, blueprint);
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
 		save.abilityCaps = new int[] {10, 3, 10, 10};

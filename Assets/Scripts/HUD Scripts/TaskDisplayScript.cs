@@ -76,7 +76,15 @@ public class TaskDisplayScript : MonoBehaviour
                 button.GetComponentInChildren<Text>().color = Color.green;
                 break;
         }
+        #if UNITY_EDITOR
+        button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => 
+        {
+            ShowMission(mission); 
+            if(Input.GetKey(KeyCode.LeftShift)) mission.status = Mission.MissionStatus.Complete;
+        }));
+        #else
         button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => {ShowMission(mission);}));
+        #endif
     }
 
     public Text nameAndPrerequisitesHeader;

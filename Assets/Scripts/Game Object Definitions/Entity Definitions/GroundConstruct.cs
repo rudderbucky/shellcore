@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Constructs on the ground
+/// </summary>
 public class GroundConstruct : Construct
 {
-    protected bool onGround = true;
-
     protected override void Start()
     {
         Terrain = TerrainType.Ground;

@@ -207,7 +207,13 @@ public class WCGeneratorHandler : MonoBehaviour
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
 
         if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
-            System.IO.Directory.Move(Application.streamingAssetsPath + "\\CanvasPlaceholder", path + "\\Canvases");
+        {
+            System.IO.Directory.CreateDirectory(path + "\\Canvases");
+            foreach(var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+            {
+                System.IO.File.Copy(file, path + "\\Canvases\\" + System.IO.Path.GetFileName(file));
+            }
+        }
         else System.IO.Directory.CreateDirectory(path + "\\Canvases");
 
         foreach(var sector in sectors)

@@ -26,6 +26,7 @@ public class RectangleEffectScript : MonoBehaviour {
     // Use this for initialization
     private void Build() {
         partSys.Clear();
+        timesByParticle.Clear();
         var sh = partSys.shape; // grab the shape of the particle system
         Vector3 dimensions = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 
         Camera.main.pixelHeight, sh.position.z - Camera.main.transform.position.z));
@@ -41,6 +42,8 @@ public class RectangleEffectScript : MonoBehaviour {
         built = true;
     }
 
+    Dictionary<int, float> timesByParticle = new Dictionary<int, float>();
+
     /// <summary>
     /// Updater for the particles in the field, wraps them around if necessary
     /// </summary>
@@ -50,8 +53,12 @@ public class RectangleEffectScript : MonoBehaviour {
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -10);
         for (int i = 0; i < particles.Length; i++) // update all particles
         {
-            ParticleWrapper(ref particles[i], 0); // call particle wrapper for both dimensions
-            ParticleWrapper(ref particles[i], 1);
+            if(!timesByParticle.ContainsKey(i))
+            {
+                timesByParticle.Add(i, 0);
+            } else timesByParticle[i] -= Time.deltaTime;
+            ParticleWrapper(ref particles[i], 0, i); // call particle wrapper for both dimensions
+            ParticleWrapper(ref particles[i], 1, i);
         }
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, oldZ);
     }
@@ -61,15 +68,17 @@ public class RectangleEffectScript : MonoBehaviour {
     /// </summary>
     /// <param name="particle">the particle to wrap</param>
     /// <param name="dimension">the dimension (0 is x, 1 is y)</param>
-    private void ParticleWrapper(ref ParticleSystem.Particle particle, int dimension)
+    private void ParticleWrapper(ref ParticleSystem.Particle particle, int dimension, int index)
     {
+        if(!PlayerCore.Instance || PlayerCore.Instance.IsMoving()) timesByParticle[index] = 0;
         Vector3 relativeCameraPos = Camera.main.WorldToViewportPoint(particle.position);
         // grab the screen position of the particle
-        if (relativeCameraPos[dimension] < -0.05F || relativeCameraPos[dimension] > 1.05F) {
+        if (timesByParticle[index] <= 0 && (relativeCameraPos[dimension] < 0F || relativeCameraPos[dimension] > 1F)) {
+            timesByParticle[index] = 1;
             // if the particle is past the screen limits wrap it around
             displacement = relativeCameraPos;
-            displacement[dimension] = relativeCameraPos[dimension] < -0.05F ? 1F
-                : 0F;
+            displacement[dimension] = relativeCameraPos[dimension] < 0F ? 1F + relativeCameraPos[dimension]
+                : relativeCameraPos[dimension] - 1;
             //Mathf.Abs(displacement[dimension] - limit);
             particle.position = Camera.main.ViewportToWorldPoint(displacement);
         }

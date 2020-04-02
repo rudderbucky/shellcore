@@ -538,22 +538,23 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		// activate windows
 		gameObject.SetActive(true);
 
+		if(SceneManager.GetActiveScene().name == "SampleScene" && (presetButtons == null || presetButtons.Length == 0)) 
+		{
+			presetButtons = GetComponentsInChildren<PresetButton>();
+			foreach(PresetButton button in presetButtons) {
+				button.SBPrefab = SBPrefab;
+				button.player = player;
+				button.cursorScript = cursorScript;
+				button.builder = this;
+				button.displayHandler = displayHandler;
+				button.currentPartHandler = currentPartHandler;
+				button.Initialize();
+			}
+		}
+
 		if(!editorMode)
 		{
 			if(editorModeButtons) editorModeButtons.SetActive(false);
-			if(presetButtons == null || presetButtons.Length == 0) 
-			{
-				presetButtons = GetComponentsInChildren<PresetButton>();
-				foreach(PresetButton button in presetButtons) {
-					button.SBPrefab = SBPrefab;
-					button.player = player;
-					button.cursorScript = cursorScript;
-					button.builder = this;
-					button.displayHandler = displayHandler;
-					button.currentPartHandler = currentPartHandler;
-					button.Initialize();
-				}
-			}
 
 			foreach(PresetButton button in presetButtons) {
 				button.gameObject.SetActive(mode == BuilderMode.Yard);
