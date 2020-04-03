@@ -46,7 +46,12 @@ public abstract class WeaponAbility : ActiveAbility {
     }
 
     protected virtual void Start() {
-        if(abilityTier != 0) damage *= abilityTier;
+        if(abilityTier != 0) 
+        {
+            damage *= abilityTier;
+            energyCost *= abilityTier;
+        }
+
         switch(type) {
             case WeaponDiversityType.Strike:
                 energyCost *= 0.6F;

@@ -22,7 +22,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	ShipBuilderPart currentPart;
 	ShipBuilderPart lastPart;
 	public IBuilderInterface builder;
-	public InputField field;
+	public InputField searchField;
 	public InputField jsonField;
 	bool flipped;
 	public AbilityHandler handler;
@@ -162,8 +162,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	void Update() {
 		int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
 		builder.UpdateChain();
-		if(Input.GetKeyDown("c") && ((builder as ShipBuilder && (builder as ShipBuilder).editorMode) 
-			|| (!field.isFocused && !jsonField.isFocused))) {
+		if(Input.GetKeyDown("c") && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active)) {
 			ClearAllParts();
 		}
 		System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / (int)y), z * ((int)x.y / (int)z), 0);

@@ -19,7 +19,7 @@ public class SectorPropertyDisplay : MonoBehaviour
     public InputField colorG;
     public InputField colorB;
     public GameObject bgSpawnInputFieldPrefab;
-    public List<InputField> bgSpawnInputFields = new List<InputField>();
+    public List<(InputField, Dropdown)> bgSpawnInputFields = new List<(InputField, Dropdown)>();
     public Transform scrollContents;
     Vector2 mousePos;
 
@@ -96,18 +96,25 @@ public class SectorPropertyDisplay : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void AddBGSpawn(string text = null) 
+    public void AddBGSpawn()
+    {
+        AddBGSpawn(null, 1);
+    }
+
+    public void AddBGSpawn(string text = null, int faction = 1) 
     {
         var field = Instantiate(bgSpawnInputFieldPrefab, scrollContents).GetComponentInChildren<InputField>();
-        bgSpawnInputFields.Add(field);
+        var drop = field.transform.parent.GetComponentInChildren<Dropdown>();
+        bgSpawnInputFields.Add((field, drop));
         field.text = text;
+        drop.value = faction;
     }
 
     public void ClearBGSpawns() 
     {
         foreach(var field in bgSpawnInputFields)
         {
-            Destroy(field.transform.parent.gameObject);
+            Destroy(field.Item1.transform.parent.gameObject);
         }
         bgSpawnInputFields.Clear();
     }
@@ -117,8 +124,8 @@ public class SectorPropertyDisplay : MonoBehaviour
         List<Sector.LevelEntity> levelEntities = new List<Sector.LevelEntity>();
         foreach(var field in bgSpawnInputFields)
         {
-            if(field.text == null || field.text == "") continue;
-            var item = ItemHandler.instance.items.Find((it) => {return it.assetID == field.text;});
+            if(field.Item1.text == null || field.Item1.text == "") continue;
+            var item = ItemHandler.instance.items.Find((it) => {return it.assetID == field.Item1.text;});
 
             if(item != null)
             {
@@ -128,7 +135,7 @@ public class SectorPropertyDisplay : MonoBehaviour
                 if(item.name != null && item.name != "")
                     ent.name = item.name;
                 else ent.name = item.obj.name;
-                ent.faction = 1; // maybe change this later
+                ent.faction = field.Item2.value; // maybe change this later
                 ent.assetID = item.assetID;
                 levelEntities.Add(ent);
             }
@@ -137,14 +144,14 @@ public class SectorPropertyDisplay : MonoBehaviour
                 try
                 {
                     EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                    JsonUtility.FromJsonOverwrite(field.text, blueprint);
+                    JsonUtility.FromJsonOverwrite(field.Item1.text, blueprint);
                     blueprint.intendedType = EntityBlueprint.IntendedType.ShellCore; // for good measure :)
 
                     Sector.LevelEntity ent = new Sector.LevelEntity();
                     ent.name = blueprint.entityName;
                     ent.assetID = "shellcore_blueprint";
                     ent.blueprintJSON = JsonUtility.ToJson(blueprint);
-                    ent.faction = 1; // maybe change this later
+                    ent.faction = field.Item2.value; // maybe change this later
                     levelEntities.Add(ent);
                 } 
                 catch(System.Exception e)
@@ -162,6 +169,7 @@ public class SectorPropertyDisplay : MonoBehaviour
             currentSector.backgroundSpawns[i].entity = ent;
             currentSector.backgroundSpawns[i].timePerSpawn = 8;
             currentSector.backgroundSpawns[i].radius = 15;
+            i++;
         }
 
         UpdateBGSpawns();
@@ -175,9 +183,9 @@ public class SectorPropertyDisplay : MonoBehaviour
             if(bgSpawn.entity.assetID != "shellcore_blueprint" 
                 && ItemHandler.instance.items.Exists((item) => {return item.assetID == bgSpawn.entity.assetID;}))
             {
-                AddBGSpawn(bgSpawn.entity.assetID);
+                AddBGSpawn(bgSpawn.entity.assetID, bgSpawn.entity.faction);
             }
-            else AddBGSpawn(bgSpawn.entity.blueprintJSON);
+            else AddBGSpawn(bgSpawn.entity.blueprintJSON, bgSpawn.entity.faction);
         }
     }
 }

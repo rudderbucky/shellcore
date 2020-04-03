@@ -62,13 +62,13 @@ public class HealthHeal : Ability
             switch (type)
             {
                 case HealingType.core:
-                    Core.TakeCoreDamage(-300 * abilityTier); // heal core
+                    Core.TakeCoreDamage(-500 * abilityTier); // heal core
                     break;
                 case HealingType.energy:
-                    Core.TakeEnergy(-100 * abilityTier);
+                    Core.TakeEnergy(-250 * abilityTier);
                     break;
                 case HealingType.shell:
-                    Core.TakeShellDamage(-300 * abilityTier, 0, GetComponentInParent<Entity>()); // heal energy
+                    Core.TakeShellDamage(-500 * abilityTier, 0, GetComponentInParent<Entity>()); // heal energy
                     break;
             }
             isOnCD = true; // set on cooldown

@@ -14,8 +14,8 @@ public class Torpedo : Bullet {
         ID = 8;
         cooldownDuration = 3F;
         CDRemaining = cooldownDuration;
-        energyCost = 10;
-        damage = 500;
+        energyCost = 100;
+        damage = 600;
         terrain = Entity.TerrainType.Ground;
         category = Entity.EntityCategory.All;
     }

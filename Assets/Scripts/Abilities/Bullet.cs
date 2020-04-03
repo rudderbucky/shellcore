@@ -25,8 +25,8 @@ public class Bullet : WeaponAbility {
         ID = 5;
         cooldownDuration = 2F;
         CDRemaining = cooldownDuration;
-        energyCost = 50;
-        damage = 450;
+        energyCost = 25;
+        damage = 400;
         prefabScale = 1 * Vector3.one;
         category = Entity.EntityCategory.All;
     }

@@ -18,7 +18,7 @@ public class Cannon : WeaponAbility {
         cooldownDuration = 2F;
         CDRemaining = cooldownDuration;
         range = 10;
-        energyCost = 10;
+        energyCost = 25;
         category = Entity.EntityCategory.All;
     }
 

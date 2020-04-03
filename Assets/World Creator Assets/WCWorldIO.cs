@@ -15,7 +15,7 @@ public class WCWorldIO : MonoBehaviour
     public Transform content;
     public InputField blueprintField;
     public InputField checkpointField;
-    
+    public static bool active = false;
 
     enum IOMode
     {
@@ -85,6 +85,7 @@ public class WCWorldIO : MonoBehaviour
     public InputField field;
     void Show(IOMode mode)
     {
+        active = true;
         gameObject.SetActive(true);
         window.SetActive(true);
         newWorldStack.SetActive(mode == IOMode.Write || mode == IOMode.WriteShipJSON); 
@@ -159,6 +160,7 @@ public class WCWorldIO : MonoBehaviour
 
     public void Hide()
     {
+        active = false;
         DestroyAllButtons();
         gameObject.SetActive(false);
         window.SetActive(false);

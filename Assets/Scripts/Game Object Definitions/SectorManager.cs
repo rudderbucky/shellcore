@@ -121,24 +121,20 @@ public class SectorManager : MonoBehaviour
         {
             dangerZoneTimer = 0;
         }
-
-        // update background spawns
-        for(int i = 0; i < bgSpawns.Count; i++)
+        
+        if(!DialogueSystem.isInCutscene)
         {
-            var key = bgSpawns[i];
-            timersBySpawn[key] -= Time.deltaTime;
-            if(timersBySpawn[key] <= 0)
-            {
-                timersBySpawn[key] = key.Item3;
+            bgSpawnTimer += Time.deltaTime;
 
-                if(!DialogueSystem.isInCutscene)
-                {
-                    var spawnPoint = player.transform.position + Quaternion.Euler(0, 0, Random.Range(0, 360)) * new Vector3(key.Item4, 0, 0);
-                    key.Item2.position = spawnPoint;
-                    key.Item2.ID = "";
-                    SpawnEntity(key.Item1, key.Item2);
-                    AudioManager.PlayClipByID("clip_respawn", spawnPoint);
-                }
+            if(bgSpawnTimer >= 8 && bgSpawns.Count > 0)
+            {
+                bgSpawnTimer = 0;
+                var key = bgSpawns[Random.Range(0, bgSpawns.Count)];
+                var spawnPoint = player.transform.position + Quaternion.Euler(0, 0, Random.Range(0, 360)) * new Vector3(key.Item4, 0, 0);
+                key.Item2.position = spawnPoint;
+                key.Item2.ID = "";
+                SpawnEntity(key.Item1, key.Item2);
+                AudioManager.PlayClipByID("clip_respawn", spawnPoint);
             }
         }
     }
@@ -425,7 +421,7 @@ public class SectorManager : MonoBehaviour
                 }
                 catch(System.Exception e)
                 {
-                    Debug.LogError(e);
+                    Debug.LogWarning(e);
                     blueprint.dialogue.traderInventory = new List<EntityBlueprint.PartInfo>();
                 }
                 break;
@@ -464,7 +460,8 @@ public class SectorManager : MonoBehaviour
     }
 
     List<(EntityBlueprint, Sector.LevelEntity, int, float)> bgSpawns = new List<(EntityBlueprint, Sector.LevelEntity, int, float)>();
-    Dictionary<(EntityBlueprint, Sector.LevelEntity, int, float), float> timersBySpawn = new Dictionary<(EntityBlueprint, Sector.LevelEntity, int, float), float>();
+    
+    private float bgSpawnTimer = 0;
     void loadSector()
     {
         #if UNITY_EDITOR
@@ -544,7 +541,7 @@ public class SectorManager : MonoBehaviour
         carriers.Clear();
 
         // reset background spawns
-        timersBySpawn.Clear();
+        bgSpawnTimer = 0;
         bgSpawns.Clear();
 
         //load new sector
@@ -605,7 +602,12 @@ public class SectorManager : MonoBehaviour
             }
             else if(obj is EntityBlueprint)
             {
-                SpawnEntity(obj as EntityBlueprint, current.entities[i]);
+                var copy = Instantiate(obj);
+                if((obj as EntityBlueprint).dialogue)
+                {
+                    (copy as EntityBlueprint).dialogue = Instantiate((obj as EntityBlueprint).dialogue);
+                }
+                SpawnEntity(copy as EntityBlueprint, current.entities[i]);
             }
         }
 
@@ -675,14 +677,12 @@ public class SectorManager : MonoBehaviour
                     EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                     JsonUtility.FromJsonOverwrite(bgSpawn.entity.blueprintJSON, blueprint);
                     bgSpawns.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
-                    timersBySpawn.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius), bgSpawn.timePerSpawn);
                 }
                 else 
                 {
                     var key = (ResourceManager.GetAsset<EntityBlueprint>(bgSpawn.entity.assetID), 
                         bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius);
                     bgSpawns.Add(key);
-                    timersBySpawn.Add(key, bgSpawn.timePerSpawn);
                 }
             }
 

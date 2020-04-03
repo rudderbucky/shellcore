@@ -14,7 +14,7 @@ public class Laser : Bullet {
         ID = 9;
         cooldownDuration = 0.2F;
         CDRemaining = cooldownDuration;
-        energyCost = 5;
+        energyCost = 15;
         damage = 50;
         prefabScale = Vector2.one;
         terrain = Entity.TerrainType.All;
