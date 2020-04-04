@@ -664,6 +664,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				}
 			}
 		}
+
+		Debug.LogWarning("test");
 		foreach(ShipBuilderInventoryScript button in partDict.Values) {
 			Destroy(button.gameObject);
 		}

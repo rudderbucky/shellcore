@@ -99,6 +99,18 @@ namespace NodeEditorFramework.Standard
                 handler.SetNode(node);
                 handler.GetInteractionOverrides()[node.EntityID].Pop();
                 if(handler is DialogueSystem || (!output || !output.connected())) DialogueSystem.Instance.DialogueViewTransitionOut();
+
+                if(openBuilder)
+                {
+                    DialogueSystem.Instance.OpenBuilder(SectorManager.instance.GetEntity(node.EntityID).transform.position);
+                }
+
+                if(openTrader)
+                {
+                    DialogueSystem.Instance.OpenTrader(SectorManager.instance.GetEntity(node.EntityID).transform.position, 
+                        JsonUtility.FromJson<ShipBuilder.TraderInventory>(traderJSON).parts);
+                }
+
                 return -1;
             }
             else
