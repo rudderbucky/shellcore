@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WaveBuilder : GUIWindowScripts
 {
@@ -26,6 +27,13 @@ public class WaveBuilder : GUIWindowScripts
     public WCSiegeWaveHandler AddWaveAndReturnHandler()
     {
         var waveHandler = Instantiate(wavePrefab, contents).GetComponent<WCSiegeWaveHandler>();
+        waveHandler.exit.onClick.AddListener(new UnityEngine.Events.UnityAction(
+            () => 
+            {
+                waveHandlers.Remove(waveHandler);
+                Destroy(waveHandler.gameObject);
+            }
+        ));
         waveHandlers.Add(waveHandler);
         return waveHandler;
     }

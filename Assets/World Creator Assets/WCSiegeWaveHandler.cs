@@ -8,6 +8,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
     public GameObject waveEntityPrefab;
     public RectTransform content;
     private List<(InputField, InputField, InputField, Dropdown)> waveEntities = new List<(InputField, InputField, InputField, Dropdown)>();
+    public Button exit;
 
     public void AddEntity()
     {
@@ -37,6 +38,16 @@ public class WCSiegeWaveHandler : MonoBehaviour
         inField2.text = time + "";
         inField3.text = flagName;
         dropdown.value = 1;
+
+        var button = gObj.GetComponentInChildren<Button>();
+        button.onClick = new Button.ButtonClickedEvent();
+        button.onClick.AddListener(new UnityEngine.Events.UnityAction(
+            () => 
+            {
+                waveEntities.Remove((inField1, inField2, inField3, dropdown));
+                Destroy(inField1.transform.parent.gameObject);
+            }
+        ));
 
         waveEntities.Add((inField1, inField2, inField3, dropdown));
         Canvas.ForceUpdateCanvases();

@@ -56,6 +56,17 @@ public class SiegeZoneManager : MonoBehaviour
 
     void Update()
     {
+        #if UNITY_EDITOR
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            playing = false;
+            if(NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
+                NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(sectorName);
+            Debug.Log("Victory!");
+            return;
+        }
+        #endif
+
         if(playing && enabled)
         {
             timer += Time.deltaTime;
@@ -84,6 +95,7 @@ public class SiegeZoneManager : MonoBehaviour
                     if(NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
                         NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(sectorName);
                     Debug.Log("Victory!");
+                    return;
                 }
             }
 
