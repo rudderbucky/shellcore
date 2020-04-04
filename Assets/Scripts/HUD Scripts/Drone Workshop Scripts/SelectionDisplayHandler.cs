@@ -13,13 +13,13 @@ public class SelectionDisplayHandler : MonoBehaviour
     void Awake() {
         ClearDisplay();
     }
-    public virtual void AssignDisplay(EntityBlueprint blueprint, DroneSpawnData data) {
+    public virtual void AssignDisplay(EntityBlueprint blueprint, DroneSpawnData data, int faction = 0) {
         ClearDisplay();
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         if(shell.sprite) {
             shell.enabled = true;
             shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
-            shell.color = FactionColors.colors[0];
+            shell.color = FactionColors.colors[faction];
 
 			shell.type = Image.Type.Sliced;
 			// orient shell image so relative center stays the same regardless of shell tier
@@ -34,7 +34,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             core.type = Image.Type.Sliced;
             if(data == null) {
                 core.material = ResourceManager.GetAsset<Material>("material_color_swap");
-                core.color = FactionColors.colors[0];
+                core.color = FactionColors.colors[faction];
             }
         } else {
             core.enabled = false;
@@ -42,7 +42,7 @@ public class SelectionDisplayHandler : MonoBehaviour
         if(data != null && data.type == DroneType.Mini) {
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
-            miniDroneShooter.color = FactionColors.colors[0];
+            miniDroneShooter.color = FactionColors.colors[faction];
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;
         } else if(blueprint.intendedType == EntityBlueprint.IntendedType.Turret ||
@@ -50,7 +50,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite = 
                 ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(blueprint.parts[0].abilityID));
-            miniDroneShooter.color = FactionColors.colors[0];
+            miniDroneShooter.color = FactionColors.colors[faction];
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;            
         } else miniDroneShooter.enabled = false;
@@ -58,6 +58,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             && blueprint.intendedType != EntityBlueprint.IntendedType.Tank)
             foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
                 DisplayPart basePart = Instantiate(partPrefab, transform, false).GetComponent<DisplayPart>();
+                basePart.UpdateFaction(faction);
                 parts.Add(basePart);
                 basePart.info = part;
             }

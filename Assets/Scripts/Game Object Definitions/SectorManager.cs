@@ -671,7 +671,7 @@ public class SectorManager : MonoBehaviour
                 break;
             case Sector.SectorType.SiegeZone:
                 siegeZone.enabled = true;
-
+                siegeZone.sectorName = current.sectorName;
                 foreach(var wave in current.waveSet.waves)
                 {
                     siegeZone.waves.Enqueue(wave);

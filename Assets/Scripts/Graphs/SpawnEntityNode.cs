@@ -30,6 +30,7 @@ namespace NodeEditorFramework.Standard
         public bool useCoordinates;
         public bool issueID;
         public string entityID;
+        public bool forceCharacterTeleport;
 
         public override void NodeGUI()
         {
@@ -71,6 +72,8 @@ namespace NodeEditorFramework.Standard
                 entityID = GUILayout.TextField(entityID);
                 GUILayout.EndHorizontal();
             }
+
+            forceCharacterTeleport = Utilities.RTEditorGUI.Toggle(forceCharacterTeleport, "Force Character Teleport");
         }
 
         public override int Traverse()
@@ -99,6 +102,10 @@ namespace NodeEditorFramework.Standard
                         if(oj && oj.name == data.name)
                         {
                             Debug.Log("Character already found. Not spawning.");
+                            if(forceCharacterTeleport)
+                            {
+                                (oj as AirCraft).Warp(coords); // hack for now, all the characters are AirCrafts so this should be fine.
+                            }
                             return 0;
                         }
                     }
@@ -118,7 +125,17 @@ namespace NodeEditorFramework.Standard
             }
 
             Debug.Log("Spawn Entity name ( " + entityName + " ) does not correspond with a character. Performing normal operations.");
-            var blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
+            EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+            try
+            {
+                JsonUtility.FromJsonOverwrite(this.blueprint, blueprint);
+            }
+            catch(System.Exception)
+            {
+                Debug.Log("Could not parse blueprint value as JSON. Now attempting to fetch blueprint through the Resource Manager.");
+                blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
+            }
+
             if (blueprint)
             {
                 Sector.LevelEntity entityData = new Sector.LevelEntity

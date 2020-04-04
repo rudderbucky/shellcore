@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class DroneUtilities : MonoBehaviour
 {
+    void Start()
+    {
+        Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Mini)));
+    }
     public static DroneSpawnData GetDefaultData(DroneType type) {
         DroneSpawnData data;
         // pretty much the same thing repeated multiple times so that if one part ever becomes different it doesn't break

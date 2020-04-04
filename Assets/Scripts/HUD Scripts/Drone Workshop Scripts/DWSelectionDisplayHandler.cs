@@ -13,7 +13,7 @@ public class DWSelectionDisplayHandler : SelectionDisplayHandler, IShipStatsData
         statsDisplay.statsDatabase = this;
         ClearDisplay();
     }
-    public override void AssignDisplay(EntityBlueprint blueprint, DroneSpawnData data) {
+    public override void AssignDisplay(EntityBlueprint blueprint, DroneSpawnData data, int faction = 0) {
         base.AssignDisplay(blueprint, data);
         statsDisplay.gameObject.SetActive(true);
         droneDesc.enabled = true;

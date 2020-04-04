@@ -9,7 +9,7 @@ namespace NodeEditorFramework.Standard
         public const string ID = "DestroyEntities";
         public override string GetName { get { return ID; } }
         public override string Title { get { return "Destroy Entities"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 142); } }
+        public override Vector2 DefaultSize { get { return new Vector2(200, 180); } }
 
         private ConditionState state;
         public ConditionState State { get { return state; } set { state = value; } }

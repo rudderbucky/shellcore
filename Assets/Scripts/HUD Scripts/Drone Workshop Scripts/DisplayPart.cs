@@ -9,6 +9,7 @@ public class DisplayPart : MonoBehaviour
 	protected Image shooter;
 	public EntityBlueprint.PartInfo info;
 
+	private int faction = 0;
 
 	protected virtual void Awake() {
 		image = GetComponent<Image>();
@@ -34,9 +35,13 @@ public class DisplayPart : MonoBehaviour
 		image.enabled = true;
 	}
 
+	public virtual void UpdateFaction(int faction) {
+		this.faction = faction;
+	}
+
 	protected virtual void UpdateAppearance() {
 		// set colors
-        image.color = FactionColors.colors[0];
+        image.color = FactionColors.colors[faction];
 		// set position
 		image.rectTransform.anchoredPosition = info.location * 100;
 		if(shooter) 

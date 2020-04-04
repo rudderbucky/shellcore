@@ -13,6 +13,7 @@ public class WCCharacterHandler : MonoBehaviour
     public InputField charBlueprint;
     public Toggle charPartyMember;
     public Transform content;
+    public Dropdown charFaction;
     private WorldData.CharacterData currentData = new WorldData.CharacterData();
     // Start is called before the first frame update
 
@@ -34,6 +35,11 @@ public class WCCharacterHandler : MonoBehaviour
     void UpdateCharPartyMember()
     {
         currentData.partyMember = charPartyMember.isOn;
+    }
+
+    void UpdateCharFaction()
+    {
+        currentData.faction = charFaction.value;
     }
 
     void Awake()
@@ -59,10 +65,7 @@ public class WCCharacterHandler : MonoBehaviour
         currentData = new WorldData.CharacterData();
         charID.text = charName.text = charBlueprint.text = "";
         charPartyMember.isOn = false;
-        UpdateCharID();
-        UpdateCharName();
-        UpdateCharBlueprint();
-        UpdateCharPartyMember();
+        UpdateFields();
     }
 
     public void UpdateFields()
@@ -71,6 +74,7 @@ public class WCCharacterHandler : MonoBehaviour
         UpdateCharName();
         UpdateCharBlueprint();
         UpdateCharPartyMember();
+        UpdateCharFaction();
     }
 
     public static void ReflectButtonData()
@@ -97,6 +101,7 @@ public class WCCharacterHandler : MonoBehaviour
         charName.text = currentData.name;
         charBlueprint.text = currentData.blueprintJSON;
         charPartyMember.isOn = currentData.partyMember;
+        charFaction.value = currentData.faction;
     }
 
     public void AddCharacter(WorldData.CharacterData data)

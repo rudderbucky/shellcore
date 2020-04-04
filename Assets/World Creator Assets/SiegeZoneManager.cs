@@ -35,6 +35,7 @@ public class SiegeZoneManager : MonoBehaviour
     private int waveCount = 0;
     public List<PlayerCore> players;
     private bool playing = false;
+    public string sectorName;
     void OnEnable()
     {
         timer = waveCount = 0;
@@ -61,7 +62,7 @@ public class SiegeZoneManager : MonoBehaviour
             entitiesToRemove.Clear();
             entitiesRemainingToRemove.Clear();
 
-            if(current == null || (current.entities.Count == 0 && entitiesRemaining.Count == 0))
+            if((current == null || (current.entities.Count == 0 && entitiesRemaining.Count == 0)))
             {
                 if(waves.Count > 0)
                 {
@@ -77,14 +78,16 @@ public class SiegeZoneManager : MonoBehaviour
                     else AlertPlayers("WAVE " + waveCount);
                     timer = 0;
                 }
-                else if(current.entities.Count == 0 && entitiesRemaining.Count == 0)
+                else if((current.entities.Count == 0 && entitiesRemaining.Count == 0))
                 {
                     playing = false;
+                    if(NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
+                        NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(sectorName);
                     Debug.Log("Victory!");
                 }
             }
 
-            Debug.Log(current.entities.Count + " - " + entitiesRemaining.Count);
+            // Debug.Log(current.entities.Count + " - " + entitiesRemaining.Count);
 
             foreach(var ent in current.entities)
             {
