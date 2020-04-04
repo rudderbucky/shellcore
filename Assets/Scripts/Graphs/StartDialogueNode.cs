@@ -83,7 +83,7 @@ namespace NodeEditorFramework.Standard
             {
                 Debug.Log(EntityID);
                 handler.GetSpeakerIDList().Add(EntityID);
-                TryAddObjective();
+                if(handler as TaskManager) TryAddObjective();
                 if (handler.GetInteractionOverrides().ContainsKey(EntityID))
                 {
                     handler.GetInteractionOverrides()[EntityID].Push(() => {
