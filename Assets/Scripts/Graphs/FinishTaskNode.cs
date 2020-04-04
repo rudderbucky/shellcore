@@ -90,7 +90,8 @@ namespace NodeEditorFramework.Standard
                             {
                                 partID = taskNode.partID,
                                 abilityID = taskNode.partAbilityID,
-                                tier = taskNode.partTier
+                                tier = taskNode.partTier,
+                                secondaryData = taskNode.partSecondaryData
                             });
                     }
                 }

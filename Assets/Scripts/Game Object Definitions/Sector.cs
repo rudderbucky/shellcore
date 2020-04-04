@@ -45,7 +45,8 @@ public class Sector : ScriptableObject
         BattleZone,
         DangerZone,
         Capitol,
-        DarkNeutral
+        DarkNeutral,
+        SiegeZone
     }
 
     public string sectorName;
@@ -66,4 +67,5 @@ public class Sector : ScriptableObject
         public float radius;
     }
     public BackgroundSpawn[] backgroundSpawns;
+    public WaveSet waveSet;
 }

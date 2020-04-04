@@ -155,7 +155,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     ent.position = item.pos;
                     ent.assetID = item.assetID;
                     ent.vendingID = item.vendingID;
-                    if(item.isTarget) sectTargetIDS[container].Add(ent.ID);
+                    if((item.isTarget &&container.type != Sector.SectorType.SiegeZone) || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) sectTargetIDS[container].Add(ent.ID);
                     if(ent.assetID == "shellcore_blueprint") 
                     {
                         sectTargetIDS[container].Add(ent.ID);
@@ -265,6 +265,9 @@ public class WCGeneratorHandler : MonoBehaviour
             case Sector.SectorType.Capitol:
                 typeRep = "Capitol";
                 break;
+            case Sector.SectorType.SiegeZone:
+                typeRep = "Siege Zone";
+                break;
             default:
                 typeRep = "Sector";
                 break;
@@ -281,6 +284,8 @@ public class WCGeneratorHandler : MonoBehaviour
                 return "music_fast";
             case Sector.SectorType.Capitol:
                 return "music_funktify"; // Funktify made by Mr Spastic, website - http://www.mrspastic.com
+            case Sector.SectorType.SiegeZone:
+                return "music_siege_1";
             default:
                 return "music_overworld";
         } 

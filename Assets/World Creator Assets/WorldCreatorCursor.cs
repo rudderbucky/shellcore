@@ -27,6 +27,7 @@ public class WorldCreatorCursor : MonoBehaviour
     public static FinishPathDelegate finishPath;
     public static WorldCreatorCursor instance;
     public ShipBuilder shipBuilder;
+    public WaveBuilder waveBuilder;
     WCPathCreator pathCreator;
 
     int cursorModeCount;
@@ -203,8 +204,13 @@ public class WorldCreatorCursor : MonoBehaviour
 
     public void ActivateShipBuilder()
     {
-        instance.shipBuilder.Initialize(BuilderMode.Yard);
-        instance.shipBuilder.Activate();
+        shipBuilder.Initialize(BuilderMode.Yard);
+        shipBuilder.Activate();
+    }
+
+    public void ActivateWaveBuilder()
+    {
+        waveBuilder.ToggleActive();
     }
 
     public int flagID = 0;
@@ -212,6 +218,10 @@ public class WorldCreatorCursor : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.B) && !system.IsPointerOverGameObject())
         {
             ActivateShipBuilder();
+        }
+        if(Input.GetKeyDown(KeyCode.V) && !system.IsPointerOverGameObject())
+        {
+            ActivateWaveBuilder();
         }
 
         if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
@@ -308,6 +318,8 @@ public class WorldCreatorCursor : MonoBehaviour
             if(currentSector == null) {
                 currentSector = new SectorWCWrapper();
                 currentSector.sector = ScriptableObject.CreateInstance<Sector>();
+                currentSector.sector.waveSet = new WaveSet();
+                currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
                 currentSector.sector.hasMusic = true; // sectors have music by default in WC
                 currentSector.sector.backgroundColor = SectorColors.colors[0];
                 var renderer = currentSector.renderer = Instantiate(borderPrefab).GetComponent<LineRenderer>();

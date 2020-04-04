@@ -38,6 +38,7 @@ namespace NodeEditorFramework.Standard
         public string partID = "";
         public int partAbilityID = 0;
         public int partTier = 1;
+        public string partSecondaryData = "";
         public int reputationReward = 0;
         public string taskName = "";
         public string acceptResponse;
@@ -45,7 +46,7 @@ namespace NodeEditorFramework.Standard
         public string taskConfirmedDialogue;
         bool init = false;
         Texture2D partTexture;
-        float height = 270f;
+        float height = 320f;
         public bool forceTask = false;
 
         [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left)]
@@ -104,7 +105,7 @@ namespace NodeEditorFramework.Standard
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));
             if(partReward)
             {
-                height += 264f;
+                height += 320f;
                 GUILayout.Label("Part ID:");
                 partID = GUILayout.TextField(partID, GUILayout.Width(200f));
                 if (ResourceManager.Instance != null && partID != null && (GUI.changed || !init))
@@ -139,6 +140,8 @@ namespace NodeEditorFramework.Standard
                     height += 24f;
                 }
                 partTier = RTEditorGUI.IntField("Part tier", partTier, GUILayout.Width(200f));
+                GUILayout.Label("Part Secondary Data:");
+                partSecondaryData = GUILayout.TextField(partSecondaryData, GUILayout.Width(200f));
             }
             else
             {

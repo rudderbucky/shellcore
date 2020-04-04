@@ -18,9 +18,11 @@ public class SectorPropertyDisplay : MonoBehaviour
     public InputField colorR;
     public InputField colorG;
     public InputField colorB;
+    public InputField waveSet;
     public GameObject bgSpawnInputFieldPrefab;
     public List<(InputField, Dropdown)> bgSpawnInputFields = new List<(InputField, Dropdown)>();
-    public Transform scrollContents;
+    public Transform bgSpawnScrollContents;
+    public RectTransform mainContents;
     Vector2 mousePos;
 
     void Start() 
@@ -41,6 +43,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         sectorName.text = sector.sectorName;
         sectorMusicBool.isOn = sector.hasMusic;
         sectorMusicID.text = sector.musicID;
+        waveSet.text = JsonUtility.ToJson(sector.waveSet);
 
         x.text = currentSector.bounds.x + "";
         y.text = currentSector.bounds.y + "";
@@ -103,11 +106,14 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void AddBGSpawn(string text = null, int faction = 1) 
     {
-        var field = Instantiate(bgSpawnInputFieldPrefab, scrollContents).GetComponentInChildren<InputField>();
+        var field = Instantiate(bgSpawnInputFieldPrefab, bgSpawnScrollContents).GetComponentInChildren<InputField>();
         var drop = field.transform.parent.GetComponentInChildren<Dropdown>();
         bgSpawnInputFields.Add((field, drop));
         field.text = text;
         drop.value = faction;
+        Canvas.ForceUpdateCanvases();
+        bgSpawnScrollContents.GetComponent<RectTransform>().sizeDelta = new Vector2(100, bgSpawnScrollContents.GetComponent<VerticalLayoutGroup>().minHeight);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(mainContents);
     }
 
     public void ClearBGSpawns() 
@@ -187,5 +193,10 @@ public class SectorPropertyDisplay : MonoBehaviour
             }
             else AddBGSpawn(bgSpawn.entity.blueprintJSON, bgSpawn.entity.faction);
         }
+    }
+
+    public void UpdateWaveSet()
+    {
+        currentSector.waveSet = JsonUtility.FromJson<WaveSet>(waveSet.text);
     }
 }

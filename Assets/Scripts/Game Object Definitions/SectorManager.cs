@@ -23,6 +23,7 @@ public class SectorManager : MonoBehaviour
     private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
     private List<IVendor> stations = new List<IVendor>();
     private BattleZoneManager battleZone;
+    private SiegeZoneManager siegeZone;
     private Dictionary<string, GameObject> objects;
     private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
@@ -73,6 +74,9 @@ public class SectorManager : MonoBehaviour
         objects = new Dictionary<string, GameObject>();
         persistentObjects = new Dictionary<string, GameObject>();
         battleZone = gameObject.AddComponent<BattleZoneManager>();
+        siegeZone = gameObject.AddComponent<SiegeZoneManager>();
+        battleZone.enabled = false;
+        siegeZone.enabled = false;
         lpg = GetComponent<LandPlatformGenerator>();
         sectorBorders = new GameObject("SectorBorders").AddComponent<LineRenderer>();
         sectorBorders.enabled = false;
@@ -634,6 +638,7 @@ public class SectorManager : MonoBehaviour
         });
         sectorBorders.startColor = sectorBorders.endColor = new Color32((byte)85, (byte)100, (byte)85, (byte)255);
         battleZone.enabled = false;
+        siegeZone.enabled = false;
         // sector type things
         switch(current.type)
         {
@@ -664,6 +669,21 @@ public class SectorManager : MonoBehaviour
             case Sector.SectorType.Capitol:
                 player.spawnPoint = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
                 break;
+            case Sector.SectorType.SiegeZone:
+                siegeZone.enabled = true;
+
+                foreach(var wave in current.waveSet.waves)
+                {
+                    siegeZone.waves.Enqueue(wave);
+                }
+
+                for (int i = 0; i < current.targets.Length; i++)
+                {
+                    siegeZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
+                }
+                
+                siegeZone.players.Add(PlayerCore.Instance);
+                break;
             default:
                 break;
         }
@@ -672,18 +692,7 @@ public class SectorManager : MonoBehaviour
             // background spawns
             foreach(var bgSpawn in current.backgroundSpawns)
             {
-                if(bgSpawn.entity.assetID == "shellcore_blueprint")
-                {
-                    EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                    JsonUtility.FromJsonOverwrite(bgSpawn.entity.blueprintJSON, blueprint);
-                    bgSpawns.Add((blueprint, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
-                }
-                else 
-                {
-                    var key = (ResourceManager.GetAsset<EntityBlueprint>(bgSpawn.entity.assetID), 
-                        bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius);
-                    bgSpawns.Add(key);
-                }
+                bgSpawns.Add((GetBlueprintOfLevelEntity(bgSpawn.entity), bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
             }
 
         // music
@@ -692,6 +701,20 @@ public class SectorManager : MonoBehaviour
         if(info) info.showMessage("Entering sector '" + current.sectorName + "'");
         if (OnSectorLoad != null)
             OnSectorLoad.Invoke(current.sectorName);
+    }
+
+    public static EntityBlueprint GetBlueprintOfLevelEntity(Sector.LevelEntity entity)
+    {
+        if(entity.assetID == "shellcore_blueprint")
+        {
+            EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+            JsonUtility.FromJsonOverwrite(entity.blueprintJSON, blueprint);
+            return blueprint;
+        }
+        else 
+        {
+            return ResourceManager.GetAsset<EntityBlueprint>(entity.assetID);
+        }
     }
 
     public void PlayCurrentSectorMusic() 

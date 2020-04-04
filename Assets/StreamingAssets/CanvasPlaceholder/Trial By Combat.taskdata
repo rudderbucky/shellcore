@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.QuestCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="-629,-79.25" zoom="1" />
+		<EditorState selected="" pan="-860,-436.25" zoom="2" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Sector Limiter" ID="-352598" type="SectorLimiterNode" pos="300,-190">
-			<Port ID="-352600" name="input" dynamic="False" />
-			<Port ID="-352602" name="output" dynamic="False" />
+		<Node name="Sector Limiter" ID="-1439012" type="SectorLimiterNode" pos="300,-190">
+			<Port ID="-1439014" name="input" dynamic="False" />
+			<Port ID="-1439016" name="output" dynamic="False" />
 			<Variable name="sectorName" refID="-1935680966" />
 			<boolean name="freeSector">false</boolean>
 		</Node>
-		<Node name="Win Battle Zone" ID="-352604" type="WinBattleCondition" pos="400,0">
-			<Port ID="-352606" name="output" dynamic="False" />
+		<Node name="Win Battle Zone" ID="-1439018" type="WinBattleCondition" pos="400,0">
+			<Port ID="-1439020" name="output" dynamic="False" />
 			<Variable name="sectorName" refID="-1935680966" />
 		</Node>
-		<Node name="Conditions" ID="-352608" type="ConditionGroupNode" pos="658.75,-184.625">
-			<Port ID="-352610" name="input" dynamic="False" />
-			<Port ID="-352586" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Conditions" ID="-1439022" type="ConditionGroupNode" pos="658.75,-184.625">
+			<Port ID="-1439024" name="input" dynamic="False" />
+			<Port ID="-1438998" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Condition</string>
 				<Direction name="direction">In</Direction>
 				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
@@ -25,7 +25,7 @@
 				<float name="sidePosition">59</float>
 				<float name="sideOffset">0</float>
 			</Port>
-			<Port ID="-352588" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+			<Port ID="-1439000" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">TaskFlow</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -34,30 +34,12 @@
 				<float name="sideOffset">0</float>
 			</Port>
 		</Node>
-		<Node name="Finish Task" ID="-352612" type="FinishTaskNode" pos="970,-180">
-			<Port ID="-352614" name="inputLeft" dynamic="False" />
-			<Port ID="-352616" name="outputRight" dynamic="False" />
-			<Port ID="-352618" name="outputUp" dynamic="False" />
-			<Variable name="rewardGiverID" refID="-532691383" />
-			<Variable name="rewardText" refID="908928342" />
-			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
-				<r>0</r>
-				<g>1</g>
-				<b>0</b>
-				<a>1</a>
-			</Color>
-		</Node>
-		<Node name="Checkpoint" ID="-352620" type="CheckpointNode" pos="1270.25,-165.625">
-			<Port ID="-352622" name="input" dynamic="False" />
-			<Port ID="-352624" name="output" dynamic="False" />
-			<Variable name="checkpointName" refID="614226780" />
-		</Node>
-		<Node name="Start Mission" ID="-352626" type="StartMissionNode" pos="-882.75,-124.125">
-			<Port ID="-352628" name="outputRight" dynamic="False" />
+		<Node name="Start Mission" ID="-1439040" type="StartMissionNode" pos="-882.75,-124.125">
+			<Port ID="-1439042" name="outputRight" dynamic="False" />
 			<Variable name="missionName" refID="2109680335" />
 			<Variable name="rank" refID="372029407" />
 			<Variable name="entryPoint" refID="1440024000" />
-			<Variable name="prerequisites" refID="-640315776" />
+			<Variable name="prerequisites" refID="-1469069312" />
 			<Variable name="prerequisitesUnsatisifedText" refID="-387041760" />
 			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
 				<r>0</r>
@@ -66,9 +48,9 @@
 				<a>1</a>
 			</Color>
 		</Node>
-		<Node name="End Dialogue" ID="-352636" type="EndDialogue" pos="-312.75,499.475">
-			<Port ID="-352638" name="input" dynamic="False" />
-			<Port ID="-352590" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="End Dialogue" ID="-1439044" type="EndDialogue" pos="-312.75,499.475">
+			<Port ID="-1439046" name="input" dynamic="False" />
+			<Port ID="-1439002" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">TaskFlow</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -76,7 +58,15 @@
 				<float name="sidePosition">29</float>
 				<float name="sideOffset">0</float>
 			</Port>
-			<Port ID="-352666" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+			<Port ID="-1439004" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1439148" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">TaskFlow</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -89,10 +79,10 @@
 			<boolean name="openTrader">false</boolean>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="Dialogue" ID="-352640" type="DialogueNode" pos="-315,-48.45">
-			<Port ID="-352642" name="input" dynamic="False" />
-			<Port ID="-352644" name="cancel" dynamic="False" />
-			<Port ID="-352592" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="-1439048" type="DialogueNode" pos="-315,-48.45">
+			<Port ID="-1439050" name="input" dynamic="False" />
+			<Port ID="-1439052" name="cancel" dynamic="False" />
+			<Port ID="-1439006" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -100,7 +90,7 @@
 				<float name="sidePosition">202</float>
 				<float name="sideOffset">0</float>
 			</Port>
-			<Port ID="-352594" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+			<Port ID="-1439008" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -115,22 +105,50 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="-288182299" />
-			<Variable name="answers" refID="-1861438208" />
+			<Variable name="answers" refID="-861958528" />
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="Start Dialogue" ID="-352630" type="StartDialogueNode" pos="-520,-130">
-			<Port ID="-352632" name="input" dynamic="False" />
-			<Port ID="-352634" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="-1439054" type="StartDialogueNode" pos="-520,-130">
+			<Port ID="-1439056" name="input" dynamic="False" />
+			<Port ID="-1439058" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="-532691383" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="Start Task" ID="-352646" type="StartTaskNode" pos="-30,-190">
-			<Port ID="-352648" name="inputLeft" dynamic="False" />
-			<Port ID="-352650" name="outputAccept" dynamic="False" />
-			<Port ID="-352652" name="outputDecline" dynamic="False" />
-			<Port ID="-352654" name="inputUp" dynamic="False" />
+		<Node name="Checkpoint" ID="-1439034" type="CheckpointNode" pos="1270.25,-165.625">
+			<Port ID="-1439036" name="input" dynamic="False" />
+			<Port ID="-1439038" name="output" dynamic="False" />
+			<Variable name="checkpointName" refID="614226780" />
+		</Node>
+		<Node name="Finish Task" ID="-1439026" type="FinishTaskNode" pos="970,-180">
+			<Port ID="-1439028" name="inputLeft" dynamic="False" />
+			<Port ID="-1439030" name="outputRight" dynamic="False" />
+			<Port ID="-1439032" name="outputUp" dynamic="False" />
+			<Variable name="rewardGiverID" refID="-532691383" />
+			<Variable name="rewardText" refID="908928342" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Start Dialogue" ID="-1439082" type="StartDialogueNode" pos="1570,-140">
+			<Port ID="-1439084" name="input" dynamic="False" />
+			<Port ID="-1439086" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-532691383" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Task" ID="-1439060" type="StartTaskNode" pos="-30,-190">
+			<Port ID="-1439062" name="inputLeft" dynamic="False" />
+			<Port ID="-1439064" name="outputAccept" dynamic="False" />
+			<Port ID="-1439066" name="outputDecline" dynamic="False" />
+			<Port ID="-1439068" name="inputUp" dynamic="False" />
 			<Variable name="dialogueText" refID="-1455648694" />
 			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
 				<r>0</r>
@@ -152,32 +170,51 @@
 			<Variable name="taskConfirmedDialogue" refID="2106320543" />
 			<boolean name="forceTask">false</boolean>
 		</Node>
+		<Node name="Start Task" ID="-1439100" type="StartTaskNode" pos="1780,-130">
+			<Port ID="-1439102" name="inputLeft" dynamic="False" />
+			<Port ID="-1439104" name="outputAccept" dynamic="False" />
+			<Port ID="-1439106" name="outputDecline" dynamic="False" />
+			<Port ID="-1439108" name="inputUp" dynamic="False" />
+			<Variable name="dialogueText" refID="-1776561570" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="objectiveList" refID="1240042" />
+			<int name="creditReward">1000</int>
+			<boolean name="partReward">true</boolean>
+			<Variable name="entityIDforConfirmedResponse" refID="-532691383" />
+			<Variable name="partID" refID="-18592513" />
+			<int name="partAbilityID">10</int>
+			<int name="partTier">1</int>
+			<int name="reputationReward">100</int>
+			<Variable name="taskName" refID="1767137116" />
+			<Variable name="acceptResponse" refID="307451455" />
+			<Variable name="declineResponse" refID="-193457612" />
+			<Variable name="taskConfirmedDialogue" refID="31860626" />
+			<boolean name="forceTask">false</boolean>
+		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="-352600" port2ID="-352650" />
-		<Connection port1ID="-352602" port2ID="-352610" />
-		<Connection port1ID="-352606" port2ID="-352586" />
-		<Connection port1ID="-352588" port2ID="-352614" />
-		<Connection port1ID="-352616" port2ID="-352622" />
-		<Connection port1ID="-352618" port2ID="-352654" />
-		<Connection port1ID="-352628" port2ID="-352632" />
-		<Connection port1ID="-352638" port2ID="-352594" />
-		<Connection port1ID="-352590" port2ID="-352632" />
-		<Connection port1ID="-352642" port2ID="-352634" />
-		<Connection port1ID="-352592" port2ID="-352648" />
+		<Connection port1ID="-1439014" port2ID="-1439064" />
+		<Connection port1ID="-1439016" port2ID="-1439024" />
+		<Connection port1ID="-1439020" port2ID="-1438998" />
+		<Connection port1ID="-1439000" port2ID="-1439028" />
+		<Connection port1ID="-1439042" port2ID="-1439056" />
+		<Connection port1ID="-1439046" port2ID="-1439008" />
+		<Connection port1ID="-1439002" port2ID="-1439056" />
+		<Connection port1ID="-1439050" port2ID="-1439058" />
+		<Connection port1ID="-1439006" port2ID="-1439062" />
+		<Connection port1ID="-1439036" port2ID="-1439030" />
+		<Connection port1ID="-1439038" port2ID="-1439084" />
+		<Connection port1ID="-1439032" port2ID="-1439068" />
+		<Connection port1ID="-1439086" port2ID="-1439102" />
 	</Connections>
 	<Objects>
 		<Object refID="-1935680966" type="System.String">
 			<string>BattleZone Alpha</string>
-		</Object>
-		<Object refID="-532691383" type="System.String">
-			<string>haven2-missioncontrol1</string>
-		</Object>
-		<Object refID="908928342" type="System.String">
-			<string>Well done. That should give us some room to breathe.</string>
-		</Object>
-		<Object refID="614226780" type="System.String">
-			<string>won-battlezone-alpha</string>
 		</Object>
 		<Object refID="2109680335" type="System.String">
 			<string>Trial By Combat</string>
@@ -188,7 +225,7 @@
 		<Object refID="1440024000" type="System.String">
 			<string>Talk to the Mission Control in Haven 2.</string>
 		</Object>
-		<Object refID="-640315776" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="-1469069312" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>Training Circuit</string>
 			</ArrayOfString>
@@ -199,11 +236,20 @@
 		<Object refID="-288182299" type="System.String">
 			<string>Newborn, I can see you possess great resolve. Will you help us win this war from the front lines?</string>
 		</Object>
-		<Object refID="-1861438208" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="-861958528" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>Tell me what I have to do.</string>
 				<string>Hold on, there's something I need to do first.</string>
 			</ArrayOfString>
+		</Object>
+		<Object refID="-532691383" type="System.String">
+			<string>haven2-missioncontrol1</string>
+		</Object>
+		<Object refID="614226780" type="System.String">
+			<string>won-battlezone-alpha</string>
+		</Object>
+		<Object refID="908928342" type="System.String">
+			<string>Well done. That should give us some room to breathe.</string>
 		</Object>
 		<Object refID="-1455648694" type="System.String">
 			<string>There is no enemy commander present in the southern BattleZone. This is our chance to strike and take out the enemy Carrier. Head to the BattleZone and support our fleet. Consider this the beginning of your Trial by Combat.</string>
@@ -227,6 +273,26 @@
 		</Object>
 		<Object refID="2106320543" type="System.String">
 			<string>Head to the BattleZone below us and support our fleet. Consider this the beginning of your Trial by Combat.</string>
+		</Object>
+		<Object refID="-1776561570" type="System.String">
+			<string>The Infected Commander that was missing from BattleZone Alpha has attacked and set up a base in SIegeZone Beta. Only two Outposts are left. Keep the Infected from conquering them until reinforcements arrive.</string>
+		</Object>
+		<Object refID="1240042" type="System.String">
+			<string>- Head to SiegeZone Beta and protect the Outposts.
+
+- Return for your reward when reinforcements arrive.</string>
+		</Object>
+		<Object refID="-18592513" type="System.String">
+			<string>SmallCenter7</string>
+		</Object>
+		<Object refID="1767137116" type="System.String">
+			<string>Trial By Combat_siege1</string>
+		</Object>
+		<Object refID="307451455" type="System.String">
+			<string>I'm on my way.</string>
+		</Object>
+		<Object refID="31860626" type="System.String">
+			<string>Head to SiegeZone Beta and protect our Outposts. You are one of our only hopes.</string>
 		</Object>
 	</Objects>
 </NodeCanvas>

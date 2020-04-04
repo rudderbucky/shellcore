@@ -230,7 +230,7 @@ public class AirCraftAI : MonoBehaviour
                 }
                 else
                 {
-                    if(craft as Drone && Input.GetKey(KeyCode.D)) Debug.Log(aggroTarget);
+                    // if(craft as Drone && Input.GetKey(KeyCode.D)) Debug.Log(aggroTarget);
                     switch (aggression)
                     {
                         case AIAggression.FollowInRange:
