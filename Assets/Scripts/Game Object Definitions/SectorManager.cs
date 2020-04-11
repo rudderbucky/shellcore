@@ -313,11 +313,13 @@ public class SectorManager : MonoBehaviour
                     try
                     {
                         // Check if data has blueprint JSON, if it does override the current blueprint
+                        // this now specifies the path to the JSON file instead of being the JSON itself
                         string json = data.blueprintJSON;
                         if (json != null && json != "")
                         {
                             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                             JsonUtility.FromJsonOverwrite(json, blueprint);
+                            // JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(resourcePath + "\\Entities\\" + json + ".json"), blueprint);
                             Debug.Log(data.name);
                             blueprint.entityName = data.name;
                             if(data.name == "Clearly Delusional")

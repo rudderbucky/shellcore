@@ -114,7 +114,7 @@ public class WCWorldIO : MonoBehaviour
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                directories = Directory.GetFiles(Application.streamingAssetsPath + "\\Entities");
+                directories = Directory.GetFiles(Application.streamingAssetsPath + "\\EntityPlaceholder");
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
@@ -173,11 +173,11 @@ public class WCWorldIO : MonoBehaviour
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                path = Application.streamingAssetsPath + "\\Entities\\" + field.text;
+                path = Application.streamingAssetsPath + "\\EntityPlaceholder\\" + field.text + ".json";
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
-                path = Application.streamingAssetsPath + "\\Waves\\" + field.text;
+                path = Application.streamingAssetsPath + "\\Waves\\" + field.text + ".json";
                 break;
         }
 

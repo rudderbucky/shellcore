@@ -43,6 +43,27 @@ public class WCGeneratorHandler : MonoBehaviour
         }
     }
 
+    ///<summary>
+    /// path1 => path2
+    ///</summary>
+    private void TryCopy(string path1, string path2)
+    {
+        if(System.IO.Directory.Exists(path2))
+        {
+            foreach(var file in System.IO.Directory.GetFiles(path2))
+            {
+                System.IO.File.Delete(file);
+            }
+        }
+        else System.IO.Directory.CreateDirectory(path2);
+
+        System.IO.Directory.CreateDirectory(path1);
+        string[] files = System.IO.Directory.GetFiles(path1);
+        foreach(string file in files)
+        {
+            System.IO.File.Copy(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+        }
+    }
 
     public bool WriteWorld(string path) 
     {
@@ -155,7 +176,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     ent.position = item.pos;
                     ent.assetID = item.assetID;
                     ent.vendingID = item.vendingID;
-                    if((item.isTarget &&container.type != Sector.SectorType.SiegeZone) || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) sectTargetIDS[container].Add(ent.ID);
+                    if((item.isTarget && container.type != Sector.SectorType.SiegeZone) || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) sectTargetIDS[container].Add(ent.ID);
                     if(ent.assetID == "shellcore_blueprint") 
                     {
                         sectTargetIDS[container].Add(ent.ID);
@@ -206,15 +227,8 @@ public class WCGeneratorHandler : MonoBehaviour
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
 
-        if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
-        {
-            System.IO.Directory.CreateDirectory(path + "\\Canvases");
-            foreach(var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
-            {
-                System.IO.File.Copy(file, path + "\\Canvases\\" + System.IO.Path.GetFileName(file));
-            }
-        }
-        else System.IO.Directory.CreateDirectory(path + "\\Canvases");
+        TryCopy(Application.streamingAssetsPath + "\\CanvasPlaceholder", path + "\\Canvases\\");
+        TryCopy(Application.streamingAssetsPath + "\\EntityPlaceholder", path + "\\Entities\\");
 
         foreach(var sector in sectors)
         {
@@ -338,20 +352,10 @@ public class WCGeneratorHandler : MonoBehaviour
             try
             {
                 // copying canvases
-                if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
-                {
-                    foreach(var placeholderCanvas in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
-                    {
-                        System.IO.File.Delete(placeholderCanvas);
-                    }
-                }
-                else System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\CanvasPlaceholder");
+                TryCopy(path + "\\Canvases\\", Application.streamingAssetsPath + "\\CanvasPlaceholder");
 
-                string[] canvasFiles = System.IO.Directory.GetFiles(path + "\\Canvases");
-                foreach(string canvasFile in canvasFiles)
-                {
-                    System.IO.File.Copy(canvasFile, Application.streamingAssetsPath + "\\CanvasPlaceholder\\" + System.IO.Path.GetFileName(canvasFile));
-                }
+                // copying entities
+                TryCopy(path + "\\Entities\\", Application.streamingAssetsPath + "\\EntityPlaceholder");
 
 
                 // reading sectors
