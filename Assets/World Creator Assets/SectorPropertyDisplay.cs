@@ -43,7 +43,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         sectorName.text = sector.sectorName;
         sectorMusicBool.isOn = sector.hasMusic;
         sectorMusicID.text = sector.musicID;
-        waveSet.text = JsonUtility.ToJson(sector.waveSet);
+        waveSet.text = sector.waveSetPath;
 
         x.text = currentSector.bounds.x + "";
         y.text = currentSector.bounds.y + "";
@@ -197,6 +197,6 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void UpdateWaveSet()
     {
-        currentSector.waveSet = JsonUtility.FromJson<WaveSet>(waveSet.text);
+        currentSector.waveSetPath = waveSet.text;
     }
 }

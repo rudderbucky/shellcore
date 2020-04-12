@@ -318,7 +318,6 @@ public class WorldCreatorCursor : MonoBehaviour
             if(currentSector == null) {
                 currentSector = new SectorWCWrapper();
                 currentSector.sector = ScriptableObject.CreateInstance<Sector>();
-                currentSector.sector.waveSet = new WaveSet();
                 currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
                 currentSector.sector.hasMusic = true; // sectors have music by default in WC
                 currentSector.sector.backgroundColor = SectorColors.colors[0];

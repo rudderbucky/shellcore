@@ -118,7 +118,7 @@ public class WCWorldIO : MonoBehaviour
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
-                directories = Directory.GetFiles(Application.streamingAssetsPath + "\\Waves");
+                directories = Directory.GetFiles(Application.streamingAssetsPath + "\\WavePlaceholder");
                 break;
         }
 
@@ -177,7 +177,7 @@ public class WCWorldIO : MonoBehaviour
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
-                path = Application.streamingAssetsPath + "\\Waves\\" + field.text + ".json";
+                path = Application.streamingAssetsPath + "\\WavePlaceholder\\" + field.text + ".json";
                 break;
         }
 

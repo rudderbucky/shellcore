@@ -49,6 +49,26 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		img.sprite = gridSprite;
 		img.type = Image.Type.Tiled;
 		img.color = new Color32(100, 100, 100, 255);
+
+		foreach(var sector in manager.sectors) 
+        {
+            if(sector.bounds.x < minX) minX = sector.bounds.x;
+            if(sector.bounds.y > maxY) maxY = sector.bounds.y;
+		}
+
+		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
+			if(SectorManager.testJsonPath != null || playerCore.cursave.sectorsSeen.Contains(sector.sectorName))
+			{
+				Image sect = Instantiate(sectorPrefab, transform, false);
+				Image border = sect.GetComponentsInChildren<Image>()[1];
+				sect.color =  1.2F * sector.backgroundColor - new Color(0.2F, 0.2F, 0.2F, 0.75F); 
+				border.color = new Color(1F, 1F, 1F, 0.5F);
+				sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x - minX, -maxY + sector.bounds.y) / zoomoutFactor;
+				border.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
+				sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2)));
+			}
+		}
+
 		for(int i = 0; i < 21; i++)
 		{
 			Text textx = new GameObject().AddComponent<Text>();
@@ -65,26 +85,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			textx.fontSize = texty.fontSize = 12;
 			textx.color = texty.color = img.color + Color.gray;
 
-		}
-
-		foreach(var sector in manager.sectors) 
-        {
-            if(sector.bounds.x < minX) minX = sector.bounds.x;
-            if(sector.bounds.y > maxY) maxY = sector.bounds.y;
-		}
-
-		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
-			if(SectorManager.testJsonPath != null || playerCore.cursave.sectorsSeen.Contains(sector.sectorName))
-			{
-				Image sect = Instantiate(sectorPrefab, transform, false);
-				sect.transform.SetAsFirstSibling();
-				Image body = sect.GetComponentsInChildren<Image>()[1];
-				sect.color = sector.backgroundColor - new Color(0.2F, 0.2F, 0.2F, 0);
-				body.color = sect.color + 0.75F * Color.white;
-				sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x - minX, -maxY + sector.bounds.y) / zoomoutFactor;
-				body.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
-				sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2)));
-			}
 		}
 
 		// draw objective locations

@@ -67,5 +67,5 @@ public class Sector : ScriptableObject
         public float radius;
     }
     public BackgroundSpawn[] backgroundSpawns;
-    public WaveSet waveSet;
+    public string waveSetPath;
 }

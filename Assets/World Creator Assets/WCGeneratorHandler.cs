@@ -229,6 +229,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
         TryCopy(Application.streamingAssetsPath + "\\CanvasPlaceholder", path + "\\Canvases\\");
         TryCopy(Application.streamingAssetsPath + "\\EntityPlaceholder", path + "\\Entities\\");
+        TryCopy(Application.streamingAssetsPath + "\\WavePlaceholder", path + "\\Waves\\");
 
         foreach(var sector in sectors)
         {
@@ -357,6 +358,8 @@ public class WCGeneratorHandler : MonoBehaviour
                 // copying entities
                 TryCopy(path + "\\Entities\\", Application.streamingAssetsPath + "\\EntityPlaceholder");
 
+                // copying waves
+                TryCopy(path + "\\Waves\\", Application.streamingAssetsPath + "\\WavePlaceholder");
 
                 // reading sectors
                 string[] files = System.IO.Directory.GetFiles(path);

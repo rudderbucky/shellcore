@@ -318,8 +318,18 @@ public class SectorManager : MonoBehaviour
                         if (json != null && json != "")
                         {
                             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                            JsonUtility.FromJsonOverwrite(json, blueprint);
-                            // JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(resourcePath + "\\Entities\\" + json + ".json"), blueprint);
+
+                            // try parsing directly, if that fails try fetching the entity file
+                            try
+                            {
+                                JsonUtility.FromJsonOverwrite(json, blueprint);
+                            }
+                            catch
+                            {
+                                JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                                    (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
+                            }
+                            
                             Debug.Log(data.name);
                             blueprint.entityName = data.name;
                             if(data.name == "Clearly Delusional")
@@ -674,7 +684,7 @@ public class SectorManager : MonoBehaviour
             case Sector.SectorType.SiegeZone:
                 siegeZone.enabled = true;
                 siegeZone.sectorName = current.sectorName;
-                foreach(var wave in current.waveSet.waves)
+                foreach(var wave in JsonUtility.FromJson<WaveSet>(File.ReadAllText(resourcePath + "\\Waves\\" + current.waveSetPath + ".json")).waves)
                 {
                     siegeZone.waves.Enqueue(wave);
                 }
