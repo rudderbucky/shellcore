@@ -61,7 +61,8 @@ public class WCGeneratorHandler : MonoBehaviour
         string[] files = System.IO.Directory.GetFiles(path1);
         foreach(string file in files)
         {
-            System.IO.File.Copy(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+            if(!file.Contains(".meta"))
+                System.IO.File.Copy(file, path2 + "\\" + System.IO.Path.GetFileName(file));
         }
     }
 
@@ -106,6 +107,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
             platform.prefabs = new string[] {
                 "New Junction",
+                "New 1 Entry",
                 "New 2 Entry",
             };
         }

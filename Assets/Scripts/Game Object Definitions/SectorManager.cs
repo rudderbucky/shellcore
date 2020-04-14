@@ -60,9 +60,10 @@ public class SectorManager : MonoBehaviour
     }
 
     public static string testJsonPath = null;
-    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main";
+    string jsonPath = null;
     public void Initialize()
     {
+        jsonPath = Application.dataPath + "\\main";
         if (instance != null)
         {
             Debug.LogWarning("There should be only one sector manager!");

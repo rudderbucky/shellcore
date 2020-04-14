@@ -1707,6 +1707,9 @@ MonoBehaviour:
   eventSystem: {fileID: 1390349144}
   movementReticlePrefab: {fileID: 5040566498833337130, guid: b321392388039e44889b9094929b8720,
     type: 3}
+  defaultCursor: {fileID: 2800000, guid: fba1b3cae525fd041b4359a44de2a994, type: 3}
+  overTargetableCursor: {fileID: 2800000, guid: d09f1790c18a21e498301f39bde1cc43,
+    type: 3}
 --- !u!1 &159066283
 GameObject:
   m_ObjectHideFlags: 0
@@ -8273,8 +8276,11 @@ MonoBehaviour:
     obj: {fileID: 8300000, guid: 8b8a1faf10b23eb40b3df2fe63e6d94b, type: 3}
   - ID: clip_missioncompleteep1
     obj: {fileID: 8300000, guid: 6782ee6fb5f0d9c43a583bad8411287d, type: 3}
-  fieldID: 
-  newObject: {fileID: 0}
+  - ID: music_siege_1
+    obj: {fileID: 8300000, guid: 2565972362b47e649b089b3ecf0974f5, type: 3}
+  fieldID: beamParticle_prefab
+  newObject: {fileID: 9067754672285149600, guid: 3a8469f0c617c4841b199db74ab6a626,
+    type: 3}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
   playerSource: {fileID: 2068204860}
   playerMusicSource: {fileID: 2077949625}
@@ -21405,6 +21411,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021176325}
   m_CullTransparentMesh: 0
+--- !u!114 &2033071276 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7943546138715558148, guid: 34ff4dae8b8986442a78643442e90c92,
+    type: 3}
+  m_PrefabInstance: {fileID: 8776915232814753614}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2035171996
 GameObject:
   m_ObjectHideFlags: 0
@@ -22710,6 +22728,11 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1878101311}
+    - target: {fileID: 7943546137540392347, guid: 34ff4dae8b8986442a78643442e90c92,
+        type: 3}
+      propertyPath: searchField
+      value: 
+      objectReference: {fileID: 2033071276}
     - target: {fileID: 7943546138175678971, guid: 34ff4dae8b8986442a78643442e90c92,
         type: 3}
       propertyPath: m_Name

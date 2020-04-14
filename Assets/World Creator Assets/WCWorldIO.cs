@@ -111,6 +111,14 @@ public class WCWorldIO : MonoBehaviour
             case IOMode.Read:
             case IOMode.Write:
                 directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
+                var newDirectories = new string[directories.Length + 1];
+                newDirectories[0] = Application.dataPath + "\\main";
+
+                for(int i = 0; i < directories.Length; i++)
+                {
+                    newDirectories[i+1] = directories[i];
+                }
+                directories = newDirectories;
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
@@ -162,7 +170,7 @@ public class WCWorldIO : MonoBehaviour
     
     public void AddButtonFromField()
     {
-
+        if(field.text == "main") return;
         string path = null;
 
         switch(mode)

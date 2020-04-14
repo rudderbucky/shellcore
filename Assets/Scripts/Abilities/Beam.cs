@@ -20,8 +20,8 @@ public class Beam : WeaponAbility {
         line.sortingLayerName = "Projectiles";
         line.material = material;
         line.startWidth = line.endWidth = 0.15F;
-        line.endColor = new Color(0.8F,0.8F,1,0.9F);
-        line.startColor = new Color(0.5F, 0.5F, 1, 0.9F);
+        line.endColor = new Color(0.8F,1F,1F,0.9F);
+        line.startColor = new Color(0.5F, 1F, 1F, 0.9F);
         cooldownDuration = CDRemaining = 3;
         damage = 525;
         energyCost = 50;
@@ -45,7 +45,7 @@ public class Beam : WeaponAbility {
         if (firing && timer < 0.1F) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
             line.startWidth = line.endWidth = 0.15F;
-            line.SetPosition(0, line.transform.position); // draw and increment timer
+            line.SetPosition(0, transform.position); // draw and increment timer
             if(nextTargetPart) line.SetPosition(1, partPos);
             else if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
             else line.SetPosition(1, line.transform.position); // TODO: Fix

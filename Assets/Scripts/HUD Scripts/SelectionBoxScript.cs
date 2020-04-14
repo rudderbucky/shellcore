@@ -26,6 +26,8 @@ public class SelectionBoxScript : MonoBehaviour
     public static bool simpleMouseMovement = true;
 
     private bool clicking = false;
+    public Texture2D defaultCursor;
+    public Texture2D overTargetableCursor;
 
     void Awake()
     {
@@ -33,6 +35,25 @@ public class SelectionBoxScript : MonoBehaviour
     }
     void Update()
     {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
+        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
+        bool overTarget = false;
+
+        foreach(var hit in hits)
+        {
+            var hitTransforn = hit.transform;
+            var ent = hitTransforn.GetComponent<Entity>();
+            if((hitTransforn.GetComponent<ITargetable>() != null && hitTransforn != PlayerCore.Instance.transform) 
+                || (hitTransforn.GetComponent<Draggable>() && (!ent || ent.faction == PlayerCore.Instance.faction)))
+            {
+                Cursor.SetCursor(overTargetableCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
+                overTarget = true;
+                break;
+            }
+        }
+        
+        if(!overTarget) Cursor.SetCursor(defaultCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
+
         // Clear targets if in cutscene/interacting
         if(PlayerCore.Instance.GetIsInteracting() || DialogueSystem.isInCutscene || PlayerViewScript.paused || PlayerViewScript.GetIsWindowActive()) 
         {

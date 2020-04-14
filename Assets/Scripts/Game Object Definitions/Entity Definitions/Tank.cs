@@ -9,9 +9,14 @@ public class Tank : GroundCraft, IOwnable
     bool hasPath = false;
     IOwner owner;
 
-    protected override void OnDestroy() {
-        if(owner != null && !owner.Equals(null))
+    protected override void OnDeath()
+    {
+        if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
             owner.GetUnitsCommanding().Remove(this);
+        base.OnDeath();
+    }
+
+    protected override void OnDestroy() {
         base.OnDestroy();
     }
     protected override void Start()
