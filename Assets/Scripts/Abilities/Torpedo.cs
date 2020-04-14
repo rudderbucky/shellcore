@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Torpedo : Bullet {
 
+    public static readonly int torpedoDamage = 600;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -15,7 +16,7 @@ public class Torpedo : Bullet {
         cooldownDuration = 3F;
         CDRemaining = cooldownDuration;
         energyCost = 100;
-        damage = 600;
+        damage = torpedoDamage;
         terrain = Entity.TerrainType.Ground;
         category = Entity.EntityCategory.All;
     }

@@ -5,13 +5,14 @@ using UnityEngine;
 public class ShellRegen : PassiveAbility {
 
 	public int index;
+	public static readonly int regen = 50;
 	public void Initialize() {
 		ID = index + 17;
 	}
 	public override void SetDestroyed(bool input)
     {
         float[] regens = Core.GetRegens();
-		regens[index] -= 50 * abilityTier;
+		regens[index] -= regen * abilityTier;
 		Core.SetRegens(regens);
         base.SetDestroyed(input);
     }
@@ -19,7 +20,7 @@ public class ShellRegen : PassiveAbility {
     protected override void Execute()
     {
         float[] regens = Core.GetRegens();
-		regens[index] += 50 * abilityTier;
+		regens[index] += regen * abilityTier;
 		Core.SetRegens(regens);
     }
 }

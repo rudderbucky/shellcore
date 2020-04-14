@@ -12,6 +12,7 @@ public class Bullet : WeaponAbility {
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
     protected string bulletSound = "clip_bullet2";
+    public static readonly int bulletDamage = 400;
 
     protected override void Awake()
     {
@@ -26,7 +27,7 @@ public class Bullet : WeaponAbility {
         cooldownDuration = 2F;
         CDRemaining = cooldownDuration;
         energyCost = 25;
-        damage = 400;
+        damage = bulletDamage;
         prefabScale = 1 * Vector3.one;
         category = Entity.EntityCategory.All;
     }

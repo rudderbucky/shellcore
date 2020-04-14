@@ -38,9 +38,11 @@ public class SiegeZoneManager : MonoBehaviour
     public string sectorName;
     void OnEnable()
     {
-        timer = waveCount = 0;
+        timer = 0;
+        waveCount = 0;
         waves = new Queue<SiegeWave>();
         players = new List<PlayerCore>();
+        entitiesToRemove = new List<SiegeEntity>();
         entitiesRemaining = new List<Entity>();
         entitiesRemainingToRemove = new List<Entity>();
         targets = new List<Entity>();

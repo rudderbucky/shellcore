@@ -9,6 +9,7 @@ public class Beam : WeaponAbility {
     private bool firing; // check for line renderer drawing
     private float timer; // float timer for line renderer drawing
     public GameObject beamHitPrefab;
+    public static readonly int beamDamage = 525;
 
     protected override void Awake()
     {
@@ -23,7 +24,7 @@ public class Beam : WeaponAbility {
         line.endColor = new Color(0.8F,1F,1F,0.9F);
         line.startColor = new Color(0.5F, 1F, 1F, 0.9F);
         cooldownDuration = CDRemaining = 3;
-        damage = 525;
+        damage = beamDamage;
         energyCost = 50;
         ID = 4;
         range = 8;

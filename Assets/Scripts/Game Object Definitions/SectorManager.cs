@@ -60,10 +60,9 @@ public class SectorManager : MonoBehaviour
     }
 
     public static string testJsonPath = null;
-    string jsonPath = null;
+    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main - " + VersionNumberScript.version;
     public void Initialize()
     {
-        jsonPath = Application.dataPath + "\\main";
         if (instance != null)
         {
             Debug.LogWarning("There should be only one sector manager!");
@@ -97,7 +96,7 @@ public class SectorManager : MonoBehaviour
     private void Update()
     {
         if(jsonMode) player.SetIsInteracting(true);
-        if(!jsonMode && player && (current == null || !current.bounds.contains(player.transform.position)))
+        if(!jsonMode && player && (current == null || (!current.bounds.contains(player.transform.position))))
         {
             // load sector
             for(int i = 0; i < sectors.Count; i++)
@@ -253,7 +252,7 @@ public class SectorManager : MonoBehaviour
             }
             catch (System.Exception e)
             {
-                Debug.Log(e);
+                Debug.LogError(e);
             };
         }
         else if (System.IO.File.Exists(path))
@@ -282,10 +281,10 @@ public class SectorManager : MonoBehaviour
             }
             catch (System.Exception e)
             {
-                Debug.Log(e);
+                Debug.LogError(e);
             }
         }
-        Debug.Log("Could not find valid sector in that path");
+        Debug.LogError("Could not find valid sector in that path");
         jsonMode = false;
         player.SetIsInteracting(false);
         loadSector();

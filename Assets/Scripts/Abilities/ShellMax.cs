@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShellMax : PassiveAbility {
 
 	public int index;
+	public static readonly int max = 250;
 
 	public void Initialize() {
 		ID = index + 18;
@@ -12,7 +13,7 @@ public class ShellMax : PassiveAbility {
 	public override void SetDestroyed(bool input)
     {
         float[] maxHealths = Core.GetMaxHealth();
-		maxHealths[index] -= 250 * abilityTier;
+		maxHealths[index] -= max * abilityTier;
 		Core.SetMaxHealth(maxHealths, false);
         base.SetDestroyed(input);
     }
@@ -20,7 +21,7 @@ public class ShellMax : PassiveAbility {
     protected override void Execute()
     {
         float[] maxHealths = Core.GetMaxHealth();
-		maxHealths[index] += 250 * abilityTier;
+		maxHealths[index] += max * abilityTier;
 		Core.SetMaxHealth(maxHealths, true);
     }
 }

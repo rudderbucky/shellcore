@@ -43,7 +43,7 @@ public class ProximityInteractScript : MonoBehaviour {
 				var blueprint = (closest as IVendor).GetVendingBlueprint();
 				var range = blueprint.range;
 
-				if((closest.transform.position - player.transform.position).sqrMagnitude <= range)
+				if(!player.GetIsDead() && (closest.transform.position - player.transform.position).sqrMagnitude <= range)
 					for (int i = 0; i < blueprint.items.Count; i++)
 					{
 						if(Input.GetKey(KeyCode.LeftShift)) {

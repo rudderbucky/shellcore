@@ -60,42 +60,42 @@ public class AbilityUtilities : MonoBehaviour {
 			case 1:
 				return "Temporarily increases speed.";
 			case 2:
-				return "Instantly heal " + 300 * tier + " shell.";
+				return "Instantly heal " + HealthHeal.heals[0] * tier + " shell.";
 			case 3:
-				return "Projectile that deals " + 100 + " damage. \nStays with you no matter what.";
+				return "Projectile that deals " + MainBullet.mbDamage + " damage. \nStays with you no matter what.";
 			case 4:
-				return "Instant attack that deals " + 500 * tier + " damage.";
+				return "Instant attack that deals " + Beam.beamDamage * tier + " damage.";
 			case 5:
-				return "Projectile that deals " + 450 * tier + " damage.";
+				return "Projectile that deals " + Bullet.bulletDamage * tier + " damage.";
 			case 6:
-				return "Instant attack that deals " + 100 * tier + " damage.";
+				return "Instant attack that deals " + Cannon.cannonDamage * tier + " damage.";
 			case 7:
-				return "Homing projectile that deals " + 1000 * tier + " damage.";
+				return "Slow homing projectile that deals " + Missile.missileDamage * tier + " damage.";
 			case 8:
-				return "Slow projectile that deals " + 500 * tier + " damage to ground entities.";
+				return "Slow projectile that deals " + Torpedo.torpedoDamage * tier + " damage to ground entities.";
 			case 9:
-				return "Fast projectile that deals " + 50 * tier + " damage. 18% pierces to core.";
+				return "Fast projectile that deals " + Laser.laserDamage * tier + " damage. 18% pierces to core.";
 			case 10:
 				if(secondaryData == null) return "Spawns a drone.";			
 				DroneSpawnData data = ScriptableObject.CreateInstance<DroneSpawnData>();
 				JsonUtility.FromJsonOverwrite(secondaryData, data);
 				return DroneUtilities.GetDescriptionByType(data.type);
 			case 11:
-				return "Instantly heal " + 300 * tier + " core.";
+				return "Instantly heal " + HealthHeal.heals[1] * tier + " core.";
 			case 12:
-				return "Instantly heal " + 100 * tier + " energy.";
+				return "Instantly heal " + HealthHeal.heals[2] * tier + " energy.";
 			case 13:
 				return "Passively increases speed.";
 			case 17:
-				return "Passively increases shell regen by "  + 50 * tier + " points.";
+				return "Passively increases shell regen by "  + ShellRegen.regen * tier + " points.";
 			case 18:
-				return "Passively increases maximum shell by " + 250 * tier + " points.";
+				return "Passively increases maximum shell by " + ShellMax.max * tier + " points.";
 			case 19:
-				return "Passively increases energy regen by " + 50 * tier + " points.";
+				return "Passively increases energy regen by " +  ShellRegen.regen * tier + " points.";
 			case 20:
-				return "Passively increases maximum energy by " + 250 * tier + " points.";
+				return "Passively increases maximum energy by " + ShellMax.max * tier + " points.";
 			case 21:
-				return "Passively increases the maximum allowed number of controlled units by 3.";
+				return "Passively increases the maximum allowed number of controlled units by " + Command.commandUnitIncrease + ".";
 			default:
 				return "Description unset";
 		}

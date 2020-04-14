@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Laser : Bullet {
 
+    public static readonly int laserDamage = 50;
+    public static readonly float laserPierceFactor = 0.18F;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -19,7 +21,7 @@ public class Laser : Bullet {
         prefabScale = Vector2.one;
         terrain = Entity.TerrainType.All;
         category = Entity.EntityCategory.Unit;
-        pierceFactor = 0.18F;
+        pierceFactor = laserPierceFactor;
     }
 
     protected override void Start() {

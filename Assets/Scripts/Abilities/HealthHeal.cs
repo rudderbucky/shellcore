@@ -13,17 +13,17 @@ public class HealthHeal : Ability
         {
             case HealingType.shell:
                 abilityName = "Shell Boost";
-                description = "Instantly heal 300 shell.";
+                description = "Instantly heal " + heals[0] + " shell.";
                 ID = 2;
                 break;
             case HealingType.core:
                 abilityName = "Core Heal";
-                description = "Instantly heal 300 core.";
+                description = "Instantly heal " + heals[1] + " core.";
                 ID = 11;
                 break;
             case HealingType.energy:
                 abilityName = "Energy";
-                description = "Instantly heal 300 energy.";
+                description = "Instantly heal " + heals[2] + " energy.";
                 ID = 12;
                 energyCost = 0;
                 break;
@@ -51,6 +51,8 @@ public class HealthHeal : Ability
         CDRemaining = 10;
     }
 
+    public static readonly int[] heals = new int[] {500, 500, 250};
+
     /// <summary>
     /// Heals the shell of the core (doesn't heal and refunds the energy used if it would overheal)
     /// </summary>
@@ -62,13 +64,13 @@ public class HealthHeal : Ability
             switch (type)
             {
                 case HealingType.core:
-                    Core.TakeCoreDamage(-500 * abilityTier); // heal core
+                    Core.TakeCoreDamage(-heals[1] * abilityTier); // heal core
                     break;
                 case HealingType.energy:
-                    Core.TakeEnergy(-250 * abilityTier);
+                    Core.TakeEnergy(-heals[2] * abilityTier);
                     break;
                 case HealingType.shell:
-                    Core.TakeShellDamage(-500 * abilityTier, 0, GetComponentInParent<Entity>()); // heal energy
+                    Core.TakeShellDamage(-heals[0] * abilityTier, 0, GetComponentInParent<Entity>()); // heal energy
                     break;
             }
             isOnCD = true; // set on cooldown

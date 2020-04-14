@@ -5,10 +5,11 @@ using UnityEngine;
 public class Missile : WeaponAbility {
 
     public GameObject missilePrefab;
+    public static readonly int missileDamage = 1000;
     protected override void Awake()
     {
         base.Awake();
-        damage = 1000;
+        damage = missileDamage;
         description = "Homing projectile that deals " + damage + " damage.";
         abilityName = "Missile";
         ID = 7;

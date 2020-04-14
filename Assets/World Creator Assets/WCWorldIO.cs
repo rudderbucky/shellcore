@@ -111,14 +111,6 @@ public class WCWorldIO : MonoBehaviour
             case IOMode.Read:
             case IOMode.Write:
                 directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
-                var newDirectories = new string[directories.Length + 1];
-                newDirectories[0] = Application.dataPath + "\\main";
-
-                for(int i = 0; i < directories.Length; i++)
-                {
-                    newDirectories[i+1] = directories[i];
-                }
-                directories = newDirectories;
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
@@ -140,7 +132,9 @@ public class WCWorldIO : MonoBehaviour
                             generatorHandler.ReadWorld(dir);
                             break;
                         case IOMode.Write:
-                            generatorHandler.WriteWorld(dir);
+                            if(dir.Contains("main"))
+                                generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(dir) + "\\main - " + VersionNumberScript.version);
+                            else generatorHandler.WriteWorld(dir);
                             break;
                         case IOMode.ReadShipJSON:
                             builder.LoadBlueprint(System.IO.File.ReadAllText(dir));
@@ -197,7 +191,9 @@ public class WCWorldIO : MonoBehaviour
                     generatorHandler.ReadWorld(path);
                     break;
                 case IOMode.Write:
-                    generatorHandler.WriteWorld(path);
+                    if(path.Contains("main"))
+                        generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(path) + "\\main - " + VersionNumberScript.version);
+                    else generatorHandler.WriteWorld(path);
                     break;
                 case IOMode.ReadShipJSON:
                     builder.LoadBlueprint(System.IO.File.ReadAllText(path));

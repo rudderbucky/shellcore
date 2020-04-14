@@ -8,6 +8,7 @@ using UnityEngine;
 public class MainBullet : Bullet {
 
     public GameObject muzzleFlash;
+    public static readonly int mbDamage = 150;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -19,7 +20,7 @@ public class MainBullet : Bullet {
         cooldownDuration = 0.4F;
         CDRemaining = cooldownDuration;
         energyCost = 10;
-        damage = 150;
+        damage = mbDamage;
         description = "Projectile that deals " + damage + " damage. \nStays with you no matter what.";
         abilityName = "Main Bullet";
         bulletSound = "clip_bullet";

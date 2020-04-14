@@ -108,4 +108,20 @@ public abstract class AirCraft : Craft
         storedPos = point;
         positionBeforeOscillation = point.y;
     }
+
+    protected override void CraftMover(Vector2 directionVector)
+    {
+        base.CraftMover(directionVector);
+
+        if (directionVector != Vector2.zero) // if core is supposed to be moving 
+        {
+            if (timePassed != 0)
+            { // need to reset the position due to the oscillator
+                storedPos = entityBody.position;
+                storedPos.y = positionBeforeOscillation;
+                entityBody.position = storedPos;
+            }
+            timePassed = 0; // reset time passed
+        }
+    }
 }
