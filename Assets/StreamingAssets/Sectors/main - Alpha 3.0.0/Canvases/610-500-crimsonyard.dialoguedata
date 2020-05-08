@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="253.75,-3.75" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="End Dialogue" ID="-1212848" type="EndDialogue" pos="-222.5,-132.125">
+			<Port ID="-1212850" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">true</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1212750" type="DialogueNode" pos="-545,-132.125">
+			<Port ID="-1212752" name="input" dynamic="False" />
+			<Port ID="-1212754" name="cancel" dynamic="False" />
+			<Port ID="-1212802" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">228</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1212806" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">283</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>0</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1082343045" />
+			<Variable name="answers" refID="-1598573440" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-1212866" type="EndDialogue" pos="-186.25,152.875">
+			<Port ID="-1212868" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="-1212740" type="StartDialogueNode" pos="-820,-160">
+			<Port ID="-1212888" name="input" dynamic="False" />
+			<Port ID="-1212744" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-130879345" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1212850" port2ID="-1212802" />
+		<Connection port1ID="-1212752" port2ID="-1212744" />
+		<Connection port1ID="-1212806" port2ID="-1212868" />
+	</Connections>
+	<Objects>
+		<Object refID="1082343045" type="System.String">
+			<string>You're crazy enough to attempt to talk to me in this mess, hm? I respect that. I don't even know if you can hear what I'm saying, but reconstruction's on me.</string>
+		</Object>
+		<Object refID="-1598573440" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I want to change my shell configuration.</string>
+				<string>Good bye.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-130879345" type="System.String">
+			<string>610-500-crimsonyard</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
