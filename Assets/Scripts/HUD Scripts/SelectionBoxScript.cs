@@ -86,9 +86,16 @@ public class SelectionBoxScript : MonoBehaviour
         // Right click clears targets
         if(Input.GetMouseButtonDown(1))
         {
-            if(PlayerCore.Instance.GetTargetingSystem().GetSecondaryTargets().Count > 0)
-                reticleScript.ClearSecondaryTargets();
-            else PlayerCore.Instance.GetTargetingSystem().SetTarget(null);
+            if(Input.GetKey(KeyCode.LeftShift))
+            {
+                PlayerCore.Instance.GetTargetingSystem().SetTarget(null);
+            }
+            else
+            {
+                if(PlayerCore.Instance.GetTargetingSystem().GetSecondaryTargets().Count > 0)
+                    reticleScript.ClearSecondaryTargets();
+                else PlayerCore.Instance.GetTargetingSystem().SetTarget(null);
+            }
         }
 
         if(Input.GetMouseButtonDown(0) && !eventSystem.IsPointerOverGameObject())

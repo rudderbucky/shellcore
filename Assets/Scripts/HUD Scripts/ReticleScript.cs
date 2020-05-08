@@ -291,7 +291,7 @@ public class ReticleScript : MonoBehaviour {
             var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
             AdjustReticleBounds(reticle.GetComponent<SpriteRenderer>(), ent.transform);
             secondariesByObject.Add((ent, reticle.transform));
-            quantityDisplay.AddEntityInfo(ent);
+            quantityDisplay.AddEntityInfo(ent, this);
         }
     }
 

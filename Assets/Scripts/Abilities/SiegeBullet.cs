@@ -9,13 +9,13 @@ public class SiegeBullet : Bullet {
         base.Awake(); // base awake
         // hardcoded values here
         bulletSpeed = 15;
-        survivalTime = 3F;
+        survivalTime = 2F;
         range = bulletSpeed * survivalTime;
         ID = 14;
         cooldownDuration = 5F;
         CDRemaining = cooldownDuration;
         energyCost = 10;
-        damage = 500;
+        damage = 1000;
         prefabScale = 2 * Vector2.one;
         category = Entity.EntityCategory.Station;
     }

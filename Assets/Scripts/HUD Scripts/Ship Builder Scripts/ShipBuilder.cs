@@ -158,7 +158,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		rect.size = rect.size * 1F;
 		return rect;
 	}
-	private enum ReconstructButtonStatus {
+	public enum ReconstructButtonStatus {
 		Valid,
 		PartInvalidPosition,
 		NotEnoughCredits,
@@ -168,7 +168,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		PastPassivesLimit,
 		PartTooHeavy
 	}
-	private void SetReconstructButton(ReconstructButtonStatus status) {
+	
+	public ReconstructButtonStatus reconstructStatus;
+
+	private void SetReconstructButton(ReconstructButtonStatus status) 
+	{
+		reconstructStatus = status;
+
 		switch(status) {
 			case ReconstructButtonStatus.Valid:
 				reconstructText.color = Color.green;

@@ -96,18 +96,9 @@ public class SectorManager : MonoBehaviour
     private void Update()
     {
         if(jsonMode) player.SetIsInteracting(true);
-        if(!jsonMode && player && (current == null || (!current.bounds.contains(player.transform.position))))
+        if(!jsonMode && player && (current == null || (!current.bounds.contains(player.transform.position) && !player.GetIsOscillating())))
         {
-            // load sector
-            for(int i = 0; i < sectors.Count; i++)
-            {
-                if(sectors[i].bounds.contains(player.transform.position))
-                {
-                    current = sectors[i];
-                    loadSector();
-                    break;
-                }
-            }
+            AttemptSectorLoad();
         }
 
         // deadzone damage
@@ -139,6 +130,23 @@ public class SectorManager : MonoBehaviour
                 key.Item2.ID = "";
                 SpawnEntity(key.Item1, key.Item2);
                 AudioManager.PlayClipByID("clip_respawn", spawnPoint);
+            }
+        }
+    }
+
+    public void AttemptSectorLoad()
+    {
+        if(player && (current == null || (!current.bounds.contains(player.transform.position))))
+        {
+            // load sector
+            for(int i = 0; i < sectors.Count; i++)
+            {
+                if(sectors[i].bounds.contains(player.transform.position))
+                {
+                    current = sectors[i];
+                    loadSector();
+                    break;
+                }
             }
         }
     }

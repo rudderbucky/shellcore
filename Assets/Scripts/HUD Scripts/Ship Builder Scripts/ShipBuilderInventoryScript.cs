@@ -18,6 +18,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDown
     protected override void Start() {
         val = GetComponentInChildren<Text>();
         val.text = count + "";
+        val.enabled = (mode == BuilderMode.Yard || mode == BuilderMode.Workshop);
         base.Start();
         // button border size is handled specifically by the grid layout components
     }

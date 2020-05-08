@@ -43,9 +43,30 @@ public class QuantityDisplayScript : MonoBehaviour {
 
     private Dictionary<Entity, GameObject> secondaryInfosByEntity = new Dictionary<Entity, GameObject>();
     public Transform content;
-    public void AddEntityInfo(Entity entity)
+    public void AddEntityInfo(Entity entity, ReticleScript reticle)
     {
         var secondary = Instantiate(secondaryTargetInfoPrefab, content);
+        secondary.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction
+        (() => 
+        {
+            if(Input.GetKey(KeyCode.LeftShift))
+            {
+                reticle.RemoveSecondaryTarget(entity);
+            }
+            else
+            {
+                var targSys = PlayerCore.Instance.GetTargetingSystem();
+                if(targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
+                {
+                    reticle.AddSecondaryTarget(targSys.GetTarget().GetComponent<Entity>());
+                }
+
+                reticle.SetTarget(entity.transform);
+                reticle.RemoveSecondaryTarget(entity);
+            }
+
+        }));
+        
         if(!secondaryInfosByEntity.ContainsKey(entity))
             secondaryInfosByEntity.Add(entity, secondary);
         else

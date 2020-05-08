@@ -14,6 +14,7 @@ public abstract class AirCraft : Craft
     protected float positionBeforeOscillation; // used for oscillation y-coordination resetting
     private Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
     protected AirCraftAI ai; // AI agent that controls this aircraft
+    private bool oscillating;
 
     protected override void Update() {
         base.Update(); // base update
@@ -56,6 +57,7 @@ public abstract class AirCraft : Craft
             storedPos = spawnPoint;
             timePassed = 0;
             positionBeforeOscillation = spawnPoint.y;
+            oscillating = false;
             return;
         }
 
@@ -68,9 +70,11 @@ public abstract class AirCraft : Craft
                 entityBody.position = storedPos;
             }
             timePassed = 0; // reset time passed
+            oscillating = false;
         }
         else if (entityBody.velocity.y == 0)
         { // idle oscillation time
+            oscillating = true;
             OscillatorFunction();
         }
         if (entityBody.velocity.y != 0)
@@ -123,5 +127,10 @@ public abstract class AirCraft : Craft
             }
             timePassed = 0; // reset time passed
         }
+    }
+
+    public bool GetIsOscillating()
+    {
+        return oscillating;
     }
 }

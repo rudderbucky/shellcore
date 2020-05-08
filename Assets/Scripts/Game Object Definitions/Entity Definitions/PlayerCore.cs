@@ -84,6 +84,9 @@ public class PlayerCore : ShellCore {
             loaded = true;
         }
 
+        // force sectors to load once positioning has been determined
+        SectorManager.instance.AttemptSectorLoad();
+
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";
 	}
@@ -174,6 +177,7 @@ public class PlayerCore : ShellCore {
         {
             instance.Start();
         }
+        SectorManager.instance.AttemptSectorLoad();
     }
 
     protected override void CraftMover(Vector2 directionVector)

@@ -285,8 +285,9 @@ public class Entity : MonoBehaviour, IDamageable {
                     shooter.transform.localPosition = Vector3.zero;
                     var shooterSprite = shooter.AddComponent<SpriteRenderer>();
                     shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-                    if(blueprint.parts.Count < 2) shooterSprite.sortingOrder = 500;
-                    else shooterSprite.sortingOrder = sr.sortingOrder + 1;
+                    // if(blueprint.parts.Count < 2) shooterSprite.sortingOrder = 500; TODO: Figure out what these lines do
+                    // shooterSprite.sortingOrder = sr.sortingOrder + 1;
+                    shooterSprite.sortingOrder = 500;
                     shellPart.shooter = shooter;
                 }
 
@@ -377,7 +378,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            if(faction != 0 && (parts[i] != shell) && Random.value < 0.08f && !(this as PlayerCore) && this as ShellCore && 
+            if(faction != 0 && (parts[i] != shell) && Random.value < 0.10f && !(this as PlayerCore) && this as ShellCore && 
                 ((this as ShellCore).GetCarrier() == null)) {
                 parts[i].SetCollectible(true);
                 if(sectorMngr) AIData.strayParts.Add(parts[i]);

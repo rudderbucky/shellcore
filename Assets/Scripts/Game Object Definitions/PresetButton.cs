@@ -27,11 +27,13 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
             if (player.cursave.presetBlueprints != null) player.cursave.presetBlueprints[number - 1] = null;
             blueprint = null;
             valid = true;
+            currentPartHandler.SetActive(true);
+            displayHandler.ClearDisplay();
             return;
         }
         if(!valid) return; // allow user to left shift out blueprint so return after that
         // TODO: check if adding a part back into your inventory validates the preset
-        if (!blueprint)
+        if (!blueprint && (builder.reconstructStatus == ShipBuilder.ReconstructButtonStatus.Valid))
         {
             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             blueprint.coreShellSpriteID = player.blueprint.coreShellSpriteID;
@@ -39,7 +41,8 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
             blueprint.parts = new List<EntityBlueprint.PartInfo>();
             foreach (ShipBuilderPart part in cursorScript.parts)
             {
-                if(!part.isInChain || !part.validPos) {
+                if(!part.isInChain || !part.validPos) 
+                {
                     blueprint = null;
                     return;
                 }
@@ -52,7 +55,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
             }
             player.cursave.presetBlueprints[number - 1] = JsonUtility.ToJson(blueprint);
         }
-        else
+        else if(blueprint)
         {
             cursorScript.ClearAllParts();
             foreach (EntityBlueprint.PartInfo info in blueprint.parts)
