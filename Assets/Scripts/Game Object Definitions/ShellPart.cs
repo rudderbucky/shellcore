@@ -105,6 +105,7 @@ public class ShellPart : MonoBehaviour {
         gameObject.layer = 9;
         rotationOffset = Random.Range(0f, 360f);
         droppedSectorName = SectorManager.instance.current.sectorName;
+        spriteRenderer.sortingLayerName = "Air Entities";
     }
 
     void OnDestroy() {
@@ -124,6 +125,13 @@ public class ShellPart : MonoBehaviour {
         spriteRenderer.enabled = true;
         Destroy(GetComponent<Rigidbody2D>()); // remove rigidbody
         currentHealth = partHealth;
+        
+        // Drone part health penalty
+        if(craft as Drone)
+        {
+            currentHealth /= 4;
+        }
+
         craft = transform.root.GetComponent<Entity>();
         faction = craft.faction;
         spriteRenderer.color = FactionColors.colors[craft.faction];

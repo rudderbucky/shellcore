@@ -155,8 +155,10 @@ public class WorldCreatorCursor : MonoBehaviour
             spawnPoint.position = CalcSpawnPos();
         }
 
+        #if UNITY_EDITOR
         if(Input.GetKeyUp(KeyCode.T))
             taskInterface.ToggleActive();
+        #endif
     }
 
     // revert or destroy pending sector if it exists        

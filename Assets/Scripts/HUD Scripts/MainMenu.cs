@@ -15,6 +15,7 @@ public class MainMenu : MonoBehaviour
     {
         if(nullifyTestJsonPath) SectorManager.testJsonPath = null;
         SceneManager.LoadScene("SampleScene");
+        Debug.LogWarning(Time.timeSinceLevelLoad);
     }
 
     public void OpenSettings()

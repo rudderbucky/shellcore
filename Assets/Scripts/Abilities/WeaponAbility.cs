@@ -95,6 +95,11 @@ public abstract class WeaponAbility : ActiveAbility {
     /// <param name="key">the associated trigger key of the ability</param>
     public override void Tick(string key)
     {
+        if(isDestroyed)
+        {
+            return; // Part has been destroyed, ability can't be used
+        }
+        
         if(key != "")
         {
             if (key == "activate" || (Core as PlayerCore && Input.GetKeyDown(key)))

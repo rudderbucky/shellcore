@@ -83,7 +83,10 @@ public class Bullet : WeaponAbility {
         script.missParticles = true;
 
         // Add velocity to the bullet
-        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos) * bulletSpeed;
+        Vector3 predictionAdjuster = Vector2.zero;
+        if(targetingSystem.GetTarget()) predictionAdjuster = targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity * survivalTime 
+            / (bulletSpeed / 2);
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos + predictionAdjuster) * bulletSpeed;
 
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);

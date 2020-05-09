@@ -57,6 +57,8 @@ public class Drone : AirCraft, IOwnable {
     }
     
     protected override void OnDestroy() {
+        if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+            owner.GetUnitsCommanding().Remove(this);
         base.OnDestroy();
         if(GetComponentInChildren<TractorBeam>()) GetComponentInChildren<TractorBeam>().SetTractorTarget(null);
     }

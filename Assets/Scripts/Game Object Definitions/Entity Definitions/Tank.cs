@@ -17,6 +17,8 @@ public class Tank : GroundCraft, IOwnable
     }
 
     protected override void OnDestroy() {
+        if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+            owner.GetUnitsCommanding().Remove(this);
         base.OnDestroy();
     }
     protected override void Start()

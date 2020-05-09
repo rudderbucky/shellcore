@@ -48,6 +48,11 @@ public abstract class ActiveAbility : Ability
     /// <param name="key">Associated string on the button to push to activate</param>
     public override void Tick(string key)
     {
+        if(isDestroyed)
+        {
+            return; // Part has been destroyed, ability can't be used
+        }
+        
         if (isActive) // active
         {
             TickDown(activeDuration, ref activeTimeRemaining, ref isActive); // tick the active time

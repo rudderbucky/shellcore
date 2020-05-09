@@ -276,6 +276,13 @@ public class Entity : MonoBehaviour, IDamageable {
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
 
+                // Drone shell and core health penalty
+                if(this as Drone)
+                {
+                    maxHealth[0] /= 2;
+                    maxHealth[1] /= 4;
+                }
+
                 string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
                 // Add shooter
                 if (shooterID != null)
