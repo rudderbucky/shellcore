@@ -87,6 +87,7 @@ Shader "Sprites/ColorSwap"
 			fixed4 SpriteFrag2(v2f IN) : SV_Target
 			{
 				fixed4 c = SampleSpriteTexture (IN.texcoord);
+                c.a *= IN.color.a;
 				c.rgb *= c.a;
 
 				if (c.r > 0.99f && c.g < 0.01f && c.b > 0.99f)
@@ -94,7 +95,7 @@ Shader "Sprites/ColorSwap"
 					c = IN.color;
 				}
 
-				return c;
+                return c;
 			}
         ENDCG
         }

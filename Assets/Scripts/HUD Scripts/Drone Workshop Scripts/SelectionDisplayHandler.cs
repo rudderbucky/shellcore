@@ -36,6 +36,7 @@ public class SelectionDisplayHandler : MonoBehaviour
                 core.material = ResourceManager.GetAsset<Material>("material_color_swap");
                 core.color = FactionColors.colors[faction];
             }
+            core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
         } else {
             core.enabled = false;
         }

@@ -705,14 +705,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     }
 
     public RectTransform passiveDialogueRect;
+    public GameObject passiveDialogueInstancePrefab;
+    public RectTransform passiveDialogueContents;
     public Text passiveDialogueText;
     private DialogueState passiveDialogueState = DialogueState.Out;
-
-    public void SlidePassiveDialogueIn()
-    {
-        passiveDialogueState = DialogueState.In;
-        StartCoroutine("SlideDialogueIn");
-    }
+    Queue<(string, string)> passiveMessages = new Queue<(string, string)>();
 
     public void SlidePassiveDialogueOut()
     {
@@ -720,53 +717,67 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         StartCoroutine("SlideDialogueOut");
     }
 
-    IEnumerator SlideDialogueIn()
+    IEnumerator SlidePassiveDialogueIn(Transform transform)
     {
-        float count = passiveDialogueRect.sizeDelta.y;
-        while(count > 0)
+        float count = transform.localScale.y;
+        while(count < 1)
         {
             if(passiveDialogueState != DialogueState.In) break;
-            count -= 10F;
-            passiveDialogueRect.anchoredPosition += 10 * Vector2.up;
+            count += 0.05F;
+            transform.localScale += new Vector3(0, 0.05F);
             yield return new WaitForSeconds(0.0025F);
         }
     }
 
-    IEnumerator SlideDialogueOut()
+    IEnumerator FadePassiveDialogueOut()
     {
-        float count = passiveDialogueRect.sizeDelta.y;
-        while(count > 0)
+        float count = passiveDialogueContents.GetComponent<CanvasGroup>().alpha;
+        passiveDialogueState = DialogueState.Out;
+        while(count > 0.1F)
         {
             if(passiveDialogueState != DialogueState.Out) break;
-            count -= 10F;
-            passiveDialogueRect.anchoredPosition -= 10 * Vector2.up;
+            count -= 0.05F;
+            passiveDialogueContents.GetComponent<CanvasGroup>().alpha -= 0.05F;
             yield return new WaitForSeconds(0.0025F);
         }
-        passiveDialogueText.text = "";
     }
 
-    public void PushPassiveDialogue(string text)
+    public void PushPassiveDialogue(string id, string text)
     {
-        if(passiveDialogueState != DialogueState.In) SlidePassiveDialogueIn();
-        passiveMessages.Enqueue(text);
+        if(passiveDialogueState != DialogueState.In) passiveDialogueState = DialogueState.In;
+        passiveMessages.Enqueue((id, text));
+    }
+    float queueTimer = 0;
+
+    void Start()
+    {
+        PushPassiveDialogue("player", "<color=lime>Hello world!</color>");
+        PushPassiveDialogue("testmissioncontrolk", "<color=lime>Hello!!</color>");
     }
 
-    Queue<string> passiveMessages = new Queue<string>();
-    float queueTimer = 0;
     void PassiveDialogueHandler()
     {
         queueTimer -= Time.deltaTime;
         if(passiveMessages.Count > 0)
         {
+            passiveDialogueContents.GetComponent<CanvasGroup>().alpha = 1;
             if(queueTimer <= 0)
             {
                 queueTimer = 3;
-                passiveDialogueText.text += "\n" + passiveMessages.Dequeue();
+                var dialogue = passiveMessages.Dequeue();
+                var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
+                Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.Item1);
+                instance.transform.Find("Name").GetComponent<Text>().text = speaker.name;
+                instance.transform.Find("Text").GetComponent<Text>().text = dialogue.Item2;
+                instance.transform.localScale -= new Vector3(0, 1);
+                StartCoroutine(SlidePassiveDialogueIn(instance.transform));
+
+                instance.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
             }
         }
         else if(queueTimer <= -2 && passiveDialogueState != DialogueState.Out)
         {
-            SlidePassiveDialogueOut();
+            StartCoroutine(FadePassiveDialogueOut());
         }
 
     }
