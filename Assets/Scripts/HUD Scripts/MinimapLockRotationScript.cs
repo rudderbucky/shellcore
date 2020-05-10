@@ -18,7 +18,10 @@ public class MinimapLockRotationScript : MonoBehaviour {
         sprRenderer.enabled = true; // enable sprite renderer
         Color factionColor;
         if(GetComponentInParent<Entity>())
+        {
             factionColor = FactionColors.colors[GetComponentInParent<Entity>().faction];
+            if(GetComponentInParent<PlayerCore>()) factionColor = Color.white;
+        }
         else factionColor = new Color32(0, 163, 255, 255);
         sprRenderer.color = factionColor; // adjust minimap color to that
     }
