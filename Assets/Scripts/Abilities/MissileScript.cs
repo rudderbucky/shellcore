@@ -80,7 +80,7 @@ public class MissileScript : MonoBehaviour {
         if(target)
         {
             var moveVector = (target.position - transform.position).normalized;
-            GetComponent<Rigidbody2D>().AddForce(80 * moveVector);
+            GetComponent<Rigidbody2D>().AddForce(120 * moveVector);
         }
 	}
 

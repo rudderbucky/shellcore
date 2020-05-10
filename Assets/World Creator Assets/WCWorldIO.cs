@@ -69,8 +69,43 @@ public class WCWorldIO : MonoBehaviour
             var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
             if(Directory.Exists(path)) 
                 generatorHandler.ReadWorld(path);
+            else
+            {
+                DeletePlaceholderDirectories();
+            }
         }
     }
+
+    public static void DeletePlaceholderDirectories()
+    {
+        if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+        {
+            foreach(var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+            {
+                System.IO.File.Delete(file);
+            }
+            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\CanvasPlaceholder");
+        }
+
+        if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\EntityPlaceholder"))
+        {
+            foreach(var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\EntityPlaceholder"))
+            {
+                System.IO.File.Delete(file);
+            }
+            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\EntityPlaceholder");
+        }
+
+        if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\WavePlaceholder"))
+        {
+            foreach(var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\WavePlaceholder"))
+            {
+                System.IO.File.Delete(file);
+            }
+            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\WavePlaceholder");
+        }
+    }
+
 
     public void TestWorld()
     {

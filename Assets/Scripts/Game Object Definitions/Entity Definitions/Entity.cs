@@ -142,10 +142,12 @@ public class Entity : MonoBehaviour, IDamageable {
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
             shell = part;
+            renderer.sortingLayerName = "Default";
         } else {
             var renderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
             renderer.color = FactionColors.colors[faction]; // needed to reset outpost colors
             renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
+            renderer.sortingLayerName = "Default";
         }
 
         if (!explosionCirclePrefab)

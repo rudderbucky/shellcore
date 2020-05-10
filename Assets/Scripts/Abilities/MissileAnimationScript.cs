@@ -45,7 +45,7 @@ public class MissileAnimationScript : MonoBehaviour {
                     Start();
                     break;
                 default:
-                    if (timer < 0.032F) // time to project
+                    if (timer < 0.020F) // time to project
                     {
                         DrawLine(speed * timer, iteration, startAngle, initialPos); // project out the line
                     }

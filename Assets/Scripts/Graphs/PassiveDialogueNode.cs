@@ -21,13 +21,17 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob output;
         ConnectionKnobAttribute OutStyle = new ConnectionKnobAttribute("Output", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right);
         public string text;
+        public string id;
 
         public override void NodeGUI()
         {
             input.DisplayLayout();
             output.DisplayLayout();
             GUILayout.Label("Text:");
-            text = GUILayout.TextArea( text);
+            text = GUILayout.TextArea(text);
+
+            GUILayout.Label("ID:");
+            id = GUILayout.TextArea(id);
         }
 
         public override int Traverse()

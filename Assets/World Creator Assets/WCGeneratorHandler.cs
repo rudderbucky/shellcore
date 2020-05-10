@@ -41,6 +41,8 @@ public class WCGeneratorHandler : MonoBehaviour
             }
             System.IO.Directory.Delete(testPath);
         }
+
+        WCWorldIO.DeletePlaceholderDirectories();
     }
 
     ///<summary>
