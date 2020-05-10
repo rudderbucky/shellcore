@@ -709,6 +709,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public RectTransform passiveDialogueContents;
     public Text passiveDialogueText;
     private DialogueState passiveDialogueState = DialogueState.Out;
+    public RectTransform passiveDialogueScrollView;
     Queue<(string, string)> passiveMessages = new Queue<(string, string)>();
 
     public void SlidePassiveDialogueOut()
@@ -731,14 +732,19 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     IEnumerator FadePassiveDialogueOut()
     {
-        float count = passiveDialogueContents.GetComponent<CanvasGroup>().alpha;
+        float count = passiveDialogueScrollView.localScale.y;
         passiveDialogueState = DialogueState.Out;
-        while(count > 0.1F)
+        while(count > 0F)
         {
             if(passiveDialogueState != DialogueState.Out) break;
             count -= 0.05F;
-            passiveDialogueContents.GetComponent<CanvasGroup>().alpha -= 0.05F;
+            passiveDialogueScrollView.localScale -= new Vector3(0, 0.05F, 0);
             yield return new WaitForSeconds(0.0025F);
+        }
+
+        for(int i = 0; i < passiveDialogueContents.childCount; i++)
+        {
+            Destroy(passiveDialogueContents.GetChild(i).gameObject);
         }
     }
 
@@ -749,25 +755,22 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     }
     float queueTimer = 0;
 
-    void Start()
-    {
-        PushPassiveDialogue("player", "<color=lime>Hello world!</color>");
-        PushPassiveDialogue("testmissioncontrolk", "<color=lime>Hello!!</color>");
-    }
-
     void PassiveDialogueHandler()
     {
         queueTimer -= Time.deltaTime;
         if(passiveMessages.Count > 0)
         {
-            passiveDialogueContents.GetComponent<CanvasGroup>().alpha = 1;
+            passiveDialogueScrollView.localScale = new Vector3(1, 1, 1);
             if(queueTimer <= 0)
             {
                 queueTimer = 3;
                 var dialogue = passiveMessages.Dequeue();
                 var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
                 Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.Item1);
-                instance.transform.Find("Name").GetComponent<Text>().text = speaker.name;
+                var name = speaker.name;
+                if(speaker as PlayerCore)
+                    name = (speaker as PlayerCore).cursave.name;
+                instance.transform.Find("Name").GetComponent<Text>().text = name;
                 instance.transform.Find("Text").GetComponent<Text>().text = dialogue.Item2;
                 instance.transform.localScale -= new Vector3(0, 1);
                 StartCoroutine(SlidePassiveDialogueIn(instance.transform));
