@@ -70,19 +70,25 @@ public class ShellPart : MonoBehaviour {
         } else holder = GameObject.Find("Part Holder");
 
 
-        GameObject obj = new GameObject("Part_" + blueprint.name);
+        GameObject obj = Instantiate(ResourceManager.GetAsset<GameObject>("base_part"));
         obj.transform.SetParent(holder.transform);
 
         //Part sprite
-        var spriteRenderer = obj.AddComponent<SpriteRenderer>();
+        var spriteRenderer = obj.GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
-        var part = obj.AddComponent<ShellPart>();
+        var part = obj.GetComponent<ShellPart>();
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
-        var collider = obj.AddComponent<PolygonCollider2D>();
+        var collider = obj.GetComponent<PolygonCollider2D>();
         collider.isTrigger = true;
         part.detachible = blueprint.detachible;
 
+        var partSys = obj.GetComponent<ParticleSystem>();
+        var sh = partSys.shape;
+        if(spriteRenderer.sprite) sh.scale = (Vector3)spriteRenderer.sprite.bounds.extents * 2;
+        var e = partSys.emission;
+        e.rateOverTime = new ParticleSystem.MinMaxCurve(3 * (blueprint.size + 1));
+        e.enabled = false;
         return obj;
     }
     
