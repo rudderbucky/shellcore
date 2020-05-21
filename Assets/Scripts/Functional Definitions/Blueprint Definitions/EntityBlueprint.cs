@@ -18,8 +18,8 @@ public class EntityBlueprint : ScriptableObject
         public int abilityID;
         public int tier;
         public string secondaryData;
-
         public string partID; //Part blueprint ID
+        public bool shiny;
     }
     public string entityName = "Unnamed";
     public string coreSpriteID;

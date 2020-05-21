@@ -42,6 +42,7 @@ public class DisplayPart : MonoBehaviour
 	protected virtual void UpdateAppearance() {
 		// set colors
         image.color = FactionColors.colors[faction];
+		if(info.shiny) image.color += new Color32(0, 0, 150, 0);
 		// set position
 		image.rectTransform.anchoredPosition = info.location * 100;
 		if(shooter) 

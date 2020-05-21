@@ -13,6 +13,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDown
     public ShipBuilderCursorScript cursor;
     public Text val;
     public BuilderMode mode;
+    public Image isShiny;
     int count;
 
     protected override void Start() {
@@ -20,6 +21,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDown
         val.text = count + "";
         val.enabled = (mode == BuilderMode.Yard || mode == BuilderMode.Workshop);
         base.Start();
+        isShiny.enabled = part.shiny;
         // button border size is handled specifically by the grid layout components
     }
     public void OnPointerDown(PointerEventData eventData)
@@ -61,7 +63,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDown
     }
     void Update() {
         val.text = count + "";
-        image.color = count > 0 ? FactionColors.colors[0] : Color.gray; // gray gray gray gray gray USA USA USA USA USA
-        if(GetComponentsInChildren<Image>().Length > 1) GetComponentsInChildren<Image>()[2].color = count > 0 ? FactionColors.colors[0] : Color.gray;
+        image.color = count > 0 ? activeColor : Color.gray; // gray gray gray gray gray USA USA USA USA USA
+        if(GetComponentsInChildren<Image>().Length > 1) GetComponentsInChildren<Image>()[2].color = count > 0 ? activeColor : Color.gray;
     }
 }

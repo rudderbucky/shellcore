@@ -93,6 +93,10 @@ public class ShipBuilderPartDisplay : MonoBehaviour {
 				image.sprite = ResourceManager.GetAsset<Sprite>(partID + "_sprite");
 				image.rectTransform.sizeDelta = image.sprite.bounds.size * 50;
 				image.color = FactionColors.colors[0];
+				if(info.shiny) 
+				{
+					image.color += new Color32(0, 0, 150, 0);
+				}
 			} else {
 				SetInactive();
 			}

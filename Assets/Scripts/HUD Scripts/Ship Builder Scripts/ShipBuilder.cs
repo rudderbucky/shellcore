@@ -95,6 +95,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		part.abilityID = partToCull.abilityID;
 		if(part.abilityID == 10) part.secondaryData = partToCull.secondaryData;
 		part.tier = partToCull.tier;
+		part.shiny = partToCull.shiny;
 		return part;
 	}
 	public enum TransferMode {

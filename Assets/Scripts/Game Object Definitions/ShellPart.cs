@@ -89,6 +89,7 @@ public class ShellPart : MonoBehaviour {
         var e = partSys.emission;
         e.rateOverTime = new ParticleSystem.MinMaxCurve(3 * (blueprint.size + 1));
         e.enabled = false;
+        part.partSys = partSys;
         return obj;
     }
     
@@ -112,6 +113,8 @@ public class ShellPart : MonoBehaviour {
         rotationOffset = Random.Range(0f, 360f);
         droppedSectorName = SectorManager.instance.current.sectorName;
         spriteRenderer.sortingLayerName = "Air Entities";
+        if(shooter)
+            shooter.GetComponent<SpriteRenderer>().sortingLayerName = "Air Entities";
     }
 
     void OnDestroy() {
@@ -151,7 +154,14 @@ public class ShellPart : MonoBehaviour {
         {
             GetComponent<Ability>().part = this;
         }
+
+        if(info.shiny && partSys) // shell does not have a Particle System, and it also can't be shiny
+        {
+            StartEmitting();
+        }
     }
+
+    ParticleSystem partSys;
 
     private void AimShooter()
     {
@@ -180,6 +190,8 @@ public class ShellPart : MonoBehaviour {
         if(shooter) shooter.GetComponent<SpriteRenderer>().enabled = spriteRenderer.enabled;
     }
 
+    private bool shinyCheck = false;
+
 	// Update is called once per frame
 	void Update () {
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)
@@ -196,6 +208,11 @@ public class ShellPart : MonoBehaviour {
         else if (hasDetached) { // if it has actually detached
             if (collectible && detachible)
             {
+                if(!shinyCheck)
+                {
+                    shinyCheck = true;
+                    ShinyCheck();
+                }
                 rigid.drag = 25;
                 // add "Draggable" component so that shellcores can grab the part
                 if (!draggable) draggable = gameObject.AddComponent<Draggable>();
@@ -222,6 +239,27 @@ public class ShellPart : MonoBehaviour {
             if(GetComponent<WeaponAbility>()) AimShooter();
         }
 	}
+
+    private void ShinyCheck()
+    {
+        if(Random.Range(3999, 4000) == 3999) 
+        {
+            info.shiny = true;
+            StartEmitting();
+        }
+    }
+
+    private void StartEmitting()
+    {
+        var emission = partSys.emission;
+        emission.enabled = true;
+
+        spriteRenderer.color += new Color32(0, 0, 150, 0);
+        shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
+
+        var color = partSys.colorOverLifetime;
+        color.color = new ParticleSystem.MinMaxGradient(spriteRenderer.color + Color.gray);
+    }
 
     /// <summary>
     /// Take part damage, if it is damaged too much remove the part
