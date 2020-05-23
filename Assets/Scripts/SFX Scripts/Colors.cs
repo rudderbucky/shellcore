@@ -12,6 +12,16 @@ public struct FactionColors
     };
 }
 
+public struct ShinyFactionColors
+{
+    public static Color[] colors = new Color[]
+    {
+        new Color(0f, 1f, 0f, 1F) + new Color32(0, 0, 150, 0),
+        new Color(1f, 0, 0, 1F) + new Color32(0, 0, 150, 0),
+        new Color32(218, 165, 182, 255),
+    };
+}
+
 public struct SectorColors
 {
     public static Color[] colors = new Color[]

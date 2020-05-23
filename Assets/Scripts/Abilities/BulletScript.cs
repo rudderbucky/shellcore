@@ -16,6 +16,7 @@ public class BulletScript : MonoBehaviour {
     private Entity.TerrainType terrain;
     private Entity.EntityCategory category;
     private float pierceFactor = 0;
+    public Color particleColor;
     Vector2 vector;
 
     /// <summary>
@@ -84,6 +85,7 @@ public class BulletScript : MonoBehaviour {
 
     void Start() {
         vector = GetComponent<Rigidbody2D>().velocity;
+        GetComponent<SpriteRenderer>().color = particleColor;
     }
 
     public void StartSurvivalTimer(float time)

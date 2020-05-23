@@ -41,6 +41,7 @@ public class Missile : WeaponAbility {
                 script.faction = Core.faction;
                 script.SetDamage(damage * abilityTier);
                 script.StartSurvivalTimer(3);
+                script.missileColor = part && part.info.shiny ? ShinyFactionColors.colors[Core.faction] : new Color(0.8F,1F,1F,0.9F);
                 isOnCD = true; // set on cooldown
                 return true;
             }

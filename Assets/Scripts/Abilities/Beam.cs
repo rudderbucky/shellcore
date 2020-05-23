@@ -21,8 +21,6 @@ public class Beam : WeaponAbility {
         line.sortingLayerName = "Projectiles";
         line.material = material;
         line.startWidth = line.endWidth = 0.15F;
-        line.endColor = new Color(0.8F,1F,1F,0.9F);
-        line.startColor = new Color(0.5F, 1F, 1F, 0.9F);
         cooldownDuration = CDRemaining = 3;
         damage = beamDamage;
         energyCost = 50;
@@ -33,6 +31,8 @@ public class Beam : WeaponAbility {
     protected override void Start() {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
         particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
+        line.endColor = part && part.info.shiny ? ShinyFactionColors.colors[Core.faction] : new Color(0.8F,1F,1F,0.9F);
+        line.startColor = part && part.info.shiny ? ShinyFactionColors.colors[Core.faction] : new Color(0.8F,1F,1F,0.9F);
         base.Start();
     }
     public void SetMaterial(Material material)

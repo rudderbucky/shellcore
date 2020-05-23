@@ -11,6 +11,7 @@ public class MissileAnimationScript : MonoBehaviour {
     private bool initialized;
     private int iteration;
     private Vector3 initialPos;
+    public Color lineColor;
 
     void Start()
     {
@@ -21,8 +22,8 @@ public class MissileAnimationScript : MonoBehaviour {
         line.startWidth = 0;
         line.positionCount = 2;
         line.useWorldSpace = false;
-        line.startColor = new Color32((byte)0, (byte)112, (byte)247, (byte)230);
-        line.endColor = new Color32((byte)201, (byte)255, (byte)247, (byte)230);
+        line.startColor = lineColor;
+        line.endColor = lineColor;
         iteration = 0;
         timer = 0;
         initialPos = Vector3.zero;

@@ -143,13 +143,8 @@ public class ShellPart : MonoBehaviour {
 
         craft = transform.root.GetComponent<Entity>();
         faction = craft.faction;
-        spriteRenderer.color = FactionColors.colors[craft.faction];
         gameObject.layer = 0;
 
-        if (shooter)
-        {
-            shooter.GetComponent<SpriteRenderer>().color = FactionColors.colors[craft.faction];
-        }
         if (GetComponent<Ability>())
         {
             GetComponent<Ability>().part = this;
@@ -158,6 +153,10 @@ public class ShellPart : MonoBehaviour {
         if(info.shiny && partSys) // shell does not have a Particle System, and it also can't be shiny
         {
             StartEmitting();
+        }
+        else
+        {
+            StartCoroutine(InitColorLerp(0));
         }
     }
 
@@ -242,7 +241,7 @@ public class ShellPart : MonoBehaviour {
 
     private void ShinyCheck()
     {
-        if(Random.Range(3999, 4000) == 3999) 
+        if(Random.Range(1, 4000) == 3999) 
         {
             info.shiny = true;
             StartEmitting();
@@ -254,11 +253,26 @@ public class ShellPart : MonoBehaviour {
         var emission = partSys.emission;
         emission.enabled = true;
 
-        spriteRenderer.color += new Color32(0, 0, 150, 0);
-        shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
+        StartCoroutine(InitColorLerp(0));
 
-        var color = partSys.colorOverLifetime;
-        color.color = new ParticleSystem.MinMaxGradient(spriteRenderer.color + Color.gray);
+    }
+
+    private IEnumerator InitColorLerp(float lerpVal)
+    {
+        ParticleSystem.ColorOverLifetimeModule partSysColorMod;
+        if(partSys) partSysColorMod = partSys.colorOverLifetime;
+        while(lerpVal <= 1)
+        {
+            lerpVal += 0.05F;
+            lerpVal = Mathf.Min(lerpVal, 1);
+            var lerpedColor = Color.Lerp(Color.gray, info.shiny ? ShinyFactionColors.colors[faction] : FactionColors.colors[faction], lerpVal);
+
+            spriteRenderer.color = lerpedColor;
+            if(shooter) shooter.GetComponent<SpriteRenderer>().color = lerpedColor;
+
+            if(partSys) partSysColorMod.color = new ParticleSystem.MinMaxGradient(lerpedColor);
+            yield return new WaitForSeconds(0.025F);
+        }
     }
 
     /// <summary>

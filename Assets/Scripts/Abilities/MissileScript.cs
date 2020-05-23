@@ -19,6 +19,7 @@ public class MissileScript : MonoBehaviour {
     private Vector2 vector;
     public GameObject hitPrefab;
     public GameObject missPrefab;
+    public Color missileColor;
 
     // Use this for initialization
     void Start () {
@@ -38,6 +39,7 @@ public class MissileScript : MonoBehaviour {
             {
                 var x = Instantiate(missileLinePrefab, transform); // instantiate
                 x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
+                x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
             }
             GetComponent<Rigidbody2D>().AddTorque(50); // add angular velocity
         }
@@ -46,6 +48,7 @@ public class MissileScript : MonoBehaviour {
             for (int i = 0; i < 3; i++) // instantiate the prefabs
             {
                 var x = Instantiate(missileLinePrefab, transform); // instantiate 
+                x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
                 x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
             }
         }
@@ -55,6 +58,8 @@ public class MissileScript : MonoBehaviour {
             var collider = gameObject.AddComponent<CircleCollider2D>(); // add collider component
             collider.isTrigger = true; // set trigger
         }
+
+        GetComponent<SpriteRenderer>().color = missileColor;
     }
 	
     /// <summary>

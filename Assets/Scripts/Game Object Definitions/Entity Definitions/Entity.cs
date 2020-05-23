@@ -257,6 +257,7 @@ public class Entity : MonoBehaviour, IDamageable {
                 GameObject partObject = ShellPart.BuildPart(partBlueprint);
                 ShellPart shellPart = partObject.GetComponent<ShellPart>();
                 shellPart.info = part;
+                shellPart.info.shiny = true;
 
                 //Add an ability to the part:
 
@@ -387,7 +388,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            if(faction != 0 && (parts[i] != shell) && Random.value < 0.10f && !(this as PlayerCore) && this as ShellCore && 
+            if(faction != 0 && (parts[i] != shell) && Random.value < 0.1f && !(this as PlayerCore) && this as ShellCore && 
                 ((this as ShellCore).GetCarrier() == null)) {
                 parts[i].SetCollectible(true);
                 if(sectorMngr) AIData.strayParts.Add(parts[i]);
