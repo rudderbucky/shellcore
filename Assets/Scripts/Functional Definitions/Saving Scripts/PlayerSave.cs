@@ -21,6 +21,8 @@ public class PlayerSave {
 	public int shards;
 	public WorldData.CharacterData[] characters;
 	public List<string> sectorsSeen;
+	public List<EntityBlueprint.PartInfo> partsSeen;
+	public List<EntityBlueprint.PartInfo> partsObtained;
 	public List<Mission> missions;
 	public int reputation;
 }

@@ -8,11 +8,17 @@ public class ShipBuilderInventoryBase : MonoBehaviour
 {
     public EntityBlueprint.PartInfo part;
     protected Image image;
+    protected Image shooter;
     protected Color activeColor;
+    public Text val;
+    public Image isShiny;
 
     protected virtual void Start() {
         image = GetComponentsInChildren<Image>()[1];
+        shooter = GetComponentsInChildren<Image>()[2];
+        val = GetComponentInChildren<Text>();
         image.sprite = ResourceManager.GetAsset<Sprite>(part.partID + "_sprite");
+        isShiny.enabled = part.shiny;
 
         image.color = activeColor = FactionColors.colors[0];
         if(part.shiny) 
@@ -25,9 +31,9 @@ public class ShipBuilderInventoryBase : MonoBehaviour
     
         string shooterID = AbilityUtilities.GetShooterByID(part.abilityID);
         if(shooterID != null) {
-            GetComponentsInChildren<Image>()[2].sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-            GetComponentsInChildren<Image>()[2].color = activeColor;
-            GetComponentsInChildren<Image>()[2].rectTransform.sizeDelta = GetComponentsInChildren<Image>()[2].sprite.bounds.size * 100;
-        } else GetComponentsInChildren<Image>()[2].enabled = false;
+            shooter.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
+            shooter.color = activeColor;
+            shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
+        } else shooter.enabled = false;
     }
 }
