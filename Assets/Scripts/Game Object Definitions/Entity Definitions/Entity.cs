@@ -395,7 +395,17 @@ public class Entity : MonoBehaviour, IDamageable {
             parts[i].Detach();
         }
 
-        if(lastDamagedBy as PlayerCore) (lastDamagedBy as PlayerCore).credits += 5;
+        if(lastDamagedBy as PlayerCore) 
+        {
+            (lastDamagedBy as PlayerCore).credits += 5;
+            if(this as ShellCore && faction == 1)
+            {
+                foreach(var part in blueprint.parts)
+                {
+                    (lastDamagedBy as PlayerCore).cursave.partsSeen.Add(PartIndexScript.CullToPartIndexValues(part));
+                }
+            }
+        }
 
         GameObject deathExplosion = Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
         /*

@@ -537,8 +537,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				info = ShipBuilder.CullSpatialValues(info);
 				AddPart(info);
 				player.cursave.partInventory.Add(info);
-				if(!player.cursave.partsObtained.Contains(info)) player.cursave.partsObtained.Add(info);
-				if(!player.cursave.partsSeen.Contains(info)) player.cursave.partsSeen.Add(info);
+
+				PartIndexScript.AttemptAddToPartsObtained(info);
+				PartIndexScript.AttemptAddToPartsSeen(info);
 				Destroy(part.gameObject);
 			}
 			LoadBlueprint(blueprint);
