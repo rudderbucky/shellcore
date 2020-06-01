@@ -12,6 +12,7 @@ public class PartIndexScript : MonoBehaviour
     public Transform[] contents;
     public GameObject[] texts;
     public GameObject infoBox;
+    public PartDisplayBase partDisplay;
 
     public enum PartStatus
     {
@@ -26,24 +27,43 @@ public class PartIndexScript : MonoBehaviour
     public void AttemptAddPart(EntityBlueprint.PartInfo part, string sectorName)
     {
         part = CullToPartIndexValues(part);
-
         if(!parts.ContainsKey(part))
         {
             var button = Instantiate(inventoryPrefab, contents[ResourceManager.GetAsset<PartBlueprint>(part.partID).size]).GetComponent<PartIndexInventoryButton>();
             parts.Add(part, button.gameObject);
             button.part = part;
-            if(PlayerCore.Instance.cursave.partsObtained.Exists(x => CullToPartIndexValues(x).Equals(part))) 
+            if(CheckPartObtained(part)) 
             {
                 button.status = PartStatus.Obtained;
                 button.displayShiny = PlayerCore.Instance.cursave.partsObtained.Find(x => CullToPartIndexValues(x).Equals(part)).shiny;
             }
-            else if(PlayerCore.Instance.cursave.partsSeen.Exists(x => CullToPartIndexValues(x).Equals(part))) button.status = PartStatus.Seen;
-            else button.status = PartStatus.Unseen;
+            else if(CheckPartSeen(part)) 
+            {
+                button.status = PartStatus.Seen;
+                button.displayShiny = false;
+            }
+            else 
+            {
+                button.status = PartStatus.Unseen;
+                button.displayShiny = false;
+            }
             button.infoBox = infoBox;
-            button.Initialize();
+            button.partDisplay = partDisplay;
             Debug.Log(PlayerCore.Instance.cursave.partsObtained.Count);
         }
         parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(sectorName);
+    }
+
+    public static bool CheckPartObtained(EntityBlueprint.PartInfo part)
+    {
+        part = CullToPartIndexValues(part);
+        return PlayerCore.Instance.cursave.partsObtained.Exists(x => CullToPartIndexValues(x).Equals(part));
+    }
+
+    public static bool CheckPartSeen(EntityBlueprint.PartInfo part)
+    {
+        part = CullToPartIndexValues(part);
+        return PlayerCore.Instance.cursave.partsSeen.Exists(x => CullToPartIndexValues(x).Equals(part));
     }
 
     void OnEnable()
@@ -57,9 +77,10 @@ public class PartIndexScript : MonoBehaviour
         }
         parts.Clear();
 
+        infoBox.gameObject.SetActive(false);
 
         // player metadata
-
+        // PlayerCore.Instance.cursave.partsObtained = null;
         if(PlayerCore.Instance.cursave.partsObtained == null || PlayerCore.Instance.cursave.partsObtained.Count == 0)
         {
             PlayerCore.Instance.cursave.partsObtained = new List<EntityBlueprint.PartInfo>();
@@ -75,13 +96,14 @@ public class PartIndexScript : MonoBehaviour
         }
         
 
+        // PlayerCore.Instance.cursave.partsSeen = null;
         if(PlayerCore.Instance.cursave.partsSeen == null || PlayerCore.Instance.cursave.partsSeen.Count == 0)
         {
             PlayerCore.Instance.cursave.partsSeen = new List<EntityBlueprint.PartInfo>();
             var partsSeen = PlayerCore.Instance.cursave.partsSeen;
             foreach(var part in PlayerCore.Instance.cursave.partsObtained)
             {
-                AttemptAddToPartsSeen(part);
+                AttemptAddToPartsSeen(CullToPartIndexValues(part));
             }
         }
 

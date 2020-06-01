@@ -36,7 +36,7 @@ public class QuantityDisplayScript : MonoBehaviour {
 
             foreach(var infos in secondaryInfosByEntity)
             {
-                UpdateInfo(infos.Key, infos.Value);
+                UpdateInfo(infos.Key ? infos.Key.gameObject : null, infos.Value);
             }
         }
 	}
@@ -88,10 +88,10 @@ public class QuantityDisplayScript : MonoBehaviour {
     public void UpdatePrimaryTargetInfo()
     {
         var targ = player.GetTargetingSystem().GetTarget();
-        UpdateInfo(targ ? targ.GetComponent<Entity>() : null, targetInfo);
+        UpdateInfo(targ ? targ.gameObject : null, targetInfo);
     }
 
-    public void UpdateInfo(Entity entity, GameObject targetInfo, int index = 0)
+    public void UpdateInfo(GameObject obj, GameObject targetInfo, int index = 0)
     {
         string description;
         var targetName = targetInfo.transform.Find("Target Name").GetComponent<Text>();
@@ -100,6 +100,14 @@ public class QuantityDisplayScript : MonoBehaviour {
         Text targetNumber = null;
         if(targetInfo.transform.Find("Number")) targetNumber = targetInfo.transform.Find("Number").GetComponent<Text>();
 
+        if(obj == null)
+        {
+            targetName.text = targetDesc.text = targetDist.text = "";
+            targetInfo.SetActive(false);
+            return;
+        }
+
+        var entity = obj.GetComponent<Entity>();
         if(entity) {
             targetInfo.SetActive(true);
             description = (entity.Terrain + " ");
@@ -114,7 +122,26 @@ public class QuantityDisplayScript : MonoBehaviour {
                 targetNumber.text = ReticleScript.instance.GetTargetIndex(entity) + 1 + "";
                 // targetShape.rectTransform.sizeDelta = targetShape.rectTransform.sizeDelta / 1.25F;
             }
-        } else {
+        } 
+        else if(obj.GetComponent<ShellPart>()) 
+        {
+            var info = obj.GetComponent<ShellPart>().info;
+            targetInfo.SetActive(true);
+            if(PartIndexScript.CheckPartObtained(info))
+            {
+                targetName.text = info.partID;
+                targetDesc.text = "Part";
+                targetDist.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, null) + " " + info.tier;
+            }
+            else
+            {
+                targetName.text = "Unobtained";
+                targetDesc.text = "Part";
+                targetDist.text = "Bring to Yard";
+                targetName.color = targetDesc.color = targetDist.color = FactionColors.colors[obj.GetComponent<ShellPart>().GetFaction()];
+            }
+        } else
+        {
             targetName.text = targetDesc.text = targetDist.text = "";
             targetInfo.SetActive(false);
         }

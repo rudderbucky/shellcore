@@ -9,13 +9,10 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
     public PartIndexScript.PartStatus status;
     public GameObject infoBox;
     public List<string> origins = new List<string>();
-    public bool displayShiny = true;
+    public bool displayShiny;
+    public PartDisplayBase partDisplay;
 
     protected override void Start()
-    {
-
-    }
-    public void Initialize()
     {
         base.Start();
         val.enabled = false;
@@ -47,14 +44,21 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
             {
                 if(!textComponent.text.Contains(origin)) 
                 {
-                    if(textComponent.text != "") textComponent.text += ", ";
-                    else textComponent.text = "Sector Origins: ";
-                    textComponent.text += origin;
+                    if(textComponent.text == "") textComponent.text = "Sector Origins: ";
+                    textComponent.text += "\n" + origin;
                 }
             }
+
+            if(status == PartIndexScript.PartStatus.Obtained)
+            {
+                partDisplay.gameObject.SetActive(true);
+                partDisplay.DisplayPartInfo(part);
+            }
+            else partDisplay.gameObject.SetActive(false);
         }
         else
         {
+            partDisplay.gameObject.SetActive(false);
             infoBox.GetComponentInChildren<Text>().text = "Sector Origins: ???";
         }
         

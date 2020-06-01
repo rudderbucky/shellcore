@@ -190,6 +190,7 @@ public class ShellPart : MonoBehaviour {
     }
 
     private bool shinyCheck = false;
+    private bool colorLerped = false;
 
 	// Update is called once per frame
 	void Update () {
@@ -241,7 +242,7 @@ public class ShellPart : MonoBehaviour {
 
     private void ShinyCheck()
     {
-        if(Random.Range(1, 4000) == 3999) 
+        if(Random.Range(0, 4000) == 3999) 
         {
             info.shiny = true;
             StartEmitting();
@@ -259,9 +260,10 @@ public class ShellPart : MonoBehaviour {
 
     private IEnumerator InitColorLerp(float lerpVal)
     {
+        colorLerped = false;
         ParticleSystem.ColorOverLifetimeModule partSysColorMod;
         if(partSys) partSysColorMod = partSys.colorOverLifetime;
-        while(lerpVal <= 1)
+        while(lerpVal < 1)
         {
             lerpVal += 0.05F;
             lerpVal = Mathf.Min(lerpVal, 1);
@@ -273,6 +275,7 @@ public class ShellPart : MonoBehaviour {
             if(partSys) partSysColorMod.color = new ParticleSystem.MinMaxGradient(lerpedColor);
             yield return new WaitForSeconds(0.025F);
         }
+        colorLerped = true;
     }
 
     /// <summary>
@@ -284,6 +287,14 @@ public class ShellPart : MonoBehaviour {
         currentHealth -= damage;
         if (currentHealth <= 0 && detachible) {
             craft.RemovePart(this);
+        }
+
+        if(partHealth != 0 && colorLerped)
+        {
+            spriteRenderer.color = Color.Lerp(Color.gray, info.shiny ? ShinyFactionColors.colors[faction] : 
+                FactionColors.colors[faction], currentHealth / partHealth);
+            Debug.LogError(spriteRenderer.color);
+            if(shooter) shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
         }
     }
 }

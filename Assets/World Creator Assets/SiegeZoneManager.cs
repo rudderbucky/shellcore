@@ -82,13 +82,7 @@ public class SiegeZoneManager : MonoBehaviour
                     entitiesRemaining.Clear();
                     current = waves.Dequeue();
                     waveCount++;
-                    if(waveCount == 1)
-                    {
-                        var randInt = Random.Range(0, 1000);
-                        if(randInt == 999) AlertPlayers("VAVE 1 ZULUL");
-                        else AlertPlayers("WAVE 1");
-                    }
-                    else AlertPlayers("WAVE " + waveCount);
+                    AlertPlayers("WAVE " + waveCount);
                     timer = 0;
                 }
                 else if((current.entities.Count == 0 && entitiesRemaining.Count == 0))
