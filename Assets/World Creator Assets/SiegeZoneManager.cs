@@ -108,7 +108,8 @@ public class SiegeZoneManager : MonoBehaviour
                         Path path = ScriptableObject.CreateInstance<Path>();
                         path.waypoints = new List<Path.Node>();
                         Path.Node node = new Path.Node();
-                        node.position = targets[Random.Range(0, targets.Count)].transform.position;
+                        if(targets.Count > 0) node.position = targets[Random.Range(0, targets.Count)].transform.position;
+                        else node.position = players[Random.Range(0, players.Count)].transform.position;
                         node.children = new List<int>();
                         path.waypoints.Add(node);
 
