@@ -109,7 +109,7 @@ public class SiegeZoneManager : MonoBehaviour
                         path.waypoints = new List<Path.Node>();
                         Path.Node node = new Path.Node();
                         if(targets.Count > 0) node.position = targets[Random.Range(0, targets.Count)].transform.position;
-                        else node.position = players[Random.Range(0, players.Count)].transform.position;
+                        else if(players.Count > 0) node.position = players[Random.Range(0, players.Count)].transform.position;
                         node.children = new List<int>();
                         path.waypoints.Add(node);
 
