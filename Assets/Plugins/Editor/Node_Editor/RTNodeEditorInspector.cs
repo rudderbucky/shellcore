@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 
 namespace NodeEditorFramework.Standard
 {
@@ -35,6 +36,10 @@ namespace NodeEditorFramework.Standard
 			}
 			else if (newCanvasIndex < 0)
 				RTNE.loadSceneName = null;
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			RTNE.raycastBlocker = EditorGUILayout.ObjectField ("Raycast Blocking Image", RTNE.raycastBlocker, typeof(Image), true) as Image;
 			GUILayout.EndHorizontal();
 
 			RTNE.screenSize = !EditorGUILayout.BeginToggleGroup (new GUIContent ("Specify Rect", "Specify Rects explicitly instead of adapting to the screen size"), !RTNE.screenSize);

@@ -44,6 +44,7 @@ public class EnergySphereScript : MonoBehaviour {
         {
             AudioManager.PlayClipByID("clip_powerup", transform.position);
             collision.GetComponentInParent<IHarvester>().AddPower(20);
+            collision.GetComponentInParent<IHarvester>().PowerHeal();
             Destroy(gameObject);
         }
     }

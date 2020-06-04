@@ -17,6 +17,7 @@ public class SystemLoader : MonoBehaviour
     private void Awake()
     {
         AllLoaded = false;
+        Application.targetFrameRate = 60;
 
         if (resourceManager)
             resourceManager.Initialize();

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NodeEditorFramework.Standard;
 
 namespace NodeEditorFramework 
 {
@@ -53,9 +54,15 @@ namespace NodeEditorFramework
 			if (canvasType != null && canvasType.IsSubclassOf (typeof(NodeCanvas)))
 				canvas = ScriptableObject.CreateInstance (canvasType) as NodeCanvas;
 			else
+				// TODO: Why can I not access StartMissionNode here???????
 				if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission)
-					canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.QuestCanvas>();
-				else canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.DialogueCanvas>();
+				{
+					canvas = ScriptableObject.CreateInstance<QuestCanvas>();
+				}	
+				else 
+				{
+					canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.DialogueCanvas>();
+				}
 			canvas.name = canvas.saveName = "New " + canvas.canvasName;
 
 			NodeEditor.BeginEditingCanvas (canvas);

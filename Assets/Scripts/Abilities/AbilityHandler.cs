@@ -36,6 +36,8 @@ public class AbilityHandler : MonoBehaviour {
     public AbilityTypes currentVisibles;
     public List<Ability> visibleAbilities = new List<Ability>();
     Ability[] displayAbs;
+    public static string[] keybindList; // list of keys for ability binds
+    public static AbilityHandler instance;
 
     public void SetCurrentVisible(AbilityTypes type) {
         if(currentVisibles != type) {
@@ -49,6 +51,7 @@ public class AbilityHandler : MonoBehaviour {
     /// Initialization of the ability handler that is tied to the player
     /// </summary>
     public void Initialize(PlayerCore player, Ability[] displayAbilities = null) {
+        instance = this;
         core = player;
         if(displayAbilities == null) abilities = core.GetAbilities(); // Get the core's ability array
         else abilities = displayAbilities;
@@ -74,6 +77,13 @@ public class AbilityHandler : MonoBehaviour {
                     break;
             }
         }
+
+        keybindList = new string[10];
+        for(int i = 0; i < 9; i++)
+        {
+            keybindList[i] = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1) + "");
+        }
+
         abilityImagesArray = new Image[abilities.Length]; // initialize all the GUI arrays
         abilityBackgroundArray = new GameObject[abilities.Length];
         abilityCDIndicatorArray = new Image[abilities.Length];
@@ -160,7 +170,7 @@ public class AbilityHandler : MonoBehaviour {
             {
                 var hotkey = abilityBackgroundArray[i].transform.Find("Hotkey");
                 hotkey.gameObject.SetActive(true);
-                hotkey.GetComponentInChildren<Text>().text = i + 1 + "";
+                hotkey.GetComponentInChildren<Text>().text = keybindList[i] + "";
 
                 // maintain layering above ability images but below cooldown and gleam
                 hotkey.transform.SetParent(abilityImagesArray[i].transform.parent, true);
@@ -202,6 +212,16 @@ public class AbilityHandler : MonoBehaviour {
         // some abilities
     }
 
+    public static void ChangeKeybind(int index, string val)
+    {
+        keybindList[index] = val;
+        PlayerPrefs.SetString("AbilityHandler_abilityKeybind" + index, val);
+        
+        instance.Deinitialize();
+        if(instance.displayAbs == null) instance.Initialize(instance.core);
+        else instance.Initialize(instance.core, instance.displayAbs);
+    }
+
     /// <summary>
     /// Deinitializes the Ability Handler UI
     /// </summary>
@@ -237,7 +257,7 @@ public class AbilityHandler : MonoBehaviour {
         {
             visibleAbilities[index].Tick("activate");
         } else visibleAbilities[index].Tick((index+1) < 10 && !Input.GetKey(KeyCode.LeftShift) ? 
-            (index + 1).ToString() : ""); // Tick the ability
+            keybindList[index] : ""); // Tick the ability
 
         if (abilityGleamArray[index])
         {

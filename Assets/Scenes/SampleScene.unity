@@ -8999,6 +8999,8 @@ MonoBehaviour:
     obj: {fileID: 1730120404059932, guid: 2ef5f3709200c574f8516632181a76d8, type: 3}
   - ID: base_part
     obj: {fileID: 7921341215074705853, guid: 447a33fc59268ec4eb429027430e03fd, type: 3}
+  - ID: energy_sphere
+    obj: {fileID: 1495316790056722, guid: 24c870b5a43478a459d701446cfe0689, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
@@ -16393,6 +16395,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8862010553011163116, guid: a54cf9b206ffd464c847a39fb58c080a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8862010553346071891, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -16411,7 +16418,7 @@ PrefabInstance:
     - target: {fileID: 8862010553346071891, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -37.5
+      value: -25
       objectReference: {fileID: 0}
     - target: {fileID: 8862010553353397763, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
@@ -16431,7 +16438,12 @@ PrefabInstance:
     - target: {fileID: 8862010553353397763, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -112.5
+      value: -75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8862010553390131949, guid: a54cf9b206ffd464c847a39fb58c080a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8862010553831405810, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
@@ -16451,7 +16463,7 @@ PrefabInstance:
     - target: {fileID: 8862010553831405810, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -187.5
+      value: -125
       objectReference: {fileID: 0}
     - target: {fileID: 8862010553920624300, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
@@ -16471,7 +16483,7 @@ PrefabInstance:
     - target: {fileID: 8862010553920624300, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -262.5
+      value: -175
       objectReference: {fileID: 0}
     - target: {fileID: 8862010554152795203, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
@@ -16611,12 +16623,12 @@ PrefabInstance:
     - target: {fileID: 8862010554221174437, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0.11999512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8862010554221174437, guid: a54cf9b206ffd464c847a39fb58c080a,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 300
+      value: 200
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a54cf9b206ffd464c847a39fb58c080a, type: 3}
@@ -21808,6 +21820,7 @@ MonoBehaviour:
   entityName: 
   isPathing: 0
   enginePower: 200
+  energySpherePrefab: {fileID: 0}
   intrinsicCommandLimit: 0
   hud: {fileID: 123063170}
   alerter: {fileID: 0}

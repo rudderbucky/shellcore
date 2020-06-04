@@ -18,6 +18,8 @@ public class SettingsScript : MonoBehaviour {
 	public Dropdown dialogueStyle;
 	public Toggle taskManagerAutoSaveEnabled;
 	public Toggle simpleMouseMovementToggle;
+	public Transform controlsSection;
+	public InputField[] abilityKeybindFields;
 
 	void Start() {
 		// get playerpref values and configure toggles and sliders based on them
@@ -30,6 +32,12 @@ public class SettingsScript : MonoBehaviour {
 		dialogueStyle.value = PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0);
 		taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
 		simpleMouseMovementToggle.isOn = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
+
+		for(int i = 0; i < 9; i++)
+		{
+			abilityKeybindFields[i].text = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1) + "");
+		}
+
 		windowedMode.isOn = (Screen.fullScreenMode == FullScreenMode.Windowed || Screen.fullScreenMode == FullScreenMode.MaximizedWindow);
 		windowResolution.value = FindResolution();
 	}
@@ -54,6 +62,16 @@ public class SettingsScript : MonoBehaviour {
 		ChangeTaskManagerAutoSaveEnabled(taskManagerAutoSaveEnabled.isOn);
 		ChangeDialogueSystemDialogueStyle(dialogueStyle.value);
 		ChangeSimpleMouseMovementEnabled(simpleMouseMovementToggle.isOn);
+
+		for(int i = 0; i < 9; i++)
+		{
+			ChangeAbilityKeybind(i, abilityKeybindFields[i].text);
+		}
+	}
+
+	public void ChangeAbilityKeybind(int index, string val)
+	{
+		AbilityHandler.ChangeKeybind(index, val);
 	}
 
 	public void ChangeMasterVolume(float newVol)

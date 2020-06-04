@@ -135,4 +135,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     {
         return unitsCommanding;
     }
+
+    public void PowerHeal()
+    {
+        TakeShellDamage(-0.05F * GetMaxHealth()[0], 0, null);
+        TakeCoreDamage(-0.05F * GetMaxHealth()[1]);
+        TakeEnergy(-0.05F * GetMaxHealth()[2]);
+    }
 }

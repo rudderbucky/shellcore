@@ -15,6 +15,7 @@ public abstract class AirCraft : Craft
     private Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
     protected AirCraftAI ai; // AI agent that controls this aircraft
     private bool oscillating;
+    public GameObject energySpherePrefab;
 
     protected override void Update() {
         base.Update(); // base update
@@ -45,8 +46,23 @@ public abstract class AirCraft : Craft
         storedPos = spawnPoint;
         positionBeforeOscillation = storedPos.y;
         Terrain = TerrainType.Air;
+        energySpherePrefab = ResourceManager.GetAsset<GameObject>("energy_sphere");
         base.Start(); // base start
     }
+
+    protected override void OnDeath()
+    {
+        if(faction == 1 && Random.Range(0, 1F) <= 0.2F)
+        {
+            var x = Instantiate(energySpherePrefab, transform.position, Quaternion.identity);
+
+            float dir = Random.Range(0f, 2 * Mathf.PI);
+            x.GetComponent<Rigidbody2D>().AddForce(new Vector2(Mathf.Sin(dir), Mathf.Cos(dir)) * Random.Range(180f, 240f));
+        }
+
+        base.OnDeath();
+    }
+
     /// <summary>
     /// Helper for oscillator
     /// </summary>

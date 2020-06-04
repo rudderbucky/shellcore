@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using NodeEditorFramework.Utilities;
+using UnityEngine.UI;
 
 namespace NodeEditorFramework.Standard
 {
@@ -16,6 +17,7 @@ namespace NodeEditorFramework.Standard
 		private NodeEditorUserCache canvasCache;
 		private NodeEditorInterface editorInterface;
 
+		public Image raycastBlocker;
         string finalPath;
 
 		// GUI rects
@@ -51,7 +53,6 @@ namespace NodeEditorFramework.Standard
 		private void Update () 
 		{
 			NodeEditor.Update ();
-
             // Keep in canvas
 
 		}

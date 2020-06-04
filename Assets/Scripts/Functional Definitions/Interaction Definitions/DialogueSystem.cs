@@ -476,6 +476,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             return;
         }
 
+        if(player.GetIsDead())
+        {
+            Debug.Log("Dead player");
+            endDialogue(0, false);
+            return;
+        }
+
         // clear everything
         if(buttons != null)
             for(int i = 0; i < buttons.Length; i++)

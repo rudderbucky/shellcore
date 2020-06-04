@@ -5,6 +5,7 @@ using UnityEngine;
 public interface IHarvester
 {
     void AddPower(float power);
+    void PowerHeal();
 }
 
 public class Harvester : WeaponAbility, IHarvester {
@@ -50,5 +51,12 @@ public class Harvester : WeaponAbility, IHarvester {
     public Draggable GetTractorTarget()
     {
         return tractor.GetTractorTarget();
+    }
+
+    public void PowerHeal()
+    {
+        owner.TakeShellDamage(-0.025F * owner.GetMaxHealth()[0], 0, null);
+        owner.TakeCoreDamage(-0.025F * owner.GetMaxHealth()[1]);
+        owner.TakeEnergy(-0.025F * owner.GetMaxHealth()[2]);
     }
 }

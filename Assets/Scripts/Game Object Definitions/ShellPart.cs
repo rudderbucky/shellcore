@@ -293,7 +293,6 @@ public class ShellPart : MonoBehaviour {
         {
             spriteRenderer.color = Color.Lerp(Color.gray, info.shiny ? ShinyFactionColors.colors[faction] : 
                 FactionColors.colors[faction], currentHealth / partHealth);
-            Debug.LogError(spriteRenderer.color);
             if(shooter) shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
         }
     }

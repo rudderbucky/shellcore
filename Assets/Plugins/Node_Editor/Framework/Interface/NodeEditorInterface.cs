@@ -47,51 +47,55 @@ namespace NodeEditorFramework.Standard
 		{
 			rect.height = toolbarHeight;
             rect.width = 200f;
-			GUILayout.BeginArea (rect, NodeEditorGUI.toolbar);
-			GUILayout.BeginHorizontal();
-            //float curToolbarHeight = 0;
-            if (GUILayout.Button("New", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
-            {
-                if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission)
-					NewNodeCanvas(typeof(QuestCanvas));
-				else NewNodeCanvas(typeof(DialogueCanvas));
-            }
-            if (GUILayout.Button("Import", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
-            {
-                IOFormat = ImportExportManager.ParseFormat("XML");
-                if (IOFormat.RequiresLocationGUI)
-                {
-                    ImportLocationGUI = IOFormat.ImportLocationArgsGUI;
-                    modalPanelContent = ImportCanvasGUI;
-                    showModalPanel = true;
-                }
-                else if (IOFormat.ImportLocationArgsSelection(out IOLocationArgs))
-                    canvasCache.SetCanvas(ImportExportManager.ImportCanvas(IOFormat, IOLocationArgs));
-            }
-            if (GUILayout.Button("Export", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
-            {
-                IOFormat = ImportExportManager.ParseFormat("XML");
-                if (IOFormat.RequiresLocationGUI)
-                {
-                    ExportLocationGUI = IOFormat.ExportLocationArgsGUI;
-                    modalPanelContent = ExportCanvasGUI;
-                    showModalPanel = true;
-                }
-                else if (IOFormat.ExportLocationArgsSelection(canvasCache.nodeCanvas.saveName, out IOLocationArgs))
-                    ImportExportManager.ExportCanvas(canvasCache.nodeCanvas, IOFormat, IOLocationArgs);
-            }
-			if (GUILayout.Button(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? "Mission" : "Dialogue", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
-            {
-				NodeEditorGUI.state = NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? 
-					NodeEditorGUI.NodeEditorState.Dialogue : NodeEditorGUI.NodeEditorState.Mission;
-				NewNodeCanvas(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? typeof(QuestCanvas) : typeof(DialogueCanvas));
-				NodeEditorGUI.Init();
-            }
-            GUI.backgroundColor = Color.white;
-			GUILayout.EndHorizontal();
-			GUILayout.EndArea();
-			if (Event.current.type == EventType.Repaint)
-				toolbarHeight = 20;
+			if(!showModalPanel)
+			{
+				GUILayout.BeginArea (rect, NodeEditorGUI.toolbar);
+				GUILayout.BeginHorizontal();
+				//float curToolbarHeight = 0;
+				if (GUILayout.Button("New", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
+				{
+					if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission)
+						NewNodeCanvas(typeof(QuestCanvas));
+					else NewNodeCanvas(typeof(DialogueCanvas));
+				}
+				if (GUILayout.Button("Import", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
+				{
+					IOFormat = ImportExportManager.ParseFormat("XML");
+					if (IOFormat.RequiresLocationGUI)
+					{
+						ImportLocationGUI = IOFormat.ImportLocationArgsGUI;
+						modalPanelContent = ImportCanvasGUI;
+						showModalPanel = true;
+					}
+					else if (IOFormat.ImportLocationArgsSelection(out IOLocationArgs))
+						canvasCache.SetCanvas(ImportExportManager.ImportCanvas(IOFormat, IOLocationArgs));
+				}
+				if (GUILayout.Button("Export", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
+				{
+					IOFormat = ImportExportManager.ParseFormat("XML");
+					if (IOFormat.RequiresLocationGUI)
+					{
+						ExportLocationGUI = IOFormat.ExportLocationArgsGUI;
+						modalPanelContent = ExportCanvasGUI;
+						showModalPanel = true;
+					}
+					else if (IOFormat.ExportLocationArgsSelection(canvasCache.nodeCanvas.saveName, out IOLocationArgs))
+						ImportExportManager.ExportCanvas(canvasCache.nodeCanvas, IOFormat, IOLocationArgs);
+				}
+				if (GUILayout.Button(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? "Mission" : "Dialogue", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
+				{
+					NodeEditorGUI.state = NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? 
+						NodeEditorGUI.NodeEditorState.Dialogue : NodeEditorGUI.NodeEditorState.Mission;
+					NewNodeCanvas(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? typeof(QuestCanvas) : typeof(DialogueCanvas));
+					NodeEditorGUI.Init();
+				}
+				GUI.backgroundColor = Color.white;
+				GUILayout.EndHorizontal();
+				GUILayout.EndArea();
+				if (Event.current.type == EventType.Repaint)
+					toolbarHeight = 20;
+			}
+			
 		}
 
 		private void SaveSceneCanvasPanel()
