@@ -192,7 +192,6 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         for(int i = 0; i < traversers.Count; i++)
         {
             traversers[i].findRoot().TryAddMission();
-            Debug.LogWarning(traversers[i].nodeCanvas.missionName);
         }
 
         // tasks

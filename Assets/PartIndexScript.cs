@@ -49,7 +49,6 @@ public class PartIndexScript : MonoBehaviour
             }
             button.infoBox = infoBox;
             button.partDisplay = partDisplay;
-            Debug.Log(PlayerCore.Instance.cursave.partsObtained.Count);
         }
         parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(sectorName);
     }

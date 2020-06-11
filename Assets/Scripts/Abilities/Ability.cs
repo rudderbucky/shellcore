@@ -220,7 +220,6 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
                 blinking = !blinking;
                 if(blinking) StartCoroutine(Blinker(indicator, glowPrefab));
             }
-            else indicator.GetComponent<SpriteRenderer>().color = indicator.GetComponent<SpriteRenderer>().color == Color.cyan ? originalIndicatorColor : Color.cyan;
         }
     }
 

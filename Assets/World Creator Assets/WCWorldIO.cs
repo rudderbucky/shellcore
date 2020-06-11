@@ -60,6 +60,10 @@ public class WCWorldIO : MonoBehaviour
         Show(IOMode.Read);
     }
 
+    #if UNITY_EDITOR
+    private bool instantTest = true;
+    #endif
+
     void Start()
     {
         if(SceneManager.GetActiveScene().name == "WorldCreator")
@@ -68,7 +72,12 @@ public class WCWorldIO : MonoBehaviour
             checkpointField.text = PlayerPrefs.GetString("WorldCreator_playerCheckpointField", "");
             var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
             if(Directory.Exists(path)) 
+            {
                 generatorHandler.ReadWorld(path);
+                #if UNITY_EDITOR
+                if(instantTest) TestWorld();
+                #endif
+            }
             else
             {
                 DeletePlaceholderDirectories();

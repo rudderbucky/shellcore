@@ -762,6 +762,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     }
     float queueTimer = 0;
 
+    public void ResetPassiveDialogueQueueTime()
+    {
+        queueTimer = 0;
+    }
+
     void PassiveDialogueHandler()
     {
         queueTimer -= Time.deltaTime;
