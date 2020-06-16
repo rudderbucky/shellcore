@@ -5,7 +5,7 @@ using UnityEngine;
 public class BattleAI : AIModule
 {
 
-    enum BattleState
+    public enum BattleState
     {
         Attack,
         Defend,
@@ -26,6 +26,19 @@ public class BattleAI : AIModule
     bool findNewTarget = false;
 
     Draggable waitingDraggable;
+
+    public void OrderModeChange(BattleState state)
+    {
+        this.state = state;
+        nextStateCheckTime = 15;
+
+        // TODO: prioritize damaged carriers over other carriers
+        if(state == BattleState.Defend && carriers.Count > 0) 
+        {
+            ai.aggression = AirCraftAI.AIAggression.KeepMoving; // Get to the home base asap
+            primaryTarget = carriers[0];
+        }
+    }
 
     public override void Init()
     {

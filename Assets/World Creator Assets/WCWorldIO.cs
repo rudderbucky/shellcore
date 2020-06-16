@@ -61,7 +61,7 @@ public class WCWorldIO : MonoBehaviour
     }
 
     #if UNITY_EDITOR
-    private bool instantTest = true;
+    private bool instantTest = false;
     #endif
 
     void Start()

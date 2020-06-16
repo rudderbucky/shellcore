@@ -98,6 +98,16 @@ public class AirCraftAI : MonoBehaviour
         }
     }
 
+    public void ChatOrderStateChange(BattleAI.BattleState state)
+    {
+        if(module is BattleAI)
+        {
+            var mod = module as BattleAI;
+            mod.OrderModeChange(state);
+        }
+        
+    }
+
     public AIMode getMode()
     {
         return mode;

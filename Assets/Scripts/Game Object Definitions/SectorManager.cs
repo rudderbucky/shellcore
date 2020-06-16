@@ -340,10 +340,7 @@ public class SectorManager : MonoBehaviour
                             
                             Debug.Log(data.name);
                             blueprint.entityName = data.name;
-                            if(data.name == "Clearly Delusional")
-                                blueprint.dialogue = ResourceManager.GetAsset<Dialogue>("default_dialogue");
-                            // hack for now, TODO: implement JSON dialogue
-                            // also TODO: dialogue editor (or allow multiple starting points in quest graphs to create multiple permanent "dialogue overrides")
+
                         } else shellcore.entityName = blueprint.entityName = data.name;
                     }
                     catch (System.Exception e)
@@ -671,6 +668,13 @@ public class SectorManager : MonoBehaviour
                     battleZone.AddTarget(playerComp);
                     if(carriers.ContainsKey(playerComp.faction))
                         playerComp.SetCarrier(carriers[playerComp.faction]);
+                    foreach(var partyMember in PartyManager.instance.partyMembers)
+                    {
+                        partyMember.GetAI().setMode(AirCraftAI.AIMode.Battle);
+                        battleZone.AddTarget(partyMember);
+                        if(carriers.ContainsKey(partyMember.faction))
+                            partyMember.SetCarrier(carriers[partyMember.faction]);
+                    }
                 }
                 for (int i = 0; i < current.targets.Length; i++)
                 {

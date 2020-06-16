@@ -12,6 +12,8 @@ public class PartyManager : MonoBehaviour
     public List<UnityAction> options = new List<UnityAction>();
     public List<Text> texts = new List<Text>();
     public GameObject textPrefab;
+    public static PartyManager instance;
+    public GameObject blocker;
     public void OrderAttack()
     {
         DialogueSystem.Instance.ResetPassiveDialogueQueueTime();
@@ -20,6 +22,8 @@ public class PartyManager : MonoBehaviour
         {
             if(core.ID == "sukrat")
                 DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>DESTRUCTION!</color>");
+            core.GetAI().setMode(AirCraftAI.AIMode.Battle);
+            core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Attack);
         }
     }
 
@@ -30,7 +34,9 @@ public class PartyManager : MonoBehaviour
         foreach(var core in partyMembers)
         {
             if(core.ID == "sukrat")
-                DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Falling back! Speed Thrust!</color>");
+                DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Falling back!</color>");
+            core.GetAI().setMode(AirCraftAI.AIMode.Battle);
+            core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Defend);
         }
     }
 
@@ -42,6 +48,8 @@ public class PartyManager : MonoBehaviour
         {
             if(core.ID == "sukrat")
                 DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>I'm on it.</color>");
+            core.GetAI().setMode(AirCraftAI.AIMode.Battle);
+            core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Collect);
         }
     }
 
@@ -68,15 +76,37 @@ public class PartyManager : MonoBehaviour
         }
     }
 
+    public Button sukratAssignButton;
     public void AssignSukrat()
     {
-        partyMembers.Add(AIData.entities.Find(x => x.ID == "sukrat") as ShellCore);
+        if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        {
+            PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
+            partyMembers.Add(AIData.entities.Find(x => x.ID == "sukrat") as ShellCore);
+            sukratAssignButton.GetComponentInChildren<Text>().text = "UNASSIGN";
+            var clicked = new Button.ButtonClickedEvent();
+            clicked.AddListener(Unassign);
+            sukratAssignButton.onClick = clicked;
+            sukratHealth.SetActive(true);
+        }
+        else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
     }
 
     public void Unassign()
     {
-        partyMembers.Clear();
+        if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        {
+            partyMembers.Clear();
+            sukratAssignButton.GetComponentInChildren<Text>().text = "ASSIGN";
+            var clicked = new Button.ButtonClickedEvent();
+            clicked.AddListener(AssignSukrat);
+            sukratAssignButton.onClick = clicked;
+            sukratHealth.SetActive(false);
+        }
+        else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
     }
+
+    public GameObject sukratHealth;
 
     private void AddOption(string name, UnityAction action)
     {
@@ -102,13 +132,30 @@ public class PartyManager : MonoBehaviour
         AddOption("Collect Power", OrderCollection);
         AddOption("Build Turret", OrderBuildTurrets);
         AddOption("Follow Me", OrderFollow);
-        
+        sukratAssignButton.onClick.AddListener(AssignSukrat);
+        instance = this;
+
         initialized = true;
     }
 
     private int index = -1;
     void Update()
     {
+
+        blocker.SetActive(false);
+        if(SectorManager.testJsonPath != null && !SectorManager.testJsonPath.Contains("main"))
+        {
+            blocker.SetActive(true);
+            blocker.GetComponentInChildren<Text>().text = "Parties are unavailable in test worlds.";
+        }
+
+        if(!PlayerCore.Instance.cursave.missions.Exists(m => m.name == "Trial By Combat")
+            || PlayerCore.Instance.cursave.missions.Find(m => m.name == "Trial By Combat").status != Mission.MissionStatus.Complete)
+        {
+            blocker.SetActive(true);
+            blocker.GetComponentInChildren<Text>().text = "Party customization is unlocked after Trial By Combat.";
+        }
+
         if(Input.GetKey(KeyCode.LeftControl))
         {
             wheel.SetActive(true);
@@ -140,6 +187,15 @@ public class PartyManager : MonoBehaviour
                 index = -1;
             }
             wheel.SetActive(false);
+        }
+
+        if(sukratHealth.activeSelf)
+        {
+            for(int i = 0; i < 3; i++)
+            {
+                sukratHealth.GetComponentsInChildren<Image>()[i+1].GetComponent<RectTransform>().sizeDelta = 
+                    new Vector2(100 * partyMembers[0].currentHealth[i] / partyMembers[0].GetMaxHealth()[i], 5);
+            }
         }
     }
 }
