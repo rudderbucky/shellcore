@@ -686,6 +686,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     IEnumerator BarFadeOut()
     {
+        if (blackBarTop == null || blackBarBottom == null)
+            yield break;
         blackBarTop.gameObject.SetActive(true);
         blackBarBottom.gameObject.SetActive(true);
 

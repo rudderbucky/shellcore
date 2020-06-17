@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     public GameObject settings;
+    public GameObject discordPopup;
+
     public void StartSectorCreator() {
         SceneManager.LoadScene("SectorCreator");
     }
@@ -37,6 +39,16 @@ public class MainMenu : MonoBehaviour
             + "Playtesting by YOU!\n"
             + "Special thanks to Flashbacker"
         );
+    }
+
+    public void OpenCommunityPopup()
+    {
+        if (discordPopup) discordPopup.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+    }
+
+    public void OpenDiscord()
+    {
+        Application.OpenURL("https://discord.gg/yZMG85r");
     }
 
     public void StartWorldCreator()

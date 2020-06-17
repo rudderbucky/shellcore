@@ -31,6 +31,12 @@ public class DevConsoleScript : MonoBehaviour
     {
         inputField.text = "";
 
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "SampleScene")
+        {
+            Debug.Log("<color=orange>Cannot execute commands outside game.</color>");
+            return;
+        }
+
         if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
         {
             var player = PlayerCore.Instance;
