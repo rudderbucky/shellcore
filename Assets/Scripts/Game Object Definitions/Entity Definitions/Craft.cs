@@ -125,7 +125,8 @@ public abstract class Craft : Entity
         bool direction = delta < 90;
 
         //rotate with physics
-        entityBody.transform.Rotate(0, 0, (direction ? 2 : -2) * enginePower /  entityBody.mass * Time.deltaTime);
+        float rotationAmount = Mathf.Min(enginePower / entityBody.mass * Time.deltaTime, 45f);
+        entityBody.transform.Rotate(0, 0, (direction ? 2 : -2) * rotationAmount);
 
         //check if the angle has gone over the target
         craftAngle = Mathf.Atan2(entityBody.transform.up.y, entityBody.transform.up.x) * Mathf.Rad2Deg;
