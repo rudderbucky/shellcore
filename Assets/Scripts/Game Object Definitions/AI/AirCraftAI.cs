@@ -313,6 +313,18 @@ public class AirCraftAI : MonoBehaviour
                         if (enemy && (enemy.transform.position - craft.transform.position).sqrMagnitude < 1600f)
                         {
                             retreatTarget = (craft.transform.position - enemy.transform.position).normalized * 20f;
+
+                            // keep commander inside sector
+                            IntRect bounds = SectorManager.instance.current.bounds;
+                            if (retreatTarget.x > bounds.x + bounds.w)
+                                retreatTarget = new Vector2(bounds.x + bounds.w, retreatTarget.y);
+                            if (retreatTarget.x < bounds.x)
+                                retreatTarget = new Vector2(bounds.x, retreatTarget.y);
+                            if (retreatTarget.y > bounds.y + bounds.h)
+                                retreatTarget = new Vector2(retreatTarget.x, bounds.y + bounds.h);
+                            if (retreatTarget.y < bounds.y)
+                                retreatTarget = new Vector2(retreatTarget.x, bounds.y);
+
                             retreatTargetFound = true;
                             Debug.Log("retreat target found!");
                         }

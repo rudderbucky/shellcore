@@ -9,11 +9,18 @@ public class BattleAI : AIModule
     {
         Attack,
         Defend,
-        Collect
+        Collect,
+        Fortify
     }
 
     class AITarget
     {
+        public AITarget(Entity entity, float significance)
+        {
+            this.entity = entity;
+            this.significance = significance;
+        }
+
         public Entity entity;
         public float significance; // 1 for outpost, 2 for outpost with rock, 3 for base
         public float influence; // based on the amount and types of turrets around
@@ -30,6 +37,7 @@ public class BattleAI : AIModule
     float nextStateCheckTime; //timer to reduce the frequency of heavy search functions
 
     Entity primaryTarget;
+    Turret attackTurret;
 
     EnergyRock collectTarget = null;
     bool findNewTarget = false;
@@ -77,6 +85,21 @@ public class BattleAI : AIModule
 
         nextSearchTime = Time.time;
         nextStateCheckTime = Time.time;
+
+        for (int i = 0; i < AIData.vendors.Count; i++)
+        {
+            int rockCount = 0;
+            for (int j = 0; j < AIData.energyRocks.Count; j++)
+            {
+                if ((AIData.energyRocks[j].transform.position - AIData.vendors[i].transform.position).sqrMagnitude < 100)
+                    rockCount++;
+            }
+            AITargets.Add(new AITarget(AIData.vendors[i], rockCount + 1f));
+        }
+        for (int i = 0; i < carriers.Count; i++)
+        {
+            AITargets.Add(new AITarget(carriers[i], 100f));
+        }
     }
 
     //TEMP:
@@ -152,6 +175,39 @@ public class BattleAI : AIModule
         switch (state)
         {
             case BattleState.Attack:
+                if (shellcore.GetTractorTarget() == null)
+                {
+                    if (attackTurret == null)
+                    {
+                        Turret t = null;
+                        float minDistance = float.MaxValue;
+                        for (int i = 0; i < AIData.entities.Count; i++)
+                        {
+                            if (AIData.entities[i] != null &&
+                                AIData.entities[i] is Turret && 
+                                AIData.entities[i].faction == shellcore.faction &&
+                                AIData.entities[i].GetComponentInChildren<WeaponAbility>().GetID() != 16)
+                            {
+                                float d = (AIData.entities[i].transform.position - shellcore.transform.position).sqrMagnitude;
+                                if (d < minDistance)
+                                {
+                                    t = AIData.entities[i] as Turret;
+                                    minDistance = d;
+                                }
+                            }
+                        }
+                        attackTurret = t;
+                    }
+                    else
+                    {
+                        float d = (attackTurret.transform.position - shellcore.transform.position).sqrMagnitude;
+                        if (d < 150)
+                        {
+                            shellcore.SetTractorTarget(attackTurret.GetComponent<Draggable>());
+                        }
+                    }
+                }
+
                 // go to nearest enemy construct, attack units / turrets if in visual range
                 if((primaryTarget == null && nextSearchTime < Time.time) || nextSearchTime < Time.time - 3f)
                 {
@@ -228,6 +284,9 @@ public class BattleAI : AIModule
                         findNewTarget = true;
                     }
                 }
+                break;
+            case BattleState.Fortify:
+                // TODO: place turrets
                 break;
             default:
                 break;
