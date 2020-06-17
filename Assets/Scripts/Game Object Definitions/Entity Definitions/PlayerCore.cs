@@ -162,8 +162,8 @@ public class PlayerCore : ShellCore {
         #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.T))
         {
-            enginePower = 1000;
-            GetComponentInChildren<MainBullet>().SetDamage(10000);
+            // enginePower = 1000;
+            // GetComponentInChildren<MainBullet>().SetDamage(10000);
             // NodeEditorFramework.Standard.TestCondition.TestTrigger.Invoke();
         }
         #endif

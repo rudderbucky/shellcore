@@ -107,7 +107,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void Update()
     {
-        if(window && speakerPos != null && player && (player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100)
+        if(window && speakerPos != null && player && (player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 && !isInCutscene)
         {
             endDialogue();
         }

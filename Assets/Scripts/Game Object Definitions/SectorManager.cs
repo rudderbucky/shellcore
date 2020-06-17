@@ -499,71 +499,10 @@ public class SectorManager : MonoBehaviour
             UnityEditor.AssetDatabase.CreateAsset(current, "Assets/SavedSector.asset");
             UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/SavedSectorPlatform.asset");
         }
-        #endif
+#endif
 
         //unload previous sector
-        var remainingObjects = new Dictionary<string, GameObject>();
-        foreach(var obj in objects)
-        {
-            if(player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
-                && obj.Value != player.gameObject)
-            {
-                var skipTag = false;
-                if(obj.Value && obj.Value.GetComponentInChildren<Entity>())
-                {
-                    foreach(var ch in characters)
-                    {
-                        if(obj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
-                        {
-                            skipTag = true;
-                            break;
-                        }
-                    }
-                    if(!skipTag && AIData.entities.Contains(obj.Value.GetComponentInChildren<Entity>()))
-                    {
-                        AIData.entities.Remove(obj.Value.GetComponentInChildren<Entity>());
-                    }
-                }
-                if(!skipTag)
-                    Destroy(obj.Value);
-                else remainingObjects.Add(obj.Key, obj.Value);
-            } else remainingObjects.Add(obj.Key, obj.Value); // add to persistent objects since the object list should start only with characters
-        }
-
-        Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
-        foreach(var obj in persistentObjects)
-        {
-            if(player && obj.Value && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
-                && obj.Value != player.gameObject && !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable)
-                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) < 100))
-            {
-                Destroy(obj.Value);
-            } else if(obj.Value) tmp.Add(obj.Key, obj.Value);
-        }
-
-        persistentObjects = tmp;
-
-        foreach(ShellPart part in AIData.strayParts) {
-            if(part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part)) {
-                Destroy(part.gameObject);
-            }
-        }
-        AIData.strayParts.Clear(); 
-
-        // Add the player's tractored part back so it gets deleted if the player doesn't tractor it through
-        // to another sector
-        if((player && player.GetTractorTarget() != null && player.GetTractorTarget().GetComponent<ShellPart>()))
-            AIData.strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
-        objects = remainingObjects;
-
-        // reset stations and carriers
-
-        stations.Clear();
-        carriers.Clear();
-
-        // reset background spawns
-        bgSpawnTimer = 0;
-        bgSpawns.Clear();
+        UnloadCurrentSector();
 
         //load new sector
         if(player) {
@@ -727,6 +666,76 @@ public class SectorManager : MonoBehaviour
             OnSectorLoad.Invoke(current.sectorName);
     }
 
+    private void UnloadCurrentSector()
+    {
+        var remainingObjects = new Dictionary<string, GameObject>();
+        foreach (var obj in objects)
+        {
+            if (player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
+                && obj.Value != player.gameObject)
+            {
+                var skipTag = false;
+                if (obj.Value && obj.Value.GetComponentInChildren<Entity>())
+                {
+                    foreach (var ch in characters)
+                    {
+                        if (obj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
+                        {
+                            skipTag = true;
+                            break;
+                        }
+                    }
+                    if (!skipTag && AIData.entities.Contains(obj.Value.GetComponentInChildren<Entity>()))
+                    {
+                        AIData.entities.Remove(obj.Value.GetComponentInChildren<Entity>());
+                    }
+                }
+                if (!skipTag)
+                    Destroy(obj.Value);
+                else remainingObjects.Add(obj.Key, obj.Value);
+            }
+            else remainingObjects.Add(obj.Key, obj.Value); // add to persistent objects since the object list should start only with characters
+        }
+
+        Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
+        foreach (var obj in persistentObjects)
+        {
+            if (player && obj.Value && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
+                && obj.Value != player.gameObject && !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable)
+                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) < 100))
+            {
+                Destroy(obj.Value);
+            }
+            else if (obj.Value) tmp.Add(obj.Key, obj.Value);
+        }
+
+        persistentObjects = tmp;
+
+        foreach (ShellPart part in AIData.strayParts)
+        {
+            if (part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part))
+            {
+                Destroy(part.gameObject);
+            }
+        }
+        AIData.strayParts.Clear();
+
+        // Add the player's tractored part back so it gets deleted if the player doesn't tractor it through
+        // to another sector
+        if ((player && player.GetTractorTarget() != null && player.GetTractorTarget().GetComponent<ShellPart>()))
+            AIData.strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
+        objects = remainingObjects;
+
+        // reset stations and carriers
+
+        stations.Clear();
+        carriers.Clear();
+
+        // reset background spawns
+        bgSpawnTimer = 0;
+        bgSpawns.Clear();
+    }
+
     public static EntityBlueprint GetBlueprintOfLevelEntity(Sector.LevelEntity entity)
     {
         if(entity.assetID == "shellcore_blueprint")
@@ -786,5 +795,15 @@ public class SectorManager : MonoBehaviour
     {
         if(objects.ContainsKey(name))
             objects.Remove(name);
+    }
+
+    public void Clear()
+    {
+        sectors.Clear();
+        UnloadCurrentSector();
+        foreach (var border in minimapSectorBorders)
+        {
+            Destroy(border.Value.gameObject);
+        }
     }
 }

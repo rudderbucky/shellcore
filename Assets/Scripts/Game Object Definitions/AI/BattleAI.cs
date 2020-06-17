@@ -12,6 +12,15 @@ public class BattleAI : AIModule
         Collect
     }
 
+    class AITarget
+    {
+        public Entity entity;
+        public float significance; // 1 for outpost, 2 for outpost with rock, 3 for base
+        public float influence; // based on the amount and types of turrets around
+        public bool collecting; // if there's an energy rock, is it being collected by the owner
+        public bool underAttack; // is enemy attacking this target
+    }
+
     BattleState state = BattleState.Attack;
 
     List<Entity> carriers;
@@ -26,6 +35,8 @@ public class BattleAI : AIModule
     bool findNewTarget = false;
 
     Draggable waitingDraggable;
+
+    List<AITarget> AITargets = new List<AITarget>();
 
     public void OrderModeChange(BattleState state)
     {
@@ -176,20 +187,29 @@ public class BattleAI : AIModule
                 {
                      // Find new target
                     float minD = float.MaxValue;
-                    EnergyRock nearest = null;
+                    EnergyRock targetRock = null;
+                    int maxEnergy = -1;
+
                     for (int i = 0; i < AIData.energyRocks.Count; i++)
                     {
-                        if (AirCraftAI.getEnemyCountInRange(AIData.energyRocks[i].transform.position, 15f, craft.faction) > 3)
+                        if (AirCraftAI.getEnemyCountInRange(AIData.energyRocks[i].transform.position, 10f, craft.faction) > 2)
                             continue;
 
+                        int energyCount = 0;
+                        for (int j = 0; j < AIData.energySpheres.Count; j++)
+                        {
+                            if ((AIData.energySpheres[j].transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude < 16)
+                                energyCount++;
+                        }
                         float d = (craft.transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude;
-                        if (d < minD && AIData.energyRocks[i] != collectTarget)
+                        if ((maxEnergy < energyCount || d * 1.5f < minD || (maxEnergy == energyCount && d < minD)) && AIData.energyRocks[i] != collectTarget)
                         {
                             minD = d;
-                            nearest = AIData.energyRocks[i];
+                            maxEnergy = energyCount;
+                            targetRock = AIData.energyRocks[i];
                         }
                     }
-                    collectTarget = nearest;
+                    collectTarget = targetRock;
 
                     if (collectTarget != null)
                         findNewTarget = false;
@@ -242,7 +262,8 @@ public class BattleAI : AIModule
             if (!energyNearby)
             {
                 shellcore.SetTractorTarget(waitingDraggable);
-                waitingDraggable = null;
+                if (shellcore.GetTractorTarget() == waitingDraggable)
+                    waitingDraggable = null;
             }
         }
 

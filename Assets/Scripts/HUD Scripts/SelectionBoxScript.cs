@@ -224,7 +224,7 @@ public class SelectionBoxScript : MonoBehaviour
         {
             if(PlayerCore.getDirectionalInput() != Vector2.zero || (currentPathData == null || !currentPathData.waypoints.Contains(current)))
             {
-                if((!currentPathData.waypoints.Contains(current)))
+                if(currentPathData == null || (!currentPathData.waypoints.Contains(current)))
                     yield break;
                 else
                 {
