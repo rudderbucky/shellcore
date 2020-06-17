@@ -47,10 +47,8 @@ public class MainBullet : Bullet {
         if(muzzle) muzzle.transform.position = transform.position;
     }
 
-    #if UNITY_EDITOR
     public void SetDamage(int damage)
     {
         this.damage = damage;
     }
-    #endif
 }
