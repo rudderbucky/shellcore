@@ -155,7 +155,19 @@ public class PartIndexScript : MonoBehaviour
     public void AttemptAddShellCoreParts(Sector.LevelEntity entity, string sectorName)
     {
         EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-        JsonUtility.FromJsonOverwrite(entity.blueprintJSON, blueprint);
+
+        // try parsing directly, if that fails try fetching the entity file
+        try
+        {
+            JsonUtility.FromJsonOverwrite(entity.blueprintJSON, blueprint);
+        }
+        catch
+        {
+            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                (SectorManager.instance.resourcePath + "\\Entities\\" + entity.blueprintJSON + ".json"), blueprint);
+        }
+
+        
         if(blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore && entity.faction == 1)
         {
             if(blueprint.parts != null)
