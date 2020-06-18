@@ -206,7 +206,7 @@ public class ShellPart : MonoBehaviour {
             transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
         }
         else if (hasDetached) { // if it has actually detached
-            if (collectible && detachible)
+            if (collectible && detachible && !SectorManager.instance.current.partDropsDisabled)
             {
                 if(!shinyCheck)
                 {

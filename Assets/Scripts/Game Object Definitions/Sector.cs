@@ -58,6 +58,7 @@ public class Sector : ScriptableObject
     public string[] targets;
     public bool hasMusic;
     public string musicID;
+    public bool partDropsDisabled = false;
     
     [System.Serializable]
     public struct BackgroundSpawn
