@@ -66,6 +66,54 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x - minX, -maxY + sector.bounds.y) / zoomoutFactor;
 				border.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
 				sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2)));
+
+
+                var platform = sector.platform;
+                if (platform)
+                {
+                    Vector2 center = sect.rectTransform.sizeDelta / 2f;
+                    float tileSize = LandPlatformGenerator.instance.tileSize / zoomoutFactor;
+                    float h = tileSize / 2f; // Half
+                    var cols = platform.columns;
+                    var rows = platform.rows;
+                    Vector2 offset = new Vector2
+                    {
+                        x = center.x - tileSize * (cols - 1) / 2F,
+                        y = center.y - tileSize * (rows - 1) / 2F
+                    };
+                    List<Vector2> vertices = new List<Vector2>();
+                    for (int i = 0; i < platform.tilemap.Length; i++)
+                    {
+                        if (platform.tilemap[i] == -1)
+                            continue;
+
+                        var pos = new Vector3
+                        {
+                            x = offset.x + tileSize * (i % cols),
+                            y = offset.y - tileSize * (i / cols),
+                            z = 0
+                        };
+
+                        vertices.Add(new Vector3(pos.x + h, pos.y + h));
+                        vertices.Add(new Vector3(pos.x - h, pos.y + h));
+                        vertices.Add(new Vector3(pos.x - h, pos.y - h));
+                        vertices.Add(new Vector3(pos.x + h, pos.y - h));
+                    }
+
+                    if (vertices.Count > 0)
+                    {
+                        var obj = new GameObject("LandPlatformMesh");
+                        obj.transform.SetParent(transform);
+                        //obj.transform.localPosition = Vector3.zero;
+                        var rt = obj.AddComponent<RectTransform>();
+                        rt.pivot = new Vector2(0f, 1f);
+                        rt.anchoredPosition = sect.rectTransform.anchoredPosition;
+                        rt.sizeDelta = sect.rectTransform.sizeDelta;
+                        var renderer = obj.AddComponent<UILandPlatfromRenderer>();
+                        renderer.vertices = vertices.ToArray();
+                        renderer.color = new Color(1f, 1f, 1f, 0.5f);
+                    }
+                }
 			}
 		}
 

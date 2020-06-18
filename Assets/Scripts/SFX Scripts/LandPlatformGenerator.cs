@@ -14,7 +14,7 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     private Dictionary<NavigationNode, int> areaIDByNode;
     private Dictionary<GameObject, int> areaIDByTile;
-    private float tileSize;
+    public float tileSize { get; private set; }
     private Color color;
     private Vector2 offset;
     public static bool CheckOnGround(Vector3 position)
