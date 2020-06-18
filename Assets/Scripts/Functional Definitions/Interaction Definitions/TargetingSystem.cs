@@ -51,6 +51,8 @@ public class TargetingSystem {
                 {
                     continue;
                 }
+                if (AIData.entities[i].invisible)
+                    continue;
 
                 float sqrD = Vector3.SqrMagnitude(parent.position - AIData.entities[i].transform.position);
                 if (closest == null || sqrD < closestD)

@@ -387,6 +387,8 @@ public class AirCraftAI : MonoBehaviour
                 continue;
             if (terrainType != Entity.TerrainType.All && AIData.entities[i].Terrain != terrainType)
                 continue;
+            if (AIData.entities[i].invisible)
+                continue;
             if (AIData.entities[i] is T)
             {
                 if (((AIData.entities[i].faction == faction) ^ !enemy) && faction != -1)

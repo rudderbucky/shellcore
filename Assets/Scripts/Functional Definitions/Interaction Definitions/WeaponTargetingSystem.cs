@@ -40,7 +40,7 @@ public class WeaponTargetingSystem {
             for (int i = 0; i < AIData.entities.Count; i++) // go through all entities and check them for several factors
             {
                 // checks for: if it is the same faction as the ability entity, 
-                // if it's dead, if it is weapon-compatible
+                // if it's dead, if it is weapon-compatible, if it is invisible
 
                 if (ability.Core.faction == AIData.entities[i].faction)
                 {
@@ -48,6 +48,10 @@ public class WeaponTargetingSystem {
                     continue;
                 }
                 if (AIData.entities[i].GetIsDead())
+                {
+                    continue;
+                }
+                if (AIData.entities[i].invisible)
                 {
                     continue;
                 }

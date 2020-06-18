@@ -170,7 +170,6 @@ public class PartyManager : MonoBehaviour
             {
                 x = 360 + x;
             }
-            Debug.Log(x);
             index = Mathf.RoundToInt((x) / (360/options.Count));
         }
         else if(initialized)

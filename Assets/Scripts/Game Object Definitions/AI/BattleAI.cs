@@ -37,6 +37,7 @@ public class BattleAI : AIModule
     float nextStateCheckTime; //timer to reduce the frequency of heavy search functions
 
     Entity primaryTarget;
+    Entity fortificationTarget;
     Turret attackTurret;
 
     EnergyRock collectTarget = null;
@@ -139,11 +140,15 @@ public class BattleAI : AIModule
                     break;
                 }
             }
-
             // if population is nearly capped, attack
-            if (shellcore.GetTotalCommandLimit() < shellcore.GetUnitsCommanding().Count + 1 || /*shellcore.GetTractorTarget() != null*/ shellcore.GetPower() >= 200) // TODO: OR if enemy base is weak
+            if (shellcore.GetTotalCommandLimit() < shellcore.GetUnitsCommanding().Count + 1) // TODO: OR if enemy base is weak
             {
                 state = BattleState.Attack;
+            }
+            else if (shellcore.GetPower() >= 300)
+            {
+                state = BattleState.Fortify;
+                primaryTarget = null;
             }
             // if there's no need for more population space, try to create turrets to protect owned outposts and stations
             else
@@ -172,6 +177,18 @@ public class BattleAI : AIModule
 
     public override void ActionTick()
     {
+        if (waitingDraggable != null && waitingDraggable)
+        {
+            Vector2 delta = waitingDraggable.transform.position - craft.transform.position;
+            if (delta.sqrMagnitude > 100f)
+            {
+                craft.MoveCraft(delta.normalized);
+            }
+            else if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
+            {
+                shellcore.SetTractorTarget(waitingDraggable);
+            }
+        }
         switch (state)
         {
             case BattleState.Attack:
@@ -183,9 +200,10 @@ public class BattleAI : AIModule
                         float minDistance = float.MaxValue;
                         for (int i = 0; i < AIData.entities.Count; i++)
                         {
-                            if (AIData.entities[i] != null &&
+                            if (AIData.entities[i] != null && AIData.entities[i] &&
                                 AIData.entities[i] is Turret && 
                                 AIData.entities[i].faction == shellcore.faction &&
+                                AIData.entities[i].GetComponentInChildren<WeaponAbility>() != null &&
                                 AIData.entities[i].GetComponentInChildren<WeaponAbility>().GetID() != 16)
                             {
                                 float d = (AIData.entities[i].transform.position - shellcore.transform.position).sqrMagnitude;
@@ -251,17 +269,17 @@ public class BattleAI : AIModule
                         if (AirCraftAI.getEnemyCountInRange(AIData.energyRocks[i].transform.position, 10f, craft.faction) > 2)
                             continue;
 
-                        int energyCount = 0;
+                        int energy = 0;
                         for (int j = 0; j < AIData.energySpheres.Count; j++)
                         {
                             if ((AIData.energySpheres[j].transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude < 16)
-                                energyCount++;
+                                energy++;
                         }
                         float d = (craft.transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude;
-                        if ((maxEnergy < energyCount || d * 1.5f < minD || (maxEnergy == energyCount && d < minD)) && AIData.energyRocks[i] != collectTarget)
+                        if ((maxEnergy < energy || d * 1.5f < minD || (maxEnergy == energy && d < minD)) && AIData.energyRocks[i] != collectTarget)
                         {
                             minD = d;
-                            maxEnergy = energyCount;
+                            maxEnergy = energy;
                             targetRock = AIData.energyRocks[i];
                         }
                     }
@@ -287,38 +305,106 @@ public class BattleAI : AIModule
                 break;
             case BattleState.Fortify:
                 // TODO: place turrets
+                // set primary target to an outpost with least defending turrets
+                if (fortificationTarget == null || !fortificationTarget)
+                {
+                    UpdateTargetInfluences();
+
+                    float closestToZero = float.MaxValue;
+
+                    for (int i = 0; i < AITargets.Count; i++)
+                    {
+                        if (Mathf.Abs(AITargets[i].influence) < closestToZero && AITargets[i].entity.faction == shellcore.faction)
+                        {
+                            fortificationTarget = AITargets[i].entity;
+                        }
+                    }
+                }
+                else if (attackTurret == null || !attackTurret)
+                {
+                    UpdateTargetInfluences();
+
+                    float minDistance = float.MaxValue;
+
+                    for (int i = 0; i < AIData.entities.Count; i++)
+                    {
+                        if (AIData.entities[i] is Turret)
+                        {
+                            float d = (craft.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
+                            float d2 = (fortificationTarget.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
+                            if (d < minDistance && d2 > 150f)
+                            {
+                                minDistance = d;
+                                attackTurret = AIData.entities[i] as Turret;
+                            }
+                        }
+                    }
+                    if (attackTurret == null)
+                    {
+                        state = BattleState.Attack;
+                        ActionTick();
+                        nextStateCheckTime += 1f;
+                        return;
+                    }
+                }
+                else if (shellcore.GetTractorTarget() != attackTurret)
+                {
+                    Vector2 delta = attackTurret.transform.position - craft.transform.position;
+                    if (delta.sqrMagnitude > 100f)
+                    {
+                        craft.MoveCraft(delta.normalized);
+                    }
+                    else
+                    {
+                        if (shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
+                        {
+                            shellcore.SetTractorTarget(attackTurret.GetComponent<Draggable>());
+                        }
+                    }
+                }
+                else
+                {
+                    Vector2 turretDelta = fortificationTarget.transform.position - attackTurret.transform.position;
+                    Vector2 targetPosition = (Vector2)fortificationTarget.transform.position + turretDelta.normalized * 16f;
+                    Vector2 delta = targetPosition - (Vector2)craft.transform.position;
+                    if (turretDelta.sqrMagnitude < 16f)
+                    {
+                        shellcore.SetTractorTarget(null);
+                    }
+                }
+
                 break;
             default:
                 break;
         }
 
+        int energyCount = 0;
         // always collect energy
         if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
         {
+            for (int i = 0; i < AIData.energySpheres.Count; i++)
             {
-                for (int i = 0; i < AIData.energySpheres.Count; i++)
+                if ((AIData.energySpheres[i].transform.position - shellcore.transform.position).sqrMagnitude < 150)
                 {
-                    if ((AIData.energySpheres[i].transform.position - shellcore.transform.position).sqrMagnitude < 150)
+                    energyCount++;
+                    if (shellcore.GetTractorTarget() != null)
                     {
                         waitingDraggable = shellcore.GetTractorTarget();
                         shellcore.SetTractorTarget(null);
-                        break;
                     }
                 }
             }
         }
         else if (shellcore.GetTractorTarget() == null && waitingDraggable != null)
         {
-            bool energyNearby = false;
             for (int i = 0; i < AIData.energySpheres.Count; i++)
             {
                 if ((AIData.energySpheres[i].transform.position - shellcore.transform.position).sqrMagnitude < 150)
                 {
-                    energyNearby = true;
-                    break;
+                    energyCount++;
                 }
             }
-            if (!energyNearby)
+            if (energyCount == 0)
             {
                 shellcore.SetTractorTarget(waitingDraggable);
                 if (shellcore.GetTractorTarget() == waitingDraggable)
@@ -327,7 +413,7 @@ public class BattleAI : AIModule
         }
 
         // always buy more turrets/tanks
-        if (shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+        if (shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit() && energyCount == 0)
         {
             for (int i = 0; i < AIData.vendors.Count; i++)
             {
@@ -418,6 +504,28 @@ public class BattleAI : AIModule
 
                         break;
                     }
+                }
+            }
+        }
+    }
+
+    void UpdateTargetInfluences()
+    {
+        for (int i = 0; i < AITargets.Count; i++)
+        {
+            var t = AITargets[i];
+            if (t.entity == null || t.entity.GetIsDead())
+            {
+                Debug.LogWarning("AI Warning: AI target null or dead!");
+                continue;
+            }
+            t.influence = 0f;
+            for (int j = 0; j < AIData.entities.Count; j++)
+            {
+                if (AIData.entities[j] is Turret)
+                {
+                    if ((AIData.entities[j].transform.position - t.entity.transform.position).sqrMagnitude < 150f)
+                        t.influence += AIData.entities[j].faction == t.entity.faction ? 1f : -1f;
                 }
             }
         }
