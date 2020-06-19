@@ -111,6 +111,8 @@ public class WCGeneratorHandler : MonoBehaviour
                 "New Junction",
                 "New 1 Entry",
                 "New 2 Entry",
+                "New 0 Entry",
+                "New 0 Entry Ghost",
             };
         }
 
