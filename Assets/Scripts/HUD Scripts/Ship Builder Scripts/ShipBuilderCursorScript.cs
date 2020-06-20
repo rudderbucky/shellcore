@@ -69,17 +69,19 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
+		var editorMode = (builder as ShipBuilder) != null && !(builder as ShipBuilder).Equals(null) && (builder as ShipBuilder).editorMode;
 		if(cursorMode != BuilderMode.Workshop)
-			if(traderInventory.gameObject.activeSelf && 
+			if(traderInventory.gameObject.activeSelf && (!editorMode || !Input.GetKey(KeyCode.LeftControl)) &&
 				RectTransformUtility.RectangleContainsScreenPoint(traderInventory, Input.mousePosition)) {
 				builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
 					? ShipBuilder.TransferMode.Sell : ShipBuilder.TransferMode.Return));
 			}
-			else if(RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
+			else if((!editorMode || !Input.GetKey(KeyCode.LeftControl)) && 
+				RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
 				builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
 					? ShipBuilder.TransferMode.Return : ShipBuilder.TransferMode.Buy));
 			}
-			else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition)) {
+			else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition) && !editorMode) {
 				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
 			} 
 			else if(builder.CheckPartIntersectsWithShell(currentPart) && currentPart.GetLastValidPos() == null) {
@@ -162,8 +164,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	void Update() {
 		int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
 		builder.UpdateChain();
-		if(Input.GetKeyDown("c") && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active)) {
-			ClearAllParts();
+		if(Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active)) {
+			if(builder as ShipBuilder == null || (builder as ShipBuilder).Equals(null) || !(builder as ShipBuilder).editorMode) ClearAllParts();
 		}
 		System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / (int)y), z * ((int)x.y / (int)z), 0);
 		var newOffset = roundToRatios(grid.position, baseMoveSize, baseMoveSize) -grid.position;
