@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BattleAI : AIModule
@@ -46,6 +47,31 @@ public class BattleAI : AIModule
     Draggable waitingDraggable;
 
     List<AITarget> AITargets = new List<AITarget>();
+
+    bool requireRangeUpdate = false;
+    Vector2 moveTarget;
+    float minDist = 10000f;
+    void SetMoveTarget(Vector2 target, float minDistance = 64f)
+    {
+        if (moveTarget != target || minDistance != minDist)
+        {
+            requireRangeUpdate = true;
+            moveTarget = target;
+            minDist = minDistance;
+        }
+    }
+    bool inRange = false;
+    float distanceToTarget = 0f;
+    bool targetIsInRange()
+    {
+        if (requireRangeUpdate)
+        {
+            distanceToTarget = (moveTarget - (Vector2)craft.transform.position).sqrMagnitude;
+            inRange = distanceToTarget < minDist;
+            requireRangeUpdate = false;
+        }
+        return inRange;
+    }
 
     public void OrderModeChange(BattleState state)
     {
@@ -177,14 +203,13 @@ public class BattleAI : AIModule
 
     public override void ActionTick()
     {
+        requireRangeUpdate = true;
         if (waitingDraggable != null && waitingDraggable)
         {
+            SetMoveTarget(waitingDraggable.transform.position, 100f);
+
             Vector2 delta = waitingDraggable.transform.position - craft.transform.position;
-            if (delta.sqrMagnitude > 100f)
-            {
-                craft.MoveCraft(delta.normalized);
-            }
-            else if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
+            if (targetIsInRange() && shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
             {
                 shellcore.SetTractorTarget(waitingDraggable);
             }
@@ -202,11 +227,11 @@ public class BattleAI : AIModule
                         {
                             if (AIData.entities[i] != null && AIData.entities[i] &&
                                 AIData.entities[i] is Turret && 
-                                AIData.entities[i].faction == shellcore.faction &&
+                                AIData.entities[i].faction == craft.faction &&
                                 AIData.entities[i].GetComponentInChildren<WeaponAbility>() != null &&
                                 AIData.entities[i].GetComponentInChildren<WeaponAbility>().GetID() != 16)
                             {
-                                float d = (AIData.entities[i].transform.position - shellcore.transform.position).sqrMagnitude;
+                                float d = (AIData.entities[i].transform.position - craft.transform.position).sqrMagnitude;
                                 if (d < minDistance)
                                 {
                                     t = AIData.entities[i] as Turret;
@@ -238,7 +263,8 @@ public class BattleAI : AIModule
                 }
                 if(primaryTarget != null)
                 {
-                    craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
+                    SetMoveTarget(primaryTarget.transform.position);
+                    //craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
                 }
                 //TODO: AI Attack:
                 // action sequences
@@ -251,8 +277,8 @@ public class BattleAI : AIModule
                 break;
             case BattleState.Defend:
                 // destroy enemy units around base, ignore everything outside siege range
-                if(primaryTarget && !primaryTarget.GetIsDead())
-                    craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
+                if (primaryTarget && !primaryTarget.GetIsDead())
+                    SetMoveTarget(primaryTarget.transform.position);
                 // buy a turret matching the biggest threat's element, if possible
                 break;
             case BattleState.Collect:
@@ -292,15 +318,9 @@ public class BattleAI : AIModule
                 }
                 if(collectTarget != null)
                 {
-                    Vector2 delta = collectTarget.transform.position - craft.transform.position;
-                    if (delta.sqrMagnitude > 25f)
-                    {
-                        craft.MoveCraft(delta.normalized);
-                    }
-                    else
-                    {
+                    SetMoveTarget(collectTarget.transform.position);
+                    if (targetIsInRange())
                         findNewTarget = true;
-                    }
                 }
                 break;
             case BattleState.Fortify:
@@ -349,12 +369,8 @@ public class BattleAI : AIModule
                 }
                 else if (shellcore.GetTractorTarget() != attackTurret)
                 {
-                    Vector2 delta = attackTurret.transform.position - craft.transform.position;
-                    if (delta.sqrMagnitude > 100f)
-                    {
-                        craft.MoveCraft(delta.normalized);
-                    }
-                    else
+                    SetMoveTarget(attackTurret.transform.position, 100f);
+                    if (targetIsInRange())
                     {
                         if (shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
                         {
@@ -505,6 +521,38 @@ public class BattleAI : AIModule
                         break;
                     }
                 }
+            }
+        }
+
+        if (!targetIsInRange())
+        {
+            if (distanceToTarget > 256f)
+            {
+                var abilities = shellcore.GetAbilities();
+                var speed = abilities.Where((x) => { return x.GetID() == 1; });
+                int half = Mathf.CeilToInt(speed.Count() / 2f);
+                int count = 0;
+                foreach (var booster in speed)
+                {
+                    booster.Tick("activate");
+                    if (booster.GetActiveTimeRemaining() > 0)
+                    {
+                        if (++count >= half)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            craft.MoveCraft((moveTarget - (Vector2)craft.transform.position).normalized);
+        }
+        if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.8f)
+        {
+            var abilities = shellcore.GetAbilities();
+            var shellBoost = abilities.Where((x) => { return x.GetID() == 2; });
+            foreach (var booster in shellBoost)
+            {
+                booster.Tick("activate");
             }
         }
     }

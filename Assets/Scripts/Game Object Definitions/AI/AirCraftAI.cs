@@ -210,7 +210,7 @@ public class AirCraftAI : MonoBehaviour
         {
             foreach (Ability a in craft.GetAbilities())
             {
-                if (a && a is WeaponAbility || a is PassiveAbility)
+                if (a /*&& a is WeaponAbility || a is PassiveAbility*/)
                 {
                     a.Tick("");
                 }
@@ -300,7 +300,7 @@ public class AirCraftAI : MonoBehaviour
                             if (craft.GetHealth()[0] < 0.1f * craft.GetMaxHealth()[0])
                             {
                                 state = AIState.Retreating;
-                                Debug.LogFormat("Faction {0} retreating!", craft.faction);
+                                //Debug.LogFormat("Faction {0} retreating!", craft.faction);
                             }
                         }
                     }
@@ -326,7 +326,7 @@ public class AirCraftAI : MonoBehaviour
                                 retreatTarget = new Vector2(retreatTarget.x, bounds.y);
 
                             retreatTargetFound = true;
-                            Debug.Log("retreat target found!");
+                            //Debug.Log("retreat target found!");
                         }
                         else
                             retreatTargetFound = false;
@@ -357,7 +357,7 @@ public class AirCraftAI : MonoBehaviour
                     if (craft.GetHealth()[0] > 0.1f * craft.GetMaxHealth()[0])
                     {
                         state = AIState.Active;
-                        Debug.LogFormat("Faction {0} stopped retreating!", craft.faction);
+                        //Debug.LogFormat("Faction {0} stopped retreating!", craft.faction);
                     }
 
                 }

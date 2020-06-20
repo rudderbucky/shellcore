@@ -129,6 +129,11 @@ public class TractorBeam : MonoBehaviour
 
     public void SetTractorTarget(Draggable newTarget)
     {
+        if (newTarget == null && owner.faction != 0)
+        {
+            Debug.Log("AI Dropped something!");
+        }
+
         if(newTarget && newTarget.GetComponent<ShellPart>()) AIData.strayParts.Remove(newTarget.GetComponent<ShellPart>());
         else if(!newTarget && target && target.GetComponent<ShellPart>()) AIData.strayParts.Add(target.GetComponent<ShellPart>());
         if (newTarget && !forcedTarget && (newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared)

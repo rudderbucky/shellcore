@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Start Mission")]
+    [Node(false, "Flow/Start Mission", typeof(QuestCanvas))]
     public class StartMissionNode : Node
     {
         //Node things

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ public class DevConsoleScript : MonoBehaviour
     public InputField inputField;
 
     public bool fullLog = false;
+
+    Queue<string> textToAdd = new Queue<string>();
 
     void OnEnable() {
         Application.logMessageReceived += HandleLog;
@@ -25,23 +28,11 @@ public class DevConsoleScript : MonoBehaviour
         else if(type == LogType.Warning) startingColor = "<color=orange>";
 
         stackTrace = stackTrace.Trim("\n".ToCharArray());
-        if (textBox)
-        {
-            string text = textBox.text += "\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>";
-            while (text.Length > 16000)
-            {
-                int cutIndex = text.IndexOf("</color>");
-                if (cutIndex == -1)
-                {
-                    text = text.Substring(Mathf.Min(0, text.Length - 16000));
-                    break;
-                }
-                text = text.Substring(cutIndex + 8);
-            }
-            textBox.text = text;
-        }
+        textToAdd.Enqueue("\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>");
         // Application.logMessageReceived -= HandleLog;
     }
+
+    
 
     public void EnterCommand(string command)
     {
@@ -75,7 +66,7 @@ public class DevConsoleScript : MonoBehaviour
         else if (command.Equals("Skynet will rise", StringComparison.CurrentCultureIgnoreCase))
         {
             SectorManager.instance.Clear();
-            SectorManager.instance.LoadSectorFile(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors/main-AI-Test"));
+            SectorManager.instance.LoadSectorFile(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors/AI-Test"));
             PlayerCore.Instance.Warp(Vector3.zero);
             textBox.text += "\n<color=green>I, for one, welcome our new robotic overlords.</color>";
         }
@@ -93,6 +84,22 @@ public class DevConsoleScript : MonoBehaviour
         {
             PlayerCore.Instance.TakeCoreDamage(float.MaxValue);
             textBox.text += "\n<color=green>Die, die, die!</color>";
+        }
+        else if (command.StartsWith("Speed of light", StringComparison.CurrentCultureIgnoreCase))
+        {
+            int locNum = 0;
+            if (command.Length > 14)
+            {
+                bool success = int.TryParse(command.Substring(14).Trim(), out locNum);
+                if (!success)
+                    Debug.Log("Wrong number format!");
+            }
+
+            if (locNum < TaskManager.objectiveLocations.Count)
+            {
+                PlayerCore.Instance.Warp(TaskManager.objectiveLocations[locNum].location);
+            }
+            textBox.text += "\n<color=green>Country roads, take me home. To the place I belong!</color>";
         }
         else if (command.Equals("Spectate", StringComparison.CurrentCultureIgnoreCase))
         {
@@ -118,6 +125,12 @@ public class DevConsoleScript : MonoBehaviour
             textBox.enabled = image.enabled = !image.enabled;
             inputField.gameObject.SetActive(image.enabled);
         }
+        else if (command.Equals("I am Ormanus", StringComparison.CurrentCultureIgnoreCase))
+        {
+            EnterCommand("I am god");
+            EnterCommand("spectate");
+            EnterCommand("skynet will rise");
+        }
     }
 
     void Update()
@@ -128,6 +141,25 @@ public class DevConsoleScript : MonoBehaviour
             inputField.gameObject.SetActive(image.enabled);
             if (image.enabled)
                 inputField.ActivateInputField();
+        }
+
+        if (textBox)
+        {
+            while (textToAdd.Count > 0)
+            {
+                string text = textBox.text += textToAdd.Dequeue();
+                while (text.Length > 16000)
+                {
+                    int cutIndex = text.IndexOf("</color>");
+                    if (cutIndex == -1)
+                    {
+                        text = text.Substring(Mathf.Min(0, text.Length - 16000));
+                        break;
+                    }
+                    text = text.Substring(cutIndex + 8);
+                }
+                textBox.text = text;
+            }
         }
     }
 }
