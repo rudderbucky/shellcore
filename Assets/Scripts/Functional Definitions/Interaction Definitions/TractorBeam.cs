@@ -15,7 +15,7 @@ public class TractorBeam : MonoBehaviour
     Draggable target;
     private float energyPickupTimer = 10.0f; // Energy pickup timer
 	protected float energyPickupSpeed = 61.0f; // Disabled for now D: (60*FixedDeltatime = 10) Energy pickup rate scale for future hard/easy gamemodes and AI balancing only.
-    private bool initialized;
+    public bool initialized;
     private bool energyEnabled = true;
     
     public void SetEnergyEnabled(bool val) {
@@ -100,9 +100,9 @@ public class TractorBeam : MonoBehaviour
 			this.energyPickupTimer = 0.0f; // Can change this to a non-zero value to add the timing element back
         }
 
-        if (target && !owner.GetIsDead() && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead())) // Update tractor beam graphics
+        if ((target && !owner.GetIsDead() && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead()))) // Update tractor beam graphics
         {
-            if((target.transform.position - transform.position).sqrMagnitude > 600) 
+            if(!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > 600) 
             {
                 SetTractorTarget(null); // break tractor if too far away
             } else 
@@ -131,7 +131,7 @@ public class TractorBeam : MonoBehaviour
     {
         if(newTarget && newTarget.GetComponent<ShellPart>()) AIData.strayParts.Remove(newTarget.GetComponent<ShellPart>());
         else if(!newTarget && target && target.GetComponent<ShellPart>()) AIData.strayParts.Add(target.GetComponent<ShellPart>());
-        if (newTarget && (newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared)
+        if (newTarget && !forcedTarget && (newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared)
             return;
         lineRenderer.enabled = (newTarget != null);
         if(target)
@@ -151,5 +151,28 @@ public class TractorBeam : MonoBehaviour
             Destroy(coreGlow.gameObject);
         if (targetGlow)
             Destroy(targetGlow.gameObject);
+    }
+
+    bool forcedTargetHadDraggable = false;
+    Transform forcedTarget;
+
+    public void ForceTarget(Transform obj)
+    {
+        if(!initialized) BuildTractor();
+        Debug.LogError(obj.gameObject);
+        if(obj == null)
+        {
+            if(forcedTarget && !forcedTargetHadDraggable) Destroy(forcedTarget.GetComponent<Draggable>());
+            forcedTarget = null;
+            forcedTargetHadDraggable = false;
+            SetTractorTarget(null);
+        }
+        else
+        {
+            forcedTargetHadDraggable = obj.GetComponentInChildren<Draggable>();
+            forcedTarget = obj;
+            if(!forcedTargetHadDraggable) obj.gameObject.AddComponent<Draggable>();
+            SetTractorTarget(obj.GetComponentInChildren<Draggable>());
+        }
     }
 }

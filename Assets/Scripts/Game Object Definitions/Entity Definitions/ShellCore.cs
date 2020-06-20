@@ -102,9 +102,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     protected override void BuildEntity()
     {
         intrinsicCommandLimit = 0;
-        if(!tractor) {
-            tractor = gameObject.AddComponent<TractorBeam>();
-            tractor.owner = this;
+        if(!tractor.initialized) {
             tractor.BuildTractor();
         }
         base.BuildEntity();
@@ -113,6 +111,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     protected override void Awake()
     {
         respawns = true;
+        if(!tractor)
+        {
+            tractor = gameObject.AddComponent<TractorBeam>();
+            tractor.owner = this;
+        }
         base.Awake(); // base awake
     }
 
