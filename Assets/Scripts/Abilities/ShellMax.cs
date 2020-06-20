@@ -9,7 +9,9 @@ public class ShellMax : PassiveAbility {
 
 	public void Initialize() {
 		ID = index + 18;
-	}
+        if (ID == 19) // Avoid ID conflict
+            ID = 23;
+    }
 	public override void SetDestroyed(bool input)
     {
         float[] maxHealths = Core.GetMaxHealth();

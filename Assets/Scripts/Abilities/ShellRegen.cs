@@ -8,6 +8,8 @@ public class ShellRegen : PassiveAbility {
 	public static readonly int regen = 50;
 	public void Initialize() {
 		ID = index + 17;
+        if (ID == 18) // Avoid ID conflict
+            ID = 22;
 	}
 	public override void SetDestroyed(bool input)
     {
