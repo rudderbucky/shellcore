@@ -25,6 +25,11 @@ public class BattleZoneManager : MonoBehaviour
     {
         if (playing && enabled)
         {
+            foreach(var target in targets)
+            {
+                if(target as ShellCore) (target as ShellCore).SetCarrier(SectorManager.instance.carriers[target.faction]);
+            }
+
             Dictionary<int, int> alive = new Dictionary<int, int>();
 
             for (int i = 0; i < targets.Count; i++)
@@ -75,7 +80,7 @@ public class BattleZoneManager : MonoBehaviour
             targets.Clear();
         if (target)
             playing = true;
-        targets.Add(target);
+        if(!targets.Contains(target)) targets.Add(target);
     }
 
     public static Entity[] getTargets()

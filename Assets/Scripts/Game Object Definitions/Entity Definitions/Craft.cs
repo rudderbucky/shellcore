@@ -139,13 +139,15 @@ public abstract class Craft : Entity
         }
     }
 
+    public bool rotateWhileMoving = true;
+
     /// <summary>
     /// Applies a force to the craft on the vector given
     /// </summary>
     /// <param name="directionVector">vector given</param>
     protected virtual void CraftMover(Vector2 directionVector)
     {
-        RotateCraft(directionVector / entityBody.mass); // rotate craft
+        if(rotateWhileMoving) RotateCraft(directionVector / entityBody.mass); // rotate craft
         entityBody.AddForce(Mathf.Min(enginePower, 300 * entityBody.mass) * directionVector); // max acceleration: 300 m/s^2
         // actual force applied to craft; independent of angle rotation
     }

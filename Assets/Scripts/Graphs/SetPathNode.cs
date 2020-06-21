@@ -23,6 +23,9 @@ namespace NodeEditorFramework.Standard
         public bool useIDInput;
         public string entityID = "";
         public bool asynchronous;
+        public bool useCustomMass;
+        public float mass;
+        public bool doNotRotate;
         public PathData path = null;
 
         public ConnectionKnob IDInput;
@@ -85,6 +88,16 @@ namespace NodeEditorFramework.Standard
                 WorldCreatorCursor.finishPath += SetPath;
                 WorldCreatorCursor.instance.pathDrawing(path);
             }
+
+            GUILayout.BeginHorizontal();
+            doNotRotate = GUILayout.Toggle(doNotRotate, "Do Not Rotate", GUILayout.MinWidth(400));
+            GUILayout.EndHorizontal();
+            if(useCustomMass = GUILayout.Toggle(useCustomMass, "Use Custom Mass", GUILayout.MinWidth(400)))
+            {
+                GUILayout.Label("Mass");
+                mass = float.Parse(GUILayout.TextField(mass + "", GUILayout.MinWidth(400)));
+            }
+
         }
 
         void SetEntityID(string ID)
@@ -132,6 +145,8 @@ namespace NodeEditorFramework.Standard
                         AIData.entities[i].isPathing = false; // override any previous paths given to it immediately
                         if(!asynchronous) (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
                         else (AIData.entities[i] as AirCraft).GetAI().setPath(path);
+                        if(useCustomMass) AIData.entities[i].GetComponentInChildren<Rigidbody2D>().mass = mass;
+                        (AIData.entities[i] as AirCraft).rotateWhileMoving = !doNotRotate;
                     }
                 }
             }

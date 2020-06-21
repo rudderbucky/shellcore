@@ -26,6 +26,9 @@ namespace NodeEditorFramework.Standard
         public Color textColor = Color.white;
         public string text;
         public List<string> answers = new List<string>();
+        public bool customDialogueSpeed;
+        public double speed;
+        private double oldSpeed;
 
         public NodeEditorGUI.NodeEditorState state;
         public override void NodeGUI()
@@ -67,6 +70,11 @@ namespace NodeEditorFramework.Standard
                 answers.Add("");
             }
             GUILayout.EndHorizontal();
+            if(customDialogueSpeed = GUILayout.Toggle(customDialogueSpeed, "Use custom typing speed", GUILayout.MinWidth(40f)))
+            {
+                GUILayout.Label("Time between characters");
+                speed = double.Parse(GUILayout.TextField(speed + "", GUILayout.MinWidth(40f)));
+            }
             cancel.DisplayLayout();
         }
 
@@ -74,6 +82,7 @@ namespace NodeEditorFramework.Standard
         {
             DialogueSystem.OnDialogueCancel -= OnCancel;
             DialogueSystem.OnDialogueEnd -= OnClick;
+            if(customDialogueSpeed) DialogueSystem.Instance.timeBetweenCharacters = oldSpeed;
             if(outputPorts[index].connected())
                 TaskManager.Instance.setNode(outputPorts[index]);
             else
@@ -88,6 +97,8 @@ namespace NodeEditorFramework.Standard
         {
             DialogueSystem.OnDialogueCancel -= OnCancel;
             DialogueSystem.OnDialogueEnd -= OnClick;
+            if(customDialogueSpeed) DialogueSystem.Instance.timeBetweenCharacters = oldSpeed;
+
             if(cancel.connected())
             {
                 IDialogueOverrideHandler handler = null;
@@ -113,6 +124,11 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            oldSpeed = DialogueSystem.Instance.timeBetweenCharacters;
+            if(customDialogueSpeed)
+            {
+                DialogueSystem.Instance.timeBetweenCharacters = speed;
+            }
             if(state == NodeEditorGUI.NodeEditorState.Mission)
                 DialogueSystem.ShowDialogueNode(this, TaskManager.GetSpeaker());
             else DialogueSystem.ShowDialogueNode(this, DialogueSystem.GetSpeaker());
