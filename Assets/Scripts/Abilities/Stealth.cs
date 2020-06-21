@@ -69,7 +69,7 @@ public class Stealth : ActiveAbility
         for (int i = 0; i < renderers.Length; i++)
         {
             var c = renderers[i].color;
-            c.a = 0.2f;
+            c.a = Core.faction == 0 ? 0.2f : 0f;
             renderers[i].color = c;
         }
         Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);

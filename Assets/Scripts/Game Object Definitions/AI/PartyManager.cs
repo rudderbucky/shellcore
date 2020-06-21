@@ -61,6 +61,8 @@ public class PartyManager : MonoBehaviour
         {
             if(core.ID == "sukrat")
                 DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Building!</color>");
+            core.GetAI().setMode(AirCraftAI.AIMode.Battle);
+            core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Fortify);
         }
     }
 
@@ -82,6 +84,28 @@ public class PartyManager : MonoBehaviour
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
             PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
+
+            if(!AIData.entities.Exists(x => x.ID == "sukrat"))
+            {
+                // check if it is a character
+                foreach(var ch in SectorManager.instance.characters)
+                {
+                    if(ch.ID == "sukrat")
+                    {
+                        var print = ScriptableObject.CreateInstance<EntityBlueprint>();
+                        JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
+                        print.intendedType = EntityBlueprint.IntendedType.ShellCore;
+                        var levelEnt = new Sector.LevelEntity();
+                        levelEnt.ID = "sukrat";
+                        levelEnt.name = ch.name;
+                        levelEnt.faction = ch.faction;
+                        levelEnt.position = PlayerCore.Instance.transform.position + new Vector3(0, 5);
+                        SectorManager.instance.SpawnEntity(print, levelEnt);
+                        break;
+                    }
+                }
+            }
+
             partyMembers.Add(AIData.entities.Find(x => x.ID == "sukrat") as ShellCore);
             sukratAssignButton.GetComponentInChildren<Text>().text = "UNASSIGN";
             var clicked = new Button.ButtonClickedEvent();
@@ -90,6 +114,8 @@ public class PartyManager : MonoBehaviour
             sukratHealth.SetActive(true);
         }
         else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
+
+        UpdatePortraits();
     }
 
     public void Unassign()
@@ -104,6 +130,8 @@ public class PartyManager : MonoBehaviour
             sukratHealth.SetActive(false);
         }
         else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
+
+        UpdatePortraits();
     }
 
     public GameObject sukratHealth;
@@ -134,7 +162,6 @@ public class PartyManager : MonoBehaviour
         AddOption("Follow Me", OrderFollow);
         sukratAssignButton.onClick.AddListener(AssignSukrat);
         instance = this;
-
         initialized = true;
     }
 
@@ -197,4 +224,26 @@ public class PartyManager : MonoBehaviour
             }
         }
     }
+
+    public Transform[] portraits;
+
+    public void UpdatePortraits()
+    {
+        portraits[0].GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(PlayerCore.Instance.blueprint, null, 0);
+        portraits[0].GetComponentInChildren<Text>().text = PlayerCore.Instance.cursave.name.ToUpper();
+        for(int i = 1; i < 3; i++)
+        {
+            if(i > partyMembers.Count) 
+            {
+                portraits[i].GetComponentInChildren<SelectionDisplayHandler>().ClearDisplay();
+                portraits[i].GetComponentInChildren<Text>().text = "";
+            }
+            else 
+            {
+                portraits[i].GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(partyMembers[i-1].blueprint, null, 0);
+                portraits[i].GetComponentInChildren<Text>().text = partyMembers[i-1].entityName.ToUpper();
+            }
+        }
+    }
+
 }

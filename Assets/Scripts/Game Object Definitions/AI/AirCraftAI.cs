@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 public class AirCraftAI : MonoBehaviour
 {
@@ -263,6 +264,21 @@ public class AirCraftAI : MonoBehaviour
                             else
                             {
                                 aggroTarget = null;
+                            }
+
+                            if (!(module is BattleAI) && craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
+                            {
+                                var abilities = craft.GetAbilities();
+                                if(abilities != null)
+                                {
+                                    var stealths = abilities.Where((x) => { return x.GetID() == 24; });
+                                    foreach (var stealth in stealths)
+                                    {
+                                        stealth.Tick("activate");
+                                        if (stealth.GetActiveTimeRemaining() > 0)
+                                            break;
+                                    }
+                                }
                             }
                             break;
                         case AIAggression.StopToAttack:

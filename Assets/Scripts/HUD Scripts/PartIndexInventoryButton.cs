@@ -66,6 +66,8 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        infoBox.SetActive(false);
+        infoBox.SetActive(true);
+        partDisplay.gameObject.SetActive(false);
+        infoBox.GetComponentInChildren<Text>().text = "Hover over a part to see information here";
     }
 }
