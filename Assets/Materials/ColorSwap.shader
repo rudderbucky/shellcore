@@ -89,10 +89,10 @@ Shader "Sprites/ColorSwap"
 				fixed4 c = SampleSpriteTexture (IN.texcoord);
                 c.a *= IN.color.a;
 				c.rgb *= c.a;
-
-				if (c.r > 0.99f && c.g < 0.01f && c.b > 0.99f)
+				float min = c.a * 0.99f;
+				if (c.r > min && c.g < 0.01f && min)
 				{
-					c = IN.color;
+					c = IN.color * c.a;
 				}
 
                 return c;
