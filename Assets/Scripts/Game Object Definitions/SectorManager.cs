@@ -20,7 +20,7 @@ public class SectorManager : MonoBehaviour
     [HideInInspector]
     public string resourcePath = "";
     private Dictionary<int, int> stationsCount = new Dictionary<int, int>();
-    private Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
+    public Dictionary<int, ICarrier> carriers = new Dictionary<int, ICarrier>();
     private List<IVendor> stations = new List<IVendor>();
     private BattleZoneManager battleZone;
     private SiegeZoneManager siegeZone;
@@ -342,6 +342,15 @@ public class SectorManager : MonoBehaviour
                             blueprint.entityName = data.name;
 
                         } else shellcore.entityName = blueprint.entityName = data.name;
+
+                        if(current.type == Sector.SectorType.BattleZone)
+                        {
+                            // set the carrier of the shellcore to the associated faction's carrier
+                            if(carriers.ContainsKey(shellcore.faction))
+                                shellcore.SetCarrier(carriers[shellcore.faction]);
+
+                            battleZone.AddTarget(shellcore);
+                        }
                     }
                     catch (System.Exception e)
                     {

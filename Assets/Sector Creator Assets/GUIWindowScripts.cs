@@ -21,7 +21,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 		return OnCancelled;
 	}
 	public virtual void CloseUI() {
-		if(transform?.parent?.gameObject?.activeSelf != null ? transform.parent.gameObject.activeSelf : false) {
+		if((transform && transform.parent && transform.parent.gameObject.activeSelf) ? transform.parent.gameObject.activeSelf : false) {
 			if(playSoundOnClose) AudioManager.PlayClipByID("clip_back", true);
 			transform.parent.gameObject.SetActive(false);
 		}
