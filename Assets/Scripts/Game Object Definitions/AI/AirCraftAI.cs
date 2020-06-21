@@ -266,12 +266,13 @@ public class AirCraftAI : MonoBehaviour
                                 aggroTarget = null;
                             }
 
+                            // Stealth if module is not BattleAI to not interfere with it
                             if (!(module is BattleAI) && craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
                             {
                                 var abilities = craft.GetAbilities();
                                 if(abilities != null)
                                 {
-                                    var stealths = abilities.Where((x) => { return x.GetID() == 24; });
+                                    var stealths = abilities.Where((x) => { return (x != null) && x.GetID() == 24; });
                                     foreach (var stealth in stealths)
                                     {
                                         stealth.Tick("activate");

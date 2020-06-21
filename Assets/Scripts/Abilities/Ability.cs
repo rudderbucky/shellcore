@@ -227,11 +227,15 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     {
         while(blinking)
         {
-            indicator.GetComponent<SpriteRenderer>().color = indicator.GetComponent<SpriteRenderer>().color == Color.cyan ? originalIndicatorColor : Color.cyan;
+            var color = indicator.GetComponent<SpriteRenderer>().color == Color.cyan ? originalIndicatorColor : Color.cyan;
+            color.a = (Core.invisible ? (Core.faction == 0 ? 0.2f: 0f) : 1f);
+            indicator.GetComponent<SpriteRenderer>().color = color;
             if(glowPrefab) glowPrefab.SetActive(!glowPrefab.activeSelf);
             yield return new WaitForSeconds(0.125F);
         }
-        indicator.GetComponent<SpriteRenderer>().color = originalIndicatorColor;
+        var resetColor = originalIndicatorColor;
+        resetColor.a = (Core.invisible ? (Core.faction == 0 ? 0.2f: 0f) : 1f);
+        indicator.GetComponent<SpriteRenderer>().color = resetColor;
     }
 
     /// <summary>

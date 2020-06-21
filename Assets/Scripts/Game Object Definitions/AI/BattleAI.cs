@@ -557,7 +557,7 @@ public class BattleAI : AIModule
 
             if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
             {
-                var stealths = abilities.Where((x) => { return x.GetID() == 24; });
+                var stealths = abilities.Where((x) => { return (x != null) && x.GetID() == 24; });
                 foreach (var stealth in stealths)
                 {
                     stealth.Tick("activate");

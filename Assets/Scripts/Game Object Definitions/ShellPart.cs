@@ -115,6 +115,13 @@ public class ShellPart : MonoBehaviour {
         spriteRenderer.sortingLayerName = "Air Entities";
         if(shooter)
             shooter.GetComponent<SpriteRenderer>().sortingLayerName = "Air Entities";
+        
+        // when a part detaches it should always be completely visible
+        var renderers = GetComponentsInChildren<SpriteRenderer>();
+        foreach(var rend in renderers)
+        {
+            rend.color += new Color(0, 0, 0, 1);
+        }
     }
 
     void OnDestroy() {
