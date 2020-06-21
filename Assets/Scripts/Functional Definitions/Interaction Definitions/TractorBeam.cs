@@ -164,7 +164,6 @@ public class TractorBeam : MonoBehaviour
     public void ForceTarget(Transform obj)
     {
         if(!initialized) BuildTractor();
-        Debug.LogError(obj.gameObject);
         if(obj == null)
         {
             if(forcedTarget && !forcedTargetHadDraggable) Destroy(forcedTarget.GetComponent<Draggable>());

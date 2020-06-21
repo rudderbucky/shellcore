@@ -182,6 +182,10 @@ public class AbilityUtilities : MonoBehaviour {
 				return "Energy Max";
 			case 21:
 				return "Command";
+			case 22:
+				return "Core Regen";
+			case 23:
+				return "Core Max";
             default:
                 return "Name unset";
         }
