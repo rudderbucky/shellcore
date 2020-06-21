@@ -275,7 +275,8 @@ public class ShellPart : MonoBehaviour {
             lerpVal += 0.05F;
             lerpVal = Mathf.Min(lerpVal, 1);
             var lerpedColor = Color.Lerp(Color.gray, info.shiny ? ShinyFactionColors.colors[faction] : FactionColors.colors[faction], lerpVal);
-
+            lerpedColor.a = (craft.invisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
+            
             spriteRenderer.color = lerpedColor;
             if(shooter) shooter.GetComponent<SpriteRenderer>().color = lerpedColor;
 
@@ -298,8 +299,10 @@ public class ShellPart : MonoBehaviour {
 
         if(partHealth != 0 && colorLerped)
         {
-            spriteRenderer.color = Color.Lerp(Color.gray, info.shiny ? ShinyFactionColors.colors[faction] : 
+            var color = Color.Lerp(Color.gray, info.shiny ? ShinyFactionColors.colors[faction] : 
                 FactionColors.colors[faction], currentHealth / partHealth);
+            color.a = (craft.invisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
+            spriteRenderer.color = color;
             if(shooter) shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
         }
     }

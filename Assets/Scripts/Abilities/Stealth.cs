@@ -64,7 +64,7 @@ public class Stealth : ActiveAbility
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
         ToggleIndicator(true);
-
+        
         SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
         for (int i = 0; i < renderers.Length; i++)
         {
