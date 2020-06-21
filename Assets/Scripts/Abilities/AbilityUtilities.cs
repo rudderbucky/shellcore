@@ -39,6 +39,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 2:
 			case 11:
 			case 12:
+            case 24:
 				return AbilityHandler.AbilityTypes.Skills;
 			case 13:
 			case 17:
@@ -96,6 +97,8 @@ public class AbilityUtilities : MonoBehaviour {
 				return "Passively increases maximum energy by " + ShellMax.max * tier + " points.";
 			case 21:
 				return "Passively increases the maximum allowed number of controlled units by " + Command.commandUnitIncrease + ".";
+            case 24:
+                return "Become invisible to enemies";
 			default:
 				return "Description unset";
 		}
@@ -186,6 +189,8 @@ public class AbilityUtilities : MonoBehaviour {
 				return "Core Regen";
 			case 23:
 				return "Core Max";
+            case 24:
+                return "Stealth";
             default:
                 return "Name unset";
         }
@@ -286,6 +291,9 @@ public class AbilityUtilities : MonoBehaviour {
 			case 21:
 				ability = obj.AddComponent<Command>();
 				break;
+            case 24:
+                ability = obj.AddComponent<Stealth>();
+                break;
 		}
 		if(ability) ability.SetTier(tier);
 		return ability;

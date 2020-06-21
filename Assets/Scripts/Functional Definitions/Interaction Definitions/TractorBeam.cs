@@ -129,7 +129,7 @@ public class TractorBeam : MonoBehaviour
 
     public void SetTractorTarget(Draggable newTarget)
     {
-        if (newTarget == null && owner.faction != 0)
+        if (target != null && newTarget == null && owner.faction != 0)
         {
             Debug.Log("AI Dropped something!");
         }

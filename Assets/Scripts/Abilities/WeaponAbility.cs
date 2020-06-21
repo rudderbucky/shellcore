@@ -99,6 +99,10 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             return; // Part has been destroyed, ability can't be used
         }
+        if (Core.invisible)
+        {
+            return; // Core is in stealth mode, weapons are disabled
+        }
         
         if(key != "")
         {

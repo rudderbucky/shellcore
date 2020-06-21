@@ -12,9 +12,6 @@ public class Stealth : ActiveAbility
     protected override void Awake()
     {
         base.Awake(); // base awake
-                      // hardcoded values here
-        abilityName = "Stealth";
-        description = "Become invisible to enemies";
         ID = 24;
         cooldownDuration = 10;
         CDRemaining = cooldownDuration;
@@ -32,9 +29,26 @@ public class Stealth : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        craft.invisible = false;
-
         ToggleIndicator(true);
+
+        craft.invisible = false;
+        SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            var c = renderers[i].color;
+            c.a = 1f;
+            renderers[i].color = c;
+        }
+        Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = true;
+        }
+        Ability[] abilities = craft.GetAbilities();
+        foreach (var ability in abilities)
+        {
+            ability.SetIsEnabled(false);
+        }
     }
 
     /// <summary>
@@ -50,5 +64,18 @@ public class Stealth : ActiveAbility
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
         ToggleIndicator(true);
+
+        SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            var c = renderers[i].color;
+            c.a = 0.2f;
+            renderers[i].color = c;
+        }
+        Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = false;
+        }
     }
 }

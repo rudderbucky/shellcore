@@ -554,6 +554,17 @@ public class BattleAI : AIModule
             {
                 booster.Tick("activate");
             }
+
+            if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
+            {
+                var stealths = abilities.Where((x) => { return x.GetID() == 24; });
+                foreach (var stealth in stealths)
+                {
+                    stealth.Tick("activate");
+                    if (stealth.GetActiveTimeRemaining() > 0)
+                        break;
+                }
+            }
         }
     }
 
