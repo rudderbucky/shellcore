@@ -32,9 +32,21 @@ public class PlayerCore : ShellCore {
     /// Respawns the player core, deinitializes the HUD
     /// </summary>
     protected override void Respawn() {
+        List<bool> weaponActivationStates = new List<bool>();
+        for (int i = 0; i < abilities.Count; i++)
+        {
+            if (abilities[i] is WeaponAbility)
+                weaponActivationStates.Add((abilities[i] as WeaponAbility).GetActiveTimeRemaining() == -1);
+        }
         if(hud) hud.DeinitializeHUD(); // deinitialize HUD
         transform.position = spawnPoint; // reset position to spawn point
         base.Respawn(); // this will reinitialize the HUD
+        int weaponIndex = 0;
+        for (int i = 0; i < abilities.Count; i++)
+        {
+            if (abilities[i] is WeaponAbility)
+                (abilities[i] as WeaponAbility).SetActive(weaponActivationStates[weaponIndex++]);
+        }
     }
     /// <summary>
     /// The directional driver for the player core, returns a vector based on current inputs
