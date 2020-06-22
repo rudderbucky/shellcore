@@ -82,7 +82,7 @@ public class MissileScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-        if(target)
+        if(target && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().invisible))
         {
             var moveVector = (target.position - transform.position).normalized;
             GetComponent<Rigidbody2D>().AddForce(120 * moveVector);
