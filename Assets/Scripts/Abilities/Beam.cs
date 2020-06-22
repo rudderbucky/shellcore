@@ -90,7 +90,7 @@ public class Beam : WeaponAbility {
             if (targetingSystem.GetTarget()) // check and get the weapon target
             {
                 AudioManager.PlayClipByID("clip_beam", transform.position);
-                var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
+                var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(damage + Core.damageAddition, 0, GetComponentInParent<Entity>()); 
                 // deal instant damage
 
                 if(nextTargetPart) {

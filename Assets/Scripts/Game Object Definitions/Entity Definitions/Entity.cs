@@ -40,6 +40,7 @@ public class Entity : MonoBehaviour, IDamageable {
     public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
     public string ID; // used in tasks
     public bool invisible; // if true, entity can't be targeted by weapons
+    public float damageAddition = 0f;
 
     public SectorManager sectorMngr;
     protected Entity lastDamagedBy;

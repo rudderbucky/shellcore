@@ -67,7 +67,7 @@ public class Cannon : WeaponAbility {
         if (effect) Destroy(effect);
         effect = Instantiate(effectPrefab, shooter, false);
         Destroy(effect, 0.2F);
-        var residue = target.TakeShellDamage(damage, 0, GetComponentInParent<Entity>());
+        var residue = target.TakeShellDamage(damage + Core.damageAddition, 0, GetComponentInParent<Entity>());
         target.TakeCoreDamage(residue);
     }
 }

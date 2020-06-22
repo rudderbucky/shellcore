@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Gives a temporary increase to the core's engine power
+/// Makes the craft temporarily invisible
 /// </summary>
 public class Stealth : ActiveAbility
 {
-    bool activated = false;
     Craft craft;
     protected override void Awake()
     {
@@ -25,7 +24,7 @@ public class Stealth : ActiveAbility
         craft = Core as Craft;
     }
     /// <summary>
-    /// Returns the engine power to the original value
+    /// Makes the craft visible again
     /// </summary>
     protected override void Deactivate()
     {
@@ -52,30 +51,30 @@ public class Stealth : ActiveAbility
     }
 
     /// <summary>
-    /// Increases core engine power to speed up the core
+    /// Makes the craft invisible
     /// </summary>
     protected override void Execute()
     {
-        // adjust fields
         if(craft) {
+            // change visibility
             craft.invisible = true;
-        } // change engine power
+            SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                var c = renderers[i].color;
+                c.a = Core.faction == 0 ? 0.2f : 0f;
+                renderers[i].color = c;
+            }
+            Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = false;
+            }
+        }
         AudioManager.PlayClipByID("clip_activateability", transform.position);
+        // adjust fields
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
         ToggleIndicator(true);
-        
-        SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            var c = renderers[i].color;
-            c.a = Core.faction == 0 ? 0.2f : 0f;
-            renderers[i].color = c;
-        }
-        Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            colliders[i].enabled = false;
-        }
     }
 }

@@ -75,7 +75,7 @@ public class Bullet : WeaponAbility {
         // Update its damage to match main bullet
         var script = bullet.GetComponent<BulletScript>();
         script.owner = GetComponentInParent<Entity>();
-        script.SetDamage(damage * (this as MainBullet ? 1 : abilityTier));
+        script.SetDamage(damage * (this as MainBullet ? 1 : abilityTier) + Core.damageAddition);
         script.SetCategory(category);
         script.SetTerrain(terrain);
         script.SetShooterFaction(Core.faction);

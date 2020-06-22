@@ -23,13 +23,12 @@ public class AIAbilityController
         // Use abilities if needed
         if (!ai.movement.targetIsInRange())
         {
-            if (ai.movement.DistanceToTarget> 256f)
+            if (ai.movement.DistanceToTarget > 256f)
             {
-                var abilities = craft.GetAbilities();
-                var speed = abilities.Where((x) => { return (x != null) && x.GetID() == 1; });
-                int half = Mathf.CeilToInt(speed.Count() / 2f);
+                var speeds = GetAbilities(1);
+                int half = Mathf.CeilToInt(speeds.Count() / 2f);
                 int count = 0;
-                foreach (var booster in speed)
+                foreach (var booster in speeds)
                 {
                     booster.Tick("activate");
                     if (booster.GetActiveTimeRemaining() > 0)
@@ -44,16 +43,15 @@ public class AIAbilityController
         }
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.8f)
         {
-            var abilities = craft.GetAbilities();
-            var shellBoost = abilities.Where((x) => { return (x != null) && x.GetID() == 2; });
-            foreach (var booster in shellBoost)
+            var shellBoosts = GetAbilities(2);
+            foreach (var booster in shellBoosts)
             {
                 booster.Tick("activate");
             }
 
             if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
             {
-                var stealths = abilities.Where((x) => { return (x != null) && x.GetID() == 24; });
+                var stealths = GetAbilities(24);
                 foreach (var stealth in stealths)
                 {
                     stealth.Tick("activate");
@@ -62,5 +60,10 @@ public class AIAbilityController
                 }
             }
         }
+    }
+
+    Ability[] GetAbilities(int ID)
+    {
+        return craft.GetAbilities().Where((x) => { return (x != null) && x.GetID() == ID; }).ToArray();
     }
 }

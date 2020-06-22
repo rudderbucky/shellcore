@@ -52,7 +52,7 @@ public class DevConsoleScript : MonoBehaviour
             player.SetRegens(new float[] { 9999, 9999, 9999 });
             player.credits = 999999;
             player.enginePower = 9999f;
-            player.GetComponentInChildren<MainBullet>().SetDamage(10000);
+            player.damageAddition = 99999f;
             player.AddPower(10000);
             textBox.text += "\n<color=green>I am noob.</color>";
         }
