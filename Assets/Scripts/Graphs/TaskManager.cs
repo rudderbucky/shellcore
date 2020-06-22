@@ -199,7 +199,17 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         foreach(var mission in missions)
         {
             if(traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))
-                traversers.Find((t) => t.nodeCanvas.missionName == mission.name).activateCheckpoint(mission.checkpoint);
+            {
+                var traverser = traversers.Find((t) => t.nodeCanvas.missionName == mission.name);
+                if(traverser.findRoot().overrideCheckpoint)
+                {
+                    traverser.activateCheckpoint(traverser.findRoot().overrideCheckpointName);
+                }
+                else
+                {
+                    traverser.activateCheckpoint(mission.checkpoint);
+                }  
+            }   
         }
 
         for (int i = 0; i < traversers.Count; i++)

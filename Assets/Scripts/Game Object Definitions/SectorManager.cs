@@ -346,8 +346,8 @@ public class SectorManager : MonoBehaviour
                         if(current.type == Sector.SectorType.BattleZone)
                         {
                             // set the carrier of the shellcore to the associated faction's carrier
-                            if(carriers.ContainsKey(shellcore.faction))
-                                shellcore.SetCarrier(carriers[shellcore.faction]);
+                            if(carriers.ContainsKey(data.faction))
+                                shellcore.SetCarrier(carriers[data.faction]);
 
                             battleZone.AddTarget(shellcore);
                         }

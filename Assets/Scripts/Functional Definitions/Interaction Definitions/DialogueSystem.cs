@@ -377,8 +377,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 var type = backgroudBox.Find("Type").GetComponent<Text>();
                 var abilityTooltip = backgroudBox.GetComponent<AbilityButtonScript>();
 
-                abilityIcon.sprite = AbilityUtilities.GetAbilityImageByID(node.partAbilityID, null);
-                tierIcon.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + Mathf.Clamp(node.partTier, 1, 3));
+                abilityIcon.sprite = AbilityUtilities.GetAbilityImageByID(node.partAbilityID, node.partSecondaryData);
+                if(node.partTier >= 1)
+                    tierIcon.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + Mathf.Clamp(node.partTier, 1, 3));
+                else tierIcon.enabled = false;
                 type.text = AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null) + (node.partTier > 0 ? " " + node.partTier : "");
                 string description = "";
                 description += AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null) + (node.partTier > 0 ? " " + node.partTier : "") + "\n";
@@ -751,9 +753,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             yield return new WaitForSeconds(0.0025F);
         }
 
-        for(int i = 0; i < passiveDialogueContents.childCount; i++)
+        while(passiveDialogueContents.childCount > 0)
         {
-            Destroy(passiveDialogueContents.GetChild(i).gameObject);
+            passiveDialogueContents.GetChild(0).localScale = new Vector3(1, 1, 1);
+            passiveDialogueContents.GetChild(0).SetParent(archiveContents, false);
         }
     }
 
@@ -774,6 +777,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         queueTimer -= Time.deltaTime;
         if(passiveMessages.Count > 0)
         {
+            archiveContents.gameObject.SetActive(false);
             passiveDialogueScrollView.localScale = new Vector3(1, 1, 1);
             if(queueTimer <= 0)
             {
@@ -797,6 +801,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             StartCoroutine(FadePassiveDialogueOut());
         }
 
+        if(passiveDialogueContents.transform.childCount == 0 && Input.GetKeyDown(KeyCode.Return))
+        {
+            archiveContents.gameObject.SetActive(!archiveContents.gameObject.activeSelf);
+        }
     }
 
     public List<string> GetSpeakerIDList()
@@ -834,4 +842,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         var speakerObj = SectorManager.instance.GetEntity(speakerID);
         return speakerObj;
     }
+
+    public GameObject passiveDialogueArchive;
+    public Transform archiveContents;
 }

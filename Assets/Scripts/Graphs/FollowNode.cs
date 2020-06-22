@@ -28,6 +28,7 @@ namespace NodeEditorFramework.Standard
 
         public ConnectionKnob FollowerInput;
         public ConnectionKnob TargetInput;
+        public bool disallowAggression;
 
         ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("Name Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
 
@@ -157,6 +158,10 @@ namespace NodeEditorFramework.Standard
                     }
                 }
             }
+
+            GUILayout.BeginHorizontal();
+            disallowAggression = GUILayout.Toggle(disallowAggression, "Diasallow Aggression", GUILayout.MinWidth(40));
+            GUILayout.EndHorizontal();
         }
 
         void SetFollowerID(string ID)
@@ -226,6 +231,8 @@ namespace NodeEditorFramework.Standard
                         {
                             (AIData.entities[i] as AirCraft).GetAI().follow(target.transform);
                             Debug.Log("Follow...");
+
+                            if(disallowAggression) (AIData.entities[i] as AirCraft).GetAI().aggression = AirCraftAI.AIAggression.KeepMoving;
                         }
                     }
                 }

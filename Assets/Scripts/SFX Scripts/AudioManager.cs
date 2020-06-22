@@ -15,6 +15,7 @@ public class AudioManager : MonoBehaviour
     void Start() 
     {
         instance = this;
+        musicOverrideID = null;
         ChangeMasterVolume(PlayerPrefs.GetFloat("MasterVolume", 0.5F));
         ChangeMusicVolume(PlayerPrefs.GetFloat("MusicVolume", 1));
         ChangeSoundEffectsVolume(PlayerPrefs.GetFloat("SFXVolume", 1));

@@ -34,7 +34,7 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             GUILayout.Label("Text:");
-            text = GUILayout.TextArea( text);
+            text = GUILayout.TextArea(text, GUILayout.ExpandHeight(false));
             GUILayout.Label("Text Color:");
             float r, g, b;
             GUILayout.BeginHorizontal();

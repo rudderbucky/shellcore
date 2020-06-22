@@ -86,6 +86,8 @@ public class Entity : MonoBehaviour, IDamageable {
             && DialogueSystem.interactionOverrides[ID].Count > 0) interactible = true;
 
         if(isPathing || DialogueSystem.isInCutscene) interactible = false;
+
+        if(this as ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone) interactible = false;
     }
 
     public bool GetInteractible()

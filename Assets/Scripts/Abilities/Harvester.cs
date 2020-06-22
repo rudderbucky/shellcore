@@ -55,8 +55,12 @@ public class Harvester : WeaponAbility, IHarvester {
 
     public void PowerHeal()
     {
-        owner.TakeShellDamage(-0.025F * owner.GetMaxHealth()[0], 0, null);
-        owner.TakeCoreDamage(-0.025F * owner.GetMaxHealth()[1]);
-        owner.TakeEnergy(-0.025F * owner.GetMaxHealth()[2]);
+        if(!owner.GetIsDead())
+        {
+            owner.TakeShellDamage(-0.025F * owner.GetMaxHealth()[0], 0, null);
+            owner.TakeCoreDamage(-0.025F * owner.GetMaxHealth()[1]);
+            owner.TakeEnergy(-0.025F * owner.GetMaxHealth()[2]);
+        }
+        
     }
 }

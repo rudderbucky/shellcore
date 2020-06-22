@@ -45,7 +45,7 @@ namespace NodeEditorFramework.Standard
                 }
             }
             GUILayout.Label("Reward text:");
-            rewardText = GUILayout.TextArea(rewardText, GUILayout.Width(200f));
+            rewardText = GUILayout.TextArea(rewardText, GUILayout.ExpandHeight(false), GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
             GUILayout.Label("Text Color:");
             float r, g, b;

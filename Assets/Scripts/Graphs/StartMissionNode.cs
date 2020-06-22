@@ -24,6 +24,8 @@ namespace NodeEditorFramework.Standard
         public List<string> prerequisites = new List<string>();
         public string prerequisitesUnsatisifedText;
         public Color textColor;
+        public bool overrideCheckpoint;
+        public string overrideCheckpointName;
         float height = 400f;
         public override void NodeGUI()
         {
@@ -83,6 +85,12 @@ namespace NodeEditorFramework.Standard
             b = RTEditorGUI.FloatField(textColor.b);
             GUILayout.EndHorizontal();
             textColor = new Color(r, g, b);
+
+            if(overrideCheckpoint = GUILayout.Toggle(overrideCheckpoint, "Override Checkpoint", GUILayout.MinWidth(100f)))
+            {
+                GUILayout.Label("Checkpoint name: ");
+                overrideCheckpointName = GUILayout.TextField(overrideCheckpointName);
+            }
         }
 
         public override int Traverse()

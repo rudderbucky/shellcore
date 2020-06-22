@@ -29,6 +29,7 @@ public class TipsFromTheYard : MonoBehaviour {
 		tipsList.Add("If you double click the Status Menu map it switches from a draggable map to a minimap-style scroll (and vice versa)!");
 		tipsList.Add("You can shift-click part buttons to instantly buy/sell them!");
 		tipsList.Add("You can press tab to cycle through your selected targets!");
+		tipsList.Add("When not receiving background dialogue you can press 'enter' to view all the background dialogue you received before!");
 		colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
 	}
 	
