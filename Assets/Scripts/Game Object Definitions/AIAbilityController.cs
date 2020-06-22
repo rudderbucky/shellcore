@@ -43,25 +43,55 @@ public class AIAbilityController
         }
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.8f)
         {
-            var shellBoosts = GetAbilities(2);
+            var shellBoosts = GetAbilities(2, 17, 26); // shell heal, shell regen, area restore
             foreach (var booster in shellBoosts)
             {
+                if (craft.GetHealth()[0] > craft.GetMaxHealth()[0] * 0.9f)
+                    break;
                 booster.Tick("activate");
             }
-
-            if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
+        }
+        if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
+        {
+            var stealths = GetAbilities(24); // stealth, stasis field, pin down
+            foreach (var stealth in stealths)
             {
-                var stealths = GetAbilities(24);
-                foreach (var stealth in stealths)
+                stealth.Tick("activate");
+                if (stealth.GetActiveTimeRemaining() > 0)
+                    break;
+            }
+        }
+        if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.1f)
+        {
+            var retreats = GetAbilities(); // retreat
+            foreach (var retreat in retreats)
+            {
+                bool CD = retreat.GetCDRemaining() > 0f;
+                if (!CD)
                 {
-                    stealth.Tick("activate");
-                    if (stealth.GetActiveTimeRemaining() > 0)
+                    retreat.Tick("activate");
+                    if (retreat.GetCDRemaining() > 0f)
                         break;
                 }
             }
         }
+        var target = craft.GetTargetingSystem().GetTarget();
+        Entity targetEntity = target.GetComponent<Entity>();
+        if (targetEntity != null && targetEntity && !targetEntity.GetIsDead())
+        {
+            var damageBoosts = GetAbilities(25); // damage boost
+            foreach (var damageBoost in damageBoosts)
+            {
+                damageBoost.Tick("activate");
+            }
+        }
+         
     }
 
+    Ability[] GetAbilities(params int[] IDs)
+    {
+        return craft.GetAbilities().Where((x) => { return (x != null) && IDs.Contains(x.GetID()); }).ToArray();
+    }
     Ability[] GetAbilities(int ID)
     {
         return craft.GetAbilities().Where((x) => { return (x != null) && x.GetID() == ID; }).ToArray();

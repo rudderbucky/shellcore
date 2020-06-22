@@ -98,8 +98,12 @@ public class AbilityUtilities : MonoBehaviour {
 			case 21:
 				return "Passively increases the maximum allowed number of controlled units by " + Command.commandUnitIncrease + ".";
             case 24:
-                return "Become invisible to enemies";
-			default:
+                return "Become invisible to enemies.";
+            case 25:
+                return "All weapon damage increased by 150,";
+            case 26:
+                return "Instantly heals self and nearby allies by +500 shell and +500 core.";
+            default:
 				return "Description unset";
 		}
 	}
@@ -191,6 +195,10 @@ public class AbilityUtilities : MonoBehaviour {
 				return "Core Max";
             case 24:
                 return "Stealth";
+            case 25:
+                return "Damage Boost";
+            case 26:
+                return "Area Restore";
             default:
                 return "Name unset";
         }
@@ -294,7 +302,13 @@ public class AbilityUtilities : MonoBehaviour {
             case 24:
                 ability = obj.AddComponent<Stealth>();
                 break;
-		}
+            case 25:
+                ability = obj.AddComponent<DamageBoost>();
+                break;
+            case 26:
+                ability = obj.AddComponent<AreaRestore>();
+                break;
+        }
 		if(ability) ability.SetTier(tier);
 		return ability;
 	}
