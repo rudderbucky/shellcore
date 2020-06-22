@@ -30,12 +30,9 @@ public class FollowAI : AIModule
             if(timer >= 0.3F)
             {
                 timer = 0;
-                direction = (target.position - craft.transform.position).magnitude > 3 ? target.position - craft.transform.position
-                    + new Vector3(Random.Range(-1F, 1F), Random.Range(-1F, 1F)) : Vector3.zero;
+                ai.movement.SetMoveTarget(target.position + new Vector3(Random.Range(-1F, 1F), Random.Range(-1F, 1F)));
             }
             else timer += Time.deltaTime;
-
-            craft.MoveCraft(direction.normalized);
         }
     }
 

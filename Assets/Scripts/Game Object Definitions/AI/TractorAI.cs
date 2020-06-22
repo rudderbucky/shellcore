@@ -22,7 +22,7 @@ public class TractorAI : AIModule
 
     public void GoTo(Vector2 pos)
     {
-        targetPosition = pos;
+        ai.movement.SetMoveTarget(pos, 25f);
         followingPlayer = false;
     }
 
@@ -50,16 +50,7 @@ public class TractorAI : AIModule
             }
             if (target != null)
             {
-                Vector2 direction = (target.position - craft.transform.position).magnitude > 5 ? target.position - craft.transform.position : Vector3.zero;
-                craft.MoveCraft(direction.normalized);
-            }
-        }
-        else
-        {
-            Vector2 direction = targetPosition - (Vector2)craft.transform.position;
-            if (direction.magnitude > 1f)
-            {
-                craft.MoveCraft(direction.normalized);
+                ai.movement.SetMoveTarget(target.transform.position, 25f);
             }
         }
         if (beamUpdateTimer > 0f)

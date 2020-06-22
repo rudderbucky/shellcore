@@ -45,6 +45,9 @@ public class AirCraftAI : MonoBehaviour
     bool retreatTargetFound = false;
     Vector2 retreatTarget;
 
+    public AIMovement movement;
+    public AIAbilityController abilityControl;
+
     //public static List<Entity> entities = new List<Entity>();
 
     public void setMode(AIMode mode)
@@ -106,7 +109,6 @@ public class AirCraftAI : MonoBehaviour
             var mod = module as BattleAI;
             mod.OrderModeChange(state);
         }
-        
     }
 
     public AIMode getMode()
@@ -178,6 +180,9 @@ public class AirCraftAI : MonoBehaviour
     {
         this.owner = owner;
         this.craft = craft;
+        movement = new AIMovement(this);
+        movement.SetMoveTarget(craft.transform.position);
+        abilityControl = new AIAbilityController(this);
     }
 
     public void RotateTo(Vector2 targetVector, UnityAction OnRotateEnd = null)
@@ -249,22 +254,12 @@ public class AirCraftAI : MonoBehaviour
                             if(timer >= 0.3F)
                             {
                                 timer = 0;
-                                delta = (aggroPos - craft.transform.position).magnitude > 3 ? aggroPos - craft.transform.position
-                                    + new Vector3(Random.Range(-1F, 1F), Random.Range(-1F, 1F)) : Vector3.zero;
+                                movement.SetMoveTarget(aggroPos + new Vector3(Random.Range(-1F, 1F), Random.Range(-1F, 1F)), 9);
                             }
                             else timer += Time.deltaTime;
-                            float dist = delta.sqrMagnitude;
-                            if (dist < 1000f)
-                            {
-                                if (dist > 16f)
-                                {
-                                    craft.MoveCraft(delta.normalized);
-                                }
-                            }
-                            else
-                            {
+                            float dist = movement.DistanceToTarget;
+                            if (dist > 1000f)
                                 aggroTarget = null;
-                            }
 
                             // Stealth if module is not BattleAI to not interfere with it
                             if (!(module is BattleAI) && craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
@@ -331,7 +326,7 @@ public class AirCraftAI : MonoBehaviour
                         {
                             retreatTarget = (craft.transform.position - enemy.transform.position).normalized * 20f;
 
-                            // keep commander inside sector
+                            // stay inside sector
                             IntRect bounds = SectorManager.instance.current.bounds;
                             if (retreatTarget.x > bounds.x + bounds.w)
                                 retreatTarget = new Vector2(bounds.x + bounds.w, retreatTarget.y);
@@ -343,7 +338,6 @@ public class AirCraftAI : MonoBehaviour
                                 retreatTarget = new Vector2(retreatTarget.x, bounds.y);
 
                             retreatTargetFound = true;
-                            //Debug.Log("retreat target found!");
                         }
                         else
                             retreatTargetFound = false;
@@ -351,26 +345,15 @@ public class AirCraftAI : MonoBehaviour
                     }
                     else if (retreatTargetFound)
                     {
-                        Vector2 delta = retreatTarget - (Vector2)craft.transform.position;
-                        if (delta.sqrMagnitude > 4f)
-                        {
-                            craft.MoveCraft(delta.normalized);
-                        }
-                        else
-                        {
-                            retreatSearchTimer = Time.time;
-                        }
+                        movement.SetMoveTarget(retreatTarget);
+                        if (movement.targetIsInRange())
+                            retreatSearchTimer = 0f;
                     }
                     else
                     {
-                        Vector2 delta = craft.spawnPoint - craft.transform.position;
-                        if (delta.sqrMagnitude > 4f)
-                        {
-                            craft.MoveCraft(delta.normalized);
-                        }
+                        movement.SetMoveTarget(craft.spawnPoint);
                     }
-
-                    // check if retreat necessary anymore
+                    // check if retreating is still necessary
                     if (craft.GetHealth()[0] > 0.1f * craft.GetMaxHealth()[0])
                     {
                         state = AIState.Active;
@@ -391,6 +374,8 @@ public class AirCraftAI : MonoBehaviour
             //{
             //    state = AIState.Inactive;
             //}
+            movement.Update();
+            abilityControl.Update();
         }
     }
 

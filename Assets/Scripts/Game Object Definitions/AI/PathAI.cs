@@ -12,7 +12,6 @@ public class PathAI : AIModule
     }
 
     private Path path;
-    public Vector2 currentTargetPos;
     public UnityAction OnPathEnd;
     int waypointID = 0;
 
@@ -31,7 +30,7 @@ public class PathAI : AIModule
 
     public void MoveToPosition(Vector2 pos)
     {
-        currentTargetPos = pos;
+        ai.movement.SetMoveTarget(pos, 4f);
         waypointID = 0;
     }
 
@@ -47,9 +46,7 @@ public class PathAI : AIModule
     {
         if (waypointID != -1)
         {
-            Vector2 direction = currentTargetPos - (Vector2)craft.transform.position;
-            craft.MoveCraft(direction.normalized);
-            if (direction.magnitude < 0.5f)
+            if (ai.movement.targetIsInRange())
             {
                 GetNextWaypoint();
             }
@@ -168,7 +165,7 @@ public class PathAI : AIModule
                     {
                         if (path.waypoints[j].ID == waypointID)
                         {
-                            currentTargetPos = path.waypoints[j].position;
+                            ai.movement.SetMoveTarget(path.waypoints[i].position, 4f);
                             break;
                         }
                     }
@@ -192,7 +189,7 @@ public class PathAI : AIModule
         {
             if (path.waypoints[i].ID == 0)
             {
-                currentTargetPos = path.waypoints[i].position;
+                ai.movement.SetMoveTarget(path.waypoints[i].position, 4f);
                 waypointID = 0;
                 return;
             }
