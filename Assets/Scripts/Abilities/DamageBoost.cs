@@ -7,9 +7,9 @@ using UnityEngine;
 /// </summary>
 public class DamageBoost: ActiveAbility
 {
-    Craft craft;
     float activationDelay = 2f; // the delay between clicking the ability and its activation
     float activationTime = 0f;
+    bool trueActive = false;
 
     protected override void Awake()
     {
@@ -23,28 +23,26 @@ public class DamageBoost: ActiveAbility
         energyCost = 200;
     }
 
-    private void Start()
-    {
-        craft = Core as Craft;
-    }
     /// <summary>
     /// Returns the engine power to the original value
     /// </summary>
     protected override void Deactivate()
     {
-        craft.damageAddition -= 150;
+        Core.damageAddition -= 150;
         ToggleIndicator(true);
+        trueActive = false;
     }
 
     public override void Tick(string key)
     {
         base.Tick(key);
-        if (isOnCD && !isActive && activationTime > Time.time)
+        if (isOnCD && Time.time > activationTime && !trueActive && GetActiveTimeRemaining() > 0)
         {
-            isActive = true; // set to active
-            if (craft)
-                craft.damageAddition += 150;
+            if (Core)
+                Core.damageAddition += 150;
             AudioManager.PlayClipByID("clip_activateability", transform.position);
+            trueActive = true;
+            ToggleIndicator(true);
         }
     }
 
@@ -55,6 +53,7 @@ public class DamageBoost: ActiveAbility
     {
         activationTime = Time.time + activationDelay;
         isOnCD = true; // set to on cooldown
-        ToggleIndicator(true);
+        isActive = true; // set to "active"
+        ToggleIndicator(false);
     }
 }

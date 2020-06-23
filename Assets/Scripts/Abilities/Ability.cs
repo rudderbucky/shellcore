@@ -225,7 +225,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
 
     IEnumerator Blinker(Transform indicator, GameObject glowPrefab)
     {
-        while(blinking)
+        while(blinking && glowPrefab)
         {
             if(glowPrefab) glowPrefab.SetActive(!glowPrefab.activeSelf);
             var newColor = glowPrefab.GetComponent<SpriteRenderer>().color;

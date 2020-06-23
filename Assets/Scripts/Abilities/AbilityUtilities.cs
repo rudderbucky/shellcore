@@ -40,7 +40,10 @@ public class AbilityUtilities : MonoBehaviour {
 			case 11:
 			case 12:
             case 24:
-				return AbilityHandler.AbilityTypes.Skills;
+            case 25:
+            case 26:
+            case 27:
+                return AbilityHandler.AbilityTypes.Skills;
 			case 13:
 			case 17:
 			case 18:
@@ -103,6 +106,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "All weapon damage increased by 150,";
             case 26:
                 return "Instantly heals self and nearby allies by +500 shell and +500 core.";
+            case 27:
+                return "Immobilizes the target";
             default:
 				return "Description unset";
 		}
@@ -199,6 +204,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Damage Boost";
             case 26:
                 return "Area Restore";
+            case 27:
+                return "Pin Down";
             default:
                 return "Name unset";
         }
@@ -307,6 +314,9 @@ public class AbilityUtilities : MonoBehaviour {
                 break;
             case 26:
                 ability = obj.AddComponent<AreaRestore>();
+                break;
+            case 27:
+                ability = obj.AddComponent<PinDown>();
                 break;
         }
 		if(ability) ability.SetTier(tier);

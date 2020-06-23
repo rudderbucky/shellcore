@@ -8,7 +8,7 @@ using UnityEngine;
 public abstract class Craft : Entity
 {
     public float enginePower; // craft's engine power, determines how fast it goes.
-    protected bool isImmobile; // whether the craft is immobile or not
+    public bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
     protected Vector2 physicsDirection = Vector2.zero;
 
