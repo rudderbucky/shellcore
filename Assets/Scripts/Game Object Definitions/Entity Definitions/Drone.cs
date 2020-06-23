@@ -80,8 +80,8 @@ public class Drone : AirCraft, IOwnable {
     {
         isDraggable = true;
         base.Start();
-        ai = gameObject.AddComponent<AirCraftAI>();
-        ai.Init(this, owner);
+        ai = GetAI();
+        ai.owner = owner;
         //ai.aggression = AirCraftAI.AIAggression.KeepMoving;
         ai.allowRetreat = false;
         //ai.setPath(path);

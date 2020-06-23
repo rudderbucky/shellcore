@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Tasks/StartTask")]
+    [Node(false, "Tasks/StartTask", typeof(QuestCanvas))]
     public class StartTaskNode : Node
     {
         /*
@@ -206,7 +206,6 @@ namespace NodeEditorFramework.Standard
             Debug.Log("Force Task: " + forceTask + " Entity ID: " + entityIDforConfirmedResponse);
             if(!forceTask)
             {
-                // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
                 var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
                 if(mission != null)
                 {

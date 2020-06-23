@@ -68,13 +68,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         // initialize instance fields
         base.Start(); // base start
 
-        if(!(this as PlayerCore) && !ai)
+        ai = GetAI();
+        if (ai && ai.getMode() == AirCraftAI.AIMode.Inactive)
         {
-            ai = gameObject.AddComponent<AirCraftAI>();
-        }
-        if(ai && ai.getMode() == AirCraftAI.AIMode.Inactive)
-        {
-            ai.Init(this);
             if(sectorMngr.current.type == Sector.SectorType.BattleZone)
             {
                 ai.setMode(AirCraftAI.AIMode.Battle);

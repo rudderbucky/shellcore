@@ -208,7 +208,6 @@ public class AirCraftAI : MonoBehaviour
             OnEnd.Invoke();
     }
 
-    Vector3 delta = Vector3.zero;
     float timer = 0.3F;
     private void Update()
     {

@@ -25,17 +25,28 @@ public class AIAbilityController
         {
             if (ai.movement.DistanceToTarget > 256f)
             {
-                var speeds = GetAbilities(1);
-                int half = Mathf.CeilToInt(speeds.Count() / 2f);
-                int count = 0;
-                foreach (var booster in speeds)
+                bool allowSpeed = true;
+                if (craft.faction == 0 && PlayerCore.Instance != null && !PlayerCore.Instance.GetIsDead())
                 {
-                    booster.Tick("activate");
-                    if (booster.GetActiveTimeRemaining() > 0)
+                    // Don't run away or get behind when escorting a player
+                    float ownD = (ai.movement.GetTarget() - (Vector2)craft.transform.position).sqrMagnitude;
+                    float playerD = (ai.movement.GetTarget() - (Vector2)PlayerCore.Instance.transform.position).sqrMagnitude;
+                    allowSpeed = playerD < ownD;
+                }
+                if (allowSpeed)
+                {
+                    var speeds = GetAbilities(1);
+                    int half = Mathf.CeilToInt(speeds.Count() / 2f);
+                    int count = 0;
+                    foreach (var booster in speeds)
                     {
-                        if (++count >= half)
+                        booster.Tick("activate");
+                        if (booster.GetActiveTimeRemaining() > 0)
                         {
-                            break;
+                            if (++count >= half)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -76,16 +87,18 @@ public class AIAbilityController
             }
         }
         var target = craft.GetTargetingSystem().GetTarget();
-        Entity targetEntity = target.GetComponent<Entity>();
-        if (targetEntity != null && targetEntity && !targetEntity.GetIsDead())
+        if (target != null && target)
         {
-            var damageBoosts = GetAbilities(25); // damage boost
-            foreach (var damageBoost in damageBoosts)
+            Entity targetEntity = target.GetComponent<Entity>();
+            if (targetEntity != null && targetEntity && !targetEntity.GetIsDead())
             {
-                damageBoost.Tick("activate");
+                var damageBoosts = GetAbilities(25); // damage boost
+                foreach (var damageBoost in damageBoosts)
+                {
+                    damageBoost.Tick("activate");
+                }
             }
         }
-         
     }
 
     Ability[] GetAbilities(params int[] IDs)

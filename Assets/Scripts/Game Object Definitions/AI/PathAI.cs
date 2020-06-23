@@ -14,6 +14,7 @@ public class PathAI : AIModule
     private Path path;
     public UnityAction OnPathEnd;
     int waypointID = 0;
+    int waypointIndex = 0;
 
     public PathAI(Path path = null)
     {
@@ -46,6 +47,7 @@ public class PathAI : AIModule
     {
         if (waypointID != -1)
         {
+            ai.movement.SetMoveTarget(path.waypoints[waypointIndex].position, 4f);
             if (ai.movement.targetIsInRange())
             {
                 GetNextWaypoint();
@@ -165,7 +167,8 @@ public class PathAI : AIModule
                     {
                         if (path.waypoints[j].ID == waypointID)
                         {
-                            ai.movement.SetMoveTarget(path.waypoints[i].position, 4f);
+                            waypointIndex = j;
+                            ai.movement.SetMoveTarget(path.waypoints[j].position, 4f);
                             break;
                         }
                     }
@@ -191,6 +194,7 @@ public class PathAI : AIModule
             {
                 ai.movement.SetMoveTarget(path.waypoints[i].position, 4f);
                 waypointID = 0;
+                waypointIndex = i;
                 return;
             }
         }
