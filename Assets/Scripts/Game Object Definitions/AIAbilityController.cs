@@ -17,6 +17,8 @@ public class AIAbilityController
 
     public void Update()
     {
+        // TODO: timers & member boolean variables to reduce checks each frame
+
         if (!useAbilities)
             return;
 
@@ -96,6 +98,18 @@ public class AIAbilityController
                 foreach (var damageBoost in damageBoosts)
                 {
                     damageBoost.Tick("activate");
+                }
+            }
+        }
+        if (craft is IOwner)
+        {
+            IOwner owner = craft as IOwner;
+            if (owner.GetUnitsCommanding().Count < owner.GetTotalCommandLimit())
+            {
+                var droneSpawns = GetAbilities(10); // drone spawn
+                foreach (var droneSpawn in droneSpawns)
+                {
+                    droneSpawn.Tick("activate");
                 }
             }
         }

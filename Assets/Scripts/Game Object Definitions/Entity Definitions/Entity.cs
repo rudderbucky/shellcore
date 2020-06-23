@@ -357,6 +357,7 @@ public class Entity : MonoBehaviour, IDamageable {
                     break;
             }
         }
+        invisible = false;
 
         // check to see if the entity is interactible
         if(dialogue && faction == 0) interactible = true;

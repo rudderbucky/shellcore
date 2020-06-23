@@ -43,6 +43,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 25:
             case 26:
             case 27:
+            case 28:
                 return AbilityHandler.AbilityTypes.Skills;
 			case 13:
 			case 17:
@@ -108,6 +109,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Instantly heals self and nearby allies by +500 shell and +500 core.";
             case 27:
                 return "Immobilizes the target";
+            case 28:
+                return "Respawn immediately";
             default:
 				return "Description unset";
 		}
@@ -206,6 +209,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Area Restore";
             case 27:
                 return "Pin Down";
+            case 28:
+                return "Retreat";
             default:
                 return "Name unset";
         }
@@ -317,6 +322,9 @@ public class AbilityUtilities : MonoBehaviour {
                 break;
             case 27:
                 ability = obj.AddComponent<PinDown>();
+                break;
+            case 28:
+                ability = obj.AddComponent<Retreat>();
                 break;
         }
 		if(ability) ability.SetTier(tier);

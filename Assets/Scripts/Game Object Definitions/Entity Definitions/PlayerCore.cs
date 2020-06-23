@@ -31,7 +31,7 @@ public class PlayerCore : ShellCore {
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
     /// </summary>
-    protected override void Respawn() {
+    public override void Respawn() {
         List<bool> weaponActivationStates = new List<bool>();
         for (int i = 0; i < abilities.Count; i++)
         {

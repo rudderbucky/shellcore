@@ -48,7 +48,7 @@ public abstract class Craft : Entity
     /// <summary>
     /// Called to respawn this craft to its spawn point
     /// </summary>
-    protected virtual void Respawn() {
+    public virtual void Respawn() {
         // no longer dead, busy or immobile
         isDead = false; 
         isBusy = false;

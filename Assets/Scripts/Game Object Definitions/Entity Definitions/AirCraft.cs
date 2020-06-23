@@ -30,7 +30,7 @@ public abstract class AirCraft : Craft
     /// <summary>
     /// Respawns the given aircraft at its spawn point
     /// </summary>
-    protected override void Respawn()
+    public override void Respawn()
     {
         base.Respawn(); // base respawn
     }
