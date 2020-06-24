@@ -79,7 +79,7 @@ public class TractorBeam : MonoBehaviour
     protected void TractorBeamUpdate()
     {
 		this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
-        if (energyEnabled && (!target) && (this.energyPickupTimer < 0)) // Grab energy automatically after a while when the craft is not pulling something more important
+        if (energyEnabled && (!target) && (this.energyPickupTimer < 0) && !owner.invisible) // Grab energy automatically after a while when the craft is not pulling something more important
         {
             EnergySphereScript[] energies = AIData.energySpheres.ToArray();
 
