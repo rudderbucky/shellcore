@@ -106,7 +106,22 @@ namespace NodeEditorFramework.Standard
                 var taskNode = (outputUp.connection(0).body as StartTaskNode);
                 if (taskNode && taskNode.entityIDforConfirmedResponse != null && taskNode.entityIDforConfirmedResponse != "")
                 {
-                    TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse].Pop();
+                    if (TaskManager.interactionOverrides.ContainsKey(taskNode.entityIDforConfirmedResponse))
+                    {
+                        TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse].Pop();
+                    }
+                    else
+                    {
+                        Debug.LogWarning(taskNode.entityIDforConfirmedResponse + " missing from interaction override dictionary!");
+                    }
+                }
+
+                var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
+                if (mission != null)
+                {
+                    var task = mission.tasks.Find((x) => x.taskID == taskNode.taskID);
+                    if (task != null)
+                        mission.tasks.Remove(task);
                 }
             }
 
@@ -132,6 +147,7 @@ namespace NodeEditorFramework.Standard
                         Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                     });
                 TaskManager.interactionOverrides.Add(rewardGiverID, stack);
+                Debug.Log("ADDED " + rewardGiverID);
             }
             TryAddObjective();
 

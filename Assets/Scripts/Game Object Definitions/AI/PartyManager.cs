@@ -147,7 +147,6 @@ public class PartyManager : MonoBehaviour
         for(int i = 0; i < texts.Count; i++)
         {
             float angle = Mathf.Deg2Rad * i * 360f/texts.Count;
-            Debug.Log(angle);
             texts[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(250 * Mathf.Sin(angle), 250 * Mathf.Cos(angle));
         }
     }

@@ -208,7 +208,15 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
                 else
                 {
                     traverser.activateCheckpoint(mission.checkpoint);
-                }  
+                }
+                foreach (var task in mission.tasks)
+                {
+                    StartTaskNode start = traverser.nodeCanvas.nodes.Find((node) => { return node is StartTaskNode && (node as StartTaskNode).taskID == task.taskID; }) as StartTaskNode;
+                    if (start != null)
+                    {
+                        traverser.ActivateTask(start.taskID);
+                    }
+                }
             }   
         }
 
