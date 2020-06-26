@@ -117,12 +117,6 @@ namespace NodeEditorFramework.Standard
                 }
 
                 var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
-                if (mission != null)
-                {
-                    var task = mission.tasks.Find((x) => x.taskID == taskNode.taskID);
-                    if (task != null)
-                        mission.tasks.Remove(task);
-                }
             }
 
             SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
