@@ -110,7 +110,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 27:
                 return "Immobilizes the target";
             case 28:
-                return "Respawn immediately";
+                return "Respawn at base";
             default:
 				return "Description unset";
 		}
