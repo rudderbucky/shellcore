@@ -150,6 +150,11 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         return 0; // active time (unless overriden this is 0)
     }
 
+    public void ResetCD()
+    {
+        CDRemaining = cooldownDuration;
+    }
+
     /// <summary>
     /// Get the cooldown remaining on the ability
     /// </summary>

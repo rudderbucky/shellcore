@@ -48,6 +48,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 30:
             case 31:
             case 32:
+            case 33:
                 return AbilityHandler.AbilityTypes.Skills;
 			case 13:
 			case 17:
@@ -117,6 +118,14 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Respawn at base";
             case 29:
                 return "Absorb damage and turn it into energy";
+            case 30:
+                return "Temporarily increase shell regen";
+            case 31:
+                return "Temporarily increase core... wait, this isn't supposed to exist!";
+            case 32:
+                return "Temporarily increase energy regen";
+            case 33:
+                return "Disrupt enemy ability cooldowns";
             default:
 				return "Description unset";
 		}
@@ -225,6 +234,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Core Regen";
             case 32:
                 return "Energy Regen";
+            case 33:
+                return "Disrupt";
             default:
                 return "Name unset";
         }
@@ -357,6 +368,9 @@ public class AbilityUtilities : MonoBehaviour {
                 ability = obj.AddComponent<ActiveRegen>();
                 (ability as ActiveRegen).index = 2;
                 (ability as ActiveRegen).Initialize();
+                break;
+            case 33:
+                ability = obj.AddComponent<Disrupt>();
                 break;
         }
 		if(ability) ability.SetTier(tier);
