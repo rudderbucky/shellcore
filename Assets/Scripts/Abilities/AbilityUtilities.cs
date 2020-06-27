@@ -45,6 +45,9 @@ public class AbilityUtilities : MonoBehaviour {
             case 27:
             case 28:
             case 29:
+            case 30:
+            case 31:
+            case 32:
                 return AbilityHandler.AbilityTypes.Skills;
 			case 13:
 			case 17:
@@ -216,6 +219,12 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Retreat";
             case 29:
                 return "Absorption";
+            case 30:
+                return "Shell Regen";
+            case 31:
+                return "Core Regen";
+            case 32:
+                return "Energy Regen";
             default:
                 return "Name unset";
         }
@@ -333,6 +342,21 @@ public class AbilityUtilities : MonoBehaviour {
                 break;
             case 29:
                 ability = obj.AddComponent<AbsorptionField>();
+                break;
+            case 30:
+                ability = obj.AddComponent<ActiveRegen>();
+                (ability as ActiveRegen).index = 0;
+                (ability as ActiveRegen).Initialize();
+                break;
+            case 31:
+                ability = obj.AddComponent<ActiveRegen>();
+                (ability as ActiveRegen).index = 1;
+                (ability as ActiveRegen).Initialize();
+                break;
+            case 32:
+                ability = obj.AddComponent<ActiveRegen>();
+                (ability as ActiveRegen).index = 2;
+                (ability as ActiveRegen).Initialize();
                 break;
         }
 		if(ability) ability.SetTier(tier);
