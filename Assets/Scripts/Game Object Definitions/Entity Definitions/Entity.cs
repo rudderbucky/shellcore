@@ -41,6 +41,7 @@ public class Entity : MonoBehaviour, IDamageable {
     public string ID; // used in tasks
     public bool invisible; // if true, entity can't be targeted by weapons
     public float damageAddition = 0f;
+    public bool isAbsorbing = false; // if true, all incoming damage is converted to energy
 
     public SectorManager sectorMngr;
     protected Entity lastDamagedBy;
@@ -666,6 +667,12 @@ public class Entity : MonoBehaviour, IDamageable {
     /// </summary>
     public float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) {
 
+        if (isAbsorbing && amount > 0f)
+        {
+            TakeEnergy(-amount);
+            return 0f;
+        }
+
         // counter drone fighting another drone, multiply damage accordingly
         if(this as Drone && lastDamagedBy as Drone && (lastDamagedBy as Drone).type == DroneType.Counter)
             amount *= 1.75F;
@@ -686,6 +693,13 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Take core damage.
     /// </summary>
     public void TakeCoreDamage(float amount) {
+
+        if (isAbsorbing && amount > 0f)
+        {
+            TakeEnergy(-amount);
+            return;
+        }
+
         currentHealth[1] -= amount;
         if (currentHealth[1] < 0) currentHealth[1] = 0;
         currentHealth[1] = currentHealth[1] > maxHealth[1] ? maxHealth[1] : currentHealth[1];

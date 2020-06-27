@@ -44,6 +44,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 26:
             case 27:
             case 28:
+            case 29:
                 return AbilityHandler.AbilityTypes.Skills;
 			case 13:
 			case 17:
@@ -111,6 +112,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Immobilizes the target";
             case 28:
                 return "Respawn at base";
+            case 29:
+                return "Absorb damage and turn it into energy";
             default:
 				return "Description unset";
 		}
@@ -211,6 +214,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Pin Down";
             case 28:
                 return "Retreat";
+            case 29:
+                return "Absorption";
             default:
                 return "Name unset";
         }
@@ -325,6 +330,9 @@ public class AbilityUtilities : MonoBehaviour {
                 break;
             case 28:
                 ability = obj.AddComponent<Retreat>();
+                break;
+            case 29:
+                ability = obj.AddComponent<AbsorptionField>();
                 break;
         }
 		if(ability) ability.SetTier(tier);
