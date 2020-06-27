@@ -33,6 +33,7 @@ public class AbsorptionField : ActiveAbility
         ToggleIndicator(true);
         Destroy(field);
         craft.isAbsorbing = false;
+        craft.isImmobile = false;
     }
 
     /// <summary>
@@ -43,6 +44,7 @@ public class AbsorptionField : ActiveAbility
         if(craft)
         {
             craft.isAbsorbing = true;
+            craft.isImmobile = true;
             field = new GameObject("Field");
             field.transform.SetParent(craft.transform);
             field.transform.localScale = Vector3.one;

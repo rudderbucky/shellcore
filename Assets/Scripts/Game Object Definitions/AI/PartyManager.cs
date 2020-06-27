@@ -20,10 +20,13 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>");
         foreach(var core in partyMembers)
         {
-            if(core.ID == "sukrat")
-                DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>DESTRUCTION!</color>");
-            core.GetAI().setMode(AirCraftAI.AIMode.Battle);
-            core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Attack);
+            if (core)
+            {
+                if(core.ID == "sukrat")
+                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>DESTRUCTION!</color>");
+                core.GetAI().setMode(AirCraftAI.AIMode.Battle);
+                core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Attack);
+            }
         }
     }
 
@@ -33,10 +36,14 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>");
         foreach(var core in partyMembers)
         {
-            if(core.ID == "sukrat")
-                DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Falling back!</color>");
-            core.GetAI().setMode(AirCraftAI.AIMode.Battle);
-            core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Defend);
+            if (core)
+            {
+                if (core.ID == "sukrat")
+                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Falling back!</color>");
+
+                core.GetAI().setMode(AirCraftAI.AIMode.Battle);
+                core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Defend);
+            }
         }
     }
 
@@ -46,10 +53,13 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>");
         foreach(var core in partyMembers)
         {
-            if(core.ID == "sukrat")
-                DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>I'm on it.</color>");
-            core.GetAI().setMode(AirCraftAI.AIMode.Battle);
-            core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Collect);
+            if (core)
+            {
+                if(core.ID == "sukrat")
+                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>I'm on it.</color>");
+                core.GetAI().setMode(AirCraftAI.AIMode.Battle);
+                core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Collect);
+            }
         }
     }
 
@@ -59,10 +69,13 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>");
         foreach(var core in partyMembers)
         {
-            if(core.ID == "sukrat")
-                DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Building!</color>");
-            core.GetAI().setMode(AirCraftAI.AIMode.Battle);
-            core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Fortify);
+            if (core)
+            {
+                if(core.ID == "sukrat")
+                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Building!</color>");
+                core.GetAI().setMode(AirCraftAI.AIMode.Battle);
+                core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Fortify);
+            }
         }
     }
 
@@ -72,9 +85,13 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>");
         foreach(var core in partyMembers)
         {
-            if(core.ID == "sukrat")
-                DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Following!</color>");
-            core.GetAI().follow(PlayerCore.Instance.transform);
+            if (core)
+            {
+                if (core.ID == "sukrat")
+                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Following!</color>");
+
+                core.GetAI().follow(PlayerCore.Instance.transform);
+            }
         }
     }
 
