@@ -124,8 +124,9 @@ public class AirCraftAI : MonoBehaviour
         }
         else
         {
-            setMode(AIMode.Path);
-            (module as PathAI).MoveToPosition(pos);
+            movement.SetMoveTarget(pos, 4f);
+            setMode(AIMode.Inactive);
+            //(module as PathAI).MoveToPosition(pos);
         }
 
     }

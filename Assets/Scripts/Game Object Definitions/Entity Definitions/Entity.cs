@@ -8,6 +8,9 @@ using UnityEngine.Rendering;
 /// </summary>
 public class Entity : MonoBehaviour, IDamageable {
 
+    public delegate void EntitySpawnDelegate(Entity entity);
+    public static EntitySpawnDelegate OnEntitySpawn;
+
     public ShellPart shell;
     protected static int maxAirLayer = 1; // the maximum sorting group layer of all entities
     protected static int maxGroundLayer = 1;
@@ -372,6 +375,8 @@ public class Entity : MonoBehaviour, IDamageable {
 
         maxHealth.CopyTo(currentHealth, 0);
         // Add abilities
+        if (OnEntitySpawn != null)
+            OnEntitySpawn.Invoke(this);
     }
    
      public bool GetIsDead() {

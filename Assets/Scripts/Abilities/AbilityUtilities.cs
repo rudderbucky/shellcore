@@ -56,7 +56,8 @@ public class AbilityUtilities : MonoBehaviour {
 			case 19:
 			case 20:
 			case 21:
-				return AbilityHandler.AbilityTypes.Passive;
+			case 34:
+                return AbilityHandler.AbilityTypes.Passive;
 			case 0:
 			default:
 				return AbilityHandler.AbilityTypes.None;
@@ -126,6 +127,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Temporarily increase energy regen";
             case 33:
                 return "Disrupt enemy ability cooldowns";
+            case 34:
+                return "Makes allies stronger";
             default:
 				return "Description unset";
 		}
@@ -148,7 +151,8 @@ public class AbilityUtilities : MonoBehaviour {
 			case 19:
 			case 20:
 			case 21:
-				return null;
+			case 34:
+                return null;
 			case 4:
 				return "beamshooter_sprite";
 			case 5:
@@ -236,6 +240,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Energy Regen";
             case 33:
                 return "Disrupt";
+            case 34:
+                return "Control";
             default:
                 return "Name unset";
         }
@@ -371,6 +377,9 @@ public class AbilityUtilities : MonoBehaviour {
                 break;
             case 33:
                 ability = obj.AddComponent<Disrupt>();
+                break;
+            case 34:
+                ability = obj.AddComponent<Control>();
                 break;
         }
 		if(ability) ability.SetTier(tier);

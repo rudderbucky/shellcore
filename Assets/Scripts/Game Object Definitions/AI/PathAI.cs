@@ -29,11 +29,11 @@ public class PathAI : AIModule
         StartPath();
     }
 
-    public void MoveToPosition(Vector2 pos)
-    {
-        ai.movement.SetMoveTarget(pos, 4f);
-        waypointID = 0;
-    }
+    //public void MoveToPosition(Vector2 pos)
+    //{
+    //    ai.movement.SetMoveTarget(pos, 4f);
+    //    waypointID = 0;
+    //}
 
     public override void Init()
     {
