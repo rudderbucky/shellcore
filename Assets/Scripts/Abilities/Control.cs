@@ -6,6 +6,7 @@ public class Control : PassiveAbility
 {
 
     const float healthAddition = 200;
+    const float damageAddition = 200;
 
     List<Entity> boosted = new List<Entity>();
 
@@ -23,6 +24,7 @@ public class Control : PassiveAbility
             maxHealths[0] -= healthAddition * abilityTier;
             var healths = entity.GetHealth();
             healths[0] -= healthAddition * abilityTier;
+            entity.damageAddition -= damageAddition;
         }
         Entity.OnEntitySpawn -= EntitySpawn;
         base.SetDestroyed(input);
@@ -39,6 +41,7 @@ public class Control : PassiveAbility
                 maxHealths[0] += healthAddition * abilityTier;
                 var healths = entity.GetHealth();
                 healths[0] += healthAddition * abilityTier;
+                entity.damageAddition += damageAddition;
                 boosted.Add(entity);
             }
         }
@@ -53,6 +56,7 @@ public class Control : PassiveAbility
             maxHealths[0] += healthAddition * abilityTier;
             var healths = entity.GetHealth();
             healths[0] += healthAddition * abilityTier;
+            entity.damageAddition += damageAddition;
             boosted.Add(entity);
         }
     }
@@ -70,6 +74,7 @@ public class Control : PassiveAbility
                 maxHealths[0] -= healthAddition * abilityTier;
                 var healths = entity.GetHealth();
                 healths[0] -= healthAddition * abilityTier;
+                entity.damageAddition -= damageAddition;
             }
 
             Entity.OnEntitySpawn -= EntitySpawn;
