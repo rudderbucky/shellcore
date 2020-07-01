@@ -30,6 +30,7 @@ public class Bullet : WeaponAbility {
         damage = bulletDamage;
         prefabScale = 1 * Vector3.one;
         category = Entity.EntityCategory.All;
+        bonusDamageType = typeof(AirConstruct);
     }
 
     protected override void Start() {
@@ -75,7 +76,7 @@ public class Bullet : WeaponAbility {
         // Update its damage to match main bullet
         var script = bullet.GetComponent<BulletScript>();
         script.owner = GetComponentInParent<Entity>();
-        script.SetDamage(damage * (this as MainBullet ? 1 : abilityTier) + Core.damageAddition);
+        script.SetDamage(GetDamage());
         script.SetCategory(category);
         script.SetTerrain(terrain);
         script.SetShooterFaction(Core.faction);

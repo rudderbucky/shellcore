@@ -27,6 +27,7 @@ public class Beam : WeaponAbility {
         ID = 4;
         range = 8;
         category = Entity.EntityCategory.All;
+        bonusDamageType = typeof(ShellCore);
     }
     protected override void Start() {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
@@ -90,7 +91,8 @@ public class Beam : WeaponAbility {
             if (targetingSystem.GetTarget()) // check and get the weapon target
             {
                 AudioManager.PlayClipByID("clip_beam", transform.position);
-                var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(damage + Core.damageAddition, 0, GetComponentInParent<Entity>()); 
+                GetDamage();
+                var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>()); 
                 // deal instant damage
 
                 if(nextTargetPart) {

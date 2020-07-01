@@ -24,6 +24,8 @@ public abstract class WeaponAbility : ActiveAbility {
     public Entity.TerrainType terrain = Entity.TerrainType.Unset;
     public Entity.EntityCategory category = Entity.EntityCategory.All;
     public WeaponDiversityType type = WeaponDiversityType.None;
+    protected System.Type bonusDamageType = null;
+    protected float bonusDamageMultiplier = 2f;
 
     public bool CheckCategoryCompatibility(IDamageable entity)
     {
@@ -48,7 +50,7 @@ public abstract class WeaponAbility : ActiveAbility {
     protected virtual void Start() {
         if(abilityTier != 0) 
         {
-            damage *= abilityTier;
+            damage *= (this is MainBullet) ? 1 : abilityTier;
             energyCost *= abilityTier;
         }
 
@@ -75,6 +77,22 @@ public abstract class WeaponAbility : ActiveAbility {
     public void SetActive(bool active)
     {
         isActive = active;
+    }
+
+    /// <summary>
+    /// Calculates the weapon damage based on the target
+    /// </summary>
+    /// <returns>damage</returns>
+    protected float GetDamage()
+    {
+        if (GetTarget() != null && bonusDamageType != null)
+        {
+            if (bonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
+            {
+                return (damage + Core.damageAddition) * bonusDamageMultiplier;
+            }
+        }
+        return damage + Core.damageAddition;
     }
 
     /// <summary>

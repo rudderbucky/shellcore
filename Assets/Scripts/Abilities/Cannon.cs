@@ -21,6 +21,7 @@ public class Cannon : WeaponAbility {
         range = 10;
         energyCost = 25;
         category = Entity.EntityCategory.All;
+        bonusDamageType = typeof(Drone);
     }
 
     /// <summary>
@@ -67,7 +68,8 @@ public class Cannon : WeaponAbility {
         if (effect) Destroy(effect);
         effect = Instantiate(effectPrefab, shooter, false);
         Destroy(effect, 0.2F);
-        var residue = target.TakeShellDamage(damage + Core.damageAddition, 0, GetComponentInParent<Entity>());
+        GetDamage();
+        var residue = target.TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
         target.TakeCoreDamage(residue);
     }
 }
