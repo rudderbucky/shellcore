@@ -261,24 +261,32 @@ public class AirCraftAI : MonoBehaviour
                             if (dist > 1000f)
                                 aggroTarget = null;
 
-                            // Stealth if module is not BattleAI to not interfere with it
-                            if (!(module is BattleAI) && craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
+                            if (module is FollowAI)
                             {
-                                var abilities = craft.GetAbilities();
-                                if(abilities != null)
+                                if (((module as FollowAI).followTarget.position - craft.transform.position).sqrMagnitude > 150f)
                                 {
-                                    var stealths = abilities.Where((x) => { return (x != null) && x.GetID() == 24; });
-                                    foreach (var stealth in stealths)
-                                    {
-                                        stealth.Tick("activate");
-                                        if (stealth.GetActiveTimeRemaining() > 0)
-                                            break;
-                                    }
+                                    aggroTarget = null;
                                 }
                             }
+
+                            //// Stealth if module is not BattleAI to not interfere with it
+                            //if (!(module is BattleAI) && craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
+                            //{
+                            //    var abilities = craft.GetAbilities();
+                            //    if(abilities != null)
+                            //    {
+                            //        var stealths = abilities.Where((x) => { return (x != null) && x.GetID() == 24; });
+                            //        foreach (var stealth in stealths)
+                            //        {
+                            //            stealth.Tick("activate");
+                            //            if (stealth.GetActiveTimeRemaining() > 0)
+                            //                break;
+                            //        }
+                            //    }
+                            //}
                             break;
                         case AIAggression.StopToAttack:
-                            // Don't move
+                            movement.SetMoveTarget(craft.transform.position);
                             break;
                         case AIAggression.KeepMoving:
                             // Back to module's movement

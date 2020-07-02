@@ -20,7 +20,7 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>");
         foreach(var core in partyMembers)
         {
-            if (core)
+            if (core && !core.GetIsDead())
             {
                 if(core.ID == "sukrat")
                     DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>DESTRUCTION!</color>");
@@ -36,7 +36,7 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>");
         foreach(var core in partyMembers)
         {
-            if (core)
+            if (core && !core.GetIsDead())
             {
                 if (core.ID == "sukrat")
                     DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Falling back!</color>");
@@ -53,7 +53,7 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>");
         foreach(var core in partyMembers)
         {
-            if (core)
+            if (core && !core.GetIsDead())
             {
                 if(core.ID == "sukrat")
                     DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>I'm on it.</color>");
@@ -69,7 +69,7 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>");
         foreach(var core in partyMembers)
         {
-            if (core)
+            if (core && !core.GetIsDead())
             {
                 if(core.ID == "sukrat")
                     DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Building!</color>");
@@ -85,7 +85,7 @@ public class PartyManager : MonoBehaviour
         DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>");
         foreach(var core in partyMembers)
         {
-            if (core)
+            if (core && !core.GetIsDead())
             {
                 if (core.ID == "sukrat")
                     DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Following!</color>");
@@ -199,7 +199,7 @@ public class PartyManager : MonoBehaviour
             blocker.GetComponentInChildren<Text>().text = "Party customization is unlocked after Trial By Combat.";
         }
 
-        if(Input.GetKey(KeyCode.LeftControl) && partyMembers.Count > 0)
+        if(Input.GetKey(KeyCode.LeftControl) && partyMembers.Count > 0 && partyMembers.TrueForAll((member)=> { return member; }))
         {
             wheel.SetActive(true);
             arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight / 2), 

@@ -783,17 +783,20 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             {
                 queueTimer = 3;
                 var dialogue = passiveMessages.Dequeue();
-                var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
                 Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.Item1);
-                var name = speaker.name;
-                if(speaker as PlayerCore)
-                    name = (speaker as PlayerCore).cursave.name;
-                instance.transform.Find("Name").GetComponent<Text>().text = name;
-                instance.transform.Find("Text").GetComponent<Text>().text = dialogue.Item2;
-                instance.transform.localScale -= new Vector3(0, 1);
-                StartCoroutine(SlidePassiveDialogueIn(instance.transform));
+                if (speaker != null)
+                {
+                    var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
+                    var name = speaker.name;
+                    if (speaker as PlayerCore)
+                        name = (speaker as PlayerCore).cursave.name;
+                    instance.transform.Find("Name").GetComponent<Text>().text = name;
+                    instance.transform.Find("Text").GetComponent<Text>().text = dialogue.Item2;
+                    instance.transform.localScale -= new Vector3(0, 1);
+                    StartCoroutine(SlidePassiveDialogueIn(instance.transform));
 
-                instance.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
+                    instance.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
+                }
             }
         }
         else if(queueTimer <= -2 && passiveDialogueState != DialogueState.Out)
