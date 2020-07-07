@@ -17,7 +17,7 @@ public class PassiveAbility : Ability {
         
     }
 
-    public override void Tick(string key)
+    public override void Tick(int key)
     {
         if (!initialized)
         {

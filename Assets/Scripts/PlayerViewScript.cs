@@ -36,7 +36,7 @@ public class PlayerViewScript : MonoBehaviour {
 		Time.timeScale = 1;
 	}
 	void Update () {
-		if(DialogueSystem.Instance && DialogueSystem.Instance.hudGroup && Input.GetKeyDown(KeyCode.F1))
+		if(DialogueSystem.Instance && DialogueSystem.Instance.hudGroup && InputManager.GetKeyDown(KeyName.HideHUD))
 		{
 			if(!DialogueSystem.isInCutscene && !DialogueSystem.Instance.IsWindowActive())
 			{
@@ -45,7 +45,7 @@ public class PlayerViewScript : MonoBehaviour {
 			}
 		}
 			
-		if(Input.GetButtonUp("Cancel")) { // for some reason this is escape
+		if(InputManager.GetKeyUp(KeyName.Exit)) { // for some reason this is escape
 			while(currentWindow.Count > 0) {
 				if(DialogueSystem.isInCutscene) break; // just go straight to escape menu, in cutscenes you can't escape dialogue
 

@@ -244,7 +244,7 @@ public class AbilityHandler : MonoBehaviour {
         // this system relies on a conversion of index into a string to find a hotkey to activate
         // temporary workaround in place in line below, but ability type segmenting must be done eventually 
 
-
+        
 
         if (!visibleAbilities[index] || visibleAbilities[index].IsDestroyed())
         {
@@ -255,9 +255,20 @@ public class AbilityHandler : MonoBehaviour {
         }
         if (clicked)
         {
-            visibleAbilities[index].Tick("activate");
-        } else visibleAbilities[index].Tick((index+1) < 10 && !Input.GetKey(KeyCode.LeftShift) ? 
-            keybindList[index] : ""); // Tick the ability
+            visibleAbilities[index].Tick(1);
+        }
+        else if ((index + 1) < 10)
+        {
+            bool pressed = InputManager.GetKeyDown(KeyName.Ability0 + index);
+            if (pressed && !InputManager.GetKey(KeyName.TurretQuickPurchase))
+            {
+                visibleAbilities[index].Tick(1); // Tick the ability
+            }
+            else
+            {
+                visibleAbilities[index].Tick(0);
+            }
+        }
 
         if (abilityGleamArray[index])
         {
@@ -319,19 +330,19 @@ public class AbilityHandler : MonoBehaviour {
                     var button = abilityBackgroundArray[ind].GetComponent<AbilityButtonScript>();
                     AbilityUpdate(ind, button.clicked); // otherwise update the current update
                     button.clicked = false;
-                } else abilities[i].Tick("");
+                } else abilities[i].Tick(-1);
             }
             if(core.GetIsDead() || core.GetIsInteracting()) return;
-            if(Input.GetKeyDown(KeyCode.Z)) {
+            if(InputManager.GetKeyDown(KeyName.ShowSkills)) {
                 SetCurrentVisible((AbilityTypes)(0));
             }
-            if(Input.GetKeyDown(KeyCode.X)) {
+            if(InputManager.GetKeyDown(KeyName.ShowSpawns)) {
                 SetCurrentVisible((AbilityTypes)(1));
             }
-            if(Input.GetKeyDown(KeyCode.C)) {
+            if(InputManager.GetKeyDown(KeyName.ShowWeapons)) {
                 SetCurrentVisible((AbilityTypes)(2));
             }
-            if(Input.GetKeyDown(KeyCode.V)) {
+            if(InputManager.GetKeyDown(KeyName.ShowPassives)) {
                 SetCurrentVisible((AbilityTypes)(3));
             }
         }

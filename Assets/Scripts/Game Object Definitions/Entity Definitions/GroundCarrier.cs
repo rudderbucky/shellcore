@@ -48,7 +48,7 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         {
             foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
             {
-                active.Tick("activate");
+                active.Tick(1);
             }
             base.Update();
         }

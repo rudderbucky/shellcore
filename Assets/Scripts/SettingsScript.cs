@@ -19,9 +19,13 @@ public class SettingsScript : MonoBehaviour {
 	public Toggle taskManagerAutoSaveEnabled;
 	public Toggle simpleMouseMovementToggle;
 	public Transform controlsSection;
-	public InputField[] abilityKeybindFields;
+	//public InputField[] abilityKeybindFields;
 
-	void Start() {
+    public GameObject keybindItemPrefab;
+    public RectTransform keybindBG;
+    GameObject[] keybinds;
+
+    void Start() {
 		// get playerpref values and configure toggles and sliders based on them
 		HUDArrowScriptToggle.isOn = PlayerPrefs.GetString("HUDArrowScript_active", "False") == "True";
 		BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
@@ -33,10 +37,31 @@ public class SettingsScript : MonoBehaviour {
 		taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
 		simpleMouseMovementToggle.isOn = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
 
-		for(int i = 0; i < 9; i++)
-		{
-			abilityKeybindFields[i].text = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1) + "");
-		}
+        //for(int i = 0; i < 9; i++)
+        //{
+        //	abilityKeybindFields[i].text = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1) + "");
+        //}
+
+        keybindBG.sizeDelta = new Vector2(0f, 64f * InputManager.keys.Count);
+
+        for (int i = 0; i < InputManager.keys.Count; i++)
+        {
+            var obj = Instantiate(keybindItemPrefab);
+            var rt = obj.GetComponent<RectTransform>();
+            rt.SetParent(keybindBG);
+            rt.localScale = Vector3.one;
+            rt.sizeDelta = new Vector2(0f, 64);
+            rt.anchoredPosition = new Vector2(0f, -64f * i);
+
+            Text key = obj.transform.Find("KeyBG").GetComponentInChildren<Text>();
+            key.text = InputManager.keys[(KeyName)i].overrideKey.ToString();
+
+            Text description = obj.transform.Find("Description").GetComponent<Text>();
+            description.text = InputManager.keys[(KeyName)i].description;
+
+            var keyName = (KeyName)i;
+            obj.GetComponent<Button>().onClick.AddListener(()=> { InputManager.ChangeControl(keyName, key); });
+        }
 
 		windowedMode.isOn = (Screen.fullScreenMode == FullScreenMode.Windowed || Screen.fullScreenMode == FullScreenMode.MaximizedWindow);
 		windowResolution.value = FindResolution();
@@ -63,10 +88,10 @@ public class SettingsScript : MonoBehaviour {
 		ChangeDialogueSystemDialogueStyle(dialogueStyle.value);
 		ChangeSimpleMouseMovementEnabled(simpleMouseMovementToggle.isOn);
 
-		for(int i = 0; i < 9; i++)
-		{
-			ChangeAbilityKeybind(i, abilityKeybindFields[i].text);
-		}
+		//for(int i = 0; i < 9; i++)
+		//{
+		//	ChangeAbilityKeybind(i, abilityKeybindFields[i].text);
+		//}
 	}
 
 	public void ChangeAbilityKeybind(int index, string val)

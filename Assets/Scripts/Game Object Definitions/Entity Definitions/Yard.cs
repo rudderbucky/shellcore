@@ -29,7 +29,7 @@ public class Yard : AirConstruct, IShipBuilder {
         targeter.GetTarget(true);
         if(!isDead)
             foreach(WeaponAbility weapon in GetComponentsInChildren<WeaponAbility>()) {
-                weapon.Tick(null);
+                weapon.Tick(0);
             }
         base.Update();
 

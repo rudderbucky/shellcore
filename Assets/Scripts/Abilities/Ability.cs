@@ -6,7 +6,7 @@ using UnityEngine;
 /// Interface for objects that can be executed by a handler; mainly used for abilities
 /// </summary>
 interface IPlayerExecutable {
-    void Tick(string key); // the state of this object will change over time
+    void Tick(int key); // the state of this object will change over time
 }
 
 /// <summary>
@@ -188,8 +188,8 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// <summary>
     /// Ability called to change the ability's state over time for players
     /// </summary>
-    /// <param name="key">The associated button to press to activate</param>
-    virtual public void Tick(string key) {
+    /// <param name="action">The associated button to press to activate</param>
+    virtual public void Tick(int action) {
         if(isDestroyed)
         {
             return; // Part has been destroyed, ability can't be used
@@ -199,8 +199,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
             TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
         }
         else if ((!(Core as PlayerCore) || !(Core as PlayerCore).GetIsInteracting()) 
-        && ((key == "activate") || (Core as PlayerCore && key != "" 
-        && Input.GetKeyDown(key))) && Core.GetHealth()[2] >= energyCost) // enough energy and button pressed
+        && ((action == 1)) && Core.GetHealth()[2] >= energyCost) // enough energy and button pressed
         {
             Core.MakeBusy(); // make core busy
             Core.TakeEnergy(energyCost); // remove the energy

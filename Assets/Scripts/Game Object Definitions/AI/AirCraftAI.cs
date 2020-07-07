@@ -216,9 +216,9 @@ public class AirCraftAI : MonoBehaviour
         {
             foreach (Ability a in craft.GetAbilities())
             {
-                if (a /*&& a is WeaponAbility || a is PassiveAbility*/)
+                if (a)
                 {
-                    a.Tick("");
+                    a.Tick(0);
                 }
             }
             

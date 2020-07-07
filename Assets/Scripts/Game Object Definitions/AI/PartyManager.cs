@@ -199,7 +199,7 @@ public class PartyManager : MonoBehaviour
             blocker.GetComponentInChildren<Text>().text = "Party customization is unlocked after Trial By Combat.";
         }
 
-        if(Input.GetKey(KeyCode.LeftControl) && partyMembers.Count > 0 && partyMembers.TrueForAll((member)=> { return member; }))
+        if(InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member)=> { return member; }))
         {
             wheel.SetActive(true);
             arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight / 2), 

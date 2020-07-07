@@ -804,7 +804,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             StartCoroutine(FadePassiveDialogueOut());
         }
 
-        if(passiveDialogueContents != null && passiveDialogueContents.transform.childCount == 0 && Input.GetKeyDown(KeyCode.Return))
+        if(passiveDialogueContents != null && passiveDialogueContents.transform.childCount == 0 && InputManager.GetKeyDown(KeyName.ShowChatHistory))
         {
             archiveContents.gameObject.SetActive(!archiveContents.gameObject.activeSelf);
         }

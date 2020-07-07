@@ -111,7 +111,7 @@ public abstract class WeaponAbility : ActiveAbility {
     /// and adjusted for the new isActive behaviour
     /// </summary>
     /// <param name="key">the associated trigger key of the ability</param>
-    public override void Tick(string key)
+    public override void Tick(int key)
     {
         if(isDestroyed)
         {
@@ -122,9 +122,9 @@ public abstract class WeaponAbility : ActiveAbility {
             return; // Core is in stealth mode, weapons are disabled
         }
         
-        if(key != "")
+        if(key != -1)
         {
-            if (key == "activate" || (Core as PlayerCore && Input.GetKeyDown(key)))
+            if (key == 1) // INPUT CHECK REMOVED FROM HERE, MAKE SURE IT STILL WORKS
             { // toggle ability
                 Core.MakeBusy(); // make core busy
                 isActive = !isActive;

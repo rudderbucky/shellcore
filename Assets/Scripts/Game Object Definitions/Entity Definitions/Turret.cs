@@ -42,7 +42,7 @@ public class Turret : AirConstruct, IOwnable {
         targeter.GetTarget(true);
         if (!isDead && GetComponentInChildren<WeaponAbility>())
         {
-            GetComponentInChildren<WeaponAbility>().Tick(null);
+            GetComponentInChildren<WeaponAbility>().Tick(0);
         }
         base.Update();
     }

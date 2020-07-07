@@ -135,7 +135,7 @@ public class DevConsoleScript : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.F3))
+        if(InputManager.GetKeyDown(KeyName.Console))
         {
             textBox.enabled = image.enabled = !image.enabled;
             inputField.gameObject.SetActive(image.enabled);

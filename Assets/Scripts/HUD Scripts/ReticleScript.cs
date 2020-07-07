@@ -175,7 +175,7 @@ public class ReticleScript : MonoBehaviour {
             SetTransform(); // update the transform of the reticle accordingly
 
             // Toggle tractor beam
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (InputManager.GetKeyDown(KeyName.ToggleTractorBeam))
             {
                 if (targSys.GetTarget())
                 {

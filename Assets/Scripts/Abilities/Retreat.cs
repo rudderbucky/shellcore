@@ -20,7 +20,7 @@ public class Retreat : Ability
         CDRemaining = cooldownDuration;
     }
 
-    public override void Tick(string key)
+    public override void Tick(int key)
     {
         base.Tick(key);
         if (isOnCD && Time.time > activationTime && charging)

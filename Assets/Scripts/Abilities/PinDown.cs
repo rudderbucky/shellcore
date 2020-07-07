@@ -24,7 +24,7 @@ public class PinDown : ActiveAbility
         activeTimeRemaining = activeDuration;
     }
 
-    public override void Tick(string key)
+    public override void Tick(int key)
     {
         base.Tick(key);
         if (isOnCD && Time.time > activationTime && !trueActive && GetActiveTimeRemaining() > 0)

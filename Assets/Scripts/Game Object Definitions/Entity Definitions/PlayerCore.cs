@@ -56,13 +56,13 @@ public class PlayerCore : ShellCore {
     {
         //Sum up all inputs
         Vector2 direction = Vector2.zero;
-        if (Input.GetKey("w"))
+        if (InputManager.GetKey(KeyName.Up))
             direction += new Vector2(0, 1);
-        if (Input.GetKey("a"))
+        if (InputManager.GetKey(KeyName.Left))
             direction += new Vector2(-1, 0);
-        if (Input.GetKey("s"))
+        if (InputManager.GetKey(KeyName.Down))
             direction += new Vector2(0, -1);
-        if (Input.GetKey("d"))
+        if (InputManager.GetKey(KeyName.Right))
             direction += new Vector2(1, 0);
 
         //Send unit vector
@@ -170,15 +170,6 @@ public class PlayerCore : ShellCore {
         }
         base.Update(); // base update
         if(!isInteracting) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
-
-        #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            // enginePower = 1000;
-            // GetComponentInChildren<MainBullet>().SetDamage(10000);
-            // NodeEditorFramework.Standard.TestCondition.TestTrigger.Invoke();
-        }
-        #endif
 	}
 
     public override void Warp(Vector3 point)

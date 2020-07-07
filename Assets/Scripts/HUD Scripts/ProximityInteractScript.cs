@@ -46,7 +46,7 @@ public class ProximityInteractScript : MonoBehaviour {
 				if(!player.GetIsDead() && (closest.transform.position - player.transform.position).sqrMagnitude <= range)
 					for (int i = 0; i < blueprint.items.Count; i++)
 					{
-						if(Input.GetKey(KeyCode.LeftShift)) {
+						if(InputManager.GetKey(KeyName.TurretQuickPurchase)) {
 							if(Input.GetKeyDown((1 + i).ToString())) 
 							{
                     			vendorUI.SetVendor(closest as IVendor, player);
@@ -82,7 +82,7 @@ public class ProximityInteractScript : MonoBehaviour {
 					interactIndicator.localScale = new Vector3(1, Mathf.Min(1, y + 0.1F), 1);
 				}
 				interactIndicator.anchoredPosition = Camera.main.WorldToScreenPoint(closest.transform.position) + new Vector3(0, 50);
-				if(Input.GetKeyUp(KeyCode.Q)) 
+				if(InputManager.GetKeyUp(KeyName.Interact)) 
 				{
 					ActivateInteraction(closest); // key received; activate interaction
 				}

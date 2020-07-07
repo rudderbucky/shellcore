@@ -42,7 +42,7 @@ public class Outpost : AirConstruct, IVendor {
         Bullet[] bullets = GetComponentsInChildren<Bullet>();
         for (int i = 0; i < bullets.Length; i++)
         {
-            bullets[i].Tick(null);
+            bullets[i].Tick(0);
         }
     }
 

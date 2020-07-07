@@ -30,7 +30,7 @@ public class Bunker : GroundConstruct, IVendor {
         WeaponAbility[] bullets = GetComponentsInChildren<WeaponAbility>();
         for (int i = 0; i < bullets.Length; i++)
         {
-            bullets[i].Tick(null);
+            bullets[i].Tick(0);
         }
     }
 

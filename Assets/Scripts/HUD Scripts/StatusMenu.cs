@@ -56,7 +56,7 @@ public class StatusMenu : GUIWindowScripts {
 	// Update is called once per frame
 	protected override void Update () 
 	{
-		if(Input.GetKeyDown(KeyCode.E) && !player.GetIsInteracting()) 
+		if(InputManager.GetKeyDown(KeyName.StatusMenu) && !player.GetIsInteracting()) 
 		{
 			toggle = !toggle;
 			if(toggle) 

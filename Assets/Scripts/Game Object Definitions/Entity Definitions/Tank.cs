@@ -40,7 +40,7 @@ public class Tank : GroundCraft, IOwnable
             targeter.GetTarget(true);
             if (!isDead && GetComponentInChildren<WeaponAbility>() && !draggable.dragging)
             {
-                GetComponentInChildren<WeaponAbility>().Tick(null);
+                GetComponentInChildren<WeaponAbility>().Tick(0);
             }
             drive();
         }

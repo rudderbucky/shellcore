@@ -42,7 +42,7 @@ public class AIAbilityController
                     int count = 0;
                     foreach (var booster in speeds)
                     {
-                        booster.Tick("activate");
+                        booster.Tick(1);
                         if (booster.GetActiveTimeRemaining() > 0)
                         {
                             if (++count >= half)
@@ -61,7 +61,7 @@ public class AIAbilityController
             {
                 if (craft.GetHealth()[0] > craft.GetMaxHealth()[0] * 0.9f)
                     break;
-                booster.Tick("activate");
+                booster.Tick(1);
             }
         }
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
@@ -69,7 +69,7 @@ public class AIAbilityController
             var stealths = GetAbilities(24); // stealth, stasis field, pin down
             foreach (var stealth in stealths)
             {
-                stealth.Tick("activate");
+                stealth.Tick(1);
                 if (stealth.GetActiveTimeRemaining() > 0)
                     break;
             }
@@ -82,7 +82,7 @@ public class AIAbilityController
                 bool CD = retreat.GetCDRemaining() > 0f;
                 if (!CD)
                 {
-                    retreat.Tick("activate");
+                    retreat.Tick(1);
                     if (retreat.GetCDRemaining() > 0f)
                         break;
                 }
@@ -97,7 +97,7 @@ public class AIAbilityController
                 var damageBoosts = GetAbilities(25); // damage boost
                 foreach (var damageBoost in damageBoosts)
                 {
-                    damageBoost.Tick("activate");
+                    damageBoost.Tick(1);
                 }
             }
         }
@@ -109,7 +109,7 @@ public class AIAbilityController
                 var droneSpawns = GetAbilities(10); // drone spawn
                 foreach (var droneSpawn in droneSpawns)
                 {
-                    droneSpawn.Tick("activate");
+                    droneSpawn.Tick(1);
                 }
             }
         }
