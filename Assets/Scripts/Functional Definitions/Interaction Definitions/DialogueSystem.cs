@@ -37,6 +37,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     Vector3? speakerPos = null;
     public CoreUpgraderScript upgraderScript;
     public static bool isInCutscene = false;
+    BattleZoneManager battleZoneManager;
 
     public enum DialogueStyle
     {
@@ -218,6 +219,29 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         if(victory) window.transform.Find("Victory").GetComponent<Text>().text = "<color=lime>VICTORY!</color>";
         else window.transform.Find("Victory").GetComponent<Text>().text = "<color=red>DEFEAT</color>";
 
+        battleZoneManager = FindObjectOfType<BattleZoneManager>();
+        if (!battleZoneManager)
+            return;
+        string[] stats = battleZoneManager.GetStats();
+        RectTransform scrollArea = window.transform.Find("Background/ViewBorder/Scroll View/Viewport/Content").GetComponent<RectTransform>();
+        GameObject prefab = scrollArea.Find("Stats").gameObject;
+        for (int i = 0; i < stats.Length; i++)
+        {
+            var obj = Instantiate(prefab);
+            obj.name = "Faction_" + i;
+            RectTransform rt = obj.GetComponent<RectTransform>();
+            Text text = obj.GetComponent<Text>();
+
+            rt.SetParent(scrollArea);
+            rt.anchorMin = new Vector2(0f, 0f);
+            rt.anchorMax = new Vector2(0f, 1f);
+            rt.pivot = new Vector2(0f, 0.5f);
+            rt.offsetMin = new Vector2(120f + 80f * i, 10f);
+            rt.offsetMax = new Vector2(128f + 80f * (i + 1), -10f);
+
+            text.text = stats[i];
+        }
+        scrollArea.sizeDelta = new Vector2(120f + 80f * stats.Length, scrollArea.sizeDelta.y);
     }
 
     public GameObject missionCompleteBoxPrefab;

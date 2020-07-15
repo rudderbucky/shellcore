@@ -10,6 +10,13 @@ public struct FactionColors
         new Color(1f, 0, 0, 1F),
         new Color32(218, 165, 32, 255),
     };
+
+    public static string[] colorNames = new string[]
+    {
+        "lime",
+        "red",
+        "olive",
+    };
 }
 
 public struct ShinyFactionColors

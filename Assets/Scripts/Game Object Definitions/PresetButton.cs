@@ -97,8 +97,17 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         }
         else
         {
-            text.color = Color.green;
-            text.text = " LOAD PRESET " + number;
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                text.color = Color.red;
+                text.text = " REMOVE PRESET " + number;
+            }
+            else
+            {
+                text.color = Color.green;
+                text.text = " LOAD PRESET " + number;
+            }
+
         }
     }
 

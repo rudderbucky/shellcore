@@ -11,6 +11,7 @@ public interface ITargetable {
     string GetName();
     string GetID();
     int GetFaction();
+    bool GetInvisible();
 }
 
 public interface IDamageable : ITargetable {
@@ -134,5 +135,10 @@ public class ShardRock : MonoBehaviour, IDamageable
     public string GetID()
     {
         return -1 + "";
+    }
+
+    public bool GetInvisible()
+    {
+        return false;
     }
 }

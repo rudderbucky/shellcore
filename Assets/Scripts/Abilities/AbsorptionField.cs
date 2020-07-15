@@ -25,6 +25,7 @@ public class AbsorptionField : ActiveAbility
     {
         craft = Core as Craft;
     }
+
     /// <summary>
     /// Removes the field sprite
     /// </summary>

@@ -11,6 +11,9 @@ public class Entity : MonoBehaviour, IDamageable {
     public delegate void EntitySpawnDelegate(Entity entity);
     public static EntitySpawnDelegate OnEntitySpawn;
 
+    public delegate void EntityDeathDelegate(Entity entity, Entity murderer);
+    public static EntityDeathDelegate OnEntityDeath;
+
     public ShellPart shell;
     protected static int maxAirLayer = 1; // the maximum sorting group layer of all entities
     protected static int maxGroundLayer = 1;
@@ -388,6 +391,17 @@ public class Entity : MonoBehaviour, IDamageable {
     /// </summary>
     protected virtual void OnDeath() {
         // set death, interactibility and immobility
+        invisible = false;
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = true;
+        }
+        foreach (var ability in abilities)
+        {
+            if (ability)
+                ability.SetDestroyed(true);
+        }
         interactible = false;
         isDead = true;
         SetIntoCombat();
@@ -406,10 +420,16 @@ public class Entity : MonoBehaviour, IDamageable {
             parts[i].Detach();
         }
 
-        if(lastDamagedBy as PlayerCore) 
+        var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
+
+        if (lastDamagedBy as PlayerCore) 
         {
             (lastDamagedBy as PlayerCore).credits += 5;
-            if(this as ShellCore && faction == 1)
+            if (BZM != null)
+            {
+                BZM.CreditsCollected += 5;
+            }
+            if (this as ShellCore && faction == 1)
             {
                 foreach(var part in blueprint.parts)
                 {
@@ -418,27 +438,15 @@ public class Entity : MonoBehaviour, IDamageable {
             }
         }
 
-        GameObject deathExplosion = Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
-        /*
-        GameObject tmp = Instantiate(explosionCirclePrefab); // instantiate circle explosion
-        tmp.SetActive(true);
-        tmp.transform.SetParent(transform, false);
-        tmp.GetComponent<DrawCircleScript>().Initialize();
-        Destroy(tmp, 2); // destroy explosions after 2 seconds
-        for (int i = 0; i < 3; i++) { // instantiate line explosions
-            tmp = Instantiate(explosionLinePrefab);
-            tmp.SetActive(true);
-            tmp.transform.SetParent(transform, false);
-            tmp.GetComponent<DrawLineScript>().Initialize();
-            Destroy(tmp, 2); // destroy explosions after 2 seconds
+        if (OnEntityDeath != null)
+            OnEntityDeath.Invoke(this, lastDamagedBy);
+
+        if (BZM != null)
+        {
+            BZM.UpdateCounters();
         }
-        */
 
-        if(GameObject.Find("SectorManager")) 
-            GameObject.Find("SectorManager").GetComponent<BattleZoneManager>().UpdateCounters();
-
-        if(NodeEditorFramework.Standard.DestroyEntityCondition.OnUnitDestroyed != null)
-            NodeEditorFramework.Standard.DestroyEntityCondition.OnUnitDestroyed.Invoke(this);
+        GameObject deathExplosion = Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
     }
 
     protected virtual void PostDeath() 
@@ -815,5 +823,10 @@ public class Entity : MonoBehaviour, IDamageable {
     public EntityCategory GetCategory()
     {
         return category;
+    }
+
+    public bool GetInvisible()
+    {
+        return invisible;
     }
 }

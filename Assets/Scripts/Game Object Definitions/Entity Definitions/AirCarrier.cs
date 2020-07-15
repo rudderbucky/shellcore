@@ -55,7 +55,7 @@ public class AirCarrier : AirConstruct, ICarrier {
         if (initialized)
         {
             var enemyTargetFound = false;
-            if(BattleZoneManager.getTargets() != null)
+            if(BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
             {
                 foreach(var target in BattleZoneManager.getTargets())
                 {

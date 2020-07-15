@@ -23,6 +23,7 @@ public class Stealth : ActiveAbility
     {
         craft = Core as Craft;
     }
+
     /// <summary>
     /// Makes the craft visible again
     /// </summary>

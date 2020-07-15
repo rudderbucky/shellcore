@@ -14,9 +14,6 @@ namespace NodeEditorFramework.Standard
         private ConditionState state;
         public ConditionState State { get { return state; } set { state = value; } }
 
-        public delegate void UnitDestroyedDelegate(Entity entity);
-        public static UnitDestroyedDelegate OnUnitDestroyed;
-
         public bool useIDInput;
         public string targetID;
         public int targetCount = 1;
@@ -95,7 +92,7 @@ namespace NodeEditorFramework.Standard
                 IDInput = inputKnobs[0];
 
             killCount = 0;
-            OnUnitDestroyed += updateState;
+            Entity.OnEntityDeath += updateState;
 
             state = ConditionState.Listening;
 
@@ -116,11 +113,11 @@ namespace NodeEditorFramework.Standard
         // I have no idea what that does
         public void DeInit()
         {
-            OnUnitDestroyed -= updateState;
+            Entity.OnEntityDeath -= updateState;
             state = ConditionState.Uninitialized;
         }
 
-        void updateState(Entity entity)
+        void updateState(Entity entity, Entity _)
         {
             if ((!nameMode && entity.ID == targetID) || (nameMode && (entity.entityName == targetID || entity.name == targetID)))
             {

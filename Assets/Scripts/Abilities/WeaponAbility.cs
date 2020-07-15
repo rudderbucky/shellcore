@@ -113,7 +113,7 @@ public abstract class WeaponAbility : ActiveAbility {
     /// <param name="key">the associated trigger key of the ability</param>
     public override void Tick(int key)
     {
-        if(isDestroyed)
+        if (isDestroyed)
         {
             return; // Part has been destroyed, ability can't be used
         }
@@ -121,14 +121,10 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             return; // Core is in stealth mode, weapons are disabled
         }
-        
-        if(key != -1)
-        {
-            if (key == 1) // INPUT CHECK REMOVED FROM HERE, MAKE SURE IT STILL WORKS
-            { // toggle ability
-                Core.MakeBusy(); // make core busy
-                isActive = !isActive;
-            }
+        if (key == 1) // INPUT CHECK REMOVED FROM HERE, MAKE SURE IT STILL WORKS
+        { // toggle ability
+            Core.MakeBusy(); // make core busy
+            isActive = !isActive;
         }
         if (isOnCD) // on cooldown
         {
@@ -138,6 +134,7 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             Transform target = targetingSystem.GetTarget(true);
             if (target && target.GetComponent<IDamageable>() != null) { // check if there is a target
+                Debug.Log("Weapon tick! @ " + Core.name);
                 Core.SetIntoCombat(); // now in combat
                 Transform targetEntity = target;
                 IDamageable tmp = targetEntity.GetComponent<IDamageable>();

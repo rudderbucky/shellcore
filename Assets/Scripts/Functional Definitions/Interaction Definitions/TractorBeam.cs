@@ -67,6 +67,8 @@ public class TractorBeam : MonoBehaviour
                 if (target.GetComponent<EnergySphereScript>())
                 {
                     rigidbody.position += (Vector2)dir.normalized * 0.6F;
+                    if (owner.invisible)
+                        target = null;
                 }
                 else if (dist > 2f)
                 {

@@ -21,16 +21,13 @@ public class WeaponTargetingSystem {
 
         Transform tmp = ability.Core.GetTargetingSystem().GetTarget(); // get the core's target if it has one
 
-        if (tmp && tmp.GetComponent<IDamageable>() != null
-            && !tmp.GetComponent<IDamageable>().GetIsDead()
-            && tmp.GetComponent<IDamageable>().GetFaction() != ability.Core.faction 
-            && ability.CheckCategoryCompatibility(tmp.GetComponent<IDamageable>())
-            && (tmp.position - ability.transform.position).magnitude <= ability.GetRange()) // check if target is compatible
+        if (tmp != null && tmp && IsValidTarget(tmp))
         {
             target = tmp;
             return target; // if the manual target is compatible it overrides everything
         }
-        else if (findNew) // check if call wants to find a new target
+
+        if (findNew || !IsValidTarget(target)) // check if call wants to find a new target
         {
             //Find the closest enemy
             //TODO: optimize
@@ -42,20 +39,23 @@ public class WeaponTargetingSystem {
                 // checks for: if it is the same faction as the ability entity, 
                 // if it's dead, if it is weapon-compatible, if it is invisible
 
-                if (ability.Core.faction == AIData.entities[i].faction)
-                {
-                    // if(ability as Beam) Debug.Log(entities[i]);
-                    continue;
-                }
-                if (AIData.entities[i].GetIsDead())
-                {
-                    continue;
-                }
-                if (AIData.entities[i].invisible)
-                {
-                    continue;
-                }
-                if (!ability.CheckCategoryCompatibility(AIData.entities[i]))
+                //if (ability.Core.faction == AIData.entities[i].faction)
+                //{
+                //    // if(ability as Beam) Debug.Log(entities[i]);
+                //    continue;
+                //}
+                //if (AIData.entities[i].GetIsDead())
+                //{
+                //    continue;
+                //}
+                //if (AIData.entities[i].invisible)
+                //{
+                //    continue;
+                //}
+                //if (!ability.CheckCategoryCompatibility(AIData.entities[i]))
+                //    continue;
+
+                if (!IsValidTarget(AIData.entities[i].transform))
                     continue;
 
                 // check if it is the closest entity that passed the checks so far
@@ -70,6 +70,21 @@ public class WeaponTargetingSystem {
             // set to the closest compatible target
             target = closest;
         }
-        return target; // get target
+
+        return target; // return the target
+    }
+
+    bool IsValidTarget(Transform t)
+    {
+        if (t == null || !t)
+            return false;
+        IDamageable damageable = t.GetComponent<IDamageable>();
+
+        return (damageable != null
+            && !damageable.GetIsDead()
+            && damageable.GetFaction() != ability.Core.faction
+            && ability.CheckCategoryCompatibility(damageable)
+            && (t.position - ability.transform.position).magnitude <= ability.GetRange()
+            && !damageable.GetInvisible());
     }
 }

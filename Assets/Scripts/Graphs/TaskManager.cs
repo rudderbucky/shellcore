@@ -179,7 +179,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
         // reset all static condition variables
         SectorLimiterNode.LimitedSector = "";
-        DestroyEntityCondition.OnUnitDestroyed = null;
+        Entity.OnEntityDeath = null;
         UsePartCondition.OnPlayerReconstruct = new UnityEvent();
         WinBattleCondition.OnBattleWin = null;
 

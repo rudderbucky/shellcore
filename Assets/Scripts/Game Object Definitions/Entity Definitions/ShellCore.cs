@@ -7,6 +7,9 @@ using UnityEngine;
 /// </summary>
 public class ShellCore : AirCraft, IHarvester, IOwner {
 
+    public delegate void PowerCollectDelegate(int faction, int amount);
+    public static PowerCollectDelegate OnPowerCollected;
+
     protected ICarrier carrier;
     protected float totalPower;
     protected GameObject bulletPrefab; // prefab for main bullet
@@ -46,6 +49,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     public void AddPower(float power)
     {
         totalPower += power;
+
+        if (power > 0 && OnPowerCollected != null)
+            OnPowerCollected.Invoke(faction, Mathf.RoundToInt(power));
     }
 
     protected override void OnDeath()

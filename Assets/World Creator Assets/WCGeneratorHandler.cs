@@ -14,6 +14,7 @@ public class WCGeneratorHandler : MonoBehaviour
     List<Sector> sectors = new List<Sector>();
     public GameObject sectorPrefab;
     public ItemHandler itemHandler;
+    public Text invalidNameWarning;
     public InputField worldName;
     public InputField worldReadPath;
     public WCCharacterHandler characterHandler;
@@ -68,9 +69,17 @@ public class WCGeneratorHandler : MonoBehaviour
         }
     }
 
+    public void OnNameEdit(string tmpWworldName)
+    {
+        invalidNameWarning.enabled = 
+            tmpWworldName == null 
+            || tmpWworldName == "" 
+            || tmpWworldName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1;
+    }
+
     public bool WriteWorld(string path) 
     {
-        if(path == null || path == "")
+        if(invalidNameWarning.enabled)
         {
             Debug.LogError("Path your damn world! Abort.");
             return false;

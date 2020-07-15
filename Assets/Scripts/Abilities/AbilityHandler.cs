@@ -264,11 +264,8 @@ public class AbilityHandler : MonoBehaviour {
             {
                 visibleAbilities[index].Tick(1); // Tick the ability
             }
-            else
-            {
-                visibleAbilities[index].Tick(0);
-            }
         }
+        visibleAbilities[index].Tick(0);
 
         if (abilityGleamArray[index])
         {
@@ -330,7 +327,7 @@ public class AbilityHandler : MonoBehaviour {
                     var button = abilityBackgroundArray[ind].GetComponent<AbilityButtonScript>();
                     AbilityUpdate(ind, button.clicked); // otherwise update the current update
                     button.clicked = false;
-                } else abilities[i].Tick(-1);
+                } else abilities[i].Tick(0);
             }
             if(core.GetIsDead() || core.GetIsInteracting()) return;
             if(InputManager.GetKeyDown(KeyName.ShowSkills)) {
