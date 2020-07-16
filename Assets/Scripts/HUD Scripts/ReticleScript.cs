@@ -167,8 +167,8 @@ public class ReticleScript : MonoBehaviour {
             {
                 ITargetable targetCraft = targSys.GetTarget().GetComponent<ITargetable>();
 
-                if (targetCraft != null && targetCraft.GetIsDead()) { 
-                    // check if the target craft is dead
+                if (targetCraft != null && (targetCraft.GetIsDead() || targetCraft.GetInvisible())) { 
+                    // check if the target craft is dead or invisible
                     targSys.SetTarget(null); // if so remove the target lock
                 }
             }
