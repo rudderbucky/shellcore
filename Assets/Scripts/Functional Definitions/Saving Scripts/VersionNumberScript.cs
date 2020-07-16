@@ -6,10 +6,28 @@ using UnityEngine.UI;
 public class VersionNumberScript : MonoBehaviour
 {
     public static string version = "Alpha 4.0.0";
-    // Start is called before the first frame update
-    void Start()
+
+    static VersionNumberScript instance;
+
+    private void Awake()
     {
-        if(GetComponent<Text>()) GetComponent<Text>().text = "Version " + version;
+        instance = this;
+    }
+
+    private void Start()
+    {
+        Refresh();
+    }
+
+    public static void Refresh()
+    {
+        if (instance)
+        {
+            if (instance.GetComponent<Text>())
+            {
+                instance.GetComponent<Text>().text = "Version " + version;
+            }
+        }
     }
 
 }

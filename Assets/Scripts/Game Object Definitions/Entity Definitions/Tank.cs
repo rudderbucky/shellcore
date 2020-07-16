@@ -57,7 +57,7 @@ public class Tank : GroundCraft, IOwnable
         float minD = float.MaxValue;
         for(int i = 0; i < entities.Length; i++)
         {
-            if (entities[i].faction == faction)
+            if (FactionManager.IsAllied(entities[i].faction, faction))
                 continue;
             float d2 = (transform.position - entities[i].transform.position).sqrMagnitude;
             if(d2 < minD && GetComponentInChildren<WeaponAbility>().CheckCategoryCompatibility(entities[i]))

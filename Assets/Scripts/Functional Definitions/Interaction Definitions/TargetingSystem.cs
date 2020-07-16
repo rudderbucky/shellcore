@@ -9,6 +9,7 @@ public class TargetingSystem {
 
     private Transform target; // the transform of the target
     public Transform parent; // parent object
+    int faction;
 
     /// <summary>
     /// Constructor that sets the target to null and takes a transform from which distances are calculate from
@@ -17,6 +18,7 @@ public class TargetingSystem {
         // initialize instance fields
         target = null;
         this.parent = parent;
+        faction = parent.GetComponent<Entity>().faction;
     }
 
     /// <summary>
@@ -45,7 +47,7 @@ public class TargetingSystem {
                 if(!AIData.entities[i]) continue;
                 if (AIData.entities[i].transform == parent)
                     continue;
-                if (parent.GetComponent<Entity>().faction == AIData.entities[i].faction)
+                if (FactionManager.IsAllied(faction, AIData.entities[i].faction))
                     continue;
                 if (AIData.entities[i].GetIsDead())
                 {

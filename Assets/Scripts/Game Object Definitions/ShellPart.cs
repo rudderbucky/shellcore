@@ -177,7 +177,7 @@ public class ShellPart : MonoBehaviour {
             if (targ != null)
             {
                 var targEntity = targ.GetComponent<IDamageable>();
-                if (targEntity != null && targEntity.GetFaction() != craft.faction)
+                if (targEntity != null && !FactionManager.IsAllied(targEntity.GetFaction(), craft.faction))
                 {
                     Vector3 targeterPos = targ.position;
                     Vector3 diff = targeterPos - shooter.transform.position;

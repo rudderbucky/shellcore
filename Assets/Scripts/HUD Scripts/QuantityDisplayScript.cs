@@ -115,7 +115,7 @@ public class QuantityDisplayScript : MonoBehaviour {
             targetName.text = entity.entityName;
             targetDesc.text = description;
             targetDist.text = "Distance: " + (int)(entity.transform.position - player.transform.position).magnitude;
-            targetName.color = targetDesc.color = targetDist.color = FactionColors.colors[entity.faction];
+            targetName.color = targetDesc.color = targetDist.color = FactionManager.GetFactionColor(entity.faction);
             if(targetNumber) 
             {
                 targetNumber.color = targetName.color;

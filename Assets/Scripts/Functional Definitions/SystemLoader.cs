@@ -11,6 +11,7 @@ public class SystemLoader : MonoBehaviour
     public SectorManager sectorManager;
     public BackgroundScript backgroundScript;
     public DialogueSystem dialogueSystem;
+    public FactionManager factionManager;
 
     public static bool AllLoaded;
 
@@ -21,6 +22,8 @@ public class SystemLoader : MonoBehaviour
 
         if (resourceManager)
             resourceManager.Initialize();
+        if (factionManager)
+            factionManager.Initialize();
         if (sectorManager)
             sectorManager.Initialize();
         if (taskManager)

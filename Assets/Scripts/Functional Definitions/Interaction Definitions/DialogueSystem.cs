@@ -76,9 +76,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         for (int i = 0; i < dialogueCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, dialogueCanvasPaths[i]);
-            Debug.Log("Dialogue Canvas path [" + i + "] = " + finalPath);
+            //Debug.Log("Dialogue Canvas path [" + i + "] = " + finalPath);
             var canvas = XMLImport.Import(finalPath) as DialogueCanvas;
-            Debug.Log(canvas);
+            //Debug.Log(canvas);
             if (canvas != null)
             {
                 traversers.Add(new DialogueTraverser(canvas));
@@ -859,9 +859,14 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         speakerID = ID;
     }
 
-    public void SetCanvasPath(string path)
+    public void ClearCanvases()
     {
-        Debug.Log("Found Dialogue Path " + dialogueCanvasPaths.Count);
+        dialogueCanvasPaths.Clear();
+    }
+
+    public void AddCanvasPath(string path)
+    {
+        //Debug.Log("Found Dialogue Path " + dialogueCanvasPaths.Count);
         dialogueCanvasPaths.Add(path);
     }
 

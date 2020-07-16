@@ -54,16 +54,16 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         return speakerObj;
     }
 
-    public void Initialize()
+    public void Initialize(bool forceReInit = false)
     {
-        if (Instance != null)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
         Instance = this;
         objectiveLocations = new List<ObjectiveLocation>();
         speakerID = null;
-        initCanvases();
+        initCanvases(forceReInit);
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
@@ -89,8 +89,12 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         return false;
     }
 
-    // TODO: add ability to set multiple paths
-    public void SetCanvasPath(string path)
+    public void ClearCanvases()
+    {
+        questCanvasPaths.Clear();
+    }
+
+    public void AddCanvasPath(string path)
     {
         Debug.Log("Found Path");
         questCanvasPaths.Add(path);
@@ -154,9 +158,9 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         return 0;
     }
 
-    void initCanvases()
+    void initCanvases(bool forceReInit)
     {
-        if (initialized)
+        if (initialized && !forceReInit)
             return;
         traversers = new List<MissionTraverser>();
         NodeCanvasManager.FetchCanvasTypes();

@@ -52,7 +52,7 @@ public abstract class AirCraft : Craft
 
     protected override void OnDeath()
     {
-        if(faction == 1 && Random.Range(0, 1F) <= 0.2F)
+        if(!FactionManager.IsAllied(0, faction) && Random.Range(0, 1F) <= 0.2F)
         {
             var x = Instantiate(energySpherePrefab, transform.position, Quaternion.identity);
 

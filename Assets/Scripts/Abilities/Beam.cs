@@ -32,8 +32,8 @@ public class Beam : WeaponAbility {
     protected override void Start() {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
         particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
-        line.endColor = part && part.info.shiny ? ShinyFactionColors.colors[Core.faction] : new Color(0.8F,1F,1F,0.9F);
-        line.startColor = part && part.info.shiny ? ShinyFactionColors.colors[Core.faction] : new Color(0.8F,1F,1F,0.9F);
+        line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
+        line.startColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
         base.Start();
     }
     public void SetMaterial(Material material)

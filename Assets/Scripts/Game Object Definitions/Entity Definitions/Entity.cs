@@ -36,7 +36,7 @@ public class Entity : MonoBehaviour, IDamageable {
     protected GameObject deathExplosionPrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
     public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
-    public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...) //TODO: get this from a file?
+    public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...)
     public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
     public Dialogue dialogue; // dialogue of entity
@@ -83,7 +83,7 @@ public class Entity : MonoBehaviour, IDamageable {
     public bool isPathing = false;
     public void UpdateInteractible()
     {
-        interactible = GetDialogue() && (faction == 0); 
+        interactible = GetDialogue() && faction == 0; 
 
         // These are implications, not a biconditional; interactibility is not necessarily true/false if there are no
         // task overrides or pathing set up. Hence the if statements are needed here
@@ -156,7 +156,7 @@ public class Entity : MonoBehaviour, IDamageable {
             renderer.sortingLayerName = "Default";
         } else {
             var renderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
-            renderer.color = FactionColors.colors[faction]; // needed to reset outpost colors
+            renderer.color = FactionManager.GetFactionColor(faction); // needed to reset outpost colors
             renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
             renderer.sortingLayerName = "Default";
         }
@@ -167,7 +167,7 @@ public class Entity : MonoBehaviour, IDamageable {
             explosionCirclePrefab.transform.SetParent(transform, false);
             LineRenderer lineRenderer = explosionCirclePrefab.AddComponent<LineRenderer>();
             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
-            explosionCirclePrefab.AddComponent<DrawCircleScript>().SetStartColor(FactionColors.colors[faction]);
+            explosionCirclePrefab.AddComponent<DrawCircleScript>().SetStartColor(FactionManager.GetFactionColor(faction));
             explosionCirclePrefab.SetActive(false);
         }
         if (!explosionLinePrefab)
@@ -176,7 +176,7 @@ public class Entity : MonoBehaviour, IDamageable {
             explosionLinePrefab.transform.SetParent(transform, false);
             LineRenderer lineRenderer = explosionLinePrefab.AddComponent<LineRenderer>();
             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
-            explosionLinePrefab.AddComponent<DrawLineScript>().SetStartColor(FactionColors.colors[faction]);
+            explosionLinePrefab.AddComponent<DrawLineScript>().SetStartColor(FactionManager.GetFactionColor(faction));
             explosionLinePrefab.SetActive(false);
         }
         if (!deathExplosionPrefab)
@@ -191,7 +191,7 @@ public class Entity : MonoBehaviour, IDamageable {
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
             renderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
-            renderer.color = FactionColors.colors[faction];
+            renderer.color = FactionManager.GetFactionColor(faction);
             if (blueprint)
             { // check if it contains a blueprint (it should)
                 if (blueprint.coreSpriteID == "" && blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore)
@@ -203,7 +203,7 @@ public class Entity : MonoBehaviour, IDamageable {
             }
             else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
             renderer.sortingOrder = 101;
-        } else GetComponent<SpriteRenderer>().color = FactionColors.colors[faction]; // needed to reset outpost colors
+        } else GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(faction); // needed to reset outpost colors
         if (!GetComponent<Rigidbody2D>())
         {
             entityBody = gameObject.AddComponent<Rigidbody2D>();
@@ -412,7 +412,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            if(faction != 0 && (parts[i] != shell) && Random.value < 0.1f && !(this as PlayerCore) && this as ShellCore && 
+            if(!FactionManager.IsAllied(0, faction) && (parts[i] != shell) && Random.value < 0.1f && !(this as PlayerCore) && this as ShellCore && 
                 ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
                 parts[i].SetCollectible(true);
                 if(sectorMngr) AIData.strayParts.Add(parts[i]);
@@ -429,7 +429,7 @@ public class Entity : MonoBehaviour, IDamageable {
             {
                 BZM.CreditsCollected += 5;
             }
-            if (this as ShellCore && faction == 1)
+            if (this as ShellCore && !FactionManager.IsAllied(0, faction))
             {
                 foreach(var part in blueprint.parts)
                 {

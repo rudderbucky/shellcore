@@ -81,7 +81,7 @@ public class Bullet : WeaponAbility {
         script.SetTerrain(terrain);
         script.SetShooterFaction(Core.faction);
         script.SetPierceFactor(pierceFactor);
-        script.particleColor = part && part.info.shiny ? ShinyFactionColors.colors[Core.faction] : new Color(0.8F,1F,1F,0.9F);
+        script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
         script.missParticles = true;
 
         // Add velocity to the bullet

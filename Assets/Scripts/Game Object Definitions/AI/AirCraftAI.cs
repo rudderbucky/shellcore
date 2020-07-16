@@ -237,7 +237,7 @@ public class AirCraftAI : MonoBehaviour
             }
 
             // shouldn't tick if dead or in cutscene, give control to the cutscene
-            if (aggroTarget && aggroTarget.faction != craft.faction && !DialogueSystem.isInCutscene) 
+            if (aggroTarget && !FactionManager.IsAllied(aggroTarget.faction, craft.faction) && !DialogueSystem.isInCutscene) 
             {
                 if (aggroTarget.GetIsDead() || aggroTarget.invisible)
                 {
@@ -401,7 +401,7 @@ public class AirCraftAI : MonoBehaviour
                 continue;
             if (AIData.entities[i] is T)
             {
-                if (((AIData.entities[i].faction == faction) ^ !enemy) && faction != -1)
+                if ((FactionManager.IsAllied(AIData.entities[i].faction, faction) ^ !enemy) && faction != -1)
                     continue;
 
                 float d = (position - AIData.entities[i].transform.position).sqrMagnitude;

@@ -32,7 +32,7 @@ public class DialogueTraverser : Traverser
     {
         while (true)
         {
-            Debug.Log("Dialogue Canvas " +  nodeCanvas + " now traversing: " + currentNode);
+            //Debug.Log("Dialogue Canvas " +  nodeCanvas + " now traversing: " + currentNode);
             if(currentNode is StartDialogueNode)
             {
                 (currentNode as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Dialogue;

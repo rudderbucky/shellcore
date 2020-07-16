@@ -134,12 +134,11 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             Transform target = targetingSystem.GetTarget(true);
             if (target && target.GetComponent<IDamageable>() != null) { // check if there is a target
-                Debug.Log("Weapon tick! @ " + Core.name);
                 Core.SetIntoCombat(); // now in combat
                 Transform targetEntity = target;
                 IDamageable tmp = targetEntity.GetComponent<IDamageable>();
 
-                if (DistanceCheck(targetEntity) && tmp.GetFaction() != Core.faction)
+                if (DistanceCheck(targetEntity) && !FactionManager.IsAllied(tmp.GetFaction(), Core.faction))
                     // check if in range
                 {
                     bool success = Execute(targetEntity.position); // execute ability using the position to fire

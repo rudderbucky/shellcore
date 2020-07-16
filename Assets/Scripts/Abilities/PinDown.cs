@@ -38,7 +38,7 @@ public class PinDown : ActiveAbility
             target = null;
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && AIData.entities[i].faction != Core.faction)
+                if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction))
                 {
                     float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
                     if (d < minDist)

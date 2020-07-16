@@ -59,7 +59,7 @@ public class AirCarrier : AirConstruct, ICarrier {
             {
                 foreach(var target in BattleZoneManager.getTargets())
                 {
-                    if(target.faction != faction && !target.GetIsDead())
+                    if(!FactionManager.IsAllied(target.faction, faction) && !target.GetIsDead())
                     {
                         enemyTargetFound = true;
                         break;

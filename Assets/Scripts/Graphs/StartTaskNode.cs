@@ -187,7 +187,7 @@ namespace NodeEditorFramework.Standard
             dialogue.nodes = new List<Dialogue.Node>();
             var node = new Dialogue.Node();
             node.ID = 0;
-            node.text = taskConfirmedDialogue;
+            node.text = taskConfirmedDialogue != null ? taskConfirmedDialogue : "Complete the task."; // TODO: Why is this (and the color(?)) sometimes null? Is the task node not loaded correctly?
             node.textColor = dialogueColor;
             node.nextNodes = new List<int>() {1};
 

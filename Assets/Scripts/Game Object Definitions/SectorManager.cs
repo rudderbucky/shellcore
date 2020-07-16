@@ -11,6 +11,8 @@ public class SectorManager : MonoBehaviour
     public static SectorLoadDelegate OnSectorLoad;
     public static SectorManager instance;
 
+    public static string customPath = "";
+
     public bool jsonMode;
     public List<Sector> sectors; //TODO: RM: load sectors from files (already done elsewhere; would it make sense to move it to RM?)
     public PlayerCore player;
@@ -86,7 +88,12 @@ public class SectorManager : MonoBehaviour
         sectorBorders.loop = true;
         OnSectorLoad = null;
 
-        Debug.Log(testJsonPath);
+        //Debug.Log(testJsonPath);
+        if (customPath != "" && current == null)
+        {
+            jsonPath = customPath;
+            jsonMode = true;
+        }
         if(jsonMode) LoadSectorFile(testJsonPath == null ? jsonPath : testJsonPath);
         jsonMode = false;
     }
@@ -166,19 +173,22 @@ public class SectorManager : MonoBehaviour
             try
             {
                 // canvas handling
-                foreach(var canvas in Directory.GetFiles(path + "\\Canvases"))
+                taskManager.ClearCanvases();
+                dialogueSystem.ClearCanvases();
+
+                foreach (var canvas in Directory.GetFiles(path + "\\Canvases"))
                 {
                     if(canvas.Contains(".meta")) continue;
                     
                     if(canvas.Contains(".taskdata"))
                     {
-                        taskManager.SetCanvasPath(canvas);
+                        taskManager.AddCanvasPath(canvas);
                         continue;
                     }
 
                     if(canvas.Contains(".dialoguedata"))
                     {
-                        dialogueSystem.SetCanvasPath(canvas);
+                        dialogueSystem.AddCanvasPath(canvas);
                         continue;
                     }
                 }

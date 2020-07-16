@@ -44,8 +44,11 @@ public class SaveHandler : MonoBehaviour {
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
 
-
-            //SectorManager.instance.LoadSectorFile(save.resourcePath);
+            if (save.resourcePath != "")
+            {
+                SectorManager.instance.LoadSectorFile(save.resourcePath);
+                taskManager.Initialize(true); // Re-init
+            }
 
             for (int i = 0; i < save.taskVariableNames.Length; i++)
             {

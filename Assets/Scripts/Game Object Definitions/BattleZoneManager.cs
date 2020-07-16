@@ -123,14 +123,14 @@ public class BattleZoneManager : MonoBehaviour
         return strings;
     }
 
-    public void AlertPlayers(int faction, string message) {
-        foreach(Entity target in targets) {
-            if(target as PlayerCore && target.faction == faction) {
-                ((PlayerCore)target).alerter.showMessage(message, "clip_stationlost");
-            }
+    public void AlertPlayers(int faction, string message)
+    {
+        if (faction == 0)
+        {
+            PlayerCore.Instance.alerter.showMessage(message, "clip_stationlost");
         }
     }
-    public void UpdateCounters()
+    public void UpdateCounters() // TODO: Allied victory
     {
         if (playing && enabled)
         {

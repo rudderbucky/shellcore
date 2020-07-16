@@ -8625,6 +8625,7 @@ GameObject:
   m_Component:
   - component: {fileID: 700752736}
   - component: {fileID: 700752735}
+  - component: {fileID: 700752737}
   m_Layer: 0
   m_Name: SystemLoader
   m_TagString: Untagged
@@ -8650,6 +8651,7 @@ MonoBehaviour:
   sectorManager: {fileID: 1863658736}
   backgroundScript: {fileID: 715925746}
   dialogueSystem: {fileID: 1193583211}
+  factionManager: {fileID: 700752737}
 --- !u!4 &700752736
 Transform:
   m_ObjectHideFlags: 0
@@ -8664,6 +8666,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &700752737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700752734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f6d2752e198cf24eb48cc91c7b48aca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  factions: []
 --- !u!1 &705696246
 GameObject:
   m_ObjectHideFlags: 0
@@ -24280,7 +24295,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ec6863ab82c12b943a46718797ba0f35, type: 2}
   - {fileID: 11400000, guid: c381e686d1c019643898f125c1b2eafa, type: 2}
   player: {fileID: 1878101311}
-  current: {fileID: 11400000, guid: ec6863ab82c12b943a46718797ba0f35, type: 2}
+  current: {fileID: 0}
   background: {fileID: 715925746}
   info: {fileID: 0}
   resourcePath: 

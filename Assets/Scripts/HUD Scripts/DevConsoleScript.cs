@@ -39,98 +39,115 @@ public class DevConsoleScript : MonoBehaviour
         inputField.text = "";
         inputField.ActivateInputField();
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "SampleScene")
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene")
         {
-            Debug.Log("<color=orange>Cannot execute commands outside game.</color>");
-            return;
+            if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
+            {
+                var player = PlayerCore.Instance;
+                player.SetMaxHealth(new float[] { 9999, 9999, 9999 }, true);
+                player.SetRegens(new float[] { 9999, 9999, 9999 });
+                player.credits = 999999;
+                player.enginePower = 9999f;
+                player.damageAddition = 99999f;
+                player.AddPower(10000);
+                textBox.text += "\n<color=green>I am noob.</color>";
+            }
+            else if (command.Equals("Immortality", StringComparison.CurrentCultureIgnoreCase))
+            {
+                var player = PlayerCore.Instance;
+                player.SetMaxHealth(new float[] { 9999, 9999, 9999 }, true);
+                player.SetRegens(new float[] { 9999, 9999, 9999 });
+                textBox.text += "\n<color=green>Immortality is an illusion, enjoy it while it lasts.</color>";
+            }
+            else if (command.Equals("Skynet will rise", StringComparison.CurrentCultureIgnoreCase))
+            {
+                SectorManager.instance.Clear();
+                SectorManager.instance.LoadSectorFile(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors/AI-Test"));
+                PlayerCore.Instance.Warp(Vector3.zero);
+                textBox.text += "\n<color=green>I, for one, welcome our new robotic overlords.</color>";
+            }
+            else if (command.StartsWith("Add power ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int number = int.Parse(command.Substring(10).Trim());
+                PlayerCore.Instance.AddPower(number);
+            }
+            else if (command.Equals("Full log", StringComparison.CurrentCultureIgnoreCase))
+            {
+                fullLog = true;
+                textBox.text += "\n<color=green>I see all, I know all</color>";
+            }
+            else if (command.Equals("Commit sudoku", StringComparison.CurrentCultureIgnoreCase))
+            {
+                PlayerCore.Instance.TakeCoreDamage(float.MaxValue);
+                textBox.text += "\n<color=green>Die, die, die!</color>";
+            }
+            else if (command.StartsWith("Speed of light", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int locNum = 0;
+                if (command.Length > 14)
+                {
+                    bool success = int.TryParse(command.Substring(14).Trim(), out locNum);
+                    if (!success)
+                        Debug.Log("Wrong number format!");
+                }
+
+                if (locNum < TaskManager.objectiveLocations.Count)
+                {
+                    PlayerCore.Instance.Warp(TaskManager.objectiveLocations[locNum].location);
+                }
+                textBox.text += "\n<color=green>Country roads, take me home. To the place I belong!</color>";
+            }
+            else if (command.Equals("Spectate", StringComparison.CurrentCultureIgnoreCase))
+            {
+                var player = PlayerCore.Instance;
+                SpriteRenderer[] renderers = player.GetComponentsInChildren<SpriteRenderer>(true);
+                for (int i = 0; i < renderers.Length; i++)
+                {
+                    renderers[i].color = new Color(1f, 1f, 1f, 0.1f);
+                }
+                Collider2D[] colliders = player.GetComponentsInChildren<Collider2D>(true);
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    colliders[i].enabled = false;
+                }
+                player.GetComponent<TractorBeam>().enabled = false;
+                player.GetAbilityHandler().Deinitialize();
+                player.hud.DeinitializeHUD();
+                player.invisible = true;
+                textBox.text += "\n<color=green>You can hide, but you can't run!</color>";
+            }
+            else if (command.Equals("Exit", StringComparison.CurrentCultureIgnoreCase))
+            {
+                textBox.enabled = image.enabled = !image.enabled;
+                inputField.gameObject.SetActive(image.enabled);
+            }
+            else if (command.Equals("I am Ormanus", StringComparison.CurrentCultureIgnoreCase))
+            {
+                EnterCommand("I am god");
+                EnterCommand("spectate");
+                EnterCommand("skynet will rise");
+            }
+        }
+        else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            if (command.StartsWith("Load ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                string directory = command.Substring(5).Trim();
+                string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", directory);
+                if (System.IO.Directory.Exists(finalPath))
+                {
+                    SectorManager.customPath = finalPath;
+                    VersionNumberScript.version = directory + " [Custom]";
+                    VersionNumberScript.Refresh();
+                    textBox.text += "\n<color=green>Custom world loaded!</color>";
+                }
+                else
+                {
+                    textBox.text += "\n<color=orange>Invalid path.</color>";
+                }
+            }
         }
 
-        if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
-        {
-            var player = PlayerCore.Instance;
-            player.SetMaxHealth(new float[] { 9999, 9999, 9999 }, true);
-            player.SetRegens(new float[] { 9999, 9999, 9999 });
-            player.credits = 999999;
-            player.enginePower = 9999f;
-            player.damageAddition = 99999f;
-            player.AddPower(10000);
-            textBox.text += "\n<color=green>I am noob.</color>";
-        }
-        else if (command.Equals("Immortality", StringComparison.CurrentCultureIgnoreCase))
-        {
-            var player = PlayerCore.Instance;
-            player.SetMaxHealth(new float[] { 9999, 9999, 9999 }, true);
-            player.SetRegens(new float[] { 9999, 9999, 9999 });
-            textBox.text += "\n<color=green>Immortality is an illusion, enjoy it while it lasts.</color>";
-        }
-        else if (command.Equals("Skynet will rise", StringComparison.CurrentCultureIgnoreCase))
-        {
-            SectorManager.instance.Clear();
-            SectorManager.instance.LoadSectorFile(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors/AI-Test"));
-            PlayerCore.Instance.Warp(Vector3.zero);
-            textBox.text += "\n<color=green>I, for one, welcome our new robotic overlords.</color>";
-        }
-        else if (command.StartsWith("Add power ", StringComparison.CurrentCultureIgnoreCase))
-        {
-            int number = int.Parse(command.Substring(10).Trim());
-            PlayerCore.Instance.AddPower(number);
-        }
-        else if (command.Equals("Full log", StringComparison.CurrentCultureIgnoreCase))
-        {
-            fullLog = true;
-            textBox.text += "\n<color=green>I see all, I know all</color>";
-        }
-        else if (command.Equals("Commit sudoku", StringComparison.CurrentCultureIgnoreCase))
-        {
-            PlayerCore.Instance.TakeCoreDamage(float.MaxValue);
-            textBox.text += "\n<color=green>Die, die, die!</color>";
-        }
-        else if (command.StartsWith("Speed of light", StringComparison.CurrentCultureIgnoreCase))
-        {
-            int locNum = 0;
-            if (command.Length > 14)
-            {
-                bool success = int.TryParse(command.Substring(14).Trim(), out locNum);
-                if (!success)
-                    Debug.Log("Wrong number format!");
-            }
-
-            if (locNum < TaskManager.objectiveLocations.Count)
-            {
-                PlayerCore.Instance.Warp(TaskManager.objectiveLocations[locNum].location);
-            }
-            textBox.text += "\n<color=green>Country roads, take me home. To the place I belong!</color>";
-        }
-        else if (command.Equals("Spectate", StringComparison.CurrentCultureIgnoreCase))
-        {
-            var player = PlayerCore.Instance;
-            SpriteRenderer[] renderers = player.GetComponentsInChildren<SpriteRenderer>(true);
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                renderers[i].color = new Color(1f, 1f, 1f, 0.1f);
-            }
-            Collider2D[] colliders = player.GetComponentsInChildren<Collider2D>(true);
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                colliders[i].enabled = false;
-            }
-            player.GetComponent<TractorBeam>().enabled = false;
-            player.GetAbilityHandler().Deinitialize();
-            player.hud.DeinitializeHUD();
-            player.invisible = true;
-            textBox.text += "\n<color=green>You can hide, but you can't run!</color>";
-        }
-        else if (command.Equals("Exit", StringComparison.CurrentCultureIgnoreCase))
-        {
-            textBox.enabled = image.enabled = !image.enabled;
-            inputField.gameObject.SetActive(image.enabled);
-        }
-        else if (command.Equals("I am Ormanus", StringComparison.CurrentCultureIgnoreCase))
-        {
-            EnterCommand("I am god");
-            EnterCommand("spectate");
-            EnterCommand("skynet will rise");
-        }
     }
 
     void Update()

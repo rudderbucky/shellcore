@@ -34,7 +34,7 @@ public class Drone : AirCraft, IOwnable {
             var vec = Vector2.zero;
             foreach(var ent in BattleZoneManager.getTargets())
             {
-                if(ent && ent is ICarrier && ent.faction != owner.GetFaction() && ent.transform)
+                if(ent && ent is ICarrier && !FactionManager.IsAllied(ent.faction, owner.GetFaction()) && ent.transform)
                 {
                     vec = ent.transform.position;
                 }

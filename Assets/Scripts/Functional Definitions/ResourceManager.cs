@@ -73,6 +73,8 @@ public class ResourceManager : MonoBehaviour
                     mode = 3;
                 else if (line.ToLower().StartsWith("paths:"))
                     mode = 4;
+                else if (line.ToLower().StartsWith("factions:"))
+                    mode = 5;
                 else
                 {
                     string[] names = line.Split(':');
@@ -117,6 +119,13 @@ public class ResourceManager : MonoBehaviour
                                 var pathBlueprint = ScriptableObject.CreateInstance<Path>();
                                 JsonUtility.FromJsonOverwrite(pathData, pathBlueprint);
                                 resources[names[0]] = pathBlueprint;
+                                break;
+                            case 5:
+                                //load faction
+                                string factionData = File.ReadAllText(Application.streamingAssetsPath + "\\" + names[1]);
+                                var faction = ScriptableObject.CreateInstance<Faction>();
+                                JsonUtility.FromJsonOverwrite(factionData, faction);
+                                resources[names[0]] = faction;
                                 break;
                             default:
                                 break;
@@ -202,6 +211,17 @@ public class ResourceManager : MonoBehaviour
         if (ID == "" || ID == null)
             return false;
         return resources.ContainsKey(ID);
+    }
+
+    public static T[] GetAssetsOfType<T>() where T : Object
+    {
+        List<T> results = new List<T>();
+        foreach (var resource in Instance.resources)
+        {
+            if (resource.Value is T)
+                results.Add(resource.Value as T);
+        }
+        return results.ToArray();
     }
 }
 

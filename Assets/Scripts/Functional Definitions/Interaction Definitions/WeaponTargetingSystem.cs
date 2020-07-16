@@ -82,7 +82,8 @@ public class WeaponTargetingSystem {
 
         return (damageable != null
             && !damageable.GetIsDead()
-            && damageable.GetFaction() != ability.Core.faction
+            && damageable.GetTransform() != ability.Core.GetTransform()
+            && !FactionManager.IsAllied(damageable.GetFaction(), ability.Core.faction)
             && ability.CheckCategoryCompatibility(damageable)
             && (t.position - ability.transform.position).magnitude <= ability.GetRange()
             && !damageable.GetInvisible());

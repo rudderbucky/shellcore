@@ -515,7 +515,7 @@ public class BattleAI : AIModule
                 if (AIData.entities[j] is Turret)
                 {
                     if ((AIData.entities[j].transform.position - t.entity.transform.position).sqrMagnitude < 150f)
-                        t.influence += AIData.entities[j].faction == t.entity.faction ? 1f : -1f;
+                        t.influence += FactionManager.IsAllied(AIData.entities[j].faction, t.entity.faction) ? 1f : -1f;
                 }
             }
         }
@@ -526,7 +526,7 @@ public class BattleAI : AIModule
         Entity[] targets = allEntities ? AIData.entities.ToArray() : BattleZoneManager.getTargets();
         for (int i = 0; i < targets.Length; i++)
         {
-            if(targets[i].faction != craft.faction && targets[i].Terrain == Entity.TerrainType.Ground)
+            if(!FactionManager.IsAllied(targets[i].faction, craft.faction) && targets[i].Terrain == Entity.TerrainType.Ground)
             {
                 return true;
             }

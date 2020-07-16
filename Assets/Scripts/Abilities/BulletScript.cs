@@ -59,7 +59,7 @@ public class BulletScript : MonoBehaviour {
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
         if (craft != null && !craft.GetIsDead()) // check if the component was obtained
         {
-            if (craft.GetFaction() != faction && CheckCategoryCompatibility(craft))
+            if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && craft.GetTransform() != owner.GetTransform())
             {
                 var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration  
                                     

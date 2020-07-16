@@ -76,7 +76,7 @@ public class PathAI : AIModule
         for (int i = 0; i < constructs.Count; i++)
         {
             //TODO: find carrier (Add to blackboard)
-            if (constructs[i].faction != craft.faction)
+            if (!FactionManager.IsAllied(constructs[i].faction, craft.faction))
             {
                 nodes.Add(new AutoNode() { construct = constructs[i], index = 0 });
                 constructs.RemoveAt(i);
