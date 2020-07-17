@@ -334,14 +334,23 @@ public class Entity : MonoBehaviour, IDamageable {
             }
         }
 
-        if (this as ShellCore && !gameObject.GetComponentInChildren<MainBullet>())
+        if (this as ShellCore)
         {
-            MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
-            mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-            mainBullet.terrain = TerrainType.Air;
-            mainBullet.SetActive(true);
-            abilities.Insert(0, mainBullet);
-        } else abilities.Insert(0, gameObject.GetComponentInChildren<MainBullet>());
+            if (!gameObject.GetComponentInChildren<MainBullet>())
+            {
+                MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
+                mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+                mainBullet.terrain = TerrainType.Air;
+                mainBullet.SetActive(true);
+                abilities.Insert(0, mainBullet);
+            }
+            else
+            {
+                MainBullet mainBullet = gameObject.GetComponentInChildren<MainBullet>();
+                mainBullet.SetDestroyed(false);
+                abilities.Insert(0, mainBullet);
+            }
+        }
 
         // unique abilities for mini and worker drones here
         if(this as Drone) {
@@ -377,7 +386,7 @@ public class Entity : MonoBehaviour, IDamageable {
         ConnectedTreeCreator();
 
         maxHealth.CopyTo(currentHealth, 0);
-        // Add abilities
+
         if (OnEntitySpawn != null)
             OnEntitySpawn.Invoke(this);
     }

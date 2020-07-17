@@ -41,6 +41,7 @@ public class AirCraftAI : MonoBehaviour
     float aggroSearchTimer = 0f;
 
     public bool allowRetreat;
+    const float retreatTreshold = 0.15f;
     float retreatSearchTimer = 0f;
     bool retreatTargetFound = false;
     Vector2 retreatTarget;
@@ -313,15 +314,14 @@ public class AirCraftAI : MonoBehaviour
                     if (aggroTarget == null)
                     {
                         module.ActionTick();
-
-                        if (allowRetreat)
+                    }
+                    if (allowRetreat)
+                    {
+                        // check if retreat necessary
+                        if (craft.GetHealth()[0] < retreatTreshold * craft.GetMaxHealth()[0])
                         {
-                            // check if retreat necessary
-                            if (craft.GetHealth()[0] < 0.1f * craft.GetMaxHealth()[0])
-                            {
-                                state = AIState.Retreating;
-                                //Debug.LogFormat("Faction {0} retreating!", craft.faction);
-                            }
+                            state = AIState.Retreating;
+                            Debug.Log(craft.name + "[ " + craft.faction + " ] retreating!");
                         }
                     }
                 }
@@ -332,29 +332,42 @@ public class AirCraftAI : MonoBehaviour
                         Entity enemy = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, Entity.TerrainType.All);
                         if (enemy && (enemy.transform.position - craft.transform.position).sqrMagnitude < 1600f)
                         {
-                            retreatTarget = (craft.transform.position - enemy.transform.position).normalized * 20f;
+                            retreatTarget = craft.transform.position + (craft.transform.position - enemy.transform.position).normalized * 20f;
 
-                            // stay inside sector
+                            //Debug.Log(craft.name + "[ " + craft.faction + " ] Initial retreat target : " + retreatTarget);
+
                             IntRect bounds = SectorManager.instance.current.bounds;
+                            if (!bounds.contains(retreatTarget))
+                            {
+                                retreatTarget = craft.spawnPoint;
+                                //Debug.Log(craft.name + "[ " + craft.faction + " ] Updated to Spawn point : " + retreatTarget);
+                            }
+
+                            // stay inside sector (just in case the spawn point is outside)
                             if (retreatTarget.x > bounds.x + bounds.w)
                                 retreatTarget = new Vector2(bounds.x + bounds.w, retreatTarget.y);
                             if (retreatTarget.x < bounds.x)
                                 retreatTarget = new Vector2(bounds.x, retreatTarget.y);
-                            if (retreatTarget.y > bounds.y + bounds.h)
-                                retreatTarget = new Vector2(retreatTarget.x, bounds.y + bounds.h);
-                            if (retreatTarget.y < bounds.y)
+                            if (retreatTarget.y < bounds.y - bounds.h)
+                                retreatTarget = new Vector2(retreatTarget.x, bounds.y - bounds.h);
+                            if (retreatTarget.y > bounds.y)
                                 retreatTarget = new Vector2(retreatTarget.x, bounds.y);
 
                             retreatTargetFound = true;
+                            //Debug.Log(craft.name + "[ " + craft.faction + " ] Sector bounds: " + bounds.x + ", " + bounds.y + ", " + bounds.w + ", " + bounds.h);
+                            //Debug.Log(craft.name + "[ " + craft.faction + " ] Found a retreat target! : " + retreatTarget);
                         }
                         else
-                            retreatTargetFound = false;
-                        retreatSearchTimer = Time.time + 1.0f;
+                        {
+                            retreatTarget = craft.spawnPoint;
+                            retreatTargetFound = true;
+                        }
+                        retreatSearchTimer = Time.time + 3.0f;
                     }
                     else if (retreatTargetFound)
                     {
                         movement.SetMoveTarget(retreatTarget);
-                        if (movement.targetIsInRange())
+                        if (movement.targetIsInRange() && retreatTarget != (Vector2)craft.spawnPoint)
                             retreatSearchTimer = 0f;
                     }
                     else
@@ -362,10 +375,10 @@ public class AirCraftAI : MonoBehaviour
                         movement.SetMoveTarget(craft.spawnPoint);
                     }
                     // check if retreating is still necessary
-                    if (craft.GetHealth()[0] > 0.1f * craft.GetMaxHealth()[0])
+                    if (craft.GetHealth()[0] > retreatTreshold * craft.GetMaxHealth()[0])
                     {
                         state = AIState.Active;
-                        //Debug.LogFormat("Faction {0} stopped retreating!", craft.faction);
+                        Debug.Log(craft.name + "[ " + craft.faction + " ] stopped retreating!");
                     }
 
                 }
