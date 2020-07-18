@@ -310,7 +310,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		shellImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
 		if(shellImage.sprite) {
 			shellImage.enabled = true;
-			shellImage.color = FactionColors.colors[0];
+			shellImage.color = FactionManager.GetFactionColor(0);
 			shellImage.rectTransform.sizeDelta = shellImage.sprite.bounds.size * 100;
 			shellImage.type = Image.Type.Sliced;
 			// orient shell image so relative center stays the same regardless of shell tier
@@ -322,7 +322,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		if(coreImage.sprite) {
 			coreImage.enabled = true;
 			coreImage.material = ResourceManager.GetAsset<Material>("material_color_swap");
-			coreImage.color = FactionColors.colors[0];
+			coreImage.color = FactionManager.GetFactionColor(0);
 			coreImage.preserveAspect = true;
 			coreImage.type = Image.Type.Sliced;
 			coreImage.rectTransform.sizeDelta = coreImage.sprite.bounds.size * 100;
@@ -331,7 +331,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 			miniDroneShooter.gameObject.SetActive(true);
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
-            miniDroneShooter.color = FactionColors.colors[0];
+            miniDroneShooter.color = FactionManager.GetFactionColor(0);
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;
         } else {

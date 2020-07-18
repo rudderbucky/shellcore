@@ -138,7 +138,7 @@ public class QuantityDisplayScript : MonoBehaviour {
                 targetName.text = "Unobtained";
                 targetDesc.text = "Part";
                 targetDist.text = "Bring to Yard";
-                targetName.color = targetDesc.color = targetDist.color = FactionColors.colors[obj.GetComponent<ShellPart>().GetFaction()];
+                targetName.color = targetDesc.color = targetDist.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
             }
         } else
         {

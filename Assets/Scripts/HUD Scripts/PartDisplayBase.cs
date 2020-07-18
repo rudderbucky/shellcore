@@ -52,6 +52,6 @@ public class PartDisplayBase : MonoBehaviour
             + "\nPART VALUE: \n" + value + " CREDITS";
         image.sprite = ResourceManager.GetAsset<Sprite>(partID + "_sprite");
         image.rectTransform.sizeDelta = image.sprite.bounds.size * 50;
-        image.color = info.shiny ? ShinyFactionColors.colors[0] : FactionColors.colors[0];
+        image.color = info.shiny ? FactionManager.GetFactionShinyColor(0) : FactionManager.GetFactionColor(0);
     }
 }

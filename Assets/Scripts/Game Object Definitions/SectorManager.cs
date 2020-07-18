@@ -571,7 +571,7 @@ public class SectorManager : MonoBehaviour
             {
                 GameObject gObj = Instantiate(obj as GameObject);
                 if(!gObj.GetComponent<EnergyRock>())
-                    gObj.GetComponent<SpriteRenderer>().color = FactionColors.colors[current.entities[i].faction];
+                    gObj.GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(current.entities[i].faction);
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
                 if(gObj.GetComponent<ShardRock>()) {

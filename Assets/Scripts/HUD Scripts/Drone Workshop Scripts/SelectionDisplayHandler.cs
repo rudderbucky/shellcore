@@ -19,7 +19,7 @@ public class SelectionDisplayHandler : MonoBehaviour
         if(shell.sprite) {
             shell.enabled = true;
             shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
-            shell.color = FactionColors.colors[faction];
+            shell.color = FactionManager.GetFactionColor(faction);
 
 			shell.type = Image.Type.Sliced;
 			// orient shell image so relative center stays the same regardless of shell tier
@@ -34,7 +34,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             core.type = Image.Type.Sliced;
             if(data == null) {
                 core.material = ResourceManager.GetAsset<Material>("material_color_swap");
-                core.color = FactionColors.colors[faction];
+                core.color = FactionManager.GetFactionColor(faction);
             }
         } else {
             core.enabled = false;
@@ -42,7 +42,7 @@ public class SelectionDisplayHandler : MonoBehaviour
         if(data != null && data.type == DroneType.Mini) {
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
-            miniDroneShooter.color = FactionColors.colors[faction];
+            miniDroneShooter.color = FactionManager.GetFactionColor(faction);
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;
         } else if(blueprint.intendedType == EntityBlueprint.IntendedType.Turret ||
@@ -50,7 +50,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite = 
                 ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(blueprint.parts[0].abilityID));
-            miniDroneShooter.color = FactionColors.colors[faction];
+            miniDroneShooter.color = FactionManager.GetFactionColor(faction);
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;            
         } else miniDroneShooter.enabled = false;

@@ -43,7 +43,7 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 	protected override void UpdateAppearance() {
 		// set colors
 		base.UpdateAppearance();
-		var mainColor = info.shiny ? ShinyFactionColors.colors[0] : FactionColors.colors[0];
+		var mainColor = info.shiny ? FactionManager.GetFactionShinyColor(0) : FactionManager.GetFactionColor(0);
 		if(highlighted) {
 			if(isInChain && validPos) {
 				image.material = ResourceManager.GetAsset<Material>("material_outline");

@@ -131,7 +131,7 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 foreach(var rend in item.obj.GetComponentsInChildren<SpriteRenderer>())
                 {
-                    rend.color = FactionColors.colors[item.faction];
+                    rend.color = FactionManager.GetFactionColor(item.faction);
                 }
             }
         }

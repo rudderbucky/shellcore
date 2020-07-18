@@ -75,4 +75,9 @@ public class FactionManager : MonoBehaviour
     {
         return ((instance.factions[faction1].relations >> faction2) & 1) > 0;
     }
+
+    public static int FactionCount
+    {
+        get { return instance.factions.Length; }
+    }
 }

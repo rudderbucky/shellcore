@@ -213,7 +213,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				placeable.obj.GetComponent<SpriteRenderer>().color = currentColor + new Color(0.5F,0.5F,0.5F);
 			} else if(GetIsFactable(placeable)) {
 				foreach(SpriteRenderer renderer in placeable.obj.GetComponentsInChildren<SpriteRenderer>()) {
-					renderer.color = FactionColors.colors[placeable.faction];
+					renderer.color = FactionManager.GetFactionColor(placeable.faction);
 				}
 				if(placeable.obj.GetComponentsInChildren<SpriteRenderer>().Length > 1)
 					placeable.obj.GetComponent<SpriteRenderer>().color = Color.white;
@@ -677,7 +677,7 @@ public class SectorCreatorMouse : MonoBehaviour {
 				
 				if(GetIsFactable(obj)) {
 					foreach(SpriteRenderer renderer in obj.obj.GetComponentsInChildren<SpriteRenderer>()) {
-						renderer.color = FactionColors.colors[obj.faction];
+						renderer.color = FactionManager.GetFactionColor(obj.faction);
 					}
 					if(obj.obj.GetComponentsInChildren<SpriteRenderer>().Length > 1)
 						obj.obj.GetComponent<SpriteRenderer>().color = Color.white;

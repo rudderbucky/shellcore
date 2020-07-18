@@ -216,7 +216,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         glowPrefab.transform.localScale = new Vector3(0.75F,0.75F,1);
         glowPrefab.GetComponent<SpriteRenderer>().color = new Color(1,1,1,0.5F);
         Destroy(glowPrefab, GetActiveTimeRemaining());
-        originalIndicatorColor = FactionColors.colors[Core.faction];
+        originalIndicatorColor = FactionManager.GetFactionColor(Core.faction);
         if (indicator)
         {
             if(blink)

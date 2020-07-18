@@ -41,7 +41,7 @@ public class DisplayPart : MonoBehaviour
 
 	protected virtual void UpdateAppearance() {
 		// set colors
-        image.color = info.shiny ? ShinyFactionColors.colors[faction] : FactionColors.colors[faction];
+        image.color = info.shiny ? FactionManager.GetFactionShinyColor(faction) : FactionManager.GetFactionColor(faction);
 		// set position
 		image.rectTransform.anchoredPosition = info.location * 100;
 		if(shooter) 

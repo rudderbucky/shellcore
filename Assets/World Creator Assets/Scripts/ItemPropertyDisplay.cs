@@ -17,6 +17,14 @@ public class ItemPropertyDisplay : MonoBehaviour
     void Start() 
     {
         if(!rectTransform) rectTransform = GetComponent<RectTransform>();
+        factionDropdown.ClearOptions();
+        List<string> options = new List<string>();
+        for (int i = 0; i < FactionManager.FactionCount; i++)
+        {
+            string option = FactionManager.GetFactionName(i);
+            options.Add(option);
+        }
+        factionDropdown.AddOptions(options);
     }
 
     void Update() 

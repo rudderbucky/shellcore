@@ -253,8 +253,8 @@ public class ReticleScript : MonoBehaviour {
             // show craft related information
 
             shellHealth.GetComponentInChildren<SpriteRenderer>().enabled = true;
-            shellHealth.GetComponentInChildren<SpriteRenderer>().color = 
-                FactionColors.colors[targetCraft.GetFaction()];
+            shellHealth.GetComponentInChildren<SpriteRenderer>().color =
+                FactionManager.GetFactionColor(targetCraft.GetFaction());
             coreHealth.GetComponentInChildren<SpriteRenderer>().enabled = true;
 
             float[] targHealth = targetCraft.GetHealth(); // get the target current health

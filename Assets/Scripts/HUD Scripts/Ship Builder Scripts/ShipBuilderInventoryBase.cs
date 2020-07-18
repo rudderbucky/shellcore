@@ -20,7 +20,7 @@ public class ShipBuilderInventoryBase : MonoBehaviour
         image.sprite = ResourceManager.GetAsset<Sprite>(part.partID + "_sprite");
         isShiny.enabled = part.shiny;
 
-        image.color = activeColor = FactionColors.colors[0];
+        image.color = activeColor = FactionManager.GetFactionColor(0);
         if(part.shiny) 
         {
             activeColor += new Color32(0, 0, 150, 0);

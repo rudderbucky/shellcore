@@ -17,7 +17,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     public float tileSize { get; private set; }
     private Color color;
     private Vector2 offset;
-    public static bool CheckOnGround(Vector3 position)
+    public static bool IsOnGround(Vector3 position)
     {
         for (int i = 0; i < instance.tiles.Count; i++)
         {
@@ -133,7 +133,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     {
         Debug.Log("Building nodes...");
 
-        float dToCenter = tileSize / 3f; // node distance to center on one axis
+        float dToCenter = tileSize / 5f; // node distance to center on one axis
         nodes = new List<NavigationNode>();
         areaIDByNode = new Dictionary<NavigationNode, int>();
         areaIDByTile = new Dictionary<GameObject, int>();

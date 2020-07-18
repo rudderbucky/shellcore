@@ -17,7 +17,7 @@ public class GroundCraft : Craft
     protected override void Update()
     {
         base.Update();
-        if (draggable && LandPlatformGenerator.CheckOnGround(transform.position) && !draggable.dragging)
+        if (draggable && LandPlatformGenerator.IsOnGround(transform.position) && !draggable.dragging)
         {
             isOnGround = true;
         }

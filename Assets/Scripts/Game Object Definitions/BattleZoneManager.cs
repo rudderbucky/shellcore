@@ -98,7 +98,7 @@ public class BattleZoneManager : MonoBehaviour
         foreach (var statBlock in stats)
         {
             string str = "";
-            str += "<color=" + FactionColors.colorNames[statBlock.faction] + ">" + (statBlock.faction == 0 ? "PLAYER" : "ENEMY") + "</color>\n\n";
+            str += "<color=" + FactionManager.GetFactionColorName(statBlock.faction) + ">" + (statBlock.faction == 0 ? "PLAYER" : "ENEMY") + "</color>\n\n";
             str += statBlock.kills + "\n";
             str += statBlock.deaths + "\n";
             str += (statBlock.deaths > 0 ? (statBlock.kills / statBlock.deaths).ToString() : "-") + "\n";

@@ -378,7 +378,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			shell.sprite = ResourceManager.GetAsset<Sprite>("core1_shell");
 			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
 		}
-		shell.color = FactionColors.colors[0];
+		shell.color = FactionManager.GetFactionColor(0);
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
 		// orient shell image so relative center stays the same regardless of shell tier
@@ -386,7 +386,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
 		
 		core.material = ResourceManager.GetAsset<Material>("material_color_swap");
-		core.color = FactionColors.colors[0];
+		core.color = FactionManager.GetFactionColor(0);
 		core.preserveAspect = true;
 		core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
 		List<EntityBlueprint.PartInfo> parts = new List<EntityBlueprint.PartInfo>();
@@ -812,7 +812,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		{
 			shell.sprite = ResourceManager.GetAsset<Sprite>("core3_shell");
 			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
-			shell.color = FactionColors.colors[0];
+			shell.color = FactionManager.GetFactionColor(0);
 			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
 			// orient shell image so relative center stays the same regardless of shell tier
@@ -820,8 +820,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
 			
 			core.material = ResourceManager.GetAsset<Material>("material_color_swap");
-			core.color = FactionColors.colors[0];
-			core.preserveAspect = true;
+            core.color = FactionManager.GetFactionColor(0);
+
+            core.preserveAspect = true;
 			core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
 		}
 		
