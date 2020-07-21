@@ -62,7 +62,7 @@ public class SectorManager : MonoBehaviour
     }
 
     public static string testJsonPath = null;
-    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main - " + VersionNumberScript.version;
+    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main - " + VersionNumberScript.mapVersion;
     public void Initialize()
     {
         if (instance != null)
@@ -241,6 +241,7 @@ public class SectorManager : MonoBehaviour
                     JsonUtility.FromJsonOverwrite(data.platformjson, plat);
                     plat.name = curSect.name + "Platform";
                     curSect.platform = plat;
+                    LandPlatformGenerator.instance.LoadNodes(plat.nodes);
 
                     // render the borders on the minimap
                     var border = new GameObject("MinimapSectorBorder - " + curSect.sectorName).AddComponent<LineRenderer>();
@@ -302,7 +303,7 @@ public class SectorManager : MonoBehaviour
                 Debug.LogError(e);
             }
         }
-        Debug.LogError("Could not find valid sector in that path");
+        Debug.LogError("Could not find valid sector in " + path);
         jsonMode = false;
         player.SetIsInteracting(false);
         loadSector();
@@ -456,8 +457,32 @@ public class SectorManager : MonoBehaviour
                 trade.mode = BuilderMode.Trader;
                 try
                 {
-                    blueprint.dialogue.traderInventory =
-                        JsonUtility.FromJson<ShipBuilder.TraderInventory>(data.blueprintJSON).parts;
+                    bool ok = true;
+                    if (blueprint.dialogue == null)
+                    {
+                        ok = false;
+                        Debug.Log("No dialogue!");
+                    }
+                    if (blueprint.dialogue.traderInventory == null)
+                    {
+                        ok = false;
+                        Debug.Log("No inventory!");
+                    }
+                    if (data.blueprintJSON == null || data.blueprintJSON == "")
+                    {
+                        ok = false;
+                        Debug.Log("No blueprint!");
+                    }
+                    if (ok)
+                    {
+                        ShipBuilder.TraderInventory inventory = JsonUtility.FromJson<ShipBuilder.TraderInventory>(data.blueprintJSON);
+                        if (inventory.parts != null)
+                        blueprint.dialogue.traderInventory = inventory.parts;
+                    }
+                    else
+                    {
+                        blueprint.dialogue.traderInventory = new List<EntityBlueprint.PartInfo>();
+                    }
                 }
                 catch(System.Exception e)
                 {
@@ -593,6 +618,12 @@ public class SectorManager : MonoBehaviour
         //land platforms
         lpg.SetColor(current.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
         lpg.BuildTiles(current.platform, new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2));
+        if (current.platform.nodes != null)
+            lpg.LoadNodes(current.platform.nodes);
+        else
+        {
+            Debug.Log("No nodes");
+        }
 
         //sector color
         background.setColor(current.backgroundColor);

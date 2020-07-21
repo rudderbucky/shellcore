@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,20 +9,33 @@ public class LandPlatformGenerator : MonoBehaviour {
     // TODO: generate one mesh instead of multiple objects
     public static LandPlatformGenerator instance { private set; get; }
     public LandPlatform blueprint;
-    private List<GameObject> tiles;
+    private Dictionary<int, GameObject> tiles;
     private List<Rect> areas;
     private List<NavigationNode> nodes;
+    private Vector2 center;
 
     private Dictionary<NavigationNode, int> areaIDByNode;
     private Dictionary<GameObject, int> areaIDByTile;
     public float tileSize { get; private set; }
     private Color color;
     private Vector2 offset;
+
     public static bool IsOnGround(Vector3 position)
     {
-        for (int i = 0; i < instance.tiles.Count; i++)
+        var cols = instance.blueprint.columns;
+        var rows = instance.blueprint.rows;
+        Vector2 offset = new Vector2
         {
-            if (instance.tiles[i].GetComponent<SpriteRenderer>().bounds.Contains(position))
+            x = instance.center.x - instance.tileSize * (cols - 1) / 2F,
+            y = instance.center.y + instance.tileSize * (rows - 1) / 2F
+        };
+        Vector2 relativePos = ((Vector2)position - offset) / instance.tileSize;
+        relativePos.y = -relativePos.y;
+        int index = Mathf.RoundToInt(relativePos.x) + Mathf.RoundToInt(relativePos.y) * cols;
+        if (instance.tiles.ContainsKey(index))
+        {
+            GameObject tile = instance.tiles[index];
+            if (tile.GetComponents<Collider2D>().Any(x => x.OverlapPoint(position)))
             {
                 return true;
             }
@@ -34,6 +48,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     }
     public void BuildTiles(LandPlatform platform, Vector2 center) {
 
+        this.center = center;
         blueprint = platform;
 
         if (blueprint == null || blueprint.prefabs.Length <= 0)
@@ -50,7 +65,7 @@ public class LandPlatformGenerator : MonoBehaviour {
             x = center.x - tileSize * (cols-1)/2F,
             y = center.y + tileSize * (rows-1)/2F
         };
-        tiles = new List<GameObject>();
+        tiles = new Dictionary<int, GameObject>();
         areas = new List<Rect>();
 
         for(int i = 0; i < blueprint.tilemap.Length; i++) {
@@ -69,42 +84,52 @@ public class LandPlatformGenerator : MonoBehaviour {
                     var tile = Instantiate(ResourceManager.GetAsset<GameObject>(blueprint.prefabs[blueprint.tilemap[i]]), pos, Quaternion.identity);
                     tile.transform.localEulerAngles = new Vector3(0,0,90 * blueprint.rotations[i]);
                     tile.GetComponent<SpriteRenderer>().color = color;
-                    tiles.Add(tile);
+                    tiles.Add(i, tile);
                     tile.transform.parent = transform;
                     areas.Add(new Rect(pos.x, pos.y, tileSize, tileSize));
                     break;
             }
         }
-        BuildNodes();
     }
 
     private void Awake()
     {
         instance = this;
+        nodes = new List<NavigationNode>();
+        tiles = new Dictionary<int, GameObject>();
     }
 
     public void Unload()
     {
-        for(int i = 0; i < tiles.Count; i++)
+        foreach (var tile in tiles)
         {
-            Destroy(tiles[i]);
+            Destroy(tile.Value);
         }
         tiles.Clear();
+        nodes.Clear();
     }
 
-    struct NavigationNode
+    [System.Serializable]
+    class NavigationNode
     {
-        public static bool operator ==(NavigationNode x, NavigationNode y)
+        public static bool operator ==(NavigationNode a, NavigationNode b)
         {
-            return x.pos == y.pos;
+            if (ReferenceEquals(a, null))
+                return ReferenceEquals(b, null);
+            if (ReferenceEquals(b, null))
+                return ReferenceEquals(a, null);
+            return a.Equals(b);
         }
-        public static bool operator !=(NavigationNode x, NavigationNode y)
+        public static bool operator !=(NavigationNode a, NavigationNode b)
         {
-            return x.pos != y.pos;
+            return !(a == b);
         }
 
         public override bool Equals(object obj)
         {
+            if (obj == null && this == null)
+                return true;
+
             if (!(obj is NavigationNode))
             {
                 return false;
@@ -120,6 +145,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         }
 
         public Vector2 pos;
+        [System.NonSerialized]
         public List<NavigationNode> neighbours;
         public List<float> distances;
         public NavigationNode(Vector2 position)
@@ -129,85 +155,183 @@ public class LandPlatformGenerator : MonoBehaviour {
             distances = new List<float>();
         }
     }
-    void BuildNodes()
+
+    public void LoadNodes(LandPlatform.GroundNode[] nodeData)
     {
-        Debug.Log("Building nodes...");
+        if (nodeData == null)
+            return;
 
-        float dToCenter = tileSize / 5f; // node distance to center on one axis
         nodes = new List<NavigationNode>();
-        areaIDByNode = new Dictionary<NavigationNode, int>();
-        areaIDByTile = new Dictionary<GameObject, int>();
-        for (int i = 0; i < blueprint.rows; i++)
+
+        // Load nodes
+        for (int i = 0; i < nodeData.Length; i++)
         {
-            for (int j = 0; j < blueprint.columns; j++)
-            {
-                if (blueprint.tilemap[i * blueprint.columns + j] > -1)
-                {
-                    //create nodes
-                    if (!isValidTile(i, j))
-                        continue;
-
-                    bool right = isValidTile(i, j + 1);
-                    bool up = isValidTile(i - 1, j);
-                    bool left = isValidTile(i, j - 1);
-                    bool down = isValidTile(i + 1, j);
-
-                    // Debug.Log(right + "" + up + left + down + " " + ((i - 1) * blueprint.columns + j + 1) + " " + isValidTile(i - 1, j + 1) + " " + (i * blueprint.columns + j));
-                    if ((!right && !up) || (right && up && !isValidTile(i - 1, j + 1))) //check if the tile is a corner
-                        nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize + dToCenter) + offset));
-                    if ((!left && !up) || (left && up && !isValidTile(i - 1, j - 1)))
-                        nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize + dToCenter) + offset));
-                    if ((!left && !down) || (left && down && !isValidTile(i + 1, j - 1)))
-                        nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize - dToCenter) + offset));
-                    if ((!right && !down) || (right && down && !isValidTile(i + 1, j + 1)))
-                        nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize - dToCenter) + offset));
-                }
-            }
+            var node = new NavigationNode(nodeData[i].pos);
+            nodes.Add(node);
         }
 
         int debugCount = 0;
 
-        //connect nodes
-        Debug.Log("Connecting nodes...");
-        for (int i = 0; i < nodes.Count; i++)
+        // Connect nodes
+        for (int i = 0; i < nodeData.Length; i++)
         {
-            for (int j = i + 1; j < nodes.Count; j++)
+            for (int j = i + 1; j < nodeData.Length; j++)
             {
-                if (isInLoS(nodes[i].pos, nodes[j].pos))
+                for (int k = 0; k < nodeData[i].neighbours.Length; k++)
                 {
-                    nodes[i].neighbours.Add(nodes[j]);
-                    nodes[j].neighbours.Add(nodes[i]);
-                    float d = (nodes[i].pos - nodes[j].pos).magnitude;
-                    nodes[i].distances.Add(d);
-                    nodes[j].distances.Add(d);
-                    debugCount++;
+                    if (nodeData[i].neighbours[k] == nodeData[j].ID)
+                    {
+                        nodes[i].neighbours.Add(nodes[j]);
+                        nodes[j].neighbours.Add(nodes[i]);
+                        nodes[i].distances.Add(nodeData[i].distances[k]);
+                        nodes[j].distances.Add(nodeData[i].distances[k]);
+                        debugCount++;
+                    }
                 }
             }
         }
 
+        // Generate dictionaries
+        areaIDByNode = new Dictionary<NavigationNode, int>();
+        areaIDByTile = new Dictionary<GameObject, int>();
+
         int currentAreaID = 0;
-        foreach(NavigationNode node in nodes) {
-            if(!areaIDByNode.ContainsKey(node)) {
+        foreach (NavigationNode node in nodes)
+        {
+            if (!areaIDByNode.ContainsKey(node))
+            {
                 RecursivelyDefineIDs(node, currentAreaID++);
             }
         }
 
-        foreach(GameObject tile in tiles) {
-            if(areaIDByTile.ContainsKey(tile)) continue;
-            foreach(NavigationNode node in nodes) {
-                if(isInLoS(tile.transform.position, node.pos)) {
+        foreach (var pair in tiles)
+        {
+            GameObject tile = pair.Value;
+            if (areaIDByTile.ContainsKey(tile)) continue;
+            foreach (NavigationNode node in nodes)
+            {
+                if (isInLoS(tile.transform.position, node.pos))
+                {
                     areaIDByTile.Add(tile, areaIDByNode[node]);
                     break;
                 }
             }
         }
         List<int> ids = new List<int>();
-        foreach(int ID in areaIDByTile.Values) {
-            if(!ids.Contains(ID)) {
+        foreach (int ID in areaIDByTile.Values)
+        {
+            if (!ids.Contains(ID))
+            {
                 ids.Add(ID);
             }
         }
         Debug.Log("Done! Nodes: " + nodes.Count + " Connections: " + debugCount + " Landmasses: " + ids.Count);
+    }
+
+    public static LandPlatform.GroundNode[] BuildNodes(LandPlatform platform, Vector2 center)
+    {
+        Debug.Log("Generating land tiles...");
+        instance.BuildTiles(platform, center);
+
+        Debug.Log("Building nodes...");
+
+        float tileSize = instance.tileSize;
+        Vector2 offset = instance.offset;
+        float dToCenter = tileSize / 5f; // node distance to center on one axis
+        instance.nodes = new List<NavigationNode>();
+
+        for (int i = 0; i < platform.rows; i++)
+        {
+            for (int j = 0; j < platform.columns; j++)
+            {
+                if (platform.tilemap[i * platform.columns + j] > -1)
+                {
+                    //create nodes
+                    if (!instance.isValidTile(i, j))
+                        continue;
+
+                    bool right = instance.isValidTile(i, j + 1);
+                    bool up = instance.isValidTile(i - 1, j);
+                    bool left = instance.isValidTile(i, j - 1);
+                    bool down = instance.isValidTile(i + 1, j);
+
+                    // check if 2-entry straight road
+                    if ((!right && !left && up && down) || (right && left && !up && !down))
+                        continue;
+
+                    if (platform.prefabs[platform.tilemap[i * platform.columns + j]] == "New 2 Entry")
+                        continue;
+
+                    // Square node pattern
+                    if (IsOnGround(new Vector2(j * tileSize + dToCenter, -i * tileSize + dToCenter) + offset))
+                        instance.nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize + dToCenter) + offset));
+                    if (IsOnGround(new Vector2(j * tileSize - dToCenter, -i * tileSize + dToCenter) + offset))
+                        instance.nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize + dToCenter) + offset));
+                    if (IsOnGround(new Vector2(j * tileSize - dToCenter, -i * tileSize - dToCenter) + offset))
+                        instance.nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize - dToCenter) + offset));
+                    if (IsOnGround(new Vector2(j * tileSize + dToCenter, -i * tileSize - dToCenter) + offset))
+                        instance.nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize - dToCenter) + offset));
+
+                    // Diamond node pattern
+                    //if (IsOnGround(new Vector2(j * tileSize + dToCenter, -i * tileSize) + offset))
+                    //    nodes.Add(new NavigationNode(new Vector2(j * tileSize + dToCenter, -i * tileSize) + offset));
+                    //if (IsOnGround(new Vector2(j * tileSize, -i * tileSize + dToCenter) + offset))
+                    //    nodes.Add(new NavigationNode(new Vector2(j * tileSize, -i * tileSize + dToCenter) + offset));
+                    //if (IsOnGround(new Vector2(j * tileSize - dToCenter, -i * tileSize) + offset))
+                    //    nodes.Add(new NavigationNode(new Vector2(j * tileSize - dToCenter, -i * tileSize) + offset));
+                    //if (IsOnGround(new Vector2(j * tileSize, -i * tileSize - dToCenter) + offset))
+                    //    nodes.Add(new NavigationNode(new Vector2(j * tileSize, -i * tileSize - dToCenter) + offset));
+                }
+            }
+        }
+        //connect nodes
+        Debug.Log("Connecting nodes...");
+        float maxDistanceSqr = (tileSize * 2f) * (tileSize * 2f);
+        for (int i = 0; i < instance.nodes.Count; i++)
+        {
+            for (int j = i + 1; j < instance.nodes.Count; j++)
+            {
+                if (instance.isInLoS(instance.nodes[i].pos, instance.nodes[j].pos, true))
+                {
+                    instance.nodes[i].neighbours.Add(instance.nodes[j]);
+                    instance.nodes[j].neighbours.Add(instance.nodes[i]);
+                    float d = (instance.nodes[i].pos - instance.nodes[j].pos).magnitude;
+                    instance.nodes[i].distances.Add(d);
+                    instance.nodes[j].distances.Add(d);
+                }
+            }
+        }
+
+        // Convert navigation nodes to storage format
+        LandPlatform.GroundNode[] storageNodes = new LandPlatform.GroundNode[instance.nodes.Count];
+        for (int i = 0; i < instance.nodes.Count; i++)
+        {
+            int[] neighbours = new int[instance.nodes[i].neighbours.Count];
+            float[] distances = new float[instance.nodes[i].neighbours.Count];
+            for (int j = 0; j < neighbours.Length; j++)
+            {
+                for (int k = 0; k < instance.nodes.Count; k++)
+                {
+                    if (instance.nodes[i].neighbours[j] == instance.nodes[k])
+                    {
+                        neighbours[j] = k;
+                        distances[j] = instance.nodes[i].distances[j];
+                        break;
+                    }
+                }
+            }
+            storageNodes[i] = new LandPlatform.GroundNode()
+            {
+                ID = i,
+                pos = instance.nodes[i].pos,
+                neighbours = neighbours,
+                distances = distances
+            };
+        }
+
+        instance.Unload();
+
+        return storageNodes;
     }
 
 
@@ -242,6 +366,12 @@ public class LandPlatformGenerator : MonoBehaviour {
         v3 = Camera.main.ScreenToWorldPoint(v3);
         Vector2 mPos = v3;
 
+        if (IsOnGround(mPos))
+            Gizmos.color = Color.white;
+        else
+            Gizmos.color = Color.red;
+        Gizmos.DrawSphere(mPos, 0.2f);
+
         if (areas != null)
         {
             for (int i = 0; i < areas.Count; i++)
@@ -252,7 +382,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                     int y = Mathf.FloorToInt((mPos.x - offset.x) / tileSize + 0.5f);
                     if (isValidTile(x, y))
                     {
-                        Gizmos.color = new Color(0, 100, 150);
+                        Gizmos.color = new Color(0.1f, 0.8f, 1f, 0.01f);
                         Gizmos.DrawCube(new Vector3(y * tileSize, -x * tileSize, 0) + (Vector3)offset, new Vector3(tileSize, tileSize, 0));
                     }
                 }
@@ -275,29 +405,38 @@ public class LandPlatformGenerator : MonoBehaviour {
         }
     }
     #endif
-    bool isInLoS(Vector2 p1, Vector2 p2)
+    bool isInLoS(Vector2 p1, Vector2 p2, bool reduceLongEdges = false)
     {
-        Vector2 p12 = (p1 - offset) / tileSize; //+ Vector2.one * 0.5f;
-        p12.x += 0.5f;
-        p12.y = -p12.y + 0.5f;
-        Vector2 p22 = (p2 - offset) / tileSize; //+ Vector2.one * 0.5f;
-        p22.x += 0.5f;
-        p22.y = -p22.y + 0.5f;
+        // TODO: try using sub-divisions instead of a ray?
+        // Other optimization?
 
-        float d = (p22 - p12).magnitude;
+        float d = (p2 - p1).magnitude;
 
-        Vector2 step = (p22 - p12) / (d * 10f);
-        Vector2 point = p12;
+        Vector2 step = (p2 - p1) / (d * 10f);
+        Vector2 point = p1;
         float stepLength = step.magnitude;
-        Vector2 normal = new Vector2(step.y, -step.x).normalized * 0.5f / tileSize; //half-width of a tank = 0.5f
-        //Debug.Log(p12 + " " + p22 + step);
+        Vector2 normal = new Vector2(step.y, -step.x).normalized * 0.5f; //half-width of a tank = 0.5f
         for (float i = 0; i < d; i += stepLength)
         {
-            //Debug.Log((int)checkPoint.y + " " + (int)checkPoint.x);
-            if (!isValidTile(Mathf.FloorToInt(point.y + normal.y), Mathf.FloorToInt(point.x + normal.x)) || !isValidTile(Mathf.FloorToInt(point.y - normal.y), Mathf.FloorToInt(point.x - normal.x)))
+            if (!IsOnGround(new Vector2(point.x + normal.x, point.y + normal.y)) || !IsOnGround(new Vector2(point.x - normal.x, point.y - normal.y)))
             {
                 //Debug.Log("failed" + p1 + " " + p2);
                 return false;
+            }
+            if (reduceLongEdges)
+            {
+                for (int j = 0; j < nodes.Count; j++)
+                {
+                    if (nodes[j].pos != p1 && nodes[j].pos != p2)
+                    {
+                        float d2 = (point - nodes[j].pos).sqrMagnitude;
+                        if (d2 < 1f)
+                        {
+                            //Debug.Log("failed! A shorter route exists.");
+                            return false;
+                        }
+                    }
+                }
             }
             point += step;
         }
@@ -319,6 +458,8 @@ public class LandPlatformGenerator : MonoBehaviour {
             d = distance;
         }
     }
+
+    // TODO: multithread
     public static Vector2[] pathfind(Vector2 startPos, Vector2 targetPos)
     {
         if (instance.blueprint == null)
@@ -331,29 +472,49 @@ public class LandPlatformGenerator : MonoBehaviour {
         NavigationNode start = getNearestNode(startPos, true);
         NavigationNode end = getNearestNode(targetPos, true);
 
+        if (end == null)
+        {
+            Debug.Log("Getting another end point...");
+            end = getNearestNode(targetPos, false);
+            Debug.Log("End = " + end.pos);
+        }
+        if (start == null)
+        {
+            Debug.LogWarning("No start node found!");
+            return null;
+        }
+
         var openList = new List<PathfindNode>();
         var closedList = new List<PathfindNode>();
+        openList.Capacity = instance.nodes.Count;
+        closedList.Capacity = instance.nodes.Count;
 
         openList.Add(new PathfindNode(start, null, 0f));
         
-        if((instance.areaIDByNode.ContainsKey(start) && instance.areaIDByNode.ContainsKey(end)) 
-        && instance.areaIDByNode[start] != instance.areaIDByNode[end]) {
-            GameObject[] tiles = instance.GetTilesByID(instance.areaIDByNode[start]);
-            GameObject closestTile = null;
+        if(instance.areaIDByNode.ContainsKey(start) && instance.areaIDByNode.ContainsKey(end) 
+        && instance.areaIDByNode[start] != instance.areaIDByNode[end])  // If start & end are on different platforms
+        {
+            GameObject[] tiles = instance.GetTilesByID(instance.areaIDByNode[start]); // Get tiles of the start platform
+            GameObject closestTile = null; // Find the tile closest to the target position
             float distance = float.MaxValue;
-            foreach(GameObject tile in tiles) {
-                    var dist = ((Vector2)tile.transform.position - targetPos).magnitude;
-                    if(dist < distance) {
+            foreach(GameObject tile in tiles)
+            {
+                var dist = ((Vector2)tile.transform.position - targetPos).magnitude;
+                if(dist < distance)
+                {
+                    closestTile = tile;
+                    distance = dist;
+                }
+                else if(dist - distance < 0.01F) // If the distance is identical, choose the one closer to the start position
+                {
+                    var mag1 = (closestTile.transform.position - (Vector3)startPos).magnitude;
+                    var mag2 = (tile.transform.position - (Vector3)startPos).magnitude;
+                    if(mag1 - mag2 > 0.01F)
+                    {
                         closestTile = tile;
                         distance = dist;
-                    } else if(dist - distance < 0.01F) {
-                        var mag1 = (closestTile.transform.position - (Vector3)startPos).magnitude;
-                        var mag2 = (tile.transform.position - (Vector3)startPos).magnitude;
-                        if(mag1 - mag2 > 0.01F) {
-                            closestTile = tile;
-                            distance = dist;
-                        }
                     }
+                }
             }
             if(closestTile != null) {
                 Vector3 dist = targetPos;
@@ -374,7 +535,9 @@ public class LandPlatformGenerator : MonoBehaviour {
                 targetPos = offset + tilePos + dist.normalized * instance.tileSize / 3F;
                 end = getNearestNode(tilePos, true);
             }
-            else{
+            else
+            {
+                Debug.LogWarning("No closest tile found!");
                 return null;
             }
         }
@@ -386,9 +549,22 @@ public class LandPlatformGenerator : MonoBehaviour {
         } else if (start == end) {
             return new Vector2[] {end.pos};
         }
-        
+
+        Debug.DrawLine(start.pos, start.pos + Vector2.up, Color.red, 3f);
+        Debug.DrawLine(end.pos, end.pos + Vector2.right, Color.green, 3f);
+        Debug.Log("Start pos : " + start.pos);
+        Debug.Log("End pos : " + end.pos);
+
         while (openList.Count > 0)
         {
+            if (openList.Count > instance.nodes.Count * 2)
+            {
+                Debug.LogWarning("Pathfind error!");
+                Debug.Log("Open: " + openList.Count);
+                Debug.Log("Closed: " + closedList.Count);
+                return null;
+            }
+
             // Get next node with shortest total distance
             PathfindNode current = openList[0];
             float shortest = float.MaxValue;
@@ -408,7 +584,6 @@ public class LandPlatformGenerator : MonoBehaviour {
                 PathfindNode node = current;
                 do
                 {
-                    Debug.Log(node.node.pos);
                     path.Add(node.node.pos);
                     node = node.parent;
                 }
@@ -418,7 +593,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                 if(!instance.isInLoS(path[path.Count - 1], startPos))
                     path.Add(node.node.pos);
 
-                 if(instance.isInLoS(end.pos, targetPos)) 
+                if(instance.isInLoS(end.pos, targetPos)) 
                 {
                     // if the second last path is in the line of sight you can skip the last one to the target
                     if(path.Count > 1 && instance.isInLoS(path[1], targetPos)) {
@@ -426,29 +601,45 @@ public class LandPlatformGenerator : MonoBehaviour {
                     } else // otherwise add the target position as the last destination
                         path.Insert(0, targetPos);
                 }
+                Debug.Log("Pathfind success!");
                 return path.ToArray();
             }
 
             for(int i = 0; i < current.node.neighbours.Count; i++)
             {
+                NavigationNode neighbour = current.node.neighbours[i];
                 bool closed = false;
                 for(int j = 0; j < closedList.Count; j++)
                 {
-                    if(closedList[j].node == current.node.neighbours[i])
+                    if(closedList[j].node == neighbour)
                     {
                         closed = true;
                         break;
                     }
                 }
-                if(!closed)
+                for (int j = 0; j < openList.Count; j++)
                 {
-                    openList.Add(new PathfindNode(current.node.neighbours[i], current, current.d + current.node.distances[i]));
+                    if (openList[j].node == neighbour)
+                    {
+                        if (openList[j].d > current.d + current.node.distances[i])
+                        {
+                            openList[j].d = current.d + current.node.distances[i];
+                            openList[j].parent = current;
+                        }
+                        closed = true;
+                        break;
+                    }
+                }
+                if (!closed)
+                {
+                    openList.Add(new PathfindNode(neighbour, current, current.d + current.node.distances[i]));
                 }
             }
 
             openList.Remove(current);
             closedList.Add(current);
         }
+        Debug.Log("Pathfinding failed! OL empty.");
         return null;
     }
 
@@ -464,18 +655,17 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     static NavigationNode getNearestNode(Vector2 pos, bool los = false)
     {
-        Vector2 pos2 = pos;// + Vector2.one * 0.5f * instance.tileSize;
-        NavigationNode nearest = new NavigationNode(Vector2.zero);
+        NavigationNode nearest = null;
         float minD = float.MaxValue;
         for (int i = 0; i < instance.nodes.Count; i++)
         {
-            if(los && !instance.isInLoS(instance.nodes[i].pos, pos2))
-            {
-                continue;
-            }
-            float d = (pos2 - instance.nodes[i].pos).sqrMagnitude;
+            float d = (pos - instance.nodes[i].pos).sqrMagnitude;
             if (d < minD)
             {
+                if (los && !instance.isInLoS(instance.nodes[i].pos, pos))
+                {
+                    continue;
+                }
                 nearest = instance.nodes[i];
                 minD = d;
             }

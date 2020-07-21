@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using NodeEditorFramework.IO;
+using UnityEngine.Events;
+
 public class WCGeneratorHandler : MonoBehaviour
 {
     public struct SectorData 
@@ -20,6 +22,8 @@ public class WCGeneratorHandler : MonoBehaviour
     public WCCharacterHandler characterHandler;
     public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
     public Item characterItem;
+    public GameObject savingLevelScreen;
+    public UnityEvent OnSectorSaved;
 
     private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
 
@@ -77,19 +81,29 @@ public class WCGeneratorHandler : MonoBehaviour
             || tmpWworldName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1;
     }
 
-    public bool WriteWorld(string path) 
+    public bool WriteWorld(string path)
     {
-        if(invalidNameWarning.enabled)
+        if (invalidNameWarning.enabled)
         {
             Debug.LogError("Path your damn world! Abort.");
             return false;
         }
 
-        #if UNITY_EDITOR
-        #else
+#if UNITY_EDITOR
+#else
         if(path.Contains("main")) return false;
-        #endif
+#endif
+        StartCoroutine(WriteWorldCo(path));
 
+        // assuming it was a success for now...
+        return true;
+    }
+
+    IEnumerator WriteWorldCo(string path)
+    {
+        Debug.Log("Writing world...");
+        savingLevelScreen.SetActive(true);
+        yield return null;
         sectors = new List<Sector>();
         var items = cursor.placedItems;
         var wrappers = cursor.sectors;
@@ -144,7 +158,7 @@ public class WCGeneratorHandler : MonoBehaviour
             if(container == null)
             {
                 Debug.LogError("No container for item. Abort.");
-                return false;
+                yield break;
             }
             switch(item.type)
             {
@@ -172,7 +186,7 @@ public class WCGeneratorHandler : MonoBehaviour
                             {
                                 Debug.LogError("Two items in sectors " + container.sectorName + " and " 
                                     + itemSectorsByID[ent.ID] + " were issued the same custom ID. Abort.");
-                                return false;
+                                yield break;
                             }
                             else itemSectorsByID.Add(ent.ID, container.sectorName);
                         }
@@ -210,9 +224,16 @@ public class WCGeneratorHandler : MonoBehaviour
                     break;
             }
         }
-        
+
+        // calculate land platform pathfinding nodes
+        foreach (var sector in sectors)
+        {
+            Vector2 center = new Vector2(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2);
+            sector.platform.nodes = LandPlatformGenerator.BuildNodes(sector.platform, center);
+        }
+
         // write all sectors into a file
-		if(!System.IO.Directory.Exists(path)) {
+        if (!System.IO.Directory.Exists(path)) {
 			System.IO.Directory.CreateDirectory(path);
 		}
         
@@ -275,7 +296,9 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
 		Debug.Log("JSON written to location: " + path);
-        return true;
+        savingLevelScreen.SetActive(false);
+        if (OnSectorSaved != null)
+            OnSectorSaved.Invoke();
     }
 
     string GetDefaultName(Sector sector, int minX, int maxY)
@@ -333,10 +356,8 @@ public class WCGeneratorHandler : MonoBehaviour
 
     (int, int) GetPlatformIndices(Sector sector, Vector2 pos) 
     {
-        Debug.Log(pos + " " + (sector.bounds.y - (int)pos.y) / (int)cursor.tileSize);
         int row = (sector.bounds.y - (int)pos.y) / (int)cursor.tileSize;
         int col = ((int)pos.x - sector.bounds.x) / (int)cursor.tileSize;
-        Debug.Log((row, col));
         return (row, col);
     }
 

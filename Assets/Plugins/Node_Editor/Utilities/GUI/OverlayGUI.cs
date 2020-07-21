@@ -203,8 +203,10 @@ namespace NodeEditorFramework.Utilities
 					inRect = Mathf.Max(inRect, DrawGroup(group.groupPos, group.subItems));
 			}
 
-			if (close || inRect < 2 || (Event.current.type == EventType.MouseDown && inRect < 3)) 
+			if (close || inRect < 2 || (Event.current.type == EventType.MouseDown && inRect < 3))
+            {
 				OverlayGUI.ClosePopup ();
+            }
 
 			NodeEditor.RepaintClients ();
 		}
@@ -252,7 +254,12 @@ namespace NodeEditorFramework.Utilities
 				if (labelRect.Contains (Event.current.mousePosition))
 					selectedPath = item.path;
 
-				bool selected = selectedPath == item.path || selectedPath.Contains (item.path + "/");
+                if (selectedPath == null)
+                {
+                    Debug.Log("SELECTED PATH == NULL");
+                    return;
+                }
+                bool selected = selectedPath == item.path || selectedPath.Contains (item.path + "/");
 				GUI.Label (labelRect, item.content, selected? NodeEditorGUI.nodeLabelSelected : NodeEditorGUI.nodeLabel);
 				
 				if (item.group) 

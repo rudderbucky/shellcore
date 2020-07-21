@@ -346,9 +346,13 @@ public class BattleAI : AIModule
                     ai.movement.SetMoveTarget(attackTurret.transform.position, 100f);
                     if (ai.movement.targetIsInRange())
                     {
-                        if (shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
+                        var target = shellcore.GetTractorTarget();
+                        if (target != null && target)
                         {
-                            shellcore.SetTractorTarget(attackTurret.GetComponent<Draggable>());
+                            if (target.gameObject.GetComponent<EnergySphereScript>() == null)
+                            {
+                                shellcore.SetTractorTarget(attackTurret.GetComponent<Draggable>());
+                            }
                         }
                     }
                 }

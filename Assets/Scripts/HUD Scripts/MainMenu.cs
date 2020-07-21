@@ -35,7 +35,8 @@ public class MainMenu : MonoBehaviour
             "Programming by Ormanus and rudderbucky\n"
             + "Art by rudderbucky\n"
             + "Music by Avocato, FlightWish and Mr Spastic\n"
-            + "Story by Flashbacker and rudderbucky\n"
+            + "Story by Flashbacker and rudderbucky\n" 
+            + "Skirmish Minisode by Vansten\n"
             + "Playtesting by YOU!\n"
             + "Special thanks to Flashbacker"
         );

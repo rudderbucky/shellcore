@@ -29,6 +29,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     List<Task> activeTasks = new List<Task>();
     public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
     public static bool autoSaveEnabled;
+    public static bool loading = false;
 
     // objective locations for visualization of tasks in the main map and minimap
     public class ObjectiveLocation 
@@ -96,12 +97,13 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     public void AddCanvasPath(string path)
     {
-        Debug.Log("Found Path");
         questCanvasPaths.Add(path);
     }
 
     public static void StartQuests() {
+        loading = true;
         Instance.startQuests();
+        loading = false;
     }
     public void AddTask(Task t)
     {
@@ -195,11 +197,17 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     {
         for(int i = 0; i < traversers.Count; i++)
         {
-            traversers[i].findRoot().TryAddMission();
+            var start = traversers[i].findRoot();
+            if (start != null)
+                start.TryAddMission();
         }
 
         // tasks
         var missions = PlayerCore.Instance.cursave.missions;
+        for (int i = 0; i < missions.Count; i++)
+        {
+            Debug.Log("Mission found: " + missions[i].name + " CP: " + missions[i].checkpoint);
+        }
         foreach(var mission in missions)
         {
             if(traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))
@@ -280,7 +288,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     public void AttemptAutoSave()
     {
-        if(autoSaveEnabled) saveHandler.Save();
+        if(autoSaveEnabled && !loading) saveHandler.Save();
     }
 
     public void RemoveTraverser(MissionTraverser traverser)

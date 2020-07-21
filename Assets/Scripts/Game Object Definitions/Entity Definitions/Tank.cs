@@ -8,6 +8,7 @@ public class Tank : GroundCraft, IOwnable
     int index = 0; 
     bool hasPath = false;
     IOwner owner;
+    Vector2? pathfindTarget = null;
 
     protected override void OnDeath()
     {
@@ -66,12 +67,18 @@ public class Tank : GroundCraft, IOwnable
                 target = entities[i];
             }
         }
+        if (target != null && pathfindTarget != target.transform.position)
+        {
+            pathfindTarget = target.transform.position;
 
-        path = target ? LandPlatformGenerator.pathfind(transform.position, target.transform.position) : null;
-        hasPath = (path != null);
+            path = null;
+            if (target && (target.transform.position - transform.position).sqrMagnitude > 16)
+                path = LandPlatformGenerator.pathfind(transform.position, target.transform.position);
+            hasPath = (path != null);
 
-        if (path != null)
-            index = path.Length - 1;
+            if (path != null)
+                index = path.Length - 1;
+        }
     }
 
     protected virtual void drive()

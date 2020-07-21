@@ -103,6 +103,7 @@ namespace NodeEditorFramework.Standard
         {
             if(PlayerCore.Instance.cursave.missions.TrueForAll((x) => {return x.name != missionName;}))
             {
+                Debug.Log("Mission added: " + missionName);
                 var mission = new Mission();
                 mission.name = missionName;
                 mission.rank = rank;
@@ -116,6 +117,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
+                Debug.Log("Mission updated: " + missionName);
                 var mission = PlayerCore.Instance.cursave.missions.Find((x) => {return x.name == missionName;});
                 mission.rank = rank;
                 mission.prerequisites = prerequisites;

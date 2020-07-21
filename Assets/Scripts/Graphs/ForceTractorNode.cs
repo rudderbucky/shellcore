@@ -149,7 +149,7 @@ namespace NodeEditorFramework.Standard
                     target = AIData.entities[i];
             }
 
-            Debug.LogError(target + " " + entity);
+            //Debug.LogError(target + " " + entity);
 
             if(entity && entity.GetComponent<TractorBeam>() && target)
             {

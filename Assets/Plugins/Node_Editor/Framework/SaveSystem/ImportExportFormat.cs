@@ -59,7 +59,10 @@ namespace NodeEditorFramework.IO
 			//GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(true));
 			if (GUILayout.Button(string.IsNullOrEmpty(fileSelection)? "Select..." : fileSelection, GUILayout.ExpandWidth(true)))
 			{
-				// Find save files
+                // Find save files
+                if (RuntimeIOPath == null)
+                    return false;
+
 				Debug.Log(RuntimeIOPath);
 				DirectoryInfo dir = Directory.CreateDirectory(RuntimeIOPath);
 				FileInfo[] taskdata = dir.GetFiles("*.taskdata");

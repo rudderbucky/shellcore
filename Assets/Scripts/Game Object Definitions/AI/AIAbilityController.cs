@@ -9,6 +9,9 @@ public class AIAbilityController
 
     public bool useAbilities = true;
 
+    float timer = 0f;
+    float interval = 0.25f;
+
     public AIAbilityController(AirCraftAI ai)
     {
         this.ai = ai;
@@ -21,6 +24,10 @@ public class AIAbilityController
 
         if (!useAbilities)
             return;
+
+        if (timer > Time.time)
+            return;
+        timer = Time.time + interval;
 
         // Use abilities if needed
         if (!ai.movement.targetIsInRange())
@@ -56,7 +63,7 @@ public class AIAbilityController
         }
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.8f)
         {
-            var shellBoosts = GetAbilities(2, 17, 26); // shell heal, shell regen, area restore
+            var shellBoosts = GetAbilities(2, 17, 26, 29, 30, 31); // shell heal, shell regen, area restore
             foreach (var booster in shellBoosts)
             {
                 if (craft.GetHealth()[0] > craft.GetMaxHealth()[0] * 0.9f)
@@ -66,17 +73,17 @@ public class AIAbilityController
         }
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
         {
-            var stealths = GetAbilities(24); // stealth, stasis field, pin down
-            foreach (var stealth in stealths)
+            var escapeAbilities = GetAbilities(24, 29, 27); // stealth, absorption, pin down
+            foreach (var escapeAbility in escapeAbilities)
             {
-                stealth.Tick(1);
-                if (stealth.GetActiveTimeRemaining() > 0)
+                escapeAbility.Tick(1);
+                if (escapeAbility.GetActiveTimeRemaining() > 0)
                     break;
             }
         }
-        if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.1f)
+        if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.2f)
         {
-            var retreats = GetAbilities(); // retreat
+            var retreats = GetAbilities(28); // retreat
             foreach (var retreat in retreats)
             {
                 bool CD = retreat.GetCDRemaining() > 0f;
@@ -88,16 +95,44 @@ public class AIAbilityController
                 }
             }
         }
+        if (craft.GetHealth()[1] < craft.GetMaxHealth()[1] * 0.5f)
+        {
+            var core = GetAbilities(11, 31); // core heal & regen
+            foreach (var ability in core)
+            {
+                ability.Tick(1);
+                if (ability.GetActiveTimeRemaining() > 0)
+                    break;
+            }
+        }
+        if (craft.GetHealth()[2] < craft.GetMaxHealth()[2] * 0.5f)
+        {
+            var energy = GetAbilities(12, 32); // energy add & regen
+            foreach (var ability in energy)
+            {
+                ability.Tick(1);
+                if (ability.GetActiveTimeRemaining() > 0)
+                    break;
+            }
+        }
         var target = craft.GetTargetingSystem().GetTarget();
         if (target != null && target)
         {
             Entity targetEntity = target.GetComponent<Entity>();
             if (targetEntity != null && targetEntity && !targetEntity.GetIsDead())
             {
-                var damageBoosts = GetAbilities(25); // damage boost
+                var damageBoosts = GetAbilities(25, 33); // damage boost, disrupt
                 foreach (var damageBoost in damageBoosts)
                 {
                     damageBoost.Tick(1);
+                }
+                if (targetEntity.GetHealth()[0] < targetEntity.GetMaxHealth()[0] * 0.2f)
+                {
+                    var pinDown = GetAbilities(27); // pin down
+                    foreach (var pin in pinDown)
+                    {
+                        pin.Tick(1);
+                    }
                 }
             }
         }

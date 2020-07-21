@@ -50,6 +50,7 @@ public class SaveHandler : MonoBehaviour {
                 taskManager.Initialize(true); // Re-init
             }
 
+            taskManager.taskVariables.Clear();
             for (int i = 0; i < save.taskVariableNames.Length; i++)
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);

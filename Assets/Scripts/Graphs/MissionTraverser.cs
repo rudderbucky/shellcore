@@ -34,6 +34,7 @@ public class MissionTraverser : Traverser
     public override bool activateCheckpoint(string CPName)
     {
         // If the quest has been started, continue
+        Debug.Log("Activating checkpoint! Canvas's mission name: " + nodeCanvas.missionName + " CP: " + CPName);
         lastCheckpointName = CPName;
         nodeCanvas.missionName = findRoot().missionName;
         if(CPName == (nodeCanvas.missionName + "_complete")) 

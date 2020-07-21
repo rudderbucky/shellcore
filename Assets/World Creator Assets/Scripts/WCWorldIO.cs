@@ -118,19 +118,26 @@ public class WCWorldIO : MonoBehaviour
 
     public void TestWorld()
     {
-        var savePath = Application.persistentDataPath + "\\Saves\\TestSave";
-        if(File.Exists(savePath)) 
-            File.Delete(savePath);
-        PlayerPrefs.SetString("WorldCreator_playerBlueprintField", blueprintField.text);
-        PlayerPrefs.SetString("WorldCreator_playerCheckpointField", checkpointField.text);
-        SaveMenuHandler.CreateSave("TestSave", checkpointField.text, blueprintField.text);
         var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
         if(generatorHandler.WriteWorld(path))
         {
-            SectorManager.testJsonPath = path;
-            SaveMenuIcon.LoadSaveByPath(savePath, false);
+            generatorHandler.OnSectorSaved.AddListener(LoadTestSave);
         }
     }
+
+    void LoadTestSave()
+    {
+        PlayerPrefs.SetString("WorldCreator_playerBlueprintField", blueprintField.text);
+        PlayerPrefs.SetString("WorldCreator_playerCheckpointField", checkpointField.text);
+        var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+        var savePath = Application.persistentDataPath + "\\Saves\\TestSave";
+        if (File.Exists(savePath))
+            File.Delete(savePath);
+        SaveMenuHandler.CreateSave("TestSave", checkpointField.text, blueprintField.text);
+        SectorManager.testJsonPath = path;
+        SaveMenuIcon.LoadSaveByPath(savePath, false);
+    }
+
 
     public void ShowWriteMode()
     {
