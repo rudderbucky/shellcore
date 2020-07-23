@@ -17,6 +17,7 @@ public class TractorBeam : MonoBehaviour
 	protected float energyPickupSpeed = 61.0f; // Disabled for now D: (60*FixedDeltatime = 10) Energy pickup rate scale for future hard/easy gamemodes and AI balancing only.
     public bool initialized;
     private bool energyEnabled = true;
+    private GameObject tractorBeamPrefab;
     
     public void SetEnergyEnabled(bool val) {
         energyEnabled = val;
@@ -36,7 +37,7 @@ public class TractorBeam : MonoBehaviour
         targetGlow.gameObject.SetActive(false);
 
         GameObject childObject = new GameObject();
-        // childObject.transform.SetParent(transform, false);
+        //childObject.transform.SetParent(transform, false); Unity ignores sorting layers if uncommented
         lineRenderer = childObject.AddComponent<LineRenderer>();
         lineRenderer.material = tractorMaterial;
         lineRenderer.startWidth = 0.1F;
@@ -46,6 +47,7 @@ public class TractorBeam : MonoBehaviour
         lineRenderer.sortingOrder = 1;
         lineRenderer.sortingLayerName = "Projectiles";
         childObject.name = "TractorBeam";
+	tractorBeamPrefab = childObject;
         initialized = true;
     }
     private void Update() {
@@ -156,8 +158,10 @@ public class TractorBeam : MonoBehaviour
     {
         if(coreGlow)
             Destroy(coreGlow.gameObject);
-        if (targetGlow)
+        if(targetGlow)
             Destroy(targetGlow.gameObject);
+	if(tractorBeamPrefab)
+            Destroy(tractorBeamPrefab);
     }
 
     bool forcedTargetHadDraggable = false;
