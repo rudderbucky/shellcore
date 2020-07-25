@@ -80,6 +80,7 @@ public class SectorManager : MonoBehaviour
         battleZone.enabled = false;
         siegeZone.enabled = false;
         lpg = GetComponent<LandPlatformGenerator>();
+        lpg.Initialize();
         sectorBorders = new GameObject("SectorBorders").AddComponent<LineRenderer>();
         sectorBorders.enabled = false;
         sectorBorders.positionCount = 4;
@@ -241,7 +242,7 @@ public class SectorManager : MonoBehaviour
                     JsonUtility.FromJsonOverwrite(data.platformjson, plat);
                     plat.name = curSect.name + "Platform";
                     curSect.platform = plat;
-                    LandPlatformGenerator.instance.LoadNodes(plat.nodes);
+                    lpg.LoadNodes(plat.nodes);
 
                     // render the borders on the minimap
                     var border = new GameObject("MinimapSectorBorder - " + curSect.sectorName).AddComponent<LineRenderer>();

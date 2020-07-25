@@ -72,7 +72,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 if (platform)
                 {
                     Vector2 center = sect.rectTransform.sizeDelta / 2f;
-                    float tileSize = LandPlatformGenerator.instance.tileSize / zoomoutFactor;
+                    float tileSize = LandPlatformGenerator.Instance.tileSize / zoomoutFactor;
                     float h = tileSize / 2f; // Half
                     var cols = platform.columns;
                     var rows = platform.rows;
