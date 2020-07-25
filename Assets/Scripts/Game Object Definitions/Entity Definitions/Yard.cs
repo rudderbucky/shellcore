@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,7 +19,17 @@ public class Yard : AirConstruct, IShipBuilder {
         return mode;
     }
 
-    protected override void Start() {
+    private TractorBeam tractor;
+
+    protected override void Start()
+    {
+        if (!tractor)
+        {
+            tractor = gameObject.AddComponent<TractorBeam>();
+            tractor.owner = this;
+            tractor.BuildTractor();
+        }
+
         category = EntityCategory.Station;
         base.Start();
     }
@@ -33,21 +43,25 @@ public class Yard : AirConstruct, IShipBuilder {
             }
         base.Update();
 
-        if((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= 100)
+        if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= 75)
         {
             var player = PlayerCore.Instance;
-            if(player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>())
+            if (player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() && !tractor.GetTractorTarget())
             {
-                var info = player.GetTractorTarget().GetComponent<ShellPart>().info;
-				info = ShipBuilder.CullSpatialValues(info);
-				player.cursave.partInventory.Add(info);
-
-				PartIndexScript.AttemptAddToPartsObtained(info);
-				PartIndexScript.AttemptAddToPartsSeen(info);
-				Destroy(player.GetTractorTarget().GetComponent<ShellPart>().gameObject);
-
-                DialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your part has been added into your inventory.</color>");
+                tractor.SetTractorTarget(player.GetTractorTarget());
+                player.SetTractorTarget(null);
             }
+        }
+        if (tractor.GetTractorTarget() && (transform.position - tractor.GetTractorTarget().transform.position).sqrMagnitude <= 10)
+        {
+            DialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your part has been added into your inventory.</color>");
+            var info = tractor.GetTractorTarget().GetComponent<ShellPart>().info;
+            info = ShipBuilder.CullSpatialValues(info);
+            PlayerCore.Instance.cursave.partInventory.Add(info);
+
+            PartIndexScript.AttemptAddToPartsObtained(info);
+            PartIndexScript.AttemptAddToPartsSeen(info);
+            Destroy(tractor.GetTractorTarget().GetComponent<ShellPart>().gameObject);
         }
     }
 }
