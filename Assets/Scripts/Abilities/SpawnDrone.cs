@@ -43,7 +43,24 @@ public class SpawnDrone : ActiveAbility
 
     private void Start()
     {
-        craft = Core as IOwner;
+        if (GetComponentInParent<Turret>())
+        {
+            foreach (AirCarrier aircarrier in GameObject.FindObjectsOfType<AirCarrier>())
+            {
+                if (aircarrier.name == "Air Carrier" && aircarrier.faction == GetComponentInParent<Turret>().faction)
+                {
+                    craft = aircarrier;
+                }
+            }
+            if (craft == null)
+            {
+                craft = PlayerCore.Instance;
+            }
+        }
+        if (craft == null)
+        {
+            craft = Core as IOwner;
+        }
     }
     /// <summary>
     /// Creates a drone
