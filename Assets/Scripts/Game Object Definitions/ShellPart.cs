@@ -293,7 +293,10 @@ public class ShellPart : MonoBehaviour {
     public void TakeDamage(float damage) {
         if(!detachible) craft.TakeCoreDamage(damage); // undetachible = core part
         currentHealth -= damage;
-        if (currentHealth <= 0 && detachible) {
+        if (currentHealth <= 0 && detachible)
+        {
+            if (craft == null || !craft)
+                Debug.Log(spriteRenderer.sprite.name);
             craft.RemovePart(this);
         }
 

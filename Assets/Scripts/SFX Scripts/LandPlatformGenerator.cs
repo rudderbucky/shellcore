@@ -276,7 +276,11 @@ public class LandPlatformGenerator : MonoBehaviour {
                         continue;
 
                     if (platform.prefabs[platform.tilemap[i * platform.columns + j]] == "New 2 Entry")
+                    {
+                        if (IsOnGround(new Vector2(j * tileSize, -i * tileSize) + offset))
+                            Instance.nodes.Add(new NavigationNode(new Vector2(j * tileSize, -i * tileSize) + offset));
                         continue;
+                    }
 
                     // Square node pattern
                     if (IsOnGround(new Vector2(j * tileSize + dToCenter, -i * tileSize + dToCenter) + offset))

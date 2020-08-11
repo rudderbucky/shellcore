@@ -64,7 +64,7 @@ public class ReticleScript : MonoBehaviour {
          */
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
-        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
+        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity, 513); // get an array of all hits
         bool droneInteraction = false;
 
         foreach(var ent in targSys.GetSecondaryTargets())

@@ -140,6 +140,7 @@ public abstract class Craft : Entity
     }
 
     public bool rotateWhileMoving = true;
+    const float maxVelocity = 40f;
 
     /// <summary>
     /// Applies a force to the craft on the vector given
@@ -149,6 +150,10 @@ public abstract class Craft : Entity
     {
         if(rotateWhileMoving) RotateCraft(directionVector / entityBody.mass); // rotate craft
         entityBody.AddForce(Mathf.Min(enginePower, 300 * entityBody.mass) * directionVector); // max acceleration: 300 m/s^2
+        if (entityBody.velocity.sqrMagnitude > maxVelocity * maxVelocity)
+        {
+            entityBody.velocity = entityBody.velocity.normalized * maxVelocity;
+        }
         // actual force applied to craft; independent of angle rotation
     }
 

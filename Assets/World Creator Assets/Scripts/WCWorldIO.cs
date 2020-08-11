@@ -121,7 +121,19 @@ public class WCWorldIO : MonoBehaviour
         var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
         if(generatorHandler.WriteWorld(path))
         {
-            generatorHandler.OnSectorSaved.AddListener(LoadTestSave);
+            generatorHandler.OnSectorSaved.AddListener(OnWorldSaved);
+        }
+    }
+
+    void OnWorldSaved() // ...and they lived happily ever after. Or did they?
+    {
+        if (generatorHandler.saveState == 2)
+        {
+            LoadTestSave();
+        }
+        else
+        {
+            Debug.LogWarning("Something went wrong, testing aborted.");
         }
     }
 

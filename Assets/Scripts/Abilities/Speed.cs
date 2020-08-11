@@ -15,7 +15,6 @@ public class Speed : PassiveAbility {
 
     public override void SetDestroyed(bool input)
     {
-        var enginePower = (Core as Craft).enginePower;
         if (input && activated) 
         {
             (Core as Craft).enginePower -= 50F * Mathf.Pow(abilityTier, 1.5F); //Mathf.Pow(enginePower, 1/(abilityTier/6 + 1.1F));
@@ -26,10 +25,7 @@ public class Speed : PassiveAbility {
     protected override void Execute()
     {
         var enginePower = (Core as Craft).enginePower;
-        if(enginePower <= 1000) {
-            activated = true;
-            (Core as Craft).enginePower += 50F * Mathf.Pow(abilityTier, 1.5F);
-        } 
-        else activated = false;
+        activated = true;
+        (Core as Craft).enginePower += 50F * Mathf.Pow(abilityTier, 1.5F);
     }
 }

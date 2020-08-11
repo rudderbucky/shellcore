@@ -25,6 +25,8 @@ public class WCGeneratorHandler : MonoBehaviour
     public GameObject savingLevelScreen;
     public UnityEvent OnSectorSaved;
 
+    public int saveState = 0; // 0 : not saving, 1 : saving, 2 : completed successfully, > 2 : something went wrong
+
     private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
 
     public static void DeleteTestWorld()
@@ -102,7 +104,7 @@ public class WCGeneratorHandler : MonoBehaviour
     IEnumerator WriteWorldCo(string path)
     {
         Debug.Log("Writing world...");
-        savingLevelScreen.SetActive(true);
+        saveState = 1;
         yield return null;
         sectors = new List<Sector>();
         var items = cursor.placedItems;
@@ -157,6 +159,8 @@ public class WCGeneratorHandler : MonoBehaviour
             Sector container = GetSurroundingSector(item.pos);
             if(container == null)
             {
+                savingLevelScreen.SetActive(false);
+                saveState = 3;
                 Debug.LogError("No container for item. Abort.");
                 yield break;
             }
@@ -184,6 +188,8 @@ public class WCGeneratorHandler : MonoBehaviour
                             ent.ID = item.ID;
                             if(itemSectorsByID.ContainsKey(ent.ID))
                             {
+                                savingLevelScreen.SetActive(false);
+                                saveState = 4;
                                 Debug.LogError("Two items in sectors " + container.sectorName + " and " 
                                     + itemSectorsByID[ent.ID] + " were issued the same custom ID. Abort.");
                                 yield break;
@@ -297,6 +303,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
 		Debug.Log("JSON written to location: " + path);
         savingLevelScreen.SetActive(false);
+        saveState = 2;
         if (OnSectorSaved != null)
             OnSectorSaved.Invoke();
     }

@@ -18,9 +18,9 @@ public enum ItemType {
 /// </summary>
 [System.Serializable]
 public class Item {
+        public string name;
     	public GameObject obj;
         public ItemType type;
-        public string name;
 		public string assetID;
 		public string shellcoreJSON;
 		public string vendingID;
