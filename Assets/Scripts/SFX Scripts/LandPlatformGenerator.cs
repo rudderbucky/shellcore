@@ -223,13 +223,26 @@ public class LandPlatformGenerator : MonoBehaviour {
         foreach (var pair in tiles)
         {
             GameObject tile = pair.Value;
+            bool found = false;
             if (areaIDByTile.ContainsKey(tile)) continue;
             foreach (NavigationNode node in nodes)
             {
-                if (isInLoS(tile.transform.position, node.pos))
+                if (tile.GetComponents<Collider2D>().Any(x => x.OverlapPoint(node.pos)))
                 {
                     areaIDByTile.Add(tile, areaIDByNode[node]);
+                    found = true;
                     break;
+                }
+            }
+            if (!found)
+            {
+                foreach (NavigationNode node in nodes)
+                {
+                    if (isInLoS(tile.transform.position, node.pos))
+                    {
+                        areaIDByTile.Add(tile, areaIDByNode[node]);
+                        break;
+                    }
                 }
             }
         }
