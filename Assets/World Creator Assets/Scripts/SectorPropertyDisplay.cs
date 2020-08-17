@@ -25,13 +25,18 @@ public class SectorPropertyDisplay : MonoBehaviour
     public RectTransform mainContents;
     Vector2 mousePos;
 
+    bool opening = false;
+
     void Start() 
     {
         if(!rectTransform) rectTransform = GetComponent<RectTransform>();
     }
 
-    public void DisplayProperties(Sector sector) {
-        if(!rectTransform) rectTransform = GetComponent<RectTransform>();
+    public void DisplayProperties(Sector sector)
+    {
+        opening = true;
+
+        if (!rectTransform) rectTransform = GetComponent<RectTransform>();
         currentSector = sector;
         gameObject.SetActive(true);
         mousePos = WorldCreatorCursor.GetMousePos();
@@ -53,6 +58,8 @@ public class SectorPropertyDisplay : MonoBehaviour
         colorG.text = currentSector.backgroundColor.g + "";
         colorB.text = currentSector.backgroundColor.b + "";
         UpdateBGSpawns();
+
+        opening = false;
     }
 
     void Update() {
@@ -67,6 +74,9 @@ public class SectorPropertyDisplay : MonoBehaviour
     }
     public void UpdateType() 
     {
+        if (opening)
+            return;
+
         currentSector.type = (Sector.SectorType)type.value;
         currentSector.backgroundColor = SectorColors.colors[type.value];
         colorR.text = currentSector.backgroundColor.r + "";
