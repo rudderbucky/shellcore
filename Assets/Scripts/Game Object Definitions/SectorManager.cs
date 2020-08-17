@@ -10,11 +10,9 @@ public class SectorManager : MonoBehaviour
     public delegate void SectorLoadDelegate(string sectorName);
     public static SectorLoadDelegate OnSectorLoad;
     public static SectorManager instance;
-
     public static string customPath = "";
-
     public bool jsonMode;
-    public List<Sector> sectors; //TODO: RM: load sectors from files (already done elsewhere; would it make sense to move it to RM?)
+    public List<Sector> sectors;
     public PlayerCore player;
     public Sector current;
     public BackgroundScript background;
@@ -89,7 +87,6 @@ public class SectorManager : MonoBehaviour
         sectorBorders.loop = true;
         OnSectorLoad = null;
 
-        //Debug.Log(testJsonPath);
         if (customPath != "" && current == null)
         {
             jsonPath = customPath;
@@ -168,6 +165,9 @@ public class SectorManager : MonoBehaviour
     public TaskManager taskManager;
     public void LoadSectorFile(string path)
     {
+        // Update passed path during load time for main saves updating to newer versions
+        if(path.Contains("main")) path = jsonPath;
+
         resourcePath = path;
         if (System.IO.Directory.Exists(path))
         {
