@@ -11,7 +11,7 @@ public class AreaRestore : Ability
     {
         base.Awake(); // base awake
                       // hardcoded values here
-        ID = 26;
+        ID = AbilityID.AreaRestore;
         energyCost = 150;
         cooldownDuration = 10;
         CDRemaining = 10;

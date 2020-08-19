@@ -14,17 +14,17 @@ public class HealthHeal : Ability
             case HealingType.shell:
                 abilityName = "Shell Boost";
                 description = "Instantly heal " + heals[0] + " shell.";
-                ID = 2;
+                ID = AbilityID.ShellBoost;
                 break;
             case HealingType.core:
                 abilityName = "Core Heal";
                 description = "Instantly heal " + heals[1] + " core.";
-                ID = 11;
+                ID = AbilityID.CoreHeal;
                 break;
             case HealingType.energy:
                 abilityName = "Energy";
                 description = "Instantly heal " + heals[2] + " energy.";
-                ID = 12;
+                ID = AbilityID.Energy;
                 energyCost = 0;
                 break;
         }

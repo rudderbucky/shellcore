@@ -16,7 +16,18 @@ public class ActiveRegen : ActiveAbility
 
     public void Initialize()
     {
-        ID = index + 30;
+        switch(index)
+        {
+            case 0:
+                ID = AbilityID.ActiveShellRegen;
+                break;
+            case 1:
+                ID = AbilityID.ActiveCoreRegen;
+                break;
+            case 2:
+                ID = AbilityID.ActiveEnergyRegen;
+                break;
+        }
         cooldownDuration = 20;
         CDRemaining = cooldownDuration;
         activeDuration = 5;

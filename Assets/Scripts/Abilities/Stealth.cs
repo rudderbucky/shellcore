@@ -11,7 +11,7 @@ public class Stealth : ActiveAbility
     protected override void Awake()
     {
         base.Awake(); // base awake
-        ID = 24;
+        ID = AbilityID.Stealth;
         cooldownDuration = 10;
         CDRemaining = cooldownDuration;
         activeDuration = 4;

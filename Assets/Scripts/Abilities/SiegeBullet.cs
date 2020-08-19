@@ -11,7 +11,7 @@ public class SiegeBullet : Bullet {
         bulletSpeed = 15;
         survivalTime = 2F;
         range = bulletSpeed * survivalTime;
-        ID = 14;
+        ID = AbilityID.SiegeBullet;
         cooldownDuration = 5F;
         CDRemaining = cooldownDuration;
         energyCost = 10;

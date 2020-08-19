@@ -13,7 +13,7 @@ public class AbsorptionField : ActiveAbility
     protected override void Awake()
     {
         base.Awake(); // base awake
-        ID = 29;
+        ID = AbilityID.Absorb;
         cooldownDuration = 10;
         CDRemaining = cooldownDuration;
         activeDuration = 1;

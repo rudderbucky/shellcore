@@ -14,7 +14,7 @@ public class Retreat : Ability
     {
         base.Awake(); // base awake
                       // hardcoded values here
-        ID = 28;
+        ID = AbilityID.Retreat;
         energyCost = 200;
         cooldownDuration = 30;
         CDRemaining = cooldownDuration;

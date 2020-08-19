@@ -24,7 +24,7 @@ public class Beam : WeaponAbility {
         cooldownDuration = CDRemaining = 3;
         damage = beamDamage;
         energyCost = 50;
-        ID = 4;
+        ID = AbilityID.Beam;
         range = 8;
         category = Entity.EntityCategory.All;
         bonusDamageType = typeof(ShellCore);

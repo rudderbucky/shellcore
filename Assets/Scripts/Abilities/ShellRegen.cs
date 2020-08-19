@@ -7,9 +7,18 @@ public class ShellRegen : PassiveAbility {
 	public int index;
 	public static readonly int regen = 50;
 	public void Initialize() {
-		ID = index + 17;
-        if (ID == 18) // Avoid ID conflict
-            ID = 22;
+		switch(index)
+        {
+            case 0:
+                ID = AbilityID.ShellRegen;
+                break;
+            case 1:
+                ID = AbilityID.CoreRegen;
+                break;
+            case 2:
+                ID = AbilityID.EnergyRegen;
+                break;
+        }
 	}
 	public override void SetDestroyed(bool input)
     {

@@ -23,7 +23,7 @@ public class Bullet : WeaponAbility {
         bulletSpeed = 20;
         survivalTime = 0.5F;
         range = bulletSpeed * survivalTime;
-        ID = 5;
+        ID = AbilityID.Bullet;
         cooldownDuration = 2F;
         CDRemaining = cooldownDuration;
         energyCost = 25;

@@ -15,7 +15,7 @@ public class DamageBoost: ActiveAbility
     {
         base.Awake(); // base awake
                       // hardcoded values here
-        ID = 25;
+        ID = AbilityID.DamageBoost;
         cooldownDuration = 20;
         CDRemaining = cooldownDuration;
         activeDuration = 5;

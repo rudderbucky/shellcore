@@ -8,9 +8,18 @@ public class ShellMax : PassiveAbility {
 	public static readonly int max = 250;
 
 	public void Initialize() {
-		ID = index + 18;
-        if (ID == 19) // Avoid ID conflict
-            ID = 23;
+        switch(index)
+        {
+            case 0:
+                ID = AbilityID.ShellMax;
+                break;
+            case 1:
+                ID = AbilityID.CoreMax;
+                break;
+            case 2:
+                ID = AbilityID.EnergyMax;
+                break;
+        }
     }
 	public override void SetDestroyed(bool input)
     {

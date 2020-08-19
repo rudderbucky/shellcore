@@ -7,7 +7,7 @@ public class Speed : PassiveAbility {
     private bool activated;
     protected override void Awake()
     {
-        ID = 13;
+        ID = AbilityID.Speed;
         base.Awake();
         abilityName = "Speed";
         description = "Passively increases speed.";

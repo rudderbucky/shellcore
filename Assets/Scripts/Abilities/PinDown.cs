@@ -16,7 +16,7 @@ public class PinDown : ActiveAbility
     {
         base.Awake(); // base awake
                       // hardcoded values here
-        ID = 27;
+        ID = AbilityID.PinDown;
         energyCost = 100f;
         cooldownDuration = 10f;
         CDRemaining = 10f;

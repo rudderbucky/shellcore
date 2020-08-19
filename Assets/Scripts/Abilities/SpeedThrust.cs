@@ -15,7 +15,7 @@ public class SpeedThrust : ActiveAbility
                       // hardcoded values here
         abilityName = "Speed Thrust";
         description = "Temporarily increases speed.";
-        ID = 1;
+        ID = AbilityID.SpeedThrust;
         cooldownDuration = 10;
         CDRemaining = cooldownDuration;
         activeDuration = 5;

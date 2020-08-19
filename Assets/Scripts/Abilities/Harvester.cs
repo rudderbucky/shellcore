@@ -15,7 +15,7 @@ public class Harvester : WeaponAbility, IHarvester {
 
     protected override void Start()
     {
-        ID = 16;
+        ID = AbilityID.Harvester;
 
         if(!owner)
         {

@@ -2,6 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+public enum AbilityID
+{
+	Unused,
+	SpeedThrust,
+	ShellBoost,
+	MainBullet,
+	Beam,
+	Bullet,
+	Cannon,
+	Missile,
+	Torpedo,
+	Laser,
+	SpawnDrone,
+	CoreHeal,
+	Energy,
+	Speed,
+	SiegeBullet,
+	SpeederBullet,
+	Harvester,
+	ShellRegen,
+	ShellMax,
+	EnergyRegen,
+	EnergyMax,
+	Command,
+	CoreRegen,
+	CoreMax,
+	Stealth,
+	DamageBoost,
+	AreaRestore,
+	PinDown,
+	Retreat,
+	Absorb,
+	ActiveShellRegen,
+	ActiveCoreRegen,
+	ActiveEnergyRegen,
+	Disrupt,
+	Control
+}
 public class AbilityUtilities : MonoBehaviour {
 
 	public static Sprite GetAbilityImageByID(int ID, string secondaryData) {
@@ -108,25 +147,25 @@ public class AbilityUtilities : MonoBehaviour {
             case 24:
                 return "Become invisible to enemies.";
             case 25:
-                return "All weapon damage increased by 150,";
+                return "All weapon damage increased by 150.";
             case 26:
                 return "Instantly heals self and nearby allies by +500 shell and +500 core.";
             case 27:
-                return "Immobilizes the target";
+                return "Immobilizes the target.";
             case 28:
-                return "Respawn at base";
+                return "Respawn at base.";
             case 29:
-                return "Absorb damage and turn it into energy";
+                return "Absorb damage and turn it into energy.";
             case 30:
-                return "Temporarily increase shell regen";
+                return "Temporarily increase shell regen.";
             case 31:
                 return "Temporarily increase core... wait, this isn't supposed to exist!";
             case 32:
-                return "Temporarily increase energy regen";
+                return "Temporarily increase energy regen.";
             case 33:
-                return "Disrupt enemy ability cooldowns";
+                return "Disrupt enemy ability cooldowns.";
             case 34:
-                return "Makes allies stronger";
+                return "Makes allies stronger.";
             default:
 				return "Description unset";
 		}

@@ -13,7 +13,7 @@ public class Laser : Bullet {
         bulletSpeed = 100;
         survivalTime = 0.1F;
         range = bulletSpeed * survivalTime;
-        ID = 9;
+        ID = AbilityID.Laser;
         cooldownDuration = 0.2F;
         CDRemaining = cooldownDuration;
         energyCost = 15;

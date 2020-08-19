@@ -13,7 +13,7 @@ public class Control : PassiveAbility
     protected override void Awake()
     {
         base.Awake();
-        ID = 34;
+        ID = AbilityID.Control;
     }
     public override void SetDestroyed(bool input)
     {

@@ -23,7 +23,7 @@ public class SpawnDrone : ActiveAbility
     IOwner craft;
     public void Init()
     {
-        ID = 10;
+        ID = AbilityID.SpawnDrone;
         cooldownDuration = spawnData.cooldown;
         CDRemaining = cooldownDuration;
         activeDuration = spawnData.delay; 

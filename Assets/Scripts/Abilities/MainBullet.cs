@@ -16,7 +16,7 @@ public class MainBullet : Bullet {
         bulletSpeed = 50;
         survivalTime = 0.25F;
         range = bulletSpeed * survivalTime;
-        ID = 3;
+        ID = AbilityID.MainBullet;
         cooldownDuration = 0.4F;
         CDRemaining = cooldownDuration;
         energyCost = 10;

@@ -12,7 +12,7 @@ public class Torpedo : Bullet {
         bulletSpeed = 10;
         survivalTime = 2.5F;
         range = bulletSpeed * survivalTime;
-        ID = 8;
+        ID = AbilityID.Torpedo;
         cooldownDuration = 3F;
         CDRemaining = cooldownDuration;
         energyCost = 100;

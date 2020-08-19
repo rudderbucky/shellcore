@@ -8,7 +8,7 @@ public class Command : PassiveAbility
     public static readonly int commandUnitIncrease = 3;
     protected override void Awake()
     {
-        ID = 21;
+        ID = AbilityID.Command;
         base.Awake();
         abilityName = "Command";
         description = "Passively increases the maximum allowed number of controlled units by " + commandUnitIncrease + ".";

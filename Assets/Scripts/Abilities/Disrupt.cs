@@ -12,7 +12,7 @@ public class Disrupt : Ability
     {
         base.Awake(); // base awake
                       // hardcoded values here
-        ID = 33;
+        ID = AbilityID.Disrupt;
         energyCost = 200;
         cooldownDuration = 30;
         CDRemaining = cooldownDuration;

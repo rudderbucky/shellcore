@@ -29,7 +29,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
             core = value;
         }
     }
-    protected int ID; // Image ID, perhaps also ability ID if that were ever to be useful (it was)
+    protected AbilityID ID; // Image ID, perhaps also ability ID if that were ever to be useful (it was)
     protected float cooldownDuration; // cooldown of the ability
     protected float energyCost; // energy cost of the ability
     protected float CDRemaining; // amount of time remaining on cooldown
@@ -122,7 +122,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// </summary>
     /// <returns>Image ID of the ability</returns>
     public virtual int GetID() {
-        return ID; // ID
+        return (int)ID; // ID
     }
 
     /// <summary>

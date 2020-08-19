@@ -12,7 +12,7 @@ public class Missile : WeaponAbility {
         damage = missileDamage;
         description = "Homing projectile that deals " + damage + " damage.";
         abilityName = "Missile";
-        ID = 7;
+        ID = AbilityID.Missile;
         cooldownDuration = 5F;
         CDRemaining = cooldownDuration;
         range = 20;
