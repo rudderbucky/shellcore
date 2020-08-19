@@ -16,14 +16,14 @@ public class PartyManager : MonoBehaviour
     public GameObject blocker;
     public void OrderAttack()
     {
-        DialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>");
+        PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>");
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
                 if(core.ID == "sukrat")
-                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>DESTRUCTION!</color>");
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>DESTRUCTION!</color>");
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Attack);
             }
@@ -32,14 +32,14 @@ public class PartyManager : MonoBehaviour
 
     public void OrderDefendStation()
     {
-        DialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>");
+        PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>");
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
                 if (core.ID == "sukrat")
-                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Falling back!</color>");
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Falling back!</color>");
 
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Defend);
@@ -49,14 +49,14 @@ public class PartyManager : MonoBehaviour
 
     public void OrderCollection()
     {
-        DialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>");
+        PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>");
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
                 if(core.ID == "sukrat")
-                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>I'm on it.</color>");
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>I'm on it.</color>");
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Collect);
             }
@@ -65,14 +65,14 @@ public class PartyManager : MonoBehaviour
 
     public void OrderBuildTurrets()
     {
-        DialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>");
+        PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>");
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
                 if(core.ID == "sukrat")
-                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Building!</color>");
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Building!</color>");
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Fortify);
             }
@@ -81,14 +81,14 @@ public class PartyManager : MonoBehaviour
 
     public void OrderFollow()
     {
-        DialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        DialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>");
+        PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>");
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
                 if (core.ID == "sukrat")
-                    DialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Following!</color>");
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Following!</color>");
 
                 core.GetAI().follow(PlayerCore.Instance.transform);
             }

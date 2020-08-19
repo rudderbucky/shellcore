@@ -36,7 +36,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            DialogueSystem.Instance.PushPassiveDialogue(id, text);
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(id, text);
             Debug.Log("done");
             return 0;
         }

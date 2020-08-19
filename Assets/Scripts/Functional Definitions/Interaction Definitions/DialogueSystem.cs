@@ -123,8 +123,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 textRenderer.text = text.Substring(0, characterCount);
             }
         }
-
-        PassiveDialogueHandler();
     }
 
     public static void StartDialogue(Dialogue dialogue, Entity speaker = null)
@@ -645,7 +643,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public RectTransform blackBarTop;
     public RectTransform blackBarBottom;
     public CanvasGroup hudGroup;
-    private enum DialogueState
+    public enum DialogueState
     {
         In,
         Out,
@@ -739,101 +737,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
-    public RectTransform passiveDialogueRect;
-    public GameObject passiveDialogueInstancePrefab;
-    public RectTransform passiveDialogueContents;
-    public Text passiveDialogueText;
-    private DialogueState passiveDialogueState = DialogueState.Out;
-    public RectTransform passiveDialogueScrollView;
-    Queue<(string, string)> passiveMessages = new Queue<(string, string)>();
-
-    public void SlidePassiveDialogueOut()
-    {
-        passiveDialogueState = DialogueState.Out;
-        StartCoroutine("SlideDialogueOut");
-    }
-
-    IEnumerator SlidePassiveDialogueIn(Transform transform)
-    {
-        float count = transform.localScale.y;
-        while(count < 1)
-        {
-            if(passiveDialogueState != DialogueState.In) break;
-            count += 0.05F;
-            transform.localScale += new Vector3(0, 0.05F);
-            yield return new WaitForSeconds(0.0025F);
-        }
-    }
-
-    IEnumerator FadePassiveDialogueOut()
-    {
-        float count = passiveDialogueScrollView.localScale.y;
-        passiveDialogueState = DialogueState.Out;
-        while(count > 0F)
-        {
-            if(passiveDialogueState != DialogueState.Out) break;
-            count -= 0.05F;
-            passiveDialogueScrollView.localScale -= new Vector3(0, 0.05F, 0);
-            yield return new WaitForSeconds(0.0025F);
-        }
-
-        while(passiveDialogueContents.childCount > 0)
-        {
-            passiveDialogueContents.GetChild(0).localScale = new Vector3(1, 1, 1);
-            passiveDialogueContents.GetChild(0).SetParent(archiveContents, false);
-        }
-    }
-
-    public void PushPassiveDialogue(string id, string text)
-    {
-        if(passiveDialogueState != DialogueState.In) passiveDialogueState = DialogueState.In;
-        passiveMessages.Enqueue((id, text));
-    }
-    float queueTimer = 0;
-
-    public void ResetPassiveDialogueQueueTime()
-    {
-        queueTimer = 0;
-    }
-
-    void PassiveDialogueHandler()
-    {
-        queueTimer -= Time.deltaTime;
-        if(passiveMessages.Count > 0)
-        {
-            archiveContents.gameObject.SetActive(false);
-            passiveDialogueScrollView.localScale = new Vector3(1, 1, 1);
-            if(queueTimer <= 0)
-            {
-                queueTimer = 3;
-                var dialogue = passiveMessages.Dequeue();
-                Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.Item1);
-                if (speaker != null)
-                {
-                    var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
-                    var name = speaker.name;
-                    if (speaker as PlayerCore)
-                        name = (speaker as PlayerCore).cursave.name;
-                    instance.transform.Find("Name").GetComponent<Text>().text = name;
-                    instance.transform.Find("Text").GetComponent<Text>().text = dialogue.Item2;
-                    instance.transform.localScale -= new Vector3(0, 1);
-                    StartCoroutine(SlidePassiveDialogueIn(instance.transform));
-
-                    instance.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
-                }
-            }
-        }
-        else if(queueTimer <= -2 && passiveDialogueState != DialogueState.Out)
-        {
-            StartCoroutine(FadePassiveDialogueOut());
-        }
-
-        if(passiveDialogueContents != null && passiveDialogueContents.transform.childCount == 0 && InputManager.GetKeyDown(KeyName.ShowChatHistory))
-        {
-            archiveContents.gameObject.SetActive(!archiveContents.gameObject.activeSelf);
-        }
-    }
-
     public List<string> GetSpeakerIDList()
     {
         return speakerIDList;
@@ -874,7 +777,4 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         var speakerObj = SectorManager.instance.GetEntity(speakerID);
         return speakerObj;
     }
-
-    public GameObject passiveDialogueArchive;
-    public Transform archiveContents;
 }
