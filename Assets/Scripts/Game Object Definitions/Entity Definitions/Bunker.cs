@@ -54,7 +54,7 @@ public class Bunker : GroundConstruct, IVendor {
         if(sectorMngr.current.type == Sector.SectorType.BattleZone)
         {
             BZManager.UpdateCounters();
-            BZManager.AlertPlayers(otherFaction, "WARNING: Outpost lost!");
+            BZManager.AlertPlayers(otherFaction, "WARNING: Bunker lost!");
         }
         Start();
         foreach (var part in parts)

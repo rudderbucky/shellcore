@@ -101,17 +101,20 @@ public class SettingsScript : MonoBehaviour {
 
 	public void ChangeMasterVolume(float newVol)
 	{
-		AudioManager.instance.ChangeMasterVolume(newVol);
+        if (AudioManager.instance)
+		    AudioManager.instance.ChangeMasterVolume(newVol);
 	}
 
 	public void ChangeSoundEffectsVolume(float newVol)
 	{
-		AudioManager.instance.ChangeSoundEffectsVolume(newVol);
+        if (AudioManager.instance)
+            AudioManager.instance.ChangeSoundEffectsVolume(newVol);
 	}
 
 	public void ChangeMusicVolume(float newVol)
 	{
-		AudioManager.instance.ChangeMusicVolume(newVol);
+        if (AudioManager.instance)
+            AudioManager.instance.ChangeMusicVolume(newVol);
 	}
 
 	public void ToggleWindowMode(bool val)
@@ -167,7 +170,7 @@ public class SettingsScript : MonoBehaviour {
 	}
 
     // Volume slider updates without having to save
-	public void Update()
+	public void UpdateVolumes()
 	{
 		ChangeMasterVolume(masterSoundSlider.value);
 		ChangeMusicVolume(musicSlider.value);

@@ -116,7 +116,7 @@ public class MissileScript : MonoBehaviour {
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
         if (craft != null && !craft.GetIsDead()) // check if the component was obtained
         {
-            if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && craft.GetTransform() != owner.transform)
+            if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && (!owner || (craft.GetTransform() != owner.transform)))
             {
                 var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
                                                         // if the shell is low, damage the part
