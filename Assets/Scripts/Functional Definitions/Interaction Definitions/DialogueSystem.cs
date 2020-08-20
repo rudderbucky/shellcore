@@ -7,6 +7,9 @@ using NodeEditorFramework.Standard;
 using NodeEditorFramework.IO;
 using NodeEditorFramework;
 
+///
+/// This class manages dialogue windows as well as dialogue traversers/canvases.
+///
 public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 {
     public static DialogueSystem Instance { get; private set; }
@@ -140,20 +143,20 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         Instance.showPopup(text, Color.white);
     }
 
-    public GameObject popupBoxPrefab;
-    private void showPopup(string text, Color color, Entity speaker = null)
+    ///
+    /// Instantiates the given prefab and sets it up as a window.
+    ///
+    private void CreateWindow(GameObject prefab, string text, Color color, Entity speaker)
     {
         if(window) Destroy(window.transform.parent.gameObject);
         //create window
         speakerPos = null;
 
-        if(!speaker)
-            window = Instantiate(popupBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
-        else 
-        {
-            window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        if(speaker)
             speakerPos = speaker.transform.position;
-        }
+
+        window = Instantiate(prefab).GetComponentInChildren<GUIWindowScripts>();
+
 
         window.Activate();
         window.transform.SetSiblingIndex(0);
@@ -168,37 +171,62 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         textRenderer.font = shellcorefont;
 
         // radio image 
-        if(speaker) {
-            DialogueViewTransitionIn(speaker);
-            window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
-            window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+        if(window.GetComponentInChildren<SelectionDisplayHandler>())
+        {
+            if(speaker) {
+                DialogueViewTransitionIn(speaker);
+                window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
+                window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+            }
+            else
+            {
+                window.GetComponentInChildren<SelectionDisplayHandler>().gameObject.SetActive(false);
+                window.transform.Find("Name").GetComponent<Text>().text = "Unknown Speaker";
+            }
         }
 
         // change text
         this.text = text.Replace("<br>", "\n");
+        characterCount = 0;
+        nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
+
+        characterCount = 0;
+        nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
+
+        textRenderer.color = color;
+
         if(speaker)
-        {
-            characterCount = 0;
-            nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
-        } else 
+            AudioManager.PlayClipByID("clip_typing");
+    }
+
+    ///
+    /// Creates and returns a button with the passed text, action call, and y position.
+    ///
+    private GameObject CreateButton(string text, UnityAction call, int ypos)
+    {
+        RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
+        button.SetParent(background, false);
+        button.anchoredPosition = new Vector2(0, ypos);
+        if(call != null)
+            button.GetComponent<Button>().onClick.AddListener(call);
+        button.Find("Text").GetComponent<Text>().text = text;
+
+        return button.gameObject;
+    }
+
+    public GameObject popupBoxPrefab;
+    private void showPopup(string text, Color color, Entity speaker = null)
+    {
+        CreateWindow(speaker ? dialogueBoxPrefab : popupBoxPrefab, text, color, speaker);
+
+        if(!speaker)
         {
             textRenderer.text = this.text;
             characterCount = text.Length;
         }
 
-        textRenderer.color = color;
-
-        // ok button
-        RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
-        button.SetParent(background, false);
-        button.anchoredPosition = new Vector2(0, 24);
-        button.GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
-        button.Find("Text").GetComponent<Text>().text = "Ok";
-
         buttons = new GameObject[1];
-        buttons[0] = button.gameObject;
-        if(speaker)
-            AudioManager.PlayClipByID("clip_typing");
+        buttons[0] = CreateButton("Ok", () => { endDialogue(); }, 24);
     }
 
     public static void ShowBattleResults(bool victory) {
@@ -269,63 +297,19 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void showDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker)
     {
-        if (window) Destroy(window.transform.parent.gameObject);
-        //speakerPos = speaker.transform.position;
-        //create window
-        speakerPos = null;
-        window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
-        window.Activate();
-        background = window.transform.Find("Background").GetComponent<RectTransform>();
-        var exit = background.transform.Find("Exit");
-        exit.GetComponent<Button>().onClick.AddListener(() => {
-            endDialogue(0, false);
-        });
-        if(isInCutscene) exit.gameObject.SetActive(false);
-        window.OnCancelled.AddListener(() => { endDialogue(); });
-        textRenderer = background.transform.Find("Text").GetComponent<Text>();
-        textRenderer.font = shellcorefont;
+        CreateWindow(dialogueBoxPrefab, node.text, node.textColor, speaker);
         DialogueViewTransitionIn(speaker);
-
-        // radio image 
-        if(speaker)
-        {
-            window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
-            window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
-        }
-        else 
-        {
-            window.GetComponentInChildren<SelectionDisplayHandler>().gameObject.SetActive(false);
-            window.transform.Find("Name").GetComponent<Text>().text = "Unknown Speaker";
-        }
-
-        // update speakerPos
-        if(speaker) speakerPos = speaker.transform.position;
-
-        if(speaker)
-            AudioManager.PlayClipByID("clip_typing");
-        // change text
-        text = node.text.Replace("<br>", "\n");
-        characterCount = 0;
-        nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
-        textRenderer.color = node.textColor;
 
         // create buttons
         buttons = new GameObject[node.answers.Count];
         
         for (int i = 0; i < node.answers.Count; i++)
         {
-            RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
-            button.SetParent(background, false);
-            button.anchoredPosition = new Vector2(0, 24 + 24 * (node.answers.Count - (i + 1)));
             int index = i;
-            // Debug.Log(i + "test");
-            button.GetComponent<Button>().onClick.AddListener(() => {
+            buttons[i] = CreateButton(node.answers[i], () => {
                 AudioManager.PlayClipByID("clip_select", true);
                 endDialogue(index + 1, false);// cancel is always first -> start from 1
-            });
-            button.Find("Text").GetComponent<Text>().text = node.answers[i];
-
-            buttons[i] = button.gameObject;
+            }, 24 + 24 * (node.answers.Count - (i + 1)));
         }
     }
 
@@ -337,35 +321,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker) //TODO: reward part image
     {
         if (window) endDialogue(0, false);
-        //speakerPos = speaker.transform.position;
-        //create window
-
-        speakerPos = null;
-        window = Instantiate(taskDialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
-        window.Activate();
-        background = window.transform.Find("Background").GetComponent<RectTransform>();
-        var exit = background.transform.Find("Exit");
-        exit.GetComponent<Button>().onClick.AddListener(() => {
-            endDialogue(0);
-        });
-        if(isInCutscene) exit.gameObject.SetActive(false);
-        window.OnCancelled.AddListener(() => { endDialogue(); });
-        textRenderer = background.transform.Find("Text").GetComponent<Text>();
-        textRenderer.font = shellcorefont;
-
+        CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.dialogueColor, speaker);
         DialogueViewTransitionIn(speaker);
-
         AudioManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
                                                      // so cover for its noise here
-        AudioManager.PlayClipByID("clip_typing", false);
-        // change text
-        text = node.dialogueText.Replace("<br>", "\n");
-        characterCount = 0;
-        nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
-        textRenderer.color = node.dialogueColor;
-
-        // update speakerPos
-        if(speaker) speakerPos = speaker.transform.position;
 
         // Objective list
         var objectiveList = background.transform.Find("ObjectiveList").GetComponent<Text>();
@@ -420,33 +379,27 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             background.transform.Find("backgroundbox").gameObject.SetActive(false);
         }
 
-        // create buttons
-        buttons = new GameObject[2];
-
         string[] answers =
         {
             node.declineResponse,
             node.acceptResponse
         };
 
+        // create buttons
+        buttons = new GameObject[answers.Length];
+
         for (int i = 0; i < answers.Length; i++)
         {
             //TODO: createButton()
-            RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
-            button.SetParent(background, false);
-            button.anchoredPosition = new Vector2(0, 24 + 24 * i/*(node.outputKnobs.Count - (i + 1))*/);
             int index = i;
-            button.GetComponent<Button>().onClick.AddListener(() => {
+            buttons[i] = CreateButton(answers[i], () => {
                 if(index == 1) 
                 {
                     DialogueViewTransitionOut(); 
                     SectorManager.instance.player.alerter.showMessage("New Task", "clip_victory");
                     endDialogue(index, false);
                 } else endDialogue(index, true);
-            });
-            button.Find("Text").GetComponent<Text>().text = answers[i];
-
-            buttons[i] = button.gameObject;
+            }, 24 + 24 * i);
         }
     }
 
@@ -589,9 +542,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             }
             Dialogue.Node next = dialogue.nodes[nextIndex];
 
-            RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
-            button.SetParent(background, false);
-            button.anchoredPosition = new Vector2(0, 24 + 16 * (current.nextNodes.Count - (i + 1)));
+            Transform button = CreateButton(next.buttonText, null, 24 + 16 * (current.nextNodes.Count - (i + 1))).transform;
+
             button.GetComponent<Button>().onClick.AddListener(()=> {
                 Next(dialogue, nextIndex, speaker);
             });
@@ -601,8 +553,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                     // need condition to ensure no sound clashes occur
                 });
             }
-            // button.GetComponent<Button>().onClick.AddListener(()=> {  });
-            button.Find("Text").GetComponent<Text>().text = next.buttonText;
 
             buttons[i] = button.gameObject;
         }
