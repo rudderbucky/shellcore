@@ -13,7 +13,7 @@ public class ProximityInteractScript : MonoBehaviour {
 	void Awake() {
 		instance = this;
 	}
-	void ActivateInteraction(Entity ent) {
+	public static void ActivateInteraction(Entity ent) {
         // TODO: perhaps make this a static ability so reticle scripts can use it as well
         if (TaskManager.interactionOverrides.ContainsKey(ent.ID) && TaskManager.interactionOverrides[ent.ID].Count > 0)
         {

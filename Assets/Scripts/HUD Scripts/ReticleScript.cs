@@ -67,9 +67,11 @@ public class ReticleScript : MonoBehaviour {
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity, 513); // get an array of all hits
         bool droneInteraction = false;
 
+        // This orders secondary target drones to move/follow accordingly.
         foreach(var ent in targSys.GetSecondaryTargets())
             droneInteraction = DroneCheck(ent.transform, hits) || droneInteraction;
 
+        // This orders primary target drones to move/follow accordingly.
         var primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits);
         droneInteraction = droneInteraction || primaryDroneInteraction;
 
@@ -101,29 +103,15 @@ public class ReticleScript : MonoBehaviour {
                     && (curTarg.GetTransform().position - craft.transform.position).sqrMagnitude < 100 
                         && (curTarg as Entity).GetInteractible()) //Interact with entity
                 {
-                    //If there's a task overriding the default dialogue, use that
-                    if(TaskManager.interactionOverrides.ContainsKey(curTarg.GetID()) 
-                        && TaskManager.interactionOverrides[curTarg.GetID()].Count > 0)
-                    {
-                        TaskManager.interactionOverrides[curTarg.GetID()].Peek().Invoke();
-                    }
-                    else if (DialogueSystem.interactionOverrides.ContainsKey(curTarg.GetID()) 
-                        && DialogueSystem.interactionOverrides[curTarg.GetID()].Count > 0)
-                    {
-                        DialogueSystem.interactionOverrides[curTarg.GetID()].Peek().Invoke();
-                    }
-                    else if (curTarg.GetDialogue() as Dialogue)
-                        DialogueSystem.StartDialogue(curTarg.GetDialogue() as Dialogue, curTarg as Entity);
+                    ProximityInteractScript.ActivateInteraction(curTarg as Entity);
                 }
 
                 SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
                 return droneInteraction; // Return so that the next check doesn't happen
             }
-            targSys.SetTarget(null); // otherwise set the target to null
         }
-        else {
-            targSys.SetTarget(null); // otherwise set the target to null
-        }
+
+        targSys.SetTarget(null); // Nothing valid found, set target to null
 
         // quantityDisplay.UpdatePrimaryTargetInfo();
         return droneInteraction;
@@ -213,6 +201,9 @@ public class ReticleScript : MonoBehaviour {
         UpdateReticleHealths(shellimage, coreimage, ent);
     }
 
+    ///
+    /// Checks if the passed Transform is a Drone that the player owns. If so, orders it to move/follow accordingly.
+    ///
     private bool DroneCheck(Transform possibleDrone, RaycastHit2D[] hits)
     {
         var check = possibleDrone && possibleDrone.GetComponent<Drone>() &&
@@ -221,12 +212,14 @@ public class ReticleScript : MonoBehaviour {
                     && (hits.Length == 0 || hits[0].transform != possibleDrone);
         if(check)
         {
+            // Move the drone if the hit array is empty. Otherwise, if the hit array's first element is the player,
+            // order a follow.
             if (hits.Length == 0 ||  hits[0].transform != craft.transform) {
                 var pos = Input.mousePosition;
                 pos.z = CameraScript.zLevel;
                 possibleDrone.GetComponent<Drone>().CommandMovement(Camera.main.ScreenToWorldPoint(pos));
                 targSys.SetTarget(null);
-            } else if (hits[0].transform == craft.transform)
+            } else if (hits[0].transform == craft.transform) // Order a follow if this passes
             {
                 possibleDrone.GetComponent<AirCraftAI>().follow(craft.transform);
                 targSys.SetTarget(null);
