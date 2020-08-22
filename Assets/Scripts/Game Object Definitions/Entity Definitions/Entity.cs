@@ -211,18 +211,7 @@ public class Entity : MonoBehaviour, IDamageable {
             entityBody.drag = 10;
             entityBody.angularDrag = 100;
         }
-        /*
-        if (!GetComponent<Collider2D>())
-        {
-            hitbox = gameObject.AddComponent<PolygonCollider2D>();
-            hitbox.isTrigger = true;
-
-            // Disable collider if no sprite
-            if(!GetComponent<SpriteRenderer>().sprite) hitbox.enabled = false; 
-        }
-        // Another collider disable check
-        else if(!GetComponent<SpriteRenderer>().sprite) GetComponent<Collider2D>().enabled = false;
-        */
+       
         if(!transform.Find("Minimap Image"))
         {
             GameObject childObject = new GameObject("Minimap Image");
@@ -353,9 +342,11 @@ public class Entity : MonoBehaviour, IDamageable {
         }
 
         // unique abilities for mini and worker drones here
-        if(this as Drone) {
+        if(this as Drone) 
+        {
             Drone drone = this as Drone;
-            switch(drone.type) {
+            switch(drone.type) 
+            {
                 case DroneType.Mini:
                     var shellObj = transform.Find("Shell Sprite").gameObject;
                     Ability ab = AbilityUtilities.AddAbilityToGameObjectByID(shellObj, 6, null, 1);
@@ -391,14 +382,16 @@ public class Entity : MonoBehaviour, IDamageable {
             OnEntitySpawn.Invoke(this);
     }
    
-     public bool GetIsDead() {
+     public bool GetIsDead() 
+    {
         return isDead; // is dead
     }
 
     /// <summary>
     /// Helper method for death animation and state changing
     /// </summary>
-    protected virtual void OnDeath() {
+    protected virtual void OnDeath() 
+    {
         // set death, interactibility and immobility
         invisible = false;
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
@@ -463,7 +456,8 @@ public class Entity : MonoBehaviour, IDamageable {
         Destroy(gameObject);
     }
 
-    virtual protected void Awake() {
+    virtual protected void Awake() 
+    {
         // initialize instance fields
         currentHealth = new float[3];
         maxHealth = new float[3];
@@ -513,7 +507,8 @@ public class Entity : MonoBehaviour, IDamageable {
         initialized = true;
     }
 
-    protected virtual void Update() {
+    protected virtual void Update() 
+    {
         if(initialized) TickState(); // tick state
     }
 
@@ -595,9 +590,11 @@ public class Entity : MonoBehaviour, IDamageable {
     /// <summary>
     /// Request weapon global cooldown (used by weapon abilities)
     /// </summary>
-    public bool RequestGCD() {
+    public bool RequestGCD() 
+    {
         if(DialogueSystem.isInCutscene) return false; // Entities should be controlled entirely by the cutscene, i.e. no siccing!
-        if(weaponGCDTimer >= weaponGCD) {
+        if(weaponGCDTimer >= weaponGCD) 
+        {
             weaponGCDTimer = 0;
             return true;
         }
@@ -619,7 +616,8 @@ public class Entity : MonoBehaviour, IDamageable {
     /// <summary>
     /// Make the craft busy
     /// </summary>
-    public void MakeBusy() {
+    public void MakeBusy() 
+    {
         isBusy = true; // set to true
         busyTimer = 0; // reset timer
     }
@@ -628,14 +626,16 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Get whether the craft is busy or not
     /// </summary>
     /// <returns>true if the craft is busy, false otherwise</returns>
-    public bool GetIsBusy() {
+    public bool GetIsBusy() 
+    {
         return isBusy; // is busy
     }
 
     /// <summary>
     /// Set the craft into combat
     /// </summary>
-    public void SetIntoCombat() {
+    public void SetIntoCombat() 
+    {
         isInCombat = true; // set these to true
         isBusy = true;
         busyTimer = 0; // reset timers
@@ -655,7 +655,8 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Get all the abilities of the craft by searching through all the parts
     /// </summary>
     /// <returns>All the abilities attached to the craft</returns>
-    public Ability[] GetAbilities() {
+    public Ability[] GetAbilities() 
+    {
         return abilities.ToArray(); 
         // create this array during start since it's likely that we'll be calling this multiple times
     }
@@ -664,7 +665,8 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Get the targeting system of this craft
     /// </summary>
     /// <returns>the targeting system of the craft</returns>
-    public TargetingSystem GetTargetingSystem() {
+    public TargetingSystem GetTargetingSystem() 
+    {
         return targeter; // get targeting system
     }
 
@@ -672,7 +674,8 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Get the current health array of the craft
     /// </summary>
     /// <returns>the current health array of the craft</returns>
-    public float[] GetHealth() {
+    public float[] GetHealth() 
+    {
         return currentHealth; // get current health
     }
 
@@ -680,14 +683,16 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Get the maximum health array of the craft
     /// </summary>
     /// <returns>the maximum health array of the craft</returns>
-    public float[] GetMaxHealth() {
+    public float[] GetMaxHealth() 
+    {
         return maxHealth; // get max health
     }
 
     /// <summary>
     /// Take shell damage, return residual damage to apply to core or parts
     /// </summary>
-    public float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) {
+    public float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) 
+    {
 
         if (isAbsorbing && amount > 0f)
         {
@@ -714,7 +719,8 @@ public class Entity : MonoBehaviour, IDamageable {
     /// <summary>
     /// Take core damage.
     /// </summary>
-    public void TakeCoreDamage(float amount) {
+    public void TakeCoreDamage(float amount) 
+    {
 
         if (isAbsorbing && amount > 0f)
         {
@@ -731,12 +737,18 @@ public class Entity : MonoBehaviour, IDamageable {
     /// Removes energy from the craft
     /// </summary>
     /// <param name="amount">The amount of energy to remove</param>
-    public void TakeEnergy(float amount) {
+    public void TakeEnergy(float amount) 
+    {
         currentHealth[2] -= amount; // remove energy
         currentHealth[2] = currentHealth[2] > maxHealth[2] ? maxHealth[2] : currentHealth[2];
     }
 
-    private void ConnectedTreeCreator() {
+    ///
+    /// Recursive method that sets up a directed acyclic graph describing part connections.
+    /// When parts are detached from a ship, all their children are too.
+    ///
+    private void ConnectedTreeCreator() 
+    {
         shell.children.Clear();
         foreach(ShellPart part in parts) 
         {
@@ -744,7 +756,8 @@ public class Entity : MonoBehaviour, IDamageable {
             part.children.Clear();
 
             // attach all core-connected parts to the shell as well
-            if(part.IsAdjacent(shell)) {
+            if(part.IsAdjacent(shell)) 
+            {
                 part.parent = shell;
                 shell.children.Add(part);
             }
@@ -752,7 +765,8 @@ public class Entity : MonoBehaviour, IDamageable {
         ConnectedTreeHelper(shell);
     }
 
-    private void ConnectedTreeHelper(ShellPart parent) {
+    private void ConnectedTreeHelper(ShellPart parent) 
+    {
         if(parent != shell)
             foreach(ShellPart part in parts) 
             {
@@ -762,11 +776,13 @@ public class Entity : MonoBehaviour, IDamageable {
                     parent.children.Add(part);
                 }
             }
-        foreach(ShellPart part in parent.children) {
+        foreach(ShellPart part in parent.children) 
+        {
             ConnectedTreeHelper(part);
         }
     }
-    private void DominoHelper(ShellPart parent) {
+    private void DominoHelper(ShellPart parent) 
+    {
         foreach(ShellPart part in parent.children.ToArray()) {
             if(part) 
             {
@@ -775,22 +791,26 @@ public class Entity : MonoBehaviour, IDamageable {
         }
     }
 
-    private void Domino(ShellPart part) {
+    private void Domino(ShellPart part) 
+    {
         if(part.parent) {
             part.parent.children.Remove(part);
         }
         DominoHelper(part);
     }
 
-    public float[] GetRegens() {
+    public float[] GetRegens() 
+    {
         return regenRate;
     }
 
-    public void SetRegens(float[] newRegen) {
+    public void SetRegens(float[] newRegen) 
+    {
         regenRate = newRegen;
     }
 
-    public void SetMaxHealth(float[] maxHealths, bool healToMaxHealth) {
+    public void SetMaxHealth(float[] maxHealths, bool healToMaxHealth) 
+    {
         maxHealth = maxHealths;
         if(healToMaxHealth) maxHealth.CopyTo(currentHealth, 0);
     }
@@ -815,7 +835,8 @@ public class Entity : MonoBehaviour, IDamageable {
         return dialogue;
     }
 
-    public string GetName() {
+    public string GetName() 
+    {
         return name;
     }
 

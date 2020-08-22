@@ -9,9 +9,7 @@ using UnityEngine.UI;
 public class HealthBarScript : MonoBehaviour {
 
     public GameObject inputBar;
-    //public UnityEngine.UI.Image[] barsInputArray; // images of the health bars
     private UnityEngine.UI.Image[] barsArray; // instantiated bars
-    //public UnityEngine.UI.Image[] gleamInputArray; // images of the gleam bars
     private UnityEngine.UI.Image[] gleamArray; // instantiated bars
     private bool initialized; // if this GUI component is initialized
     private bool[] gleaming; // if the bar is gleaming

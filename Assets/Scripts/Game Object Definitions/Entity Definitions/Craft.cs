@@ -70,12 +70,6 @@ public abstract class Craft : Entity
     protected override void Start() {
         base.Start();
         category = EntityCategory.Unit;
-        /*
-        var circle = Instantiate(explosionCirclePrefab, transform, false);
-        circle.SetActive(true);
-        circle.GetComponent<DrawCircleScript>().Initialize();
-        circle.GetComponent<DrawCircleScript>().SetRespawnMode(true);
-        */
         instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
         instantiatedRespawnPrefab.position = transform.position;
     }
