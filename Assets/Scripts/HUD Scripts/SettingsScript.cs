@@ -24,6 +24,7 @@ public class SettingsScript : MonoBehaviour {
     public GameObject keybindItemPrefab;
     public RectTransform keybindBG;
     GameObject[] keybinds;
+	public bool initialized = false;
 
     void Start() {
 		// get playerpref values and configure toggles and sliders based on them
@@ -65,6 +66,7 @@ public class SettingsScript : MonoBehaviour {
 
 		windowedMode.isOn = (Screen.fullScreenMode == FullScreenMode.Windowed || Screen.fullScreenMode == FullScreenMode.MaximizedWindow);
 		windowResolution.value = FindResolution();
+		initialized = true;
 	}
 
 	int FindResolution()
@@ -78,9 +80,7 @@ public class SettingsScript : MonoBehaviour {
 
 	public void SaveSettings()
 	{
-		ChangeMasterVolume(masterSoundSlider.value);
-		ChangeMusicVolume(musicSlider.value);
-		ChangeSoundEffectsVolume(soundSlider.value);
+		UpdateVolumes();
 		ChangeHUDArrowScriptActive(HUDArrowScriptToggle.isOn);
 		ChangeBackgroundScriptActive(BackgroundScriptToggle.isOn);
 		ChangeRectangleEffectScriptActive(RectangleEffectScriptToggle.isOn);
@@ -172,8 +172,11 @@ public class SettingsScript : MonoBehaviour {
     // Volume slider updates without having to save
 	public void UpdateVolumes()
 	{
-		ChangeMasterVolume(masterSoundSlider.value);
-		ChangeMusicVolume(musicSlider.value);
-		ChangeSoundEffectsVolume(soundSlider.value);
+		if(initialized)
+		{
+			ChangeMasterVolume(masterSoundSlider.value);
+			ChangeMusicVolume(musicSlider.value);
+			ChangeSoundEffectsVolume(soundSlider.value);
+		}
 	}
 }
