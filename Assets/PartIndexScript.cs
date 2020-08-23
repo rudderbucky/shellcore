@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PartIndexScript : MonoBehaviour
 {
@@ -14,6 +15,15 @@ public class PartIndexScript : MonoBehaviour
     public GameObject infoBox;
     public PartDisplayBase partDisplay;
 
+    // Tallies how many parts the player has interacted with and how.
+    // Stats numbers -
+    // 0: number of shiny parts
+    // 1: number of obtained parts
+    // 2: number of seen parts
+    // 3: number of total parts
+    public Image[] statsBar;
+    public int[] statsNumbers;
+    public Text statsTotalTally;
     public enum PartStatus
     {
         Unseen,
@@ -36,11 +46,18 @@ public class PartIndexScript : MonoBehaviour
             {
                 button.status = PartStatus.Obtained;
                 button.displayShiny = PlayerCore.Instance.cursave.partsObtained.Find(x => CullToPartIndexValues(x).Equals(part)).shiny;
+
+                // Update stats on 3 tallies, possibly the shiny tally
+                if(button.displayShiny) statsNumbers[0]++;
+                statsNumbers[1]++;
+                statsNumbers[2]++;
             }
             else if(CheckPartSeen(part)) 
             {
                 button.status = PartStatus.Seen;
                 button.displayShiny = false;
+                // Update only the seen tally
+                statsNumbers[2]++;
             }
             else 
             {
@@ -49,6 +66,8 @@ public class PartIndexScript : MonoBehaviour
             }
             button.infoBox = infoBox;
             button.partDisplay = partDisplay;
+            // Update total number
+            statsNumbers[3]++;
         }
         parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(sectorName);
     }
@@ -67,6 +86,7 @@ public class PartIndexScript : MonoBehaviour
 
     void OnEnable()
     {
+        statsNumbers = new int[] {0, 0, 0, 0};
         foreach(var content in contents)
         {
             for(int i = 0; i < content.childCount; i++)
@@ -76,10 +96,7 @@ public class PartIndexScript : MonoBehaviour
         }
         parts.Clear();
 
-        infoBox.gameObject.SetActive(false);
-
         // player metadata
-        // PlayerCore.Instance.cursave.partsObtained = null;
         if(PlayerCore.Instance.cursave.partsObtained == null || PlayerCore.Instance.cursave.partsObtained.Count == 0)
         {
             PlayerCore.Instance.cursave.partsObtained = new List<EntityBlueprint.PartInfo>();
@@ -94,8 +111,6 @@ public class PartIndexScript : MonoBehaviour
             }
         }
         
-
-        // PlayerCore.Instance.cursave.partsSeen = null;
         if(PlayerCore.Instance.cursave.partsSeen == null || PlayerCore.Instance.cursave.partsSeen.Count == 0)
         {
             PlayerCore.Instance.cursave.partsSeen = new List<EntityBlueprint.PartInfo>();
@@ -125,6 +140,15 @@ public class PartIndexScript : MonoBehaviour
         {
             texts[i].SetActive(contents[i].childCount > 0);
         }
+
+        // Update tally graphic bar
+        for(int i = 0; i < statsBar.Length; i++)
+        {
+            statsBar[i].rectTransform.sizeDelta = new Vector2(statsNumbers[i] * 800 / statsNumbers[3], 20);
+        }
+
+        // Just found out about string interpolation. Damn that stuff rocks.
+        statsTotalTally.text = $"{statsNumbers[3]}";
     }
 
     public static void AttemptAddToPartsObtained(EntityBlueprint.PartInfo part)
