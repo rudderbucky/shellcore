@@ -14,7 +14,7 @@ public class TractorBeam : MonoBehaviour
     public Entity owner;
     Draggable target;
     private float energyPickupTimer = 10.0f; // Energy pickup timer
-	protected float energyPickupSpeed = 61.0f; // Disabled for now D: (60*FixedDeltatime = 10) Energy pickup rate scale for future hard/easy gamemodes and AI balancing only.
+	protected float energyPickupSpeed = 61.0f;
     public bool initialized;
     private bool energyEnabled = true;
     private GameObject tractorBeamPrefab;
@@ -47,7 +47,7 @@ public class TractorBeam : MonoBehaviour
         lineRenderer.sortingOrder = 1;
         lineRenderer.sortingLayerName = "Projectiles";
         childObject.name = "TractorBeam";
-	tractorBeamPrefab = childObject;
+	    tractorBeamPrefab = childObject;
         initialized = true;
     }
     private void Update() {
@@ -66,7 +66,7 @@ public class TractorBeam : MonoBehaviour
                 float dist = dir.magnitude;
                 //DebugMeter.AddDataPoint((dir.normalized * (dist - 2F) * 10000f * Time.fixedDeltaTime).magnitude);
 
-                if (target.GetComponent<EnergySphereScript>())
+                if (target.GetComponent<EnergySphereScript>() || owner as Yard)
                 {
                     rigidbody.position += (Vector2)dir.normalized * 0.6F;
                     if (owner.invisible)
@@ -83,7 +83,8 @@ public class TractorBeam : MonoBehaviour
     protected void TractorBeamUpdate()
     {
 		this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
-        if (energyEnabled && (!target) && (this.energyPickupTimer < 0) && !owner.invisible && !owner.isAbsorbing) // Grab energy automatically after a while when the craft is not pulling something more important
+        // Grab energy automatically after a while when the craft is not pulling something more important
+        if (energyEnabled && (!target) && (this.energyPickupTimer < 0) && !owner.invisible && !owner.isAbsorbing)
         {
             EnergySphereScript[] energies = AIData.energySpheres.ToArray();
 
@@ -106,7 +107,7 @@ public class TractorBeam : MonoBehaviour
 
         if ((target && !owner.GetIsDead() && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead()))) // Update tractor beam graphics
         {
-            if(!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > 600) 
+            if(!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > 600 && !(owner as Yard)) 
             {
                 SetTractorTarget(null); // break tractor if too far away
             } else 
@@ -140,7 +141,7 @@ public class TractorBeam : MonoBehaviour
 
         if(newTarget && newTarget.GetComponent<ShellPart>()) AIData.strayParts.Remove(newTarget.GetComponent<ShellPart>());
         else if(!newTarget && target && target.GetComponent<ShellPart>()) AIData.strayParts.Add(target.GetComponent<ShellPart>());
-        if (newTarget && !forcedTarget && (newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared)
+        if (newTarget && !forcedTarget && (newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared && !(owner as Yard))
             return;
         lineRenderer.enabled = (newTarget != null);
         if(target)
@@ -160,7 +161,7 @@ public class TractorBeam : MonoBehaviour
             Destroy(coreGlow.gameObject);
         if(targetGlow)
             Destroy(targetGlow.gameObject);
-	if(tractorBeamPrefab)
+	    if(tractorBeamPrefab)
             Destroy(tractorBeamPrefab);
     }
 
