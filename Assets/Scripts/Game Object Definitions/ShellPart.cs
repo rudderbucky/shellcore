@@ -26,9 +26,7 @@ public class ShellPart : MonoBehaviour {
     private float rotationOffset;
     public GameObject shooter;
     public string SpawnID { get; set; }
-
     public EntityBlueprint.PartInfo info;
-
     public string droppedSectorName;
 
     public bool GetDetached() {

@@ -81,6 +81,7 @@ public class Entity : MonoBehaviour, IDamageable {
     
     // prevents interaction while entities are in paths
     public bool isPathing = false;
+    public static float partDropRate = 0.1f;
     public void UpdateInteractible()
     {
         interactible = GetDialogue() && faction == 0; 
@@ -414,7 +415,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
         for(int i = 0; i < parts.Count; i++)
         {
-            if(!FactionManager.IsAllied(0, faction) && (parts[i] != shell) && Random.value < 0.1f && !(this as PlayerCore) && this as ShellCore && 
+            if(!FactionManager.IsAllied(0, faction) && (parts[i] != shell) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
                 ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
                 parts[i].SetCollectible(true);
                 if(sectorMngr) AIData.strayParts.Add(parts[i]);
