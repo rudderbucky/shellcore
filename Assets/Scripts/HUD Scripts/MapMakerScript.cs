@@ -21,6 +21,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	public GameObject mapArrowPrefab;
 	// Use this for initialization
 	static MapMakerScript instance;
+	public GameObject tooltipPrefab;
+	public RectTransform tooltipTransform;
 
 	void OnEnable() 
 	{
@@ -109,7 +111,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                         rt.pivot = new Vector2(0f, 1f);
                         rt.anchoredPosition = sect.rectTransform.anchoredPosition;
                         rt.sizeDelta = sect.rectTransform.sizeDelta;
-                        var renderer = obj.AddComponent<UILandPlatfromRenderer>();
+                        var renderer = obj.AddComponent<UILandPlatformRenderer>();
                         renderer.vertices = vertices.ToArray();
                         renderer.color = new Color(1f, 1f, 1f, 0.5f);
                     }
@@ -204,6 +206,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		{
 			arrows[objective].anchoredPosition = new Vector2(objective.location.x - minX, objective.location.y - maxY) / zoomoutFactor;
 		}
+
+		if(tooltipTransform) tooltipTransform.position = Input.mousePosition;
 	}
 
 	void PollMouseFollow()
