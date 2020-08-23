@@ -45,8 +45,9 @@ public class StatusMenu : GUIWindowScripts {
 		}
 		toggle = false;
 	}
-	void Initialize() {
-		
+	void Initialize() 
+	{
+		GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 		AudioManager.PlayClipByID("clip_select");
 		PlayerViewScript.SetCurrentWindow(this);
 		GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;

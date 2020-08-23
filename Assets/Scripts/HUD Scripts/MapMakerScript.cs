@@ -22,7 +22,9 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	// Use this for initialization
 	static MapMakerScript instance;
 	public GameObject tooltipPrefab;
-	public RectTransform tooltipTransform;
+	private RectTransform tooltipTransform;
+	private List<(Image, Vector3)> sectorImages = new List<(Image, Vector3)>();
+	private Dictionary<Image, (string, Sector.SectorType)> sectorInfo = new Dictionary<Image, (string, Sector.SectorType)>();
 
 	void OnEnable() 
 	{
@@ -68,6 +70,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x - minX, -maxY + sector.bounds.y) / zoomoutFactor;
 				border.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
 				sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2)));
+				sectorInfo.Add(sect, (sector.sectorName, sector.type));
 
 
                 var platform = sector.platform;
@@ -141,8 +144,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		DrawObjectiveLocations();
 	}
 
-	private List<(Image, Vector3)> sectorImages = new List<(Image, Vector3)>();
-
 	// Draw arrows signifying objective locations. Do not constantly call this method.
 	public static void DrawObjectiveLocations()
 	{
@@ -207,7 +208,30 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			arrows[objective].anchoredPosition = new Vector2(objective.location.x - minX, objective.location.y - maxY) / zoomoutFactor;
 		}
 
-		if(tooltipTransform) tooltipTransform.position = Input.mousePosition;
+		// Instantiate tooltip. Destroy tooltip if mouse is not over a sector image.
+		bool mouseOverSector = false;
+		foreach(var sect in sectorImages)
+		{
+			var pos = sect.Item1.rectTransform.position;
+			var sizeDelta = sect.Item1.rectTransform.sizeDelta;
+			var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
+
+			// Mouse over sector. Instantiate tooltip if necessary, move tooltip and set text up
+			if(newRect.Contains(Input.mousePosition))
+			{
+				if(!tooltipTransform) tooltipTransform = Instantiate(tooltipPrefab, transform.parent.parent).GetComponent<RectTransform>();
+				tooltipTransform.position = Input.mousePosition;
+				tooltipTransform.GetComponent<RectTransform>().sizeDelta = new Vector2(175, 50);
+				mouseOverSector = true;
+				tooltipTransform.GetComponentInChildren<Text>().text = 
+					$"{sectorInfo[sect.Item1].Item1}\n{sectorInfo[sect.Item1].Item2}".ToUpper();
+
+			}
+		}
+		if(!mouseOverSector) 
+		{
+			if(tooltipTransform) Destroy(tooltipTransform.gameObject);
+		}
 	}
 
 	void PollMouseFollow()
@@ -231,6 +255,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			Destroy(transform.GetChild(i).gameObject); // destroy stray children
 		}
 		sectorImages.Clear();
+		sectorInfo.Clear();
 	}
 	void OnDisable() {
 		Destroy();
