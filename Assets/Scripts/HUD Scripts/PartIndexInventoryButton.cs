@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Linq;
 
-public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler, IPointerExitHandler
+public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
     public PartIndexScript.PartStatus status;
     public GameObject infoBox;
     public List<string> origins = new List<string>();
     public bool displayShiny;
     public PartDisplayBase partDisplay;
+    public static List<string> partMarkerSectorNames = new List<string>();
 
     protected override void Start()
     {
@@ -39,12 +41,11 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
         if(status != PartIndexScript.PartStatus.Unseen)
         {
             var textComponent = infoBox.GetComponentInChildren<Text>();
-            textComponent.text = null;
+            textComponent.text = "Sector Origins: (Click part to mark on map)";
             foreach(var origin in origins)
             {
                 if(!textComponent.text.Contains(origin)) 
                 {
-                    if(textComponent.text == "") textComponent.text = "Sector Origins: ";
                     textComponent.text += "\n" + origin;
                 }
             }
@@ -61,7 +62,15 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
             partDisplay.gameObject.SetActive(false);
             infoBox.GetComponentInChildren<Text>().text = "Sector Origins: ???";
         }
-        
+    }
+
+    ///
+    /// Sets up the markers for the map and switches to it.
+    ///
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        partMarkerSectorNames = origins.Distinct().ToList();
+        StatusMenu.instance.SwitchSections(0);
     }
 
     public void OnPointerExit(PointerEventData eventData)

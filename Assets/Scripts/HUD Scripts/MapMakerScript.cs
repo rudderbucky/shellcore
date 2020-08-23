@@ -25,6 +25,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	private RectTransform tooltipTransform;
 	private List<(Image, Vector3)> sectorImages = new List<(Image, Vector3)>();
 	private Dictionary<Image, (string, Sector.SectorType)> sectorInfo = new Dictionary<Image, (string, Sector.SectorType)>();
+	private List<Image> partOriginMarkerImages = new List<Image>();
 
 	void OnEnable() 
 	{
@@ -68,6 +69,19 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				sect.color =  1.2F * sector.backgroundColor - new Color(0.2F, 0.2F, 0.2F, 0.75F); 
 				border.color = new Color(1F, 1F, 1F, 0.5F);
 				sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x - minX, -maxY + sector.bounds.y) / zoomoutFactor;
+
+				// Set up markers.
+				if(PartIndexInventoryButton.partMarkerSectorNames.Contains(sector.sectorName))
+				{
+					Image marker = new GameObject($"Marker {sector.sectorName}").AddComponent<Image>();
+					marker.transform.SetParent(transform);
+					marker.rectTransform.sizeDelta = new Vector2(5, 5);
+					marker.rectTransform.anchoredPosition = sect.rectTransform.anchoredPosition;
+					marker.rectTransform.anchoredPosition += (new Vector2(sector.bounds.w, -sector.bounds.h) / (2 * zoomoutFactor));
+					marker.color = new Color(0,1,0,1);
+					partOriginMarkerImages.Add(marker);
+				}
+
 				border.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
 				sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2)));
 				sectorInfo.Add(sect, (sector.sectorName, sector.type));
@@ -95,7 +109,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                         var pos = new Vector3
                         {
                             x = offset.x + tileSize * (i % cols),
-                            y = offset.y - tileSize * (i / cols),
+                            y = -offset.y - tileSize * (i / cols),
                             z = 0
                         };
 
@@ -142,6 +156,9 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
 		// draw objective locations
 		DrawObjectiveLocations();
+
+		// clear markers
+		PartIndexInventoryButton.partMarkerSectorNames.Clear();
 	}
 
 	// Draw arrows signifying objective locations. Do not constantly call this method.
@@ -232,6 +249,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		{
 			if(tooltipTransform) Destroy(tooltipTransform.gameObject);
 		}
+
+		// Blink markers.
+		bool markerActive = (Time.time % 2 > 1);
+		foreach(var marker in partOriginMarkerImages)
+		{
+			marker.enabled = markerActive;
+		}
 	}
 
 	void PollMouseFollow()
@@ -254,8 +278,10 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		for(int i = 0; i < transform.childCount; i++) {
 			Destroy(transform.GetChild(i).gameObject); // destroy stray children
 		}
+		if(tooltipTransform) Destroy(tooltipTransform.gameObject);
 		sectorImages.Clear();
 		sectorInfo.Clear();
+		partOriginMarkerImages.Clear();
 	}
 	void OnDisable() {
 		Destroy();

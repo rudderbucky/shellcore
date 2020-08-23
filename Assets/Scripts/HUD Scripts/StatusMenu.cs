@@ -19,23 +19,33 @@ public class StatusMenu : GUIWindowScripts {
 		for(int i = 0; i < buttons.Length; i++)
 		{
 			int x = i;
-			buttons[i].onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
-				for(int j = 0; j < sections.Length; j++ )
-				{
-					if(x != j) 
-					{
-						sections[j].gameObject.SetActive(false);
-						buttons[j].image.color = Color.grey;
-					}
-					else
-					{
-						sections[j].gameObject.SetActive(true);
-						buttons[j].image.color = Color.white;
-					} 
-				}
+			buttons[i].onClick.AddListener(new UnityEngine.Events.UnityAction(() => 
+			{
+				SwitchSections(x);
 			}));
 		}
 	}
+
+	///
+	/// Switches Status Menu sections to the index specified.
+	///
+	public void SwitchSections(int x)
+	{
+		for(int j = 0; j < sections.Length; j++ )
+		{
+			if(x != j) 
+			{
+				sections[j].gameObject.SetActive(false);
+				buttons[j].image.color = Color.grey;
+			}
+			else
+			{
+				sections[j].gameObject.SetActive(true);
+				buttons[j].image.color = Color.white;
+			} 
+		}
+	}
+
 	public override void CloseUI()
 	{
 		AudioManager.PlayClipByID("clip_back");
