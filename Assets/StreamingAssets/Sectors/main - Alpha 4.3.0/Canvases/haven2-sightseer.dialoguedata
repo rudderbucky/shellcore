@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="-375868" pan="-57.5,-1.25" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="End Dialogue" ID="-375902" type="EndDialogue" pos="146.25,-43.375">
+			<Port ID="-375904" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-375882" type="DialogueNode" pos="-447.5,-164.625">
+			<Port ID="-375884" name="input" dynamic="False" />
+			<Port ID="-375886" name="cancel" dynamic="False" />
+			<Port ID="-375910" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">215</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-375912" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">270</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1408041379" />
+			<Variable name="answers" refID="-1003018752" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-375892" type="DialogueNode" pos="-160,-40">
+			<Port ID="-375894" name="input" dynamic="False" />
+			<Port ID="-375896" name="cancel" dynamic="False" />
+			<Port ID="-375916" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">189</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="393639385" />
+			<Variable name="answers" refID="-1229739008" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="-375868" type="StartDialogueNode" pos="-740,-80">
+			<Port ID="-375944" name="input" dynamic="False" />
+			<Port ID="-375872" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1701968445" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-375904" port2ID="-375916" />
+		<Connection port1ID="-375904" port2ID="-375912" />
+		<Connection port1ID="-375884" port2ID="-375872" />
+		<Connection port1ID="-375910" port2ID="-375894" />
+	</Connections>
+	<Objects>
+		<Object refID="1408041379" type="System.String">
+			<string>Have you taken a good look at the scenery here? The Turrets, the ShellCores, it's got so much variety! It never gets old!</string>
+		</Object>
+		<Object refID="-1003018752" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Agreed!</string>
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="393639385" type="System.String">
+			<string>I guess you could say, this is not a dating sight.</string>
+		</Object>
+		<Object refID="-1229739008" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1701968445" type="System.String">
+			<string>haven2-sightseer</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
