@@ -69,8 +69,11 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
     ///
     public void OnPointerClick(PointerEventData eventData)
     {
-        partMarkerSectorNames = origins.Distinct().ToList();
-        StatusMenu.instance.SwitchSections(0);
+        if(status != PartIndexScript.PartStatus.Unseen)
+        {
+            partMarkerSectorNames = origins.Distinct().ToList();
+            StatusMenu.instance.SwitchSections(0);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
