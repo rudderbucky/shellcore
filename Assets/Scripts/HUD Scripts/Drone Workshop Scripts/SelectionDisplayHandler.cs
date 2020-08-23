@@ -22,8 +22,6 @@ public class SelectionDisplayHandler : MonoBehaviour
             shell.color = FactionManager.GetFactionColor(faction);
 
 			shell.type = Image.Type.Sliced;
-			// orient shell image so relative center stays the same regardless of shell tier
-			shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
         } else {
             shell.enabled = false;
         }
@@ -36,6 +34,8 @@ public class SelectionDisplayHandler : MonoBehaviour
                 core.material = ResourceManager.GetAsset<Material>("material_color_swap");
                 core.color = FactionManager.GetFactionColor(faction);
             }
+            // orient core image so relative center stays the same regardless of shell tier
+            core.rectTransform.anchoredPosition = shell.sprite.pivot - shell.rectTransform.sizeDelta / 2;
         } else {
             core.enabled = false;
         }
