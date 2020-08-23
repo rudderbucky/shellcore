@@ -267,7 +267,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 28:
                 return "Retreat";
             case 29:
-                return "Absorption";
+                return "Absorb Field";
             case 30:
                 return "Shell Regen";
             case 31:
@@ -302,7 +302,7 @@ public class AbilityUtilities : MonoBehaviour {
 				((HealthHeal)ability).Initialize();
 				break;
 			case 3:
-				Debug.Log("Main bullet should be intrinsically added!");
+				Debug.LogWarning("Main bullet should be intrinsically added!");
 				ability = obj.AddComponent<MainBullet>();
 				break;
 			case 4:
