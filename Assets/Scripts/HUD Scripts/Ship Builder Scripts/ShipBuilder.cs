@@ -303,7 +303,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 	static Dictionary<string, List<(string, int)>> originsofParts = new Dictionary<string, List<(string, int)>>();
 
-	static void AddOriginToDictionary(ShellPart part)
+	public static void AddOriginToDictionary(ShellPart part)
 	{
 		if(!originsofParts.ContainsKey(part.droppedSectorName))
 		{

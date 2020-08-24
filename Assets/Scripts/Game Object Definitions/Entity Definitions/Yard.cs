@@ -62,6 +62,7 @@ public class Yard : AirConstruct, IShipBuilder {
                     PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your part has been added into your inventory.</color>");
                     var info = tractor.GetTractorTarget().GetComponent<ShellPart>().info;
                     info = ShipBuilder.CullSpatialValues(info);
+                    ShipBuilder.AddOriginToDictionary(tractor.GetTractorTarget().GetComponent<ShellPart>());
                     PlayerCore.Instance.cursave.partInventory.Add(info);
 
                     PartIndexScript.AttemptAddToPartsObtained(info);

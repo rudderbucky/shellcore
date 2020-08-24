@@ -19,8 +19,10 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
         public string dropRate;
-        private float oldDropRate;
+        private static float oldDropRate;
         public string sectorName;
+        public bool restoreOld;
+        static SectorManager.SectorLoadDelegate del;
         public override void NodeGUI()
         {
             GUILayout.BeginHorizontal();
@@ -28,21 +30,38 @@ namespace NodeEditorFramework.Standard
             output.DisplayLayout();
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Drop Rate");
-            dropRate = RTEditorGUI.TextField(dropRate, GUILayout.MinWidth(400));
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Sector Name");
-            sectorName = RTEditorGUI.TextField(sectorName, GUILayout.MinWidth(400));
+            if(!(restoreOld = GUILayout.Toggle(restoreOld, "Restore old drop rate")))
+            {
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Drop Rate");
+                dropRate = RTEditorGUI.TextField(dropRate, GUILayout.MinWidth(400));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Sector Name");
+                sectorName = RTEditorGUI.TextField(sectorName, GUILayout.MinWidth(400));
+            }
+            
             GUILayout.EndHorizontal();
 
         }
 
         public override int Traverse()
         {
-            oldDropRate = Entity.partDropRate;
-            Entity.partDropRate = float.Parse(dropRate);
-            SectorManager.OnSectorLoad += RestoreOldValue; 
+            if(!restoreOld)
+            {
+                oldDropRate = Entity.partDropRate;
+                Entity.partDropRate = float.Parse(dropRate);
+                del = RestoreOldValue;
+                SectorManager.OnSectorLoad += del; 
+            }
+            else if(del != null)
+            {
+                SectorManager.OnSectorLoad -= del;
+                del = null;
+                Entity.partDropRate = oldDropRate;
+            }
+
             return 0;
         }
 
@@ -52,7 +71,11 @@ namespace NodeEditorFramework.Standard
             {
                 Debug.Log("Left part drop rate sector");
                 Entity.partDropRate = oldDropRate;
-                SectorManager.OnSectorLoad -= RestoreOldValue;
+            }
+            else
+            {
+                Debug.Log("Entering part drop rate sector");
+                Entity.partDropRate = float.Parse(dropRate);
             }
         }
     }
