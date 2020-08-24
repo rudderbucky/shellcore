@@ -93,7 +93,7 @@ public class TaskDisplayScript : MonoBehaviour
     public static void ShowMission(Mission mission)
     {
         instance.ClearMissionObjectivesSpace();
-        instance.nameAndPrerequisitesHeader.text = mission.name + "\n\nEntrypoint:\n" + mission.entryPoint + "\n\nPrequisites:\n";
+        instance.nameAndPrerequisitesHeader.text = mission.name + "\n\nEntrypoint:\n" + mission.entryPoint + "\n\nPrerequisites:\n";
         instance.rankHeader.text = mission.rank;
         instance.rankHeader.transform.parent.gameObject.SetActive(true);
         instance.rankHeader.color = rankColorsByString[mission.rank];
