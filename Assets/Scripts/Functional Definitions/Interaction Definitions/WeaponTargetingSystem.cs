@@ -21,6 +21,14 @@ public class WeaponTargetingSystem {
 
         Transform tmp = ability.Core.GetTargetingSystem().GetTarget(); // get the core's target if it has one
 
+        if(!(ability.Core as ShellCore))
+        {
+            if(IsValidTarget(tmp)) 
+                target = tmp;
+            else target = null;
+            return target;
+        }
+
         if (tmp != null && tmp && IsValidTarget(tmp))
         {
             target = tmp;
@@ -33,6 +41,7 @@ public class WeaponTargetingSystem {
             //TODO: optimize
             Transform closest = null;
             float closestD = float.MaxValue;
+            var pos = ability.Core.transform.position;
 
             for (int i = 0; i < AIData.entities.Count; i++) // go through all entities and check them for several factors
             {
@@ -60,7 +69,7 @@ public class WeaponTargetingSystem {
 
                 // check if it is the closest entity that passed the checks so far
 
-                float sqrD = Vector3.SqrMagnitude(ability.Core.transform.position - AIData.entities[i].transform.position);
+                float sqrD = Vector3.SqrMagnitude(pos - AIData.entities[i].transform.position);
                 if (closest == null || sqrD < closestD)
                 {
                     closestD = sqrD;

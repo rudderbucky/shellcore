@@ -41,13 +41,14 @@ public class TargetingSystem {
             //TODO: optimize
             Transform closest = null;
             float closestD = float.MaxValue;
+            var pos = parent.position;
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
                 if(!AIData.entities[i]) continue;
                 if (AIData.entities[i].transform == parent)
                     continue;
-                if (FactionManager.IsAllied(faction, AIData.entities[i].faction))
+                if (FactionManager.IsAllied(AIData.entities[i].faction, faction))
                     continue;
                 if (AIData.entities[i].GetIsDead())
                 {
@@ -56,7 +57,8 @@ public class TargetingSystem {
                 if (AIData.entities[i].invisible)
                     continue;
 
-                float sqrD = Vector3.SqrMagnitude(parent.position - AIData.entities[i].transform.position);
+                
+                float sqrD = Vector3.SqrMagnitude(pos - AIData.entities[i].transform.position);
                 if (closest == null || sqrD < closestD)
                 {
                     closestD = sqrD;

@@ -36,7 +36,7 @@ public class Entity : MonoBehaviour, IDamageable {
     protected GameObject deathExplosionPrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
     public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
-    public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = blue...)
+    public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = olive...)
     public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
     public Dialogue dialogue; // dialogue of entity
@@ -465,7 +465,6 @@ public class Entity : MonoBehaviour, IDamageable {
         regenRate = new float[3];
         parts = new List<ShellPart>();
         isBusy = false;
-        targeter = new TargetingSystem(transform); // create the associated targeting system for this craft
         isInCombat = false;
 
         if (!GetComponent<Draggable>() && (this as Drone || this as Tank || this as Turret))
@@ -501,6 +500,7 @@ public class Entity : MonoBehaviour, IDamageable {
         BuildEntity(); // Generate shell parts around the entity
         transform.position = spawnPoint;
         GetComponentInChildren<MinimapLockRotationScript>().Initialize(); // initialize the minimap dot
+        targeter = new TargetingSystem(transform); // create the associated targeting system for this craft
         targeter.SetTarget(null);
         //transform.rotation = Quaternion.identity; // reset rotation
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer

@@ -498,7 +498,6 @@ public class SectorManager : MonoBehaviour
             default:
                 break;
         }
-
         Entity entity = gObj.GetComponent<Entity>();
         // TODO: These lines should perhaps be moved somewhere inside Entity itself, they need to run before even Awake is called
         if(!AIData.entities.Contains(entity))
