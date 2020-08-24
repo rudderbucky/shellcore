@@ -175,7 +175,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         {
             if(speaker) {
                 DialogueViewTransitionIn(speaker);
-                window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
+                window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
                 window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
             }
             else

@@ -121,7 +121,7 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             return; // Core is in stealth mode, weapons are disabled
         }
-        if (key == 1) // INPUT CHECK REMOVED FROM HERE, MAKE SURE IT STILL WORKS
+        if (key == 1)
         { // toggle ability
             Core.MakeBusy(); // make core busy
             isActive = !isActive;
