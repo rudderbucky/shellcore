@@ -18,7 +18,7 @@ namespace NodeEditorFramework.Standard
 
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
-        public string dropRate;
+        public float dropRate;
         private static float oldDropRate;
         public string sectorName;
         public bool restoreOld;
@@ -35,7 +35,7 @@ namespace NodeEditorFramework.Standard
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Drop Rate");
-                dropRate = RTEditorGUI.TextField(dropRate, GUILayout.MinWidth(400));
+                dropRate = RTEditorGUI.FloatField(dropRate, GUILayout.MinWidth(400));
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Sector Name");
@@ -51,7 +51,7 @@ namespace NodeEditorFramework.Standard
             if(!restoreOld)
             {
                 oldDropRate = Entity.partDropRate;
-                Entity.partDropRate = float.Parse(dropRate);
+                Entity.partDropRate = dropRate;
                 del = RestoreOldValue;
                 SectorManager.OnSectorLoad += del; 
             }
@@ -75,7 +75,7 @@ namespace NodeEditorFramework.Standard
             else
             {
                 Debug.Log("Entering part drop rate sector");
-                Entity.partDropRate = float.Parse(dropRate);
+                Entity.partDropRate = dropRate;
             }
         }
     }
