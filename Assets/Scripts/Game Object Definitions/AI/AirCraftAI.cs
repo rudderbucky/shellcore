@@ -231,6 +231,7 @@ public class AirCraftAI : MonoBehaviour
                 if (target && (target.transform.position - craft.transform.position).sqrMagnitude < 800f)
                 {
                     aggroTarget = target;
+                    craft.GetTargetingSystem().SetTarget(target.transform);
                     //Debug.Log("AggroTarget: " + aggroTarget.name + " Factions: " + aggroTarget.faction + " - " + craft.faction);
                 }
 
