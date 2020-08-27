@@ -215,6 +215,10 @@ public class AirCraftAI : MonoBehaviour
     {
         if (!craft.GetIsDead())
         {
+            // find target
+            Entity target = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, craft.Terrain);
+            craft.GetTargetingSystem().SetTarget(target ? target.transform : null);
+            
             foreach (Ability a in craft.GetAbilities())
             {
                 if (a)
@@ -226,12 +230,10 @@ public class AirCraftAI : MonoBehaviour
             // shouldn't tick if dead or in cutscene, give control to the cutscene
             if (aggression != AIAggression.KeepMoving && aggroSearchTimer < Time.time && !DialogueSystem.isInCutscene)
             {
-                // find target, stop or follow, give up if it's outside range
-                Entity target = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, craft.Terrain);
+                // stop or follow target, give up if it's outside range
                 if (target && (target.transform.position - craft.transform.position).sqrMagnitude < 800f)
                 {
                     aggroTarget = target;
-                    craft.GetTargetingSystem().SetTarget(target.transform);
                     //Debug.Log("AggroTarget: " + aggroTarget.name + " Factions: " + aggroTarget.faction + " - " + craft.faction);
                 }
 

@@ -44,6 +44,7 @@ public class AirConstruct : Construct {
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+        targeter.GetTarget(true);
         Oscillator();
     }
 }
