@@ -36,7 +36,8 @@ public class SaveHandler : MonoBehaviour {
 			if(save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "") {
 				JsonUtility.FromJsonOverwrite(save.currentPlayerBlueprint, player.blueprint);
 			} else {
-				Debug.LogWarning("Save has been played but does not have a player blueprint.");
+				Debug.LogWarning("Save should have been given a currentPlayerBlueprint by now.");
+				player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 				player.blueprint.baseRegen = new float[] {60,0,60};
 				player.blueprint.shellHealth = new float[] {1000,250,500};
 				player.blueprint.coreSpriteID = "core1_light";

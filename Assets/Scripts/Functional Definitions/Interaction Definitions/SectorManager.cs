@@ -92,6 +92,10 @@ public class SectorManager : MonoBehaviour
             jsonPath = customPath;
             jsonMode = true;
         }
+
+        // Main menu loader; only the main menu is not loaded by JSON anymore.
+        // Look at how far we've come :)
+        if(!jsonMode && current != null) loadSector();
         jsonMode = false;
     }
 
@@ -210,14 +214,14 @@ public class SectorManager : MonoBehaviour
                         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
                         spawnPoint = wdata.initialSpawn;
-                        Debug.LogError(player.cursave.timePlayed);
                         if(player.cursave == null || player.cursave.timePlayed == 0)
                         {
                             player.transform.position = player.spawnPoint = spawnPoint;
-                            if(wdata.defaultBlueprintJSON != "")
+                            if(wdata.defaultBlueprintJSON != null && wdata.defaultBlueprintJSON != "")
                             {
-                                player.cursave.currentPlayerBlueprint = wdata.defaultBlueprintJSON;
-                                Debug.LogWarning("Set default blueprint");
+                                if(player.cursave != null)
+                                    player.cursave.currentPlayerBlueprint = wdata.defaultBlueprintJSON;
+                                Debug.Log("Default blueprint set");
                             }
                         }
                             
