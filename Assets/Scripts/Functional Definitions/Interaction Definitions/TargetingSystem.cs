@@ -37,8 +37,13 @@ public class TargetingSystem {
     public Transform GetTarget(bool findNew = false) {
         if(findNew)
         {
-            //Find the closest enemy
-            //TODO: optimize
+            // Find the closest enemy
+            // TODO: optimize, currently calling this method for all entities is O(n^2) with n being entity count. 
+            // Using Delaunay triangulation under a static call and grabbing shortest edges first 
+            // will reduce it to O(nlogn), a drastic difference. Yet theoretically the game
+            // should still not lag under say, 40000 iterations per frame, which it does lag under.
+            // In fact, it still lags with 4000 iterations if you reduce the calls per frame. 
+            // I don't think this method is the big reason behind the lag anymore.
             Transform closest = null;
             float closestD = float.MaxValue;
             var pos = parent.position;
