@@ -25,11 +25,10 @@ public class SaveHandler : MonoBehaviour {
 			if(SectorManager.testJsonPath != null) save.resourcePath = SectorManager.testJsonPath;
 			else if(save.resourcePath == "") save.resourcePath = SectorManager.jsonPath;
 			player.cursave = save;
-            if (save.resourcePath != "")
-            {
-                SectorManager.instance.LoadSectorFile(save.resourcePath);
-                taskManager.Initialize(true); // Re-init
-            }
+
+			SectorManager.instance.LoadSectorFile(save.resourcePath);
+			taskManager.Initialize(true); // Re-init
+			DialogueSystem.InitCanvases();
 
 			player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 			player.blueprint.name = "Player Save Blueprint";

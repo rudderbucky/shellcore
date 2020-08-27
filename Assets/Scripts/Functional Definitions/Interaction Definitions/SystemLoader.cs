@@ -29,12 +29,14 @@ public class SystemLoader : MonoBehaviour
             factionManager.Initialize();
         if (sectorManager)
             sectorManager.Initialize();
-        if (taskManager)
-            taskManager.Initialize();
-        if (dialogueSystem)
+
+        // Save Handler will initialize dialogue canvases after sector loading if present.
+        if (!saveHandler && dialogueSystem)
             DialogueSystem.InitCanvases();
         if (saveHandler)
             saveHandler.Initialize();
+        if (taskManager)
+            taskManager.Initialize();
 
         AllLoaded = true;
     }
