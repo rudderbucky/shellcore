@@ -127,6 +127,10 @@ public class DevConsoleScript : MonoBehaviour
                 EnterCommand("spectate");
                 EnterCommand("skynet will rise");
             }
+            else if (command.Equals("fps", StringComparison.CurrentCultureIgnoreCase))
+            {
+                textBox.text += $"\n{1f / Time.smoothDeltaTime}";
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {
