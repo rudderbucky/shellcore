@@ -20,16 +20,53 @@ public class SectorPropertyDisplay : MonoBehaviour
     public InputField colorB;
     public InputField waveSet;
     public GameObject bgSpawnInputFieldPrefab;
+    public GameObject deleteButton;
+    public GameObject insertBGSpawnsButton;
+    public GameObject clearBGSpawnsButton;
+    public GameObject parseBGSpawnsButton;
+
     public List<(InputField, Dropdown)> bgSpawnInputFields = new List<(InputField, Dropdown)>();
     public Transform bgSpawnScrollContents;
     public RectTransform mainContents;
     Vector2 mousePos;
 
     bool opening = false;
+    bool editingDefaults = false;
 
     void Start() 
     {
         if(!rectTransform) rectTransform = GetComponent<RectTransform>();
+    }
+
+    public void SetDefaults()
+    {
+        opening = true;
+        editingDefaults = true;
+
+        if (!rectTransform) rectTransform = GetComponent<RectTransform>();
+        gameObject.SetActive(true);
+        rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
+
+        type.value = 0;
+        sectorMusicBool.isOn = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultMusicOn", 1) == 1 ? true : false;
+        sectorMusicID.text = PlayerPrefs.GetString("WCSectorPropertyDisplay_defaultMusic0", WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)0));
+
+        sectorName.transform.parent.gameObject.SetActive(false);
+        waveSet.transform.parent.gameObject.SetActive(false);
+        x.transform.parent.gameObject.SetActive(false);
+        y.transform.parent.gameObject.SetActive(false);
+        w.transform.parent.gameObject.SetActive(false);
+        h.transform.parent.gameObject.SetActive(false);
+        colorR.transform.parent.gameObject.SetActive(false);
+        colorG.transform.parent.gameObject.SetActive(false);
+        colorB.transform.parent.gameObject.SetActive(false);
+        bgSpawnScrollContents.gameObject.SetActive(false);
+        insertBGSpawnsButton.SetActive(false);
+        clearBGSpawnsButton.SetActive(false);
+        parseBGSpawnsButton.SetActive(false);
+        deleteButton.SetActive(false);
+
+        opening = false;
     }
 
     public void DisplayProperties(Sector sector)
@@ -48,6 +85,22 @@ public class SectorPropertyDisplay : MonoBehaviour
         sectorName.text = sector.sectorName;
         sectorMusicBool.isOn = sector.hasMusic;
         sectorMusicID.text = sector.musicID;
+
+        sectorName.transform.parent.gameObject.SetActive(true);
+        waveSet.transform.parent.gameObject.SetActive(true);
+        x.transform.parent.gameObject.SetActive(true);
+        y.transform.parent.gameObject.SetActive(true);
+        w.transform.parent.gameObject.SetActive(true);
+        h.transform.parent.gameObject.SetActive(true);
+        colorR.transform.parent.gameObject.SetActive(true);
+        colorG.transform.parent.gameObject.SetActive(true);
+        colorB.transform.parent.gameObject.SetActive(true);
+        bgSpawnScrollContents.gameObject.SetActive(true);
+        insertBGSpawnsButton.SetActive(true);
+        clearBGSpawnsButton.SetActive(true);
+        parseBGSpawnsButton.SetActive(true);
+        deleteButton.SetActive(true);
+
         waveSet.text = sector.waveSetPath;
 
         x.text = currentSector.bounds.x + "";
@@ -63,19 +116,29 @@ public class SectorPropertyDisplay : MonoBehaviour
     }
 
     void Update() {
-        var pos = Camera.main.WorldToScreenPoint(mousePos);
-        pos += new Vector3(300, 0);
-        rectTransform.anchoredPosition = pos;
+        if(!editingDefaults)
+        {
+            var pos = Camera.main.WorldToScreenPoint(mousePos);
+            pos += new Vector3(300, 0);
+            rectTransform.anchoredPosition = pos;
 
-        x.text = currentSector.bounds.x + "";
-        y.text = currentSector.bounds.y + "";
-        w.text = currentSector.bounds.w + "";
-        h.text = currentSector.bounds.h + "";
+            x.text = currentSector.bounds.x + "";
+            y.text = currentSector.bounds.y + "";
+            w.text = currentSector.bounds.w + "";
+            h.text = currentSector.bounds.h + "";
+        }
     }
     public void UpdateType() 
     {
         if (opening)
             return;
+        if(editingDefaults)
+        {
+            sectorMusicID.text = 
+            PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{type.value}", 
+                WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)type.value));
+            return;
+        }
 
         currentSector.type = (Sector.SectorType)type.value;
         currentSector.backgroundColor = SectorColors.colors[type.value];
@@ -86,36 +149,55 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void UpdateName() 
     {
+        if (opening || editingDefaults)
+            return;
         currentSector.sectorName = sectorName.text;
     }
 
     public void UpdateMusic() 
     {
+        if (opening || editingDefaults)
+            return;
         currentSector.musicID = sectorMusicID.text;
     }
 
     public void UpdateMusicBool()
     {
+        if (opening || editingDefaults)
+            return;
         currentSector.hasMusic = sectorMusicBool.isOn;
     }
 
     public void UpdateColor()
     {
+        if (opening || editingDefaults)
+            return;
         currentSector.backgroundColor = new Color(float.Parse(colorR.text), float.Parse(colorG.text), float.Parse(colorB.text), 1);
     }
 
     public void Hide() 
     {
         gameObject.SetActive(false);
+        if(editingDefaults)
+        {
+            PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultMusicOn", sectorMusicBool.isOn ? 1 : 0);
+            if(sectorMusicID.text != "")
+                PlayerPrefs.SetString($"WCSectorPropertyDisplay_defaultMusic{type.value}", sectorMusicID.text);
+        }
+        editingDefaults = false;
     }
 
     public void AddBGSpawn()
     {
+        if (opening || editingDefaults)
+            return;
         AddBGSpawn(null, 1);
     }
 
     public void AddBGSpawn(string text = null, int faction = 1) 
     {
+        if (opening || editingDefaults)
+            return;
         var field = Instantiate(bgSpawnInputFieldPrefab, bgSpawnScrollContents).GetComponentInChildren<InputField>();
         var drop = field.transform.parent.GetComponentInChildren<Dropdown>();
         bgSpawnInputFields.Add((field, drop));
@@ -128,6 +210,8 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void ClearBGSpawns() 
     {
+        if (opening || editingDefaults)
+            return;
         foreach(var field in bgSpawnInputFields)
         {
             Destroy(field.Item1.transform.parent.gameObject);
@@ -137,6 +221,8 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void TryParseBGSpawns()
     {
+        if (opening || editingDefaults)
+            return;
         List<Sector.LevelEntity> levelEntities = new List<Sector.LevelEntity>();
         foreach(var field in bgSpawnInputFields)
         {
@@ -193,6 +279,8 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void UpdateBGSpawns()
     {
+        if (opening || editingDefaults)
+            return;
         ClearBGSpawns();
         foreach(var bgSpawn in currentSector.backgroundSpawns)
         {
@@ -207,6 +295,8 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void UpdateWaveSet()
     {
+        if (opening || editingDefaults)
+            return;
         currentSector.waveSetPath = waveSet.text;
     }
 }

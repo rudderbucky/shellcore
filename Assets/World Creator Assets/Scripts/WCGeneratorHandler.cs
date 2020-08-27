@@ -272,7 +272,7 @@ public class WCGeneratorHandler : MonoBehaviour
         wdata.defaultCharacters = cursor.characters.ToArray();
         wdata.defaultBlueprintJSON = blueprintField.text;
         wdata.author = authorField.text;
-        
+
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
 
@@ -289,7 +289,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
             if(sector.hasMusic && (sector.musicID == null || sector.musicID == ""))
             {
-                sector.musicID = GetDefaultMusic(sector);
+                sector.musicID = GetDefaultMusic(sector.type);
             }
             
             sector.entities = sectEnts[sector].ToArray();
@@ -343,18 +343,19 @@ public class WCGeneratorHandler : MonoBehaviour
         return typeRep + " " + x + "-" + y;
     }
 
-    string GetDefaultMusic(Sector sector)
+    public static string GetDefaultMusic(Sector.SectorType type)
     {
-        switch(sector.type)
+        switch(type)
         {
             case Sector.SectorType.BattleZone:
-                return "music_fast";
+                return PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{(int)type}", "music_fast");
             case Sector.SectorType.Capitol:
-                return "music_funktify"; // Funktify made by Mr Spastic, website - http://www.mrspastic.com
+                return PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{(int)type}", "music_funktify");
+                // Funktify made by Mr Spastic, website - http://www.mrspastic.com
             case Sector.SectorType.SiegeZone:
-                return "music_siege_1";
+                return PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{(int)type}", "music_siege_1");
             default:
-                return "music_overworld";
+                return PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{(int)type}", "music_overworld");
         } 
     }
 
