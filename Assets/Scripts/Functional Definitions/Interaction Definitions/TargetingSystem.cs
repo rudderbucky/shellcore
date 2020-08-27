@@ -45,24 +45,25 @@ public class TargetingSystem {
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if(!AIData.entities[i]) continue;
-                if (AIData.entities[i].transform == parent)
+                var ent = AIData.entities[i];
+                if(!ent) continue;
+                var entTransform = ent.transform;
+                if (entTransform == parent)
                     continue;
-                if (FactionManager.IsAllied(AIData.entities[i].faction, faction))
+                if (FactionManager.IsAllied(ent.faction, faction))
                     continue;
-                if (AIData.entities[i].GetIsDead())
+                if (ent.GetIsDead())
                 {
                     continue;
                 }
-                if (AIData.entities[i].invisible)
+                if (ent.invisible)
                     continue;
-
-                
-                float sqrD = Vector3.SqrMagnitude(pos - AIData.entities[i].transform.position);
+             
+                float sqrD = Vector2.SqrMagnitude(pos - entTransform.position);
                 if (closest == null || sqrD < closestD)
                 {
                     closestD = sqrD;
-                    closest = AIData.entities[i].transform;
+                    closest = entTransform;
                 }
             }
             target = closest;
