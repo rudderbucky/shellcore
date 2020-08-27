@@ -20,6 +20,17 @@ public class SaveHandler : MonoBehaviour {
 			string json = File.ReadAllText(currentPath);
 			save = JsonUtility.FromJson<PlayerSave>(json);
 
+            if(save.timePlayed != 0) player.spawnPoint = save.position;
+
+			if(SectorManager.testJsonPath != null) save.resourcePath = SectorManager.testJsonPath;
+			else if(save.resourcePath == "") save.resourcePath = SectorManager.jsonPath;
+			player.cursave = save;
+            if (save.resourcePath != "")
+            {
+                SectorManager.instance.LoadSectorFile(save.resourcePath);
+                taskManager.Initialize(true); // Re-init
+            }
+
 			player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 			player.blueprint.name = "Player Save Blueprint";
 			if(save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "") {
@@ -33,25 +44,15 @@ public class SaveHandler : MonoBehaviour {
 			}
 			player.abilityCaps = save.abilityCaps;
 			player.shards = save.shards;
-			player.cursave = save;
 			player.credits = save.credits;
 			player.reputation = save.reputation;
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
 
-            if(save.timePlayed != 0) player.spawnPoint = save.position;
-
-            player.Rebuild();
+			player.Rebuild();
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
-
-			if(SectorManager.testJsonPath != null) save.resourcePath = SectorManager.testJsonPath;
-            if (save.resourcePath != "")
-            {
-                SectorManager.instance.LoadSectorFile(save.resourcePath);
-                taskManager.Initialize(true); // Re-init
-            }
 
             taskManager.taskVariables.Clear();
             for (int i = 0; i < save.taskVariableNames.Length; i++)

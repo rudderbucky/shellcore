@@ -60,7 +60,7 @@ public class SectorManager : MonoBehaviour
     }
 
     public static string testJsonPath = null;
-    string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main - " + VersionNumberScript.mapVersion;
+    public static string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main - " + VersionNumberScript.mapVersion;
     public void Initialize()
     {
         if (instance != null)
@@ -217,6 +217,7 @@ public class SectorManager : MonoBehaviour
                             if(wdata.defaultBlueprintJSON != "")
                             {
                                 player.cursave.currentPlayerBlueprint = wdata.defaultBlueprintJSON;
+                                Debug.LogWarning("Set default blueprint");
                             }
                         }
                             

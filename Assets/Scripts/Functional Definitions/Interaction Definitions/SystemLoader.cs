@@ -17,6 +17,9 @@ public class SystemLoader : MonoBehaviour
 
     private void Awake()
     {
+        /*
+        * Save Handler loads sectors now
+        */
         AllLoaded = false;
         Application.targetFrameRate = 60;
 
