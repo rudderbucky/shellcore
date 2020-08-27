@@ -39,7 +39,6 @@ public class Turret : AirConstruct, IOwnable {
 
     protected override void Update()
     {
-        targeter.GetTarget(true);
         if (!isDead && GetComponentInChildren<WeaponAbility>())
         {
             GetComponentInChildren<WeaponAbility>().Tick(0);

@@ -21,6 +21,7 @@ public class WeaponTargetingSystem {
 
         Transform tmp = ability.Core.GetTargetingSystem().GetTarget(); // get the core's target if it has one
 
+        // Performance: Don't allow weapon targeting for non-ShellCores
         if(!(ability.Core as ShellCore))
         {
             if(IsValidTarget(tmp)) 

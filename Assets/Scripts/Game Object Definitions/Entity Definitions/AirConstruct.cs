@@ -39,12 +39,12 @@ public class AirConstruct : Construct {
 	// Update is called once per frame
 	protected override void Update () {
         base.Update();
+        targeter.GetTarget(true);
 	}
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        targeter.GetTarget(true);
         Oscillator();
     }
 }

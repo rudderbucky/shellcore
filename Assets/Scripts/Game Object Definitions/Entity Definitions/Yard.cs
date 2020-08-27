@@ -37,7 +37,6 @@ public class Yard : AirConstruct, IShipBuilder {
 
     protected override void Update()
     {
-        targeter.GetTarget(true);
         if(!isDead)
             foreach(WeaponAbility weapon in GetComponentsInChildren<WeaponAbility>()) {
                 weapon.Tick(0);
