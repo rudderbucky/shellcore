@@ -92,7 +92,6 @@ public class SectorManager : MonoBehaviour
             jsonPath = customPath;
             jsonMode = true;
         }
-        if(jsonMode) LoadSectorFile(testJsonPath == null ? jsonPath : testJsonPath);
         jsonMode = false;
     }
 
@@ -211,8 +210,16 @@ public class SectorManager : MonoBehaviour
                         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
                         spawnPoint = wdata.initialSpawn;
+                        Debug.LogError(player.cursave.timePlayed);
                         if(player.cursave == null || player.cursave.timePlayed == 0)
+                        {
                             player.transform.position = player.spawnPoint = spawnPoint;
+                            if(wdata.defaultBlueprintJSON != "")
+                            {
+                                player.cursave.currentPlayerBlueprint = wdata.defaultBlueprintJSON;
+                            }
+                        }
+                            
                         if(characters == null || characters.Length == 0) characters = wdata.defaultCharacters;
                         else
                         {
@@ -318,7 +325,6 @@ public class SectorManager : MonoBehaviour
         if(!sectorLoaded)
         {
             background.setColor(SectorColors.colors[5]);
-            if(!jsonMode) loadSector();
         }
     }
 

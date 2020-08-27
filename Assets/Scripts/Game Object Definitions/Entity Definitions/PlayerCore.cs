@@ -78,13 +78,12 @@ public class PlayerCore : ShellCore {
         if (!initialized)
             base.Awake();
         ID = "player";
-        initialized = true;
     }
     // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
     protected override void Start () {
         // initialize instance fields
         base.Start();
-        // spawnPoint = transform.position = Vector3.zero; // overrides the shellcore spawn point
+
         if (hud) hud.InitializeHUD(this);
         else
         {

@@ -19,6 +19,8 @@ public class WCGeneratorHandler : MonoBehaviour
     public Text invalidNameWarning;
     public InputField worldName;
     public InputField worldReadPath;
+    public InputField blueprintField;
+    public InputField authorField;
     public WCCharacterHandler characterHandler;
     public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
     public Item characterItem;
@@ -268,6 +270,9 @@ public class WCGeneratorHandler : MonoBehaviour
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         wdata.initialSpawn = cursor.spawnPoint.position;
         wdata.defaultCharacters = cursor.characters.ToArray();
+        wdata.defaultBlueprintJSON = blueprintField.text;
+        wdata.author = authorField.text;
+        
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
 
@@ -429,6 +434,9 @@ public class WCGeneratorHandler : MonoBehaviour
                         {
                             characterHandler.AddCharacter(ch);
                         }
+
+                        blueprintField.text = wdata.defaultBlueprintJSON;
+                        authorField.text = wdata.author;
                         continue;
                     }
 

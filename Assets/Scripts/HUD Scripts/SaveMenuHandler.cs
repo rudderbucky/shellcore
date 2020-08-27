@@ -170,7 +170,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 	}
 
 
-	public static PlayerSave CreateSave(string name, string checkpointName = null, string blueprintField = null)
+	public static PlayerSave CreateSave(string name, string checkpointName = null)
 	{
 		string currentVersion = VersionNumberScript.version;
 		PlayerSave save = new PlayerSave();
@@ -191,7 +191,6 @@ public class SaveMenuHandler : GUIWindowScripts {
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		blueprint.coreSpriteID = "core1_light";
 		blueprint.coreShellSpriteID = "core1_shell";
-		if(blueprintField != null && blueprintField != "") JsonUtility.FromJsonOverwrite(blueprintField, blueprint);
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
 		save.abilityCaps = new int[] {10, 3, 10, 10};
 		save.shards = 0;

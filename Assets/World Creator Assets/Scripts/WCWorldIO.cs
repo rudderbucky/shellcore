@@ -14,8 +14,6 @@ public class WCWorldIO : MonoBehaviour
     public WaveBuilder waveBuilder;
     public GameObject buttonPrefab;
     public Transform content;
-    public InputField blueprintField;
-    public InputField checkpointField;
     public static bool active = false;
 
     enum IOMode
@@ -68,8 +66,6 @@ public class WCWorldIO : MonoBehaviour
     {
         if(SceneManager.GetActiveScene().name == "WorldCreator")
         {
-            blueprintField.text = PlayerPrefs.GetString("WorldCreator_playerBlueprintField", "");
-            checkpointField.text = PlayerPrefs.GetString("WorldCreator_playerCheckpointField", "");
             var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
             if(Directory.Exists(path)) 
             {
@@ -139,13 +135,11 @@ public class WCWorldIO : MonoBehaviour
 
     void LoadTestSave()
     {
-        PlayerPrefs.SetString("WorldCreator_playerBlueprintField", blueprintField.text);
-        PlayerPrefs.SetString("WorldCreator_playerCheckpointField", checkpointField.text);
         var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
         var savePath = Application.persistentDataPath + "\\Saves\\TestSave";
         if (File.Exists(savePath))
             File.Delete(savePath);
-        SaveMenuHandler.CreateSave("TestSave", checkpointField.text, blueprintField.text);
+        SaveMenuHandler.CreateSave("TestSave");
         SectorManager.testJsonPath = path;
         SaveMenuIcon.LoadSaveByPath(savePath, false);
     }

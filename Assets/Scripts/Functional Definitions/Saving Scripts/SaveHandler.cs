@@ -19,11 +19,13 @@ public class SaveHandler : MonoBehaviour {
             // Load
 			string json = File.ReadAllText(currentPath);
 			save = JsonUtility.FromJson<PlayerSave>(json);
+
 			player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 			player.blueprint.name = "Player Save Blueprint";
 			if(save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "") {
 				JsonUtility.FromJsonOverwrite(save.currentPlayerBlueprint, player.blueprint);
 			} else {
+				Debug.LogWarning("Save has been played but does not have a player blueprint.");
 				player.blueprint.baseRegen = new float[] {60,0,60};
 				player.blueprint.shellHealth = new float[] {1000,250,500};
 				player.blueprint.coreSpriteID = "core1_light";
@@ -44,6 +46,7 @@ public class SaveHandler : MonoBehaviour {
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
 
+			if(SectorManager.testJsonPath != null) save.resourcePath = SectorManager.testJsonPath;
             if (save.resourcePath != "")
             {
                 SectorManager.instance.LoadSectorFile(save.resourcePath);
