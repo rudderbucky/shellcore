@@ -69,4 +69,6 @@ public class Sector : ScriptableObject
     }
     public BackgroundSpawn[] backgroundSpawns;
     public string waveSetPath;
+    public RectangleEffectSkin rectangleEffectSkin;
+    public BackgroundTileSkin backgroundTileSkin;
 }

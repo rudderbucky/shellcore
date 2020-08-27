@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum RectangleEffectSkin
+{
+    Squares,
+    Crosses
+}
+
 /// <summary>
 /// Rectangle effect script used to create the cool rectangles
 /// </summary>
@@ -11,6 +17,7 @@ public class RectangleEffectScript : MonoBehaviour {
     private Vector3 displacement; // used to wrap particles around
     public static bool active = true;
     bool built = false;
+    public static RectangleEffectSkin currentSkin = RectangleEffectSkin.Squares;
     public static List<RectangleEffectScript> instances = new List<RectangleEffectScript>();
 
     void Awake()
@@ -27,6 +34,8 @@ public class RectangleEffectScript : MonoBehaviour {
     private void Build() {
         partSys.Clear();
         timesByParticle.Clear();
+        var rd = partSys.GetComponentInChildren<ParticleSystemRenderer>().material = 
+            ResourceManager.GetAsset<Material>($"RectangleEffectScript_skin{(int)currentSkin}");
         var sh = partSys.shape; // grab the shape of the particle system
         Vector3 dimensions = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 
         Camera.main.pixelHeight, sh.position.z - Camera.main.transform.position.z));

@@ -8,6 +8,8 @@ public class SectorPropertyDisplay : MonoBehaviour
     Sector currentSector;
     Vector2 sectorCenter;
     public Dropdown type;
+    public Dropdown particles;
+    public Dropdown tiles;
     public InputField sectorName;
     public InputField sectorMusicID;
     public Toggle sectorMusicBool;
@@ -50,6 +52,8 @@ public class SectorPropertyDisplay : MonoBehaviour
         type.value = 0;
         sectorMusicBool.isOn = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultMusicOn", 1) == 1 ? true : false;
         sectorMusicID.text = PlayerPrefs.GetString("WCSectorPropertyDisplay_defaultMusic0", WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)0));
+        particles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
+        tiles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
 
         sectorName.transform.parent.gameObject.SetActive(false);
         waveSet.transform.parent.gameObject.SetActive(false);
@@ -85,6 +89,8 @@ public class SectorPropertyDisplay : MonoBehaviour
         sectorName.text = sector.sectorName;
         sectorMusicBool.isOn = sector.hasMusic;
         sectorMusicID.text = sector.musicID;
+        particles.value = (int)sector.rectangleEffectSkin;
+        tiles.value = (int)sector.backgroundTileSkin;
 
         sectorName.transform.parent.gameObject.SetActive(true);
         waveSet.transform.parent.gameObject.SetActive(true);
@@ -175,6 +181,20 @@ public class SectorPropertyDisplay : MonoBehaviour
         currentSector.backgroundColor = new Color(float.Parse(colorR.text), float.Parse(colorG.text), float.Parse(colorB.text), 1);
     }
 
+    public void UpdateParticles()
+    {
+        if (opening || editingDefaults)
+            return;
+        currentSector.rectangleEffectSkin = (RectangleEffectSkin)particles.value;
+    }
+
+    public void UpdateTiles()
+    {
+        if (opening || editingDefaults)
+            return;
+        currentSector.backgroundTileSkin = (BackgroundTileSkin)tiles.value;
+    }
+
     public void Hide() 
     {
         gameObject.SetActive(false);
@@ -183,6 +203,8 @@ public class SectorPropertyDisplay : MonoBehaviour
             PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultMusicOn", sectorMusicBool.isOn ? 1 : 0);
             if(sectorMusicID.text != "")
                 PlayerPrefs.SetString($"WCSectorPropertyDisplay_defaultMusic{type.value}", sectorMusicID.text);
+            PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultParticles", particles.value);
+            PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultTiles", tiles.value);
         }
         editingDefaults = false;
     }

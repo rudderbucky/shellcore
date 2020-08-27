@@ -321,6 +321,10 @@ public class WorldCreatorCursor : MonoBehaviour
                 currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
                 currentSector.sector.hasMusic = true; // sectors have music by default in WC
                 currentSector.sector.backgroundColor = SectorColors.colors[0];
+                currentSector.sector.rectangleEffectSkin = (RectangleEffectSkin)
+                    PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
+                currentSector.sector.backgroundTileSkin = (BackgroundTileSkin)
+                    PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
                 var renderer = currentSector.renderer = Instantiate(borderPrefab).GetComponent<LineRenderer>();
                 renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = currentSector.sector;
                 lastSectorPos = null;

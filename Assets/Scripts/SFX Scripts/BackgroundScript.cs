@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BackgroundTileSkin
+{
+    Squares,
+    Clouds
+}
+
 public class BackgroundScript : MonoBehaviour {
 
     public GameObject[] tile; // array of tile images, prefabbed into sprites
