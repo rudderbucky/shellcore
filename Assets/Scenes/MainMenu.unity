@@ -533,7 +533,6 @@ GameObject:
   - component: {fileID: 160606979}
   - component: {fileID: 160606978}
   - component: {fileID: 160606977}
-  - component: {fileID: 160606980}
   m_Layer: 0
   m_Name: SectorManager
   m_TagString: Untagged
@@ -594,20 +593,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &160606980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 160606976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c14e9f32ba8b4c4c8398c4caa718164, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  taskManager: {fileID: 0}
 --- !u!1 &164074673
 GameObject:
   m_ObjectHideFlags: 0
@@ -4605,6 +4590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15b992901f2bed448362231c059d374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  episodeText: {fileID: 1666498274}
 --- !u!1 &1321692915
 GameObject:
   m_ObjectHideFlags: 0
@@ -5448,6 +5434,18 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 1
+--- !u!114 &1666498274 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2810088264203401984, guid: 13fb2b845533e8240bb59d1e6f1ff9b6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2810088263601248129}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1682176943
 GameObject:
   m_ObjectHideFlags: 0
@@ -6618,7 +6616,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourceManager: {fileID: 1290578397}
-  saveHandler: {fileID: 160606980}
+  saveHandler: {fileID: 0}
   taskManager: {fileID: 0}
   sectorManager: {fileID: 160606978}
   dialogueSystem: {fileID: 2138104585}

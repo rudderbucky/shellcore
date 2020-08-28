@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
@@ -91,6 +92,28 @@ public class SectorManager : MonoBehaviour
         {
             jsonPath = customPath;
             jsonMode = true;
+        }
+
+
+            
+		
+		if(SceneManager.GetActiveScene().name == "MainMenu")
+		{
+            string currentPath;
+            if(!File.Exists(Application.persistentDataPath + "\\CurrentSavePath"))
+			    currentPath = null;
+            else currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+
+			if(File.Exists(currentPath))
+			{
+				string json = File.ReadAllText(currentPath);
+				var save = JsonUtility.FromJson<PlayerSave>(json);
+				SetMainMenuSector(save.episode);
+			}
+			else 
+            {
+                SetMainMenuSector(0);
+            }
         }
 
         jsonMode = false;
@@ -346,6 +369,7 @@ public class SectorManager : MonoBehaviour
         if(!sectorLoaded)
         {
             current = sectors[episode];
+            VersionNumberScript.SetEpisodeName(episode);
         }
     }
 

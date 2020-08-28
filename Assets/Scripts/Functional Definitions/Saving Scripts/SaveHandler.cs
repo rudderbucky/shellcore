@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 public class SaveHandler : MonoBehaviour {
 
 	public PlayerCore player;
@@ -16,19 +15,6 @@ public class SaveHandler : MonoBehaviour {
 			currentPath = Application.persistentDataPath + "\\TestSave";
 		}
 		else currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
-		
-		if(SceneManager.GetActiveScene().name == "MainMenu")
-		{
-			if(File.Exists(currentPath))
-			{
-				string json = File.ReadAllText(currentPath);
-				save = JsonUtility.FromJson<PlayerSave>(json);
-				SectorManager.instance.SetMainMenuSector(save.episode);
-			}
-			else SectorManager.instance.SetMainMenuSector(0);
-			save = null;
-			return;
-		}
 
 		if(File.Exists(currentPath)) {
             // Load
