@@ -26,6 +26,7 @@ namespace NodeEditorFramework.Standard
         public Color textColor;
         public bool overrideCheckpoint;
         public string overrideCheckpointName;
+        public int episode = 0;
         float height = 400f;
         public override void NodeGUI()
         {
@@ -72,6 +73,9 @@ namespace NodeEditorFramework.Standard
             }
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
+            episode = RTEditorGUI.IntField("Episode:", episode);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Dialogue to show if prerequisites unsatisfied:");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
@@ -113,6 +117,7 @@ namespace NodeEditorFramework.Standard
                 mission.entryPoint = entryPoint;
                 mission.prerequisitesUnsatisifedText = prerequisitesUnsatisifedText;
                 mission.textColor = textColor;
+                mission.episode = episode;
                 PlayerCore.Instance.cursave.missions.Add(mission);
             }
             else
@@ -124,6 +129,7 @@ namespace NodeEditorFramework.Standard
                 mission.entryPoint = entryPoint;
                 mission.prerequisitesUnsatisifedText = prerequisitesUnsatisifedText;
                 mission.textColor = textColor;
+                mission.episode = episode;
             }
 
             // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases

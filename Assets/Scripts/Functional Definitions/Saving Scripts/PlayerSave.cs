@@ -25,5 +25,10 @@ public class PlayerSave {
 	public List<EntityBlueprint.PartInfo> partsObtained;
 	public List<Mission> missions;
 	public int reputation;
+
+	// Episode count is slightly non-trivial.
+	// Episode 1 is 0, episode 2 is 1, and so on.
+	// This allows EP1 missions to not have to be rewritten,
+	// As well as for side missions to not change the episode number.
 	public int episode;
 }

@@ -34,4 +34,5 @@ public class Mission
     public string prerequisitesUnsatisifedText;
     public Color textColor;
     public string checkpoint;
+    public int episode;
 }

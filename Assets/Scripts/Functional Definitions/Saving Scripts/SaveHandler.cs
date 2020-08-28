@@ -106,6 +106,14 @@ public class SaveHandler : MonoBehaviour {
             save.missions.Find((m) => m.name == traverser.nodeCanvas.missionName).checkpoint = lastCheckpoint;
         }
 
+		// Calculate the save episode by finding the maximal active mission's epsiode.
+		save.episode = 0;
+		foreach(var mission in save.missions)
+		{
+			if(mission.status != Mission.MissionStatus.Inactive)
+				if(save.episode < mission.episode) save.episode = mission.episode;
+		}
+
         Dictionary<string, int> variables = taskManager.taskVariables;
         string[] keys = new string[taskManager.taskVariables.Count];
         int[] values = new int[taskManager.taskVariables.Count];
