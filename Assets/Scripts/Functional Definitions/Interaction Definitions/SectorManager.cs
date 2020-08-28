@@ -645,6 +645,7 @@ public class SectorManager : MonoBehaviour
         if(BackgroundScript.currentSkin != current.backgroundTileSkin)
         {
             BackgroundScript.currentSkin = current.backgroundTileSkin;
+            BackgroundScript.instance.setColor(SectorColors.colors[5], true);
             BackgroundScript.instance.Restart();
         }
 

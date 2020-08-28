@@ -20,15 +20,20 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     public SelectionDisplayHandler displayHandler;
     public GameObject currentPartHandler;
 
+    public void ClearPreset()
+    {
+        if (player.cursave.presetBlueprints != null) player.cursave.presetBlueprints[number - 1] = null;
+        blueprint = null;
+        valid = true;
+        currentPartHandler.SetActive(true);
+        displayHandler.ClearDisplay();
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (player.cursave.presetBlueprints != null) player.cursave.presetBlueprints[number - 1] = null;
-            blueprint = null;
-            valid = true;
-            currentPartHandler.SetActive(true);
-            displayHandler.ClearDisplay();
+            ClearPreset();
             return;
         }
         if(!valid) return; // allow user to left shift out blueprint so return after that

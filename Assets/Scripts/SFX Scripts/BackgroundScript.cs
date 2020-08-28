@@ -142,14 +142,14 @@ public class BackgroundScript : MonoBehaviour {
     }
 
     Color lastColor; // used like bgCol, just without the static attribute
-    public void setColor(Color color)
+    public void setColor(Color color, bool force=false)
     {
         Camera.main.backgroundColor = color / 2F;
         if(ingameTiles == null) {
             bgCol = lastColor = color;
             return;
         }
-        if(lastColor == Color.clear) {
+        if(lastColor == Color.clear || force) {
             bgCol = lastColor = color;
             foreach (GameObject tile in ingameTiles) {
                 tile.GetComponent<SpriteRenderer>().color = color;
