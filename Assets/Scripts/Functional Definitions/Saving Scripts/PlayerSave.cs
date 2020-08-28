@@ -25,4 +25,5 @@ public class PlayerSave {
 	public List<EntityBlueprint.PartInfo> partsObtained;
 	public List<Mission> missions;
 	public int reputation;
+	public int episode;
 }

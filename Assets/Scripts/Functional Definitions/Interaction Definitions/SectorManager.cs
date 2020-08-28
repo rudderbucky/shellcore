@@ -337,6 +337,18 @@ public class SectorManager : MonoBehaviour
         }
     }
 
+    ///
+    /// Sets the main menu sector based on the passed episode int.
+    /// Assumes you are in the main menu scene.
+    ///
+    public void SetMainMenuSector(int episode)
+    {
+        if(!sectorLoaded)
+        {
+            current = sectors[episode];
+        }
+    }
+
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
     {
         GameObject gObj = new GameObject(data.name);

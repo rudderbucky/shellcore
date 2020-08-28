@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class SaveHandler : MonoBehaviour {
 
 	public PlayerCore player;
@@ -15,11 +16,24 @@ public class SaveHandler : MonoBehaviour {
 			currentPath = Application.persistentDataPath + "\\TestSave";
 		}
 		else currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+		
+		if(SceneManager.GetActiveScene().name == "MainMenu")
+		{
+			if(File.Exists(currentPath))
+			{
+				string json = File.ReadAllText(currentPath);
+				save = JsonUtility.FromJson<PlayerSave>(json);
+				SectorManager.instance.SetMainMenuSector(save.episode);
+			}
+			else SectorManager.instance.SetMainMenuSector(0);
+			save = null;
+			return;
+		}
+
 		if(File.Exists(currentPath)) {
             // Load
 			string json = File.ReadAllText(currentPath);
 			save = JsonUtility.FromJson<PlayerSave>(json);
-
             if(save.timePlayed != 0) player.spawnPoint = save.position;
 
 			if(SectorManager.testJsonPath != null) save.resourcePath = SectorManager.testJsonPath;
@@ -60,6 +74,7 @@ public class SaveHandler : MonoBehaviour {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
 		} else {
+			Debug.LogWarning("There was not a save or test save that was ready on load.");
 			save = new PlayerSave();
 			save.presetBlueprints = new string[5];
 			save.currentHealths = new float[] {1000,250,500};
