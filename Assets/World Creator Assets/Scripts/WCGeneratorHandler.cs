@@ -142,6 +142,11 @@ public class WCGeneratorHandler : MonoBehaviour
                 "New 0 Entry Ghost",
                 "New 3 Entry",
                 "New 4 Entry",
+                "New Junction Ghost",
+                "New 1 Entry Ghost",
+                "New 2 Entry Ghost",
+                "New 3 Entry Ghost",
+                "New 4 Entry Ghost",
             };
         }
 
