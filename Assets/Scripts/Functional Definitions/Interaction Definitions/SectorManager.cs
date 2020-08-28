@@ -368,6 +368,7 @@ public class SectorManager : MonoBehaviour
     {
         if(!sectorLoaded)
         {
+            if(episode >= sectors.Count) episode = sectors.Count-1;
             current = sectors[episode];
             VersionNumberScript.SetEpisodeName(episode);
         }
