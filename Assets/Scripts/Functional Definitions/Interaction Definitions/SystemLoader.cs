@@ -9,9 +9,9 @@ public class SystemLoader : MonoBehaviour
     public SaveHandler saveHandler;
     public TaskManager taskManager;
     public SectorManager sectorManager;
-    public BackgroundScript backgroundScript;
     public DialogueSystem dialogueSystem;
     public FactionManager factionManager;
+    public AudioManager audioManager;
 
     public static bool AllLoaded;
 
@@ -27,6 +27,8 @@ public class SystemLoader : MonoBehaviour
             resourceManager.Initialize();
         if (factionManager)
             factionManager.Initialize();
+        if (audioManager)
+            audioManager.Initialize();
         if (sectorManager)
             sectorManager.Initialize();
 

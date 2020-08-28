@@ -93,9 +93,6 @@ public class SectorManager : MonoBehaviour
             jsonMode = true;
         }
 
-        // Main menu loader; only the main menu is not loaded by JSON anymore.
-        // Look at how far we've come :)
-        if(!jsonMode && current != null) loadSector();
         jsonMode = false;
     }
 
@@ -329,7 +326,14 @@ public class SectorManager : MonoBehaviour
 
         if(!sectorLoaded)
         {
-            background.setColor(SectorColors.colors[5]);
+            // Main menu loader; only the main menu is not loaded by JSON anymore.
+            // Look at how far we've come :)
+            if(!jsonMode && current != null) 
+            {
+                loadSector();
+                sectorLoaded = true;
+            }
+            else background.setColor(SectorColors.colors[5]);
         }
     }
 

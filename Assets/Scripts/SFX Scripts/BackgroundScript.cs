@@ -144,6 +144,7 @@ public class BackgroundScript : MonoBehaviour {
     Color lastColor; // used like bgCol, just without the static attribute
     public void setColor(Color color, bool force=false)
     {
+        Debug.LogError(color);
         Camera.main.backgroundColor = color / 2F;
         if(ingameTiles == null) {
             bgCol = lastColor = color;

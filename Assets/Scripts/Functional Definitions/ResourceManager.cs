@@ -35,10 +35,6 @@ public class ResourceManager : MonoBehaviour
     Dictionary<string, Object> resources;
     public static ResourceManager Instance { get; private set; }
     public static float soundVolume = 1;
-
-    public AudioSource playerSource;
-    public AudioSource playerMusicSource;
-
     public void Initialize()
     {
         allPartNames = new List<string>();

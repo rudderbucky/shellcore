@@ -9,13 +9,19 @@ public class AudioManager : MonoBehaviour
     public AudioMixerGroup sounds;
     public AudioMixerGroup music;
     public static AudioManager instance;
+    public AudioSource playerSource;
+    public AudioSource playerMusicSource;
     
     // change this ID to override sector music
     public static string musicOverrideID = null;
-    void Start() 
+
+    public void Initialize()
     {
         instance = this;
         musicOverrideID = null;
+    }
+    void Start() 
+    {
         ChangeMasterVolume(PlayerPrefs.GetFloat("MasterVolume", 0.5f));
         ChangeMusicVolume(PlayerPrefs.GetFloat("MusicVolume", 1f));
         ChangeSoundEffectsVolume(PlayerPrefs.GetFloat("SFXVolume", 1f));
@@ -51,12 +57,12 @@ public class AudioManager : MonoBehaviour
 
     // Plays the clip directly on the player
     public static void PlayClipByID(string ID, bool clear=false) {
-        if(ResourceManager.Instance.playerSource != null) {
-            if(clear) ResourceManager.Instance.playerSource.Stop();
+        if(instance.playerSource != null) {
+            if(clear) instance.playerSource.Stop();
             if(ID != null) 
             {
                 var clip = ResourceManager.GetAsset<AudioClip>(ID);
-                ResourceManager.Instance.playerSource.PlayOneShot(clip, 1F);
+                instance.playerSource.PlayOneShot(clip, 1F);
             }
             // can pass null just to clear the sound buffer
         }
@@ -66,35 +72,35 @@ public class AudioManager : MonoBehaviour
     // Use for Soundtrack
     public static void OverrideMusicTemporarily(string ID)
     {
-        var curClip = ResourceManager.Instance.playerMusicSource.clip;
-        ResourceManager.Instance.playerMusicSource.Stop();
+        var curClip = instance.playerMusicSource.clip;
+        instance.playerMusicSource.Stop();
         var newClip = ResourceManager.GetAsset<AudioClip>(ID);
-        ResourceManager.Instance.playerMusicSource.PlayOneShot(newClip);
+        instance.playerMusicSource.PlayOneShot(newClip);
         // TODO: Maybe continue the main music instead of restarting it but mute it somehow?
-        ResourceManager.Instance.playerMusicSource.PlayDelayed(newClip.length + 5F);
+        instance.playerMusicSource.PlayDelayed(newClip.length + 5F);
     }
     
     public static void PlayMusic(string ID, bool loop=true)
     {
-        if(ResourceManager.Instance.playerMusicSource != null)
+        if(instance.playerMusicSource != null)
         {
-            ResourceManager.Instance.playerMusicSource.loop = loop;
+            instance.playerMusicSource.loop = loop;
             var clip = ResourceManager.GetAsset<AudioClip>(musicOverrideID != null ? musicOverrideID : ID);
-            if(ResourceManager.Instance.playerMusicSource.clip != clip)
+            if(instance.playerMusicSource.clip != clip)
             {
-                ResourceManager.Instance.playerMusicSource.clip = clip;
-                ResourceManager.Instance.playerMusicSource.Play();
+                instance.playerMusicSource.clip = clip;
+                instance.playerMusicSource.Play();
             }
         }
     }
 
     public static void StopMusic()
     {
-        if(ResourceManager.Instance.playerMusicSource != null && musicOverrideID == null) // ensure no override
+        if(instance.playerMusicSource != null && musicOverrideID == null) // ensure no override
         {
-            ResourceManager.Instance.playerMusicSource.Stop();
+            instance.playerMusicSource.Stop();
 
-            ResourceManager.Instance.playerMusicSource.clip = null; // clear song
+            instance.playerMusicSource.clip = null; // clear song
         }
     }
 }
