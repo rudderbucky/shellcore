@@ -11,6 +11,7 @@ public enum BackgroundTileSkin
 public class BackgroundScript : MonoBehaviour {
 
     public GameObject[] tile; // array of tile images, prefabbed into sprites
+    public static BackgroundTileSkin currentSkin = BackgroundTileSkin.Squares;
     private Vector2 tileStartPos; // the start position of the background (lower left tile)
     Vector2 tileSpacing; // the size of the tile (contains length and height as x and y)
     private Vector3 instancedPos; // vector that stores the position of a generated tile
@@ -22,7 +23,7 @@ public class BackgroundScript : MonoBehaviour {
     private GameObject[] ingameTiles; // array of generated tiles
     public static bool active = true;
     public static Color bgCol;
-    private static BackgroundScript instance;
+    public static BackgroundScript instance;
 
     public void Awake()
     {
@@ -81,7 +82,7 @@ public class BackgroundScript : MonoBehaviour {
             pixelRect = Camera.main.pixelRect;
             if(transform.Find("Tile Holder")) Destroy(transform.Find("Tile Holder").gameObject);
             mcamera = Camera.main.transform;
-            tileSpacing = tile[0].GetComponent<Renderer>().bounds.size; 
+            tileSpacing = tile[4 * (int)currentSkin].GetComponent<Renderer>().bounds.size; 
             GameObject parent = new GameObject("Tile Holder");
             parent.transform.SetParent(transform, true);
             // grab tile spacing (this should be constant between the tile sprites given)
@@ -99,7 +100,7 @@ public class BackgroundScript : MonoBehaviour {
             int count = 0; // used for array assignment (to keep a 1d count in the 2d loop)
             for (int i = 0; i < gridHeight; i++) {
                 for (int j = 0; j < gridWidth; j++) {
-                    int randomTile = Random.Range(0, tile.Length); // grabs a random tile from the array of sprites
+                    int randomTile = Random.Range(4 * (int)currentSkin, 4 * (int)currentSkin + 4); // grabs a random tile from the array of sprites
                     instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
                     // the position of the tile
                     GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;

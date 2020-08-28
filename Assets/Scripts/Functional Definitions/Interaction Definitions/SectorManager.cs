@@ -636,12 +636,18 @@ public class SectorManager : MonoBehaviour
             Debug.Log("No nodes");
         }
 
-        // Restart rectangle effects to new skin if necessary
+        // Restart particle and background effects to new skin if necessary
         if(RectangleEffectScript.currentSkin != current.rectangleEffectSkin)
         {
             RectangleEffectScript.currentSkin = current.rectangleEffectSkin;
             foreach(var rect in RectangleEffectScript.instances) if(rect) rect.Start();
         }
+        if(BackgroundScript.currentSkin != current.backgroundTileSkin)
+        {
+            BackgroundScript.currentSkin = current.backgroundTileSkin;
+            BackgroundScript.instance.Restart();
+        }
+
 
         //sector color
         background.setColor(current.backgroundColor);
