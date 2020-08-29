@@ -26,7 +26,7 @@ public class Bunker : GroundConstruct, IVendor {
     protected override void Update()
     {
         base.Update();
-        targeter.GetTarget(true);
+        TargetManager.Enqueue(targeter);
         WeaponAbility[] bullets = GetComponentsInChildren<WeaponAbility>();
         for (int i = 0; i < bullets.Length; i++)
         {

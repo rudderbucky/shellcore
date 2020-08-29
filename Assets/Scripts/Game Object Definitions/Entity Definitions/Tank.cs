@@ -38,7 +38,7 @@ public class Tank : GroundCraft, IOwnable
 
         if (isOnGround && !isDead)
         {
-            targeter.GetTarget(true);
+            TargetManager.Enqueue(targeter);
             if (!isDead && GetComponentInChildren<WeaponAbility>() && !draggable.dragging)
             {
                 GetComponentInChildren<WeaponAbility>().Tick(0);

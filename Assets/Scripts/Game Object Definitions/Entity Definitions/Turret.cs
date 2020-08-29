@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : AirConstruct, IOwnable {
-
+public class Turret : AirConstruct, IOwnable
+{
     public IOwner owner;
 
     protected override void Awake()

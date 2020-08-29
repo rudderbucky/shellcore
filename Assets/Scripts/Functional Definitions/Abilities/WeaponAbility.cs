@@ -132,7 +132,8 @@ public abstract class WeaponAbility : ActiveAbility {
         }
         else if (isActive && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
         {
-            Transform target = targetingSystem.GetTarget(true);
+            TargetManager.Enqueue(targetingSystem);
+            Transform target = targetingSystem.GetTarget();
             if (target && target.GetComponent<IDamageable>() != null) { // check if there is a target
                 Core.SetIntoCombat(); // now in combat
                 Transform targetEntity = target;

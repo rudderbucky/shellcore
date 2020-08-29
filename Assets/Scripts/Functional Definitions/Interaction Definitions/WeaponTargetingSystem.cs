@@ -5,8 +5,8 @@ using UnityEngine;
 /// <summary>
 /// The targeting system of each weapon ability
 /// </summary>
-public class WeaponTargetingSystem {
-
+public class WeaponTargetingSystem : ITargetingSystem
+{
     public WeaponAbility ability; // owner ability of the targeting system
     public Transform target; // target of the targeting system
 
@@ -15,7 +15,7 @@ public class WeaponTargetingSystem {
     /// </summary>
     /// <param name="findNew">Whether or not the targeting system should find a new target</param>
     /// <returns>The target of the targeting system</returns>
-    public Transform GetTarget(bool findNew = false)
+    public Transform GetTarget()
     {
         if(DialogueSystem.isInCutscene) return null; // TODO: remove the hack and prevent weapons from firing somehow else
 
@@ -36,54 +36,16 @@ public class WeaponTargetingSystem {
             return target; // if the manual target is compatible it overrides everything
         }
 
-        if (findNew || !IsValidTarget(target)) // check if call wants to find a new target
+        if (!IsValidTarget(target))
         {
-            //Find the closest enemy
-            //TODO: optimize
-            Transform closest = null;
-            float closestD = float.MaxValue;
-            var pos = ability.Core.transform.position;
-
-            for (int i = 0; i < AIData.entities.Count; i++) // go through all entities and check them for several factors
-            {
-                // checks for: if it is the same faction as the ability entity, 
-                // if it's dead, if it is weapon-compatible, if it is invisible
-
-                //if (ability.Core.faction == AIData.entities[i].faction)
-                //{
-                //    // if(ability as Beam) Debug.Log(entities[i]);
-                //    continue;
-                //}
-                //if (AIData.entities[i].GetIsDead())
-                //{
-                //    continue;
-                //}
-                //if (AIData.entities[i].invisible)
-                //{
-                //    continue;
-                //}
-                //if (!ability.CheckCategoryCompatibility(AIData.entities[i]))
-                //    continue;
-
-                if (!IsValidTarget(AIData.entities[i].transform))
-                    continue;
-
-                // check if it is the closest entity that passed the checks so far
-
-                float sqrD = Vector3.SqrMagnitude(pos - AIData.entities[i].transform.position);
-                if (closest == null || sqrD < closestD)
-                {
-                    closestD = sqrD;
-                    closest = AIData.entities[i].transform;
-                }
-            }
-            // set to the closest compatible target
-            target = closest;
+            TargetManager.Enqueue(this);
+            return null;
         }
-
         return target; // return the target
     }
 
+    // checks for: if it is the same faction as the ability entity, 
+    // if it's dead, if it is weapon-compatible, if it is invisible
     bool IsValidTarget(Transform t)
     {
         if (t == null || !t)
@@ -97,5 +59,20 @@ public class WeaponTargetingSystem {
             && ability.CheckCategoryCompatibility(damageable)
             && (t.position - ability.transform.position).magnitude <= ability.GetRange()
             && !damageable.GetInvisible());
+    }
+
+    public Entity GetEntity()
+    {
+        return ability.Core;
+    }
+
+    public WeaponAbility GetAbility()
+    {
+        return ability;
+    }
+
+    public void SetTarget(Transform t)
+    {
+        target = t;
     }
 }

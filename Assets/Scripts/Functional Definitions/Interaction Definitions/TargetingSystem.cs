@@ -2,14 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface ITargetingSystem
+{
+    Transform GetTarget();
+    void SetTarget(Transform t);
+    Entity GetEntity();
+    WeaponAbility GetAbility();
+}
+
 /// <summary>
 /// Class used for the targeting of crafts for weapon abilities
 /// </summary>
-public class TargetingSystem {
+public class TargetingSystem : ITargetingSystem
+{
 
     private Transform target; // the transform of the target
     public Transform parent; // parent object
     int faction;
+    Entity ent;
 
     /// <summary>
     /// Constructor that sets the target to null and takes a transform from which distances are calculate from
@@ -18,7 +28,7 @@ public class TargetingSystem {
         // initialize instance fields
         target = null;
         this.parent = parent;
-        faction = parent.GetComponent<Entity>().faction;
+        faction = GetEntity().faction;
     }
 
     /// <summary>
@@ -34,46 +44,8 @@ public class TargetingSystem {
     /// </summary>
     /// <param name="findNew">Whether or not the targeting system should find a new target</param>
     /// <returns>The target of the targeting system</returns>
-    public Transform GetTarget(bool findNew = false) {
-        if(findNew)
-        {
-            // Find the closest enemy
-            // TODO: optimize, currently calling this method for all entities is O(n^2) with n being entity count. 
-            // Using Delaunay triangulation under a static call and grabbing shortest edges first 
-            // will reduce it to O(nlogn), a drastic difference. Yet theoretically the game
-            // should still not lag under say, 40000 iterations per frame, which it does lag under.
-            // In fact, it still lags with 4000 iterations if you reduce the calls per frame. 
-            // I don't think this method is the big reason behind the lag anymore.
-            Transform closest = null;
-            float closestD = float.MaxValue;
-            var pos = parent.position;
-
-            for (int i = 0; i < AIData.entities.Count; i++)
-            {
-                var ent = AIData.entities[i];
-                if(!ent) continue;
-                var entTransform = ent.transform;
-                if (entTransform == parent)
-                    continue;
-                if (FactionManager.IsAllied(ent.faction, faction))
-                    continue;
-                if (ent.GetIsDead())
-                {
-                    continue;
-                }
-                if (ent.invisible)
-                    continue;
-             
-                float sqrD = Vector2.SqrMagnitude(pos - entTransform.position);
-                if (closest == null || sqrD < closestD)
-                {
-                    closestD = sqrD;
-                    closest = entTransform;
-                }
-            }
-            target = closest;
-        }
-
+    public Transform GetTarget()
+    {
         return target; // get target
     }
 
@@ -103,5 +75,17 @@ public class TargetingSystem {
     public void ClearSecondaryTargets()
     {
         secondaryTargets.Clear();
+    }
+
+    public Entity GetEntity()
+    {
+        if (ent == null && parent)
+            ent = parent.GetComponent<Entity>();
+        return ent;
+    }
+
+    public WeaponAbility GetAbility()
+    {
+        return null;
     }
 }

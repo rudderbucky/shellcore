@@ -28,7 +28,7 @@ public class AirConstruct : Construct {
             oscillatorVector = transform.position; // get the current aircraft position
             oscillatorVector.y = Mathf.Min(oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + entityBody.position.x), storedPos.y); // cool math stuff 
             oscillatorVector.y = Mathf.Max(oscillatorVector.y, storedPos.y - 1); // more cool math stuff
-            transform.position = oscillatorVector; // set the aircraft position
+            entityBody.MovePosition(oscillatorVector); // set the aircraft position
         } else 
         {
             storedPos = entityBody.position;
@@ -39,8 +39,8 @@ public class AirConstruct : Construct {
 	// Update is called once per frame
 	protected override void Update () {
         base.Update();
-        targeter.GetTarget(true);
-	}
+        TargetManager.Enqueue(targeter);
+    }
 
     protected override void FixedUpdate()
     {

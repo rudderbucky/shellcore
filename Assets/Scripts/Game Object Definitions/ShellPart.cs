@@ -29,6 +29,8 @@ public class ShellPart : MonoBehaviour {
     public EntityBlueprint.PartInfo info;
     public string droppedSectorName;
 
+    public bool weapon { get; set; } = false;
+
     public bool GetDetached() {
         return hasDetached;
     }
@@ -113,7 +115,8 @@ public class ShellPart : MonoBehaviour {
         spriteRenderer.sortingLayerName = "Air Entities";
         if(shooter)
             shooter.GetComponent<SpriteRenderer>().sortingLayerName = "Air Entities";
-        
+        GetComponent<Collider2D>().enabled = true;
+
         // when a part detaches it should always be completely visible
         var renderers = GetComponentsInChildren<SpriteRenderer>();
         foreach(var rend in renderers)
@@ -239,11 +242,9 @@ public class ShellPart : MonoBehaviour {
                 }
             }
         }
-        else
-        {
-            if(GetComponent<WeaponAbility>()) AimShooter();
-        }
-	}
+        else if (weapon)
+            AimShooter();
+    }
 
     private void ShinyCheck()
     {

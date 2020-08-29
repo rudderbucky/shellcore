@@ -48,6 +48,7 @@ public class Entity : MonoBehaviour, IDamageable {
     public bool invisible; // if true, entity can't be targeted by weapons
     public float damageAddition = 0f;
     public bool isAbsorbing = false; // if true, all incoming damage is converted to energy
+    bool collidersEnabled = true;
 
     public SectorManager sectorMngr;
     protected Entity lastDamagedBy;
@@ -57,12 +58,14 @@ public class Entity : MonoBehaviour, IDamageable {
     private float weaponGCD = 0.1F; // weapon global cooldown
     private float weaponGCDTimer;
 
-    public enum TerrainType // terrain type of entity
+    // terrain type of entity
+    // binary flag
+    public enum TerrainType
     {
+        Unset,
         Ground,
         Air,
         All,
-        Unset
     }
 
     public enum EntityCategory // category of entity (carriers, outposts and bunkers are stations, everything else are units)
@@ -299,6 +302,7 @@ public class Entity : MonoBehaviour, IDamageable {
                     // shooterSprite.sortingOrder = sr.sortingOrder + 1;
                     shooterSprite.sortingOrder = 500;
                     shellPart.shooter = shooter;
+                    shell.weapon = true;
                 }
 
                 var weaponAbility = partObject.GetComponent<WeaponAbility>();
@@ -859,5 +863,18 @@ public class Entity : MonoBehaviour, IDamageable {
     public bool GetInvisible()
     {
         return invisible;
+    }
+
+    public void ToggleColliders(bool enable)
+    {
+        if (enable != collidersEnabled)
+        {
+            foreach (Collider2D c in GetComponentsInChildren<Collider2D>())
+            {
+                if (c.gameObject.name != "Shell Sprite")
+                    c.enabled = enable;
+            }
+            collidersEnabled = enable;
+        }
     }
 }
