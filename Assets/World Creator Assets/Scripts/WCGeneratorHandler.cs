@@ -167,7 +167,7 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             foreach(var spawn in sector.backgroundSpawns)
             {
-                AttemptAddShellCoreParts(spawn.entity, sector.sectorName);
+                AttemptAddShellCoreParts(spawn.entity, sector.sectorName, path);
             }
         }
 
@@ -242,7 +242,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         ent.blueprintJSON = item.shellcoreJSON;
                         if(!charExists)
                         {
-                            AttemptAddShellCoreParts(ent, container.sectorName);
+                            AttemptAddShellCoreParts(ent, container.sectorName, path);
                         }
                     }
                     if(ent.assetID == "trader_blueprint")
@@ -567,7 +567,7 @@ public class WCGeneratorHandler : MonoBehaviour
         }
     }
 
-    public void AttemptAddShellCoreParts(Sector.LevelEntity entity, string sectorName)
+    public void AttemptAddShellCoreParts(Sector.LevelEntity entity, string sectorName, string path)
     {
         EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 
@@ -579,7 +579,7 @@ public class WCGeneratorHandler : MonoBehaviour
         catch
         {
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (SectorManager.instance.resourcePath + "\\Entities\\" + entity.blueprintJSON + ".json"), blueprint);
+                (path + "\\Entities\\" + entity.blueprintJSON + ".json"), blueprint);
         }
 
         
@@ -610,6 +610,6 @@ public class WCGeneratorHandler : MonoBehaviour
             data.origins = new List<string>();
             partData.Add(data);
         }
-        data.origins.Add(origin);
+        if(!data.origins.Contains(origin)) data.origins.Add(origin);
     }
 }
