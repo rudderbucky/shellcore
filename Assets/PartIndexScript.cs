@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class PartIndexScript : MonoBehaviour
 {
-    public static PartIndexScript instance;
-    public WorldData.PartIndexData[] index;
+    // The Part Index assumes this field is already set up gby the Sector Manager upon reading world data.
+    public static WorldData.PartIndexData[] index;
 
     public Dictionary<EntityBlueprint.PartInfo, GameObject> parts = new Dictionary<EntityBlueprint.PartInfo, GameObject>();
     public GameObject inventoryPrefab;
@@ -35,7 +35,7 @@ public class PartIndexScript : MonoBehaviour
     ///
     /// Attempt to add a part into the index, check if the player obtained/saw it
     ///
-    public void AttemptAddPart(EntityBlueprint.PartInfo part, string sectorName)
+    public void AttemptAddPart(EntityBlueprint.PartInfo part, List<string> origins)
     {
         part = CullToPartIndexValues(part);
         if(!parts.ContainsKey(part))
@@ -70,7 +70,8 @@ public class PartIndexScript : MonoBehaviour
             // Update total number
             statsNumbers[3]++;
         }
-        parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(sectorName);
+        foreach(var origin in origins)
+            parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(origin);
     }
 
     public static bool CheckPartObtained(EntityBlueprint.PartInfo part)
@@ -96,6 +97,12 @@ public class PartIndexScript : MonoBehaviour
             }
         }
         parts.Clear();
+
+        if(index == null)
+        {
+            Debug.LogWarning("The Part Index cache has not been set up for this world. Please rewrite this world, it will rebuild automatically.");
+            return;
+        }
 
         // player metadata
         if(PlayerCore.Instance.cursave.partsObtained == null || PlayerCore.Instance.cursave.partsObtained.Count == 0)
@@ -124,17 +131,9 @@ public class PartIndexScript : MonoBehaviour
 
         // index assembly
 
-        foreach(var sector in SectorManager.instance.sectors)
+        foreach(var partData in index)
         {
-            foreach(var entity in sector.entities)
-            {
-                AttemptAddShellCoreParts(entity, sector.sectorName);
-            }
-
-            foreach(var backgroundSpawn in sector.backgroundSpawns)
-            {
-                AttemptAddShellCoreParts(backgroundSpawn.entity, sector.sectorName);
-            }
+            AttemptAddPart(partData.part, partData.origins);
         }
 
         for(int i = 0; i < contents.Length; i++)
@@ -171,37 +170,6 @@ public class PartIndexScript : MonoBehaviour
         if(!partsSeen.Exists(x => CullToPartIndexValues(x).Equals( CullToPartIndexValues(part) ) ))
         {
             partsSeen.Add(part);
-        }
-    }
-
-    ///
-    /// Attempt to add all the ShellCore's parts into the index
-    ///
-    public void AttemptAddShellCoreParts(Sector.LevelEntity entity, string sectorName)
-    {
-        EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-        // try parsing directly, if that fails try fetching the entity file
-        try
-        {
-            JsonUtility.FromJsonOverwrite(entity.blueprintJSON, blueprint);
-        }
-        catch
-        {
-            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (SectorManager.instance.resourcePath + "\\Entities\\" + entity.blueprintJSON + ".json"), blueprint);
-        }
-
-        
-        if(blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore && entity.faction == 1)
-        {
-            if(blueprint.parts != null)
-            {
-                foreach(var part in blueprint.parts)
-                {
-                    AttemptAddPart(part, sectorName);
-                }
-            }       
         }
     }
 

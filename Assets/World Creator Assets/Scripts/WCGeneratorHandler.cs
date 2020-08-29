@@ -526,7 +526,8 @@ public class WCGeneratorHandler : MonoBehaviour
                                 {
                                     Item copy = itemHandler.CopyItem(item);
                                     copy.pos = copy.obj.transform.position 
-                                        = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize, -cursor.cursorOffset.y + curSect.bounds.y - i * cursor.tileSize);
+                                        = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize, 
+                                            -cursor.cursorOffset.y + curSect.bounds.y - i * cursor.tileSize);
                                     copy.rotation = plat.rotations[plat.columns * i + j];
                                     copy.obj.transform.RotateAround(copy.pos, Vector3.forward, 90 * copy.rotation);
                                     cursor.placedItems.Add(copy);

@@ -261,6 +261,8 @@ public class SectorManager : MonoBehaviour
                             }
                             characters = charList.ToArray();
                         }
+
+                        PartIndexScript.index = wdata.partIndexDataArray;
                         continue;
                     }
 
