@@ -30,6 +30,7 @@ public class WCGeneratorHandler : MonoBehaviour
     public int saveState = 0; // 0 : not saving, 1 : saving, 2 : completed successfully, > 2 : something went wrong
 
     private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+    List<WorldData.PartIndexData> partData = new List<WorldData.PartIndexData>();
 
     public static void DeleteTestWorld()
     {
@@ -160,7 +161,18 @@ public class WCGeneratorHandler : MonoBehaviour
             sectTargetIDS.Add(sector, new List<string>());
         }
 
+        // Add background spawns to part index
+        partData.Clear();
+        foreach(var sector in sectors)
+        {
+            foreach(var spawn in sector.backgroundSpawns)
+            {
+                AttemptAddShellCoreParts(spawn.entity, sector.sectorName);
+            }
+        }
+
         Dictionary<string, string> itemSectorsByID = new Dictionary<string, string>();
+        
         foreach(var item in items)
         {
             Sector container = GetSurroundingSector(item.pos);
@@ -220,11 +232,18 @@ public class WCGeneratorHandler : MonoBehaviour
                     ent.position = item.pos;
                     ent.assetID = item.assetID;
                     ent.vendingID = item.vendingID;
-                    if((item.isTarget && container.type != Sector.SectorType.SiegeZone) || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) sectTargetIDS[container].Add(ent.ID);
-                    if(ent.assetID == "shellcore_blueprint" || cursor.characters.Exists(ch => ch.ID == ent.ID ))
+                    if((item.isTarget && container.type != Sector.SectorType.SiegeZone)
+                        || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) 
+                            sectTargetIDS[container].Add(ent.ID);
+                    var charExists = cursor.characters.Exists(ch => ch.ID == ent.ID );
+                    if(ent.assetID == "shellcore_blueprint" || charExists)
                     {
                         sectTargetIDS[container].Add(ent.ID);
                         ent.blueprintJSON = item.shellcoreJSON;
+                        if(!charExists)
+                        {
+                            AttemptAddShellCoreParts(ent, container.sectorName);
+                        }
                     }
                     if(ent.assetID == "trader_blueprint")
                     {
@@ -277,6 +296,7 @@ public class WCGeneratorHandler : MonoBehaviour
         wdata.defaultCharacters = cursor.characters.ToArray();
         wdata.defaultBlueprintJSON = blueprintField.text;
         wdata.author = authorField.text;
+        wdata.partIndexDataArray = partData.ToArray();
 
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
@@ -312,6 +332,7 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
 		Debug.Log("JSON written to location: " + path);
+        Debug.Log($"Index size: {partData.Count}");
         savingLevelScreen.SetActive(false);
         saveState = 2;
         if (OnSectorSaved != null)
@@ -544,5 +565,51 @@ public class WCGeneratorHandler : MonoBehaviour
             };
             Input.ResetInputAxes(); // clear the copy paste ctrl press if there was one
         }
+    }
+
+    public void AttemptAddShellCoreParts(Sector.LevelEntity entity, string sectorName)
+    {
+        EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+
+        // try parsing directly, if that fails try fetching the entity file
+        try
+        {
+            JsonUtility.FromJsonOverwrite(entity.blueprintJSON, blueprint);
+        }
+        catch
+        {
+            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                (SectorManager.instance.resourcePath + "\\Entities\\" + entity.blueprintJSON + ".json"), blueprint);
+        }
+
+        
+        if(blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore && entity.faction == 1)
+        {
+            if(blueprint.parts != null)
+            {
+                foreach(var part in blueprint.parts)
+                {
+                    AddPart(part, sectorName);
+                }
+            }       
+        }
+    }
+
+
+    ///
+    /// Attempt to add a part into the index, check if the player obtained/saw it
+    ///
+    public void AddPart(EntityBlueprint.PartInfo part, string origin)
+    {
+        part = PartIndexScript.CullToPartIndexValues(part);
+        WorldData.PartIndexData data = partData.Find((pData) => pData.part.Equals(part));
+        if(data == null)
+        {
+            data = new WorldData.PartIndexData();
+            data.part = part;
+            data.origins = new List<string>();
+            partData.Add(data);
+        }
+        data.origins.Add(origin);
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PartIndexScript : MonoBehaviour
 {
     public static PartIndexScript instance;
+    public WorldData.PartIndexData[] index;
 
     public Dictionary<EntityBlueprint.PartInfo, GameObject> parts = new Dictionary<EntityBlueprint.PartInfo, GameObject>();
     public GameObject inventoryPrefab;

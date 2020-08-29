@@ -11,7 +11,14 @@ public class WorldData : ScriptableObject
         public string name;
         public string blueprintJSON;
         public bool partyMember;
+        public bool partsCollectible;
         public int faction;
+    }
+
+    [System.Serializable]
+    public class PartIndexData {
+        public EntityBlueprint.PartInfo part;
+        public List<string> origins;
     }
 
     // Characters are special entities linked to the storyline of which there can only be one
@@ -23,4 +30,5 @@ public class WorldData : ScriptableObject
     public Vector2 initialSpawn;
     public string defaultBlueprintJSON;
     public string author;
+    public PartIndexData[] partIndexDataArray;
 }

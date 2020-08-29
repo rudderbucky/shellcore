@@ -22,6 +22,7 @@ public class AudioManager : MonoBehaviour
     }
     void Start() 
     {
+        if(!masterMixer) return;
         ChangeMasterVolume(PlayerPrefs.GetFloat("MasterVolume", 0.5f));
         ChangeMusicVolume(PlayerPrefs.GetFloat("MusicVolume", 1f));
         ChangeSoundEffectsVolume(PlayerPrefs.GetFloat("SFXVolume", 1f));
