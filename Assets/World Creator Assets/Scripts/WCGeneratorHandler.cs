@@ -248,7 +248,14 @@ public class WCGeneratorHandler : MonoBehaviour
                     else if(ent.assetID == "trader_blueprint")
                     {
                         ent.blueprintJSON = item.shellcoreJSON;
-                        AttemptAddTraderParts(ent, container.sectorName);
+                        if(ent.blueprintJSON == null)
+                        {
+                            // TODO: Grab trader blueprint JSON from dialogue
+                            // Debug.LogError($"Trader in {container.sectorName} has no trader inventory JSON. Abort.");
+                            // yield return false;
+                        }
+                            
+                        // AttemptAddTraderParts(ent, container.sectorName);
                     }
 
                     sectEnts[container].Add(ent);
@@ -571,7 +578,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
     public void AttemptAddTraderParts(Sector.LevelEntity trader, string sectorName)
     {
-        ShipBuilder.TraderInventory traderInventory = JsonUtility.FromJson(trader.blueprintJSON);
+        ShipBuilder.TraderInventory traderInventory = JsonUtility.FromJson<ShipBuilder.TraderInventory>(trader.blueprintJSON);
         foreach(var part in traderInventory.parts)
         {
             AddPart(part, sectorName);
@@ -590,7 +597,7 @@ public class WCGeneratorHandler : MonoBehaviour
         catch
         {
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (path + "\\Entities\\" + entity.blueprintJSON + ".json"), blueprint);
+                (Application.streamingAssetsPath + "\\EntityPlaceholder\\" + entity.blueprintJSON + ".json"), blueprint);
         }
 
         
