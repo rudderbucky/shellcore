@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PartIndexScript : MonoBehaviour
 {
-    // The Part Index assumes this field is already set up gby the Sector Manager upon reading world data.
+    // The Part Index assumes this field is already set up by the Sector Manager upon reading world data.
     public static WorldData.PartIndexData[] index;
 
     public Dictionary<EntityBlueprint.PartInfo, GameObject> parts = new Dictionary<EntityBlueprint.PartInfo, GameObject>();

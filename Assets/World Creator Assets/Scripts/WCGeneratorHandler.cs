@@ -245,9 +245,10 @@ public class WCGeneratorHandler : MonoBehaviour
                             AttemptAddShellCoreParts(ent, container.sectorName, path);
                         }
                     }
-                    if(ent.assetID == "trader_blueprint")
+                    else if(ent.assetID == "trader_blueprint")
                     {
                         ent.blueprintJSON = item.shellcoreJSON;
+                        AttemptAddTraderParts(ent, container.sectorName);
                     }
 
                     sectEnts[container].Add(ent);
@@ -565,6 +566,15 @@ public class WCGeneratorHandler : MonoBehaviour
                 Debug.Log(e);
             };
             Input.ResetInputAxes(); // clear the copy paste ctrl press if there was one
+        }
+    }
+
+    public void AttemptAddTraderParts(Sector.LevelEntity trader, string sectorName)
+    {
+        ShipBuilder.TraderInventory traderInventory = JsonUtility.FromJson(trader.blueprintJSON);
+        foreach(var part in traderInventory.parts)
+        {
+            AddPart(part, sectorName);
         }
     }
 
