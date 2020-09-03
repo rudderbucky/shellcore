@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using NodeEditorFramework.IO;
 using UnityEngine.Events;
+using NodeEditorFramework.Standard;
+using NodeEditorFramework;
 
 public class WCGeneratorHandler : MonoBehaviour
 {
@@ -31,6 +33,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
     private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
     List<WorldData.PartIndexData> partData = new List<WorldData.PartIndexData>();
+    
 
     public static void DeleteTestWorld()
     {
@@ -107,6 +110,12 @@ public class WCGeneratorHandler : MonoBehaviour
     IEnumerator WriteWorldCo(string path)
     {
         Debug.Log("Writing world...");
+
+        // Folder paths
+        var canvasPlaceholderPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
+        var entityPlaceholderPath = Application.streamingAssetsPath + "\\EntityPlaceholder";
+        var wavePlaceholderPath = Application.streamingAssetsPath + "\\WavePlaceholder";
+
         saveState = 1;
         yield return null;
         sectors = new List<Sector>();
@@ -250,6 +259,9 @@ public class WCGeneratorHandler : MonoBehaviour
                         ent.blueprintJSON = item.shellcoreJSON;
                         if(ent.blueprintJSON == null)
                         {
+                            var dialogueDataPath = $"{canvasPlaceholderPath}\\{ent.ID}.dialoguedata";
+                            Debug.Log(dialogueDataPath);
+                            // var canvas = XMLImport.Import() as QuestCanvas;
                             // TODO: Grab trader blueprint JSON from dialogue
                             // Debug.LogError($"Trader in {container.sectorName} has no trader inventory JSON. Abort.");
                             // yield return false;
@@ -309,9 +321,9 @@ public class WCGeneratorHandler : MonoBehaviour
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
 
-        TryCopy(Application.streamingAssetsPath + "\\CanvasPlaceholder", path + "\\Canvases\\");
-        TryCopy(Application.streamingAssetsPath + "\\EntityPlaceholder", path + "\\Entities\\");
-        TryCopy(Application.streamingAssetsPath + "\\WavePlaceholder", path + "\\Waves\\");
+        TryCopy(canvasPlaceholderPath, path + "\\Canvases\\");
+        TryCopy(entityPlaceholderPath, path + "\\Entities\\");
+        TryCopy(wavePlaceholderPath, path + "\\Waves\\");
 
         foreach(var sector in sectors)
         {
