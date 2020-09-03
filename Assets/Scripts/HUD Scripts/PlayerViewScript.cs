@@ -28,7 +28,6 @@ public class PlayerViewScript : MonoBehaviour {
 	// Update is called once per frame
 	void Awake() {
 		if(escapeMenu) escapeCanvas = escapeMenu.GetComponentInChildren<Canvas>();
-		Debug.Log(Application.persistentDataPath);
 		currentWindow = new Stack<IWindow>();
 		instance = this;
 		if(escapeMenu) escapeMenu.SetActive(false);

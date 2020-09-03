@@ -6,6 +6,7 @@ using NodeEditorFramework.IO;
 using UnityEngine.Events;
 using NodeEditorFramework.Standard;
 using NodeEditorFramework;
+using NodeEditorFramework.Utilities;
 
 public class WCGeneratorHandler : MonoBehaviour
 {
@@ -115,6 +116,9 @@ public class WCGeneratorHandler : MonoBehaviour
         var canvasPlaceholderPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
         var entityPlaceholderPath = Application.streamingAssetsPath + "\\EntityPlaceholder";
         var wavePlaceholderPath = Application.streamingAssetsPath + "\\WavePlaceholder";
+
+        // Reinitialize node editor
+        NodeEditor.ReInit(false);
 
         saveState = 1;
         yield return null;
@@ -257,17 +261,47 @@ public class WCGeneratorHandler : MonoBehaviour
                     else if(ent.assetID == "trader_blueprint")
                     {
                         ent.blueprintJSON = item.shellcoreJSON;
-                        if(ent.blueprintJSON == null)
+
+                        // Attempt to add trader parts into index.
+                        if(ent.blueprintJSON == null || ent.blueprintJSON == "")
                         {
                             var dialogueDataPath = $"{canvasPlaceholderPath}\\{ent.ID}.dialoguedata";
-                            Debug.Log(dialogueDataPath);
-                            // var canvas = XMLImport.Import() as QuestCanvas;
+                            
+                            if(System.IO.File.Exists(dialogueDataPath))
+                            {
+                                var XMLImport = new XMLImportExport();
+                                var canvas = XMLImport.Import(dialogueDataPath) as DialogueCanvas;
+                                foreach(var node in canvas.nodes)
+                                {
+                                    if(node is EndDialogue)
+                                    {
+                                        var endDialogue = node as EndDialogue;
+                                        if(endDialogue.openTrader)
+                                        {
+                                            ShipBuilder.TraderInventory traderInventory = 
+                                                JsonUtility.FromJson<ShipBuilder.TraderInventory>(endDialogue.traderJSON);
+                                            AttemptAddPartArray(traderInventory.parts, container.sectorName);
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                            else 
+                            {
+                                // Maybe make this error message more descriptive.
+                                Debug.LogError($"Trader has neither default trader JSON nor an associated dialogue file named '{ent.ID}.dialoguedata'. Abort.");
+                                yield return false;
+                            }
                             // TODO: Grab trader blueprint JSON from dialogue
                             // Debug.LogError($"Trader in {container.sectorName} has no trader inventory JSON. Abort.");
                             // yield return false;
                         }
-                            
-                        // AttemptAddTraderParts(ent, container.sectorName);
+                        else
+                        {
+                            ShipBuilder.TraderInventory traderInventory = 
+                                JsonUtility.FromJson<ShipBuilder.TraderInventory>(ent.blueprintJSON);
+                            AttemptAddPartArray(traderInventory.parts, container.sectorName);
+                        }
                     }
 
                     sectEnts[container].Add(ent);
@@ -588,10 +622,9 @@ public class WCGeneratorHandler : MonoBehaviour
         }
     }
 
-    public void AttemptAddTraderParts(Sector.LevelEntity trader, string sectorName)
+    public void AttemptAddPartArray(List<EntityBlueprint.PartInfo> parts, string sectorName)
     {
-        ShipBuilder.TraderInventory traderInventory = JsonUtility.FromJson<ShipBuilder.TraderInventory>(trader.blueprintJSON);
-        foreach(var part in traderInventory.parts)
+        foreach(var part in parts)
         {
             AddPart(part, sectorName);
         }
