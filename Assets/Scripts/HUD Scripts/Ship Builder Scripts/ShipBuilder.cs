@@ -400,7 +400,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		else
 		{
-			/*
+			/* Adds all part/ability/tier/drone permutations to the player's inventory. Uncomment to cheat.
 			for(int i = 0; i < 8; i++) 
 			{
 				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
@@ -440,6 +440,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			foreach(var part in traderInventory)
 			{
 				traderInv.Add(CullSpatialValues(part));
+
+				// Player has now seen all the parts in the trader's inventory.
+				player.cursave.partsSeen.Add(PartIndexScript.CullToPartIndexValues(part));
 			}
 			traderInventory = traderInv;
 		}

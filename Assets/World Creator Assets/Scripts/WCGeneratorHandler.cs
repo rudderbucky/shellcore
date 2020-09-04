@@ -290,7 +290,7 @@ public class WCGeneratorHandler : MonoBehaviour
                             {
                                 // Maybe make this error message more descriptive.
                                 Debug.LogError($"Trader has neither default trader JSON nor an associated dialogue file named '{ent.ID}.dialoguedata'. Abort.");
-                                yield return false;
+                                yield break;
                             }
                             // TODO: Grab trader blueprint JSON from dialogue
                             // Debug.LogError($"Trader in {container.sectorName} has no trader inventory JSON. Abort.");
