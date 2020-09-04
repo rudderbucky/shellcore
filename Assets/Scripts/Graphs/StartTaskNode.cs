@@ -165,9 +165,9 @@ namespace NodeEditorFramework.Standard
         public void OnClick(int index)
         {
             DialogueSystem.OnDialogueEnd -= OnClick;
+            TaskManager.interactionOverrides[StartDialogueNode.missionCanvasNode.EntityID].Pop();
             if (index != 0)
             {
-                TaskManager.interactionOverrides[StartDialogueNode.missionCanvasNode.EntityID].Pop();
                 StartDialogueNode.missionCanvasNode = null;
                 StartTask();
                 TaskManager.Instance.setNode(outputAccept);
