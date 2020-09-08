@@ -173,6 +173,10 @@ public class PartIndexScript : MonoBehaviour
         }
     }
 
+    ///
+    /// Culls unnecessary data in the passed PartInfo for adding into the Part Index.
+    /// Notably, it nullifies secondary data if the part does not spawn drones.
+    ///
     public static EntityBlueprint.PartInfo CullToPartIndexValues(EntityBlueprint.PartInfo partToCull)
     {
         var part = new EntityBlueprint.PartInfo();

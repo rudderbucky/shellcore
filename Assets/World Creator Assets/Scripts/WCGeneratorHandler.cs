@@ -311,6 +311,34 @@ public class WCGeneratorHandler : MonoBehaviour
             }
         }
 
+        // Add reward parts from tasks.
+        foreach(var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
+        {
+            if(System.IO.Path.GetExtension(canvasPath) == ".taskdata")
+            {
+                var XMLImport = new XMLImportExport();
+                var canvas = XMLImport.Import(canvasPath) as QuestCanvas;
+                foreach(var node in canvas.nodes)
+                {
+                    if(node is StartTaskNode)
+                    {
+                        var startTask = node as StartTaskNode;
+                        if(startTask.partReward)
+                        {
+                            EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
+                            part.partID = startTask.partID;
+                            part.abilityID = startTask.partAbilityID;
+                            part.tier = startTask.partTier;
+                            part.secondaryData = startTask.partSecondaryData;
+                            part = PartIndexScript.CullToPartIndexValues(part);
+                            AddPart(part, canvas.missionName);
+                        }
+                        
+                    }
+                }
+            }
+        }
+
         // calculate land platform pathfinding nodes
         foreach (var sector in sectors)
         {
