@@ -23,6 +23,36 @@ public class MissionTraverser : Traverser
         nodeCanvas.missionName = findRoot().missionName;
         if(lastCheckpointName == (nodeCanvas.missionName + "_complete")) 
         {
+            // Retroactively add all parts from the completed quest as parts obtained by the player.
+            if(PlayerCore.Instance)
+            {
+                foreach(var node in nodeCanvas.nodes)
+                {
+                    if(node is StartTaskNode)
+                    {
+                        var startTask = node as StartTaskNode;
+                        if(startTask.partReward)
+                        {
+                            EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
+                            part.partID = startTask.partID;
+                            part.abilityID = startTask.partAbilityID;
+                            part.tier = startTask.partTier;
+                            part.secondaryData = startTask.partSecondaryData;
+                            part = PartIndexScript.CullToPartIndexValues(part);
+
+                            if(!PlayerCore.Instance.cursave.partsObtained.Contains(part))
+                            {
+                                PlayerCore.Instance.cursave.partsObtained.Add(part);
+                            }
+                            if(!PlayerCore.Instance.cursave.partsSeen.Contains(part))
+                            {
+                                PlayerCore.Instance.cursave.partsSeen.Add(part);
+                            }
+                        }
+                    }
+                }
+            }
+            
             return;
         }
         Debug.Log(lastCheckpointName + nodeCanvas.missionName);

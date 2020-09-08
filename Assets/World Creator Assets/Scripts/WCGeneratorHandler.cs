@@ -318,6 +318,17 @@ public class WCGeneratorHandler : MonoBehaviour
             {
                 var XMLImport = new XMLImportExport();
                 var canvas = XMLImport.Import(canvasPath) as QuestCanvas;
+
+                string missionName = null;
+                foreach(var node in canvas.nodes)
+                {
+                    if(node is StartMissionNode)
+                    {
+                        var startMission = node as StartMissionNode;
+                        missionName = startMission.missionName;
+                    }
+                }
+
                 foreach(var node in canvas.nodes)
                 {
                     if(node is StartTaskNode)
@@ -331,7 +342,8 @@ public class WCGeneratorHandler : MonoBehaviour
                             part.tier = startTask.partTier;
                             part.secondaryData = startTask.partSecondaryData;
                             part = PartIndexScript.CullToPartIndexValues(part);
-                            AddPart(part, canvas.missionName);
+
+                            AddPart(part, missionName);
                         }
                         
                     }
