@@ -173,7 +173,7 @@ public class BackgroundScript : MonoBehaviour {
 
     private IEnumerator FadeColor(Color newColor, SpriteRenderer renderer) {
         float beginLerp = 0;
-        while(renderer.color != newColor) {
+        while(renderer && renderer.color != newColor) {
             renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
             beginLerp += 0.0125F;
             if (beginLerp > 1)

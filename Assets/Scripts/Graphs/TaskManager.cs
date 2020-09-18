@@ -261,6 +261,11 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
+    /**
+        Sets the passed node's canvas's current node to the passed node.
+        The Task Manager isn't modified by this method. 
+        All changes are at the canvas level.
+    */
     public void setNode(Node node)
     {
         NodeCanvas canvas = node.Canvas;
