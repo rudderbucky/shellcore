@@ -238,10 +238,11 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			{
 				if(!tooltipTransform) tooltipTransform = Instantiate(tooltipPrefab, transform.parent.parent).GetComponent<RectTransform>();
 				tooltipTransform.position = Input.mousePosition;
-				tooltipTransform.GetComponent<RectTransform>().sizeDelta = new Vector2(175, 50);
 				mouseOverSector = true;
-				tooltipTransform.GetComponentInChildren<Text>().text = 
+				var text = tooltipTransform.GetComponentInChildren<Text>();
+				text.text = 
 					$"{sectorInfo[sect.Item1].Item1}\n{sectorInfo[sect.Item1].Item2}".ToUpper();
+				tooltipTransform.GetComponent<RectTransform>().sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
 
 			}
 		}
