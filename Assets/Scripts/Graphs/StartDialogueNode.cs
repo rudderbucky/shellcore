@@ -87,6 +87,30 @@ namespace NodeEditorFramework.Standard
                 if (handler.GetInteractionOverrides().ContainsKey(EntityID))
                 {
                     handler.GetInteractionOverrides()[EntityID].Push(() => {
+                        
+                        /* This code skips task dialogue if the prerequisites are not yet satisfied and the entity has other stuff
+                        to say. This essentially allows you to allocate multiple tasks from different missions to the
+                        same entity as long as one task is always under prerequisites while the other is active. */
+                        
+                        if(EntityID != null && TaskManager.interactionOverrides[EntityID].Count > 0)
+                        {
+                            var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
+                            if(mission != null)
+                            {
+                                foreach(var prereq in mission.prerequisites)
+                                {
+                                    if(prereq == "None.") continue;
+                                    if(PlayerCore.Instance.cursave.missions.Find((x) => x.name == prereq).status != Mission.MissionStatus.Complete)
+                                    {
+                                        Debug.Log("SKIP starting dialogue for mission with unsatisfied prerequisites and already overriden entity."); 
+                                        TaskManager.interactionOverrides[EntityID].Pop().Invoke();
+                                        TaskManager.Instance.setNode(this);
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+
                         if(handler as TaskManager) missionCanvasNode = this;
                         else dialogueCanvasNode = this;
                         handler.SetSpeakerID(EntityID);
@@ -101,6 +125,7 @@ namespace NodeEditorFramework.Standard
                     stack.Push(() => {
                             if(handler as TaskManager) missionCanvasNode = this;
                             else dialogueCanvasNode = this;
+
                             handler.SetSpeakerID(EntityID);
                             handler.SetNode(output);
                         });

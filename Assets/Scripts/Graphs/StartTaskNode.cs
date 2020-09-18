@@ -205,22 +205,6 @@ namespace NodeEditorFramework.Standard
                         if(prereq == "None.") continue;
                         if(PlayerCore.Instance.cursave.missions.Find((x) => x.name == prereq).status != Mission.MissionStatus.Complete)
                         {
-
-                            /* This code skips task dialogue if the prerequisites are not yet satisfied and the entity has other stuff
-                               to say. This essentially allows you to allocate multiple tasks from different missions to the
-                               same entity as long as one task is always under prerequisites while the other is active. 
-                               Also make sure the task with prereqs starts right off with a Start Dialogue -> Start Task. This won't
-                               work otherwise. TODO: Maybe generalize this to Start Dialogue instead of Start Task to fix this? */
-                            if(StartDialogueNode.missionCanvasNode.EntityID != null
-                                && TaskManager.interactionOverrides[StartDialogueNode.missionCanvasNode.EntityID].Count > 1)
-                            {
-                                var missionNode = StartDialogueNode.missionCanvasNode;
-                                TaskManager.interactionOverrides[missionNode.EntityID].Pop();
-                                TaskManager.interactionOverrides[missionNode.EntityID].Pop().Invoke();
-                                TaskManager.Instance.setNode(missionNode);
-                                return -1;
-                            }
-
                             Dialogue dialogue = ScriptableObject.CreateInstance<Dialogue>();
                             dialogue.nodes = new List<Dialogue.Node>();
                             var node = new Dialogue.Node();
