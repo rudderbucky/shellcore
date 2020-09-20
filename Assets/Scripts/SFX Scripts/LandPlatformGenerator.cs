@@ -288,7 +288,8 @@ public class LandPlatformGenerator : MonoBehaviour {
                     if ((!right && !left && up && down) || (right && left && !up && !down))
                         continue;
 
-                    if (platform.prefabs[platform.tilemap[i * platform.columns + j]] == "New 2 Entry")
+                    if (platform.prefabs[platform.tilemap[i * platform.columns + j]] == "New 2 Entry"
+                            || platform.prefabs[platform.tilemap[i * platform.columns + j]] == "New 2 Entry Ghost")
                     {
                         if (IsOnGround(new Vector2(j * tileSize, -i * tileSize) + offset))
                             Instance.nodes.Add(new NavigationNode(new Vector2(j * tileSize, -i * tileSize) + offset));

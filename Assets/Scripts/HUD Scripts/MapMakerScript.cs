@@ -330,7 +330,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			clickedOnce = true;
 		}
 
-		if(SectorManager.testJsonPath != null)
+		if(SectorManager.testJsonPath != null || DevConsoleScript.godModeEnabled == true)
 			foreach(var sect in sectorImages)
 			{
 				var pos = sect.Item1.rectTransform.position;

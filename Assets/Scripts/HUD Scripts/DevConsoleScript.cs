@@ -10,11 +10,13 @@ public class DevConsoleScript : MonoBehaviour
     public InputField inputField;
 
     public bool fullLog = false;
+    public static bool godModeEnabled = false;
 
     Queue<string> textToAdd = new Queue<string>();
 
     void OnEnable() {
         Application.logMessageReceived += HandleLog;
+        godModeEnabled = false;
     }
      
     void Disable() {
@@ -50,6 +52,7 @@ public class DevConsoleScript : MonoBehaviour
                 player.enginePower = 9999f;
                 player.damageAddition = 99999f;
                 player.AddPower(10000);
+                godModeEnabled = true;
                 textBox.text += "\n<color=green>I am noob.</color>";
             }
             else if (command.Equals("Immortality", StringComparison.CurrentCultureIgnoreCase))
