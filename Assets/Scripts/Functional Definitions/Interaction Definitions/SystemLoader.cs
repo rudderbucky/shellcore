@@ -37,7 +37,9 @@ public class SystemLoader : MonoBehaviour
             DialogueSystem.InitCanvases();
         if (saveHandler)
             saveHandler.Initialize();
-        if (taskManager)
+
+        // Save Handler will initialize mission canvases after sector loading if present.
+        if (!saveHandler && taskManager)
             taskManager.Initialize();
 
         AllLoaded = true;

@@ -64,10 +64,10 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         Instance = this;
         objectiveLocations = new List<ObjectiveLocation>();
         speakerID = null;
+        interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
         initCanvases(forceReInit);
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
-        interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
     }
 
     void Update()

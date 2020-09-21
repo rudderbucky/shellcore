@@ -12,6 +12,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	public PlayerSave save;
 	public string path;
 	public Text saveName;
+	public Text episodeNumber;
 	public Text version;
 	public Text timePlayed;
 	public int index;
@@ -30,6 +31,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		// coreImage.rectTransform.anchoredPosition = shellImage.sprite.pivot / 2 - shellImage.rectTransform.sizeDelta / 2;
 		shellImage.color = coreImage.color = FactionManager.GetFactionColor(0);
 		saveName.text = save.name;
+		episodeNumber.text = $"Episode: {Mathf.Max(1, save.episode)}";
 		version.text = "Version: " + save.version;
 		if(save.version.Contains("Prototype") || save.version.Contains("Alpha 0.0.0"))
 		{
