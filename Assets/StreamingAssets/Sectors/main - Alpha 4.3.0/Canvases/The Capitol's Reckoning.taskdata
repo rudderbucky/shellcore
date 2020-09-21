@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.QuestCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-884.5,72.5" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-42786" type="StartDialogueNode" pos="-345,-179.7">
+			<Port ID="-42788" name="input" dynamic="False" />
+			<Port ID="-42790" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-187786652" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-42792" type="DialogueNode" pos="-80,-200">
+			<Port ID="-42794" name="input" dynamic="False" />
+			<Port ID="-42796" name="cancel" dynamic="False" />
+			<Port ID="-42780" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">228</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-2027564644" />
+			<Variable name="answers" refID="1224581632" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Mission" ID="-42798" type="StartMissionNode" pos="-720,-190">
+			<Port ID="-42800" name="outputRight" dynamic="False" />
+			<Variable name="missionName" refID="783077131" />
+			<Variable name="rank" refID="372029405" />
+			<Variable name="entryPoint" refID="-78461926" />
+			<Variable name="prerequisites" refID="-50770688" />
+			<Variable name="prerequisitesUnsatisifedText" refID="-975014578" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<boolean name="overrideCheckpoint">false</boolean>
+			<int name="episode">2</int>
+		</Node>
+		<Node name="Dialogue" ID="-42802" type="DialogueNode" pos="225,-193.7">
+			<Port ID="-42804" name="input" dynamic="False" />
+			<Port ID="-42806" name="cancel" dynamic="False" />
+			<Port ID="-42782" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">215</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-409663289" />
+			<Variable name="answers" refID="-528376320" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Task" ID="-42814" type="StartTaskNode" pos="554,-157.7">
+			<Port ID="-42816" name="inputLeft" dynamic="False" />
+			<Port ID="-42818" name="outputAccept" dynamic="False" />
+			<Port ID="-42820" name="outputDecline" dynamic="False" />
+			<Port ID="-42822" name="inputUp" dynamic="False" />
+			<Variable name="dialogueText" refID="1572332805" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="objectiveList" refID="1154301273" />
+			<int name="creditReward">500</int>
+			<boolean name="partReward">false</boolean>
+			<Variable name="entityIDforConfirmedResponse" refID="-187786652" />
+			<Variable name="partID" refID="371857150" />
+			<int name="partAbilityID">0</int>
+			<int name="partTier">1</int>
+			<Variable name="partSecondaryData" refID="371857150" />
+			<int name="reputationReward">100</int>
+			<Variable name="taskName" refID="-1818615839" />
+			<Variable name="acceptResponse" refID="479492801" />
+			<Variable name="declineResponse" refID="-150001183" />
+			<Variable name="taskConfirmedDialogue" refID="-1442898572" />
+			<boolean name="forceTask">false</boolean>
+		</Node>
+		<Node name="Sector Limiter" ID="-42808" type="SectorLimiterNode" pos="890,-150">
+			<Port ID="-42810" name="input" dynamic="False" />
+			<Port ID="-42812" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-302540227" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-42788" port2ID="-42800" />
+		<Connection port1ID="-42790" port2ID="-42794" />
+		<Connection port1ID="-42780" port2ID="-42804" />
+		<Connection port1ID="-42782" port2ID="-42816" />
+		<Connection port1ID="-42818" port2ID="-42810" />
+	</Connections>
+	<Objects>
+		<Object refID="-187786652" type="System.String">
+			<string>haven3-missioncontrol1</string>
+		</Object>
+		<Object refID="-2027564644" type="System.String">
+			<string>Commander, you have helped clear the scourge in these sectors. Given the circumstances, you are too helpful, not to mention useful, to stay up here.</string>
+		</Object>
+		<Object refID="1224581632" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>What do you want me to do?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="783077131" type="System.String">
+			<string>The Capitol's Reckoning</string>
+		</Object>
+		<Object refID="372029405" type="System.String">
+			<string>A</string>
+		</Object>
+		<Object refID="-78461926" type="System.String">
+			<string>Speak to Mission Control in Haven 3.</string>
+		</Object>
+		<Object refID="-50770688" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>The Scourge of Secrecy</string>
+				<string>DeadZone Scouting</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-975014578" type="System.String">
+			<string>It is too risky for you to travel through given our current technology. You might want to search around for other cores who have a lead on how they even got there.</string>
+		</Object>
+		<Object refID="-409663289" type="System.String">
+			<string>We need to get you to the Capitol, but we are not sure how. We now know that the Infected have totally flanked out our path to the lower sectors.</string>
+		</Object>
+		<Object refID="-528376320" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I'll find a way.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1572332805" type="System.String">
+			<string>You already have. The Stealth ability you helped find was facilitatory to their guerilla attacks around here. We are also aware that it is your fighting chance of getting to the Capitol. Use it wisely.</string>
+		</Object>
+		<Object refID="1154301273" type="System.String">
+			<string>- Head to the Capitol Platforms.</string>
+		</Object>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="-1818615839" type="System.String">
+			<string>The Capitol's Reckoning_travel1</string>
+		</Object>
+		<Object refID="479492801" type="System.String">
+			<string>I'll find a way to the Capitol Platforms.</string>
+		</Object>
+		<Object refID="-150001183" type="System.String">
+			<string>I'll need some more preparation before embarking.</string>
+		</Object>
+		<Object refID="-1442898572" type="System.String">
+			<string>Now hurry and travel to the Capitol. Don't worry about us. I've marked our intel of the path on your map. Good luck!</string>
+		</Object>
+		<Object refID="-302540227" type="System.String">
+			<string>Sector 760-1550</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
