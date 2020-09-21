@@ -236,13 +236,18 @@ public class LandPlatformGenerator : MonoBehaviour {
             }
             if (!found)
             {
+                List<int> notThisID = new List<int>();
                 foreach (NavigationNode node in nodes)
                 {
+                    /*
+                    if(notThisID.Contains(areaIDByNode[node])) continue;
                     if (isInLoS(tile.transform.position, node.pos))
                     {
                         areaIDByTile.Add(tile, areaIDByNode[node]);
                         break;
                     }
+                    else notThisID.Add(areaIDByNode[node]);
+                    */
                 }
             }
         }
