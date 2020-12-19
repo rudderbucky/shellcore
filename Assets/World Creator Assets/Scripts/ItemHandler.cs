@@ -29,6 +29,7 @@ public class Item {
 		public int placeablesIndex;
 		public Vector3 pos;
 		public int rotation;
+        public NodeEditorFramework.Standard.PathData patrolPath;
         public string ID;
 }
 

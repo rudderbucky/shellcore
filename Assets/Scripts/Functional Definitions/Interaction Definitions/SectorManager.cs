@@ -563,6 +563,12 @@ public class SectorManager : MonoBehaviour
         entity.spawnPoint = data.position;
         entity.blueprint = blueprint;
 
+        if(entity as AirCraft && data.patrolPath != null && data.patrolPath.waypoints.Count > 0)
+        {
+            // patrolling
+            (entity as AirCraft).GetAI().setPath(data.patrolPath, null, true);
+        }
+
         if(data.ID == "" || data.ID == null || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
         {
             data.ID = objects.Count.ToString();

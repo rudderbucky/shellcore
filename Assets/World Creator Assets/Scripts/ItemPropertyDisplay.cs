@@ -65,7 +65,26 @@ public class ItemPropertyDisplay : MonoBehaviour
         currentItem.ID = idField.text;
     }
 
+    public void UpdatePatrolPath()
+    {
+        if(currentItem.patrolPath == null)
+        {
+            currentItem.patrolPath = new NodeEditorFramework.Standard.PathData();
+            currentItem.patrolPath.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
+        }
+        
+        WorldCreatorCursor.finishPath += SetPath;
+        WorldCreatorCursor.instance.pathDrawing(currentItem.patrolPath);
+        gameObject.SetActive(false);
+    }
+
     public void Hide() {
         gameObject.SetActive(false);
+    }
+
+    public void SetPath(NodeEditorFramework.Standard.PathData path)
+    {
+        gameObject.SetActive(true);
+        currentItem.patrolPath = path;
     }
 }

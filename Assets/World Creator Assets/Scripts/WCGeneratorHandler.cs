@@ -245,6 +245,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     ent.position = item.pos;
                     ent.assetID = item.assetID;
                     ent.vendingID = item.vendingID;
+                    ent.patrolPath = item.patrolPath;
                     if((item.isTarget && container.type != Sector.SectorType.SiegeZone)
                         || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) 
                             sectTargetIDS[container].Add(ent.ID);
@@ -604,6 +605,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 copy.pos = copy.obj.transform.position = ent.position;
                                 copy.vendingID = ent.vendingID;
                                 copy.shellcoreJSON = ent.blueprintJSON;
+                                copy.patrolPath = ent.patrolPath;
                                 cursor.placedItems.Add(copy);
                             }              
                         }
