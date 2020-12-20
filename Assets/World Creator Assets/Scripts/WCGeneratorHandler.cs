@@ -164,6 +164,13 @@ public class WCGeneratorHandler : MonoBehaviour
             };
         }
 
+        // ensure spawn point in some sector
+        if(sectors.TrueForAll(sector => !sector.bounds.contains(cursor.spawnPoint.position)))
+        {
+            Debug.LogError("Spawn point not in sector bounds. Abort.");
+            yield break;
+        }
+
         // set up items and platforms
         int ID = 0;
         Dictionary<Sector, List<Sector.LevelEntity>> sectEnts = new Dictionary<Sector, List<Sector.LevelEntity>>();
@@ -312,6 +319,7 @@ public class WCGeneratorHandler : MonoBehaviour
             }
         }
 
+        if(!System.IO.Directory.Exists(canvasPlaceholderPath)) System.IO.Directory.CreateDirectory(canvasPlaceholderPath);
         // Add reward parts from tasks.
         foreach(var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
         {
