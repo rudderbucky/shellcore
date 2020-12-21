@@ -18,6 +18,8 @@ public class PassiveDialogueSystem : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        archiveContents.transform.parent.gameObject.SetActive(false);
+        passiveDialogueScrollView.localScale = new Vector3(1, 0, 1);
     }
 
     public void SlidePassiveDialogueOut()
