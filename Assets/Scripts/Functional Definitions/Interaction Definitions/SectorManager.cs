@@ -563,7 +563,7 @@ public class SectorManager : MonoBehaviour
         entity.spawnPoint = data.position;
         entity.blueprint = blueprint;
 
-        if(entity as AirCraft && data.patrolPath != null && data.patrolPath.waypoints.Count > 0)
+        if(entity as AirCraft && data.patrolPath != null && data.patrolPath.waypoints != null && data.patrolPath.waypoints.Count > 0)
         {
             // patrolling
             (entity as AirCraft).GetAI().setPath(data.patrolPath, null, true);
