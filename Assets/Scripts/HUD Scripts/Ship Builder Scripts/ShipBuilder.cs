@@ -673,7 +673,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
 				if(partDict[info].GetCount() > 0) {
 					for(int i = 0; i < partDict[info].GetCount(); i++)
+					{
 						player.cursave.partInventory.Add(info);
+						PartIndexScript.AttemptAddToPartsObtained(info);
+					}
 				}
 			}
 		}
