@@ -53,21 +53,21 @@ public class DevConsoleScript : MonoBehaviour
                 player.damageAddition = 99999f;
                 player.AddPower(10000);
                 godModeEnabled = true;
-                textBox.text += "\n<color=green>I am noob.</color>";
+                textBox.text += "\n<color=lime>I am noob.</color>";
             }
             else if (command.Equals("Immortality", StringComparison.CurrentCultureIgnoreCase))
             {
                 var player = PlayerCore.Instance;
                 player.SetMaxHealth(new float[] { 9999, 9999, 9999 }, true);
                 player.SetRegens(new float[] { 9999, 9999, 9999 });
-                textBox.text += "\n<color=green>Immortality is an illusion, enjoy it while it lasts.</color>";
+                textBox.text += "\n<color=lime>Immortality is an illusion, enjoy it while it lasts.</color>";
             }
             else if (command.Equals("Skynet will rise", StringComparison.CurrentCultureIgnoreCase))
             {
                 SectorManager.instance.Clear();
                 SectorManager.instance.LoadSectorFile(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors/AI-Test"));
                 PlayerCore.Instance.Warp(Vector3.zero);
-                textBox.text += "\n<color=green>I, for one, welcome our new robotic overlords.</color>";
+                textBox.text += "\n<color=lime>I, for one, welcome our new robotic overlords.</color>";
             }
             else if (command.StartsWith("Add power ", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -77,12 +77,12 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.Equals("Full log", StringComparison.CurrentCultureIgnoreCase))
             {
                 fullLog = true;
-                textBox.text += "\n<color=green>I see all, I know all</color>";
+                textBox.text += "\n<color=lime>I see all, I know all</color>";
             }
             else if (command.Equals("Commit sudoku", StringComparison.CurrentCultureIgnoreCase))
             {
                 PlayerCore.Instance.TakeCoreDamage(float.MaxValue);
-                textBox.text += "\n<color=green>Die, die, die!</color>";
+                textBox.text += "\n<color=lime>Die, die, die!</color>";
             }
             else if (command.StartsWith("Speed of light", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -98,7 +98,7 @@ public class DevConsoleScript : MonoBehaviour
                 {
                     PlayerCore.Instance.Warp(TaskManager.objectiveLocations[locNum].location);
                 }
-                textBox.text += "\n<color=green>Country roads, take me home. To the place I belong!</color>";
+                textBox.text += "\n<color=lime>Country roads, take me home. To the place I belong!</color>";
             }
             else if (command.Equals("Spectate", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -117,7 +117,7 @@ public class DevConsoleScript : MonoBehaviour
                 player.GetAbilityHandler().Deinitialize();
                 player.hud.DeinitializeHUD();
                 player.invisible = true;
-                textBox.text += "\n<color=green>You can hide, but you can't run!</color>";
+                textBox.text += "\n<color=lime>You can hide, but you can't run!</color>";
             }
             else if (command.Equals("Exit", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -134,6 +134,11 @@ public class DevConsoleScript : MonoBehaviour
             {
                 textBox.text += $"\n{1f / Time.smoothDeltaTime}";
             }
+            else if (command.Equals("parts please", StringComparison.CurrentCultureIgnoreCase))
+            {
+                ShipBuilder.heavyCheat = true;
+                textBox.text += "\n<color=lime>I just wanna equip DeadZone parts for god's sake.</color>";
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {
@@ -146,7 +151,7 @@ public class DevConsoleScript : MonoBehaviour
                     SectorManager.customPath = finalPath;
                     VersionNumberScript.version = directory + " [Custom]";
                     VersionNumberScript.Refresh();
-                    textBox.text += "\n<color=green>Custom world loaded!</color>";
+                    textBox.text += "\n<color=lime>Custom world loaded!</color>";
                 }
                 else
                 {

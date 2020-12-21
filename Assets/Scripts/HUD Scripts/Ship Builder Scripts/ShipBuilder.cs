@@ -52,7 +52,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public static WorldData.CharacterData currentCharacter;
 	public GameObject editorModeAddPartSection;
 	public ShipBuilder instance;
-
+	public static bool heavyCheat = false;
 	public BuilderMode GetMode() {
 		return mode;
 	}
@@ -271,7 +271,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	private bool CheckPartSizes() {
-		int maxTier = !editorMode ? CoreUpgraderScript.GetPartTierLimit(player.blueprint.coreShellSpriteID) : 3;
+		int maxTier = !editorMode && !heavyCheat ? CoreUpgraderScript.GetPartTierLimit(player.blueprint.coreShellSpriteID) : 3;
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(ResourceManager.GetAsset<PartBlueprint>(shipPart.info.partID).size > maxTier) {
 				SetReconstructButton(ReconstructButtonStatus.PartTooHeavy);
