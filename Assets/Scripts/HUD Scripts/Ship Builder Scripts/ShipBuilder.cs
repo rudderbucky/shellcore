@@ -53,8 +53,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public GameObject editorModeAddPartSection;
 	public ShipBuilder instance;
 	public static bool heavyCheat = false;
-	public int editorCoreTier = 0;
-	public BuilderMode GetMode() {
+	private int editorCoreTier = 0;
+		public BuilderMode GetMode() {
 		return mode;
 	}
 	public bool ContainsParts(List<EntityBlueprint.PartInfo> parts) {
@@ -817,8 +817,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		if(editorMode && Input.GetKeyDown(KeyCode.X))
 		{
-			var cores = new string[] {"core1_shell", "core2_shell", "core3skills_shell", "core3weapons_shell",
-				"core4commando_shell", "core4elite_shell", "core4captain_shell", "core4admiral_shell"};
+			var cores = CoreUpgraderScript.GetCoreNames();
 			editorCoreTier++;
 			shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier % cores.Length]);
 			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
@@ -885,7 +884,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		else
 		{
-			blueprint.coreShellSpriteID = "core1_shell";
+			blueprint.coreShellSpriteID = CoreUpgraderScript.GetCoreNames()[editorCoreTier % CoreUpgraderScript.GetCoreNames().Length];
 			blueprint.coreSpriteID = "core1_light";
 		}
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();

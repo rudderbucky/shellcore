@@ -219,4 +219,11 @@ public class CoreUpgraderScript : GUIWindowScripts
                 return new float[] {0, 0, 0};
         }
     }
+
+    public static string[] GetCoreNames()
+    {
+        return new string[] {"core1_shell", "core2_shell", "core3skills_shell", "core3weapons_shell",
+				"core4commando_shell", "core4elite_shell", "core4captain_shell", "core4admiral_shell"};
+
+    }
 }
