@@ -53,6 +53,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public GameObject editorModeAddPartSection;
 	public ShipBuilder instance;
 	public static bool heavyCheat = false;
+	public int editorCoreTier = 0;
 	public BuilderMode GetMode() {
 		return mode;
 	}
@@ -816,7 +817,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		if(editorMode && Input.GetKeyDown(KeyCode.X))
 		{
-			shell.sprite = ResourceManager.GetAsset<Sprite>("core3_shell");
+			var cores = new string[] {"core1_shell", "core2_shell", "core3skills_shell", "core3weapons_shell",
+				"core4commando_shell", "core4elite_shell", "core4captain_shell", "core4admiral_shell"};
+			editorCoreTier++;
+			shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier % cores.Length]);
 			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
 			shell.color = FactionManager.GetFactionColor(0);
 			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
