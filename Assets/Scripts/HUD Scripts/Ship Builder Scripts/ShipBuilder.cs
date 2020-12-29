@@ -379,6 +379,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			shell.sprite = ResourceManager.GetAsset<Sprite>("core1_shell");
 			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
 		}
+
 		shell.color = FactionManager.GetFactionColor(0);
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
@@ -708,6 +709,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			p.isInChain = true;
 			p.validPos = true;
 		}
+		core.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+		shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
+		shell.color = FactionManager.GetFactionColor(0);
+		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 	}
 	public static void SaveBlueprint(EntityBlueprint blueprint = null, string fileName = null, string json = null) {
 		if(fileName != null) 
