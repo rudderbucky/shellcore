@@ -86,7 +86,7 @@ namespace NodeEditorFramework.Standard
                     path.waypoints = new List<PathData.Node>();
                 }
                 WorldCreatorCursor.finishPath += SetPath;
-                WorldCreatorCursor.instance.pathDrawing(path);
+                WorldCreatorCursor.instance.pathDrawing(WorldCreatorCursor.WCCursorMode.Control, path);
             }
 
             GUILayout.BeginHorizontal();

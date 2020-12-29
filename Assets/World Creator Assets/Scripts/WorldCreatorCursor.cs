@@ -29,8 +29,8 @@ public class WorldCreatorCursor : MonoBehaviour
     public ShipBuilder shipBuilder;
     public WaveBuilder waveBuilder;
     WCPathCreator pathCreator;
-
     int cursorModeCount;
+    public static WCCursorMode originalCursorMode;
 
     public enum WCCursorMode
     {
@@ -412,7 +412,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 if (underCursor.type == ItemType.Other)
                 {
                     taskInterface.Activate();
-                    mode = WCCursorMode.Control;
+                    mode = originalCursorMode;
                     selectEntity.Invoke(underCursor.name);
                 }
             }
@@ -420,17 +420,18 @@ public class WorldCreatorCursor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             taskInterface.Activate();
-            mode = WCCursorMode.Control;
+            mode = originalCursorMode;
             selectEntity.Invoke("");
         }
     }
 
-    public void pathDrawing(NodeEditorFramework.Standard.PathData path = null)
+    public void pathDrawing(WorldCreatorCursor.WCCursorMode originalMode, NodeEditorFramework.Standard.PathData path = null)
     {
         pathCreator.Clear();
         pathCreator.SetPath(path);
 
         taskInterface.CloseUI();
+        originalCursorMode = originalMode;
         mode = WCCursorMode.DrawPath;
     }
 

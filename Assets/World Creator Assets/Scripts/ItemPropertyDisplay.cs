@@ -74,7 +74,7 @@ public class ItemPropertyDisplay : MonoBehaviour
         }
         
         WorldCreatorCursor.finishPath += SetPath;
-        WorldCreatorCursor.instance.pathDrawing(currentItem.patrolPath);
+        WorldCreatorCursor.instance.pathDrawing(WorldCreatorCursor.WCCursorMode.Item, currentItem.patrolPath);
         gameObject.SetActive(false);
     }
 
@@ -86,5 +86,6 @@ public class ItemPropertyDisplay : MonoBehaviour
     {
         gameObject.SetActive(true);
         currentItem.patrolPath = path;
+        WorldCreatorCursor.finishPath -= SetPath;
     }
 }
