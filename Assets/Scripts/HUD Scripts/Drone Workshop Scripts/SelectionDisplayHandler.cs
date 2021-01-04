@@ -35,7 +35,7 @@ public class SelectionDisplayHandler : MonoBehaviour
                 core.color = FactionManager.GetFactionColor(faction);
             }
             // orient core image so relative center stays the same regardless of shell tier
-            core.rectTransform.anchoredPosition = shell.sprite.pivot - shell.rectTransform.sizeDelta / 2;
+            core.rectTransform.anchoredPosition = (shell.sprite.pivot - shell.rectTransform.sizeDelta / 2) / 100;
         } else {
             core.enabled = false;
         }

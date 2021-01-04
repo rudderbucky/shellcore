@@ -88,8 +88,6 @@ public class PartyManager : MonoBehaviour
             }
         }
     }
-
-    public Button sukratAssignButton;
     public void AssignCharacter(string charID, Button assignButton)
     {
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
@@ -144,10 +142,8 @@ public class PartyManager : MonoBehaviour
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
             partyMembers.Clear();
-            sukratAssignButton.GetComponentInChildren<Text>().text = "ASSIGN";
             var clicked = new Button.ButtonClickedEvent();
             clicked.AddListener(() => AssignCharacter(charID, assignButton));
-            sukratAssignButton.onClick = clicked;
             // sukratHealth.SetActive(false);
         }
         else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
