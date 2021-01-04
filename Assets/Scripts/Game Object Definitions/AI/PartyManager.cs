@@ -23,8 +23,7 @@ public class PartyManager : MonoBehaviour
         {
             if (core && !core.GetIsDead())
             {
-                if(core.ID == "sukrat")
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>DESTRUCTION!</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].attackDialogue}</color>");
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Attack);
             }
@@ -39,9 +38,7 @@ public class PartyManager : MonoBehaviour
         {
             if (core && !core.GetIsDead())
             {
-                if (core.ID == "sukrat")
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Falling back!</color>");
-
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].defendDialogue}</color>");
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Defend);
             }
@@ -56,8 +53,7 @@ public class PartyManager : MonoBehaviour
         {
             if (core && !core.GetIsDead())
             {
-                if(core.ID == "sukrat")
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>I'm on it.</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].collectDialogue}</color>");
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Collect);
             }
@@ -72,8 +68,7 @@ public class PartyManager : MonoBehaviour
         {
             if (core && !core.GetIsDead())
             {
-                if(core.ID == "sukrat")
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Building!</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].buildDialogue}</color>");
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Fortify);
             }
@@ -88,64 +83,72 @@ public class PartyManager : MonoBehaviour
         {
             if (core && !core.GetIsDead())
             {
-                if (core.ID == "sukrat")
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue("sukrat", "<color=lime>Following!</color>");
-
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].followDialogue}</color>");
                 core.GetAI().follow(PlayerCore.Instance.transform);
             }
         }
     }
 
     public Button sukratAssignButton;
-    public void AssignSukrat()
+    public void AssignCharacter(string charID, Button assignButton)
     {
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
-            PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
+            AssignBackend(charID);
 
-            if(!AIData.entities.Exists(x => x.ID == "sukrat"))
-            {
-                // check if it is a character
-                foreach(var ch in SectorManager.instance.characters)
-                {
-                    if(ch.ID == "sukrat")
-                    {
-                        var print = ScriptableObject.CreateInstance<EntityBlueprint>();
-                        JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
-                        print.intendedType = EntityBlueprint.IntendedType.ShellCore;
-                        var levelEnt = new Sector.LevelEntity();
-                        levelEnt.ID = "sukrat";
-                        levelEnt.name = ch.name;
-                        levelEnt.faction = ch.faction;
-                        levelEnt.position = PlayerCore.Instance.transform.position + new Vector3(0, 5);
-                        SectorManager.instance.SpawnEntity(print, levelEnt);
-                        break;
-                    }
-                }
-            }
-
-            partyMembers.Add(AIData.entities.Find(x => x.ID == "sukrat") as ShellCore);
-            sukratAssignButton.GetComponentInChildren<Text>().text = "UNASSIGN";
+            assignButton.GetComponentInChildren<Text>().text = "UNASSIGN";
             var clicked = new Button.ButtonClickedEvent();
-            clicked.AddListener(Unassign);
-            sukratAssignButton.onClick = clicked;
-            sukratHealth.SetActive(true);
+            clicked.AddListener(() => Unassign(charID, assignButton));
+            assignButton.onClick = clicked;
+            // sukratHealth.SetActive(true);
         }
         else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
 
         UpdatePortraits();
     }
 
-    public void Unassign()
+    public void AssignBackend(string charID)
+    {
+        PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
+
+        // check if it is a character
+        foreach(var ch in SectorManager.instance.characters)
+        {
+            if(ch.ID == charID)
+            {
+                if(!AIData.entities.Exists(x => x.ID == charID))
+                {
+                    Debug.Log("spawning");
+                    var print = ScriptableObject.CreateInstance<EntityBlueprint>();
+                    JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
+                    print.intendedType = EntityBlueprint.IntendedType.ShellCore;
+                    var levelEnt = new Sector.LevelEntity();
+                    levelEnt.ID = charID;
+                    levelEnt.name = ch.name;
+                    levelEnt.faction = ch.faction;
+                    levelEnt.position = PlayerCore.Instance.transform.position + new Vector3(0, 5);
+                    SectorManager.instance.SpawnEntity(print, levelEnt);
+                }
+                Debug.Log("abc");
+                partyResponses.Add(charID, ch.partyData);
+
+                break;
+            }
+        }
+
+        partyMembers.Add(AIData.entities.Find(x => x.ID == charID) as ShellCore);
+    }
+
+    public void Unassign(string charID, Button assignButton)
     {
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
             partyMembers.Clear();
             sukratAssignButton.GetComponentInChildren<Text>().text = "ASSIGN";
             var clicked = new Button.ButtonClickedEvent();
-            clicked.AddListener(AssignSukrat);
+            clicked.AddListener(() => AssignCharacter(charID, assignButton));
             sukratAssignButton.onClick = clicked;
-            sukratHealth.SetActive(false);
+            // sukratHealth.SetActive(false);
         }
         else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
 
@@ -170,6 +173,8 @@ public class PartyManager : MonoBehaviour
     }
 
     bool initialized = false;
+    public GameObject characterBarPrefab;
+    public GameObject characterScrollContents;
     void Start()
     {
         AddOption("Attack Enemy", OrderAttack);
@@ -177,9 +182,30 @@ public class PartyManager : MonoBehaviour
         AddOption("Collect Power", OrderCollection);
         AddOption("Build Turret", OrderBuildTurrets);
         AddOption("Follow Me", OrderFollow);
-        sukratAssignButton.onClick.AddListener(AssignSukrat);
         instance = this;
         initialized = true;
+    }
+
+    public void CharacterScrollSetup()
+    {
+        for(int i = 0; i < characterScrollContents.transform.childCount; i++)
+        {
+            Destroy(characterScrollContents.transform.GetChild(i).gameObject);
+        }
+
+        foreach(var id in PlayerCore.Instance.cursave.unlockedPartyIDs)
+        {
+            var inst = Instantiate(characterBarPrefab, characterScrollContents.transform).transform;
+            var button = inst.Find("Assign").GetComponent<Button>();
+            var name = inst.Find("Name").GetComponent<Text>();
+            foreach(var ch in SectorManager.instance.characters)
+            {
+                if(ch.ID == id)
+                    name.text = ch.name;
+            }
+            
+            button.onClick.AddListener(() => AssignCharacter(id, button));
+        }
     }
 
     private int index = -1;
@@ -187,6 +213,7 @@ public class PartyManager : MonoBehaviour
     {
 
         blocker.SetActive(false);
+        /*
         if(SectorManager.testJsonPath != null && !SectorManager.testJsonPath.Contains("main"))
         {
             blocker.SetActive(true);
@@ -199,6 +226,8 @@ public class PartyManager : MonoBehaviour
             blocker.SetActive(true);
             blocker.GetComponentInChildren<Text>().text = "Party customization is unlocked after Trial By Combat.";
         }
+        */
+
 
         if(InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member)=> { return member; }))
         {
@@ -243,7 +272,6 @@ public class PartyManager : MonoBehaviour
     }
 
     public Transform[] portraits;
-
     public void UpdatePortraits()
     {
         portraits[0].GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(PlayerCore.Instance.blueprint, null, 0);
@@ -261,6 +289,8 @@ public class PartyManager : MonoBehaviour
                 portraits[i].GetComponentInChildren<Text>().text = partyMembers[i-1].entityName.ToUpper();
             }
         }
+
+        CharacterScrollSetup();
     }
 
 }

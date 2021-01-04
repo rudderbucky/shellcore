@@ -21,7 +21,12 @@ public class SaveMenuHandler : GUIWindowScripts {
 	{
 		"Alpha 1.0.0",
 		"Alpha 2.0.0",
-		"Alpha 2.1.0"
+		"Alpha 2.1.0",
+		"Alpha 4.0.0",
+		"Alpha 4.1.0",
+		"Alpha 4.1.1",
+		"Alpha 4.2.0",
+		"Alpha 4.3.0",
 	};
 	void Awake() {
 		saves = new List<PlayerSave>();
@@ -104,12 +109,29 @@ public class SaveMenuHandler : GUIWindowScripts {
 	public void Migrate()
 	{
 		var save = saves[indexToMigrate];
-		save.version = VersionNumberScript.version;
-		save.reputation = 0;
-		migratedTimePlayed = save.timePlayed;
-		save.timePlayed = 0;
-		File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
-		SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+		switch(save.version)
+		{
+			case "Alpha 4.0.0":
+			case "Alpha 4.1.0":
+			case "Alpha 4.1.1":
+			case "Alpha 4.2.0":
+			case "Alpha 4.3.0":
+				// attempt to add Sukrat to the party list
+				if(!save.unlockedPartyIDs.Contains("sukrat"))
+					save.unlockedPartyIDs.Add("sukrat");
+				save.version = VersionNumberScript.version;
+				break;
+			case "Alpha 1.0.0":
+			case "Alpha 2.0.0":
+			case "Alpha 2.1.0":
+				save.version = VersionNumberScript.version;
+				save.reputation = 0;
+				migratedTimePlayed = save.timePlayed;
+				save.timePlayed = 0;
+				File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
+				SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+				break;
+		}
 	}
 
 	public void DeleteSave() 

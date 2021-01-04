@@ -23,15 +23,16 @@ public class WCCharacterHandler : GUIWindowScripts
     private WorldData.CharacterData currentData = new WorldData.CharacterData();
     // Start is called before the first frame update
 
-    void ClearData()
+    void ClearFieldData()
     {
         currentData = new WorldData.CharacterData();
-        ReflectData();
+        currentData.partyData = new WorldData.PartyData();
+        reflectData();
     }
 
     void OnEnable()
     {
-        ClearData();
+        ClearFieldData();
     }
 
     void UpdateCharID()
@@ -106,10 +107,10 @@ public class WCCharacterHandler : GUIWindowScripts
         }
 
         currentData = new WorldData.CharacterData();
+        currentData.partyData = new WorldData.PartyData();
         charID.text = charName.text = charBlueprint.text = "";
         charPartyMember.isOn = false;
-        if(updateFields)
-            UpdateFields();
+        ClearFieldData();
     }
 
     public void UpdateFields()
@@ -128,14 +129,17 @@ public class WCCharacterHandler : GUIWindowScripts
 
     public static void ReflectButtonData()
     {
-        for(int i = 0; i < instance.content.childCount; i++)
+        if(instance)
         {
-            Destroy(instance.content.GetChild(i).gameObject);
-        }
-        
-        foreach(var ch in instance.cursor.characters)
-        {
-            instance.AddCharacter(ch);
+            for(int i = 0; i < instance.content.childCount; i++)
+            {
+                Destroy(instance.content.GetChild(i).gameObject);
+            }
+            
+            foreach(var ch in instance.cursor.characters)
+            {
+                instance.AddCharacter(ch);
+            }
         }
     }
 
