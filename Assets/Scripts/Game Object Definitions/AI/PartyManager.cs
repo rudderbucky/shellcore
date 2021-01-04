@@ -14,6 +14,7 @@ public class PartyManager : MonoBehaviour
     public GameObject textPrefab;
     public static PartyManager instance;
     public GameObject blocker;
+    private Dictionary<string, WorldData.PartyData> partyResponses = new Dictionary<string, WorldData.PartyData>();
     public void OrderAttack()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();

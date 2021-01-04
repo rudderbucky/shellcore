@@ -14,6 +14,12 @@ public class WCCharacterHandler : GUIWindowScripts
     public Toggle charPartyMember;
     public Transform content;
     public Dropdown charFaction;
+    public InputField attackDialogue;
+    public InputField defendDialogue;
+    public InputField collectDialogue;
+    public InputField buildDialogue;
+    public InputField followDialogue;
+
     private WorldData.CharacterData currentData = new WorldData.CharacterData();
     // Start is called before the first frame update
 
@@ -53,6 +59,27 @@ public class WCCharacterHandler : GUIWindowScripts
         currentData.faction = charFaction.value;
     }
 
+    void UpdateAttackDialogue()
+    {
+        currentData.partyData.attackDialogue = attackDialogue.text;
+    }
+    void UpdateDefendDialogue()
+    {
+        currentData.partyData.defendDialogue = defendDialogue.text;
+    }
+    void UpdateCollectDialogue()
+    {
+        currentData.partyData.collectDialogue = collectDialogue.text;
+    }
+    void UpdateBuildDialogue()
+    {
+        currentData.partyData.buildDialogue = buildDialogue.text;
+    }
+    void UpdateFollowDialogue()
+    {
+        currentData.partyData.followDialogue = followDialogue.text;
+    }
+
     void Awake()
     {
         instance = this;
@@ -86,6 +113,11 @@ public class WCCharacterHandler : GUIWindowScripts
         UpdateCharBlueprint();
         UpdateCharPartyMember();
         UpdateCharFaction();
+        UpdateAttackDialogue();
+        UpdateDefendDialogue();
+        UpdateCollectDialogue();
+        UpdateBuildDialogue();
+        UpdateFollowDialogue();
     }
 
     public static void ReflectButtonData()
@@ -113,6 +145,11 @@ public class WCCharacterHandler : GUIWindowScripts
         charBlueprint.text = currentData.blueprintJSON;
         charPartyMember.isOn = currentData.partyMember;
         charFaction.value = currentData.faction;
+        attackDialogue.text = currentData.partyData.attackDialogue;
+        defendDialogue.text = currentData.partyData.defendDialogue;
+        collectDialogue.text = currentData.partyData.collectDialogue;
+        buildDialogue.text = currentData.partyData.buildDialogue;
+        followDialogue.text = currentData.partyData.followDialogue;
     }
 
     public void AddCharacter(WorldData.CharacterData data)
