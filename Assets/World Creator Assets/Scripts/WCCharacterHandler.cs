@@ -61,22 +61,27 @@ public class WCCharacterHandler : GUIWindowScripts
 
     void UpdateAttackDialogue()
     {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
         currentData.partyData.attackDialogue = attackDialogue.text;
     }
     void UpdateDefendDialogue()
     {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
         currentData.partyData.defendDialogue = defendDialogue.text;
     }
     void UpdateCollectDialogue()
     {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
         currentData.partyData.collectDialogue = collectDialogue.text;
     }
     void UpdateBuildDialogue()
     {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
         currentData.partyData.buildDialogue = buildDialogue.text;
     }
     void UpdateFollowDialogue()
     {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
         currentData.partyData.followDialogue = followDialogue.text;
     }
 
@@ -103,7 +108,8 @@ public class WCCharacterHandler : GUIWindowScripts
         currentData = new WorldData.CharacterData();
         charID.text = charName.text = charBlueprint.text = "";
         charPartyMember.isOn = false;
-        UpdateFields();
+        if(updateFields)
+            UpdateFields();
     }
 
     public void UpdateFields()
@@ -145,11 +151,22 @@ public class WCCharacterHandler : GUIWindowScripts
         charBlueprint.text = currentData.blueprintJSON;
         charPartyMember.isOn = currentData.partyMember;
         charFaction.value = currentData.faction;
-        attackDialogue.text = currentData.partyData.attackDialogue;
-        defendDialogue.text = currentData.partyData.defendDialogue;
-        collectDialogue.text = currentData.partyData.collectDialogue;
-        buildDialogue.text = currentData.partyData.buildDialogue;
-        followDialogue.text = currentData.partyData.followDialogue;
+        if(currentData != null && currentData.partyData != null)
+        {
+            attackDialogue.text = currentData.partyData.attackDialogue;
+            defendDialogue.text = currentData.partyData.defendDialogue;
+            collectDialogue.text = currentData.partyData.collectDialogue;
+            buildDialogue.text = currentData.partyData.buildDialogue;
+            followDialogue.text = currentData.partyData.followDialogue;
+        }
+        else
+        {
+            attackDialogue.text = 
+            defendDialogue.text = 
+            collectDialogue.text = 
+            buildDialogue.text = 
+            followDialogue.text = "";
+        }
     }
 
     public void AddCharacter(WorldData.CharacterData data)
