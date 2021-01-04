@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WCCharacterHandler : MonoBehaviour
+public class WCCharacterHandler : GUIWindowScripts
 {
     public static WCCharacterHandler instance;
     public WorldCreatorCursor cursor;
@@ -16,6 +16,17 @@ public class WCCharacterHandler : MonoBehaviour
     public Dropdown charFaction;
     private WorldData.CharacterData currentData = new WorldData.CharacterData();
     // Start is called before the first frame update
+
+    void ClearData()
+    {
+        currentData = new WorldData.CharacterData();
+        ReflectData();
+    }
+
+    void OnEnable()
+    {
+        ClearData();
+    }
 
     void UpdateCharID()
     {

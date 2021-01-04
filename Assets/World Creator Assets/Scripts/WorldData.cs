@@ -13,6 +13,17 @@ public class WorldData : ScriptableObject
         public bool partyMember;
         public bool partsCollectible;
         public int faction;
+
+        public PartyData partyData;
+    }
+
+    [System.Serializable]
+    public class PartyData {
+        public string attackDialogue;
+        public string defendDialogue;
+        public string collectDialogue;
+        public string buildDialogue;
+        public string followDialogue;
     }
 
     [System.Serializable]
