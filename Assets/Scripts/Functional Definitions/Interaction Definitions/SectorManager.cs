@@ -272,11 +272,14 @@ public class SectorManager : MonoBehaviour
                     // Debug.Log("Sector JSON: " + data.sectorjson);
                     Sector curSect = ScriptableObject.CreateInstance<Sector>();
                     JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
-                    LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
-                    JsonUtility.FromJsonOverwrite(data.platformjson, plat);
-                    plat.name = curSect.name + "Platform";
-                    curSect.platform = plat;
-                    lpg.LoadNodes(plat.nodes);
+
+                    if (data.platformjson != "") // If the file has old platform data
+                    {
+                        LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                        JsonUtility.FromJsonOverwrite(data.platformjson, plat);
+                        plat.name = curSect.name + "Platform";
+                        curSect.platform = plat;
+                    }
 
                     // render the borders on the minimap
                     var border = new GameObject("MinimapSectorBorder - " + curSect.sectorName).AddComponent<LineRenderer>();
@@ -319,10 +322,13 @@ public class SectorManager : MonoBehaviour
                 Debug.Log("Sector JSON: " + data.sectorjson);
                 Sector curSect = ScriptableObject.CreateInstance<Sector>();
                 JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
-                LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
-                JsonUtility.FromJsonOverwrite(data.platformjson, plat);
-                plat.name = curSect.name + "Platform";
-                curSect.platform = plat;
+                if (data.platformjson != "") // If the file has old platform data
+                {
+                    LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                    JsonUtility.FromJsonOverwrite(data.platformjson, plat);
+                    plat.name = curSect.name + "Platform";
+                    curSect.platform = plat;
+                }
                 current = curSect;
                 sectors = new List<Sector>();
                 sectors.Add(curSect);
@@ -404,7 +410,7 @@ public class SectorManager : MonoBehaviour
                                     (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
                             }
                             
-                            Debug.Log(data.name);
+                            //Debug.Log(data.name);
                             blueprint.entityName = data.name;
 
                         } else shellcore.entityName = blueprint.entityName = data.name;
@@ -585,17 +591,20 @@ public class SectorManager : MonoBehaviour
     {
         #if UNITY_EDITOR
         if(Input.GetKey(KeyCode.LeftShift)) {
+
+            // What does this do?
+
             SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
-            data.platformjson = JsonUtility.ToJson(current.platform);
+            data.platformjson = JsonUtility.ToJson(current.platforms);
             data.sectorjson = JsonUtility.ToJson(current);
             current.name = "SavedSector";
-            current.platform.name = "SavedSectorPlatform";
+            //current.platforms.name = "SavedSectorPlatform";
             // var x = JsonUtility.ToJson(data);
 		    // string path = Application.streamingAssetsPath + "\\Sectors\\" + "SavedSector";
 		    // System.IO.File.WriteAllText(path, x);
 		    // System.IO.Path.ChangeExtension(path, ".json");            
             UnityEditor.AssetDatabase.CreateAsset(current, "Assets/SavedSector.asset");
-            UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/SavedSectorPlatform.asset");
+            //UnityEditor.AssetDatabase.CreateAsset(current.platforms, "Assets/SavedSectorPlatform.asset");
         }
 #endif
 
@@ -671,12 +680,42 @@ public class SectorManager : MonoBehaviour
 
         //land platforms
         lpg.SetColor(current.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
-        lpg.BuildTiles(current.platform, new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2));
-        if (current.platform.nodes != null)
-            lpg.LoadNodes(current.platform.nodes);
-        else
+
+        Vector2 center = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
+
+        if (current.platform) // Old data
         {
-            Debug.Log("No nodes");
+            lpg.BuildTiles(current.platform, center);
+        }
+        else if (current.platformData.Length > 0)
+        {
+            GameObject[] prefabs = new GameObject[LandPlatformGenerator.prefabNames.Length];
+            for (int i = 0; i < LandPlatformGenerator.prefabNames.Length; i++)
+            {
+                prefabs[i] = ResourceManager.GetAsset<GameObject>(LandPlatformGenerator.prefabNames[i]);
+            }
+
+            float tileSize = prefabs[0].GetComponent<SpriteRenderer>().bounds.size.x;
+            lpg.tileSize = tileSize;
+
+            var cols = current.bounds.h / (int)tileSize;
+            var rows = current.bounds.w / (int)tileSize;
+
+            Vector2 offset = new Vector2
+            {
+                x = center.x - tileSize * (rows - 1) / 2F,
+                y = center.y + tileSize * (cols - 1) / 2F
+            };
+
+            lpg.Offset = offset;
+
+            current.platforms = new GroundPlatform[current.platformData.Length];
+            for (int i = 0; i < current.platformData.Length; i++)
+            {
+                var plat = new GroundPlatform(current.platformData[i], prefabs, lpg);
+                current.platforms[i] = plat;
+            }
+            lpg.groundPlatforms = current.platforms;
         }
 
         // Restart particle and background effects to new skin if necessary
@@ -852,6 +891,8 @@ public class SectorManager : MonoBehaviour
         // reset background spawns
         bgSpawnTimer = 0;
         bgSpawns.Clear();
+
+        lpg.Unload();
     }
 
     public static EntityBlueprint GetBlueprintOfLevelEntity(Sector.LevelEntity entity)

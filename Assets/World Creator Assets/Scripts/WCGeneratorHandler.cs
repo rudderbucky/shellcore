@@ -132,36 +132,11 @@ public class WCGeneratorHandler : MonoBehaviour
 
         int minX = int.MaxValue;
         int maxY = int.MinValue;
-        // create land platforms for each sector
+        // Get the world bounds
         foreach(var sector in sectors) 
         {
             if(sector.bounds.x < minX) minX = sector.bounds.x;
             if(sector.bounds.y > maxY) maxY = sector.bounds.y;
-            LandPlatform platform = ScriptableObject.CreateInstance<LandPlatform>();
-            sector.platform = platform;
-            platform.rows = sector.bounds.h / (int)cursor.tileSize;
-            platform.columns = sector.bounds.w / (int)cursor.tileSize;
-            platform.tilemap = new int[platform.rows * platform.columns];
-            platform.rotations = new int[platform.rows * platform.columns];
-            for(int i = 0; i < platform.rows * platform.columns; i++) 
-            {
-                platform.tilemap[i] = -1;
-            }
-
-            platform.prefabs = new string[] {
-                "New Junction",
-                "New 1 Entry",
-                "New 2 Entry",
-                "New 0 Entry",
-                "New 0 Entry Ghost",
-                "New 3 Entry",
-                "New 4 Entry",
-                "New Junction Ghost",
-                "New 1 Entry Ghost",
-                "New 2 Entry Ghost",
-                "New 3 Entry Ghost",
-                "New 4 Entry Ghost",
-            };
         }
 
         // set up items and platforms
@@ -200,8 +175,15 @@ public class WCGeneratorHandler : MonoBehaviour
             {
                 case ItemType.Platform:
                     var index = GetPlatformIndices(container, item.pos);
-                    container.platform.tilemap[index.Item1 * container.platform.columns + index.Item2] = item.placeablesIndex;
-                    container.platform.rotations[index.Item1 * container.platform.columns + index.Item2] = ((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4;
+                    if (container.tiles == null)
+                        container.tiles = new List<GroundPlatform.Tile>();
+                    container.tiles.Add(new GroundPlatform.Tile()
+                    {
+                        pos = new Vector2Int(index.Item2, index.Item1),
+                        type = (byte)item.placeablesIndex,
+                        rotation = (byte)(((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4),
+                        directions = new Dictionary<Vector2Int, byte>()
+                    });
                     break;
                 case ItemType.Other:
                 case ItemType.Decoration:
@@ -312,50 +294,61 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
         // Add reward parts from tasks.
-        foreach(var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
-        {
-            if(System.IO.Path.GetExtension(canvasPath) == ".taskdata")
+        if (System.IO.Directory.Exists(canvasPlaceholderPath))
+            foreach(var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
             {
-                var XMLImport = new XMLImportExport();
-                var canvas = XMLImport.Import(canvasPath) as QuestCanvas;
-
-                string missionName = null;
-                foreach(var node in canvas.nodes)
+                if(System.IO.Path.GetExtension(canvasPath) == ".taskdata")
                 {
-                    if(node is StartMissionNode)
-                    {
-                        var startMission = node as StartMissionNode;
-                        missionName = startMission.missionName;
-                    }
-                }
+                    var XMLImport = new XMLImportExport();
+                    var canvas = XMLImport.Import(canvasPath) as QuestCanvas;
 
-                foreach(var node in canvas.nodes)
-                {
-                    if(node is StartTaskNode)
+                    string missionName = null;
+                    foreach(var node in canvas.nodes)
                     {
-                        var startTask = node as StartTaskNode;
-                        if(startTask.partReward)
+                        if(node is StartMissionNode)
                         {
-                            EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
-                            part.partID = startTask.partID;
-                            part.abilityID = startTask.partAbilityID;
-                            part.tier = startTask.partTier;
-                            part.secondaryData = startTask.partSecondaryData;
-                            part = PartIndexScript.CullToPartIndexValues(part);
-
-                            AddPart(part, missionName);
+                            var startMission = node as StartMissionNode;
+                            missionName = startMission.missionName;
                         }
+                    }
+
+                    foreach(var node in canvas.nodes)
+                    {
+                        if(node is StartTaskNode)
+                        {
+                            var startTask = node as StartTaskNode;
+                            if(startTask.partReward)
+                            {
+                                EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
+                                part.partID = startTask.partID;
+                                part.abilityID = startTask.partAbilityID;
+                                part.tier = startTask.partTier;
+                                part.secondaryData = startTask.partSecondaryData;
+                                part = PartIndexScript.CullToPartIndexValues(part);
+
+                                AddPart(part, missionName);
+                            }
                         
+                        }
                     }
                 }
             }
-        }
 
-        // calculate land platform pathfinding nodes
+        // calculate land platform pathfinding directions
         foreach (var sector in sectors)
         {
-            Vector2 center = new Vector2(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2);
-            sector.platform.nodes = LandPlatformGenerator.BuildNodes(sector.platform, center);
+            if (sector.tiles != null)
+            {
+                Debug.Log(sector.tiles.Count);
+                sector.platforms = LandPlatformGenerator.DivideToPlatforms(sector.tiles);
+                List<string> data = new List<string>();
+                foreach (var plat in sector.platforms)
+                {
+                    plat.GenerateDirections();
+                    data.Add(plat.Encode());
+                }
+                sector.platformData = data.ToArray();
+            }
         }
 
         // write all sectors into a file
@@ -417,7 +410,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
             SectorData data = new SectorData();
             data.sectorjson = JsonUtility.ToJson(sector);
-            data.platformjson = JsonUtility.ToJson(sector.platform);
+            data.platformjson = ""; // For backwards compatibility...
 
             string output = JsonUtility.ToJson(data);
 
@@ -572,10 +565,62 @@ public class WCGeneratorHandler : MonoBehaviour
                     // Debug.Log("Sector JSON: " + data.sectorjson);
                     Sector curSect = ScriptableObject.CreateInstance<Sector>();
                     JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
-                    LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
-                    JsonUtility.FromJsonOverwrite(data.platformjson, plat);
-                    plat.name = curSect.name + "Platform";
-                    curSect.platform = plat;
+
+                    // Try to load old land platform
+                    if (data.platformjson != "")
+                    {
+                        LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
+                        JsonUtility.FromJsonOverwrite(data.platformjson, plat);
+                        plat.name = curSect.name + "Platform";
+                        for (int i = 0; i < plat.rows; i++)
+                        {
+                            for (int j = 0; j < plat.columns; j++)
+                            {
+                                int placeablesIndex = plat.tilemap[plat.columns * i + j];
+                                foreach (Item item in itemHandler.itemPack.items)
+                                {
+                                    if (item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
+                                    {
+                                        Item copy = itemHandler.CopyItem(item);
+                                        copy.pos = copy.obj.transform.position
+                                            = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize,
+                                                -cursor.cursorOffset.y + curSect.bounds.y - i * cursor.tileSize);
+                                        copy.rotation = plat.rotations[plat.columns * i + j];
+                                        copy.obj.transform.RotateAround(copy.pos, Vector3.forward, 90 * copy.rotation);
+                                        cursor.placedItems.Add(copy);
+                                    }
+                                }
+                            }
+                        }
+                        // curSect.platform = plat;
+                    }
+                    else
+                    {
+                        foreach (var platData in curSect.platformData)
+                        {
+                            GroundPlatform plat = new GroundPlatform(platData);
+
+                            GroundPlatform.Tile[] tiles = plat.tiles.ToArray();
+                            for (int i = 0; i < tiles.Length; i++)
+                            {
+                                int placeablesIndex = tiles[i].type;
+                                foreach (Item item in itemHandler.itemPack.items)
+                                {
+                                    if (item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
+                                    {
+                                        Item copy = itemHandler.CopyItem(item);
+                                        copy.pos = copy.obj.transform.position
+                                            = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + tiles[i].pos.x * cursor.tileSize,
+                                                -cursor.cursorOffset.y + curSect.bounds.y - tiles[i].pos.y * cursor.tileSize);
+                                        copy.rotation = tiles[i].rotation;
+                                        copy.obj.transform.RotateAround(copy.pos, Vector3.forward, 90 * copy.rotation);
+                                        cursor.placedItems.Add(copy);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     LineRenderer renderer = Instantiate(sectorPrefab).GetComponent<LineRenderer>();
                     renderer.SetPositions(new Vector3[] 
                         {
@@ -606,27 +651,6 @@ public class WCGeneratorHandler : MonoBehaviour
                                 copy.shellcoreJSON = ent.blueprintJSON;
                                 cursor.placedItems.Add(copy);
                             }              
-                        }
-                    }
-
-                    for(int i = 0; i < plat.rows; i++)
-                    {
-                        for(int j = 0; j < plat.columns; j++)
-                        {
-                            int placeablesIndex = plat.tilemap[plat.columns * i + j];
-                            foreach(Item item in itemHandler.itemPack.items)
-                            {
-                                if(item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
-                                {
-                                    Item copy = itemHandler.CopyItem(item);
-                                    copy.pos = copy.obj.transform.position 
-                                        = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize, 
-                                            -cursor.cursorOffset.y + curSect.bounds.y - i * cursor.tileSize);
-                                    copy.rotation = plat.rotations[plat.columns * i + j];
-                                    copy.obj.transform.RotateAround(copy.pos, Vector3.forward, 90 * copy.rotation);
-                                    cursor.placedItems.Add(copy);
-                                }
-                            }
                         }
                     }
                 }

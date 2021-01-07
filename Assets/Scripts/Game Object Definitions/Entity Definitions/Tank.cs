@@ -53,6 +53,7 @@ public class Tank : GroundCraft, IOwnable
 
     private void pathfindToTarget()
     {
+        // Find the closest ground target
         Entity[] entities = FindObjectsOfType<Entity>();
         Entity target = null;
         float minD = float.MaxValue;
@@ -67,6 +68,8 @@ public class Tank : GroundCraft, IOwnable
                 target = entities[i];
             }
         }
+
+        // If a target is found, find a path to it
         if (target != null && pathfindTarget != target.transform.position)
         {
             pathfindTarget = target.transform.position;
