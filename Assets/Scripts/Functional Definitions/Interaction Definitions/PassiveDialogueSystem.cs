@@ -18,6 +18,8 @@ public class PassiveDialogueSystem : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        archiveContents.transform.parent.gameObject.SetActive(false);
+        passiveDialogueScrollView.localScale = new Vector3(1, 0, 1);
     }
 
     public void SlidePassiveDialogueOut()
@@ -74,7 +76,7 @@ public class PassiveDialogueSystem : MonoBehaviour
         queueTimer -= Time.deltaTime;
         if(passiveMessages.Count > 0)
         {
-            archiveContents.gameObject.SetActive(false);
+            archiveContents.transform.parent.gameObject.SetActive(false);
             passiveDialogueScrollView.localScale = new Vector3(1, 1, 1);
             if(queueTimer <= 0)
             {
@@ -103,7 +105,8 @@ public class PassiveDialogueSystem : MonoBehaviour
 
         if(passiveDialogueContents != null && passiveDialogueContents.transform.childCount == 0 && InputManager.GetKeyDown(KeyName.ShowChatHistory))
         {
-            archiveContents.gameObject.SetActive(!archiveContents.gameObject.activeSelf);
+            var par = archiveContents.transform.parent.gameObject;
+           par.SetActive(!par.activeSelf);
         }
     }
 }

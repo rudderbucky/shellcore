@@ -16,14 +16,18 @@ public class PathAI : AIModule
     int waypointID = 0;
     int waypointIndex = 0;
 
+    // if this is set to true the AI restarts on path end
+    bool patrolling = false;
+
     public PathAI(Path path = null)
     {
         this.path = path;
     }
 
-    public void setPath(Path path)
+    public void setPath(Path path, bool patrolling = false)
     {
         this.path = path;
+        this.patrolling = patrolling;
         if (path == null)
             createPath();
         StartPath();
@@ -55,9 +59,22 @@ public class PathAI : AIModule
         }
         else
         {
-            ai.setMode(AirCraftAI.AIMode.Inactive);
-            if (OnPathEnd != null)
-                OnPathEnd.Invoke();
+            if(!patrolling)
+            {
+                ai.setMode(AirCraftAI.AIMode.Inactive);
+                if (OnPathEnd != null)
+                    OnPathEnd.Invoke();
+            }
+            else
+            {
+                waypointID = 0;
+                waypointIndex = 0;
+                ai.movement.SetMoveTarget(path.waypoints[0].position, 4f);
+                if (ai.movement.targetIsInRange())
+                {
+                    GetNextWaypoint();
+                }
+            }
         }
     }
 

@@ -43,7 +43,7 @@ public class Turret : AirConstruct, IOwnable
         {
             GetComponentInChildren<WeaponAbility>().Tick(0);
         }
-        if (!isDead && GetComponentInChildren<ActiveAbility>())
+        else if (!isDead && GetComponentInChildren<ActiveAbility>())
         {
             GetComponentInChildren<ActiveAbility>().Tick(1);
         }

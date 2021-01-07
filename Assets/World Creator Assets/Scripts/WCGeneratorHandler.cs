@@ -139,6 +139,13 @@ public class WCGeneratorHandler : MonoBehaviour
             if(sector.bounds.y > maxY) maxY = sector.bounds.y;
         }
 
+        // ensure spawn point in some sector
+        if(sectors.TrueForAll(sector => !sector.bounds.contains(cursor.spawnPoint.position)))
+        {
+            Debug.LogError("Spawn point not in sector bounds. Abort.");
+            yield break;
+        }
+
         // set up items and platforms
         int ID = 0;
         Dictionary<Sector, List<Sector.LevelEntity>> sectEnts = new Dictionary<Sector, List<Sector.LevelEntity>>();
@@ -227,6 +234,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     ent.position = item.pos;
                     ent.assetID = item.assetID;
                     ent.vendingID = item.vendingID;
+                    ent.patrolPath = item.patrolPath;
                     if((item.isTarget && container.type != Sector.SectorType.SiegeZone)
                         || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) 
                             sectTargetIDS[container].Add(ent.ID);
@@ -293,6 +301,7 @@ public class WCGeneratorHandler : MonoBehaviour
             }
         }
 
+        if(!System.IO.Directory.Exists(canvasPlaceholderPath)) System.IO.Directory.CreateDirectory(canvasPlaceholderPath);
         // Add reward parts from tasks.
         if (System.IO.Directory.Exists(canvasPlaceholderPath))
             foreach(var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
@@ -649,6 +658,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 copy.pos = copy.obj.transform.position = ent.position;
                                 copy.vendingID = ent.vendingID;
                                 copy.shellcoreJSON = ent.blueprintJSON;
+                                copy.patrolPath = ent.patrolPath;
                                 cursor.placedItems.Add(copy);
                             }              
                         }

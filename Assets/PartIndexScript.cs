@@ -142,9 +142,20 @@ public class PartIndexScript : MonoBehaviour
         }
 
         // Update tally graphic bar
-        for(int i = 0; i < statsBar.Length; i++)
+        if(statsNumbers[3] > 0)
         {
-            statsBar[i].rectTransform.sizeDelta = new Vector2(statsNumbers[i] * 800 / statsNumbers[3], 20);
+            for(int i = 0; i < statsBar.Length; i++)
+            {
+                statsBar[i].rectTransform.sizeDelta = new Vector2(statsNumbers[i] * 800 / statsNumbers[3], 20);
+            }
+        }
+        else
+        {
+            // no parts in world, just hide the bars
+            for(int i = 0; i < statsBar.Length; i++)
+            {
+                statsBar[i].gameObject.SetActive(false);
+            }
         }
 
         // Just found out about string interpolation. Damn that stuff rocks.

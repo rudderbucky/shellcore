@@ -302,7 +302,8 @@ public class Entity : MonoBehaviour, IDamageable {
                     // shooterSprite.sortingOrder = sr.sortingOrder + 1;
                     shooterSprite.sortingOrder = 500;
                     shellPart.shooter = shooter;
-                    shell.weapon = true;
+                    if(AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons) 
+                        shellPart.weapon = true;
                 }
 
                 var weaponAbility = partObject.GetComponent<WeaponAbility>();

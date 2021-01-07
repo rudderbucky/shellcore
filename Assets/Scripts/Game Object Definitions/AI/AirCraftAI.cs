@@ -31,12 +31,10 @@ public class AirCraftAI : MonoBehaviour
 
     private AIMode mode = AIMode.Inactive;
     private AIState state;
-
     public AIAggression aggression;
     public Craft craft;
     public IOwner owner;
     private AIModule module;
-
     private Entity aggroTarget; // Overrides current module's movement if aggression level allowes that
     float aggroSearchTimer = 0f;
 
@@ -132,7 +130,7 @@ public class AirCraftAI : MonoBehaviour
 
     }
 
-    public void setPath(NodeEditorFramework.Standard.PathData data, UnityAction OnPathEnd = null)
+    public void setPath(NodeEditorFramework.Standard.PathData data, UnityAction OnPathEnd = null, bool patrolling = false)
     {
         craft.isPathing = true;
         Path path = ScriptableObject.CreateInstance<Path>();
@@ -152,7 +150,7 @@ public class AirCraftAI : MonoBehaviour
         }
 
         setMode(AIMode.Path);
-        (module as PathAI).setPath(path);
+        (module as PathAI).setPath(path, patrolling);
         if(OnPathEnd == null) OnPathEnd = new UnityAction(() => craft.isPathing = false);
         else 
         {

@@ -123,7 +123,7 @@ public class CoreUpgraderScript : GUIWindowScripts
                 return 500;
             case "core3skills_shell":
             case "core3weapons_shell":
-                return 2500;
+                return 3000;
             default:
                 return 0;
         }
@@ -218,5 +218,12 @@ public class CoreUpgraderScript : GUIWindowScripts
             default:
                 return new float[] {0, 0, 0};
         }
+    }
+
+    public static string[] GetCoreNames()
+    {
+        return new string[] {"core1_shell", "core2_shell", "core3skills_shell", "core3weapons_shell",
+				"core4commando_shell", "core4elite_shell", "core4captain_shell", "core4admiral_shell"};
+
     }
 }

@@ -52,8 +52,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public static WorldData.CharacterData currentCharacter;
 	public GameObject editorModeAddPartSection;
 	public ShipBuilder instance;
-
-	public BuilderMode GetMode() {
+	public static bool heavyCheat = false;
+	private int editorCoreTier = 0;
+		public BuilderMode GetMode() {
 		return mode;
 	}
 	public bool ContainsParts(List<EntityBlueprint.PartInfo> parts) {
@@ -271,7 +272,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	private bool CheckPartSizes() {
-		int maxTier = !editorMode ? CoreUpgraderScript.GetPartTierLimit(player.blueprint.coreShellSpriteID) : 3;
+		int maxTier = !editorMode && !heavyCheat ? CoreUpgraderScript.GetPartTierLimit(player.blueprint.coreShellSpriteID) : 3;
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(ResourceManager.GetAsset<PartBlueprint>(shipPart.info.partID).size > maxTier) {
 				SetReconstructButton(ReconstructButtonStatus.PartTooHeavy);
@@ -378,6 +379,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			shell.sprite = ResourceManager.GetAsset<Sprite>("core1_shell");
 			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
 		}
+
 		shell.color = FactionManager.GetFactionColor(0);
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
@@ -673,7 +675,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
 				if(partDict[info].GetCount() > 0) {
 					for(int i = 0; i < partDict[info].GetCount(); i++)
+					{
 						player.cursave.partInventory.Add(info);
+						PartIndexScript.AttemptAddToPartsObtained(info);
+					}
 				}
 			}
 		}
@@ -704,6 +709,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			p.isInChain = true;
 			p.validPos = true;
 		}
+		core.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+		shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
+		shell.color = FactionManager.GetFactionColor(0);
+		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 	}
 	public static void SaveBlueprint(EntityBlueprint blueprint = null, string fileName = null, string json = null) {
 		if(fileName != null) 
@@ -813,7 +822,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		if(editorMode && Input.GetKeyDown(KeyCode.X))
 		{
-			shell.sprite = ResourceManager.GetAsset<Sprite>("core3_shell");
+			var cores = CoreUpgraderScript.GetCoreNames();
+			editorCoreTier++;
+			shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier % cores.Length]);
 			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
 			shell.color = FactionManager.GetFactionColor(0);
 			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
@@ -878,7 +889,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		else
 		{
-			blueprint.coreShellSpriteID = "core1_shell";
+			blueprint.coreShellSpriteID = CoreUpgraderScript.GetCoreNames()[editorCoreTier % CoreUpgraderScript.GetCoreNames().Length];
 			blueprint.coreSpriteID = "core1_light";
 		}
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();

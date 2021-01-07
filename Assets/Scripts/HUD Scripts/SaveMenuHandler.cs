@@ -21,7 +21,12 @@ public class SaveMenuHandler : GUIWindowScripts {
 	{
 		"Alpha 1.0.0",
 		"Alpha 2.0.0",
-		"Alpha 2.1.0"
+		"Alpha 2.1.0",
+		"Alpha 4.0.0",
+		"Alpha 4.1.0",
+		"Alpha 4.1.1",
+		"Alpha 4.2.0",
+		"Alpha 4.3.0",
 	};
 	void Awake() {
 		saves = new List<PlayerSave>();
@@ -94,9 +99,14 @@ public class SaveMenuHandler : GUIWindowScripts {
 		{
 			case "Alpha 2.1.0":
 				indexToMigrate = index;
+				migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will reset your task progress, reputation and place you in the "
+					+ "Spawning Grounds. Backup first! (Below save icon delete button)";
 				migratePrompt.ToggleActive();
 				break;
 			default:
+				indexToMigrate = index;
+				migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will simply add Sukrat to your party list. Regardless, backup first! (Below save icon delete button)";
+				migratePrompt.ToggleActive();
 				break;
 		}
 	}
@@ -104,12 +114,44 @@ public class SaveMenuHandler : GUIWindowScripts {
 	public void Migrate()
 	{
 		var save = saves[indexToMigrate];
-		save.version = VersionNumberScript.version;
-		save.reputation = 0;
-		migratedTimePlayed = save.timePlayed;
-		save.timePlayed = 0;
-		File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
-		SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+		switch(save.version)
+		{
+			case "Alpha 4.0.0":
+			case "Alpha 4.1.0":
+			case "Alpha 4.1.1":
+			case "Alpha 4.2.0":
+			case "Alpha 4.3.0":
+				// attempt to add Sukrat to the party list
+				if(!save.unlockedPartyIDs.Contains("sukrat"))
+					save.unlockedPartyIDs.Add("sukrat");
+				save.version = VersionNumberScript.version;
+				for(int i = 0; i < save.characters.Length; i++)
+				{
+					if(save.characters[i].ID == "sukrat")
+					{
+						var party = save.characters[i].partyData = new WorldData.PartyData();
+						party.attackDialogue = "DESTRUCTION!";
+						party.defendDialogue = "Falling back!";
+						party.collectDialogue = "I'm on it.";
+						party.buildDialogue = "Building!";
+						party.followDialogue = "Following!";
+					}
+				}
+
+				File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
+				SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+				break;
+			case "Alpha 1.0.0":
+			case "Alpha 2.0.0":
+			case "Alpha 2.1.0":
+				save.version = VersionNumberScript.version;
+				save.reputation = 0;
+				migratedTimePlayed = save.timePlayed;
+				save.timePlayed = 0;
+				File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
+				SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+				break;
+		}
 	}
 
 	public void DeleteSave() 

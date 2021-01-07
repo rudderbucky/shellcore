@@ -36,6 +36,7 @@ public class Sector : ScriptableObject
         public string vendingID;
         public string pathID;
         public Vector2 position;
+        public NodeEditorFramework.Standard.PathData patrolPath;
     }
 
     public enum SectorType

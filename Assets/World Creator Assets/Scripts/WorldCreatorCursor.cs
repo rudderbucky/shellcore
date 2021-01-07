@@ -28,9 +28,10 @@ public class WorldCreatorCursor : MonoBehaviour
     public static WorldCreatorCursor instance;
     public ShipBuilder shipBuilder;
     public WaveBuilder waveBuilder;
+    public WCCharacterHandler characterHandler;
     WCPathCreator pathCreator;
-
     int cursorModeCount;
+    public static WCCursorMode originalCursorMode;
 
     public enum WCCursorMode
     {
@@ -213,6 +214,11 @@ public class WorldCreatorCursor : MonoBehaviour
         waveBuilder.ToggleActive();
     }
 
+    public void ActivateCharacterHandler()
+    {
+        characterHandler.ToggleActive();
+    }
+
     public int flagID = 0;
     void PollItems() {
         if(Input.GetKeyDown(KeyCode.B) && !system.IsPointerOverGameObject())
@@ -222,6 +228,10 @@ public class WorldCreatorCursor : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.V) && !system.IsPointerOverGameObject())
         {
             ActivateWaveBuilder();
+        }
+        if(Input.GetKeyDown(KeyCode.C) && !system.IsPointerOverGameObject())
+        {
+            ActivateCharacterHandler();
         }
 
         if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
@@ -412,7 +422,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 if (underCursor.type == ItemType.Other)
                 {
                     taskInterface.Activate();
-                    mode = WCCursorMode.Control;
+                    mode = originalCursorMode;
                     selectEntity.Invoke(underCursor.name);
                 }
             }
@@ -420,17 +430,18 @@ public class WorldCreatorCursor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             taskInterface.Activate();
-            mode = WCCursorMode.Control;
+            mode = originalCursorMode;
             selectEntity.Invoke("");
         }
     }
 
-    public void pathDrawing(NodeEditorFramework.Standard.PathData path = null)
+    public void pathDrawing(WorldCreatorCursor.WCCursorMode originalMode, NodeEditorFramework.Standard.PathData path = null)
     {
         pathCreator.Clear();
         pathCreator.SetPath(path);
 
         taskInterface.CloseUI();
+        originalCursorMode = originalMode;
         mode = WCCursorMode.DrawPath;
     }
 
