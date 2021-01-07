@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4129538462974586}
   - component: {fileID: 212592188191761426}
-  - component: {fileID: 3128750609998848820}
+  - component: {fileID: -4129358383192297431}
   m_Layer: 11
   m_Name: Junction Ghost
   m_TagString: Untagged
@@ -83,8 +83,8 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &3128750609998848820
-BoxCollider2D:
+--- !u!60 &-4129358383192297431
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -106,9 +106,15 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 9, y: 9}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: -3.02, y: -0.98999995}
+      - {x: -3.02, y: -5}
+      - {x: 3.03, y: -5}
+      - {x: 3.497297, y: -3.495554}
+      - {x: 5, y: -3.02}
+      - {x: 5, y: 3.02}
+      - {x: 0.98999995, y: 3.02}
 --- !u!1 &1324730153348259163
 GameObject:
   m_ObjectHideFlags: 0

@@ -311,6 +311,8 @@ public class LandPlatformGenerator : MonoBehaviour {
     #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
+        if (groundPlatforms == null)
+            return;
 
         var v3 = Input.mousePosition;
         v3.z = 10.0f;
@@ -326,7 +328,6 @@ public class LandPlatformGenerator : MonoBehaviour {
         Vector2 relativePos = ((Vector2)mPos - instance.Offset) / Instance.tileSize;
         relativePos.y = -relativePos.y;
 
-        Debug.Log(relativePos);
 
         //if (areas != null)
         //{
@@ -388,14 +389,18 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     public static Vector2[] pathfind(Vector2 startPos, Vector2 targetPos)
     {
+        Debug.Log("Pathfinding...");
         // Get platform
         var plat = Instance.GetPlatformInPosition(startPos);
+
+        Debug.Log(plat.tiles[0].pos.ToString());
+
         GroundPlatform.Tile? end = instance.GetNearestTile(plat, targetPos);
         GroundPlatform.Tile? start = instance.GetNearestTile(plat, startPos);
 
         if (end.Value.pos == start.Value.pos && end.HasValue)
         {
-            return new Vector2[] { TileToWorldPos(end.Value.pos) };
+            return null; // new Vector2[] { TileToWorldPos(end.Value.pos) };
         }
 
         List<Vector2> path = new List<Vector2>();
@@ -461,6 +466,13 @@ public class LandPlatformGenerator : MonoBehaviour {
         }
         path.Reverse();
 
+        string pathString = "";
+        for (int i = 0; i < path.Count; i++)
+        {
+            pathString += path[i].ToString();
+        }
+        Debug.Log("Path: " + pathString);
+
         return path.ToArray();
     }
 
@@ -492,15 +504,14 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     protected GroundPlatform GetPlatformInPosition(Vector2 pos)
     {
-        Vector2 relativePos = ((Vector2)pos - Offset) / tileSize;
+        Vector2 relativePos = (pos - Offset) / tileSize;
         relativePos.y = -relativePos.y;
 
-        GroundPlatform.Tile? tile = null;
         for (int i = 0; i < groundPlatforms.Length; i++)
         {
             var plat = groundPlatforms[i];
-            tile = plat.tiles.FirstOrDefault(t => t.pos == new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y)));
-            if (tile == null)
+            var tilePos = new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y));
+            if (!plat.tiles.Exists(t => t.pos == tilePos))
                 continue;
             return plat;
         }

@@ -251,7 +251,7 @@ public class GroundPlatform
 
     public void GenerateDirections()
     {
-        Debug.Log("Generating directions...");
+        //Debug.Log("Generating directions for " + tiles.Count + " tiles...");
         for (int i = 0; i < tiles.Count; i++)
         {
             var openList = new List<Tile>();
@@ -277,6 +277,9 @@ public class GroundPlatform
 
                 for (int j = 0; j < tiles.Count; j++)
                 {
+                    if (i == j)
+                        continue;
+
                     if ((ends & 1) == 1 && tiles[j].pos == current.pos + new Vector2Int(1, 0) &&
                         !tiles[i].directions.ContainsKey(tiles[j].pos))
                     {
@@ -314,11 +317,18 @@ public class GroundPlatform
                 openList.RemoveAt(0);
             }
 
-            if (tiles[i].directions.Count != tiles.Count)
+            if (tiles[i].directions.Count < tiles.Count - 1)
             {
-                Debug.LogWarning(tiles[i].directions.Count + " != " + (tiles.Count));
+                Debug.LogWarning(tiles[i].pos + " has too few directions!");
             }
         }
+
+        string s = "";
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            s += tiles[i].pos + " " + tiles[i].rotation + '\n';
+        }
+        Debug.Log(s);
     }
 
     public void Clear()
