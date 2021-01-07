@@ -33,6 +33,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	public RectTransform playerInventory;
 	public RectTransform traderInventory;
 	public BuilderMode cursorMode = BuilderMode.Yard;
+	private Vector2 offset;
 
 	public void SetMode(BuilderMode mode) {
 		cursorMode = mode;
@@ -66,6 +67,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			parts.Add(part);
 			part.rectTransform.SetAsLastSibling();
 		}
+		offset = part.GetComponent<RectTransform>().anchoredPosition - GetComponent<RectTransform>().anchoredPosition;
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
@@ -183,7 +185,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			return;
 		}
 		if(currentPart) {
-			currentPart.info.location = GetComponent<RectTransform>().anchoredPosition / 100;
+			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
 			if(Input.GetMouseButtonUp(0)) {
 				PlaceCurrentPart();
 			}
