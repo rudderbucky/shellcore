@@ -202,31 +202,91 @@ public class GroundPlatform
         return result;
     }
 
+    public static int GetPlatformEnds(Tile tile)
+    {
+        int ends = 0; // 1 = right, 2 = up, 4 = left, 8 = down
+        switch (tile.type)
+        {
+            case 0:
+            case 7:
+                ends = 1 | 8;
+                break;
+            case 1:
+            case 8:
+                ends = 4;
+                break;
+            case 2:
+            case 9:
+                ends = 1 | 4;
+                break;
+            case 3:
+            case 4:
+                ends = 0;
+                break;
+            case 5:
+            case 10:
+                ends = 2 | 4 | 8;
+                break;
+            case 6:
+            case 11:
+                ends = 1 | 2 | 4 | 8;
+                break;
+            default:
+                Debug.LogWarning("Unknown tile!");
+                ends = 1 | 2 | 4 | 8;
+                break;
+        }
+        for (int j = 0; j < tile.rotation; j++)
+        {
+            ends *= 2;
+            if ((ends & 16) == 16)
+            {
+                ends -= 16;
+                ends += 1;
+            }
+        }
+
+        return ends;
+    }
+
     public void GenerateDirections()
     {
+        Debug.Log("Generating directions...");
         for (int i = 0; i < tiles.Count; i++)
         {
             var openList = new List<Tile>();
             openList.Add(tiles[i]);
 
+            int count = 0;
+
             while (openList.Count > 0)
             {
+                if (count++ > 10000)
+                {
+                    Debug.LogError("Infinite loop in direction flooding");
+                    return;
+                }
+
                 Tile current = openList[0];
                 byte dir = 0;
                 if (tiles[i].directions.ContainsKey(current.pos))
                     dir = tiles[i].directions[current.pos];
 
+                int ends = GetPlatformEnds(current);
+                //Debug.Log("Tile: " + new Vector2Int(current.pos.x, current.pos.y) + " type: " + current.type + " rot: " + current.rotation + " direction flags: " + (ends & 8) + " " + (ends & 4) + " " + (ends & 2) + " " + (ends & 1));
+
                 for (int j = 0; j < tiles.Count; j++)
                 {
-                    if (tiles[j].pos == current.pos + new Vector2Int(1, 0) &&
+                    if ((ends & 1) == 1 && tiles[j].pos == current.pos + new Vector2Int(1, 0) &&
                         !tiles[i].directions.ContainsKey(tiles[j].pos))
                     {
+                        // If at start, set the flooding direction
                         if (current.pos == tiles[i].pos)
                             dir = 0;
                         tiles[i].directions.Add(tiles[j].pos, dir);
                         openList.Add(tiles[j]);
                     }
-                    if (tiles[j].pos == current.pos + new Vector2Int(0, 1) &&
+                    if ((ends & 2) == 2 && tiles[j].pos == current.pos + new Vector2Int(0, -1) &&
                         !tiles[i].directions.ContainsKey(tiles[j].pos))
                     {
                         if (current.pos == tiles[i].pos)
@@ -234,7 +294,7 @@ public class GroundPlatform
                         tiles[i].directions.Add(tiles[j].pos, dir);
                         openList.Add(tiles[j]);
                     }
-                    if (tiles[j].pos == current.pos + new Vector2Int(-1, 0) &&
+                    if ((ends & 4) == 4 && tiles[j].pos == current.pos + new Vector2Int(-1, 0) &&
                         !tiles[i].directions.ContainsKey(tiles[j].pos))
                     {
                         if (current.pos == tiles[i].pos)
@@ -242,7 +302,7 @@ public class GroundPlatform
                         tiles[i].directions.Add(tiles[j].pos, dir);
                         openList.Add(tiles[j]);
                     }
-                    if (tiles[j].pos == current.pos + new Vector2Int(0, -1) &&
+                    if ((ends & 8) == 8 && tiles[j].pos == current.pos + new Vector2Int(0, 1) &&
                         !tiles[i].directions.ContainsKey(tiles[j].pos))
                     {
                         if (current.pos == tiles[i].pos)
@@ -252,6 +312,11 @@ public class GroundPlatform
                     }
                 }
                 openList.RemoveAt(0);
+            }
+
+            if (tiles[i].directions.Count != tiles.Count)
+            {
+                Debug.LogWarning(tiles[i].directions.Count + " != " + (tiles.Count));
             }
         }
     }

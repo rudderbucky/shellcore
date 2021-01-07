@@ -172,50 +172,10 @@ public class LandPlatformGenerator : MonoBehaviour {
                     // Get connected neighbors
 
                     var current = openList[0];
-                    int neighborFlags = 0; // 1 = right, 2 = up, 4 = left, 8 = down
-                    switch (current.type)
-                    {
-                        case 0:
-                        case 7:
-                            neighborFlags = 1 | 8;
-                            break;
-                        case 1:
-                        case 8:
-                            neighborFlags = 4;
-                            break;
-                        case 2:
-                        case 9:
-                            neighborFlags = 1 | 4;
-                            break;
-                        case 3:
-                        case 4:
-                            neighborFlags = 0;
-                            break;
-                        case 5:
-                        case 10:
-                            neighborFlags = 2 | 4 | 8;
-                            break;
-                        case 6:
-                        case 11:
-                            neighborFlags = 1 | 2 | 4 | 8;
-                            break;
-                        default:
-                            Debug.Log("Unknown tile!");
-                            neighborFlags = 1 | 2 | 4 | 8;
-                            break;
-                    }
-                    for (int j = 0; j < current.rotation; j++)
-                    {
-                        neighborFlags *= 2;
-                        if ((neighborFlags & 16) == 16)
-                        {
-                            neighborFlags -= 16;
-                            neighborFlags += 1;
-                        }
-                    }
+                    int ends = GroundPlatform.GetPlatformEnds(current);
 
-                    //Debug.Log("Tile: " + new Vector2Int(current.pos.x, current.pos.y) + " type: " + current.type + " rot: " + current.rotation + " direction flags: " + (neighborFlags & 8) + " " + (neighborFlags & 4) + " " + (neighborFlags & 2) + " " + (neighborFlags & 1));
-                    if ((neighborFlags & 1) == 1)
+                    //Debug.Log("Tile: " + new Vector2Int(current.pos.x, current.pos.y) + " type: " + current.type + " rot: " + current.rotation + " direction flags: " + (ends & 8) + " " + (ends & 4) + " " + (ends & 2) + " " + (ends & 1));
+                    if ((ends & 1) == 1)
                     {
                         int neighborIndex = tiles.FindIndex(t => t.pos == new Vector2Int(current.pos.x + 1, current.pos.y));
                         if (neighborIndex > -1)
@@ -235,7 +195,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                             Debug.Log("Couldn't find a 1 tile");
                         }
                     }
-                    if ((neighborFlags & 2) == 2)
+                    if ((ends & 2) == 2)
                     {
                         int neighborIndex = tiles.FindIndex(t => t.pos == new Vector2Int(current.pos.x, current.pos.y - 1));
                         if (neighborIndex > -1)
@@ -255,7 +215,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                             Debug.Log("Couldn't find a 2 tile");
                         }
                     }
-                    if ((neighborFlags & 4) == 4)
+                    if ((ends & 4) == 4)
                     {
                         int neighborIndex = tiles.FindIndex(t => t.pos == new Vector2Int(current.pos.x - 1, current.pos.y));
                         if (neighborIndex > -1)
@@ -275,7 +235,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                             Debug.Log("Couldn't find a 4 tile");
                         }
                     }
-                    if ((neighborFlags & 8) == 8)
+                    if ((ends & 8) == 8)
                     {
                         int neighborIndex = tiles.FindIndex(t => t.pos == new Vector2Int(current.pos.x, current.pos.y + 1));
                         if (neighborIndex > -1)
@@ -301,6 +261,8 @@ public class LandPlatformGenerator : MonoBehaviour {
                 platIndex++;
             }
         }
+
+        Debug.Log("Platform count: " + platIndex);
 
         var platforms = new List<GroundPlatform>();
 
@@ -426,8 +388,6 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     public static Vector2[] pathfind(Vector2 startPos, Vector2 targetPos)
     {
-        Debug.Log("Pathfinding...");
-
         // Get platform
         var plat = Instance.GetPlatformInPosition(startPos);
         GroundPlatform.Tile? end = instance.GetNearestTile(plat, targetPos);
@@ -455,13 +415,13 @@ public class LandPlatformGenerator : MonoBehaviour {
                         next = plat.GetTile(current.pos + Vector2Int.right);
                         break;
                     case 1:
-                        next = plat.GetTile(current.pos + Vector2Int.up);
+                        next = plat.GetTile(current.pos + Vector2Int.down);
                         break;
                     case 2:
                         next = plat.GetTile(current.pos + Vector2Int.left);
                         break;
                     case 3:
-                        next = plat.GetTile(current.pos + Vector2Int.down);
+                        next = plat.GetTile(current.pos + Vector2Int.up);
                         break;
                     default:
                         break;
@@ -472,16 +432,31 @@ public class LandPlatformGenerator : MonoBehaviour {
                     current = next.Value;
                     path.Add(TileToWorldPos(current.pos));
                 }
+                else
+                {
+                    Debug.LogError("Pathfinding failed because of corrupted direction data at " + current.pos + " with direction " + dir);
+                    return null;
+                }
             }
             else
             {
                 Debug.LogError("Pathfinding failed because of incomplete ground platform generation.");
+                return null;
             }
 
             iteration++;
-            if (iteration > 1000)
+            if (iteration > 10000)
             {
+                string s = "";
+                for (int i = 0; i < path.Count; i++)
+                {
+                    s += path[i].ToString() + '\n';
+                }
+
+                Debug.Log(s);
+
                 Debug.LogError("Infinite loop in pathfinding!");
+                return null;
             }
         }
         path.Reverse();
@@ -512,8 +487,6 @@ public class LandPlatformGenerator : MonoBehaviour {
                 tile = platform.tiles[i];
             }
         }
-
-        Debug.Log(relativePos + " -> " + tile.Value.pos);
         return tile;
     }
 
