@@ -70,7 +70,7 @@ public class Tank : GroundCraft, IOwnable
         }
 
         // If a target is found, find a path to it
-        if (target != null && pathfindTarget != target.transform.position)
+        if (target != null/* && pathfindTarget != target.transform.position*/)
         {
             pathfindTarget = target.transform.position;
 
