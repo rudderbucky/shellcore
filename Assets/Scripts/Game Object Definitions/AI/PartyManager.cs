@@ -197,7 +197,7 @@ public class PartyManager : MonoBehaviour
             foreach(var ch in SectorManager.instance.characters)
             {
                 if(ch.ID == id)
-                    name.text = ch.name;
+                    name.text = ch.name.ToUpper();
             }
             
             button.onClick.AddListener(() => AssignCharacter(id, button));

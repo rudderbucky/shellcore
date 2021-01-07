@@ -604,13 +604,13 @@ public class SectorManager : MonoBehaviour
             data.platformjson = JsonUtility.ToJson(current.platforms);
             data.sectorjson = JsonUtility.ToJson(current);
             current.name = "SavedSector";
-            //current.platforms.name = "SavedSectorPlatform";
+            //current.platforms = "SavedSectorPlatform";
             // var x = JsonUtility.ToJson(data);
 		    // string path = Application.streamingAssetsPath + "\\Sectors\\" + "SavedSector";
 		    // System.IO.File.WriteAllText(path, x);
 		    // System.IO.Path.ChangeExtension(path, ".json");            
             UnityEditor.AssetDatabase.CreateAsset(current, "Assets/SavedSector.asset");
-            //UnityEditor.AssetDatabase.CreateAsset(current.platforms, "Assets/SavedSectorPlatform.asset");
+            //UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/SavedSectorPlatform.asset");
         }
 #endif
 
