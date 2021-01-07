@@ -526,7 +526,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         for (int i = 0; i < groundPlatforms.Length; i++)
         {
             var plat = groundPlatforms[i];
-            tile = plat.tiles.First(t => t.pos == new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y)));
+            tile = plat.tiles.FirstOrDefault(t => t.pos == new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y)));
             if (tile == null)
                 continue;
             return plat;

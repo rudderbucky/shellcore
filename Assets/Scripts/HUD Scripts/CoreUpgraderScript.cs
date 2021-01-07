@@ -23,7 +23,8 @@ public class CoreUpgraderScript : GUIWindowScripts
         Activate();
         gameObject.SetActive(true);
         drawScreen();
-        ShardCountScript.StickySlideIn(player.shards);
+        // TODO: Fix the shard count script
+        // ShardCountScript.StickySlideIn(player.shards);
 
     }
 
