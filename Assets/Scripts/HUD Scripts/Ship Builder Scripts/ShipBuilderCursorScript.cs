@@ -67,6 +67,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			parts.Add(part);
 			part.rectTransform.SetAsLastSibling();
 		}
+		// offset = Vector2.zero;
 		offset = part.GetComponent<RectTransform>().anchoredPosition - GetComponent<RectTransform>().anchoredPosition;
 		currentPart = part;
 	}
@@ -197,6 +198,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				var origPos = transform.position;
 				transform.position = Input.mousePosition;
 				if(bound.Contains(GetComponent<RectTransform>().anchoredPosition)) {
+					transform.position = origPos;
 					GrabPart(parts[i]);
 					break;
 				}

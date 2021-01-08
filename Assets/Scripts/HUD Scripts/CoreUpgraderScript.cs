@@ -29,7 +29,7 @@ public class CoreUpgraderScript : GUIWindowScripts
     }
 
     public override void CloseUI() {
-        ShardCountScript.StickySlideOut();
+        //ShardCountScript.StickySlideOut();
         player.SetIsInteracting(false);
         gameObject.SetActive(false);
         AudioManager.PlayClipByID("clip_back");
@@ -87,7 +87,7 @@ public class CoreUpgraderScript : GUIWindowScripts
         if(player.abilityCaps[type] < maxAbilityCap[type]) {
             player.shards -= GetUpgradeCost(type);
             player.abilityCaps[type]++;
-            ShardCountScript.UpdateNumber(player.shards);
+            //ShardCountScript.UpdateNumber(player.shards);
         }
 
     }
