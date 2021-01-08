@@ -67,8 +67,15 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			parts.Add(part);
 			part.rectTransform.SetAsLastSibling();
 		}
-		// offset = Vector2.zero;
-		offset = part.GetComponent<RectTransform>().anchoredPosition - GetComponent<RectTransform>().anchoredPosition;
+		
+		// code to ensure part does not snap to cursor immediately
+		var pos = part.GetComponent<RectTransform>().anchoredPosition;
+
+		// if the initial position is zero that means this is a new part, don't set an offset
+		if(pos == Vector2.zero)
+			offset = Vector2.zero;
+		else
+			offset = pos - GetComponent<RectTransform>().anchoredPosition;
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
