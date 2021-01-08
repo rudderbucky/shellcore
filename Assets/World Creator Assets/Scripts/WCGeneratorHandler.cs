@@ -278,13 +278,10 @@ public class WCGeneratorHandler : MonoBehaviour
                             }
                             else 
                             {
+                                ent.blueprintJSON = JsonUtility.ToJson(new ShipBuilder.TraderInventory());
                                 // Maybe make this error message more descriptive.
-                                Debug.LogError($"Trader has neither default trader JSON nor an associated dialogue file named '{ent.ID}.dialoguedata'. Abort.");
-                                yield break;
+                                Debug.LogWarning($"Trader has neither default trader JSON nor an associated dialogue file named '{ent.ID}.dialoguedata'. Replacing with empty trader inventory.");
                             }
-                            // TODO: Grab trader blueprint JSON from dialogue
-                            // Debug.LogError($"Trader in {container.sectorName} has no trader inventory JSON. Abort.");
-                            // yield return false;
                         }
                         else
                         {
