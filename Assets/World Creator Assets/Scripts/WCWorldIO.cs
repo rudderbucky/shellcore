@@ -16,6 +16,8 @@ public class WCWorldIO : MonoBehaviour
     public Transform content;
     public static bool active = false;
 
+    string originalReadPath = "";
+
     enum IOMode
     {
         Read,
@@ -141,6 +143,7 @@ public class WCWorldIO : MonoBehaviour
             File.Delete(savePath);
         SaveMenuHandler.CreateSave("TestSave");
         SectorManager.testJsonPath = path;
+        SectorManager.testResourcePath = originalReadPath;
         SaveMenuIcon.LoadSaveByPath(savePath, false);
     }
 
@@ -186,6 +189,7 @@ public class WCWorldIO : MonoBehaviour
                     switch(mode)
                     {
                         case IOMode.Read:
+                            originalReadPath = dir;
                             generatorHandler.ReadWorld(dir);
                             break;
                         case IOMode.Write:

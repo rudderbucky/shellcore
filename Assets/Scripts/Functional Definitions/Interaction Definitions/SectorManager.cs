@@ -61,6 +61,7 @@ public class SectorManager : MonoBehaviour
     }
 
     public static string testJsonPath = null;
+    public static string testResourcePath = null;
     public static string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main - " + VersionNumberScript.mapVersion;
     public void Initialize()
     {
@@ -196,6 +197,12 @@ public class SectorManager : MonoBehaviour
         {
             try
             {
+                // resource pack loading
+                if (!ResourceManager.Instance.LoadResources(path) && testResourcePath != null)
+                {
+                    ResourceManager.Instance.LoadResources(testResourcePath);
+                }
+
                 // canvas handling
                 taskManager.ClearCanvases();
                 dialogueSystem.ClearCanvases();
@@ -225,7 +232,7 @@ public class SectorManager : MonoBehaviour
                 minimapSectorBorders = new Dictionary<Sector, LineRenderer>();
                 foreach (string file in files)
                 {
-                    if(file.Contains(".meta")) continue;
+                    if(file.Contains(".meta") || file.Contains("ResourceData.txt")) continue;
 
                     // parse world data
                     if(file.Contains(".worlddata"))

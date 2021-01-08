@@ -262,8 +262,6 @@ public class LandPlatformGenerator : MonoBehaviour {
             }
         }
 
-        Debug.Log("Platform count: " + platIndex);
-
         var platforms = new List<GroundPlatform>();
 
         for (int i = 0; i < platIndex; i++)

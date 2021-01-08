@@ -322,13 +322,6 @@ public class GroundPlatform
                 Debug.LogWarning(tiles[i].pos + " has too few directions!");
             }
         }
-
-        string s = "";
-        for (int i = 0; i < tiles.Count; i++)
-        {
-            s += tiles[i].pos + " " + tiles[i].rotation + '\n';
-        }
-        Debug.Log(s);
     }
 
     public void Clear()

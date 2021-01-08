@@ -348,7 +348,6 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             if (sector.tiles != null)
             {
-                Debug.Log(sector.tiles.Count);
                 sector.platforms = LandPlatformGenerator.DivideToPlatforms(sector.tiles);
                 List<string> data = new List<string>();
                 foreach (var plat in sector.platforms)
@@ -525,6 +524,12 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             try
             {
+                // resource pack loading
+                if (!ResourceManager.Instance.LoadResources(path) && SectorManager.testResourcePath != null)
+                {
+                    ResourceManager.Instance.LoadResources(SectorManager.testResourcePath);
+                }
+
                 // copying canvases
                 TryCopy(path + "\\Canvases\\", Application.streamingAssetsPath + "\\CanvasPlaceholder");
 
@@ -564,6 +569,11 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
 
                     if(file.Contains(".taskdata") || file.Contains(".dialoguedata"))
+                    {
+                        continue;
+                    }
+
+                    if (file.Contains("ResourceData.txt"))
                     {
                         continue;
                     }
