@@ -94,34 +94,25 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
                     foreach (var platform in platforms)
                     {
-                        Vector2 center = sect.rectTransform.sizeDelta / 2f;
                         float tileSize = LandPlatformGenerator.Instance.tileSize / zoomoutFactor;
-                        float h = tileSize / 2f; // Half
-                        
 
                         List<Vector2> vertices = new List<Vector2>();
                         for (int i = 0; i < platform.tiles.Count; i++)
                         {
                             var tile = platform.tiles[i];
 
-                            var pos = new Vector3
-                            {
-                                x = lpg.Offset.x + tileSize * tile.pos.x,
-                                y = -lpg.Offset.y - tileSize * tile.pos.y,
-                                z = 0
-                            };
+                            var pos = new Vector2(tile.pos.x, -tile.pos.y - 1f) * tileSize;
 
-                            vertices.Add(new Vector3(pos.x + h, pos.y + h));
-                            vertices.Add(new Vector3(pos.x - h, pos.y + h));
-                            vertices.Add(new Vector3(pos.x - h, pos.y - h));
-                            vertices.Add(new Vector3(pos.x + h, pos.y - h));
+                            vertices.Add(new Vector3(pos.x + tileSize, pos.y + tileSize));
+                            vertices.Add(new Vector3(pos.x, pos.y + tileSize));
+                            vertices.Add(new Vector3(pos.x, pos.y));
+                            vertices.Add(new Vector3(pos.x + tileSize, pos.y));
                         }
 
                         if (vertices.Count > 0)
                         {
                             var obj = new GameObject("LandPlatformMesh");
                             obj.transform.SetParent(transform);
-                            //obj.transform.localPosition = Vector3.zero;
                             var rt = obj.AddComponent<RectTransform>();
                             rt.pivot = new Vector2(0f, 1f);
                             rt.anchoredPosition = sect.rectTransform.anchoredPosition;
@@ -338,7 +329,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
 				if(newRect.Contains(eventData.position))
 				{
-					Debug.Log("click");
 					player.GetComponent<AirCraft>().Warp(sect.Item2);
 				}
 			}
