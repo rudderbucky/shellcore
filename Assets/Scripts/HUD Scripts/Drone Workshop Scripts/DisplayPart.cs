@@ -30,9 +30,16 @@ public class DisplayPart : MonoBehaviour
 		image.rectTransform.anchoredPosition = shooter.rectTransform.anchoredPosition = info.location * 100;
 		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
 		// NEVER name something with "_sprite" at the end UNLESS it is a PART SPRITE!
-		image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
-		UpdateAppearance();
-		image.enabled = true;
+		if(image.sprite)
+		{
+			image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
+			UpdateAppearance();
+			image.enabled = true;
+		}
+		else
+		{
+			Debug.LogWarning("Invalid display part image.");
+		}
 	}
 
 	public virtual void UpdateFaction(int faction) {

@@ -122,6 +122,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
         modeText.color = Camera.main.backgroundColor = modeColors[(int)mode];
         modeText.color += Color.gray;
+        modeText.text = modeText.text.ToUpper();
     }
 
     void UpdateEntityAppearances()
@@ -234,8 +235,12 @@ public class WorldCreatorCursor : MonoBehaviour
             ActivateCharacterHandler();
         }
 
-        if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
-            else if(Input.mouseScrollDelta.y > 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
+        if(!Input.GetKey(KeyCode.LeftControl))
+        {
+            if(Input.mouseScrollDelta.y < 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
+            else if(Input.mouseScrollDelta.y > 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
+        }
+        
 		
         if(GetItemUnderCursor() != null) 
         {
