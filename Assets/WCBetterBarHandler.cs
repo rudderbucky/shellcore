@@ -25,6 +25,7 @@ public class WCBetterBarHandler : MonoBehaviour
 	private RectTransform tooltipTransform;
     public WCWorldIO WCWorldIO;
     public Sprite playButtonImage;
+    public static WCBetterBarHandler instance;
 
     /// <summary>
     /// Option buttons for the World Creator
@@ -35,10 +36,27 @@ public class WCBetterBarHandler : MonoBehaviour
         public string tooltip;
         public Sprite sprite;
         public Image imgRef;
+        public WorldCreatorCursor.WCCursorMode mode;
         public Button.ButtonClickedEvent action;
     }
 
     public List<OptionButton> globalButtons;
+    public List<OptionButton> extraButtons;
+
+    public static void UpdateActiveButtons()
+    {
+        instance.updateActiveButtons();
+    }
+
+    // Activates/deactivates extra buttons according to the current cursor mode
+    void updateActiveButtons()
+    {
+        foreach(var extraButton in extraButtons)
+        {
+            extraButton.imgRef.gameObject.SetActive(extraButton.mode == cursor.GetMode());
+            // extraButton.imgRef.GetComponentsInChildren<Image>()[1].color = cursor.modeColors[(int)cursor.GetMode()] + Color.gray;
+        }
+    }
 
     void AddOptionButton(int i, List<OptionButton> buttonList)
     {
@@ -55,6 +73,11 @@ public class WCBetterBarHandler : MonoBehaviour
         var buttonScript = button.imgRef.gameObject.AddComponent<Button>();
         buttonScript.onClick = button.action;
         activeOptionButtons.Add(button);
+    }
+
+    void Awake()
+    {
+        instance = this;
     }
 
     void Start()
@@ -113,6 +136,12 @@ public class WCBetterBarHandler : MonoBehaviour
         {
             AddOptionButton(i, globalButtons);
         }
+
+        for(int i = 0; i < extraButtons.Count; i++)
+        {
+            AddOptionButton(i, extraButtons);
+        }
+        UpdateActiveButtons();
     }
 
     void SetStandardImage(GameObject obj, GameObject buttonObj, float scale=1)
@@ -157,11 +186,13 @@ public class WCBetterBarHandler : MonoBehaviour
         }
 
         itemName.text = itemHandler.itemPack.items[currentActiveButton].name.ToUpper();
+        itemName.color = cursor.modeColors[(int)cursor.GetMode()] + Color.gray;
 
         // Instantiate tooltip. Destroy tooltip if mouse is not over a sector image.
 		bool mouseOverSector = false;
 		foreach(var optionButton in activeOptionButtons)
 		{
+            if(!optionButton.imgRef.gameObject.activeSelf) continue;
 			var pos = optionButton.imgRef.rectTransform.position;
 			var sizeDelta = optionButton.imgRef.rectTransform.sizeDelta;
 			var newRect = new Rect(pos.x - sizeDelta.x / 2, pos.y - sizeDelta.y / 2, sizeDelta.x, sizeDelta.y);

@@ -42,7 +42,7 @@ public class WorldCreatorCursor : MonoBehaviour
         DrawPath
     }
 
-    readonly Color[] modeColors = new Color[]
+    public readonly Color[] modeColors = new Color[]
         {
             new Color32(28, 42, 63, 255),
             new Color32(63, 28, 42, 255),
@@ -54,6 +54,11 @@ public class WorldCreatorCursor : MonoBehaviour
     WCCursorMode mode = WCCursorMode.Item;
     public Text modeText;
     public List<WorldData.CharacterData> characters = new List<WorldData.CharacterData>();
+
+    public WCCursorMode GetMode()
+    {
+        return mode;
+    }
 
     private void Awake()
     {
@@ -82,7 +87,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
         {
-            mode = (WCCursorMode)(((int)mode + 1) % 3);
+            SetMode((WCCursorMode)(((int)mode + 1) % 3));
         }
 
         switch (mode)
@@ -406,7 +411,7 @@ public class WorldCreatorCursor : MonoBehaviour
     public void EntitySelection()
     {
         taskInterface.CloseUI();
-        mode = WCCursorMode.SelectEntity;
+        SetMode(WCCursorMode.SelectEntity);
     }
 
     void PollEntitySelection()
@@ -427,7 +432,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 if (underCursor.type == ItemType.Other)
                 {
                     taskInterface.Activate();
-                    mode = originalCursorMode;
+                    SetMode(originalCursorMode);
                     selectEntity.Invoke(underCursor.name);
                 }
             }
@@ -435,7 +440,7 @@ public class WorldCreatorCursor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             taskInterface.Activate();
-            mode = originalCursorMode;
+            SetMode(originalCursorMode);
             selectEntity.Invoke("");
         }
     }
@@ -447,7 +452,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
         taskInterface.CloseUI();
         originalCursorMode = originalMode;
-        mode = WCCursorMode.DrawPath;
+        SetMode(WCCursorMode.DrawPath);
     }
 
     ///
@@ -573,5 +578,6 @@ public class WorldCreatorCursor : MonoBehaviour
     public void SetMode(WCCursorMode mode)
     {
         this.mode = mode;
+        WCBetterBarHandler.UpdateActiveButtons();
     }
 }

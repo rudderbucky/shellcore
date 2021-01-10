@@ -2278,6 +2278,7 @@ MonoBehaviour:
   - tooltip: Play this world.
     sprite: {fileID: 21300000, guid: 0faff2d7d96c091459c53102bd285b99, type: 3}
     imgRef: {fileID: 0}
+    mode: 0
     action:
       m_PersistentCalls:
         m_Calls:
@@ -2295,6 +2296,7 @@ MonoBehaviour:
   - tooltip: Read a world into the World Creator.
     sprite: {fileID: 21300000, guid: 8713a6917a323f043a52c11bb423fc69, type: 3}
     imgRef: {fileID: 0}
+    mode: 0
     action:
       m_PersistentCalls:
         m_Calls:
@@ -2312,6 +2314,7 @@ MonoBehaviour:
   - tooltip: Write a world into a folder.
     sprite: {fileID: 21300000, guid: fa1bce8d0d8272043b3f5720d0f1d9fd, type: 3}
     imgRef: {fileID: 0}
+    mode: 0
     action:
       m_PersistentCalls:
         m_Calls:
@@ -2329,11 +2332,103 @@ MonoBehaviour:
   - tooltip: Clear the current world.
     sprite: {fileID: 21300000, guid: 2ab481da5af1a1948bb754963af3ae07, type: 3}
     imgRef: {fileID: 0}
+    mode: 0
     action:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2091568000}
           m_MethodName: Clear
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  extraButtons:
+  - tooltip: Open the Ship Builder.
+    sprite: {fileID: 21300000, guid: 3ad2e05520120284bbae5ba484d5508a, type: 3}
+    imgRef: {fileID: 0}
+    mode: 0
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2091568000}
+          m_MethodName: ActivateShipBuilder
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - tooltip: Open the Wave Builder.
+    sprite: {fileID: 21300000, guid: d02fea69d958fc042b6cd00cb477110a, type: 3}
+    imgRef: {fileID: 0}
+    mode: 0
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2091568000}
+          m_MethodName: ActivateWaveBuilder
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - tooltip: Change Sector Defaults.
+    sprite: {fileID: 21300000, guid: 4c115555d5e4ea54a8d5a63172655a05, type: 3}
+    imgRef: {fileID: 0}
+    mode: 1
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1450865101}
+          m_MethodName: SetDefaults
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - tooltip: Open the Mission/Dialogue Canvas Editor.
+    sprite: {fileID: 21300000, guid: 153ec45e260d5104dbb692f6ef286a06, type: 3}
+    imgRef: {fileID: 0}
+    mode: 2
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7198219662996043835}
+          m_MethodName: ToggleActive
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - tooltip: Open the Character Handler.
+    sprite: {fileID: 21300000, guid: 8f09591a1d09af94c864eaef4b5576ef, type: 3}
+    imgRef: {fileID: 0}
+    mode: 2
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2091568000}
+          m_MethodName: ActivateCharacterHandler
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
