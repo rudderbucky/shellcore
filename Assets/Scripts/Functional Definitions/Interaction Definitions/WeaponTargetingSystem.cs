@@ -63,7 +63,7 @@ public class WeaponTargetingSystem : ITargetingSystem
 
     public Entity GetEntity()
     {
-        return ability.Core;
+        return (ability && ability.Core) ? ability.Core : null;
     }
 
     public WeaponAbility GetAbility()

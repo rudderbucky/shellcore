@@ -33,8 +33,13 @@ public class CoreUpgraderScript : GUIWindowScripts
         player.SetIsInteracting(false);
         gameObject.SetActive(false);
         AudioManager.PlayClipByID("clip_back");
-    }	
-    
+    }
+
+    public override bool GetActive()
+    {
+        return gameObject.activeSelf;
+    }
+
     public static void DrawScreen() {
         instance.drawScreen();
     }
