@@ -57,7 +57,7 @@ public class BulletScript : MonoBehaviour {
         //TODO: Make this collision avoid hitting the core collider which may mess up the part damage calculation a bit  (for missiles as well)
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
-        if (craft != null && !craft.GetIsDead()) // check if the component was obtained
+        if (craft != null && !craft.GetIsDead() && owner) // check if the component was obtained
         {
             if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && craft.GetTransform() != owner.GetTransform())
             {
