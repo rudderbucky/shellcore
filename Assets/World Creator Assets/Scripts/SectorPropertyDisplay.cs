@@ -116,9 +116,8 @@ public class SectorPropertyDisplay : MonoBehaviour
         colorR.text = currentSector.backgroundColor.r + "";
         colorG.text = currentSector.backgroundColor.g + "";
         colorB.text = currentSector.backgroundColor.b + "";
-        UpdateBGSpawns();
-
         opening = false;
+        UpdateBGSpawns();
     }
 
     void Update() {
@@ -306,6 +305,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         ClearBGSpawns();
         foreach(var bgSpawn in currentSector.backgroundSpawns)
         {
+            Debug.LogError(bgSpawn.timePerSpawn);
             if(bgSpawn.entity.assetID != "shellcore_blueprint" 
                 && ItemHandler.instance.items.Exists((item) => {return item.assetID == bgSpawn.entity.assetID;}))
             {

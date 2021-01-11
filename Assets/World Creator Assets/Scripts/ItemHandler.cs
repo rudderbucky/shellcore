@@ -56,6 +56,7 @@ public class ItemHandler : MonoBehaviour
 
     void Awake()
     {
+        instance = this;
         GenerateItemList();
     }
 
