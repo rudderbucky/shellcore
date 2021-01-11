@@ -46,14 +46,12 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            if(SectorManager.testJsonPath == null)
+            if(clearParty) PartyManager.instance.partyMembers.Clear();
+            else 
             {
-                if(clearParty) PartyManager.instance.partyMembers.Clear();
-                else 
-                {
-                    if(entityID == "sukrat") PartyManager.instance.AssignSukrat();
-                    else PartyManager.instance.partyMembers.Add(AIData.entities.Find(entity => entity.ID == entityID) as ShellCore);
-                }
+                if(!PlayerCore.Instance.cursave.unlockedPartyIDs.Contains(entityID))
+                    PlayerCore.Instance.cursave.unlockedPartyIDs.Add(entityID);
+                PartyManager.instance.AssignBackend(entityID);
             }
 
             return 0;

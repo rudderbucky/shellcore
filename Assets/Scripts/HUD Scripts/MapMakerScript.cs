@@ -87,51 +87,42 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				sectorInfo.Add(sect, (sector.sectorName, sector.type));
 
 
-                var platform = sector.platform;
-                if (platform)
+                var platforms = sector.platforms;
+                if (platforms != null)
                 {
-                    Vector2 center = sect.rectTransform.sizeDelta / 2f;
-                    float tileSize = LandPlatformGenerator.Instance.tileSize / zoomoutFactor;
-                    float h = tileSize / 2f; // Half
-                    var cols = platform.columns;
-                    var rows = platform.rows;
-                    Vector2 offset = new Vector2
-                    {
-                        x = center.x - tileSize * (cols - 1) / 2F,
-                        y = center.y - tileSize * (rows - 1) / 2F
-                    };
-                    List<Vector2> vertices = new List<Vector2>();
-                    for (int i = 0; i < platform.tilemap.Length; i++)
-                    {
-                        if (platform.tilemap[i] == -1)
-                            continue;
+                    var lpg = LandPlatformGenerator.Instance;
 
-                        var pos = new Vector3
+                    foreach (var platform in platforms)
+                    {
+                        float tileSize = LandPlatformGenerator.Instance.tileSize / zoomoutFactor;
+
+                        List<Vector2> vertices = new List<Vector2>();
+                        for (int i = 0; i < platform.tiles.Count; i++)
                         {
-                            x = offset.x + tileSize * (i % cols),
-                            y = -offset.y - tileSize * (i / cols),
-                            z = 0
-                        };
+                            var tile = platform.tiles[i];
 
-                        vertices.Add(new Vector3(pos.x + h, pos.y + h));
-                        vertices.Add(new Vector3(pos.x - h, pos.y + h));
-                        vertices.Add(new Vector3(pos.x - h, pos.y - h));
-                        vertices.Add(new Vector3(pos.x + h, pos.y - h));
+                            var pos = new Vector2(tile.pos.x, -tile.pos.y - 1f) * tileSize;
+
+                            vertices.Add(new Vector3(pos.x + tileSize, pos.y + tileSize));
+                            vertices.Add(new Vector3(pos.x, pos.y + tileSize));
+                            vertices.Add(new Vector3(pos.x, pos.y));
+                            vertices.Add(new Vector3(pos.x + tileSize, pos.y));
+                        }
+
+                        if (vertices.Count > 0)
+                        {
+                            var obj = new GameObject("LandPlatformMesh");
+                            obj.transform.SetParent(transform);
+                            var rt = obj.AddComponent<RectTransform>();
+                            rt.pivot = new Vector2(0f, 1f);
+                            rt.anchoredPosition = sect.rectTransform.anchoredPosition;
+                            rt.sizeDelta = sect.rectTransform.sizeDelta;
+                            var renderer = obj.AddComponent<UILandPlatformRenderer>();
+                            renderer.vertices = vertices.ToArray();
+                            renderer.color = new Color(1f, 1f, 1f, 0.5f);
+                        }
                     }
 
-                    if (vertices.Count > 0)
-                    {
-                        var obj = new GameObject("LandPlatformMesh");
-                        obj.transform.SetParent(transform);
-                        //obj.transform.localPosition = Vector3.zero;
-                        var rt = obj.AddComponent<RectTransform>();
-                        rt.pivot = new Vector2(0f, 1f);
-                        rt.anchoredPosition = sect.rectTransform.anchoredPosition;
-                        rt.sizeDelta = sect.rectTransform.sizeDelta;
-                        var renderer = obj.AddComponent<UILandPlatformRenderer>();
-                        renderer.vertices = vertices.ToArray();
-                        renderer.color = new Color(1f, 1f, 1f, 0.5f);
-                    }
                 }
 			}
 		}
@@ -338,7 +329,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
 				if(newRect.Contains(eventData.position))
 				{
-					Debug.Log("click");
 					player.GetComponent<AirCraft>().Warp(sect.Item2);
 				}
 			}

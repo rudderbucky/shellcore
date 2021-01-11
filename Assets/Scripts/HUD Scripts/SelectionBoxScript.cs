@@ -57,7 +57,7 @@ public class SelectionBoxScript : MonoBehaviour
         // Clear targets if in cutscene/interacting
         if(PlayerCore.Instance.GetIsInteracting() || DialogueSystem.isInCutscene || PlayerViewScript.paused || PlayerViewScript.GetIsWindowActive()) 
         {
-            // Debug.Log(PlayerCore.Instance.GetIsInteracting() + " " + DialogueSystem.isInCutscene + " " + PlayerViewScript.paused);
+            // Debug.Log(PlayerCore.Instance.GetIsInteracting() + " " + DialogueSystem.isInCutscene + " " + PlayerViewScript.paused + " " + PlayerViewScript.GetIsWindowActive());
             if(!PlayerViewScript.paused)
             {
                 PlayerCore.Instance.GetTargetingSystem().ClearSecondaryTargets();

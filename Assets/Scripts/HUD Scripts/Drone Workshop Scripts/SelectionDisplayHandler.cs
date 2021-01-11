@@ -20,8 +20,9 @@ public class SelectionDisplayHandler : MonoBehaviour
             shell.enabled = true;
             shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
             shell.color = FactionManager.GetFactionColor(faction);
-
 			shell.type = Image.Type.Sliced;
+            shell.rectTransform.pivot = new Vector2(shell.sprite.pivot.x 
+                / (shell.sprite.bounds.size.x * 100), shell.sprite.pivot.y/ (shell.sprite.bounds.size.y* 100) );
         } else {
             shell.enabled = false;
         }
@@ -35,7 +36,7 @@ public class SelectionDisplayHandler : MonoBehaviour
                 core.color = FactionManager.GetFactionColor(faction);
             }
             // orient core image so relative center stays the same regardless of shell tier
-            core.rectTransform.anchoredPosition = shell.sprite.pivot - shell.rectTransform.sizeDelta / 2;
+
         } else {
             core.enabled = false;
         }
@@ -46,10 +47,10 @@ public class SelectionDisplayHandler : MonoBehaviour
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;
         } else if(blueprint.intendedType == EntityBlueprint.IntendedType.Turret ||
-            blueprint.intendedType == EntityBlueprint.IntendedType.Tank) {
+            blueprint.intendedType == EntityBlueprint.IntendedType.Tank || blueprint.intendedType == EntityBlueprint.IntendedType.WeaponStation) {
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite = 
-                ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(blueprint.parts[0].abilityID));
+                ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(blueprint.parts[0].abilityID, blueprint.parts[0].secondaryData));
             miniDroneShooter.color = FactionManager.GetFactionColor(faction);
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;            

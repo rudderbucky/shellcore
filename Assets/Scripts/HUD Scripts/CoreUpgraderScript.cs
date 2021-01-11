@@ -23,17 +23,23 @@ public class CoreUpgraderScript : GUIWindowScripts
         Activate();
         gameObject.SetActive(true);
         drawScreen();
-        ShardCountScript.StickySlideIn(player.shards);
+        // TODO: Fix the shard count script
+        // ShardCountScript.StickySlideIn(player.shards);
 
     }
 
     public override void CloseUI() {
-        ShardCountScript.StickySlideOut();
+        //ShardCountScript.StickySlideOut();
         player.SetIsInteracting(false);
         gameObject.SetActive(false);
         AudioManager.PlayClipByID("clip_back");
-    }	
-    
+    }
+
+    public override bool GetActive()
+    {
+        return gameObject.activeSelf;
+    }
+
     public static void DrawScreen() {
         instance.drawScreen();
     }
@@ -86,7 +92,7 @@ public class CoreUpgraderScript : GUIWindowScripts
         if(player.abilityCaps[type] < maxAbilityCap[type]) {
             player.shards -= GetUpgradeCost(type);
             player.abilityCaps[type]++;
-            ShardCountScript.UpdateNumber(player.shards);
+            //ShardCountScript.UpdateNumber(player.shards);
         }
 
     }
@@ -123,7 +129,7 @@ public class CoreUpgraderScript : GUIWindowScripts
                 return 500;
             case "core3skills_shell":
             case "core3weapons_shell":
-                return 2500;
+                return 3000;
             default:
                 return 0;
         }
@@ -218,5 +224,12 @@ public class CoreUpgraderScript : GUIWindowScripts
             default:
                 return new float[] {0, 0, 0};
         }
+    }
+
+    public static string[] GetCoreNames()
+    {
+        return new string[] {"core1_shell", "core2_shell", "core3skills_shell", "core3weapons_shell",
+				"core4commando_shell", "core4elite_shell", "core4captain_shell", "core4admiral_shell"};
+
     }
 }

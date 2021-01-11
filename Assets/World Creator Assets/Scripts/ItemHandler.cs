@@ -53,15 +53,14 @@ public class ItemHandler : MonoBehaviour
     public Transform viewContent;
     public WorldCreatorCursor cursor;
     public static ItemHandler instance;
-    void Start() {
+
+    void Awake()
+    {
         GenerateItemList();
-        for(int i = 0; i < itemPack.items.Count; i++) {
-            var ib = Instantiate(buttonPrefab, viewContent, false).GetComponent<ItemButtonScript>();
-            ib.item = itemPack.items[i];
-            ib.itemIndex = i;
-            ib.cursor = cursor;
-        }
-        instance = this;
+    }
+
+    void Start() {
+        
     }
 
     public Item GetItemByIndex(int index) {
@@ -111,6 +110,7 @@ public class ItemHandlerEditor : Editor
     SerializedProperty buttonPrefab;
     SerializedProperty cursor;
     SerializedProperty viewContent;
+    int testIndex;
     private void OnEnable() {
         objRef = new Object();
         placeholder = new Item();
@@ -135,6 +135,27 @@ public class ItemHandlerEditor : Editor
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
             mode = GUILayout.Toolbar(mode, new string[] {"Add Mode", "View Mode"});
+        EditorGUILayout.EndHorizontal();
+        
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Index:");
+        testIndex = EditorGUILayout.IntField(testIndex);
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+            if(GUILayout.Button("Shift Up"))
+            {
+                var entry = handler.itemPack.items[testIndex];
+                handler.itemPack.items.RemoveAt(testIndex);
+                testIndex--;
+                handler.itemPack.items.Insert(testIndex, entry);
+            }
+            if(GUILayout.Button("Shift Down"))
+            {
+                var entry = handler.itemPack.items[testIndex];
+                handler.itemPack.items.RemoveAt(testIndex);
+                testIndex++;
+                handler.itemPack.items.Insert(testIndex, entry);
+            }
         EditorGUILayout.EndHorizontal();
         switch(mode) {
             case 0:
@@ -204,7 +225,6 @@ public class ItemHandlerEditor : Editor
         EditorGUILayout.BeginHorizontal();
         handler.viewContent = EditorGUILayout.ObjectField("Content Transform:", handler.viewContent, typeof(Transform), true) as Transform;
         EditorGUILayout.EndHorizontal();
-
         serializedObject.ApplyModifiedProperties();
     }
 

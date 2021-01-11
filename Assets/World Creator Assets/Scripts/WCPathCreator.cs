@@ -178,7 +178,7 @@ public class WCPathCreator : MonoBehaviour
             }
 
             WorldCreatorCursor.finishPath(pathData);
-            WorldCreatorCursor.instance.SetMode(WorldCreatorCursor.WCCursorMode.Control);
+            WorldCreatorCursor.instance.SetMode(WorldCreatorCursor.originalCursorMode);
 
             Clear();
         }

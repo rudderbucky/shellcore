@@ -7,6 +7,12 @@ public class FactionManager : MonoBehaviour
 
     static FactionManager instance;
 
+    public static void UpdateFactions()
+    {
+        if (instance)
+            instance.Initialize();
+    }
+
     public void Initialize()
     {
         instance = this;

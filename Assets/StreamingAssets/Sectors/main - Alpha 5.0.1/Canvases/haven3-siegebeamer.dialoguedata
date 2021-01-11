@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="57.5,66.25" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="End Dialogue" ID="-331114" type="EndDialogue" pos="-170,0.375">
+			<Port ID="-331116" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="-331118" type="StartDialogueNode" pos="-700,-180">
+			<Port ID="-331138" name="input" dynamic="False" />
+			<Port ID="-331122" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1657249257" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-331124" type="DialogueNode" pos="-470,-180">
+			<Port ID="-331126" name="input" dynamic="False" />
+			<Port ID="-331128" name="cancel" dynamic="False" />
+			<Port ID="-331110" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">202</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="52103215" />
+			<Variable name="answers" refID="-972753152" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-331116" port2ID="-331110" />
+		<Connection port1ID="-331122" port2ID="-331126" />
+	</Connections>
+	<Objects>
+		<Object refID="-1657249257" type="System.String">
+			<string>haven3-siegebeamer</string>
+		</Object>
+		<Object refID="52103215" type="System.String">
+			<string>Greetings, defender of SiegeZone Beta. I knew you would make it here. Your work is invaluable.</string>
+		</Object>
+		<Object refID="-972753152" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Thank you!</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

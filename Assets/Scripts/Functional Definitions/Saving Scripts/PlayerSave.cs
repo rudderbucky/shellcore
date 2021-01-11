@@ -31,4 +31,7 @@ public class PlayerSave {
 	// This allows EP1 missions to not have to be rewritten,
 	// As well as for side missions to not change the episode number.
 	public int episode;
+
+	// Contains IDs of unlocked party members (there will be a node that unlocks members adding IDs into this list)
+	public List<string> unlockedPartyIDs;
 }

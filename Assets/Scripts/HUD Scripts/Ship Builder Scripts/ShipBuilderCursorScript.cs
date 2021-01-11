@@ -33,6 +33,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	public RectTransform playerInventory;
 	public RectTransform traderInventory;
 	public BuilderMode cursorMode = BuilderMode.Yard;
+	private Vector2 offset;
 
 	public void SetMode(BuilderMode mode) {
 		cursorMode = mode;
@@ -66,6 +67,15 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			parts.Add(part);
 			part.rectTransform.SetAsLastSibling();
 		}
+		
+		// code to ensure part does not snap to cursor immediately
+		var pos = part.GetComponent<RectTransform>().anchoredPosition;
+
+		// if the initial position is zero that means this is a new part, don't set an offset
+		if(pos == Vector2.zero)
+			offset = Vector2.zero;
+		else
+			offset = pos - GetComponent<RectTransform>().anchoredPosition;
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
@@ -183,7 +193,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			return;
 		}
 		if(currentPart) {
-			currentPart.info.location = GetComponent<RectTransform>().anchoredPosition / 100;
+			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
 			if(Input.GetMouseButtonUp(0)) {
 				PlaceCurrentPart();
 			}
@@ -195,6 +205,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				var origPos = transform.position;
 				transform.position = Input.mousePosition;
 				if(bound.Contains(GetComponent<RectTransform>().anchoredPosition)) {
+					transform.position = origPos;
 					GrabPart(parts[i]);
 					break;
 				}

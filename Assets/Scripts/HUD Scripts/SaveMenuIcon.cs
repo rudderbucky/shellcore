@@ -28,8 +28,10 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		shellImage.sprite = ResourceManager.GetAsset<Sprite>(print.coreShellSpriteID);
 		shellImage.rectTransform.sizeDelta = shellImage.sprite.bounds.size * 50;
 		coreImage.material = ResourceManager.GetAsset<Material>("material_color_swap");
-		// coreImage.rectTransform.anchoredPosition = shellImage.sprite.pivot / 2 - shellImage.rectTransform.sizeDelta / 2;
-		shellImage.color = coreImage.color = FactionManager.GetFactionColor(0);
+		shellImage.color = coreImage.color = FactionManager.GetFactionColor(0);	
+		shellImage.rectTransform.anchoredPosition = new Vector2(shellImage.rectTransform.anchoredPosition.x, 
+			(shellImage.rectTransform.sizeDelta.y - (shellImage.sprite.pivot).y) / 2);
+		
 		saveName.text = save.name;
 		episodeNumber.text = $"Episode: {Mathf.Max(1, save.episode)}";
 		version.text = "Version: " + save.version;

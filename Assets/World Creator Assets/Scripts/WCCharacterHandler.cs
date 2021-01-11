@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WCCharacterHandler : MonoBehaviour
+public class WCCharacterHandler : GUIWindowScripts
 {
     public static WCCharacterHandler instance;
     public WorldCreatorCursor cursor;
@@ -14,8 +14,26 @@ public class WCCharacterHandler : MonoBehaviour
     public Toggle charPartyMember;
     public Transform content;
     public Dropdown charFaction;
+    public InputField attackDialogue;
+    public InputField defendDialogue;
+    public InputField collectDialogue;
+    public InputField buildDialogue;
+    public InputField followDialogue;
+
     private WorldData.CharacterData currentData = new WorldData.CharacterData();
     // Start is called before the first frame update
+
+    void ClearFieldData()
+    {
+        currentData = new WorldData.CharacterData();
+        currentData.partyData = new WorldData.PartyData();
+        reflectData();
+    }
+
+    void OnEnable()
+    {
+        ClearFieldData();
+    }
 
     void UpdateCharID()
     {
@@ -42,6 +60,32 @@ public class WCCharacterHandler : MonoBehaviour
         currentData.faction = charFaction.value;
     }
 
+    void UpdateAttackDialogue()
+    {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        currentData.partyData.attackDialogue = attackDialogue.text;
+    }
+    void UpdateDefendDialogue()
+    {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        currentData.partyData.defendDialogue = defendDialogue.text;
+    }
+    void UpdateCollectDialogue()
+    {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        currentData.partyData.collectDialogue = collectDialogue.text;
+    }
+    void UpdateBuildDialogue()
+    {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        currentData.partyData.buildDialogue = buildDialogue.text;
+    }
+    void UpdateFollowDialogue()
+    {
+        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        currentData.partyData.followDialogue = followDialogue.text;
+    }
+
     void Awake()
     {
         instance = this;
@@ -63,9 +107,10 @@ public class WCCharacterHandler : MonoBehaviour
         }
 
         currentData = new WorldData.CharacterData();
+        currentData.partyData = new WorldData.PartyData();
         charID.text = charName.text = charBlueprint.text = "";
         charPartyMember.isOn = false;
-        UpdateFields();
+        ClearFieldData();
     }
 
     public void UpdateFields()
@@ -75,18 +120,26 @@ public class WCCharacterHandler : MonoBehaviour
         UpdateCharBlueprint();
         UpdateCharPartyMember();
         UpdateCharFaction();
+        UpdateAttackDialogue();
+        UpdateDefendDialogue();
+        UpdateCollectDialogue();
+        UpdateBuildDialogue();
+        UpdateFollowDialogue();
     }
 
     public static void ReflectButtonData()
     {
-        for(int i = 0; i < instance.content.childCount; i++)
+        if(instance)
         {
-            Destroy(instance.content.GetChild(i).gameObject);
-        }
-        
-        foreach(var ch in instance.cursor.characters)
-        {
-            instance.AddCharacter(ch);
+            for(int i = 0; i < instance.content.childCount; i++)
+            {
+                Destroy(instance.content.GetChild(i).gameObject);
+            }
+            
+            foreach(var ch in instance.cursor.characters)
+            {
+                instance.AddCharacter(ch);
+            }
         }
     }
 
@@ -102,6 +155,22 @@ public class WCCharacterHandler : MonoBehaviour
         charBlueprint.text = currentData.blueprintJSON;
         charPartyMember.isOn = currentData.partyMember;
         charFaction.value = currentData.faction;
+        if(currentData != null && currentData.partyData != null)
+        {
+            attackDialogue.text = currentData.partyData.attackDialogue;
+            defendDialogue.text = currentData.partyData.defendDialogue;
+            collectDialogue.text = currentData.partyData.collectDialogue;
+            buildDialogue.text = currentData.partyData.buildDialogue;
+            followDialogue.text = currentData.partyData.followDialogue;
+        }
+        else
+        {
+            attackDialogue.text = 
+            defendDialogue.text = 
+            collectDialogue.text = 
+            buildDialogue.text = 
+            followDialogue.text = "";
+        }
     }
 
     public void AddCharacter(WorldData.CharacterData data)

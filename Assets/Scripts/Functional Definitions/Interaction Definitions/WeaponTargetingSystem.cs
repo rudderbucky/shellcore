@@ -21,8 +21,8 @@ public class WeaponTargetingSystem : ITargetingSystem
 
         Transform tmp = ability.Core.GetTargetingSystem().GetTarget(); // get the core's target if it has one
 
-        // Performance: Don't allow weapon targeting for non-ShellCores
-        if(!(ability.Core as ShellCore))
+        // Performance: Don't allow weapon targeting for non-ShellCores/Carriers
+        if(!(ability.Core as ShellCore) && !(ability.Core is ICarrier))
         {
             if(IsValidTarget(tmp)) 
                 target = tmp;
@@ -41,6 +41,7 @@ public class WeaponTargetingSystem : ITargetingSystem
             TargetManager.Enqueue(this);
             return null;
         }
+
         return target; // return the target
     }
 
@@ -51,7 +52,6 @@ public class WeaponTargetingSystem : ITargetingSystem
         if (t == null || !t)
             return false;
         IDamageable damageable = t.GetComponent<IDamageable>();
-
         return (damageable != null
             && !damageable.GetIsDead()
             && damageable.GetTransform() != ability.Core.GetTransform()
@@ -63,7 +63,7 @@ public class WeaponTargetingSystem : ITargetingSystem
 
     public Entity GetEntity()
     {
-        return ability.Core;
+        return (ability && ability.Core) ? ability.Core : null;
     }
 
     public WeaponAbility GetAbility()

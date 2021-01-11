@@ -322,7 +322,7 @@ public class AirCraftAI : MonoBehaviour
                         if (craft.GetHealth()[0] < retreatTreshold * craft.GetMaxHealth()[0])
                         {
                             state = AIState.Retreating;
-                            Debug.Log(craft.name + "[ " + craft.faction + " ] retreating!");
+                            //Debug.Log(craft.name + "[ " + craft.faction + " ] retreating!");
                         }
                     }
                 }
@@ -379,7 +379,7 @@ public class AirCraftAI : MonoBehaviour
                     if (craft.GetHealth()[0] > retreatTreshold * craft.GetMaxHealth()[0])
                     {
                         state = AIState.Active;
-                        Debug.Log(craft.name + "[ " + craft.faction + " ] stopped retreating!");
+                        //Debug.Log(craft.name + "[ " + craft.faction + " ] stopped retreating!");
                     }
 
                 }

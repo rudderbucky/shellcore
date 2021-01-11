@@ -55,11 +55,17 @@ public class Sector : ScriptableObject
     public SectorType type;
     public Color backgroundColor;
     public LevelEntity[] entities;
+    public string[] platformData;
     public LandPlatform platform;
     public string[] targets;
     public bool hasMusic;
     public string musicID;
     public bool partDropsDisabled = false;
+
+    [System.NonSerialized]
+    public GroundPlatform[] platforms;
+    [System.NonSerialized]
+    public List<GroundPlatform.Tile> tiles;
     
     [System.Serializable]
     public struct BackgroundSpawn

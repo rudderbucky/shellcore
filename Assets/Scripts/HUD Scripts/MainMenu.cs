@@ -15,7 +15,11 @@ public class MainMenu : MonoBehaviour
     }
     public static void StartGame(bool nullifyTestJsonPath = false)
     {
-        if(nullifyTestJsonPath) SectorManager.testJsonPath = null;
+        if (nullifyTestJsonPath)
+        {
+            SectorManager.testJsonPath = null;
+            SectorManager.testResourcePath = null;
+        }
         SceneManager.LoadScene("SampleScene");
     }
 

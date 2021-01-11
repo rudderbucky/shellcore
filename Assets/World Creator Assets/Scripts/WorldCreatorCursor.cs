@@ -28,9 +28,10 @@ public class WorldCreatorCursor : MonoBehaviour
     public static WorldCreatorCursor instance;
     public ShipBuilder shipBuilder;
     public WaveBuilder waveBuilder;
+    public WCCharacterHandler characterHandler;
     WCPathCreator pathCreator;
-
     int cursorModeCount;
+    public static WCCursorMode originalCursorMode;
 
     public enum WCCursorMode
     {
@@ -41,7 +42,7 @@ public class WorldCreatorCursor : MonoBehaviour
         DrawPath
     }
 
-    readonly Color[] modeColors = new Color[]
+    public readonly Color[] modeColors = new Color[]
         {
             new Color32(28, 42, 63, 255),
             new Color32(63, 28, 42, 255),
@@ -53,6 +54,11 @@ public class WorldCreatorCursor : MonoBehaviour
     WCCursorMode mode = WCCursorMode.Item;
     public Text modeText;
     public List<WorldData.CharacterData> characters = new List<WorldData.CharacterData>();
+
+    public WCCursorMode GetMode()
+    {
+        return mode;
+    }
 
     private void Awake()
     {
@@ -81,7 +87,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
         {
-            mode = (WCCursorMode)(((int)mode + 1) % 3);
+            SetMode((WCCursorMode)(((int)mode + 1) % 3));
         }
 
         switch (mode)
@@ -121,6 +127,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
         modeText.color = Camera.main.backgroundColor = modeColors[(int)mode];
         modeText.color += Color.gray;
+        modeText.text = modeText.text.ToUpper();
     }
 
     void UpdateEntityAppearances()
@@ -157,6 +164,11 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.T))
             taskInterface.ToggleActive();
+
+        if(Input.GetKeyDown(KeyCode.C) && !system.IsPointerOverGameObject())
+        {
+            ActivateCharacterHandler();
+        }
     }
 
     // revert or destroy pending sector if it exists        
@@ -213,6 +225,11 @@ public class WorldCreatorCursor : MonoBehaviour
         waveBuilder.ToggleActive();
     }
 
+    public void ActivateCharacterHandler()
+    {
+        characterHandler.ToggleActive();
+    }
+
     public int flagID = 0;
     void PollItems() {
         if(Input.GetKeyDown(KeyCode.B) && !system.IsPointerOverGameObject())
@@ -224,14 +241,18 @@ public class WorldCreatorCursor : MonoBehaviour
             ActivateWaveBuilder();
         }
 
-        if(Input.mouseScrollDelta.y < 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
-            else if(Input.mouseScrollDelta.y > 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
+        if(!Input.GetKey(KeyCode.LeftControl))
+        {
+            if(Input.mouseScrollDelta.y < 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
+            else if(Input.mouseScrollDelta.y > 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
+        }
+        
 		
         if(GetItemUnderCursor() != null) 
         {
             Item underCursor;
             underCursor = (Item)GetItemUnderCursor();
-            if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject() && current.obj) 
+            if(Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject() && current.obj) 
             {
                 if(((Item)underCursor).type == current.type)
                     propertyDisplay.DisplayProperties(underCursor);
@@ -239,21 +260,27 @@ public class WorldCreatorCursor : MonoBehaviour
             } 
             else if(Input.GetKeyUp(KeyCode.R) && !system.IsPointerOverGameObject()) 
             {
+                
                 if(underCursor.type == ItemType.Platform) 
                 {
                     Rotate((Item)underCursor);
                 }
             }
-            else if(Input.GetMouseButtonUp(1) && !system.IsPointerOverGameObject()) 
+            else if((Input.GetMouseButtonUp(1) || (Input.GetMouseButton(1) && underCursor.type == ItemType.Platform)) && !system.IsPointerOverGameObject()) 
             {
                 Remove((Item)underCursor);
             }
         } 
         else 
         {
-            if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject() && current.obj) 
+            if(Input.GetKeyUp(KeyCode.R) && current.type == ItemType.Platform)
             {
-                Add(CopyCurrent());
+                Rotate(current);
+            }
+            if(!system.IsPointerOverGameObject() && current.obj) 
+            {
+                if(Input.GetMouseButtonUp(0) || (Input.GetMouseButton(0) && current.type == ItemType.Platform))
+                    Add(CopyCurrent());
             } 
         }
     }
@@ -391,7 +418,7 @@ public class WorldCreatorCursor : MonoBehaviour
     public void EntitySelection()
     {
         taskInterface.CloseUI();
-        mode = WCCursorMode.SelectEntity;
+        SetMode(WCCursorMode.SelectEntity);
     }
 
     void PollEntitySelection()
@@ -412,7 +439,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 if (underCursor.type == ItemType.Other)
                 {
                     taskInterface.Activate();
-                    mode = WCCursorMode.Control;
+                    SetMode(originalCursorMode);
                     selectEntity.Invoke(underCursor.name);
                 }
             }
@@ -420,18 +447,19 @@ public class WorldCreatorCursor : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             taskInterface.Activate();
-            mode = WCCursorMode.Control;
+            SetMode(originalCursorMode);
             selectEntity.Invoke("");
         }
     }
 
-    public void pathDrawing(NodeEditorFramework.Standard.PathData path = null)
+    public void pathDrawing(WorldCreatorCursor.WCCursorMode originalMode, NodeEditorFramework.Standard.PathData path = null)
     {
         pathCreator.Clear();
         pathCreator.SetPath(path);
 
         taskInterface.CloseUI();
-        mode = WCCursorMode.DrawPath;
+        originalCursorMode = originalMode;
+        SetMode(WCCursorMode.DrawPath);
     }
 
     ///
@@ -557,5 +585,6 @@ public class WorldCreatorCursor : MonoBehaviour
     public void SetMode(WCCursorMode mode)
     {
         this.mode = mode;
+        WCBetterBarHandler.UpdateActiveButtons();
     }
 }

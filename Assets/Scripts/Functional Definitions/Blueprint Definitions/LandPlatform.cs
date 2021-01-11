@@ -8,14 +8,14 @@ using UnityEditor;
 [CreateAssetMenu(fileName = "LandPlatform", menuName = "ShellCore/LandPlatform", order = 3)]
 public class LandPlatform : ScriptableObject
 {
-    [System.Serializable]
-    public struct GroundNode
-    {
-        public int ID;
-        public Vector2 pos;
-        public int[] neighbours;
-        public float[] distances;
-    }
+    //[System.Serializable]
+    //public struct GroundNode
+    //{
+    //    public int ID;
+    //    public Vector2 pos;
+    //    public int[] neighbours;
+    //    public float[] distances;
+    //}
 
     //public LandPlatform blueprint;
     public string[] prefabs;
@@ -27,7 +27,7 @@ public class LandPlatform : ScriptableObject
 
     public int[] rotations = new int[1];
 
-    public GroundNode[] nodes;
+    //public GroundNode[] nodes;
 }
 
 #if UNITY_EDITOR
