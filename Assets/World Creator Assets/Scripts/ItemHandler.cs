@@ -110,6 +110,7 @@ public class ItemHandlerEditor : Editor
     SerializedProperty buttonPrefab;
     SerializedProperty cursor;
     SerializedProperty viewContent;
+    int testIndex;
     private void OnEnable() {
         objRef = new Object();
         placeholder = new Item();
@@ -134,6 +135,27 @@ public class ItemHandlerEditor : Editor
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
             mode = GUILayout.Toolbar(mode, new string[] {"Add Mode", "View Mode"});
+        EditorGUILayout.EndHorizontal();
+        
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Index:");
+        testIndex = EditorGUILayout.IntField(testIndex);
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+            if(GUILayout.Button("Shift Up"))
+            {
+                var entry = handler.itemPack.items[testIndex];
+                handler.itemPack.items.RemoveAt(testIndex);
+                testIndex--;
+                handler.itemPack.items.Insert(testIndex, entry);
+            }
+            if(GUILayout.Button("Shift Down"))
+            {
+                var entry = handler.itemPack.items[testIndex];
+                handler.itemPack.items.RemoveAt(testIndex);
+                testIndex++;
+                handler.itemPack.items.Insert(testIndex, entry);
+            }
         EditorGUILayout.EndHorizontal();
         switch(mode) {
             case 0:
