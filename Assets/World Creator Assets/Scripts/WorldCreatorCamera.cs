@@ -11,7 +11,7 @@ public class WorldCreatorCamera : MonoBehaviour
     public CanvasGroup group;
     void FixedUpdate() 
     {
-        group.interactable = (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0);
+        //group.interactable = (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0);
         if(!system.IsPointerOverGameObject())
         {
             transform.position += Input.GetAxis("Horizontal") * new Vector3(1 + Mathf.Abs(transform.position.z + 10) / 4, 0, 0);;

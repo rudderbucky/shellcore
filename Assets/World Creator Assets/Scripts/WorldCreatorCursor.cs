@@ -241,7 +241,7 @@ public class WorldCreatorCursor : MonoBehaviour
             ActivateWaveBuilder();
         }
 
-        if(!Input.GetKey(KeyCode.LeftControl))
+        if(!Input.GetKey(KeyCode.LeftControl) && !system.IsPointerOverGameObject())
         {
             if(Input.mouseScrollDelta.y < 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
             else if(Input.mouseScrollDelta.y > 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
@@ -565,6 +565,14 @@ public class WorldCreatorCursor : MonoBehaviour
         copy.obj.transform.position = copy.pos;
         return copy;
     }
+
+    public void BumpCurrent(int val)
+    {
+        if(currentIndex + val < 0 || currentIndex + val >= handler.items.Count)
+            return;
+        SetCurrent(currentIndex + val);
+    }
+
     public void SetCurrent(int index) 
     {
         if(current != null && current.obj) Destroy(current.obj);

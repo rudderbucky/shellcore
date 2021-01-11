@@ -10,8 +10,6 @@ public class ItemPropertyDisplay : MonoBehaviour
     public InputField jsonField;
     public InputField nameField;
     public InputField idField;
-    public Text assetName;
-    public Text assetType;
     Item currentItem;
 
     void Start() 
@@ -36,13 +34,11 @@ public class ItemPropertyDisplay : MonoBehaviour
     public void DisplayProperties(Item item) 
     {
         currentItem = item;
-        gameObject.SetActive(true);
+        rectTransform.gameObject.SetActive(true);
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
         factionDropdown.value = item.faction;
-        assetName.text = currentItem.assetID;
-        assetType.text = currentItem.type + "";
         jsonField.text = currentItem.shellcoreJSON;
         nameField.text = currentItem.name;
         idField.text = currentItem.ID;
@@ -75,16 +71,16 @@ public class ItemPropertyDisplay : MonoBehaviour
         
         WorldCreatorCursor.finishPath += SetPath;
         WorldCreatorCursor.instance.pathDrawing(WorldCreatorCursor.WCCursorMode.Item, currentItem.patrolPath);
-        gameObject.SetActive(false);
+        rectTransform.gameObject.SetActive(false);
     }
 
     public void Hide() {
-        gameObject.SetActive(false);
+        rectTransform.gameObject.SetActive(false);
     }
 
     public void SetPath(NodeEditorFramework.Standard.PathData path)
     {
-        gameObject.SetActive(true);
+        rectTransform.gameObject.SetActive(true);
         currentItem.patrolPath = path;
         WorldCreatorCursor.finishPath -= SetPath;
     }

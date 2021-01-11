@@ -46,7 +46,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         editingDefaults = true;
 
         if (!rectTransform) rectTransform = GetComponent<RectTransform>();
-        gameObject.SetActive(true);
+        rectTransform.gameObject.SetActive(true);
         rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
 
         type.value = 0;
@@ -79,7 +79,7 @@ public class SectorPropertyDisplay : MonoBehaviour
 
         if (!rectTransform) rectTransform = GetComponent<RectTransform>();
         currentSector = sector;
-        gameObject.SetActive(true);
+        rectTransform.gameObject.SetActive(true);
         mousePos = WorldCreatorCursor.GetMousePos();
         var pos = Camera.main.WorldToScreenPoint(mousePos);
         pos += new Vector3(300, 0);
@@ -197,7 +197,7 @@ public class SectorPropertyDisplay : MonoBehaviour
 
     public void Hide() 
     {
-        gameObject.SetActive(false);
+        rectTransform.gameObject.SetActive(false);
         if(editingDefaults)
         {
             PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultMusicOn", sectorMusicBool.isOn ? 1 : 0);
