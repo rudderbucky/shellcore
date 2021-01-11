@@ -164,6 +164,11 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.T))
             taskInterface.ToggleActive();
+
+        if(Input.GetKeyDown(KeyCode.C) && !system.IsPointerOverGameObject())
+        {
+            ActivateCharacterHandler();
+        }
     }
 
     // revert or destroy pending sector if it exists        
@@ -235,10 +240,6 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             ActivateWaveBuilder();
         }
-        if(Input.GetKeyDown(KeyCode.C) && !system.IsPointerOverGameObject())
-        {
-            ActivateCharacterHandler();
-        }
 
         if(!Input.GetKey(KeyCode.LeftControl))
         {
@@ -251,7 +252,7 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             Item underCursor;
             underCursor = (Item)GetItemUnderCursor();
-            if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject() && current.obj) 
+            if(Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject() && current.obj) 
             {
                 if(((Item)underCursor).type == current.type)
                     propertyDisplay.DisplayProperties(underCursor);
@@ -259,21 +260,27 @@ public class WorldCreatorCursor : MonoBehaviour
             } 
             else if(Input.GetKeyUp(KeyCode.R) && !system.IsPointerOverGameObject()) 
             {
+                
                 if(underCursor.type == ItemType.Platform) 
                 {
                     Rotate((Item)underCursor);
                 }
             }
-            else if(Input.GetMouseButtonUp(1) && !system.IsPointerOverGameObject()) 
+            else if((Input.GetMouseButtonUp(1) || (Input.GetMouseButton(1) && underCursor.type == ItemType.Platform)) && !system.IsPointerOverGameObject()) 
             {
                 Remove((Item)underCursor);
             }
         } 
         else 
         {
-            if(Input.GetMouseButtonUp(0) && !system.IsPointerOverGameObject() && current.obj) 
+            if(Input.GetKeyUp(KeyCode.R) && current.type == ItemType.Platform)
             {
-                Add(CopyCurrent());
+                Rotate(current);
+            }
+            if(!system.IsPointerOverGameObject() && current.obj) 
+            {
+                if(Input.GetMouseButtonUp(0) || (Input.GetMouseButton(0) && current.type == ItemType.Platform))
+                    Add(CopyCurrent());
             } 
         }
     }

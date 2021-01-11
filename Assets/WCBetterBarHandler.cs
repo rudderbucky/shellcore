@@ -26,6 +26,7 @@ public class WCBetterBarHandler : MonoBehaviour
     public WCWorldIO WCWorldIO;
     public Sprite playButtonImage;
     public static WCBetterBarHandler instance;
+    public GameObject barContainer;
 
     /// <summary>
     /// Option buttons for the World Creator
@@ -165,28 +166,36 @@ public class WCBetterBarHandler : MonoBehaviour
     void Update()
     {
         currentActiveButton = cursor.currentIndex;
-
-        foreach(Image image in images)
-        {
-            image.sprite = betterButtonInactive;
-        }
-        var test = betterBarContents.GetChild(currentActiveButton).GetComponent<Image>();
-        test.sprite = betterButtonActive;
-        if((currentActiveButton > maxButton - padding) && currentActiveButton < images.Count - 1)
-        {
-            minButton++;
-            maxButton++;
-            (betterBarContents as RectTransform).anchoredPosition = new Vector2(-(maxButton - 7) * 125 ,0);
-        }
-        else if(currentActiveButton < minButton + padding && currentActiveButton > 0)
-        {
-            minButton--;
-            maxButton--;
-            (betterBarContents as RectTransform).anchoredPosition = new Vector2(-(maxButton - 7) * 125 ,0);
-        }
-
-        itemName.text = itemHandler.itemPack.items[currentActiveButton].name.ToUpper();
         itemName.color = cursor.modeColors[(int)cursor.GetMode()] + Color.gray;
+
+        if(cursor.GetMode() == WorldCreatorCursor.WCCursorMode.Item)
+        {
+            barContainer.SetActive(true);
+            foreach(Image image in images)
+            {
+                image.sprite = betterButtonInactive;
+            }
+            var test = betterBarContents.GetChild(currentActiveButton).GetComponent<Image>();
+            test.sprite = betterButtonActive;
+            if((currentActiveButton > maxButton - padding) && currentActiveButton < images.Count - 1)
+            {
+                minButton++;
+                maxButton++;
+                (betterBarContents as RectTransform).anchoredPosition = new Vector2(-(maxButton - 7) * 125 ,0);
+            }
+            else if(currentActiveButton < minButton + padding && currentActiveButton > 0)
+            {
+                minButton--;
+                maxButton--;
+                (betterBarContents as RectTransform).anchoredPosition = new Vector2(-(maxButton - 7) * 125 ,0);
+            }
+
+            itemName.text = itemHandler.itemPack.items[currentActiveButton].name.ToUpper();
+        }
+        else
+        {
+            barContainer.SetActive(false);
+        }
 
         // Instantiate tooltip. Destroy tooltip if mouse is not over a sector image.
 		bool mouseOverSector = false;
