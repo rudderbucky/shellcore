@@ -305,7 +305,6 @@ public class SectorPropertyDisplay : MonoBehaviour
         ClearBGSpawns();
         foreach(var bgSpawn in currentSector.backgroundSpawns)
         {
-            Debug.LogError(bgSpawn.timePerSpawn);
             if(bgSpawn.entity.assetID != "shellcore_blueprint" 
                 && ItemHandler.instance.items.Exists((item) => {return item.assetID == bgSpawn.entity.assetID;}))
             {

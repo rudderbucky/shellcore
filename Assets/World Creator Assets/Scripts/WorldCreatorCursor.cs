@@ -68,6 +68,11 @@ public class WorldCreatorCursor : MonoBehaviour
         cursorModeCount = System.Enum.GetValues(typeof(WCCursorMode)).Length;
     }
 
+    public void ShiftMode(int bump)
+    {
+        SetMode((WCCursorMode)(((int)mode + bump) % 3));
+    }
+
     void Start() {
         SetCurrent(0);
         maxIndex = handler.itemPack.items.Count;
@@ -87,7 +92,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
         {
-            SetMode((WCCursorMode)(((int)mode + 1) % 3));
+            ShiftMode(1);
         }
 
         switch (mode)
@@ -525,6 +530,7 @@ public class WorldCreatorCursor : MonoBehaviour
     void Rotate(Item item) {
         item.obj.transform.Rotate(0, 0, 90);
     }
+
     public Vector2 CalcPos(Item item) {
         Vector3 mousePos = GetMousePos();
         if(item.type == ItemType.Platform) {

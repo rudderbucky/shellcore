@@ -27,6 +27,7 @@ public class WCBetterBarHandler : MonoBehaviour
     public Sprite playButtonImage;
     public static WCBetterBarHandler instance;
     public GameObject barContainer;
+    public Image modeGobj;
 
     /// <summary>
     /// Option buttons for the World Creator
@@ -199,30 +200,45 @@ public class WCBetterBarHandler : MonoBehaviour
 
         // Instantiate tooltip. Destroy tooltip if mouse is not over a sector image.
 		bool mouseOverSector = false;
+        Vector3 pos, sizeDelta;
+        Rect newRect;
 		foreach(var optionButton in activeOptionButtons)
 		{
             if(!optionButton.imgRef.gameObject.activeSelf) continue;
-			var pos = optionButton.imgRef.rectTransform.position;
-			var sizeDelta = optionButton.imgRef.rectTransform.sizeDelta;
-			var newRect = new Rect(pos.x - sizeDelta.x / 2, pos.y - sizeDelta.y / 2, sizeDelta.x, sizeDelta.y);
+			pos = optionButton.imgRef.rectTransform.position;
+			sizeDelta = optionButton.imgRef.rectTransform.sizeDelta;
+			newRect = new Rect(pos.x - sizeDelta.x / 2, pos.y - sizeDelta.y / 2, sizeDelta.x, sizeDelta.y);
 			// Mouse over sector. Instantiate tooltip if necessary, move tooltip and set text up
 			if(newRect.Contains(Input.mousePosition))
 			{
-				if(!tooltipTransform) tooltipTransform = Instantiate(tooltipPrefab, transform.parent).GetComponent<RectTransform>();
-				tooltipTransform.position = Input.mousePosition;
 				mouseOverSector = true;
-				var text = tooltipTransform.GetComponentInChildren<Text>();
-				text.text = 
-					$"{optionButton.tooltip}".ToUpper();
-				tooltipTransform.GetComponent<RectTransform>().sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
-
+                SetTooltip(optionButton.tooltip);
 			}
 		}
+
+        pos = modeGobj.rectTransform.position;
+        sizeDelta = modeGobj.rectTransform.sizeDelta;
+        newRect = new Rect(pos.x - sizeDelta.x, pos.y, sizeDelta.x, sizeDelta.y);
+        if(newRect.Contains(Input.mousePosition))
+        {
+            mouseOverSector = true;
+            SetTooltip("Click to change mode.", -1);
+        }
+
 		if(!mouseOverSector) 
 		{
 			if(tooltipTransform) Destroy(tooltipTransform.gameObject);
 		}
+    }
 
-
+    void SetTooltip(string displayText, int scale=1)
+    {
+        if(!tooltipTransform) tooltipTransform = Instantiate(tooltipPrefab, transform.parent).GetComponent<RectTransform>();
+        tooltipTransform.position = Input.mousePosition;                                      
+        var text = tooltipTransform.GetComponentInChildren<Text>();
+        tooltipTransform.localScale = text.rectTransform.localScale = new Vector3(scale, 1, 1); 
+        text.text = 
+            $"{displayText}".ToUpper();
+        tooltipTransform.GetComponent<RectTransform>().sizeDelta = new Vector2(text.preferredWidth + 16, text.preferredHeight + 16);
     }
 }

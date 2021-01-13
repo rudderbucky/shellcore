@@ -84,4 +84,10 @@ public class ItemPropertyDisplay : MonoBehaviour
         currentItem.patrolPath = path;
         WorldCreatorCursor.finishPath -= SetPath;
     }
+
+    public void SetRotation(int rotation)
+    {
+        currentItem.rotation = rotation;
+        currentItem.obj.transform.rotation = Quaternion.Euler(0, 0, rotation);
+    }
 }
