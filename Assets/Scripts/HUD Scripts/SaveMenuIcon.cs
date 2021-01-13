@@ -49,6 +49,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	}
 
 	public void LoadSave() {
+		if(save.resourcePath != "" && !save.resourcePath.Contains("main")) SectorManager.customPath = save.resourcePath;
 		if(!SaveMenuHandler.migrationVersions.Exists((v) => save.version == v))
 			LoadSaveByPath(path, true);
 		else handler.PromptMigrate(index);

@@ -79,6 +79,16 @@ public class WCWorldIO : MonoBehaviour
         Show(IOMode.Write);
     }
 
+    string currentResourcePath = "";
+    public SaveMenuHandler saveMenuHandler;
+
+    public void PromptCurrentResourcePath()
+    {
+        if(currentResourcePath == "") return;
+        saveMenuHandler.Activate(currentResourcePath);
+        Hide();
+    }
+
     #if UNITY_EDITOR
     private bool instantTest = false;
     #endif
@@ -210,9 +220,10 @@ public class WCWorldIO : MonoBehaviour
                         case IOMode.Read:
                             originalReadPath = dir;
                             worldPathName.text = System.IO.Path.GetFileName(dir);
-                            WorldData wdata = new WorldData();
+                            WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(dir + "\\world.worlddata"), wdata);
                             authors.text = wdata.author;
+                            currentResourcePath = dir;
                             description.text = wdata.description;
                             break;
                         case IOMode.Write:
@@ -249,16 +260,9 @@ public class WCWorldIO : MonoBehaviour
         button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name);
     }
     
-    string currentReadPath;
     public Text worldPathName;
     public InputField authors;
     public InputField description;
-
-    public void WCReadCurrentPath()
-    {
-        generatorHandler.ReadWorld(originalReadPath);
-        Hide();
-    }
 
     public void AddButtonFromField()
     {
@@ -286,12 +290,12 @@ public class WCWorldIO : MonoBehaviour
             switch(mode)
             {
                 case IOMode.Read:
-                    currentReadPath = path;
                     worldPathName.text = System.IO.Path.GetFileName(path);
-                    WorldData wdata = new WorldData();
+                    WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                     JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
                     authors.text = wdata.author;
                     description.text = wdata.description;
+                    currentResourcePath = path;
                     //generatorHandler.ReadWorld(path);
                     break;
                 case IOMode.Write:
