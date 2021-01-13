@@ -80,6 +80,7 @@ public class WorldCreatorCursor : MonoBehaviour
     }
     // Update is called once per frame
     static int sortLayerNum = 1;
+    public GUIWindowScripts manual;
     void Update() {
 		current.pos = CalcPos(current);
         if(current.obj) {
@@ -93,6 +94,11 @@ public class WorldCreatorCursor : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
         {
             ShiftMode(1);
+        }
+
+        if(Input.GetKeyDown(KeyCode.M))
+        {
+            manual.ToggleActive();
         }
 
         switch (mode)
