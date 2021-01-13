@@ -142,6 +142,11 @@ public class WCWorldIO : MonoBehaviour
         }
     }
 
+    public void WCReadCurrentPath()
+    {
+        generatorHandler.ReadWorld(currentResourcePath);
+        Hide();
+    }
 
     public void TestWorld()
     {
