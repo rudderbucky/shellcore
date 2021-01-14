@@ -13,6 +13,8 @@ public class ShardCountScript : MonoBehaviour
     private bool stickySlide;
     void Start() {
         instance = this;
+        instance.origX = instance.GetComponent<RectTransform>().anchoredPosition.x;
+        instance.sizeDeltaX = instance.GetComponent<RectTransform>().sizeDelta.x;
     }
     void FixedUpdate() {
         imageTransform.rotation = Quaternion.Euler(0, 0, Time.fixedTime * 100);
@@ -27,6 +29,8 @@ public class ShardCountScript : MonoBehaviour
     public static void UpdateNumber(int count) {
         instance.number.text = count + "";
     }
+    float origX;
+    float sizeDeltaX;
     /// sticky slides used when you want the player to see their shard count
     public static void StickySlideIn(int count) {
 //        instance.rectTransform.anchoredPosition += new Vector2(-instance.rectTransform.anchoredPosition.x -71F, 0);
@@ -43,9 +47,8 @@ public class ShardCountScript : MonoBehaviour
     }
 
     IEnumerator SlideIn() {
-        while(rectTransform.anchoredPosition.x < -13.5F) {
-            var minint = Mathf.Min(3F, -13.5F - rectTransform.anchoredPosition.x);
-
+        while(rectTransform.anchoredPosition.x < origX + sizeDeltaX) {
+            var minint = Mathf.Min(3F, origX + sizeDeltaX - rectTransform.anchoredPosition.x);
             rectTransform.anchoredPosition = rectTransform.anchoredPosition + new Vector2(minint, 0);
             yield return null;
         }
@@ -53,7 +56,7 @@ public class ShardCountScript : MonoBehaviour
         if(!stickySlide) instance.StartCoroutine("SlideOut");
     }
     IEnumerator SlideOut() {
-        while(rectTransform.anchoredPosition.x > -71F) {
+        while(rectTransform.anchoredPosition.x > origX) {
             rectTransform.anchoredPosition = rectTransform.anchoredPosition - new Vector2(3F, 0);
             yield return null;
         }

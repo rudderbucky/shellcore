@@ -859,8 +859,15 @@ public class SectorManager : MonoBehaviour
         // destroy existing shard rocks
         foreach(var rock in shardRocks)
         {
-            Destroy(rock.gameObject);
+            if(rock)
+                Destroy(rock.gameObject);
         }
+        foreach(var shard in ShardRock.shards)
+        {
+            if(shard && !shard.GetComponent<Draggable>().dragging)
+                Destroy(shard.gameObject);
+        }
+        ShardRock.shards.Clear();
         shardRocks.Clear();
 
         var remainingObjects = new Dictionary<string, GameObject>();

@@ -24,12 +24,12 @@ public class CoreUpgraderScript : GUIWindowScripts
         gameObject.SetActive(true);
         drawScreen();
         // TODO: Fix the shard count script
-        // ShardCountScript.StickySlideIn(player.shards);
+        ShardCountScript.StickySlideIn(player.shards);
 
     }
 
     public override void CloseUI() {
-        //ShardCountScript.StickySlideOut();
+        ShardCountScript.StickySlideOut();
         player.SetIsInteracting(false);
         gameObject.SetActive(false);
         AudioManager.PlayClipByID("clip_back");
@@ -92,7 +92,7 @@ public class CoreUpgraderScript : GUIWindowScripts
         if(player.abilityCaps[type] < maxAbilityCap[type]) {
             player.shards -= GetUpgradeCost(type);
             player.abilityCaps[type]++;
-            //ShardCountScript.UpdateNumber(player.shards);
+            ShardCountScript.UpdateNumber(player.shards);
         }
 
     }

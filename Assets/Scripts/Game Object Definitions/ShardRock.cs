@@ -29,6 +29,7 @@ public class ShardRock : MonoBehaviour, IDamageable
     public Sprite[] shardSprites;
     public Sprite[] tierSprites;
     public GameObject shard;
+    public static List<Shard> shards = new List<Shard>();
     public int tier = 1;
     public void Start() {
         BuildRock();
@@ -123,6 +124,7 @@ public class ShardRock : MonoBehaviour, IDamageable
             rend.sprite = shardSprites[Random.Range(0, 3)];
             if(i == 0) rend.gameObject.AddComponent<Draggable>();
             var shardComp = rend.GetComponent<Shard>();
+            shards.Add(shardComp);
             shardComp.Detach();
             shardComp.SetCollectible(i == 0);
             shardComp.tier = tier;
