@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerViewScript : MonoBehaviour {
 
-	public Transform player;
 	private Stack<IWindow> currentWindow;
 	private static PlayerViewScript instance;
 	public static int currentLayer = 2;
