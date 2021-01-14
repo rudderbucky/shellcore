@@ -358,7 +358,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 currentSector.sector = ScriptableObject.CreateInstance<Sector>();
                 currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
                 currentSector.sector.hasMusic = true; // sectors have music by default in WC
-                currentSector.sector.backgroundColor = SectorColors.colors[0];
+                currentSector.sector.backgroundColor = GetDefaultColor((Sector.SectorType)0);
                 currentSector.sector.rectangleEffectSkin = (RectangleEffectSkin)
                     PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
                 currentSector.sector.backgroundTileSkin = (BackgroundTileSkin)
@@ -424,6 +424,18 @@ public class WorldCreatorCursor : MonoBehaviour
                 }
             }
         }
+    }
+
+    public static Color GetDefaultColor(Sector.SectorType type)
+    {
+        return new Color(
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{(int)type}", 
+                SectorColors.colors[(int)type].r),
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{(int)type}", 
+                SectorColors.colors[(int)type].g),
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{(int)type}", 
+                SectorColors.colors[(int)type].b)
+        );
     }
 
     public void EntitySelection()

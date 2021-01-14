@@ -53,6 +53,16 @@ public class SectorPropertyDisplay : MonoBehaviour
         type.value = 0;
         sectorMusicBool.isOn = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultMusicOn", 1) == 1 ? true : false;
         sectorMusicID.text = PlayerPrefs.GetString("WCSectorPropertyDisplay_defaultMusic0", WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)0));
+        colorR.text = 
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR0", 
+                SectorColors.colors[0].r) + "";
+        colorB.text = 
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB0", 
+                SectorColors.colors[0].b) + "";
+        colorG.text = 
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG0", 
+                SectorColors.colors[0].g) + "";
+        
         particles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
         tiles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
 
@@ -62,9 +72,9 @@ public class SectorPropertyDisplay : MonoBehaviour
         y.transform.parent.gameObject.SetActive(false);
         w.transform.parent.gameObject.SetActive(false);
         h.transform.parent.gameObject.SetActive(false);
-        colorR.transform.parent.gameObject.SetActive(false);
-        colorG.transform.parent.gameObject.SetActive(false);
-        colorB.transform.parent.gameObject.SetActive(false);
+        colorR.transform.parent.gameObject.SetActive(true);
+        colorG.transform.parent.gameObject.SetActive(true);
+        colorB.transform.parent.gameObject.SetActive(true);
         bgSpawnScrollContents.gameObject.SetActive(false);
         insertBGSpawnsButton.SetActive(false);
         clearBGSpawnsButton.SetActive(false);
@@ -156,11 +166,21 @@ public class SectorPropertyDisplay : MonoBehaviour
             sectorMusicID.text = 
             PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{type.value}", 
                 WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)type.value));
+
+            colorR.text = 
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{type.value}", 
+                SectorColors.colors[type.value].r) + "";
+            colorB.text = 
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{type.value}", 
+                SectorColors.colors[type.value].b) + "";
+            colorG.text = 
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{type.value}", 
+                SectorColors.colors[type.value].g) + "";
             return;
         }
 
         currentSector.type = (Sector.SectorType)type.value;
-        currentSector.backgroundColor = SectorColors.colors[type.value];
+        currentSector.backgroundColor = WorldCreatorCursor.GetDefaultColor((Sector.SectorType)type.value);
         colorR.text = currentSector.backgroundColor.r + "";
         colorG.text = currentSector.backgroundColor.g + "";
         colorB.text = currentSector.backgroundColor.b + "";
@@ -191,6 +211,7 @@ public class SectorPropertyDisplay : MonoBehaviour
     {
         if (opening || editingDefaults)
             return;
+
         currentSector.backgroundColor = new Color(float.Parse(colorR.text), float.Parse(colorG.text), float.Parse(colorB.text), 1);
     }
 
@@ -229,6 +250,12 @@ public class SectorPropertyDisplay : MonoBehaviour
                 PlayerPrefs.SetString($"WCSectorPropertyDisplay_defaultMusic{type.value}", sectorMusicID.text);
             PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultParticles", particles.value);
             PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultTiles", tiles.value);
+            if(colorR.text != "")
+                PlayerPrefs.SetFloat($"WCSectorPropertyDisplay_defaultR{type.value}", float.Parse(colorR.text));
+            if(colorG.text != "")
+                PlayerPrefs.SetFloat($"WCSectorPropertyDisplay_defaultG{type.value}", float.Parse(colorG.text));
+            if(colorB.text != "")
+                PlayerPrefs.SetFloat($"WCSectorPropertyDisplay_defaultB{type.value}", float.Parse(colorB.text));
         }
         editingDefaults = false;
     }
