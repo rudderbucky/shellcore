@@ -19,7 +19,6 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob output;
 
         public int seconds = 0;
-        bool timerStarted = false;
         Coroutine timer = null;
 
         public override void NodeGUI()
@@ -43,7 +42,6 @@ namespace NodeEditorFramework.Standard
         {
             TaskManager.Instance.StopCoroutine(timer);
             timer = null;
-            timerStarted = false;
             State = ConditionState.Uninitialized;
             Debug.Log("Timer stopped!");
         }

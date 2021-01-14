@@ -154,6 +154,7 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             sectEnts.Add(sector, new List<Sector.LevelEntity>());
             sectTargetIDS.Add(sector, new List<string>());
+            sector.tiles = new List<GroundPlatform.Tile>();
         }
 
         // Add background spawns to part index
@@ -182,8 +183,6 @@ public class WCGeneratorHandler : MonoBehaviour
             {
                 case ItemType.Platform:
                     var index = GetPlatformIndices(container, item.pos);
-                    if (container.tiles == null)
-                        container.tiles = new List<GroundPlatform.Tile>();
                     container.tiles.Add(new GroundPlatform.Tile()
                     {
                         pos = new Vector2Int(index.Item2, index.Item1),
@@ -343,7 +342,7 @@ public class WCGeneratorHandler : MonoBehaviour
         // calculate land platform pathfinding directions
         foreach (var sector in sectors)
         {
-            if (sector.tiles != null)
+            if (sector.tiles != null && sector.tiles.Count > 0)
             {
                 sector.platforms = LandPlatformGenerator.DivideToPlatforms(sector.tiles);
                 List<string> data = new List<string>();
@@ -583,8 +582,9 @@ public class WCGeneratorHandler : MonoBehaviour
                     JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
 
                     // Try to load old land platform
-                    if (data.platformjson != "")
+                    if (data.platformjson != "" && curSect.platformData == null)
                     {
+                        Debug.Log("Loading OLD platforms!");
                         LandPlatform plat = ScriptableObject.CreateInstance<LandPlatform>();
                         JsonUtility.FromJsonOverwrite(data.platformjson, plat);
                         plat.name = curSect.name + "Platform";
@@ -608,7 +608,8 @@ public class WCGeneratorHandler : MonoBehaviour
                                 }
                             }
                         }
-                        // curSect.platform = plat;
+                        Destroy(plat);
+                        curSect.platform = null;
                     }
                     else
                     {

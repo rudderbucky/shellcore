@@ -116,6 +116,7 @@ public class WCWorldIO : MonoBehaviour
 
     public void TestWorld()
     {
+        // TODO: copy custom resources
         var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
         if(generatorHandler.WriteWorld(path))
         {

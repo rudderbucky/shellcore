@@ -40,7 +40,7 @@ public class LandPlatformGenerator : MonoBehaviour {
             return instance;
         }
     }
-    public LandPlatform blueprint;
+
     public GroundPlatform[] groundPlatforms;
     //private Dictionary<int, GameObject> tiles;
     private List<Rect> areas;
@@ -48,7 +48,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     private Vector2 center;
 
     //private Dictionary<NavigationNode, int> areaIDByNode;
-    private Dictionary<GameObject, int> areaIDByTile;
+    private Dictionary<GameObject, int> areaIDByTile; // TODO: Add areaIDByTile
     public float tileSize { get; set; }
     public Color color { get; private set; }
     public Vector2 Offset { get; set; }
@@ -97,7 +97,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     public void BuildTiles(LandPlatform platform, Vector2 center) {
 
         this.center = center;
-        blueprint = platform;
+        var blueprint = platform;
 
         tileSize = ResourceManager.GetAsset<GameObject>(blueprint.prefabs[0]).GetComponent<SpriteRenderer>().bounds.size.x;
 
@@ -295,15 +295,6 @@ public class LandPlatformGenerator : MonoBehaviour {
         groundPlatforms = null;
 
         //nodes.Clear();
-    }
-
-    bool isValidTile(int x, int y)
-    {
-        bool limitCheck = x < blueprint.rows && y < blueprint.columns && x >= 0 && y >= 0;
-        bool selfIsTile = limitCheck && blueprint.tilemap[x * blueprint.columns + y] > -1;
-        bool selfIsWithinLengthLimit = selfIsTile && blueprint.tilemap[x * blueprint.columns + y] < blueprint.prefabs.Length;
-        bool final = selfIsWithinLengthLimit && blueprint.prefabs[blueprint.tilemap[x * blueprint.columns + y]] != null;
-        return final;
     }
 
     #if UNITY_EDITOR
