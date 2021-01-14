@@ -78,4 +78,6 @@ public class Sector : ScriptableObject
     public string waveSetPath;
     public RectangleEffectSkin rectangleEffectSkin;
     public BackgroundTileSkin backgroundTileSkin;
+
+    public int[] shardCountSet = new int[3] {0, 0, 0};
 }

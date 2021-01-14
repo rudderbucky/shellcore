@@ -31,6 +31,7 @@ public class SectorPropertyDisplay : MonoBehaviour
     public Transform bgSpawnScrollContents;
     public RectTransform mainContents;
     Vector2 mousePos;
+    public List<InputField> shardCounts = new List<InputField>();
 
     bool opening = false;
     bool editingDefaults = false;
@@ -69,6 +70,10 @@ public class SectorPropertyDisplay : MonoBehaviour
         clearBGSpawnsButton.SetActive(false);
         parseBGSpawnsButton.SetActive(false);
         deleteButton.SetActive(false);
+        for(int i = 0; i < shardCounts.Count; i++)
+        {
+            shardCounts[i].gameObject.SetActive(false);
+        }
 
         opening = false;
     }
@@ -106,6 +111,11 @@ public class SectorPropertyDisplay : MonoBehaviour
         clearBGSpawnsButton.SetActive(true);
         parseBGSpawnsButton.SetActive(true);
         deleteButton.SetActive(true);
+        for(int i = 0; i < shardCounts.Count; i++)
+        {
+            shardCounts[i].gameObject.SetActive(true);
+        }
+
 
         waveSet.text = sector.waveSetPath;
 
@@ -116,6 +126,10 @@ public class SectorPropertyDisplay : MonoBehaviour
         colorR.text = currentSector.backgroundColor.r + "";
         colorG.text = currentSector.backgroundColor.g + "";
         colorB.text = currentSector.backgroundColor.b + "";
+        for(int i = 0; i < shardCounts.Count; i++)
+        {
+            shardCounts[i].text = currentSector.shardCountSet[i] + "";
+        }
         opening = false;
         UpdateBGSpawns();
     }
@@ -192,6 +206,17 @@ public class SectorPropertyDisplay : MonoBehaviour
         if (opening || editingDefaults)
             return;
         currentSector.backgroundTileSkin = (BackgroundTileSkin)tiles.value;
+    }
+
+    public void UpdateShardCounts()
+    {
+        if (opening || editingDefaults)
+            return;
+
+        for(int i = 0; i < shardCounts.Count; i++)
+        {
+            currentSector.shardCountSet[i] = int.Parse(shardCounts[i].text);
+        }
     }
 
     public void Hide() 
