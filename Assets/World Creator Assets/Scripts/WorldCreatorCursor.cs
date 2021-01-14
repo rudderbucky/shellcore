@@ -68,6 +68,11 @@ public class WorldCreatorCursor : MonoBehaviour
         cursorModeCount = System.Enum.GetValues(typeof(WCCursorMode)).Length;
     }
 
+    public void ShiftMode(int bump)
+    {
+        SetMode((WCCursorMode)(((int)mode + bump) % 3));
+    }
+
     void Start() {
         SetCurrent(0);
         maxIndex = handler.itemPack.items.Count;
@@ -75,6 +80,7 @@ public class WorldCreatorCursor : MonoBehaviour
     }
     // Update is called once per frame
     static int sortLayerNum = 1;
+    public GUIWindowScripts manual;
     void Update() {
 		current.pos = CalcPos(current);
         if(current.obj) {
@@ -87,7 +93,12 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
         {
-            SetMode((WCCursorMode)(((int)mode + 1) % 3));
+            ShiftMode(1);
+        }
+
+        if(Input.GetKeyDown(KeyCode.M))
+        {
+            manual.ToggleActive();
         }
 
         switch (mode)
@@ -347,7 +358,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 currentSector.sector = ScriptableObject.CreateInstance<Sector>();
                 currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
                 currentSector.sector.hasMusic = true; // sectors have music by default in WC
-                currentSector.sector.backgroundColor = SectorColors.colors[0];
+                currentSector.sector.backgroundColor = GetDefaultColor((Sector.SectorType)0);
                 currentSector.sector.rectangleEffectSkin = (RectangleEffectSkin)
                     PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
                 currentSector.sector.backgroundTileSkin = (BackgroundTileSkin)
@@ -413,6 +424,18 @@ public class WorldCreatorCursor : MonoBehaviour
                 }
             }
         }
+    }
+
+    public static Color GetDefaultColor(Sector.SectorType type)
+    {
+        return new Color(
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{(int)type}", 
+                SectorColors.colors[(int)type].r),
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{(int)type}", 
+                SectorColors.colors[(int)type].g),
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{(int)type}", 
+                SectorColors.colors[(int)type].b)
+        );
     }
 
     public void EntitySelection()
@@ -525,6 +548,7 @@ public class WorldCreatorCursor : MonoBehaviour
     void Rotate(Item item) {
         item.obj.transform.Rotate(0, 0, 90);
     }
+
     public Vector2 CalcPos(Item item) {
         Vector3 mousePos = GetMousePos();
         if(item.type == ItemType.Platform) {

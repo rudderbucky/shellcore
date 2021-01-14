@@ -41,5 +41,6 @@ public class WorldData : ScriptableObject
     public Vector2 initialSpawn;
     public string defaultBlueprintJSON;
     public string author;
+    public string description;
     public PartIndexData[] partIndexDataArray;
 }

@@ -93,7 +93,7 @@ public class SaveHandler : MonoBehaviour {
 		save.credits = player.credits;
         save.abilityCaps = player.abilityCaps;
         save.shards = player.shards;
-        save.resourcePath = SectorManager.instance.resourcePath;
+        if(save.resourcePath == "" || save.resourcePath.Contains("main")) save.resourcePath = SectorManager.instance.resourcePath;
 		save.characters = SectorManager.instance.characters;
 		save.version = VersionNumberScript.version;
 		

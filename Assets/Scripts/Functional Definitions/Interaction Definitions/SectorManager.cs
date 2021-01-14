@@ -35,6 +35,9 @@ public class SectorManager : MonoBehaviour
     public Vector2 spawnPoint;
     public WorldData.CharacterData[] characters; // Unity initializes public arrays, remember!
     public DialogueSystem dialogueSystem;
+
+    public List<ShardRock> shardRocks = new List<ShardRock>();
+    public GameObject shardRockPrefab;
     public static Sector GetSectorByName(string sectorName) 
     {
         foreach(var sector in instance.sectors)
@@ -828,6 +831,21 @@ public class SectorManager : MonoBehaviour
                 bgSpawns.Add((GetBlueprintOfLevelEntity(bgSpawn.entity), bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
             }
 
+
+        // shards
+        for(int i = 0; i < current.shardCountSet.Length; i++)
+        {
+            for(int j = 0; j < current.shardCountSet[i]; j++)
+            {
+                var shard = Instantiate(shardRockPrefab, new Vector3(
+                    Random.Range(current.bounds.x, current.bounds.x + current.bounds.w), 
+                    Random.Range(current.bounds.y, current.bounds.y - current.bounds.h), 0)
+                , Quaternion.identity).GetComponent<ShardRock>();
+                shard.tier = i;
+                shardRocks.Add(shard);
+            }
+        }
+
         // music
         PlayCurrentSectorMusic();
 
@@ -838,6 +856,20 @@ public class SectorManager : MonoBehaviour
 
     private void UnloadCurrentSector()
     {
+        // destroy existing shard rocks
+        foreach(var rock in shardRocks)
+        {
+            if(rock)
+                Destroy(rock.gameObject);
+        }
+        foreach(var shard in ShardRock.shards)
+        {
+            if(shard && !shard.GetComponent<Draggable>().dragging)
+                Destroy(shard.gameObject);
+        }
+        ShardRock.shards.Clear();
+        shardRocks.Clear();
+
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var obj in objects)
         {

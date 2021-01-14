@@ -14,6 +14,8 @@ public class WCWorldIO : MonoBehaviour
     public WaveBuilder waveBuilder;
     public GameObject buttonPrefab;
     public Transform content;
+    public RectTransform IOContainer;
+    public GameObject worldContents;
     public static bool active = false;
 
     string originalReadPath = "";
@@ -37,27 +39,54 @@ public class WCWorldIO : MonoBehaviour
 
     public void ShowWaveReadMode()
     {
+        IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        worldContents.SetActive(false);
         Show(IOMode.ReadWaveJSON);
     }
 
     public void ShowWaveWriteMode()
     {
+        IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        worldContents.SetActive(false);
         Show(IOMode.WriteWaveJSON);
     }
 
     public void ShowShipReadMode()
     {
+        IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        worldContents.SetActive(false);
         Show(IOMode.ReadShipJSON);
     }
 
     public void ShowShipWriteMode()
     {
+        IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        worldContents.SetActive(false);
         Show(IOMode.WriteShipJSON);
     }
 
     public void ShowReadMode()
     {
+        IOContainer.sizeDelta = new Vector2(900, IOContainer.sizeDelta.y);
+        worldContents.SetActive(true);
         Show(IOMode.Read);
+    }
+
+    public void ShowWriteMode()
+    {
+        IOContainer.sizeDelta = new Vector2(900, IOContainer.sizeDelta.y);
+        worldContents.SetActive(true);
+        Show(IOMode.Write);
+    }
+
+    string currentResourcePath = "";
+    public SaveMenuHandler saveMenuHandler;
+
+    public void PromptCurrentResourcePath()
+    {
+        if(currentResourcePath == "") return;
+        saveMenuHandler.Activate(currentResourcePath);
+        Hide();
     }
 
     #if UNITY_EDITOR
@@ -113,6 +142,11 @@ public class WCWorldIO : MonoBehaviour
         }
     }
 
+    public void WCReadCurrentPath()
+    {
+        generatorHandler.ReadWorld(currentResourcePath);
+        Hide();
+    }
 
     public void TestWorld()
     {
@@ -149,14 +183,12 @@ public class WCWorldIO : MonoBehaviour
     }
 
 
-    public void ShowWriteMode()
-    {
-        Show(IOMode.Write);
-    }
+    
 
     public GameObject window;
     public GameObject newWorldStack;
     public InputField field;
+    public GameObject readButtons;
     void Show(IOMode mode)
     {
         active = true;
@@ -166,6 +198,8 @@ public class WCWorldIO : MonoBehaviour
         DestroyAllButtons();
         this.mode = mode;
         string[] directories = null;
+
+        readButtons.SetActive(mode == IOMode.Read);
 
         switch(mode)
         {
@@ -191,27 +225,35 @@ public class WCWorldIO : MonoBehaviour
                     {
                         case IOMode.Read:
                             originalReadPath = dir;
-                            generatorHandler.ReadWorld(dir);
+                            worldPathName.text = System.IO.Path.GetFileName(dir);
+                            WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+                            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(dir + "\\world.worlddata"), wdata);
+                            authors.text = wdata.author;
+                            currentResourcePath = dir;
+                            description.text = wdata.description;
                             break;
                         case IOMode.Write:
                             if(dir.Contains("main"))
                                 generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(dir) + "\\main - " + VersionNumberScript.version);
                             else generatorHandler.WriteWorld(dir);
+                            Hide();
                             break;
                         case IOMode.ReadShipJSON:
                             builder.LoadBlueprint(System.IO.File.ReadAllText(dir));
                             break;
                         case IOMode.WriteShipJSON:
                             ShipBuilder.SaveBlueprint(null, dir, builder.GetCurrentJSON());
+                            Hide();
                             break;
                         case IOMode.ReadWaveJSON:
                             waveBuilder.ReadWaves(JsonUtility.FromJson<WaveSet>(System.IO.File.ReadAllText(dir)));
+                            Hide();
                             break;
                         case IOMode.WriteWaveJSON:
                             waveBuilder.ParseWaves(dir);
+                            Hide();
                             break;
                     }
-                    Hide();
                 }));
         }
 
@@ -221,9 +263,13 @@ public class WCWorldIO : MonoBehaviour
     {
         var button = Instantiate(buttonPrefab, content).GetComponent<Button>();
         button.onClick.AddListener(action);
-        button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name);
+        button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name);
     }
     
+    public Text worldPathName;
+    public InputField authors;
+    public InputField description;
+
     public void AddButtonFromField()
     {
         if(field.text == "main") return;
@@ -250,27 +296,37 @@ public class WCWorldIO : MonoBehaviour
             switch(mode)
             {
                 case IOMode.Read:
-                    generatorHandler.ReadWorld(path);
+                    worldPathName.text = System.IO.Path.GetFileName(path);
+                    WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+                    JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
+                    authors.text = wdata.author;
+                    description.text = wdata.description;
+                    currentResourcePath = path;
+                    //generatorHandler.ReadWorld(path);
                     break;
                 case IOMode.Write:
                     if(path.Contains("main"))
                         generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(path) + "\\main - " + VersionNumberScript.version);
                     else generatorHandler.WriteWorld(path);
+                    Hide();
                     break;
                 case IOMode.ReadShipJSON:
                     builder.LoadBlueprint(System.IO.File.ReadAllText(path));
+                    Hide();
                     break;
                 case IOMode.WriteShipJSON:
                     ShipBuilder.SaveBlueprint(null, path, builder.GetCurrentJSON());
+                    Hide();
                     break;
                 case IOMode.ReadWaveJSON:
                     waveBuilder.ReadWaves(JsonUtility.FromJson<WaveSet>(System.IO.File.ReadAllText(path)));
+                    Hide();
                     break;
                 case IOMode.WriteWaveJSON:
                     waveBuilder.ParseWaves(path);
+                    Hide();
                     break;
             }
-            Hide();
         }));
 }
 

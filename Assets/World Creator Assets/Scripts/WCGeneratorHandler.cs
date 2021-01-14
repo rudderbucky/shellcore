@@ -24,6 +24,7 @@ public class WCGeneratorHandler : MonoBehaviour
     public InputField worldReadPath;
     public InputField blueprintField;
     public InputField authorField;
+    public InputField descriptionField;
     public WCCharacterHandler characterHandler;
     public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
     public Item characterItem;
@@ -387,6 +388,7 @@ public class WCGeneratorHandler : MonoBehaviour
         wdata.defaultCharacters = cursor.characters.ToArray();
         wdata.defaultBlueprintJSON = blueprintField.text;
         wdata.author = authorField.text;
+        wdata.description = descriptionField.text;
         wdata.partIndexDataArray = partData.ToArray();
 
         string wdjson = JsonUtility.ToJson(wdata);
@@ -560,7 +562,8 @@ public class WCGeneratorHandler : MonoBehaviour
                         }
 
                         blueprintField.text = wdata.defaultBlueprintJSON;
-                        authorField.text = wdata.author;
+                        // authorField.text = wdata.author;
+                        // descriptionField.text = wdata.description;
                         continue;
                     }
 

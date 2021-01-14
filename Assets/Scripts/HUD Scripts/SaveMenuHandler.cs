@@ -17,6 +17,8 @@ public class SaveMenuHandler : GUIWindowScripts {
 	public GUIWindowScripts deletePrompt;
 	public GUIWindowScripts migratePrompt;
 	public static float? migratedTimePlayed = null;
+	public static SaveMenuHandler instance;
+	public string resourcePath = "";
 	public static List<string> migrationVersions = new List<string>() 
 	{
 		"Alpha 1.0.0",
@@ -29,6 +31,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		"Alpha 4.3.0",
 	};
 	void Awake() {
+		instance = this;
 		saves = new List<PlayerSave>();
 		paths = new List<string>();
 		icons = new List<SaveMenuIcon>();
@@ -56,11 +59,14 @@ public class SaveMenuHandler : GUIWindowScripts {
 		}
 	}
 
-	void Initialize() {
+	void Initialize(string resourcePath = "") {
 		string curpath = null;
+		this.resourcePath = resourcePath;
 		if(File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) 
 			curpath = File.ReadAllText(Application.persistentDataPath + "\\CurrentSavePath");
 		for(int i = 0; i < saves.Count; i++) {
+			if((resourcePath == "" && !saves[i].resourcePath.Contains("main")) 
+				|| (resourcePath != "" && saves[i].resourcePath != resourcePath)) continue;
 			SaveMenuIcon icon = Instantiate(saveIconPrefab, contents).GetComponent<SaveMenuIcon>();
 			icon.save = saves[i];
 			icon.index = i;
@@ -75,6 +81,11 @@ public class SaveMenuHandler : GUIWindowScripts {
 	public override void Activate() {
 		base.Activate();
 		Initialize();
+	}
+
+	public void Activate(string resourcePath = "") {
+		base.Activate();
+		Initialize(resourcePath);
 	}
 
 	public override void CloseUI() {
@@ -174,7 +185,8 @@ public class SaveMenuHandler : GUIWindowScripts {
 			paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1) return;
 
 		var save = CreateSave(name);
-
+		Debug.Log(this.resourcePath);
+		save.resourcePath = this.resourcePath;
 		saves.Add(save);
 		paths.Add(path);
 
