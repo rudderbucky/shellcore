@@ -13,7 +13,11 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
 			if(name == "MainMenuButton") 
 			{
 				if(SectorManager.testJsonPath == null) SceneManager.LoadScene("MainMenu");
-				else SceneManager.LoadScene("WorldCreator");
+				else 
+        {
+          SceneManager.LoadScene("WorldCreator");
+          SectorManager.testJsonPath = null;
+        }
 			}
     }
 
