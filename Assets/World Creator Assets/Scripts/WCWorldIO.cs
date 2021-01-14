@@ -79,13 +79,12 @@ public class WCWorldIO : MonoBehaviour
         Show(IOMode.Write);
     }
 
-    string currentResourcePath = "";
     public SaveMenuHandler saveMenuHandler;
 
     public void PromptCurrentResourcePath()
     {
-        if(currentResourcePath == "") return;
-        saveMenuHandler.Activate(currentResourcePath);
+        if(originalReadPath == "") return;
+        saveMenuHandler.Activate(originalReadPath);
         Hide();
     }
 
@@ -144,7 +143,7 @@ public class WCWorldIO : MonoBehaviour
 
     public void WCReadCurrentPath()
     {
-        generatorHandler.ReadWorld(currentResourcePath);
+        generatorHandler.ReadWorld(originalReadPath);
         Hide();
     }
 
@@ -182,6 +181,19 @@ public class WCWorldIO : MonoBehaviour
         SaveMenuIcon.LoadSaveByPath(savePath, false);
     }
 
+    private void ReadWorldInternal(string path)
+    {
+        worldPathName.text = System.IO.Path.GetFileName(path);
+        WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+        JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
+        authors.text = wdata.author;
+        description.text = wdata.description;
+        originalReadPath = path;
+        foreach(var button in buttons)
+        {
+            button.image.color = new Color32(60,60,60,255);
+        }
+    }
 
     
 
@@ -191,6 +203,7 @@ public class WCWorldIO : MonoBehaviour
     public GameObject readButtons;
     void Show(IOMode mode)
     {
+        buttons.Clear();
         active = true;
         gameObject.SetActive(true);
         window.SetActive(true);
@@ -224,13 +237,7 @@ public class WCWorldIO : MonoBehaviour
                     switch(mode)
                     {
                         case IOMode.Read:
-                            originalReadPath = dir;
-                            worldPathName.text = System.IO.Path.GetFileName(dir);
-                            WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
-                            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(dir + "\\world.worlddata"), wdata);
-                            authors.text = wdata.author;
-                            currentResourcePath = dir;
-                            description.text = wdata.description;
+                            ReadWorldInternal(dir);
                             break;
                         case IOMode.Write:
                             if(dir.Contains("main"))
@@ -264,8 +271,11 @@ public class WCWorldIO : MonoBehaviour
         var button = Instantiate(buttonPrefab, content).GetComponent<Button>();
         button.onClick.AddListener(action);
         button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name);
+        buttons.Add(button);
     }
     
+    private List<Button> buttons = new List<Button>();
+
     public Text worldPathName;
     public InputField authors;
     public InputField description;
@@ -296,12 +306,7 @@ public class WCWorldIO : MonoBehaviour
             switch(mode)
             {
                 case IOMode.Read:
-                    worldPathName.text = System.IO.Path.GetFileName(path);
-                    WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
-                    JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
-                    authors.text = wdata.author;
-                    description.text = wdata.description;
-                    currentResourcePath = path;
+                    ReadWorldInternal(path);
                     //generatorHandler.ReadWorld(path);
                     break;
                 case IOMode.Write:
@@ -332,6 +337,7 @@ public class WCWorldIO : MonoBehaviour
 
     void DestroyAllButtons()
     {
+        buttons.Clear();
         for(int i = 0; i < content.childCount; i++)
         {
             Destroy(content.GetChild(i).gameObject);
