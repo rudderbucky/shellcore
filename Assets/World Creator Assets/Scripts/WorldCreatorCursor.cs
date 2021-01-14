@@ -534,7 +534,7 @@ public class WorldCreatorCursor : MonoBehaviour
         return null;
     }
 
-    void Remove(Item item) {
+    public void Remove(Item item) {
         placedItems.Remove(item);
         Destroy(item.obj);
         propertyDisplay.Hide();

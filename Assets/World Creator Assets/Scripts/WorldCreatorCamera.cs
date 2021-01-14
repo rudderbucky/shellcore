@@ -15,15 +15,20 @@ public class WorldCreatorCamera : MonoBehaviour
         if(!system.IsPointerOverGameObject())
         {
             transform.position += Input.GetAxis("Horizontal") * new Vector3(1 + Mathf.Abs(transform.position.z + 10) / 4, 0, 0);
-            if(Screen.width - Input.mousePosition.x < 3)
-                transform.position += new Vector3(1 + Mathf.Abs(transform.position.z + 10) / 4, 0, 0);
-            if(Screen.width - Input.mousePosition.x > Screen.width - 3)
-                transform.position -= new Vector3(1 + Mathf.Abs(transform.position.z + 10) / 4, 0, 0);
             transform.position += Input.GetAxis("Vertical") * new Vector3(0, 1 + Mathf.Abs(transform.position.z + 10) / 4, 0);
-            if(Screen.height - Input.mousePosition.y < 3)
-                transform.position += new Vector3(0, 1 + Mathf.Abs(transform.position.z + 10) / 4, 0);
-            if(Screen.height - Input.mousePosition.y > Screen.height - 3)
-                transform.position -= new Vector3(0, 1 + Mathf.Abs(transform.position.z + 10) / 4, 0);
+            
+
+            if(Input.GetMouseButton(2))
+            {
+                if(Screen.width - Input.mousePosition.x < 3)
+                    transform.position += 2*new Vector3(1 + Mathf.Abs(transform.position.z + 10) / 4, 0, 0);
+                if(Screen.width - Input.mousePosition.x > Screen.width - 3)
+                    transform.position -= 2*new Vector3(1 + Mathf.Abs(transform.position.z + 10) / 4, 0, 0);
+                if(Screen.height - Input.mousePosition.y < 3)
+                    transform.position += 2*new Vector3(0, 1 + Mathf.Abs(transform.position.z + 10) / 4, 0);
+                if(Screen.height - Input.mousePosition.y > Screen.height - 3)
+                    transform.position -= 2*new Vector3(0, 1 + Mathf.Abs(transform.position.z + 10) / 4, 0);
+            }
 
             if(Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.z >= -150) 
             {

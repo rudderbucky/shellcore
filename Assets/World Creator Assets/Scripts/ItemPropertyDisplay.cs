@@ -90,4 +90,11 @@ public class ItemPropertyDisplay : MonoBehaviour
         currentItem.rotation = rotation;
         currentItem.obj.transform.rotation = Quaternion.Euler(0, 0, rotation);
     }
+
+    public void RemoveCurrent()
+    {
+        WorldCreatorCursor.instance.Remove(currentItem);
+        currentItem = null;
+        Hide();
+    }
 }
