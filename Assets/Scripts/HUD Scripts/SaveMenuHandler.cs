@@ -8,8 +8,11 @@ public class SaveMenuHandler : GUIWindowScripts {
 
 	List<PlayerSave> saves;
 	List<string> paths;
+	public Transform worldContents;
 	public Transform contents;
+	public GameObject worldIconPrefab;
 	public GameObject saveIconPrefab;
+	List<Button> worldButtons;
 	List<SaveMenuIcon> icons;
 	public InputField inputField;
 	int indexToDelete;
@@ -19,6 +22,9 @@ public class SaveMenuHandler : GUIWindowScripts {
 	public static float? migratedTimePlayed = null;
 	public static SaveMenuHandler instance;
 	public string resourcePath = "";
+	public GameObject saveView;
+	public GameObject worldView;
+	public Text selectIndicatorText;
 	public static List<string> migrationVersions = new List<string>() 
 	{
 		"Alpha 1.0.0",
@@ -30,8 +36,34 @@ public class SaveMenuHandler : GUIWindowScripts {
 		"Alpha 4.2.0",
 		"Alpha 4.3.0",
 	};
-	void Awake() {
-		instance = this;
+
+	void SetUpWorlds()
+	{
+		worldButtons = new List<Button>();
+		selectIndicatorText.text = "SELECT WORLD";
+		string[] directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
+		foreach(var dir in directories)
+        {
+			if(dir.Contains("main") && !dir.Contains(VersionNumberScript.mapVersion))
+				continue;
+			string xdir = dir;
+			Button worldButton = Instantiate(worldIconPrefab, worldContents).GetComponent<Button>();
+			worldButtons.Add(worldButton);
+			worldButton.GetComponentInChildren<Text>().text = dir.Contains("main") ? "Main world" : System.IO.Path.GetFileName(dir);
+			worldButton.onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
+				this.resourcePath = dir.Contains("main") ? "" : xdir;
+				worldView.SetActive(false);
+				InitializeSaves();
+			}));
+			if(dir.Contains("main"))
+			{
+				worldButton.transform.SetSiblingIndex(0);
+			}
+		}
+	}
+
+	void SetUpSaves()
+	{
 		saves = new List<PlayerSave>();
 		paths = new List<string>();
 		icons = new List<SaveMenuIcon>();
@@ -59,9 +91,12 @@ public class SaveMenuHandler : GUIWindowScripts {
 		}
 	}
 
-	void Initialize(string resourcePath = "") {
+	void InitializeSaves()
+	{
+		saveView.SetActive(true);
+		selectIndicatorText.text = "SELECT SAVE";
 		string curpath = null;
-		this.resourcePath = resourcePath;
+		
 		if(File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) 
 			curpath = File.ReadAllText(Application.persistentDataPath + "\\CurrentSavePath");
 		for(int i = 0; i < saves.Count; i++) {
@@ -73,9 +108,26 @@ public class SaveMenuHandler : GUIWindowScripts {
 			icon.handler = this;
 			icon.path = paths[i];
 			icons.Add(icon);
-			if(icon.path == curpath || i == 0) icon.transform.SetAsFirstSibling();
-			else icon.transform.SetSiblingIndex(1);
+			if(resourcePath == "")
+			{
+				if(icon.path == curpath || i == 0) icon.transform.SetAsFirstSibling();
+				else icon.transform.SetSiblingIndex(1);
+			}
+			else icon.transform.SetSiblingIndex(0);
 		}
+	}
+
+	void Awake() {
+		instance = this;
+	}
+
+	void Initialize(string resourcePath = "") {
+		this.resourcePath = resourcePath;
+		worldView.SetActive(true);
+		saveView.SetActive(false);
+		SetUpWorlds();
+		SetUpSaves();
+		
 	}
 
 	public override void Activate() {
@@ -92,7 +144,12 @@ public class SaveMenuHandler : GUIWindowScripts {
 		foreach(SaveMenuIcon icon in icons) {
 			Destroy(icon.gameObject);
 		}
+		foreach(var worldButton in worldButtons)
+		{
+			Destroy(worldButton.gameObject);
+		}
 		icons.Clear();
+		worldButtons.Clear();
 		base.CloseUI();
 	}
 
@@ -177,6 +234,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 			icons[i].index = i;
 		}
 	}
+
 	public void AddSave() {
 		string name = inputField.text.Trim();
 		string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
