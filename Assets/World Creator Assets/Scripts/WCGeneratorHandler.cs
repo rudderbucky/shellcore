@@ -522,6 +522,7 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             try
             {
+                //cursor.Clear();
                 // resource pack loading
                 if (!ResourceManager.Instance.LoadResources(path) && SectorManager.testResourcePath != null)
                 {

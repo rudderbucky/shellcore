@@ -143,7 +143,14 @@ public class WCWorldIO : MonoBehaviour
 
     public void WCReadCurrentPath()
     {
-        generatorHandler.ReadWorld(originalReadPath);
+        if(mode == IOMode.Read)
+            generatorHandler.ReadWorld(originalReadPath);
+        else if(mode == IOMode.Write)
+        {
+            if(originalReadPath.Contains("main"))
+                generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(originalReadPath) + "\\main - " + VersionNumberScript.version);
+            else generatorHandler.WriteWorld(originalReadPath);
+        }
         Hide();
     }
 
@@ -181,20 +188,27 @@ public class WCWorldIO : MonoBehaviour
         SaveMenuIcon.LoadSaveByPath(savePath, false);
     }
 
-    private void ReadWorldInternal(string path)
+    void SetWorldIndicators(string path)
     {
         worldPathName.text = "Currently selected: " + System.IO.Path.GetFileName(path);
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
-        JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
-        authors.text = wdata.author;
-        description.text = wdata.description;
-        originalReadPath = path;
+        try
+        {
+            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
+            authors.text = wdata.author;
+            description.text = wdata.description;
+        }
+        catch(System.Exception e)
+        {
+            authors.text = 
+            description.text = "";
+            Debug.Log(e);
+        }
         foreach(var button in buttons)
         {
+            originalReadPath = path;
             button.image.color = new Color32(60,60,60,255);
         }
-        authors.placeholder.GetComponent<Text>().text = "World authors appear here";
-        description.placeholder.GetComponent<Text>().text = "World descriptions appear here";
     }
 
     
@@ -253,13 +267,8 @@ public class WCWorldIO : MonoBehaviour
                     switch(mode)
                     {
                         case IOMode.Read:
-                            ReadWorldInternal(dir);
-                            break;
                         case IOMode.Write:
-                            if(dir.Contains("main"))
-                                generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(dir) + "\\main - " + VersionNumberScript.version);
-                            else generatorHandler.WriteWorld(dir);
-                            Hide();
+                            SetWorldIndicators(dir);
                             break;
                         case IOMode.ReadShipJSON:
                             builder.LoadBlueprint(System.IO.File.ReadAllText(dir));
@@ -330,14 +339,8 @@ public class WCWorldIO : MonoBehaviour
             switch(mode)
             {
                 case IOMode.Read:
-                    ReadWorldInternal(path);
-                    //generatorHandler.ReadWorld(path);
-                    break;
                 case IOMode.Write:
-                    if(path.Contains("main"))
-                        generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(path) + "\\main - " + VersionNumberScript.version);
-                    else generatorHandler.WriteWorld(path);
-                    Hide();
+                    SetWorldIndicators(path);
                     break;
                 case IOMode.ReadShipJSON:
                     builder.LoadBlueprint(System.IO.File.ReadAllText(path));

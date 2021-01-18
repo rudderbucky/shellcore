@@ -116,7 +116,6 @@ public class PartyManager : MonoBehaviour
             {
                 if(!AIData.entities.Exists(x => x.ID == charID))
                 {
-                    Debug.Log("spawning");
                     var print = ScriptableObject.CreateInstance<EntityBlueprint>();
                     JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
                     print.intendedType = EntityBlueprint.IntendedType.ShellCore;
@@ -127,7 +126,6 @@ public class PartyManager : MonoBehaviour
                     levelEnt.position = PlayerCore.Instance.transform.position + new Vector3(0, 5);
                     SectorManager.instance.SpawnEntity(print, levelEnt);
                 }
-                Debug.Log("abc");
                 partyResponses.Add(charID, ch.partyData);
 
                 break;
