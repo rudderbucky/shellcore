@@ -183,7 +183,7 @@ public class WCWorldIO : MonoBehaviour
 
     private void ReadWorldInternal(string path)
     {
-        worldPathName.text = System.IO.Path.GetFileName(path);
+        worldPathName.text = "Currently selected: " + System.IO.Path.GetFileName(path);
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
         authors.text = wdata.author;
@@ -193,6 +193,8 @@ public class WCWorldIO : MonoBehaviour
         {
             button.image.color = new Color32(60,60,60,255);
         }
+        authors.placeholder.GetComponent<Text>().text = "World authors appear here";
+        description.placeholder.GetComponent<Text>().text = "World descriptions appear here";
     }
 
     
@@ -200,7 +202,7 @@ public class WCWorldIO : MonoBehaviour
     public GameObject window;
     public GameObject newWorldStack;
     public InputField field;
-    public GameObject readButtons;
+    public Text readButton;
     void Show(IOMode mode)
     {
         buttons.Clear();
@@ -212,12 +214,26 @@ public class WCWorldIO : MonoBehaviour
         this.mode = mode;
         string[] directories = null;
 
-        readButtons.SetActive(mode == IOMode.Read);
+        readButton.gameObject.SetActive(mode == IOMode.Read || mode == IOMode.Write);
 
         switch(mode)
         {
             case IOMode.Read:
+                readButton.text = "Read world";
+                worldPathName.text = "If you select a world, its name will appear here.";
+                authors.text = "";
+                description.text = "";
+                authors.placeholder.GetComponent<Text>().text = "World authors appear here";
+                description.placeholder.GetComponent<Text>().text = "World description appear here";
+                directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
+                break;
             case IOMode.Write:
+                readButton.text = "Write world";
+                worldPathName.text = "If you select a world, its name will appear here.";
+                authors.text = "";
+                description.text = "";
+                authors.placeholder.GetComponent<Text>().text = "Enter world authors here";
+                description.placeholder.GetComponent<Text>().text = "Enter world description here";
                 directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
                 break;
             case IOMode.ReadShipJSON:
@@ -279,6 +295,14 @@ public class WCWorldIO : MonoBehaviour
     public Text worldPathName;
     public InputField authors;
     public InputField description;
+    public InputField newWorldInputField;
+
+    public void OpenNewWorldPrompt() {
+		newWorldInputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+		newWorldInputField.transform.parent.Find("Background").GetComponentInChildren<Text>().text = "Name your World:\n" +
+		"(Warning: the contents of the World Creator will immediately be written into the new folder.)";
+		newWorldInputField.transform.parent.Find("Create Save").GetComponentInChildren<Text>().text = "Create World!";
+	}
 
     public void AddButtonFromField()
     {

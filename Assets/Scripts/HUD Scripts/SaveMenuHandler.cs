@@ -155,6 +155,9 @@ public class SaveMenuHandler : GUIWindowScripts {
 
 	public void OpenSavePrompt() {
 		inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+		inputField.transform.parent.Find("Background").GetComponentInChildren<Text>().text = "Name your ShellCore:\n" +
+		"(Warning: closing this box, entering nothing, or entering a name already in use by another save will terminate this process.)";
+		inputField.transform.parent.Find("Create Save").GetComponentInChildren<Text>().text = "Create ShellCore!";
 	}
 
 	public void PromptDelete(int index) {
