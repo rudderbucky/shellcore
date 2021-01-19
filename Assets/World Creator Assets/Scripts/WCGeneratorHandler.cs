@@ -577,6 +577,11 @@ public class WCGeneratorHandler : MonoBehaviour
                         continue;
                     }
 
+                    if (ResourceManager.fileNames.Contains(file))
+                    {
+                        continue;
+                    }
+
                     string sectorjson = System.IO.File.ReadAllText(file);
                     SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                     // Debug.Log("Platform JSON: " + data.platformjson);

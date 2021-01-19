@@ -35,6 +35,9 @@ public class ResourceManager : MonoBehaviour
     Dictionary<string, Object> resources;
     public static ResourceManager Instance { get; private set; }
     public static float soundVolume = 1;
+
+    public static List<string> fileNames = new List<string>();
+
     public void Initialize()
     {
         allPartNames = new List<string>();
@@ -67,6 +70,8 @@ public class ResourceManager : MonoBehaviour
 
         string resDataPath = System.IO.Path.Combine(path, "ResourceData.txt");
 
+        fileNames = new List<string>();
+
         if (File.Exists(resDataPath))
         {
             string[] lines = File.ReadAllLines(resDataPath);
@@ -96,6 +101,7 @@ public class ResourceManager : MonoBehaviour
                     string resPath = System.IO.Path.Combine(path, names[1]);
                     if (File.Exists(resPath))
                     {
+                        fileNames.Add(resPath);
                         switch (mode)
                         {
                             case 0: sprites.    Add((names[0], resPath)); break;
