@@ -53,7 +53,6 @@ namespace NodeEditorFramework.Standard
                     PlayerCore.Instance.cursave.unlockedPartyIDs.Add(entityID);
                 PartyManager.instance.AssignBackend(entityID);
             }
-
             return 0;
         }
     }

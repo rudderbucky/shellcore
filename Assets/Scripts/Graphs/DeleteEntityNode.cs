@@ -40,8 +40,10 @@ namespace NodeEditorFramework.Standard
         {
             foreach(var data in AIData.entities)
             {
+                
                 if(data.ID == entityID)
                 {
+                    Debug.LogError(entityID + data.ID);
                     Destroy(data.gameObject);
                     return 0;
                 }
