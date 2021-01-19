@@ -1002,6 +1002,11 @@ public class SectorManager : MonoBehaviour
 
     public void RemoveObject(string name)
     {
+        if (name == null)
+        {
+            Debug.LogWarning("Null entity name?");
+            return;
+        }
         if(objects.ContainsKey(name))
             objects.Remove(name);
     }
