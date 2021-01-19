@@ -82,7 +82,8 @@ public class Drone : AirCraft, IOwnable {
         base.Start();
         ai = GetAI();
         ai.owner = owner;
-        //ai.aggression = AirCraftAI.AIAggression.KeepMoving;
+        if (type == DroneType.Worker)
+            ai.aggression = AirCraftAI.AIAggression.KeepMoving;
         ai.allowRetreat = false;
         //ai.setPath(path);
         //ai.setMode(AirCraftAI.AIMode.Path);
