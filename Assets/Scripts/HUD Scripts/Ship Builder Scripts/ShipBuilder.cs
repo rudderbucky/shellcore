@@ -789,7 +789,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		if(editorMode && currentCharacter != null) 
 		{
 			currentCharacter.blueprintJSON = GetCurrentJSON();
-			WCCharacterHandler.ReflectData();
+			WorldCreatorCursor.instance.characterHandler.reflectData();
 			
 			// null character so another change doesn't accidentally happen
 			currentCharacter = null;

@@ -144,7 +144,10 @@ public class WCWorldIO : MonoBehaviour
     public void WCReadCurrentPath()
     {
         if(mode == IOMode.Read)
+        {
+            WorldCreatorCursor.instance.Clear();
             generatorHandler.ReadWorld(originalReadPath);
+        } 
         else if(mode == IOMode.Write)
         {
             if(originalReadPath.Contains("main"))
@@ -204,9 +207,9 @@ public class WCWorldIO : MonoBehaviour
             description.text = "";
             Debug.Log(e);
         }
+        originalReadPath = path;
         foreach(var button in buttons)
         {
-            originalReadPath = path;
             button.image.color = new Color32(60,60,60,255);
         }
     }

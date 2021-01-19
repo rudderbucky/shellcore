@@ -104,6 +104,11 @@ public class WCCharacterHandler : GUIWindowScripts
             var button = Instantiate(buttonPrefab, content).GetComponentInChildren<CharacterButtonScript>();
             button.character = currentData;
             button.cursor = cursor;
+            button.transform.Find("Clear").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
+            {
+                DeleteCharacter(button.character);
+                Destroy(button.gameObject);
+            }));
         }
 
         currentData = new WorldData.CharacterData();
@@ -127,19 +132,22 @@ public class WCCharacterHandler : GUIWindowScripts
         UpdateFollowDialogue();
     }
 
-    public static void ReflectButtonData()
+
+    public void DeleteCharacter(WorldData.CharacterData character)
     {
-        if(instance)
+        cursor.characters.Remove(character);
+    }
+
+    public void ReflectButtonData()
+    {
+        for(int i = 0; i < content.childCount; i++)
         {
-            for(int i = 0; i < instance.content.childCount; i++)
-            {
-                Destroy(instance.content.GetChild(i).gameObject);
-            }
-            
-            foreach(var ch in instance.cursor.characters)
-            {
-                instance.AddCharacter(ch);
-            }
+            Destroy(content.GetChild(i).gameObject);
+        }
+        
+        foreach(var ch in cursor.characters)
+        {
+            AddCharacter(ch);
         }
     }
 

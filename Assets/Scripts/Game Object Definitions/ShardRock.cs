@@ -72,6 +72,7 @@ public class ShardRock : MonoBehaviour, IDamageable
     public float TakeShellDamage(float damage, float shellPiercingFactor, Entity lastDamagedBy)
     {
         currentHealths[0] -= damage;
+        currentHealths[0] = Mathf.Max(0, currentHealths[0]);
         return 0;
     }
 
@@ -107,6 +108,7 @@ public class ShardRock : MonoBehaviour, IDamageable
 
     private void OnDeath() {
         dead = true;
+        currentHealths[0] = 0;
         Destroy(gameObject, 0.75F);
         foreach(SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>()) {
             renderer.enabled = false;
