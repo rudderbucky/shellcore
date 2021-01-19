@@ -175,7 +175,8 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             player.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
             creation.transform.position = vendor.GetPosition();
             creation.GetComponent<Entity>().spawnPoint = vendor.GetPosition();
-            player.SetTractorTarget(creation.GetComponent<Draggable>());
+            if (blueprint.items[index].entityBlueprint.intendedType != EntityBlueprint.IntendedType.Tank)
+                player.SetTractorTarget(creation.GetComponent<Draggable>());
             player.AddPower(-blueprint.items[index].cost);
             if(GetActive()) CloseUI();
             ClearVendor();

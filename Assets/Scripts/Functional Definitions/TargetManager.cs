@@ -44,6 +44,11 @@ public class TargetManager : MonoBehaviour
             {
                 GetTarget(ts);
             }
+            else
+            {
+                targetSearchQueries.Remove(ts);
+                i--;
+            }
         }
 
         targetSearchQueries.Clear();
