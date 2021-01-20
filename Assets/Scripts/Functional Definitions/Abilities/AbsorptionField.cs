@@ -54,7 +54,7 @@ public class AbsorptionField : ActiveAbility
             sr.sprite = ResourceManager.GetAsset<Sprite>("absorption_sprite");
             sr.sortingOrder = 1000;
         }
-        AudioManager.PlayClipByID("clip_activateability", transform.position);
+        AudioManager.PlayClipByID("clip_buff", transform.position);
         // adjust fields
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown

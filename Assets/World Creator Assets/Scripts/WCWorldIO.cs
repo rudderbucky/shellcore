@@ -346,12 +346,11 @@ public class WCWorldIO : MonoBehaviour
         }
 
         if(!Directory.Exists(path) && (mode == IOMode.Read || mode == IOMode.Write)) Directory.CreateDirectory(path);
-        AddButton(path, new UnityEngine.Events.UnityAction(() => {
             switch(mode)
             {
-                case IOMode.Read:
                 case IOMode.Write:
-                    SetWorldIndicators(path);
+                    originalReadPath = path;
+                    WCReadCurrentPath();
                     break;
                 case IOMode.ReadShipJSON:
                     builder.LoadBlueprint(System.IO.File.ReadAllText(path));
@@ -369,9 +368,10 @@ public class WCWorldIO : MonoBehaviour
                     waveBuilder.ParseWaves(path);
                     Hide();
                     break;
+                default:
+                    break;
             }
-        }));
-}
+    }
 
     void DestroyAllButtons()
     {
