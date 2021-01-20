@@ -180,6 +180,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 Debug.LogError("No container for item. Abort.");
                 yield break;
             }
+            Debug.Log("item type " + item.ID);
             switch(item.type)
             {
                 case ItemType.Platform:
@@ -682,6 +683,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
                 }
 
+                /*
                 // now create the character items
                 foreach(var sector in cursor.sectors)
                 {
@@ -700,6 +702,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         }
                     }
                 }
+                */
 
                 ImportExportFormat.RuntimeIOPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
                 Debug.Log("World loaded");

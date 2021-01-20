@@ -646,9 +646,11 @@ public class SectorManager : MonoBehaviour
             if(player.alerter) player.alerter.showMessage("Entering sector: " + current.sectorName);
         }
 
-
+        bool spawnedChar = false;
         for(int i = 0; i < current.entities.Length; i++)
         {
+            if(spawnedChar)
+                break;
             // check if it is a character
             foreach(var ch in characters)
             {
@@ -671,9 +673,13 @@ public class SectorManager : MonoBehaviour
                     current.entities[i].name = ch.name;
                     current.entities[i].faction = ch.faction;
                     SpawnEntity(print, current.entities[i]);
-                    continue;
+                    spawnedChar = true;
+                    break;
                 }
             }
+
+            if(spawnedChar)
+                continue;
             Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
 
             if(obj is GameObject)

@@ -275,6 +275,7 @@ public class WCWorldIO : MonoBehaviour
                             break;
                         case IOMode.ReadShipJSON:
                             builder.LoadBlueprint(System.IO.File.ReadAllText(dir));
+                            Hide();
                             break;
                         case IOMode.WriteShipJSON:
                             ShipBuilder.SaveBlueprint(null, dir, builder.GetCurrentJSON());

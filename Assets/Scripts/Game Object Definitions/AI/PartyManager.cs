@@ -139,7 +139,7 @@ public class PartyManager : MonoBehaviour
     {
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
-            partyMembers.Clear();
+            partyMembers.Remove(partyMembers.Find(c => c.ID == charID));
             var clicked = new Button.ButtonClickedEvent();
             clicked.AddListener(() => AssignCharacter(charID, assignButton));
             // sukratHealth.SetActive(false);
@@ -198,7 +198,13 @@ public class PartyManager : MonoBehaviour
                     name.text = ch.name.ToUpper();
             }
             
-            button.onClick.AddListener(() => AssignCharacter(id, button));
+            if(partyMembers.Exists(c => c.ID == id))
+            {
+                button.GetComponentInChildren<Text>().text = "UNASSIGN";
+                button.onClick.AddListener(() => Unassign(id, button));
+            }
+            else 
+                button.onClick.AddListener(() => AssignCharacter(id, button));
         }
     }
 
@@ -207,21 +213,6 @@ public class PartyManager : MonoBehaviour
     {
 
         blocker.SetActive(false);
-        /*
-        if(SectorManager.testJsonPath != null && !SectorManager.testJsonPath.Contains("main"))
-        {
-            blocker.SetActive(true);
-            blocker.GetComponentInChildren<Text>().text = "Parties are unavailable in test worlds.";
-        }
-
-        if(!PlayerCore.Instance.cursave.missions.Exists(m => m.name == "Trial By Combat")
-            || PlayerCore.Instance.cursave.missions.Find(m => m.name == "Trial By Combat").status != Mission.MissionStatus.Complete)
-        {
-            blocker.SetActive(true);
-            blocker.GetComponentInChildren<Text>().text = "Party customization is unlocked after Trial By Combat.";
-        }
-        */
-
 
         if(InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member)=> { return member; }))
         {
