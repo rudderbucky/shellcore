@@ -70,6 +70,7 @@ public class WCManualEditor : Editor
         if(GUILayout.Button("Add"))
         {
             manual.manualEntries.Add(manual.placeholder);
+            manual.placeholder = new WCManual.ManualEntry();
         }
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
