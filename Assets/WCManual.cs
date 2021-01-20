@@ -39,14 +39,38 @@ public class WCManual : GUIWindowScripts
 [CustomEditor(typeof(WCManual))]
 public class WCManualEditor : Editor 
 {   
+    int testIndex;
+    WCManual manual;
+    public void OnEnable() {
+        manual = (WCManual)target;
+        Debug.Log(manual.manualEntries.Count);
+    }
     public override void OnInspectorGUI ()
     {
         var areaStyle = new GUIStyle(GUI.skin.textArea);
-        
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Index:");
+        testIndex = EditorGUILayout.IntField(testIndex);
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+            if(GUILayout.Button("Shift Up"))
+            {
+                var entry = manual.manualEntries[testIndex];
+                manual.manualEntries.RemoveAt(testIndex);
+                testIndex--;
+                manual.manualEntries.Insert(testIndex, entry);
+            }
+            if(GUILayout.Button("Shift Down"))
+            {
+                var entry = manual.manualEntries[testIndex];
+                manual.manualEntries.RemoveAt(testIndex);
+                testIndex++;
+                manual.manualEntries.Insert(testIndex, entry);
+            }
+        EditorGUILayout.EndHorizontal();
 
 
         areaStyle.wordWrap = true;
-        WCManual manual = target as WCManual;
         EditorGUILayout.BeginHorizontal();
         manual.listContents = EditorGUILayout.ObjectField("List contents:", manual.listContents, typeof(Transform), true) as Transform;
         EditorGUILayout.EndHorizontal();
