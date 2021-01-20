@@ -126,10 +126,10 @@ public class CoreUpgraderScript : GUIWindowScripts
             case "core1_shell":
                 return 100;
             case "core2_shell":
-                return 500;
+                return 3000;
             case "core3skills_shell":
             case "core3weapons_shell":
-                return 3000;
+                return 10000;
             default:
                 return 0;
         }

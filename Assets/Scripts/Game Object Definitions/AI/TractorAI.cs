@@ -50,7 +50,7 @@ public class TractorAI : AIModule
             }
             if (target != null)
             {
-                ai.movement.SetMoveTarget(target.position + new Vector3(Random.Range(-1F, 1F), Random.Range(-1F, 1F)));
+                ai.movement.SetMoveTarget(target.position + new Vector3(Random.Range(-1.5F, 1.5F), Random.Range(-1.5F, 1.5F)), 25);
             }
         }
         if (beamUpdateTimer > 0f)
