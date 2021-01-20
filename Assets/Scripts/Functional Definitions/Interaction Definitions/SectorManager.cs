@@ -646,11 +646,10 @@ public class SectorManager : MonoBehaviour
             if(player.alerter) player.alerter.showMessage("Entering sector: " + current.sectorName);
         }
 
-        bool spawnedChar = false;
+        
         for(int i = 0; i < current.entities.Length; i++)
         {
-            if(spawnedChar)
-                break;
+            bool spawnedChar = false;
             // check if it is a character
             foreach(var ch in characters)
             {
@@ -662,6 +661,7 @@ public class SectorManager : MonoBehaviour
                         if(oj.Value.GetComponentInChildren<Entity>() && oj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
                         {
                             skipTag = true;
+                            spawnedChar = true;
                             break;
                         }
                     }
