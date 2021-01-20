@@ -200,6 +200,8 @@ public class WCWorldIO : MonoBehaviour
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
             authors.text = wdata.author;
             description.text = wdata.description;
+            defaultBlueprint.text = wdata.defaultBlueprintJSON;
+            Debug.Log(wdata.defaultBlueprintJSON);
         }
         catch(System.Exception e)
         {
@@ -240,8 +242,10 @@ public class WCWorldIO : MonoBehaviour
                 worldPathName.text = "If you select a world, its name will appear here.";
                 authors.text = "";
                 description.text = "";
+                defaultBlueprint.text = "";
                 authors.placeholder.GetComponent<Text>().text = "World authors appear here";
-                description.placeholder.GetComponent<Text>().text = "World description appear here";
+                description.placeholder.GetComponent<Text>().text = "World description appears here";
+                defaultBlueprint.placeholder.GetComponent<Text>().text = "Default blueprint appears here";
                 directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
                 break;
             case IOMode.Write:
@@ -249,8 +253,10 @@ public class WCWorldIO : MonoBehaviour
                 worldPathName.text = "If you select a world, its name will appear here.";
                 authors.text = "";
                 description.text = "";
+                defaultBlueprint.text = "";
                 authors.placeholder.GetComponent<Text>().text = "Enter world authors here";
                 description.placeholder.GetComponent<Text>().text = "Enter world description here";
+                defaultBlueprint.placeholder.GetComponent<Text>().text = "Enter default blueprint here";
                 directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
                 break;
             case IOMode.ReadShipJSON:
@@ -308,6 +314,7 @@ public class WCWorldIO : MonoBehaviour
     public Text worldPathName;
     public InputField authors;
     public InputField description;
+    public InputField defaultBlueprint;
     public InputField newWorldInputField;
 
     public void OpenNewWorldPrompt() {

@@ -709,6 +709,18 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			p.isInChain = true;
 			p.validPos = true;
 		}
+
+		if(editorMode)
+		{
+			for(int i = 0; i < CoreUpgraderScript.GetCoreNames().Length; i++)
+			{
+				if(CoreUpgraderScript.GetCoreNames()[i] == blueprint.coreShellSpriteID)
+				{
+					editorCoreTier = i;
+				}
+			}
+		}
+		
 		core.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
 		shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
 		shell.color = FactionManager.GetFactionColor(0);
