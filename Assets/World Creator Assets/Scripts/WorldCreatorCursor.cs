@@ -96,7 +96,7 @@ public class WorldCreatorCursor : MonoBehaviour
             ShiftMode(1);
         }
 
-        if(Input.GetKeyDown(KeyCode.M))
+        if(Input.GetKeyDown(KeyCode.M) && !system.IsPointerOverGameObject())
         {
             manual.ToggleActive();
         }
