@@ -286,10 +286,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
-        window.transform.Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper();
+        if(mission.name.Length <= 33)
+            window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper();
+        else
+            window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper().Substring(0,30) + "...";
         window.transform.Find("Rank").GetComponent<Text>().text = mission.rank.ToUpper();
         window.transform.Find("Rank").GetComponent<Text>().color = TaskDisplayScript.rankColorsByString[mission.rank];
-        window.transform.Find("Rewards").GetComponent<Text>().text = rewardsText;
+        window.transform.Find("Holder").Find("Rewards").GetComponent<Text>().text = rewardsText;
     }
 
     public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null)

@@ -40,7 +40,8 @@ public class Harvester : WeaponAbility, IHarvester {
 
     public void AddPower(float power)
     {
-        owner.AddPower(power);
+        if(owner) 
+            owner.AddPower(power);
     }
 
     public void SetOwner(ShellCore owner)
@@ -55,7 +56,7 @@ public class Harvester : WeaponAbility, IHarvester {
 
     public void PowerHeal()
     {
-        if(!owner.GetIsDead())
+        if(owner && !owner.GetIsDead())
         {
             owner.TakeShellDamage(-0.025F * owner.GetMaxHealth()[0], 0, null);
             owner.TakeCoreDamage(-0.025F * owner.GetMaxHealth()[1]);

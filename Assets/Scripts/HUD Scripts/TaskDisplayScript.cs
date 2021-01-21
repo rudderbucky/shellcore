@@ -63,7 +63,10 @@ public class TaskDisplayScript : MonoBehaviour
         loadedMissions.Add(mission);
         var button = Instantiate(instance.missionButtonPrefab, 
             instance.missionListContents[rankNumberByString[mission.rank]]).GetComponent<Button>();
-        button.GetComponentInChildren<Text>().text = mission.name;
+        if(mission.name.Length <= 33)
+            button.GetComponentInChildren<Text>().text = mission.name;
+        else
+            button.GetComponentInChildren<Text>().text = mission.name.Substring(0,30) + "...";
         switch(mission.status)
         {
             case Mission.MissionStatus.Inactive:
