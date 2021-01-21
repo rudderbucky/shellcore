@@ -57,7 +57,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private void Awake()
     {
         Instance = this;
-        dialogueStyle = (DialogueStyle)PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0); 
+        dialogueStyle = (DialogueStyle)PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0);
+        isInCutscene = false;
+        CameraScript.panning = false;
     }
 
     public static List<string> dialogueCanvasPaths = new List<string>();

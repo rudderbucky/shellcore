@@ -1010,7 +1010,6 @@ public class SectorManager : MonoBehaviour
     {
         if (name == null)
         {
-            Debug.LogWarning("Null entity name?");
             return;
         }
         if(objects.ContainsKey(name))
