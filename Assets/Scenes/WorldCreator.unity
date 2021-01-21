@@ -12644,7 +12644,7 @@ MonoBehaviour:
     type: 3}
   contentText: {fileID: 1222126572}
   placeholder:
-    title: Miss
+    title: 
     contents: 
   manualEntries:
   - title: Introduction
@@ -12726,6 +12726,28 @@ MonoBehaviour:
     contents: Missions always start with a "Start Mission" node, which defines several
       variables of the mission like name, prerequisites, rank, etc. They are also
       used by the game to identify where a mission starts.
+  - title: Missions IV
+    contents: "A key feature of missions in ShellCore Command\r is the interaction
+      with Mission Controls, which is done primarily through the\r \"Start Dialogue\",
+      \"Dialogue\", and \"End Dialogue\" nodes, which all have fairly\r self-explanatory
+      names. Which entites they affect depend on the ID given to\r the Start Dialogue
+      node; you can set entity IDs via the Item Property Display."
+  - title: Missions V
+    contents: "A mission typically consists of a series of tasks after the Start\r
+      Mission node, which are themselves started using a Start Task node. Starting\r
+      tasks requires an entity to give you the task, and so a Start Dialogue node\r
+      typically precedes the Start Task node. Flow in missions is fairly linear\r
+      - i.e. for every node there is a way in and a way out. "
+  - title: Missions VI
+    contents: "The Sector Limiter allows you to\r prevent linear progress until the
+      player reaches a certain sector. Use it in\r between parts before and after
+      the player reaches a target destination for tasks with the goal of reaching
+      certain sectors.\r\n"
+  - title: Missions VII
+    contents: "For part collection/enemy destruction/BattleZone missions - All of
+      these typically\r use Condition nodes, which like the Sector Limiter prevents
+      progress until\r one or more conditions have been met. These conditions can
+      all be found in\r the node creation menu (right clicking the canvas)"
   - title: Property Display
     contents: "You need to use a Property Display to assign metadata like ID or name
       to items or sectors. \n\nIn Item Mode, the Item Property Display can be brought
@@ -12737,8 +12759,6 @@ MonoBehaviour:
       be made party members and do not despawn if you leave the sector they are in.
       Code also exists to facilitate defining their blueprints dynamically via a
       Canvas, but that isn't fully implemented yet.
-  - title: Missions IV
-    contents: 
 --- !u!1 &694745046
 GameObject:
   m_ObjectHideFlags: 0
