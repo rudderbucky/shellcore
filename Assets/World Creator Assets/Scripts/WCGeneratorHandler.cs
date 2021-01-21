@@ -180,7 +180,6 @@ public class WCGeneratorHandler : MonoBehaviour
                 Debug.LogError("No container for item. Abort.");
                 yield break;
             }
-            Debug.Log("item type " + item.ID);
             switch(item.type)
             {
                 case ItemType.Platform:

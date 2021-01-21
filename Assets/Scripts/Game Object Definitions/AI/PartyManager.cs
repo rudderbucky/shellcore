@@ -140,6 +140,7 @@ public class PartyManager : MonoBehaviour
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
             partyMembers.Remove(partyMembers.Find(c => c.ID == charID));
+            partyResponses.Remove(charID);
             var clicked = new Button.ButtonClickedEvent();
             clicked.AddListener(() => AssignCharacter(charID, assignButton));
             // sukratHealth.SetActive(false);
