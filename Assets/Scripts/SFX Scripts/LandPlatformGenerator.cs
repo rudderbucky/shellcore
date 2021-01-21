@@ -394,7 +394,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         {
             if (d > sqr)
             {
-                path.Add(end.Value.pos);
+                path.Add(TileToWorldPos(end.Value.pos));
             }
             else
             {
