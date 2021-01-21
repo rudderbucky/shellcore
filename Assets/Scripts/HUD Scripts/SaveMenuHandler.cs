@@ -245,9 +245,10 @@ public class SaveMenuHandler : GUIWindowScripts {
 		if(name == "" || name == "TestSave" ||
 			paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1) return;
 
-		var save = CreateSave(name);
 		Debug.Log(this.resourcePath);
-		save.resourcePath = this.resourcePath;
+		var save = CreateSave(name, null, this.resourcePath);
+
+		if(save.resourcePath == "") save.resourcePath = "main";
 		saves.Add(save);
 		paths.Add(path);
 
@@ -285,7 +286,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 	}
 
 
-	public static PlayerSave CreateSave(string name, string checkpointName = null)
+	public static PlayerSave CreateSave(string name, string checkpointName = null, string resourcePath = "")
 	{
 		string currentVersion = VersionNumberScript.version;
 		PlayerSave save = new PlayerSave();
@@ -310,6 +311,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		save.abilityCaps = new int[] {10, 3, 10, 10};
 		save.shards = 0;
 		save.version = currentVersion;
+		save.resourcePath = resourcePath;
 		File.WriteAllText(Application.persistentDataPath + "\\Saves" + "\\" + name, JsonUtility.ToJson(save));
 		return save;
 	} 

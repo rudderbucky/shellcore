@@ -217,6 +217,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(!shipPart.isInChain) {
 				var y = GetRect(shipPart.rectTransform);
+				y.Expand(0.001F);
 				if(x.Intersects(y)) {
 					shipPart.isInChain = true;
 					UpdateChainHelper(shipPart);
@@ -231,9 +232,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		var partBounds = GetRect(shipPart.rectTransform);
 		if(partBounds.Intersects(shellRect)) {
-			bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
+			bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <=
 			0.18F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
-			Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
+			Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <=
 			0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
 			shipPart.isInChain = !z;
 			return z;

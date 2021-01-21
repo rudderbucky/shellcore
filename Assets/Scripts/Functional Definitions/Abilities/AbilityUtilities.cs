@@ -39,7 +39,8 @@ public enum AbilityID
 	ActiveCoreRegen,
 	ActiveEnergyRegen,
 	Disrupt,
-	Control
+	Control,
+	InvertTractor
 }
 public class AbilityUtilities : MonoBehaviour {
 
@@ -87,6 +88,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 31:
             case 32:
             case 33:
+			case 35:
                 return AbilityHandler.AbilityTypes.Skills;
 			case 13:
 			case 17:
@@ -166,6 +168,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Disrupt enemy ability cooldowns.";
             case 34:
                 return "Makes allies stronger.";
+			case 35:
+				return "Temporarily pulls you to your tractor target.";
             default:
 				return "Description unset";
 		}
@@ -278,6 +282,8 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Disrupt";
             case 34:
                 return "Control";
+			case 35:
+				return "Invert Tractor";
             default:
                 return "Name unset";
         }
@@ -416,6 +422,9 @@ public class AbilityUtilities : MonoBehaviour {
             case 34:
                 ability = obj.AddComponent<Control>();
                 break;
+			case 35:
+				ability = obj.AddComponent<InvertTractor>();
+				break;
         }
 		if(ability) ability.SetTier(tier);
 		return ability;

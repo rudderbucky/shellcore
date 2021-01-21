@@ -177,6 +177,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		if(Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active)) {
 			if(builder as ShipBuilder == null || (builder as ShipBuilder).Equals(null) || !(builder as ShipBuilder).editorMode) ClearAllParts();
 		}
+		foreach(var part in parts)
+		{
+			part.boundImage.enabled = Input.GetKey(KeyCode.LeftShift);
+		}
+
 		System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / (int)y), z * ((int)x.y / (int)z), 0);
 		var newOffset = roundToRatios(grid.position, baseMoveSize, baseMoveSize) -grid.position;
 		transform.position = roundToRatios(Input.mousePosition, baseMoveSize, baseMoveSize) - newOffset;

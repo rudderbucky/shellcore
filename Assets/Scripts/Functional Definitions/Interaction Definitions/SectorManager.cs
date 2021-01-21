@@ -94,7 +94,7 @@ public class SectorManager : MonoBehaviour
 
         if (customPath != "" && current == null)
         {
-            jsonPath = customPath;
+            // jsonPath = customPath;
             jsonMode = true;
         }
 
@@ -193,7 +193,7 @@ public class SectorManager : MonoBehaviour
     public void LoadSectorFile(string path)
     {
         // Update passed path during load time for main saves updating to newer versions
-        if(path.Contains("main")) path = jsonPath;
+        if(path.Contains("main") || path == "") path = jsonPath;
 
         resourcePath = path;
         if (System.IO.Directory.Exists(path))

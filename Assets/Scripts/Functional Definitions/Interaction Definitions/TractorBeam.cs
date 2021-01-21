@@ -40,6 +40,8 @@ public class TractorBeam : MonoBehaviour
         //childObject.transform.SetParent(transform, false); Unity ignores sorting layers if uncommented
         lineRenderer = childObject.AddComponent<LineRenderer>();
         lineRenderer.material = tractorMaterial;
+        lineRenderer.material.color = new Color32(88, 239, 255, 128);
+        //lineRenderer.material.color = new Color32(255,32,255,128);
         lineRenderer.startWidth = 0.1F;
         lineRenderer.endWidth = 0.1F;
         lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -68,13 +70,20 @@ public class TractorBeam : MonoBehaviour
 
                 if (target.GetComponent<EnergySphereScript>() || owner as Yard)
                 {
-                    rigidbody.position += (Vector2)dir.normalized * 0.6F;
+                    if(dir.sqrMagnitude <= 0.36F)
+                        rigidbody.position += (Vector2)dir;
+                    else
+                        rigidbody.position += (Vector2)dir.normalized * 0.6F;
                     if (owner.invisible)
                         target = null;
                 }
                 else if (dist > 2f)
                 {
-                    rigidbody.AddForce(dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    if(!owner.tractorSwitched)
+                        rigidbody.AddForce(dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * rigidbody.mass / 2);
+                    else
+                        owner.GetComponent<Rigidbody2D>().AddForce(-dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * 
+                            rigidbody.mass);
                 }
             }
         }
@@ -82,6 +91,7 @@ public class TractorBeam : MonoBehaviour
 
     protected void TractorBeamUpdate()
     {
+        lineRenderer.material.color = owner.tractorSwitched ? new Color32(255,32,255,128) : new Color32(88, 239, 255, 128);
 		this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
         // Grab energy automatically after a while when the craft is not pulling something more important
         if (energyEnabled && (!target) && (this.energyPickupTimer < 0) && !owner.invisible && !owner.isAbsorbing)

@@ -51,7 +51,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         isEnabled = input; // set is enabled
     }
 
-    public void SetTier(int abilityTier) {
+    public virtual void SetTier(int abilityTier) {
         if(abilityTier > 3 || abilityTier < 0) Debug.LogError("An ability tier was set out of bounds!" + "number: " + abilityTier);
         this.abilityTier = abilityTier;
     }
