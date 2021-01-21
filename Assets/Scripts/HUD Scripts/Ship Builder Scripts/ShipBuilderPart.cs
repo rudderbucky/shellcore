@@ -12,6 +12,7 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 
 	public RectTransform rectTransform;
 	public ShipBuilderCursorScript cursorScript;
+	public Image boundImage;
 	public bool isInChain;
 	public bool validPos;
 	public bool highlighted;

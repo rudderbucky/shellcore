@@ -43,7 +43,7 @@ public class ActiveRegen : ActiveAbility
     {
         trueActive = false;
         ToggleIndicator(true);
-        if (Core)
+        if (Core && trueActive)
         {
             float[] regens = Core.GetRegens();
             regens[index] -= healAmount * abilityTier;

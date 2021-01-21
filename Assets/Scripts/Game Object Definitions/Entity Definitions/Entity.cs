@@ -49,6 +49,7 @@ public class Entity : MonoBehaviour, IDamageable {
     public float damageAddition = 0f;
     public bool isAbsorbing = false; // if true, all incoming damage is converted to energy
     bool collidersEnabled = true;
+    public bool tractorSwitched = false;
 
     public SectorManager sectorMngr;
     protected Entity lastDamagedBy;
