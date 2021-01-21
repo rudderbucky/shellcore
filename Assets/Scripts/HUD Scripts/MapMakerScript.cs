@@ -87,11 +87,38 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				sectorInfo.Add(sect, (sector.sectorName, sector.type));
 
 
-                var platforms = sector.platforms;
-                if (platforms != null)
-                {
-                    var lpg = LandPlatformGenerator.Instance;
+                var lpg = LandPlatformGenerator.Instance;
 
+                if (sector.platforms == null && sector.platformData.Length > 0)
+                {
+                    GameObject prefab = ResourceManager.GetAsset<GameObject>(LandPlatformGenerator.prefabNames[0]);
+                    float tileSize = prefab.GetComponent<SpriteRenderer>().bounds.size.x;
+                    lpg.tileSize = tileSize;
+
+                    var cols = sector.bounds.h / (int)tileSize;
+                    var rows = sector.bounds.w / (int)tileSize;
+
+                    Vector2 center = new Vector2(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2);
+
+                    Vector2 offset = new Vector2
+                    {
+                        x = center.x - tileSize * (rows - 1) / 2F,
+                        y = center.y + tileSize * (cols - 1) / 2F
+                    };
+
+                    lpg.Offset = offset;
+
+                    sector.platforms = new GroundPlatform[sector.platformData.Length];
+                    for (int i = 0; i < sector.platformData.Length; i++)
+                    {
+                        var plat = new GroundPlatform(sector.platformData[i], null, lpg);
+                        sector.platforms[i] = plat;
+                    }
+                }
+
+                if (sector.platforms != null)
+                {
+                    var platforms = sector.platforms;
                     foreach (var platform in platforms)
                     {
                         float tileSize = LandPlatformGenerator.Instance.tileSize / zoomoutFactor;

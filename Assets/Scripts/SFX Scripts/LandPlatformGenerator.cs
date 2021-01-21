@@ -55,6 +55,9 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     public static bool IsOnGround(Vector3 position)
     {
+        if (Instance.groundPlatforms == null)
+            return false;
+
         Vector2 relativePos = ((Vector2)position - instance.Offset) / Instance.tileSize;
         relativePos.y = -relativePos.y;
 
@@ -378,14 +381,11 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     public static Vector2[] pathfind(Vector2 startPos, Vector2 targetPos, float distance = 0f)
     {
-        Debug.Log("Pathfinding...");
         // Get platform
         var plat = Instance.GetPlatformInPosition(startPos);
 
         GroundPlatform.Tile? end = instance.GetNearestTile(plat, targetPos);
         GroundPlatform.Tile? start = instance.GetNearestTile(plat, startPos);
-
-        Debug.Log(start.Value.pos);
 
         float d = (startPos - targetPos).sqrMagnitude;
         float sqr = distance * distance;

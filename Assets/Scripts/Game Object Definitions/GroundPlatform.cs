@@ -131,10 +131,15 @@ public class GroundPlatform
 
             Vector2Int pos = new Vector2Int(x, y);
 
-            GameObject tileObj = UnityEngine.Object.Instantiate(prefabs[type], LandPlatformGenerator.TileToWorldPos(pos), Quaternion.identity);
-            tileObj.GetComponent<SpriteRenderer>().color = lpg.color;
-            tileObj.transform.localEulerAngles = new Vector3(0, 0, 90 * rotation);
-            tileObj.transform.SetParent(lpg.transform);
+            GameObject tileObj = null;
+            if (prefabs != null)
+            {
+                tileObj = UnityEngine.Object.Instantiate(prefabs[type], LandPlatformGenerator.TileToWorldPos(pos), Quaternion.identity);
+                tileObj.GetComponent<SpriteRenderer>().color = lpg.color;
+                tileObj.transform.localEulerAngles = new Vector3(0, 0, 90 * rotation);
+                tileObj.transform.SetParent(lpg.transform);
+            }
+
 
             tileList.Add(
                 new Tile()
@@ -143,7 +148,7 @@ public class GroundPlatform
                     type = (byte)type,
                     rotation = (byte)rotation,
                     directions = dirs,
-                    colliders = tileObj.GetComponentsInChildren<Collider2D>()
+                    colliders = tileObj?.GetComponentsInChildren<Collider2D>()
                 });
         }
         tiles = tileList;

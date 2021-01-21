@@ -15,12 +15,6 @@ public class UILandPlatformRenderer : MaskableGraphic
             return;
         }
 
-        //for (int i = 0; i < vertices.Length; i++)
-        //{
-        //    vertices[i] -= rectTransform.pivot;
-        //    vertices[i] *= rectTransform.rect.size;
-        //}
-
         vh.Clear();
 
         UIVertex vert = UIVertex.simpleVert;
