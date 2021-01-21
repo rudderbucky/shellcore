@@ -40,7 +40,7 @@ public class DamageBoost: ActiveAbility
         {
             if (Core)
                 Core.damageAddition += 150;
-            AudioManager.PlayClipByID("clip_activateability", transform.position);
+            AudioManager.PlayClipByID("clip_buff", transform.position);
             trueActive = true;
             ToggleIndicator(true);
         }

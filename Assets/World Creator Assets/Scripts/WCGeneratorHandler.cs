@@ -682,6 +682,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
                 }
 
+                /*
                 // now create the character items
                 foreach(var sector in cursor.sectors)
                 {
@@ -700,6 +701,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         }
                     }
                 }
+                */
 
                 ImportExportFormat.RuntimeIOPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
                 Debug.Log("World loaded");
