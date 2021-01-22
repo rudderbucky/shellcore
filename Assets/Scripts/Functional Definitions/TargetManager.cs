@@ -8,7 +8,7 @@ public class TargetManager : MonoBehaviour
 
     //Dictionary<(int, int), Transform> targets = new Dictionary<(int, int), Transform>();
 
-    List<ITargetingSystem> targetSearchQueries = new List<ITargetingSystem>();
+    List<(ITargetingSystem, Entity.EntityCategory)> targetSearchQueries = new List<(ITargetingSystem, Entity.EntityCategory)>();
 
     Dictionary<int, List<Entity>> groundTargets;
     Dictionary<int, List<Entity>> airTargets;
@@ -21,15 +21,17 @@ public class TargetManager : MonoBehaviour
         Instance = this;
     }
 
-    public static void Enqueue(ITargetingSystem targetingSystem)
+    public static void Enqueue(ITargetingSystem targetingSystem, Entity.EntityCategory targetCategory = Entity.EntityCategory.All)
     {
-        Instance.enqueue(targetingSystem);
+        Instance.enqueue(targetingSystem, targetCategory);
     }
     
-    void enqueue(ITargetingSystem targetingSystem)
+    void enqueue(ITargetingSystem targetingSystem, Entity.EntityCategory targetCategory)
     {
-        if (!targetSearchQueries.Contains(targetingSystem))
-            targetSearchQueries.Add(targetingSystem);
+        if (targetSearchQueries.FindIndex((x)=>x.Item1 == targetingSystem) == -1)
+        {
+            targetSearchQueries.Add((targetingSystem, targetCategory));
+        }
     }
 
     private void Update()
@@ -40,9 +42,9 @@ public class TargetManager : MonoBehaviour
         for (int i = 0; i < targetSearchQueries.Count; i++)
         {
             var ts = targetSearchQueries[i];
-            if (ts.GetEntity())
+            if (ts.Item1.GetEntity())
             {
-                GetTarget(ts);
+                GetTarget(ts.Item1, ts.Item2);
             }
             else
             {
@@ -114,12 +116,12 @@ public class TargetManager : MonoBehaviour
         trUpdated = true;
     }
 
-    public static Transform GetTargetImmediate(ITargetingSystem ts)
+    public static Transform GetTargetImmediate(ITargetingSystem ts, Entity.EntityCategory ec = Entity.EntityCategory.All)
     {
-        return Instance.GetTarget(ts);
+        return Instance.GetTarget(ts, ec);
     }
 
-    Transform GetTarget(ITargetingSystem ts)
+    Transform GetTarget(ITargetingSystem ts, Entity.EntityCategory ec)
     {
         if (!trUpdated)
             UpdateTargets();
@@ -158,18 +160,25 @@ public class TargetManager : MonoBehaviour
         }
         for (int i = 0; i < targets.Count; i++) // go through all entities and check them for several factors
         {
-            // check if it is the closest entity that passed the checks so far
-            float sqrD = Vector3.SqrMagnitude(pos - targets[i].transform.position);
-            if (closest == null || sqrD < closestD)
+            // check if the target's category matches
+            if (ec == Entity.EntityCategory.All || targets[i].category == ec)
             {
-                if (targets[i] == ts.GetEntity())
-                    continue;
-                var ability = ts.GetAbility();
-                if (ability != null && sqrD >= ability.GetRange() * ability.GetRange())
-                    continue;
-
-                closestD = sqrD;
-                closest = targets[i].transform;
+                // check if it is the closest entity that passed the checks so far
+                float sqrD = Vector3.SqrMagnitude(pos - targets[i].transform.position);
+                if (closest == null || sqrD < closestD)
+                {
+                    if (targets[i] == ts.GetEntity())
+                    {
+                        continue;
+                    }
+                    var ability = ts.GetAbility();
+                    if (ability != null && sqrD >= ability.GetRange() * ability.GetRange())
+                    {
+                        continue;
+                    }
+                    closestD = sqrD;
+                    closest = targets[i].transform;
+                }
             }
         }
         // set to the closest compatible target

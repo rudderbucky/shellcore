@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : WeaponAbility {
-
-    // TODO: maybe "blueprint-ize" this ability, as well as every ability?
-
+public class Bullet : WeaponAbility
+{
     public GameObject bulletPrefab; // the prefabbed sprite for a bullet with a BulletScript
     protected float bulletSpeed; // the speed of the bullet
     protected float survivalTime; // the time the bullet takes to delete itself

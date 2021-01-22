@@ -42,6 +42,7 @@ public class Yard : AirConstruct, IShipBuilder {
                 weapon.Tick(0);
             }
         base.Update();
+        TargetManager.Enqueue(targeter);
 
         if (FactionManager.IsAllied(faction, 0))
         {

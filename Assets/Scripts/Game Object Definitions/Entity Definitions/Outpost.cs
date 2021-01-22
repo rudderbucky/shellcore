@@ -38,6 +38,7 @@ public class Outpost : AirConstruct, IVendor {
     protected override void Update()
     {
         base.Update();
+        TargetManager.Enqueue(targeter);
         Bullet[] bullets = GetComponentsInChildren<Bullet>();
         for (int i = 0; i < bullets.Length; i++)
         {

@@ -39,7 +39,6 @@ public class AirConstruct : Construct {
 	// Update is called once per frame
 	protected override void Update () {
         base.Update();
-        TargetManager.Enqueue(targeter);
     }
 
     protected override void FixedUpdate()

@@ -29,8 +29,10 @@ public abstract class WeaponAbility : ActiveAbility {
 
     public bool CheckCategoryCompatibility(IDamageable entity)
     {
-        if(type == WeaponDiversityType.Torpedo) return entity.GetTerrain() == Entity.TerrainType.Ground;
-        else return (category == Entity.EntityCategory.All || category == entity.GetCategory())
+        if(type == WeaponDiversityType.Torpedo)
+            return entity.GetTerrain() == Entity.TerrainType.Ground;
+        else
+            return (category == Entity.EntityCategory.All || category == entity.GetCategory())
             && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
     }
 
@@ -132,17 +134,19 @@ public abstract class WeaponAbility : ActiveAbility {
         }
         else if (isActive && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
         {
-            TargetManager.Enqueue(targetingSystem);
             Transform target = targetingSystem.GetTarget();
-            if (target && target.GetComponent<IDamageable>() != null) { // check if there is a target
+            if (target == null || !target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
+            {
+                TargetManager.Enqueue(targetingSystem, category);
+            }
+            else if (target && target.GetComponent<IDamageable>() != null) { // check if there is a target
                 Core.SetIntoCombat(); // now in combat
-                Transform targetEntity = target;
-                IDamageable tmp = targetEntity.GetComponent<IDamageable>();
+                IDamageable tmp = target.GetComponent<IDamageable>();
 
-                if (DistanceCheck(targetEntity) && !FactionManager.IsAllied(tmp.GetFaction(), Core.faction))
-                    // check if in range
+                // check if allied
+                if (!FactionManager.IsAllied(tmp.GetFaction(), Core.faction))
                 {
-                    bool success = Execute(targetEntity.position); // execute ability using the position to fire
+                    bool success = Execute(target.position); // execute ability using the position to fire
                     if(success)
                         Core.TakeEnergy(energyCost); // take energy, if the ability was executed
                 }

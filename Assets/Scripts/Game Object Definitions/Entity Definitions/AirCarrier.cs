@@ -74,6 +74,7 @@ public class AirCarrier : AirConstruct, ICarrier {
 
 
             base.Update();
+            TargetManager.Enqueue(targeter);
         }
     }
 
