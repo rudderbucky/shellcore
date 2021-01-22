@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="0,0" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-1863579008" type="StartDialogueNode" pos="-577,-159">
+			<Port ID="-848401664" name="input" dynamic="False" />
+			<Port ID="1516892160" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="1179896192" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-514498432" type="DialogueNode" pos="-341,-175">
+			<Port ID="479452032" name="input" dynamic="False" />
+			<Port ID="-1740635008" name="cancel" dynamic="False" />
+			<Port ID="-703194880" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">215</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="334245248" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">270</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-500216829" />
+			<Variable name="answers" refID="-1921771392" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-1508653312" type="EndDialogue" pos="40,-300">
+			<Port ID="1371685376" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">true</boolean>
+			<Variable name="traderJSON" refID="-2107882564" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="566226944" type="EndDialogue" pos="-13,92">
+			<Port ID="-1885841792" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1516892160" port2ID="479452032" />
+		<Connection port1ID="-703194880" port2ID="1371685376" />
+		<Connection port1ID="334245248" port2ID="-1885841792" />
+	</Connections>
+	<Objects>
+		<Object refID="1179896192" type="System.String">
+			<string>capitol-advanced-spawns</string>
+		</Object>
+		<Object refID="-500216829" type="System.String">
+			<string>I'm selling parts with advanced drone spawns. A large fleet of advanced drone spawns can easily overwelm an enemy.</string>
+		</Object>
+		<Object refID="-1921771392" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I would like to buy some parts.</string>
+				<string>On second thought, no thanks.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-2107882564" type="System.String">
+			<string>{"parts":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"strike_drone","partID":"MediumSide1"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"counter_drone","partID":"MediumSide1"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"torpedo_drone","partID":"MediumSide2"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"gun_drone","partID":"MediumSide2"}]}
+</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

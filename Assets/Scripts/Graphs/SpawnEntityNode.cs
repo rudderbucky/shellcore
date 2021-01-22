@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: Switch this node to work with IDs
+
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Actions/Spawn Entity")]
@@ -124,7 +126,7 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
-            Debug.Log("Spawn Entity name ( " + entityName + " ) does not correspond with a character. Performing normal operations.");
+            Debug.LogError("Spawn Entity name ( " + entityName + " ) does not correspond with a character. Performing normal operations.");
             EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             try
             {

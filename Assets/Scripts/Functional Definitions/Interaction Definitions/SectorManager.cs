@@ -268,6 +268,12 @@ public class SectorManager : MonoBehaviour
                                 {
                                     charList.Add(defaultChar);
                                 }
+                                else
+                                {
+                                    // We want to make sure names and IDs match at all times since these won't be changeable
+                                    // by the player and the game needs these to match
+                                    charList.Find(ch => ch.ID == defaultChar.ID).name = defaultChar.name;
+                                }
                             }
                             characters = charList.ToArray();
                         }
@@ -928,7 +934,23 @@ public class SectorManager : MonoBehaviour
         {
             if (part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part))
             {
-                Destroy(part.gameObject);
+                var droneHasPart = false;
+                foreach(Entity ent in player.GetUnitsCommanding()) 
+                {
+				    if(!(ent as Drone)) continue;
+				    var beam = ent.GetComponentInChildren<TractorBeam>();
+                    if(beam)
+                    {
+                        var target = beam.GetTractorTarget();
+                        if (target && target.GetComponent<ShellPart>() && target.GetComponent<ShellPart>() == part)
+                        {
+                            droneHasPart = true;
+                            break;
+                        }
+                    }
+			    }
+                if(!droneHasPart)
+                    Destroy(part.gameObject);
             }
         }
         AIData.strayParts.Clear();
