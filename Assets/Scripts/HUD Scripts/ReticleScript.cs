@@ -89,6 +89,29 @@ public class ReticleScript : MonoBehaviour {
                     player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
                 }
                 SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
+                /*
+                var ent = draggableTarget.GetComponent<Entity>();
+                if(Input.GetKey(KeyCode.LeftControl) && ent)
+                {
+                    if(!secondariesByObject.Contains((ent, draggableTarget.transform)))
+                    {
+                        AddSecondaryTarget(ent);
+                    }
+                    else
+                    {
+                        RemoveSecondaryTarget(ent);
+                    }
+                }
+                else
+                {
+                    Debug.Log("test");
+                    SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
+                    if(!secondariesByObject.Contains((ent, draggableTarget.transform)))
+                    {
+                        RemoveSecondaryTarget(ent);
+                    }
+                }     
+                */
                 return droneInteraction; // Return so that the next check doesn't happen
             }
 
@@ -107,6 +130,21 @@ public class ReticleScript : MonoBehaviour {
                 }
 
                 SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
+                /*
+                if(Input.GetKey(KeyCode.LeftControl))
+                {
+                    if(!secondariesByObject.Contains((curTarg as Entity, curTarg.GetTransform())))
+                    {
+                        AddSecondaryTarget(curTarg as Entity);
+                    }
+                    else
+                    {
+                        RemoveSecondaryTarget(curTarg as Entity);
+                    }
+                }
+                else
+                    SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
+                */
                 return droneInteraction; // Return so that the next check doesn't happen
             }
         }
