@@ -222,7 +222,7 @@ public class ReticleScript : MonoBehaviour {
 
     private void SetSecondaryReticleTransform(Entity ent, Transform reticle, int count)
     {
-        if(ent != null && !ent.GetIsDead())
+        if(ent != null && !ent.GetIsDead() && !ent.GetInvisible())
         {
             reticle.transform.position = ent.transform.position; // update reticle position
             reticle.GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
