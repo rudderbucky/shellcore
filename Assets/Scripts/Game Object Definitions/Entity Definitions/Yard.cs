@@ -48,7 +48,8 @@ public class Yard : AirConstruct, IShipBuilder {
             if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= 75)
             {
                 var player = PlayerCore.Instance;
-                if (player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() && !tractor.GetTractorTarget())
+                if (player.GetTractorTarget() && (player.GetTractorTarget().GetComponent<ShellPart>()
+                    || player.GetTractorTarget().GetComponent<Shard>()) && !tractor.GetTractorTarget())
                 {
                     tractor.SetTractorTarget(player.GetTractorTarget());
                     player.SetTractorTarget(null);
@@ -67,6 +68,15 @@ public class Yard : AirConstruct, IShipBuilder {
                     PartIndexScript.AttemptAddToPartsObtained(info);
                     PartIndexScript.AttemptAddToPartsSeen(info);
                     Destroy(tractor.GetTractorTarget().GetComponent<ShellPart>().gameObject);
+                }
+                else if(tractor.GetTractorTarget().GetComponent<Shard>())
+                {
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your shard has been added into your stash.</color>");
+                    var shard = tractor.GetTractorTarget().GetComponent<Shard>();
+                    var tiers = new int[] {1, 5, 20};
+                    PlayerCore.Instance.shards += tiers[shard.tier];
+                    ShardCountScript.DisplayCount(PlayerCore.Instance.shards);
+                    Destroy(shard.gameObject);
                 }
             }
         }

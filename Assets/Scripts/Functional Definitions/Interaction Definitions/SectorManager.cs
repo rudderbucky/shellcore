@@ -855,8 +855,8 @@ public class SectorManager : MonoBehaviour
             for(int j = 0; j < current.shardCountSet[i]; j++)
             {
                 var shard = Instantiate(shardRockPrefab, new Vector3(
-                    Random.Range(current.bounds.x, current.bounds.x + current.bounds.w), 
-                    Random.Range(current.bounds.y, current.bounds.y - current.bounds.h), 0)
+                    Random.Range(current.bounds.x + current.bounds.w * 0.2f, current.bounds.x + current.bounds.w * 0.8f), 
+                    Random.Range(current.bounds.y - current.bounds.h * 0.2f, current.bounds.y - current.bounds.h * 0.8f), 0)
                 , Quaternion.identity).GetComponent<ShardRock>();
                 shard.tier = i;
                 shardRocks.Add(shard);
