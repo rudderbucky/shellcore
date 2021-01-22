@@ -119,7 +119,8 @@ namespace NodeEditorFramework.Standard
 
         void updateState(Entity entity, Entity _)
         {
-            if ((!nameMode && entity.ID == targetID) || (nameMode && (entity.entityName == targetID || entity.name == targetID)))
+            if (((!nameMode && entity.ID == targetID) || (nameMode && (entity.entityName == targetID || entity.name == targetID)))
+                && entity.faction == targetFaction)
             {
                 killCount++;
                 if(targetFaction != 0)
