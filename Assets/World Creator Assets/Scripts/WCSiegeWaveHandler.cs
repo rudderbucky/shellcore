@@ -37,7 +37,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
         inField1.text = name;
         inField2.text = time + "";
         inField3.text = flagName;
-        dropdown.value = 1;
+        dropdown.value = faction;
 
         var button = gObj.GetComponentInChildren<Button>();
         button.onClick = new Button.ButtonClickedEvent();
@@ -83,6 +83,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
                 ent.name = item.name;
             else ent.name = item.obj.name;
             ent.faction = field.Item4.value; // maybe change this later
+            Debug.Log(ent.faction);
             ent.assetID = item.assetID;
         }
         else
