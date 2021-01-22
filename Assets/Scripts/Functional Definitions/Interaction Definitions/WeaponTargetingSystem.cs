@@ -8,7 +8,7 @@ using UnityEngine;
 public class WeaponTargetingSystem : ITargetingSystem
 {
     public WeaponAbility ability; // owner ability of the targeting system
-    public Transform target; // target of the targeting system
+    public Transform target;// target of the targeting system
 
     /// <summary>
     /// Get the target of the targeting system
@@ -22,13 +22,14 @@ public class WeaponTargetingSystem : ITargetingSystem
         Transform tmp = ability.Core.GetTargetingSystem().GetTarget(); // get the core's target if it has one
 
         // Performance: Don't allow weapon targeting for non-ShellCores/Carriers
-        if(!(ability.Core as ShellCore) && !(ability.Core is ICarrier))
-        {
-            if(IsValidTarget(tmp)) 
-                target = tmp;
-            else target = null;
-            return target;
-        }
+        //if(!(ability.Core as ShellCore) && !(ability.Core is ICarrier))
+        //{
+        //    if(IsValidTarget(tmp)) 
+        //        target = tmp;
+        //    else target = null;
+        //    return target;
+        //}
+        // Disabled because weapon targeting is needed for turrets and tanks with specific target categories
 
         if (tmp != null && tmp && IsValidTarget(tmp))
         {
@@ -38,7 +39,7 @@ public class WeaponTargetingSystem : ITargetingSystem
 
         if (!IsValidTarget(target))
         {
-            TargetManager.Enqueue(this);
+            TargetManager.Enqueue(this, ability.category);
             return null;
         }
 
