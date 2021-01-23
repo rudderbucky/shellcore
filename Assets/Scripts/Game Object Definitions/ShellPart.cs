@@ -28,6 +28,8 @@ public class ShellPart : MonoBehaviour {
     public string SpawnID { get; set; }
     public EntityBlueprint.PartInfo info;
     public string droppedSectorName;
+    public static int partShader = 0;
+    public static List<Material> shaderMaterials = null;
 
     public bool weapon { get; set; } = false;
 
@@ -64,6 +66,13 @@ public class ShellPart : MonoBehaviour {
     /// <param name="blueprint">blueprint of the part</param>
     public static GameObject BuildPart(PartBlueprint blueprint)
     {
+        if(shaderMaterials == null)
+        {
+            shaderMaterials = new List<Material>();
+            shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader0"));
+            shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader1"));
+        }
+
         GameObject holder;
         if(!GameObject.Find("Part Holder")) {
             holder = new GameObject("Part Holder");
@@ -75,6 +84,7 @@ public class ShellPart : MonoBehaviour {
 
         //Part sprite
         var spriteRenderer = obj.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = shaderMaterials[partShader];
         spriteRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
         var part = obj.GetComponent<ShellPart>();
         part.partMass = blueprint.mass;
@@ -202,6 +212,8 @@ public class ShellPart : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        if(spriteRenderer)
+            spriteRenderer.material = shaderMaterials[partShader];
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)
         {
             if(name != "Shell Sprite" && spriteRenderer.sprite) Blink(); // blink

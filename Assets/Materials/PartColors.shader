@@ -81,7 +81,7 @@ Shader "Sprites/PartColors"
 			fixed4 frag(v2f IN) : SV_Target
 			{
 				fixed4 c = SampleSpriteTexture (IN.texcoord);
-				
+				c.a *= IN.color.a;
 				c.rgb *= c.a;
 				if (c.r > 0.125 && c.g > 0.125 && c.b > 0.125)
 				{

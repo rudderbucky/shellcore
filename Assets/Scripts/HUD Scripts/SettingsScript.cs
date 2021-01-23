@@ -16,6 +16,7 @@ public class SettingsScript : MonoBehaviour {
 	public Dropdown windowResolution;
 	public Toggle windowedMode;
 	public Dropdown dialogueStyle;
+	public Dropdown partShader;
 	public Toggle taskManagerAutoSaveEnabled;
 	public Toggle simpleMouseMovementToggle;
 	public Transform controlsSection;
@@ -35,6 +36,7 @@ public class SettingsScript : MonoBehaviour {
 		musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
 		soundSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
 		dialogueStyle.value = PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0);
+		partShader.value = PlayerPrefs.GetInt("ShellPart_partShader", 0);
 		taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
 		simpleMouseMovementToggle.isOn = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
 
@@ -87,6 +89,7 @@ public class SettingsScript : MonoBehaviour {
 		ChangeTaskManagerAutoSaveEnabled(taskManagerAutoSaveEnabled.isOn);
 		ChangeDialogueSystemDialogueStyle(dialogueStyle.value);
 		ChangeSimpleMouseMovementEnabled(simpleMouseMovementToggle.isOn);
+		ChangeShellPartPartShader(partShader.value);
 
 		//for(int i = 0; i < 9; i++)
 		//{
@@ -155,6 +158,12 @@ public class SettingsScript : MonoBehaviour {
 	{
 		PlayerPrefs.SetInt("DialogueSystem_dialogueStyle", val);
 		DialogueSystem.dialogueStyle = (DialogueSystem.DialogueStyle)val;
+	}
+
+	public void ChangeShellPartPartShader(int val)
+	{
+		PlayerPrefs.SetInt("ShellPart_partShader", val);
+		ShellPart.partShader = val;
 	}
 
 	public void ChangeTaskManagerAutoSaveEnabled(bool val)
