@@ -44,6 +44,10 @@ namespace NodeEditorFramework.IO
 
 		private string fileSelection = "";
 		private Rect fileSelectionMenuRect;
+		private List<FileInfo> files;
+		private int limit = 25;
+		private int currentMin = 0;
+		private float width = 0;
 
 		/// <summary>
 		/// Called only if RequiresLocationGUI is true.
@@ -67,11 +71,24 @@ namespace NodeEditorFramework.IO
 				DirectoryInfo dir = Directory.CreateDirectory(RuntimeIOPath);
 				FileInfo[] taskdata = dir.GetFiles("*.taskdata");
 				FileInfo[] dialoguedata = dir.GetFiles("*.dialoguedata");
-				var files = new List<FileInfo>();
+				currentMin = 0;
+				files = new List<FileInfo>();
 				files.AddRange(taskdata);
 				files.AddRange(dialoguedata);
 				// Fill save file selection menu
 				GenericMenu fileSelectionMenu = new GenericMenu(false);
+				for(int i = currentMin; i < Mathf.Min(currentMin + limit, files.Count); i++)
+				{
+					int x = i;
+					fileSelectionMenu.AddItem(new GUIContent(files[i].Name), false, () => 
+					{
+						if(files[x].Name.Contains("taskdata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Mission;
+						if(files[x].Name.Contains("dialoguedata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Dialogue;
+						fileSelection = Path.GetFileName(files[x].Name);
+						NodeEditorGUI.Init();
+					});
+				}
+				/*
 				foreach (FileInfo file in files)
 					fileSelectionMenu.AddItem(new GUIContent(file.Name), false, () => 
 					{
@@ -80,13 +97,37 @@ namespace NodeEditorFramework.IO
 						fileSelection = Path.GetFileName(file.Name);
 						NodeEditorGUI.Init();
 					});
+				*/
 				fileSelectionMenu.DropDown(fileSelectionMenuRect);
 				fileSelectionMenuRect.height = 500;
+				width = fileSelectionMenuRect.width;
 			}
 			if (Event.current.type == EventType.Repaint)
 			{
 				Rect popupPos = GUILayoutUtility.GetLastRect();
 				fileSelectionMenuRect = new Rect(popupPos.x + 2, popupPos.yMax + 2, popupPos.width - 4, 500);
+			}
+			else if(files != null && Event.current.delta != Vector2.zero)
+			{
+				if(Event.current.delta.y > 0)
+					currentMin = Mathf.Min(currentMin + 1, files.Count - 1);
+				else
+					currentMin = Mathf.Max(0, currentMin - 1);
+				GenericMenu fileSelectionMenu = new GenericMenu(false);
+				for(int i = currentMin; i < Mathf.Min(currentMin + limit, files.Count); i++)
+				{
+					int x = i;
+					fileSelectionMenu.AddItem(new GUIContent(files[i].Name), false, () => 
+					{
+						if(files[x].Name.Contains("taskdata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Mission;
+						if(files[x].Name.Contains("dialoguedata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Dialogue;
+						fileSelection = Path.GetFileName(files[x].Name);
+						NodeEditorGUI.Init();
+					});
+				}
+				fileSelectionMenu.DropDown(fileSelectionMenuRect, width);
+				fileSelectionMenuRect.height = 500;
+				width = fileSelectionMenuRect.width;
 			}
 
 			// Finish operation buttons

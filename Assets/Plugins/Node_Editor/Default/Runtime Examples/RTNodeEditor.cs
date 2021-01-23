@@ -129,6 +129,7 @@ namespace NodeEditorFramework.Standard
 				Debug.LogException (e);
 			}
 			
+			//Debug.Log(Event.current.type);
 			// Draw Interface
 			editorInterface.DrawToolbarGUI(canvasRect);
 			editorInterface.DrawModalPanel();

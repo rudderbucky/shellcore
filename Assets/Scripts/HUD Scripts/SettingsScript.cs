@@ -39,6 +39,7 @@ public class SettingsScript : MonoBehaviour {
 		partShader.value = PlayerPrefs.GetInt("ShellPart_partShader", 0);
 		taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
 		simpleMouseMovementToggle.isOn = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
+		SaveSettings();
 
         //for(int i = 0; i < 9; i++)
         //{
