@@ -9,7 +9,7 @@ public class SpeederBullet : Bullet {
         base.Awake(); // base awake
         // hardcoded values here
         bulletSpeed = 50;
-        survivalTime = 0.5F;
+        survivalTime = 0.2F;
         range = bulletSpeed * survivalTime;
         ID = AbilityID.SpeederBullet;
         cooldownDuration = 1.2F;

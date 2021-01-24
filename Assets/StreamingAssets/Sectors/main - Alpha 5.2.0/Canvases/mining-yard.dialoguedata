@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-70,-39" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-329606912" type="StartDialogueNode" pos="-633.6,-171.6">
+			<Port ID="831664768" name="input" dynamic="False" />
+			<Port ID="396044416" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="598030413" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-36106496" type="EndDialogue" pos="43,35">
+			<Port ID="1433484544" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">true</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1297221120" type="DialogueNode" pos="-349,-107">
+			<Port ID="-786602496" name="input" dynamic="False" />
+			<Port ID="250837632" name="cancel" dynamic="False" />
+			<Port ID="-1388422272" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">228</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1723898112" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">283</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1891095151" />
+			<Variable name="answers" refID="1289753344" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="2038773760" type="EndDialogue" pos="60,273">
+			<Port ID="-1824042624" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="396044416" port2ID="-786602496" />
+		<Connection port1ID="1433484544" port2ID="-1388422272" />
+		<Connection port1ID="1723898112" port2ID="-1824042624" />
+	</Connections>
+	<Objects>
+		<Object refID="598030413" type="System.String">
+			<string>mining-yard</string>
+		</Object>
+		<Object refID="1891095151" type="System.String">
+			<string>Welcome to the Capitol Mining Sector. Here, we use Worker Drones to carry the shards of power clusters, but they can help you carry parts from enemies as well.</string>
+		</Object>
+		<Object refID="1289753344" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I would like to change my shell configuration</string>
+				<string>On second thought, no thanks.</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>
