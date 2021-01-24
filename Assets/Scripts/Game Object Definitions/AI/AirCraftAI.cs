@@ -140,6 +140,7 @@ public class AirCraftAI : MonoBehaviour
         {
             for (int i = 0; i < data.waypoints.Count; i++)
             {
+                Debug.Log(data.waypoints[i].position);
                 path.waypoints.Add(new Path.Node()
                 {
                     ID = data.waypoints[i].ID,

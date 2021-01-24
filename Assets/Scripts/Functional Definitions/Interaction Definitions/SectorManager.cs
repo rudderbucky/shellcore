@@ -587,7 +587,7 @@ public class SectorManager : MonoBehaviour
         }
         entity.sectorMngr = this;
         entity.faction = data.faction;
-        entity.spawnPoint = data.position;
+        entity.spawnPoint = entity.transform.position = data.position;
         entity.blueprint = blueprint;
 
         if(entity as AirCraft && data.patrolPath != null && data.patrolPath.waypoints != null && data.patrolPath.waypoints.Count > 0)

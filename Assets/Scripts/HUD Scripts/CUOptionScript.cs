@@ -21,6 +21,7 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
             player.blueprint.baseRegen = CoreUpgraderScript.GetRegens(coreID);
             player.Rebuild();
             CoreUpgraderScript.DrawScreen();
+            NodeEditorFramework.Standard.UpgradeCoreCondition.OnCoreUpgrade.Invoke();
         } else Debug.Log("Not enough reputation!" + player.reputation + " " + repCost);
     }
 

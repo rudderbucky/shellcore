@@ -9484,8 +9484,8 @@ MonoBehaviour:
     obj: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   - ID: part_shader1
     obj: {fileID: 2100000, guid: 90cd502e10e287b4992545559f7aa240, type: 2}
-  fieldID: 
-  newObject: {fileID: 0}
+  fieldID: torpedo_drone_spawn
+  newObject: {fileID: 11400000, guid: fc1c478122710a245941eddd3e93d377, type: 2}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
 --- !u!1 &473189169
 GameObject:
@@ -12655,7 +12655,7 @@ MonoBehaviour:
     contents: This manual is meant to aid users through the process of creating worlds
       in the World Creator. Though the tool is abstract, I believe it has great power
       in creating stories in a ShellCore setting. I hope you enjoy using it.
-  - title: Hotkeys
+  - title: Hotkeys I
     contents: 'Open manual: M
 
       Change mode: Z
@@ -12663,35 +12663,42 @@ MonoBehaviour:
       Orient camera to player
       spawn/sector center: Spacebar
 
+      Zoom in/out: Ctrl + Scroll
 
-      Certain hotkeys work in certain modes.
+
+      Certain
+      hotkeys work in certain modes.
 
 
-      Item
-      mode:
+      Item mode:
 
-      Delete item: Right mouse button
+      Delete item: Right
+      mouse button
 
       Rotate item: R
 
-      Open
-      Ship Builder: B
-
-      Open Wave Builder: W
-
-
-      Sector mode:
+      Open Ship Builder: B
 
       Open
-      Sector Property Display: Shift-click a sector
+      Wave Builder: W'
+  - title: Hotkeys II
+    contents: 'Sector mode:
+
+      Open Sector Property Display: Shift-click a sector
 
 
-      Control mode:
+      Control
+      mode:
 
-      Open
-      Canvas editor: T
+      Open Canvas editor: T
 
       Open Character Editor: C'
+  - title: Property Display
+    contents: "You need to use a Property Display to assign metadata like ID or name
+      to items or sectors. \n\nIn Item Mode, the Item Property Display can be brought
+      up by clicking items with the cursor on a related item - so platforms need
+      the cursor to be on a platform and so on. \n\nIn Sector Mode, the Sector Property
+      Display can be brought up by shift-clicking a sector."
   - title: Modes
     contents: 'You can change the World Creator''s current mode by pressing the mode
       button in the botttom right or by pressing Z. There are three prominent modes
@@ -12707,10 +12714,14 @@ MonoBehaviour:
       accessed through clicking an item, item properties such as blueprint, rotation,
       ID, and name can be manipulated. '
   - title: Sector Mode
-    contents: You can manipulate the size and shape of sectors, add new sectors,
-      and change metadata like name, color and Background Spawns in this mode. The
+    contents: 'You can manipulate the size and shape of sectors, add new sectors,
+      and change metadata like name, color and Background Spawns in this mode.  To
+      adjust sector properties, shift-click a sector and a window should show up.
+
+
+      The
       Defaults list can be opened up via a button on the left side of the screen,
-      where you can set the default tiles and particles for each type of sector.
+      where you can set the default tiles and particles for each type of sector.'
   - title: Control Mode
     contents: Allows you to change the spawn point, add/edit missions/dialogue, and
       change characters. Click the dark core in this mode to move it around; the
@@ -12753,12 +12764,6 @@ MonoBehaviour:
       these typically\r use Condition nodes, which like the Sector Limiter prevents
       progress until\r one or more conditions have been met. These conditions can
       all be found in\r the node creation menu (right clicking the canvas)"
-  - title: Property Display
-    contents: "You need to use a Property Display to assign metadata like ID or name
-      to items or sectors. \n\nIn Item Mode, the Item Property Display can be brought
-      up by clicking items with the cursor on a related item - so platforms need
-      the cursor to be on a platform and so on. \n\nIn Sector Mode, the Sector Property
-      Display can be brought up by shift-clicking a sector."
   - title: Characters
     contents: Characters are special entities to a given world. These entities can
       be made party members and do not despawn if you leave the sector they are in.

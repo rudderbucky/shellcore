@@ -17,7 +17,6 @@ public class AIMovement
     float minDist = 10000f;
     public void SetMoveTarget(Vector2 target, float minDistance = 64f)
     {
-
         if (moveTarget != target || minDistance != minDist)
         {
             requireRangeUpdate = true;

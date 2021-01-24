@@ -119,7 +119,19 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     {
         if (opened)
         {
-            if(vendor.GetFaction() != player.faction) {
+            if(vendor == null) 
+            {
+                Debug.LogWarning("No vendor!");
+                return;
+            }
+
+            if(player == null) 
+            {
+                Debug.Log("No player set! Using default player.");
+                player = PlayerCore.Instance;
+            }
+
+            if(player && vendor.GetFaction() != player.faction) {
                 Debug.Log("Vendor faction changed");
                 CloseUI();
                 return;

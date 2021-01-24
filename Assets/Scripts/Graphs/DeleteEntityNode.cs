@@ -43,7 +43,6 @@ namespace NodeEditorFramework.Standard
                 
                 if(data.ID == entityID)
                 {
-                    Debug.LogError(entityID + data.ID);
                     Destroy(data.gameObject);
                     return 0;
                 }
