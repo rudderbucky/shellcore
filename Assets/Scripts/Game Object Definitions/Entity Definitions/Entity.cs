@@ -108,26 +108,8 @@ public class Entity : MonoBehaviour, IDamageable {
         return interactible;
     }
 
-    /// <summary>
-    /// Generate shell parts in the blueprint, change ship stats accordingly
-    /// </summary>
-    protected virtual void BuildEntity()
+    protected void AttemptAddComponents()
     {
-        // all created entities should have blueprints!
-        if (!blueprint) Debug.Log(this + " does not have a blueprint! EVERY constructed entity should have one!");
-
-        // Remove possible old parts from list
-        foreach(var part in parts)
-        {
-            if(part && part.gameObject && part.gameObject.name != "Shell Sprite")
-                Destroy(part.gameObject);
-        }
-        parts.Clear();
-        blueprint.shellHealth.CopyTo(maxHealth, 0);
-        blueprint.baseRegen.CopyTo(regenRate, 0);
-
-        if(blueprint) this.dialogue = blueprint.dialogue;
-
         if (!GetComponent<SortingGroup>())
         {
             group = gameObject.AddComponent<SortingGroup>();
@@ -197,18 +179,9 @@ public class Entity : MonoBehaviour, IDamageable {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
             renderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
             renderer.color = FactionManager.GetFactionColor(faction);
-            if (blueprint)
-            { // check if it contains a blueprint (it should)
-                if (blueprint.coreSpriteID == "" && blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore)
-                {
-                    Debug.Log(this + "'s blueprint does not contain a core sprite ID!"); 
-                    // check if the blueprint does not contain a core sprite ID (it should) 
-                }
-                renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
-            }
-            else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
-            renderer.sortingOrder = 101;
+            
         } else GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(faction); // needed to reset outpost colors
+
         if (!GetComponent<Rigidbody2D>())
         {
             entityBody = gameObject.AddComponent<Rigidbody2D>();
@@ -241,6 +214,55 @@ public class Entity : MonoBehaviour, IDamageable {
             else renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
         }
+        
+        if (!GetComponent<Draggable>() && (this as Drone || this as Tank || this as Turret))
+        {
+            draggable = gameObject.AddComponent<Draggable>();
+        }
+        else if (GetComponent<Draggable>() && !draggable)
+        {
+            Debug.LogWarning("Draggable was added to an entity manually, " +
+                "it should be added automatically by setting isDraggable to true!");
+        }
+
+    }
+
+
+    /// <summary>
+    /// Generate shell parts in the blueprint, change ship stats accordingly
+    /// </summary>
+    protected virtual void BuildEntity()
+    {
+        // all created entities should have blueprints!
+        if (!blueprint) Debug.Log(this + " does not have a blueprint! EVERY constructed entity should have one!");
+
+        // Remove possible old parts from list
+        foreach(var part in parts)
+        {
+            if(part && part.gameObject && part.gameObject.name != "Shell Sprite")
+                Destroy(part.gameObject);
+        }
+        parts.Clear();
+        blueprint.shellHealth.CopyTo(maxHealth, 0);
+        blueprint.baseRegen.CopyTo(regenRate, 0);
+
+        if(blueprint) this.dialogue = blueprint.dialogue;
+
+        AttemptAddComponents();
+        var renderer = GetComponent<SpriteRenderer>();
+        if (blueprint)
+        { // check if it contains a blueprint (it should)
+           
+            if (blueprint.coreSpriteID == "" && blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore)
+            {
+                Debug.Log(this + "'s blueprint does not contain a core sprite ID!"); 
+                // check if the blueprint does not contain a core sprite ID (it should) 
+            }
+            renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+        }
+        else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+        renderer.sortingOrder = 101;
+
 
         abilities = new List<Ability>();
 
@@ -473,15 +495,7 @@ public class Entity : MonoBehaviour, IDamageable {
         isBusy = false;
         isInCombat = false;
 
-        if (!GetComponent<Draggable>() && (this as Drone || this as Tank || this as Turret))
-        {
-            draggable = gameObject.AddComponent<Draggable>();
-        }
-        else if (GetComponent<Draggable>() && !draggable)
-        {
-            Debug.Log("Draggable was added to an entity manually, " +
-                "it should be added automatically by setting isDraggable to true!");
-        }
+        AttemptAddComponents();
 
         if(!AIData.entities.Contains(this)) 
         {

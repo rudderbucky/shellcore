@@ -143,6 +143,7 @@ public class SiegeZoneManager : MonoBehaviour
 
     public void AddTarget(Entity target)
     {
+        Debug.Log("target " + target.name);
         if (targets == null)
             targets = new List<Entity>();
         if (!playing)
