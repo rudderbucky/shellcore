@@ -5,34 +5,27 @@
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Start Dialogue" ID="168746752" type="StartDialogueNode" pos="-953,-160">
-			<Port ID="-75063680" name="input" dynamic="False" />
-			<Port ID="70143104" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="-871945344" type="StartDialogueNode" pos="-953,-160">
+			<Port ID="831664768" name="input" dynamic="False" />
+			<Port ID="-931809280" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="-1824660718" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="End Dialogue" ID="295736320" type="EndDialogue" pos="-274,173">
-			<Port ID="-1112503808" name="input" dynamic="False" />
-			<boolean name="jumpToStart">false</boolean>
-			<boolean name="openBuilder">false</boolean>
-			<boolean name="openTrader">false</boolean>
-			<NodeEditorState name="state">Mission</NodeEditorState>
-		</Node>
-		<Node name="End Dialogue" ID="-1779143936" type="EndDialogue" pos="-294,-440">
-			<Port ID="2145023360" name="input" dynamic="False" />
+		<Node name="End Dialogue" ID="1748360192" type="EndDialogue" pos="-294,-440">
+			<Port ID="1143070976" name="input" dynamic="False" />
 			<boolean name="jumpToStart">true</boolean>
 			<boolean name="openBuilder">false</boolean>
 			<boolean name="openTrader">true</boolean>
 			<Variable name="traderJSON" refID="-1795908866" />
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="Dialogue" ID="411763200" type="DialogueNode" pos="-605,-130">
-			<Port ID="1252790016" name="input" dynamic="False" />
-			<Port ID="-2004737152" name="cancel" dynamic="False" />
-			<Port ID="-967297024" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="-1640151808" type="DialogueNode" pos="-605,-130">
+			<Port ID="-2114456192" name="input" dynamic="False" />
+			<Port ID="-1077016064" name="cancel" dynamic="False" />
+			<Port ID="-641395712" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -40,7 +33,7 @@
 				<float name="sidePosition">202</float>
 				<float name="sideOffset">0</float>
 			</Port>
-			<Port ID="1107583232" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+			<Port ID="1288277760" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -55,16 +48,23 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="204819612" />
-			<Variable name="answers" refID="-673282816" />
+			<Variable name="answers" refID="78779264" />
 			<boolean name="customDialogueSpeed">false</boolean>
 			<double name="speed">0</double>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
+		<Node name="End Dialogue" ID="-326520064" type="EndDialogue" pos="-274,173">
+			<Port ID="105630848" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="70143104" port2ID="1252790016" />
-		<Connection port1ID="-1112503808" port2ID="1107583232" />
-		<Connection port1ID="2145023360" port2ID="-967297024" />
+		<Connection port1ID="-931809280" port2ID="-2114456192" />
+		<Connection port1ID="1143070976" port2ID="-641395712" />
+		<Connection port1ID="1288277760" port2ID="105630848" />
 	</Connections>
 	<Objects>
 		<Object refID="-1824660718" type="System.String">
@@ -77,7 +77,7 @@
 		<Object refID="204819612" type="System.String">
 			<string>I'll selling parts with advanced skills. You'll see some great benefits for youself when you activate them.</string>
 		</Object>
-		<Object refID="-673282816" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="78779264" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>I would like to buy some parts.</string>
 				<string>On second thought, no thanks.</string>
