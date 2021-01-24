@@ -11,6 +11,7 @@ public class AIAbilityController
 
     float timer = 0f;
     float interval = 0.25f;
+    public float nextStealth = 0f;
 
     public AIAbilityController(AirCraftAI ai)
     {
@@ -71,14 +72,17 @@ public class AIAbilityController
                 booster.Tick(1);
             }
         }
-        if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f)
+        if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f && Time.time > nextStealth)
         {
             var escapeAbilities = GetAbilities(24, 29, 27); // stealth, absorption, pin down
             foreach (var escapeAbility in escapeAbilities)
             {
                 escapeAbility.Tick(1);
-                if (escapeAbility.GetActiveTimeRemaining() > 0)
+                if (escapeAbility.GetActiveTimeRemaining() > 0f)
+                {
+                    nextStealth = Time.time + escapeAbility.GetActiveTimeRemaining() + 1.0f;
                     break;
+                }
             }
         }
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.2f)
@@ -136,9 +140,10 @@ public class AIAbilityController
                 }
             }
         }
-        if (craft is IOwner)
+        if (craft is IOwner && target != null && target)
         {
             IOwner owner = craft as IOwner;
+
             if (owner.GetUnitsCommanding().Count < owner.GetTotalCommandLimit())
             {
                 var droneSpawns = GetAbilities(10); // drone spawn
