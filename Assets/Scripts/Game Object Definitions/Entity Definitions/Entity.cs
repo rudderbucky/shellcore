@@ -195,23 +195,6 @@ public class Entity : MonoBehaviour, IDamageable {
             GameObject childObject = new GameObject("Minimap Image");
             childObject.transform.SetParent(transform, false);
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
-            if(category == EntityCategory.Station && !(this is Turret))
-            {
-                if(this as Outpost)
-                {
-                    renderer.sprite = ResourceManager.GetAsset<Sprite>("outpost_minimap_sprite");
-                }
-                else if(this as Bunker)
-                {
-                    renderer.sprite = ResourceManager.GetAsset<Sprite>("bunker_minimap_sprite");                   
-                }
-                else
-                {
-                    renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
-                } 
-                renderer.transform.localScale = new Vector3(3.5F, 3.5F, 3.5F);
-            }
-            else renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             childObject.AddComponent<MinimapLockRotationScript>();
         }
         
@@ -262,6 +245,25 @@ public class Entity : MonoBehaviour, IDamageable {
         }
         else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
         renderer.sortingOrder = 101;
+
+        renderer = transform.Find("Minimap Image").GetComponent<SpriteRenderer>();
+        if(category == EntityCategory.Station && !(this is Turret))
+        {
+            if(this as Outpost)
+            {
+                renderer.sprite = ResourceManager.GetAsset<Sprite>("outpost_minimap_sprite");
+            }
+            else if(this as Bunker)
+            {
+                renderer.sprite = ResourceManager.GetAsset<Sprite>("bunker_minimap_sprite");                   
+            }
+            else
+            {
+                renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+            } 
+            renderer.transform.localScale = new Vector3(3.5F, 3.5F, 3.5F);
+        }
+        else renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
 
 
         abilities = new List<Ability>();

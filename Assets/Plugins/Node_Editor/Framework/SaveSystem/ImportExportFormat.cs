@@ -107,7 +107,7 @@ namespace NodeEditorFramework.IO
 				Rect popupPos = GUILayoutUtility.GetLastRect();
 				fileSelectionMenuRect = new Rect(popupPos.x + 2, popupPos.yMax + 2, popupPos.width - 4, 500);
 			}
-			else if(files != null && Event.current.delta != Vector2.zero)
+			else if(files != null && Event.current.delta != Vector2.zero && Event.current.isScrollWheel)
 			{
 				if(Event.current.delta.y > 0)
 					currentMin = Mathf.Min(currentMin + 1, files.Count - 1);
