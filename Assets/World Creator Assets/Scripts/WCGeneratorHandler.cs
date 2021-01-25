@@ -354,6 +354,11 @@ public class WCGeneratorHandler : MonoBehaviour
                 }
                 sector.platformData = data.ToArray();
             }
+            else 
+            {
+                sector.platforms = new GroundPlatform[0];
+                sector.platformData = new string[0];
+            }
         }
 
         // write all sectors into a file
