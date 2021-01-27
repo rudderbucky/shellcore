@@ -22,6 +22,7 @@ namespace NodeEditorFramework.Standard
         ConnectionKnobAttribute OutStyle = new ConnectionKnobAttribute("Output", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right);
         public string text;
         public string id;
+        public bool onlyShowIfInParty;
 
         public override void NodeGUI()
         {
@@ -32,12 +33,16 @@ namespace NodeEditorFramework.Standard
 
             GUILayout.Label("ID:");
             id = GUILayout.TextArea(id);
+
+            onlyShowIfInParty = GUILayout.Toggle(onlyShowIfInParty, "Only show if in party");
         }
 
         public override int Traverse()
         {
-            PassiveDialogueSystem.Instance.PushPassiveDialogue(id, text);
-            Debug.Log("done");
+            if(!onlyShowIfInParty || (PartyManager.instance.partyMembers.Exists(sc => sc.ID == id)))
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(id, text);
+            else
+                Debug.Log("Party member not found, not pushing dialogue");
             return 0;
         }
     }

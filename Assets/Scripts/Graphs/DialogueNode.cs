@@ -72,7 +72,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             if(customDialogueSpeed = GUILayout.Toggle(customDialogueSpeed, "Use custom typing speed", GUILayout.MinWidth(40f)))
             {
-                GUILayout.Label("Time between characters");
+                GUILayout.Label("Time between characters (seconds)");
                 speed = double.Parse(GUILayout.TextField(speed + "", GUILayout.MinWidth(40f)));
             }
             cancel.DisplayLayout();

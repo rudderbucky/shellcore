@@ -81,7 +81,7 @@ public class ProximityInteractScript : MonoBehaviour {
 					interactIndicator.localScale = new Vector3(1, Mathf.Min(1, y + 0.1F), 1);
 				}
 				interactIndicator.anchoredPosition = Camera.main.WorldToScreenPoint(closest.transform.position) + new Vector3(0, 50);
-				if(InputManager.GetKeyUp(KeyName.Interact)) 
+				if(InputManager.GetKeyUp(KeyName.Interact) && !DialogueSystem.Instance.IsWindowActive()) 
 				{
 					ActivateInteraction(closest); // key received; activate interaction
 				}
