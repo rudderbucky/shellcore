@@ -694,7 +694,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			Destroy(part.gameObject);
 		}
 		cursorScript.parts = new List<ShipBuilderPart>();
-		if(!editorMode && !validClose) {
+		if((!editorMode || player) && !validClose) {
 			AbilityHandler handler = player.GetAbilityHandler(); // reset handler to correct representation
 			handler.Deinitialize();
 			handler.Initialize(player);
@@ -835,10 +835,15 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		if(editorMode && Input.GetKeyDown(KeyCode.X))
 		{
-			var cores = CoreUpgraderScript.GetCoreNames();
+			var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
+			cores.Add("groundcarriershell");
 			editorCoreTier++;
-			shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier % cores.Length]);
-			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+			shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier % cores.Count]);
+			if(editorCoreTier != cores.Count - 1)
+				core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+			else
+				core.sprite = ResourceManager.GetAsset<Sprite>("groundcarriercore");
+			
 			shell.color = FactionManager.GetFactionColor(0);
 			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
@@ -902,8 +907,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		else
 		{
-			blueprint.coreShellSpriteID = CoreUpgraderScript.GetCoreNames()[editorCoreTier % CoreUpgraderScript.GetCoreNames().Length];
-			blueprint.coreSpriteID = "core1_light";
+			var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
+			cores.Add("groundcarriershell");
+			blueprint.coreShellSpriteID = cores[editorCoreTier % cores.Count];
+			if(editorCoreTier != cores.Count - 1)
+				blueprint.coreSpriteID = "core1_light";
+			else
+				blueprint.coreSpriteID = "groundcarriercore";
 		}
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		foreach(ShipBuilderPart part in cursorScript.parts) {

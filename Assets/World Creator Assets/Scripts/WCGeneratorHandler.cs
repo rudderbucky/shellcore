@@ -290,6 +290,10 @@ public class WCGeneratorHandler : MonoBehaviour
                             AttemptAddPartArray(traderInventory.parts, container.sectorName);
                         }
                     }
+                    else if(ent.assetID == "groundcarrier_blueprint" || ent.assetID == "carrier_blueprint")
+                    {
+                        ent.blueprintJSON = item.shellcoreJSON;
+                    }
 
                     sectEnts[container].Add(ent);
                     break;   

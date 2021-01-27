@@ -36,7 +36,7 @@ public class PlayerViewScript : MonoBehaviour {
 	void Update () {
 		if(DialogueSystem.Instance && DialogueSystem.Instance.hudGroup && InputManager.GetKeyDown(KeyName.HideHUD))
 		{
-			if(!DialogueSystem.isInCutscene && !DialogueSystem.Instance.IsWindowActive())
+			if(!DialogueSystem.isInCutscene && (DialogueSystem.Instance.IsWindowActive() != null))
 			{
 				hidingHUD = !hidingHUD;
 				DialogueSystem.Instance.hudGroup.alpha = 1 - DialogueSystem.Instance.hudGroup.alpha;

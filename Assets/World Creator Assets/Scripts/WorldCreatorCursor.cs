@@ -259,10 +259,10 @@ public class WorldCreatorCursor : MonoBehaviour
         }
         
 		
-        if(GetItemUnderCursor() != null) 
+        if(GetItemUnderCursor(current.type) != null) 
         {
             Item underCursor;
-            underCursor = (Item)GetItemUnderCursor();
+            underCursor = (Item)GetItemUnderCursor(current.type);
             if(Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject() && current.obj) 
             {
                 if(((Item)underCursor).type == current.type)
@@ -525,9 +525,9 @@ public class WorldCreatorCursor : MonoBehaviour
         return false;
     }
 
-    Item GetItemUnderCursor() {
+    Item GetItemUnderCursor(ItemType? type = null) {
         foreach(Item itemObj in placedItems) {
-            if(itemObj.pos == current.pos) {
+            if(itemObj.pos == current.pos && (type == null || type == itemObj.type)) {
                 return itemObj;
             }
         }

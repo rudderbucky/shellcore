@@ -406,6 +406,7 @@ public class SectorManager : MonoBehaviour
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
     {
         GameObject gObj = new GameObject(data.name);
+        string json = null;
         switch (blueprint.intendedType)
         {
             case EntityBlueprint.IntendedType.ShellCore:
@@ -415,7 +416,7 @@ public class SectorManager : MonoBehaviour
                     {
                         // Check if data has blueprint JSON, if it does override the current blueprint
                         // this now specifies the path to the JSON file instead of being the JSON itself
-                        string json = data.blueprintJSON;
+                        json = data.blueprintJSON;
                         if (json != null && json != "")
                         {
                             blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -509,6 +510,28 @@ public class SectorManager : MonoBehaviour
                     break;
                 }
             case EntityBlueprint.IntendedType.AirCarrier:
+                json = data.blueprintJSON;
+                if (json != null && json != "")
+                {
+                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+
+                    // try parsing directly, if that fails try fetching the entity file
+                    try
+                    {
+                        JsonUtility.FromJsonOverwrite(json, blueprint);
+                    }
+                    catch
+                    {
+                        JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                            (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
+                    }
+                    
+                    //Debug.Log(data.name);
+                    blueprint.entityName = data.name = "Air Carrier";
+
+                } 
+
+
                 AirCarrier carrier = gObj.AddComponent<AirCarrier>();
                 if (!carriers.ContainsKey(data.faction))
                 {
@@ -517,6 +540,27 @@ public class SectorManager : MonoBehaviour
                 carrier.sectorMngr = this;
                 break;
             case EntityBlueprint.IntendedType.GroundCarrier:
+                json = data.blueprintJSON;
+                if (json != null && json != "")
+                {
+                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+
+                    // try parsing directly, if that fails try fetching the entity file
+                    try
+                    {
+                        JsonUtility.FromJsonOverwrite(json, blueprint);
+                    }
+                    catch
+                    {
+                        JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                            (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
+                    }
+                    
+                    //Debug.Log(data.name);
+                    blueprint.entityName = data.name = "Ground Carrier";
+
+                } 
+
                 GroundCarrier gcarrier = gObj.AddComponent<GroundCarrier>();
                 if (!carriers.ContainsKey(data.faction))
                 {
