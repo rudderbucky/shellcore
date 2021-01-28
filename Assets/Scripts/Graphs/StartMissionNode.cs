@@ -23,7 +23,7 @@ namespace NodeEditorFramework.Standard
         public string entryPoint;
         public List<string> prerequisites = new List<string>();
         public string prerequisitesUnsatisifedText;
-        public Color textColor;
+        public Color textColor = Color.white;
         public bool overrideCheckpoint;
         public string overrideCheckpointName;
         public int episode = 0;
