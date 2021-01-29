@@ -7,6 +7,8 @@ public class FactionManager : MonoBehaviour
 
     static FactionManager instance;
 
+    int factionCount = 0;
+
     public static void UpdateFactions()
     {
         if (instance)
@@ -45,6 +47,8 @@ public class FactionManager : MonoBehaviour
         {
             if (factions[fs[i].ID] != null)
                 Debug.LogWarning("Faction ID conflict! [" + fs[i].ID + "]");
+            else
+                factionCount++;
             factions[fs[i].ID] = fs[i];
         }
     }
@@ -55,6 +59,13 @@ public class FactionManager : MonoBehaviour
         if (f.ID < 0 || f.ID >= 32)
             return false;
         return true;
+    }
+
+    public static bool FactionExists(int faction)
+    {
+        if (faction < 0 || faction >= 32)
+            return false;
+        return instance.factions[faction] != null;
     }
 
     public static string GetFactionName(int faction)

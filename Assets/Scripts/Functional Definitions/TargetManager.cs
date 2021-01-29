@@ -134,7 +134,7 @@ public class TargetManager : MonoBehaviour
         List<Entity> targets = new List<Entity>();
         for (int i = 0; i < FactionManager.FactionCount; i++)
         {
-            if (FactionManager.IsAllied(ts.GetEntity().faction, i))
+            if (FactionManager.IsAllied(ts.GetEntity().faction, i) || !FactionManager.FactionExists(i))
                 continue;
 
             if (ts.GetAbility() == null)

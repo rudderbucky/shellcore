@@ -19,8 +19,11 @@ public class ItemPropertyDisplay : MonoBehaviour
         List<string> options = new List<string>();
         for (int i = 0; i < FactionManager.FactionCount; i++)
         {
-            string option = FactionManager.GetFactionName(i);
-            options.Add(option);
+            if (FactionManager.FactionExists(i))
+            {
+                string option = FactionManager.GetFactionName(i);
+                options.Add(option);
+            }
         }
         factionDropdown.AddOptions(options);
     }
