@@ -239,9 +239,10 @@ public class WCGeneratorHandler : MonoBehaviour
                         || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) 
                             sectTargetIDS[container].Add(ent.ID);
                     var charExists = cursor.characters.Exists(ch => ch.ID == ent.ID );
-                    if((ent.assetID == "shellcore_blueprint" || charExists) && container.type != Sector.SectorType.SiegeZone)
+                    if(ent.assetID == "shellcore_blueprint" || charExists)
                 {
-                        sectTargetIDS[container].Add(ent.ID);
+                        if(container.type != Sector.SectorType.SiegeZone)
+                            sectTargetIDS[container].Add(ent.ID);
                         ent.blueprintJSON = item.shellcoreJSON;
                         if(!charExists)
                         {

@@ -162,6 +162,19 @@ public class WorldCreatorCursor : MonoBehaviour
             }
         }
     }
+
+    public void UpdateCurrentAppearanceToDefault()
+    {
+        current.faction = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        if(current.type == ItemType.Other || current.assetID == "core_gate" || current.assetID == "broken_core_gate")
+        {
+            foreach(var rend in current.obj.GetComponentsInChildren<SpriteRenderer>())
+            {
+                rend.color = FactionManager.GetFactionColor(current.faction);
+            }
+        }
+    }
+
     public Transform spawnPoint;
     bool changingSpawnPoint = false;
     public GUIWindowScripts taskInterface;
