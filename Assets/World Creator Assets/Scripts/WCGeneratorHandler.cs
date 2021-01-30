@@ -290,7 +290,8 @@ public class WCGeneratorHandler : MonoBehaviour
                             AttemptAddPartArray(traderInventory.parts, container.sectorName);
                         }
                     }
-                    else if(ent.assetID == "groundcarrier_blueprint" || ent.assetID == "carrier_blueprint")
+                    else if(ent.assetID == "groundcarrier_blueprint" || ent.assetID == "carrier_blueprint" || ent.assetID == "outpost_blueprint"
+                        || ent.assetID == "bunker_blueprint")
                     {
                         ent.blueprintJSON = item.shellcoreJSON;
                     }

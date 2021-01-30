@@ -837,12 +837,16 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		{
 			var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
 			cores.Add("groundcarriershell");
+			cores.Add("drone_shell");
+			
 			editorCoreTier++;
 			shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier % cores.Count]);
-			if(editorCoreTier != cores.Count - 1)
-				core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
-			else
+			if(editorCoreTier == cores.Count - 2)
 				core.sprite = ResourceManager.GetAsset<Sprite>("groundcarriercore");
+			else if(editorCoreTier == cores.Count - 1)
+				core.sprite = ResourceManager.GetAsset<Sprite>("drone_light");
+			else
+				core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");				
 			
 			shell.color = FactionManager.GetFactionColor(0);
 			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
@@ -909,11 +913,14 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		{
 			var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
 			cores.Add("groundcarriershell");
+			cores.Add("drone_shell");
 			blueprint.coreShellSpriteID = cores[editorCoreTier % cores.Count];
-			if(editorCoreTier != cores.Count - 1)
-				blueprint.coreSpriteID = "core1_light";
-			else
+			if(editorCoreTier == cores.Count - 2)
 				blueprint.coreSpriteID = "groundcarriercore";
+			else if(editorCoreTier == cores.Count - 1)
+				blueprint.coreSpriteID = "drone_light";
+			else
+				blueprint.coreSpriteID = "core1_light";
 		}
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		foreach(ShipBuilderPart part in cursorScript.parts) {

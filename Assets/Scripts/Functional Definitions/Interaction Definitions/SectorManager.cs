@@ -481,6 +481,27 @@ public class SectorManager : MonoBehaviour
                 }
             case EntityBlueprint.IntendedType.Bunker:
                 {
+                    json = data.blueprintJSON;
+                    if (json != null && json != "")
+                    {
+                        blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+
+                        // try parsing directly, if that fails try fetching the entity file
+                        try
+                        {
+                            JsonUtility.FromJsonOverwrite(json, blueprint);
+                        }
+                        catch
+                        {
+                            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                                (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
+                        }
+                        
+                        //Debug.Log(data.name);
+                        blueprint.entityName = data.name = "Bunker";
+
+                    } 
+
                     Bunker bunker = gObj.AddComponent<Bunker>();
                     stations.Add(bunker);
                     bunker.vendingBlueprint =
@@ -491,6 +512,27 @@ public class SectorManager : MonoBehaviour
                 }
             case EntityBlueprint.IntendedType.Outpost:
                 {
+                    json = data.blueprintJSON;
+                    if (json != null && json != "")
+                    {
+                        blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+
+                        // try parsing directly, if that fails try fetching the entity file
+                        try
+                        {
+                            JsonUtility.FromJsonOverwrite(json, blueprint);
+                        }
+                        catch
+                        {
+                            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                                (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
+                        }
+                        
+                        //Debug.Log(data.name);
+                        blueprint.entityName = data.name = "Outpost";
+
+                    } 
+
                     Outpost outpost = gObj.AddComponent<Outpost>();
                     stations.Add(outpost);
                     outpost.vendingBlueprint = 
