@@ -11,6 +11,22 @@ public class ItemPropertyDisplay : MonoBehaviour
     public InputField nameField;
     public InputField idField;
     Item currentItem;
+    bool editingDefaults = false;
+    public List<GameObject> nonDefaults;
+    public void SetDefaults()
+    {
+        editingDefaults = true;
+        if (!rectTransform) rectTransform = GetComponent<RectTransform>();
+        rectTransform.gameObject.SetActive(true);
+        rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
+
+        factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        jsonField.text = PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
+        foreach(var nonDefault in nonDefaults)
+        {
+            nonDefault.SetActive(false);
+        }
+    }
 
     void Start() 
     {
@@ -26,10 +42,16 @@ public class ItemPropertyDisplay : MonoBehaviour
             }
         }
         factionDropdown.AddOptions(options);
+        factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
     }
 
     void Update() 
     {
+        if(editingDefaults)
+        {
+            return;
+        }
+        
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
@@ -38,6 +60,10 @@ public class ItemPropertyDisplay : MonoBehaviour
     {
         currentItem = item;
         rectTransform.gameObject.SetActive(true);
+        foreach(var nonDefault in nonDefaults)
+        {
+            nonDefault.SetActive(true);
+        }
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
@@ -49,12 +75,22 @@ public class ItemPropertyDisplay : MonoBehaviour
 
     public void UpdateFaction() 
     {
+        if(editingDefaults)
+        {
+            return;
+        }
+
         currentItem.faction = factionDropdown.value;
-        Debug.Log("updated faction: " + currentItem.faction );
+        Debug.Log("updated faction: " + currentItem.faction);
     }
 
     public void UpdateBlueprint()
     {
+        if(editingDefaults)
+        {
+            return;
+        }
+
         currentItem.shellcoreJSON = jsonField.text;
     }
 
@@ -78,7 +114,15 @@ public class ItemPropertyDisplay : MonoBehaviour
     }
 
     public void Hide() {
+        if(editingDefaults)
+        {
+            //Debug.LogWarning(factionDropdown.value);
+            PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", factionDropdown.value);
+            PlayerPrefs.SetString("WCItemPropertyDisplay_defaultJSON", jsonField.text);
+        }
+
         rectTransform.gameObject.SetActive(false);
+        editingDefaults = false;
     }
 
     public void SetPath(NodeEditorFramework.Standard.PathData path)

@@ -25,8 +25,8 @@ public class BattleAI : AIModule
         public Entity entity;
         public float significance; // 1 for outpost, 2 for outpost with rock, 3 for base
         public float influence; // based on the amount and types of turrets around
-        public bool collecting; // if there's an energy rock, is it being collected by the owner
-        public bool underAttack; // is enemy attacking this target
+        // public bool collecting; // if there's an energy rock, is it being collected by the owner
+        // public bool underAttack; // is enemy attacking this target
     }
 
     BattleState state = BattleState.Attack;

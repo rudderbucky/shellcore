@@ -49,6 +49,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -123,6 +124,7 @@ MonoBehaviour:
   missPrefab: {fileID: 8654600599346773465, guid: 9aa8e24e2ff05cf4499b5f2dbc180396,
     type: 3}
   owner: {fileID: 0}
+  particleColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!58 &58694357176774442
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -185,6 +187,7 @@ TrailRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -230,9 +233,9 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0.57198024, b: 0, a: 0.9019608}
-      key1: {r: 1, g: 0.57198024, b: 0, a: 0.50980395}
-      key2: {r: 0, g: 0, b: 0, a: 0}
+      key0: {r: 0.78431374, g: 1, b: 1, a: 0.9019608}
+      key1: {r: 0.78431374, g: 1, b: 1, a: 0.9019608}
+      key2: {r: 1, g: 0.57198024, b: 0, a: 0.50980395}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -240,7 +243,7 @@ TrailRenderer:
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 0
       ctime1: 65535
-      ctime2: 0
+      ctime2: 65535
       ctime3: 0
       ctime4: 0
       ctime5: 0
@@ -248,7 +251,7 @@ TrailRenderer:
       ctime7: 0
       atime0: 0
       atime1: 65535
-      atime2: 0
+      atime2: 65535
       atime3: 0
       atime4: 0
       atime5: 0

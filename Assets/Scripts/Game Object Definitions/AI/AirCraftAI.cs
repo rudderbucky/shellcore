@@ -69,6 +69,12 @@ public class AirCraftAI : MonoBehaviour
                 module = new BattleAI();
                 break;
             case AIMode.Inactive:
+                if(module is TractorAI)
+                {
+                    (module as TractorAI).StopFollowing();
+                    movement.StopMoving();
+                }
+                    
                 module = null;
                 break;
             case AIMode.Tractor:
@@ -117,7 +123,7 @@ public class AirCraftAI : MonoBehaviour
 
     public void moveToPosition(Vector2 pos)
     {
-        if(craft is Drone && (craft as Drone).type == DroneType.Worker)
+        if(craft is Drone && (craft as Drone).type == DroneType.Worker && module != null)
         {
             (module as TractorAI).GoTo(pos);
         }

@@ -125,7 +125,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 8:
 				return "Slow projectile that deals " + Torpedo.torpedoDamage * tier + " damage to ground entities.";
 			case 9:
-				return "Fast projectile that deals " + Laser.laserDamage * tier + " damage. 18% pierces to core.";
+				return "Fast projectile that deals " + Laser.laserDamage * tier + " damage. 25% pierces to core.";
 			case 10:
 				if(secondaryData == null || secondaryData == "") return "Spawns a drone.";
                 DroneSpawnData data = GetDroneSpawnData(secondaryData);

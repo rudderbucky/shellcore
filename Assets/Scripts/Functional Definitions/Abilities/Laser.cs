@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Laser : Bullet {
 
-    public static readonly int laserDamage = 50;
-    public static readonly float laserPierceFactor = 0.18F;
+    public static readonly int laserDamage = 75;
+    public static readonly float laserPierceFactor = 0.25F;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -16,8 +16,8 @@ public class Laser : Bullet {
         ID = AbilityID.Laser;
         cooldownDuration = 0.2F;
         CDRemaining = cooldownDuration;
-        energyCost = 15;
-        damage = 50;
+        energyCost = 5;
+        damage = 75;
         prefabScale = Vector2.one;
         terrain = Entity.TerrainType.All;
         category = Entity.EntityCategory.Unit;

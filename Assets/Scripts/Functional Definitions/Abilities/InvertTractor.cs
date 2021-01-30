@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class InvertTractor : ActiveAbility
 {
-    float activationDelay = 0f; // the delay between clicking the ability and its activation
-
     public override void SetTier(int abilityTier)
     {
         base.SetTier(abilityTier);

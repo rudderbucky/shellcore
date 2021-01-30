@@ -14,6 +14,11 @@ public class TractorAI : AIModule
 
     bool followingPlayer = true;
 
+    public void StopFollowing()
+    {
+        followingPlayer = false;
+    }
+
     public void Follow(Transform target)
     {
         followTarget = target;
@@ -29,10 +34,16 @@ public class TractorAI : AIModule
     public override void Init()
     {
         initialized = true;
-        beam = craft.gameObject.AddComponent<TractorBeam>();
-        beam.owner = craft;
+        if(!craft.gameObject.GetComponent<TractorBeam>())
+        {
+            beam = craft.gameObject.AddComponent<TractorBeam>();
+            beam.owner = craft;
+            beam.BuildTractor();
+        }
+        else
+            beam = craft.gameObject.GetComponent<TractorBeam>();
+        
         beam.SetEnergyEnabled(false);
-        beam.BuildTractor();
     }
 
     public override void ActionTick()

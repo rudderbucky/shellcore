@@ -145,12 +145,20 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         foreach(var item in placedItems)
         {
-            if(item.type == ItemType.Other)
+            if(item.type == ItemType.Other || item.assetID == "core_gate" || item.assetID == "broken_core_gate")
             {
                 foreach(var rend in item.obj.GetComponentsInChildren<SpriteRenderer>())
                 {
                     rend.color = FactionManager.GetFactionColor(item.faction);
                 }
+            }
+        }
+
+        if(current.type == ItemType.Other || current.assetID == "core_gate" || current.assetID == "broken_core_gate")
+        {
+            foreach(var rend in current.obj.GetComponentsInChildren<SpriteRenderer>())
+            {
+                rend.color = FactionManager.GetFactionColor(current.faction);
             }
         }
     }
@@ -587,6 +595,7 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         var copy = handler.CopyItem(current);
         copy.obj.transform.position = copy.pos;
+
         return copy;
     }
 
@@ -604,6 +613,10 @@ public class WorldCreatorCursor : MonoBehaviour
         current = handler.GetItemByIndex(index);
         current.pos = CalcPos(current);
         current.obj.transform.position = current.pos;
+
+        // item defaults go here
+        current.faction = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        current.shellcoreJSON = PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
     }
 
     public void SetCurrent(Item item)

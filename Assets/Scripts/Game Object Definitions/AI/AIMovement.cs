@@ -13,8 +13,12 @@ public class AIMovement
     }
 
     bool requireRangeUpdate = false;
-    Vector2 moveTarget;
+    Vector2? moveTarget;
     float minDist = 10000f;
+    public void StopMoving()
+    {
+        moveTarget = null;
+    }
     public void SetMoveTarget(Vector2 target, float minDistance = 64f)
     {
         if (moveTarget != target || minDistance != minDist)
@@ -31,9 +35,9 @@ public class AIMovement
     }
     public bool targetIsInRange()
     {
-        if (requireRangeUpdate)
+        if (requireRangeUpdate && moveTarget != null)
         {
-            DistanceToTarget = (moveTarget - (Vector2)craft.transform.position).sqrMagnitude;
+            DistanceToTarget = ((Vector2)moveTarget - (Vector2)craft.transform.position).sqrMagnitude;
             inRange = DistanceToTarget < minDist;
             requireRangeUpdate = false;
         }
@@ -43,13 +47,13 @@ public class AIMovement
     public void Update()
     {
         requireRangeUpdate = true;
-        if (!targetIsInRange())
+        if (!targetIsInRange() && moveTarget != null)
         {
-            craft.MoveCraft((moveTarget - (Vector2)craft.transform.position).normalized);
+            craft.MoveCraft(((Vector2)moveTarget - (Vector2)craft.transform.position).normalized);
         }
     }
 
-    public Vector2 GetTarget()
+    public Vector2? GetTarget()
     {
         return moveTarget;
     }

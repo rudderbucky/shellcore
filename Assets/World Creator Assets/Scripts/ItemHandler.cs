@@ -89,6 +89,7 @@ public class ItemHandler : MonoBehaviour
         item.assetID = toCopy.assetID;
         item.isTarget = toCopy.isTarget;
         item.type = toCopy.type;
+        item.faction = toCopy.faction;
         item.shellcoreJSON = toCopy.shellcoreJSON;
         item.placeablesIndex = toCopy.placeablesIndex;
         item.pos = toCopy.pos;

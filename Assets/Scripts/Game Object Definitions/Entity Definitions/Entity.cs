@@ -728,7 +728,10 @@ public class Entity : MonoBehaviour, IDamageable {
             amount *= 1.75F;
         if(lastDamagedBy != this && amount > 0) this.lastDamagedBy = lastDamagedBy; // heals require this check
         if (amount > 0) SetIntoCombat();
-        float residue = shellPiercingFactor * amount; // get initial residual damage
+        
+        // pierce now goes directly to core first
+        TakeCoreDamage(shellPiercingFactor * amount);
+        float residue = 0; // get initial residual damage
         currentHealth[0] -= amount * (1 - shellPiercingFactor); // subtract amount from shell
         if (currentHealth[0] < 0) { // if shell has dipped below 0
             residue -= currentHealth[0]; // add residue

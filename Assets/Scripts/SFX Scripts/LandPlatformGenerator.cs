@@ -48,7 +48,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     private Vector2 center;
 
     //private Dictionary<NavigationNode, int> areaIDByNode;
-    private Dictionary<GameObject, int> areaIDByTile; // TODO: Add areaIDByTile
+    // private Dictionary<GameObject, int> areaIDByTile; // TODO: Add areaIDByTile
     public float tileSize { get; set; }
     public Color color { get; private set; }
     public Vector2 Offset { get; set; }
@@ -539,6 +539,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         return null;
     }
 
+    /*
     public GameObject[] GetTilesByID(int ID) {
         List<GameObject> tilesToReturn = new List<GameObject>();
         foreach(GameObject tile in areaIDByTile.Keys) {
@@ -548,4 +549,5 @@ public class LandPlatformGenerator : MonoBehaviour {
         }
         return tilesToReturn.ToArray();
     }
+    */
 }

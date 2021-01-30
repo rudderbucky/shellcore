@@ -36,11 +36,12 @@ public class AIAbilityController
             if (ai.movement.DistanceToTarget > 256f)
             {
                 bool allowSpeed = true;
-                if (craft.faction == 0 && PlayerCore.Instance != null && !PlayerCore.Instance.GetIsDead())
+                if (craft.faction == 0 && PlayerCore.Instance != null && !PlayerCore.Instance.GetIsDead()
+                    && ai.movement.GetTarget() != null)
                 {
                     // Don't run away or get behind when escorting a player
-                    float ownD = (ai.movement.GetTarget() - (Vector2)craft.transform.position).sqrMagnitude;
-                    float playerD = (ai.movement.GetTarget() - (Vector2)PlayerCore.Instance.transform.position).sqrMagnitude;
+                    float ownD = ((Vector2)ai.movement.GetTarget() - (Vector2)craft.transform.position).sqrMagnitude;
+                    float playerD = ((Vector2)ai.movement.GetTarget() - (Vector2)PlayerCore.Instance.transform.position).sqrMagnitude;
                     allowSpeed = playerD < ownD;
                 }
                 if (allowSpeed)
