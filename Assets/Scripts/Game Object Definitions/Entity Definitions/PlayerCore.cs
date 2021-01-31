@@ -102,7 +102,7 @@ public class PlayerCore : ShellCore {
         name = entityName = "player";
 	}
 
-    public void Rebuild() {
+    public override void Rebuild() {
         if (!initialized)
             Awake();
         initialized = true;

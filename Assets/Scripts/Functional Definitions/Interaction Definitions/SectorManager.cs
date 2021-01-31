@@ -484,6 +484,7 @@ public class SectorManager : MonoBehaviour
                     json = data.blueprintJSON;
                     if (json != null && json != "")
                     {
+                        var dialogueRef = blueprint.dialogue;
                         blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 
                         // try parsing directly, if that fails try fetching the entity file
@@ -497,6 +498,7 @@ public class SectorManager : MonoBehaviour
                                 (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
                         }
                         
+                        blueprint.dialogue = dialogueRef;
                         //Debug.Log(data.name);
                         blueprint.entityName = data.name = "Bunker";
 
@@ -515,6 +517,7 @@ public class SectorManager : MonoBehaviour
                     json = data.blueprintJSON;
                     if (json != null && json != "")
                     {
+                        var dialogueRef = blueprint.dialogue;
                         blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 
                         // try parsing directly, if that fails try fetching the entity file
@@ -528,6 +531,7 @@ public class SectorManager : MonoBehaviour
                                 (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
                         }
                         
+                        blueprint.dialogue = dialogueRef;
                         //Debug.Log(data.name);
                         blueprint.entityName = data.name = "Outpost";
 
@@ -687,11 +691,6 @@ public class SectorManager : MonoBehaviour
             data.ID = objects.Count.ToString();
         }
         entity.ID = data.ID;
-
-        if (data.dialogueID != "")
-        {
-            entity.dialogue = ResourceManager.GetAsset<Dialogue>(data.dialogueID);
-        }
 
         if(!objects.ContainsKey(data.ID)) objects.Add(data.ID, gObj);
         return entity;

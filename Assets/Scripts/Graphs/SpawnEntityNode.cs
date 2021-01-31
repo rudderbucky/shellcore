@@ -12,7 +12,8 @@ namespace NodeEditorFramework.Standard
         public override string GetName { get { return "SpawnEntityNode"; } }
         public override string Title { get { return "Spawn Entity"; } }
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, 350); } }
+        public override Vector2 DefaultSize { get { return new Vector2(400, 350); } }
+        public override bool AutoLayout { get { return true; } }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -40,10 +41,8 @@ namespace NodeEditorFramework.Standard
             input.DisplayLayout();
             output.DisplayLayout();
             GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Note: Using the name of a character will spawn the " +
-                "character, rendering the blueprint, faction and entity ID fields obsolete.");
-            GUILayout.EndHorizontal();
+            GUILayout.Label("Note: Using the ID of a character will spawn the " +
+                "character, rendering the blueprint, faction and entity name fields obsolete.");
             GUILayout.Label("Blueprint:");
             blueprint = GUILayout.TextField(blueprint);
             GUILayout.Label("Entity Name:");
@@ -69,10 +68,8 @@ namespace NodeEditorFramework.Standard
 
             if (issueID = Utilities.RTEditorGUI.Toggle(issueID, "Issue ID"))
             {
-                GUILayout.BeginHorizontal();
                 GUILayout.Label("Entity ID:");
                 entityID = GUILayout.TextField(entityID);
-                GUILayout.EndHorizontal();
             }
 
             forceCharacterTeleport = Utilities.RTEditorGUI.Toggle(forceCharacterTeleport, "Force Character Teleport");
@@ -93,40 +90,44 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
-            foreach(var data in SectorManager.instance.characters)
+            if(issueID)
             {
-                if(data.name == entityName)
+                foreach(var data in SectorManager.instance.characters)
                 {
-                    Debug.Log("Spawn Entity name given matches with a character name! Spawning character...");
-                    
-                    foreach(var oj in AIData.entities)
+                    if(data.ID == entityID)
                     {
-                        if(oj && oj.name == data.name)
+                        Debug.Log("Spawn Entity ID given matches with a character name! Spawning character...");
+                        
+                        foreach(var oj in AIData.entities)
                         {
-                            Debug.Log("Character already found. Not spawning.");
-                            if(forceCharacterTeleport)
+                            if(oj && oj.ID == data.ID)
                             {
-                                (oj as AirCraft).Warp(coords); // hack for now, all the characters are AirCrafts so this should be fine.
+                                Debug.Log("Character already found. Not spawning.");
+                                if(forceCharacterTeleport)
+                                {
+                                    (oj as AirCraft).Warp(coords); // hack for now, all the characters are AirCrafts so this should be fine.
+                                }
+                                return 0;
                             }
-                            return 0;
                         }
+
+                        var characterBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                        JsonUtility.FromJsonOverwrite(data.blueprintJSON, characterBlueprint);
+                        Sector.LevelEntity entityData = new Sector.LevelEntity
+                        {
+                            faction = data.faction,
+                            name = data.name,
+                            position = coords,
+                            ID = data.ID,
+                        };
+                        SectorManager.instance.SpawnEntity(characterBlueprint, entityData);
+                        return 0;
                     }
-
-                    var characterBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                    JsonUtility.FromJsonOverwrite(data.blueprintJSON, characterBlueprint);
-                    Sector.LevelEntity entityData = new Sector.LevelEntity
-                    {
-                        faction = data.faction,
-                        name = data.name,
-                        position = coords,
-                        ID = data.ID,
-                    };
-                    SectorManager.instance.SpawnEntity(characterBlueprint, entityData);
-                    return 0;
                 }
-            }
 
-            Debug.LogError("Spawn Entity name ( " + entityName + " ) does not correspond with a character. Performing normal operations.");
+                Debug.LogError("Spawn Entity ID ( " + entityID + " ) does not correspond with a character. Performing normal operations.");
+            }
+            
             EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             try
             {

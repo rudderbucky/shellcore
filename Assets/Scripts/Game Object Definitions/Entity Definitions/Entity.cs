@@ -210,6 +210,23 @@ public class Entity : MonoBehaviour, IDamageable {
 
     }
 
+    /// <summary>
+    /// Reconstruct the entity, public method for use via node traversal
+    /// </summary>
+    public virtual void Rebuild() {
+        if (!initialized)
+            Awake();
+        initialized = true;
+
+        // destroy existing parts except the shell and rebuild
+        for(int i = 0; i < parts.Count; i++) {
+            if(parts[i].gameObject.name != "Shell Sprite")
+                Destroy(parts[i].gameObject);
+        }
+
+        BuildEntity();
+    }
+
 
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
