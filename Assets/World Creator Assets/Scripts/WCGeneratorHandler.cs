@@ -236,7 +236,8 @@ public class WCGeneratorHandler : MonoBehaviour
                     ent.vendingID = item.vendingID;
                     ent.patrolPath = item.patrolPath;
                     if((item.isTarget && container.type != Sector.SectorType.SiegeZone)
-                        || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint")) 
+                        || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint" && item.faction == 0)
+                        || (container.type == Sector.SectorType.SiegeZone && item.assetID == "bunker_blueprint" && item.faction == 0)) 
                             sectTargetIDS[container].Add(ent.ID);
                     var charExists = cursor.characters.Exists(ch => ch.ID == ent.ID );
                     if(ent.assetID == "shellcore_blueprint" || charExists)
