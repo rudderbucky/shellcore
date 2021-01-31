@@ -89,7 +89,7 @@ public class MissileScript : MonoBehaviour {
             GetComponent<Rigidbody2D>().AddForce(120 * moveVector);
         }
 	   
-	if (target && target.GetComponent<Entity>().GetIsDead() && Vector3.Distance(transform.position, target.position) < 0.1f)
+	if (target && target.GetComponent<ITargetable>().GetIsDead() && Vector3.Distance(transform.position, target.position) < 0.1f)
         {
             Destroy(gameObject);
         }
