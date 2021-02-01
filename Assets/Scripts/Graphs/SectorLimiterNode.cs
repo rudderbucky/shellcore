@@ -98,7 +98,6 @@ namespace NodeEditorFramework.Standard
         void TryAddObjective()
         {
             var bounds = SectorManager.GetSectorByName(sectorName).bounds;
-            TaskManager.objectiveLocations.Clear();
             TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation
             (
                 new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2), 

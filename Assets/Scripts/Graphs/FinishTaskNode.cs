@@ -155,7 +155,6 @@ namespace NodeEditorFramework.Standard
                 if(!ent) continue;
                 if(ent.ID == rewardGiverID)
                 {
-                    TaskManager.objectiveLocations.Clear();
                     TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,

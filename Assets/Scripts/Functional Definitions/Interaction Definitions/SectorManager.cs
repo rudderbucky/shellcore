@@ -890,6 +890,16 @@ public class SectorManager : MonoBehaviour
                             partyMember.SetCarrier(carriers[partyMember.faction]);
                     }
                 }
+
+                // add party member minimap arrows
+                if(MinimapArrowScript.instance)
+                {
+                    foreach(var partyMember in PartyManager.instance.partyMembers)
+                    {
+                        MinimapArrowScript.instance.AddCoreArrow(partyMember);
+                    }
+                }
+
                 for (int i = 0; i < current.targets.Length; i++)
                 {
                     if(objects[current.targets[i]].GetComponent<ShellCore>())

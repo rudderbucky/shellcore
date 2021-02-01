@@ -25,27 +25,50 @@ public class Drone : AirCraft, IOwnable {
         this.owner = owner;
         ai.owner = owner;
         owner.GetUnitsCommanding().Add(this);
-        if(owner as AirCarrier) 
+        if(owner as AirCarrier || owner as GroundCarrier) 
         {
             // GET THE DRONES TO MOVE
             ai.setMode(AirCraftAI.AIMode.Path);
             var path = ScriptableObject.CreateInstance<Path>();
             path.waypoints = new List<Path.Node>();
             var vec = Vector2.zero;
-            foreach(var ent in BattleZoneManager.getTargets())
+            if(owner as AirCarrier)
             {
-                if(ent && ent is ICarrier && !FactionManager.IsAllied(ent.faction, owner.GetFaction()) && ent.transform)
+                foreach(var ent in BattleZoneManager.getTargets())
                 {
-                    vec = ent.transform.position;
+                    if(ent && ent is ICarrier && !FactionManager.IsAllied(ent.faction, owner.GetFaction()) && ent.transform)
+                    {
+                        vec = ent.transform.position;
+                    }
                 }
             }
+            // otherwise this is a ground carrier, drones are defensive for them so set a path to the drone position currently
+            else vec = transform.position;
+            
             // TODO: jank, fix this eventually
             var node = new Path.Node();
             node.position = vec;
             node.ID = 0;
             node.children = new List<int>();
             if(vec != Vector2.zero) path.waypoints.Add(node);
-            ai.setPath(path);
+            if(owner as AirCarrier)
+                ai.setPath(path);
+            else
+            {
+                NodeEditorFramework.Standard.PathData data = new NodeEditorFramework.Standard.PathData();
+                data.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
+                // TODO: LOL THESE TWO ARE DIFFERENT, unify them
+                foreach(var point in path.waypoints)
+                {
+                    var node2 = new NodeEditorFramework.Standard.PathData.Node();
+                    node2.ID = point.ID;
+                    node2.children = point.children;
+                    node2.position = point.position;
+                    data.waypoints.Add(node2);
+                }
+        
+                ai.setPath(data, null, true);
+            }
         }
     }
 

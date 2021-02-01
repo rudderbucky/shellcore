@@ -178,7 +178,6 @@ namespace NodeEditorFramework.Standard
                 if(!ent) continue;
                 if(ent.ID == EntityID)
                 {
-                    TaskManager.objectiveLocations.Clear();
                     TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,

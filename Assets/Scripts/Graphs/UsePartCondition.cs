@@ -41,7 +41,7 @@ namespace NodeEditorFramework.Standard
         {
             OnPlayerReconstruct.AddListener(CheckParts);
             State = ConditionState.Listening;
-            TryAddObjective(true);
+            TryAddObjective(false);
         }
 
         public void DeInit()
