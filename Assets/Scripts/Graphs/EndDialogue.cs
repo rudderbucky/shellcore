@@ -80,12 +80,12 @@ namespace NodeEditorFramework.Standard
             // Debug.Log(handler as DialogueSystem + "sdjhgndfgikuhtdukhntdouhntdh " + StartDialogueNode.dialogueStartNode.EntityID);
 
             if(handler as TaskManager)
-                foreach(var objectiveLocation in TaskManager.objectiveLocations)
+                foreach(var objectiveLocation in TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName])
                 {
                     if(objectiveLocation.followEntity &&
                         objectiveLocation.followEntity.ID == StartDialogueNode.missionCanvasNode?.EntityID)
                     {
-                        TaskManager.objectiveLocations.Remove(objectiveLocation);
+                        TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
                         TaskManager.DrawObjectiveLocations();
                         break;
                     }

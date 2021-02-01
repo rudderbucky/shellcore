@@ -94,10 +94,13 @@ public class DevConsoleScript : MonoBehaviour
                         Debug.Log("Wrong number format!");
                 }
 
+                // TODO: broke, fix
+                /*
                 if (locNum < TaskManager.objectiveLocations.Count)
                 {
                     PlayerCore.Instance.Warp(TaskManager.objectiveLocations[locNum].location);
                 }
+                */
                 textBox.text += "\n<color=lime>Country roads, take me home. To the place I belong!</color>";
             }
             else if (command.Equals("Spectate", StringComparison.CurrentCultureIgnoreCase))

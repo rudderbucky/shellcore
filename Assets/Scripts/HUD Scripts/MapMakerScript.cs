@@ -191,13 +191,16 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			}
 			instance.arrows.Clear();
 
-			foreach(var loc in TaskManager.objectiveLocations)
+			foreach(var ls in TaskManager.objectiveLocations.Values)
 			{
-				var arrow = Instantiate(instance.mapArrowPrefab, instance.transform, false);
-				arrow.GetComponent<Image>().color = Color.red + Color.green / 2;
-				instance.arrows.Add(loc, arrow.GetComponent<RectTransform>());
-				arrow.GetComponent<RectTransform>().anchoredPosition = 
-					new Vector2(loc.location.x - instance.minX, loc.location.y - instance.maxY) / instance.zoomoutFactor;
+				foreach(var loc in ls)
+				{
+					var arrow = Instantiate(instance.mapArrowPrefab, instance.transform, false);
+					arrow.GetComponent<Image>().color = Color.red + Color.green / 2;
+					instance.arrows.Add(loc, arrow.GetComponent<RectTransform>());
+					arrow.GetComponent<RectTransform>().anchoredPosition = 
+						new Vector2(loc.location.x - instance.minX, loc.location.y - instance.maxY) / instance.zoomoutFactor;
+				}
 			}
 		}
 		
@@ -260,10 +263,24 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				var text = tooltipTransform.GetComponentInChildren<Text>();
 				text.text = 
 					$"{sectorInfo[sect.Item1].Item1}\n{sectorInfo[sect.Item1].Item2}".ToUpper();
-				tooltipTransform.GetComponent<RectTransform>().sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
 
+				foreach(var objective in arrows.Keys)
+				{
+					var img = arrows[objective].GetComponent<Image>();
+					var imgpos = img.rectTransform.position;
+					var imgsizeDelta = img.rectTransform.sizeDelta;
+					var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
+					if(imgnewRect.Contains(Input.mousePosition))
+					{
+						text.text += $"\nCLICK TO VIEW MISSION: {objective.missionName.ToUpper()}";
+						break;
+					}
+				}
+
+				tooltipTransform.GetComponent<RectTransform>().sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
 			}
 		}
+
 		if(!mouseOverSector) 
 		{
 			if(tooltipTransform) Destroy(tooltipTransform.gameObject);
@@ -346,6 +363,20 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		{
 			timer = 0;
 			clickedOnce = true;
+		}
+
+		foreach(var objective in arrows.Keys)
+		{
+			var img = arrows[objective].GetComponent<Image>();
+			var imgpos = img.rectTransform.position;
+			var imgsizeDelta = img.rectTransform.sizeDelta;
+			var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
+			if(imgnewRect.Contains(Input.mousePosition))
+			{
+				StatusMenu.instance.SwitchSections(1);
+				TaskDisplayScript.ShowMission(PlayerCore.Instance.cursave.missions.Find(m => m.name == objective.missionName));
+				return;
+			}
 		}
 
 		if(SectorManager.testJsonPath != null || DevConsoleScript.godModeEnabled == true)

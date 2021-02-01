@@ -31,13 +31,16 @@ public class MinimapArrowScript : MonoBehaviour {
 			}
 			instance.arrows.Clear();
 
-			foreach(var loc in TaskManager.objectiveLocations)
+			foreach(var ls in TaskManager.objectiveLocations.Values)
 			{
-				var arrow = Instantiate(instance.arrowPrefab, instance.transform, false);
-				arrow.GetComponent<SpriteRenderer>().color = Color.red + Color.green / 2; // orange
-				arrow.GetComponent<SpriteRenderer>().enabled = true;
-				instance.arrows.Add(loc, arrow.transform);
-				instance.UpdatePosition(arrow.transform, loc.location);
+				foreach(var loc in ls)
+				{
+					var arrow = Instantiate(instance.arrowPrefab, instance.transform, false);
+					arrow.GetComponent<SpriteRenderer>().color = Color.red + Color.green / 2; // orange
+					arrow.GetComponent<SpriteRenderer>().enabled = true;
+					instance.arrows.Add(loc, arrow.transform);
+					instance.UpdatePosition(arrow.transform, loc.location);
+				}
 			}
 		}
 	}
@@ -118,6 +121,11 @@ public class MinimapArrowScript : MonoBehaviour {
 
 		foreach(var core in coreArrows.Keys)
 		{
+			if(!core)
+			{
+				coreArrows[core].GetComponent<SpriteRenderer>().enabled = false;
+				continue;
+			} 
 			UpdatePosition(coreArrows[core], core.transform.position, core.faction != PlayerCore.Instance.faction);
 			if(core.faction != player.faction && coreArrows[core].GetComponent<SpriteRenderer>().enabled)
 			{

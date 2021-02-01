@@ -21,6 +21,9 @@ public class MissionTraverser : Traverser
     {
         // If the quest has been started, continue
         nodeCanvas.missionName = findRoot().missionName;
+
+        // add objective list
+        TaskManager.objectiveLocations.Add(nodeCanvas.missionName, new List<TaskManager.ObjectiveLocation>());
         if(lastCheckpointName == (nodeCanvas.missionName + "_complete")) 
         {
             // Retroactively add all parts from the completed quest as parts obtained by the player.

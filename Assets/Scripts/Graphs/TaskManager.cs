@@ -37,16 +37,17 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         public Vector2 location;
         public bool exactLocation;
         public Entity followEntity;
-        public ObjectiveLocation(Vector2 location, bool exactLocation, Entity followEntity = null)
+        public string missionName;
+        public ObjectiveLocation(Vector2 location, bool exactLocation, string missionName, Entity followEntity = null)
         {
+            this.missionName = missionName;
             this.location = location;
             this.exactLocation = exactLocation;
             this.followEntity = followEntity;
         }
     }
 
-    public static List<ObjectiveLocation> objectiveLocations = new List<ObjectiveLocation>();
-
+    public static Dictionary<string, List<ObjectiveLocation>> objectiveLocations = new Dictionary<string, List<ObjectiveLocation>>();
     // Move to Dialogue System?
     public static string speakerID = null;
     public static List<string> speakerIDList = new List<string>();
@@ -62,7 +63,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
             Destroy(gameObject);
         }
         Instance = this;
-        objectiveLocations = new List<ObjectiveLocation>();
+        objectiveLocations = new Dictionary<string, List<ObjectiveLocation>>();
         speakerID = null;
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
         initCanvases(forceReInit);
@@ -72,11 +73,14 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     void Update()
     {
-        foreach(var loc in objectiveLocations)
+        foreach(var ls in objectiveLocations.Values)
         {
-            if(loc.followEntity)
+            foreach(var loc in ls)
             {
-                loc.location = loc.followEntity.transform.position;
+                if(loc.followEntity)
+                {
+                    loc.location = loc.followEntity.transform.position;
+                }
             }
         }
     }

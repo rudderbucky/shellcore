@@ -90,6 +90,12 @@ public class PartyManager : MonoBehaviour
     }
     public void AssignCharacter(string charID, Button assignButton)
     {
+        if(partyMembers.Count >= 2)
+        {
+            PlayerCore.Instance.alerter.showMessage("Cannot assign more than 2 party members!", "clip_alert");
+            return;
+        }
+
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
             AssignBackend(charID);

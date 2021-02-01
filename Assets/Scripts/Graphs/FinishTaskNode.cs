@@ -155,9 +155,11 @@ namespace NodeEditorFramework.Standard
                 if(!ent) continue;
                 if(ent.ID == rewardGiverID)
                 {
-                    TaskManager.objectiveLocations.Add(new TaskManager.ObjectiveLocation(
+                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
+                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,
+                        (Canvas as QuestCanvas).missionName,
                         ent
                     ));
                     TaskManager.DrawObjectiveLocations();

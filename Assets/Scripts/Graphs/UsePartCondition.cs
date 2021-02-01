@@ -49,9 +49,9 @@ namespace NodeEditorFramework.Standard
             OnPlayerReconstruct.RemoveListener(CheckParts);
             State = ConditionState.Uninitialized;
 
-            if(TaskManager.objectiveLocations.Contains(objectiveLocation))
+            if(TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
             {
-                TaskManager.objectiveLocations.Remove(objectiveLocation);
+                TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
                 TaskManager.DrawObjectiveLocations();
             }
         }
@@ -84,9 +84,10 @@ namespace NodeEditorFramework.Standard
                     objectiveLocation = new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,
+                        (Canvas as QuestCanvas).missionName,
                         ent
                     );
-                    TaskManager.objectiveLocations.Add(objectiveLocation);
+                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(objectiveLocation);
                     TaskManager.DrawObjectiveLocations();
                 }
             }
