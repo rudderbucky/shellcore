@@ -45,7 +45,9 @@ namespace NodeEditorFramework.Standard
         {
             "Checkpoint",
             "Task Variable",
-            "Reputation"
+            "Reputation",
+            "Parts Seen",
+            "Parts Obtained"
         };
 
         public override void NodeGUI()
@@ -73,10 +75,14 @@ namespace NodeEditorFramework.Standard
             }
             //variableType = GUILayout.SelectionGrid(variableType, variableTypes, 1, GUILayout.Width(128f));
 
-            GUILayout.Label("Variable Name:");
-            GUILayout.BeginHorizontal();
-            variableName = GUILayout.TextArea(variableName);
-            GUILayout.EndHorizontal();
+            if(variableType <= 1)
+            {
+                GUILayout.Label("Variable Name:");
+                GUILayout.BeginHorizontal();
+                variableName = GUILayout.TextArea(variableName);
+                GUILayout.EndHorizontal();
+            }
+            
 
             if (variableName.Equals(checkpointName, System.StringComparison.CurrentCulture))
                 checkpointName = "";
@@ -97,7 +103,7 @@ namespace NodeEditorFramework.Standard
                 {
                     comparisonPopup = new PopupMenu();
                     comparisonPopup.SetupGUI();
-                    for (int i = 0; i < variableTypes.Length; i++)
+                    for (int i = 0; i < comparisonModes.Length; i++)
                     {
                         comparisonPopup.AddItem(new GUIContent(comparisonModes[i]), false, SelectMode, i);
                     }
@@ -136,21 +142,33 @@ namespace NodeEditorFramework.Standard
             else
             {
                 int variableToCompare = 0;
-                if (variableType == 1)
+                switch(variableType)
                 {
-                    if (TaskManager.Instance.taskVariables.ContainsKey(variableName))
-                    {
-                        variableToCompare = TaskManager.Instance.taskVariables[variableName];
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Unknown task variable: " + variableName);
-                        return 1;
-                    }
-                }
-                else
-                {
-                    variableToCompare = PlayerCore.Instance.reputation;
+                    case 1:
+                        if (TaskManager.Instance.taskVariables.ContainsKey(variableName))
+                        {
+                            variableToCompare = TaskManager.Instance.taskVariables[variableName];
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Unknown task variable: " + variableName);
+                            return 1;
+                        }
+                        break;
+                    case 2:
+                        variableToCompare = PlayerCore.Instance.reputation;
+                        break;
+                    case 3:
+                        variableToCompare = PartIndexScript.GetNumberOfPartsSeen();
+                        break;
+                    case 4:
+                        variableToCompare = PartIndexScript.GetNumberOfPartsObtained();
+                        #if UNITY_EDITOR
+                        if(Input.GetKey(KeyCode.J))
+                            variableToCompare = 1000;
+                        #endif
+                        break;
+
                 }
 
                 switch (comparisonMode)

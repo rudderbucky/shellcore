@@ -898,6 +898,10 @@ public class SectorManager : MonoBehaviour
                         ShellCore shellcore = objects[current.targets[i]].GetComponent<ShellCore>();
                         if(carriers.ContainsKey(shellcore.faction))
                             shellcore.SetCarrier(carriers[shellcore.faction]);
+
+                        // add minimap arrow
+                        if(MinimapArrowScript.instance && !(shellcore is PlayerCore))
+                            MinimapArrowScript.instance.AddCoreArrow(shellcore);
                     }
                     battleZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
                 }
@@ -971,6 +975,10 @@ public class SectorManager : MonoBehaviour
         }
         ShardRock.shards.Clear();
         shardRocks.Clear();
+
+        // clear minimap core arrows
+        if(MinimapArrowScript.instance)
+            MinimapArrowScript.instance.ClearCoreArrows();
 
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var obj in objects)

@@ -100,6 +100,8 @@ public class SaveMenuHandler : GUIWindowScripts {
 		if(File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) 
 			curpath = File.ReadAllText(Application.persistentDataPath + "\\CurrentSavePath");
 		for(int i = 0; i < saves.Count; i++) {
+			if(saves[i] == null) 
+				continue;
 			SaveMenuIcon icon = Instantiate(saveIconPrefab, contents).GetComponent<SaveMenuIcon>();
 			icon.save = saves[i];
 			icon.index = i;
@@ -112,7 +114,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 				else icon.transform.SetSiblingIndex(1);
 			}
 			else icon.transform.SetSiblingIndex(0);
-			if((resourcePath == "" && !saves[i].resourcePath.Contains("main")) 
+			if((resourcePath == "" && saves[i].resourcePath != null && !saves[i].resourcePath.Contains("main")) 
 				|| (resourcePath != "" && saves[i].resourcePath != resourcePath)) icon.gameObject.SetActive(false);
 		}
 	}

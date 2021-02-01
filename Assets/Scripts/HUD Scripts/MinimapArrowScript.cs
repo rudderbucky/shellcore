@@ -6,10 +6,11 @@ public class MinimapArrowScript : MonoBehaviour {
 
 	public Camera minicam;
 	PlayerCore player;
-	static MinimapArrowScript instance;
+	public static MinimapArrowScript instance;
 	public GameObject arrowPrefab;
 
 	Dictionary<TaskManager.ObjectiveLocation, Transform> arrows = new Dictionary<TaskManager.ObjectiveLocation, Transform>();
+	Dictionary<ShellCore, Transform> coreArrows = new Dictionary<ShellCore, Transform>();
 	Transform playerTargetArrow;
 	public void Initialize(PlayerCore player) {
 		this.player = player;
@@ -41,8 +42,11 @@ public class MinimapArrowScript : MonoBehaviour {
 		}
 	}
 
-	bool UpdatePosition(Transform arrow, Vector2 realPos)
+	bool UpdatePosition(Transform arrow, Vector2 realPos, bool hideIfOffViewport = false)
 	{
+		// we initially just set the sprite renderer active
+		arrow.gameObject.GetComponent<SpriteRenderer>().enabled = true;
+
 		// arrow is in minimap space, and it is directly captured into the minimap via the camera render
 		// therefore to display the arrow all that is necessary is a translation of world position into the minimap camera's
 		// viewport position, which is done here
@@ -57,25 +61,30 @@ public class MinimapArrowScript : MonoBehaviour {
 		// revert the arrow to default rotation if neither xlim nor ylim was marked is true
 		arrow.transform.eulerAngles = new Vector3(0,0,180);
 
+		// we hide the arrow if it is off the minimap in specific cases, like enemies in BattleZones
 		// viewport coordinates have their left and right edges at 0 and 1 respectively, beyond that is outside the viewport
 		// if it is outside the viewport we need to adjust the arrow's rotation and position it on the edge, which is being done here
 		// if not, the original position actually fits in the viewport so we can just use that
 		if(pos.x > 1) {
+			arrow.gameObject.GetComponent<SpriteRenderer>().enabled = !hideIfOffViewport;
 			arrowpos.x = minicam.ViewportToWorldPoint(new Vector3(1,0,0)).x;
 			arrow.transform.eulerAngles = new Vector3(0,0,-90);
 			xlim = true;
 		}
 		else if(pos.x < 0) {
+			arrow.gameObject.GetComponent<SpriteRenderer>().enabled = !hideIfOffViewport;
 			arrowpos.x = minicam.ViewportToWorldPoint(new Vector3(0,0,0)).x;
 			arrow.transform.eulerAngles = new Vector3(0,0,90);
 			xlim = true;
 		} else arrowpos.x = realPos.x;
 		if(pos.y > 1) {
+			arrow.gameObject.GetComponent<SpriteRenderer>().enabled = !hideIfOffViewport;
 			arrowpos.y = minicam.ViewportToWorldPoint(new Vector3(0,1,0)).y;
 			arrow.transform.eulerAngles = new Vector3(0,0,0);
 			ylim = true;
 		}
 		else if(pos.y < 0) {
+			arrow.gameObject.GetComponent<SpriteRenderer>().enabled = !hideIfOffViewport;
 			arrowpos.y = minicam.ViewportToWorldPoint(new Vector3(0,0,0)).y;
 			arrow.transform.eulerAngles = new Vector3(0,0,180);
 			ylim = true;
@@ -106,5 +115,27 @@ public class MinimapArrowScript : MonoBehaviour {
 		{
 			UpdatePosition(arrows[loc], loc.location);
 		}
+
+		foreach(var core in coreArrows.Keys)
+		{
+			UpdatePosition(coreArrows[core], core.transform.position, core.faction != PlayerCore.Instance.faction);
+		}
+	}
+
+	public void ClearCoreArrows()
+	{
+		foreach(var kvp in coreArrows)
+		{
+			Destroy(kvp.Value.gameObject);
+		}
+
+		coreArrows.Clear();
+	}
+
+	public void AddCoreArrow(ShellCore core)
+	{
+		coreArrows.Add(core, Instantiate(arrowPrefab, transform, false).transform);
+		coreArrows[core].GetComponent<SpriteRenderer>().color = FactionColors.colors[core.faction];
+		UpdatePosition(coreArrows[core], core.transform.position, core.faction != PlayerCore.Instance.faction);
 	}
 }

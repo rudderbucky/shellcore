@@ -32,6 +32,35 @@ public class PartIndexScript : MonoBehaviour
         Obtained
     }
 
+    public static int GetNumberOfPartsObtained()
+    {
+        int count = 0;
+        foreach(var part in index)
+        {
+            var part2 = CullToPartIndexValues(part.part);
+            if(CheckPartObtained(part2))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int GetNumberOfPartsSeen()
+    {
+        int count = 0;
+        foreach(var part in index)
+        {
+            var part2 = CullToPartIndexValues(part.part);
+            if(CheckPartObtained(part2))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
     ///
     /// Attempt to add a part into the index, check if the player obtained/saw it
     ///
