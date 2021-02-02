@@ -185,7 +185,6 @@ public class PathAI : AIModule
                         if (path.waypoints[j].ID == waypointID)
                         {
                             waypointIndex = j;
-                            Debug.LogError(path.waypoints[j].position);
                             ai.movement.SetMoveTarget(path.waypoints[j].position, 4f);
                             break;
                         }

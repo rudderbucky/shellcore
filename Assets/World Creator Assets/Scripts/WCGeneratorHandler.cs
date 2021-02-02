@@ -69,7 +69,14 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             foreach(var file in System.IO.Directory.GetFiles(path2))
             {
+                #if UNITY_EDITOR
+                if(!file.Contains(".meta"))
+                {
+                    System.IO.File.Delete(file);
+                }
+                #else
                 System.IO.File.Delete(file);
+                #endif
             }
         }
         else System.IO.Directory.CreateDirectory(path2);
@@ -80,6 +87,8 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             if(!file.Contains(".meta"))
                 System.IO.File.Copy(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+            else
+                System.IO.File.Move(file, path2 + "\\" + System.IO.Path.GetFileName(file));
         }
     }
 
@@ -432,7 +441,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
             string output = JsonUtility.ToJson(data);
 
-            string sectorPath = path + "\\" + sector.sectorName + ".json";                
+            string sectorPath = path + "\\." + sector.sectorName + ".json";                
             System.IO.File.WriteAllText(sectorPath, output);
         }
 
