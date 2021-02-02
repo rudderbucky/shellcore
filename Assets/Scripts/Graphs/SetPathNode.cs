@@ -111,6 +111,7 @@ namespace NodeEditorFramework.Standard
         void SetPath(PathData path)
         {
             this.path = path;
+            WorldCreatorCursor.finishPath -= SetPath;
         }
 
         public override int Traverse()
