@@ -67,6 +67,10 @@ namespace NodeEditorFramework.Standard
 
         public void OnDialogue()
         {
+            // draw objectives
+            TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
+            TaskManager.DrawObjectiveLocations();
+
             DialogueSystem.ShowPopup(rewardText, textColor, SectorManager.instance.GetEntity(rewardGiverID));
             DialogueSystem.OnDialogueEnd = (int _) =>
             {
@@ -120,25 +124,23 @@ namespace NodeEditorFramework.Standard
             }
 
             SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
+
+
             TaskManager.speakerIDList.Add(rewardGiverID);
             if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
             {
                 Debug.Log("Contains key");
                 TaskManager.interactionOverrides[rewardGiverID].Push(() => {
-                    Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                     TaskManager.interactionOverrides[rewardGiverID].Pop();
                     OnDialogue();
-                    Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                 });
             }
             else
             {
                 var stack = new Stack<UnityEngine.Events.UnityAction>();
                 stack.Push(() => {
-                        Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                         TaskManager.interactionOverrides[rewardGiverID].Pop();
                         OnDialogue();
-                        Debug.Log(TaskManager.interactionOverrides[rewardGiverID].Count);
                     });
                 TaskManager.interactionOverrides.Add(rewardGiverID, stack);
                 Debug.Log("ADDED " + rewardGiverID);
@@ -148,6 +150,7 @@ namespace NodeEditorFramework.Standard
             return -1;
         }
 
+        TaskManager.ObjectiveLocation objectiveLocation;
         void TryAddObjective()
 		{
             foreach(var ent in AIData.entities)
@@ -156,12 +159,13 @@ namespace NodeEditorFramework.Standard
                 if(ent.ID == rewardGiverID)
                 {
                     TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
-                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(new TaskManager.ObjectiveLocation(
+                    objectiveLocation = new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,
                         (Canvas as QuestCanvas).missionName,
                         ent
-                    ));
+                    );
+                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(objectiveLocation);
                     TaskManager.DrawObjectiveLocations();
                     break;
                 }

@@ -114,7 +114,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 				else icon.transform.SetSiblingIndex(1);
 			}
 			else icon.transform.SetSiblingIndex(0);
-			if((resourcePath == "" && saves[i].resourcePath != null && !saves[i].resourcePath.Contains("main")) 
+			if((resourcePath == "" && saves[i].resourcePath != null && !saves[i].resourcePath.Contains("main") && saves[i].resourcePath != "") 
 				|| (resourcePath != "" && saves[i].resourcePath != resourcePath)) icon.gameObject.SetActive(false);
 		}
 	}

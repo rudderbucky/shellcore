@@ -441,6 +441,14 @@ public class SectorManager : MonoBehaviour
 
                         if(current.type == Sector.SectorType.BattleZone)
                         {
+                            // add core arrow
+                            if(MinimapArrowScript.instance && !(shellcore is PlayerCore))
+                            {
+                                shellcore.faction = data.faction;
+                                MinimapArrowScript.instance.AddCoreArrow(shellcore);
+                            }   
+                                
+
                             // set the carrier of the shellcore to the associated faction's carrier
                             if(carriers.ContainsKey(data.faction))
                                 shellcore.SetCarrier(carriers[data.faction]);

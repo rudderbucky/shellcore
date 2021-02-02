@@ -41,7 +41,7 @@ namespace NodeEditorFramework.Standard
         {
             OnPlayerReconstruct.AddListener(CheckParts);
             State = ConditionState.Listening;
-            TryAddObjective(false);
+            TryAddObjective(true);
         }
 
         public void DeInit()
@@ -80,7 +80,7 @@ namespace NodeEditorFramework.Standard
                 // TODO: Disambiguate name and entityName
                 if(ent.name == "Yard" || ent.entityName == "Yard")
                 {
-                    if(clear) TaskManager.objectiveLocations.Clear();
+                    if(clear) TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
                     objectiveLocation = new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,

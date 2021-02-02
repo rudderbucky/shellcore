@@ -146,6 +146,9 @@ public class MinimapArrowScript : MonoBehaviour {
 
 	public void AddCoreArrow(ShellCore core)
 	{
+		if(coreArrows.ContainsKey(core)) 
+			return;
+
 		coreArrows.Add(core, Instantiate(arrowPrefab, transform, false).transform);
 		coreArrows[core].GetComponent<SpriteRenderer>().color = FactionColors.colors[core.faction];
 		UpdatePosition(coreArrows[core], core.transform.position, core.faction != PlayerCore.Instance.faction);
