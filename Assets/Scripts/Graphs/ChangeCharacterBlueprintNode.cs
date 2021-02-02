@@ -49,7 +49,9 @@ namespace NodeEditorFramework.Standard
                     {
                         Debug.Log("<Change Character Blueprint Node> Forcing reconstruct");
                         var ent = AIData.entities.Find(c => c.ID == charID);
+                        var oldName = ent.entityName;
                         JsonUtility.FromJsonOverwrite(blueprintJSON, ent.blueprint);
+                        ent.entityName = oldName;
                         ent.Rebuild();
                     }
                     else
