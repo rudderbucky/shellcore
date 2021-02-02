@@ -166,7 +166,7 @@ public class SectorManager : MonoBehaviour
         }
     }
 
-    public void AttemptSectorLoad()
+    public void AttemptSectorLoad(Sector.SectorType? lastSectorType = null)
     {
         if(player && (current == null || (!current.bounds.contains(player.transform.position))))
         {
@@ -175,8 +175,10 @@ public class SectorManager : MonoBehaviour
             {
                 if(sectors[i].bounds.contains(player.transform.position))
                 {
+                    Sector.SectorType? oldType = null;
+                    if(current != null) oldType = current.type;
                     current = sectors[i];
-                    loadSector();
+                    loadSector(oldType);
                     break;
                 }
             }
@@ -699,7 +701,7 @@ public class SectorManager : MonoBehaviour
     List<(EntityBlueprint, Sector.LevelEntity, int, float)> bgSpawns = new List<(EntityBlueprint, Sector.LevelEntity, int, float)>();
     
     private float bgSpawnTimer = 0;
-    void loadSector()
+    void loadSector(Sector.SectorType? lastSectorType = null)
     {
         #if UNITY_EDITOR
         if(Input.GetKey(KeyCode.LeftShift)) {
@@ -721,7 +723,7 @@ public class SectorManager : MonoBehaviour
 #endif
 
         //unload previous sector
-        UnloadCurrentSector();
+        UnloadCurrentSector(lastSectorType);
 
         //load new sector
         if(player) {
@@ -970,7 +972,7 @@ public class SectorManager : MonoBehaviour
             OnSectorLoad.Invoke(current.sectorName);
     }
 
-    private void UnloadCurrentSector()
+    private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null)
     {
         // destroy existing shard rocks
         foreach(var rock in shardRocks)
@@ -1001,7 +1003,10 @@ public class SectorManager : MonoBehaviour
                 {
                     foreach (var ch in characters)
                     {
-                        if (obj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
+                        if (obj.Value.GetComponentInChildren<Entity>().ID == ch.ID && (
+                            lastSectorType == null ||
+                            lastSectorType != Sector.SectorType.BattleZone || 
+                            obj.Value.GetComponentInChildren<Entity>().faction == player.faction))
                         {
                             skipTag = true;
                             break;
