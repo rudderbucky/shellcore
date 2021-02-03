@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.Audio;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -67,6 +68,7 @@ public class ResourceManager : MonoBehaviour
         var vending = new List<(string, string)>();
         var paths = new List<(string, string)>();
         var factions = new List<(string, string)>();
+        var sounds = new List<(string, string)>();
 
         string resDataPath = System.IO.Path.Combine(path, "ResourceData.txt");
 
@@ -95,6 +97,8 @@ public class ResourceManager : MonoBehaviour
                     mode = 4;
                 else if (line.ToLower().StartsWith("factions:"))
                     mode = 5;
+                else if (line.ToLower().StartsWith("audio:"))
+                    mode = 6;
                 else
                 {
                     string[] names = line.Split(':');
@@ -110,6 +114,7 @@ public class ResourceManager : MonoBehaviour
                             case 3: vending.    Add((names[0], resPath)); break;
                             case 4: paths.      Add((names[0], resPath)); break;
                             case 5: factions.   Add((names[0], resPath)); break;
+                            case 6: sounds.     Add((names[0], resPath)); break;
                             default:
                                 break;
                         }
@@ -181,6 +186,12 @@ public class ResourceManager : MonoBehaviour
                 resources[factions[i].Item1] = faction;
             }
 
+            //load factions
+            for (int i = 0; i < sounds.Count; i++)
+            {
+                StartCoroutine(GetAudioClip(sounds[i].Item1, sounds[i].Item2));
+            }
+
             FactionManager.UpdateFactions();
         }
         else
@@ -192,7 +203,24 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
-    #if UNITY_EDITOR
+    IEnumerator GetAudioClip(string ID, string path)
+    {
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError)
+            {
+                Debug.LogError(www.error);
+            }
+            else
+            {
+                resources[ID] = DownloadHandlerAudioClip.GetContent(www);
+            }
+        }
+    }
+
+#if UNITY_EDITOR
     public void GenerateSegmentedList(ResourceManagerEditor.ResourcesByType type)
     {
         /*
