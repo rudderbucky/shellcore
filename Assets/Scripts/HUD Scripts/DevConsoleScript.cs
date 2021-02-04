@@ -74,6 +74,11 @@ public class DevConsoleScript : MonoBehaviour
                 int number = int.Parse(command.Substring(10).Trim());
                 PlayerCore.Instance.AddPower(number);
             }
+            else if (command.StartsWith("Add rep ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int number = int.Parse(command.Substring(8).Trim());
+                PlayerCore.Instance.reputation += number;
+            }
             else if (command.Equals("Full log", StringComparison.CurrentCultureIgnoreCase))
             {
                 fullLog = true;
