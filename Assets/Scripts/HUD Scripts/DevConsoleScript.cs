@@ -46,8 +46,8 @@ public class DevConsoleScript : MonoBehaviour
             if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
             {
                 var player = PlayerCore.Instance;
-                player.SetMaxHealth(new float[] { 9999, 9999, 9999 }, true);
-                player.SetRegens(new float[] { 9999, 9999, 9999 });
+                player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
+                player.SetRegens(new float[] { 99999, 99999, 99999 });
                 player.credits = 999999;
                 player.enginePower = 9999f;
                 player.damageAddition = 99999f;
@@ -58,8 +58,8 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.Equals("Immortality", StringComparison.CurrentCultureIgnoreCase))
             {
                 var player = PlayerCore.Instance;
-                player.SetMaxHealth(new float[] { 9999, 9999, 9999 }, true);
-                player.SetRegens(new float[] { 9999, 9999, 9999 });
+                player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
+                player.SetRegens(new float[] { 99999, 99999, 99999 });
                 textBox.text += "\n<color=lime>Immortality is an illusion, enjoy it while it lasts.</color>";
             }
             else if (command.Equals("Skynet will rise", StringComparison.CurrentCultureIgnoreCase))
