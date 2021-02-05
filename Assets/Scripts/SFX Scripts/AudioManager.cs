@@ -14,10 +14,12 @@ public class AudioManager : MonoBehaviour
     
     // change this ID to override sector music
     public static string musicOverrideID = null;
+    private Dictionary<string, float> timePlayed;
 
     public void Initialize()
     {
         instance = this;
+        timePlayed = new Dictionary<string, float>();
         musicOverrideID = null;
     }
     void Start() 
@@ -50,23 +52,40 @@ public class AudioManager : MonoBehaviour
     }
 
     public static void PlayClipByID(string ID, Vector3 pos) {
+        if(instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
+            return;
+
         var source = new GameObject().AddComponent<AudioSource>();
         source.transform.position = pos;
         source.name = "Audio One-Shot";
         source.outputAudioMixerGroup = instance.sounds;
         source.clip = ResourceManager.GetAsset<AudioClip>(ID);
         source.Play();
+        if(!instance.timePlayed.ContainsKey(ID))
+            instance.timePlayed.Add(ID, Time.time);
+        else
+            instance.timePlayed[ID] = Time.time;
+        
         Destroy(source.gameObject, source.clip.length);
     }
 
     // Plays the clip directly on the player
     public static void PlayClipByID(string ID, bool clear=false) {
+        
+
         if(instance.playerSource != null) {
             if(clear) instance.playerSource.Stop();
             if(ID != null) 
             {
+                if(instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
+                    return;
+
                 var clip = ResourceManager.GetAsset<AudioClip>(ID);
                 instance.playerSource.PlayOneShot(clip, 1F);
+                if(!instance.timePlayed.ContainsKey(ID))
+                    instance.timePlayed.Add(ID, Time.time);
+                else
+                    instance.timePlayed[ID] = Time.time;
             }
             // can pass null just to clear the sound buffer
         }
