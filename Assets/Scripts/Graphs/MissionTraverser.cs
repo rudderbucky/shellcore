@@ -114,14 +114,7 @@ public class MissionTraverser : Traverser
     public override void SetNode(Node node)
     {
         Debug.Log("Mission Canvas " + nodeCanvas.missionName + " now setting node: " + node);
-        if(node is StartDialogueNode)
-        {
-            (node as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
-        }
-        if(node is DialogueNode)
-            (node as DialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
-        if(node is EndDialogue)
-            (node as EndDialogue).state = NodeEditorGUI.NodeEditorState.Mission;
+        SetDialogueState(node, NodeEditorGUI.NodeEditorState.Mission);
         base.SetNode(node);
     }
 
@@ -130,14 +123,7 @@ public class MissionTraverser : Traverser
         while (true)
         {
             Debug.Log("Mission Canvas " +  nodeCanvas.missionName + " now traversing: " + currentNode);
-            if(currentNode is StartDialogueNode)
-            {
-                (currentNode as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
-            }
-            if(currentNode is DialogueNode)
-                (currentNode as DialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
-            if(currentNode is EndDialogue)
-                (currentNode as EndDialogue).state = NodeEditorGUI.NodeEditorState.Mission;
+            SetDialogueState(currentNode, NodeEditorGUI.NodeEditorState.Mission);
             if (currentNode == null)
                 return;
             int outputIndex = currentNode.Traverse();

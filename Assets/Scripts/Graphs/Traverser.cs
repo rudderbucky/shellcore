@@ -96,4 +96,16 @@ public class Traverser : NodeCanvasTraversal
             Traverse();
         else Debug.LogWarning("Traverser failed to traverse because system failed to load. Abort.");
     }
+
+    protected void SetDialogueState(Node node, NodeEditorGUI.NodeEditorState state)
+    {
+        if (node is StartDialogueNode)
+        {
+            (node as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
+        }
+        if (node is DialogueNode)
+            (node as DialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
+        if (node is EndDialogue)
+            (node as EndDialogue).state = NodeEditorGUI.NodeEditorState.Mission;
+    }
 }

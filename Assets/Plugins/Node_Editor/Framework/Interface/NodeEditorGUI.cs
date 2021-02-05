@@ -45,7 +45,8 @@ namespace NodeEditorFramework
 		public enum NodeEditorState
 		{
 			Mission,
-			Dialogue
+			Dialogue,
+            Sector
 		}
 
 		public static NodeEditorState state = NodeEditorState.Mission;
@@ -66,7 +67,12 @@ namespace NodeEditorFramework
 					NE_LightColor = new Color (0.0f, 0.4f, 0.4f);
 					NE_TextColor = new Color(0.0f, 0.8f, 0.8f);
 					break;
-			}
+                case NodeEditorState.Sector:
+                    GUIBox = ResourceManager.LoadTexture("Textures/NE_SectorCanvasBox.png");
+                    NE_LightColor = new Color(0.8f, 0.4f, 0.0f);
+                    NE_TextColor = new Color(1.0f, 0.6f, 0.1f);
+                    break;
+            }
 			GUIButton = ResourceManager.LoadTexture ("Textures/NE_Button.png");
 			//GUIBoxSelection = ResourceManager.LoadTexture("Textures/BoxSelection.png");
 			GUIToolbar = ResourceManager.LoadTexture("Textures/NE_Toolbar.png");

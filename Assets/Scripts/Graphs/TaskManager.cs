@@ -26,6 +26,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     bool initialized = false;
     public List<MissionTraverser> traversers;
+    public List<SectorTraverser> sectorTraversers;
     List<Task> activeTasks = new List<Task>();
     public Dictionary<string, int> taskVariables = new Dictionary<string, int>();
     public static bool autoSaveEnabled;
@@ -169,6 +170,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         if (initialized && !forceReInit)
             return;
         traversers = new List<MissionTraverser>();
+        sectorTraversers = new List<SectorTraverser>();
         NodeCanvasManager.FetchCanvasTypes();
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
@@ -179,11 +181,23 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
             Debug.Log("Canvas path [" + i + "] = " + finalPath);
-            var canvas = XMLImport.Import(finalPath) as QuestCanvas;
-            Debug.Log(canvas);
-            if (canvas != null)
+            if (finalPath.Contains(".taskdata"))
             {
-                traversers.Add(new MissionTraverser(canvas));
+                var canvas = XMLImport.Import(finalPath) as QuestCanvas;
+                Debug.Log(canvas);
+                if (canvas != null)
+                {
+                    traversers.Add(new MissionTraverser(canvas));
+                }
+            }
+            else if (finalPath.Contains(".sectordata"))
+            {
+                var canvas = XMLImport.Import(finalPath) as SectorCanvas;
+                Debug.Log(canvas);
+                if (canvas != null)
+                {
+                    sectorTraversers.Add(new SectorTraverser(canvas));
+                }
             }
         }
 
@@ -242,6 +256,13 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         for (int i = 0; i < traversers.Count; i++)
         {
             traversers[i].StartQuest();
+        }
+
+        for (int i = 0; i < sectorTraversers.Count; i++)
+        {
+            var start = sectorTraversers[i].findRoot();
+            sectorTraversers[i].startNode = (LoadSectorNode)start;
+            sectorTraversers[i].StartQuest();
         }
     }
 

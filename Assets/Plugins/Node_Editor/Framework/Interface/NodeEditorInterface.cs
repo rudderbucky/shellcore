@@ -54,9 +54,18 @@ namespace NodeEditorFramework.Standard
 				//float curToolbarHeight = 0;
 				if (GUILayout.Button("New", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
 				{
-					if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission)
-						NewNodeCanvas(typeof(QuestCanvas));
-					else NewNodeCanvas(typeof(DialogueCanvas));
+                    switch (NodeEditorGUI.state)
+                    {
+                        case NodeEditorGUI.NodeEditorState.Mission:
+                            NewNodeCanvas(typeof(QuestCanvas));
+                            break;
+                        case NodeEditorGUI.NodeEditorState.Dialogue:
+                            NewNodeCanvas(typeof(DialogueCanvas));
+                            break;
+                        case NodeEditorGUI.NodeEditorState.Sector:
+                            NewNodeCanvas(typeof(SectorCanvas));
+                            break;
+                    }
 				}
 				if (GUILayout.Button("Import", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
 				{
@@ -82,11 +91,40 @@ namespace NodeEditorFramework.Standard
 					else if (IOFormat.ExportLocationArgsSelection(canvasCache.nodeCanvas.saveName, out IOLocationArgs))
 						ImportExportManager.ExportCanvas(canvasCache.nodeCanvas, IOFormat, IOLocationArgs);
 				}
-				if (GUILayout.Button(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? "Mission" : "Dialogue", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
+                string buttonText = "Mission";
+                switch (NodeEditorGUI.state)
+                {
+                    case NodeEditorGUI.NodeEditorState.Mission:
+                        buttonText = "Mission";
+                        break;
+                    case NodeEditorGUI.NodeEditorState.Dialogue:
+                        buttonText = "Dialogue";
+                        break;
+                    case NodeEditorGUI.NodeEditorState.Sector:
+                        buttonText = "Sector";
+                        break;
+                    default:
+                        break;
+                }
+
+                if (GUILayout.Button(buttonText, NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
 				{
-					NodeEditorGUI.state = NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? 
-						NodeEditorGUI.NodeEditorState.Dialogue : NodeEditorGUI.NodeEditorState.Mission;
-					NewNodeCanvas(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? typeof(QuestCanvas) : typeof(DialogueCanvas));
+                    NodeEditorGUI.state = (NodeEditorGUI.NodeEditorState)(((int)NodeEditorGUI.state + 1) % 3);
+
+                    switch (NodeEditorGUI.state)
+                    {
+                        case NodeEditorGUI.NodeEditorState.Mission:
+                            NewNodeCanvas(typeof(QuestCanvas));
+                            break;
+                        case NodeEditorGUI.NodeEditorState.Dialogue:
+                            NewNodeCanvas(typeof(DialogueCanvas));
+                            break;
+                        case NodeEditorGUI.NodeEditorState.Sector:
+                            NewNodeCanvas(typeof(SectorCanvas));
+                            break;
+                        default:
+                            break;
+                    }
 					NodeEditorGUI.Init();
 				}
 				GUI.backgroundColor = Color.white;
@@ -261,7 +299,9 @@ namespace NodeEditorFramework.Standard
 				if (state == null)
 					return;
 
-				if (state == true)
+                Debug.Log(IOLocationArgs);
+
+                if (state == true)
 					ImportExportManager.ExportCanvas(canvasCache.nodeCanvas, IOFormat, IOLocationArgs);
 
 				ImportLocationGUI = null;

@@ -71,12 +71,14 @@ namespace NodeEditorFramework.IO
 				DirectoryInfo dir = Directory.CreateDirectory(RuntimeIOPath);
 				FileInfo[] taskdata = dir.GetFiles("*.taskdata");
 				FileInfo[] dialoguedata = dir.GetFiles("*.dialoguedata");
-				currentMin = 0;
+				FileInfo[] sectordata = dir.GetFiles("*.sectordata");
+                currentMin = 0;
 				files = new List<FileInfo>();
 				files.AddRange(taskdata);
 				files.AddRange(dialoguedata);
-				// Fill save file selection menu
-				GenericMenu fileSelectionMenu = new GenericMenu(false);
+				files.AddRange(sectordata);
+                // Fill save file selection menu
+                GenericMenu fileSelectionMenu = new GenericMenu(false);
 				for(int i = currentMin; i < Mathf.Min(currentMin + limit, files.Count); i++)
 				{
 					int x = i;
@@ -84,7 +86,8 @@ namespace NodeEditorFramework.IO
 					{
 						if(files[x].Name.Contains("taskdata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Mission;
 						if(files[x].Name.Contains("dialoguedata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Dialogue;
-						fileSelection = Path.GetFileName(files[x].Name);
+						if(files[x].Name.Contains("sectordata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Sector;
+                        fileSelection = Path.GetFileName(files[x].Name);
 						NodeEditorGUI.Init();
 					});
 				}
@@ -121,7 +124,8 @@ namespace NodeEditorFramework.IO
 					{
 						if(files[x].Name.Contains("taskdata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Mission;
 						if(files[x].Name.Contains("dialoguedata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Dialogue;
-						fileSelection = Path.GetFileName(files[x].Name);
+						if(files[x].Name.Contains("sectordata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Sector;
+                        fileSelection = Path.GetFileName(files[x].Name);
 						NodeEditorGUI.Init();
 					});
 				}
@@ -179,7 +183,19 @@ namespace NodeEditorFramework.IO
 
 			// File save field
 			GUILayout.BeginHorizontal();
-			var ext = (NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission ? ".taskdata" : ".dialoguedata");
+            string ext = ".taskdata";
+            switch (NodeEditorGUI.state)
+            {
+                case NodeEditorGUI.NodeEditorState.Mission:
+                    ext = ".taskdata";
+                    break;
+                case NodeEditorGUI.NodeEditorState.Dialogue:
+                    ext = ".dialoguedata";
+                    break;
+                case NodeEditorGUI.NodeEditorState.Sector:
+                    ext = ".sectordata";
+                    break;
+            }
 			// GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(false));
 			fileSelection = GUILayout.TextField(Path.GetFileNameWithoutExtension(fileSelection), GUILayout.ExpandWidth(true));
 			GUILayout.Label(ext, GUILayout.ExpandWidth (false));
@@ -194,7 +210,12 @@ namespace NodeEditorFramework.IO
 				if (string.IsNullOrEmpty(fileSelection))
 					return false;
 				fileSelection = Path.GetFileNameWithoutExtension(fileSelection);
-				locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection + ext};
+
+                if (RuntimeIOPath == null || RuntimeIOPath == "")
+                    RuntimeIOPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
+
+                locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection + ext};
+                Debug.Log(RuntimeIOPath + "\\" + fileSelection + ext);
 				return true;
 			}
 			GUILayout.EndHorizontal();

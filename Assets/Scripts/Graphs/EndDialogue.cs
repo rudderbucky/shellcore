@@ -34,13 +34,13 @@ namespace NodeEditorFramework.Standard
                 DeleteConnectionPort(outputKnobs[0]);
                 output = null;
             } 
-            else if((NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission) && (output == null))
+            else if((NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue) && (output == null))
             {
                 output = CreateConnectionKnob(OutStyle);
             }
             GUILayout.BeginHorizontal();
             input.DisplayLayout();
-            if(!jumpToStart && (NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission))
+            if(!jumpToStart && (NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue))
             {
                 if (output == null)
                 {
@@ -73,7 +73,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             IDialogueOverrideHandler handler = null;
-            if(state == NodeEditorGUI.NodeEditorState.Mission)
+            if(state != NodeEditorGUI.NodeEditorState.Dialogue)
                 handler = TaskManager.Instance;
             else handler = DialogueSystem.Instance;
             
@@ -91,7 +91,7 @@ namespace NodeEditorFramework.Standard
                     }
                 }
             
-            var node = state == NodeEditorGUI.NodeEditorState.Mission 
+            var node = state != NodeEditorGUI.NodeEditorState.Dialogue 
                 ? StartDialogueNode.missionCanvasNode : StartDialogueNode.dialogueCanvasNode;
 
             if(jumpToStart)

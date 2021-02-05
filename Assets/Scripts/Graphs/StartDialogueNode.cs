@@ -41,7 +41,7 @@ namespace NodeEditorFramework.Standard
                 DeleteConnectionPort(input);
                 input = null;
             } 
-            else if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission && input == null)
+            else if(NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue && input == null)
             {
                 input = CreateConnectionKnob(inputInStyle);
             }
@@ -75,7 +75,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             IDialogueOverrideHandler handler = null;
-            if(state == NodeEditorGUI.NodeEditorState.Mission)
+            if(state != NodeEditorGUI.NodeEditorState.Dialogue)
                 handler = TaskManager.Instance;
             else handler = DialogueSystem.Instance;
 

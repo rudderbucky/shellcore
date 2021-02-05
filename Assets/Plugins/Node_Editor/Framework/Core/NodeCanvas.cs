@@ -54,15 +54,22 @@ namespace NodeEditorFramework
 			if (canvasType != null && canvasType.IsSubclassOf (typeof(NodeCanvas)))
 				canvas = ScriptableObject.CreateInstance (canvasType) as NodeCanvas;
 			else
-				// TODO: Why can I not access StartMissionNode here???????
-				if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Mission)
-				{
-					canvas = ScriptableObject.CreateInstance<QuestCanvas>();
-				}	
-				else 
-				{
-					canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.DialogueCanvas>();
-				}
+                // TODO: Why can I not access StartMissionNode here???????
+                switch (NodeEditorGUI.state)
+                {
+                    case NodeEditorGUI.NodeEditorState.Mission:
+                        canvas = ScriptableObject.CreateInstance<QuestCanvas>();
+                        break;
+                    case NodeEditorGUI.NodeEditorState.Dialogue:
+                        canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.DialogueCanvas>();
+                        break;
+                    case NodeEditorGUI.NodeEditorState.Sector:
+                        canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.SectorCanvas> ();
+                        break;
+                    default:
+                        canvas = ScriptableObject.CreateInstance<QuestCanvas>();
+                        break;
+                }
 			canvas.name = canvas.saveName = "New " + canvas.canvasName;
 
 			NodeEditor.BeginEditingCanvas (canvas);

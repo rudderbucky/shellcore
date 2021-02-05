@@ -589,7 +589,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         continue;
                     }
 
-                    if(file.Contains(".taskdata") || file.Contains(".dialoguedata"))
+                    if(file.Contains(".taskdata") || file.Contains(".dialoguedata") || file.Contains(".sectordata"))
                     {
                         continue;
                     }

@@ -129,7 +129,9 @@ namespace NodeEditorFramework.IO
 				SerializeObjectToXML(obj, objectData.data);
 			}
 
-			// WRITE
+            // WRITE
+
+            Debug.Log(path);
 
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 			using (XmlTextWriter writer = new XmlTextWriter(path, Encoding.UTF8))

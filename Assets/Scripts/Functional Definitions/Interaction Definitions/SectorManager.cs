@@ -222,7 +222,13 @@ public class SectorManager : MonoBehaviour
                         continue;
                     }
 
-                    if(canvas.Contains(".dialoguedata"))
+                    if (canvas.Contains(".sectordata"))
+                    {
+                        taskManager.AddCanvasPath(canvas);
+                        continue;
+                    }
+
+                    if (canvas.Contains(".dialoguedata"))
                     {
                         dialogueSystem.AddCanvasPath(canvas);
                         continue;

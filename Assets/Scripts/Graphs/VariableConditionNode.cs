@@ -5,7 +5,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Conditions/Variable", typeof(QuestCanvas))]
+    [Node(false, "Conditions/Variable", typeof(QuestCanvas), typeof(SectorCanvas))]
     public class VariableConditionNode : Node, ICondition
     {
         readonly string[] modes = new string[]

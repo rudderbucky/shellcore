@@ -87,7 +87,7 @@ namespace NodeEditorFramework.Standard
                 TaskManager.Instance.setNode(outputPorts[index]);
             else
             {
-                TaskManager.Instance.setNode(state == NodeEditorGUI.NodeEditorState.Mission 
+                TaskManager.Instance.setNode(state != NodeEditorGUI.NodeEditorState.Dialogue 
                     ? StartDialogueNode.missionCanvasNode : StartDialogueNode.dialogueCanvasNode);
             }
 
@@ -102,11 +102,11 @@ namespace NodeEditorFramework.Standard
             if(cancel.connected())
             {
                 IDialogueOverrideHandler handler = null;
-                if(state == NodeEditorGUI.NodeEditorState.Mission)
+                if(state != NodeEditorGUI.NodeEditorState.Dialogue)
                     handler = TaskManager.Instance;
                 else handler = DialogueSystem.Instance;
 
-                var node = state == NodeEditorGUI.NodeEditorState.Mission 
+                var node = state != NodeEditorGUI.NodeEditorState.Dialogue 
                     ? StartDialogueNode.missionCanvasNode : StartDialogueNode.dialogueCanvasNode;
                 Debug.Log(node?.EntityID + " " + StartDialogueNode.missionCanvasNode?.EntityID);
                 if(node && node.EntityID != null && node.EntityID != "")
@@ -129,7 +129,7 @@ namespace NodeEditorFramework.Standard
             {
                 DialogueSystem.Instance.timeBetweenCharacters = speed;
             }
-            if(state == NodeEditorGUI.NodeEditorState.Mission)
+            if(state != NodeEditorGUI.NodeEditorState.Dialogue)
                 DialogueSystem.ShowDialogueNode(this, TaskManager.GetSpeaker());
             else DialogueSystem.ShowDialogueNode(this, DialogueSystem.GetSpeaker());
             DialogueSystem.OnDialogueEnd += OnClick;
