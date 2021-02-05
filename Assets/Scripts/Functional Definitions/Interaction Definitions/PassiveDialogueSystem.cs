@@ -103,7 +103,8 @@ public class PassiveDialogueSystem : MonoBehaviour
             StartCoroutine(FadePassiveDialogueOut());
         }
 
-        if(passiveDialogueContents != null && passiveDialogueContents.transform.childCount == 0 && InputManager.GetKeyDown(KeyName.ShowChatHistory))
+        if(passiveDialogueContents != null && passiveDialogueContents.transform.childCount == 0 && InputManager.GetKeyDown(KeyName.ShowChatHistory)
+            && !DevConsoleScript.componentEnabled)
         {
             var par = archiveContents.transform.parent.gameObject;
            par.SetActive(!par.activeSelf);

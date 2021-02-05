@@ -9,6 +9,7 @@ public class DevConsoleScript : MonoBehaviour
     public Image image;
     public InputField inputField;
 
+    public static bool componentEnabled = false;
     public bool fullLog = false;
     public static bool godModeEnabled = false;
 
@@ -20,6 +21,7 @@ public class DevConsoleScript : MonoBehaviour
     }
      
     void Disable() {
+        componentEnabled = false;
         Application.logMessageReceived -= HandleLog;
     }
  
@@ -175,6 +177,7 @@ public class DevConsoleScript : MonoBehaviour
         if(InputManager.GetKeyDown(KeyName.Console))
         {
             textBox.enabled = image.enabled = !image.enabled;
+            componentEnabled = image.enabled;
             inputField.gameObject.SetActive(image.enabled);
             if (image.enabled)
                 inputField.ActivateInputField();

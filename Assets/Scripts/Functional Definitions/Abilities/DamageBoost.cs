@@ -7,10 +7,7 @@ using UnityEngine;
 /// </summary>
 public class DamageBoost: ActiveAbility
 {
-    float activationDelay = 2f; // the delay between clicking the ability and its activation
-    float activationTime = 0f;
-    bool trueActive = false;
-
+    bool activated = false;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -28,22 +25,20 @@ public class DamageBoost: ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        Core.damageAddition -= 150;
+        if(Core && activated)
+        {
+            Core.damageAddition -= 150;
+        }
+            
         ToggleIndicator(true);
-        trueActive = false;
     }
+
+
 
     public override void Tick(int key)
     {
+        Debug.LogError(Core.damageAddition);
         base.Tick(key);
-        if (isOnCD && Time.time > activationTime && !trueActive && GetActiveTimeRemaining() > 0)
-        {
-            if (Core)
-                Core.damageAddition += 150;
-            AudioManager.PlayClipByID("clip_buff", transform.position);
-            trueActive = true;
-            ToggleIndicator(true);
-        }
     }
 
     /// <summary>
@@ -51,9 +46,15 @@ public class DamageBoost: ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        activationTime = Time.time + activationDelay;
+        if (Core)
+        {
+            Core.damageAddition += 150;
+            activated = true;
+        }
+
+        AudioManager.PlayClipByID("clip_buff", transform.position);
         isOnCD = true; // set to on cooldown
         isActive = true; // set to "active"
-        ToggleIndicator(false);
+        ToggleIndicator(true);
     }
 }

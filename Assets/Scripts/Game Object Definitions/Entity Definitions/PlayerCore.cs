@@ -168,7 +168,7 @@ public class PlayerCore : ShellCore {
             group.sortingOrder = ++maxAirLayer;
         }
         base.Update(); // base update
-        if(!isInteracting && !DialogueSystem.isInCutscene) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+        if(!isInteracting && !DialogueSystem.isInCutscene && !DevConsoleScript.componentEnabled) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
 	}
 
     public override void Warp(Vector3 point)

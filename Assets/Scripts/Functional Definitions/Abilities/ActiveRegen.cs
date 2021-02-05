@@ -41,13 +41,13 @@ public class ActiveRegen : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        trueActive = false;
         ToggleIndicator(true);
         if (Core && trueActive)
         {
             float[] regens = Core.GetRegens();
             regens[index] -= healAmount * abilityTier;
             Core.SetRegens(regens);
+            trueActive = false;
         }
     }
 

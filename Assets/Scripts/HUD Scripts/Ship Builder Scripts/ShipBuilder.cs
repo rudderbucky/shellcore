@@ -835,6 +835,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		if(editorMode && Input.GetKeyDown(KeyCode.X))
 		{
+			foreach(var input in GetComponentsInChildren<InputField>())
+			{
+				if(input.isFocused) return;
+			}
+
 			var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
 			cores.Add("groundcarriershell");
 			cores.Add("drone_shell");
