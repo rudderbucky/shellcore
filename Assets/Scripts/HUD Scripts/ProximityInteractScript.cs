@@ -61,6 +61,7 @@ public class ProximityInteractScript : MonoBehaviour {
 		instance.focus();
 	}
 	void focus() {
+		if(Time.timeScale == 0) return;
 		if(player != null) {
 			if(player.GetIsInteracting() || closest == null || (closest.transform.position - player.transform.position).sqrMagnitude >= 100) 
 			{

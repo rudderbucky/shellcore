@@ -30,7 +30,7 @@ public class QuantityDisplayScript : MonoBehaviour {
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
             texts[1].text = player.GetPower() + "";
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
-            texts[5].text = player.credits + "";
+            texts[5].text = GetCreditString(player.credits) + "";
 
             UpdatePrimaryTargetInfo();
 
@@ -74,6 +74,17 @@ public class QuantityDisplayScript : MonoBehaviour {
             if(secondaryInfosByEntity[entity]) Destroy(secondaryInfosByEntity[entity].gameObject);
             secondaryInfosByEntity[entity] = secondary;
         }
+    }
+
+    public static string GetCreditString(int credits)
+    {
+        if(credits < 100000) return $"{credits}";
+        else if(credits < 1000000)
+            return $"{credits / 100000}K";
+        else if(credits < 1000000000)
+            return $"{credits / 1000000}M";
+        else
+            return "LOTS!";
     }
 
     public void RemoveEntityInfo(Entity entity)

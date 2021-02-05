@@ -951,14 +951,16 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public EntityBlueprint.PartInfo? RequestInventoryMouseOverInfo()
 	{
 		foreach(var part in partDict) {
-			if(RectTransformUtility.RectangleContainsScreenPoint(part.Value.GetComponent<RectTransform>(), Input.mousePosition)) {
+			if(RectTransformUtility.RectangleContainsScreenPoint(part.Value.GetComponent<RectTransform>(), Input.mousePosition) &&
+				part.Value.gameObject.activeSelf) {
 				return part.Key;
 			}
 		}
 
 		if(traderPartDict != null)
 			foreach(var part in traderPartDict) {
-				if(RectTransformUtility.RectangleContainsScreenPoint(part.Value.GetComponent<RectTransform>(), Input.mousePosition)) {
+				if(RectTransformUtility.RectangleContainsScreenPoint(part.Value.GetComponent<RectTransform>(), Input.mousePosition) &&
+					part.Value.gameObject.activeSelf) {
 					return part.Key;
 				}
 			}

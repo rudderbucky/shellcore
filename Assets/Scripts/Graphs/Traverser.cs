@@ -101,11 +101,11 @@ public class Traverser : NodeCanvasTraversal
     {
         if (node is StartDialogueNode)
         {
-            (node as StartDialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
+            (node as StartDialogueNode).state = state;
         }
         if (node is DialogueNode)
-            (node as DialogueNode).state = NodeEditorGUI.NodeEditorState.Mission;
+            (node as DialogueNode).state = state;
         if (node is EndDialogue)
-            (node as EndDialogue).state = NodeEditorGUI.NodeEditorState.Mission;
+            (node as EndDialogue).state = state;
     }
 }
