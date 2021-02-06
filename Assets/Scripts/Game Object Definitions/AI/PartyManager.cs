@@ -111,8 +111,20 @@ public class PartyManager : MonoBehaviour
         UpdatePortraits();
     }
 
+    public void ClearParty()
+    {
+        partyMembers.Clear();
+        partyResponses.Clear();
+    }
+
     public void AssignBackend(string charID)
     {
+        if(partyMembers.Count >= 2)
+        {
+            PlayerCore.Instance.alerter.showMessage("Cannot assign more than 2 party members!", "clip_alert");
+            return;
+        }
+
         PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
 
         // check if it is a character
@@ -132,7 +144,9 @@ public class PartyManager : MonoBehaviour
                     levelEnt.position = PlayerCore.Instance.transform.position + new Vector3(0, 5);
                     SectorManager.instance.SpawnEntity(print, levelEnt);
                 }
-                partyResponses.Add(charID, ch.partyData);
+
+                if(!partyResponses.ContainsKey(charID))
+                    partyResponses.Add(charID, ch.partyData);
 
                 break;
             }

@@ -85,7 +85,6 @@ public abstract class Craft : Entity
     /// <param name="direction">integer that specifies the direction of movement</param>
     public void MoveCraft(Vector2 direction)
     {
-        
         if (!isImmobile) // check for immobility
         {
             physicsDirection = direction;

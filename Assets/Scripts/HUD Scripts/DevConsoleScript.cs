@@ -81,6 +81,11 @@ public class DevConsoleScript : MonoBehaviour
                 int number = int.Parse(command.Substring(8).Trim());
                 PlayerCore.Instance.reputation += number;
             }
+            else if (command.StartsWith("Add shards ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int number = int.Parse(command.Substring(11).Trim());
+                PlayerCore.Instance.shards += number;
+            }
             else if (command.Equals("Full log", StringComparison.CurrentCultureIgnoreCase))
             {
                 fullLog = true;

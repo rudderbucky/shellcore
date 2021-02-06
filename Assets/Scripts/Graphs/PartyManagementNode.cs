@@ -46,7 +46,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            if(clearParty) PartyManager.instance.partyMembers.Clear();
+            if(clearParty) PartyManager.instance.ClearParty();
             else 
             {
                 if(!PlayerCore.Instance.cursave.unlockedPartyIDs.Contains(entityID))

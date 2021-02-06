@@ -37,7 +37,6 @@ public class DamageBoost: ActiveAbility
 
     public override void Tick(int key)
     {
-        Debug.LogError(Core.damageAddition);
         base.Tick(key);
     }
 

@@ -1095,6 +1095,45 @@ public class SectorManager : MonoBehaviour
         lpg.Unload();
     }
 
+    private bool CheckIsRelevantTractoredEntity(GameObject obj)
+    {
+        if(player.GetTractorTarget() && player.GetTractorTarget().gameObject == obj)
+            return true;
+        
+        foreach(var partyMember in PartyManager.instance.partyMembers)
+        {
+            if(partyMember.GetTractorTarget() && partyMember.GetTractorTarget().gameObject == obj)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool CheckIsRelevantOwnedDrone(GameObject obj)
+    {
+        if(player.unitsCommanding.Contains(obj.GetComponent<Drone>() as IOwnable))
+        {
+            return true;
+        }
+
+        foreach(var partyMember in PartyManager.instance.partyMembers)
+        {
+            if(partyMember.unitsCommanding.Contains(obj.GetComponent<Drone>() as IOwnable))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool SectorUnloadDeleteEntityRangeCheck(GameObject obj)
+    {
+        return Vector3.SqrMagnitude(obj.transform.position - player.transform.position) < 100;
+    }
+
     public static EntityBlueprint GetBlueprintOfLevelEntity(Sector.LevelEntity entity)
     {
         if(entity.assetID == "shellcore_blueprint")

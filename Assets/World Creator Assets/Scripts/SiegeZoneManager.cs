@@ -101,6 +101,12 @@ public class SiegeZoneManager : MonoBehaviour
             {
                 if(timer >= ent.timeSinceWaveStartToSpawn)
                 {
+                    if(!AIData.flags.Exists((f) => f.name == ent.flagName))
+                    {
+                        Debug.LogError("<SiegeZoneManager> Invalid flag name.");
+                        continue;
+                    }
+
                     ent.entity.position = AIData.flags.Find((f) => f.name == ent.flagName).transform.position;
                     var sectorEntity = SectorManager.instance.SpawnEntity(SectorManager.GetBlueprintOfLevelEntity(ent.entity), ent.entity);
                     if(sectorEntity as Drone || sectorEntity as ShellCore) 
