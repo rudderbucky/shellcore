@@ -39,6 +39,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	public RectTransform grid2mask;
 	private Vector2 grid2lastPos;
 	private Vector2 grid2mousePos;
+	bool clickedOnce;
+	float timer;
 
 	public void SetMode(BuilderMode mode) {
 		cursorMode = mode;
@@ -51,6 +53,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		buildCost = 0;
 		currentAbilities = new List<Ability>();
 
+		grid.anchoredPosition = Vector2.zero;
 		buildValue = 0;
 		foreach(ShipBuilderPart part in parts) {
 			buildValue += EntityBlueprint.GetPartValue(part.info);
@@ -177,6 +180,16 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		flipped = true;
 	}
 	void Update() {
+
+		if(clickedOnce)
+		{
+			if(timer > 0.2F)
+			{
+				clickedOnce = false;
+			}
+			else timer += Time.deltaTime;
+		}
+
 		int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
 		builder.UpdateChain();
 		if(Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active)) {
@@ -202,6 +215,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			flipped = false;
 			return;
 		}
+
 		if(currentPart) {
 			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
 			if(Input.GetMouseButtonUp(0)) {
@@ -223,13 +237,24 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				}
 				transform.position = origPos;
 			}
+			if(clickedOnce && !rotateMode && !flipped && !currentPart)
+			{
+				Debug.Log("test");
+				grid2lastPos = grid.anchoredPosition = Vector2.zero;
+			} 
+			else 
+			{
+				Debug.Log("test2");
+				timer = 0;
+				clickedOnce = true;
+			}
 		}
 
 		// drag grid
-		Vector2 bounds = grid2mask.sizeDelta / 2;
-		if(Input.GetMouseButton(0))
+		Vector2 bounds = grid.sizeDelta / 2 - grid2mask.sizeDelta / 2;
+		if(Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
 		{
-			grid.anchoredPosition = grid2lastPos + (Vector2)Input.mousePosition - grid2mousePos;
+			grid.anchoredPosition = grid2lastPos + ((Vector2)Input.mousePosition - grid2mousePos) * 2;
 			grid.anchoredPosition = new Vector2(Mathf.Max(-bounds.x, Mathf.Min(bounds.x, grid.anchoredPosition.x)),
 				Mathf.Max(-bounds.y, Mathf.Min(bounds.y, grid.anchoredPosition.y))
 			);

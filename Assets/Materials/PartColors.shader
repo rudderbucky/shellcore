@@ -85,7 +85,7 @@ Shader "Sprites/PartColors"
 				c.rgb *= c.a;
 				if (c.r > 0.125 && c.g > 0.125 && c.b > 0.125)
 				{
-				c *= IN.color;
+					c *= IN.color;
 				}
 				return c;
 			}

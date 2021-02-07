@@ -5,6 +5,13 @@
     }
     SubShader {
 
+        // required for UI.Mask
+        Stencil
+        {
+            Ref 1
+            Comp Equal
+        }
+
         Cull Off
         Blend One OneMinusSrcAlpha
        
