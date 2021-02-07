@@ -186,23 +186,26 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	public RectTransform statsSection;
 	public RectTransform background;
 
-	void Update() {
-		if(Input.GetKeyDown(KeyCode.H)) compactMode = !compactMode;
+	private void UpdateCompact()
+	{
 		if(compactMode)
 		{
-			inventorySection.anchoredPosition = new Vector2(-471.5F+125, 0);
-			statsSection.anchoredPosition = new Vector2(-125, 0);
+			inventorySection.anchoredPosition = new Vector2(-465.15F+125, 0);
+			statsSection.anchoredPosition = new Vector2(-125+6.35F, 0);
 			grid2mask.sizeDelta = new Vector2(750, 1250);
 			background.sizeDelta = new Vector2(1270-250, 670);
 		}
 		else
 		{
-			inventorySection.anchoredPosition = new Vector2(-471.5F, 0);
-			statsSection.anchoredPosition = new Vector2(0, 0);
+			inventorySection.anchoredPosition = new Vector2(-465.15F, 0);
+			statsSection.anchoredPosition = new Vector2(6.35F, 0);
 			grid2mask.sizeDelta = new Vector2(1250, 1250);
 			background.sizeDelta = new Vector2(1270, 670);
 		}
+	}
 
+	void Update() {
+		UpdateCompact();
 
 		if(clickedOnce)
 		{
@@ -281,6 +284,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				Mathf.Max(-bounds.y, Mathf.Min(bounds.y, grid.anchoredPosition.y))
 			);
 		}
+	}
+
+	public void ToggleCompact() {
+		compactMode = !compactMode;
+		UpdateCompact();
 	}
 
     public List<DisplayPart> GetParts()
