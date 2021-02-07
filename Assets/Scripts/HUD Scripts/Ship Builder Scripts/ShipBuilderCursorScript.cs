@@ -35,6 +35,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	public BuilderMode cursorMode = BuilderMode.Yard;
 	private Vector2 offset;
 
+	public RectTransform grid2;
+	public RectTransform grid2mask;
+	private Vector2 grid2lastPos;
+	private Vector2 grid2mousePos;
+
 	public void SetMode(BuilderMode mode) {
 		cursorMode = mode;
 	}
@@ -203,6 +208,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				PlaceCurrentPart();
 			}
 		} else if(Input.GetMouseButtonDown(0)) {
+			grid2lastPos = grid.anchoredPosition;
+			grid2mousePos = Input.mousePosition;
 			lastPart = null;
 			for(int i = parts.Count - 1; i >= 0; i--) {
 				Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);
@@ -216,6 +223,16 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				}
 				transform.position = origPos;
 			}
+		}
+
+		// drag grid
+		Vector2 bounds = grid2mask.sizeDelta / 2;
+		if(Input.GetMouseButton(0))
+		{
+			grid.anchoredPosition = grid2lastPos + (Vector2)Input.mousePosition - grid2mousePos;
+			grid.anchoredPosition = new Vector2(Mathf.Max(-bounds.x, Mathf.Min(bounds.x, grid.anchoredPosition.x)),
+				Mathf.Max(-bounds.y, Mathf.Min(bounds.y, grid.anchoredPosition.y))
+			);
 		}
 	}
 
