@@ -949,7 +949,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 	/// prevent dragging the window if the mouse is on the grid
 	public override void OnPointerDown(PointerEventData eventData) {
-		if(RectTransformUtility.RectangleContainsScreenPoint(cursorScript.grid, Input.mousePosition)) return;
+		if(RectTransformUtility.RectangleContainsScreenPoint(cursorScript.grid2mask, Input.mousePosition)) return;
 		base.OnPointerDown(eventData);
 	}
 

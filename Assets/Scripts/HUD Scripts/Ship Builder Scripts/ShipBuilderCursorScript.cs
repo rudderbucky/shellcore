@@ -50,6 +50,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	}
 
 	void OnEnable() {
+		compactMode = Screen.width == 1024;
 		buildCost = 0;
 		currentAbilities = new List<Ability>();
 
@@ -179,7 +180,29 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		lastPart.info.mirrored = !lastPart.info.mirrored;
 		flipped = true;
 	}
+
+	private bool compactMode = true;
+	public RectTransform inventorySection;
+	public RectTransform statsSection;
+	public RectTransform background;
+
 	void Update() {
+		if(Input.GetKeyDown(KeyCode.H)) compactMode = !compactMode;
+		if(compactMode)
+		{
+			inventorySection.anchoredPosition = new Vector2(-471.5F+125, 0);
+			statsSection.anchoredPosition = new Vector2(-125, 0);
+			grid2mask.sizeDelta = new Vector2(750, 1250);
+			background.sizeDelta = new Vector2(1270-250, 670);
+		}
+		else
+		{
+			inventorySection.anchoredPosition = new Vector2(-471.5F, 0);
+			statsSection.anchoredPosition = new Vector2(0, 0);
+			grid2mask.sizeDelta = new Vector2(1250, 1250);
+			background.sizeDelta = new Vector2(1270, 670);
+		}
+
 
 		if(clickedOnce)
 		{
@@ -239,12 +262,10 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			}
 			if(clickedOnce && !rotateMode && !flipped && !currentPart)
 			{
-				Debug.Log("test");
 				grid2lastPos = grid.anchoredPosition = Vector2.zero;
 			} 
 			else 
 			{
-				Debug.Log("test2");
 				timer = 0;
 				clickedOnce = true;
 			}
@@ -252,7 +273,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 
 		// drag grid
 		Vector2 bounds = grid.sizeDelta / 2 - grid2mask.sizeDelta / 2;
-		if(Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
+		if(RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition)
+			&& Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
 		{
 			grid.anchoredPosition = grid2lastPos + ((Vector2)Input.mousePosition - grid2mousePos) * 2;
 			grid.anchoredPosition = new Vector2(Mathf.Max(-bounds.x, Mathf.Min(bounds.x, grid.anchoredPosition.x)),
