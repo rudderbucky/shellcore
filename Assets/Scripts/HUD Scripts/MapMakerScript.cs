@@ -262,7 +262,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				mouseOverSector = true;
 				var text = tooltipTransform.GetComponentInChildren<Text>();
 				text.text = 
-					$"{sectorInfo[sect.Item1].Item1}\n{sectorInfo[sect.Item1].Item2}".ToUpper();
+					$"{sectorInfo[sect.Item1].Item1}".ToUpper();
 
 				foreach(var objective in arrows.Keys)
 				{

@@ -107,13 +107,12 @@ public class QuantityDisplayScript : MonoBehaviour {
         string description;
         var targetName = targetInfo.transform.Find("Target Name").GetComponent<Text>();
         var targetDesc = targetInfo.transform.Find("Name").GetComponent<Text>();
-        var targetDist = targetInfo.transform.Find("Distance").GetComponent<Text>();
         Text targetNumber = null;
         if(targetInfo.transform.Find("Number")) targetNumber = targetInfo.transform.Find("Number").GetComponent<Text>();
 
         if(obj == null)
         {
-            targetName.text = targetDesc.text = targetDist.text = "";
+            targetName.text = targetDesc.text = "";
             targetInfo.SetActive(false);
             return;
         }
@@ -125,8 +124,7 @@ public class QuantityDisplayScript : MonoBehaviour {
             description += (entity.category + "");
             targetName.text = entity.entityName;
             targetDesc.text = description;
-            targetDist.text = "Distance: " + (int)(entity.transform.position - player.transform.position).magnitude;
-            targetName.color = targetDesc.color = targetDist.color = FactionManager.GetFactionColor(entity.faction);
+            targetName.color = targetDesc.color = FactionManager.GetFactionColor(entity.faction);
             if(targetNumber) 
             {
                 targetNumber.color = targetName.color;
@@ -141,19 +139,17 @@ public class QuantityDisplayScript : MonoBehaviour {
             if(PartIndexScript.CheckPartObtained(info))
             {
                 targetName.text = info.partID;
-                targetDesc.text = "Part";
-                targetDist.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, null) + " " + info.tier;
+                targetDesc.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, null) + " " + info.tier;
             }
             else
             {
-                targetName.text = "Unobtained";
-                targetDesc.text = "Part";
-                targetDist.text = "Bring to Yard";
-                targetName.color = targetDesc.color = targetDist.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
+                targetName.text = "Unobtained Part";
+                targetDesc.text = "Bring to Yard";
+                targetName.color = targetDesc.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
             }
         } else
         {
-            targetName.text = targetDesc.text = targetDist.text = "";
+            targetName.text = targetDesc.text = "";
             targetInfo.SetActive(false);
         }
     }
