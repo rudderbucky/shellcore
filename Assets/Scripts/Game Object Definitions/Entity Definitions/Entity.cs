@@ -59,6 +59,10 @@ public class Entity : MonoBehaviour, IDamageable {
     private float weaponGCD = 0.1F; // weapon global cooldown
     private float weaponGCDTimer;
 
+    public float weight;
+
+    private float weightMultiplier = 25;
+
     // terrain type of entity
     // binary flag
     public enum TerrainType
@@ -186,7 +190,7 @@ public class Entity : MonoBehaviour, IDamageable {
         {
             entityBody = gameObject.AddComponent<Rigidbody2D>();
             entityBody.gravityScale = 0;
-            entityBody.drag = 10;
+            entityBody.drag = 0;
             entityBody.angularDrag = 100;
         }
        
@@ -288,6 +292,7 @@ public class Entity : MonoBehaviour, IDamageable {
         entityName = blueprint.entityName;
         name = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
+        weight = 25;
 
         var isLightDrone = this as Drone && (this as Drone).type == DroneType.Light; // used for light drone weight reduction
         //For shellcores, create the tractor beam
@@ -321,6 +326,8 @@ public class Entity : MonoBehaviour, IDamageable {
                 partObject.transform.localScale = tmp;
                 sr.sortingOrder = i + 2;
                 entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
+                var partWeight = isLightDrone ? partBlueprint.mass * 0.6F * weightMultiplier : partBlueprint.mass * weightMultiplier;
+                weight += partWeight;
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
 
@@ -648,6 +655,11 @@ public class Entity : MonoBehaviour, IDamageable {
             part.GetComponent<Ability>().SetDestroyed(true);
         }
         entityBody.mass -= part.partMass;
+        weight -= part.partMass * weightMultiplier;
+        if(this as Craft)
+        {
+            (this as Craft).CalculatePhysicsConstants();
+        }
         Domino(part);
         part.Detach();
         parts.Remove(part);

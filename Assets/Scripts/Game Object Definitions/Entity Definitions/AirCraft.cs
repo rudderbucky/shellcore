@@ -9,10 +9,10 @@ using UnityEngine;
 public abstract class AirCraft : Craft
 {
 
-    private float timePassed; // float that stores the time passed since the last aircraft movement, used for idle oscillation and perhaps more down the line
-    private Vector2 oscillatorVector; // vector used to oscillate the aircraft during idle time
+    protected float timePassed; // float that stores the time passed since the last aircraft movement, used for idle oscillation and perhaps more down the line
+    protected Vector2 oscillatorVector; // vector used to oscillate the aircraft during idle time
     protected float positionBeforeOscillation; // used for oscillation y-coordination resetting
-    private Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
+    protected Vector2 storedPos; // position of aircraft before it stopped, used to reset the aircraft's position after oscillation
     protected AirCraftAI ai; // AI agent that controls this aircraft
     private bool oscillating;
     public GameObject energySpherePrefab;

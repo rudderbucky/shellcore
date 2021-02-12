@@ -182,9 +182,15 @@ public class PlayerCore : ShellCore {
         SectorManager.instance.AttemptSectorLoad();
     }
 
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
+
     protected override void CraftMover(Vector2 directionVector)
     {
         base.CraftMover(directionVector);
+
         if(directionVector != Vector2.zero) CameraScript.instance.Focus(transform.position);
     }
 }

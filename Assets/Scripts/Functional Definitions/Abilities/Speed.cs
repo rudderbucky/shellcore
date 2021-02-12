@@ -18,6 +18,8 @@ public class Speed : PassiveAbility {
         if (input && activated) 
         {
             (Core as Craft).enginePower -= 50F * Mathf.Pow(abilityTier, 1.5F); //Mathf.Pow(enginePower, 1/(abilityTier/6 + 1.1F));
+            (Core as Craft).speed -= 15 * abilityTier;
+            (Core as Craft).CalculatePhysicsConstants();
         }
         base.SetDestroyed(input);
     }
@@ -27,5 +29,7 @@ public class Speed : PassiveAbility {
         var enginePower = (Core as Craft).enginePower;
         activated = true;
         (Core as Craft).enginePower += 50F * Mathf.Pow(abilityTier, 1.5F);
+        (Core as Craft).speed += 15 * abilityTier;
+        (Core as Craft).CalculatePhysicsConstants();
     }
 }

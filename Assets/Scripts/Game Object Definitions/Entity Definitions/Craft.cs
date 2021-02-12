@@ -10,6 +10,22 @@ public abstract class Craft : Entity
     public float enginePower; // craft's engine power, determines how fast it goes.
     public bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
+
+    public float speed = 50;
+    public float accel = 25;
+    public float physicsSpeed;
+    public float physicsAccel;
+
+    public void CalculatePhysicsConstants()
+    {
+        float weightNumeratorConstant = 40;
+        physicsSpeed = speed * (weightNumeratorConstant / weight) + 0.2f * speed;
+        physicsSpeed *= 0.25F;
+        accel = 0.5F * speed;
+        physicsAccel = accel * (0.5F * weightNumeratorConstant / weight) + 0.1f * accel;
+        physicsAccel *= 5F;
+    }
+
     protected Vector2 physicsDirection = Vector2.zero;
 
     public void SetImmobile(bool val) {
@@ -20,6 +36,7 @@ public abstract class Craft : Entity
     {
         enginePower = 125;
         base.BuildEntity();
+        CalculatePhysicsConstants();
     }
 
     protected override void OnDeath()
@@ -99,6 +116,13 @@ public abstract class Craft : Entity
             CraftMover(physicsDirection); // if not immobile move craft
             physicsDirection = Vector2.zero;
         }
+
+        if(physicsDirection == Vector2.zero)
+        {
+            var dir = entityBody.velocity.normalized;
+            entityBody.velocity -= entityBody.velocity.normalized * 1 * maxVelocity * Time.fixedDeltaTime;
+            if(dir != entityBody.velocity.normalized) entityBody.velocity = Vector2.zero;
+        }
     }
 
     /// <summary>
@@ -134,7 +158,7 @@ public abstract class Craft : Entity
     }
 
     public bool rotateWhileMoving = true;
-    const float maxVelocity = 40f;
+    protected const float maxVelocity = 40f;
 
     /// <summary>
     /// Applies a force to the craft on the vector given
@@ -142,6 +166,8 @@ public abstract class Craft : Entity
     /// <param name="directionVector">vector given</param>
     protected virtual void CraftMover(Vector2 directionVector)
     {
+        // legacy movement code
+        /*
         if(rotateWhileMoving) RotateCraft(directionVector / entityBody.mass); // rotate craft
         entityBody.AddForce(Mathf.Min(enginePower, 300 * entityBody.mass) * directionVector); // max acceleration: 300 m/s^2
         if (entityBody.velocity.sqrMagnitude > maxVelocity * maxVelocity)
@@ -149,6 +175,15 @@ public abstract class Craft : Entity
             entityBody.velocity = entityBody.velocity.normalized * maxVelocity;
         }
         // actual force applied to craft; independent of angle rotation
+        */
+
+        if(rotateWhileMoving) RotateCraft(directionVector / weight); // rotate craft
+        entityBody.velocity += directionVector * physicsAccel * Time.fixedDeltaTime;
+        var sqr = entityBody.velocity.sqrMagnitude;
+        if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)
+        {
+            entityBody.velocity = entityBody.velocity.normalized * Mathf.Min(physicsSpeed, maxVelocity);
+        }
     }
 
     /// <summary>
