@@ -52,6 +52,8 @@ public class DevConsoleScript : MonoBehaviour
                 player.SetRegens(new float[] { 99999, 99999, 99999 });
                 player.credits = 999999;
                 player.enginePower = 9999f;
+                player.speed = 9999f;
+                player.CalculatePhysicsConstants();
                 player.damageAddition = 99999f;
                 player.AddPower(10000);
                 godModeEnabled = true;

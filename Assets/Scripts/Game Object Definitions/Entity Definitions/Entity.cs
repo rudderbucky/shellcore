@@ -61,7 +61,8 @@ public class Entity : MonoBehaviour, IDamageable {
 
     public float weight;
 
-    private float weightMultiplier = 25;
+    public static readonly float weightMultiplier = 25;
+    public static readonly float coreWeight = 40;
 
     // terrain type of entity
     // binary flag
@@ -292,7 +293,7 @@ public class Entity : MonoBehaviour, IDamageable {
         entityName = blueprint.entityName;
         name = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
-        weight = 25;
+        weight = this as Drone ? 25 : coreWeight;
 
         var isLightDrone = this as Drone && (this as Drone).type == DroneType.Light; // used for light drone weight reduction
         //For shellcores, create the tractor beam
@@ -447,6 +448,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// </summary>
     protected virtual void OnDeath() 
     {
+        // entityBody.velocity = Vector2.zero;
         // set death, interactibility and immobility
         invisible = false;
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);

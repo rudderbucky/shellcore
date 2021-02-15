@@ -11,16 +11,22 @@ public abstract class Craft : Entity
     public bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
 
-    public float speed = 50;
+    public static readonly float initSpeed = 50;
+
+    public float speed = initSpeed;
     public float accel = 25;
     public float physicsSpeed;
     public float physicsAccel;
+    public static readonly float weightNumeratorConstant = 40;
+
+    public static float GetPhysicsSpeed(float speed, float weight)
+    {
+        return 0.25F * (speed * (weightNumeratorConstant / weight) + 0.2f * speed);
+    }
 
     public void CalculatePhysicsConstants()
     {
-        float weightNumeratorConstant = 40;
-        physicsSpeed = speed * (weightNumeratorConstant / weight) + 0.2f * speed;
-        physicsSpeed *= 0.25F;
+        physicsSpeed = GetPhysicsSpeed(speed, weight);
         accel = 0.5F * speed;
         physicsAccel = accel * (0.5F * weightNumeratorConstant / weight) + 0.1f * accel;
         physicsAccel *= 5F;
@@ -111,17 +117,17 @@ public abstract class Craft : Entity
     Transform instantiatedRespawnPrefab;
     protected override void FixedUpdate()
     {
+        if(physicsDirection == Vector2.zero)
+        {
+            var dir = entityBody.velocity.normalized;
+            entityBody.velocity -= entityBody.velocity.normalized * physicsAccel * Time.fixedDeltaTime;
+            if(dir != entityBody.velocity.normalized) entityBody.velocity = Vector2.zero;
+        }
+
         if(!isImmobile)
         {
             CraftMover(physicsDirection); // if not immobile move craft
             physicsDirection = Vector2.zero;
-        }
-
-        if(physicsDirection == Vector2.zero)
-        {
-            var dir = entityBody.velocity.normalized;
-            entityBody.velocity -= entityBody.velocity.normalized * 1 * maxVelocity * Time.fixedDeltaTime;
-            if(dir != entityBody.velocity.normalized) entityBody.velocity = Vector2.zero;
         }
     }
 

@@ -25,10 +25,13 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 		float[] totalRegens = new float[] {60,0,60};
 		float shipMass = 1;
 		float enginePower = 200;
+		float weight = Entity.coreWeight;
+		float speed = Craft.initSpeed;
 		foreach(DisplayPart part in statsDatabase.GetParts()) {
 			switch(part.info.abilityID) {
 				case 13:
 					enginePower *= Mathf.Pow(1.1F, part.info.tier);
+					speed += 15 * part.info.tier;
 					break;
 				case 17:
 					totalRegens[0] += 50 * part.info.tier;
@@ -47,6 +50,7 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 			totalHealths[0] += blueprint.health / 2;
 			totalHealths[1] += blueprint.health / 4;
 			shipMass += blueprint.mass;
+			weight += blueprint.mass * Entity.weightMultiplier;
 		}
 		string buildStat = "";
 		if(statsDatabase.GetMode() == BuilderMode.Yard || statsDatabase.GetMode() == BuilderMode.Workshop) {
@@ -60,8 +64,8 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 		display.text = "SHELL: " + totalHealths[0] + "\n"
 		+              "CORE: " + totalHealths[1] + "\n"
 		+              "ENERGY: " + totalHealths[2] + "\n"
-		+              "MASS: " + Mathf.RoundToInt(shipMass * 100) / 100F 
-		+ 			   "\nENGINE POWER: " + (int)enginePower
+		+ 			   "\nSPEED: " + (int)Craft.GetPhysicsSpeed(speed, weight) + "\n"
+		+			   "WEIGHT: " + (int)weight + "\n"
 		+              buildStat;
 		regenDisplay.text = "REGEN: " + totalRegens[0] + "\n\n" + "REGEN: " + totalRegens[2];
 	}

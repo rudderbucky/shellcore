@@ -49,7 +49,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     }
     public static DialogueStyle dialogueStyle;
 
-    public GUIWindowScripts IsWindowActive()
+    public bool IsWindowActive()
     {
         return window;
     }

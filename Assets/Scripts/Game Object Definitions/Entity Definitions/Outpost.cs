@@ -39,10 +39,10 @@ public class Outpost : AirConstruct, IVendor {
     {
         base.Update();
         TargetManager.Enqueue(targeter);
-        Bullet[] bullets = GetComponentsInChildren<Bullet>();
-        for (int i = 0; i < bullets.Length; i++)
+        WeaponAbility[] weapons = GetComponentsInChildren<WeaponAbility>();
+        for (int i = 0; i < weapons.Length; i++)
         {
-            bullets[i].Tick(0);
+            weapons[i].Tick(0);
         }
     }
 

@@ -35,7 +35,7 @@ public class SpeedThrust : ActiveAbility
         var enginePower = (Core as Craft).enginePower;
         if(craft && activated) {
             (Core as Craft).enginePower -= 100F * Mathf.Pow(abilityTier, 1.5F);
-            (Core as Craft).speed -= 50 * abilityTier;
+            (Core as Craft).speed -= 25 * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         } // bring the engine power back
         ToggleIndicator(true);
@@ -51,7 +51,7 @@ public class SpeedThrust : ActiveAbility
             var enginePower = (Core as Craft).enginePower;
             activated = true;
             (Core as Craft).enginePower += 100F * Mathf.Pow(abilityTier, 1.5F);
-            (Core as Craft).speed += 50 * abilityTier;
+            (Core as Craft).speed += 25 * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         } // change engine power
         AudioManager.PlayClipByID("clip_activateability", transform.position);

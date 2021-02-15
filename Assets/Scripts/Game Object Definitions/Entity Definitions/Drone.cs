@@ -43,7 +43,11 @@ public class Drone : AirCraft, IOwnable {
                 }
             }
             // otherwise this is a ground carrier, drones are defensive for them so set a path to the drone position currently
-            else vec = transform.position;
+            else 
+            {
+                var angle = Random.Range(0F, 360);
+                vec = owner.GetTransform().position + new Vector3(5 * Mathf.Sin(angle), 5 * Mathf.Cos(angle));
+            }
             
             // TODO: jank, fix this eventually
             var node = new Path.Node();
