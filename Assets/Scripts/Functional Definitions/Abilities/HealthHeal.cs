@@ -51,7 +51,7 @@ public class HealthHeal : Ability
         CDRemaining = 10;
     }
 
-    public static readonly int[] heals = new int[] {500, 500, 250};
+    public static readonly int[] heals = new int[] {500, 500, 300};
 
     /// <summary>
     /// Heals the shell of the core (doesn't heal and refunds the energy used if it would overheal)

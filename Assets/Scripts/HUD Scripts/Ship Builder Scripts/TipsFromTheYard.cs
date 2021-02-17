@@ -30,6 +30,7 @@ public class TipsFromTheYard : MonoBehaviour {
 		tipsList.Add("You can shift-click part buttons to instantly buy/sell them!");
 		tipsList.Add("You can press tab to cycle through your selected targets!");
 		tipsList.Add("When not receiving background dialogue you can press 'enter' to view all the background dialogue you received before!");
+		tipsList.Add("You can quickly switch your weapon bar to a desired category while fighting by pressing 'Z', 'X', 'C', or 'V'!");
 		colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
 	}
 	

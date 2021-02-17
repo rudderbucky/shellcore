@@ -9,7 +9,7 @@ public class ActiveRegen : ActiveAbility
 {
     float activationDelay = 3f;
     float activationTime = 0f;
-    const float healAmount = 75f;
+    const float healAmount = 100f;
     bool trueActive = false;
 
     public int index;
@@ -30,7 +30,7 @@ public class ActiveRegen : ActiveAbility
         }
         cooldownDuration = 20;
         CDRemaining = cooldownDuration;
-        activeDuration = 5;
+        activeDuration = 10;
         activeTimeRemaining = activeDuration;
         energyCost = 150;
 

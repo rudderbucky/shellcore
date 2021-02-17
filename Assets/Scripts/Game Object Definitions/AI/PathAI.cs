@@ -47,11 +47,13 @@ public class PathAI : AIModule
             StartPath();
     }
 
+    public static readonly float minDist = 4f;
+
     public override void ActionTick()
     {
         if (waypointID != -1)
         {
-            ai.movement.SetMoveTarget(path.waypoints[waypointIndex].position, 4f);
+            ai.movement.SetMoveTarget(path.waypoints[waypointIndex].position, minDist);
             if (ai.movement.targetIsInRange())
             {
                 GetNextWaypoint();
@@ -69,7 +71,7 @@ public class PathAI : AIModule
             {
                 waypointID = 0;
                 waypointIndex = 0;
-                ai.movement.SetMoveTarget(path.waypoints[0].position, 4f);
+                ai.movement.SetMoveTarget(path.waypoints[0].position, minDist);
                 if (ai.movement.targetIsInRange())
                 {
                     GetNextWaypoint();
@@ -185,7 +187,7 @@ public class PathAI : AIModule
                         if (path.waypoints[j].ID == waypointID)
                         {
                             waypointIndex = j;
-                            ai.movement.SetMoveTarget(path.waypoints[j].position, 4f);
+                            ai.movement.SetMoveTarget(path.waypoints[j].position, minDist);
                             break;
                         }
                     }
@@ -209,7 +211,7 @@ public class PathAI : AIModule
         {
             if (path.waypoints[i].ID == 0)
             {
-                ai.movement.SetMoveTarget(path.waypoints[i].position, 4f);
+                ai.movement.SetMoveTarget(path.waypoints[i].position, minDist);
                 waypointID = 0;
                 waypointIndex = i;
                 return;

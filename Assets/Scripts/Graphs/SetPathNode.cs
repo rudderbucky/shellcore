@@ -168,7 +168,7 @@ namespace NodeEditorFramework.Standard
             {
                 Vector2 delta = current.position - (Vector2)player.transform.position;
                 player.MoveCraft(delta.normalized);
-                if (delta.sqrMagnitude < 0.1f)
+                if (delta.sqrMagnitude < PathAI.minDist)
                 {
                     if (current.children.Count > 0)
                     {

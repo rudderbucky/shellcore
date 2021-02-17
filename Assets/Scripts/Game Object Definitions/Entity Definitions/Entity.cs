@@ -448,7 +448,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// </summary>
     protected virtual void OnDeath() 
     {
-        // entityBody.velocity = Vector2.zero;
+        entityBody.velocity = Vector2.zero;
         // set death, interactibility and immobility
         invisible = false;
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
