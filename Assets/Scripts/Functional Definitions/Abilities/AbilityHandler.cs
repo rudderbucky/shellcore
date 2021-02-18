@@ -12,7 +12,8 @@ public class AbilityHandler : MonoBehaviour {
     public Image abilityCDIndicator; // used to indicate if the ability is on cooldown
     public Image abilityGleam; // gleam for the ability
     public GameObject betterBGbox;
-    public AbilityButtonScript[] betterBGboxArray;
+    public Dictionary<AbilityID, AbilityButtonScript> betterBGboxArray;
+    public List<AbilityID>[] visibleAbilityOrder = new List<AbilityID>[4];
     public GameObject tooltipPrefab; // Prefab for showing information when mouse hovers over the ability button
     public Image HUDbg; // the grey area in which the ability icons sit
     private bool initialized; // check for the update method
@@ -40,6 +41,7 @@ public class AbilityHandler : MonoBehaviour {
     Ability[] displayAbs;
     public static string[] keybindList; // list of keys for ability binds
     public static AbilityHandler instance;
+    public float tileSpacing;
 
     public void SetCurrentVisible(AbilityTypes type) {
         if(currentVisibles != type) {
@@ -86,30 +88,37 @@ public class AbilityHandler : MonoBehaviour {
             keybindList[i] = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1) + "");
         }
 
-        betterBGboxArray = new AbilityButtonScript[abilities.Length];
+        betterBGboxArray = new Dictionary<AbilityID, AbilityButtonScript>();
 
-
-        float tileSpacing = betterBGbox.GetComponent<Image>().sprite.bounds.size.x * 30; // Used to space out the abilities on the GUI
+        tileSpacing = betterBGbox.GetComponent<Image>().sprite.bounds.size.x * 30; // Used to space out the abilities on the GUI
         
         for (int i = 0; i < visibleAbilities.Count; i++)
         { // iterate through to display all the abilities
             if (visibleAbilities[i] == null) break;
-            Vector3 pos = new Vector3(tileSpacing * (0.8F*i+0.5F), tileSpacing*0.8F, this.transform.position.z); // find where to position the images
+            
             // position them all, do not keep the world position
-            betterBGboxArray[i] = Instantiate(betterBGbox, pos, Quaternion.identity).GetComponent<AbilityButtonScript>();
-            betterBGboxArray[i].transform.SetParent(transform, false); // set parent (do not keep world position)
-            betterBGboxArray[i].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[i] + "" : null, core);
+            var id = (AbilityID)visibleAbilities[i].GetID();
+            if(!betterBGboxArray.ContainsKey(id))
+            {
+                Vector3 pos = new Vector3(GetAbilityPos(betterBGboxArray.Count), tileSpacing*0.8F, this.transform.position.z); // find where to position the images
+                betterBGboxArray.Add(id,
+                    Instantiate(betterBGbox, pos, Quaternion.identity).GetComponent<AbilityButtonScript>());
+                betterBGboxArray[id].transform.SetParent(transform, false); // set parent (do not keep world position)
+                betterBGboxArray[id].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count-1] + "" : null, core);
+            }
+            else betterBGboxArray[id].AddAbility(visibleAbilities[i]);
+            
         }
 
         var HUDbgrectTransform = HUDbg.GetComponent<RectTransform>();
         if(visibleAbilities.Count > 0)
         {
             var y = HUDbgrectTransform.anchoredPosition;
-            y.x = betterBGboxArray[0].image.rectTransform.anchoredPosition.x - 1F * tileSpacing;
+            y.x = 0.5f * tileSpacing - 1F * tileSpacing;
             HUDbgrectTransform.anchoredPosition = y;
 
             var x = HUDbgrectTransform.sizeDelta;
-            x.x = betterBGboxArray[visibleAbilities.Count - 1].image.rectTransform.anchoredPosition.x + 0.5F * tileSpacing - y.x;
+            x.x = GetAbilityPos(betterBGboxArray.Count-1) + GetAbilityPos(0) - y.x;
             HUDbgrectTransform.sizeDelta = x;
 
         } else HUDbgrectTransform.sizeDelta = new Vector2(0, HUDbgrectTransform.sizeDelta.y);
@@ -119,6 +128,77 @@ public class AbilityHandler : MonoBehaviour {
         // handler completely initialized, safe to update now
         // if display abilities were passed the handler must not update since it is merely representing
         // some abilities
+
+        visibleAbilityOrder = new List<AbilityID>[] {player.cursave.abilityHotkeys.skills, player.cursave.abilityHotkeys.spawns,
+            player.cursave.abilityHotkeys.weapons, player.cursave.abilityHotkeys.passive};
+        if(visibleAbilityOrder == null || visibleAbilityOrder[0] == null)
+        {
+            visibleAbilityOrder = new List<AbilityID>[] {null, null, null, null};
+        }
+
+        if(visibleAbilityOrder[(int)currentVisibles] == null || visibleAbilityOrder[(int)currentVisibles].Count == 0)
+        {
+            visibleAbilityOrder[(int)currentVisibles] = new List<AbilityID>();
+            foreach(var i in instance.betterBGboxArray.Keys)
+            {
+                visibleAbilityOrder[(int)currentVisibles].Add(i);
+            }
+        }
+        else
+        {
+            Rearrange();
+        }
+    }
+
+    public static float GetAbilityPos(int index)
+    {
+        return instance.tileSpacing * (0.8F*index+0.5F);
+    }
+
+    public static void RearrangeID(float xPos, AbilityID id)
+    {
+        int index = GetAbilityPosInverse(xPos);
+        instance.visibleAbilityOrder[(int)instance.currentVisibles].Remove(id);
+        instance.visibleAbilityOrder[(int)instance.currentVisibles].Insert(index, id);
+        instance.Rearrange();
+    }
+
+    private static int GetAbilityPosInverse(float xPos)
+    {
+        instance.Rearrange();
+        return Mathf.Min(Mathf.Max(0, Mathf.RoundToInt(((xPos / instance.tileSpacing) - 0.5F) / 0.8F)), instance.betterBGboxArray.Count - 1);
+    }
+
+    private void Rearrange()
+    {
+        if(!core.GetIsInteracting())
+        {
+            core.cursave.abilityHotkeys = new PlayerSave.AbilityHotkeyStruct()
+            {
+                skills = visibleAbilityOrder[0],
+                spawns = visibleAbilityOrder[1],
+                weapons = visibleAbilityOrder[2],
+                passive = visibleAbilityOrder[3]
+            };
+        }
+        
+        int i = 0;
+        while(i < visibleAbilityOrder[(int)currentVisibles].Count)
+        {
+            if(!betterBGboxArray.ContainsKey(visibleAbilityOrder[(int)currentVisibles][i]))
+            {
+                visibleAbilityOrder[(int)currentVisibles].RemoveAt(i);
+            }
+            else i++;
+        }
+
+
+        for(i = 0; i < visibleAbilityOrder[(int)currentVisibles].Count; i++)
+        {
+            instance.betterBGboxArray[visibleAbilityOrder[(int)currentVisibles][i]].transform.position = new Vector3(GetAbilityPos(i), 
+                tileSpacing*0.8F, this.transform.position.z);
+            instance.betterBGboxArray[visibleAbilityOrder[(int)currentVisibles][i]].ReflectHotkey(currentVisibles != AbilityTypes.Passive ? keybindList[i] : null);
+        }
     }
 
     public static void ChangeKeybind(int index, string val)

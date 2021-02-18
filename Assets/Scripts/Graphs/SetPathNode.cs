@@ -166,7 +166,7 @@ namespace NodeEditorFramework.Standard
 
             while (current != null)
             {
-                Vector2 delta = current.position - (Vector2)player.transform.position;
+                Vector2 delta = current.position - (Vector2)player.transform.position - (Vector2)player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
                 player.MoveCraft(delta.normalized);
                 if (delta.sqrMagnitude < PathAI.minDist)
                 {

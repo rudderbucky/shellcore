@@ -235,8 +235,8 @@ public class SelectionBoxScript : MonoBehaviour
                 break;
             } 
 
-            Vector2 delta = current.position - (Vector2)player.transform.position;
-            Vector2 originalDelta = current.position - lastPosition;
+            Vector2 delta = current.position - (Vector2)player.transform.position - (Vector2)player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
+            Vector2 originalDelta = current.position - lastPosition + (Vector2)player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
             player.MoveCraft(delta.normalized);
             var lastNode = current.ID - 1 > 0 ? GetNode(currentPathData, current.ID - 1) : null;
             var lineRenderer = reticleRenderersByNode[current].GetComponent<LineRenderer>();

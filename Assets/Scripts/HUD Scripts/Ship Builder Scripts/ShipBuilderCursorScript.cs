@@ -238,6 +238,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			return;
 		}
 		if(flipped) {
+			grid2mousePos = Input.mousePosition;
 			flipped = false;
 			return;
 		}
