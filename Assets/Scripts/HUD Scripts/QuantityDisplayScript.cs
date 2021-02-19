@@ -80,7 +80,7 @@ public class QuantityDisplayScript : MonoBehaviour {
     {
         if(credits < 100000) return $"{credits}";
         else if(credits < 1000000)
-            return $"{credits / 100000}K";
+            return $"{credits / 1000}K";
         else if(credits < 1000000000)
             return $"{credits / 1000000}M";
         else

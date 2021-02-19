@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Contains lists of Ability IDs, which signify what position each ability is in
+// !!! WARNING: EXTREME MEGA SPACE CANCER AHEAD !!!
+// Since spawns do not use ability IDs, HUNDREDS of lines of code need to be special cased for drone blueprint strings! (See AbilityHandler.cs)
+// Life sucks sometimes. If you're still reading this try listening to this https://www.youtube.com/watch?v=AlIdlrlv6Ak
 [System.Serializable]
 public struct AbilityHotkeyStruct
 {

@@ -42,6 +42,7 @@ public abstract class Craft : Entity
     {
         enginePower = 125;
         base.BuildEntity();
+        speed = initSpeed;
         CalculatePhysicsConstants();
     }
 

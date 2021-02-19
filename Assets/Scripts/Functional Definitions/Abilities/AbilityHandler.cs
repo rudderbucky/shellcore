@@ -8,25 +8,15 @@ using UnityEngine.UI;
 /// </summary>
 public class AbilityHandler : MonoBehaviour {
 
-    public GameObject abilityBackground; // background of the ability
-    public Image abilityCDIndicator; // used to indicate if the ability is on cooldown
-    public Image abilityGleam; // gleam for the ability
     public GameObject betterBGbox;
     public Dictionary<string, AbilityButtonScript> betterBGboxArray;
     public AbilityHotkeyStruct visibleAbilityOrder = new AbilityHotkeyStruct();
-    public GameObject tooltipPrefab; // Prefab for showing information when mouse hovers over the ability button
     public Image HUDbg; // the grey area in which the ability icons sit
     private bool initialized; // check for the update method
     private PlayerCore core; // the player
     private Ability[] abilities; // ability array of the core
     private Image image; // image prefab for the actual ability image
-    private Image[] abilityImagesArray; // images of the abilities displayed on the GUI
-    private GameObject[] abilityBackgroundArray; // all ability backgrounds displayed on the GUI
-    private Image[] abilityCDIndicatorArray; // all ability cooldown indicators displayed on the GUI
-    private Image[] abilityGleamArray; // all ability gleams displayed on the GUI
-    private Image[] abilityTierArray; // all ability tier images displayed on the GUI 
-    private bool[] gleaming; // array to check whether an ability is currently gleaming
-    private bool[] gleamed; // array to check whether an ability has already gleamed in the cycle
+
 
     public enum AbilityTypes {
         Skills,
