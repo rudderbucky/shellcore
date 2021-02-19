@@ -110,7 +110,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         if(dragging)
         {
             var xPos = Input.mousePosition.x;
-            AbilityHandler.RearrangeID(xPos, (AbilityID)abilities[0].GetID());
+            AbilityHandler.RearrangeID(xPos, (AbilityID)abilities[0].GetID(), (AbilityID)abilities[0].GetID() == AbilityID.SpawnDrone ? 
+                (abilities[0] as SpawnDrone).spawnData.drone : null);
         }
 
         // update the number of off-CD abilities

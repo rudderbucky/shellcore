@@ -314,7 +314,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		save.shards = 0;
 		save.version = currentVersion;
 		save.resourcePath = resourcePath;
-		save.abilityHotkeys = new PlayerSave.AbilityHotkeyStruct();
+		save.abilityHotkeys = new AbilityHotkeyStruct();
 		File.WriteAllText(Application.persistentDataPath + "\\Saves" + "\\" + name, JsonUtility.ToJson(save));
 		return save;
 	} 

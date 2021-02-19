@@ -2,6 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Contains lists of Ability IDs, which signify what position each ability is in
+[System.Serializable]
+public struct AbilityHotkeyStruct
+{
+	public List<AbilityID> skills;
+	public List<string> spawns;
+	public List<AbilityID> weapons;
+	public List<AbilityID> passive;
+
+	public IList GetList(int index)
+	{
+		switch(index)
+		{
+			case 0:
+				return skills;
+			case 1:
+				return spawns;
+			case 2:
+				return weapons;
+			case 3:
+				return passive;
+		}
+		return null;
+	}
+}
+
 [System.Serializable]
 public class PlayerSave {
 	
@@ -34,15 +60,5 @@ public class PlayerSave {
 
 	// Contains IDs of unlocked party members (there will be a node that unlocks members adding IDs into this list)
 	public List<string> unlockedPartyIDs;
-	
-	// Contains lists of Ability IDs, which signify what position each ability is in
-	[System.Serializable]
-	public struct AbilityHotkeyStruct
-	{
-		public List<AbilityID> skills;
-		public List<AbilityID> spawns;
-		public List<AbilityID> weapons;
-		public List<AbilityID> passive;
-	}
 	public AbilityHotkeyStruct abilityHotkeys;
 }

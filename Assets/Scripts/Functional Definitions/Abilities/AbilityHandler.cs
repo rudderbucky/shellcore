@@ -12,8 +12,8 @@ public class AbilityHandler : MonoBehaviour {
     public Image abilityCDIndicator; // used to indicate if the ability is on cooldown
     public Image abilityGleam; // gleam for the ability
     public GameObject betterBGbox;
-    public Dictionary<AbilityID, AbilityButtonScript> betterBGboxArray;
-    public List<AbilityID>[] visibleAbilityOrder = new List<AbilityID>[4];
+    public Dictionary<string, AbilityButtonScript> betterBGboxArray;
+    public AbilityHotkeyStruct visibleAbilityOrder = new AbilityHotkeyStruct();
     public GameObject tooltipPrefab; // Prefab for showing information when mouse hovers over the ability button
     public Image HUDbg; // the grey area in which the ability icons sit
     private bool initialized; // check for the update method
@@ -88,7 +88,7 @@ public class AbilityHandler : MonoBehaviour {
             keybindList[i] = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1) + "");
         }
 
-        betterBGboxArray = new Dictionary<AbilityID, AbilityButtonScript>();
+        betterBGboxArray = new Dictionary<string, AbilityButtonScript>();
 
         tileSpacing = betterBGbox.GetComponent<Image>().sprite.bounds.size.x * 30; // Used to space out the abilities on the GUI
         
@@ -98,16 +98,17 @@ public class AbilityHandler : MonoBehaviour {
             
             // position them all, do not keep the world position
             var id = (AbilityID)visibleAbilities[i].GetID();
-            if(!betterBGboxArray.ContainsKey(id))
+            var key = id != AbilityID.SpawnDrone ? $"{(int)id}" : (visibleAbilities[i] as SpawnDrone).spawnData.drone;
+            
+            if(!betterBGboxArray.ContainsKey(key))
             {
                 Vector3 pos = new Vector3(GetAbilityPos(betterBGboxArray.Count), tileSpacing*0.8F, this.transform.position.z); // find where to position the images
-                betterBGboxArray.Add(id,
+                betterBGboxArray.Add(key,
                     Instantiate(betterBGbox, pos, Quaternion.identity).GetComponent<AbilityButtonScript>());
-                betterBGboxArray[id].transform.SetParent(transform, false); // set parent (do not keep world position)
-                betterBGboxArray[id].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count-1] + "" : null, core);
+                betterBGboxArray[key].transform.SetParent(transform, false); // set parent (do not keep world position)
+                betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count-1] + "" : null, core);
             }
-            else betterBGboxArray[id].AddAbility(visibleAbilities[i]);
-            
+            else betterBGboxArray[key].AddAbility(visibleAbilities[i]);
         }
 
         var HUDbgrectTransform = HUDbg.GetComponent<RectTransform>();
@@ -129,19 +130,27 @@ public class AbilityHandler : MonoBehaviour {
         // if display abilities were passed the handler must not update since it is merely representing
         // some abilities
 
-        visibleAbilityOrder = new List<AbilityID>[] {player.cursave.abilityHotkeys.skills, player.cursave.abilityHotkeys.spawns,
-            player.cursave.abilityHotkeys.weapons, player.cursave.abilityHotkeys.passive};
-        if(visibleAbilityOrder == null || visibleAbilityOrder[0] == null)
+        visibleAbilityOrder = player.cursave.abilityHotkeys;
+        if(visibleAbilityOrder.skills == null)
         {
-            visibleAbilityOrder = new List<AbilityID>[] {null, null, null, null};
+            visibleAbilityOrder = new AbilityHotkeyStruct()
+            {
+                skills = new List<AbilityID>(),
+                spawns = new List<string>(),
+                weapons = new List<AbilityID>(),
+                passive = new List<AbilityID>()
+            };
         }
 
-        if(visibleAbilityOrder[(int)currentVisibles] == null || visibleAbilityOrder[(int)currentVisibles].Count == 0)
+        if(visibleAbilityOrder.GetList((int)currentVisibles) == null || visibleAbilityOrder.GetList((int)currentVisibles).Count == 0)
         {
-            visibleAbilityOrder[(int)currentVisibles] = new List<AbilityID>();
+            visibleAbilityOrder.GetList((int)currentVisibles).Clear();
             foreach(var i in instance.betterBGboxArray.Keys)
             {
-                visibleAbilityOrder[(int)currentVisibles].Add(i);
+                if(currentVisibles == AbilityTypes.Spawns)
+                    (visibleAbilityOrder.GetList((int)currentVisibles) as List<string>).Add(i);
+                else
+                    (visibleAbilityOrder.GetList((int)currentVisibles) as List<AbilityID>).Add((AbilityID)int.Parse(i));
             }
         }
         else
@@ -155,17 +164,28 @@ public class AbilityHandler : MonoBehaviour {
         return instance.tileSpacing * (0.8F*index+0.5F);
     }
 
-    public static void RearrangeID(float xPos, AbilityID id)
+    public static void RearrangeID(float xPos, AbilityID id, string droneData)
     {
-        int index = GetAbilityPosInverse(xPos);
-        instance.visibleAbilityOrder[(int)instance.currentVisibles].Remove(id);
-        instance.visibleAbilityOrder[(int)instance.currentVisibles].Insert(index, id);
+        if(id != AbilityID.SpawnDrone)
+        {
+            var list = (instance.visibleAbilityOrder.GetList((int)instance.currentVisibles) as List<AbilityID>);
+            int index = GetAbilityPosInverse(xPos);
+            list.Remove(id);
+            list.Insert(index, id);
+        }
+        else
+        {
+            var list = (instance.visibleAbilityOrder.GetList((int)instance.currentVisibles) as List<string>);
+            int index = GetAbilityPosInverse(xPos);
+            list.Remove(droneData);
+            list.Insert(index, droneData);
+        }
+        
         instance.Rearrange();
     }
 
     private static int GetAbilityPosInverse(float xPos)
     {
-        instance.Rearrange();
         return Mathf.Min(Mathf.Max(0, Mathf.RoundToInt(((xPos / instance.tileSpacing) - 0.5F) / 0.8F)), instance.betterBGboxArray.Count - 1);
     }
 
@@ -173,31 +193,61 @@ public class AbilityHandler : MonoBehaviour {
     {
         if(!core.GetIsInteracting())
         {
-            core.cursave.abilityHotkeys = new PlayerSave.AbilityHotkeyStruct()
-            {
-                skills = visibleAbilityOrder[0],
-                spawns = visibleAbilityOrder[1],
-                weapons = visibleAbilityOrder[2],
-                passive = visibleAbilityOrder[3]
-            };
+            core.cursave.abilityHotkeys = visibleAbilityOrder;
         }
-        
+    
+
         int i = 0;
-        while(i < visibleAbilityOrder[(int)currentVisibles].Count)
+        var list =  visibleAbilityOrder.GetList((int)currentVisibles);
+        while(i < list.Count)
         {
-            if(!betterBGboxArray.ContainsKey(visibleAbilityOrder[(int)currentVisibles][i]))
+            string key = ConvertObjectToString(list, i);
+
+            if(!betterBGboxArray.ContainsKey(key))
             {
-                visibleAbilityOrder[(int)currentVisibles].RemoveAt(i);
+                list.RemoveAt(i);
             }
             else i++;
         }
 
-
-        for(i = 0; i < visibleAbilityOrder[(int)currentVisibles].Count; i++)
+        foreach(var key in betterBGboxArray.Keys)
         {
-            instance.betterBGboxArray[visibleAbilityOrder[(int)currentVisibles][i]].transform.position = new Vector3(GetAbilityPos(i), 
+            if(currentVisibles == AbilityTypes.Spawns)
+            {
+                if(!list.Contains(key))
+                {
+                    list.Add(key);
+                }
+            }
+            else
+            {
+                if(!list.Contains((AbilityID)int.Parse(key)))
+                {
+                    list.Add((AbilityID)int.Parse(key));
+                } 
+            }
+        }
+
+
+        for(i = 0; i < list.Count; i++)
+        {
+            instance.betterBGboxArray[ConvertObjectToString(list, i)].transform.position = new Vector3(GetAbilityPos(i), 
                 tileSpacing*0.8F, this.transform.position.z);
-            instance.betterBGboxArray[visibleAbilityOrder[(int)currentVisibles][i]].ReflectHotkey(currentVisibles != AbilityTypes.Passive ? keybindList[i] : null);
+            instance.betterBGboxArray[ConvertObjectToString(list, i)].ReflectHotkey(currentVisibles != AbilityTypes.Passive && i < 9? keybindList[i] : null);
+        }
+    }
+    
+    public string ConvertObjectToString(IList list, int i)
+    {
+        var idList = visibleAbilityOrder.GetList((int)currentVisibles) as List<AbilityID>;
+        var spawnList = visibleAbilityOrder.GetList((int)currentVisibles) as List<string>;
+        if(idList != null)
+        {
+            return $"{(int)idList[i]}";
+        }
+        else
+        {
+            return spawnList[i];
         }
     }
 
