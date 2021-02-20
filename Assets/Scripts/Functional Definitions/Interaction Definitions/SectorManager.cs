@@ -986,6 +986,8 @@ public class SectorManager : MonoBehaviour
             OnSectorLoad.Invoke(current.sectorName);
     }
 
+    static float objectDespawnDistance = 100f;
+
     private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null)
     {
         // destroy existing shard rocks
@@ -1043,7 +1045,7 @@ public class SectorManager : MonoBehaviour
         {
             if (player && obj.Value && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
                 && obj.Value != player.gameObject && !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable)
-                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) < 100))
+                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) < objectDespawnDistance))
             {
                 Destroy(obj.Value);
             }
@@ -1052,6 +1054,8 @@ public class SectorManager : MonoBehaviour
 
         persistentObjects = tmp;
 
+
+        List<ShellPart> savedParts = new List<ShellPart>();
         foreach (ShellPart part in AIData.strayParts)
         {
             if (part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part))
@@ -1072,7 +1076,16 @@ public class SectorManager : MonoBehaviour
                     }
 			    }
                 if(!droneHasPart)
-                    Destroy(part.gameObject);
+                {
+                    if(Vector3.SqrMagnitude(part.transform.position - player.transform.position) < objectDespawnDistance)
+                    {
+                        savedParts.Add(part);
+                    }
+                    else
+                    {
+                        Destroy(part.gameObject);
+                    }
+                }
             }
         }
         AIData.strayParts.Clear();
@@ -1081,6 +1094,12 @@ public class SectorManager : MonoBehaviour
         // to another sector
         if ((player && player.GetTractorTarget() != null && player.GetTractorTarget().GetComponent<ShellPart>()))
             AIData.strayParts.Add(player.GetTractorTarget().GetComponent<ShellPart>());
+
+        foreach(var part in savedParts)
+        {
+            AIData.strayParts.Add(part);
+        }
+        
         objects = remainingObjects;
 
         // reset stations and carriers

@@ -92,9 +92,9 @@ namespace NodeEditorFramework.Standard
             GUILayout.BeginHorizontal();
             doNotRotate = GUILayout.Toggle(doNotRotate, "Do Not Rotate", GUILayout.MinWidth(400));
             GUILayout.EndHorizontal();
-            if(useCustomMass = GUILayout.Toggle(useCustomMass, "Use Custom Mass", GUILayout.MinWidth(400)))
+            if(useCustomMass = GUILayout.Toggle(useCustomMass, "Use Custom Weight", GUILayout.MinWidth(400)))
             {
-                GUILayout.Label("Mass");
+                GUILayout.Label("Weight");
                 mass = float.Parse(GUILayout.TextField(mass + "", GUILayout.MinWidth(400)));
             }
 
@@ -146,7 +146,7 @@ namespace NodeEditorFramework.Standard
                         AIData.entities[i].isPathing = false; // override any previous paths given to it immediately
                         if(!asynchronous) (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
                         else (AIData.entities[i] as AirCraft).GetAI().setPath(path);
-                        if(useCustomMass) AIData.entities[i].GetComponentInChildren<Rigidbody2D>().mass = mass;
+                        if(useCustomMass) AIData.entities[i].weight = mass;
                         (AIData.entities[i] as AirCraft).rotateWhileMoving = !doNotRotate;
                     }
                 }

@@ -11,7 +11,7 @@ public abstract class Craft : Entity
     public bool isImmobile; // whether the craft is immobile or not
     protected bool respawns; // whether the craft respawns or not
 
-    public static readonly float initSpeed = 50;
+    public static readonly float initSpeed = 40;
 
     public float speed = initSpeed;
     public float accel = 25;

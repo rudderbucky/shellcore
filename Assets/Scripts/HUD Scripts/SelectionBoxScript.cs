@@ -245,7 +245,7 @@ public class SelectionBoxScript : MonoBehaviour
                 = Color.Lerp(new Color32((byte)100, (byte)100, (byte)100, (byte)255), Color.green,
             (1 - (delta.magnitude / originalDelta.magnitude)));
 
-            if (delta.sqrMagnitude < 0.1f)
+            if (delta.sqrMagnitude < PathAI.minDist)
             {
                 Destroy(reticleRenderersByNode[current].gameObject, 5);
                 reticleRenderersByNode.Remove(current);

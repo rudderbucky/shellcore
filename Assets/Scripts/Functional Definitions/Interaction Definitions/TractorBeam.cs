@@ -148,9 +148,8 @@ public class TractorBeam : MonoBehaviour
         //{
         //    Debug.Log("AI Dropped something!");
         //}
-
-        if(newTarget && newTarget.GetComponent<ShellPart>()) AIData.strayParts.Remove(newTarget.GetComponent<ShellPart>());
-        else if(!newTarget && target && target.GetComponent<ShellPart>()) AIData.strayParts.Add(target.GetComponent<ShellPart>());
+        var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
+        if(!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp)) AIData.strayParts.Add(targetComp);
         if (newTarget && !forcedTarget && (newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared && !(owner as Yard))
             return;
         if(lineRenderer)

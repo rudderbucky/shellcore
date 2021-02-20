@@ -136,6 +136,14 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         }
 
         abilities.Sort((a, b) => {
+            if(!a.IsDestroyed() && b.IsDestroyed())
+            {
+                return -1;
+            }
+            else if(a.IsDestroyed() && !b.IsDestroyed())
+            {
+                return 1;
+            }
             if(a.GetCDRemaining() > b.GetCDRemaining())
             {
                 return 1;

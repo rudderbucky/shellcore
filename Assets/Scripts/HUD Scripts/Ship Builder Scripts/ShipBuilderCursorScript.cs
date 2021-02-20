@@ -277,7 +277,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 
 		// drag grid
 		Vector2 bounds = grid.sizeDelta / 2 - grid2mask.sizeDelta / 2;
-		if(RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition)
+		if(grid.GetComponent<DragDetector>().dragging
 			&& Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
 		{
 			grid.anchoredPosition = grid2lastPos + ((Vector2)Input.mousePosition - grid2mousePos) * 2;
