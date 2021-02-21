@@ -297,8 +297,10 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         // Debug.Log("Node: " + node.name + " Canvas: " + node.Canvas);
         if(node.Canvas is QuestCanvas)
             (canvas.Traversal as MissionTraverser).SetNode(node);
-        else
+        else if(node.Canvas is DialogueCanvas)
             (canvas.Traversal as DialogueTraverser).SetNode(node);
+        else
+            (canvas.Traversal as SectorTraverser).SetNode(node);
     }
 
     public static void DrawObjectiveLocations()

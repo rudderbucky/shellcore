@@ -42,7 +42,11 @@ public class ItemPropertyDisplay : MonoBehaviour
             }
         }
         factionDropdown.AddOptions(options);
-        factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        if(editingDefaults)
+        {
+            factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        }
+        
     }
 
     void Update() 

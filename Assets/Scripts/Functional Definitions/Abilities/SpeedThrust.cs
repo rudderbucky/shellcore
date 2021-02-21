@@ -9,6 +9,7 @@ public class SpeedThrust : ActiveAbility
 {
     bool activated = false;
     Craft craft;
+    public static readonly float boost = 20;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -35,7 +36,7 @@ public class SpeedThrust : ActiveAbility
         var enginePower = (Core as Craft).enginePower;
         if(craft && activated) {
             (Core as Craft).enginePower -= 100F * Mathf.Pow(abilityTier, 1.5F);
-            (Core as Craft).speed -= 25 * abilityTier;
+            (Core as Craft).speed -= boost * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         } // bring the engine power back
         ToggleIndicator(true);
@@ -51,7 +52,7 @@ public class SpeedThrust : ActiveAbility
             var enginePower = (Core as Craft).enginePower;
             activated = true;
             (Core as Craft).enginePower += 100F * Mathf.Pow(abilityTier, 1.5F);
-            (Core as Craft).speed += 25 * abilityTier;
+            (Core as Craft).speed += boost * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         } // change engine power
         AudioManager.PlayClipByID("clip_activateability", transform.position);

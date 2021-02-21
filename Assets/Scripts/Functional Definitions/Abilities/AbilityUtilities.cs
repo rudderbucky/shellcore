@@ -109,7 +109,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 0:
 				return "Does nothing.";
 			case 1:
-				return "+" + 25 * tier + " speed.";
+				return "+" + SpeedThrust.boost * tier + " speed for 10 seconds.";
 			case 2:
 				return "Instantly heal " + HealthHeal.heals[0] * tier + " shell.";
 			case 3:
@@ -135,7 +135,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 12:
 				return "Instantly heal " + HealthHeal.heals[2] * tier + " energy.";
 			case 13:
-				return "+" + 15 * tier + " speed.";
+				return "+" + Speed.boost * tier + " speed.";
 			case 17:
 				return "Passively increases shell regen by "  + ShellRegen.regen * tier + " points.";
 			case 18:

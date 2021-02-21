@@ -17,6 +17,7 @@ public class PlayerCore : ShellCore {
     public int[] abilityCaps;
     public int reputation;
     public static PlayerCore Instance;
+    public List<ShellPart> partsToDestroy = new List<ShellPart>();
 
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
@@ -81,7 +82,13 @@ public class PlayerCore : ShellCore {
     }
     // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
     protected override void Start () {
-        // initialize instance fields
+        
+        foreach(var part in partsToDestroy)
+        {
+            Destroy(part.gameObject);
+        }
+        partsToDestroy.Clear();
+
         base.Start();
 
         if (hud) hud.InitializeHUD(this);

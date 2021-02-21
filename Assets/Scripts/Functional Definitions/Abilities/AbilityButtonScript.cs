@@ -176,16 +176,18 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         if(!entity.GetIsDead())
         {
+            bool hotkeyAccepted = (Input.GetKeyDown(hotkeyText.text) && !InputManager.GetKey(KeyName.TurretQuickPurchase));
             if(abilities[0] is WeaponAbility)
             {
                 foreach(var ab in abilities)
                 {
-                    ab.Tick(Input.GetKeyDown(hotkeyText.text) || (clicked && Input.mousePosition == oldInputMousePos) ? 1 : 0);
+                    ab.Tick(hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos) ? 1 : 0);
                 }
             }
             else
             {
-                abilities[0].Tick(Input.GetKeyDown(hotkeyText.text) || (clicked && Input.mousePosition == oldInputMousePos) ? 1 : 0);
+                abilities[0].Tick(hotkeyAccepted
+                    || (clicked && Input.mousePosition == oldInputMousePos) ? 1 : 0);
                 for(int i = 1; i < abilities.Count; i++)
                 {
                     abilities[i].Tick(0);

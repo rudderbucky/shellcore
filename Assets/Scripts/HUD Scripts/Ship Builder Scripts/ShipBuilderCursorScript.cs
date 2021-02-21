@@ -88,6 +88,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		currentPart = part;
 	}
 	void PlaceCurrentPart() {
+		currentPart.SetMaskable(true);
 		var editorMode = (builder as ShipBuilder) != null && !(builder as ShipBuilder).Equals(null) && (builder as ShipBuilder).editorMode;
 		if(cursorMode != BuilderMode.Workshop)
 			if(traderInventory.gameObject.activeSelf && (!editorMode || !Input.GetKey(KeyCode.LeftControl)) &&
@@ -244,6 +245,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		}
 
 		if(currentPart) {
+			currentPart.SetMaskable(false);
 			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
 			if(Input.GetMouseButtonUp(0)) {
 				PlaceCurrentPart();

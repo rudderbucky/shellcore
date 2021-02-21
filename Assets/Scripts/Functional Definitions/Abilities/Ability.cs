@@ -42,6 +42,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     public ShellPart part;
     public string abilityName = "Ability";
     protected string description = "Does things";
+    public GameObject glowPrefab;
 
     /// <summary>
     /// Setter method for isEnabled, will be used by parts
@@ -91,6 +92,10 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// <param name="input">boolean to set to</param>
     virtual public void SetDestroyed(bool input)
     {
+        // delete glow from ability
+        if(glowPrefab)
+            Destroy(glowPrefab);
+            
         isDestroyed = input; // set is destroyed
     }
 
@@ -211,11 +216,16 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     virtual protected void ToggleIndicator(bool blink = false)
     {
         var indicator = transform.Find("Shooter");
-        GameObject glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
-        glowPrefab = Instantiate(glowPrefab, transform, false);
-        glowPrefab.transform.localScale = new Vector3(0.75F,0.75F,1);
-        glowPrefab.GetComponent<SpriteRenderer>().color = new Color(1,1,1,0.5F);
-        Destroy(glowPrefab, GetActiveTimeRemaining());
+        if(!glowPrefab)
+        {
+            glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
+            glowPrefab = Instantiate(glowPrefab, transform, false);
+            glowPrefab.transform.localScale = new Vector3(0.75F,0.75F,1);
+            glowPrefab.GetComponent<SpriteRenderer>().color = new Color(1,1,1,0.5F);
+            Destroy(glowPrefab, GetActiveTimeRemaining());
+        }
+        else Destroy(glowPrefab);
+
         originalIndicatorColor = FactionManager.GetFactionColor(Core.faction);
         if (indicator)
         {
@@ -241,6 +251,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
         var resetColor = originalIndicatorColor;
         resetColor.a = (Core.invisible ? (Core.faction == 0 ? 0.2f: 0f) : 1f);
         indicator.GetComponent<SpriteRenderer>().color = resetColor;
+        Destroy(glowPrefab);
     }
 
     /// <summary>

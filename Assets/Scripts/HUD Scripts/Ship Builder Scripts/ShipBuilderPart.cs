@@ -27,6 +27,16 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 		return lastValidPos;
 	}
 	
+	public void SetMaskable(bool maskable)
+	{
+		if(image)
+			image.maskable = maskable;
+		if(shooter)
+			shooter.maskable = maskable;
+		if(boundImage)
+			boundImage.maskable = maskable;
+	}
+
 	public void Snapback() {
 		if(lastValidPos != null) info.location = (Vector3)lastValidPos;
 	}

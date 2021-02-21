@@ -109,6 +109,14 @@ public class ShellPart : MonoBehaviour {
     public void Detach() {
         if (name != "Shell Sprite")
             transform.SetParent(null, true);
+
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            if(transform.GetChild(i).name.Contains("Glow"))
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+        }
         detachedTime = Time.time; // update detached time
         hasDetached = true; // has detached now
         gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
@@ -245,10 +253,12 @@ public class ShellPart : MonoBehaviour {
             }
             else
             {
-                if (name != "Shell Sprite")
+                if (name != "Shell Sprite" && !(craft as PlayerCore))
                 {
                     Destroy(gameObject);
                 } else {
+                    if(craft as PlayerCore && name != "Shell Sprite") 
+                        (craft as PlayerCore).partsToDestroy.Add(this);
                     spriteRenderer.enabled = false; // disable sprite renderer
                     if(shooter) shooter.SetActive(false);
                 }

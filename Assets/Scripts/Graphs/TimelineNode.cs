@@ -28,6 +28,7 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
+            GUILayout.Label("WARNING: this node is deprecated and will later be deleted. Use a Condition Group Node with a Time Trigger.");
             GUILayout.BeginVertical(GUILayout.MinWidth(300f));
             for (int i = 0; i < times.Count; i++)
             {
@@ -59,6 +60,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            Debug.LogWarning("WARNING: this node is deprecated and will later be deleted. Use a Condition Group Node with a Time Trigger.");
             TaskManager.Instance.StartCoroutine(timer());
             return -1;
         }
@@ -78,7 +80,10 @@ namespace NodeEditorFramework.Standard
                     }
                 }
             }
-            TaskManager.Instance.setNode(outputRight);
+            if(Canvas as QuestCanvas)
+                TaskManager.Instance.setNode(outputRight);
+            else if(Canvas as DialogueCanvas)
+                DialogueSystem.Instance.SetNode(outputRight);
         }
     }
 }
