@@ -71,7 +71,11 @@ public class TractorBeam : MonoBehaviour
                 if (target.GetComponent<EnergySphereScript>() || owner as Yard)
                 {
                     if(dir.sqrMagnitude <= 0.36F)
-                        rigidbody.position += (Vector2)dir;
+                    {
+                        rigidbody.position = transform.position;
+                        rigidbody.velocity = Vector2.zero;
+                        target = null;
+                    }    
                     else
                         rigidbody.position += (Vector2)dir.normalized * 0.6F;
                     if (owner.invisible)

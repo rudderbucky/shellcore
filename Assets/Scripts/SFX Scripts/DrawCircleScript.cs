@@ -41,6 +41,11 @@ public class DrawCircleScript : MonoBehaviour {
         GetComponent<LineRenderer>().startColor = color;
     }
 
+    public void SetRadius(float radius)
+    {
+        xrad = yrad = radius;
+    }
+
     private void Start()
     {
         if(respawnMode) {

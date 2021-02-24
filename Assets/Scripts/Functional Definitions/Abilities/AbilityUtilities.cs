@@ -40,7 +40,9 @@ public enum AbilityID
 	ActiveEnergyRegen,
 	Disrupt,
 	Control,
-	InvertTractor
+	InvertTractor,
+	Bomb,
+	Ion
 }
 public class AbilityUtilities : MonoBehaviour {
 
@@ -73,6 +75,8 @@ public class AbilityUtilities : MonoBehaviour {
 			case 7:
 			case 8:
 			case 9:
+			case 36:
+			case 37:
 				return AbilityHandler.AbilityTypes.Weapons;
 			case 1:
 			case 2:
@@ -170,6 +174,10 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Makes allies stronger.";
 			case 35:
 				return "Temporarily pulls you to your tractor target.";
+			case 36:
+				return $"Stationary projectile that deals {Bomb.bombDamage} damage. Projectile lasts {45F * tier} seconds.";
+			case 37:
+				return $"Slow moving beam that deals heavy damage for 5 seconds. Tier does not increase damage but reduces energy cost.";
             default:
 				return "Description unset";
 		}
@@ -203,6 +211,8 @@ public class AbilityUtilities : MonoBehaviour {
 			case 6:
 				return "cannonshooter_sprite";
 			case 7:
+			case 36:
+			case 37:
 			if(data != "missile_station_shooter")
 				return "missileshooter_sprite";
 			else return "missile_station_shooter";
@@ -284,6 +294,10 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Control";
 			case 35:
 				return "Invert Tractor";
+			case 36:
+				return "Bomb";
+			case 37:
+				return "Ion";
             default:
                 return "Name unset";
         }
@@ -424,6 +438,12 @@ public class AbilityUtilities : MonoBehaviour {
                 break;
 			case 35:
 				ability = obj.AddComponent<InvertTractor>();
+				break;
+			case 36:
+				ability = obj.AddComponent<Bomb>();
+				break;
+			case 37:
+				ability = obj.AddComponent<Ion>();
 				break;
         }
 		if(ability) ability.SetTier(tier);

@@ -21,7 +21,7 @@ public class Entity : MonoBehaviour, IDamageable {
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected List<Ability> abilities; // abilities
-    protected Rigidbody2D entityBody; // entity to modify with this script
+    public Rigidbody2D entityBody; // entity to modify with this script
     protected Collider2D hitbox; // the hitbox of the entity (excluding extra parts)
     protected TargetingSystem targeter; // the TargetingSystem of the entity
     protected bool isInCombat; // whether the entity is in combat or not
@@ -456,11 +456,7 @@ public class Entity : MonoBehaviour, IDamageable {
         {
             colliders[i].enabled = true;
         }
-        foreach (var ability in abilities)
-        {
-            if (ability)
-                ability.SetDestroyed(true);
-        }
+
         interactible = false;
         isDead = true;
         SetIntoCombat();

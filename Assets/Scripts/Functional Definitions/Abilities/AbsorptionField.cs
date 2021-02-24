@@ -44,6 +44,7 @@ public class AbsorptionField : ActiveAbility
     {
         if(craft)
         {
+            craft.entityBody.velocity = Vector2.zero;
             craft.isAbsorbing = true;
             craft.isImmobile = true;
             field = new GameObject("Field");

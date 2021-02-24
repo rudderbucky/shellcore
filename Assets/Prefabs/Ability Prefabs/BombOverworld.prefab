@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 2617061536785054136}
   - component: {fileID: 2617061536785054013}
   - component: {fileID: 2617061536785054207}
-  - component: {fileID: 2617061536785053779}
-  - component: {fileID: 2617061536785053958}
   - component: {fileID: 3366182814409647079}
   - component: {fileID: 8525528236371965032}
+  - component: {fileID: 7953594592938060559}
   m_Layer: 10
   m_Name: BombOverworld
   m_TagString: Untagged
@@ -107,57 +106,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &2617061536785053779
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2617061536785054286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b266ec5e0731534996fdec7fd1b93ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  missParticles: 0
-  hitPrefab: {fileID: 1502281276678149486, guid: 1042cc1ecdd8e644fbf1602a91dac5c9,
-    type: 3}
-  missPrefab: {fileID: 8654600599346773465, guid: 9aa8e24e2ff05cf4499b5f2dbc180396,
-    type: 3}
-  owner: {fileID: 0}
-  particleColor: {r: 0, g: 0, b: 0, a: 0}
---- !u!60 &2617061536785053958
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2617061536785054286}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.73, y: 0.73}
-    newSize: {x: 0.46, y: 1.66}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.085, y: 0.42}
-      - {x: -0.105, y: 0.39999998}
-      - {x: -0.145, y: 0.049999997}
-      - {x: -0.145, y: -0.42}
-      - {x: 0.145, y: -0.42}
-      - {x: 0.145, y: 0.17999999}
-      - {x: 0.085, y: 0.42}
 --- !u!198 &3366182814409647079
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4854,8 +4802,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2073840431
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -4880,3 +4828,22 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &7953594592938060559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2617061536785054286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3cf6e91d5ebd67418af34fcf3a5eee9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 0}
+  bombColor: {r: 0, g: 0, b: 0, a: 0}
+  faction: 0
+  missPrefab: {fileID: 8654600599346773465, guid: 9aa8e24e2ff05cf4499b5f2dbc180396,
+    type: 3}
+  hitPrefab: {fileID: 1502281276678149486, guid: 1042cc1ecdd8e644fbf1602a91dac5c9,
+    type: 3}

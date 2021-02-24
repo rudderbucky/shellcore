@@ -49,10 +49,12 @@ public abstract class WeaponAbility : ActiveAbility {
         if(abilityName == null) abilityName = "Weapon Ability";
     }
 
+    List<AbilityID> damageUnaffectedByTier = new List<AbilityID> {AbilityID.MainBullet, AbilityID.Bomb};
+
     protected virtual void Start() {
         if(abilityTier != 0) 
         {
-            damage *= (this is MainBullet) ? 1 : abilityTier;
+            damage *= (damageUnaffectedByTier.Contains(ID)) ? 1 : abilityTier;
             energyCost *= abilityTier;
         }
 
