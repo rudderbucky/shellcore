@@ -61,14 +61,16 @@ public class Yard : AirConstruct, IShipBuilder {
                 if (tractor.GetTractorTarget().GetComponent<ShellPart>())
                 {
                     PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your part has been added into your inventory.</color>");
-                    var info = tractor.GetTractorTarget().GetComponent<ShellPart>().info;
+                    var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
+                    var info = shellPart.info;
                     info = ShipBuilder.CullSpatialValues(info);
-                    ShipBuilder.AddOriginToDictionary(tractor.GetTractorTarget().GetComponent<ShellPart>());
+                    ShipBuilder.AddOriginToDictionary(shellPart);
                     PlayerCore.Instance.cursave.partInventory.Add(info);
-
                     PartIndexScript.AttemptAddToPartsObtained(info);
                     PartIndexScript.AttemptAddToPartsSeen(info);
-                    Destroy(tractor.GetTractorTarget().GetComponent<ShellPart>().gameObject);
+                    NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
+                    Destroy(shellPart.gameObject);
+                    
                 }
                 else if(tractor.GetTractorTarget().GetComponent<Shard>())
                 {

@@ -44,6 +44,7 @@ public class IonLineController : MonoBehaviour
         this.range = range;
         this.part = part;
         this.tier = tier;
+        energyCost = 50 / tier;
     }
 
     public bool GetFiring()
@@ -55,6 +56,7 @@ public class IonLineController : MonoBehaviour
     void Start()
     {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
+        
     }
     public void SetMaterial(Material material)
     {
@@ -74,10 +76,12 @@ public class IonLineController : MonoBehaviour
         }
     }
 
+    float energyCost;
+
     void Update()
     {
         line.gameObject.transform.position = gameObject.transform.position;
-        if(Core.GetHealth()[2] < 50) duration = 0;
+        if(Core.GetHealth()[2] < energyCost) duration = 0;
         if(initialized && targetingSystem.GetTarget() && !Core.invisible && duration > 0)
         {
             duration -= Time.deltaTime;
@@ -95,7 +99,7 @@ public class IonLineController : MonoBehaviour
             
             var diff = targetBearing - originalBearing;
             
-            var c = 1F;
+            var c = 65 * Time.deltaTime;
             bool goForwards = false;
 
             if(originalBearing < 180)
@@ -122,7 +126,7 @@ public class IonLineController : MonoBehaviour
             line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * range);
             ThickenLine(0.005F);
             
-
+            var damage = 300;
             var raycastHits = Physics2D.RaycastAll(transform.position, GetVectorByBearing(originalBearing), range);
             for(int i = 0; i < raycastHits.Length; i++)
             {
@@ -135,11 +139,11 @@ public class IonLineController : MonoBehaviour
 
                     var magnitude = (hitTransform.position - transform.position).magnitude;
                     line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * magnitude);
-                    Core.TakeEnergy(50 / tier);
+                    Core.TakeEnergy(energyCost);
 
                     var part = hitTransform.GetComponentInChildren<ShellPart>();
 
-                    var residue = damageable.TakeShellDamage(100, 0, GetComponentInParent<Entity>()); 
+                    var residue = damageable.TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
                     
                     // deal instant damage
 

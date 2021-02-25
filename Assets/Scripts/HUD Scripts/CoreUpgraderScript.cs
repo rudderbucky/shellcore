@@ -136,6 +136,10 @@ public class CoreUpgraderScript : GUIWindowScripts
     }
 
     public static int GetPartTierLimit(string coreName) {
+        return Mathf.Min(GetCoreTier(coreName), 2);
+    }
+
+    public static int GetCoreTier(string coreName) {
         switch(coreName) {
             case "core1_shell":
                 return 0;
@@ -143,11 +147,12 @@ public class CoreUpgraderScript : GUIWindowScripts
                 return 1;
             case "core3skills_shell":
             case "core3weapons_shell":
+                return 2;
             case "core4commando_shell":
             case "core4elite_shell":
             case "core4captain_shell":
             case "core4admiral_shell":
-                return 2;
+                return 3;
             default:
                 return 0;
         }

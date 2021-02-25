@@ -117,7 +117,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 2:
 				return "Instantly heal " + HealthHeal.heals[0] * tier + " shell.";
 			case 3:
-				return "Projectile that deals " + MainBullet.mbDamage + " damage. \nStays with you no matter what.";
+				return "Projectile that deals " + MainBullet.GetDamage(tier) + " damage. \nStays with you no matter what.";
 			case 4:
 				return "Instant attack that deals " + Beam.beamDamage * tier + " damage.";
 			case 5:
@@ -175,9 +175,9 @@ public class AbilityUtilities : MonoBehaviour {
 			case 35:
 				return "Temporarily pulls you to your tractor target.";
 			case 36:
-				return $"Stationary projectile that deals {Bomb.bombDamage} damage. Projectile lasts {45F * tier} seconds.";
+				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:
-				return $"Slow moving beam that deals heavy damage for 5 seconds. Tier does not increase damage but reduces energy cost.";
+				return $"Slow moving beam that deals heavy damage for 5 seconds. \nTier does not increase damage but reduces energy cost.";
             default:
 				return "Description unset";
 		}

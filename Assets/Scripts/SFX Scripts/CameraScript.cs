@@ -51,7 +51,8 @@ public class CameraScript : MonoBehaviour {
             {
                 if(Input.GetAxis("Mouse ScrollWheel") < 0f) 
                 { 
-                    zLevel = Mathf.Min(10, zLevel + 0.5F);
+                    zLevel = Mathf.Min(10 + 2.5F * (1+
+                        CoreUpgraderScript.GetCoreTier(PlayerCore.Instance.blueprint.coreShellSpriteID)), zLevel + 0.5F);
                     Focus(transform.position);
                 }
                 else if(Input.GetAxis("Mouse ScrollWheel") > 0f) 

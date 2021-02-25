@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-9.750013,94.50001" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="1116194944" type="StartDialogueNode" pos="-850,-200">
+			<Port ID="1835452288" name="input" dynamic="False" />
+			<Port ID="1367763840" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1121577521" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1257906560" type="DialogueNode" pos="-550,-200">
+			<Port ID="-1889763328" name="input" dynamic="False" />
+			<Port ID="943218944" name="cancel" dynamic="False" />
+			<Port ID="1512970624" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">241</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1744556544" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">296</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-801607440" />
+			<Variable name="answers" refID="-562438400" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1936703744" type="DialogueNode" pos="-200,-250">
+			<Port ID="1980659072" name="input" dynamic="False" />
+			<Port ID="-1276868096" name="cancel" dynamic="False" />
+			<Port ID="-707116416" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">228</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1093402118" />
+			<Variable name="answers" refID="997418240" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="257298176" type="EndDialogue" pos="-200,100">
+			<Port ID="798012160" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-1817582080" type="EndDialogue" pos="100,-50">
+			<Port ID="-239427968" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1367763840" port2ID="-1889763328" />
+		<Connection port1ID="1512970624" port2ID="1980659072" />
+		<Connection port1ID="-1744556544" port2ID="798012160" />
+		<Connection port1ID="-707116416" port2ID="-239427968" />
+	</Connections>
+	<Objects>
+		<Object refID="-1121577521" type="System.String">
+			<string>haven1-infectionexplainer</string>
+		</Object>
+		<Object refID="-801607440" type="System.String">
+			<string>We still don't know what caused the 'Infection'. All we know is that it started after some of us entered the Core Sectors of this world. Ever since, we've been under attack and their numbers just keep rising and rising.</string>
+		</Object>
+		<Object refID="-562438400" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Core Sectors?</string>
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1093402118" type="System.String">
+			<string>Apparently, at the very origin of our existence. I've heard rumors of other realms of sectors as well... what I do know is that this realm is known as the Standard Sectors.</string>
+		</Object>
+		<Object refID="997418240" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Huh.</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

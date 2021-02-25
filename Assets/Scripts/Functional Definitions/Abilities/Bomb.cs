@@ -20,7 +20,7 @@ public class Bomb : WeaponAbility
         abilityName = "Bomb";
         bombSpeed = 2;
         survivalTime = 45F;
-        range = 10F;
+        range = 30F;
         ID = AbilityID.Bomb;
         cooldownDuration = 30F;
         CDRemaining = cooldownDuration;

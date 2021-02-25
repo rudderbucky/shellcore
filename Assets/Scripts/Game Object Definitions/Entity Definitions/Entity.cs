@@ -384,6 +384,7 @@ public class Entity : MonoBehaviour, IDamageable {
             if (!gameObject.GetComponentInChildren<MainBullet>())
             {
                 MainBullet mainBullet = gameObject.AddComponent<MainBullet>();
+                mainBullet.SetTier(Mathf.Min(3, 1+CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID)));
                 mainBullet.bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
                 mainBullet.terrain = TerrainType.Air;
                 mainBullet.SetActive(true);
@@ -392,6 +393,7 @@ public class Entity : MonoBehaviour, IDamageable {
             else
             {
                 MainBullet mainBullet = gameObject.GetComponentInChildren<MainBullet>();
+                mainBullet.SetTier(Mathf.Min(3, 1+CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID)));
                 mainBullet.SetDestroyed(false);
                 abilities.Insert(0, mainBullet);
             }
