@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Gives a temporary increase to the core's engine power
 /// </summary>
-public class SpeedThrust : ActiveAbility
+public class SpeedThrust : ActiveAbility, IBlinkOnUse
 {
     bool activated = false;
     Craft craft;
@@ -39,7 +39,7 @@ public class SpeedThrust : ActiveAbility
             (Core as Craft).speed -= boost * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         } // bring the engine power back
-        ToggleIndicator(true);
+        base.Deactivate();
     }
 
     /// <summary>
@@ -58,6 +58,6 @@ public class SpeedThrust : ActiveAbility
         AudioManager.PlayClipByID("clip_activateability", transform.position);
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
-        ToggleIndicator(true);
+        base.Execute();
     }
 }

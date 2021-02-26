@@ -5,13 +5,10 @@ using UnityEngine;
 /// <summary>
 /// Temporarily increases the craft's regen
 /// </summary>
-public class ActiveRegen : ActiveAbility
+public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
 {
     float activationDelay = 3f;
-    float activationTime = 0f;
     const float healAmount = 100f;
-    bool trueActive = false;
-
     public int index;
 
     public void Initialize()
@@ -41,7 +38,7 @@ public class ActiveRegen : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        ToggleIndicator(true);
+        base.Deactivate();
         if (Core && trueActive)
         {
             float[] regens = Core.GetRegens();
@@ -64,7 +61,7 @@ public class ActiveRegen : ActiveAbility
             }
             AudioManager.PlayClipByID("clip_activateability", transform.position);
             trueActive = true;
-            ToggleIndicator(true);
+            // SetIndicatorBlink(true);
         }
     }
 
@@ -76,6 +73,6 @@ public class ActiveRegen : ActiveAbility
         activationTime = Time.time + activationDelay;
         isOnCD = true; // set to on cooldown
         isActive = true; // set to "active"
-        ToggleIndicator(false);
+        base.Execute();
     }
 }

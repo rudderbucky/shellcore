@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Temporarily increases the craft's damage multiplier
 /// </summary>
-public class DamageBoost: ActiveAbility
+public class DamageBoost: ActiveAbility, IBlinkOnUse
 {
     bool activated = false;
     protected override void Awake()
@@ -30,7 +30,7 @@ public class DamageBoost: ActiveAbility
             Core.damageAddition -= 150;
         }
             
-        ToggleIndicator(true);
+        base.Deactivate();
     }
 
 
@@ -54,6 +54,6 @@ public class DamageBoost: ActiveAbility
         AudioManager.PlayClipByID("clip_buff", transform.position);
         isOnCD = true; // set to on cooldown
         isActive = true; // set to "active"
-        ToggleIndicator(true);
+        base.Execute();
     }
 }

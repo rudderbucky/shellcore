@@ -48,6 +48,6 @@ public class Retreat : Ability
         activationTime = Time.time + activationDelay;
         isOnCD = true;
         charging = true;
-        ToggleIndicator(false);
+        ToggleIndicator();
     }
 }

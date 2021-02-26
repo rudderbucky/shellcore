@@ -160,7 +160,8 @@ public class PartyManager : MonoBehaviour
         if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
             var member = partyMembers.Find(c => c.ID == charID);
-            member.GetAI().follow(null);
+            if(member && member.GetAI() != null)
+                member.GetAI().follow(null);
             partyMembers.Remove(member);
             partyResponses.Remove(charID);
             var clicked = new Button.ButtonClickedEvent();

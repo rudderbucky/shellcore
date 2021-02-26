@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InvertTractor : ActiveAbility
+public class InvertTractor : ActiveAbility, IBlinkOnUse
 {
     public override void SetTier(int abilityTier)
     {
@@ -28,8 +28,7 @@ public class InvertTractor : ActiveAbility
     protected override void Deactivate()
     {
         Core.tractorSwitched = false;
-        ToggleIndicator(true);
-        Debug.Log("tes");
+        base.Deactivate();
     }
 
     /// <summary>
@@ -41,6 +40,6 @@ public class InvertTractor : ActiveAbility
         isOnCD = true; // set to on cooldown
         isActive = true; // set to "active"
         AudioManager.PlayClipByID("clip_buff", transform.position);
-        ToggleIndicator(false);
+        base.Execute();
     }
 }

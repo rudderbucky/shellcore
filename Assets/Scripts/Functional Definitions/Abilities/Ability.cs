@@ -213,7 +213,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     }
 
     private bool blinking;
-    virtual protected void ToggleIndicator(bool blink = false)
+    virtual protected void ToggleIndicator()
     {
         var indicator = transform.Find("Shooter");
         if(!glowPrefab)
@@ -225,19 +225,29 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
             Destroy(glowPrefab, GetActiveTimeRemaining());
         }
         else Destroy(glowPrefab);
-
-        originalIndicatorColor = FactionManager.GetFactionColor(Core.faction);
-        if (indicator)
-        {
-            if(blink)
-            {
-                blinking = !blinking;
-                if(blinking) StartCoroutine(Blinker(indicator, glowPrefab));
-            }
-        }
     }
 
-    IEnumerator Blinker(Transform indicator, GameObject glowPrefab)
+    virtual protected void SetIndicatorBlink(bool blink)
+    {
+        blinking = blink;
+        var indicator = transform.Find("Shooter");
+        
+        if(blinking && indicator) 
+        {
+            if(!glowPrefab)
+            {
+                glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
+                glowPrefab = Instantiate(glowPrefab, transform, false);
+                glowPrefab.transform.localScale = new Vector3(0.75F,0.75F,1);
+                glowPrefab.GetComponent<SpriteRenderer>().color = new Color(1,1,1,0.5F);
+                Destroy(glowPrefab, GetActiveTimeRemaining());
+            }
+            StartCoroutine(Blinker(glowPrefab));
+        }
+        else if(glowPrefab) Destroy(glowPrefab);
+    }
+
+    IEnumerator Blinker(GameObject glowPrefab)
     {
         while(blinking && glowPrefab)
         {
@@ -248,9 +258,7 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
 
             yield return new WaitForSeconds(0.125F);
         }
-        var resetColor = originalIndicatorColor;
-        resetColor.a = (Core.invisible ? (Core.faction == 0 ? 0.2f: 0f) : 1f);
-        indicator.GetComponent<SpriteRenderer>().color = resetColor;
+
         Destroy(glowPrefab);
     }
 
@@ -258,6 +266,6 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// Used to activate whatever effect the ability has, almost always overriden
     /// </summary>
     virtual protected void Execute() {
-        isOnCD = true; // template to be overriden
+        
     }
 }

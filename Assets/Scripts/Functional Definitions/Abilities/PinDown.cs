@@ -5,11 +5,9 @@ using UnityEngine;
 /// <summary>
 /// Immobilizes the nearest enemy
 /// </summary>
-public class PinDown : ActiveAbility
+public class PinDown : ActiveAbility, IChargeOnUseThenBlink
 {
     float activationDelay = 2f; // the delay between clicking the ability and its activation
-    float activationTime = 0f;
-    bool trueActive = false;
     Craft target;
 
     protected override void Awake()
@@ -31,7 +29,6 @@ public class PinDown : ActiveAbility
         {
             AudioManager.PlayClipByID("clip_activateability", transform.position);
             trueActive = true;
-            ToggleIndicator(true);
 
             var targeting = Core.GetTargetingSystem();
             float minDist = float.MaxValue;
@@ -59,7 +56,7 @@ public class PinDown : ActiveAbility
 
     protected override void Deactivate()
     {
-        ToggleIndicator(true);
+        base.Deactivate();
         trueActive = false;
         if (target != null && target)
         {
@@ -76,6 +73,6 @@ public class PinDown : ActiveAbility
         activationTime = Time.time + activationDelay;
         isOnCD = true; // set to on cooldown
         isActive = true; // set to "active"
-        ToggleIndicator(false);
+        base.Execute();
     }
 }

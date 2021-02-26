@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Immobilizes the craft and converts all damage to energy
 /// </summary>
-public class AbsorptionField : ActiveAbility
+public class AbsorptionField : ActiveAbility, IBlinkOnUse
 {
     Craft craft;
     GameObject field;
@@ -31,7 +31,7 @@ public class AbsorptionField : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        ToggleIndicator(true);
+        base.Deactivate();
         Destroy(field);
         craft.isAbsorbing = false;
         craft.isImmobile = false;
@@ -59,6 +59,6 @@ public class AbsorptionField : ActiveAbility
         // adjust fields
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
-        ToggleIndicator(true);
+        base.Execute();
     }
 }

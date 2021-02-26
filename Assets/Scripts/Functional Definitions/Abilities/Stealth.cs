@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Makes the craft temporarily invisible
 /// </summary>
-public class Stealth : ActiveAbility
+public class Stealth : ActiveAbility, IBlinkOnUse
 {
     Craft craft;
     protected override void Awake()
@@ -29,7 +29,7 @@ public class Stealth : ActiveAbility
     /// </summary>
     protected override void Deactivate()
     {
-        ToggleIndicator(true);
+        base.Deactivate();
 
         craft.invisible = false;
         SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
@@ -76,6 +76,6 @@ public class Stealth : ActiveAbility
         // adjust fields
         isActive = true; // set to active
         isOnCD = true; // set to on cooldown
-        ToggleIndicator(true);
+        base.Execute();
     }
 }

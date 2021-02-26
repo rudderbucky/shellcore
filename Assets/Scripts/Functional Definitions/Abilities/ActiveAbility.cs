@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface IBlinkOnUse {}
+public interface IChargeOnUseThenBlink {}
+
 /// <summary>
 /// Any ability that has a specific active time is an active ability (abilities that are simply click for effect that does not expire are not active abilities)
 /// </summary>
@@ -10,6 +13,8 @@ public abstract class ActiveAbility : Ability
     protected bool isActive = false; // used to check if the ability is active
     protected float activeTimeRemaining; // how much active time is remaining on the ability
     protected float activeDuration; // the duration it is active for
+    protected bool trueActive;
+    protected float activationTime;
 
     /// <summary>
     /// Initialization of every active ability
@@ -40,7 +45,24 @@ public abstract class ActiveAbility : Ability
     /// <summary>
     /// Called when active time hits 0, used to rollback whatever change was done on the core
     /// </summary>
-    virtual protected void Deactivate() { }
+    virtual protected void Deactivate() { 
+        if(this as IBlinkOnUse != null || this as IChargeOnUseThenBlink != null)
+        {
+            SetIndicatorBlink(false);
+        }
+    }
+
+    override protected void Execute() { 
+        if(this as IBlinkOnUse != null)
+        {
+            SetIndicatorBlink(true);
+        }
+        if(this as IChargeOnUseThenBlink != null)
+        {
+            ToggleIndicator();
+        }
+        base.Execute();
+    }
 
     /// <summary>
     /// Override on tick that accounts for actives for players
@@ -51,6 +73,14 @@ public abstract class ActiveAbility : Ability
         if(isDestroyed)
         {
             return; // Part has been destroyed, ability can't be used
+        }
+
+        if(this as IChargeOnUseThenBlink != null)
+        {
+            if (isOnCD && Time.time > activationTime && !trueActive && GetActiveTimeRemaining() > 0)
+            {
+                SetIndicatorBlink(true);
+            }
         }
         
         if (isActive) // active
