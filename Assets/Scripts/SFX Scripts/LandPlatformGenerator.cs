@@ -95,6 +95,16 @@ public class LandPlatformGenerator : MonoBehaviour {
 
     public void SetColor(Color color) {
         this.color = color;
+        if (groundPlatforms != null)
+            for (int i = 0; i < groundPlatforms.Length; i++)
+            {
+                for (int j = 0; j < groundPlatforms[i].tiles.Count; j++)
+                {
+                    var obj = groundPlatforms[i].tiles?[j].colliders?[0];
+                    if (obj)
+                        obj.GetComponent<SpriteRenderer>().color = color;
+                }
+            }
     }
 
     public void BuildTiles(LandPlatform platform, Vector2 center) {

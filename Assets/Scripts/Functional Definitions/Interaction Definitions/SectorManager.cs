@@ -10,6 +10,7 @@ public class SectorManager : MonoBehaviour
 {
     public delegate void SectorLoadDelegate(string sectorName);
     public static SectorLoadDelegate OnSectorLoad;
+    public static SectorLoadDelegate SectorGraphLoad;
     public static SectorManager instance;
     public static string customPath = "";
     public bool jsonMode;
@@ -38,6 +39,7 @@ public class SectorManager : MonoBehaviour
 
     public List<ShardRock> shardRocks = new List<ShardRock>();
     public GameObject shardRockPrefab;
+    public Sector overrideProperties = null;
     public static Sector GetSectorByName(string sectorName) 
     {
         foreach(var sector in instance.sectors)
@@ -739,8 +741,12 @@ public class SectorManager : MonoBehaviour
         //unload previous sector
         UnloadCurrentSector(lastSectorType);
 
+        if (overrideProperties)
+            Destroy(overrideProperties);
+        overrideProperties = Instantiate(current);
+
         //load new sector
-        if(player) {
+        if (player) {
             // player has seen this sector now
             if (player.cursave.sectorsSeen == null)
                 player.cursave.sectorsSeen = new List<string>();
@@ -753,7 +759,7 @@ public class SectorManager : MonoBehaviour
             if(player.alerter) player.alerter.showMessage("Entering sector: " + current.sectorName);
         }
 
-        
+        // Load entities
         for(int i = 0; i < current.entities.Length; i++)
         {
             bool spawnedChar = false;
@@ -812,8 +818,12 @@ public class SectorManager : MonoBehaviour
             }
         }
 
-        //land platforms
-        lpg.SetColor(current.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
+        // Load sector graph
+        if (SectorGraphLoad != null)
+            SectorGraphLoad.Invoke(current.sectorName);
+
+        //Load land platforms
+        lpg.SetColor(overrideProperties.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
 
         Vector2 center = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
 
@@ -853,7 +863,7 @@ public class SectorManager : MonoBehaviour
         }
 
         // Restart particle and background effects to new skin if necessary
-        if(RectangleEffectScript.currentSkin != current.rectangleEffectSkin)
+        if (RectangleEffectScript.currentSkin != current.rectangleEffectSkin)
         {
             RectangleEffectScript.currentSkin = current.rectangleEffectSkin;
             foreach(var rect in RectangleEffectScript.instances) if(rect) rect.Start();
@@ -867,7 +877,7 @@ public class SectorManager : MonoBehaviour
 
 
         //sector color
-        background.setColor(current.backgroundColor);
+        background.setColor(overrideProperties.backgroundColor);
         //Camera.main.backgroundColor = current.backgroundColor / 2F;
         //sector borders
         foreach(var sector in sectors)
@@ -887,7 +897,7 @@ public class SectorManager : MonoBehaviour
         battleZone.enabled = false;
         siegeZone.enabled = false;
         // sector type things
-        switch(current.type)
+        switch(overrideProperties.type)
         {
             case Sector.SectorType.BattleZone:
                 //battle zone things

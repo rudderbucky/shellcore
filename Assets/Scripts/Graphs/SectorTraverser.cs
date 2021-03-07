@@ -17,7 +17,7 @@ public class SectorTraverser : Traverser
 
     ~SectorTraverser()
     {
-        SectorManager.OnSectorLoad -= LoadSector;
+        SectorManager.SectorGraphLoad -= LoadSector;
     }
 
     public override void SetNode(Node node)
@@ -46,7 +46,7 @@ public class SectorTraverser : Traverser
 
     public override void StartQuest()
     {
-        SectorManager.OnSectorLoad += LoadSector;
+        SectorManager.SectorGraphLoad += LoadSector;
     }
 
     void LoadSector(string name)

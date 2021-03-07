@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Load Sector", typeof(SectorCanvas))]
+    [Node(false, "Flow/Enter Sector", typeof(SectorCanvas))]
     public class LoadSectorNode : Node
     {
         public static StartDialogueNode missionCanvasNode = null;
         public static StartDialogueNode dialogueCanvasNode = null;
 
         public override string GetName { get { return "LoadSectorNode"; } }
-        public override string Title { get { return "Load Sector"; } }
+        public override string Title { get { return "Enter Sector"; } }
 
         public override bool AutoLayout { get { return true; } }
         public override bool AllowRecursion { get { return true; } }
