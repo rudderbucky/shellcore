@@ -86,6 +86,9 @@ public class Tank : GroundCraft, IOwnable
 
     private void pathfindToTarget()
     {
+        if (!isOnGround)
+            return;
+
         // Find the closest ground target
         Entity[] entities = FindObjectsOfType<Entity>();
         Entity target = null;
