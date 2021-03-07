@@ -42,6 +42,12 @@ public abstract class ActiveAbility : Ability
         base.SetDestroyed(input);
     }
 
+    private void OnDestroy()
+    {
+        if (trueActive)
+            Deactivate();
+    }
+
     /// <summary>
     /// Called when active time hits 0, used to rollback whatever change was done on the core
     /// </summary>

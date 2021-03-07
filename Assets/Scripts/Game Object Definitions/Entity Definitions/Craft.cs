@@ -8,7 +8,22 @@ using UnityEngine;
 public abstract class Craft : Entity
 {
     public float enginePower; // craft's engine power, determines how fast it goes.
-    public bool isImmobile; // whether the craft is immobile or not
+
+    // whether the craft is immobile or not
+
+    protected int pins = 0;
+    protected bool forceImmobile = false;
+    public virtual bool isImmobile
+    {
+        get
+        {
+            return pins > 0 || forceImmobile || isAbsorbing || isDead;
+        }
+        set
+        {
+            forceImmobile = true;
+        }
+    }
     protected bool respawns; // whether the craft respawns or not
 
     public static readonly float initSpeed = 40;
@@ -18,6 +33,21 @@ public abstract class Craft : Entity
     public float physicsSpeed;
     public float physicsAccel;
     public static readonly float weightNumeratorConstant = 40;
+
+    public void AddPin()
+    {
+        pins++;
+    }
+
+    public void RemovePin()
+    {
+        pins--;
+        if (pins < 0)
+        {
+            Debug.LogError("Negative pins!");
+            pins = 0;
+        }
+    }
 
     public static float GetPhysicsSpeed(float speed, float weight)
     {
@@ -48,7 +78,6 @@ public abstract class Craft : Entity
 
     protected override void OnDeath()
     {
-        isImmobile = true;
         base.OnDeath();
     }
     protected override void PostDeath() {
@@ -76,7 +105,6 @@ public abstract class Craft : Entity
         // no longer dead, busy or immobile
         isDead = false; 
         isBusy = false;
-        isImmobile = false;
         transform.rotation = Quaternion.identity; // reset rotation so part rotation can be reset
         foreach (Transform child in transform) { // reset all the children rotations
             child.transform.rotation = Quaternion.identity;
@@ -125,11 +153,8 @@ public abstract class Craft : Entity
             if(dir != entityBody.velocity.normalized) entityBody.velocity = Vector2.zero;
         }
 
-        if(!isImmobile)
-        {
-            CraftMover(physicsDirection); // if not immobile move craft
-            physicsDirection = Vector2.zero;
-        }
+        CraftMover(physicsDirection); // move craft
+        physicsDirection = Vector2.zero;
     }
 
     /// <summary>
@@ -184,7 +209,13 @@ public abstract class Craft : Entity
         // actual force applied to craft; independent of angle rotation
         */
 
-        if(rotateWhileMoving) RotateCraft(directionVector / weight); // rotate craft
+        if (isImmobile)
+        {
+            entityBody.velocity = Vector2.zero;
+            return;
+        }
+
+        if (rotateWhileMoving) RotateCraft(directionVector / weight); // rotate craft
         entityBody.velocity += directionVector * physicsAccel * Time.fixedDeltaTime;
         var sqr = entityBody.velocity.sqrMagnitude;
         if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)

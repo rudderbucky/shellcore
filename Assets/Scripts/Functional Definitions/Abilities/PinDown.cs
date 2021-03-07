@@ -49,7 +49,7 @@ public class PinDown : ActiveAbility, IChargeOnUseThenBlink
             if (target != null)
             {
                 Debug.Log(target.name + " has been made immobile!");
-                target.isImmobile = true;
+                target.AddPin();
             }
         }
     }
@@ -60,7 +60,7 @@ public class PinDown : ActiveAbility, IChargeOnUseThenBlink
         trueActive = false;
         if (target != null && target)
         {
-            target.isImmobile = false;
+            target.RemovePin();
             Debug.Log(target.name + " has been made mobile again!");
         }
     }

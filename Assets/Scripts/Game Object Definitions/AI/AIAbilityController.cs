@@ -12,6 +12,7 @@ public class AIAbilityController
     float timer = 0f;
     float interval = 0.25f;
     public float nextStealth = 0f;
+    float nextPin = 0f;
 
     public AIAbilityController(AirCraftAI ai)
     {
@@ -131,12 +132,20 @@ public class AIAbilityController
                 {
                     damageBoost.Tick(1);
                 }
-                if (targetEntity.GetHealth()[0] < targetEntity.GetMaxHealth()[0] * 0.2f)
+                var pinDown = GetAbilities(27); // pin down
+                if (Time.time > nextPin)
                 {
-                    var pinDown = GetAbilities(27); // pin down
                     foreach (var pin in pinDown)
                     {
-                        pin.Tick(1);
+                        if (pin.GetActiveTimeRemaining() <= 0)
+                        {
+                            pin.Tick(1);
+                            if (pin.GetActiveTimeRemaining() > 0f)
+                            {
+                                nextPin = Time.time + pin.GetActiveTimeRemaining() -1.5f; // 2 sec activation time, leave 0.5 sec for fleeing
+                                break;
+                            }
+                        }
                     }
                 }
             }

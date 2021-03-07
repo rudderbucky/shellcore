@@ -156,6 +156,10 @@ public class DevConsoleScript : MonoBehaviour
                 ShipBuilder.heavyCheat = true;
                 textBox.text += "\n<color=lime>I just wanna equip DeadZone parts for god's sake.</color>";
             }
+            else if (command.Equals("moar data", StringComparison.CurrentCultureIgnoreCase))
+            {
+                ReticleScript.instance.DebugMode = true;
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {

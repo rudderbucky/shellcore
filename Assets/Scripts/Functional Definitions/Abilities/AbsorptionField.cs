@@ -34,7 +34,6 @@ public class AbsorptionField : ActiveAbility, IBlinkOnUse
         base.Deactivate();
         Destroy(field);
         craft.isAbsorbing = false;
-        craft.isImmobile = false;
     }
 
     /// <summary>
@@ -46,7 +45,6 @@ public class AbsorptionField : ActiveAbility, IBlinkOnUse
         {
             craft.entityBody.velocity = Vector2.zero;
             craft.isAbsorbing = true;
-            craft.isImmobile = true;
             field = new GameObject("Field");
             field.transform.SetParent(craft.transform);
             field.transform.localScale = Vector3.one;

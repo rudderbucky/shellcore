@@ -745,6 +745,8 @@ public class Entity : MonoBehaviour, IDamageable {
     /// </summary>
     public float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) 
     {
+        if (amount > 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
+            Debug.Log("Damage: " + amount + " (f " + lastDamagedBy?.faction + " -> " + faction + ")");
 
         if (isAbsorbing && amount > 0f)
         {

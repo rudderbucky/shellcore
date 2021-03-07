@@ -17,6 +17,11 @@ public class ReticleScript : MonoBehaviour {
     private Transform coreimage;
     public EventSystem system;
     public QuantityDisplayScript quantityDisplay;
+    public GameObject secondaryReticlePrefab;
+    public List<(Entity, Transform)> secondariesByObject = new List<(Entity, Transform)>();
+
+    public bool DebugMode = false;
+
     public static ReticleScript instance;
     void Awake()
     {
@@ -181,6 +186,14 @@ public class ReticleScript : MonoBehaviour {
 	void Update () {
         if (initialized) // check if it is safe to update
         {
+            if (DebugMode)
+            {
+                for (int i = 0; i < AIData.entities.Count; i++)
+                {
+                    AddSecondaryTarget(AIData.entities[i]);
+                }
+            }
+
             var index = 0;
             while(index < secondariesByObject.Count)
             {
@@ -225,6 +238,7 @@ public class ReticleScript : MonoBehaviour {
         if(ent != null && !ent.GetIsDead() && !ent.GetInvisible())
         {
             reticle.transform.position = ent.transform.position; // update reticle position
+
             reticle.GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
             reticle.Find("Number Marker").GetComponent<MeshRenderer>().enabled = true;
             reticle.Find("Number Marker").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
@@ -236,7 +250,13 @@ public class ReticleScript : MonoBehaviour {
         var shellimage = reticle.Find("Target Shell");
         var coreimage = reticle.Find("Target Core");
 
-        UpdateReticleHealths(shellimage, coreimage, ent);
+        if (DebugMode)
+        {
+            var energyimage = reticle.Find("Target Energy");
+            UpdateReticleHealths(shellimage, coreimage, ent, energyimage);
+        }
+        else
+            UpdateReticleHealths(shellimage, coreimage, ent);
     }
 
     ///
@@ -277,7 +297,7 @@ public class ReticleScript : MonoBehaviour {
         }
     }
 
-    private void UpdateReticleHealths(Transform shellHealth, Transform coreHealth, ITargetable targetCraft)
+    private void UpdateReticleHealths(Transform shellHealth, Transform coreHealth, ITargetable targetCraft, Transform energy = null)
     {
         if(targetCraft != null)
         {
@@ -302,6 +322,27 @@ public class ReticleScript : MonoBehaviour {
             scale.x = targHealth[1] / targMax[1];
 
             coreHealth.localScale = scale;
+
+            if (DebugMode)
+            {
+                energy.GetComponentInChildren<SpriteRenderer>().enabled = true;
+                scale.x = targHealth[2] / targMax[2];
+                energy.localScale = scale;
+
+                var parent = shellHealth.parent;
+                parent.Find("Shell Number").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
+                parent.Find("Core Number").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
+                parent.Find("Energy Number").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
+
+                var meshRenderers = parent.GetComponentsInChildren<MeshRenderer>();
+                foreach (MeshRenderer mr in meshRenderers)
+                    mr.enabled = true;
+
+
+                parent.Find("Shell Number").GetComponentInChildren<TextMesh>().text = targHealth[0] + "/" + targMax[0];
+                parent.Find("Core Number").GetComponentInChildren<TextMesh>().text = targHealth[1] + "/" + targMax[1];
+                parent.Find("Energy Number").GetComponentInChildren<TextMesh>().text = targHealth[2] + "/" + targMax[2];
+            }
         }
         else
         {
@@ -311,9 +352,6 @@ public class ReticleScript : MonoBehaviour {
         }
     }
 
-    public GameObject secondaryReticlePrefab;
-    public List<(Entity, Transform)> secondariesByObject = new List<(Entity, Transform)>();
-
     public void AddSecondaryTarget(Entity ent)
     {
         var success = targSys.AddSecondaryTarget(ent);
@@ -322,7 +360,8 @@ public class ReticleScript : MonoBehaviour {
             var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
             AdjustReticleBounds(reticle.GetComponent<SpriteRenderer>(), ent.transform);
             secondariesByObject.Add((ent, reticle.transform));
-            quantityDisplay.AddEntityInfo(ent, this);
+            if (!DebugMode)
+                quantityDisplay.AddEntityInfo(ent, this);
         }
     }
 

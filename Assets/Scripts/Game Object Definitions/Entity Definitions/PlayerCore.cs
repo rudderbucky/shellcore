@@ -168,7 +168,6 @@ public class PlayerCore : ShellCore {
     
 	// Update is called once per frame
 	protected override void Update () {
-        isImmobile = isDead || isAbsorbing;
         // call methods
         if(group.sortingOrder < maxAirLayer) // player must always be above other entities
         {

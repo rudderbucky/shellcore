@@ -22,6 +22,18 @@ public class Tank : GroundCraft, IOwnable
         }
     }
 
+    public override bool isImmobile
+    {
+        get
+        {
+            return pins > 0 || forceImmobile || !isOnGround;
+        }
+        set
+        {
+            forceImmobile = true;
+        }
+    }
+
     protected override void OnDeath()
     {
         if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
@@ -107,7 +119,6 @@ public class Tank : GroundCraft, IOwnable
 
     protected virtual void drive()
     {
-        isImmobile = !isOnGround;
         if (hasPath)
         {
             Vector2 direction = path[index] - (Vector2)transform.position;
