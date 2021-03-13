@@ -165,7 +165,9 @@ public class WorldCreatorCursor : MonoBehaviour
 
     public void UpdateCurrentAppearanceToDefault()
     {
+        if(current == null) return;
         current.faction = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        current.shellcoreJSON =  PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
         if(current.type == ItemType.Other || current.assetID == "core_gate" || current.assetID == "broken_core_gate")
         {
             foreach(var rend in current.obj.GetComponentsInChildren<SpriteRenderer>())

@@ -517,9 +517,6 @@ public class SectorManager : MonoBehaviour
                         }
                         
                         blueprint.dialogue = dialogueRef;
-                        //Debug.Log(data.name);
-                        blueprint.entityName = data.name = "Bunker";
-
                     } 
 
                     Bunker bunker = gObj.AddComponent<Bunker>();
@@ -550,9 +547,6 @@ public class SectorManager : MonoBehaviour
                         }
                         
                         blueprint.dialogue = dialogueRef;
-                        //Debug.Log(data.name);
-                        blueprint.entityName = data.name = "Outpost";
-
                     } 
 
                     Outpost outpost = gObj.AddComponent<Outpost>();
@@ -589,10 +583,6 @@ public class SectorManager : MonoBehaviour
                         JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
                             (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
                     }
-                    
-                    //Debug.Log(data.name);
-                    blueprint.entityName = data.name = "Air Carrier";
-
                 } 
 
 
@@ -619,10 +609,6 @@ public class SectorManager : MonoBehaviour
                         JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
                             (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
                     }
-                    
-                    //Debug.Log(data.name);
-                    blueprint.entityName = data.name = "Ground Carrier";
-
                 } 
 
                 GroundCarrier gcarrier = gObj.AddComponent<GroundCarrier>();

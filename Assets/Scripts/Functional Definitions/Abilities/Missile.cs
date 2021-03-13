@@ -15,7 +15,7 @@ public class Missile : WeaponAbility {
         ID = AbilityID.Missile;
         cooldownDuration = 5F;
         CDRemaining = cooldownDuration;
-        range = 20;
+        range = 30;
         energyCost = 150;
         category = Entity.EntityCategory.All;
         bonusDamageType = typeof(ShellCore);

@@ -14,7 +14,6 @@ public class IonLineController : MonoBehaviour
     GameObject hitPrefab;
     ShellPart part;
     float duration;
-
     float tier;
 
     float startWidth = 0f;
@@ -26,8 +25,14 @@ public class IonLineController : MonoBehaviour
         line.material = material;
         line.startWidth = line.endWidth = 0;
         line.useWorldSpace = true;
-        line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
-        line.startColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
+        var col = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
+        Gradient gradient = new Gradient();
+        gradient.mode = GradientMode.Fixed;
+        gradient.SetKeys(
+            new GradientColorKey[] {new GradientColorKey(col, 0), new GradientColorKey(col, 1)},
+            new GradientAlphaKey[] {new GradientAlphaKey(0.5F, 0), new GradientAlphaKey(1F, 0.1F), new GradientAlphaKey(1, 1)}
+            );
+        line.colorGradient = gradient;
     }
 
     public void StartFiring(float duration)
@@ -44,7 +49,7 @@ public class IonLineController : MonoBehaviour
         this.range = range;
         this.part = part;
         this.tier = tier;
-        energyCost = 50 / tier;
+        energyCost = energyC / tier;
     }
 
     public bool GetFiring()
@@ -77,13 +82,19 @@ public class IonLineController : MonoBehaviour
     }
 
     float energyCost;
+    public static float damageC = 1500;
+    public static float energyC = 300;
 
     void Update()
     {
         line.gameObject.transform.position = gameObject.transform.position;
-        if(Core.GetHealth()[2] < energyCost) duration = 0;
         if(initialized && targetingSystem.GetTarget() && !Core.invisible && duration > 0)
         {
+            if(Core.GetHealth()[2] < energyCost * Time.deltaTime) 
+            {
+                duration = 0;
+                return;
+            }
             duration -= Time.deltaTime;
             var pos = targetingSystem.GetTarget().position;
             line.positionCount = 2;
@@ -126,20 +137,18 @@ public class IonLineController : MonoBehaviour
             line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * range);
             ThickenLine(0.005F);
             
-            var damage = 300;
+            var damage = 1500 * Time.deltaTime;
             var raycastHits = Physics2D.RaycastAll(transform.position, GetVectorByBearing(originalBearing), range);
             for(int i = 0; i < raycastHits.Length; i++)
             {
                 var damageable = raycastHits[i].transform.GetComponentInParent<IDamageable>();
                 if(raycastHits[i].transform && damageable != null && damageable.GetFaction() != Core.faction && !damageable.GetIsDead())
                 {
-                    var hitTransform = raycastHits[i].transform;
-
-                    if(!hitPrefab) hitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");                    
+                    var hitTransform = raycastHits[i].transform;                   
 
                     var magnitude = (hitTransform.position - transform.position).magnitude;
                     line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * magnitude);
-                    Core.TakeEnergy(energyCost);
+                    Core.TakeEnergy(energyCost * Time.deltaTime);
 
                     var part = hitTransform.GetComponentInChildren<ShellPart>();
 
@@ -151,10 +160,13 @@ public class IonLineController : MonoBehaviour
                         part.TakeDamage(residue);
                     }
 
-                    Instantiate(hitPrefab, line.GetPosition(1), Quaternion.identity); // instantiate hit effect
                     break;
                 }
             }
+
+            if(!hitPrefab) hitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle"); 
+            if(line.positionCount > 1)
+                Instantiate(hitPrefab, line.GetPosition(1), Quaternion.identity); // instantiate hit effect
             
         }
         else 

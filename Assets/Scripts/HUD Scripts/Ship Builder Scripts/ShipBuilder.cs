@@ -57,6 +57,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		public BuilderMode GetMode() {
 		return mode;
 	}
+	public GameObject partSelectContainer;
+	public Transform[] partSelectTransforms;
+
 	public bool ContainsParts(List<EntityBlueprint.PartInfo> parts) {
 		Dictionary<EntityBlueprint.PartInfo, int> counts = new Dictionary<EntityBlueprint.PartInfo, int>();
 		// get the part counts
@@ -610,6 +613,16 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				break;
 		}
 
+		var dropdown = editorModeAddPartSection.transform.Find("Ability ID").GetComponent<Dropdown>();
+		if(editorMode && dropdown.options.Count == 0)
+		{
+			foreach(var id in System.Enum.GetValues(typeof(AbilityID)))
+			{
+				dropdown.options.Add(new Dropdown.OptionData
+				(id.ToString()));
+			}
+		}
+
 		cursorScript.gameObject.SetActive(true);
 		cursorScript.UpdateHandler();
 	}
@@ -638,12 +651,12 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	
 	public void AddPartByEditorSection() {
 		var part = new EntityBlueprint.PartInfo();
-		if(int.TryParse(editorModeAddPartSection.transform.Find("Ability ID").GetComponent<InputField>().text, out part.abilityID)
-			&& int.TryParse(editorModeAddPartSection.transform.Find("Ability Tier").GetComponent<InputField>().text, out part.tier)) {
+		
+		if(int.TryParse(editorModeAddPartSection.transform.Find("Ability Tier").GetComponent<InputField>().text, out part.tier)) {
 			
-				var secondaryData = editorModeAddPartSection.transform.Find("Secondary Data").GetComponent<InputField>().text;
-				part.secondaryData = secondaryData != null ? secondaryData : "";
-
+			var secondaryData = editorModeAddPartSection.transform.Find("Secondary Data").GetComponent<InputField>().text;
+			part.secondaryData = secondaryData != null ? secondaryData : "";
+			part.abilityID = editorModeAddPartSection.transform.Find("Ability ID").GetComponent<Dropdown>().value;
 			var x = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
 			if(ResourceManager.allPartNames.Contains(x)) {
 				part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
@@ -734,6 +747,42 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		else
 			AssetDatabase.CreateAsset(blueprint, "Assets\\SavedPrint.asset");
 		#endif
+	}
+
+	private List<ShipBuilderInventoryNameSelect> nameSelectObjs = new List<ShipBuilderInventoryNameSelect>();
+	public void SetSelectPartActive(bool active)
+	{
+		partSelectContainer.SetActive(active);
+
+		if(active)
+		{
+			nameSelectObjs.Clear();
+			foreach(var name in ResourceManager.allPartNames)
+			{
+				var size = ResourceManager.GetAsset<PartBlueprint>(name).size;
+				GameObject invButton = Instantiate(buttonPrefab, 
+				partSelectTransforms[size]);
+
+				// remove the inventory button and add a name select button. Carry over the refs in the inventory button
+				var oldComp = invButton.GetComponent<ShipBuilderInventoryScript>();
+				var shiny = oldComp.isShiny;
+				Destroy(oldComp);
+				var comp = invButton.AddComponent<ShipBuilderInventoryNameSelect>();
+				comp.part = new EntityBlueprint.PartInfo();
+				comp.part.partID = name;
+				comp.isShiny = shiny;
+				comp.builder = this;
+				comp.field = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>();
+			}
+		}
+		else
+		{
+			foreach(var obj in nameSelectObjs)
+			{
+				Destroy(obj.gameObject);
+			}
+			nameSelectObjs.Clear();
+		}
 	}
 
 	public void LoadBlueprint(string json) {

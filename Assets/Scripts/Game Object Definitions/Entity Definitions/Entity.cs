@@ -459,6 +459,12 @@ public class Entity : MonoBehaviour, IDamageable {
             colliders[i].enabled = true;
         }
 
+        foreach (var ability in abilities)
+        {
+            if (ability)
+                ability.SetDestroyed(true);
+        }
+
         interactible = false;
         isDead = true;
         SetIntoCombat();

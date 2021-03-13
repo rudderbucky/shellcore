@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems; // Required when using Event data.
 using UnityEngine.UI;
 
-public class ShipBuilderInventoryBase : MonoBehaviour
+public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
 {
     public EntityBlueprint.PartInfo part;
     protected Image image;
@@ -12,6 +12,10 @@ public class ShipBuilderInventoryBase : MonoBehaviour
     protected Color activeColor;
     public Text val;
     public Image isShiny;
+
+    public virtual void OnPointerDown(PointerEventData eventData)
+    {
+    }
 
     protected virtual void Start() {
         image = GetComponentsInChildren<Image>()[1];

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 
 
-public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDownHandler {
+public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
 
     public GameObject SBPrefab;
     public ShipBuilderCursorScript cursor;
@@ -21,7 +21,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase, IPointerDown
         val.enabled = (mode == BuilderMode.Yard || mode == BuilderMode.Workshop);
         // button border size is handled specifically by the grid layout components
     }
-    public void OnPointerDown(PointerEventData eventData)
+    public override void OnPointerDown(PointerEventData eventData)
     {
         if(Input.GetKey(KeyCode.LeftShift)) 
         {

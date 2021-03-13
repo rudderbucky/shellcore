@@ -177,7 +177,7 @@ public class AbilityUtilities : MonoBehaviour {
 			case 36:
 				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:
-				return $"Slow moving beam that deals heavy damage for 5 seconds. \nTier does not increase damage but reduces energy cost.";
+				return $"Slow moving beam that deals {IonLineController.damageC} damage per second for 5 seconds. \nBeam costs {IonLineController.energyC} energy per";
             default:
 				return "Description unset";
 		}

@@ -268,7 +268,7 @@ public class AirCraftAI : MonoBehaviour
                             if (dist > 1000f)
                                 aggroTarget = null;
 
-                            if (module is FollowAI)
+                            if (module is FollowAI && (module as FollowAI).followTarget)
                             {
                                 if (((module as FollowAI).followTarget.position - craft.transform.position).sqrMagnitude > 150f)
                                 {
