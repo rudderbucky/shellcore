@@ -679,6 +679,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	public void CloseUI(bool validClose) {
+		if(editorMode)
+			SetSelectPartActive(false);
 		if(!validClose) AudioManager.PlayClipByID("clip_back");
 		else AudioManager.PlayClipByID("clip_select");
 		initialized = false;

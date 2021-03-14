@@ -519,6 +519,7 @@ public class SectorManager : MonoBehaviour
                         blueprint.dialogue = dialogueRef;
                     } 
 
+                    blueprint.entityName = data.name;
                     Bunker bunker = gObj.AddComponent<Bunker>();
                     stations.Add(bunker);
                     bunker.vendingBlueprint =
@@ -546,9 +547,11 @@ public class SectorManager : MonoBehaviour
                                 (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
                         }
                         
+                        Debug.LogError(blueprint.shellHealth[0]);
                         blueprint.dialogue = dialogueRef;
                     } 
 
+                    blueprint.entityName = data.name;
                     Outpost outpost = gObj.AddComponent<Outpost>();
                     stations.Add(outpost);
                     outpost.vendingBlueprint = 
@@ -585,7 +588,7 @@ public class SectorManager : MonoBehaviour
                     }
                 } 
 
-
+                blueprint.entityName = data.name;
                 AirCarrier carrier = gObj.AddComponent<AirCarrier>();
                 if (!carriers.ContainsKey(data.faction))
                 {
@@ -611,6 +614,7 @@ public class SectorManager : MonoBehaviour
                     }
                 } 
 
+                blueprint.entityName = data.name;
                 GroundCarrier gcarrier = gObj.AddComponent<GroundCarrier>();
                 if (!carriers.ContainsKey(data.faction))
                 {

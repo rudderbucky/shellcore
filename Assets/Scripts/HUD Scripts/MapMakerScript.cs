@@ -62,7 +62,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		}
 
 		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
-			if(SectorManager.testJsonPath != null || playerCore.cursave.sectorsSeen.Contains(sector.sectorName))
+			if(SectorManager.testJsonPath != null || (mapVisibleCheatEnabled || playerCore.cursave.sectorsSeen.Contains(sector.sectorName)))
 			{
 				Image sect = Instantiate(sectorPrefab, transform, false);
 				Image border = sect.GetComponentsInChildren<Image>()[1];
@@ -206,6 +206,16 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		
 	}
 
+	public static void EnableMapCheat()
+	{
+		mapVisibleCheatEnabled = true;
+		if(instance)
+		{
+			instance.Destroy();
+			instance.Draw();
+		}
+	}
+
 	RectTransform canvas;
 	void Awake()
 	{
@@ -334,36 +344,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			updatePos = true;
 			mousePos = Input.mousePosition;
 		}
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-		if(!followPlayerMode)
-		{
-			updatePos = false;
-			anchor = canvas.anchoredPosition;
-		}
-    }
-
-	bool clickedOnce;
-	bool followPlayerMode;
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if(clickedOnce)
-		{
-			followPlayerMode = !followPlayerMode;
-			if(!followPlayerMode) 
-			{
-				canvas.anchoredPosition = anchor;
-				canvas.anchorMin = new Vector2(0,1);
-				canvas.anchorMax = new Vector2(0,1);
-			}
-		} 
-		else 
-		{
-			timer = 0;
-			clickedOnce = true;
-		}
 
 		foreach(var objective in arrows.Keys)
 		{
@@ -390,5 +370,36 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 					player.GetComponent<AirCraft>().Warp(sect.Item2);
 				}
 			}
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+		if(!followPlayerMode)
+		{
+			updatePos = false;
+			anchor = canvas.anchoredPosition;
+		}
+    }
+
+	bool clickedOnce;
+	bool followPlayerMode;
+	private static bool mapVisibleCheatEnabled = false;
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if(clickedOnce)
+		{
+			followPlayerMode = !followPlayerMode;
+			if(!followPlayerMode) 
+			{
+				canvas.anchoredPosition = anchor;
+				canvas.anchorMin = new Vector2(0,1);
+				canvas.anchorMax = new Vector2(0,1);
+			}
+		} 
+		else 
+		{
+			timer = 0;
+			clickedOnce = true;
+		}
     }
 }

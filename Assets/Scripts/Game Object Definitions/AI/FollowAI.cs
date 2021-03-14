@@ -16,7 +16,7 @@ public class FollowAI : AIModule
     public override void ActionTick()
     {
         Transform target;
-        if(owner != null)
+        if(owner != null && !owner.Equals(null))
         {
             target = owner.GetTransform();
         }

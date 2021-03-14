@@ -160,6 +160,11 @@ public class DevConsoleScript : MonoBehaviour
             {
                 ReticleScript.instance.DebugMode = true;
             }
+            else if (command.Equals("marco", StringComparison.CurrentCultureIgnoreCase))
+            {
+                MapMakerScript.EnableMapCheat();
+                textBox.text += "\n<color=lime>Polo.</color>";
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {

@@ -89,7 +89,7 @@ public abstract class ActiveAbility : Ability
             }
         }
         
-        if (isActive) // active
+        if (isActive)
         {
             TickDown(activeDuration, ref activeTimeRemaining, ref isActive); // tick the active time
             if (!isActive) // if the boolean got flipped deactivate

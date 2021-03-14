@@ -68,6 +68,7 @@ public class Yard : AirConstruct, IShipBuilder {
                     PlayerCore.Instance.cursave.partInventory.Add(info);
                     PartIndexScript.AttemptAddToPartsObtained(info);
                     PartIndexScript.AttemptAddToPartsSeen(info);
+                    if(NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect != null)
                     NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
                     Destroy(shellPart.gameObject);
                     
