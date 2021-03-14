@@ -6,7 +6,7 @@ using NodeEditorFramework.IO;
 using UnityEngine.Events;
 using NodeEditorFramework.Standard;
 using NodeEditorFramework;
-using NodeEditorFramework.Utilities;
+using System.Linq;
 
 public class WCGeneratorHandler : MonoBehaviour
 {
@@ -171,10 +171,11 @@ public class WCGeneratorHandler : MonoBehaviour
         partData.Clear();
         foreach(var sector in sectors)
         {
-            foreach(var spawn in sector.backgroundSpawns)
-            {
-                AttemptAddShellCoreParts(spawn.entity, sector.sectorName, path);
-            }
+            if (sector.backgroundSpawns != null)
+                foreach(var spawn in sector.backgroundSpawns)
+                {
+                    AttemptAddShellCoreParts(spawn.entity, sector.sectorName, path);
+                }
         }
 
         Dictionary<string, string> itemSectorsByID = new Dictionary<string, string>();
@@ -382,26 +383,42 @@ public class WCGeneratorHandler : MonoBehaviour
 			System.IO.Directory.CreateDirectory(path);
 		}
         
+        // Delete all unnecessary files
         if(System.IO.Directory.Exists(path))
         {
+            string[] resPaths = ResourceManager.Instance.GetFileNames(path);
+
+            for (int i = 0; i < resPaths.Length; i++)
+            {
+                resPaths[i] = resPaths[i].Replace('\\', '/');
+                Debug.Log("Res path: " + resPaths[i]);
+            }
+
             string[] directories = System.IO.Directory.GetDirectories(path);
             foreach(var dir in directories)
             {
+                bool del = true;
                 foreach(var f in System.IO.Directory.GetFiles(dir))
                 {
-                    System.IO.File.Delete(f);
+                    Debug.Log("File in dir: " + System.IO.Path.Combine(dir, f));
+                    if (!resPaths.Contains(System.IO.Path.Combine(dir, f).Replace('\\', '/')))
+                    {
+                        System.IO.File.Delete(f);
+                        del = false;
+                    }
                 }
-                System.IO.Directory.Delete(dir);
+                if (del)
+                    System.IO.Directory.Delete(dir);
             }
 
             string[] files = System.IO.Directory.GetFiles(path);
             foreach(var file in files)
             {
-                System.IO.File.Delete(file);
+                string f = file.Replace('\\', '/');
+                if (!resPaths.Contains(f) && f != System.IO.Path.Combine(path, "ResourceData.txt").Replace('\\', '/'))
+                    System.IO.File.Delete(file);
             }
-        }
-
-		System.IO.Directory.CreateDirectory(path);
+        }   
 
         // create world data
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();

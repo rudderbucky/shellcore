@@ -203,6 +203,48 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
+    public string[] GetFileNames(string path)
+    {
+        if (!path.Equals(Application.streamingAssetsPath))
+        {
+            Debug.Log("Attempting to load resource names from: \"" + path + "\"");
+        }
+
+        string resDataPath = System.IO.Path.Combine(path, "ResourceData.txt");
+
+        fileNames = new List<string>();
+
+        if (File.Exists(resDataPath))
+        {
+            string[] lines = File.ReadAllLines(resDataPath);
+            //get files
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i];
+                if (line == "")
+                    continue;
+                string lower = line.ToLower();
+                if (lower.StartsWith("sprites:") ||
+                    lower.StartsWith("parts:") ||
+                    lower.StartsWith("entities:") ||
+                    lower.StartsWith("vending-options:") ||
+                    lower.StartsWith("paths:") ||
+                    lower.StartsWith("factions:") ||
+                    lower.StartsWith("audio:"))
+                {
+                    continue;
+                }
+                string[] names = line.Split(':');
+                string resPath = System.IO.Path.Combine(path, names[1]);
+                if (File.Exists(resPath))
+                {
+                    fileNames.Add(resPath);
+                }
+            }
+        }
+        return fileNames.ToArray();
+    }
+
     IEnumerator GetAudioClip(string ID, string path)
     {
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS))
