@@ -18,6 +18,7 @@ public class PlayerCore : ShellCore {
     public int reputation;
     public static PlayerCore Instance;
     public List<ShellPart> partsToDestroy = new List<ShellPart>();
+    public Vector2 havenSpawnPoint;
 
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
@@ -40,6 +41,17 @@ public class PlayerCore : ShellCore {
                 weaponActivationStates.Add((abilities[i] as WeaponAbility).GetActiveTimeRemaining() == -1);
         }
         if(hud) hud.DeinitializeHUD(); // deinitialize HUD
+
+        carrier = FindCarrier();
+        if (carrier != null)
+        {
+            spawnPoint = carrier.GetSpawnPoint();
+        }
+        else
+        {
+            spawnPoint = havenSpawnPoint;
+        }
+        
         transform.position = spawnPoint; // reset position to spawn point
         base.Respawn(); // this will reinitialize the HUD
         int weaponIndex = 0;
@@ -70,6 +82,25 @@ public class PlayerCore : ShellCore {
         direction.Normalize();
 
         return direction; // it's not exactly like it was in the original game, but I like it more like this actually
+    }
+
+    ICarrier FindCarrier()
+    {
+        if (SectorManager.instance.current.type == Sector.SectorType.BattleZone)
+        {
+            var targets = BattleZoneManager.getTargets();
+            for (int i = 0; i < targets.Length; i++)
+            {
+                if (targets[i] && 
+                    !targets[i].GetIsDead() && 
+                    targets[i] is ICarrier &&
+                    targets[i].faction == faction)
+                {
+                    return targets[i] as ICarrier;
+                }
+            }
+        }
+        return null;
     }
 
     protected override void Awake()

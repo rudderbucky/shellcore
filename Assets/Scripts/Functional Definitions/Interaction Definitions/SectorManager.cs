@@ -931,7 +931,7 @@ public class SectorManager : MonoBehaviour
                 break;
             case Sector.SectorType.Haven:
             case Sector.SectorType.Capitol:
-                player.spawnPoint = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
+                player.havenSpawnPoint = player.spawnPoint = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
                 break;
             case Sector.SectorType.SiegeZone:
                 siegeZone.enabled = true;
