@@ -338,7 +338,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null) {
 
 		// set editor mode if testing
-		if(SectorManager.testJsonPath != null && !Input.GetKey(KeyCode.LeftShift))
+		if(SectorManager.testJsonPath != null && !Input.GetKey(KeyCode.LeftShift) && mode == BuilderMode.Yard)
 			editorMode = true;
 		else if(SceneManager.GetActiveScene().name != "WorldCreator") editorMode = false;
 
@@ -687,6 +687,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		if(player) player.SetIsInteracting(false);
 		gameObject.SetActive(false);
 		if(!editorMode && validClose) {
+
+			// try adding parts in the player's inventory and on their ship into the part index obtained list.
 			player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
 			foreach(EntityBlueprint.PartInfo info in partDict.Keys) {
 				if(partDict[info].GetCount() > 0) {
@@ -696,6 +698,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 						PartIndexScript.AttemptAddToPartsObtained(info);
 					}
 				}
+			}
+
+			foreach(EntityBlueprint.PartInfo info2 in player.blueprint.parts)
+			{
+				PartIndexScript.AttemptAddToPartsObtained(info2);
 			}
 		}
 

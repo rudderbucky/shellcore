@@ -103,8 +103,11 @@ public class PartIndexScript : MonoBehaviour
             parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(origin);
     }
 
+    public static bool partsObtainedCheat;
+
     public static bool CheckPartObtained(EntityBlueprint.PartInfo part)
     {
+        if(partsObtainedCheat) return true;
         part = CullToPartIndexValues(part);
         return PlayerCore.Instance.cursave.partsObtained.Exists(x => CullToPartIndexValues(x).Equals(part));
     }

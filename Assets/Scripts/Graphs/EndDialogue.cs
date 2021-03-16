@@ -115,7 +115,6 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                Debug.Log(node?.EntityID + " " + StartDialogueNode.missionCanvasNode?.EntityID);
                 if(node && node.EntityID != null && node.EntityID != "")
                 {
                     handler.GetInteractionOverrides()[node.EntityID].Pop();

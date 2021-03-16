@@ -241,4 +241,31 @@ public class DroneUtilities : MonoBehaviour
                 return "Spawns a drone.";
         }
     }
+    public static DroneSpawnData GetDroneSpawnDataByShorthand(string secondaryData)
+    {
+
+        switch (secondaryData)
+        {
+            case "mini_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("mini_drone_spawn");
+            case "counter_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("counter_drone_spawn");
+            case "light_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("light_drone_spawn");
+            case "strike_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("strike_drone_spawn");
+            case "gun_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("gun_drone_spawn");
+            case "heavy_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("heavy_drone_spawn");
+            case "torpedo_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("torpedo_drone_spawn");
+            case "worker_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("worker_drone_spawn");
+            default:
+                var spawnData = ScriptableObject.CreateInstance<DroneSpawnData>();
+                JsonUtility.FromJsonOverwrite(secondaryData, spawnData);
+                return spawnData;
+        }
+    }
 }

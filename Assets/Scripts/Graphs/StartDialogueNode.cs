@@ -78,21 +78,24 @@ namespace NodeEditorFramework.Standard
             if(state != NodeEditorGUI.NodeEditorState.Dialogue)
                 handler = TaskManager.Instance;
             else handler = DialogueSystem.Instance;
+            
 
             if (SpeakToEntity)
             {
-                Debug.Log(EntityID);
+                
+                Debug.LogError("Start Dialogue");
                 handler.GetSpeakerIDList().Add(EntityID);
                 if(handler as TaskManager) TryAddObjective();
                 if (handler.GetInteractionOverrides().ContainsKey(EntityID))
                 {
                     handler.GetInteractionOverrides()[EntityID].Push(() => {
                         
+                        var cnt = TaskManager.interactionOverrides[EntityID].Count;
                         /* This code skips task dialogue if the prerequisites are not yet satisfied and the entity has other stuff
                         to say. This essentially allows you to allocate multiple tasks from different missions to the
                         same entity as long as one task is always under prerequisites while the other is active. */
-                        
-                        if(EntityID != null && TaskManager.interactionOverrides[EntityID].Count > 0)
+                        Debug.LogError(cnt + " " + EntityID);
+                        if(EntityID != null && cnt > 1)
                         {
                             var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
                             if(mission != null)
@@ -116,8 +119,6 @@ namespace NodeEditorFramework.Standard
                         handler.SetSpeakerID(EntityID);
                         handler.SetNode(output);
                     });
-                    Debug.Log("called");
-
                 }
                 else
                 {

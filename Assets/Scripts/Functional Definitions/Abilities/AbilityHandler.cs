@@ -88,8 +88,8 @@ public class AbilityHandler : MonoBehaviour {
             
             // position them all, do not keep the world position
             var id = (AbilityID)visibleAbilities[i].GetID();
-            var key = id != AbilityID.SpawnDrone ? $"{(int)id}" : (visibleAbilities[i] as SpawnDrone).spawnData.drone;
-            
+            var key = id != AbilityID.SpawnDrone ? $"{(int)id}" : GetAHSpawnData((visibleAbilities[i] as SpawnDrone).spawnData.drone);
+
             if(!betterBGboxArray.ContainsKey(key))
             {
                 Vector3 pos = new Vector3(GetAbilityPos(betterBGboxArray.Count), tileSpacing*0.8F, this.transform.position.z); // find where to position the images
@@ -147,6 +147,13 @@ public class AbilityHandler : MonoBehaviour {
         {
             Rearrange();
         }
+    }
+
+    private static string GetAHSpawnData(string data)
+    {
+        if(DroneUtilities.GetDroneSpawnDataByShorthand(data).drone != null)
+            return DroneUtilities.GetDroneSpawnDataByShorthand(data).drone;
+        else return data;
     }
 
     public static float GetAbilityPos(int index)

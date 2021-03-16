@@ -49,7 +49,7 @@ public class AbilityUtilities : MonoBehaviour {
 	public static Sprite GetAbilityImageByID(int ID, string secondaryData) {
 		if(ID == 0) return null;
 		if(ID == 10) {
-            DroneSpawnData data = GetDroneSpawnData(secondaryData);
+            DroneSpawnData data = DroneUtilities.GetDroneSpawnDataByShorthand(secondaryData);
 			return DroneUtilities.GetAbilitySpriteBySpawnData(data);
 		}
 		return ResourceManager.GetAsset<Sprite>("AbilitySprite" + ID);
@@ -132,7 +132,7 @@ public class AbilityUtilities : MonoBehaviour {
 				return "Fast projectile that deals " + Laser.laserDamage * tier + " damage. 25% pierces to core.";
 			case 10:
 				if(secondaryData == null || secondaryData == "") return "Spawns a drone.";
-                DroneSpawnData data = GetDroneSpawnData(secondaryData);
+                DroneSpawnData data = DroneUtilities.GetDroneSpawnDataByShorthand(secondaryData);
 				return DroneUtilities.GetDescriptionByType(data.type);
 			case 11:
 				return "Instantly heal " + HealthHeal.heals[1] * tier + " core.";
@@ -248,7 +248,7 @@ public class AbilityUtilities : MonoBehaviour {
                 return "Laser";
             case 10:
 				if(secondaryData == null) return "Spawn Drone";
-                DroneSpawnData data = GetDroneSpawnData(secondaryData);
+                DroneSpawnData data = DroneUtilities.GetDroneSpawnDataByShorthand(secondaryData);
 				return DroneUtilities.GetAbilityNameByType(data.type);
             case 11:
                 return "Core Heal";
@@ -349,7 +349,7 @@ public class AbilityUtilities : MonoBehaviour {
 				break;
 			case 10:
 				ability = obj.AddComponent<SpawnDrone>();
-                ((SpawnDrone)ability).spawnData = GetDroneSpawnData(data);
+                ((SpawnDrone)ability).spawnData = DroneUtilities.GetDroneSpawnDataByShorthand(data);
                 ((SpawnDrone)ability).Init();
 				break;
 			case 11:
@@ -449,32 +449,4 @@ public class AbilityUtilities : MonoBehaviour {
 		if(ability) ability.SetTier(tier);
 		return ability;
 	}
-
-    static DroneSpawnData GetDroneSpawnData(string secondaryData)
-    {
-
-        switch (secondaryData)
-        {
-            case "mini_drone":
-                return ResourceManager.GetAsset<DroneSpawnData>("mini_drone_spawn");
-            case "counter_drone":
-                return ResourceManager.GetAsset<DroneSpawnData>("counter_drone_spawn");
-            case "light_drone":
-                return ResourceManager.GetAsset<DroneSpawnData>("light_drone_spawn");
-            case "strike_drone":
-                return ResourceManager.GetAsset<DroneSpawnData>("strike_drone_spawn");
-            case "gun_drone":
-                return ResourceManager.GetAsset<DroneSpawnData>("gun_drone_spawn");
-            case "heavy_drone":
-                return ResourceManager.GetAsset<DroneSpawnData>("heavy_drone_spawn");
-            case "torpedo_drone":
-                return ResourceManager.GetAsset<DroneSpawnData>("torpedo_drone_spawn");
-            case "worker_drone":
-                return ResourceManager.GetAsset<DroneSpawnData>("worker_drone_spawn");
-            default:
-                var spawnData = ScriptableObject.CreateInstance<DroneSpawnData>();
-                JsonUtility.FromJsonOverwrite(secondaryData, spawnData);
-                return spawnData;
-        }
-    }
 }

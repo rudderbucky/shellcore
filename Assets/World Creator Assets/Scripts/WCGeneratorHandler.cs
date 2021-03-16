@@ -282,6 +282,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                         {
                                             ShipBuilder.TraderInventory traderInventory = 
                                                 JsonUtility.FromJson<ShipBuilder.TraderInventory>(endDialogue.traderJSON);
+                                            Debug.LogError(container.sectorName + "end dialog");
                                             AttemptAddPartArray(traderInventory.parts, container.sectorName);
                                         }
                                         
@@ -299,6 +300,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         {
                             ShipBuilder.TraderInventory traderInventory = 
                                 JsonUtility.FromJson<ShipBuilder.TraderInventory>(ent.blueprintJSON);
+                            Debug.LogError(container.sectorName + "inv");
                             AttemptAddPartArray(traderInventory.parts, container.sectorName);
                         }
                     }
@@ -755,6 +757,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
     public void AttemptAddPartArray(List<EntityBlueprint.PartInfo> parts, string sectorName)
     {
+        
         foreach(var part in parts)
         {
             AddPart(part, sectorName);

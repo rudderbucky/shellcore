@@ -57,6 +57,7 @@ public class DevConsoleScript : MonoBehaviour
                 player.damageAddition = 99999f;
                 player.AddPower(10000);
                 godModeEnabled = true;
+                MapMakerScript.EnableMapCheat();
                 textBox.text += "\n<color=lime>I am noob.</color>";
             }
             else if (command.Equals("Immortality", StringComparison.CurrentCultureIgnoreCase))
@@ -164,6 +165,11 @@ public class DevConsoleScript : MonoBehaviour
             {
                 MapMakerScript.EnableMapCheat();
                 textBox.text += "\n<color=lime>Polo.</color>";
+            }
+            else if(command.Equals("caught em all", StringComparison.CurrentCultureIgnoreCase))
+            {
+                PartIndexScript.partsObtainedCheat = true;
+                textBox.text += "\n<color=lime>There's a time and place for everything! But not now.</color>";
             }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
