@@ -11,7 +11,7 @@ namespace NodeEditorFramework.Standard
         public const string ID = "MissionCondition";
         public override string GetName { get { return ID; } }
         public override string Title { get { return "Mission Condition"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 320); } }
+        public override Vector2 DefaultSize { get { return new Vector2(200, 200); } }
 
         private ConditionState state;
         public ConditionState State { get { return state; } set { state = value; } }
@@ -43,6 +43,19 @@ namespace NodeEditorFramework.Standard
 
         public void Init(int index)
         {
+            Debug.Log("Init...");
+            for (int i = 0; i < PlayerCore.Instance.cursave.missions.Count; i++)
+            {
+                Debug.Log("Mission: " + PlayerCore.Instance.cursave.missions[i].name + ", status: " + PlayerCore.Instance.cursave.missions[i].status);
+                if (PlayerCore.Instance.cursave.missions[i].name == missionName &&
+                    PlayerCore.Instance.cursave.missions[i].status == (Mission.MissionStatus)missionStatus)
+                {
+                    state = ConditionState.Completed;
+                    output.connection(0).body.Calculate();
+                    return;
+                }
+            }
+
             OnMissionStatusChange += MissionStatus;
 
             state = ConditionState.Listening;
