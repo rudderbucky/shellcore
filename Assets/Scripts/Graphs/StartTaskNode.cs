@@ -273,6 +273,8 @@ namespace NodeEditorFramework.Standard
             if(mission != null)
             {
                 mission.status = Mission.MissionStatus.Ongoing;
+                if (MissionCondition.OnMissionStatusChange != null)
+                    MissionCondition.OnMissionStatusChange.Invoke(mission);
                 if(!mission.tasks.Exists((x) => x.dialogue == task.dialogue)) mission.tasks.Add(task);
             }
 

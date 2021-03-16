@@ -115,6 +115,15 @@ public abstract class Craft : Entity
                 tmp.Start(); // initialize it
             }
         }
+
+        foreach (var ability in abilities)
+        {
+            if (ability is ActiveAbility)
+            {
+                (ability as ActiveAbility).SetDestroyed(true);
+            }
+        }
+
         Start(); // once everything else is done initialize the craft again
         AudioManager.PlayClipByID("clip_respawn", transform.position);
     }

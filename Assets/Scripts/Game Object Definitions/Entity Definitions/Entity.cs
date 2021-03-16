@@ -45,9 +45,29 @@ public class Entity : MonoBehaviour, IDamageable {
     protected bool initialized; // is the entity safe to call update() on?
     public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
     public string ID; // used in tasks
-    public bool invisible; // if true, entity can't be targeted by weapons
+    public int stealths = 0;
+    public bool invisible = false;
+    public bool IsInvisible
+    {
+        get
+        {
+            return stealths > 0 && invisible;
+        }
+        set
+        {
+            invisible = value;
+        }
+    } 
     public float damageAddition = 0f;
-    public bool isAbsorbing = false; // if true, all incoming damage is converted to energy
+    [HideInInspector]
+    public int absorptions = 0;
+    public bool isAbsorbing // if true, all incoming damage is converted to energy
+    {
+        get
+        {
+            return absorptions > 0;
+        }
+    }
     bool collidersEnabled = true;
     public bool tractorSwitched = false;
 
@@ -422,7 +442,7 @@ public class Entity : MonoBehaviour, IDamageable {
                     break;
             }
         }
-        invisible = false;
+        IsInvisible = false;
 
         // check to see if the entity is interactible
         if(dialogue && faction == 0) interactible = true;
@@ -452,7 +472,7 @@ public class Entity : MonoBehaviour, IDamageable {
     {
         entityBody.velocity = Vector2.zero;
         // set death, interactibility and immobility
-        invisible = false;
+        IsInvisible = false;
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -920,7 +940,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
     public bool GetInvisible()
     {
-        return invisible;
+        return IsInvisible;
     }
 
     public void ToggleColliders(bool enable)

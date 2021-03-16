@@ -246,7 +246,7 @@ public class AirCraftAI : MonoBehaviour
             // shouldn't tick if dead or in cutscene, give control to the cutscene
             if (aggroTarget && !FactionManager.IsAllied(aggroTarget.faction, craft.faction) && !DialogueSystem.isInCutscene) 
             {
-                if (aggroTarget.GetIsDead() || aggroTarget.invisible)
+                if (aggroTarget.GetIsDead() || aggroTarget.IsInvisible)
                 {
                     aggroTarget = null;
                     aggroSearchTimer = 0f;
@@ -416,7 +416,7 @@ public class AirCraftAI : MonoBehaviour
                 continue;
             if (terrainType != Entity.TerrainType.All && AIData.entities[i].Terrain != terrainType)
                 continue;
-            if (AIData.entities[i].invisible)
+            if (AIData.entities[i].IsInvisible)
                 continue;
             if (AIData.entities[i] is T)
             {

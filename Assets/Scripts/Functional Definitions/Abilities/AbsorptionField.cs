@@ -33,7 +33,7 @@ public class AbsorptionField : ActiveAbility, IBlinkOnUse
     {
         base.Deactivate();
         Destroy(field);
-        craft.isAbsorbing = false;
+        craft.absorptions--;
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public class AbsorptionField : ActiveAbility, IBlinkOnUse
         if(craft)
         {
             craft.entityBody.velocity = Vector2.zero;
-            craft.isAbsorbing = true;
+            craft.absorptions++;
             field = new GameObject("Field");
             field.transform.SetParent(craft.transform);
             field.transform.localScale = Vector3.one;

@@ -121,7 +121,7 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             return; // Part has been destroyed, ability can't be used
         }
-        if (Core.invisible || Core.isAbsorbing)
+        if (Core.IsInvisible || Core.isAbsorbing)
         {
             return; // Core is in stealth mode, weapons are disabled
         }

@@ -40,6 +40,8 @@ namespace NodeEditorFramework.Standard
             var mission = PlayerCore.Instance.cursave.missions.Find(
                 (m) => m.name == (Canvas as QuestCanvas).missionName);
             mission.status = Mission.MissionStatus.Complete;
+            if (MissionCondition.OnMissionStatusChange != null)
+                MissionCondition.OnMissionStatusChange.Invoke(mission);
             DialogueSystem.ShowMissionComplete(mission, rewardsText);
             AudioManager.OverrideMusicTemporarily(jingleID);
             (Canvas.Traversal as Traverser).lastCheckpointName = mission.name + "_complete";

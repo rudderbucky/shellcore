@@ -129,7 +129,7 @@ public class MinimapArrowScript : MonoBehaviour {
 			UpdatePosition(coreArrows[core], core.transform.position, core.faction != PlayerCore.Instance.faction);
 			if(core.faction != player.faction && coreArrows[core].GetComponent<SpriteRenderer>().enabled)
 			{
-				coreArrows[core].GetComponent<SpriteRenderer>().enabled = !core.invisible;
+				coreArrows[core].GetComponent<SpriteRenderer>().enabled = !core.IsInvisible;
 			}
 		}
 	}

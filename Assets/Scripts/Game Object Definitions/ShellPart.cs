@@ -306,7 +306,7 @@ public class ShellPart : MonoBehaviour {
             lerpVal += 0.05F;
             lerpVal = Mathf.Min(lerpVal, 1);
             var lerpedColor = Color.Lerp(Color.gray, info.shiny ? FactionManager.GetFactionShinyColor(faction) : FactionManager.GetFactionColor(faction), lerpVal);
-            lerpedColor.a = (craft.invisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
+            lerpedColor.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
             
             spriteRenderer.color = lerpedColor;
             if(shooter) shooter.GetComponent<SpriteRenderer>().color = lerpedColor;
@@ -333,7 +333,7 @@ public class ShellPart : MonoBehaviour {
         {
             var color = Color.Lerp(Color.gray, info.shiny ? FactionManager.GetFactionShinyColor(faction) :
                 FactionManager.GetFactionColor(faction), currentHealth / partHealth);
-            color.a = (craft.invisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
+            color.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
             spriteRenderer.color = color;
             if(shooter) shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
         }
