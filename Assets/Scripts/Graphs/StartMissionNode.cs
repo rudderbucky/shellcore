@@ -111,11 +111,9 @@ namespace NodeEditorFramework.Standard
                 var mission = new Mission();
                 mission.name = missionName;
                 mission.rank = rank;
-                mission.prerequisites = prerequisites;
                 mission.status = Mission.MissionStatus.Inactive;
                 mission.tasks = new List<Task>();
                 mission.entryPoint = entryPoint;
-                mission.prerequisitesUnsatisifedText = prerequisitesUnsatisifedText;
                 mission.textColor = textColor;
                 mission.episode = episode;
                 PlayerCore.Instance.cursave.missions.Add(mission);
@@ -125,9 +123,7 @@ namespace NodeEditorFramework.Standard
                 Debug.Log("Mission updated: " + missionName);
                 var mission = PlayerCore.Instance.cursave.missions.Find((x) => {return x.name == missionName;});
                 mission.rank = rank;
-                mission.prerequisites = prerequisites;
                 mission.entryPoint = entryPoint;
-                mission.prerequisitesUnsatisifedText = prerequisitesUnsatisifedText;
                 mission.textColor = textColor;
                 mission.episode = episode;
             }
