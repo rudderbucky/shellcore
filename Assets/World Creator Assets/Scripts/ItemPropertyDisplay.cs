@@ -10,9 +10,11 @@ public class ItemPropertyDisplay : MonoBehaviour
     public InputField jsonField;
     public InputField nameField;
     public InputField idField;
+    public GameObject pathButton;
     Item currentItem;
     bool editingDefaults = false;
     public List<GameObject> nonDefaults;
+
     public void SetDefaults()
     {
         editingDefaults = true;
@@ -73,8 +75,10 @@ public class ItemPropertyDisplay : MonoBehaviour
         rectTransform.anchoredPosition = pos;
         factionDropdown.value = item.faction;
         jsonField.text = currentItem.shellcoreJSON;
+        jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other);
         nameField.text = currentItem.name;
         idField.text = currentItem.ID;
+        pathButton.SetActive(item.type == ItemType.Other);
     }
 
     public void UpdateFaction() 
