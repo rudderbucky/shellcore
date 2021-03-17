@@ -38,7 +38,7 @@ public abstract class ActiveAbility : Ability
 
     public override void SetDestroyed(bool input)
     {
-        if (input && isActive) Deactivate();
+        if (input && isActive && trueActive) Deactivate();
         base.SetDestroyed(input);
     }
 

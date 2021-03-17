@@ -51,7 +51,7 @@ public class Entity : MonoBehaviour, IDamageable {
     {
         get
         {
-            return stealths > 0 && invisible;
+            return stealths > 0 || invisible;
         }
         set
         {
