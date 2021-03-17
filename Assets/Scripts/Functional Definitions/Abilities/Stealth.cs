@@ -52,11 +52,6 @@ public class Stealth : ActiveAbility, IBlinkOnUse
             {
                 colliders[i].enabled = true;
             }
-            Ability[] abilities = craft.GetAbilities();
-            foreach (var ability in abilities)
-            {
-                ability.SetIsEnabled(false);
-            }
         }
     }
 
@@ -65,7 +60,8 @@ public class Stealth : ActiveAbility, IBlinkOnUse
     /// </summary>
     protected override void Execute()
     {
-        if(craft) {
+        if(craft)
+        {
             // change visibility
             craft.stealths++;
             SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
@@ -80,11 +76,12 @@ public class Stealth : ActiveAbility, IBlinkOnUse
             {
                 colliders[i].enabled = false;
             }
+
+            AudioManager.PlayClipByID("clip_activateability", transform.position);
+            // adjust fields
+            isActive = true; // set to active
+            isOnCD = true; // set to on cooldown
+            base.Execute();
         }
-        AudioManager.PlayClipByID("clip_activateability", transform.position);
-        // adjust fields
-        isActive = true; // set to active
-        isOnCD = true; // set to on cooldown
-        base.Execute();
     }
 }
