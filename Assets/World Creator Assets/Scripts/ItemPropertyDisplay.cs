@@ -8,6 +8,7 @@ public class ItemPropertyDisplay : MonoBehaviour
     public RectTransform rectTransform;
     public Dropdown factionDropdown;
     public InputField jsonField;
+    public GameObject rotationButtons;
     public InputField nameField;
     public InputField idField;
     public GameObject pathButton;
@@ -76,6 +77,7 @@ public class ItemPropertyDisplay : MonoBehaviour
         factionDropdown.value = item.faction;
         jsonField.text = currentItem.shellcoreJSON;
         jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other);
+        rotationButtons.SetActive(item.type == ItemType.Platform);
         nameField.text = currentItem.name;
         idField.text = currentItem.ID;
         pathButton.SetActive(item.type == ItemType.Other);
