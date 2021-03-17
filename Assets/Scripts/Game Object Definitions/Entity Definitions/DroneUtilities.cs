@@ -7,12 +7,14 @@ public class DroneUtilities : MonoBehaviour
 {
     void Start()
     {
+        /*
         Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Mini)));
         Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Strike)));
         Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Counter)));
         Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Heavy)));
         Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Worker)));
         Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Torpedo)));
+        */
     }
     public static DroneSpawnData GetDefaultData(DroneType type) {
         DroneSpawnData data;

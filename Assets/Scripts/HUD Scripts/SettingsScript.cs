@@ -68,7 +68,7 @@ public class SettingsScript : MonoBehaviour {
         }
 
 		windowedMode.isOn = (Screen.fullScreenMode == FullScreenMode.Windowed || Screen.fullScreenMode == FullScreenMode.MaximizedWindow);
-		windowResolution.value = FindResolution();
+		windowResolution.value = PlayerPrefs.GetInt("Screen_defaultResolution", FindResolution() != -1 ? FindResolution() : 3); 
 		initialized = true;
 	}
 
@@ -131,6 +131,7 @@ public class SettingsScript : MonoBehaviour {
 
 	public void ChangeResolution(int index)
 	{
+		PlayerPrefs.SetInt("Screen_defaultResolution", index); 
 		#if UNITY_EDITOR
 		#else
 		Screen.SetResolution(resolutions[index].Item1, resolutions[index].Item2, Screen.fullScreenMode, 0);
