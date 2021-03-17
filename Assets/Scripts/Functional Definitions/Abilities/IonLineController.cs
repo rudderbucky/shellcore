@@ -88,7 +88,7 @@ public class IonLineController : MonoBehaviour
     void Update()
     {
         line.gameObject.transform.position = gameObject.transform.position;
-        if(initialized && targetingSystem.GetTarget() && !Core.invisible && duration > 0)
+        if(initialized && targetingSystem.GetTarget() && !Core.IsInvisible && duration > 0)
         {
             if(Core.GetHealth()[2] < energyCost * Time.deltaTime) 
             {

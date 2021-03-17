@@ -31,23 +31,32 @@ public class Stealth : ActiveAbility, IBlinkOnUse
     {
         base.Deactivate();
 
-        craft.invisible = false;
-        SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
-        for (int i = 0; i < renderers.Length; i++)
+        craft.stealths--;
+
+        if (craft.stealths < 0)
         {
-            var c = renderers[i].color;
-            c.a = 1f;
-            renderers[i].color = c;
+            Debug.LogError("Stealth is bugged, complain to Ormanus");
         }
-        Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
-        for (int i = 0; i < colliders.Length; i++)
+
+        if (craft.stealths == 0)
         {
-            colliders[i].enabled = true;
-        }
-        Ability[] abilities = craft.GetAbilities();
-        foreach (var ability in abilities)
-        {
-            ability.SetIsEnabled(false);
+            SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                var c = renderers[i].color;
+                c.a = 1f;
+                renderers[i].color = c;
+            }
+            Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = true;
+            }
+            Ability[] abilities = craft.GetAbilities();
+            foreach (var ability in abilities)
+            {
+                ability.SetIsEnabled(false);
+            }
         }
     }
 
@@ -58,7 +67,7 @@ public class Stealth : ActiveAbility, IBlinkOnUse
     {
         if(craft) {
             // change visibility
-            craft.invisible = true;
+            craft.stealths++;
             SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
             for (int i = 0; i < renderers.Length; i++)
             {

@@ -78,7 +78,7 @@ public class TractorBeam : MonoBehaviour
                     }    
                     else
                         rigidbody.position += (Vector2)dir.normalized * 0.6F;
-                    if (owner.invisible)
+                    if (owner.IsInvisible)
                         target = null;
                 }
                 else if (dist > 2f)
@@ -98,7 +98,7 @@ public class TractorBeam : MonoBehaviour
         lineRenderer.material.color = owner.tractorSwitched ? new Color32(255,32,255,128) : new Color32(88, 239, 255, 128);
 		this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
         // Grab energy automatically after a while when the craft is not pulling something more important
-        if (energyEnabled && (!target) && (this.energyPickupTimer < 0) && !owner.invisible && !owner.isAbsorbing)
+        if (energyEnabled && (!target) && (this.energyPickupTimer < 0) && !owner.IsInvisible && !owner.isAbsorbing)
         {
             EnergySphereScript[] energies = AIData.energySpheres.ToArray();
 

@@ -82,8 +82,6 @@ namespace NodeEditorFramework.Standard
 
             if (SpeakToEntity)
             {
-                
-                Debug.LogError("Start Dialogue");
                 handler.GetSpeakerIDList().Add(EntityID);
                 if(handler as TaskManager) TryAddObjective();
                 if (handler.GetInteractionOverrides().ContainsKey(EntityID))

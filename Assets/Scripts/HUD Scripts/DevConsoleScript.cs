@@ -134,7 +134,7 @@ public class DevConsoleScript : MonoBehaviour
                 player.GetComponent<TractorBeam>().enabled = false;
                 player.GetAbilityHandler().Deinitialize();
                 player.hud.DeinitializeHUD();
-                player.invisible = true;
+                player.IsInvisible = true;
                 textBox.text += "\n<color=lime>You can hide, but you can't run!</color>";
             }
             else if (command.Equals("Exit", StringComparison.CurrentCultureIgnoreCase))

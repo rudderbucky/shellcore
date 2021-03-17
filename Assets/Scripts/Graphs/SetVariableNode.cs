@@ -20,11 +20,15 @@ namespace NodeEditorFramework.Standard
         //Data
         public string variableName;
         public int value;
-        public bool action;
 
         ConnectionKnobAttribute flowIn = new ConnectionKnobAttribute("Input ", Direction.In, "TaskFlow", ConnectionCount.Multi, NodeSide.Left, 20);
         ConnectionKnobAttribute flowOut = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
-        ConnectionKnobAttribute actionIn = new ConnectionKnobAttribute("Input ", Direction.In, "Action", ConnectionCount.Multi, NodeSide.Left, 20);
+
+        ConnectionKnobAttribute dialogueIn = new ConnectionKnobAttribute("Input ", Direction.In, "Dialogue", ConnectionCount.Multi, NodeSide.Left, 20);
+        ConnectionKnobAttribute dialogueOut = new ConnectionKnobAttribute("Output ", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right, 20);
+
+        ConnectionKnob input;
+        ConnectionKnob output;
 
         //[ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
         //public ConnectionKnob inputLeft;
@@ -34,37 +38,25 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
-            action = RTEditorGUI.Toggle(action, "Action");
-            if(action && outputKnobs.Count == 1)
+            if(input == null)
             {
-                DeleteConnectionPort(outputKnobs[0]);
-                DeleteConnectionPort(inputKnobs[0]);
-                CreateConnectionPort(actionIn);
-            }
-            else if(!action && outputKnobs.Count == 0 && inputKnobs.Count == 1)
-            {
-                DeleteConnectionPort(inputKnobs[0]);
-                CreateConnectionPort(flowIn);
-                CreateConnectionPort(flowOut);
-            }
-            else if(inputKnobs.Count == 0)
-            {
-                if(action)
+                if (inputKnobs.Count > 0)
                 {
-                    CreateConnectionPort(actionIn);
+                    input = inputKnobs[0];
+                    output = outputKnobs[0];
+                }
+                else if (Canvas is DialogueCanvas)
+                {
+                    input = CreateConnectionKnob(dialogueIn);
+                    output = CreateConnectionKnob(dialogueOut);
                 }
                 else
                 {
-                    CreateConnectionPort(flowIn);
-                    CreateConnectionPort(flowOut);
+                    input = CreateConnectionKnob(flowIn);
+                    output = CreateConnectionKnob(flowOut);
                 }
             }
 
-            if (action)
-            {
-                inputKnobs[0].DisplayLayout();
-            }
-            else
             {
                 GUILayout.BeginHorizontal();
                 inputKnobs[0].DisplayLayout();
