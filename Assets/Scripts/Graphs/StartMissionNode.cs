@@ -113,6 +113,7 @@ namespace NodeEditorFramework.Standard
                 mission.rank = rank;
                 mission.status = Mission.MissionStatus.Inactive;
                 mission.tasks = new List<Task>();
+                mission.prerequisites = prerequisites;
                 mission.entryPoint = entryPoint;
                 mission.textColor = textColor;
                 mission.episode = episode;
@@ -123,6 +124,7 @@ namespace NodeEditorFramework.Standard
                 Debug.Log("Mission updated: " + missionName);
                 var mission = PlayerCore.Instance.cursave.missions.Find((x) => {return x.name == missionName;});
                 mission.rank = rank;
+                mission.prerequisites = prerequisites;
                 mission.entryPoint = entryPoint;
                 mission.textColor = textColor;
                 mission.episode = episode;

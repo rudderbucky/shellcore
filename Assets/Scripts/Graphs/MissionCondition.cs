@@ -43,10 +43,9 @@ namespace NodeEditorFramework.Standard
 
         public void Init(int index)
         {
-            Debug.Log("Init...");
             for (int i = 0; i < PlayerCore.Instance.cursave.missions.Count; i++)
             {
-                Debug.Log("Mission: " + PlayerCore.Instance.cursave.missions[i].name + ", status: " + PlayerCore.Instance.cursave.missions[i].status);
+                //Debug.Log("Mission: " + PlayerCore.Instance.cursave.missions[i].name + ", status: " + PlayerCore.Instance.cursave.missions[i].status);
                 if (PlayerCore.Instance.cursave.missions[i].name == missionName &&
                     PlayerCore.Instance.cursave.missions[i].status == (Mission.MissionStatus)missionStatus)
                 {
