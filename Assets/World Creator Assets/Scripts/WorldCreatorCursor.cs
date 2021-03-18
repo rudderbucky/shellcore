@@ -621,7 +621,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 {
                     taskInterface.Activate();
                     SetMode(originalCursorMode);
-                    selectEntity.Invoke(underCursor.name);
+                    selectEntity.Invoke(underCursor.ID);
                 }
             }
         }
