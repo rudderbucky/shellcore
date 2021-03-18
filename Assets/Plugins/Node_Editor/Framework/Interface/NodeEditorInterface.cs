@@ -57,6 +57,7 @@ namespace NodeEditorFramework.Standard
 				//float curToolbarHeight = 0;
 				if (GUILayout.Button("New", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
 				{
+                    AutoSave();
                     switch (NodeEditorGUI.state)
                     {
                         case NodeEditorGUI.NodeEditorState.Mission:
@@ -69,7 +70,8 @@ namespace NodeEditorFramework.Standard
                             NewNodeCanvas(typeof(SectorCanvas));
                             break;
                     }
-				}
+                    IOLocationArgs = null;
+                }
 				if (GUILayout.Button("Import", NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
 				{
 					IOFormat = ImportExportManager.ParseFormat("XML");
