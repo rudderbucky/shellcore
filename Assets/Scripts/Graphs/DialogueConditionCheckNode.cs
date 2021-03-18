@@ -47,7 +47,8 @@ namespace NodeEditorFramework.Standard
             "Task Variable",
             "Reputation",
             "Parts Seen",
-            "Parts Obtained"
+            "Parts Obtained",
+            "Mission Completed"
         };
 
         public override void NodeGUI()
@@ -75,7 +76,7 @@ namespace NodeEditorFramework.Standard
             }
             //variableType = GUILayout.SelectionGrid(variableType, variableTypes, 1, GUILayout.Width(128f));
 
-            if(variableType <= 1)
+            if(variableType <= 1 || variableType == 5)
             {
                 GUILayout.Label("Variable Name:");
                 GUILayout.BeginHorizontal();
@@ -92,7 +93,7 @@ namespace NodeEditorFramework.Standard
                 GUILayout.Label("<color=red>Deprecated data detected! Checkpoint name = '" + checkpointName + "'</color>\n");
             }
 
-            if (variableType > 0)
+            if (variableType > 0 && variableType != 5)
             {
                 GUILayout.Label("Value:");
                 value = RTEditorGUI.IntField(value);
@@ -168,6 +169,10 @@ namespace NodeEditorFramework.Standard
                             variableToCompare = 1000;
                         #endif
                         break;
+                    case 5:
+                        return PlayerCore.Instance.cursave.missions.Exists(m => m.name == variableName) && 
+                            PlayerCore.Instance.cursave.missions.Find(m => m.name == variableName).status == Mission.MissionStatus.Complete ?
+                                0 : 1;
 
                 }
 
