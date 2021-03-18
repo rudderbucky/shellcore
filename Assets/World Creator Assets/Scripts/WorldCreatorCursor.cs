@@ -82,7 +82,7 @@ public class WorldCreatorCursor : MonoBehaviour
     static int sortLayerNum = 1;
     public GUIWindowScripts manual;
     void Update() {
-		current.pos = CalcPos(current);
+		current.pos = CalcPos(current.type);
         if(current.obj) {
             current.obj.transform.position = current.pos;
         }
@@ -351,27 +351,46 @@ public class WorldCreatorCursor : MonoBehaviour
         if(sectors.Contains(sector)) sectors.Remove(sector);
     }
 
+    Vector2 sectorStoredMousePos;
+
+    Vector2 GetSectorOriginalPosition(LineRenderer renderer)
+    {
+        List<Vector2> origins = new List<Vector2>()
+        {
+            renderer.GetPosition(0),
+            renderer.GetPosition(1),
+            renderer.GetPosition(2),
+            renderer.GetPosition(3),
+        };
+
+        var vec = GetMousePos();
+        var finalOrigin = (Vector2)renderer.GetPosition(0);
+        foreach(var origin in origins)
+        {
+            if((origin - vec).sqrMagnitude > (finalOrigin - vec).sqrMagnitude)
+                finalOrigin = origin;
+        }
+
+        return finalOrigin;
+    }
+
     void PollSectors() 
     {
         if(Input.GetMouseButtonDown(0)) 
         {
+            sectorStoredMousePos = Input.mousePosition;
             foreach(SectorWCWrapper sector in sectors)
             {
                 LineRenderer renderer = sector.renderer;
                 if(CheckMouseContainsSector(renderer)) 
                 {
-                    if(Input.GetKey(KeyCode.LeftShift)) {
-                        sectorPropertyDisplay.DisplayProperties(sector.sector);
-                        return;
-                    }
-
-                    origPos = renderer.GetPosition(0);
+                    origPos = GetSectorOriginalPosition(renderer);
                     lastSectorPos = new Vector3[4];
                     for(int i = 0; i < 4; i++) 
                     {
                         lastSectorPos[i] = renderer.GetPosition(i);
                     }
-                    renderer.SetPosition(0, origPos);
+                    //renderer.SetPosition(0, origPos);
                     currentSector = sector;
                     break;
                 }
@@ -399,6 +418,20 @@ public class WorldCreatorCursor : MonoBehaviour
         }
         else if(currentSector != null && Input.GetMouseButtonUp(0)) 
         {
+            if((Vector2)Input.mousePosition == sectorStoredMousePos)
+            {
+                foreach(SectorWCWrapper sector in sectors)
+                {
+                    LineRenderer renderer = sector.renderer;
+                    if(CheckMouseContainsSector(renderer)) 
+                    {
+                        sectorPropertyDisplay.DisplayProperties(sector.sector);
+                        currentSector = null;
+                        return;
+                    }
+                }
+
+            }
             if(!CheckForSectorOverlap(currentSector.renderer) && CheckSectorSize(currentSector.renderer)) 
             {
                 if(lastSectorPos == null) sectors.Add(currentSector);
@@ -414,9 +447,10 @@ public class WorldCreatorCursor : MonoBehaviour
             }
             currentSector = null; // reset reference
         }
-        else if(currentSector != null && Input.GetMouseButton(0))
+        else if(currentSector != null && Input.GetMouseButton(0) && (Vector2)Input.mousePosition != sectorStoredMousePos)
         {
             var renderer = currentSector.renderer;
+            renderer.SetPosition(0, origPos);
             renderer.SetPosition(1, new Vector3(origPos.x, CalcSectorPos().y, 0));
             renderer.SetPosition(2, CalcSectorPos());
             renderer.SetPosition(3, new Vector3(CalcSectorPos().x, origPos.y, 0));
@@ -572,9 +606,9 @@ public class WorldCreatorCursor : MonoBehaviour
         item.obj.transform.Rotate(0, 0, 90);
     }
 
-    public Vector2 CalcPos(Item item) {
+    public Vector2 CalcPos(ItemType type) {
         Vector3 mousePos = GetMousePos();
-        if(item.type == ItemType.Platform) {
+        if(type == ItemType.Platform) {
 			mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x / 2> 0 ? 0.5F : -0.5F));
 			mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y / 2> 0 ? 0.5F : -0.5F));
 		} else {
@@ -626,7 +660,7 @@ public class WorldCreatorCursor : MonoBehaviour
         if(current != null && current.obj) Destroy(current.obj);
         currentIndex = index;
         current = handler.GetItemByIndex(index);
-        current.pos = CalcPos(current);
+        current.pos = CalcPos(current.type);
         current.obj.transform.position = current.pos;
 
         // item defaults go here
@@ -638,7 +672,7 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         if(current != null && current.obj) Destroy(current.obj);
         current = item;
-        current.pos = CalcPos(current);
+        current.pos = CalcPos(current.type);
         current.obj.transform.position = current.pos;
     }
 
