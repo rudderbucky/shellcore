@@ -243,8 +243,13 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 if(renderer.sortingOrder < sortLayerNum) 
                     renderer.sortingOrder = ++sortLayerNum;
-                renderer.startColor = renderer.endColor = Color.green;
-            } else renderer.startColor = renderer.endColor = Color.white;
+                if(translatingSectors.Contains(sector))
+                    renderer.startColor = renderer.endColor = Color.yellow;
+                else renderer.startColor = renderer.endColor = Color.green;
+            } 
+            else if(translatingSectors.Contains(sector))
+                renderer.startColor = renderer.endColor = Color.yellow;
+            else renderer.startColor = renderer.endColor = Color.white;
         }
     }
 
@@ -326,6 +331,7 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         public LineRenderer renderer;
         public Sector sector;
+        public Vector2[] originalRendererPos = new Vector2[4];
     }
 
     public List<SectorWCWrapper> sectors = new List<SectorWCWrapper>();
@@ -374,11 +380,21 @@ public class WorldCreatorCursor : MonoBehaviour
         return finalOrigin;
     }
 
+    List<SectorWCWrapper> translatingSectors = new List<SectorWCWrapper>();
+    Vector2 sectorTranslationStoredPos;
+    float doubleClickTimer;
+
     void PollSectors() 
     {
+        if(!Input.GetKey(KeyCode.LeftShift) && translatingSectors.Count > 0)
+        {
+            FinalizeTranslation();
+            translatingSectors.Clear();
+            return;
+        }
+            
         if(Input.GetMouseButtonDown(0)) 
         {
-            sectorStoredMousePos = Input.mousePosition;
             foreach(SectorWCWrapper sector in sectors)
             {
                 LineRenderer renderer = sector.renderer;
@@ -391,39 +407,73 @@ public class WorldCreatorCursor : MonoBehaviour
                         lastSectorPos[i] = renderer.GetPosition(i);
                     }
                     //renderer.SetPosition(0, origPos);
-                    currentSector = sector;
+                    if(Input.GetKey(KeyCode.LeftShift) && Time.time - doubleClickTimer < 0.2F)
+                    {
+                        if(!translatingSectors.Contains(sector))
+                            translatingSectors.Add(sector);
+                        else
+                            translatingSectors.Remove(sector);
+                        doubleClickTimer = 0;
+                    }
+                    else    
+                        currentSector = sector;
+                    doubleClickTimer = Time.time;
                     break;
+                    
                 }
             }
-            if(currentSector == null) {
-                currentSector = new SectorWCWrapper();
-                currentSector.sector = ScriptableObject.CreateInstance<Sector>();
-                currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
-                currentSector.sector.hasMusic = true; // sectors have music by default in WC
-                currentSector.sector.backgroundColor = GetDefaultColor((Sector.SectorType)0);
-                currentSector.sector.rectangleEffectSkin = (RectangleEffectSkin)
-                    PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
-                currentSector.sector.backgroundTileSkin = (BackgroundTileSkin)
-                    PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
-                var renderer = currentSector.renderer = Instantiate(borderPrefab).GetComponent<LineRenderer>();
-                renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = currentSector.sector;
-                lastSectorPos = null;
-                origPos = CalcSectorPos();
-                renderer.SetPosition(0, origPos);
-                renderer.SetPosition(1, origPos);
-                renderer.SetPosition(2, origPos);
-                renderer.SetPosition(3, origPos);
-                SyncSectorCoords(currentSector);
+
+            sectorStoredMousePos = Input.mousePosition;
+            if(Input.GetKey(KeyCode.LeftShift))
+            {
+                foreach(var sector in translatingSectors)
+                {
+                    for(int i = 0; i < 4; i++)
+                        sector.originalRendererPos[i] = sector.renderer.GetPosition(i);
+                }
+                sectorTranslationStoredPos = CalcSectorPos();
             }
+            else
+            {
+                
+                
+                if(currentSector == null) {
+                    currentSector = new SectorWCWrapper();
+                    currentSector.sector = ScriptableObject.CreateInstance<Sector>();
+                    currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
+                    currentSector.sector.hasMusic = true; // sectors have music by default in WC
+                    currentSector.sector.backgroundColor = GetDefaultColor((Sector.SectorType)0);
+                    currentSector.sector.rectangleEffectSkin = (RectangleEffectSkin)
+                        PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
+                    currentSector.sector.backgroundTileSkin = (BackgroundTileSkin)
+                        PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
+                    var renderer = currentSector.renderer = Instantiate(borderPrefab).GetComponent<LineRenderer>();
+                    renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = currentSector.sector;
+                    lastSectorPos = null;
+                    origPos = CalcSectorPos();
+                    renderer.SetPosition(0, origPos);
+                    renderer.SetPosition(1, origPos);
+                    renderer.SetPosition(2, origPos);
+                    renderer.SetPosition(3, origPos);
+                    SyncSectorCoords(currentSector);
+                }
+            }
+            
         }
-        else if(currentSector != null && Input.GetMouseButtonUp(0)) 
+        else if(Input.GetMouseButtonUp(0)) 
         {
+            if(Input.GetKey(KeyCode.LeftShift))
+            {
+                FinalizeTranslation();
+            }
+
             if((Vector2)Input.mousePosition == sectorStoredMousePos)
             {
+                
                 foreach(SectorWCWrapper sector in sectors)
                 {
                     LineRenderer renderer = sector.renderer;
-                    if(CheckMouseContainsSector(renderer)) 
+                    if(CheckMouseContainsSector(renderer) && !Input.GetKey(KeyCode.LeftShift)) 
                     {
                         sectorPropertyDisplay.DisplayProperties(sector.sector);
                         currentSector = null;
@@ -432,36 +482,55 @@ public class WorldCreatorCursor : MonoBehaviour
                 }
 
             }
-            if(!CheckForSectorOverlap(currentSector.renderer) && CheckSectorSize(currentSector.renderer)) 
+            if(currentSector != null)
             {
-                if(lastSectorPos == null) sectors.Add(currentSector);
-            } else if(lastSectorPos != null) { // invalid position for current sector
-                for(int i = 0; i < 4; i++) {
-                    currentSector.renderer.SetPosition(i, lastSectorPos[i]);
+                if(!CheckForSectorOverlap(currentSector.renderer) && CheckSectorSize(currentSector.renderer)) 
+                {
+                    if(lastSectorPos == null) sectors.Add(currentSector);
+                } else if(lastSectorPos != null) { // invalid position for current sector
+                    for(int i = 0; i < 4; i++) {
+                        currentSector.renderer.SetPosition(i, lastSectorPos[i]);
+                    }
+                    SyncSectorCoords(currentSector);
+                    lastSectorPos = null;
+                } else  // delete sector
+                {
+                    RemoveSector(currentSector);
                 }
-                SyncSectorCoords(currentSector);
-                lastSectorPos = null;
-            } else  // delete sector
-            {
-                RemoveSector(currentSector);
+                currentSector = null; // reset reference
             }
-            currentSector = null; // reset reference
+            
         }
-        else if(currentSector != null && Input.GetMouseButton(0) && (Vector2)Input.mousePosition != sectorStoredMousePos)
+        else if(Input.GetMouseButton(0))
         {
-            var renderer = currentSector.renderer;
-            renderer.SetPosition(0, origPos);
-            renderer.SetPosition(1, new Vector3(origPos.x, CalcSectorPos().y, 0));
-            renderer.SetPosition(2, CalcSectorPos());
-            renderer.SetPosition(3, new Vector3(CalcSectorPos().x, origPos.y, 0));
-            SyncSectorCoords(currentSector);
-            // check for overlap
-            renderer.startColor = renderer.endColor = Color.white;
-            if(CheckForSectorOverlap(renderer)) 
+            if(Input.GetKey(KeyCode.LeftShift))
             {
-                if(renderer.sortingOrder < sortLayerNum)
-                    renderer.sortingOrder = ++sortLayerNum;
-                renderer.startColor = renderer.endColor = Color.red;
+                foreach(var sector in translatingSectors)
+                {
+                    TranslateSector(sector, CalcSectorPos() - sectorTranslationStoredPos);
+                    if(CheckForSectorOverlap(sector.renderer)) 
+                    {
+                        if(sector.renderer.sortingOrder < sortLayerNum)
+                            sector.renderer.sortingOrder = ++sortLayerNum;
+                        sector.renderer.startColor = sector.renderer.endColor = Color.red;
+                    }
+                }
+            }
+            else if(currentSector != null && (Vector2)Input.mousePosition != sectorStoredMousePos)
+            {
+                var renderer = currentSector.renderer;
+                renderer.SetPosition(0, origPos);
+                renderer.SetPosition(1, new Vector3(origPos.x, CalcSectorPos().y, 0));
+                renderer.SetPosition(2, CalcSectorPos());
+                renderer.SetPosition(3, new Vector3(CalcSectorPos().x, origPos.y, 0));
+                SyncSectorCoords(currentSector);
+                // check for overlap
+                if(CheckForSectorOverlap(renderer)) 
+                {
+                    if(renderer.sortingOrder < sortLayerNum)
+                        renderer.sortingOrder = ++sortLayerNum;
+                    renderer.startColor = renderer.endColor = Color.red;
+                }
             }
         }
         else if(Input.GetMouseButtonUp(1)) 
@@ -469,6 +538,7 @@ public class WorldCreatorCursor : MonoBehaviour
             foreach(SectorWCWrapper sector in sectors) 
             {
                 var renderer = sector.renderer;
+                renderer.startColor = renderer.endColor = Color.white;
                 if(CheckMouseContainsSector(renderer))
                 {
                     Destroy(renderer.gameObject);
@@ -481,6 +551,33 @@ public class WorldCreatorCursor : MonoBehaviour
                 }
             }
         }
+    }
+
+    void FinalizeTranslation()
+    {
+        foreach(var sector in translatingSectors)
+        {
+            if(CheckForSectorOverlap(sector.renderer))
+            {
+                foreach(var sector2 in translatingSectors)
+                {
+                    for(int i = 0; i < 4; i++)
+                    {
+                        sector2.renderer.SetPosition(i, sector2.originalRendererPos[i]);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    void TranslateSector(SectorWCWrapper sector, Vector2 offset)
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            sector.renderer.SetPosition(i, sector.originalRendererPos[i] + offset);
+        }
+        SyncSectorCoords(sector);
     }
 
     public static Color GetDefaultColor(Sector.SectorType type)
@@ -680,5 +777,6 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         this.mode = mode;
         WCBetterBarHandler.UpdateActiveButtons();
+        translatingSectors.Clear();
     }
 }
