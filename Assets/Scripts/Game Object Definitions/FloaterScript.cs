@@ -13,4 +13,14 @@ public class FloaterScript : MonoBehaviour {
 			GetComponent<SpriteRenderer>().color = SectorManager.instance.current.backgroundColor + Color.grey;
 		}
 	}
+
+	void Update()
+	{
+		if(!SectorManager.instance) return;
+		if(SectorManager.instance.overrideProperties != null)
+		{
+			GetComponent<SpriteRenderer>().color = SectorManager.instance.overrideProperties.backgroundColor + Color.grey;
+		}
+		else GetComponent<SpriteRenderer>().color = SectorManager.instance.current.backgroundColor + Color.grey;
+	}
 }
