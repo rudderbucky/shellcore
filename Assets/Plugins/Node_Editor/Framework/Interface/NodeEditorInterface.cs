@@ -16,8 +16,8 @@ namespace NodeEditorFramework.Standard
 		public string sceneCanvasName = "";
 		public float toolbarHeight = 20;
 
-		// Modal Panel
-		public bool showModalPanel;
+        // Modal Panel
+        public bool showModalPanel;
 		public Rect modalPanelRect = new Rect(20, 50, 250, 150);
 		public Action modalPanelContent;
 
@@ -28,6 +28,9 @@ namespace NodeEditorFramework.Standard
 		private delegate bool? DefImportLocationGUI(ref object[] locationArgs);
 		private DefImportLocationGUI ImportLocationGUI;
 		private DefExportLocationGUI ExportLocationGUI;
+
+        // Auto Save
+        public bool autoSaveEnabled = false;
 
 		public void ShowNotification(GUIContent message)
 		{
@@ -46,7 +49,7 @@ namespace NodeEditorFramework.Standard
 		public void DrawToolbarGUI(Rect rect)
 		{
 			rect.height = toolbarHeight;
-            rect.width = 200f;
+            rect.width = 280f;
 			if(!showModalPanel)
 			{
 				GUILayout.BeginArea (rect, NodeEditorGUI.toolbar);
@@ -72,7 +75,10 @@ namespace NodeEditorFramework.Standard
 					IOFormat = ImportExportManager.ParseFormat("XML");
 					if (IOFormat.RequiresLocationGUI)
 					{
-						ImportLocationGUI = IOFormat.ImportLocationArgsGUI;
+                        // Try to auto save
+                        AutoSave();
+
+                        ImportLocationGUI = IOFormat.ImportLocationArgsGUI;
 						modalPanelContent = ImportCanvasGUI;
 						showModalPanel = true;
 					}
@@ -127,6 +133,15 @@ namespace NodeEditorFramework.Standard
                     }
 					NodeEditorGUI.Init();
 				}
+
+                bool autoSave = GUILayout.Toggle(autoSaveEnabled, "Auto Save");
+                if (autoSave != autoSaveEnabled)
+                {
+                    autoSaveEnabled = autoSave;
+                    PlayerPrefs.SetInt("NEAutoSave", autoSave ? 1 : 0);
+                    PlayerPrefs.Save();
+                }
+
 				GUI.backgroundColor = Color.white;
 				GUILayout.EndHorizontal();
 				GUILayout.EndArea();
@@ -135,6 +150,22 @@ namespace NodeEditorFramework.Standard
 			}
 			
 		}
+
+        public void AutoSave()
+        {
+            if (autoSaveEnabled)
+            {
+                if (IOLocationArgs == null)
+                {
+                    Debug.Log("[Auto Save] Null IO location args");
+                }
+                else
+                {
+                    Debug.Log("[Auto Save] IO location args: " + IOLocationArgs[0]);
+                    ImportExportManager.ExportCanvas(canvasCache.nodeCanvas, IOFormat, IOLocationArgs);
+                }
+            }
+        }
 
 		private void SaveSceneCanvasPanel()
 		{
@@ -263,14 +294,16 @@ namespace NodeEditorFramework.Standard
 		{
 			if (ImportLocationGUI != null)
 			{
-				bool? state = ImportLocationGUI(ref IOLocationArgs);
+                // Get new file location
+                bool? state = ImportLocationGUI(ref IOLocationArgs);
 				if (state == null)
 					return;
 
+                // Import canvas
 				if (state == true)
-					canvasCache.SetCanvas(ImportExportManager.ImportCanvas(IOFormat, IOLocationArgs));
+                    canvasCache.SetCanvas(ImportExportManager.ImportCanvas(IOFormat, IOLocationArgs));
 
-				ImportLocationGUI = null;
+                ImportLocationGUI = null;
 				modalPanelContent = null;
 				showModalPanel = false;
 			}

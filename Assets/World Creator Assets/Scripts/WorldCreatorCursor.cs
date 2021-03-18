@@ -197,7 +197,11 @@ public class WorldCreatorCursor : MonoBehaviour
         }
 
         if(Input.GetKeyUp(KeyCode.T))
+        {
+            if (taskInterface.GetActive())
+                taskInterface.GetComponentInChildren<NodeEditorFramework.Standard.RTNodeEditor>().AutoSave();
             taskInterface.ToggleActive();
+        }
 
         if(Input.GetKeyDown(KeyCode.C) && !system.IsPointerOverGameObject())
         {

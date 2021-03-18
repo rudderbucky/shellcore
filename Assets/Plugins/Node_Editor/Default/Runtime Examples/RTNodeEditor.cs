@@ -46,9 +46,8 @@ namespace NodeEditorFramework.Standard
 		{
             rectTransform = GetComponent<RectTransform>();
 
-
             //NormalReInit();
-		}
+        }
 
 		private void Update () 
 		{
@@ -93,7 +92,8 @@ namespace NodeEditorFramework.Standard
 			{ // Setup editor interface
 				editorInterface = new NodeEditorInterface();
 				editorInterface.canvasCache = canvasCache;
-			}
+                editorInterface.autoSaveEnabled = PlayerPrefs.GetInt("NEAutoSave", 0) == 1;
+            }
 		}
 
 		private void OnGUI ()
@@ -149,5 +149,10 @@ namespace NodeEditorFramework.Standard
 			editorInterface.ExportData(path);
 		}
 	
+        public void AutoSave()
+        {
+            if (editorInterface != null)
+                editorInterface.AutoSave();
+        }
 	}
 }

@@ -123,7 +123,8 @@ namespace NodeEditorFramework
 				toolbar = new GUIStyle(nodeSkin.box);
 				toolbar.normal.background = GUIToolbar;
 				toolbar.active.background = GUIToolbar;
-				toolbar.border = new RectOffset(0, 0, 0, 0);
+
+				toolbar.border = new RectOffset(3, 3, 3, 3);
 				toolbar.margin = new RectOffset(0, 0, 0, 0);
 				toolbar.padding = new RectOffset(0, 0, 0, 0);
 
