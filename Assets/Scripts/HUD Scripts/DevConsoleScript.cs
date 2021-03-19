@@ -15,14 +15,18 @@ public class DevConsoleScript : MonoBehaviour
 
     Queue<string> textToAdd = new Queue<string>();
 
+    static DevConsoleScript Instance;
+
     void OnEnable() {
         Application.logMessageReceived += HandleLog;
         godModeEnabled = false;
+        Instance = this;
     }
      
     void Disable() {
         componentEnabled = false;
         Application.logMessageReceived -= HandleLog;
+        Instance = null;
     }
  
     void HandleLog(string logString, string stackTrace, LogType type) {
@@ -36,7 +40,10 @@ public class DevConsoleScript : MonoBehaviour
         // Application.logMessageReceived -= HandleLog;
     }
 
-    
+    public static void Print(string logString)
+    {
+        Instance.textToAdd.Enqueue("\n <color=white>" + logString + "</color>");
+    }
 
     public void EnterCommand(string command)
     {
@@ -170,6 +177,11 @@ public class DevConsoleScript : MonoBehaviour
             {
                 PartIndexScript.partsObtainedCheat = true;
                 textBox.text += "\n<color=lime>There's a time and place for everything! But not now.</color>";
+            }
+            else if (command.Equals("counting cards", StringComparison.CurrentCultureIgnoreCase))
+            {
+                NodeEditorFramework.Standard.RandomizerNode.PrintRandomRolls = true;
+                textBox.text += "\n<color=lime>Don't let the casino catch you!</color>";
             }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")

@@ -26,6 +26,8 @@ namespace NodeEditorFramework.Standard
         public List<float> chances = new List<float>();
         public bool dialogue = false;
 
+        public static bool PrintRandomRolls = false;
+
         public override void NodeGUI()
         {
             if (!(Canvas is DialogueCanvas))
@@ -96,12 +98,15 @@ namespace NodeEditorFramework.Standard
                 total += chances[i];
            
             float roll = Random.Range(0, total);
+            float originalRoll = roll;
             for(int i = 0; i < chances.Count; i++)
             {
                 roll -= chances[i];
                 if(roll <= 0)
                 {
                     TaskManager.Instance.setNode(outputKnobs[i]);
+                    if (PrintRandomRolls)
+                        DevConsoleScript.Print("Total weight: " + total + ", Random roll: " + originalRoll + ", Connection index: " + i);
                     return -1;
                 }
             }

@@ -7,13 +7,19 @@ using UnityEngine;
 /// </summary>
 public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
 {
-    float activationDelay = 3f;
     const float healAmount = 100f;
     public int index;
 
     public void Initialize()
     {
-        switch(index)
+        cooldownDuration = 20;
+        CDRemaining = cooldownDuration;
+        activeDuration = 10;
+        activeTimeRemaining = activeDuration;
+        energyCost = 150;
+        activationDelay = 3f;
+
+        switch (index)
         {
             case 0:
                 ID = AbilityID.ActiveShellRegen;
@@ -23,14 +29,9 @@ public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
                 break;
             case 2:
                 ID = AbilityID.ActiveEnergyRegen;
+                energyCost = 0;
                 break;
         }
-        cooldownDuration = 20;
-        CDRemaining = cooldownDuration;
-        activeDuration = 10;
-        activeTimeRemaining = activeDuration;
-        energyCost = 150;
-
     }
 
     /// <summary>
