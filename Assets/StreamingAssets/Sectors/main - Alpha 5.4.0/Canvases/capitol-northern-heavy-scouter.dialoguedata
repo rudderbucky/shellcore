@@ -5,19 +5,19 @@
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Start Dialogue" ID="-1666615296" type="StartDialogueNode" pos="-700,-300">
-			<Port ID="1524046080" name="input" dynamic="False" />
-			<Port ID="196192384" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="1486559488" type="StartDialogueNode" pos="-700,-300">
+			<Port ID="322351744" name="input" dynamic="False" />
+			<Port ID="177144960" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="2092452081" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="Dialogue" ID="1971709056" type="DialogueNode" pos="-400,-300">
-			<Port ID="341399168" name="input" dynamic="False" />
-			<Port ID="1378839296" name="cancel" dynamic="False" />
-			<Port ID="-696040960" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="421521024" type="DialogueNode" pos="-400,-300">
+			<Port ID="-1295915520" name="input" dynamic="False" />
+			<Port ID="-258475392" name="cancel" dynamic="False" />
+			<Port ID="-1897735296" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -32,13 +32,13 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="-1787428634" />
-			<Variable name="answers" refID="-2095519360" />
+			<Variable name="answers" refID="-1337232640" />
 			<boolean name="customDialogueSpeed">false</boolean>
 			<double name="speed">0</double>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="End Dialogue" ID="1793819904" type="EndDialogue" pos="-100,-200">
-			<Port ID="-1878687872" name="input" dynamic="False" />
+		<Node name="End Dialogue" ID="2043070208" type="EndDialogue" pos="-100,-200">
+			<Port ID="778964736" name="input" dynamic="False" />
 			<boolean name="jumpToStart">true</boolean>
 			<boolean name="openBuilder">false</boolean>
 			<boolean name="openTrader">false</boolean>
@@ -46,8 +46,8 @@
 		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="196192384" port2ID="341399168" />
-		<Connection port1ID="-696040960" port2ID="-1878687872" />
+		<Connection port1ID="177144960" port2ID="-1295915520" />
+		<Connection port1ID="-1897735296" port2ID="778964736" />
 	</Connections>
 	<Objects>
 		<Object refID="2092452081" type="System.String">
@@ -56,7 +56,7 @@
 		<Object refID="-1787428634" type="System.String">
 			<string>How could anyone make it to Haven 3 in less than a minute? This guy is clearly delusional. Do whatever you want, but I'm staying right where I am!</string>
 		</Object>
-		<Object refID="-2095519360" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="-1337232640" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>Yay, the name drop! I've been waiting for the name drop.</string>
 			</ArrayOfString>
