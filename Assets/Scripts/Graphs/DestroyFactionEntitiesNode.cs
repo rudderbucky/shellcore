@@ -34,7 +34,8 @@ namespace NodeEditorFramework.Standard
         {
             foreach (var ent in AIData.entities)
             {
-
+                if (ent == PlayerCore.Instance)
+                    continue;
                 if (ent.GetFaction() == targetFaction)
                 {
                     Destroy(ent.gameObject);
