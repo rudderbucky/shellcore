@@ -99,13 +99,15 @@ namespace NodeEditorFramework.Standard
             for(int i = 0; i < chances.Count; i++)
             {
                 roll -= chances[i];
-                if(roll < 0)
+                if(roll <= 0)
                 {
                     TaskManager.Instance.setNode(outputKnobs[i]);
                     return -1;
                 }
             }
-            Debug.LogWarning("Something went wrong with the roulette. Double check the entered floats!");
+            // This might be possible due to floating point inaccuracies
+            TaskManager.Instance.setNode(outputKnobs[chances.Count - 1]);
+            //Debug.LogWarning("Something went wrong with the roulette. Double check the entered floats!");
             return -1;
         }
     }
