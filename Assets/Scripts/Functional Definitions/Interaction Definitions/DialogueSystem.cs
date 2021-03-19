@@ -719,6 +719,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public void ClearCanvases()
     {
+        if (traversers != null)
+            for (int i = 0; i < traversers.Count; i++)
+            {
+                traversers[i].nodeCanvas.Destroy();
+            }
         dialogueCanvasPaths.Clear();
     }
 

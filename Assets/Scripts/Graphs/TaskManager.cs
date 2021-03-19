@@ -97,6 +97,18 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     public void ClearCanvases()
     {
+        if (traversers != null)
+            for (int i = 0; i < traversers.Count; i++)
+            {
+                traversers[i].nodeCanvas.Destroy();
+            }
+        if (sectorTraversers != null)
+            for (int i = 0; i < sectorTraversers.Count; i++)
+            {
+                sectorTraversers[i].nodeCanvas.Destroy();
+            }
+        sectorTraversers = new List<SectorTraverser>();
+        traversers = new List<MissionTraverser>();
         questCanvasPaths.Clear();
     }
 

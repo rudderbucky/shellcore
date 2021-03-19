@@ -211,6 +211,7 @@ public class SectorManager : MonoBehaviour
                 }
 
                 // canvas handling
+                SectorGraphLoad = null;
                 taskManager.ClearCanvases();
                 dialogueSystem.ClearCanvases();
 
@@ -390,7 +391,10 @@ public class SectorManager : MonoBehaviour
         {
             // Main menu loader; only the main menu is not loaded by JSON anymore.
             // Look at how far we've come :)
-            if(!jsonMode && current != null) 
+
+            SectorGraphLoad = null;
+
+            if (!jsonMode && current != null) 
             {
                 loadSector();
                 sectorLoaded = true;

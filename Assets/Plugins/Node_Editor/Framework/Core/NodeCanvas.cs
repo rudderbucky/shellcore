@@ -78,13 +78,21 @@ namespace NodeEditorFramework
 			return canvas;
 		}
 
-		#endregion
+        #endregion
 
-		#region Extension Methods
+        public void Destroy()
+        {
+            foreach (Node node in nodes)
+            {
+                Destroy(node);
+            }
+        }
 
-		// GENERAL
+        #region Extension Methods
 
-		protected virtual void OnCreate () {}
+        // GENERAL
+
+        protected virtual void OnCreate () {}
 
 		protected virtual void ValidateSelf () { }
 
