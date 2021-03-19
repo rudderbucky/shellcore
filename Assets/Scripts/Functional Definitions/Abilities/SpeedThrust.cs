@@ -31,7 +31,7 @@ public class SpeedThrust : ActiveAbility, IBlinkOnUse
     /// <summary>
     /// Returns the engine power to the original value
     /// </summary>
-    protected override void Deactivate()
+    public override void Deactivate()
     {
         var enginePower = (Core as Craft).enginePower;
         if(craft && activated) {

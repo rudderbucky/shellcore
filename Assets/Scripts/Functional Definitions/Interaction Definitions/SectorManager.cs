@@ -93,14 +93,13 @@ public class SectorManager : MonoBehaviour
         sectorBorders.endWidth = 0.15f;
         sectorBorders.loop = true;
         OnSectorLoad = null;
+        SectorGraphLoad = null;
 
         if (customPath != "" && current == null)
         {
             // jsonPath = customPath;
             jsonMode = true;
         }
-
-
             
 		
 		if(SceneManager.GetActiveScene().name == "MainMenu")
@@ -211,7 +210,6 @@ public class SectorManager : MonoBehaviour
                 }
 
                 // canvas handling
-                SectorGraphLoad = null;
                 taskManager.ClearCanvases();
                 dialogueSystem.ClearCanvases();
 
@@ -257,7 +255,7 @@ public class SectorManager : MonoBehaviour
                         spawnPoint = wdata.initialSpawn;
                         if(player.cursave == null || player.cursave.timePlayed == 0)
                         {
-                            player.transform.position = player.spawnPoint = spawnPoint;
+                            player.transform.position = player.spawnPoint = player.havenSpawnPoint = spawnPoint;
                             if(wdata.defaultBlueprintJSON != null && wdata.defaultBlueprintJSON != "")
                             {
                                 if(player.cursave != null)
@@ -391,9 +389,6 @@ public class SectorManager : MonoBehaviour
         {
             // Main menu loader; only the main menu is not loaded by JSON anymore.
             // Look at how far we've come :)
-
-            SectorGraphLoad = null;
-
             if (!jsonMode && current != null) 
             {
                 loadSector();

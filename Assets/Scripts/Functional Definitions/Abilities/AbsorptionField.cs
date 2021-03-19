@@ -29,7 +29,7 @@ public class AbsorptionField : ActiveAbility, IBlinkOnUse
     /// <summary>
     /// Removes the field sprite
     /// </summary>
-    protected override void Deactivate()
+    public override void Deactivate()
     {
         base.Deactivate();
         Destroy(field);

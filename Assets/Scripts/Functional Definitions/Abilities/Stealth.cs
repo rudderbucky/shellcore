@@ -27,7 +27,7 @@ public class Stealth : ActiveAbility, IBlinkOnUse
     /// <summary>
     /// Makes the craft visible again
     /// </summary>
-    protected override void Deactivate()
+    public override void Deactivate()
     {
         base.Deactivate();
 

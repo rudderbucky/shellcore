@@ -105,6 +105,17 @@ public abstract class Craft : Entity
         // no longer dead, busy or immobile
         isDead = false; 
         isBusy = false;
+
+        // Deactivate abilities
+        foreach (var ability in abilities)
+        {
+            if (ability is ActiveAbility)
+            {
+                ActiveAbility aa = (ability as ActiveAbility);
+                if (aa.TrueActive)
+                    aa.Deactivate();
+            }
+        }
         transform.rotation = Quaternion.identity; // reset rotation so part rotation can be reset
         foreach (Transform child in transform) { // reset all the children rotations
             child.transform.rotation = Quaternion.identity;
@@ -113,14 +124,6 @@ public abstract class Craft : Entity
             // will be changed to check for all parts instead of just shell part
             if (tmp) { // if part exists
                 tmp.Start(); // initialize it
-            }
-        }
-
-        foreach (var ability in abilities)
-        {
-            if (ability is ActiveAbility)
-            {
-                (ability as ActiveAbility).SetDestroyed(true);
             }
         }
 

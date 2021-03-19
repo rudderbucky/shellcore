@@ -25,7 +25,7 @@ public class InvertTractor : ActiveAbility, IBlinkOnUse
     /// <summary>
     /// Returns the engine power to the original value
     /// </summary>
-    protected override void Deactivate()
+    public override void Deactivate()
     {
         Core.tractorSwitched = false;
         base.Deactivate();

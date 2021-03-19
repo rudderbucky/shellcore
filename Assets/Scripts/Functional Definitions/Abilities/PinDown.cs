@@ -7,8 +7,8 @@ using UnityEngine;
 /// </summary>
 public class PinDown : ActiveAbility, IChargeOnUseThenBlink
 {
-    float activationDelay = 2f; // the delay between clicking the ability and its activation
     Craft target;
+    bool activated;
 
     protected override void Awake()
     {
@@ -20,16 +20,16 @@ public class PinDown : ActiveAbility, IChargeOnUseThenBlink
         CDRemaining = 10f;
         activeDuration = 5f;
         activeTimeRemaining = activeDuration;
+        activationDelay = 2f;
     }
 
     public override void Tick(int key)
     {
         base.Tick(key);
-        if (isOnCD && Time.time > activationTime && !trueActive && GetActiveTimeRemaining() > 0)
+        if (isOnCD && Time.time > activationTime && GetActiveTimeRemaining() > 0 && !activated)
         {
+            activated = true;
             AudioManager.PlayClipByID("clip_activateability", transform.position);
-            trueActive = true;
-
             var targeting = Core.GetTargetingSystem();
             float minDist = float.MaxValue;
             target = null;
@@ -48,20 +48,18 @@ public class PinDown : ActiveAbility, IChargeOnUseThenBlink
 
             if (target != null)
             {
-                Debug.Log(target.name + " has been made immobile!");
                 target.AddPin();
             }
         }
     }
 
-    protected override void Deactivate()
+    public override void Deactivate()
     {
+        activated = false;
         base.Deactivate();
-        trueActive = false;
         if (target != null && target)
         {
             target.RemovePin();
-            Debug.Log(target.name + " has been made mobile again!");
         }
     }
 

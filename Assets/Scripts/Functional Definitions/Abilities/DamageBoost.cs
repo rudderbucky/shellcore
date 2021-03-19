@@ -23,7 +23,7 @@ public class DamageBoost: ActiveAbility, IBlinkOnUse
     /// <summary>
     /// Returns the engine power to the original value
     /// </summary>
-    protected override void Deactivate()
+    public override void Deactivate()
     {
         if(Core && activated)
         {

@@ -65,7 +65,7 @@ public class SpawnDrone : ActiveAbility
     /// <summary>
     /// Creates a drone
     /// </summary>
-    protected override void Deactivate()
+    public override void Deactivate()
     {
         AudioManager.PlayClipByID("clip_respawn", transform.position);
 

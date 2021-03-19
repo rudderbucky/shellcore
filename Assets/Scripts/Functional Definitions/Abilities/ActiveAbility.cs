@@ -10,11 +10,11 @@ public interface IChargeOnUseThenBlink {}
 /// </summary>
 public abstract class ActiveAbility : Ability
 {
-    protected bool isActive = false; // used to check if the ability is active
+    protected bool isActive = false; // used to check if the ability has been activated
     protected float activeTimeRemaining; // how much active time is remaining on the ability
     protected float activeDuration; // the duration it is active for
-    protected bool trueActive;
     protected float activationTime;
+    protected float activationDelay = 0f;
 
     /// <summary>
     /// Initialization of every active ability
@@ -36,26 +36,35 @@ public abstract class ActiveAbility : Ability
         else return 0; // not active
     }
 
+    public bool TrueActive
+    {
+        get
+        {
+            return isActive && Time.time > activationTime + activationDelay && !isDestroyed;
+        }
+    }
+
     public override void SetDestroyed(bool input)
     {
-        if (input && isActive && trueActive) Deactivate();
+        if (input && isActive && TrueActive) Deactivate();
         base.SetDestroyed(input);
     }
 
     private void OnDestroy()
     {
-        if (trueActive)
+        if (TrueActive)
             Deactivate();
     }
 
     /// <summary>
     /// Called when active time hits 0, used to rollback whatever change was done on the core
     /// </summary>
-    virtual protected void Deactivate() { 
+    virtual public void Deactivate() { 
         if(this as IBlinkOnUse != null || this as IChargeOnUseThenBlink != null)
         {
             SetIndicatorBlink(false);
         }
+        isActive = false;
     }
 
     override protected void Execute() { 
@@ -83,7 +92,7 @@ public abstract class ActiveAbility : Ability
 
         if(this as IChargeOnUseThenBlink != null)
         {
-            if (isOnCD && Time.time > activationTime && !trueActive && GetActiveTimeRemaining() > 0)
+            if (isOnCD && Time.time > activationTime && !TrueActive && GetActiveTimeRemaining() > 0)
             {
                 SetIndicatorBlink(true);
             }

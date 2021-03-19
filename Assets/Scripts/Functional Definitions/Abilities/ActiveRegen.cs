@@ -36,22 +36,21 @@ public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
     /// <summary>
     /// Returns the regen back to previous
     /// </summary>
-    protected override void Deactivate()
+    public override void Deactivate()
     {
         base.Deactivate();
-        if (Core && trueActive)
+        if (Core && TrueActive)
         {
             float[] regens = Core.GetRegens();
             regens[index] -= healAmount * abilityTier;
             Core.SetRegens(regens);
-            trueActive = false;
         }
     }
 
     public override void Tick(int key)
     {
         base.Tick(key);
-        if (isOnCD && Time.time > activationTime && !trueActive && GetActiveTimeRemaining() > 0)
+        if (isOnCD && Time.time > activationTime && !TrueActive && GetActiveTimeRemaining() > 0)
         {
             if (Core)
             {
@@ -60,8 +59,6 @@ public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
                 Core.SetRegens(regens);
             }
             AudioManager.PlayClipByID("clip_activateability", transform.position);
-            trueActive = true;
-            // SetIndicatorBlink(true);
         }
     }
 
