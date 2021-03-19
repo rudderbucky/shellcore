@@ -537,7 +537,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 }
             }
         }
-        else if(Input.GetMouseButtonUp(1)) 
+        else if(Input.GetMouseButtonUp(1) && !Input.GetKey(KeyCode.LeftShift)) 
         {
             foreach(SectorWCWrapper sector in sectors) 
             {

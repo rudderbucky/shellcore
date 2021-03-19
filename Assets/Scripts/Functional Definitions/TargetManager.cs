@@ -23,7 +23,7 @@ public class TargetManager : MonoBehaviour
 
     public static void Enqueue(ITargetingSystem targetingSystem, Entity.EntityCategory targetCategory = Entity.EntityCategory.All)
     {
-        Instance.enqueue(targetingSystem, targetCategory);
+        if(Instance) Instance.enqueue(targetingSystem, targetCategory);
     }
     
     void enqueue(ITargetingSystem targetingSystem, Entity.EntityCategory targetCategory)

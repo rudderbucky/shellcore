@@ -22,6 +22,12 @@ public class MissionTraverser : Traverser
         // If the quest has been started, continue
         nodeCanvas.missionName = findRoot().missionName;
 
+        if(nodeCanvas.missionName == null)
+        {
+            Debug.LogError("A mission wasn't given a name. Every mission must have a name.");
+            return;
+        }
+
         // add objective list
         TaskManager.objectiveLocations.Add(nodeCanvas.missionName, new List<TaskManager.ObjectiveLocation>());
         if(lastCheckpointName == (nodeCanvas.missionName + "_complete")) 

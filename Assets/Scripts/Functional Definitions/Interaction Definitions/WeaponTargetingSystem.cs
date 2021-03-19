@@ -19,7 +19,7 @@ public class WeaponTargetingSystem : ITargetingSystem
     {
         if(DialogueSystem.isInCutscene) return null; // TODO: remove the hack and prevent weapons from firing somehow else
 
-        Transform tmp = ability.Core.GetTargetingSystem().GetTarget(); // get the core's target if it has one
+        Transform tmp = ability?.Core?.GetTargetingSystem()?.GetTarget(); // get the core's target if it has one
 
         // Performance: Don't allow weapon targeting for non-ShellCores/Carriers
         //if(!(ability.Core as ShellCore) && !(ability.Core is ICarrier))

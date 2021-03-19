@@ -336,7 +336,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
 	public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null) {
-
+		SetSelectPartActive(false);
 		// set editor mode if testing
 		if(SectorManager.testJsonPath != null && !Input.GetKey(KeyCode.LeftShift) && mode == BuilderMode.Yard)
 			editorMode = true;
@@ -782,6 +782,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				comp.isShiny = shiny;
 				comp.builder = this;
 				comp.field = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>();
+				nameSelectObjs.Add(comp);
 			}
 		}
 		else
