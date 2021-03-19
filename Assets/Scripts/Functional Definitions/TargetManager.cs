@@ -132,7 +132,7 @@ public class TargetManager : MonoBehaviour
         var pos = ts.GetEntity().transform.position;
 
         List<Entity> targets = new List<Entity>();
-        for (int i = 0; i < FactionManager.FactionCount; i++)
+        for (int i = 0; i < FactionManager.FactionArrayLength; i++)
         {
             if (FactionManager.IsAllied(ts.GetEntity().faction, i) || !FactionManager.FactionExists(i))
                 continue;

@@ -130,7 +130,7 @@ public class BattleZoneManager : MonoBehaviour
             PlayerCore.Instance.alerter.showMessage(message, "clip_stationlost");
         }
     }
-    public void UpdateCounters() // TODO: Allied victory
+    public void UpdateCounters()
     {
         if (playing && enabled)
         {
@@ -139,43 +139,43 @@ public class BattleZoneManager : MonoBehaviour
                 if(target as ShellCore) (target as ShellCore).SetCarrier(SectorManager.instance.carriers[target.faction]);
             }
 
-            Dictionary<int, int> alive = new Dictionary<int, int>();
+            List<int> livingFactions = new List<int>();
 
+            // Create dictionary entries for counts of existing target entities of each faction
             for (int i = 0; i < targets.Count; i++)
             {
-                if (!alive.ContainsKey(targets[i].faction))
-                    alive.Add(targets[i].faction, 0); // adds a dictionary field with current value of zero
-                if (targets[i] && !targets[i].GetIsDead())
-                    alive[targets[i].faction]++;
+                if (targets[i] && !targets[i].GetIsDead() && !livingFactions.Contains(targets[i].faction))
+                    livingFactions.Add(targets[i].faction);
             }
-            int factionCount = 0;
-            foreach (var pair in alive)
-            {
-                if (pair.Value > 0)
-                    factionCount++;
-            }
-            if (factionCount < 2)
-            {
-                int winningFaction = -1;
-                foreach (var pair in alive)
-                {
-                    if (pair.Value > 0)
-                        winningFaction = pair.Key;
-                }
-                foreach(Entity ent in targets) {
-                    if(ent as PlayerCore) {
-                        if(ent.faction == winningFaction) {
-                            AudioManager.PlayClipByID("clip_victory");
-                            //ResourceManager.PlayClipByID("clip_victory", ent.transform.position);
 
-                            Debug.Log("Faction " + winningFaction + " won!");
+            bool allAllied = true;
+
+            for (int i = 0; i < livingFactions.Count; i++)
+            {
+                for (int j = 0; j < livingFactions.Count; j++)
+                {
+                    if (!FactionManager.IsAllied(livingFactions[i], livingFactions[j]) ||
+                        !FactionManager.IsAllied(livingFactions[j], livingFactions[i]))
+                    {
+                        allAllied = false;
+                        break;
+                    }
+                }
+            }
+
+            if (livingFactions.Count < 2 || allAllied)
+            {
+                foreach(Entity playerEntity in targets) {
+                    if(playerEntity as PlayerCore) {
+                        if(livingFactions.Contains(playerEntity.faction)) {
+                            AudioManager.PlayClipByID("clip_victory");
                             if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
                                 NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
                         }
                         else AudioManager.PlayClipByID("clip_fail");
                     }
                 }
-                DialogueSystem.ShowBattleResults(winningFaction == 0);
+                DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
                 playing = false;
             }
         }

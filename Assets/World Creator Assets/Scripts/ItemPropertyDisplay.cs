@@ -15,6 +15,7 @@ public class ItemPropertyDisplay : MonoBehaviour
     Item currentItem;
     bool editingDefaults = false;
     public List<GameObject> nonDefaults;
+    public List<int> factionIDs;
 
     public void SetDefaults()
     {
@@ -36,12 +37,14 @@ public class ItemPropertyDisplay : MonoBehaviour
         if(!rectTransform) rectTransform = GetComponent<RectTransform>();
         factionDropdown.ClearOptions();
         List<string> options = new List<string>();
-        for (int i = 0; i < FactionManager.FactionCount; i++)
+        factionIDs = new List<int>();
+        for (int i = 0; i < FactionManager.FactionArrayLength; i++)
         {
             if (FactionManager.FactionExists(i))
             {
                 string option = FactionManager.GetFactionName(i);
                 options.Add(option);
+                factionIDs.Add(i);
             }
         }
         factionDropdown.AddOptions(options);
@@ -90,7 +93,7 @@ public class ItemPropertyDisplay : MonoBehaviour
             return;
         }
 
-        currentItem.faction = factionDropdown.value;
+        currentItem.faction = factionIDs[factionDropdown.value];
         Debug.Log("updated faction: " + currentItem.faction);
     }
 
