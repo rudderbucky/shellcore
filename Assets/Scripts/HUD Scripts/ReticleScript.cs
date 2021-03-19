@@ -339,9 +339,9 @@ public class ReticleScript : MonoBehaviour {
                     mr.enabled = true;
 
 
-                parent.Find("Shell Number").GetComponentInChildren<TextMesh>().text = targHealth[0] + "/" + targMax[0];
-                parent.Find("Core Number").GetComponentInChildren<TextMesh>().text = targHealth[1] + "/" + targMax[1];
-                parent.Find("Energy Number").GetComponentInChildren<TextMesh>().text = targHealth[2] + "/" + targMax[2];
+                parent.Find("Shell Number").GetComponentInChildren<TextMesh>().text = Mathf.Round(targHealth[0]) + "/" + targMax[0];
+                parent.Find("Core Number").GetComponentInChildren<TextMesh>().text = Mathf.Round(targHealth[1]) + "/" + targMax[1];
+                parent.Find("Energy Number").GetComponentInChildren<TextMesh>().text = Mathf.Round(targHealth[2]) + "/" + targMax[2];
             }
         }
         else
