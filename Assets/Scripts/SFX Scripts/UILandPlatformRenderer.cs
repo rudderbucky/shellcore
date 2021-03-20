@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 [ExecuteInEditMode]
+[RequireComponent(typeof(CanvasRenderer))]
 public class UILandPlatformRenderer : MaskableGraphic
 {
     public Vector2[] vertices;
