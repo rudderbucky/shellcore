@@ -16,7 +16,10 @@ public class Command : PassiveAbility
     public override void SetDestroyed(bool input)
     {
         if(activated)
+        {
             (Core as ShellCore).intrinsicCommandLimit -= commandUnitIncrease;
+            activated = false;
+        }
         base.SetDestroyed(input);
     }
 

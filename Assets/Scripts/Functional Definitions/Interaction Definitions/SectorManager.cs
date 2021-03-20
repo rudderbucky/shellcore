@@ -545,8 +545,6 @@ public class SectorManager : MonoBehaviour
                             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
                                 (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
                         }
-                        
-                        Debug.LogError(blueprint.shellHealth[0]);
                         blueprint.dialogue = dialogueRef;
                     } 
 
