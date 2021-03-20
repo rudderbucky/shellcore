@@ -9,6 +9,7 @@ public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
 {
     const float healAmount = 100f;
     public int index;
+    bool activated = false;
 
     public void Initialize()
     {
@@ -40,21 +41,23 @@ public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
     public override void Deactivate()
     {
         base.Deactivate();
-        if (Core && TrueActive)
+        if (Core && TrueActive && activated)
         {
             float[] regens = Core.GetRegens();
             regens[index] -= healAmount * abilityTier;
             Core.SetRegens(regens);
+            activated = false;
         }
     }
 
     public override void Tick(int key)
     {
         base.Tick(key);
-        if (isOnCD && Time.time > activationTime && !TrueActive && GetActiveTimeRemaining() > 0)
+        if (isOnCD && Time.time > activationTime && !TrueActive && GetActiveTimeRemaining() > 0 && !activated)
         {
             if (Core)
             {
+                activated = true;
                 float[] regens = Core.GetRegens();
                 regens[index] += healAmount * abilityTier;
                 Core.SetRegens(regens);
