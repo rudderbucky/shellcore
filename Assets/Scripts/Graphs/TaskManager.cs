@@ -187,6 +187,9 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
 
+         if(Instance)
+            Instance.ClearCanvases();
+
         var XMLImport = new XMLImportExport();
 
         for (int i = 0; i < questCanvasPaths.Count; i++)

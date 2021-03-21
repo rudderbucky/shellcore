@@ -209,10 +209,6 @@ public class SectorManager : MonoBehaviour
                     ResourceManager.Instance.LoadResources(testResourcePath);
                 }
 
-                // canvas handling
-                taskManager.ClearCanvases();
-                dialogueSystem.ClearCanvases();
-
                 foreach (var canvas in Directory.GetFiles(path + "\\Canvases"))
                 {
                     if(canvas.Contains(".meta")) continue;
