@@ -39,8 +39,6 @@ public class FactionManager : MonoBehaviour
         if (maxID == -1)
             Debug.LogError("No valid factions loaded!");
 
-        Debug.Log("Factions found: " + fs.Length + ", max ID: " + maxID);
-
         // This may leave some empty indices in-between, but it should be fast
         factions = new Faction[maxID + 1];
         for (int i = 0; i < fs.Length; i++)

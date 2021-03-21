@@ -192,11 +192,11 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         for (int i = 0; i < questCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
-            Debug.Log("Canvas path [" + i + "] = " + finalPath);
+
             if (finalPath.Contains(".taskdata"))
             {
                 var canvas = XMLImport.Import(finalPath) as QuestCanvas;
-                Debug.Log(canvas);
+
                 if (canvas != null)
                 {
                     traversers.Add(new MissionTraverser(canvas));
@@ -205,7 +205,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
             else if (finalPath.Contains(".sectordata"))
             {
                 var canvas = XMLImport.Import(finalPath) as SectorCanvas;
-                Debug.Log(canvas);
+
                 if (canvas != null)
                 {
                     sectorTraversers.Add(new SectorTraverser(canvas));
@@ -234,10 +234,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
         // tasks
         var missions = PlayerCore.Instance.cursave.missions;
-        for (int i = 0; i < missions.Count; i++)
-        {
-            Debug.Log("Mission found: " + missions[i].name + " CP: " + missions[i].checkpoint);
-        }
+
         foreach(var mission in missions)
         {
             if(traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))

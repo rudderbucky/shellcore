@@ -332,7 +332,7 @@ public class SectorManager : MonoBehaviour
                     sectors.Add(curSect);
                 }
                 player.SetIsInteracting(false);
-                Debug.Log("worked");
+
                 jsonMode = false;
                 sectorLoaded = true;
                 return;
@@ -638,17 +638,14 @@ public class SectorManager : MonoBehaviour
                     if (blueprint.dialogue == null)
                     {
                         ok = false;
-                        Debug.Log("No dialogue!");
                     }
                     if (blueprint.dialogue.traderInventory == null)
                     {
                         ok = false;
-                        Debug.Log("No inventory!");
                     }
                     if (data.blueprintJSON == null || data.blueprintJSON == "")
                     {
                         ok = false;
-                        Debug.Log("No blueprint!");
                     }
                     if (ok)
                     {

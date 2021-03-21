@@ -109,7 +109,6 @@ namespace NodeEditorFramework.Standard
                             handler.SetNode(output);
                         });
                     handler.GetInteractionOverrides().Add(EntityID, stack);
-                    Debug.Log("called1 " + handler.GetInteractionOverrides()[EntityID].Count + " " + TaskManager.speakerID);
                 }
 
                 if(!allowAfterSpeaking)
@@ -128,7 +127,6 @@ namespace NodeEditorFramework.Standard
                     if(flowOutput == null)
                         flowOutput = outputKnobs[1];
                     handler.SetNode(flowOutput);
-                    Debug.Log("Start Dialogue: async pass to: " + flowOutput.connections[0].body);
                     return -1;
                 }
             }
@@ -140,8 +138,6 @@ namespace NodeEditorFramework.Standard
 
         void SetEntityID(string newID)
         {
-            Debug.Log("selected " + newID + "!");
-
             EntityID = newID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
         }

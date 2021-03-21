@@ -346,7 +346,7 @@ public class Entity : MonoBehaviour, IDamageable {
                 tmp.x = part.mirrored ? -1 : 1;
                 partObject.transform.localScale = tmp;
                 sr.sortingOrder = i + 2;
-                entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
+                //entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
                 var partWeight = isLightDrone ? partBlueprint.mass * 0.6F * weightMultiplier : partBlueprint.mass * weightMultiplier;
                 weight += partWeight;
                 maxHealth[0] += partBlueprint.health / 2;

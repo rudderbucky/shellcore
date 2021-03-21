@@ -96,7 +96,8 @@ public class AbilityHandler : MonoBehaviour {
                 betterBGboxArray.Add(key,
                     Instantiate(betterBGbox, pos, Quaternion.identity).GetComponent<AbilityButtonScript>());
                 betterBGboxArray[key].transform.SetParent(transform, false); // set parent (do not keep world position)
-                betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count-1] + "" : null, core);
+                betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count-1] + "" : null, core,
+                    KeyName.Ability0 + i);
             }
             else betterBGboxArray[key].AddAbility(visibleAbilities[i]);
         }
@@ -230,7 +231,7 @@ public class AbilityHandler : MonoBehaviour {
         {
             instance.betterBGboxArray[ConvertObjectToString(list, i)].transform.position = new Vector3(GetAbilityPos(i), 
                 tileSpacing*0.8F, this.transform.position.z);
-            instance.betterBGboxArray[ConvertObjectToString(list, i)].ReflectHotkey(currentVisibles != AbilityTypes.Passive && i < 9? keybindList[i] : null);
+            // instance.betterBGboxArray[ConvertObjectToString(list, i)].ReflectHotkey(currentVisibles != AbilityTypes.Passive && i < 9? keybindList[i] : null);
         }
     }
     
