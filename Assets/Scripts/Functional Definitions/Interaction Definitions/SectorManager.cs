@@ -734,6 +734,10 @@ public class SectorManager : MonoBehaviour
             if (!player.cursave.sectorsSeen.Contains(current.sectorName))
                 player.cursave.sectorsSeen.Add(current.sectorName);
             player.ResetPower();
+            foreach(var member in PartyManager.instance.partyMembers)
+            {
+                member.ResetPower();
+            }
             if(!objects.ContainsKey("player")) objects.Add("player", player.gameObject);
             player.sectorMngr = this;
             if(player.alerter) player.alerter.showMessage("Entering sector: " + current.sectorName);

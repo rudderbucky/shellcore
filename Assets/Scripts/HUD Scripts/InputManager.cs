@@ -108,6 +108,8 @@ public class InputManager : MonoBehaviour
     {
         PlayerPrefs.SetString("Controls", JsonUtility.ToJson(keys));
         PlayerPrefs.Save();
+        AbilityHandler.instance.Deinitialize();
+        AbilityHandler.instance.Initialize(PlayerCore.Instance);
     }
 
     public static void LoadControls()

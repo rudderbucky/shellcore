@@ -97,7 +97,7 @@ public class AbilityHandler : MonoBehaviour {
                     Instantiate(betterBGbox, pos, Quaternion.identity).GetComponent<AbilityButtonScript>());
                 betterBGboxArray[key].transform.SetParent(transform, false); // set parent (do not keep world position)
                 betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count-1] + "" : null, core,
-                    KeyName.Ability0 + i);
+                    KeyName.Ability0 + (betterBGboxArray.Count - 1));
             }
             else betterBGboxArray[key].AddAbility(visibleAbilities[i]);
         }

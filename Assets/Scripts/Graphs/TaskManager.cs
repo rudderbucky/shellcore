@@ -95,7 +95,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         return false;
     }
 
-    public void ClearCanvases()
+    public void ClearCanvases(bool doNotClearCanvasPaths = false)
     {
         if (traversers != null)
             for (int i = 0; i < traversers.Count; i++)
@@ -109,7 +109,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
             }
         sectorTraversers = new List<SectorTraverser>();
         traversers = new List<MissionTraverser>();
-        questCanvasPaths.Clear();
+        if(!doNotClearCanvasPaths) questCanvasPaths.Clear();
     }
 
     public void AddCanvasPath(string path)
@@ -187,15 +187,18 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
 
-         if(Instance)
-            Instance.ClearCanvases();
+        if(Instance)
+        {
+            Instance.ClearCanvases(true);
+        }
+            
 
         var XMLImport = new XMLImportExport();
 
         for (int i = 0; i < questCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
-
+            
             if (finalPath.Contains(".taskdata"))
             {
                 var canvas = XMLImport.Import(finalPath) as QuestCanvas;
@@ -240,6 +243,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
         foreach(var mission in missions)
         {
+            
             if(traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))
             {
                 var traverser = traversers.Find((t) => t.nodeCanvas.missionName == mission.name);
