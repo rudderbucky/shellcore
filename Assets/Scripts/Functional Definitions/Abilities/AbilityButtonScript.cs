@@ -45,7 +45,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         ReflectName(ability);
         ReflectDescription(ability);
         ReflectTier(ability);
-        ReflectHotkey(GetPrettyStringFromKeycode(InputManager.keys[keycode].overrideKey));
+        ReflectHotkey(keycode);
 
         this.keycode = keycode;
 
@@ -55,13 +55,14 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         gleamed = ability is PassiveAbility;
     }
 
-    public void ReflectHotkey(string hotkeyText)
+    public void ReflectHotkey(KeyName keycode)
     {
+        this.keycode = keycode;
         // set up hotkey display
         if(hotkeyText != null)
         {
             this.hotkeyText.transform.parent.gameObject.SetActive(true);
-            this.hotkeyText.text = hotkeyText;
+            this.hotkeyText.text = GetPrettyStringFromKeycode(InputManager.keys[keycode].overrideKey);
         } 
         else this.hotkeyText.transform.parent.gameObject.SetActive(false);
     }
@@ -189,7 +190,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         if(!entity.GetIsDead())
         {
-            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase));
+            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase)) && !PlayerViewScript.paused;
             if(abilities[0] is WeaponAbility)
             {
                 foreach(var ab in abilities)

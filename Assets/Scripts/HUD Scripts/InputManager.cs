@@ -108,8 +108,6 @@ public class InputManager : MonoBehaviour
     {
         PlayerPrefs.SetString("Controls", JsonUtility.ToJson(keys));
         PlayerPrefs.Save();
-        AbilityHandler.instance.Deinitialize();
-        AbilityHandler.instance.Initialize(PlayerCore.Instance);
     }
 
     public static void LoadControls()
@@ -155,11 +153,19 @@ public class InputManager : MonoBehaviour
                 if (Input.GetKeyDown((KeyCode)key))
                 {
                     SetControl(inputToChange.Value, (KeyCode)key);
-                    Debug.Log("Set binding for " + inputToChange.Value + " to " + (KeyCode)key);
-                    inputToChange = null;
+                    
                     keyText.text = ((KeyCode)key).ToString();
                     keyText.color = Color.white;
                     keyText = null;
+
+                    if(inputToChange.Value >= KeyName.Ability0 && inputToChange.Value <= KeyName.Ability9)
+                    {
+                        AbilityHandler.instance.ReorientAbilityBoxes();
+                    }
+
+                    Debug.Log("Set binding for " + inputToChange.Value + " to " + (KeyCode)key);
+                    inputToChange = null;
+
                     break;
                 }
             }
