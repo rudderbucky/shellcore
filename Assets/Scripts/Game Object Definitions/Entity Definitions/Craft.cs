@@ -187,7 +187,7 @@ public abstract class Craft : Entity
         bool direction = delta < 90;
 
         //rotate with physics
-        float rotationAmount = Mathf.Min(enginePower / entityBody.mass * Time.deltaTime, 45f);
+        float rotationAmount = Mathf.Min(physicsAccel * Time.deltaTime * 2, 45f);
         entityBody.transform.Rotate(0, 0, (direction ? 2 : -2) * rotationAmount);
 
         //check if the angle has gone over the target
