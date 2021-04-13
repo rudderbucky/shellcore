@@ -12,6 +12,7 @@ public class DevConsoleScript : MonoBehaviour
     public static bool componentEnabled = false;
     public bool fullLog = false;
     public static bool godModeEnabled = false;
+    public bool updateLog = false;
 
     Queue<string> textToAdd = new Queue<string>();
 
@@ -36,7 +37,8 @@ public class DevConsoleScript : MonoBehaviour
         else if(type == LogType.Warning) startingColor = "<color=orange>";
 
         stackTrace = stackTrace.Trim("\n".ToCharArray());
-        textToAdd.Enqueue("\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>");
+        if(!stackTrace.Contains("Update ()") || updateLog)
+            textToAdd.Enqueue("\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>");
         // Application.logMessageReceived -= HandleLog;
     }
 
@@ -183,6 +185,11 @@ public class DevConsoleScript : MonoBehaviour
                 NodeEditorFramework.Standard.RandomizerNode.PrintRandomRolls = true;
                 textBox.text += "\n<color=lime>Don't let the casino catch you!</color>";
             }
+            else if(command.Equals("Update debug", StringComparison.CurrentCultureIgnoreCase))
+            {
+                updateLog = true;
+                textBox.text += "\n<color=lime>You're probably not gonna be able to see this.</color>";
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {
@@ -208,6 +215,7 @@ public class DevConsoleScript : MonoBehaviour
 
     void Update()
     {
+        Debug.LogError("Break");
         if(InputManager.GetKeyDown(KeyName.Console))
         {
             textBox.enabled = image.enabled = !image.enabled;
