@@ -761,6 +761,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	private List<ShipBuilderInventoryNameSelect> nameSelectObjs = new List<ShipBuilderInventoryNameSelect>();
 	public void SetSelectPartActive(bool active)
 	{
+		if(partSelectContainer.activeSelf && active) return;
 		partSelectContainer.SetActive(active);
 
 		if(active)

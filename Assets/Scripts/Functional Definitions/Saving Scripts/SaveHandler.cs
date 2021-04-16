@@ -10,6 +10,7 @@ public class SaveHandler : MonoBehaviour {
 	PlayerSave save;
 
 	public void Initialize() {
+		Debug.LogError("Save handler");
 		string currentPath;
 		if(!File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) {
 			currentPath = Application.persistentDataPath + "\\TestSave";
@@ -17,6 +18,7 @@ public class SaveHandler : MonoBehaviour {
 		else currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
 
 		if(File.Exists(currentPath)) {
+			Debug.LogError("exists");
             // Load
 			string json = File.ReadAllText(currentPath);
 			save = JsonUtility.FromJson<PlayerSave>(json);
@@ -35,7 +37,7 @@ public class SaveHandler : MonoBehaviour {
 			if(save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "") {
 				JsonUtility.FromJsonOverwrite(save.currentPlayerBlueprint, player.blueprint);
 			} else {
-				Debug.LogWarning("Save should have been given a currentPlayerBlueprint by now.");
+				Debug.LogError("Save should have been given a currentPlayerBlueprint by now.");
 				player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 				player.blueprint.baseRegen = new float[] {60,0,60};
 				player.blueprint.shellHealth = new float[] {1000,250,500};
@@ -50,6 +52,7 @@ public class SaveHandler : MonoBehaviour {
 				save.presetBlueprints = new string[5];
 			}
 
+			Debug.LogError($"Rebuild {player.blueprint} {player.blueprint == null}");
 			player.Rebuild();
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
@@ -60,7 +63,7 @@ public class SaveHandler : MonoBehaviour {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
 		} else {
-			Debug.LogWarning("There was not a save or test save that was ready on load.");
+			Debug.LogError("There was not a save or test save that was ready on load.");
 			save = new PlayerSave();
 			save.presetBlueprints = new string[5];
 			save.currentHealths = new float[] {1000,250,500};
@@ -76,6 +79,8 @@ public class SaveHandler : MonoBehaviour {
 			player.cursave = save;
 			player.abilityCaps = new int[] {10, 10, 10, 10};
 		}
+
+		Debug.LogError("Save handler end");
 	}
 	
 	public void Save() {

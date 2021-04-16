@@ -229,6 +229,9 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
 
     virtual protected void SetIndicatorBlink(bool blink)
     {
+        // Ignore true calls when already blinking
+        if(blinking && blink) return;
+
         blinking = blink;
         var indicator = transform.Find("Shooter");
         

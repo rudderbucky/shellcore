@@ -215,7 +215,6 @@ public class DevConsoleScript : MonoBehaviour
 
     void Update()
     {
-        Debug.LogError("Break");
         if(InputManager.GetKeyDown(KeyName.Console))
         {
             textBox.enabled = image.enabled = !image.enabled;

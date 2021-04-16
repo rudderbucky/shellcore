@@ -259,7 +259,7 @@ public class Entity : MonoBehaviour, IDamageable {
     protected virtual void BuildEntity()
     {
         // all created entities should have blueprints!
-        if (!blueprint) Debug.Log(this + " does not have a blueprint! EVERY constructed entity should have one!");
+        if (!blueprint) Debug.LogError(this + " does not have a blueprint! EVERY constructed entity should have one!");
 
         // Remove possible old parts from list
         foreach(var part in parts)

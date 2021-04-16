@@ -40,7 +40,7 @@ public abstract class ActiveAbility : Ability
     {
         get
         {
-            return isActive && Time.time > activationTime + activationDelay && !isDestroyed;
+            return isActive && Time.time > activationTime && !isDestroyed;
         }
     }
 
@@ -94,7 +94,7 @@ public abstract class ActiveAbility : Ability
 
         if(this as IChargeOnUseThenBlink != null)
         {
-            if (isOnCD && Time.time > activationTime && !TrueActive && GetActiveTimeRemaining() > 0)
+            if (TrueActive)
             {
                 SetIndicatorBlink(true);
             }
