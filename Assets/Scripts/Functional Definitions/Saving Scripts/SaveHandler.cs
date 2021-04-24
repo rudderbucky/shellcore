@@ -10,7 +10,6 @@ public class SaveHandler : MonoBehaviour {
 	PlayerSave save;
 
 	public void Initialize() {
-		Debug.LogError("Save handler");
 		string currentPath;
 		if(!File.Exists(Application.persistentDataPath + "\\CurrentSavePath")) {
 			currentPath = Application.persistentDataPath + "\\TestSave";
@@ -18,7 +17,6 @@ public class SaveHandler : MonoBehaviour {
 		else currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
 
 		if(File.Exists(currentPath)) {
-			Debug.LogError("exists");
             // Load
 			string json = File.ReadAllText(currentPath);
 			save = JsonUtility.FromJson<PlayerSave>(json);
@@ -51,8 +49,6 @@ public class SaveHandler : MonoBehaviour {
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
-
-			Debug.LogError($"Rebuild {player.blueprint} {player.blueprint == null}");
 			player.Rebuild();
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
@@ -79,8 +75,6 @@ public class SaveHandler : MonoBehaviour {
 			player.cursave = save;
 			player.abilityCaps = new int[] {10, 10, 10, 10};
 		}
-
-		Debug.LogError("Save handler end");
 	}
 	
 	public void Save() {
