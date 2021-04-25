@@ -61,7 +61,7 @@ public class RectangleEffectScript : MonoBehaviour {
     private void ParticleUpdate(ParticleSystem.Particle[] particles) {
         var oldZ = Camera.main.transform.position.z;
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 
-            CameraScript.GetMaxZoomLevel());
+            -CameraScript.GetMaxZoomLevel());
         for (int i = 0; i < particles.Length; i++) // update all particles
         {
             if(!timesByParticle.ContainsKey(i))

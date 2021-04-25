@@ -239,7 +239,7 @@ public class PartyManager : MonoBehaviour
         blocker.SetActive(false);
 
         // distance maximum for party members - teleport them close to the player
-        if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        if(SectorManager.instance?.current?.type != Sector.SectorType.BattleZone)
         foreach(var member in partyMembers)
         {
             if(member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
