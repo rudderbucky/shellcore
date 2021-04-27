@@ -244,7 +244,10 @@ public class PartyManager : MonoBehaviour
         {
             if(member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
             Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > 2500)
-                member.transform.position = PlayerCore.Instance.transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2));
+            {
+                // Use warp to teleport AirCraft
+                member.Warp(PlayerCore.Instance.transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));
+            }   
         }
 
 
@@ -269,7 +272,6 @@ public class PartyManager : MonoBehaviour
             
             if(index != -1)
             {
-                Debug.Log(index);
                 if(index == 0 || index == options.Count) 
                 {
                     options[0].Invoke();

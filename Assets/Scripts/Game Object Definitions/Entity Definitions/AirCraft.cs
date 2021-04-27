@@ -121,6 +121,7 @@ public abstract class AirCraft : Craft
         return ai;
     }
 
+    // NEVER directly use the transform to teleport AirCraft! Use this method instead.
     public virtual void Warp(Vector3 point)
     {
         transform.position = point;

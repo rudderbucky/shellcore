@@ -251,7 +251,7 @@ public class ResourceManager : MonoBehaviour
         {
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError)
+            if (www.result == UnityWebRequest.Result.ConnectionError)
             {
                 Debug.LogError(www.error);
             }
