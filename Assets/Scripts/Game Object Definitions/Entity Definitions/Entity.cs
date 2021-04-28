@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// The base class of every "being" in the game.
 /// </summary>
-public class Entity : MonoBehaviour, IDamageable {
+public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
     public delegate void EntitySpawnDelegate(Entity entity);
     public static EntitySpawnDelegate OnEntitySpawn;
@@ -111,6 +111,21 @@ public class Entity : MonoBehaviour, IDamageable {
     // prevents interaction while entities are in paths
     public bool isPathing = false;
     public static float partDropRate = 0.1f;
+
+    // Code run on reticle double-click/proximity hotkey press
+    public void Interact()
+    {
+        if (TaskManager.interactionOverrides.ContainsKey(ID) && TaskManager.interactionOverrides[ID].Count > 0)
+        {
+            TaskManager.interactionOverrides[ID].Peek().Invoke();
+        }
+        else if (DialogueSystem.interactionOverrides.ContainsKey(ID) && DialogueSystem.interactionOverrides[ID].Count > 0)
+        {
+            DialogueSystem.interactionOverrides[ID].Peek().Invoke();
+        }
+		else DialogueSystem.StartDialogue(dialogue, this);
+    }
+
     public void UpdateInteractible()
     {
         interactible = GetDialogue() && faction == 0; 
@@ -126,6 +141,8 @@ public class Entity : MonoBehaviour, IDamageable {
         if(isPathing || DialogueSystem.isInCutscene) interactible = false;
 
         if(this as ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone) interactible = false;
+
+        if(isDead) interactible = false;
     }
 
     public bool GetInteractible()
@@ -553,6 +570,10 @@ public class Entity : MonoBehaviour, IDamageable {
         {
             AIData.entities.Add(this);
         }
+        if(!AIData.interactables.Contains(this)) 
+        {
+            AIData.interactables.Add(this);
+        }
            
         if(this is IVendor)
             AIData.vendors.Add(this);
@@ -562,6 +583,8 @@ public class Entity : MonoBehaviour, IDamageable {
     {
         if(AIData.entities.Contains(this))
             AIData.entities.Remove(this);
+        if(AIData.interactables.Contains(this))
+            AIData.interactables.Remove(this);
         if (this is IVendor)
             AIData.vendors.Remove(this);
         SectorManager.instance.RemoveObject(ID);

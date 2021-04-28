@@ -617,7 +617,8 @@ public class WorldCreatorCursor : MonoBehaviour
                 Debug.Log("under cursor ID: " + item.ID);
                 Debug.Log("under cursor assetID: " + item.assetID);
 
-                if (underCursor.type == ItemType.Other)
+                // TODO: Specify which type of item you are scanning for
+                if (underCursor.type == ItemType.Other || underCursor.type == ItemType.Decoration)
                 {
                     taskInterface.Activate();
                     SetMode(originalCursorMode);
@@ -655,6 +656,21 @@ public class WorldCreatorCursor : MonoBehaviour
 
     bool CheckMouseContainsSector(LineRenderer renderer) {
         return renderer.bounds.Contains(GetMousePos()); 
+    }
+
+    // iterate through all sectors till you find the one that contains pos
+    public SectorWCWrapper GetWrapperByPos(Vector2 pos)
+    {
+        foreach(var sector in sectors)
+        {
+            if(sector.sector.bounds.contains(pos)) return sector;
+        }
+        return null;
+    }
+
+    public SectorWCWrapper GetWrapperByPos(Item item)
+    {
+        return GetWrapperByPos(item.pos);
     }
 
     public Vector2 GetSectorCenter() 
