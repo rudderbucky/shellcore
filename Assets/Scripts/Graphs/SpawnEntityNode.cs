@@ -47,8 +47,7 @@ namespace NodeEditorFramework.Standard
             blueprint = GUILayout.TextField(blueprint);
             GUILayout.Label("Entity Name:");
             entityName = GUILayout.TextField(entityName);
-            GUILayout.Label("Faction number:");
-            faction = Utilities.RTEditorGUI.IntField(faction);
+            faction = Utilities.RTEditorGUI.IntField(new GUIContent("Faction number: "), faction);
 
             if (useCoordinates = Utilities.RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
             {
