@@ -62,7 +62,7 @@ public class ProximityInteractScript : MonoBehaviour {
 	void focus() {
 		if(Time.timeScale == 0) return;
 		if(player != null) {
-			if(player.GetIsInteracting() || closest == null || (closest.GetTransform().position - player.transform.position).sqrMagnitude >= 100) 
+			if(player.GetIsInteracting() || closest == null || closest.Equals(null) || (closest.GetTransform().position - player.transform.position).sqrMagnitude >= 100) 
 			{
 				interactIndicator.localScale = new Vector3(1,0,1);
 				interactIndicator.gameObject.SetActive(false);

@@ -510,13 +510,23 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         AudioManager.PlayClipByID("clip_explosion1", transform.position);
 
+        // 1 part drop style - choose a random part if the criteria fits, set it to collectible
+        if(!FactionManager.IsAllied(0, faction) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
+            ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
+            // extract non-shell parts
+            var selectedParts = parts.FindAll(p => p != shell);
+
+            // find random part and set to collectible
+            if(selectedParts.Count > 0)
+            {
+                var randomPart = Random.Range(0,selectedParts.Count);
+                selectedParts[randomPart].SetCollectible(true);
+                if(sectorMngr) AIData.strayParts.Add(selectedParts[randomPart]);
+            }
+        }
+
         for(int i = 0; i < parts.Count; i++)
         {
-            if(!FactionManager.IsAllied(0, faction) && (parts[i] != shell) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
-                ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
-                parts[i].SetCollectible(true);
-                if(sectorMngr) AIData.strayParts.Add(parts[i]);
-            }
             parts[i].Detach();
         }
 
