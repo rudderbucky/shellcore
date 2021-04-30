@@ -5,7 +5,9 @@ using UnityEngine;
 // Tractor beam wrapper class.
 public class TractorBeam : MonoBehaviour
 {
-    public static readonly int maxRangeSquared = 225;
+    public int maxRangeSquared = 225;
+    public int energyPickupRangeSquared = 160;
+    public int maxBreakRangeSquared = 600;
     protected LineRenderer lineRenderer;
     public GameObject glowPrefab;
     public Material tractorMaterial;
@@ -114,14 +116,14 @@ public class TractorBeam : MonoBehaviour
                     closest = energies[i].transform;
                 }
             }
-            if (closest && closestD < 160 && target == null)
+            if (closest && closestD < energyPickupRangeSquared && target == null)
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
 			this.energyPickupTimer = 0.0f; // Can change this to a non-zero value to add the timing element back
         }
 
         if ((target && !owner.GetIsDead() && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead()))) // Update tractor beam graphics
         {
-            if(!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > 600 && !(owner as Yard)) 
+            if(!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > maxBreakRangeSquared && !(owner as Yard)) 
             {
                 SetTractorTarget(null); // break tractor if too far away
             } else 
