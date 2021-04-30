@@ -106,6 +106,21 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         intrinsicCommandLimit = 0;
         if(!tractor.initialized) {
             tractor.BuildTractor();
+            if (CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID) == 0) {
+                tractor.maxRangeSquared = 225;
+                tractor.energyPickupRangeSquared = 160;
+                tractor.maxBreakRangeSquared = 600;
+            }
+            else if (CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID) == 1) {
+                tractor.maxRangeSquared = 325;
+                tractor.energyPickupRangeSquared = 240;
+                tractor.maxBreakRangeSquared = 900;
+            }
+            else if (CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID) == 2) {
+                tractor.maxRangeSquared = 450;
+                tractor.energyPickupRangeSquared = 320;
+                tractor.maxBreakRangeSquared = 1200;
+            }
         }
         base.BuildEntity();
     }
