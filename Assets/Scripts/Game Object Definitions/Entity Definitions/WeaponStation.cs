@@ -17,7 +17,7 @@ public class WeaponStation : GroundConstruct {
         WeaponAbility[] bullets = GetComponentsInChildren<WeaponAbility>();
         for (int i = 0; i < bullets.Length; i++)
         {
-            bullets[i].Tick(0);
+            bullets[i].Tick();
         }
     }
 }

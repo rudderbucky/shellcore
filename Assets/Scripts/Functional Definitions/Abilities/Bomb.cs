@@ -23,7 +23,6 @@ public class Bomb : WeaponAbility
         range = 30F;
         ID = AbilityID.Bomb;
         cooldownDuration = 30F;
-        CDRemaining = cooldownDuration;
         energyCost = 500;
         damage = bombDamage;
         prefabScale = 1 * Vector3.one;
@@ -43,16 +42,8 @@ public class Bomb : WeaponAbility
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if(Core.RequestGCD()) {
-            if (targetingSystem.GetTarget()) // check if there is actually a target, do not fire if there is not
-            {
-                FireBullet(victimPos); // fire if there is
-                isOnCD = true; // set on cooldown
-                return true;
-            }
-            return false;
-        }
-        return false;
+        FireBullet(victimPos); // fire if there is
+        return true;
     }
 
     /// <summary>

@@ -5,17 +5,16 @@ using UnityEngine;
 /// <summary>
 /// Makes the craft temporarily invisible
 /// </summary>
-public class Stealth : ActiveAbility, IBlinkOnUse
+public class Stealth : ActiveAbility
 {
     Craft craft;
+
     protected override void Awake()
     {
         base.Awake(); // base awake
         ID = AbilityID.Stealth;
         cooldownDuration = 10;
-        CDRemaining = cooldownDuration;
         activeDuration = 4;
-        activeTimeRemaining = activeDuration;
         energyCost = 100;
     }
 
@@ -78,9 +77,6 @@ public class Stealth : ActiveAbility, IBlinkOnUse
             }
 
             AudioManager.PlayClipByID("clip_activateability", transform.position);
-            // adjust fields
-            isActive = true; // set to active
-            isOnCD = true; // set to on cooldown
             base.Execute();
         }
     }

@@ -69,7 +69,11 @@ public class AirCarrier : AirConstruct, ICarrier {
 
             foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
             {
-                if(!(active is SpawnDrone) || enemyTargetFound) active.Tick(1);
+                if(!(active is SpawnDrone) || enemyTargetFound)
+                {
+                    active.Tick();
+                    active.Activate();
+                }
             }
 
 

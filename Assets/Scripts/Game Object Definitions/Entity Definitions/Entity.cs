@@ -125,7 +125,7 @@ public class Entity : MonoBehaviour, IDamageable {
 
         if(isPathing || DialogueSystem.isInCutscene) interactible = false;
 
-        if(this as ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone) interactible = false;
+        if(this as ShellCore && SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone) interactible = false;
     }
 
     public bool GetInteractible()
@@ -248,6 +248,9 @@ public class Entity : MonoBehaviour, IDamageable {
             if(parts[i].gameObject.name != "Shell Sprite")
                 Destroy(parts[i].gameObject);
         }
+
+        stealths = 0;
+        absorptions = 0;
 
         BuildEntity();
     }
@@ -564,7 +567,8 @@ public class Entity : MonoBehaviour, IDamageable {
             AIData.entities.Remove(this);
         if (this is IVendor)
             AIData.vendors.Remove(this);
-        SectorManager.instance.RemoveObject(ID);
+        if (SectorManager.instance != null)
+            SectorManager.instance.RemoveObject(ID);
     }
 
     virtual protected void Start()

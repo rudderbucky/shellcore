@@ -405,6 +405,9 @@ public class WCGeneratorHandler : MonoBehaviour
                     if (!resPaths.Contains(System.IO.Path.Combine(dir, f).Replace('\\', '/')))
                     {
                         System.IO.File.Delete(f);
+                    }
+                    else
+                    {
                         del = false;
                     }
                 }

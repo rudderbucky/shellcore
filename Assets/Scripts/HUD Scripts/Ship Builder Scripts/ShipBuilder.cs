@@ -298,7 +298,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		var extras = CoreUpgraderScript.GetExtraAbilities(player.blueprint.coreShellSpriteID);
 
 		for(int i = 0; i < 4; i++) {
-			if(currentAbilitynumbers[i] > abilityLimits[i] + extras[i]) {
+            if (currentAbilitynumbers[i] > abilityLimits[i] + extras[i]) {
 				SetReconstructButton((ReconstructButtonStatus)(3 + i));
 				return false;
 			}

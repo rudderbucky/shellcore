@@ -42,7 +42,7 @@ public class Outpost : AirConstruct, IVendor {
         WeaponAbility[] weapons = GetComponentsInChildren<WeaponAbility>();
         for (int i = 0; i < weapons.Length; i++)
         {
-            weapons[i].Tick(0);
+            weapons[i].Tick();
         }
     }
 
@@ -67,7 +67,7 @@ public class Outpost : AirConstruct, IVendor {
             RemovePart(parts[i]);
         }
         targeter.SetTarget(null);
-        if(sectorMngr.current.type == Sector.SectorType.BattleZone)
+        if(sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             BZManager.UpdateCounters();
             BZManager.AlertPlayers(otherFaction, "WARNING: Outpost lost!");

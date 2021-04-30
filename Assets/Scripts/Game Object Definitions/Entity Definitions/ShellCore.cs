@@ -77,7 +77,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         ai = GetAI();
         if (ai && ai.getMode() == AirCraftAI.AIMode.Inactive)
         {
-            if(sectorMngr.current.type == Sector.SectorType.BattleZone)
+            if(sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
             {
                 ai.setMode(AirCraftAI.AIMode.Battle);
             }

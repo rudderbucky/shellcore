@@ -96,7 +96,7 @@ public class PartyManager : MonoBehaviour
             return;
         }
 
-        if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        if(SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
         {
             AssignBackend(charID);
 
@@ -157,7 +157,7 @@ public class PartyManager : MonoBehaviour
 
     public void Unassign(string charID, Button assignButton)
     {
-        if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        if(SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
         {
             var member = partyMembers.Find(c => c.ID == charID);
             if(member && member.GetAI() != null)

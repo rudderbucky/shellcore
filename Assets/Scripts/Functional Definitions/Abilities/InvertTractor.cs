@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InvertTractor : ActiveAbility, IBlinkOnUse
+public class InvertTractor : ActiveAbility
 {
     public override void SetTier(int abilityTier)
     {
         base.SetTier(abilityTier);
         activeDuration = 5 * abilityTier;
-        activeTimeRemaining = activeDuration;
         print(activeDuration);
     }
 
@@ -18,7 +17,6 @@ public class InvertTractor : ActiveAbility, IBlinkOnUse
                       // hardcoded values here
         ID = AbilityID.InvertTractor;
         cooldownDuration = 20;
-        CDRemaining = cooldownDuration;
         energyCost = 250;
     }
 
@@ -37,8 +35,6 @@ public class InvertTractor : ActiveAbility, IBlinkOnUse
     protected override void Execute()
     {
         Core.tractorSwitched = true;
-        isOnCD = true; // set to on cooldown
-        isActive = true; // set to "active"
         AudioManager.PlayClipByID("clip_buff", transform.position);
         base.Execute();
     }

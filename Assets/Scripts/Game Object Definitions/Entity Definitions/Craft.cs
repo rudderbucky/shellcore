@@ -112,8 +112,7 @@ public abstract class Craft : Entity
             if (ability is ActiveAbility)
             {
                 ActiveAbility aa = (ability as ActiveAbility);
-                if (aa.TrueActive)
-                    aa.Deactivate();
+                aa.Deactivate();
             }
         }
         transform.rotation = Quaternion.identity; // reset rotation so part rotation can be reset

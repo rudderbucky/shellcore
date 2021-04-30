@@ -15,7 +15,6 @@ public class Disrupt : Ability
         ID = AbilityID.Disrupt;
         energyCost = 200;
         cooldownDuration = 30;
-        CDRemaining = cooldownDuration;
     }
 
     /// <summary>
@@ -23,8 +22,6 @@ public class Disrupt : Ability
     /// </summary>
     protected override void Execute()
     {
-        isOnCD = true;
-
         for (int i = 0; i < AIData.entities.Count; i++)
         {
             if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction))
@@ -34,7 +31,7 @@ public class Disrupt : Ability
                 {
                     foreach (var ability in AIData.entities[i].GetAbilities())
                     {
-                        if (ability != null && ability.GetCDRemaining() > 0)
+                        if (ability != null && ability.TimeUntilReady() > 0)
                         {
                             ability.ResetCD();
                         }
@@ -42,5 +39,6 @@ public class Disrupt : Ability
                 }
             }
         }
+        base.Execute();
     }
 }

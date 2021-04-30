@@ -5,20 +5,17 @@ using UnityEngine;
 /// <summary>
 /// Temporarily increases the craft's regen
 /// </summary>
-public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
+public class ActiveRegen : ActiveAbility
 {
     const float healAmount = 100f;
     public int index;
-    bool activated = false;
 
     public void Initialize()
     {
         cooldownDuration = 20;
-        CDRemaining = cooldownDuration;
         activeDuration = 10;
-        activeTimeRemaining = activeDuration;
         energyCost = 150;
-        activationDelay = 3f;
+        chargeDuration = 3f;
 
         switch (index)
         {
@@ -41,29 +38,21 @@ public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
     public override void Deactivate()
     {
         base.Deactivate();
-        if (Core && TrueActive && activated)
+        if (Core && State == AbilityState.Active)
         {
             float[] regens = Core.GetRegens();
             regens[index] -= healAmount * abilityTier;
             Core.SetRegens(regens);
-            activated = false;
+            State = AbilityState.Cooldown;
         }
     }
 
-    public override void Tick(int key)
+    public override void Tick()
     {
-        base.Tick(key);
-        if (isOnCD && Time.time > activationTime && !TrueActive && GetActiveTimeRemaining() > 0 && !activated)
-        {
-            if (Core)
-            {
-                activated = true;
-                float[] regens = Core.GetRegens();
-                regens[index] += healAmount * abilityTier;
-                Core.SetRegens(regens);
-            }
+        AbilityState prevState = State;
+        base.Tick();
+        if (State == AbilityState.Active && prevState != AbilityState.Active)
             AudioManager.PlayClipByID("clip_activateability", transform.position);
-        }
     }
 
     /// <summary>
@@ -71,9 +60,7 @@ public class ActiveRegen : ActiveAbility, IChargeOnUseThenBlink
     /// </summary>
     protected override void Execute()
     {
-        activationTime = Time.time + activationDelay;
-        isOnCD = true; // set to on cooldown
-        isActive = true; // set to "active"
+        State = AbilityState.Active;
         base.Execute();
     }
 }

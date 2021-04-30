@@ -32,7 +32,7 @@ public class ItemPropertyDisplay : MonoBehaviour
         }
     }
 
-    void Start() 
+    void Awake() 
     {
         if(!rectTransform) rectTransform = GetComponent<RectTransform>();
         factionDropdown.ClearOptions();
