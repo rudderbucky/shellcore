@@ -597,7 +597,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
             AIData.interactables.Remove(this);
         if (this is IVendor)
             AIData.vendors.Remove(this);
-        SectorManager.instance.RemoveObject(ID);
+        SectorManager.instance.RemoveObject(ID, gameObject);
     }
 
     virtual protected void Start()
