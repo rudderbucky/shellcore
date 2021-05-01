@@ -8,6 +8,7 @@ public class TractorBeam : MonoBehaviour
     public int maxRangeSquared = 225;
     public int energyPickupRangeSquared = 160;
     public int maxBreakRangeSquared = 600;
+    public float tractorStrength = 100f;
     protected LineRenderer lineRenderer;
     public GameObject glowPrefab;
     public Material tractorMaterial;
@@ -86,10 +87,9 @@ public class TractorBeam : MonoBehaviour
                 else if (dist > 2f)
                 {
                     if(!owner.tractorSwitched)
-                        rigidbody.AddForce(dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * rigidbody.mass / 2);
+                        rigidbody.AddForce(dir.normalized * (dist - 2F) * rigidbody.mass * tractorStrength);
                     else
-                        owner.GetComponent<Rigidbody2D>().AddForce(-dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * 
-                            rigidbody.mass);
+                        owner.GetComponent<Rigidbody2D>().AddForce(-dir.normalized * (dist - 2F) * rigidbody.mass * tractorStrength * 2);
                 }
             }
         }
