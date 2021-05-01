@@ -44,11 +44,24 @@ public class ShellPart : MonoBehaviour {
     public void SetCollectible(bool collectible) {
         this.collectible = collectible;
         // try setting the part to shiny
-        if(!shinyCheck && collectible)
+        if(collectible)
         {
-            shinyCheck = true;
-            ShinyCheck();
+             if(!transform.Find("Minimap Image"))
+            {
+                GameObject childObject = new GameObject("Minimap Image");
+                childObject.transform.SetParent(transform, false);
+                SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
+                renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+                childObject.AddComponent<MinimapLockRotationScript>().Initialize(); // initialize the minimap dot
+            }
+
+            if(!shinyCheck)
+            {
+                shinyCheck = true;
+                ShinyCheck();
+            }
         }
+        
     }
 
     public float GetPartMass()
