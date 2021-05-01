@@ -240,7 +240,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
             childObject.AddComponent<MinimapLockRotationScript>();
         }
         
-        if (!GetComponent<Draggable>() && (this as Drone || this as Tank || this as Turret))
+        if (!GetComponent<Draggable>())
         {
             draggable = gameObject.AddComponent<Draggable>();
         }

@@ -86,9 +86,7 @@ public class ReticleScript : MonoBehaviour {
 
             if (draggableTarget)
             {
-                if (targSys.GetTarget() == draggableTarget.transform 
-                && (!targSys.GetTarget().GetComponent<Entity>() 
-                || targSys.GetTarget().GetComponent<Entity>().faction == craft.faction))
+                if (targSys.GetTarget() == draggableTarget.transform)
                 {
                     PlayerCore player = craft.GetComponent<PlayerCore>();
                     player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
