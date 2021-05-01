@@ -35,10 +35,7 @@ public class AreaRestore : Ability
                     {
                         ally.TakeShellDamage(-500f, 0f, GetComponentInParent<Entity>());
                     }
-                    if (ally.GetHealth()[1] < ally.GetMaxHealth()[1])
-                    {
-                        ally.TakeCoreDamage(-500f);
-                    }
+                    
                 }
             }
         }
