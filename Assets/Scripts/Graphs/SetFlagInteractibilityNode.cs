@@ -12,7 +12,7 @@ public enum FlagInteractibility
 namespace NodeEditorFramework.Standard
 {
     // sets interactibility for flags, if they are interactible also allows you to do specialized tasks with them (e.g., warping)
-    [Node(false, "Actions/Set Flag Interactibility", typeof(SectorCanvas))]
+    [Node(false, "Actions/Set Flag Interactibility")]
     public class SetFlagInteractibilityNode : Node
     {
         public override string GetName { get { return "SetFlagInteractibilityNode"; } }
@@ -43,8 +43,6 @@ namespace NodeEditorFramework.Standard
         {
             // Params: Flag name, Flag interactibility enum
             // If warp: grab entity ID and sector through entity selection
-            GUILayout.Label("Warning: Node not tested on mission graphs (intended for sector graphs)");
-            GUILayout.Label("Flag name (NOT ID): ");
             flagName = GUILayout.TextField(flagName);
             
 
