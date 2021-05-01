@@ -8,6 +8,10 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
+    //i'll leave it up to you to rewrite this in a way that fits the rest of your code
+    [SerializeField] private static float deadzoneDamageMult;
+    [SerializeField] private static float deadzoneDamageBase;
+    private static float deadzoneDamage = deadzoneDamageBase;
     public delegate void SectorLoadDelegate(string sectorName);
     public static SectorLoadDelegate OnSectorLoad;
     public static SectorLoadDelegate SectorGraphLoad;
@@ -141,12 +145,14 @@ public class SectorManager : MonoBehaviour
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
-                player.TakeShellDamage(0.2F * player.GetMaxHealth()[0], 0, null);
-                player.TakeCoreDamage(0.2F * player.GetMaxHealth()[1]);
+                player.TakeShellDamage(deadzoneDamage * player.GetMaxHealth()[0], 0, null);
+                player.TakeCoreDamage(deadzoneDamage * player.GetMaxHealth()[1]);
                 player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
+                deadzoneDamage += deadzoneDamageMult;
             } else dangerZoneTimer += Time.deltaTime;
         } else
         {
+            deadzoneDamage = deadzoneDamageBase;
             dangerZoneTimer = 0;
         }
         
