@@ -77,10 +77,33 @@ public class WorldCreatorCursor : MonoBehaviour
         SetCurrent(0);
         maxIndex = handler.itemPack.items.Count;
         pathCreator = gameObject.AddComponent<WCPathCreator>();
+        AudioManager.StopMusic();
     }
     // Update is called once per frame
     static int sortLayerNum = 1;
     public GUIWindowScripts manual;
+
+    public List<string> music;
+    private float musicTimer;
+    private static readonly float musicTimerThreshold = 10;
+
+    void UpdateMusic()
+    {
+        // time music so that it does not immediately start (5 seconds for now)
+        // play a random song (might make it so that it doesn't play the same song twice)
+        if(music.Count == 0 || !AudioManager.instance) return;
+        if(!AudioManager.instance.playerMusicSource.isPlaying)
+            musicTimer += Time.deltaTime;
+
+        // TODO: Add null logic to AudioManager when the song is done playing
+        if(musicTimer >= musicTimerThreshold)
+        {
+            musicTimer = 0;
+            var track = music[Random.Range(0,music.Count)];
+            AudioManager.PlayMusic(track, false);
+        }
+    }
+
     void Update() {
 		current.pos = CalcPos(current.type);
         if(current.obj) {
@@ -88,6 +111,7 @@ public class WorldCreatorCursor : MonoBehaviour
         }
 
         UpdateEntityAppearances();
+        UpdateMusic();
 
         VisualizeMouseInSector();
 
