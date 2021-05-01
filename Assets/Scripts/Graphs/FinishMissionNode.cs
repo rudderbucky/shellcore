@@ -44,6 +44,7 @@ namespace NodeEditorFramework.Standard
                 MissionCondition.OnMissionStatusChange.Invoke(mission);
             DialogueSystem.ShowMissionComplete(mission, rewardsText);
             AudioManager.OverrideMusicTemporarily(jingleID);
+            TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
             (Canvas.Traversal as Traverser).lastCheckpointName = mission.name + "_complete";
             TaskManager.Instance.AttemptAutoSave();
             return -1;
