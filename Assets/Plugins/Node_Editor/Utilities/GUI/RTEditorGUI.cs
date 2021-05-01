@@ -435,7 +435,9 @@ namespace NodeEditorFramework.Utilities
 		public static float FloatField (GUIContent label, float value, params GUILayoutOption[] options)
 		{
 			Rect totalPos = GetFieldRect (label, GUI.skin.label, options);
-			Rect fieldPos = PrefixLabel (totalPos, 0.5f, label, GUI.skin.label);
+			// push out the label a little
+			totalPos.xMin += 5;
+			Rect fieldPos = PrefixLabel (totalPos, 1f, label, GUI.skin.label);
 			return FloatField (fieldPos, value, options);
 		}
 
@@ -472,7 +474,7 @@ namespace NodeEditorFramework.Utilities
 			// Handle custom copy-paste
 			str = HandleCopyPaste(floatFieldID) ?? str;
 
-			string strValue = GUI.TextField (pos, str);
+			string strValue = GUILayout.TextField (str);
 			if (recorded)
 				activeFloatFieldString = strValue;
 

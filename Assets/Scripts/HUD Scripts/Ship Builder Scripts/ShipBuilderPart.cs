@@ -74,8 +74,9 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 		var closeConstant = mode == BuilderMode.Workshop ? -1.2F : -1F;
 		var rect1 = ShipBuilder.GetRect(rectTransform);
 		var rect2 = ShipBuilder.GetRect(otherPart.rectTransform);
-		rect1.Expand(closeConstant * rect1.extents);
-		rect2.Expand(closeConstant * rect2.extents);
+		// add small number (0.005) to deal with floating point issues
+		rect1.Expand((closeConstant - 0.005F) * rect1.extents);
+		rect2.Expand((closeConstant - 0.005F) * rect2.extents);
 		return rect1.Intersects(rect2);
 	}
 	

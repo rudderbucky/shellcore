@@ -510,13 +510,23 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         AudioManager.PlayClipByID("clip_explosion1", transform.position);
 
+        // 1 part drop style - choose a random part if the criteria fits, set it to collectible
+        if(!FactionManager.IsAllied(0, faction) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
+            ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
+            // extract non-shell parts
+            var selectedParts = parts.FindAll(p => p != shell);
+
+            // find random part and set to collectible
+            if(selectedParts.Count > 0)
+            {
+                var randomPart = Random.Range(0,selectedParts.Count);
+                selectedParts[randomPart].SetCollectible(true);
+                if(sectorMngr) AIData.strayParts.Add(selectedParts[randomPart]);
+            }
+        }
+
         for(int i = 0; i < parts.Count; i++)
         {
-            if(!FactionManager.IsAllied(0, faction) && (parts[i] != shell) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
-                ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
-                parts[i].SetCollectible(true);
-                if(sectorMngr) AIData.strayParts.Add(parts[i]);
-            }
             parts[i].Detach();
         }
 
@@ -719,8 +729,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// </summary>
     public void MakeBusy() 
     {
-        isBusy = true; // set to true
-        busyTimer = 0; // reset timer
+        isBusy = true; 
+        busyTimer = 0; 
     }
 
     /// <summary>
@@ -729,7 +739,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <returns>true if the craft is busy, false otherwise</returns>
     public bool GetIsBusy() 
     {
-        return isBusy; // is busy
+        return isBusy; 
     }
 
     /// <summary>
@@ -737,7 +747,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// </summary>
     public void SetIntoCombat() 
     {
-        isInCombat = true; // set these to true
+        isInCombat = true; 
         isBusy = true;
         busyTimer = 0; // reset timers
         combatTimer = 0;
@@ -749,7 +759,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <returns>true if the craft is in combat, false otherwise</returns>
     public bool GetIsInCombat()
     {
-        return isInCombat; // is in combat
+        return isInCombat; 
     }
 
     /// <summary>
@@ -768,7 +778,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <returns>the targeting system of the craft</returns>
     public TargetingSystem GetTargetingSystem() 
     {
-        return targeter; // get targeting system
+        return targeter; 
     }
 
     /// <summary>
@@ -777,7 +787,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <returns>the current health array of the craft</returns>
     public float[] GetHealth() 
     {
-        return currentHealth; // get current health
+        return currentHealth; 
     }
 
     /// <summary>
@@ -786,7 +796,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <returns>the maximum health array of the craft</returns>
     public float[] GetMaxHealth() 
     {
-        return maxHealth; // get max health
+        return maxHealth; 
     }
 
     /// <summary>

@@ -43,6 +43,12 @@ public class ShellPart : MonoBehaviour {
 
     public void SetCollectible(bool collectible) {
         this.collectible = collectible;
+        // try setting the part to shiny
+        if(!shinyCheck && collectible)
+        {
+            shinyCheck = true;
+            ShinyCheck();
+        }
     }
 
     public float GetPartMass()
@@ -106,7 +112,7 @@ public class ShellPart : MonoBehaviour {
     /// <summary>
     /// Detach the part from the Shellcore
     /// </summary>
-    public void Detach() {
+    public void Detach(bool drop = false) {
         if (name != "Shell Sprite")
             transform.SetParent(null, true);
 
@@ -246,11 +252,7 @@ public class ShellPart : MonoBehaviour {
         else if (hasDetached) { // if it has actually detached
             if (collectible && detachible && !SectorManager.instance.current.partDropsDisabled)
             {
-                if(!shinyCheck)
-                {
-                    shinyCheck = true;
-                    ShinyCheck();
-                }
+                
                 rigid.drag = 25;
                 // add "Draggable" component so that shellcores can grab the part
                 if (!draggable) draggable = gameObject.AddComponent<Draggable>();
