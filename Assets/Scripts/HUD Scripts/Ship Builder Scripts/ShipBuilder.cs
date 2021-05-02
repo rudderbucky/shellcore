@@ -51,7 +51,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public GameObject editorModeButtons;
 	public static WorldData.CharacterData currentCharacter;
 	public GameObject editorModeAddPartSection;
-	public ShipBuilder instance;
+	public static ShipBuilder instance;
 	public static bool heavyCheat = false;
 	private int editorCoreTier = 0;
 		public BuilderMode GetMode() {
@@ -229,8 +229,19 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 	}
 
+	Vector2 GetImageBoundsBySprite(Image img)
+	{
+		return img.sprite.bounds.size * 100;
+	}
+
 	public bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart)
 	{
+		// make sure calculations here are only with core1_shell
+		// TODO: optimize by storing the sprite in a specific reference
+		var oldSprite = shell.sprite;
+		shell.sprite = ResourceManager.GetAsset<Sprite>("core1_shell");
+		shell.rectTransform.sizeDelta = GetImageBoundsBySprite(shell);
+
 		var shellRect = GetRect(shell.rectTransform);
 
 		var partBounds = GetRect(shipPart.rectTransform);
@@ -240,8 +251,15 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <=
 			0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
 			shipPart.isInChain = !z;
+
+			// reset sprite
+			shell.sprite = oldSprite;
+			shell.rectTransform.sizeDelta = GetImageBoundsBySprite(shell);
 			return z;
 		}
+
+		shell.sprite = oldSprite;
+		shell.rectTransform.sizeDelta = GetImageBoundsBySprite(shell);
 		return false;
 	}
 
@@ -345,6 +363,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		// initialize window on screen
 		if(initialized) CloseUI(false); // prevent initializing twice by closing UI if already initialized
 		initialized = true;
+		instance = this;
 		Activate();
 		cursorScript.gameObject.SetActive(false);
 		cursorScript.SetBuilder(this);
@@ -905,7 +924,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			cores.Add("drone_shell");
 			
 			editorCoreTier++;
-			shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier % cores.Count]);
+			editorCoreTier %= cores.Count;
+			shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier]);
 			if(editorCoreTier == cores.Count - 2)
 				core.sprite = ResourceManager.GetAsset<Sprite>("groundcarriercore");
 			else if(editorCoreTier == cores.Count - 1)
