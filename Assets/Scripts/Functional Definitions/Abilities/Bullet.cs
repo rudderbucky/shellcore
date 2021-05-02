@@ -84,8 +84,7 @@ public class Bullet : WeaponAbility
 
         // Add velocity to the bullet
         Vector3 predictionAdjuster = Vector2.zero;
-        if(targetingSystem.GetTarget()) predictionAdjuster = (targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity) * survivalTime 
-            / (bulletSpeed / 2);
+        if(targetingSystem.GetTarget()) predictionAdjuster = (targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity) * survivalTime / 2;
         bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos + predictionAdjuster) * bulletSpeed;
 
         // Destroy the bullet after survival time
