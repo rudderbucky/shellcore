@@ -8,9 +8,8 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
-    //i'll leave it up to you to rewrite this in a way that fits the rest of your code
-    [SerializeField] private static float deadzoneDamageMult;
-    [SerializeField] private static float deadzoneDamageBase;
+    private static float deadzoneDamageMult = 0.1f;
+    private static float deadzoneDamageBase = 0.2f;
     private static float deadzoneDamage = deadzoneDamageBase;
     public delegate void SectorLoadDelegate(string sectorName);
     public static SectorLoadDelegate OnSectorLoad;
