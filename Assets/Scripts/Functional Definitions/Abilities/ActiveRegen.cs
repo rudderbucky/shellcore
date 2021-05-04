@@ -38,21 +38,12 @@ public class ActiveRegen : ActiveAbility
     public override void Deactivate()
     {
         base.Deactivate();
-        if (Core && State == AbilityState.Active)
+        if (Core)
         {
             float[] regens = Core.GetRegens();
             regens[index] -= healAmount * abilityTier;
             Core.SetRegens(regens);
-            State = AbilityState.Cooldown;
         }
-    }
-
-    public override void Tick()
-    {
-        AbilityState prevState = State;
-        base.Tick();
-        if (State == AbilityState.Active && prevState != AbilityState.Active)
-            AudioManager.PlayClipByID("clip_activateability", transform.position);
     }
 
     /// <summary>
@@ -60,7 +51,12 @@ public class ActiveRegen : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        State = AbilityState.Active;
+        AudioManager.PlayClipByID("clip_activateability", transform.position);
+        float[] regens = Core.GetRegens();
+        regens[index] += healAmount * abilityTier;
+        Core.SetRegens(regens);
         base.Execute();
+
+        Debug.Log("Increased regen!");
     }
 }

@@ -53,7 +53,6 @@ public abstract class ActiveAbility : Ability
     override protected void Execute()
     {
         base.Execute();
-        startTime = Time.time;
     }
 
     /// <summary>

@@ -41,6 +41,5 @@ public class AreaRestore : Ability
                 }
             }
         }
-        startTime = Time.time;
     }
 }

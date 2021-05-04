@@ -52,9 +52,11 @@ public abstract class Ability : MonoBehaviour {
     protected float startTime; // the time the ability was activated by the entity
     private Color originalIndicatorColor;
     protected int abilityTier;
-    public ShellPart part;
-    public string abilityName = "Ability";
     protected string description = "Does things";
+    protected ShellPart part;
+
+    public ShellPart Part { set { part = value; } }
+    public string abilityName = "Ability";
     public SpriteRenderer glow;
 
     public bool isEnabled { get; set; } = true;
@@ -223,7 +225,9 @@ public abstract class Ability : MonoBehaviour {
             Core.TakeEnergy(energyCost); // remove the energy
             startTime = Time.time; // Set activation time
             UpdateState(); // Update state
-            Execute();
+            // If there's no charge time, execute immediately
+            if (State == AbilityState.Active || State == AbilityState.Cooldown)
+                Execute();
         }
     }
 
@@ -242,13 +246,13 @@ public abstract class Ability : MonoBehaviour {
 
         UpdateBlinker();
 
-        //// If ability activated
-        //if (State == AbilityState.Active && prevState != AbilityState.Active)
-        //{
-        //    Execute(); // execute the ability
-        //}
-        // else
-        if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown)
+        // If ability activated
+        if (State == AbilityState.Active && prevState == AbilityState.Charging)
+        {
+            Execute(); // execute the ability
+        }
+        // If the ability needs to cool down
+        else if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown)
         {
             Deactivate(); // deactivate the ability
         }

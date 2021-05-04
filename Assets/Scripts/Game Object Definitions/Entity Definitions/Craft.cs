@@ -37,14 +37,16 @@ public abstract class Craft : Entity
     public void AddPin()
     {
         pins++;
+        Debug.Log("Pin added! Count: " + pins);
     }
 
     public void RemovePin()
     {
         pins--;
+        Debug.Log("Pin removed! Count: " + pins);
         if (pins < 0)
         {
-            Debug.LogError("Negative pins!");
+            Debug.LogError($"Negative pins! {name}");
             pins = 0;
         }
     }
@@ -112,7 +114,8 @@ public abstract class Craft : Entity
             if (ability is ActiveAbility)
             {
                 ActiveAbility aa = (ability as ActiveAbility);
-                aa.Deactivate();
+                if (aa.State == Ability.AbilityState.Active)
+                    aa.Deactivate();
             }
         }
         transform.rotation = Quaternion.identity; // reset rotation so part rotation can be reset

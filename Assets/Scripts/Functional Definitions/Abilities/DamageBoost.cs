@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public class DamageBoost: ActiveAbility
 {
-    bool activated = false;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -23,12 +22,11 @@ public class DamageBoost: ActiveAbility
     /// </summary>
     public override void Deactivate()
     {
-        if(Core && activated)
+        if(Core)
         {
             Core.damageAddition -= 150;
+            base.Deactivate();
         }
-            
-        base.Deactivate();
     }
 
     /// <summary>
@@ -39,10 +37,8 @@ public class DamageBoost: ActiveAbility
         if (Core)
         {
             Core.damageAddition += 150;
-            activated = true;
+            AudioManager.PlayClipByID("clip_buff", transform.position);
+            base.Execute();
         }
-
-        AudioManager.PlayClipByID("clip_buff", transform.position);
-        base.Execute();
     }
 }

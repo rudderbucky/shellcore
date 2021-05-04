@@ -8,6 +8,7 @@ using UnityEngine;
 public class PinDown : ActiveAbility
 {
     Craft target;
+    float rangeSquared = 15f * 15f;
 
     protected override void Awake()
     {
@@ -35,7 +36,7 @@ public class PinDown : ActiveAbility
     {
         AudioManager.PlayClipByID("clip_activateability", transform.position);
         var targeting = Core.GetTargetingSystem();
-        float minDist = float.MaxValue;
+        float minDist = rangeSquared;
         target = null;
         for (int i = 0; i < AIData.entities.Count; i++)
         {

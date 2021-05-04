@@ -96,6 +96,11 @@ public class DevConsoleScript : MonoBehaviour
                 int number = int.Parse(command.Substring(11).Trim());
                 PlayerCore.Instance.shards += number;
             }
+            else if (command.StartsWith("Add money ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int number = int.Parse(command.Substring(10).Trim());
+                PlayerCore.Instance.credits += number;
+            }
             else if (command.Equals("Full log", StringComparison.CurrentCultureIgnoreCase))
             {
                 fullLog = true;

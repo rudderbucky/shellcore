@@ -76,6 +76,7 @@ public class HealthHeal : Ability
         }
         else {
             Core.TakeEnergy(-energyCost); // refund energy
+            startTime = Time.time - cooldownDuration;
         }
     }
 }

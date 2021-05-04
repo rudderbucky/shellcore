@@ -132,6 +132,7 @@ public class AIAbilityController
                 {
                     damageBoost.Activate();
                 }
+                // TODO: use only if the enemy is close enough!
                 var pinDown = GetAbilities(27); // pin down
                 if (Time.time > nextPin)
                 {
