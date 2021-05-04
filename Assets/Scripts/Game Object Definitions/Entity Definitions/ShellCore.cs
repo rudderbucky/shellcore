@@ -22,9 +22,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     {
         if (sectorMngr)
         {
-            return intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction);
+            return Mathf.Min(intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction), 99);
         }
-        else return intrinsicCommandLimit;
+        else return Mathf.Min(intrinsicCommandLimit, 99);
     }
 
     public void SetCarrier(ICarrier carrier)
