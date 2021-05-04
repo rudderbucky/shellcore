@@ -16,8 +16,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
-    private TractorBeam tractor;
-
+    private TractorBeam tractor; 
+    public PlayerCore player;
     public int GetTotalCommandLimit()
     {
         if (sectorMngr)
@@ -58,6 +58,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     {
         tractor.SetTractorTarget(null);
         base.OnDeath();
+        if(lastDamagedBy as PlayerCore){
+            (lastDamagedBy as PlayerCore).shellcoreKills ++;
+        }
     }
 
 

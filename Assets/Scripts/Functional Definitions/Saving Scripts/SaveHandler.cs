@@ -89,6 +89,8 @@ public class SaveHandler : MonoBehaviour {
 		save.currentHealths = player.currentHealth;
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
+		save.creditsGained = player.creditsGained;
+		save.shellcoreKills = player.shellcoreKills;
 		save.credits = player.credits;
         save.abilityCaps = player.abilityCaps;
         save.shards = player.shards;

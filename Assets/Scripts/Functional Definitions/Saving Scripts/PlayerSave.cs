@@ -43,6 +43,8 @@ public class PlayerSave {
 	public string[] presetBlueprints;
 	public float timePlayed;
 	public int credits;
+	public int shellcoreKills;
+	public int creditsGained;
     public string[] taskVariableNames;
     public int[] taskVariableValues;
 	public int[] abilityCaps;
