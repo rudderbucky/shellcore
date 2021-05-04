@@ -25,7 +25,8 @@ public class SpawnDrone : ActiveAbility
     {
         ID = AbilityID.SpawnDrone;
         cooldownDuration = spawnData.cooldown;
-        activeDuration = spawnData.delay; 
+        chargeDuration = spawnData.delay;
+        activeDuration = spawnData.delay + 0.1f;
         // create blueprint from string json in spawn data
         blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
         JsonUtility.FromJsonOverwrite(spawnData.drone, blueprint);
