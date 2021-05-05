@@ -29,15 +29,13 @@ public abstract class ActiveAbility : Ability
 
     public override void SetDestroyed(bool input)
     {
+        //if (input && State == AbilityState.Active)
+        //    Deactivate();
         base.SetDestroyed(input);
-        if (input && State == AbilityState.Active)
-            Deactivate();
     }
 
     private void OnDestroy()
     {
-        if (State == AbilityState.Active)
-            Deactivate();
         if (State != AbilityState.Destroyed)
             SetDestroyed(true);
     }

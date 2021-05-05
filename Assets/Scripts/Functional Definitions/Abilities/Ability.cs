@@ -267,6 +267,14 @@ public abstract class Ability : MonoBehaviour {
         }
         else if (State == AbilityState.Active)
         {
+            // Do not reveal stealth enemies by blinking their parts
+            if (ID == AbilityID.Stealth && core.faction != 0)
+            {
+                if (glow)
+                    Destroy(glow.gameObject);
+                return;
+            }
+
             var blinker = GetBlinker();
 
             // Blink

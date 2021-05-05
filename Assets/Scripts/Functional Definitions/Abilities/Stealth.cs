@@ -34,7 +34,7 @@ public class Stealth : ActiveAbility
 
         if (craft.stealths < 0)
         {
-            Debug.LogError("Stealth is bugged, complain to Ormanus");
+            Debug.LogError($"Stealth is bugged, complain to Ormanus [entity name: {craft.name}, faction: {craft.faction}, count: {craft.stealths}");
         }
 
         if (craft.stealths == 0)
