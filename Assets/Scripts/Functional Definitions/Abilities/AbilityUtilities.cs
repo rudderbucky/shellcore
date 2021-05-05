@@ -101,6 +101,8 @@ public class AbilityUtilities : MonoBehaviour {
 			case 19:
 			case 20:
 			case 21:
+			case 22:
+			case 23:
 			case 34:
                 return AbilityHandler.AbilityTypes.Passive;
 			case 0:

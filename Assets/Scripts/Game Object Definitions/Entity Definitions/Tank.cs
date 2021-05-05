@@ -122,6 +122,9 @@ public class Tank : GroundCraft, IOwnable
 
     protected virtual void drive()
     {
+        if (!isOnGround)
+            return;
+            
         if (hasPath)
         {
             Vector2 direction = path[index] - (Vector2)transform.position;

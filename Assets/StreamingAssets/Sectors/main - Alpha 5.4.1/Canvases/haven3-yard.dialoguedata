@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="69.25,172.25" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-1108087424" type="StartDialogueNode" pos="-600,-150">
+			<Port ID="1850089088" name="input" dynamic="False" />
+			<Port ID="-1573637504" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="2010232037" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="2074863232" type="DialogueNode" pos="-300,-150">
+			<Port ID="-536197376" name="input" dynamic="False" />
+			<Port ID="-79584384" name="cancel" dynamic="False" />
+			<Port ID="1042668416" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">228</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="2080108544" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">283</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-140401469" />
+			<Variable name="answers" refID="1373557248" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-1530657536" type="EndDialogue" pos="50,50">
+			<Port ID="812648960" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">true</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1573637504" port2ID="-536197376" />
+		<Connection port1ID="1042668416" port2ID="812648960" />
+		<Connection port1ID="2080108544" port2ID="812648960" />
+	</Connections>
+	<Objects>
+		<Object refID="2010232037" type="System.String">
+			<string>haven3-yard1</string>
+		</Object>
+		<Object refID="-140401469" type="System.String">
+			<string>While reconstructing your shell, you should also have been able to rearrange and sort your special skill, but the devs are lazy, so you can't do that yet. Remind them!</string>
+		</Object>
+		<Object refID="1373557248" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I would like to change my shell configuration.</string>
+				<string>On second thought, no thanks.</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

@@ -24,8 +24,19 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     bool gleamed;
     bool dragging;
     Vector3 oldInputMousePos;
+    KeyName keycode;
 
-    public void Init(Ability ability, string hotkeyText, Entity entity)
+    string GetPrettyStringFromKeycode(KeyCode code)
+    {
+        var str = code.ToString();
+       
+        if(str.Length >= 5 &&  str.Substring(0, 5) == "Alpha")
+            str = str.Remove(0, 5);
+ 
+        return str;
+    }
+
+    public void Init(Ability ability, string hotkeyText, Entity entity, KeyName keycode)
     {
         this.entity = entity;
         abilities.Add(ability);
@@ -34,7 +45,9 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         ReflectName(ability);
         ReflectDescription(ability);
         ReflectTier(ability);
-        ReflectHotkey(hotkeyText);
+        ReflectHotkey(keycode);
+
+        this.keycode = keycode;
 
         // set up image
         abilityImage.sprite = AbilityUtilities.GetAbilityImage(ability);
@@ -42,13 +55,14 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         gleamed = ability is PassiveAbility;
     }
 
-    public void ReflectHotkey(string hotkeyText)
+    public void ReflectHotkey(KeyName keycode)
     {
+        this.keycode = keycode;
         // set up hotkey display
         if(hotkeyText != null)
         {
             this.hotkeyText.transform.parent.gameObject.SetActive(true);
-            this.hotkeyText.text = hotkeyText;
+            this.hotkeyText.text = GetPrettyStringFromKeycode(InputManager.keys[keycode].overrideKey);
         } 
         else this.hotkeyText.transform.parent.gameObject.SetActive(false);
     }
@@ -185,7 +199,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         if(!entity.GetIsDead())
         {
-            bool hotkeyAccepted = (Input.GetKeyDown(hotkeyText.text) && !InputManager.GetKey(KeyName.TurretQuickPurchase));
+            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase)) && !PlayerViewScript.paused;
             if(abilities[0] is WeaponAbility)
             {
                 foreach(var ab in abilities)

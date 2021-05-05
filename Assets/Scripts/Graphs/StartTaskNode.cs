@@ -194,7 +194,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            Debug.Log("Force Task: " + forceTask + " Entity ID: " + entityIDforConfirmedResponse);
+
             if(!forceTask)
             {
                 DialogueSystem.ShowTaskPrompt(this, TaskManager.GetSpeaker());
@@ -248,7 +248,7 @@ namespace NodeEditorFramework.Standard
             (Canvas.Traversal as Traverser).lastCheckpointName = taskName;
             TaskManager.Instance.AttemptAutoSave();
 
-            Debug.Log("Task started, Entity ID:  " + dialogueText + " " + entityIDforConfirmedResponse);
+
 
             if(entityIDforConfirmedResponse != null && entityIDforConfirmedResponse != "")
             {

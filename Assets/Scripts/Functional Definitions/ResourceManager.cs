@@ -59,7 +59,7 @@ public class ResourceManager : MonoBehaviour
     {
         if (!path.Equals(Application.streamingAssetsPath))
         {
-            Debug.Log("Attempting to load additional resources from: \"" + path + "\"");
+            // Debug.Log("Attempting to load additional resources from: \"" + path + "\"");
         }
 
         var sprites = new List<(string, string)>();
@@ -196,7 +196,7 @@ public class ResourceManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Resource file does not exist.");
+            // Debug.Log("Resource file does not exist.");
             return false;
         }
 
@@ -251,7 +251,7 @@ public class ResourceManager : MonoBehaviour
         {
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError)
+            if (www.result == UnityWebRequest.Result.ConnectionError)
             {
                 Debug.LogError(www.error);
             }

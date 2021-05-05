@@ -35,7 +35,7 @@ public class SaveHandler : MonoBehaviour {
 			if(save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "") {
 				JsonUtility.FromJsonOverwrite(save.currentPlayerBlueprint, player.blueprint);
 			} else {
-				Debug.LogWarning("Save should have been given a currentPlayerBlueprint by now.");
+				Debug.LogError("Save should have been given a currentPlayerBlueprint by now.");
 				player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 				player.blueprint.baseRegen = new float[] {60,0,60};
 				player.blueprint.shellHealth = new float[] {1000,250,500};
@@ -49,7 +49,6 @@ public class SaveHandler : MonoBehaviour {
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
-
 			player.Rebuild();
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
@@ -60,7 +59,7 @@ public class SaveHandler : MonoBehaviour {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
 		} else {
-			Debug.LogWarning("There was not a save or test save that was ready on load.");
+			Debug.LogError("There was not a save or test save that was ready on load.");
 			save = new PlayerSave();
 			save.presetBlueprints = new string[5];
 			save.currentHealths = new float[] {1000,250,500};

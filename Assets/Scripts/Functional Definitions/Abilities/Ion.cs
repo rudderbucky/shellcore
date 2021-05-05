@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Ion : WeaponAbility {
-    bool firing = false;
     IonLineController lineController;
     protected override void Awake()
     {

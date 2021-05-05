@@ -95,7 +95,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         return false;
     }
 
-    public void ClearCanvases()
+    public void ClearCanvases(bool doNotClearCanvasPaths = false)
     {
         if (traversers != null)
             for (int i = 0; i < traversers.Count; i++)
@@ -109,7 +109,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
             }
         sectorTraversers = new List<SectorTraverser>();
         traversers = new List<MissionTraverser>();
-        questCanvasPaths.Clear();
+        if(!doNotClearCanvasPaths) questCanvasPaths.Clear();
     }
 
     public void AddCanvasPath(string path)
@@ -187,16 +187,22 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
 
+        if(Instance)
+        {
+            Instance.ClearCanvases(true);
+        }
+            
+
         var XMLImport = new XMLImportExport();
 
         for (int i = 0; i < questCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
-            Debug.Log("Canvas path [" + i + "] = " + finalPath);
+            
             if (finalPath.Contains(".taskdata"))
             {
                 var canvas = XMLImport.Import(finalPath) as QuestCanvas;
-                Debug.Log(canvas);
+
                 if (canvas != null)
                 {
                     traversers.Add(new MissionTraverser(canvas));
@@ -205,7 +211,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
             else if (finalPath.Contains(".sectordata"))
             {
                 var canvas = XMLImport.Import(finalPath) as SectorCanvas;
-                Debug.Log(canvas);
+
                 if (canvas != null)
                 {
                     sectorTraversers.Add(new SectorTraverser(canvas));
@@ -234,12 +240,10 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
         // tasks
         var missions = PlayerCore.Instance.cursave.missions;
-        for (int i = 0; i < missions.Count; i++)
-        {
-            Debug.Log("Mission found: " + missions[i].name + " CP: " + missions[i].checkpoint);
-        }
+
         foreach(var mission in missions)
         {
+            
             if(traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))
             {
                 var traverser = traversers.Find((t) => t.nodeCanvas.missionName == mission.name);

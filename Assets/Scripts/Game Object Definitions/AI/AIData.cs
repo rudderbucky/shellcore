@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AIData
 {
+    public static List<IInteractable> interactables = new List<IInteractable>();
     public static List<Entity> entities = new List<Entity>();
     public static List<EnergyRock> energyRocks = new List<EnergyRock>();
     public static List<EnergySphereScript> energySpheres = new List<EnergySphereScript>();

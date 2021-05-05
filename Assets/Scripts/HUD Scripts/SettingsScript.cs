@@ -98,11 +98,6 @@ public class SettingsScript : MonoBehaviour {
 		//}
 	}
 
-	public void ChangeAbilityKeybind(int index, string val)
-	{
-		AbilityHandler.ChangeKeybind(index, val);
-	}
-
 	public void ChangeMasterVolume(float newVol)
 	{
         if (AudioManager.instance)

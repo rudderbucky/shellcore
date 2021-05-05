@@ -406,10 +406,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     {
                         System.IO.File.Delete(f);
                     }
-                    else
-                    {
-                        del = false;
-                    }
+                    del = false;
                 }
                 if (del)
                     System.IO.Directory.Delete(dir);

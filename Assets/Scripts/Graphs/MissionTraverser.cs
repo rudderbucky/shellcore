@@ -64,7 +64,7 @@ public class MissionTraverser : Traverser
             
             return;
         }
-        Debug.Log(lastCheckpointName + nodeCanvas.missionName);
+
         base.StartQuest();
         SectorManager.OnSectorLoad += ((val) => {if(traverserLimiterDelegate != null) traverserLimiterDelegate.Invoke(val);});
         if(currentNode == null) TaskManager.Instance.RemoveTraverser(this);
@@ -73,12 +73,12 @@ public class MissionTraverser : Traverser
     public override bool activateCheckpoint(string CPName)
     {
         // If the quest has been started, continue
-        Debug.Log("Activating checkpoint! Canvas's mission name: " + nodeCanvas.missionName + " CP: " + CPName);
+
         lastCheckpointName = CPName;
         nodeCanvas.missionName = findRoot().missionName;
         if(CPName == (nodeCanvas.missionName + "_complete")) 
         {
-            Debug.Log("Mission: " + nodeCanvas.missionName + " already complete. Not activating checkpoint or starting.");
+
             PlayerCore.Instance.cursave.missions.Find((mission) => mission.name == nodeCanvas.missionName).status 
                 = Mission.MissionStatus.Complete;
             return true;
@@ -119,7 +119,7 @@ public class MissionTraverser : Traverser
 
     public override void SetNode(Node node)
     {
-        Debug.Log("Mission Canvas " + nodeCanvas.missionName + " now setting node: " + node);
+
         SetDialogueState(node, NodeEditorGUI.NodeEditorState.Mission);
         base.SetNode(node);
     }
@@ -128,7 +128,7 @@ public class MissionTraverser : Traverser
     {
         while (true)
         {
-            Debug.Log("Mission Canvas " +  nodeCanvas.missionName + " now traversing: " + currentNode);
+
             SetDialogueState(currentNode, NodeEditorGUI.NodeEditorState.Mission);
             if (currentNode == null)
                 return;

@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// The base class of every "being" in the game.
 /// </summary>
-public class Entity : MonoBehaviour, IDamageable {
+public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
     public delegate void EntitySpawnDelegate(Entity entity);
     public static EntitySpawnDelegate OnEntitySpawn;
@@ -111,6 +111,21 @@ public class Entity : MonoBehaviour, IDamageable {
     // prevents interaction while entities are in paths
     public bool isPathing = false;
     public static float partDropRate = 0.1f;
+
+    // Code run on reticle double-click/proximity hotkey press
+    public void Interact()
+    {
+        if (TaskManager.interactionOverrides.ContainsKey(ID) && TaskManager.interactionOverrides[ID].Count > 0)
+        {
+            TaskManager.interactionOverrides[ID].Peek().Invoke();
+        }
+        else if (DialogueSystem.interactionOverrides.ContainsKey(ID) && DialogueSystem.interactionOverrides[ID].Count > 0)
+        {
+            DialogueSystem.interactionOverrides[ID].Peek().Invoke();
+        }
+		else DialogueSystem.StartDialogue(dialogue, this);
+    }
+
     public void UpdateInteractible()
     {
         interactible = GetDialogue() && faction == 0; 
@@ -125,7 +140,9 @@ public class Entity : MonoBehaviour, IDamageable {
 
         if(isPathing || DialogueSystem.isInCutscene) interactible = false;
 
-        if(this as ShellCore && SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone) interactible = false;
+        if(this as ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone) interactible = false;
+
+        if(isDead) interactible = false;
     }
 
     public bool GetInteractible()
@@ -223,7 +240,7 @@ public class Entity : MonoBehaviour, IDamageable {
             childObject.AddComponent<MinimapLockRotationScript>();
         }
         
-        if (!GetComponent<Draggable>() && (this as Drone || this as Tank || this as Turret))
+        if (!GetComponent<Draggable>())
         {
             draggable = gameObject.AddComponent<Draggable>();
         }
@@ -262,7 +279,7 @@ public class Entity : MonoBehaviour, IDamageable {
     protected virtual void BuildEntity()
     {
         // all created entities should have blueprints!
-        if (!blueprint) Debug.Log(this + " does not have a blueprint! EVERY constructed entity should have one!");
+        if (!blueprint) Debug.LogError(this + " does not have a blueprint! EVERY constructed entity should have one!");
 
         // Remove possible old parts from list
         foreach(var part in parts)
@@ -349,7 +366,7 @@ public class Entity : MonoBehaviour, IDamageable {
                 tmp.x = part.mirrored ? -1 : 1;
                 partObject.transform.localScale = tmp;
                 sr.sortingOrder = i + 2;
-                entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
+                //entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
                 var partWeight = isLightDrone ? partBlueprint.mass * 0.6F * weightMultiplier : partBlueprint.mass * weightMultiplier;
                 weight += partWeight;
                 maxHealth[0] += partBlueprint.health / 2;
@@ -496,13 +513,23 @@ public class Entity : MonoBehaviour, IDamageable {
 
         AudioManager.PlayClipByID("clip_explosion1", transform.position);
 
+        // 1 part drop style - choose a random part if the criteria fits, set it to collectible
+        if(!FactionManager.IsAllied(0, faction) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
+            ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
+            // extract non-shell parts
+            var selectedParts = parts.FindAll(p => p != shell);
+
+            // find random part and set to collectible
+            if(selectedParts.Count > 0)
+            {
+                var randomPart = Random.Range(0,selectedParts.Count);
+                selectedParts[randomPart].SetCollectible(true);
+                if(sectorMngr) AIData.strayParts.Add(selectedParts[randomPart]);
+            }
+        }
+
         for(int i = 0; i < parts.Count; i++)
         {
-            if(!FactionManager.IsAllied(0, faction) && (parts[i] != shell) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
-                ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
-                parts[i].SetCollectible(true);
-                if(sectorMngr) AIData.strayParts.Add(parts[i]);
-            }
             parts[i].Detach();
         }
 
@@ -556,6 +583,10 @@ public class Entity : MonoBehaviour, IDamageable {
         {
             AIData.entities.Add(this);
         }
+        if(!AIData.interactables.Contains(this)) 
+        {
+            AIData.interactables.Add(this);
+        }
            
         if(this is IVendor)
             AIData.vendors.Add(this);
@@ -565,10 +596,11 @@ public class Entity : MonoBehaviour, IDamageable {
     {
         if(AIData.entities.Contains(this))
             AIData.entities.Remove(this);
+        if(AIData.interactables.Contains(this))
+            AIData.interactables.Remove(this);
         if (this is IVendor)
             AIData.vendors.Remove(this);
-        if (SectorManager.instance != null)
-            SectorManager.instance.RemoveObject(ID);
+        SectorManager.instance.RemoveObject(ID, gameObject);
     }
 
     virtual protected void Start()
@@ -700,8 +732,8 @@ public class Entity : MonoBehaviour, IDamageable {
     /// </summary>
     public void MakeBusy() 
     {
-        isBusy = true; // set to true
-        busyTimer = 0; // reset timer
+        isBusy = true; 
+        busyTimer = 0; 
     }
 
     /// <summary>
@@ -710,7 +742,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// <returns>true if the craft is busy, false otherwise</returns>
     public bool GetIsBusy() 
     {
-        return isBusy; // is busy
+        return isBusy; 
     }
 
     /// <summary>
@@ -718,7 +750,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// </summary>
     public void SetIntoCombat() 
     {
-        isInCombat = true; // set these to true
+        isInCombat = true; 
         isBusy = true;
         busyTimer = 0; // reset timers
         combatTimer = 0;
@@ -730,7 +762,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// <returns>true if the craft is in combat, false otherwise</returns>
     public bool GetIsInCombat()
     {
-        return isInCombat; // is in combat
+        return isInCombat; 
     }
 
     /// <summary>
@@ -749,7 +781,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// <returns>the targeting system of the craft</returns>
     public TargetingSystem GetTargetingSystem() 
     {
-        return targeter; // get targeting system
+        return targeter; 
     }
 
     /// <summary>
@@ -758,7 +790,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// <returns>the current health array of the craft</returns>
     public float[] GetHealth() 
     {
-        return currentHealth; // get current health
+        return currentHealth; 
     }
 
     /// <summary>
@@ -767,7 +799,7 @@ public class Entity : MonoBehaviour, IDamageable {
     /// <returns>the maximum health array of the craft</returns>
     public float[] GetMaxHealth() 
     {
-        return maxHealth; // get max health
+        return maxHealth; 
     }
 
     /// <summary>

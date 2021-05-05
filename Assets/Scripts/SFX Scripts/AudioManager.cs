@@ -22,6 +22,12 @@ public class AudioManager : MonoBehaviour
         timePlayed = new Dictionary<string, float>();
         musicOverrideID = null;
     }
+
+    void Awake()
+    {
+
+    }
+
     void Start() 
     {
         if(!masterMixer) return;

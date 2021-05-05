@@ -81,8 +81,9 @@ public class ItemPropertyDisplay : MonoBehaviour
         jsonField.text = currentItem.shellcoreJSON;
         jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other);
         rotationButtons.SetActive(item.type == ItemType.Platform);
-        nameField.text = currentItem.name;
+        factionDropdown.transform.parent.gameObject.SetActive(item.type != ItemType.Flag && item.type != ItemType.Platform);
         idField.text = currentItem.ID;
+        nameField.text = currentItem.name;
         pathButton.SetActive(item.type == ItemType.Other);
     }
 

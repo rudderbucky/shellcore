@@ -40,7 +40,9 @@ namespace NodeEditorFramework.Standard
 
         public void DeInit()
         {
-            TaskManager.Instance.StopCoroutine(timer);
+            // TODO: Find why the timer is sometimes null
+            if(timer != null)
+                TaskManager.Instance.StopCoroutine(timer);
             timer = null;
             State = ConditionState.Uninitialized;
             Debug.Log("Timer stopped!");
