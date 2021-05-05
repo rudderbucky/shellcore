@@ -24,7 +24,7 @@ public class AchievementScript : MonoBehaviour
     public void updateCreditsGain(){
         creditGain = save.creditsGained;
     }
-    public void updateCreditsSpend(){
+    public void updateCreditsSpent(){
         creditLoss = save.creditsGained - save.credits;
     }
     public void updateSectors(){

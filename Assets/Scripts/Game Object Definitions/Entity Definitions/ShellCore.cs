@@ -17,7 +17,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
     private TractorBeam tractor; 
-    public PlayerCore player;
     public int GetTotalCommandLimit()
     {
         if (sectorMngr)
