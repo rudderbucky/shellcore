@@ -20,7 +20,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public int GetTotalCommandLimit()
     {
-        return sectorMngr ? Mathf.Min(intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction), 99) : Mathf.Min(intrinsicCommandLimit, 99);
+        return Mathf.Min(intrinsicCommandLimit + (sectorMngr ? sectorMngr.GetExtraCommandUnits(faction) : 0), 99);
     }
 
     public void SetCarrier(ICarrier carrier)
