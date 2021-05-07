@@ -515,7 +515,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         // 1 part drop style - choose a random part if the criteria fits, set it to collectible
         if(!FactionManager.IsAllied(0, faction) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
-            ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
+            ( (this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null) 
+            || (this as ShellCore).GetCarrier().GetIsDead() )) {
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
 

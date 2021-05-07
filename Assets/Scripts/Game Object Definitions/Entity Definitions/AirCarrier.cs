@@ -7,6 +7,7 @@ public interface ICarrier : IOwner
 {
     Vector3 GetSpawnPoint();
     bool GetIsInitialized();
+    bool GetIsDead();
 }
 
 public class AirCarrier : AirConstruct, ICarrier {
