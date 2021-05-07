@@ -176,7 +176,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 34:
                 return "Makes allies stronger.";
 			case 35:
-				return "Temporarily pulls you to your tractor target.";
+				return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
 			case 36:
 				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:
