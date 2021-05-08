@@ -165,6 +165,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			builder.DispatchPart(parts[0], ShipBuilder.TransferMode.Return);
 		}
 		UpdateHandler();
+		builder.UpdateChain();
 	}
 	public bool rotateMode;
 	public void RotateLastPart() {
