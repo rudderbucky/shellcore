@@ -32,7 +32,7 @@ public class AirCarrier : AirConstruct, ICarrier {
         category = EntityCategory.Station;
         base.Start();
         initialized = true;
-        coreAlertThreshold = maxHealth[1];
+        coreAlertThreshold = maxHealth[1] * 0.75f;
         shellAlertThreshold = maxHealth[0];
     }
 

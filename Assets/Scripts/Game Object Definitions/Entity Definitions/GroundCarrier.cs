@@ -25,7 +25,7 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         category = EntityCategory.Station;
         base.Start();
         initialized = true;
-        coreAlertThreshold = maxHealth[1];
+        coreAlertThreshold = maxHealth[1] * 0.75f;
         shellAlertThreshold = maxHealth[0];
     }
 
@@ -84,17 +84,17 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         base.TakeCoreDamage(amount);
         if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
             if(currentHealth[1] < 1){
-                shellAlertThreshold = -99999;
+                coreAlertThreshold = -99999;
                 PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
                 PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base has been destroyed! You're on your last life now!</color>");
             }
             else if(currentHealth[1] < (maxHealth[1] / 2)){
-                shellAlertThreshold = 1;
+                coreAlertThreshold = 1;
                 PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
                 PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base is about to die! Kill the attacking enemies NOW!</color>");
             }
             else{
-                shellAlertThreshold = (maxHealth[1] / 2);
+                coreAlertThreshold = (maxHealth[1] / 2);
                 PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
                 PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base is taking Core damage! We won't last much longer!</color>");
             }
