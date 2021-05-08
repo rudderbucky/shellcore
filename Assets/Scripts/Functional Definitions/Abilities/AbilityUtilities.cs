@@ -158,7 +158,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 25:
                 return "All weapon damage increased by 150.";
             case 26:
-                return "Instantly heals self and nearby allies by +500 shell and +500 core.";
+                return "Instantly heals self and nearby allies by +500 shell";
             case 27:
                 return "Immobilizes the target.";
             case 28:
