@@ -20,11 +20,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public int GetTotalCommandLimit()
     {
-        if (sectorMngr)
-        {
-            return intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction);
-        }
-        else return intrinsicCommandLimit;
+        return Mathf.Min(intrinsicCommandLimit + (sectorMngr ? sectorMngr.GetExtraCommandUnits(faction) : 0), 99);
     }
 
     public void SetCarrier(ICarrier carrier)
@@ -77,7 +73,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         ai = GetAI();
         if (ai && ai.getMode() == AirCraftAI.AIMode.Inactive)
         {
-            if(sectorMngr.current.type == Sector.SectorType.BattleZone)
+            if(sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
             {
                 ai.setMode(AirCraftAI.AIMode.Battle);
             }
@@ -106,6 +102,28 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         intrinsicCommandLimit = 0;
         if(!tractor.initialized) {
             tractor.BuildTractor();
+            switch (CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID)) {
+                case 0:
+                    tractor.maxRangeSquared = 225;
+                    tractor.energyPickupRangeSquared = 160;
+                    tractor.maxBreakRangeSquared = 600;
+                    break;
+                case 1:
+                    tractor.maxRangeSquared = 325;
+                    tractor.energyPickupRangeSquared = 240;
+                    tractor.maxBreakRangeSquared = 900;
+                    break;
+                case 2:
+                    tractor.maxRangeSquared = 450;
+                    tractor.energyPickupRangeSquared = 320;
+                    tractor.maxBreakRangeSquared = 1200;
+                    break;
+                case 3:
+                    tractor.maxRangeSquared = 550;
+                    tractor.energyPickupRangeSquared = 400;
+                    tractor.maxBreakRangeSquared = 1500;
+                    break;
+            }
         }
         base.BuildEntity();
     }

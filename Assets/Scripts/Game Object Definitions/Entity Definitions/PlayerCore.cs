@@ -86,7 +86,7 @@ public class PlayerCore : ShellCore {
 
     ICarrier FindCarrier()
     {
-        if (SectorManager.instance.current.type == Sector.SectorType.BattleZone)
+        if (SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             var targets = BattleZoneManager.getTargets();
             for (int i = 0; i < targets.Length; i++)

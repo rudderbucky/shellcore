@@ -13,7 +13,7 @@ public class Turret : AirConstruct, IOwnable
     }
     protected override void Start()
     {
-        if(Random.Range(0, 100) == 99) Debug.Log("Doughnut activated!");
+
         base.Start();
         if (entityBody)
             entityBody.drag = 25f;
@@ -41,11 +41,11 @@ public class Turret : AirConstruct, IOwnable
     {
         if (!isDead && GetComponentInChildren<WeaponAbility>())
         {
-            GetComponentInChildren<WeaponAbility>().Tick(0);
+            GetComponentInChildren<WeaponAbility>().Tick();
         }
         else if (!isDead && GetComponentInChildren<ActiveAbility>())
         {
-            GetComponentInChildren<ActiveAbility>().Tick(1);
+            GetComponentInChildren<ActiveAbility>().Activate();
         }
         base.Update();
     }

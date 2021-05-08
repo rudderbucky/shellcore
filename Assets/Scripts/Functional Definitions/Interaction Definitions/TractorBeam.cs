@@ -5,7 +5,9 @@ using UnityEngine;
 // Tractor beam wrapper class.
 public class TractorBeam : MonoBehaviour
 {
-    public static readonly int maxRangeSquared = 225;
+    public int maxRangeSquared = 225;
+    public int energyPickupRangeSquared = 160;
+    public int maxBreakRangeSquared = 600;
     protected LineRenderer lineRenderer;
     public GameObject glowPrefab;
     public Material tractorMaterial;
@@ -57,6 +59,7 @@ public class TractorBeam : MonoBehaviour
     }
     protected void FixedUpdate()
     {
+        if (!IsValidTarget(target)) SetTractorTarget(null); // Make sure that you are still allowed to tractor the target
         if (target && !owner.GetIsDead()) // Update tractor beam physics
         {
             Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
@@ -114,14 +117,14 @@ public class TractorBeam : MonoBehaviour
                     closest = energies[i].transform;
                 }
             }
-            if (closest && closestD < 160 && target == null)
+            if (closest && closestD < energyPickupRangeSquared && target == null)
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
 			this.energyPickupTimer = 0.0f; // Can change this to a non-zero value to add the timing element back
         }
 
         if ((target && !owner.GetIsDead() && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead()))) // Update tractor beam graphics
         {
-            if(!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > 600 && !(owner as Yard)) 
+            if(!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > maxBreakRangeSquared && !(owner as Yard)) 
             {
                 SetTractorTarget(null); // break tractor if too far away
             } else 
@@ -154,16 +157,33 @@ public class TractorBeam : MonoBehaviour
         //}
         var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
         if(!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp)) AIData.strayParts.Add(targetComp);
-        if (newTarget && !forcedTarget && (newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared && !(owner as Yard))
-            return;
-        if(lineRenderer)
-            lineRenderer.enabled = (newTarget != null);
-        if(target)
-            target.dragging = false;
-        target = newTarget;
-        if (target)
-            target.dragging = true;
+
+        if (IsValidTarget(newTarget))
+        {
+            if (lineRenderer)
+                lineRenderer.enabled = (newTarget != null);
+            if (target)
+                target.dragging = false;
+            target = newTarget;
+            if (target)
+                target.dragging = true;
+        }  
     }
+
+    private bool IsValidTarget(Draggable newTarget)
+    {
+        if (forcedTarget || !newTarget) 
+            return true;
+
+        if ((newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared && !(owner as Yard))
+            return false;
+
+        Entity requestedTarget = newTarget.gameObject.GetComponent<Entity>(); 
+        if (owner.tractorSwitched || !requestedTarget || ((requestedTarget.faction == owner.faction) && (requestedTarget is Drone || requestedTarget is Tank || requestedTarget is Turret)))
+            return true;
+
+        return false;
+    }    
 
     public Draggable GetTractorTarget()
     {

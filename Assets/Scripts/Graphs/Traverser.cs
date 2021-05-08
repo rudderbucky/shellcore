@@ -40,7 +40,7 @@ public class Traverser : NodeCanvasTraversal
     {
         if (currentNode != null)
         {
-            Debug.Log("Continuing quest from " + currentNode.GetName);
+
             Traverse();
             return;
         }
@@ -49,14 +49,14 @@ public class Traverser : NodeCanvasTraversal
         if (currentNode == null && nodeCanvas != null)
         {
             currentNode = findRoot();
-            Debug.Log("Root found for canvas " + nodeCanvas.canvasName + ":" + currentNode);
+
             if (currentNode == null)
             {
                 nodeCanvas = null;
                 return;
             }
             //Start quest
-            Debug.Log("Starting...");
+
             SetNode(currentNode);
         }
     }
@@ -90,7 +90,6 @@ public class Traverser : NodeCanvasTraversal
 
     public override void SetNode(Node node)
     {
-        // Debug.Log(currentNode + " Setting Node");
         currentNode = node;
         if (SystemLoader.AllLoaded)
             Traverse();

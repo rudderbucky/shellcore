@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Beam : WeaponAbility {
-
+public class Beam : WeaponAbility
+{
     public LineRenderer line; // line renderer of the beam
     private Material material; // material used by the line renderer
     private bool firing; // check for line renderer drawing
@@ -21,13 +21,13 @@ public class Beam : WeaponAbility {
         line.sortingLayerName = "Projectiles";
         line.material = material;
         line.startWidth = line.endWidth = 0.15F;
-        cooldownDuration = CDRemaining = 3;
         damage = beamDamage;
         energyCost = 50;
         ID = AbilityID.Beam;
         range = 8;
         category = Entity.EntityCategory.All;
         bonusDamageType = typeof(ShellCore);
+        cooldownDuration = 1f;
     }
     protected override void Start() {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
@@ -55,18 +55,6 @@ public class Beam : WeaponAbility {
         }
         else if(firing && timer >= 0.1F)
         {
-            /*
-            if(line.positionCount > 0 && ((line.GetPosition(1)-line.transform.position).sqrMagnitude 
-                > (line.GetPosition(0)-line.transform.position).sqrMagnitude)) {
-                line.SetPosition(0, line.GetPosition(0) + (line.GetPosition(1)-line.GetPosition(0)).normalized * 2); 
-                if((line.GetPosition(0)-line.transform.position).sqrMagnitude 
-                    > (line.GetPosition(1)-line.transform.position).sqrMagnitude) {
-                    line.SetPosition(0, line.GetPosition(1));
-                }
-                if(nextTargetPart) line.SetPosition(1, partPos);
-                else if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
-            }
-            else line.positionCount = 0;*/
             if(line.startWidth > 0)
             {
                 line.startWidth -= 0.01F;
@@ -75,6 +63,7 @@ public class Beam : WeaponAbility {
             if(line.startWidth < 0)
             {
                 line.startWidth = line.endWidth = 0;
+                firing = false;
             }
 
         } else 
@@ -86,32 +75,26 @@ public class Beam : WeaponAbility {
 
     protected override bool Execute(Vector3 victimPos)
     {
-        if(Core.RequestGCD()) {
-            if(!beamHitPrefab) beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
-            if (targetingSystem.GetTarget()) // check and get the weapon target
-            {
-                AudioManager.PlayClipByID("clip_beam", transform.position);
-                GetDamage();
-                var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>()); 
-                // deal instant damage
+        if(!beamHitPrefab) beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+        AudioManager.PlayClipByID("clip_beam", transform.position);
+        GetDamage();
+        var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
+        // deal instant damage
 
-                if(nextTargetPart) {
-                    nextTargetPart.TakeDamage(residue);
-                    victimPos = partPos = nextTargetPart.transform.position;
-                }
-                // if(targetingSystem.GetTarget().GetComponent<Entity>())
-                //   targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
-                line.positionCount = 2; // render the beam line
-                timer = 0; // start the timer
-                isOnCD = true; // set booleans and return
-                firing = true;
+        if (nextTargetPart)
+        {
+            nextTargetPart.TakeDamage(residue);
+            victimPos = partPos = nextTargetPart.transform.position;
+        }
+        // if(targetingSystem.GetTarget().GetComponent<Entity>())
+        //   targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
+        line.positionCount = 2; // render the beam line
+        timer = 0; // start the timer
+        firing = true;
 
-                Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
-                InstantiateParticles(victimPos);
-                return true;
-            }
-            return false;
-        } return false;
+        Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
+        InstantiateParticles(victimPos);
+        return true;
     }
 
     public GameObject particlePrefab;

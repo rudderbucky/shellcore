@@ -445,6 +445,8 @@ namespace NodeEditorFramework.Utilities
 		public static float FloatField (float value, params GUILayoutOption[] options)
 		{
 			Rect pos = GetFieldRect (GUIContent.none, null, options);
+			pos.xMin = Mathf.Max(5, pos.xMin);
+			pos.xMax -= 5;
 			return FloatField (pos, value, options);
 		}
 

@@ -166,7 +166,7 @@ namespace NodeEditorFramework.Standard
 
         void SetFollowerID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+
 
             followerID = ID;
             WorldCreatorCursor.selectEntity -= SetFollowerID;
@@ -175,7 +175,7 @@ namespace NodeEditorFramework.Standard
 
         void SetTargetID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+
 
             followerID = ID;
             WorldCreatorCursor.selectEntity -= SetTargetID;
@@ -217,8 +217,6 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
-            Debug.Log("Follower ID: " + followerID);
-            Debug.Log("Target ID: " + targetID);
 
             if (!stopFollowing)
             {
@@ -230,7 +228,7 @@ namespace NodeEditorFramework.Standard
                         if (AIData.entities[i].ID == followerID && AIData.entities[i] is AirCraft)
                         {
                             (AIData.entities[i] as AirCraft).GetAI().follow(target.transform);
-                            Debug.Log("Follow...");
+
 
                             if(disallowAggression) (AIData.entities[i] as AirCraft).GetAI().aggression = AirCraftAI.AIAggression.KeepMoving;
                         }

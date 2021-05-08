@@ -14,14 +14,14 @@ public class Torpedo : Bullet {
         range = bulletSpeed * survivalTime;
         ID = AbilityID.Torpedo;
         cooldownDuration = 3F;
-        CDRemaining = cooldownDuration;
         energyCost = 100;
         damage = torpedoDamage;
         terrain = Entity.TerrainType.Ground;
         category = Entity.EntityCategory.All;
     }
 
-    protected override void Start() {
+    protected override void Start()
+    {
         bulletPrefab = ResourceManager.GetAsset<GameObject>("torpedo_prefab");
     }
 }

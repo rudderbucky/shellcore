@@ -8,6 +8,9 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
+    private static float deadzoneDamageMult = 0.1f;
+    private static float deadzoneDamageBase = 0.2f;
+    private static float deadzoneDamage = deadzoneDamageBase;
     public delegate void SectorLoadDelegate(string sectorName);
     public static SectorLoadDelegate OnSectorLoad;
     public static SectorLoadDelegate SectorGraphLoad;
@@ -135,18 +138,20 @@ public class SectorManager : MonoBehaviour
         }
 
         // deadzone damage
-        if(current && current.type == Sector.SectorType.DangerZone)
+        if(current && GetCurrentType() == Sector.SectorType.DangerZone)
         {
             if(dangerZoneTimer >= 5 && !player.GetIsDead())
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
-                player.TakeShellDamage(0.2F * player.GetMaxHealth()[0], 0, null);
-                player.TakeCoreDamage(0.2F * player.GetMaxHealth()[1]);
+                player.TakeShellDamage(deadzoneDamage * player.GetMaxHealth()[0], 0, null);
+                player.TakeCoreDamage(deadzoneDamage * player.GetMaxHealth()[1]);
                 player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
+                deadzoneDamage += deadzoneDamageMult;
             } else dangerZoneTimer += Time.deltaTime;
         } else
         {
+            deadzoneDamage = deadzoneDamageBase;
             dangerZoneTimer = 0;
         }
         
@@ -208,10 +213,6 @@ public class SectorManager : MonoBehaviour
                 {
                     ResourceManager.Instance.LoadResources(testResourcePath);
                 }
-
-                // canvas handling
-                taskManager.ClearCanvases();
-                dialogueSystem.ClearCanvases();
 
                 foreach (var canvas in Directory.GetFiles(path + "\\Canvases"))
                 {
@@ -332,7 +333,7 @@ public class SectorManager : MonoBehaviour
                     sectors.Add(curSect);
                 }
                 player.SetIsInteracting(false);
-                Debug.Log("worked");
+
                 jsonMode = false;
                 sectorLoaded = true;
                 return;
@@ -446,7 +447,7 @@ public class SectorManager : MonoBehaviour
 
                         } else shellcore.entityName = blueprint.entityName = data.name;
 
-                        if(current.type == Sector.SectorType.BattleZone)
+                        if(GetCurrentType() == Sector.SectorType.BattleZone)
                         {
                             // add core arrow
                             if(MinimapArrowScript.instance && !(shellcore is PlayerCore))
@@ -638,17 +639,14 @@ public class SectorManager : MonoBehaviour
                     if (blueprint.dialogue == null)
                     {
                         ok = false;
-                        Debug.Log("No dialogue!");
                     }
                     if (blueprint.dialogue.traderInventory == null)
                     {
                         ok = false;
-                        Debug.Log("No inventory!");
                     }
                     if (data.blueprintJSON == null || data.blueprintJSON == "")
                     {
                         ok = false;
-                        Debug.Log("No blueprint!");
                     }
                     if (ok)
                     {
@@ -697,119 +695,67 @@ public class SectorManager : MonoBehaviour
         }
         entity.ID = data.ID;
 
-        if(!objects.ContainsKey(data.ID)) objects.Add(data.ID, gObj);
+        if(!objects.ContainsKey(data.ID)) 
+        {
+            objects.Add(data.ID, gObj);
+        }
         return entity;
     }
 
     List<(EntityBlueprint, Sector.LevelEntity, int, float)> bgSpawns = new List<(EntityBlueprint, Sector.LevelEntity, int, float)>();
     
-    private float bgSpawnTimer = 0;
-    void loadSector(Sector.SectorType? lastSectorType = null)
+    private void SetPlayerVariablesOnSectorLoad()
     {
-        #if UNITY_EDITOR
-        if(Input.GetKey(KeyCode.LeftShift)) {
+        // player has seen this sector now
+        if (player.cursave.sectorsSeen == null)
+            player.cursave.sectorsSeen = new List<string>();
 
-            // What does this do?
-
-            SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
-            data.platformjson = JsonUtility.ToJson(current.platforms);
-            data.sectorjson = JsonUtility.ToJson(current);
-            current.name = "SavedSector";
-            //current.platforms = "SavedSectorPlatform";
-            // var x = JsonUtility.ToJson(data);
-		    // string path = Application.streamingAssetsPath + "\\Sectors\\" + "SavedSector";
-		    // System.IO.File.WriteAllText(path, x);
-		    // System.IO.Path.ChangeExtension(path, ".json");            
-            UnityEditor.AssetDatabase.CreateAsset(current, "Assets/SavedSector.asset");
-            //UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/SavedSectorPlatform.asset");
-        }
-#endif
-
-        //unload previous sector
-        UnloadCurrentSector(lastSectorType);
-
-        if (overrideProperties)
-            Destroy(overrideProperties);
-        overrideProperties = Instantiate(current);
-
-        //load new sector
-        if (player) {
-            // player has seen this sector now
-            if (player.cursave.sectorsSeen == null)
-                player.cursave.sectorsSeen = new List<string>();
-
-            if (!player.cursave.sectorsSeen.Contains(current.sectorName))
-                player.cursave.sectorsSeen.Add(current.sectorName);
-            player.ResetPower();
-            if(!objects.ContainsKey("player")) objects.Add("player", player.gameObject);
-            player.sectorMngr = this;
-            if(player.alerter) player.alerter.showMessage("Entering sector: " + current.sectorName);
-        }
-
-        // Load entities
-        for(int i = 0; i < current.entities.Length; i++)
+        if (!player.cursave.sectorsSeen.Contains(current.sectorName))
+            player.cursave.sectorsSeen.Add(current.sectorName);
+        player.ResetPower();
+        foreach(var member in PartyManager.instance.partyMembers)
         {
-            bool spawnedChar = false;
-            // check if it is a character
-            foreach(var ch in characters)
+            member.ResetPower();
+        }
+        if(!objects.ContainsKey("player")) objects.Add("player", player.gameObject);
+        player.sectorMngr = this;
+        if(player.alerter) player.alerter.showMessage("Entering sector: " + current.sectorName);
+    }
+
+    // returns true if the entity is supposed to be a character. Spawns it if it is not already in the world. Otherwise
+    // returns false
+    private bool SectorLoadEntityCharacterHandler(Sector.LevelEntity entity)
+    {
+        foreach(var ch in characters)
+        {
+            if(ch.ID == entity.ID)
             {
-                if(ch.ID == current.entities[i].ID)
+                var skipTag = false;
+                foreach(var oj in objects)
                 {
-                    var skipTag = false;
-                    foreach(var oj in objects)
+                    if(oj.Value.GetComponentInChildren<Entity>() && oj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
                     {
-                        if(oj.Value.GetComponentInChildren<Entity>() && oj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
-                        {
-                            skipTag = true;
-                            spawnedChar = true;
-                            break;
-                        }
+                        skipTag = true;
+                        return true;
                     }
-
-                    if(skipTag) continue;
-                    var print = ScriptableObject.CreateInstance<EntityBlueprint>();
-                    JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
-                    print.intendedType = EntityBlueprint.IntendedType.ShellCore;
-                    current.entities[i].name = ch.name;
-                    current.entities[i].faction = ch.faction;
-                    SpawnEntity(print, current.entities[i]);
-                    spawnedChar = true;
-                    break;
                 }
-            }
 
-            if(spawnedChar)
-                continue;
-            Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
-
-            if(obj is GameObject)
-            {
-                GameObject gObj = Instantiate(obj as GameObject);
-                if(!gObj.GetComponent<EnergyRock>())
-                    gObj.GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(current.entities[i].faction);
-                gObj.transform.position = current.entities[i].position;
-                gObj.name = current.entities[i].name;
-                if(gObj.GetComponent<ShardRock>()) {
-                    gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].vendingID);
-                }
-                objects.Add(current.entities[i].ID, gObj);
-            }
-            else if(obj is EntityBlueprint)
-            {
-                var copy = Instantiate(obj);
-                if((obj as EntityBlueprint).dialogue)
-                {
-                    (copy as EntityBlueprint).dialogue = Instantiate((obj as EntityBlueprint).dialogue);
-                }
-                SpawnEntity(copy as EntityBlueprint, current.entities[i]);
+                if(skipTag) continue;
+                var print = ScriptableObject.CreateInstance<EntityBlueprint>();
+                JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
+                print.intendedType = EntityBlueprint.IntendedType.ShellCore;
+                entity.name = ch.name;
+                entity.faction = ch.faction;
+                SpawnEntity(print, entity);
+                return true;
             }
         }
 
-        // Load sector graph
-        if (SectorGraphLoad != null)
-            SectorGraphLoad.Invoke(current.sectorName);
+        return false;
+    }
 
-        //Load land platforms
+    private void LoadSectorLandPlatforms()
+    {
         lpg.SetColor(overrideProperties.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
 
         Vector2 center = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
@@ -848,42 +794,10 @@ public class SectorManager : MonoBehaviour
             }
             lpg.groundPlatforms = current.platforms;
         }
+    }
 
-        // Restart particle and background effects to new skin if necessary
-        if (RectangleEffectScript.currentSkin != current.rectangleEffectSkin)
-        {
-            RectangleEffectScript.currentSkin = current.rectangleEffectSkin;
-            foreach(var rect in RectangleEffectScript.instances) if(rect) rect.Start();
-        }
-        if(BackgroundScript.currentSkin != current.backgroundTileSkin)
-        {
-            BackgroundScript.currentSkin = current.backgroundTileSkin;
-            BackgroundScript.instance.setColor(SectorColors.colors[5], true);
-            BackgroundScript.instance.Restart();
-        }
-
-
-        //sector color
-        background.setColor(overrideProperties.backgroundColor);
-        //Camera.main.backgroundColor = current.backgroundColor / 2F;
-        //sector borders
-        foreach(var sector in sectors)
-        {
-            if(minimapSectorBorders != null && minimapSectorBorders[sector]) minimapSectorBorders[sector].enabled = minimapSectorBorders != null 
-                && minimapSectorBorders.ContainsKey(sector) && player.cursave.sectorsSeen.Contains(sector.sectorName);
-        }
-
-        sectorBorders.enabled = true;
-        sectorBorders.SetPositions(new Vector3[]{
-            new Vector3(current.bounds.x, current.bounds.y, 0),
-            new Vector3(current.bounds.x + current.bounds.w, current.bounds.y, 0),
-            new Vector3(current.bounds.x + current.bounds.w, current.bounds.y - current.bounds.h, 0),
-            new Vector3(current.bounds.x, current.bounds.y - current.bounds.h, 0)
-        });
-        sectorBorders.startColor = sectorBorders.endColor = new Color32((byte)85, (byte)100, (byte)85, (byte)255);
-        battleZone.enabled = false;
-        siegeZone.enabled = false;
-        // sector type things
+    private void SetSectorTypeBehavior()
+    {
         switch(overrideProperties.type)
         {
             case Sector.SectorType.BattleZone:
@@ -952,6 +866,123 @@ public class SectorManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private float bgSpawnTimer = 0;
+    void loadSector(Sector.SectorType? lastSectorType = null)
+    {
+        #if UNITY_EDITOR
+        if(Input.GetKey(KeyCode.LeftShift)) {
+
+            // What does this do?
+
+            SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
+            data.platformjson = JsonUtility.ToJson(current.platforms);
+            data.sectorjson = JsonUtility.ToJson(current);
+            current.name = "SavedSector";
+            //current.platforms = "SavedSectorPlatform";
+            // var x = JsonUtility.ToJson(data);
+		    // string path = Application.streamingAssetsPath + "\\Sectors\\" + "SavedSector";
+		    // System.IO.File.WriteAllText(path, x);
+		    // System.IO.Path.ChangeExtension(path, ".json");            
+            UnityEditor.AssetDatabase.CreateAsset(current, "Assets/SavedSector.asset");
+            //UnityEditor.AssetDatabase.CreateAsset(current.platform, "Assets/SavedSectorPlatform.asset");
+        }
+#endif
+
+        //unload previous sector
+        UnloadCurrentSector(lastSectorType);
+
+        if (overrideProperties)
+            Destroy(overrideProperties);
+        overrideProperties = Instantiate(current);
+
+        //load new sector
+        if (player) {
+            SetPlayerVariablesOnSectorLoad();
+        }
+
+        // Load entities
+        for(int i = 0; i < current.entities.Length; i++)
+        {
+            bool spawnedChar = SectorLoadEntityCharacterHandler(current.entities[i]);
+
+            if(spawnedChar)
+                continue;
+            Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
+
+            if(obj is GameObject)
+            {
+                GameObject gObj = Instantiate(obj as GameObject);
+
+                // TODO: Make some property for level entities that dictates whether they change on faction or not
+                if(!gObj.GetComponent<EnergyRock>() && !gObj.GetComponent<Flag>())
+                {
+                    gObj.GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(current.entities[i].faction);
+                }
+                    
+                gObj.transform.position = current.entities[i].position;
+                gObj.name = current.entities[i].name;
+                if(gObj.GetComponent<ShardRock>()) {
+                    gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].vendingID);
+                }
+                objects.Add(current.entities[i].ID, gObj);
+            }
+            else if(obj is EntityBlueprint)
+            {
+                var copy = Instantiate(obj);
+                if((obj as EntityBlueprint).dialogue)
+                {
+                    (copy as EntityBlueprint).dialogue = Instantiate((obj as EntityBlueprint).dialogue);
+                }
+                SpawnEntity(copy as EntityBlueprint, current.entities[i]);
+            }
+        }
+
+        // Load sector graph
+        if (SectorGraphLoad != null)
+            SectorGraphLoad.Invoke(current.sectorName);
+
+        //Load land platforms
+        LoadSectorLandPlatforms();
+
+        // Restart particle and background effects to new skin if necessary
+        if (RectangleEffectScript.currentSkin != current.rectangleEffectSkin)
+        {
+            RectangleEffectScript.currentSkin = current.rectangleEffectSkin;
+            foreach(var rect in RectangleEffectScript.instances) if(rect) rect.Start();
+        }
+        if(BackgroundScript.currentSkin != current.backgroundTileSkin)
+        {
+            BackgroundScript.currentSkin = current.backgroundTileSkin;
+            BackgroundScript.instance.setColor(SectorColors.colors[5], true);
+            BackgroundScript.instance.Restart();
+        }
+
+
+        //sector color
+        background.setColor(overrideProperties.backgroundColor);
+        //Camera.main.backgroundColor = current.backgroundColor / 2F;
+        //sector borders
+        foreach(var sector in sectors)
+        {
+            if(minimapSectorBorders != null && minimapSectorBorders[sector]) minimapSectorBorders[sector].enabled = minimapSectorBorders != null 
+                && minimapSectorBorders.ContainsKey(sector) && player.cursave.sectorsSeen.Contains(sector.sectorName);
+        }
+
+        sectorBorders.enabled = true;
+        sectorBorders.SetPositions(new Vector3[]{
+            new Vector3(current.bounds.x, current.bounds.y, 0),
+            new Vector3(current.bounds.x + current.bounds.w, current.bounds.y, 0),
+            new Vector3(current.bounds.x + current.bounds.w, current.bounds.y - current.bounds.h, 0),
+            new Vector3(current.bounds.x, current.bounds.y - current.bounds.h, 0)
+        });
+        sectorBorders.startColor = sectorBorders.endColor = new Color32((byte)85, (byte)100, (byte)85, (byte)255);
+        battleZone.enabled = false;
+        siegeZone.enabled = false;
+
+        // sector type things
+        SetSectorTypeBehavior();
 
         if(current.backgroundSpawns != null)
             // background spawns
@@ -1008,7 +1039,7 @@ public class SectorManager : MonoBehaviour
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var obj in objects)
         {
-            if (player && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
+            if (player && (!player.GetTractorTarget() || (obj.Value != player.GetTractorTarget().gameObject))
                 && obj.Value != player.gameObject)
             {
                 var skipTag = false;
@@ -1042,7 +1073,8 @@ public class SectorManager : MonoBehaviour
         {
             if (player && obj.Value && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
                 && obj.Value != player.gameObject && !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable)
-                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) < objectDespawnDistance))
+                // TODO: why < objectDespawnDistance?
+                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance))
             {
                 Destroy(obj.Value);
             }
@@ -1098,7 +1130,6 @@ public class SectorManager : MonoBehaviour
         }
         
         objects = remainingObjects;
-
         // reset stations and carriers
 
         stations.Clear();
@@ -1205,14 +1236,22 @@ public class SectorManager : MonoBehaviour
         return null;
     }
 
-    public void RemoveObject(string name)
+    public void RemoveObject(string name, GameObject value)
     {
         if (name == null)
         {
             return;
         }
-        if(objects.ContainsKey(name))
+
+        // even if objects contains the key, it might be a different object than the one we are trying to remove. We need to compare both
+        // See -> Spawn in sector w/ defense turret. Move to another sector with turret, return to original sector without turret
+        // If racing happens the turret in the new sector calls RemoveObject after the new turret spawns with the same ID, kicking it out
+        // of the objects list (which shouldn't happen)
+        if(objects.ContainsKey(name) && objects[name] == value)
+        {
             objects.Remove(name);
+        }
+            
     }
 
     public void Clear()
@@ -1223,5 +1262,13 @@ public class SectorManager : MonoBehaviour
         {
             Destroy(border.Value.gameObject);
         }
+    }
+
+    public Sector.SectorType GetCurrentType()
+    {
+        if (overrideProperties != null)
+            return overrideProperties.type;
+        else
+            return current.type;
     }
 }

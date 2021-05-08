@@ -87,7 +87,7 @@ public class BackgroundScript : MonoBehaviour {
             parent.transform.SetParent(transform, true);
             // grab tile spacing (this should be constant between the tile sprites given)
             Vector3 dimensions = Camera.main.ScreenToWorldPoint(
-                new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth - Camera.main.transform.position.z));
+                new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth + CameraScript.GetMaxZoomLevel()));
             // grab camera dimensions
             gridWidth = 1 + (int)Mathf.Ceil((dimensions.x - mcamera.position.x) * 2/ tileSpacing.x); // calculate height and width using camera dimensions
             gridHeight = 1 + (int)Mathf.Ceil((dimensions.y - mcamera.position.y) * 2 / tileSpacing.y);

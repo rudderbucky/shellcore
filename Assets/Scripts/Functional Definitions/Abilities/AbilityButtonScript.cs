@@ -24,8 +24,19 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     bool gleamed;
     bool dragging;
     Vector3 oldInputMousePos;
+    KeyName keycode;
 
-    public void Init(Ability ability, string hotkeyText, Entity entity)
+    string GetPrettyStringFromKeycode(KeyCode code)
+    {
+        var str = code.ToString();
+       
+        if(str.Length >= 5 &&  str.Substring(0, 5) == "Alpha")
+            str = str.Remove(0, 5);
+ 
+        return str;
+    }
+
+    public void Init(Ability ability, string hotkeyText, Entity entity, KeyName keycode)
     {
         this.entity = entity;
         abilities.Add(ability);
@@ -34,7 +45,9 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         ReflectName(ability);
         ReflectDescription(ability);
         ReflectTier(ability);
-        ReflectHotkey(hotkeyText);
+        ReflectHotkey(keycode);
+
+        this.keycode = keycode;
 
         // set up image
         abilityImage.sprite = AbilityUtilities.GetAbilityImage(ability);
@@ -42,13 +55,14 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         gleamed = ability is PassiveAbility;
     }
 
-    public void ReflectHotkey(string hotkeyText)
+    public void ReflectHotkey(KeyName keycode)
     {
+        this.keycode = keycode;
         // set up hotkey display
         if(hotkeyText != null)
         {
             this.hotkeyText.transform.parent.gameObject.SetActive(true);
-            this.hotkeyText.text = hotkeyText;
+            this.hotkeyText.text = GetPrettyStringFromKeycode(InputManager.keys[keycode].overrideKey);
         } 
         else this.hotkeyText.transform.parent.gameObject.SetActive(false);
     }
@@ -116,7 +130,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         // update the number of off-CD abilities
         if(offCDCountText)
-            offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() && a.GetCDRemaining() == 0).Count + "";
+            offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() && a.TimeUntilReady() == 0).Count + "";
 
         if(tooltip)
         {
@@ -144,11 +158,11 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             {
                 return 1;
             }
-            if(a.GetCDRemaining() > b.GetCDRemaining())
+            if(a.TimeUntilReady() > b.TimeUntilReady())
             {
                 return 1;
             }
-            else if(a.GetCDRemaining() < b.GetCDRemaining())
+            else if(a.TimeUntilReady() < b.TimeUntilReady())
             {
                 return -1;
             }
@@ -171,27 +185,38 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         {
             image.color = new Color(0, 0, 0.3F); // make the background dark blue
         }
-        else image.color = abilities[0].GetActiveTimeRemaining() != 0 ? Color.green : Color.white;
-        cooldown.fillAmount = abilities[0].GetCDRemaining() / abilities[0].GetCDDuration();
+        else if (abilities[0].State == Ability.AbilityState.Active || 
+                 abilities[0].State == Ability.AbilityState.Charging ||
+                 (abilities[0] is WeaponAbility && abilities[0].State == Ability.AbilityState.Ready))
+        {
+            image.color = Color.green;
+        }
+        else
+        {
+            image.color = Color.white;
+        }
+        cooldown.fillAmount = abilities[0].TimeUntilReady() / abilities[0].GetCDDuration();
 
         if(!entity.GetIsDead())
         {
-            bool hotkeyAccepted = (Input.GetKeyDown(hotkeyText.text) && !InputManager.GetKey(KeyName.TurretQuickPurchase));
+            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase)) && !PlayerViewScript.paused;
             if(abilities[0] is WeaponAbility)
             {
                 foreach(var ab in abilities)
                 {
-                    ab.Tick(hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos) ? 1 : 0);
+                    if (hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos))
+                    {
+                        ab.Activate();
+                    }
                 }
             }
-            else
+            else if (hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos))
             {
-                abilities[0].Tick(hotkeyAccepted
-                    || (clicked && Input.mousePosition == oldInputMousePos) ? 1 : 0);
-                for(int i = 1; i < abilities.Count; i++)
-                {
-                    abilities[i].Tick(0);
-                }
+                abilities[0].Activate();
+            }
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                abilities[i].Tick();
             }
         }
             
@@ -203,7 +228,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             Gleam();
         }
 
-        if(abilities[0].GetCDRemaining() != 0)
+        if(abilities[0].TimeUntilReady() != 0)
         {
             gleamed = false;
         }

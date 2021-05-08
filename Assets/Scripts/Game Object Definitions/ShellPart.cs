@@ -43,6 +43,25 @@ public class ShellPart : MonoBehaviour {
 
     public void SetCollectible(bool collectible) {
         this.collectible = collectible;
+        // try setting the part to shiny
+        if(collectible)
+        {
+             if(!transform.Find("Minimap Image"))
+            {
+                GameObject childObject = new GameObject("Minimap Image");
+                childObject.transform.SetParent(transform, false);
+                SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
+                renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+                childObject.AddComponent<MinimapLockRotationScript>().Initialize(); // initialize the minimap dot
+            }
+
+            if(!shinyCheck)
+            {
+                shinyCheck = true;
+                ShinyCheck();
+            }
+        }
+        
     }
 
     public float GetPartMass()
@@ -106,7 +125,7 @@ public class ShellPart : MonoBehaviour {
     /// <summary>
     /// Detach the part from the Shellcore
     /// </summary>
-    public void Detach() {
+    public void Detach(bool drop = false) {
         if (name != "Shell Sprite")
             transform.SetParent(null, true);
 
@@ -173,7 +192,7 @@ public class ShellPart : MonoBehaviour {
 
         if (GetComponent<Ability>())
         {
-            GetComponent<Ability>().part = this;
+            GetComponent<Ability>().Part = this;
         }
 
         if(info.shiny && partSys) // shell does not have a Particle System, and it also can't be shiny
@@ -246,11 +265,7 @@ public class ShellPart : MonoBehaviour {
         else if (hasDetached) { // if it has actually detached
             if (collectible && detachible && !SectorManager.instance.current.partDropsDisabled)
             {
-                if(!shinyCheck)
-                {
-                    shinyCheck = true;
-                    ShinyCheck();
-                }
+                
                 rigid.drag = 25;
                 // add "Draggable" component so that shellcores can grab the part
                 if (!draggable) draggable = gameObject.AddComponent<Draggable>();

@@ -49,7 +49,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             LimitedSector = sectorName ?? "";
-            Debug.Log(LimitedSector);
+
 
             if(sectorName == "" || freeSector)
             {

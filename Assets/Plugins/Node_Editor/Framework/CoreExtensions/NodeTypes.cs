@@ -23,7 +23,7 @@ namespace NodeEditorFramework
 			nodes = new Dictionary<string, NodeTypeData> ();
 			foreach (Type type in ReflectionUtility.getSubTypes (typeof(Node)))	
 			{
-				object[] nodeAttributes = type.GetCustomAttributes(typeof(NodeAttribute), false);                    
+                object[] nodeAttributes = type.GetCustomAttributes(typeof(NodeAttribute), false);
 				NodeAttribute attr = nodeAttributes[0] as NodeAttribute;
 				if(attr == null || !attr.hide)
 				{ // Only regard if it is not marked as hidden

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Reflection;
 
 public enum AbilityID
 {
@@ -100,6 +101,8 @@ public class AbilityUtilities : MonoBehaviour {
 			case 19:
 			case 20:
 			case 21:
+			case 22:
+			case 23:
 			case 34:
                 return AbilityHandler.AbilityTypes.Passive;
 			case 0:
@@ -173,7 +176,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 34:
                 return "Makes allies stronger.";
 			case 35:
-				return "Temporarily pulls you to your tractor target.";
+				return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
 			case 36:
 				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:

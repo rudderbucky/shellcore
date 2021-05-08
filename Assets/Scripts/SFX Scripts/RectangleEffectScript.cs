@@ -37,8 +37,9 @@ public class RectangleEffectScript : MonoBehaviour {
         var rd = partSys.GetComponentInChildren<ParticleSystemRenderer>().material = 
             ResourceManager.GetAsset<Material>($"RectangleEffectScript_skin{(int)currentSkin}");
         var sh = partSys.shape; // grab the shape of the particle system
+
         Vector3 dimensions = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 
-        Camera.main.pixelHeight, sh.position.z - Camera.main.transform.position.z));
+        Camera.main.pixelHeight, sh.position.z + CameraScript.GetMaxZoomLevel()));
         Vector3 pos = Camera.main.transform.position;
         pos.z = 0;
         dimensions -= pos;
@@ -59,7 +60,8 @@ public class RectangleEffectScript : MonoBehaviour {
     /// <param name="particles">array of particles in the field</param>
     private void ParticleUpdate(ParticleSystem.Particle[] particles) {
         var oldZ = Camera.main.transform.position.z;
-        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -10);
+        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 
+            -CameraScript.GetMaxZoomLevel());
         for (int i = 0; i < particles.Length; i++) // update all particles
         {
             if(!timesByParticle.ContainsKey(i))

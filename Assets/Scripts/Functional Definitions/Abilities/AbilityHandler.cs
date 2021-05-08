@@ -31,7 +31,7 @@ public class AbilityHandler : MonoBehaviour {
     Ability[] displayAbs;
     public static string[] keybindList; // list of keys for ability binds
     public static AbilityHandler instance;
-    public float tileSpacing;
+    public static float tileSpacing;
 
     public void SetCurrentVisible(AbilityTypes type) {
         if(currentVisibles != type) {
@@ -96,7 +96,8 @@ public class AbilityHandler : MonoBehaviour {
                 betterBGboxArray.Add(key,
                     Instantiate(betterBGbox, pos, Quaternion.identity).GetComponent<AbilityButtonScript>());
                 betterBGboxArray[key].transform.SetParent(transform, false); // set parent (do not keep world position)
-                betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count-1] + "" : null, core);
+                betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count-1] + "" : null, core,
+                    KeyName.Ability0 + (betterBGboxArray.Count - 1));
             }
             else betterBGboxArray[key].AddAbility(visibleAbilities[i]);
         }
@@ -158,7 +159,7 @@ public class AbilityHandler : MonoBehaviour {
 
     public static float GetAbilityPos(int index)
     {
-        return instance.tileSpacing * (0.8F*index+0.5F);
+        return tileSpacing * (0.8F*index+0.5F);
     }
 
     public static void RearrangeID(float xPos, AbilityID id, string droneData)
@@ -183,7 +184,7 @@ public class AbilityHandler : MonoBehaviour {
 
     private static int GetAbilityPosInverse(float xPos)
     {
-        return Mathf.Min(Mathf.Max(0, Mathf.RoundToInt(((xPos / instance.tileSpacing) - 0.5F) / 0.8F)), instance.betterBGboxArray.Count - 1);
+        return Mathf.Min(Mathf.Max(0, Mathf.RoundToInt(((xPos / tileSpacing) - 0.5F) / 0.8F)), instance.betterBGboxArray.Count - 1);
     }
 
     private void Rearrange()
@@ -225,15 +226,20 @@ public class AbilityHandler : MonoBehaviour {
             }
         }
 
-
-        for(i = 0; i < list.Count; i++)
-        {
-            instance.betterBGboxArray[ConvertObjectToString(list, i)].transform.position = new Vector3(GetAbilityPos(i), 
-                tileSpacing*0.8F, this.transform.position.z);
-            instance.betterBGboxArray[ConvertObjectToString(list, i)].ReflectHotkey(currentVisibles != AbilityTypes.Passive && i < 9? keybindList[i] : null);
-        }
+        ReorientAbilityBoxes();
     }
     
+    public void ReorientAbilityBoxes()
+    {
+        var list = visibleAbilityOrder.GetList((int)currentVisibles);
+        for(int i = 0; i < list.Count; i++)
+        {
+            betterBGboxArray[ConvertObjectToString(list, i)].transform.position = new Vector3(GetAbilityPos(i), 
+                tileSpacing*0.8F, transform.position.z);
+            betterBGboxArray[ConvertObjectToString(list, i)].ReflectHotkey(KeyName.Ability0 + i);
+        }
+    }
+
     public string ConvertObjectToString(IList list, int i)
     {
         var idList = visibleAbilityOrder.GetList((int)currentVisibles) as List<AbilityID>;
@@ -276,11 +282,14 @@ public class AbilityHandler : MonoBehaviour {
         {
             for (int i = 0; i < core.GetAbilities().Length; i++)
             { // update all abilities
-                if (abilities[i] == null || core.GetIsDead()) continue; 
+                if (abilities[i] == null || core.GetIsDead()) continue;
                 // skip ability instead of break because further abilities may not be destroyed
-                if(visibleAbilities.Contains(abilities[i])) {
-                    
-                } else abilities[i].Tick(0);
+                if (visibleAbilities.Contains(abilities[i]))
+                {
+
+                }
+                else //abilities[i].UpdateState();
+                    abilities[i].Tick();
             }
             if(core.GetIsDead() || core.GetIsInteracting()) return;
             if(InputManager.GetKeyDown(KeyName.ShowSkills)) {
