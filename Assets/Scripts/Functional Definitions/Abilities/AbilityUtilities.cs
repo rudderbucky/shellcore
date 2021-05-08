@@ -1,48 +1,48 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public enum AbilityID
 {
-	Unused,
-	SpeedThrust,
-	ShellBoost,
-	MainBullet,
-	Beam,
-	Bullet,
-	Cannon,
-	Missile,
-	Torpedo,
-	Laser,
-	SpawnDrone,
-	CoreHeal,
-	Energy,
-	Speed,
-	SiegeBullet,
-	SpeederBullet,
-	Harvester,
-	ShellRegen,
-	ShellMax,
-	EnergyRegen,
-	EnergyMax,
-	Command,
-	CoreRegen,
-	CoreMax,
-	Stealth,
-	DamageBoost,
-	AreaRestore,
-	PinDown,
-	Retreat,
-	Absorb,
-	ActiveShellRegen,
-	ActiveCoreRegen,
-	ActiveEnergyRegen,
-	Disrupt,
-	Control,
-	InvertTractor,
-	Bomb,
-	Ion
+	Unused, //1
+	SpeedThrust, //2
+	ShellBoost, //3
+	MainBullet, //4
+	Beam, //5
+	Bullet, //6
+	Cannon, //7
+	Missile, //8
+	Torpedo, //9
+	Laser, //10
+	SpawnDrone, //11
+	CoreHeal, //12
+	Energy, //13
+	Speed, //14
+	SiegeBullet, //15
+	SpeederBullet, //16
+	Harvester, //17
+	ShellRegen, //18
+	ShellMax, //19
+	EnergyRegen, //20
+	EnergyMax, //21
+	Command, //22
+	CoreRegen, //23
+	CoreMax, //24
+	Stealth, //25
+	DamageBoost, //26
+	AreaRestore, //27
+	PinDown, //28
+	Retreat, //29
+	Absorb, //30
+	ActiveShellRegen, //31
+	ActiveCoreRegen, //32
+	ActiveEnergyRegen, //33
+	Disrupt, //34
+	Control, //35
+	InvertTractor, //36
+	Bomb, //37
+	Ion //38
 }
 public class AbilityUtilities : MonoBehaviour {
 
