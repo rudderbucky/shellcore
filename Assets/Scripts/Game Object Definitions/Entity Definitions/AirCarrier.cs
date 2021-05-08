@@ -89,17 +89,17 @@ public class AirCarrier : AirConstruct, ICarrier {
         base.TakeCoreDamage(amount);
         if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
             if(currentHealth[1] < 1){
-                shellAlertThreshold = -99999;
+                coreAlertThreshold = -99999;
                 PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
                 PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier has been destroyed! You're on your last life now!</color>");
             }
             else if(currentHealth[1] < (maxHealth[1] / 2)){
-                shellAlertThreshold = 1;
+                coreAlertThreshold = 1;
                 PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
                 PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier is about to die! Kill the attacking enemies NOW!</color>");
             }
             else{
-                shellAlertThreshold = (maxHealth[1] / 2);
+                coreAlertThreshold = (maxHealth[1] / 2);
                 PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
                 PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier is taking Core damage! We won't last much longer!</color>");
             }
