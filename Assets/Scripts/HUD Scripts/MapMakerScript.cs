@@ -367,7 +367,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
 				if(newRect.Contains(eventData.position))
 				{
-					player.GetComponent<AirCraft>().Warp(sect.Item2);
+					player.GetComponent<PlayerCore>().Warp(sect.Item2);
 				}
 			}
     }

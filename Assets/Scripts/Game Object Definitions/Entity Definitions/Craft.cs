@@ -155,7 +155,7 @@ public abstract class Craft : Entity
         }
     }
 
-    Transform instantiatedRespawnPrefab;
+    protected Transform instantiatedRespawnPrefab;
     protected override void FixedUpdate()
     {
         if(physicsDirection == Vector2.zero)

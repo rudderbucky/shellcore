@@ -238,6 +238,9 @@ public class PlayerCore : ShellCore {
         {
             instance.Start();
         }
+        instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
+        instantiatedRespawnPrefab.position = transform.position;
+        AudioManager.PlayClipByID("clip_respawn", transform.position);
         SectorManager.instance.AttemptSectorLoad();
     }
 
