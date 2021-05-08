@@ -538,11 +538,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         if (lastDamagedBy as PlayerCore) 
         {
-            (lastDamagedBy as PlayerCore).credits += 5;
-            if (BZM != null)
-            {
-                BZM.CreditsCollected += 5;
-            }
+            (lastDamagedBy as PlayerCore).AddCredits(Random.Range(1,5));
+
             if (this as ShellCore && !FactionManager.IsAllied(0, faction))
             {
                 foreach(var part in blueprint.parts)

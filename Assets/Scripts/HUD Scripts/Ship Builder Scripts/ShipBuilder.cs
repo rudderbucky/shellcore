@@ -265,7 +265,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 	public void UpdateChain() {
 		if(!editorMode)
-			SetReconstructButton(cursorScript.buildCost > player.credits ? 
+			SetReconstructButton(cursorScript.buildCost > player.GetCredits() ? 
 				ReconstructButtonStatus.NotEnoughCredits : ReconstructButtonStatus.Valid);
 		else SetReconstructButton(ReconstructButtonStatus.Valid);
 
@@ -884,7 +884,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		#endif
 	}
 	public void Deinitialize() {
-		if(!editorMode && cursorScript.buildCost > player.credits) return;
+		if(!editorMode && cursorScript.buildCost > player.GetCredits()) return;
 		if(!CheckAbilityCaps()) return;
 		if(!CheckPartSizes()) return;
 		bool invalidState = false;
@@ -903,7 +903,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public void Export() {
 		if(player)
 		{
-			player.credits -= cursorScript.buildCost;
+			player.AddCredits(cursorScript.buildCost);
 			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 			foreach(ShipBuilderPart part in cursorScript.parts) {
 				player.blueprint.parts.Add(part.info);

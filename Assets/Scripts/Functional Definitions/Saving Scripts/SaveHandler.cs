@@ -44,7 +44,7 @@ public class SaveHandler : MonoBehaviour {
 			}
 			player.abilityCaps = save.abilityCaps;
 			player.shards = save.shards;
-			player.credits = save.credits;
+			player.SetCredits(save.credits);
 			player.reputation = save.reputation;
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
@@ -89,7 +89,7 @@ public class SaveHandler : MonoBehaviour {
 		save.currentHealths = player.currentHealth;
 		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
-		save.credits = player.credits;
+		save.credits = player.GetCredits();
         save.abilityCaps = player.abilityCaps;
         save.shards = player.shards;
         if(save.resourcePath == "" || save.resourcePath.Contains("main")) save.resourcePath = SectorManager.instance.resourcePath;

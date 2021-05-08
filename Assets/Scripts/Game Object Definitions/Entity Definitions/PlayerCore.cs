@@ -12,13 +12,35 @@ public class PlayerCore : ShellCore {
     public PlayerSave cursave;
     public bool loaded;
     private bool isInteracting;
-    public int credits;
+    protected int credits;
     public int shards;
     public int[] abilityCaps;
     public int reputation;
     public static PlayerCore Instance;
     public List<ShellPart> partsToDestroy = new List<ShellPart>();
     public Vector2 havenSpawnPoint;
+
+    // Uses this method to generally add credits for the player.
+    public void AddCredits(int amount)
+    {
+        credits += amount;
+        var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
+        if (BZM != null)
+        {
+            BZM.CreditsCollected += 5;
+        }
+    }
+
+    public int GetCredits()
+    {
+        return credits;
+    }
+
+    // Method only used for save loading
+    public void SetCredits(int val)
+    {
+        this.credits = val;
+    }
 
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
