@@ -1,20 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-/// <summary>
-/// Interface for objects that can be executed by a handler; mainly used for abilities
-/// </summary>
-interface IPlayerExecutable {
-    void Tick(int key); // the state of this object will change over time
-}
 
 /// <summary>
 /// A trait that can be activated for a special effect; parts sometimes come with these
 /// All weapons have abilities that deal their effect
 /// </summary>
-public abstract class Ability : MonoBehaviour, IPlayerExecutable {
-    
+public abstract class Ability : MonoBehaviour {
+
     Entity core;  // craft that uses this ability
     public Entity Core
     {
@@ -29,28 +23,43 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
             core = value;
         }
     }
+
+    public enum AbilityType
+    {
+        Skill,
+        Spawn,
+        Weapon,
+        Passive
+    }
+
+    public enum AbilityState
+    {
+        Ready,
+        Charging,
+        Active,
+        Cooldown,
+        Disabled,
+        Destroyed
+    }
+
+    public AbilityState State = AbilityState.Ready;
+
     protected AbilityID ID; // Image ID, perhaps also ability ID if that were ever to be useful (it was)
-    protected float cooldownDuration; // cooldown of the ability
+    protected float chargeDuration; // delay before activation
+    protected float activeDuration;  // active time ( + charge)
+    protected float cooldownDuration; // cooldown of the ability (+ charge and active time)
     protected float energyCost; // energy cost of the ability
-    protected float CDRemaining; // amount of time remaining on cooldown
-    protected bool isOnCD = false; // check for cooldown
-    protected bool isPassive = false; // if the ability is passive
-    protected bool isEnabled = true; // if the ability is enabled
-    protected bool isDestroyed = false; // has the part detached from the craft
+    protected float startTime; // the time the ability was activated by the entity
     private Color originalIndicatorColor;
     protected int abilityTier;
-    public ShellPart part;
-    public string abilityName = "Ability";
     protected string description = "Does things";
-    public GameObject glowPrefab;
+    protected ShellPart part;
 
-    /// <summary>
-    /// Setter method for isEnabled, will be used by parts
-    /// </summary>
-    /// <param name="input">boolean to set to</param>
-    public void SetIsEnabled(bool input) {
-        isEnabled = input; // set is enabled
-    }
+    public ShellPart Part { set { part = value; } }
+    public string abilityName = "Ability";
+    public SpriteRenderer glow;
+
+    public bool isEnabled { get; set; } = true;
 
     public virtual void SetTier(int abilityTier) {
         if(abilityTier > 3 || abilityTier < 0) Debug.LogError("An ability tier was set out of bounds!" + "number: " + abilityTier);
@@ -60,12 +69,10 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     public int GetTier() {
         return abilityTier;
     }
-    /// <summary>
-    /// Getter method for isEnabled, will be used by the AbilityHandler
-    /// </summary>
-    /// <returns>true if ability is enabled, false otherwise</returns>
-    public bool GetIsEnabled() {
-        return isEnabled; // get is enabled
+
+    public AbilityType GetAbilityType()
+    {
+        return AbilityType.Skill;
     }
 
     /// <summary>
@@ -92,11 +99,26 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// <param name="input">boolean to set to</param>
     virtual public void SetDestroyed(bool input)
     {
-        // delete glow from ability
-        if(glowPrefab)
-            Destroy(glowPrefab);
-            
-        isDestroyed = input; // set is destroyed
+        if (input)
+        {
+            // delete glow from ability
+            if (glow)
+                Destroy(glow.gameObject);
+
+            if (State == AbilityState.Active)
+                Deactivate();
+            State = AbilityState.Destroyed;
+        }
+        else
+        {
+            State = AbilityState.Ready;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (State != AbilityState.Destroyed && Core)
+            SetDestroyed(true);
     }
 
     /// <summary>
@@ -105,21 +127,17 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// <returns>true if ability is destroyed, false otherwise</returns>
     public bool IsDestroyed()
     {
-        return isDestroyed; // get is destroyed
+        return State == AbilityState.Destroyed;
     }
 
 
     /// <summary>
     /// Initialization of every ability
     /// </summary>
-    protected virtual void Awake() { }
-
-    /// <summary>
-    /// Get the isPassive of the ability
-    /// </summary>
-    /// <returns>the isPassive of the ability</returns>
-    public bool GetIsPassive() {
-        return isPassive; // is passive
+    protected virtual void Awake()
+    {
+        State = AbilityState.Ready;
+        startTime = -100f; // 0 would trigger the ability at start
     }
 
     /// <summary>
@@ -157,36 +175,59 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
 
     public void ResetCD()
     {
-        CDRemaining = cooldownDuration;
+        startTime = Time.time - activeDuration;
     }
 
     /// <summary>
     /// Get the cooldown remaining on the ability
     /// </summary>
     /// <returns>The cooldown duration remaining on the ability</returns>
-    public float GetCDRemaining() {
-        if (isOnCD) // on cooldown
+    public float TimeUntilReady() {
+        if (State == AbilityState.Cooldown || State == AbilityState.Charging || State == AbilityState.Active) // active or on cooldown
         {
-            return CDRemaining; // return the cooldown remaining, calculated prior to this call via TickDown
+            return cooldownDuration - (Time.time - startTime); // return the cooldown remaining, calculated prior to this call via TickDown
         }
         else return 0; // not on cooldown
     }
 
+
     /// <summary>
-    /// Helper method used to update the ability's fields, usually called by Tick every update (not always)
+    /// Updates the internal state of the ability
     /// </summary>
-    /// <param name="duration">Used to reset remaining; this is its default value</param>
-    /// <param name="remaining">Duration to tick down</param>
-    /// <param name="checkerVal">The boolean to flip once remaining ticks to 0</param>
-    public void TickDown(float duration, ref float remaining, ref bool checkerVal) {
-        if (remaining > Time.deltaTime) // tick down
-        {
-            remaining -= Time.deltaTime; // reduce by time passed since last frame
-        }
+    public void UpdateState()
+    {
+        if (State == AbilityState.Destroyed)
+            return;
+        if (!isEnabled)
+            State = AbilityState.Disabled;
+        else if (Time.time >= startTime + cooldownDuration)
+            State = AbilityState.Ready;
+        else if (Time.time >= startTime + activeDuration)
+            State = AbilityState.Cooldown;
+        else if (Time.time >= startTime + chargeDuration)
+            State = AbilityState.Active;
         else
+            State = AbilityState.Charging;
+
+        if (!Core || Core.GetIsDead())
         {
-            remaining = duration; // reset remaining
-            checkerVal = false; // flip boolean
+            State = AbilityState.Destroyed;
+            Debug.Log($"Destroyed!! Core: {Core}, IsDead: {Core?.GetIsDead()}");
+        }
+    }
+
+    public virtual void Activate()
+    {
+        // If (NPC or (Player and not interacting)) and enough energy
+        if (State == AbilityState.Ready && (!(Core as PlayerCore) || !(Core as PlayerCore).GetIsInteracting()) && Core.GetHealth()[2] >= energyCost)
+        {
+            Core.MakeBusy(); // make core busy
+            Core.TakeEnergy(energyCost); // remove the energy
+            startTime = Time.time; // Set activation time
+            UpdateState(); // Update state
+            // If there's no charge time, execute immediately
+            if (State == AbilityState.Active || State == AbilityState.Cooldown)
+                Execute();
         }
     }
 
@@ -194,81 +235,101 @@ public abstract class Ability : MonoBehaviour, IPlayerExecutable {
     /// Ability called to change the ability's state over time for players
     /// </summary>
     /// <param name="action">The associated button to press to activate</param>
-    virtual public void Tick(int action) {
-        if(isDestroyed)
+    virtual public void Tick() {
+        if(State == AbilityState.Destroyed)
         {
             return; // Part has been destroyed, ability can't be used
         }
-        else if (isOnCD) // tick the cooldown down
+
+        AbilityState prevState = State;
+        UpdateState();
+
+        UpdateBlinker();
+
+        // If ability activated
+        if (State == AbilityState.Active && prevState == AbilityState.Charging)
         {
-            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD);  // tick down
-        }
-        else if ((!(Core as PlayerCore) || !(Core as PlayerCore).GetIsInteracting()) 
-        && ((action == 1)) && Core.GetHealth()[2] >= energyCost) // enough energy and button pressed
-        {
-            Core.MakeBusy(); // make core busy
-            Core.TakeEnergy(energyCost); // remove the energy
             Execute(); // execute the ability
         }
-    }
-
-    private bool blinking;
-    virtual protected void ToggleIndicator()
-    {
-        var indicator = transform.Find("Shooter");
-        if(!glowPrefab)
+        // If the ability needs to cool down
+        else if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown)
         {
-            glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
-            glowPrefab = Instantiate(glowPrefab, transform, false);
-            glowPrefab.transform.localScale = new Vector3(0.75F,0.75F,1);
-            glowPrefab.GetComponent<SpriteRenderer>().color = new Color(1,1,1,0.5F);
-            Destroy(glowPrefab, GetActiveTimeRemaining());
+            Deactivate(); // deactivate the ability
         }
-        else Destroy(glowPrefab);
     }
 
-    virtual protected void SetIndicatorBlink(bool blink)
+    void UpdateBlinker()
     {
-        // Ignore true calls when already blinking
-        if(blinking && blink) return;
-
-        blinking = blink;
-        var indicator = transform.Find("Shooter");
-        
-        if(blinking && indicator) 
+        if (State == AbilityState.Charging)
         {
-            if(!glowPrefab)
+            // Make sure the glow exists
+            GetBlinker();
+        }
+        else if (State == AbilityState.Active)
+        {
+            // Do not reveal stealth enemies by blinking their parts
+            if (ID == AbilityID.Stealth && core.faction != 0)
             {
-                glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
-                glowPrefab = Instantiate(glowPrefab, transform, false);
-                glowPrefab.transform.localScale = new Vector3(0.75F,0.75F,1);
-                glowPrefab.GetComponent<SpriteRenderer>().color = new Color(1,1,1,0.5F);
-                Destroy(glowPrefab, GetActiveTimeRemaining());
+                if (glow)
+                    Destroy(glow.gameObject);
+                return;
             }
-            StartCoroutine(Blinker(glowPrefab));
+
+            var blinker = GetBlinker();
+
+            // Blink
+            blinker.enabled = (Time.time % 0.25f) > 0.125f;
+
+            // Update alpha
+            Color newColor = glow.color;
+            if (Core.invisible)
+            {
+                // Invisible player
+                if (Core.faction == 0)
+                    newColor.a = 0.1f;
+                // Invisible enemy
+                else
+                    newColor.a = 0f;
+            }
+            // Visible entity
+            else
+                newColor.a = 0.5f;
+
+            glow.color = newColor;
         }
-        else if(glowPrefab) Destroy(glowPrefab);
+        else if(glow)
+                Destroy(glow.gameObject);
     }
 
-    IEnumerator Blinker(GameObject glowPrefab)
+    protected SpriteRenderer GetBlinker()
     {
-        while(blinking && glowPrefab)
+        if (!glow)
         {
-            if(glowPrefab) glowPrefab.SetActive(!glowPrefab.activeSelf);
-            var newColor = glowPrefab.GetComponent<SpriteRenderer>().color;
-            newColor.a = (Core.IsInvisible ? (Core.faction == 0 ? 0.1f: 0f) : 0.5f);
-            glowPrefab.GetComponent<SpriteRenderer>().color = newColor;
-
-            yield return new WaitForSeconds(0.125F);
+            var glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
+            if (glowPrefab)
+            {
+                var obj = Instantiate(glowPrefab, transform, false);
+                obj.transform.localScale = new Vector3(0.75F, 0.75F, 1);
+                glow = obj.GetComponent<SpriteRenderer>();
+                glow.color = new Color(1, 1, 1, 0.5F);
+            }
         }
-
-        Destroy(glowPrefab);
+        return glow;
     }
 
     /// <summary>
     /// Used to activate whatever effect the ability has, almost always overriden
     /// </summary>
-    virtual protected void Execute() {
+    virtual protected void Execute()
+    {
         
+    }
+
+    /// <summary>
+    /// Remove effects of an ability
+    /// </summary>
+    virtual public void Deactivate()
+    {
+
     }
 }

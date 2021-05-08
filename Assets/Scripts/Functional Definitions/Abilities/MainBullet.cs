@@ -18,7 +18,6 @@ public class MainBullet : Bullet {
         range = bulletSpeed * survivalTime;
         ID = AbilityID.MainBullet;
         cooldownDuration = 0.4F;
-        CDRemaining = cooldownDuration;
         energyCost = 10;
         damage = GetDamage(abilityTier);
         description = "Projectile that deals " + GetDamage(abilityTier) + " damage. \nStays with you no matter what.";
@@ -50,10 +49,5 @@ public class MainBullet : Bullet {
     void Update()
     {
         if(muzzle) muzzle.transform.position = transform.position;
-    }
-
-    public void SetDamage(int damage)
-    {
-        this.damage = damage;
     }
 }

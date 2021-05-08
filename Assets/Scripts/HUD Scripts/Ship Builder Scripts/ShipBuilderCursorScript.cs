@@ -59,6 +59,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		foreach(ShipBuilderPart part in parts) {
 			buildValue += EntityBlueprint.GetPartValue(part.info);
 		}
+		builder.UpdateChain();
 	}
 	public EntityBlueprint.PartInfo? GetCurrentInfo() {
 		if(!currentPart) return null;
@@ -218,7 +219,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		}
 
 		int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
-		builder.UpdateChain();
+
 		if(Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active)) {
 			if(builder as ShipBuilder == null || (builder as ShipBuilder).Equals(null) || !(builder as ShipBuilder).editorMode) ClearAllParts();
 		}
@@ -250,6 +251,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			if(Input.GetMouseButtonUp(0)) {
 				PlaceCurrentPart();
 			}
+			builder.UpdateChain();
 		} else if(Input.GetMouseButtonDown(0)) {
 			grid2lastPos = grid.anchoredPosition;
 			grid2mousePos = Input.mousePosition;

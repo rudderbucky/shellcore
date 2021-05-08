@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PassiveAbility : Ability {
-
-    private bool initialized = false;
-
+public class PassiveAbility : Ability
+{
     protected override void Awake()
     {
         base.Awake();
@@ -17,12 +15,12 @@ public class PassiveAbility : Ability {
         
     }
 
-    public override void Tick(int key)
+    public override void Tick()
     {
-        if (!initialized)
+        if (State != AbilityState.Active)
         {
+            State = AbilityState.Active;
             Execute();
-            initialized = true;
         }
     }
 }

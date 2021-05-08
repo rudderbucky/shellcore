@@ -240,7 +240,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
             childObject.AddComponent<MinimapLockRotationScript>();
         }
         
-        if (!GetComponent<Draggable>() && (this as Drone || this as Tank || this as Turret))
+        if (!GetComponent<Draggable>())
         {
             draggable = gameObject.AddComponent<Draggable>();
         }
@@ -265,6 +265,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
             if(parts[i].gameObject.name != "Shell Sprite")
                 Destroy(parts[i].gameObject);
         }
+
+        stealths = 0;
+        absorptions = 0;
 
         BuildEntity();
     }
@@ -512,7 +515,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         // 1 part drop style - choose a random part if the criteria fits, set it to collectible
         if(!FactionManager.IsAllied(0, faction) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
-            ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
+            ( (this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null) 
+            || (this as ShellCore).GetCarrier().GetIsDead() )) {
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
 
@@ -534,11 +538,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         if (lastDamagedBy as PlayerCore) 
         {
-            (lastDamagedBy as PlayerCore).credits += 5;
-            if (BZM != null)
-            {
-                BZM.CreditsCollected += 5;
-            }
+            (lastDamagedBy as PlayerCore).AddCredits(Random.Range(1,5));
+
             if (this as ShellCore && !FactionManager.IsAllied(0, faction))
             {
                 foreach(var part in blueprint.parts)
@@ -804,7 +805,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// </summary>
     public float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) 
     {
-        if (amount > 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
+        if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
             Debug.Log("Damage: " + amount + " (f " + lastDamagedBy?.faction + " -> " + faction + ")");
 
         if (isAbsorbing && amount > 0f)

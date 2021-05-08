@@ -20,6 +20,7 @@ namespace NodeEditorFramework.Standard
         //Data
         public string variableName;
         public int value;
+        bool incrementMode;
 
         ConnectionKnobAttribute flowIn = new ConnectionKnobAttribute("Input ", Direction.In, "TaskFlow", ConnectionCount.Multi, NodeSide.Left, 20);
         ConnectionKnobAttribute flowOut = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
@@ -68,11 +69,12 @@ namespace NodeEditorFramework.Standard
             variableName = GUILayout.TextField(variableName);
             GUILayout.Label("Value:");
             value = RTEditorGUI.IntField(value);
+            incrementMode = GUILayout.Toggle(incrementMode,"Increment mode: ");
         }
 
         public override int Traverse()
         {
-            TaskManager.Instance.SetTaskVariable(variableName, value);
+            TaskManager.Instance.SetTaskVariable(variableName, value, incrementMode);
             return 0;
         }
     }

@@ -17,7 +17,6 @@ public class Cannon : WeaponAbility {
         ID = AbilityID.Cannon;
         damage = cannonDamage;
         cooldownDuration = 2F;
-        CDRemaining = cooldownDuration;
         range = 10;
         energyCost = 25;
         category = Entity.EntityCategory.All;
@@ -30,17 +29,11 @@ public class Cannon : WeaponAbility {
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if(Core.RequestGCD()) {
-            if(!effectPrefab) effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
-            if (targetingSystem.GetTarget().GetComponent<Entity>() != null) // check if there is actually a target, do not fire if there is not
-            {
-                AudioManager.PlayClipByID("clip_cannon", transform.position);
-                FireCannon(targetingSystem.GetTarget().GetComponent<Entity>()); // fire if there is
-                isOnCD = true; // set on cooldown
-                return true;
-            }
-            return false;
-        } return false;
+        // TODO: There was a check if the target was an entity. Is that necessary?
+        if(!effectPrefab) effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+        AudioManager.PlayClipByID("clip_cannon", transform.position);
+        FireCannon(targetingSystem.GetTarget().GetComponent<Entity>()); // fire if there is
+        return true;
     }
 
     protected void Update()

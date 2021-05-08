@@ -64,7 +64,8 @@ public class GroundCarrier : GroundConstruct, ICarrier {
             {
                 if(!(active is SpawnDrone) || enemyTargetFound) 
                 {
-                    active.Tick(1);
+                    active.Tick();
+                    active.Activate();
                 }
             }
 

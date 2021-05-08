@@ -9,6 +9,7 @@ public class Bullet : WeaponAbility
     protected float survivalTime; // the time the bullet takes to delete itself
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
+    protected int accuracy = 3; // bullet accuracy; 0 = no lead, default is 3
     protected string bulletSound = "clip_bullet2";
     public static readonly int bulletDamage = 400;
 
@@ -23,7 +24,6 @@ public class Bullet : WeaponAbility
         range = bulletSpeed * survivalTime;
         ID = AbilityID.Bullet;
         cooldownDuration = 2F;
-        CDRemaining = cooldownDuration;
         energyCost = 25;
         damage = bulletDamage;
         prefabScale = 1 * Vector3.one;
@@ -42,16 +42,8 @@ public class Bullet : WeaponAbility
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if(Core.RequestGCD()) {
-            if (targetingSystem.GetTarget()) // check if there is actually a target, do not fire if there is not
-            {
-                FireBullet(victimPos); // fire if there is
-                isOnCD = true; // set on cooldown
-                return true;
-            }
-            return false;
-        }
-        return false;
+        FireBullet(victimPos); // fire if there is
+        return true;
     }
 
     /// <summary>
@@ -82,10 +74,17 @@ public class Bullet : WeaponAbility
         script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
         script.missParticles = true;
 
-        // Add velocity to the bullet
+        // Calculate future target position
+        Vector2 targetVelocity = targetingSystem.GetTarget() ? targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
+        float flightTime;
         Vector3 predictionAdjuster = Vector2.zero;
-        if(targetingSystem.GetTarget()) predictionAdjuster = (targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity) * survivalTime 
-            / (bulletSpeed / 2);
+        for (int i = 0; i < accuracy; i++) 
+        {
+            flightTime = (targetPos - originPos + predictionAdjuster).magnitude / bulletSpeed;
+            predictionAdjuster = targetVelocity * flightTime;
+        }
+
+        // Add velocity to the bullet
         bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos + predictionAdjuster) * bulletSpeed;
 
         // Destroy the bullet after survival time

@@ -7,6 +7,7 @@ public interface ICarrier : IOwner
 {
     Vector3 GetSpawnPoint();
     bool GetIsInitialized();
+    bool GetIsDead();
 }
 
 public class AirCarrier : AirConstruct, ICarrier {
@@ -69,7 +70,11 @@ public class AirCarrier : AirConstruct, ICarrier {
 
             foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
             {
-                if(!(active is SpawnDrone) || enemyTargetFound) active.Tick(1);
+                if(!(active is SpawnDrone) || enemyTargetFound)
+                {
+                    active.Tick();
+                    active.Activate();
+                }
             }
 
 

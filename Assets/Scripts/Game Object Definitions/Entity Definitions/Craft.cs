@@ -44,7 +44,7 @@ public abstract class Craft : Entity
         pins--;
         if (pins < 0)
         {
-            Debug.LogError("Negative pins!");
+            Debug.LogError($"Negative pins! {name}");
             pins = 0;
         }
     }
@@ -112,7 +112,7 @@ public abstract class Craft : Entity
             if (ability is ActiveAbility)
             {
                 ActiveAbility aa = (ability as ActiveAbility);
-                if (aa.TrueActive)
+                if (aa.State == Ability.AbilityState.Active)
                     aa.Deactivate();
             }
         }

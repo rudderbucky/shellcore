@@ -8,6 +8,9 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
+    private static float deadzoneDamageMult = 0.1f;
+    private static float deadzoneDamageBase = 0.2f;
+    private static float deadzoneDamage = deadzoneDamageBase;
     public delegate void SectorLoadDelegate(string sectorName);
     public static SectorLoadDelegate OnSectorLoad;
     public static SectorLoadDelegate SectorGraphLoad;
@@ -135,18 +138,20 @@ public class SectorManager : MonoBehaviour
         }
 
         // deadzone damage
-        if(current && current.type == Sector.SectorType.DangerZone)
+        if(current && GetCurrentType() == Sector.SectorType.DangerZone)
         {
             if(dangerZoneTimer >= 5 && !player.GetIsDead())
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
-                player.TakeShellDamage(0.2F * player.GetMaxHealth()[0], 0, null);
-                player.TakeCoreDamage(0.2F * player.GetMaxHealth()[1]);
+                player.TakeShellDamage(deadzoneDamage * player.GetMaxHealth()[0], 0, null);
+                player.TakeCoreDamage(deadzoneDamage * player.GetMaxHealth()[1]);
                 player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
+                deadzoneDamage += deadzoneDamageMult;
             } else dangerZoneTimer += Time.deltaTime;
         } else
         {
+            deadzoneDamage = deadzoneDamageBase;
             dangerZoneTimer = 0;
         }
         
@@ -442,7 +447,7 @@ public class SectorManager : MonoBehaviour
 
                         } else shellcore.entityName = blueprint.entityName = data.name;
 
-                        if(current.type == Sector.SectorType.BattleZone)
+                        if(GetCurrentType() == Sector.SectorType.BattleZone)
                         {
                             // add core arrow
                             if(MinimapArrowScript.instance && !(shellcore is PlayerCore))
@@ -1257,5 +1262,13 @@ public class SectorManager : MonoBehaviour
         {
             Destroy(border.Value.gameObject);
         }
+    }
+
+    public Sector.SectorType GetCurrentType()
+    {
+        if (overrideProperties != null)
+            return overrideProperties.type;
+        else
+            return current.type;
     }
 }

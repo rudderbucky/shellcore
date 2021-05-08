@@ -59,7 +59,7 @@ public class DevConsoleScript : MonoBehaviour
                 var player = PlayerCore.Instance;
                 player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
                 player.SetRegens(new float[] { 99999, 99999, 99999 });
-                player.credits = 999999;
+                player.AddCredits(999999);
                 player.enginePower = 9999f;
                 player.speed = 9999f;
                 player.CalculatePhysicsConstants();
@@ -97,6 +97,11 @@ public class DevConsoleScript : MonoBehaviour
             {
                 int number = int.Parse(command.Substring(11).Trim());
                 PlayerCore.Instance.shards += number;
+            }
+            else if (command.StartsWith("Add money ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int number = int.Parse(command.Substring(10).Trim());
+                PlayerCore.Instance.AddCredits(number);
             }
             else if (command.Equals("Full log", StringComparison.CurrentCultureIgnoreCase))
             {

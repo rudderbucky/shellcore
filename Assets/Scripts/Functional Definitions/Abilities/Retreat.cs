@@ -1,53 +1,57 @@
 ﻿using System.Linq;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
-/// Heals all allies in range
+/// Respawns the entity
 /// </summary>
 public class Retreat : Ability
 {
-    float activationDelay = 3f; // the delay between clicking the ability and its activation
-    float activationTime = 0f;
-    bool charging = false;
-
     protected override void Awake()
     {
         base.Awake(); // base awake
                       // hardcoded values here
         ID = AbilityID.Retreat;
         energyCost = 200;
+        chargeDuration = 3f;
+        activeDuration = 3.1f;
         cooldownDuration = 30;
-        CDRemaining = cooldownDuration;
     }
 
-    public override void Tick(int key)
-    {
-        base.Tick(key);
-        if (isOnCD && Time.time > activationTime && charging)
-        {
-            charging = false;
-            AudioManager.PlayClipByID("clip_activateability", transform.position);
-            if (Core is Craft)
-            {
-                (Core as Craft).Respawn();
-                Retreat r = Core.GetAbilities().First((a) => { return a is Retreat; }) as Retreat;
-                if (r != null)
-                {
-                    r.isOnCD = true;
-                    r.CDRemaining = r.cooldownDuration - activationDelay;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Heals all nearby allies
-    /// </summary>
     protected override void Execute()
     {
-        activationTime = Time.time + activationDelay;
-        isOnCD = true;
-        charging = true;
-        ToggleIndicator();
+        if (Core is Craft)
+        {
+            AudioManager.PlayClipByID("clip_activateability", transform.position);
+            // get all current retreats, set the new retreat's start times to the old retreat start times, find one that is off CD
+            // and set it to CD
+            List<Retreat> oldRetreats = new List<Retreat>();
+            foreach(Ability ability in Core.GetAbilities())
+            {
+                if(ability as Retreat)
+                    oldRetreats.Add(ability as Retreat);
+            }
+
+            (Core as Craft).Respawn();
+
+            List<Retreat> newRetreats = new List<Retreat>();
+            foreach(Ability ability in Core.GetAbilities())
+            {
+                if(ability as Retreat)
+                    newRetreats.Add(ability as Retreat);
+            }
+            for(int i = 0; i < oldRetreats.Count; i++)
+            {
+               newRetreats[i].startTime = oldRetreats[i].startTime; 
+            }
+
+            // prior to Awake activation since Respawn was set on this stack. We therefore search for 0 here
+            Retreat r = newRetreats.Find((a) => { return a.startTime == 0; }) as Retreat;
+            if (r != null)
+            {
+                r.startTime = Time.time - activeDuration + 0.1f;
+            }
+        }
     }
 }

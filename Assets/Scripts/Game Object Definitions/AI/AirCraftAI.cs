@@ -226,7 +226,7 @@ public class AirCraftAI : MonoBehaviour
             {
                 if (a)
                 {
-                    a.Tick(0);
+                    a.Tick();
                 }
             }
             
