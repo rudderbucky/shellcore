@@ -27,7 +27,7 @@ public class Beam : WeaponAbility
         range = 8;
         category = Entity.EntityCategory.All;
         bonusDamageType = typeof(ShellCore);
-        cooldownDuration = 1f;
+        cooldownDuration = 3f;
     }
     protected override void Start() {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
