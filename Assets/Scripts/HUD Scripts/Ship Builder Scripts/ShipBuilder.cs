@@ -706,17 +706,16 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public void AddPartByEditorSection() {
 		var part = new EntityBlueprint.PartInfo();
 		
-		if(int.TryParse(editorModeAddPartSection.transform.Find("Ability Tier").GetComponent<InputField>().text, out part.tier)) {
-			
-			var secondaryData = editorModeAddPartSection.transform.Find("Secondary Data").GetComponent<InputField>().text;
-			part.secondaryData = secondaryData != null ? secondaryData : "";
-			part.abilityID = editorModeAddPartSection.transform.Find("Ability ID").GetComponent<Dropdown>().value;
-			var x = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
-			if(ResourceManager.allPartNames.Contains(x)) {
-				part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
-				AddPart(part);
-			}
-
+		if(!int.TryParse(editorModeAddPartSection.transform.Find("Ability Tier").GetComponent<InputField>().text, out part.tier)) {
+			part.tier = 0;
+		}
+		var secondaryData = editorModeAddPartSection.transform.Find("Secondary Data").GetComponent<InputField>().text;
+		part.secondaryData = secondaryData != null ? secondaryData : "";
+		part.abilityID = editorModeAddPartSection.transform.Find("Ability ID").GetComponent<Dropdown>().value;
+		var x = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
+		if(ResourceManager.allPartNames.Contains(x)) {
+			part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
+			AddPart(part);
 		}
 	}
 

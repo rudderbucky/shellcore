@@ -69,8 +69,9 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		if(!lastPart) return null;
 		return lastPart.info;
 	}
-	public void GrabPart(ShipBuilderPart part) {
+	public void GrabPart(ShipBuilderPart part, ShipBuilderPart symmetryPart=null) {
 		lastPart = null;
+		symmetryLastPart = null;
 		if(parts.Contains(part)) {
 			parts.Remove(part);
 			parts.Add(part);
@@ -86,6 +87,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		else
 			offset = pos - GetComponent<RectTransform>().anchoredPosition;
 		currentPart = part;
+		symmetryCurrentPart = symmetryPart; 
 	}
 	void PlaceCurrentPart() {
 		currentPart.SetMaskable(true);
@@ -118,7 +120,9 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 
 	private void PlaceCurrentPartInGrid() {
 		lastPart = currentPart;
+		symmetryLastPart = symmetryCurrentPart;
 		currentPart = null;
+		symmetryCurrentPart = null;
 		if(lastPart.isInChain && lastPart.validPos) {
 			lastPart.SetLastValidPos(lastPart.info.location);
 		} 
@@ -176,11 +180,14 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			lastPart.info.rotation = y.z;
 		}
 		else lastPart.info.rotation = 0;
-			return;
+		if(symmetryLastPart && symmetryMode == SymmetryMode.X) symmetryLastPart.info.rotation = -lastPart.info.rotation;
+		if(symmetryLastPart && symmetryMode == SymmetryMode.Y) symmetryLastPart.info.rotation = -lastPart.info.rotation + 180;
+		return;
 	}
 	public void FlipLastPart() {
 		lastPart.info.mirrored = !lastPart.info.mirrored;
-		flipped = true;
+		if(symmetryLastPart) symmetryLastPart.info.mirrored = !lastPart.info.mirrored;
+			flipped = true;
 	}
 
 	private bool compactMode = true;
@@ -203,6 +210,40 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			statsSection.anchoredPosition = new Vector2(6.35F, 0);
 			grid2mask.sizeDelta = new Vector2(1250, 1250);
 			background.sizeDelta = new Vector2(1270, 670);
+		}
+	}
+
+	public enum SymmetryMode
+	{
+		Off,
+		X,
+		Y
+	}
+
+	public SymmetryMode symmetryMode = SymmetryMode.Off;
+	public Text symmetryButtonText;
+
+	// symmetry mode is used by code to determine axis of symmetry
+	public void ToggleSymmetryMode()
+	{
+		symmetryMode = (SymmetryMode)((int)++symmetryMode % System.Enum.GetNames(typeof(SymmetryMode)).Length);
+		if(symmetryButtonText) symmetryButtonText.text = "SYMMETRY MODE: " + symmetryMode.ToString().ToUpper();
+	}
+
+	ShipBuilderPart symmetryCurrentPart;
+	ShipBuilderPart symmetryLastPart;
+
+	// flips the x/y value of the passed vector based on passed symmetry mode
+	private Vector2 GetSymmetrizedVector(Vector2 vec, SymmetryMode mode)
+	{
+		switch(mode)
+		{
+			case SymmetryMode.X:
+				return new Vector2(-vec.x, vec.y);
+			case SymmetryMode.Y:
+				return new Vector2(vec.x,-vec.y);
+			default:
+				return vec;
 		}
 	}
 
@@ -245,39 +286,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			return;
 		}
 
-		if(currentPart) {
-			currentPart.SetMaskable(false);
-			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
-			if(Input.GetMouseButtonUp(0)) {
-				PlaceCurrentPart();
-			}
-			builder.UpdateChain();
-		} else if(Input.GetMouseButtonDown(0)) {
-			grid2lastPos = grid.anchoredPosition;
-			grid2mousePos = Input.mousePosition;
-			lastPart = null;
-			for(int i = parts.Count - 1; i >= 0; i--) {
-				Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);
-				bound.extents /= 1.5F;
-				var origPos = transform.position;
-				transform.position = Input.mousePosition;
-				if(bound.Contains(GetComponent<RectTransform>().anchoredPosition)) {
-					transform.position = origPos;
-					GrabPart(parts[i]);
-					break;
-				}
-				transform.position = origPos;
-			}
-			if(clickedOnce && !rotateMode && !flipped && !currentPart)
-			{
-				grid2lastPos = grid.anchoredPosition = Vector2.zero;
-			} 
-			else 
-			{
-				timer = 0;
-				clickedOnce = true;
-			}
-		}
+		UpdateCurrentPart();
 
 		// drag grid
 		Vector2 bounds = grid.sizeDelta / 2 - grid2mask.sizeDelta / 2;
@@ -289,6 +298,68 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 				Mathf.Max(-bounds.y, Mathf.Min(bounds.y, grid.anchoredPosition.y))
 			);
 		}
+	}
+
+	public void UpdateCurrentPart()
+	{
+		if(currentPart) {
+			currentPart.SetMaskable(false);
+			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
+			if(symmetryCurrentPart)
+				symmetryCurrentPart.info.location = GetSymmetrizedVector(currentPart.info.location, symmetryMode);
+			if(Input.GetMouseButtonUp(0)) {
+				PlaceCurrentPart();
+			}
+			builder.UpdateChain();
+		} else if(Input.GetMouseButtonDown(0)) {
+			grid2lastPos = grid.anchoredPosition;
+			grid2mousePos = Input.mousePosition;
+			lastPart = null;
+
+			var vecPos = GetComponent<RectTransform>().anchoredPosition;
+			var part = FindPart(vecPos, null);
+			// check for symmetry mode and grab parts accordingly
+			if(part)
+			{
+				if(symmetryMode != SymmetryMode.Off)
+				{
+					var symmetryPart = FindPart(GetSymmetrizedVector(vecPos, symmetryMode), part);
+					if(symmetryPart == part) symmetryPart = null;
+					GrabPart(part, symmetryPart);
+				}
+				else GrabPart(part);
+			}
+
+			if(clickedOnce && !rotateMode && !flipped && !currentPart)
+			{
+				grid2lastPos = grid.anchoredPosition = Vector2.zero;
+			} 
+			else 
+			{
+				timer = 0;
+				clickedOnce = true;
+			}
+		}
+	}
+
+	// Finds the part which contains the passed vector point
+	// symmetry mode enables checks based on symmetryPart - same part ID, ability ID, different mirrored
+	private ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart)
+	{
+		for(int i = parts.Count - 1; i >= 0; i--) {
+			Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);
+			bound.extents /= 1.5F;
+			var origPos = transform.position;
+			transform.position = Input.mousePosition;
+			if(bound.Contains(vector) && (!symmetryPart || (parts[i].info.partID ==symmetryPart.info.partID &&
+				symmetryPart.info.abilityID == parts[i].info.abilityID
+					&& (symmetryMode != SymmetryMode.X || parts[i].info.mirrored != symmetryPart.info.mirrored)))) {
+				transform.position = origPos;
+				return parts[i];
+			}
+			transform.position = origPos;
+		}
+		return null;
 	}
 
 	public void ToggleCompact() {
