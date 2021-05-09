@@ -678,6 +678,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		cursorScript.gameObject.SetActive(true);
 		cursorScript.UpdateHandler();
+		UpdateChain();
 	}
     public void AddShard(Shard shard) {
         var tiers = new int[] {1, 5, 20};
@@ -784,6 +785,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			p.SetLastValidPos(part.location);
 			p.isInChain = true;
 			p.validPos = true;
+			p.Initialize();
 		}
 
 		if(editorMode)

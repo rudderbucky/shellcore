@@ -59,7 +59,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		foreach(ShipBuilderPart part in parts) {
 			buildValue += EntityBlueprint.GetPartValue(part.info);
 		}
-		builder.UpdateChain();
 	}
 	public EntityBlueprint.PartInfo? GetCurrentInfo() {
 		if(!currentPart) return null;
