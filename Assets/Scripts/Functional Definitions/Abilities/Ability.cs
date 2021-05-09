@@ -23,15 +23,6 @@ public abstract class Ability : MonoBehaviour {
             core = value;
         }
     }
-
-    public enum AbilityType
-    {
-        Skill,
-        Spawn,
-        Weapon,
-        Passive
-    }
-
     public enum AbilityState
     {
         Ready,
@@ -70,9 +61,9 @@ public abstract class Ability : MonoBehaviour {
         return abilityTier;
     }
 
-    public AbilityType GetAbilityType()
+    public AbilityHandler.AbilityTypes GetAbilityType()
     {
-        return AbilityType.Skill;
+        return AbilityUtilities.GetAbilityTypeByID((int)ID);
     }
 
     /// <summary>
