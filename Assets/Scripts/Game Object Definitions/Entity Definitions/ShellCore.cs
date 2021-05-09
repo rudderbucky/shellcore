@@ -30,6 +30,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public ICarrier GetCarrier()
     {
+        if(carrier == null || carrier.Equals(null) || carrier.GetIsDead()) return null;
         return carrier;
     }
 

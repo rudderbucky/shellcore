@@ -132,7 +132,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                 (abilities[0] as SpawnDrone).spawnData.drone : null);
         }
 
-        Debug.Log("TEST");
         // update the number of off-CD abilities
         if(offCDCountText)
             offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() && 

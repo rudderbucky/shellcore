@@ -23,6 +23,8 @@ public class Retreat : Ability
     {
         if (Core is Craft)
         {
+            if(Core as ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone
+                && (Core as ShellCore).GetCarrier() == null) return;
             AudioManager.PlayClipByID("clip_activateability", transform.position);
             // get all current retreats, set the new retreat's start times to the old retreat start times, find one that is off CD
             // and set it to CD
