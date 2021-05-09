@@ -32,7 +32,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
 
         if(count > 0) {
             var builderPart = InstantiatePart();
-            ShipBuilderPart symmetryPart = cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
+            ShipBuilderPart symmetryPart = count > 1 && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
             if(symmetryPart) 
             {
                 //if(cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
@@ -42,6 +42,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
             }
             cursor.GrabPart(builderPart, symmetryPart);
             count--;
+            if(symmetryPart) count--;
             cursor.buildValue += EntityBlueprint.GetPartValue(part);
             if(mode == BuilderMode.Trader) cursor.buildCost += EntityBlueprint.GetPartValue(part);
 
