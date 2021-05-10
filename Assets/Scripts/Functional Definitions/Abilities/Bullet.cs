@@ -9,7 +9,6 @@ public class Bullet : WeaponAbility
     protected float survivalTime; // the time the bullet takes to delete itself
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
-    protected int accuracy = 3; // bullet accuracy; 0 = no lead, default is 3
     protected string bulletSound = "clip_bullet2";
     public static readonly int bulletDamage = 400;
 
@@ -76,16 +75,20 @@ public class Bullet : WeaponAbility
 
         // Calculate future target position
         Vector2 targetVelocity = targetingSystem.GetTarget() ? targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
-        float flightTime;
-        Vector3 predictionAdjuster = Vector2.zero;
-        for (int i = 0; i < accuracy; i++) 
-        {
-            flightTime = (targetPos - originPos + predictionAdjuster).magnitude / bulletSpeed;
-            predictionAdjuster = targetVelocity * flightTime;
-        }
+        
+        // Closed form solution to bullet lead problem involves finding t via a quadratic solved here.
+        Vector2 relativeDistance = targetPos - originPos;
+        var a = (bulletSpeed * bulletSpeed - Vector2.Dot(targetVelocity,targetVelocity));
+        var b = -(2*targetVelocity.x*relativeDistance.x + 2*targetVelocity.y*relativeDistance.y) ;
+        var c = -Vector2.Dot(relativeDistance,relativeDistance);
 
+        if(a == 0 || b*b-4*a*c<0) return;
+
+        var t1 = (-b + Mathf.Sqrt(b*b - 4*a*c))/(2*a);
+        var t2 = (-b - Mathf.Sqrt(b*b - 4*a*c))/(2*a);
+        float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1,t2));
         // Add velocity to the bullet
-        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos + predictionAdjuster) * bulletSpeed;
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity*t) * bulletSpeed;
 
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);

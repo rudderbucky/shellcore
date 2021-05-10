@@ -49,7 +49,6 @@ public class SaveHandler : MonoBehaviour {
 			if(save.presetBlueprints.Length != 5) {
 				save.presetBlueprints = new string[5];
 			}
-			player.Rebuild();
             Camera.main.GetComponent<CameraScript>().Initialize(player);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
 

@@ -475,6 +475,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         ConnectedTreeCreator();
 
         maxHealth.CopyTo(currentHealth, 0);
+        ActivatePassives(); // activate passive abilities here to avoid race condition BS
 
         if (OnEntitySpawn != null)
             OnEntitySpawn.Invoke(this);
@@ -611,6 +612,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
         initialized = true;
+    }
+
+    private void ActivatePassives()
+    {
+        foreach(var ability in abilities)
+        {
+            if(ability as PassiveAbility) 
+            {
+                (ability as PassiveAbility).Activate();
+            }
+        }
     }
 
     protected virtual void Update() 
