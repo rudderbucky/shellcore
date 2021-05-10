@@ -202,17 +202,6 @@ public class PlayerCore : ShellCore {
 
         name = entityName = "player";
         positionBeforeOscillation = transform.position.y;
-        if(save.currentHealths.Length < 3)
-        {
-            maxHealth.CopyTo(currentHealth, 0);
-        }
-        else
-        {
-            currentHealth = save.currentHealths;
-        }
-        for(int i = 0; i < currentHealth.Length; i++) {
-            if(currentHealth[i] > maxHealth[i]) currentHealth[i] = maxHealth[i];
-        }
     }
     public List<EntityBlueprint.PartInfo> GetInventory() {
         if(cursave != null) return cursave.partInventory;

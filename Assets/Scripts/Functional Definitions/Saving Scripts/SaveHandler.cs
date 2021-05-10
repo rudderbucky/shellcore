@@ -50,7 +50,6 @@ public class SaveHandler : MonoBehaviour {
 				save.presetBlueprints = new string[5];
 			}
             Camera.main.GetComponent<CameraScript>().Initialize(player);
-            GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(player);
 
             taskManager.taskVariables.Clear();
             for (int i = 0; i < save.taskVariableNames.Length; i++)
