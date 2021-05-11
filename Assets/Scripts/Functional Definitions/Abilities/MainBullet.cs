@@ -32,7 +32,7 @@ public class MainBullet : Bullet {
     }
 
     private GameObject muzzle;
-    protected override void FireBullet(Vector3 targetPos)
+    protected override bool FireBullet(Vector3 targetPos)
     {
         muzzle = Instantiate(muzzleFlash, transform.position, Quaternion.identity);
 
@@ -43,7 +43,7 @@ public class MainBullet : Bullet {
         // float delta = Mathf.Abs(Mathf.DeltaAngle(targetAngle - craftAngle, 90));
 
         muzzle.transform.eulerAngles = new Vector3(0, 0, targetAngle);
-        base.FireBullet(targetPos);
+        return base.FireBullet(targetPos);
     }
 
     void Update()

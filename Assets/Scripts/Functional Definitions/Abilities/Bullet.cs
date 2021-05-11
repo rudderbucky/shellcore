@@ -41,15 +41,14 @@ public class Bullet : WeaponAbility
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        FireBullet(victimPos); // fire if there is
-        return true;
+        return FireBullet(victimPos); // fire if there is
     }
 
     /// <summary>
     /// Helper method for Execute() that creates a bullet and modifies it to be shot
     /// </summary>
     /// <param name="targetPos">The position to fire the bullet to</param>
-    protected virtual void FireBullet(Vector3 targetPos)
+    protected virtual bool FireBullet(Vector3 targetPos)
     {
         AudioManager.PlayClipByID(bulletSound, transform.position);
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
@@ -63,12 +62,14 @@ public class Bullet : WeaponAbility
         var b = -(2*targetVelocity.x*relativeDistance.x + 2*targetVelocity.y*relativeDistance.y) ;
         var c = -Vector2.Dot(relativeDistance,relativeDistance);
 
-        if(a == 0 || b*b-4*a*c<0) return;
+        if(a == 0 || b*b-4*a*c<0) return false;
 
         var t1 = (-b + Mathf.Sqrt(b*b - 4*a*c))/(2*a);
         var t2 = (-b - Mathf.Sqrt(b*b - 4*a*c))/(2*a);
-        float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1,t2));
         
+        float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1,t2));
+        if(t <= 0) return false;
+
         // Create the Bullet from the Bullet Prefab
         if(bulletPrefab == null)
         {
@@ -93,5 +94,6 @@ public class Bullet : WeaponAbility
 
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);
+        return true;
     }
 }
