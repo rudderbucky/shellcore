@@ -53,26 +53,7 @@ public class Bullet : WeaponAbility
     {
         AudioManager.PlayClipByID(bulletSound, transform.position);
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
-        // Create the Bullet from the Bullet Prefab
-        Vector3 diff = targetPos - originPos;
-        if(bulletPrefab == null)
-        {
-            bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
-        }
-        var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90)));
-        bullet.transform.localScale = prefabScale;
-
-        // Update its damage to match main bullet
-        var script = bullet.GetComponent<BulletScript>();
-        script.owner = GetComponentInParent<Entity>();
-        script.SetDamage(GetDamage());
-        script.SetCategory(category);
-        script.SetTerrain(terrain);
-        script.SetShooterFaction(Core.faction);
-        script.SetPierceFactor(pierceFactor);
-        script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
-        script.missParticles = true;
-
+    
         // Calculate future target position
         Vector2 targetVelocity = targetingSystem.GetTarget() ? targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
         
@@ -87,6 +68,26 @@ public class Bullet : WeaponAbility
         var t1 = (-b + Mathf.Sqrt(b*b - 4*a*c))/(2*a);
         var t2 = (-b - Mathf.Sqrt(b*b - 4*a*c))/(2*a);
         float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1,t2));
+        
+        // Create the Bullet from the Bullet Prefab
+        if(bulletPrefab == null)
+        {
+            bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
+        }
+        var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
+        bullet.transform.localScale = prefabScale;
+
+        // Update its damage to match main bullet
+        var script = bullet.GetComponent<BulletScript>();
+        script.owner = GetComponentInParent<Entity>();
+        script.SetDamage(GetDamage());
+        script.SetCategory(category);
+        script.SetTerrain(terrain);
+        script.SetShooterFaction(Core.faction);
+        script.SetPierceFactor(pierceFactor);
+        script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
+        script.missParticles = true;
+
         // Add velocity to the bullet
         bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity*t) * bulletSpeed;
 
