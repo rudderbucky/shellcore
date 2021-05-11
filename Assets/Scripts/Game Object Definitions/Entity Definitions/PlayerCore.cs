@@ -102,8 +102,7 @@ public class PlayerCore : ShellCore {
 
         //Send unit vector
         direction.Normalize();
-
-        return direction; // it's not exactly like it was in the original game, but I like it more like this actually
+        return direction; 
     }
 
     ICarrier FindCarrier()

@@ -67,8 +67,8 @@ public abstract class Craft : Entity
     protected override void BuildEntity()
     {
         speed = initSpeed;
-        CalculatePhysicsConstants();
         base.BuildEntity();
+        CalculatePhysicsConstants();
     }
 
     protected override void OnDeath()
@@ -201,17 +201,6 @@ public abstract class Craft : Entity
     /// <param name="directionVector">vector given</param>
     protected virtual void CraftMover(Vector2 directionVector)
     {
-        // legacy movement code
-        /*
-        if(rotateWhileMoving) RotateCraft(directionVector / entityBody.mass); // rotate craft
-        entityBody.AddForce(Mathf.Min(enginePower, 300 * entityBody.mass) * directionVector); // max acceleration: 300 m/s^2
-        if (entityBody.velocity.sqrMagnitude > maxVelocity * maxVelocity)
-        {
-            entityBody.velocity = entityBody.velocity.normalized * maxVelocity;
-        }
-        // actual force applied to craft; independent of angle rotation
-        */
-
         if (isImmobile)
         {
             entityBody.velocity = Vector2.zero;
