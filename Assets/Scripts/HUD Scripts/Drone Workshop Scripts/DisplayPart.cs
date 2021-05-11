@@ -26,17 +26,18 @@ public class DisplayPart : MonoBehaviour
 		shooter.enabled = false;
 		shooter.rectTransform.localScale = Vector3.one;
 		initialized = true;
+		SetAppearance();
 		ReflectLocation();
 	}
 
-	void Start() {
+	void SetAppearance()
+	{
 		if(AbilityUtilities.GetShooterByID(info.abilityID) != null) {
 			shooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(info.abilityID));
 			shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
 			shooter.enabled = true;
 			shooter.raycastTarget = false;
 		}
-		ReflectLocation();
 		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
 		// NEVER name something with "_sprite" at the end UNLESS it is a PART SPRITE!
 		if(image.sprite)
@@ -49,6 +50,10 @@ public class DisplayPart : MonoBehaviour
 		{
 			Debug.LogWarning("Invalid display part image.");
 		}
+	}
+
+	void Start() {
+		ReflectLocation();
 	}
 
 	public void ReflectLocation()
