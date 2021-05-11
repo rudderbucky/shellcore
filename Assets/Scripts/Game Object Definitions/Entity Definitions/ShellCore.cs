@@ -166,4 +166,14 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         TakeCoreDamage(-0.05F * GetMaxHealth()[1]);
         TakeEnergy(-0.05F * GetMaxHealth()[2]);
     }
+
+    public int GetIntrinsicCommandLimit()
+    {
+        return intrinsicCommandLimit;
+    }
+
+    public void SetIntrinsicCommandLimit(int val)
+    {
+        intrinsicCommandLimit = val;
+    }
 }

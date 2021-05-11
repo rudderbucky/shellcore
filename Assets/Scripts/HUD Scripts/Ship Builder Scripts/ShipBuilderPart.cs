@@ -43,7 +43,6 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 
 	protected override void Awake() {
 		base.Awake();
-		validPos = true;
 		rectTransform = image.rectTransform;
 	}
 

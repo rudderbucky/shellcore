@@ -17,7 +17,7 @@ public class Command : PassiveAbility
     {
         if(activated)
         {
-            (Core as ShellCore).intrinsicCommandLimit -= commandUnitIncrease;
+            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() - commandUnitIncrease);
             activated = false;
         }
         base.SetDestroyed(input);
@@ -25,7 +25,7 @@ public class Command : PassiveAbility
 
     protected override void Execute()
     {
-        (Core as ShellCore).intrinsicCommandLimit += commandUnitIncrease;
+        (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() + commandUnitIncrease);
         activated = true;
     }
 }

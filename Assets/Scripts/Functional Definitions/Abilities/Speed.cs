@@ -16,18 +16,25 @@ public class Speed : PassiveAbility {
 
     public override void SetDestroyed(bool input)
     {
-        if (input && activated) 
+        if(Core as Craft)
         {
-            (Core as Craft).speed -= boost * abilityTier;
-            (Core as Craft).CalculatePhysicsConstants();
+            if (input && activated) 
+            {
+                (Core as Craft).speed -= boost * abilityTier;
+                (Core as Craft).CalculatePhysicsConstants();
+            }
         }
         base.SetDestroyed(input);
     }
 
     protected override void Execute()
     {
-        activated = true;
-        (Core as Craft).speed += boost * abilityTier;
-        (Core as Craft).CalculatePhysicsConstants();
+        if(Core as Craft)
+        {
+            activated = true;
+            (Core as Craft).speed += boost * abilityTier;
+            (Core as Craft).CalculatePhysicsConstants();
+        }
+        else Debug.LogError("Why did you add a Speed part to a non-moving entity? Weirdo!");
     }
 }

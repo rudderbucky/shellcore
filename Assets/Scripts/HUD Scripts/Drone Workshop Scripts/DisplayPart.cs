@@ -12,7 +12,7 @@ public class DisplayPart : MonoBehaviour
 	private int faction = 0;
 
 	protected virtual void Awake() {
-		Initialize();
+		image = GetComponent<Image>();
 	}
 
 	// Use to avoid race condition BS
@@ -53,6 +53,7 @@ public class DisplayPart : MonoBehaviour
 	}
 
 	void Start() {
+		if(!initialized) Initialize();
 		ReflectLocation();
 	}
 

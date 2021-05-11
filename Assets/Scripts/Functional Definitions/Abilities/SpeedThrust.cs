@@ -23,6 +23,7 @@ public class SpeedThrust : ActiveAbility
 
     private void Start()
     {
+        if(!(Core as Craft)) Debug.LogError("Why did you add Speed Thrust to a non-moving entity? Weirdo!");
         craft = Core as Craft;
     }
     /// <summary>

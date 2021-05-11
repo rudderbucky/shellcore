@@ -8,6 +8,8 @@ public interface IOwner
     int GetFaction();
     Transform GetTransform();
     List<IOwnable> GetUnitsCommanding();
+    int GetIntrinsicCommandLimit();
+    void SetIntrinsicCommandLimit(int val);
     int GetTotalCommandLimit();
     SectorManager GetSectorManager();
     Draggable GetTractorTarget(); 

@@ -60,6 +60,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
         builderPart.info = part;
         builderPart.cursorScript = cursor;
         builderPart.mode = mode;
+        builderPart.Initialize();
         cursor.parts.Add(builderPart);
         return builderPart;
     }
