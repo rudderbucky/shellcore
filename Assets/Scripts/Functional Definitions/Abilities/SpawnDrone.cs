@@ -74,7 +74,6 @@ public class SpawnDrone : ActiveAbility
         drone.faction = craft.GetFaction();
         drone.transform.position = part.transform.position;
         drone.spawnPoint = part.transform.position;
-        drone.enginePower = 100;
         drone.type = spawnData.type;
         drone.Init();
         drone.SetOwner(craft);

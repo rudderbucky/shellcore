@@ -7,10 +7,6 @@ using UnityEngine;
 /// </summary>
 public abstract class Craft : Entity
 {
-    public float enginePower; // craft's engine power, determines how fast it goes.
-
-    // whether the craft is immobile or not
-
     protected int pins = 0;
     protected bool forceImmobile = false;
     public virtual bool isImmobile
@@ -70,10 +66,9 @@ public abstract class Craft : Entity
 
     protected override void BuildEntity()
     {
-        enginePower = 125;
-        base.BuildEntity();
         speed = initSpeed;
         CalculatePhysicsConstants();
+        base.BuildEntity();
     }
 
     protected override void OnDeath()
@@ -136,10 +131,6 @@ public abstract class Craft : Entity
         category = EntityCategory.Unit;
         instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
         instantiatedRespawnPrefab.position = transform.position;
-    }
-
-    public float GetEnginePower() {
-        return enginePower;
     }
 
     /// <summary>

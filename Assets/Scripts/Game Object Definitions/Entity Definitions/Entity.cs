@@ -476,7 +476,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         maxHealth.CopyTo(currentHealth, 0);
         ActivatePassives(); // activate passive abilities here to avoid race condition BS
-
+        
         if (OnEntitySpawn != null)
             OnEntitySpawn.Invoke(this);
     }
