@@ -40,7 +40,7 @@ public class Harvester : WeaponAbility, IHarvester {
 
     public void AddPower(float power)
     {
-        if(owner) 
+        if(owner && owner.GetPower() < 5000) 
             owner.AddPower(power);
     }
 
