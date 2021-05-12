@@ -921,7 +921,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			// null character so another change doesn't accidentally happen
 			currentCharacter = null;
 		}
-			
+		
 		#endif
         
 		NodeEditorFramework.Standard.UsePartCondition.OnPlayerReconstruct.Invoke();

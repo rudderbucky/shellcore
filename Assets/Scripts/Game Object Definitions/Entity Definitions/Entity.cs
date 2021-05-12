@@ -285,7 +285,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         foreach(var part in parts)
         {
             if(part && part.gameObject && part.gameObject.name != "Shell Sprite")
+            {
+                part.GetComponentInChildren<Ability>()?.SetDestroyed(true);
                 Destroy(part.gameObject);
+            }
+
         }
         parts.Clear();
         blueprint.shellHealth.CopyTo(maxHealth, 0);

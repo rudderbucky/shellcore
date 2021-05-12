@@ -22,6 +22,7 @@ public class DevConsoleScript : MonoBehaviour
         Application.logMessageReceived += HandleLog;
         godModeEnabled = false;
         Instance = this;
+        componentEnabled = false;
     }
      
     void Disable() {

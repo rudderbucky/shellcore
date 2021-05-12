@@ -168,11 +168,13 @@ public class PlayerCore : ShellCore {
         hud.DeinitializeHUD();
         for(int i = 0; i < parts.Count; i++) {
             if(parts[i].gameObject.name != "Shell Sprite")
+            {
+                parts[i].GetComponentInChildren<Ability>()?.SetDestroyed(true);
                 Destroy(parts[i].gameObject);
+            }
         }
         // UnityEditor.AssetDatabase.CreateAsset(blueprint, "Assets/Core Upgrades.asset");
         BuildEntity();
-        
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";
         hud.InitializeHUD(this);

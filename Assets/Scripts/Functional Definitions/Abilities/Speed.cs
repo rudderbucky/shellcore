@@ -14,17 +14,14 @@ public class Speed : PassiveAbility {
         description = "Passively increases speed.";
     }
 
-    public override void SetDestroyed(bool input)
+    public override void Deactivate()
     {
         if(Core as Craft)
         {
-            if (input && activated) 
-            {
-                (Core as Craft).speed -= boost * abilityTier;
-                (Core as Craft).CalculatePhysicsConstants();
-            }
+            (Core as Craft).speed -= boost * abilityTier;
+            (Core as Craft).CalculatePhysicsConstants();
         }
-        base.SetDestroyed(input);
+        base.Deactivate();
     }
 
     protected override void Execute()

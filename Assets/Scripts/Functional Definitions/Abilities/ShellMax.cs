@@ -21,12 +21,13 @@ public class ShellMax : PassiveAbility {
                 break;
         }
     }
-	public override void SetDestroyed(bool input)
+
+    public override void Deactivate()
     {
         float[] maxHealths = Core.GetMaxHealth();
         var percentage = Core.GetHealth()[index] / maxHealths[index];
-		maxHealths[index] -= max * abilityTier;
-		Core.SetMaxHealth(maxHealths, false);
+        maxHealths[index] -= max * abilityTier;
+        Core.SetMaxHealth(maxHealths, false);
 
         // Remove a percentage of health from the ship, based on what max health the core had before destruction
         switch(index)
@@ -41,7 +42,7 @@ public class ShellMax : PassiveAbility {
                 Core.TakeEnergy(percentage* max * abilityTier);
                 break;
         }
-        base.SetDestroyed(input);
+        base.Deactivate();
     }
 
     protected override void Execute()
