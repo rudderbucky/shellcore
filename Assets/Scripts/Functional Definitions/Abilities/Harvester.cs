@@ -40,8 +40,12 @@ public class Harvester : WeaponAbility, IHarvester {
 
     public void AddPower(float power)
     {
-        if(owner && owner.GetPower() < 5000) 
+        if(owner && (owner.GetPower() + power) <= 5000){
             owner.AddPower(power);
+        }
+        else if (owner.GetPower() <= 5000){
+            owner.AddPower(5000 - owner.GetPower());
+        }
     }
 
     public void SetOwner(ShellCore owner)
