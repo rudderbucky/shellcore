@@ -32,7 +32,7 @@ public class AirCarrier : AirConstruct, ICarrier {
         category = EntityCategory.Station;
         base.Start();
         initialized = true;
-        coreAlertThreshold = maxHealth[1] * 0.75f;
+        coreAlertThreshold = maxHealth[1] * 0.8f;
         shellAlertThreshold = maxHealth[0];
     }
 
@@ -90,18 +90,15 @@ public class AirCarrier : AirConstruct, ICarrier {
         if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
             if(currentHealth[1] < 1){
                 coreAlertThreshold = -99999;
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier has been destroyed! You're on your last life now!</color>");
+                PlayerCore.Instance.alerter.showMessage("Carrier has been destroyed!", "clip_alert");
             }
             else if(currentHealth[1] < (maxHealth[1] / 2)){
-                coreAlertThreshold = 1;
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier is about to die! Kill the attacking enemies NOW!</color>");
+                coreAlertThreshold -= (maxHealth[1] * 0.2f);
+                PlayerCore.Instance.alerter.showMessage("Carrier is about to be destroyed!", "clip_alert");
             }
             else{
-                coreAlertThreshold = (maxHealth[1] / 2);
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier is taking Core damage! We won't last much longer!</color>");
+                coreAlertThreshold -= (maxHealth[1] * 0.2f);
+                PlayerCore.Instance.alerter.showMessage("Carrier Core is under attack!", "clip_alert");
             }
         }
     }
@@ -111,18 +108,15 @@ public class AirCarrier : AirConstruct, ICarrier {
         if(currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction)){
             if(currentHealth[0] < 1){
                 shellAlertThreshold = -99999;
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier shell is down! We're taking Core damage now!</color>");
+                PlayerCore.Instance.alerter.showMessage("Carrier shell has been destroyed!", "clip_alert");
             }
-            else if(currentHealth[0] < (maxHealth[0] / 2)){
-                shellAlertThreshold = 1;
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier shell is heavily damaged! Take out those enemies before they bring down the Carrier!</color>");
+            else if (currentHealth[0] < maxHealth[0] / 2){
+                shellAlertThreshold -= (maxHealth[0] * 0.2f);
+                PlayerCore.Instance.alerter.showMessage("Carrier shell is taking heavy damage!", "clip_alert");
             }
             else{
-                shellAlertThreshold = (maxHealth[0] / 2);
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Carrier is taking damage! Defend your Carrier or you won't have anywhere to respawn!</color>");
+                shellAlertThreshold -= (maxHealth[0] * 0.2f);
+                PlayerCore.Instance.alerter.showMessage("Carrier is under attack!", "clip_alert");
             }
         }
         return residue;

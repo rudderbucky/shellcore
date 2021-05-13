@@ -85,18 +85,15 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
             if(currentHealth[1] < 1){
                 coreAlertThreshold = -99999;
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base has been destroyed! You're on your last life now!</color>");
+                PlayerCore.Instance.alerter.showMessage("Base has been destroyed!", "clip_alert");
             }
             else if(currentHealth[1] < (maxHealth[1] / 2)){
-                coreAlertThreshold = 1;
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base is about to die! Kill the attacking enemies NOW!</color>");
+                coreAlertThreshold -= (maxHealth[1] * 0.2f);
+                PlayerCore.Instance.alerter.showMessage("Base is about to be destroyed!", "clip_alert");
             }
             else{
-                coreAlertThreshold = (maxHealth[1] / 2);
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base is taking Core damage! We won't last much longer!</color>");
+                coreAlertThreshold -= (maxHealth[1] * 0.2f);
+                PlayerCore.Instance.alerter.showMessage("Base Core is under attack!", "clip_alert");
             }
         }
     }
@@ -106,18 +103,15 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         if(currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction)){
             if(currentHealth[0] < 1){
                 shellAlertThreshold = -99999;
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base shell is down! We're taking Core damage now!</color>");
+                PlayerCore.Instance.alerter.showMessage("Base shell has been destroyed!", "clip_alert");
             }
-            else if(currentHealth[0] < (maxHealth[0] / 2)){
-                shellAlertThreshold = 1;
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base shell is heavily damaged! Take out those enemies before they destroy our Base!</color>");
+            else if (currentHealth[0] < maxHealth[0] / 2){
+                shellAlertThreshold -= (maxHealth[0] * 0.2f);
+                PlayerCore.Instance.alerter.showMessage("Base shell is taking heavy damage!", "clip_alert");
             }
             else{
-                shellAlertThreshold = (maxHealth[0] / 2);
-                PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Base is taking damage! Defend your Base or you won't have anywhere to respawn!</color>");
+                shellAlertThreshold -= (maxHealth[0] * 0.2f);
+                PlayerCore.Instance.alerter.showMessage("Base is under attack!", "clip_alert");
             }
         }
         return residue;
