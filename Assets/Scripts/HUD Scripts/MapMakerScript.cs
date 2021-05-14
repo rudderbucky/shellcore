@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+// TODO: THIS CLASS HAS BEEN AWARDED THE "WORST CODE IN THIS PROJECT EVER" AWARD! It probably should be completely rewritten.
 public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerUpHandler {
 
 	public Image sectorPrefab;
@@ -38,32 +39,51 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	int const1 = 150;
 	int const2 = 200;
 	int const4 = 200;
+	const int distancePerTextMarker = 200;
 
-	// this is an arbitrary number, sets the size of the grid
-	int const3 = 4000;
+	float gridSizeX;
+	float gridSizeY;
+	Image gridImg;
 
 	Dictionary<TaskManager.ObjectiveLocation, RectTransform> arrows = new Dictionary<TaskManager.ObjectiveLocation, RectTransform>();
 	void Draw()
 	{
-		Image img = new GameObject().AddComponent<Image>();
-		img.transform.SetParent(transform, false);
-		img.rectTransform.localScale = Vector3.one;
-		img.rectTransform.pivot = new Vector2(0,1);
-		img.rectTransform.sizeDelta = new Vector2(const3, const3);
-		img.rectTransform.anchoredPosition = Vector2.zero;
-		img.sprite = gridSprite;
-		img.type = Image.Type.Tiled;
-		img.color = new Color32(100, 100, 100, 255);
+		gridSizeX = canvas.sizeDelta.x;
+		gridSizeY = canvas.sizeDelta.y;
+		// this sets up the tiled grid
+		gridImg = new GameObject().AddComponent<Image>();
+		gridImg.gameObject.name = "Grid";
+		gridImg.transform.SetParent(transform, false);
+		gridImg.rectTransform.localScale = Vector3.one;
+		gridImg.rectTransform.pivot = new Vector2(0,1);
+		gridImg.rectTransform.anchoredPosition = Vector2.zero;
+		gridImg.sprite = gridSprite;
+		gridImg.type = Image.Type.Tiled;
+		gridImg.color = new Color32(100, 100, 100, 255);
 
+		// this sets up the top-left part of the map
 		foreach(var sector in manager.sectors) 
         {
             if(sector.bounds.x < minX) minX = sector.bounds.x;
             if(sector.bounds.y > maxY) maxY = sector.bounds.y;
+
 		}
+
+		foreach(var sector in manager.sectors)
+		{
+			gridSizeX = Mathf.Max(gridSizeX, (sector.bounds.x + sector.bounds.w - minX) / zoomoutFactor);
+			gridSizeY = Mathf.Max(gridSizeY, -(sector.bounds.y - sector.bounds.h - maxY) / zoomoutFactor);			
+		}
+		gridImg.rectTransform.sizeDelta = new Vector2((gridSizeX*zoomoutFactor+distancePerTextMarker) / zoomoutFactor, 
+			(gridSizeY*zoomoutFactor+distancePerTextMarker) / zoomoutFactor);
+		// round to multiple of 100 to maintain grid lining
+		gridImg.rectTransform.sizeDelta = new Vector2(((int)gridImg.rectTransform.sizeDelta.x / 100 + 0.5F) * 100, 
+			((int)gridImg.rectTransform.sizeDelta.y / 100 + 0.5F) * 100);
 
 		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
 			if(SectorManager.testJsonPath != null || (mapVisibleCheatEnabled || playerCore.cursave.sectorsSeen.Contains(sector.sectorName)))
 			{
+				// set up the sector image
 				Image sect = Instantiate(sectorPrefab, transform, false);
 				Image border = sect.GetComponentsInChildren<Image>()[1];
 				sect.color =  1.2F * sector.backgroundColor - new Color(0.2F, 0.2F, 0.2F, 0.75F); 
@@ -82,13 +102,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 					partOriginMarkerImages.Add(marker);
 				}
 
+				// set up the border image
 				border.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
 				sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2)));
 				sectorInfo.Add(sect, (sector.sectorName, sector.type));
 
-
+				// set up land platforms
                 var lpg = LandPlatformGenerator.Instance;
-
                 if (sector.platforms == null && sector.platformData.Length > 0)
                 {
                     GameObject prefab = ResourceManager.GetAsset<GameObject>(LandPlatformGenerator.prefabNames[0]);
@@ -154,21 +174,22 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			}
 		}
 
-		for(int i = 0; i < 21; i++)
+		// The most egregious part. Make this variable
+		for(int i = 0; i < Mathf.Max(gridSizeX, gridSizeY) * zoomoutFactor / distancePerTextMarker + 1; i++)
 		{
 			Text textx = new GameObject().AddComponent<Text>();
 			Text texty = new GameObject().AddComponent<Text>();
 			textx.font = texty.font = shellcoreFont;
 			textx.transform.SetParent(transform,false);
 			texty.transform.SetParent(transform,false);
-			textx.rectTransform.anchoredPosition = new Vector2(i * 200 + const4, const1) / zoomoutFactor;
-			texty.rectTransform.anchoredPosition = new Vector2(const2, -i * 200 - const4) / zoomoutFactor;
+			textx.rectTransform.anchoredPosition = new Vector2(i * distancePerTextMarker + const4, const1) / zoomoutFactor;
+			texty.rectTransform.anchoredPosition = new Vector2(const2, -i * distancePerTextMarker - const4) / zoomoutFactor;
 			textx.rectTransform.localScale = texty.rectTransform.localScale = Vector3.one;
 			textx.alignment = TextAnchor.LowerLeft;
 			texty.alignment = TextAnchor.UpperLeft;
-			textx.text = texty.text = i * 200 + "";
+			textx.text = texty.text = i * distancePerTextMarker + "";
 			textx.fontSize = texty.fontSize = 12;
-			textx.color = texty.color = img.color + Color.gray;
+			textx.color = texty.color = gridImg.color + Color.gray;
 
 		}
 
@@ -310,12 +331,17 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		canvas.anchorMax = new Vector2(0,1);
 		Vector2 playerPos = new Vector2(player.transform.position.x - minX, player.transform.position.y - maxY);
 
+		// this is another egregious part that needs updating
 		if(updatePos)
 		{
 			var width = canvas.sizeDelta.x;
+			var height = canvas.sizeDelta.y;
 			canvas.anchoredPosition = anchor + (Vector2)Input.mousePosition - mousePos;
 			canvas.anchoredPosition = new Vector2(Mathf.Min(canvas.anchoredPosition.x, 0), Mathf.Max(canvas.anchoredPosition.y, 0));
-			canvas.anchoredPosition = new Vector2(Mathf.Max(canvas.anchoredPosition.x, -((const3 - width)/zoomoutFactor - const1) / zoomoutFactor), Mathf.Min(canvas.anchoredPosition.y, (1400 + (const3 - width)/zoomoutFactor - const1) / zoomoutFactor));
+			canvas.anchoredPosition = new Vector2(Mathf.Max(canvas.anchoredPosition.x, 
+				-gridImg.rectTransform.sizeDelta.x + width), 
+				//(gridSizeY * zoomoutFactor + distancePerTextMarker) / zoomoutFactor - height )
+				Mathf.Min(canvas.anchoredPosition.y, gridImg.rectTransform.sizeDelta.y - height));
 		}
 		greenBox.anchoredPosition =  canvas.anchoredPosition + playerPos / zoomoutFactor;
 	}
@@ -383,7 +409,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
 	bool clickedOnce;
 	bool followPlayerMode;
-	private static bool mapVisibleCheatEnabled = false;
+	private static bool mapVisibleCheatEnabled = true;
     public void OnPointerClick(PointerEventData eventData)
     {
         if(clickedOnce)
