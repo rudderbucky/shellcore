@@ -92,29 +92,42 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	void PlaceCurrentPart() {
 		currentPart.SetMaskable(true);
 		var editorMode = (builder as ShipBuilder) != null && !(builder as ShipBuilder).Equals(null) && (builder as ShipBuilder).editorMode;
+		var dispatch = false;
+		ShipBuilder.TransferMode mode = ShipBuilder.TransferMode.Return;
 		if(cursorMode != BuilderMode.Workshop)
 			if(traderInventory.gameObject.activeSelf && (!editorMode || !Input.GetKey(KeyCode.LeftControl)) &&
 				RectTransformUtility.RectangleContainsScreenPoint(traderInventory, Input.mousePosition)) {
-				builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
-					? ShipBuilder.TransferMode.Sell : ShipBuilder.TransferMode.Return));
+					dispatch = true;
+					mode = (currentPart.mode == BuilderMode.Yard 
+					? ShipBuilder.TransferMode.Sell : ShipBuilder.TransferMode.Return);
 			}
 			else if((!editorMode || !Input.GetKey(KeyCode.LeftControl)) && 
 				RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
-				builder.DispatchPart(currentPart, (currentPart.mode == BuilderMode.Yard 
-					? ShipBuilder.TransferMode.Return : ShipBuilder.TransferMode.Buy));
+					dispatch = true;
+					mode = (currentPart.mode == BuilderMode.Yard 
+					? ShipBuilder.TransferMode.Return : ShipBuilder.TransferMode.Buy);
 			}
 			else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition) && !editorMode) {
-				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
+				dispatch = true;
+				mode = ShipBuilder.TransferMode.Return;
 			} 
 			else if(builder.CheckPartIntersectsWithShell(currentPart) && currentPart.GetLastValidPos() == null) {
-				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
+				dispatch = true;
+				mode = ShipBuilder.TransferMode.Return;
 			}
 			else PlaceCurrentPartInGrid();
 		else {
 			if(RectTransformUtility.RectangleContainsScreenPoint(playerInventory, Input.mousePosition)) {
-				builder.DispatchPart(currentPart, ShipBuilder.TransferMode.Return);
+				dispatch = true;
+				mode = ShipBuilder.TransferMode.Return;
 			} else PlaceCurrentPartInGrid();
 		}
+		if(dispatch)
+		{
+			builder.DispatchPart(currentPart, mode);
+			if(symmetryCurrentPart) builder.DispatchPart(symmetryCurrentPart, mode);
+		}
+		
 		UpdateHandler();
 	}
 

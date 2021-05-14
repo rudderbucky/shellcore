@@ -904,7 +904,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public void Export() {
 		if(player)
 		{
-			player.AddCredits(cursorScript.buildCost);
+			player.AddCredits(-cursorScript.buildCost);
 			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 			foreach(ShipBuilderPart part in cursorScript.parts) {
 				player.blueprint.parts.Add(part.info);
