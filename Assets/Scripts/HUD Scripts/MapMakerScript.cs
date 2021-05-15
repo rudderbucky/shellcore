@@ -409,7 +409,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
 	bool clickedOnce;
 	bool followPlayerMode;
-	private static bool mapVisibleCheatEnabled = true;
+	private static bool mapVisibleCheatEnabled = false;
     public void OnPointerClick(PointerEventData eventData)
     {
         if(clickedOnce)
