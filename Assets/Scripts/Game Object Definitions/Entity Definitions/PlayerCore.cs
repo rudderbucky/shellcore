@@ -252,4 +252,10 @@ public class PlayerCore : ShellCore {
 
         if(directionVector != Vector2.zero) CameraScript.instance.Focus(transform.position);
     }
+    public void takeShellTrueDamage(float amount){
+        currentHealth[0] -= amount;
+    }
+    public void takeCoreTrueDamage(float amount){
+        currentHealth[1] -= amount;
+    }
 }
