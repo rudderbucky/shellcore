@@ -44,7 +44,16 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public void AddPower(float power)
     {
-        totalPower += power;
+        if (totalPower + power <= 5000){
+            totalPower += power;
+        }
+        else if (totalPower < 5000){
+            totalPower = 5000;
+        }
+        else {
+            PlayerCore.Instance.alerter.showMessage("You can't harvest any more power!", "clip_alert");
+        }
+        
 
         if (power > 0 && OnPowerCollected != null)
             OnPowerCollected.Invoke(faction, Mathf.RoundToInt(power));
