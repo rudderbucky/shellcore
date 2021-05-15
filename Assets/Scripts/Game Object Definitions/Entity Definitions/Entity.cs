@@ -35,7 +35,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     protected GameObject respawnImplosionPrefab;
     protected GameObject deathExplosionPrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
-    public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    private float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = olive...)
     public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
@@ -848,6 +848,24 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         currentHealth[1] -= amount;
         if (currentHealth[1] < 0) currentHealth[1] = 0;
         currentHealth[1] = currentHealth[1] > maxHealth[1] ? maxHealth[1] : currentHealth[1];
+    }
+    public void removeShell(float amount){
+        currentHealth[0] -= amount;
+    }
+    public void removeCore(float amount){
+        currentHealth[1] -= amount;
+    }
+    public float getCurrentHealth(int type){
+        return currentHealth[type];
+    }
+    public float[] getCurrentHealth(){
+        return currentHealth;
+    }
+    public void setCurrentHealth(float[] amount){
+        currentHealth = amount;
+    }
+    public void setCurrentHealth(int type, float amount){
+        currentHealth[type] = amount;
     }
 
     /// <summary>

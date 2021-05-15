@@ -36,7 +36,7 @@ public class Bunker : GroundConstruct, IVendor {
 
     protected override void DeathHandler()
     {
-        if (currentHealth[0] <= 0 && !isDead)
+        if (getCurrentHealth(0) <= 0 && !isDead)
         {
             OnDeath(); // switch factions
         }

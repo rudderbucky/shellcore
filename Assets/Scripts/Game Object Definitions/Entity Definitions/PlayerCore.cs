@@ -204,14 +204,14 @@ public class PlayerCore : ShellCore {
         positionBeforeOscillation = transform.position.y;
         if(save.currentHealths.Length < 3)
         {
-            maxHealth.CopyTo(currentHealth, 0);
+            maxHealth.CopyTo(getCurrentHealth(), 0);
         }
         else
         {
-            currentHealth = save.currentHealths;
+            setCurrentHealth(save.currentHealths);
         }
-        for(int i = 0; i < currentHealth.Length; i++) {
-            if(currentHealth[i] > maxHealth[i]) currentHealth[i] = maxHealth[i];
+        for(int i = 0; i < getCurrentHealth().Length; i++) {
+            if(getCurrentHealth(i) > maxHealth[i]) setCurrentHealth(i,maxHealth[i]);
         }
     }
     public List<EntityBlueprint.PartInfo> GetInventory() {
@@ -252,10 +252,5 @@ public class PlayerCore : ShellCore {
 
         if(directionVector != Vector2.zero) CameraScript.instance.Focus(transform.position);
     }
-    public void takeShellTrueDamage(float amount){
-        currentHealth[0] -= amount;
-    }
-    public void takeCoreTrueDamage(float amount){
-        currentHealth[1] -= amount;
-    }
+    
 }

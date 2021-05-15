@@ -144,8 +144,8 @@ public class SectorManager : MonoBehaviour
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
-                player.takeShellTrueDamage(deadzoneDamage * player.GetMaxHealth()[0]);
-                player.takeCoreTrueDamage(deadzoneDamage * player.GetMaxHealth()[1]);
+                player.removeShell(deadzoneDamage * player.GetMaxHealth()[0]);
+                player.removeCore(deadzoneDamage * player.GetMaxHealth()[1]);
                 player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
                 deadzoneDamage += deadzoneDamageMult;
             } else dangerZoneTimer += Time.deltaTime;
