@@ -177,7 +177,6 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 case EntityBlueprint.IntendedType.Tank:
                     Tank tank = creation.AddComponent<Tank>();
                     tank.blueprint = blueprint.items[index].entityBlueprint;
-                    tank.enginePower = 250;
                     tank.SetOwner(player);
                     break;
                 default:

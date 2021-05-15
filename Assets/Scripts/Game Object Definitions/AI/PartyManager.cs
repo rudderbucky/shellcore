@@ -233,6 +233,7 @@ public class PartyManager : MonoBehaviour
     }
 
     private int index = -1;
+    private float partyMemberTeleportThreshold = 2500;
     void Update()
     {
 
@@ -243,7 +244,7 @@ public class PartyManager : MonoBehaviour
             foreach(var member in partyMembers)
             {
                 if(member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
-                Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > 2500)
+                Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > partyMemberTeleportThreshold)
                 {
                     // Use warp to teleport AirCraft
                     member.Warp(PlayerCore.Instance.transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));

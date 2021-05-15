@@ -7,10 +7,6 @@ using UnityEngine;
 /// </summary>
 public abstract class Craft : Entity
 {
-    public float enginePower; // craft's engine power, determines how fast it goes.
-
-    // whether the craft is immobile or not
-
     protected int pins = 0;
     protected bool forceImmobile = false;
     public virtual bool isImmobile
@@ -70,9 +66,8 @@ public abstract class Craft : Entity
 
     protected override void BuildEntity()
     {
-        enginePower = 125;
-        base.BuildEntity();
         speed = initSpeed;
+        base.BuildEntity();
         CalculatePhysicsConstants();
     }
 
@@ -138,10 +133,6 @@ public abstract class Craft : Entity
         instantiatedRespawnPrefab.position = transform.position;
     }
 
-    public float GetEnginePower() {
-        return enginePower;
-    }
-
     /// <summary>
     /// The method that moves the craft based on the integer input it receives
     /// Movement tries to emulate original Shellcore Command movement (specifically episode 1) but is not perfect
@@ -155,7 +146,7 @@ public abstract class Craft : Entity
         }
     }
 
-    Transform instantiatedRespawnPrefab;
+    protected Transform instantiatedRespawnPrefab;
     protected override void FixedUpdate()
     {
         if(physicsDirection == Vector2.zero)
@@ -210,17 +201,6 @@ public abstract class Craft : Entity
     /// <param name="directionVector">vector given</param>
     protected virtual void CraftMover(Vector2 directionVector)
     {
-        // legacy movement code
-        /*
-        if(rotateWhileMoving) RotateCraft(directionVector / entityBody.mass); // rotate craft
-        entityBody.AddForce(Mathf.Min(enginePower, 300 * entityBody.mass) * directionVector); // max acceleration: 300 m/s^2
-        if (entityBody.velocity.sqrMagnitude > maxVelocity * maxVelocity)
-        {
-            entityBody.velocity = entityBody.velocity.normalized * maxVelocity;
-        }
-        // actual force applied to craft; independent of angle rotation
-        */
-
         if (isImmobile)
         {
             entityBody.velocity = Vector2.zero;

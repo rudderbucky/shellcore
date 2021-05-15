@@ -1243,7 +1243,7 @@ public class SectorManager : MonoBehaviour
             return;
         }
 
-        // even if objects contains the key, it might be a different object than the one we are trying to remove. We need to compare both
+        // even if objects contains the key, it might be a different object than the one we are trying to remove. We need to compare both.
         // See -> Spawn in sector w/ defense turret. Move to another sector with turret, return to original sector without turret
         // If racing happens the turret in the new sector calls RemoveObject after the new turret spawns with the same ID, kicking it out
         // of the objects list (which shouldn't happen)
