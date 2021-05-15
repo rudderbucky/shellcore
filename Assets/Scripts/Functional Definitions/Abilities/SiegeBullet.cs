@@ -13,7 +13,6 @@ public class SiegeBullet : Bullet {
         range = bulletSpeed * survivalTime;
         ID = AbilityID.SiegeBullet;
         cooldownDuration = 5F;
-        CDRemaining = cooldownDuration;
         energyCost = 10;
         damage = 1000;
         prefabScale = 2 * Vector2.one;

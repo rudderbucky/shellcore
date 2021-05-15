@@ -22,15 +22,15 @@ public class QuantityDisplayScript : MonoBehaviour {
 	void Update () {
         if (initialized)
         {
-            if(lastCredits != player.credits) {
-                int diff = player.credits - lastCredits;
+            if(lastCredits != player.GetCredits()) {
+                int diff = player.GetCredits() - lastCredits;
                 marker.DisplayText(diff);
             }
-            lastCredits = player.credits;
+            lastCredits = player.GetCredits();
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
             texts[1].text = player.GetPower() + "";
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
-            texts[5].text = GetCreditString(player.credits) + "";
+            texts[5].text = GetCreditString(player.GetCredits()) + "";
 
             UpdatePrimaryTargetInfo();
 

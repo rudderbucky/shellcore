@@ -30,7 +30,7 @@ public class Bunker : GroundConstruct, IVendor {
         WeaponAbility[] bullets = GetComponentsInChildren<WeaponAbility>();
         for (int i = 0; i < bullets.Length; i++)
         {
-            bullets[i].Tick(0);
+            bullets[i].Tick();
         }
     }
 
@@ -51,7 +51,7 @@ public class Bunker : GroundConstruct, IVendor {
             RemovePart(parts[i]);
         }
         targeter.SetTarget(null);
-        if(sectorMngr.current.type == Sector.SectorType.BattleZone)
+        if(sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             BZManager.UpdateCounters();
             BZManager.AlertPlayers(otherFaction, "WARNING: Bunker lost!");

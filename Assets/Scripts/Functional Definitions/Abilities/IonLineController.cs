@@ -137,7 +137,7 @@ public class IonLineController : MonoBehaviour
             line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * range);
             ThickenLine(0.005F);
             
-            var damage = 1500 * Time.deltaTime;
+            var damage = damageC * Time.deltaTime;
             var raycastHits = Physics2D.RaycastAll(transform.position, GetVectorByBearing(originalBearing), range);
             for(int i = 0; i < raycastHits.Length; i++)
             {

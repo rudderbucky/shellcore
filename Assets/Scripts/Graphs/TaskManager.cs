@@ -160,9 +160,11 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         StatusMenu.taskInfo = getTasks();
     }
 
-    public void SetTaskVariable(string name, int value)
+    public void SetTaskVariable(string name, int value, bool incrementMode)
     {
-        taskVariables[name] = value;
+        if(incrementMode)
+            taskVariables[name] += value;
+        else taskVariables[name] = value;
         if (VariableConditionNode.OnVariableUpdate != null)
             VariableConditionNode.OnVariableUpdate.Invoke(name);
     }

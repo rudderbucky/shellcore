@@ -74,7 +74,7 @@ public class Tank : GroundCraft, IOwnable
             TargetManager.Enqueue(targeter);
             if (!isDead && Weapon && !draggable.dragging)
             {
-                Weapon.Tick(0);
+                Weapon.Tick();
             }
             drive();
         }

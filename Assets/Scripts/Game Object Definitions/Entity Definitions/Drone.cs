@@ -112,10 +112,7 @@ public class Drone : AirCraft, IOwnable {
         if (type == DroneType.Worker)
             ai.aggression = AirCraftAI.AIAggression.KeepMoving;
         ai.allowRetreat = false;
-        //ai.setPath(path);
-        //ai.setMode(AirCraftAI.AIMode.Path);
         initialized = true;
-        enginePower = 200;
     }
 
     public void CommandMovement(Vector3 pos)

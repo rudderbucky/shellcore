@@ -20,11 +20,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public int GetTotalCommandLimit()
     {
-        if (sectorMngr)
-        {
-            return intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction);
-        }
-        else return intrinsicCommandLimit;
+        return Mathf.Min(intrinsicCommandLimit + (sectorMngr ? sectorMngr.GetExtraCommandUnits(faction) : 0), 99);
     }
 
     public void SetCarrier(ICarrier carrier)
@@ -34,6 +30,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public ICarrier GetCarrier()
     {
+        if(carrier == null || carrier.Equals(null) || carrier.GetIsDead()) return null;
         return carrier;
     }
 
@@ -77,7 +74,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         ai = GetAI();
         if (ai && ai.getMode() == AirCraftAI.AIMode.Inactive)
         {
-            if(sectorMngr.current.type == Sector.SectorType.BattleZone)
+            if(sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
             {
                 ai.setMode(AirCraftAI.AIMode.Battle);
             }
@@ -168,5 +165,15 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         TakeShellDamage(-0.05F * GetMaxHealth()[0], 0, null);
         TakeCoreDamage(-0.05F * GetMaxHealth()[1]);
         TakeEnergy(-0.05F * GetMaxHealth()[2]);
+    }
+
+    public int GetIntrinsicCommandLimit()
+    {
+        return intrinsicCommandLimit;
+    }
+
+    public void SetIntrinsicCommandLimit(int val)
+    {
+        intrinsicCommandLimit = val;
     }
 }

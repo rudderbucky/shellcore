@@ -37,6 +37,24 @@ public class SaveMenuHandler : GUIWindowScripts {
 		"Alpha 4.3.0",
 	};
 
+	// Use to check before world load if the format is correct. Helps prevent loading incorrectly installed worlds
+	private bool CheckWorldValidity(string dir)
+	{
+		// check the 3 main folders are in the world
+		bool foundEntities = false;
+		bool foundCanvases = false;
+		bool foundWaves = false;
+
+		foreach(var childDir in System.IO.Directory.GetDirectories(dir))
+		{
+			if(childDir.Contains("Entities")) foundEntities = true;
+			if(childDir.Contains("Canvases")) foundCanvases = true;
+			if(childDir.Contains("Waves")) foundWaves = true;
+		}
+
+		return foundCanvases && foundEntities && foundWaves;
+	}
+
 	void SetUpWorlds()
 	{
 		worldButtons = new List<Button>();
@@ -50,6 +68,13 @@ public class SaveMenuHandler : GUIWindowScripts {
 			Button worldButton = Instantiate(worldIconPrefab, worldContents).GetComponent<Button>();
 			worldButtons.Add(worldButton);
 			worldButton.GetComponentInChildren<Text>().text = dir.Contains("main") ? "Main world" : System.IO.Path.GetFileName(dir);
+
+			if(!CheckWorldValidity(dir))
+			{
+				worldButton.GetComponentInChildren<Text>().color = Color.red;
+				worldButton.GetComponentInChildren<Text>().text += " - World may be incorrectly installed";
+			}
+
 			worldButton.onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
 				this.resourcePath = dir.Contains("main") ? "" : xdir;
 				worldView.SetActive(false);

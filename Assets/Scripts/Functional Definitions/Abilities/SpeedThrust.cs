@@ -5,9 +5,8 @@ using UnityEngine;
 /// <summary>
 /// Gives a temporary increase to the core's engine power
 /// </summary>
-public class SpeedThrust : ActiveAbility, IBlinkOnUse
+public class SpeedThrust : ActiveAbility
 {
-    bool activated = false;
     Craft craft;
     public static readonly float boost = 20;
     protected override void Awake()
@@ -18,14 +17,13 @@ public class SpeedThrust : ActiveAbility, IBlinkOnUse
         description = "Temporarily increases speed.";
         ID = AbilityID.SpeedThrust;
         cooldownDuration = 10;
-        CDRemaining = cooldownDuration;
         activeDuration = 5;
-        activeTimeRemaining = activeDuration;
         energyCost = 50;
     }
 
     private void Start()
     {
+        if(!(Core as Craft)) Debug.LogError("Why did you add Speed Thrust to a non-moving entity? Weirdo!");
         craft = Core as Craft;
     }
     /// <summary>
@@ -33,12 +31,8 @@ public class SpeedThrust : ActiveAbility, IBlinkOnUse
     /// </summary>
     public override void Deactivate()
     {
-        var enginePower = (Core as Craft).enginePower;
-        if(craft && activated) {
-            (Core as Craft).enginePower -= 100F * Mathf.Pow(abilityTier, 1.5F);
-            (Core as Craft).speed -= boost * abilityTier;
-            (Core as Craft).CalculatePhysicsConstants();
-        } // bring the engine power back
+        craft.speed -= boost * abilityTier;
+        craft.CalculatePhysicsConstants();
         base.Deactivate();
     }
 
@@ -47,17 +41,9 @@ public class SpeedThrust : ActiveAbility, IBlinkOnUse
     /// </summary>
     protected override void Execute()
     {
-        // adjust fields
-        if(craft) {
-            var enginePower = (Core as Craft).enginePower;
-            activated = true;
-            (Core as Craft).enginePower += 100F * Mathf.Pow(abilityTier, 1.5F);
-            (Core as Craft).speed += boost * abilityTier;
-            (Core as Craft).CalculatePhysicsConstants();
-        } // change engine power
+        craft.speed += boost * abilityTier;
+        craft.CalculatePhysicsConstants();
         AudioManager.PlayClipByID("clip_activateability", transform.position);
-        isActive = true; // set to active
-        isOnCD = true; // set to on cooldown
         base.Execute();
     }
 }

@@ -34,7 +34,7 @@ public class AIAbilityController
         // Use abilities if needed
         if (!ai.movement.targetIsInRange())
         {
-            if (ai.movement.DistanceToTarget > 256f)
+            if (ai.movement.DistanceToTarget > 5f)
             {
                 bool allowSpeed = true;
                 if (craft.faction == 0 && PlayerCore.Instance != null && !PlayerCore.Instance.GetIsDead()
@@ -52,7 +52,7 @@ public class AIAbilityController
                     int count = 0;
                     foreach (var booster in speeds)
                     {
-                        booster.Tick(1);
+                        booster.Activate();
                         if (booster.GetActiveTimeRemaining() > 0)
                         {
                             if (++count >= half)
@@ -71,7 +71,7 @@ public class AIAbilityController
             {
                 if (craft.GetHealth()[0] > craft.GetMaxHealth()[0] * 0.9f)
                     break;
-                booster.Tick(1);
+                booster.Activate();
             }
         }
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f && Time.time > nextStealth)
@@ -79,7 +79,7 @@ public class AIAbilityController
             var escapeAbilities = GetAbilities(24, 29, 27); // stealth, absorption, pin down
             foreach (var escapeAbility in escapeAbilities)
             {
-                escapeAbility.Tick(1);
+                escapeAbility.Activate();
                 if (escapeAbility.GetActiveTimeRemaining() > 0f)
                 {
                     nextStealth = Time.time + escapeAbility.GetActiveTimeRemaining() + 1.0f;
@@ -92,11 +92,11 @@ public class AIAbilityController
             var retreats = GetAbilities(28); // retreat
             foreach (var retreat in retreats)
             {
-                bool CD = retreat.GetCDRemaining() > 0f;
+                bool CD = retreat.TimeUntilReady() > 0f;
                 if (!CD)
                 {
-                    retreat.Tick(1);
-                    if (retreat.GetCDRemaining() > 0f)
+                    retreat.Activate();
+                    if (retreat.TimeUntilReady() > 0f)
                         break;
                 }
             }
@@ -106,7 +106,7 @@ public class AIAbilityController
             var core = GetAbilities(11, 31); // core heal & regen
             foreach (var ability in core)
             {
-                ability.Tick(1);
+                ability.Activate();
                 if (ability.GetActiveTimeRemaining() > 0)
                     break;
             }
@@ -116,7 +116,7 @@ public class AIAbilityController
             var energy = GetAbilities(12, 32); // energy add & regen
             foreach (var ability in energy)
             {
-                ability.Tick(1);
+                ability.Activate();
                 if (ability.GetActiveTimeRemaining() > 0)
                     break;
             }
@@ -130,8 +130,9 @@ public class AIAbilityController
                 var damageBoosts = GetAbilities(25, 33); // damage boost, disrupt
                 foreach (var damageBoost in damageBoosts)
                 {
-                    damageBoost.Tick(1);
+                    damageBoost.Activate();
                 }
+                // TODO: use only if the enemy is close enough!
                 var pinDown = GetAbilities(27); // pin down
                 if (Time.time > nextPin)
                 {
@@ -139,7 +140,7 @@ public class AIAbilityController
                     {
                         if (pin.GetActiveTimeRemaining() <= 0)
                         {
-                            pin.Tick(1);
+                            pin.Activate();
                             if (pin.GetActiveTimeRemaining() > 0f)
                             {
                                 nextPin = Time.time + pin.GetActiveTimeRemaining() -1.5f; // 2 sec activation time, leave 0.5 sec for fleeing
@@ -159,7 +160,7 @@ public class AIAbilityController
                 var droneSpawns = GetAbilities(10); // drone spawn
                 foreach (var droneSpawn in droneSpawns)
                 {
-                    droneSpawn.Tick(1);
+                    droneSpawn.Activate();
                 }
             }
         }

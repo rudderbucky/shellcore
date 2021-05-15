@@ -48,7 +48,6 @@ public class HealthHeal : Ability
         // remember, the ID change works here 
         // because awake only triggers AFTER the thread which instantiated the ability is completely executed
         cooldownDuration = 10;
-        CDRemaining = 10;
     }
 
     public static readonly int[] heals = new int[] {500, 500, 300};
@@ -73,10 +72,11 @@ public class HealthHeal : Ability
                     Core.TakeShellDamage(-heals[0] * abilityTier, 0, GetComponentInParent<Entity>()); // heal energy
                     break;
             }
-            isOnCD = true; // set on cooldown
+            base.Execute();
         }
         else {
             Core.TakeEnergy(-energyCost); // refund energy
+            startTime = Time.time - cooldownDuration;
         }
     }
 }

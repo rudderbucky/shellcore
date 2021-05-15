@@ -240,7 +240,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
             childObject.AddComponent<MinimapLockRotationScript>();
         }
         
-        if (!GetComponent<Draggable>() && (this as Drone || this as Tank || this as Turret))
+        if (!GetComponent<Draggable>())
         {
             draggable = gameObject.AddComponent<Draggable>();
         }
@@ -266,6 +266,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 Destroy(parts[i].gameObject);
         }
 
+        stealths = 0;
+        absorptions = 0;
+
         BuildEntity();
     }
 
@@ -282,7 +285,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         foreach(var part in parts)
         {
             if(part && part.gameObject && part.gameObject.name != "Shell Sprite")
+            {
+                part.GetComponentInChildren<Ability>()?.SetDestroyed(true);
                 Destroy(part.gameObject);
+            }
+
         }
         parts.Clear();
         blueprint.shellHealth.CopyTo(maxHealth, 0);
@@ -472,7 +479,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         ConnectedTreeCreator();
 
         maxHealth.CopyTo(currentHealth, 0);
-
+        ActivatePassives(); // activate passive abilities here to avoid race condition BS
+        
         if (OnEntitySpawn != null)
             OnEntitySpawn.Invoke(this);
     }
@@ -512,7 +520,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         // 1 part drop style - choose a random part if the criteria fits, set it to collectible
         if(!FactionManager.IsAllied(0, faction) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
-            ((this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null))) {
+            (this as ShellCore).GetCarrier() == null) {
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
 
@@ -534,11 +542,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         if (lastDamagedBy as PlayerCore) 
         {
-            (lastDamagedBy as PlayerCore).credits += 5;
-            if (BZM != null)
-            {
-                BZM.CreditsCollected += 5;
-            }
+            (lastDamagedBy as PlayerCore).AddCredits(Random.Range(1,5));
+
             if (this as ShellCore && !FactionManager.IsAllied(0, faction))
             {
                 foreach(var part in blueprint.parts)
@@ -611,6 +616,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
         initialized = true;
+    }
+
+    private void ActivatePassives()
+    {
+        foreach(var ability in abilities)
+        {
+            if(ability as PassiveAbility) 
+            {
+                (ability as PassiveAbility).Activate();
+            }
+        }
     }
 
     protected virtual void Update() 
@@ -804,7 +820,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// </summary>
     public virtual float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) 
     {
-        if (amount > 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
+        if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
             Debug.Log("Damage: " + amount + " (f " + lastDamagedBy?.faction + " -> " + faction + ")");
 
         if (isAbsorbing && amount > 0f)

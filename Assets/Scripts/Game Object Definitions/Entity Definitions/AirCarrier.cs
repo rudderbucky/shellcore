@@ -7,6 +7,7 @@ public interface ICarrier : IOwner
 {
     Vector3 GetSpawnPoint();
     bool GetIsInitialized();
+    bool GetIsDead();
 }
 
 public class AirCarrier : AirConstruct, ICarrier {
@@ -73,7 +74,11 @@ public class AirCarrier : AirConstruct, ICarrier {
 
             foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
             {
-                if(!(active is SpawnDrone) || enemyTargetFound) active.Tick(1);
+                if(!(active is SpawnDrone) || enemyTargetFound)
+                {
+                    active.Tick();
+                    active.Activate();
+                }
             }
 
 
@@ -85,6 +90,7 @@ public class AirCarrier : AirConstruct, ICarrier {
     public Draggable GetTractorTarget() {
         return null;
     }
+
     public int GetIntrinsicCommandLimit()
     {
         return intrinsicCommandLimit;
@@ -94,6 +100,7 @@ public class AirCarrier : AirConstruct, ICarrier {
     {
         intrinsicCommandLimit = val;
     }
+
     public override void TakeCoreDamage(float amount){
         base.TakeCoreDamage(amount);
         if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {

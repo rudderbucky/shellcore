@@ -8,6 +8,8 @@ public interface IOwner
     int GetFaction();
     Transform GetTransform();
     List<IOwnable> GetUnitsCommanding();
+    int GetIntrinsicCommandLimit();
+    void SetIntrinsicCommandLimit(int val);
     int GetTotalCommandLimit();
     SectorManager GetSectorManager();
     Draggable GetTractorTarget(); 
@@ -25,10 +27,8 @@ public class SpawnDrone : ActiveAbility
     {
         ID = AbilityID.SpawnDrone;
         cooldownDuration = spawnData.cooldown;
-        CDRemaining = cooldownDuration;
-        activeDuration = spawnData.delay; 
-        activeTimeRemaining = activeDuration;
-        energyCost = spawnData.energyCost;
+        chargeDuration = spawnData.delay;
+        activeDuration = spawnData.delay + 0.1f;
         // create blueprint from string json in spawn data
         blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
         JsonUtility.FromJsonOverwrite(spawnData.drone, blueprint);
@@ -65,10 +65,8 @@ public class SpawnDrone : ActiveAbility
     /// <summary>
     /// Creates a drone
     /// </summary>
-    public override void Deactivate()
+    protected override void Execute()
     {
-        if(isDestroyed) return;
-        
         AudioManager.PlayClipByID("clip_respawn", transform.position);
 
         // Spawn the drone
@@ -78,7 +76,6 @@ public class SpawnDrone : ActiveAbility
         drone.faction = craft.GetFaction();
         drone.transform.position = part.transform.position;
         drone.spawnPoint = part.transform.position;
-        drone.enginePower = 100;
         drone.type = spawnData.type;
         drone.Init();
         drone.SetOwner(craft);
@@ -99,23 +96,19 @@ public class SpawnDrone : ActiveAbility
                 drone.getAI().owner = craft;
             }
         }
-
-        ToggleIndicator();
     }
 
     /// <summary>
     /// Starts the spawning countdown
     /// </summary>
-    protected override void Execute()
+    public override void Activate()
     {
         if (craft != null && craft.GetUnitsCommanding().Count < craft.GetTotalCommandLimit())
         {
-            isActive = true; // set to active
-            isOnCD = true; // set to on cooldown
-            ToggleIndicator();
+            Core.TakeEnergy(-energyCost);
+            base.Activate();
         }
-        else Core.TakeEnergy(-energyCost);
-        if(craft as PlayerCore && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
+        else if (craft as PlayerCore && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
         {
             (craft as PlayerCore).alerter.showMessage("Unit limit reached!", "clip_alert");
         }

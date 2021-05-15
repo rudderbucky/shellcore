@@ -41,11 +41,11 @@ public class Turret : AirConstruct, IOwnable
     {
         if (!isDead && GetComponentInChildren<WeaponAbility>())
         {
-            GetComponentInChildren<WeaponAbility>().Tick(0);
+            GetComponentInChildren<WeaponAbility>().Tick();
         }
         else if (!isDead && GetComponentInChildren<ActiveAbility>())
         {
-            GetComponentInChildren<ActiveAbility>().Tick(1);
+            GetComponentInChildren<ActiveAbility>().Activate();
         }
         base.Update();
     }

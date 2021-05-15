@@ -43,7 +43,7 @@ public abstract class WeaponAbility : ActiveAbility {
 
     protected override void Awake()
     {
-        isActive = true; // initialize abilities to be active
+        isEnabled = true; // initialize abilities to be active
         targetingSystem = new WeaponTargetingSystem();
         targetingSystem.ability = this;
         if(abilityName == null) abilityName = "Weapon Ability";
@@ -78,9 +78,13 @@ public abstract class WeaponAbility : ActiveAbility {
         return range; // get range
     }
 
+    /// <summary>
+    /// Enable / disable the weapon ability
+    /// </summary>
     public void SetActive(bool active)
     {
-        isActive = active;
+        isEnabled = active;
+        State = AbilityState.Ready;
     }
 
     /// <summary>
@@ -106,18 +110,24 @@ public abstract class WeaponAbility : ActiveAbility {
     /// <returns>a float value that is directly based on isActive rather than a duration</returns>
     public override float GetActiveTimeRemaining()
     {
-        if (isActive) return -1; // -1 is not zero so the ability is active
+        if (isEnabled) return -1; // -1 is not zero so the ability is active
         else return 0; // inactive ability
+    }
+
+    public override void Activate()
+    {
+        isEnabled = !isEnabled;
+        UpdateState();
+        Core.MakeBusy(); // make core busy
     }
 
     /// <summary>
     /// Override for tick that integrates the targeting system of the core for players
     /// and adjusted for the new isActive behaviour
     /// </summary>
-    /// <param name="key">the associated trigger key of the ability</param>
-    public override void Tick(int key)
+    public override void Tick()
     {
-        if (isDestroyed)
+        if (State == AbilityState.Destroyed)
         {
             return; // Part has been destroyed, ability can't be used
         }
@@ -125,39 +135,45 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             return; // Core is in stealth mode, weapons are disabled
         }
-        if (key == 1)
-        { // toggle ability
-            Core.MakeBusy(); // make core busy
-            isActive = !isActive;
-        }
-        if (isOnCD) // on cooldown
-        {
-            TickDown(cooldownDuration, ref CDRemaining, ref isOnCD); // tick the cooldown time
-        }
-        else if (isActive && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
+        
+        UpdateState(); // Update state
+
+        Shoot();
+    }
+
+    void Shoot()
+    {
+        if (State == AbilityState.Ready && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
         {
             Transform target = targetingSystem.GetTarget();
             if (target == null || !target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
             {
                 TargetManager.Enqueue(targetingSystem, category);
             }
-            else if (target && target.GetComponent<IDamageable>() != null) { // check if there is a target
+            else if (target && target.GetComponent<IDamageable>() != null)
+            { // check if there is a target
                 Core.SetIntoCombat(); // now in combat
                 IDamageable tmp = target.GetComponent<IDamageable>();
 
                 // check if allied
                 if (!FactionManager.IsAllied(tmp.GetFaction(), Core.faction))
                 {
-                    bool success = Execute(target.position); // execute ability using the position to fire
-                    if(success)
-                        Core.TakeEnergy(energyCost); // take energy, if the ability was executed
+                    if (targetingSystem.GetTarget() && Core.RequestGCD())
+                    {
+                        bool success = Execute(target.position); // execute ability using the position to fire
+                        if (success)
+                        {
+                            Core.TakeEnergy(energyCost); // take energy, if the ability was executed
+                            startTime = Time.time;
+                        }
+                    }
                 }
             }
         }
     }
 
     protected virtual bool DistanceCheck(Transform targetEntity) {
-        return Vector2.Distance(transform.position, targetEntity.position) <= GetRange();
+        return Vector2.SqrMagnitude(transform.position - targetEntity.position) <= GetRange() * GetRange();
     }
 
     /// <summary>
@@ -176,7 +192,7 @@ public abstract class WeaponAbility : ActiveAbility {
     /// <returns> whether or not the action was executed </returns>
     protected virtual bool Execute(Vector3 victimPos)
     {
-        isOnCD = true; // set on cooldown
+        base.Execute();
         return true;
     }
 }
