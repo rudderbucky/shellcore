@@ -85,6 +85,15 @@ public class AirCarrier : AirConstruct, ICarrier {
     public Draggable GetTractorTarget() {
         return null;
     }
+    public int GetIntrinsicCommandLimit()
+    {
+        return intrinsicCommandLimit;
+    }
+
+    public void SetIntrinsicCommandLimit(int val)
+    {
+        intrinsicCommandLimit = val;
+    }
     public override void TakeCoreDamage(float amount){
         base.TakeCoreDamage(amount);
         if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
