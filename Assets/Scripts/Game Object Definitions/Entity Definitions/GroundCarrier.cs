@@ -83,36 +83,18 @@ public class GroundCarrier : GroundConstruct, ICarrier {
     public override void TakeCoreDamage(float amount){
         base.TakeCoreDamage(amount);
         if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
-            if(currentHealth[1] < 1){
-                coreAlertThreshold = -99999;
-                PlayerCore.Instance.alerter.showMessage("Base has been destroyed!", "clip_alert");
-            }
-            else if(currentHealth[1] < (maxHealth[1] / 2)){
-                coreAlertThreshold -= (maxHealth[1] * 0.2f);
-                PlayerCore.Instance.alerter.showMessage("Base is about to be destroyed!", "clip_alert");
-            }
-            else{
-                coreAlertThreshold -= (maxHealth[1] * 0.2f);
-                PlayerCore.Instance.alerter.showMessage("Base Core is under attack!", "clip_alert");
-            }
+            int temp = (int)(Mathf.Floor((currentHealth[1]/maxHealth[1]) * 5) + 1) * 20;
+            shellAlertThreshold -= (maxHealth[1] * 0.2f);
+            PlayerCore.Instance.alerter.showMessage("Base is at " + temp + "% core", "clip_alert");
         }
     }
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy){
         //this is bad code but idk how to do better
         float residue = base.TakeShellDamage(amount,shellPiercingFactor,lastDamagedBy);
         if(currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction)){
-            if(currentHealth[0] < 1){
-                shellAlertThreshold = -99999;
-                PlayerCore.Instance.alerter.showMessage("Base shell has been destroyed!", "clip_alert");
-            }
-            else if (currentHealth[0] < maxHealth[0] / 2){
-                shellAlertThreshold -= (maxHealth[0] * 0.2f);
-                PlayerCore.Instance.alerter.showMessage("Base shell is taking heavy damage!", "clip_alert");
-            }
-            else{
-                shellAlertThreshold -= (maxHealth[0] * 0.2f);
-                PlayerCore.Instance.alerter.showMessage("Base is under attack!", "clip_alert");
-            }
+            int temp = (int)(Mathf.Floor((currentHealth[0]/maxHealth[0]) * 5) + 1) * 20;
+            shellAlertThreshold -= (maxHealth[0] * 0.2f);
+            PlayerCore.Instance.alerter.showMessage("Base is at " + temp + "% shell", "clip_alert");
         }
         return residue;
     }
