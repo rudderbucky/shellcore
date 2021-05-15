@@ -8,6 +8,8 @@ public interface IOwner
     int GetFaction();
     Transform GetTransform();
     List<IOwnable> GetUnitsCommanding();
+    int GetIntrinsicCommandLimit();
+    void SetIntrinsicCommandLimit(int val);
     int GetTotalCommandLimit();
     SectorManager GetSectorManager();
     Draggable GetTractorTarget(); 
@@ -74,7 +76,6 @@ public class SpawnDrone : ActiveAbility
         drone.faction = craft.GetFaction();
         drone.transform.position = part.transform.position;
         drone.spawnPoint = part.transform.position;
-        drone.enginePower = 100;
         drone.type = spawnData.type;
         drone.Init();
         drone.SetOwner(craft);

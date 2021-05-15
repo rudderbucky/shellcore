@@ -11,9 +11,6 @@ public class ShipBuilderJSONButton : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData)
     {
-		#if UNITY_EDITOR
-			Debug.Log(builder.GetCurrentJSON());
-		#endif
 		if(window)
 		{
 			window.ToggleActive();

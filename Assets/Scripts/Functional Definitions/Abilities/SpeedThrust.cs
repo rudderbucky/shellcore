@@ -23,6 +23,7 @@ public class SpeedThrust : ActiveAbility
 
     private void Start()
     {
+        if(!(Core as Craft)) Debug.LogError("Why did you add Speed Thrust to a non-moving entity? Weirdo!");
         craft = Core as Craft;
     }
     /// <summary>
@@ -30,8 +31,6 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     public override void Deactivate()
     {
-        var enginePower = craft.enginePower;
-        craft.enginePower -= 100F * Mathf.Pow(abilityTier, 1.5F);
         craft.speed -= boost * abilityTier;
         craft.CalculatePhysicsConstants();
         base.Deactivate();
@@ -42,8 +41,6 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        var enginePower = (Core as Craft).enginePower;
-        craft.enginePower += 100F * Mathf.Pow(abilityTier, 1.5F);
         craft.speed += boost * abilityTier;
         craft.CalculatePhysicsConstants();
         AudioManager.PlayClipByID("clip_activateability", transform.position);

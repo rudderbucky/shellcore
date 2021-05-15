@@ -30,6 +30,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public ICarrier GetCarrier()
     {
+        if(carrier == null || carrier.Equals(null) || carrier.GetIsDead()) return null;
         return carrier;
     }
 
@@ -164,5 +165,15 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         TakeShellDamage(-0.05F * GetMaxHealth()[0], 0, null);
         TakeCoreDamage(-0.05F * GetMaxHealth()[1]);
         TakeEnergy(-0.05F * GetMaxHealth()[2]);
+    }
+
+    public int GetIntrinsicCommandLimit()
+    {
+        return intrinsicCommandLimit;
+    }
+
+    public void SetIntrinsicCommandLimit(int val)
+    {
+        intrinsicCommandLimit = val;
     }
 }

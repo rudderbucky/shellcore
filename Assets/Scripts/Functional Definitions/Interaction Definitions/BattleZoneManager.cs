@@ -136,7 +136,10 @@ public class BattleZoneManager : MonoBehaviour
         {
             foreach(var target in targets)
             {
-                if(target as ShellCore) (target as ShellCore).SetCarrier(SectorManager.instance.carriers[target.faction]);
+                if(!SectorManager.instance.carriers.ContainsKey(target.faction)) continue;
+                var carrier = SectorManager.instance.carriers[target.faction];
+                if(target as ShellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead()) 
+                    (target as ShellCore).SetCarrier(SectorManager.instance.carriers[target.faction]);
             }
 
             List<int> livingFactions = new List<int>();

@@ -86,4 +86,14 @@ public class AirCarrier : AirConstruct, ICarrier {
     public Draggable GetTractorTarget() {
         return null;
     }
+
+    public int GetIntrinsicCommandLimit()
+    {
+        return intrinsicCommandLimit;
+    }
+
+    public void SetIntrinsicCommandLimit(int val)
+    {
+        intrinsicCommandLimit = val;
+    }
 }

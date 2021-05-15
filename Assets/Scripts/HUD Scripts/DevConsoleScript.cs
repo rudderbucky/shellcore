@@ -22,6 +22,7 @@ public class DevConsoleScript : MonoBehaviour
         Application.logMessageReceived += HandleLog;
         godModeEnabled = false;
         Instance = this;
+        componentEnabled = false;
     }
      
     void Disable() {
@@ -60,7 +61,6 @@ public class DevConsoleScript : MonoBehaviour
                 player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
                 player.SetRegens(new float[] { 99999, 99999, 99999 });
                 player.AddCredits(999999);
-                player.enginePower = 9999f;
                 player.speed = 9999f;
                 player.CalculatePhysicsConstants();
                 player.damageAddition = 99999f;
