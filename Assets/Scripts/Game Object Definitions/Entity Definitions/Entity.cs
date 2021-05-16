@@ -353,6 +353,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 GameObject partObject = ShellPart.BuildPart(partBlueprint);
                 ShellPart shellPart = partObject.GetComponent<ShellPart>();
                 shellPart.info = part;
+                partObject.transform.SetParent(transform, false);
+                partObject.transform.SetAsFirstSibling();
 
                 //Add an ability to the part:
 
@@ -360,8 +362,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 if(ab) { // add weapon diversity
                     ab.type = DroneUtilities.GetDiversityTypeByEntity(this);
                 }
-                partObject.transform.SetParent(transform, false);
-                partObject.transform.SetAsFirstSibling();
                 partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
                 partObject.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
                 SpriteRenderer sr = partObject.GetComponent<SpriteRenderer>();
