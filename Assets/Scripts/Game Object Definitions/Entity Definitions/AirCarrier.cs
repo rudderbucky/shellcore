@@ -11,6 +11,8 @@ public interface ICarrier : IOwner
 }
 
 public class AirCarrier : AirConstruct, ICarrier {
+    private float coreAlertThreshold;
+    private float shellAlertThreshold;
 
     int intrinsicCommandLimit = 0;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
@@ -31,6 +33,8 @@ public class AirCarrier : AirConstruct, ICarrier {
         category = EntityCategory.Station;
         base.Start();
         initialized = true;
+        coreAlertThreshold = maxHealth[1] * 0.8f;
+        shellAlertThreshold = maxHealth[0];
     }
 
 
@@ -95,5 +99,24 @@ public class AirCarrier : AirConstruct, ICarrier {
     public void SetIntrinsicCommandLimit(int val)
     {
         intrinsicCommandLimit = val;
+    }
+
+    public override void TakeCoreDamage(float amount){
+        base.TakeCoreDamage(amount);
+        if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
+            int temp = (int)(Mathf.Floor((currentHealth[1]/maxHealth[1]) * 5) + 1) * 20;
+            coreAlertThreshold -= (maxHealth[1] * 0.2f);
+            PlayerCore.Instance.alerter.showMessage("Carrier is at " + temp + "% core", "clip_alert");
+        }
+    }
+    public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy){
+        //this is bad code but idk how to do better
+        float residue = base.TakeShellDamage(amount,shellPiercingFactor,lastDamagedBy);
+        if(currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction)){
+            int temp = (int)(Mathf.Floor((currentHealth[0]/maxHealth[0]) * 5) + 1) * 20;
+            shellAlertThreshold -= (maxHealth[0] * 0.2f);
+            PlayerCore.Instance.alerter.showMessage("Carrier is at " + temp + "% shell", "clip_alert");
+        }
+        return residue;
     }
 }

@@ -818,7 +818,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <summary>
     /// Take shell damage, return residual damage to apply to core or parts
     /// </summary>
-    public float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) 
+    public virtual float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) 
     {
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
             Debug.Log("Damage: " + amount + " (f " + lastDamagedBy?.faction + " -> " + faction + ")");
@@ -851,7 +851,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <summary>
     /// Take core damage.
     /// </summary>
-    public void TakeCoreDamage(float amount) 
+    public virtual void TakeCoreDamage(float amount) 
     {
 
         if (isAbsorbing && amount > 0f)
