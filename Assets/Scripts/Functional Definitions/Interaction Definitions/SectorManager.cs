@@ -977,7 +977,7 @@ public class SectorManager : MonoBehaviour
             OnSectorLoad.Invoke(current.sectorName);
     }
 
-    static float objectDespawnDistance = 100f;
+    static float objectDespawnDistance = 1000f;
 
     private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null)
     {
@@ -1034,10 +1034,15 @@ public class SectorManager : MonoBehaviour
         Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
         foreach (var obj in persistentObjects)
         {
-            if (player && obj.Value && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
-                && obj.Value != player.gameObject && !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable)
-                // TODO: why < objectDespawnDistance?
-                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance))
+            var notPlayerTractorTarget = 
+                (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject));
+
+            //var notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+            var notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+
+            if (player && obj.Value && notPlayerTractorTarget
+                && obj.Value != player.gameObject
+                && notClose)
             {
                 Destroy(obj.Value);
             }
