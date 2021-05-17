@@ -30,6 +30,7 @@ public class SectorManager : MonoBehaviour
     private BattleZoneManager battleZone;
     private SiegeZoneManager siegeZone;
     private Dictionary<string, GameObject> objects;
+    // TODO: Remove persistent objects. Doesn't need to be here
     private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
@@ -1038,7 +1039,8 @@ public class SectorManager : MonoBehaviour
                 (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject));
 
             //var notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
-            var notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+            var notClose = false;
+            if(obj.Value) notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
 
             if (player && obj.Value && notPlayerTractorTarget
                 && obj.Value != player.gameObject

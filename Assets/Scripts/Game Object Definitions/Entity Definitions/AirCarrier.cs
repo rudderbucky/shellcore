@@ -103,7 +103,7 @@ public class AirCarrier : AirConstruct, ICarrier {
 
     public override void TakeCoreDamage(float amount){
         base.TakeCoreDamage(amount);
-        if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
+        if (PlayerCore.Instance && currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
             int temp = (int)(Mathf.Floor((currentHealth[1]/maxHealth[1]) * 5) + 1) * 20;
             coreAlertThreshold -= (maxHealth[1] * 0.2f);
             PlayerCore.Instance.alerter.showMessage("Carrier is at " + temp + "% core", "clip_alert");
@@ -112,7 +112,7 @@ public class AirCarrier : AirConstruct, ICarrier {
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy){
         //this is bad code but idk how to do better
         float residue = base.TakeShellDamage(amount,shellPiercingFactor,lastDamagedBy);
-        if(currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction)){
+        if(PlayerCore.Instance && currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction)){
             int temp = (int)(Mathf.Floor((currentHealth[0]/maxHealth[0]) * 5) + 1) * 20;
             shellAlertThreshold -= (maxHealth[0] * 0.2f);
             PlayerCore.Instance.alerter.showMessage("Carrier is at " + temp + "% shell", "clip_alert");
