@@ -19,7 +19,7 @@ public class SpeedThrust : ActiveAbility
         cooldownDuration = 10;
         activeDuration = 5;
         energyCost = 50;
-        if(!(Core as Craft)) Debug.LogError("Why did you add Speed Thrust to a non-moving entity? Weirdo!");
+        if(Core && !(Core as Craft)) Debug.LogError("Why did you add Speed Thrust to a non-moving entity? Weirdo!");
         craft = Core as Craft;
     }
     /// <summary>

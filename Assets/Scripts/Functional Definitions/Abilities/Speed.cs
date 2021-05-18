@@ -32,6 +32,6 @@ public class Speed : PassiveAbility {
             (Core as Craft).speed += boost * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         }
-        else Debug.LogError("Why did you add a Speed part to a non-moving entity? Weirdo!");
+        else if(Core) Debug.LogError("Why did you add a Speed part to a non-moving entity? Weirdo!");
     }
 }
