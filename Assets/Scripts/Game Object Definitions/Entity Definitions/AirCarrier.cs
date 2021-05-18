@@ -34,7 +34,7 @@ public class AirCarrier : AirConstruct, ICarrier {
         base.Start();
         initialized = true;
         coreAlertThreshold = maxHealth[1] * 0.8f;
-        shellAlertThreshold = maxHealth[0];
+        shellAlertThreshold = maxHealth[0] * 0.8f;
     }
 
 
