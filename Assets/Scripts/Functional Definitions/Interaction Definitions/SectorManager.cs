@@ -1038,13 +1038,20 @@ public class SectorManager : MonoBehaviour
             var notPlayerTractorTarget = 
                 (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject));
 
-            //var notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+            // set up booleans to determine whether a drone/turret gets despawned.
+            var notPlayerDrone = false;
             var notClose = false;
-            if(obj.Value) notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+            var partyDrone = false;
+            if(obj.Value) 
+            {
+                notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+                notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+                partyDrone = PartyManager.instance.partyMembers.Exists(sc => sc.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+            }
 
             if (player && obj.Value && notPlayerTractorTarget
                 && obj.Value != player.gameObject
-                && notClose)
+                && (notPlayerDrone || notClose))
             {
                 Destroy(obj.Value);
             }

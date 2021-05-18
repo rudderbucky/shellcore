@@ -45,8 +45,10 @@ public class PlayerCore : ShellCore {
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
     }
+
+    // "Interacting" means the player is in a situation where they SHOULDN'T BE MOVING
     public bool GetIsInteracting() {
-        return isInteracting;
+        return isInteracting || DevConsoleScript.componentEnabled;
     }
 
     public void SetIsInteracting(bool val) {
@@ -217,7 +219,7 @@ public class PlayerCore : ShellCore {
             group.sortingOrder = ++maxAirLayer;
         }
         base.Update(); // base update
-        if(!isInteracting && !DialogueSystem.isInCutscene && !DevConsoleScript.componentEnabled) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+        if(!GetIsInteracting() && !DialogueSystem.isInCutscene) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
 	}
 
     public override void Warp(Vector3 point)
