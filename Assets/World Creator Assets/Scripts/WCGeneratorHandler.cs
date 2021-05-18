@@ -282,7 +282,6 @@ public class WCGeneratorHandler : MonoBehaviour
                                         {
                                             ShipBuilder.TraderInventory traderInventory = 
                                                 JsonUtility.FromJson<ShipBuilder.TraderInventory>(endDialogue.traderJSON);
-                                            Debug.LogError(container.sectorName + "end dialog");
                                             AttemptAddPartArray(traderInventory.parts, container.sectorName);
                                         }
                                         

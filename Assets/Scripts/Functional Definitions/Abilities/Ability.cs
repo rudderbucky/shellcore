@@ -15,7 +15,7 @@ public abstract class Ability : MonoBehaviour {
         get
         {
             if (core == null)
-                core = GetComponentInParent<Entity>();
+                core = part ? part.GetComponentInParent<Entity>() : GetComponentInParent<Entity>();
             return core;
         }
         set

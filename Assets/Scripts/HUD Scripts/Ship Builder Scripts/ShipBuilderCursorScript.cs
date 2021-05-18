@@ -365,8 +365,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			var origPos = transform.position;
 			transform.position = Input.mousePosition;
 			if(bound.Contains(vector) && (!symmetryPart || (parts[i].info.partID ==symmetryPart.info.partID &&
-				symmetryPart.info.abilityID == parts[i].info.abilityID
-					&& (symmetryMode != SymmetryMode.X || parts[i].info.mirrored != symmetryPart.info.mirrored)))) {
+					(symmetryMode != SymmetryMode.X || parts[i].info.mirrored != symmetryPart.info.mirrored)))) {
 				transform.position = origPos;
 				return parts[i];
 			}

@@ -433,8 +433,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		else
 		{
-			shell.sprite = ResourceManager.GetAsset<Sprite>("core1_shell");
-			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+			shell.sprite = ResourceManager.GetAsset<Sprite>(GetEditorShellString());
+			core.sprite = ResourceManager.GetAsset<Sprite>(GetEditorCoreString());
 		}
 
 		shell.color = FactionManager.GetFactionColor(0);
@@ -1022,6 +1022,32 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 	}
 
+	// The following 3 methods use editorCoreTier to set the editor core sprites correctly;
+	private List<string> GetEditorCoreList()
+	{
+		var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
+		cores.Add("groundcarriershell");
+		cores.Add("drone_shell");
+		return cores;
+	}
+	private string GetEditorShellString()
+	{
+		var cores = GetEditorCoreList();
+		return cores[editorCoreTier % cores.Count];
+		
+	}
+
+	private string GetEditorCoreString()
+	{
+		var cores = GetEditorCoreList();
+		if(editorCoreTier == cores.Count - 2)
+			return "groundcarriercore";
+		else if(editorCoreTier == cores.Count - 1)
+			return "drone_light";
+		else
+			return "core1_light";
+	}
+
 	public string GetCurrentJSON() {
 		EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();	
 		if(!editorMode)
@@ -1030,17 +1056,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			blueprint.coreSpriteID = player.blueprint.coreSpriteID;
 		}
 		else
-		{
-			var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
-			cores.Add("groundcarriershell");
-			cores.Add("drone_shell");
-			blueprint.coreShellSpriteID = cores[editorCoreTier % cores.Count];
-			if(editorCoreTier == cores.Count - 2)
-				blueprint.coreSpriteID = "groundcarriercore";
-			else if(editorCoreTier == cores.Count - 1)
-				blueprint.coreSpriteID = "drone_light";
-			else
-				blueprint.coreSpriteID = "core1_light";
+		{	
+			blueprint.coreShellSpriteID = GetEditorShellString();
+			blueprint.coreSpriteID = GetEditorCoreString();
 		}
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		foreach(ShipBuilderPart part in cursorScript.parts) {

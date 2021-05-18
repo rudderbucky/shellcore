@@ -80,7 +80,7 @@ public class MissileScript : MonoBehaviour {
         this.target = target; // set target
     }
 
-    float forceConst = 180;
+    float forceConst = 160;
 
 	// Update is called once per frame
    void FixedUpdate ()

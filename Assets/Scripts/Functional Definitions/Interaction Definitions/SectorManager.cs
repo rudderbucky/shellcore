@@ -30,6 +30,7 @@ public class SectorManager : MonoBehaviour
     private BattleZoneManager battleZone;
     private SiegeZoneManager siegeZone;
     private Dictionary<string, GameObject> objects;
+    // TODO: Remove persistent objects. Doesn't need to be here
     private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
@@ -413,6 +414,24 @@ public class SectorManager : MonoBehaviour
         }
     }
 
+    // does all the checking on whether the string is json or a filename
+    public EntityBlueprint TryGettingEntityBlueprint(string jsonOrName)
+    {
+        var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+
+        // try parsing directly, if that fails try fetching the entity file
+        try
+        {
+            JsonUtility.FromJsonOverwrite(jsonOrName, blueprint);
+        }
+        catch
+        {
+            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                (resourcePath + "\\Entities\\" + jsonOrName + ".json"), blueprint);
+        }
+        return blueprint;            
+    }
+
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
     {
         GameObject gObj = new GameObject(data.name);
@@ -429,18 +448,7 @@ public class SectorManager : MonoBehaviour
                         json = data.blueprintJSON;
                         if (json != null && json != "")
                         {
-                            blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                            // try parsing directly, if that fails try fetching the entity file
-                            try
-                            {
-                                JsonUtility.FromJsonOverwrite(json, blueprint);
-                            }
-                            catch
-                            {
-                                JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                                    (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                            }
+                            blueprint = TryGettingEntityBlueprint(json);
                             
                             //Debug.Log(data.name);
                             blueprint.entityName = data.name;
@@ -503,18 +511,7 @@ public class SectorManager : MonoBehaviour
                     if (json != null && json != "")
                     {
                         var dialogueRef = blueprint.dialogue;
-                        blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                        // try parsing directly, if that fails try fetching the entity file
-                        try
-                        {
-                            JsonUtility.FromJsonOverwrite(json, blueprint);
-                        }
-                        catch
-                        {
-                            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                                (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                        }
+                        blueprint = TryGettingEntityBlueprint(json);
                         
                         blueprint.dialogue = dialogueRef;
                     } 
@@ -534,18 +531,7 @@ public class SectorManager : MonoBehaviour
                     if (json != null && json != "")
                     {
                         var dialogueRef = blueprint.dialogue;
-                        blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                        // try parsing directly, if that fails try fetching the entity file
-                        try
-                        {
-                            JsonUtility.FromJsonOverwrite(json, blueprint);
-                        }
-                        catch
-                        {
-                            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                                (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                        }
+                        blueprint = TryGettingEntityBlueprint(json);
                         blueprint.dialogue = dialogueRef;
                     } 
 
@@ -572,18 +558,7 @@ public class SectorManager : MonoBehaviour
                 json = data.blueprintJSON;
                 if (json != null && json != "")
                 {
-                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                    // try parsing directly, if that fails try fetching the entity file
-                    try
-                    {
-                        JsonUtility.FromJsonOverwrite(json, blueprint);
-                    }
-                    catch
-                    {
-                        JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                            (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                    }
+                    blueprint = TryGettingEntityBlueprint(json);
                 } 
 
                 blueprint.entityName = data.name;
@@ -598,18 +573,7 @@ public class SectorManager : MonoBehaviour
                 json = data.blueprintJSON;
                 if (json != null && json != "")
                 {
-                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                    // try parsing directly, if that fails try fetching the entity file
-                    try
-                    {
-                        JsonUtility.FromJsonOverwrite(json, blueprint);
-                    }
-                    catch
-                    {
-                        JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                            (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                    }
+                    blueprint = TryGettingEntityBlueprint(json);
                 } 
 
                 blueprint.entityName = data.name;
@@ -1014,7 +978,7 @@ public class SectorManager : MonoBehaviour
             OnSectorLoad.Invoke(current.sectorName);
     }
 
-    static float objectDespawnDistance = 100f;
+    static float objectDespawnDistance = 1000f;
 
     private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null)
     {
@@ -1071,10 +1035,16 @@ public class SectorManager : MonoBehaviour
         Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
         foreach (var obj in persistentObjects)
         {
-            if (player && obj.Value && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
-                && obj.Value != player.gameObject && !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable)
-                // TODO: why < objectDespawnDistance?
-                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance))
+            var notPlayerTractorTarget = 
+                (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject));
+
+            //var notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+            var notClose = false;
+            if(obj.Value) notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+
+            if (player && obj.Value && notPlayerTractorTarget
+                && obj.Value != player.gameObject
+                && notClose)
             {
                 Destroy(obj.Value);
             }
@@ -1181,12 +1151,12 @@ public class SectorManager : MonoBehaviour
         return Vector3.SqrMagnitude(obj.transform.position - player.transform.position) < 100;
     }
 
+    // this method is used for WC-created entities, which can only really be shellcores or assets.
     public static EntityBlueprint GetBlueprintOfLevelEntity(Sector.LevelEntity entity)
     {
         if(entity.assetID == "shellcore_blueprint")
         {
-            EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-            JsonUtility.FromJsonOverwrite(entity.blueprintJSON, blueprint);
+            EntityBlueprint blueprint = instance.TryGettingEntityBlueprint(entity.blueprintJSON);
             return blueprint;
         }
         else 
