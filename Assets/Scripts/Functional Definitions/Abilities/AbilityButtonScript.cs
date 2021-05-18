@@ -25,6 +25,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     bool dragging;
     Vector3 oldInputMousePos;
     KeyName keycode;
+    public bool visualMode = false;
 
     string GetPrettyStringFromKeycode(KeyCode code)
     {
@@ -36,11 +37,11 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         return str;
     }
 
-    public void Init(Ability ability, string hotkeyText, Entity entity, KeyName keycode)
+    public void Init(Ability ability, string hotkeyText, Entity entity, KeyName keycode, bool visualMode=false)
     {
         this.entity = entity;
         abilities.Add(ability);
-
+        this.visualMode = visualMode;
         // set up name, description, tier
         ReflectName(ability);
         ReflectDescription(ability);
@@ -142,7 +143,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             tooltip.transform.position = Input.mousePosition;
         }
 
-        if(!entity || (entity as PlayerCore).GetIsInteracting()) return;
+        if(!entity || visualMode) return;
 
         // there's no point in running Update if there is no ability
         if (!abilities.Exists(ab => ab && !ab.IsDestroyed()) || entity.GetIsDead())
@@ -204,7 +205,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         if(!entity.GetIsDead())
         {
-            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase)) && !PlayerViewScript.paused;
+            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase)) 
+                && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
             if(abilities[0] is WeaponAbility)
             {
                 foreach(var ab in abilities)
