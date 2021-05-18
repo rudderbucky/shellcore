@@ -13,7 +13,6 @@ public class SpeederBullet : Bullet {
         range = bulletSpeed * survivalTime;
         ID = AbilityID.SpeederBullet;
         cooldownDuration = 1.2F;
-        CDRemaining = cooldownDuration;
         energyCost = 10;
         damage = 100;
         prefabScale = 1 * Vector3.one;

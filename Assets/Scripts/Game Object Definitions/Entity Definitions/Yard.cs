@@ -39,7 +39,7 @@ public class Yard : AirConstruct, IShipBuilder {
     {
         if(!isDead)
             foreach(WeaponAbility weapon in GetComponentsInChildren<WeaponAbility>()) {
-                weapon.Tick(0);
+                weapon.Tick();
             }
         base.Update();
         TargetManager.Enqueue(targeter);

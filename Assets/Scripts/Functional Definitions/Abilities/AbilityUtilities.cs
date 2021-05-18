@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Reflection;
 
 public enum AbilityID
 {
@@ -44,7 +45,7 @@ public enum AbilityID
 	Bomb,
 	Ion
 }
-public class AbilityUtilities : MonoBehaviour {
+public static class AbilityUtilities {
 
 	public static Sprite GetAbilityImageByID(int ID, string secondaryData) {
 		if(ID == 0) return null;
@@ -157,7 +158,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 25:
                 return "All weapon damage increased by 150.";
             case 26:
-                return "Instantly heals self and nearby allies by +500 shell and +500 core.";
+                return "Instantly heals self and nearby allies by +500 shell";
             case 27:
                 return "Immobilizes the target.";
             case 28:
@@ -175,7 +176,7 @@ public class AbilityUtilities : MonoBehaviour {
             case 34:
                 return "Makes allies stronger.";
 			case 35:
-				return "Temporarily pulls you to your tractor target.";
+				return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
 			case 36:
 				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:

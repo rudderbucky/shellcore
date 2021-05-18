@@ -15,7 +15,6 @@ public class Laser : Bullet {
         range = bulletSpeed * survivalTime;
         ID = AbilityID.Laser;
         cooldownDuration = 0.2F;
-        CDRemaining = cooldownDuration;
         energyCost = 5;
         damage = 75;
         prefabScale = Vector2.one;

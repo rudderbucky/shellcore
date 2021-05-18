@@ -9,9 +9,9 @@ public class Ion : WeaponAbility {
         GameObject gObj = new GameObject("Line Renderer");
         gObj.transform.SetParent(this.transform, false);
         lineController = gObj.AddComponent<IonLineController>();
-        cooldownDuration = CDRemaining = 15;
         ID = AbilityID.Ion;
         abilityName = "Ion";
+        cooldownDuration = 5f;
         range = 15;
         category = Entity.EntityCategory.All;
         base.Awake();
@@ -78,20 +78,13 @@ public class Ion : WeaponAbility {
             firing = true;
         }
         */
-            
-        if(Core.RequestGCD()) {
-            if (targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponent<IDamageable>() != null) // check if there is actually a target, do not fire if there is not
-            {
-                if(!lineController.GetFiring())
-                {
-                    AudioManager.PlayClipByID("clip_bullet2", transform.position);
-                    lineController.StartFiring(5);
-                    isOnCD = true; // set booleans and return
-                    return true;
-                }
-                
-            }
-            return false;
-        } return false;
+
+        if (!lineController.GetFiring()) // TODO: Use AbilityState.Charging instead
+        {
+            AudioManager.PlayClipByID("clip_bullet2", transform.position);
+            lineController.StartFiring(5);
+            return true;
+        }
+        return false;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Immobilizes the craft and converts all damage to energy
 /// </summary>
-public class AbsorptionField : ActiveAbility, IBlinkOnUse
+public class AbsorptionField : ActiveAbility
 {
     Craft craft;
     GameObject field;
@@ -15,9 +15,7 @@ public class AbsorptionField : ActiveAbility, IBlinkOnUse
         base.Awake(); // base awake
         ID = AbilityID.Absorb;
         cooldownDuration = 10;
-        CDRemaining = cooldownDuration;
         activeDuration = 1;
-        activeTimeRemaining = activeDuration;
         energyCost = 100;
     }
 
@@ -55,8 +53,6 @@ public class AbsorptionField : ActiveAbility, IBlinkOnUse
         }
         AudioManager.PlayClipByID("clip_buff", transform.position);
         // adjust fields
-        isActive = true; // set to active
-        isOnCD = true; // set to on cooldown
         base.Execute();
     }
 }

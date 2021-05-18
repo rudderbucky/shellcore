@@ -282,11 +282,14 @@ public class AbilityHandler : MonoBehaviour {
         {
             for (int i = 0; i < core.GetAbilities().Length; i++)
             { // update all abilities
-                if (abilities[i] == null || core.GetIsDead()) continue; 
+                if (abilities[i] == null || core.GetIsDead()) continue;
                 // skip ability instead of break because further abilities may not be destroyed
-                if(visibleAbilities.Contains(abilities[i])) {
-                    
-                } else abilities[i].Tick(0);
+                if (visibleAbilities.Contains(abilities[i]))
+                {
+
+                }
+                else //abilities[i].UpdateState();
+                    abilities[i].Tick();
             }
             if(core.GetIsDead() || core.GetIsInteracting()) return;
             if(InputManager.GetKeyDown(KeyName.ShowSkills)) {

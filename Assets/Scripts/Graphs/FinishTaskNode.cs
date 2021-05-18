@@ -85,7 +85,7 @@ namespace NodeEditorFramework.Standard
                     string taskID = taskNode.taskID;
                     TaskManager.Instance.endTask(taskID);
                     Debug.Log("Task complete!");
-                    SectorManager.instance.player.credits += taskNode.creditReward;
+                    SectorManager.instance.player.AddCredits(taskNode.creditReward);
                     SectorManager.instance.player.reputation += taskNode.reputationReward;
                     if(taskNode.partReward)
                     {

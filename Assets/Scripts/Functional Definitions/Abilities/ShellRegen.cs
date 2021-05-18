@@ -20,13 +20,15 @@ public class ShellRegen : PassiveAbility {
                 break;
         }
 	}
-	public override void SetDestroyed(bool input)
+
+    public override void Deactivate()
     {
         float[] regens = Core.GetRegens();
-		regens[index] -= regen * abilityTier;
-		Core.SetRegens(regens);
-        base.SetDestroyed(input);
+        regens[index] -= regen * abilityTier;
+        Core.SetRegens(regens);
+        base.Deactivate();
     }
+
 
     protected override void Execute()
     {

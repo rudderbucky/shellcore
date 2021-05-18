@@ -5,18 +5,15 @@ using UnityEngine;
 /// <summary>
 /// Temporarily increases the craft's damage multiplier
 /// </summary>
-public class DamageBoost: ActiveAbility, IBlinkOnUse
+public class DamageBoost: ActiveAbility
 {
-    bool activated = false;
     protected override void Awake()
     {
         base.Awake(); // base awake
                       // hardcoded values here
         ID = AbilityID.DamageBoost;
         cooldownDuration = 20;
-        CDRemaining = cooldownDuration;
         activeDuration = 5;
-        activeTimeRemaining = activeDuration;
         energyCost = 200;
     }
 
@@ -25,19 +22,11 @@ public class DamageBoost: ActiveAbility, IBlinkOnUse
     /// </summary>
     public override void Deactivate()
     {
-        if(Core && activated)
+        if(Core)
         {
             Core.damageAddition -= 150;
+            base.Deactivate();
         }
-            
-        base.Deactivate();
-    }
-
-
-
-    public override void Tick(int key)
-    {
-        base.Tick(key);
     }
 
     /// <summary>
@@ -48,12 +37,8 @@ public class DamageBoost: ActiveAbility, IBlinkOnUse
         if (Core)
         {
             Core.damageAddition += 150;
-            activated = true;
+            AudioManager.PlayClipByID("clip_buff", transform.position);
+            base.Execute();
         }
-
-        AudioManager.PlayClipByID("clip_buff", transform.position);
-        isOnCD = true; // set to on cooldown
-        isActive = true; // set to "active"
-        base.Execute();
     }
 }

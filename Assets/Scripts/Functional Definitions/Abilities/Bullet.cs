@@ -23,7 +23,6 @@ public class Bullet : WeaponAbility
         range = bulletSpeed * survivalTime;
         ID = AbilityID.Bullet;
         cooldownDuration = 2F;
-        CDRemaining = cooldownDuration;
         energyCost = 25;
         damage = bulletDamage;
         prefabScale = 1 * Vector3.one;
@@ -42,33 +41,41 @@ public class Bullet : WeaponAbility
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if(Core.RequestGCD()) {
-            if (targetingSystem.GetTarget()) // check if there is actually a target, do not fire if there is not
-            {
-                FireBullet(victimPos); // fire if there is
-                isOnCD = true; // set on cooldown
-                return true;
-            }
-            return false;
-        }
-        return false;
+        return FireBullet(victimPos); // fire if there is
     }
 
     /// <summary>
     /// Helper method for Execute() that creates a bullet and modifies it to be shot
     /// </summary>
     /// <param name="targetPos">The position to fire the bullet to</param>
-    protected virtual void FireBullet(Vector3 targetPos)
+    protected virtual bool FireBullet(Vector3 targetPos)
     {
         AudioManager.PlayClipByID(bulletSound, transform.position);
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
+    
+        // Calculate future target position
+        Vector2 targetVelocity = targetingSystem.GetTarget() ? targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
+        
+        // Closed form solution to bullet lead problem involves finding t via a quadratic solved here.
+        Vector2 relativeDistance = targetPos - originPos;
+        var a = (bulletSpeed * bulletSpeed - Vector2.Dot(targetVelocity,targetVelocity));
+        var b = -(2*targetVelocity.x*relativeDistance.x + 2*targetVelocity.y*relativeDistance.y) ;
+        var c = -Vector2.Dot(relativeDistance,relativeDistance);
+
+        if(a == 0 || b*b-4*a*c<0) return false;
+
+        var t1 = (-b + Mathf.Sqrt(b*b - 4*a*c))/(2*a);
+        var t2 = (-b - Mathf.Sqrt(b*b - 4*a*c))/(2*a);
+        
+        float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1,t2));
+        if(t <= 0) return false;
+
         // Create the Bullet from the Bullet Prefab
-        Vector3 diff = targetPos - originPos;
         if(bulletPrefab == null)
         {
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
-        var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90)));
+        var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
 
         // Update its damage to match main bullet
@@ -83,12 +90,10 @@ public class Bullet : WeaponAbility
         script.missParticles = true;
 
         // Add velocity to the bullet
-        Vector3 predictionAdjuster = Vector2.zero;
-        if(targetingSystem.GetTarget()) predictionAdjuster = (targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity) * survivalTime 
-            / (bulletSpeed / 2);
-        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(targetPos - originPos + predictionAdjuster) * bulletSpeed;
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity*t) * bulletSpeed;
 
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);
+        return true;
     }
 }

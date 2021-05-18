@@ -12,13 +12,35 @@ public class PlayerCore : ShellCore {
     public PlayerSave cursave;
     public bool loaded;
     private bool isInteracting;
-    public int credits;
+    protected int credits;
     public int shards;
     public int[] abilityCaps;
     public int reputation;
     public static PlayerCore Instance;
     public List<ShellPart> partsToDestroy = new List<ShellPart>();
     public Vector2 havenSpawnPoint;
+
+    // Uses this method to generally add credits for the player.
+    public void AddCredits(int amount)
+    {
+        credits += amount;
+        var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
+        if (BZM != null)
+        {
+            BZM.CreditsCollected += 5;
+        }
+    }
+
+    public int GetCredits()
+    {
+        return credits;
+    }
+
+    // Method only used for save loading
+    public void SetCredits(int val)
+    {
+        this.credits = val;
+    }
 
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
@@ -80,13 +102,12 @@ public class PlayerCore : ShellCore {
 
         //Send unit vector
         direction.Normalize();
-
-        return direction; // it's not exactly like it was in the original game, but I like it more like this actually
+        return direction; 
     }
 
     ICarrier FindCarrier()
     {
-        if (SectorManager.instance.current.type == Sector.SectorType.BattleZone)
+        if (SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             var targets = BattleZoneManager.getTargets();
             for (int i = 0; i < targets.Length; i++)
@@ -147,11 +168,13 @@ public class PlayerCore : ShellCore {
         hud.DeinitializeHUD();
         for(int i = 0; i < parts.Count; i++) {
             if(parts[i].gameObject.name != "Shell Sprite")
+            {
+                parts[i].GetComponentInChildren<Ability>()?.SetDestroyed(true);
                 Destroy(parts[i].gameObject);
+            }
         }
         // UnityEditor.AssetDatabase.CreateAsset(blueprint, "Assets/Core Upgrades.asset");
         BuildEntity();
-        
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";
         hud.InitializeHUD(this);
@@ -180,17 +203,6 @@ public class PlayerCore : ShellCore {
 
         name = entityName = "player";
         positionBeforeOscillation = transform.position.y;
-        if(save.currentHealths.Length < 3)
-        {
-            maxHealth.CopyTo(currentHealth, 0);
-        }
-        else
-        {
-            currentHealth = save.currentHealths;
-        }
-        for(int i = 0; i < currentHealth.Length; i++) {
-            if(currentHealth[i] > maxHealth[i]) currentHealth[i] = maxHealth[i];
-        }
     }
     public List<EntityBlueprint.PartInfo> GetInventory() {
         if(cursave != null) return cursave.partInventory;
@@ -216,6 +228,9 @@ public class PlayerCore : ShellCore {
         {
             instance.Start();
         }
+        instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
+        instantiatedRespawnPrefab.position = transform.position;
+        AudioManager.PlayClipByID("clip_respawn", transform.position);
         SectorManager.instance.AttemptSectorLoad();
     }
 

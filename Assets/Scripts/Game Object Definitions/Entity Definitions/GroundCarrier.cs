@@ -68,7 +68,8 @@ public class GroundCarrier : GroundConstruct, ICarrier {
             {
                 if(!(active is SpawnDrone) || enemyTargetFound) 
                 {
-                    active.Tick(1);
+                    active.Tick();
+                    active.Activate();
                 }
             }
 
@@ -80,6 +81,7 @@ public class GroundCarrier : GroundConstruct, ICarrier {
     public Draggable GetTractorTarget() {
         return null;
     }
+
     public int GetIntrinsicCommandLimit()
     {
         return intrinsicCommandLimit;
@@ -89,6 +91,7 @@ public class GroundCarrier : GroundConstruct, ICarrier {
     {
         intrinsicCommandLimit = val;
     }
+
     public override void TakeCoreDamage(float amount){
         base.TakeCoreDamage(amount);
         if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
@@ -107,4 +110,5 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         }
         return residue;
     }
+
 }

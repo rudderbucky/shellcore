@@ -80,13 +80,15 @@ public class MissileScript : MonoBehaviour {
         this.target = target; // set target
     }
 
+    float forceConst = 180;
+
 	// Update is called once per frame
    void FixedUpdate ()
    {
         if(target && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().IsInvisible))
         {
             var moveVector = (target.position - transform.position).normalized;
-            GetComponent<Rigidbody2D>().AddForce(120 * moveVector);
+            GetComponent<Rigidbody2D>().AddForce(forceConst * moveVector);
         }
 	   
 	if (target && target.GetComponent<ITargetable>().GetIsDead() && Vector3.Distance(transform.position, target.position) < 0.1f)

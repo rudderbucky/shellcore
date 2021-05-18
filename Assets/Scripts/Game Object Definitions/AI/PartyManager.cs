@@ -96,7 +96,7 @@ public class PartyManager : MonoBehaviour
             return;
         }
 
-        if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        if(SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
         {
             AssignBackend(charID);
 
@@ -157,7 +157,7 @@ public class PartyManager : MonoBehaviour
 
     public void Unassign(string charID, Button assignButton)
     {
-        if(SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        if(SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
         {
             var member = partyMembers.Find(c => c.ID == charID);
             if(member && member.GetAI() != null)
@@ -233,22 +233,23 @@ public class PartyManager : MonoBehaviour
     }
 
     private int index = -1;
+    private float partyMemberTeleportThreshold = 2500;
     void Update()
     {
 
         blocker.SetActive(false);
 
         // distance maximum for party members - teleport them close to the player
-        if(SectorManager.instance?.current?.type != Sector.SectorType.BattleZone)
-        foreach(var member in partyMembers)
-        {
-            if(member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
-            Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > 2500)
+        if(SectorManager.instance?.current?.type != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)
+            foreach(var member in partyMembers)
             {
-                // Use warp to teleport AirCraft
-                member.Warp(PlayerCore.Instance.transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));
-            }   
-        }
+                if(member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
+                Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > partyMemberTeleportThreshold)
+                {
+                    // Use warp to teleport AirCraft
+                    member.Warp(PlayerCore.Instance.transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));
+                }   
+            }
 
 
         if(InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member)=> { return member; }))
