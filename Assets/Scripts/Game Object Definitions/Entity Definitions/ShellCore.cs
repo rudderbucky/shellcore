@@ -45,8 +45,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public void AddPower(float power)
     {
-        totalPower += power;
-
+        totalPower = Mathf.Min(5000,totalPower + power);
         if (power > 0 && OnPowerCollected != null)
             OnPowerCollected.Invoke(faction, Mathf.RoundToInt(power));
     }
