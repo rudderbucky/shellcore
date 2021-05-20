@@ -21,8 +21,8 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		float[] totalHealths = new float[] {1000,250,500};
-		float[] totalRegens = new float[] {60,0,60};
+		float[] totalHealths = CoreUpgraderScript.defaultHealths;
+		float[] totalRegens = CoreUpgraderScript.GetRegens(cursorScript?.player?.blueprint?.coreShellSpriteID);
 		float shipMass = 1;
 		float enginePower = 200;
 		float weight = Entity.coreWeight;

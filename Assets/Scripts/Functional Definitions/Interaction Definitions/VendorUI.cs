@@ -184,6 +184,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 break;
         }
         creation.GetComponent<Entity>().spawnPoint = vendor.GetPosition();
+        creation.GetComponent<Entity>().faction = core.faction;
         creation.name = blueprint.items[index].entityBlueprint.name;
         core.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
         core.AddPower(-blueprint.items[index].cost);

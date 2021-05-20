@@ -128,7 +128,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			if(symmetryCurrentPart) builder.DispatchPart(symmetryCurrentPart, mode);
 		}
 		
-		UpdateHandler();
+		if(handler && currentAbilities != null) UpdateHandler();
 	}
 
 	private void PlaceCurrentPartInGrid() {
@@ -145,6 +145,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		} 
 	}
 	public void UpdateHandler() {
+		if(!handler || currentAbilities == null) return;
 		currentAbilities.Clear();
 		foreach(Ability ab in gameObject.GetComponentsInChildren<Ability>()) {
 			Destroy(ab);
