@@ -849,22 +849,22 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         if (currentHealth[1] < 0) currentHealth[1] = 0;
         currentHealth[1] = currentHealth[1] > maxHealth[1] ? maxHealth[1] : currentHealth[1];
     }
-    public void removeShell(float amount){
+    public void RemoveShell(float amount){
         currentHealth[0] -= amount;
     }
-    public void removeCore(float amount){
+    public void RemoveCore(float amount){
         currentHealth[1] -= amount;
     }
-    public float getCurrentHealth(int type){
+    public float GetCurrentHealth(int type){
         return currentHealth[type];
     }
-    public float[] getCurrentHealth(){
+    public float[] GetCurrentHealth(){
         return currentHealth;
     }
-    public void setCurrentHealth(float[] amount){
+    public void SetCurrentHealth(float[] amount){
         currentHealth = amount;
     }
-    public void setCurrentHealth(int type, float amount){
+    public void SetCurrentHealth(int type, float amount){
         currentHealth[type] = amount;
     }
 

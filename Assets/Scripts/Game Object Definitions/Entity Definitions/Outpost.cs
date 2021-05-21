@@ -48,7 +48,7 @@ public class Outpost : AirConstruct, IVendor {
 
     protected override void DeathHandler()
     {
-        if (getCurrentHealth(0) <= 0 && !isDead)
+        if (GetCurrentHealth(0) <= 0 && !isDead)
         {
             OnDeath(); // switch factions
         }

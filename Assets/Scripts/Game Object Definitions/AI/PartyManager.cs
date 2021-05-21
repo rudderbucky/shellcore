@@ -287,7 +287,7 @@ public class PartyManager : MonoBehaviour
             for(int i = 0; i < 3; i++)
             {
                 sukratHealth.GetComponentsInChildren<Image>()[i+1].GetComponent<RectTransform>().sizeDelta = 
-                    new Vector2(100 * partyMembers[0].getCurrentHealth(i) / partyMembers[0].GetMaxHealth()[i], 5);
+                    new Vector2(100 * partyMembers[0].GetCurrentHealth(i) / partyMembers[0].GetMaxHealth()[i], 5);
             }
         }
     }

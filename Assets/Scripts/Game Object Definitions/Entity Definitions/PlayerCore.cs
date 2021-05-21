@@ -204,14 +204,14 @@ public class PlayerCore : ShellCore {
         positionBeforeOscillation = transform.position.y;
         if(save.currentHealths.Length < 3)
         {
-            maxHealth.CopyTo(getCurrentHealth(), 0);
+            maxHealth.CopyTo(GetCurrentHealth(), 0);
         }
         else
         {
-            setCurrentHealth(save.currentHealths);
+            SetCurrentHealth(save.currentHealths);
         }
-        for(int i = 0; i < getCurrentHealth().Length; i++) {
-            if(getCurrentHealth(i) > maxHealth[i]) setCurrentHealth(i,maxHealth[i]);
+        for(int i = 0; i < GetCurrentHealth().Length; i++) {
+            if(GetCurrentHealth(i) > maxHealth[i]) SetCurrentHealth(i,maxHealth[i]);
         }
     }
     public List<EntityBlueprint.PartInfo> GetInventory() {
