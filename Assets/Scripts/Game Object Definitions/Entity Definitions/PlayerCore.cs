@@ -102,8 +102,7 @@ public class PlayerCore : ShellCore {
 
         //Send unit vector
         direction.Normalize();
-
-        return direction; // it's not exactly like it was in the original game, but I like it more like this actually
+        return direction; 
     }
 
     ICarrier FindCarrier()
@@ -169,11 +168,13 @@ public class PlayerCore : ShellCore {
         hud.DeinitializeHUD();
         for(int i = 0; i < parts.Count; i++) {
             if(parts[i].gameObject.name != "Shell Sprite")
+            {
+                parts[i].GetComponentInChildren<Ability>()?.SetDestroyed(true);
                 Destroy(parts[i].gameObject);
+            }
         }
         // UnityEditor.AssetDatabase.CreateAsset(blueprint, "Assets/Core Upgrades.asset");
         BuildEntity();
-        
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";
         hud.InitializeHUD(this);
@@ -202,6 +203,7 @@ public class PlayerCore : ShellCore {
 
         name = entityName = "player";
         positionBeforeOscillation = transform.position.y;
+
         if(save.currentHealths.Length < 3)
         {
             maxHealth.CopyTo(GetCurrentHealth(), 0);
@@ -213,6 +215,8 @@ public class PlayerCore : ShellCore {
         for(int i = 0; i < GetCurrentHealth().Length; i++) {
             if(GetCurrentHealth(i) > maxHealth[i]) SetCurrentHealth(i,maxHealth[i]);
         }
+
+
     }
     public List<EntityBlueprint.PartInfo> GetInventory() {
         if(cursave != null) return cursave.partInventory;
@@ -238,6 +242,9 @@ public class PlayerCore : ShellCore {
         {
             instance.Start();
         }
+        instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
+        instantiatedRespawnPrefab.position = transform.position;
+        AudioManager.PlayClipByID("clip_respawn", transform.position);
         SectorManager.instance.AttemptSectorLoad();
     }
 

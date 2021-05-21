@@ -56,7 +56,5 @@ public class ActiveRegen : ActiveAbility
         regens[index] += healAmount * abilityTier;
         Core.SetRegens(regens);
         base.Execute();
-
-        Debug.Log("Increased regen!");
     }
 }

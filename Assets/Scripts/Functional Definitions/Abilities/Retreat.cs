@@ -23,6 +23,11 @@ public class Retreat : Ability
     {
         if (Core is Craft)
         {
+            if((Core as ShellCore
+                && (Core as ShellCore).GetCarrier() == null) && (!(Core as PlayerCore) || (Core as PlayerCore).havenSpawnPoint == Vector2.zero)) 
+                {
+                    return;
+                }
             AudioManager.PlayClipByID("clip_activateability", transform.position);
             // get all current retreats, set the new retreat's start times to the old retreat start times, find one that is off CD
             // and set it to CD

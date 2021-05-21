@@ -45,7 +45,7 @@ public enum AbilityID
 	Bomb, //37
 	Ion //38
 }
-public class AbilityUtilities : MonoBehaviour {
+public static class AbilityUtilities {
 
 	public static Sprite GetAbilityImageByID(int ID, string secondaryData) {
 		if(ID == 0) return null;

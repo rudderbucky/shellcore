@@ -469,6 +469,7 @@ public class BattleAI : AIModule
 
                     if (itemIndex != -1)
                     {
+                        Debug.LogError("VENDORAI HAS THE SAME CODE DO NOT COPYPASTE FIX THIS WHEN YOU CAN");
                         GameObject creation = new GameObject();
                         creation.transform.position = AIData.vendors[i].transform.position;
                         switch (vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.intendedType)
@@ -485,7 +486,6 @@ public class BattleAI : AIModule
                                 creation.name = "Tank";
                                 Tank tank = creation.AddComponent<Tank>();
                                 tank.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
-                                tank.enginePower = 250;
                                 tank.SetOwner(shellcore);
                                 tank.faction = craft.faction;
                                 break;

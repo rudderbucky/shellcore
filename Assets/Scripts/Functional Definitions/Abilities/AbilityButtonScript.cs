@@ -17,7 +17,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     public Image image;
     public Text hotkeyText;
     public Text offCDCountText;
-    List<Ability> abilities = new List<Ability>();
+    [SerializeField] List<Ability> abilities = new List<Ability>();
     public Entity entity;
     public Image movingImage;
     bool gleaming;
@@ -77,6 +77,10 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         {
             description += "Cooldown duration: " + ability.GetCDDuration() + "\n";
         }
+        if((ability as WeaponAbility)?.GetRange() != null)
+        {
+            description += $"Range: {(ability as WeaponAbility).GetRange()}\n";
+        }
         description += AbilityUtilities.GetDescription(ability);
         abilityInfo = description;
         if(tooltip)
@@ -130,7 +134,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         // update the number of off-CD abilities
         if(offCDCountText)
-            offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() && a.TimeUntilReady() == 0).Count + "";
+            offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() && 
+                (a.TimeUntilReady() == 0 || a.GetAbilityType() == AbilityHandler.AbilityTypes.Passive)).Count + "";
 
         if(tooltip)
         {
@@ -185,9 +190,9 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         {
             image.color = new Color(0, 0, 0.3F); // make the background dark blue
         }
-        else if (abilities[0].State == Ability.AbilityState.Active || 
+        else if (abilities[0].GetAbilityType() != AbilityHandler.AbilityTypes.Passive && (abilities[0].State == Ability.AbilityState.Active || 
                  abilities[0].State == Ability.AbilityState.Charging ||
-                 (abilities[0] is WeaponAbility && abilities[0].State == Ability.AbilityState.Ready))
+                 (abilities[0] is WeaponAbility && abilities[0].State == Ability.AbilityState.Ready)))
         {
             image.color = Color.green;
         }
