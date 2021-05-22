@@ -158,7 +158,7 @@ public class BattleAI : AIModule
                 {
                     collectTarget = null;
                 }
-                if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.3f)
+                if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f)
                 {
                     state = BattleState.Attack;
                 }
