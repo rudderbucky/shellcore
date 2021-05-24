@@ -18,7 +18,7 @@ public class WCWorldIO : MonoBehaviour
     public GameObject worldContents;
     public static bool active = false;
 
-    string originalReadPath = "";
+    private string originalReadPath = "";
 
     enum IOMode
     {
@@ -138,6 +138,15 @@ public class WCWorldIO : MonoBehaviour
                 System.IO.File.Delete(file);
             }
             System.IO.Directory.Delete(Application.streamingAssetsPath + "\\WavePlaceholder");
+        }
+
+        if(System.IO.Directory.Exists(Application.streamingAssetsPath + "\\FactionPlaceholder"))
+        {
+            foreach(var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\FactionPlaceholder"))
+            {
+                System.IO.File.Delete(file);
+            }
+            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\FactionPlaceholder");
         }
     }
 

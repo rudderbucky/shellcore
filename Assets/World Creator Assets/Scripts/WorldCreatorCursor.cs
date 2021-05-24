@@ -173,7 +173,7 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 foreach(var rend in item.obj.GetComponentsInChildren<SpriteRenderer>())
                 {
-                    rend.color = FactionManager.GetFactionColor(item.faction);
+                    rend.color = FactionManager.GetFactionColor(FactionManager.FactionExists(item.faction) ? item.faction : 0);
                 }
             }
         }
@@ -182,7 +182,7 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             foreach(var rend in current.obj.GetComponentsInChildren<SpriteRenderer>())
             {
-                rend.color = FactionManager.GetFactionColor(current.faction);
+                rend.color = FactionManager.GetFactionColor(FactionManager.FactionExists(current.faction) ? current.faction : 0);
             }
         }
     }
