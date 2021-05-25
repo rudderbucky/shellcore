@@ -660,6 +660,9 @@ public class SectorManager : MonoBehaviour
             else maxID = objects.Count;
             data.ID = maxID.ToString();
         }
+        var testInt = 0;
+        if(int.TryParse(data.ID, out testInt) && testInt > maxID)
+            maxID = ++testInt;
         entity.ID = data.ID;
         if(!objects.ContainsKey(data.ID)) 
         {

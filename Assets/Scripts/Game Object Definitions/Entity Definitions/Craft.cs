@@ -66,6 +66,7 @@ public abstract class Craft : Entity
 
     protected override void BuildEntity()
     {
+        DestroyOldParts();
         speed = initSpeed;
         base.BuildEntity();
         CalculatePhysicsConstants();
