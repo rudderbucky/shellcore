@@ -44,6 +44,7 @@ public class SectorManager : MonoBehaviour
     public List<ShardRock> shardRocks = new List<ShardRock>();
     public GameObject shardRockPrefab;
     public Sector overrideProperties = null;
+    int maxID = 0;
     public static Sector GetSectorByName(string sectorName) 
     {
         foreach(var sector in instance.sectors)
@@ -655,10 +656,11 @@ public class SectorManager : MonoBehaviour
 
         if(data.ID == "" || data.ID == null || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
         {
-            data.ID = objects.Count.ToString();
+            if(objects.Count <= maxID) maxID++;
+            else maxID = objects.Count;
+            data.ID = maxID.ToString();
         }
         entity.ID = data.ID;
-
         if(!objects.ContainsKey(data.ID)) 
         {
             objects.Add(data.ID, gObj);
@@ -1038,13 +1040,20 @@ public class SectorManager : MonoBehaviour
             var notPlayerTractorTarget = 
                 (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject));
 
-            //var notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+            // set up booleans to determine whether a drone/turret gets despawned.
+            var notPlayerDrone = false;
             var notClose = false;
-            if(obj.Value) notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+            var partyDrone = false;
+            if(obj.Value) 
+            {
+                notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+                notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+                partyDrone = PartyManager.instance.partyMembers.Exists(sc => sc.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+            }
 
             if (player && obj.Value && notPlayerTractorTarget
                 && obj.Value != player.gameObject
-                && notClose)
+                && (notPlayerDrone || notClose))
             {
                 Destroy(obj.Value);
             }

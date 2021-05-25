@@ -38,17 +38,18 @@ public class DisplayPart : MonoBehaviour
 			shooter.enabled = true;
 			shooter.raycastTarget = false;
 		}
-		image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
+		
 		// NEVER name something with "_sprite" at the end UNLESS it is a PART SPRITE!
-		if(image.sprite)
+		if(ResourceManager.Instance.resourceExists(info.partID +"_sprite"))
 		{
+			image.sprite = ResourceManager.GetAsset<Sprite>(info.partID +"_sprite");
 			image.rectTransform.sizeDelta = image.sprite.bounds.size * 100;
 			UpdateAppearance();
 			image.enabled = true;
 		}
 		else
 		{
-			Debug.LogWarning("Invalid display part image.");
+			Debug.LogWarning($"Invalid display part image: {info.partID}");
 		}
 	}
 

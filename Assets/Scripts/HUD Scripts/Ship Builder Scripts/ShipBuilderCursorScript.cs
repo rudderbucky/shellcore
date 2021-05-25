@@ -128,7 +128,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			if(symmetryCurrentPart) builder.DispatchPart(symmetryCurrentPart, mode);
 		}
 		
-		UpdateHandler();
+		if(handler && currentAbilities != null) UpdateHandler();
 	}
 
 	private void PlaceCurrentPartInGrid() {
@@ -145,6 +145,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		} 
 	}
 	public void UpdateHandler() {
+		if(!handler || currentAbilities == null) return;
 		currentAbilities.Clear();
 		foreach(Ability ab in gameObject.GetComponentsInChildren<Ability>()) {
 			Destroy(ab);
@@ -275,7 +276,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
 
 		if(Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active)) {
-			if(builder as ShipBuilder == null || (builder as ShipBuilder).Equals(null) || !(builder as ShipBuilder).editorMode) ClearAllParts();
+			if(builder as ShipBuilder == null || !(builder as ShipBuilder).Equals(null))
+			{
+				if(!(new List<InputField>((builder as ShipBuilder).GetComponentsInChildren<InputField>())).Exists(f => f.isFocused))
+					ClearAllParts();
+			} 
 		}
 		foreach(var part in parts)
 		{

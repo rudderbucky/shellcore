@@ -19,6 +19,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     protected static int maxGroundLayer = 1;
     protected SortingGroup group;
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    [SerializeField]
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected List<Ability> abilities; // abilities
     public Rigidbody2D entityBody; // entity to modify with this script
@@ -518,19 +519,20 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         AudioManager.PlayClipByID("clip_explosion1", transform.position);
 
-        // 1 part drop style - choose a random part if the criteria fits, set it to collectible
-        if(!FactionManager.IsAllied(0, faction) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
+        // Roll on each part
+        if(!FactionManager.IsAllied(0, faction) && !(this as PlayerCore) && this as ShellCore && 
             (this as ShellCore).GetCarrier() == null) {
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
-
-            // find random part and set to collectible
             if(selectedParts.Count > 0)
-            {
-                var randomPart = Random.Range(0,selectedParts.Count);
-                selectedParts[randomPart].SetCollectible(true);
-                if(sectorMngr) AIData.strayParts.Add(selectedParts[randomPart]);
-            }
+                foreach(var part in selectedParts)
+                {
+                    if(Random.value < partDropRate)
+                    {
+                        part.SetCollectible(true);
+                        if(sectorMngr) AIData.strayParts.Add(part);
+                    }
+                }
         }
 
         for(int i = 0; i < parts.Count; i++)

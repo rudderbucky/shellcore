@@ -83,7 +83,12 @@ public class TaskDisplayScript : MonoBehaviour
         button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => 
         {
             ShowMission(mission); 
-            if(Input.GetKey(KeyCode.LeftShift)) mission.status = Mission.MissionStatus.Complete;
+            if(Input.GetKey(KeyCode.LeftShift)) 
+            {
+                mission.status = Mission.MissionStatus.Complete;
+                if (NodeEditorFramework.Standard.MissionCondition.OnMissionStatusChange != null)
+                    NodeEditorFramework.Standard.MissionCondition.OnMissionStatusChange.Invoke(mission);
+            }
         }));
         #else
         button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => {ShowMission(mission);}));

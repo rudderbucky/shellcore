@@ -158,7 +158,7 @@ public class BattleAI : AIModule
                 {
                     collectTarget = null;
                 }
-                if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.3f)
+                if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f)
                 {
                     state = BattleState.Attack;
                 }
@@ -469,33 +469,7 @@ public class BattleAI : AIModule
 
                     if (itemIndex != -1)
                     {
-                        Debug.LogError("VENDORAI HAS THE SAME CODE DO NOT COPYPASTE FIX THIS WHEN YOU CAN");
-                        GameObject creation = new GameObject();
-                        creation.transform.position = AIData.vendors[i].transform.position;
-                        switch (vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.intendedType)
-                        {
-                            case EntityBlueprint.IntendedType.Turret:
-                                creation.name = "Turret";
-                                Turret tur = creation.AddComponent<Turret>();
-                                tur.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
-                                tur.SetOwner(shellcore);
-                                tur.faction = craft.faction;
-                                shellcore.SetTractorTarget(creation.GetComponent<Draggable>());
-                                break;
-                            case EntityBlueprint.IntendedType.Tank:
-                                creation.name = "Tank";
-                                Tank tank = creation.AddComponent<Tank>();
-                                tank.blueprint = vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint;
-                                tank.SetOwner(shellcore);
-                                tank.faction = craft.faction;
-                                break;
-                            default:
-                                break;
-                        }
-                        shellcore.sectorMngr.InsertPersistentObject(vendor.GetVendingBlueprint().items[itemIndex].entityBlueprint.name, creation);
-                        creation.GetComponent<Entity>().spawnPoint = AIData.vendors[i].transform.position;
-                        shellcore.AddPower(-vendor.GetVendingBlueprint().items[itemIndex].cost);
-
+                        VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
                         break;
                     }
                 }

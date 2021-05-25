@@ -441,8 +441,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
 		// orient shell image so relative center stays the same regardless of shell tier
-		shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
-		core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
+		OrientShellAndCore();
 		
 		core.material = ResourceManager.GetAsset<Material>("material_color_swap");
 		core.color = FactionManager.GetFactionColor(0);
@@ -680,6 +679,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		cursorScript.UpdateHandler();
 		UpdateChain();
 	}
+
+	private void OrientShellAndCore()
+	{
+		shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
+		core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
+	}
+
     public void AddShard(Shard shard) {
         var tiers = new int[] {1, 5, 20};
         player.shards += tiers[shard.tier];
@@ -776,6 +782,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 	}
 	public void LoadBlueprint(EntityBlueprint blueprint) {
+		cursorScript.ClearAllParts();
 		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
 			var p = Instantiate(SBPrefab, cursorScript.transform.parent).GetComponent<ShipBuilderPart>();
 			p.cursorScript = cursorScript;
@@ -802,6 +809,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
 		shell.color = FactionManager.GetFactionColor(0);
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
+		OrientShellAndCore();
 	}
 	public static void SaveBlueprint(EntityBlueprint blueprint = null, string fileName = null, string json = null) {
 		if(fileName != null) 
@@ -972,8 +980,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
 			// orient shell image so relative center stays the same regardless of shell tier
-			shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
-			core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
+			OrientShellAndCore();
 			
 			core.material = ResourceManager.GetAsset<Material>("material_color_swap");
             core.color = FactionManager.GetFactionColor(0);

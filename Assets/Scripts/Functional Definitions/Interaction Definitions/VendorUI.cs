@@ -27,6 +27,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     private Text nameInfo;
     public int range;
     public GameObject tooltipPrefab;
+    public static VendorUI instance;
     
     public bool GetActive() {
 		return UI && UI.activeSelf;
@@ -56,7 +57,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         }
         UI = Instantiate(UIPrefab);
         UI.GetComponentInChildren<GUIWindowScripts>().Activate();
-
+        instance = this;
         background = UI.transform.Find("Container").Find("Background");
         Button close = background.transform.Find("Close").GetComponent<Button>();
         close.onClick.AddListener(CloseUI);
@@ -160,35 +161,41 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         ClearVendor();
     }
 
+    public static void BuyItem(ShellCore core, int index, IVendor vendor)
+    {
+        if (core.unitsCommanding.Count >= core.GetTotalCommandLimit()) return;
+        GameObject creation = new GameObject();
+        creation.transform.position = vendor.GetPosition();
+        var blueprint = vendor.GetVendingBlueprint();
+        switch(blueprint.items[index].entityBlueprint.intendedType)
+        {
+            case EntityBlueprint.IntendedType.Turret:
+                Turret tur = creation.AddComponent<Turret>();
+                tur.blueprint = blueprint.items[index].entityBlueprint;
+                core.SetTractorTarget(creation.GetComponent<Draggable>());
+                tur.SetOwner(core);
+                break;
+            case EntityBlueprint.IntendedType.Tank:
+                Tank tank = creation.AddComponent<Tank>();
+                tank.blueprint = blueprint.items[index].entityBlueprint;
+                tank.SetOwner(core);
+                break;
+            default:
+                break;
+        }
+        creation.GetComponent<Entity>().spawnPoint = vendor.GetPosition();
+        creation.GetComponent<Entity>().faction = core.faction;
+        creation.name = blueprint.items[index].entityBlueprint.name;
+        core.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
+        core.AddPower(-blueprint.items[index].cost);
+    }
+
     public void onButtonPressed(int index)
     {
-        // TODO: this is invalid for non ownable items, so must be changed later on
         if (player.GetPower() >= blueprint.items[index].cost && player.faction == vendor.GetFaction()
             && player.unitsCommanding.Count < player.GetTotalCommandLimit())
         {
-            GameObject creation = new GameObject();
-            switch(blueprint.items[index].entityBlueprint.intendedType)
-            {
-                case EntityBlueprint.IntendedType.Turret:
-                    Turret tur = creation.AddComponent<Turret>();
-                    tur.blueprint = blueprint.items[index].entityBlueprint;
-                    tur.SetOwner(player);
-                    break;
-                case EntityBlueprint.IntendedType.Tank:
-                    Tank tank = creation.AddComponent<Tank>();
-                    tank.blueprint = blueprint.items[index].entityBlueprint;
-                    tank.SetOwner(player);
-                    break;
-                default:
-                    break;
-            }
-            creation.name = blueprint.items[index].entityBlueprint.name;
-            player.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
-            creation.transform.position = vendor.GetPosition();
-            creation.GetComponent<Entity>().spawnPoint = vendor.GetPosition();
-            if (blueprint.items[index].entityBlueprint.intendedType != EntityBlueprint.IntendedType.Tank)
-                player.SetTractorTarget(creation.GetComponent<Draggable>());
-            player.AddPower(-blueprint.items[index].cost);
+            BuyItem(player, index, vendor);
             if(GetActive()) CloseUI();
             ClearVendor();
         } else if(player as PlayerCore && player.GetUnitsCommanding().Count >= player.GetTotalCommandLimit())

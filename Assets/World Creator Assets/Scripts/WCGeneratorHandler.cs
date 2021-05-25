@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using NodeEditorFramework.Standard;
 using NodeEditorFramework;
 using System.Linq;
+using System.IO;
 
 public class WCGeneratorHandler : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class WCGeneratorHandler : MonoBehaviour
 
     private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
     List<WorldData.PartIndexData> partData = new List<WorldData.PartIndexData>();
+    [SerializeField]
+    FactionManager factionManager;
     
 
     public static void DeleteTestWorld()
@@ -92,6 +95,50 @@ public class WCGeneratorHandler : MonoBehaviour
         }
     }
 
+    List<string> legacyFactionFilesToDelete = new List<string>();
+    // This method helps clear out legacy faction files, which were allowed to be anywhere in the world folder.
+    // The game does not actually delete the legacy files until the folder is written to (with the appropriate method)
+    private void ReadFactionsIntoFactionPlaceholder(string path)
+    {
+        legacyFactionFilesToDelete.Clear();
+        string resourceTxtPath = System.IO.Path.Combine(path, "ResourceData.txt");
+        string factionPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder");
+        if(!Directory.Exists(factionPlaceholderPath)) Directory.CreateDirectory(factionPlaceholderPath);
+        using(StreamReader sr = File.OpenText(resourceTxtPath))
+        {
+            bool onFactions = false;
+            string s;
+            while((s = sr.ReadLine()) != null)
+            {
+                if(ResourceManager.resourceHeaders.Any(header => s.ToLower().StartsWith(header)))
+                {
+                    if(s.ToLower().StartsWith("factions:"))
+                    {
+                        onFactions = true;
+                        continue;
+                    }
+                    else if(onFactions) 
+                    {
+                        break;
+                    }
+                }
+                
+                if(onFactions)
+                {
+                    string[] names = s.Split(':');
+                    string resPath = System.IO.Path.Combine(path, names[1]);
+                    // make sure the faction was not already copied in
+                    if(!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, names[0]+".json")))
+                    {
+                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, names[0]+".json"));
+                        legacyFactionFilesToDelete.Add(resPath);
+                    }   
+                }
+            }
+            
+        }
+    }
+
     public void OnNameEdit(string tmpWworldName)
     {
         invalidNameWarning.enabled = 
@@ -126,6 +173,7 @@ public class WCGeneratorHandler : MonoBehaviour
         var canvasPlaceholderPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
         var entityPlaceholderPath = Application.streamingAssetsPath + "\\EntityPlaceholder";
         var wavePlaceholderPath = Application.streamingAssetsPath + "\\WavePlaceholder";
+        var factionPlaceholderPath = Application.streamingAssetsPath + "\\FactionPlaceholder";
 
         // Reinitialize node editor
         NodeEditor.ReInit(false);
@@ -357,6 +405,44 @@ public class WCGeneratorHandler : MonoBehaviour
                 }
             }
 
+        // try to write out resources. Factions are obtained from the FactionManager
+        if(!System.IO.Directory.Exists(factionPlaceholderPath)) System.IO.Directory.CreateDirectory(factionPlaceholderPath);
+        var resourceTxtPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt");
+        if(System.IO.File.Exists(resourceTxtPath))
+        {
+            // first, extract all the lines without the factions.
+            List<string> lines = new List<string>();
+            using(StreamReader sr = File.OpenText(resourceTxtPath))
+            {
+                string s;
+                bool onFactions = false;
+                while((s = sr.ReadLine()) != null)
+                {
+                    if(ResourceManager.resourceHeaders.Any(header => s.ToLower().StartsWith(header)))
+                    {
+                        if(s.ToLower().StartsWith("factions:"))
+                        {
+                            onFactions = true;
+                        }
+                        else onFactions = false;
+                    }
+                    if(!onFactions) lines.Add(s);
+                }
+                
+            }
+            //  we then reconstruct the factions tab with FM data
+            lines.Add("factions:");
+            foreach(var faction in factionManager.factions)
+            {
+                // avoid default factions
+                if(faction.ID <= 2) continue;
+                lines.Add($"{faction.factionName}:Factions/{faction.factionName}.json");
+            }
+            File.WriteAllLines(resourceTxtPath, lines);
+        }
+
+        
+
         // calculate land platform pathfinding directions
         foreach (var sector in sectors)
         {
@@ -415,7 +501,8 @@ public class WCGeneratorHandler : MonoBehaviour
             foreach(var file in files)
             {
                 string f = file.Replace('\\', '/');
-                if (!resPaths.Contains(f) && f != System.IO.Path.Combine(path, "ResourceData.txt").Replace('\\', '/'))
+                if ((!resPaths.Contains(f) && f != System.IO.Path.Combine(path, "ResourceData.txt").Replace('\\', '/'))
+                    || legacyFactionFilesToDelete.Contains(file))
                     System.IO.File.Delete(file);
             }
         }   
@@ -431,10 +518,15 @@ public class WCGeneratorHandler : MonoBehaviour
 
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
+        if(File.Exists(System.IO.Path.Combine(path, "ResourceData.txt")))
+            File.Delete(System.IO.Path.Combine(path, "ResourceData.txt"));
+        if(File.Exists(resourceTxtPath))
+            File.Move(resourceTxtPath, System.IO.Path.Combine(path, "ResourceData.txt"));
 
         TryCopy(canvasPlaceholderPath, path + "\\Canvases\\");
         TryCopy(entityPlaceholderPath, path + "\\Entities\\");
         TryCopy(wavePlaceholderPath, path + "\\Waves\\");
+        TryCopy(factionPlaceholderPath, path + "\\Factions\\");
 
         foreach(var sector in sectors)
         {
@@ -560,7 +652,6 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             try
             {
-                //cursor.Clear();
                 // resource pack loading
                 if (!ResourceManager.Instance.LoadResources(path) && SectorManager.testResourcePath != null)
                 {
@@ -576,6 +667,13 @@ public class WCGeneratorHandler : MonoBehaviour
                 // copying waves
                 TryCopy(path + "\\Waves\\", Application.streamingAssetsPath + "\\WavePlaceholder");
 
+                // copying factions
+                TryCopy(path + "\\Factions\\", Application.streamingAssetsPath + "\\FactionPlaceholder");
+
+                var resourcePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt");
+                if(File.Exists(resourcePlaceholderPath))
+                    File.Delete(resourcePlaceholderPath);
+                    
                 // reading sectors
                 string[] files = System.IO.Directory.GetFiles(path);
 
@@ -613,6 +711,8 @@ public class WCGeneratorHandler : MonoBehaviour
 
                     if (file.Contains("ResourceData.txt"))
                     {
+                        File.Copy(file, System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt"), true);
+                        ReadFactionsIntoFactionPlaceholder(path);
                         continue;
                     }
 
@@ -747,7 +847,7 @@ public class WCGeneratorHandler : MonoBehaviour
             }
             catch (System.Exception e)
             {
-                Debug.Log(e);
+                Debug.LogError(e);
             };
             Input.ResetInputAxes(); // clear the copy paste ctrl press if there was one
         }
