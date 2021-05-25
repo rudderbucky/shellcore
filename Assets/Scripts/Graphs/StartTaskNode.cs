@@ -35,6 +35,7 @@ namespace NodeEditorFramework.Standard
         public string acceptResponse;
         public string declineResponse;
         public string taskConfirmedDialogue;
+        public bool useEntityColor = true;
         bool init = false;
         Texture2D partTexture;
         float height = 320f;
@@ -66,14 +67,17 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Dialogue:");
             dialogueText = GUILayout.TextArea(dialogueText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 200f);
-            GUILayout.Label("Dialogue Color:");
-            float r, g, b;
-            GUILayout.BeginHorizontal();
-            r = RTEditorGUI.FloatField(dialogueColor.r);
-            g = RTEditorGUI.FloatField(dialogueColor.g);
-            b = RTEditorGUI.FloatField(dialogueColor.b);
-            GUILayout.EndHorizontal();
-            dialogueColor = new Color(r, g, b);
+            if(!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
+            {
+                GUILayout.Label("Text Color:");
+                float r, g, b;
+                GUILayout.BeginHorizontal();
+                r = RTEditorGUI.FloatField(dialogueColor.r);
+                g = RTEditorGUI.FloatField(dialogueColor.g);
+                b = RTEditorGUI.FloatField(dialogueColor.b);
+                GUILayout.EndHorizontal();
+                dialogueColor = new Color(r, g, b);
+            }
             GUILayout.BeginHorizontal();
             GUILayout.Label("Accept Player Response:");
             GUILayout.EndHorizontal();
