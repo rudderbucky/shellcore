@@ -176,7 +176,7 @@ public abstract class Ability : MonoBehaviour {
     public float TimeUntilReady() {
         if (State == AbilityState.Cooldown || State == AbilityState.Charging || State == AbilityState.Active) // active or on cooldown
         {
-            return cooldownDuration - (Time.time - startTime); // return the cooldown remaining, calculated prior to this call via TickDown
+            return Mathf.Max(cooldownDuration - (Time.time - startTime), 0); // return the cooldown remaining, calculated prior to this call via TickDown
         }
         else return 0; // not on cooldown
     }

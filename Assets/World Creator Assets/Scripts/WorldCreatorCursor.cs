@@ -231,6 +231,10 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             ActivateCharacterHandler();
         }
+        if(Input.GetKeyDown(KeyCode.F) && !system.IsPointerOverGameObject())
+        {
+            ActivateFactionHandler();
+        }
     }
 
     // revert or destroy pending sector if it exists        
@@ -292,9 +296,18 @@ public class WorldCreatorCursor : MonoBehaviour
         waveBuilder.ToggleActive();
     }
 
+    [SerializeField]
+    WCBasePropertyHandler basePropertyHandler;
     public void ActivateCharacterHandler()
     {
-        characterHandler.ToggleActive();
+        basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Characters);
+        basePropertyHandler.ToggleActive();    
+    }
+
+    public void ActivateFactionHandler()
+    {
+        basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Factions);
+        basePropertyHandler.ToggleActive();
     }
 
     public int flagID = 0;
