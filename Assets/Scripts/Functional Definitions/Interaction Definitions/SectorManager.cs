@@ -44,6 +44,7 @@ public class SectorManager : MonoBehaviour
     public List<ShardRock> shardRocks = new List<ShardRock>();
     public GameObject shardRockPrefab;
     public Sector overrideProperties = null;
+    int maxID = 0;
     public static Sector GetSectorByName(string sectorName) 
     {
         foreach(var sector in instance.sectors)
@@ -655,10 +656,11 @@ public class SectorManager : MonoBehaviour
 
         if(data.ID == "" || data.ID == null || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
         {
-            data.ID = objects.Count.ToString();
+            if(objects.Count <= maxID) maxID++;
+            else maxID = objects.Count;
+            data.ID = maxID.ToString();
         }
         entity.ID = data.ID;
-
         if(!objects.ContainsKey(data.ID)) 
         {
             objects.Add(data.ID, gObj);
