@@ -31,6 +31,7 @@ namespace NodeEditorFramework.Standard
         public int partTier = 1;
         public string partSecondaryData = "";
         public int reputationReward = 0;
+        public int shardReward;
         public string taskName = "";
         public string acceptResponse;
         public string declineResponse;
@@ -60,7 +61,7 @@ namespace NodeEditorFramework.Standard
             outputDecline.DisplayLayout();
             GUILayout.BeginHorizontal();
             GUILayout.Label("Task Name:");
-            height = 270f;
+            height = 360f;
             taskName = GUILayout.TextArea(taskName, GUILayout.Width(200f));
             GUILayout.EndHorizontal();
             GUILayout.Label("Dialogue:");
@@ -93,6 +94,8 @@ namespace NodeEditorFramework.Standard
             creditReward = RTEditorGUI.IntField(creditReward, GUILayout.Width(200f));
             GUILayout.Label("Reputation reward:");
             reputationReward = RTEditorGUI.IntField(reputationReward, GUILayout.Width(200f));
+            GUILayout.Label("Shard reward:");
+            shardReward = RTEditorGUI.IntField(shardReward, GUILayout.Width(200f));
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));
             if(partReward)
             {
@@ -224,6 +227,7 @@ namespace NodeEditorFramework.Standard
                 dialogue = dialogueText,
                 dialogueColor = dialogueColor,
                 reputationReward = reputationReward,
+                shardReward = shardReward,
             };
             if (partReward)
             {

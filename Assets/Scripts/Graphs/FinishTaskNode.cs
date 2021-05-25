@@ -87,6 +87,7 @@ namespace NodeEditorFramework.Standard
                     Debug.Log("Task complete!");
                     SectorManager.instance.player.AddCredits(taskNode.creditReward);
                     SectorManager.instance.player.reputation += taskNode.reputationReward;
+                    SectorManager.instance.player.shards += taskNode.shardReward;
                     if(taskNode.partReward)
                     {
                         SectorManager.instance.player.cursave.partInventory.Add(
