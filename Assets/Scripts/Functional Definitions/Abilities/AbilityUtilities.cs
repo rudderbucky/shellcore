@@ -180,8 +180,8 @@ public static class AbilityUtilities {
 			case 36:
 				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:
-				return $"Slow moving beam that deals {IonLineController.damageC} damage per second for 5 seconds. "
-				+ $"\nBeam costs {IonLineController.energyC / Mathf.Max(tier,1)} energy per second";
+				return $"Slow moving beam that deals {IonLineController.damageC * tier} damage per second for 5 seconds. "
+				+ $"\nBeam costs {IonLineController.energyC * tier} energy per second";
             default:
 				return "Description unset";
 		}

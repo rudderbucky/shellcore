@@ -293,7 +293,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// </summary>
     protected virtual void BuildEntity()
     {
-        Debug.Log("BUILD");
         // all created entities should have blueprints!
         if (!blueprint) Debug.LogError(this + " does not have a blueprint! EVERY constructed entity should have one!");
 

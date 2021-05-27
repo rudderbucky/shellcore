@@ -389,7 +389,6 @@ public class WorldCreatorCursor : MonoBehaviour
             RemoveSector(sectors[0]);
         }
         characters.Clear();
-        characterHandler.ReflectButtonData();
     }
 
     void RemoveSector(SectorWCWrapper sector)
