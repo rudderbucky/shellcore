@@ -433,16 +433,15 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 		else
 		{
-			shell.sprite = ResourceManager.GetAsset<Sprite>("core1_shell");
-			core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+			shell.sprite = ResourceManager.GetAsset<Sprite>(GetEditorShellString());
+			core.sprite = ResourceManager.GetAsset<Sprite>(GetEditorCoreString());
 		}
 
 		shell.color = FactionManager.GetFactionColor(0);
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
 		// orient shell image so relative center stays the same regardless of shell tier
-		shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
-		core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
+		OrientShellAndCore();
 		
 		core.material = ResourceManager.GetAsset<Material>("material_color_swap");
 		core.color = FactionManager.GetFactionColor(0);
@@ -678,7 +677,15 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 		cursorScript.gameObject.SetActive(true);
 		cursorScript.UpdateHandler();
+		UpdateChain();
 	}
+
+	private void OrientShellAndCore()
+	{
+		shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
+		core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
+	}
+
     public void AddShard(Shard shard) {
         var tiers = new int[] {1, 5, 20};
         player.shards += tiers[shard.tier];
@@ -705,17 +712,16 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public void AddPartByEditorSection() {
 		var part = new EntityBlueprint.PartInfo();
 		
-		if(int.TryParse(editorModeAddPartSection.transform.Find("Ability Tier").GetComponent<InputField>().text, out part.tier)) {
-			
-			var secondaryData = editorModeAddPartSection.transform.Find("Secondary Data").GetComponent<InputField>().text;
-			part.secondaryData = secondaryData != null ? secondaryData : "";
-			part.abilityID = editorModeAddPartSection.transform.Find("Ability ID").GetComponent<Dropdown>().value;
-			var x = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
-			if(ResourceManager.allPartNames.Contains(x)) {
-				part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
-				AddPart(part);
-			}
-
+		if(!int.TryParse(editorModeAddPartSection.transform.Find("Ability Tier").GetComponent<InputField>().text, out part.tier)) {
+			part.tier = 0;
+		}
+		var secondaryData = editorModeAddPartSection.transform.Find("Secondary Data").GetComponent<InputField>().text;
+		part.secondaryData = secondaryData != null ? secondaryData : "";
+		part.abilityID = editorModeAddPartSection.transform.Find("Ability ID").GetComponent<Dropdown>().value;
+		var x = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
+		if(ResourceManager.allPartNames.Contains(x)) {
+			part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
+			AddPart(part);
 		}
 	}
 
@@ -776,6 +782,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 	}
 	public void LoadBlueprint(EntityBlueprint blueprint) {
+		cursorScript.ClearAllParts();
 		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
 			var p = Instantiate(SBPrefab, cursorScript.transform.parent).GetComponent<ShipBuilderPart>();
 			p.cursorScript = cursorScript;
@@ -784,6 +791,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			p.SetLastValidPos(part.location);
 			p.isInChain = true;
 			p.validPos = true;
+			p.Initialize();
 		}
 
 		if(editorMode)
@@ -801,6 +809,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
 		shell.color = FactionManager.GetFactionColor(0);
 		shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
+		OrientShellAndCore();
 	}
 	public static void SaveBlueprint(EntityBlueprint blueprint = null, string fileName = null, string json = null) {
 		if(fileName != null) 
@@ -903,7 +912,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	public void Export() {
 		if(player)
 		{
-			player.AddCredits(cursorScript.buildCost);
+			player.AddCredits(-cursorScript.buildCost);
 			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 			foreach(ShipBuilderPart part in cursorScript.parts) {
 				player.blueprint.parts.Add(part.info);
@@ -920,7 +929,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			// null character so another change doesn't accidentally happen
 			currentCharacter = null;
 		}
-			
+		
 		#endif
         
 		NodeEditorFramework.Standard.UsePartCondition.OnPlayerReconstruct.Invoke();
@@ -971,8 +980,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
 			// orient shell image so relative center stays the same regardless of shell tier
-			shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
-			core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
+			OrientShellAndCore();
 			
 			core.material = ResourceManager.GetAsset<Material>("material_color_swap");
             core.color = FactionManager.GetFactionColor(0);
@@ -1021,6 +1029,32 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 	}
 
+	// The following 3 methods use editorCoreTier to set the editor core sprites correctly;
+	private List<string> GetEditorCoreList()
+	{
+		var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
+		cores.Add("groundcarriershell");
+		cores.Add("drone_shell");
+		return cores;
+	}
+	private string GetEditorShellString()
+	{
+		var cores = GetEditorCoreList();
+		return cores[editorCoreTier % cores.Count];
+		
+	}
+
+	private string GetEditorCoreString()
+	{
+		var cores = GetEditorCoreList();
+		if(editorCoreTier == cores.Count - 2)
+			return "groundcarriercore";
+		else if(editorCoreTier == cores.Count - 1)
+			return "drone_light";
+		else
+			return "core1_light";
+	}
+
 	public string GetCurrentJSON() {
 		EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();	
 		if(!editorMode)
@@ -1029,17 +1063,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			blueprint.coreSpriteID = player.blueprint.coreSpriteID;
 		}
 		else
-		{
-			var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
-			cores.Add("groundcarriershell");
-			cores.Add("drone_shell");
-			blueprint.coreShellSpriteID = cores[editorCoreTier % cores.Count];
-			if(editorCoreTier == cores.Count - 2)
-				blueprint.coreSpriteID = "groundcarriercore";
-			else if(editorCoreTier == cores.Count - 1)
-				blueprint.coreSpriteID = "drone_light";
-			else
-				blueprint.coreSpriteID = "core1_light";
+		{	
+			blueprint.coreShellSpriteID = GetEditorShellString();
+			blueprint.coreSpriteID = GetEditorCoreString();
 		}
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		foreach(ShipBuilderPart part in cursorScript.parts) {

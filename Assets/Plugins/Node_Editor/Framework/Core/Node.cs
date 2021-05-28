@@ -334,12 +334,13 @@ namespace NodeEditorFramework
 			Vector2 size = new Vector2();
 			size.y = Math.Max(nodeGUIHeight.y, MinSize.y) + 4;
 
+			// TODO: Figure out this thing
 			// Account for potential knobs that might occupy horizontal space
-			float knobSize = 0;
-			List<ConnectionKnob> verticalKnobs = connectionKnobs.Where (x => x.side == NodeSide.Bottom || x.side == NodeSide.Top).ToList ();
-			if (verticalKnobs.Count > 0)
-				knobSize = verticalKnobs.Max ((ConnectionKnob knob) => knob.GetGUIKnob ().xMax - nodeRect.xMin);
-			size.x = Math.Max (knobSize, MinSize.x);
+			//float knobSize = 0;
+			//List<ConnectionKnob> verticalKnobs = connectionKnobs.Where (x => x.side == NodeSide.Bottom || x.side == NodeSide.Top).ToList ();
+			//if (verticalKnobs.Count > 0)
+			//	knobSize = verticalKnobs.Max ((ConnectionKnob knob) => knob.GetGUIKnob ().xMax - nodeRect.xMin);
+			size.x = Math.Max (0, MinSize.x);
 			
 			autoSize = size;
 			NodeEditor.RepaintClients ();

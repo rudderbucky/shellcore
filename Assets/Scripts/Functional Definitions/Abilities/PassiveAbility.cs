@@ -15,12 +15,17 @@ public class PassiveAbility : Ability
         
     }
 
-    public override void Tick()
+    public override void Activate()
     {
-        if (State != AbilityState.Active)
+        if(State != AbilityState.Active)
         {
             State = AbilityState.Active;
             Execute();
         }
+    }
+
+    public override void Tick()
+    {
+
     }
 }

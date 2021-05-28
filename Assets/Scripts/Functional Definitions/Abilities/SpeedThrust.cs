@@ -19,10 +19,7 @@ public class SpeedThrust : ActiveAbility
         cooldownDuration = 10;
         activeDuration = 5;
         energyCost = 50;
-    }
-
-    private void Start()
-    {
+        if(Core && !(Core as Craft)) Debug.LogError("Why did you add Speed Thrust to a non-moving entity? Weirdo!");
         craft = Core as Craft;
     }
     /// <summary>
@@ -30,11 +27,12 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     public override void Deactivate()
     {
-        var enginePower = craft.enginePower;
-        craft.enginePower -= 100F * Mathf.Pow(abilityTier, 1.5F);
-        craft.speed -= boost * abilityTier;
-        craft.CalculatePhysicsConstants();
-        base.Deactivate();
+        if(craft)
+        {
+            craft.speed -= boost * abilityTier;
+            craft.CalculatePhysicsConstants();
+            base.Deactivate();
+        }
     }
 
     /// <summary>
@@ -42,11 +40,12 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        var enginePower = (Core as Craft).enginePower;
-        craft.enginePower += 100F * Mathf.Pow(abilityTier, 1.5F);
-        craft.speed += boost * abilityTier;
-        craft.CalculatePhysicsConstants();
-        AudioManager.PlayClipByID("clip_activateability", transform.position);
-        base.Execute();
+        if(craft)
+        {
+            craft.speed += boost * abilityTier;
+            craft.CalculatePhysicsConstants();
+            AudioManager.PlayClipByID("clip_activateability", transform.position);
+            base.Execute();
+        }
     }
 }

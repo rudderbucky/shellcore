@@ -10,8 +10,6 @@ public class WorldData : ScriptableObject
         public string ID;
         public string name;
         public string blueprintJSON;
-        public bool partyMember;
-        public bool partsCollectible;
         public int faction;
 
         public PartyData partyData;

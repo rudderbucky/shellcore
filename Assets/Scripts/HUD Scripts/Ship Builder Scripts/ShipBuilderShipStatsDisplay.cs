@@ -21,8 +21,8 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		float[] totalHealths = new float[] {1000,250,500};
-		float[] totalRegens = new float[] {60,0,60};
+		float[] totalHealths = CoreUpgraderScript.defaultHealths;
+		float[] totalRegens = CoreUpgraderScript.GetRegens(cursorScript?.player?.blueprint?.coreShellSpriteID);
 		float shipMass = 1;
 		float enginePower = 200;
 		float weight = Entity.coreWeight;
@@ -59,12 +59,12 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 			string colorTag = "<color=white>";
 			if(cursorScript.buildCost > 0) colorTag = "<color=red>";
 			else if(cursorScript.buildCost < 0) colorTag = "<color=lime>";
-			buildStat = "\nTOTAL BUILD COST: " + "\n" + colorTag + statsDatabase.GetBuildCost() + " CREDITS</color>";
+			buildStat = "TOTAL BUILD COST: " + "\n" + colorTag + statsDatabase.GetBuildCost() + " CREDITS</color>";
 		}
 		display.text = "SHELL: " + totalHealths[0] + "\n"
 		+              "CORE: " + totalHealths[1] + "\n"
 		+              "ENERGY: " + totalHealths[2] + "\n"
-		+ 			   "\nSPEED: " + (int)Craft.GetPhysicsSpeed(speed, weight) + "\n"
+		+ 			   "SPEED: " + (int)Craft.GetPhysicsSpeed(speed, weight) + "\n"
 		+			   "WEIGHT: " + (int)weight + "\n"
 		+              buildStat;
 		regenDisplay.text = "REGEN: " + totalRegens[0] + "\n\n" + "REGEN: " + totalRegens[2];

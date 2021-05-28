@@ -8,6 +8,8 @@ public interface IOwner
     int GetFaction();
     Transform GetTransform();
     List<IOwnable> GetUnitsCommanding();
+    int GetIntrinsicCommandLimit();
+    void SetIntrinsicCommandLimit(int val);
     int GetTotalCommandLimit();
     SectorManager GetSectorManager();
     Draggable GetTractorTarget(); 
@@ -27,6 +29,7 @@ public class SpawnDrone : ActiveAbility
         cooldownDuration = spawnData.cooldown;
         chargeDuration = spawnData.delay;
         activeDuration = spawnData.delay + 0.1f;
+        energyCost = spawnData.energyCost;
         // create blueprint from string json in spawn data
         blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
         JsonUtility.FromJsonOverwrite(spawnData.drone, blueprint);
@@ -74,7 +77,6 @@ public class SpawnDrone : ActiveAbility
         drone.faction = craft.GetFaction();
         drone.transform.position = part.transform.position;
         drone.spawnPoint = part.transform.position;
-        drone.enginePower = 100;
         drone.type = spawnData.type;
         drone.Init();
         drone.SetOwner(craft);

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Speed : PassiveAbility {
-
-    private bool activated;
     public static readonly float boost = 10;
     protected override void Awake()
     {
@@ -14,23 +12,23 @@ public class Speed : PassiveAbility {
         description = "Passively increases speed.";
     }
 
-    public override void SetDestroyed(bool input)
+    public override void Deactivate()
     {
-        if (input && activated) 
+        if(Core as Craft)
         {
-            (Core as Craft).enginePower -= 50F * Mathf.Pow(abilityTier, 1.5F); //Mathf.Pow(enginePower, 1/(abilityTier/6 + 1.1F));
             (Core as Craft).speed -= boost * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         }
-        base.SetDestroyed(input);
+        base.Deactivate();
     }
 
     protected override void Execute()
     {
-        var enginePower = (Core as Craft).enginePower;
-        activated = true;
-        (Core as Craft).enginePower += 50F * Mathf.Pow(abilityTier, 1.5F);
-        (Core as Craft).speed += boost * abilityTier;
-        (Core as Craft).CalculatePhysicsConstants();
+        if(Core as Craft)
+        {
+            (Core as Craft).speed += boost * abilityTier;
+            (Core as Craft).CalculatePhysicsConstants();
+        }
+        else if(Core) Debug.LogError("Why did you add a Speed part to a non-moving entity? Weirdo!");
     }
 }

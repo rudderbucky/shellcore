@@ -11,9 +11,11 @@ namespace NodeEditorFramework.Standard
         public const string ID = "StartTaskNode";
         public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Start Task"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
+        public override bool AutoLayout { get { return true; } }
 
+        public override string Title { get { return "Start Task"; } }
+        public override Vector2 MinSize { get { return new Vector2(208, 50); } }
+    
         //Task related
         public string taskID
         {
@@ -36,20 +38,24 @@ namespace NodeEditorFramework.Standard
         public string acceptResponse;
         public string declineResponse;
         public string taskConfirmedDialogue;
+        public bool useEntityColor = true;
         bool init = false;
         Texture2D partTexture;
         float height = 320f;
         public bool forceTask = false;
 
+        
         [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left)]
         public ConnectionKnob inputLeft;
 
+        
         [ConnectionKnob("Output Accept", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputAccept;
+        
         [ConnectionKnob("Output Decline", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputDecline;
 
-        [ConnectionKnob("Input Up", Direction.In, "Complete", NodeSide.Top, 100f)]
+        [ConnectionKnob("Input Up", Direction.In, "Complete", NodeSide.Top, 104)]
         public ConnectionKnob inputUp;
 
         public override void NodeGUI()
@@ -58,23 +64,33 @@ namespace NodeEditorFramework.Standard
             inputLeft.DisplayLayout();
             outputAccept.DisplayLayout();
             GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
             outputDecline.DisplayLayout();
+            GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Label("Task Name:");
-            height = 360f;
+
+            GUILayout.EndHorizontal();
+            //height = 270f;
+            GUILayout.BeginHorizontal();
+
             taskName = GUILayout.TextArea(taskName, GUILayout.Width(200f));
             GUILayout.EndHorizontal();
+
             GUILayout.Label("Dialogue:");
             dialogueText = GUILayout.TextArea(dialogueText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 200f);
-            GUILayout.Label("Dialogue Color:");
-            float r, g, b;
-            GUILayout.BeginHorizontal();
-            r = RTEditorGUI.FloatField(dialogueColor.r);
-            g = RTEditorGUI.FloatField(dialogueColor.g);
-            b = RTEditorGUI.FloatField(dialogueColor.b);
-            GUILayout.EndHorizontal();
-            dialogueColor = new Color(r, g, b);
+            if(!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
+            {
+                GUILayout.Label("Text Color:");
+                float r, g, b;
+                GUILayout.BeginHorizontal();
+                r = RTEditorGUI.FloatField(dialogueColor.r);
+                g = RTEditorGUI.FloatField(dialogueColor.g);
+                b = RTEditorGUI.FloatField(dialogueColor.b);
+                GUILayout.EndHorizontal();
+                dialogueColor = new Color(r, g, b);
+            }
             GUILayout.BeginHorizontal();
             GUILayout.Label("Accept Player Response:");
             GUILayout.EndHorizontal();
@@ -89,13 +105,14 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             GUILayout.Label("Objective list:");
             objectiveList = GUILayout.TextArea(objectiveList, GUILayout.Width(200f));
-            height += GUI.skin.textArea.CalcHeight(new GUIContent(objectiveList), 200f);
             GUILayout.Label("Credit reward:");
-            creditReward = RTEditorGUI.IntField(creditReward, GUILayout.Width(200f));
+            creditReward = RTEditorGUI.IntField(creditReward, GUILayout.Width(208f));
             GUILayout.Label("Reputation reward:");
-            reputationReward = RTEditorGUI.IntField(reputationReward, GUILayout.Width(200f));
+
+            reputationReward = RTEditorGUI.IntField(reputationReward, GUILayout.Width(208f));
             GUILayout.Label("Shard reward:");
-            shardReward = RTEditorGUI.IntField(shardReward, GUILayout.Width(200f));
+            shardReward = RTEditorGUI.IntField(shardReward, GUILayout.Width(208f));
+
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));
             if(partReward)
             {
@@ -148,7 +165,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Entity ID for Confirmed Dialogue");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            entityIDforConfirmedResponse = GUILayout.TextField(entityIDforConfirmedResponse);
+            entityIDforConfirmedResponse = GUILayout.TextField(entityIDforConfirmedResponse, GUILayout.Width(200f));
             GUILayout.EndHorizontal();
 
             GUILayout.Label("Task Confirmed Dialogue:");

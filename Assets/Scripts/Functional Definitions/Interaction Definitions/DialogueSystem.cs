@@ -305,7 +305,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void showDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker)
     {
-        CreateWindow(dialogueBoxPrefab, node.text, node.textColor, speaker);
+        CreateWindow(dialogueBoxPrefab, node.text, node.useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : node.textColor, speaker);
         DialogueViewTransitionIn(speaker);
 
         // create buttons
@@ -329,7 +329,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker) //TODO: reward part image
     {
         if (window) endDialogue(0, false);
-        CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.dialogueColor, speaker);
+        CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : node.dialogueColor, speaker);
         DialogueViewTransitionIn(speaker);
         AudioManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
                                                      // so cover for its noise here

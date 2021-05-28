@@ -50,11 +50,6 @@ public class WCCharacterHandler : GUIWindowScripts
         currentData.blueprintJSON = charBlueprint.text;
     }
 
-    void UpdateCharPartyMember()
-    {
-        currentData.partyMember = charPartyMember.isOn;
-    }
-
     void UpdateCharFaction()
     {
         currentData.faction = charFaction.value;
@@ -123,7 +118,6 @@ public class WCCharacterHandler : GUIWindowScripts
         UpdateCharID();
         UpdateCharName();
         UpdateCharBlueprint();
-        UpdateCharPartyMember();
         UpdateCharFaction();
         UpdateAttackDialogue();
         UpdateDefendDialogue();
@@ -161,7 +155,6 @@ public class WCCharacterHandler : GUIWindowScripts
         charID.text = currentData.ID;
         charName.text = currentData.name;
         charBlueprint.text = currentData.blueprintJSON;
-        charPartyMember.isOn = currentData.partyMember;
         charFaction.value = currentData.faction;
         if(currentData != null && currentData.partyData != null)
         {

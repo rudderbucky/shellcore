@@ -23,15 +23,6 @@ public abstract class Ability : MonoBehaviour {
             core = value;
         }
     }
-
-    public enum AbilityType
-    {
-        Skill,
-        Spawn,
-        Weapon,
-        Passive
-    }
-
     public enum AbilityState
     {
         Ready,
@@ -70,9 +61,9 @@ public abstract class Ability : MonoBehaviour {
         return abilityTier;
     }
 
-    public AbilityType GetAbilityType()
+    public AbilityHandler.AbilityTypes GetAbilityType()
     {
-        return AbilityType.Skill;
+        return AbilityUtilities.GetAbilityTypeByID((int)ID);
     }
 
     /// <summary>
@@ -185,7 +176,7 @@ public abstract class Ability : MonoBehaviour {
     public float TimeUntilReady() {
         if (State == AbilityState.Cooldown || State == AbilityState.Charging || State == AbilityState.Active) // active or on cooldown
         {
-            return cooldownDuration - (Time.time - startTime); // return the cooldown remaining, calculated prior to this call via TickDown
+            return Mathf.Max(cooldownDuration - (Time.time - startTime), 0); // return the cooldown remaining, calculated prior to this call via TickDown
         }
         else return 0; // not on cooldown
     }

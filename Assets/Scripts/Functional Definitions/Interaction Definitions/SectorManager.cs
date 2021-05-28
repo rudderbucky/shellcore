@@ -30,6 +30,7 @@ public class SectorManager : MonoBehaviour
     private BattleZoneManager battleZone;
     private SiegeZoneManager siegeZone;
     private Dictionary<string, GameObject> objects;
+    // TODO: Remove persistent objects. Doesn't need to be here
     private Dictionary<string, GameObject> persistentObjects;
     private LandPlatformGenerator lpg;
     private LineRenderer sectorBorders;
@@ -43,6 +44,7 @@ public class SectorManager : MonoBehaviour
     public List<ShardRock> shardRocks = new List<ShardRock>();
     public GameObject shardRockPrefab;
     public Sector overrideProperties = null;
+    int maxID = 0;
     public static Sector GetSectorByName(string sectorName) 
     {
         foreach(var sector in instance.sectors)
@@ -413,6 +415,24 @@ public class SectorManager : MonoBehaviour
         }
     }
 
+    // does all the checking on whether the string is json or a filename
+    public EntityBlueprint TryGettingEntityBlueprint(string jsonOrName)
+    {
+        var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+
+        // try parsing directly, if that fails try fetching the entity file
+        try
+        {
+            JsonUtility.FromJsonOverwrite(jsonOrName, blueprint);
+        }
+        catch
+        {
+            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                (resourcePath + "\\Entities\\" + jsonOrName + ".json"), blueprint);
+        }
+        return blueprint;            
+    }
+
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
     {
         GameObject gObj = new GameObject(data.name);
@@ -429,18 +449,7 @@ public class SectorManager : MonoBehaviour
                         json = data.blueprintJSON;
                         if (json != null && json != "")
                         {
-                            blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                            // try parsing directly, if that fails try fetching the entity file
-                            try
-                            {
-                                JsonUtility.FromJsonOverwrite(json, blueprint);
-                            }
-                            catch
-                            {
-                                JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                                    (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                            }
+                            blueprint = TryGettingEntityBlueprint(json);
                             
                             //Debug.Log(data.name);
                             blueprint.entityName = data.name;
@@ -503,18 +512,7 @@ public class SectorManager : MonoBehaviour
                     if (json != null && json != "")
                     {
                         var dialogueRef = blueprint.dialogue;
-                        blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                        // try parsing directly, if that fails try fetching the entity file
-                        try
-                        {
-                            JsonUtility.FromJsonOverwrite(json, blueprint);
-                        }
-                        catch
-                        {
-                            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                                (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                        }
+                        blueprint = TryGettingEntityBlueprint(json);
                         
                         blueprint.dialogue = dialogueRef;
                     } 
@@ -534,18 +532,7 @@ public class SectorManager : MonoBehaviour
                     if (json != null && json != "")
                     {
                         var dialogueRef = blueprint.dialogue;
-                        blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                        // try parsing directly, if that fails try fetching the entity file
-                        try
-                        {
-                            JsonUtility.FromJsonOverwrite(json, blueprint);
-                        }
-                        catch
-                        {
-                            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                                (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                        }
+                        blueprint = TryGettingEntityBlueprint(json);
                         blueprint.dialogue = dialogueRef;
                     } 
 
@@ -572,18 +559,7 @@ public class SectorManager : MonoBehaviour
                 json = data.blueprintJSON;
                 if (json != null && json != "")
                 {
-                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                    // try parsing directly, if that fails try fetching the entity file
-                    try
-                    {
-                        JsonUtility.FromJsonOverwrite(json, blueprint);
-                    }
-                    catch
-                    {
-                        JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                            (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                    }
+                    blueprint = TryGettingEntityBlueprint(json);
                 } 
 
                 blueprint.entityName = data.name;
@@ -598,18 +574,7 @@ public class SectorManager : MonoBehaviour
                 json = data.blueprintJSON;
                 if (json != null && json != "")
                 {
-                    blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
-                    // try parsing directly, if that fails try fetching the entity file
-                    try
-                    {
-                        JsonUtility.FromJsonOverwrite(json, blueprint);
-                    }
-                    catch
-                    {
-                        JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                            (resourcePath + "\\Entities\\" + json + ".json"), blueprint);
-                    }
+                    blueprint = TryGettingEntityBlueprint(json);
                 } 
 
                 blueprint.entityName = data.name;
@@ -691,10 +656,14 @@ public class SectorManager : MonoBehaviour
 
         if(data.ID == "" || data.ID == null || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
         {
-            data.ID = objects.Count.ToString();
+            if(objects.Count <= maxID) maxID++;
+            else maxID = objects.Count;
+            data.ID = maxID.ToString();
         }
+        var testInt = 0;
+        if(int.TryParse(data.ID, out testInt) && testInt > maxID)
+            maxID = ++testInt;
         entity.ID = data.ID;
-
         if(!objects.ContainsKey(data.ID)) 
         {
             objects.Add(data.ID, gObj);
@@ -1014,7 +983,7 @@ public class SectorManager : MonoBehaviour
             OnSectorLoad.Invoke(current.sectorName);
     }
 
-    static float objectDespawnDistance = 100f;
+    static float objectDespawnDistance = 1000f;
 
     private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null)
     {
@@ -1071,10 +1040,23 @@ public class SectorManager : MonoBehaviour
         Dictionary<string, GameObject> tmp = new Dictionary<string, GameObject>();
         foreach (var obj in persistentObjects)
         {
-            if (player && obj.Value && (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject))
-                && obj.Value != player.gameObject && !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable)
-                // TODO: why < objectDespawnDistance?
-                && Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance))
+            var notPlayerTractorTarget = 
+                (!player.GetTractorTarget() || (player.GetTractorTarget() && obj.Value != player.GetTractorTarget().gameObject));
+
+            // set up booleans to determine whether a drone/turret gets despawned.
+            var notPlayerDrone = false;
+            var notClose = false;
+            var partyDrone = false;
+            if(obj.Value) 
+            {
+                notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+                notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+                partyDrone = PartyManager.instance.partyMembers.Exists(sc => sc.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+            }
+
+            if (player && obj.Value && notPlayerTractorTarget
+                && obj.Value != player.gameObject
+                && (notPlayerDrone || notClose))
             {
                 Destroy(obj.Value);
             }
@@ -1181,12 +1163,12 @@ public class SectorManager : MonoBehaviour
         return Vector3.SqrMagnitude(obj.transform.position - player.transform.position) < 100;
     }
 
+    // this method is used for WC-created entities, which can only really be shellcores or assets.
     public static EntityBlueprint GetBlueprintOfLevelEntity(Sector.LevelEntity entity)
     {
         if(entity.assetID == "shellcore_blueprint")
         {
-            EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-            JsonUtility.FromJsonOverwrite(entity.blueprintJSON, blueprint);
+            EntityBlueprint blueprint = instance.TryGettingEntityBlueprint(entity.blueprintJSON);
             return blueprint;
         }
         else 
@@ -1243,7 +1225,7 @@ public class SectorManager : MonoBehaviour
             return;
         }
 
-        // even if objects contains the key, it might be a different object than the one we are trying to remove. We need to compare both
+        // even if objects contains the key, it might be a different object than the one we are trying to remove. We need to compare both.
         // See -> Spawn in sector w/ defense turret. Move to another sector with turret, return to original sector without turret
         // If racing happens the turret in the new sector calls RemoveObject after the new turret spawns with the same ID, kicking it out
         // of the objects list (which shouldn't happen)

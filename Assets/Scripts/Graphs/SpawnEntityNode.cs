@@ -125,7 +125,7 @@ namespace NodeEditorFramework.Standard
                     }
                 }
 
-                Debug.LogError("Spawn Entity ID ( " + entityID + " ) does not correspond with a character. Performing normal operations.");
+                Debug.Log("Spawn Entity ID ( " + entityID + " ) does not correspond with a character. Performing normal operations.");
             }
             
             EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();

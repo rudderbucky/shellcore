@@ -3,19 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DroneUtilities : MonoBehaviour
+public static class DroneUtilities
 {
-    void Start()
-    {
-        /*
-        Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Mini)));
-        Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Strike)));
-        Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Counter)));
-        Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Heavy)));
-        Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Worker)));
-        Debug.Log(JsonUtility.ToJson(GetDefaultData(DroneType.Torpedo)));
-        */
-    }
     public static DroneSpawnData GetDefaultData(DroneType type) {
         DroneSpawnData data;
         // pretty much the same thing repeated multiple times so that if one part ever becomes different it doesn't break

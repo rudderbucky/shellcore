@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShellRegen : PassiveAbility {
 
 	public int index;
-	public static readonly int regen = 50;
+	public static readonly int[] regens = new int[] {50, 50, 20};
 	public void Initialize() {
 		switch(index)
         {
@@ -20,18 +20,20 @@ public class ShellRegen : PassiveAbility {
                 break;
         }
 	}
-	public override void SetDestroyed(bool input)
+
+    public override void Deactivate()
     {
-        float[] regens = Core.GetRegens();
-		regens[index] -= regen * abilityTier;
-		Core.SetRegens(regens);
-        base.SetDestroyed(input);
+        float[] coreRegens = Core.GetRegens();
+        coreRegens[index] -= regens[index] * abilityTier;
+        Core.SetRegens(coreRegens);
+        base.Deactivate();
     }
+
 
     protected override void Execute()
     {
-        float[] regens = Core.GetRegens();
-		regens[index] += regen * abilityTier;
-		Core.SetRegens(regens);
+        float[] coreRegens = Core.GetRegens();
+		coreRegens[index] += regens[index] * abilityTier;
+		Core.SetRegens(coreRegens);
     }
 }

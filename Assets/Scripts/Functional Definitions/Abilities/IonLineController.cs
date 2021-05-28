@@ -49,7 +49,8 @@ public class IonLineController : MonoBehaviour
         this.range = range;
         this.part = part;
         this.tier = tier;
-        energyCost = energyC / tier;
+        energyCost = energyC * tier;
+        damage = damageC * tier;
     }
 
     public bool GetFiring()
@@ -82,8 +83,9 @@ public class IonLineController : MonoBehaviour
     }
 
     float energyCost;
+    float damage;
     public static float damageC = 1500;
-    public static float energyC = 300;
+    public static float energyC = 150;
 
     void Update()
     {

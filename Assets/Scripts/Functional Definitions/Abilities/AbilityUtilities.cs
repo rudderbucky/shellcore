@@ -45,7 +45,7 @@ public enum AbilityID
 	Bomb,
 	Ion
 }
-public class AbilityUtilities : MonoBehaviour {
+public static class AbilityUtilities {
 
 	public static Sprite GetAbilityImageByID(int ID, string secondaryData) {
 		if(ID == 0) return null;
@@ -144,11 +144,11 @@ public class AbilityUtilities : MonoBehaviour {
 			case 13:
 				return "+" + Speed.boost * tier + " speed.";
 			case 17:
-				return "Passively increases shell regen by "  + ShellRegen.regen * tier + " points.";
+				return "Passively increases shell regen by "  + ShellRegen.regens[0] * tier + " points.";
 			case 18:
 				return "Passively increases maximum shell by " + ShellMax.max * tier + " points.";
 			case 19:
-				return "Passively increases energy regen by " +  ShellRegen.regen * tier + " points.";
+				return "Passively increases energy regen by " +  ShellRegen.regens[2] * tier + " points.";
 			case 20:
 				return "Passively increases maximum energy by " + ShellMax.max * tier + " points.";
 			case 21:
@@ -180,7 +180,8 @@ public class AbilityUtilities : MonoBehaviour {
 			case 36:
 				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:
-				return $"Slow moving beam that deals {IonLineController.damageC} damage per second for 5 seconds. \nBeam costs {IonLineController.energyC} energy per";
+				return $"Slow moving beam that deals {IonLineController.damageC * tier} damage per second for 5 seconds. "
+				+ $"\nBeam costs {IonLineController.energyC * tier} energy per second";
             default:
 				return "Description unset";
 		}

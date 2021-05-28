@@ -17,7 +17,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     public Image image;
     public Text hotkeyText;
     public Text offCDCountText;
-    List<Ability> abilities = new List<Ability>();
+    [SerializeField] List<Ability> abilities = new List<Ability>();
     public Entity entity;
     public Image movingImage;
     bool gleaming;
@@ -25,6 +25,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     bool dragging;
     Vector3 oldInputMousePos;
     KeyName keycode;
+    public bool visualMode = false;
 
     string GetPrettyStringFromKeycode(KeyCode code)
     {
@@ -36,11 +37,11 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         return str;
     }
 
-    public void Init(Ability ability, string hotkeyText, Entity entity, KeyName keycode)
+    public void Init(Ability ability, string hotkeyText, Entity entity, KeyName keycode, bool visualMode=false)
     {
         this.entity = entity;
         abilities.Add(ability);
-
+        this.visualMode = visualMode;
         // set up name, description, tier
         ReflectName(ability);
         ReflectDescription(ability);
@@ -76,6 +77,10 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         if (ability.GetCDDuration() != 0)
         {
             description += "Cooldown duration: " + ability.GetCDDuration() + "\n";
+        }
+        if((ability as WeaponAbility)?.GetRange() != null)
+        {
+            description += $"Range: {(ability as WeaponAbility).GetRange()}\n";
         }
         description += AbilityUtilities.GetDescription(ability);
         abilityInfo = description;
@@ -130,14 +135,15 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         // update the number of off-CD abilities
         if(offCDCountText)
-            offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() && a.TimeUntilReady() == 0).Count + "";
+            offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() && 
+                (a.TimeUntilReady() == 0 || a.GetAbilityType() == AbilityHandler.AbilityTypes.Passive)).Count + "";
 
         if(tooltip)
         {
             tooltip.transform.position = Input.mousePosition;
         }
 
-        if(!entity || (entity as PlayerCore).GetIsInteracting()) return;
+        if(!entity || visualMode) return;
 
         // there's no point in running Update if there is no ability
         if (!abilities.Exists(ab => ab && !ab.IsDestroyed()) || entity.GetIsDead())
@@ -185,9 +191,9 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         {
             image.color = new Color(0, 0, 0.3F); // make the background dark blue
         }
-        else if (abilities[0].State == Ability.AbilityState.Active || 
+        else if (abilities[0].GetAbilityType() != AbilityHandler.AbilityTypes.Passive && (abilities[0].State == Ability.AbilityState.Active || 
                  abilities[0].State == Ability.AbilityState.Charging ||
-                 (abilities[0] is WeaponAbility && abilities[0].State == Ability.AbilityState.Ready))
+                 (abilities[0] is WeaponAbility && abilities[0].State == Ability.AbilityState.Ready)))
         {
             image.color = Color.green;
         }
@@ -199,7 +205,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         if(!entity.GetIsDead())
         {
-            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase)) && !PlayerViewScript.paused;
+            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase)) 
+                && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
             if(abilities[0] is WeaponAbility)
             {
                 foreach(var ab in abilities)

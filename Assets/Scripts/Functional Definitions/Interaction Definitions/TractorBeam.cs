@@ -87,14 +87,15 @@ public class TractorBeam : MonoBehaviour
                 else if (dist > 2f)
                 {
                     if(!owner.tractorSwitched)
-                        rigidbody.AddForce(dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * rigidbody.mass / 2);
+                        rigidbody.AddForce(dir.normalized * (dist - 2F)  * rigidbody.mass * tractorStrength / Time.fixedDeltaTime);
                     else
-                        owner.GetComponent<Rigidbody2D>().AddForce(-dir.normalized * (dist - 2F) * 5000F * Time.fixedDeltaTime * 
-                            rigidbody.mass);
+                        owner.GetComponent<Rigidbody2D>().AddForce(-dir.normalized * (dist - 2F) *
+                            rigidbody.mass * tractorStrength / Time.fixedDeltaTime);
                 }
             }
         }
     }
+    private static float tractorStrength = 1.5F;
 
     protected void TractorBeamUpdate()
     {

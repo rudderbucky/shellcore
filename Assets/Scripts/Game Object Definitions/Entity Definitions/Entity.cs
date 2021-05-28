@@ -19,6 +19,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     protected static int maxGroundLayer = 1;
     protected SortingGroup group;
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    [SerializeField]
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     protected List<Ability> abilities; // abilities
     public Rigidbody2D entityBody; // entity to modify with this script
@@ -272,6 +273,20 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         BuildEntity();
     }
 
+    // guarantees abilities deactivate on stack frame
+    protected void DestroyOldParts()
+    {
+        // Remove possible old parts from list
+        foreach(var part in parts)
+        {
+            if(part && part.gameObject && part.gameObject.name != "Shell Sprite")
+            {
+                part.GetComponentInChildren<Ability>()?.SetDestroyed(true);
+                Destroy(part.gameObject);
+            }
+
+        }
+    }
 
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
@@ -281,12 +296,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         // all created entities should have blueprints!
         if (!blueprint) Debug.LogError(this + " does not have a blueprint! EVERY constructed entity should have one!");
 
-        // Remove possible old parts from list
-        foreach(var part in parts)
-        {
-            if(part && part.gameObject && part.gameObject.name != "Shell Sprite")
-                Destroy(part.gameObject);
-        }
+        DestroyOldParts();
+        
         parts.Clear();
         blueprint.shellHealth.CopyTo(maxHealth, 0);
         blueprint.baseRegen.CopyTo(regenRate, 0);
@@ -349,6 +360,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 GameObject partObject = ShellPart.BuildPart(partBlueprint);
                 ShellPart shellPart = partObject.GetComponent<ShellPart>();
                 shellPart.info = part;
+                partObject.transform.SetParent(transform, false);
+                partObject.transform.SetAsFirstSibling();
 
                 //Add an ability to the part:
 
@@ -356,8 +369,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 if(ab) { // add weapon diversity
                     ab.type = DroneUtilities.GetDiversityTypeByEntity(this);
                 }
-                partObject.transform.SetParent(transform, false);
-                partObject.transform.SetAsFirstSibling();
                 partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
                 partObject.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
                 SpriteRenderer sr = partObject.GetComponent<SpriteRenderer>();
@@ -475,7 +486,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         ConnectedTreeCreator();
 
         maxHealth.CopyTo(currentHealth, 0);
-
+        ActivatePassives(); // activate passive abilities here to avoid race condition BS
+        
         if (OnEntitySpawn != null)
             OnEntitySpawn.Invoke(this);
     }
@@ -513,20 +525,20 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
 
         AudioManager.PlayClipByID("clip_explosion1", transform.position);
 
-        // 1 part drop style - choose a random part if the criteria fits, set it to collectible
-        if(!FactionManager.IsAllied(0, faction) && Random.value < partDropRate && !(this as PlayerCore) && this as ShellCore && 
-            ( (this as ShellCore).GetCarrier() == null || (this as ShellCore).GetCarrier().Equals(null) 
-            || (this as ShellCore).GetCarrier().GetIsDead() )) {
+        // Roll on each part
+        if(!FactionManager.IsAllied(0, faction) && !(this as PlayerCore) && this as ShellCore && 
+            (this as ShellCore).GetCarrier() == null) {
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
-
-            // find random part and set to collectible
             if(selectedParts.Count > 0)
-            {
-                var randomPart = Random.Range(0,selectedParts.Count);
-                selectedParts[randomPart].SetCollectible(true);
-                if(sectorMngr) AIData.strayParts.Add(selectedParts[randomPart]);
-            }
+                foreach(var part in selectedParts)
+                {
+                    if(Random.value < partDropRate)
+                    {
+                        part.SetCollectible(true);
+                        if(sectorMngr) AIData.strayParts.Add(part);
+                    }
+                }
         }
 
         for(int i = 0; i < parts.Count; i++)
@@ -612,6 +624,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
         initialized = true;
+    }
+
+    private void ActivatePassives()
+    {
+        foreach(var ability in abilities)
+        {
+            if(ability as PassiveAbility) 
+            {
+                (ability as PassiveAbility).Activate();
+            }
+        }
     }
 
     protected virtual void Update() 
@@ -803,7 +826,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <summary>
     /// Take shell damage, return residual damage to apply to core or parts
     /// </summary>
-    public float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) 
+    public virtual float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy) 
     {
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
             Debug.Log("Damage: " + amount + " (f " + lastDamagedBy?.faction + " -> " + faction + ")");
@@ -836,7 +859,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     /// <summary>
     /// Take core damage.
     /// </summary>
-    public void TakeCoreDamage(float amount) 
+    public virtual void TakeCoreDamage(float amount) 
     {
 
         if (isAbsorbing && amount > 0f)
