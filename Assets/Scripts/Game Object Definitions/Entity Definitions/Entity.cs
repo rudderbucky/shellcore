@@ -536,6 +536,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         {
             (lastDamagedBy as PlayerCore).credits += 5;
             (lastDamagedBy as PlayerCore).creditsGained += 5;
+            (lastDamagedBy as PlayerCore).cursave.creditsGained += 5;
             
             if (BZM != null)
             {

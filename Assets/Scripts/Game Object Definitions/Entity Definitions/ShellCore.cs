@@ -59,6 +59,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         base.OnDeath();
         if(lastDamagedBy as PlayerCore){
             (lastDamagedBy as PlayerCore).shellcoreKills ++;
+            (lastDamagedBy as PlayerCore).cursave.shellcoreKills ++;
         }
     }
 

@@ -54,6 +54,7 @@ public class PlayerSave {
 	public List<EntityBlueprint.PartInfo> partsSeen;
 	public List<EntityBlueprint.PartInfo> partsObtained;
 	public List<Mission> missions;
+	public List<Achievement> achievements;
 	public int reputation;
 
 	// Episode count is slightly non-trivial.
