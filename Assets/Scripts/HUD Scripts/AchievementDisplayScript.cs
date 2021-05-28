@@ -45,7 +45,7 @@ public class AchievementDisplayScript : MonoBehaviour
         var button = Instantiate(instance.buttonPrefab, 
         instance.achievementListContents[0]).GetComponent<Button>();
         button.GetComponentInChildren<Text>().text = name;
-        button.GetComponentInChildren<Text>().color = Color.blue;
+        button.GetComponentInChildren<Text>().color = Color.cyan;
         button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => {ShowStatistic(index,name,verb,noun);}));
     }
     public static void AddAchievement(Achievement achievement)

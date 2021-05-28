@@ -66,6 +66,9 @@ namespace NodeEditorFramework
                     case NodeEditorGUI.NodeEditorState.Sector:
                         canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.SectorCanvas> ();
                         break;
+					case NodeEditorGUI.NodeEditorState.Achievement:
+						canvas = ScriptableObject.CreateInstance<NodeEditorFramework.Standard.AchievementCanvas> ();
+						break;
                     default:
                         canvas = ScriptableObject.CreateInstance<QuestCanvas>();
                         break;

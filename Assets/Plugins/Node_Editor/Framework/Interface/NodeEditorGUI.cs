@@ -46,7 +46,8 @@ namespace NodeEditorFramework
 		{
 			Mission,
 			Dialogue,
-            Sector
+            Sector,
+			Achievement
 		}
 
 		public static NodeEditorState state = NodeEditorState.Mission;
@@ -68,6 +69,12 @@ namespace NodeEditorFramework
 					NE_TextColor = new Color(0.0f, 0.8f, 0.8f);
 					break;
                 case NodeEditorState.Sector:
+                    GUIBox = ResourceManager.LoadTexture("Textures/NE_SectorCanvasBox.png");
+                    NE_LightColor = new Color(0.8f, 0.4f, 0.0f);
+                    NE_TextColor = new Color(1.0f, 0.6f, 0.1f);
+                    break;
+				case NodeEditorState.Achievement:
+					//will fix later?
                     GUIBox = ResourceManager.LoadTexture("Textures/NE_SectorCanvasBox.png");
                     NE_LightColor = new Color(0.8f, 0.4f, 0.0f);
                     NE_TextColor = new Color(1.0f, 0.6f, 0.1f);

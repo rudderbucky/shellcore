@@ -299,6 +299,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		save.partInventory = new List<EntityBlueprint.PartInfo>();
 		save.sectorsSeen = new List<string>();
 		save.missions = new List<Mission>();
+		save.achievements = new List<Achievement>();
 
 		// this section contains default information for a new save. Edit this to change how the default save
 		// is created.

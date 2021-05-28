@@ -111,6 +111,9 @@ namespace NodeEditorFramework.Standard
                     case NodeEditorGUI.NodeEditorState.Sector:
                         buttonText = "Sector";
                         break;
+					case NodeEditorGUI.NodeEditorState.Achievement:
+                        buttonText = "Achievement";
+                        break;
                     default:
                         break;
                 }
@@ -129,6 +132,9 @@ namespace NodeEditorFramework.Standard
                             break;
                         case NodeEditorGUI.NodeEditorState.Sector:
                             NewNodeCanvas(typeof(SectorCanvas));
+                            break;
+						case NodeEditorGUI.NodeEditorState.Achievement:
+                            NewNodeCanvas(typeof(AchievementCanvas));
                             break;
                         default:
                             break;
