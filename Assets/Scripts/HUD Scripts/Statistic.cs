@@ -59,6 +59,6 @@ public class Achievement
     public string name;
     public string description;
     public bool completion;
-    public int progress;
+    public float progress;
     public Color textColor;
 }

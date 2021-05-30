@@ -69,6 +69,9 @@ namespace NodeEditorFramework.Standard
                         case NodeEditorGUI.NodeEditorState.Sector:
                             NewNodeCanvas(typeof(SectorCanvas));
                             break;
+						case NodeEditorGUI.NodeEditorState.Achievement:
+                            NewNodeCanvas(typeof(AchievementCanvas));
+                            break;
                     }
                     IOLocationArgs = null;
                 }
@@ -120,7 +123,7 @@ namespace NodeEditorFramework.Standard
 
                 if (GUILayout.Button(buttonText, NodeEditorGUI.toolbarButton, GUILayout.Width(50)))
 				{
-                    NodeEditorGUI.state = (NodeEditorGUI.NodeEditorState)(((int)NodeEditorGUI.state + 1) % 3);
+                    NodeEditorGUI.state = (NodeEditorGUI.NodeEditorState)(((int)NodeEditorGUI.state + 1) % 4);
 
                     switch (NodeEditorGUI.state)
                     {

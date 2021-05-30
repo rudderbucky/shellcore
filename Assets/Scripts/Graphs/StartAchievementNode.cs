@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Start Achievement", typeof(QuestCanvas))]
+    [Node(false, "Flow/Start Achievement", typeof(AchievementCanvas))]
     public class StartAchievementNode : Node
     {
         //Node things
@@ -28,7 +28,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.BeginHorizontal();
             GUILayout.Label("Achievement Name:");
             achievementName = GUILayout.TextArea(achievementName, GUILayout.Width(100f));
-            (Canvas as QuestCanvas).missionName = achievementName;
+            (Canvas as AchievementCanvas).missionName = achievementName;
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Label("Description:");
@@ -73,7 +73,7 @@ namespace NodeEditorFramework.Standard
             }
 
             // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
-            (Canvas as QuestCanvas).missionName = achievementName;
+            (Canvas as AchievementCanvas).missionName = achievementName;
         }
     }
-}
+} 

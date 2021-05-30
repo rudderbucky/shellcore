@@ -3,7 +3,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Update Achievement Progress")]
+    [Node(false, "Flow/Update Achievement Progress", typeof(AchievementCanvas))]
     public class UpdateAchievementProgressNode : Node
     {
         //Node things
@@ -20,20 +20,20 @@ namespace NodeEditorFramework.Standard
 
         [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputRight;
-        public int progressIncrease;
+        public float progressIncrease;
         public override void NodeGUI()
         {
             GUILayout.Label("Progress Increase:");
-            progressIncrease = RTEditorGUI.IntField(progressIncrease, GUILayout.Width(200f));
+            progressIncrease = RTEditorGUI.FloatField(progressIncrease, GUILayout.Width(200f));
         }
 
         public override int Traverse()
         {
             // TODO: prevent using this node in DialogueCanvases
             var achievement = PlayerCore.Instance.cursave.achievements.Find(
-                (m) => m.name == (Canvas as QuestCanvas).missionName);
+                (m) => m.name == (Canvas as AchievementCanvas).missionName);
             achievement.progress += progressIncrease;
-            if (achievement.progress > 100)
+            if (achievement.progress > 100 && !achievement.completion)
                 achievement.completion = true;
             SectorManager.instance.player.alerter.showMessage("ACHIEVEMENT OBTAINED", "clip_victory");;             
             return -1;

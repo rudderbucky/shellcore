@@ -72,6 +72,7 @@ namespace NodeEditorFramework.IO
 				FileInfo[] taskdata = dir.GetFiles("*.taskdata");
 				FileInfo[] dialoguedata = dir.GetFiles("*.dialoguedata");
 				FileInfo[] sectordata = dir.GetFiles("*.sectordata");
+				FileInfo[] achievementdata = dir.GetFiles("*.achievementdata");
                 currentMin = 0;
 				files = new List<FileInfo>();
 				files.AddRange(taskdata);
@@ -194,6 +195,9 @@ namespace NodeEditorFramework.IO
                     break;
                 case NodeEditorGUI.NodeEditorState.Sector:
                     ext = ".sectordata";
+                    break;
+				case NodeEditorGUI.NodeEditorState.Achievement:
+                    ext = ".achievementdata";
                     break;
             }
 			// GUILayout.Label(RuntimeIOPath, GUILayout.ExpandWidth(false));
