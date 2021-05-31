@@ -56,6 +56,7 @@ public class TargetingSystem : ITargetingSystem
         if(!secondaryTargets.Contains(ent))
         {
             secondaryTargets.Insert(secondaryTargets.Count, ent);
+
             return true;
         }
         return false;

@@ -89,8 +89,18 @@ public class PlayerCore : ShellCore {
     /// The directional driver for the player core, returns a vector based on current inputs
     /// </summary>
     /// <returns>a directional vector based on current inputs</returns>
-    public static Vector2 getDirectionalInput()
+    public Vector2 getDirectionalInput()
     {
+        
+        if(Input.GetMouseButton(1))
+        {
+            var delta = (MouseMovementVisualScript.overMinimap ? CameraScript.instance.minimapCamera.ScreenToWorldPoint(MouseMovementVisualScript.GetMousePosOnMinimap())
+                 : CameraScript.instance.GetWorldPositionOfMouse()) - 
+                transform.position;
+            return delta.normalized;
+        }
+           
+
         //Sum up all inputs
         Vector2 direction = Vector2.zero;
         if (InputManager.GetKey(KeyName.Up))

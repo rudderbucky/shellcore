@@ -143,7 +143,7 @@ public abstract class Craft : Entity
     {
         if (!isImmobile) // check for immobility
         {
-            physicsDirection = direction;
+            physicsDirection = direction; 
         }
     }
 
