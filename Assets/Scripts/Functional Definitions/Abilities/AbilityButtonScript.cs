@@ -217,7 +217,11 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                     }
                 }
             }
-            else if (hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos))
+            else if (clicked && Input.mousePosition == oldInputMousePos && Input.GetKey(KeyCode.LeftShift)){
+                abilities[0].Activate();
+                abilities[0].ToggleAutocast();
+            }
+            else if (hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos) /*|| abilities[0].GetAutocast()*/)
             {
                 abilities[0].Activate();
             }

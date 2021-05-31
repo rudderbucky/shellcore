@@ -98,7 +98,6 @@ public class SpawnDrone : ActiveAbility
             }
         }
     }
-
     /// <summary>
     /// Starts the spawning countdown
     /// </summary>
@@ -109,7 +108,7 @@ public class SpawnDrone : ActiveAbility
             Core.TakeEnergy(-energyCost);
             base.Activate();
         }
-        else if (craft as PlayerCore && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
+        else if (craft as PlayerCore && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit() && !base.GetAutocast())
         {
             (craft as PlayerCore).alerter.showMessage("Unit limit reached!", "clip_alert");
         }

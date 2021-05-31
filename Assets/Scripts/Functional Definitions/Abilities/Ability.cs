@@ -45,7 +45,7 @@ public abstract class Ability : MonoBehaviour {
     protected int abilityTier;
     protected string description = "Does things";
     protected ShellPart part;
-
+    private bool autocast = false;
     public ShellPart Part { set { part = value; } }
     public string abilityName = "Ability";
     public SpriteRenderer glow;
@@ -221,6 +221,12 @@ public abstract class Ability : MonoBehaviour {
                 Execute();
         }
     }
+    public void ToggleAutocast(){
+        autocast = !autocast;
+    }
+    public bool GetAutocast(){
+        return autocast;
+    }
 
     /// <summary>
     /// Ability called to change the ability's state over time for players
@@ -291,7 +297,11 @@ public abstract class Ability : MonoBehaviour {
         else if(glow)
                 Destroy(glow.gameObject);
     }
-
+    void Update(){
+        if (autocast && State == AbilityState.Ready){
+            Activate();
+        }
+    }
     protected SpriteRenderer GetBlinker()
     {
         if (!glow)
