@@ -37,10 +37,10 @@ public class SaveHandler : MonoBehaviour {
 			} else {
 				Debug.LogError("Save should have been given a currentPlayerBlueprint by now.");
 				player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
-				player.blueprint.baseRegen = new float[] {60,0,60};
-				player.blueprint.shellHealth = new float[] {1000,250,500};
 				player.blueprint.coreSpriteID = "core1_light";
 				player.blueprint.coreShellSpriteID = "core1_shell";
+				player.blueprint.baseRegen = CoreUpgraderScript.GetRegens(player.blueprint.coreShellSpriteID);
+				player.blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
 			}
 			player.abilityCaps = save.abilityCaps;
 			player.shards = save.shards;
@@ -65,13 +65,13 @@ public class SaveHandler : MonoBehaviour {
 
 			player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 			player.blueprint.name = "Player Save Blueprint";
-			player.blueprint.baseRegen = new float[] {60,0,60};
-			player.blueprint.shellHealth = new float[] {1000,250,500};
-			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 			player.blueprint.coreSpriteID = "core1_light";
 			player.blueprint.coreShellSpriteID = "core1_shell";
+			player.blueprint.baseRegen = CoreUpgraderScript.GetRegens(player.blueprint.coreShellSpriteID);
+			player.blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
+			player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
 			player.cursave = save;
-			player.abilityCaps = new int[] {10, 10, 10, 10};
+			player.abilityCaps = CoreUpgraderScript.minAbilityCap;
 		}
 	}
 	

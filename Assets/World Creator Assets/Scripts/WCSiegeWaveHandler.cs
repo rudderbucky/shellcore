@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class WCSiegeWaveHandler : MonoBehaviour
 {
@@ -87,7 +88,9 @@ public class WCSiegeWaveHandler : MonoBehaviour
             ent.assetID = item.assetID;
         }
         else
-        {
+        {            
+            ent.assetID = "shellcore_blueprint";
+            ent.faction = field.Item4.value; // maybe change this later
             try
             {
                 EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -95,14 +98,23 @@ public class WCSiegeWaveHandler : MonoBehaviour
                 blueprint.intendedType = EntityBlueprint.IntendedType.ShellCore; // for good measure :)
 
                 ent.name = blueprint.entityName;
-                ent.assetID = "shellcore_blueprint";
                 ent.blueprintJSON = JsonUtility.ToJson(blueprint);
-                ent.faction = field.Item4.value; // maybe change this later
+
             } 
             catch(System.Exception e)
             {
-                Debug.LogWarning(e);
-                return null;
+                // try and see if the name is an indirect reference
+                var path = Application.streamingAssetsPath + "\\EntityPlaceholder";
+                if(System.IO.Directory.GetFiles(path).Contains<string>(path + "\\" + field.Item1.text + ".json"))
+                {
+                    ent.name = "ShellCore";
+                    ent.blueprintJSON = field.Item1.text;
+                }
+                else
+                {
+                    Debug.LogWarning(e);
+                    return null;
+                }
             }
         }
         siegeEntity.entity = ent;

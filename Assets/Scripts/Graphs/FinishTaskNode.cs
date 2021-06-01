@@ -30,6 +30,7 @@ namespace NodeEditorFramework.Standard
 
         [ConnectionKnob("Output Up", Direction.Out, "Complete", ConnectionCount.Single, NodeSide.Top, 100f)]
         public ConnectionKnob outputUp;
+        public bool useEntityColor = true;
 
         public override void NodeGUI()
         {
@@ -47,14 +48,17 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Reward text:");
             rewardText = GUILayout.TextArea(rewardText, GUILayout.ExpandHeight(false), GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
-            GUILayout.Label("Text Color:");
-            float r, g, b;
-            GUILayout.BeginHorizontal();
-            r = RTEditorGUI.FloatField(textColor.r);
-            g = RTEditorGUI.FloatField(textColor.g);
-            b = RTEditorGUI.FloatField(textColor.b);
-            GUILayout.EndHorizontal();
-            textColor = new Color(r, g, b);
+            if(!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
+            {
+                GUILayout.Label("Text Color:");
+                float r, g, b;
+                GUILayout.BeginHorizontal();
+                r = RTEditorGUI.FloatField(textColor.r);
+                g = RTEditorGUI.FloatField(textColor.g);
+                b = RTEditorGUI.FloatField(textColor.b);
+                GUILayout.EndHorizontal();
+                textColor = new Color(r, g, b);
+            }
         }
 
         void SetEntityID(string ID)
@@ -87,6 +91,7 @@ namespace NodeEditorFramework.Standard
                     Debug.Log("Task complete!");
                     SectorManager.instance.player.AddCredits(taskNode.creditReward);
                     SectorManager.instance.player.reputation += taskNode.reputationReward;
+                    SectorManager.instance.player.shards += taskNode.shardReward;
                     if(taskNode.partReward)
                     {
                         SectorManager.instance.player.cursave.partInventory.Add(

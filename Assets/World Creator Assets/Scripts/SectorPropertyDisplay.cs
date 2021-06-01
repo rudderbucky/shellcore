@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 public class SectorPropertyDisplay : MonoBehaviour
 {
     public RectTransform rectTransform;
@@ -316,24 +317,36 @@ public class SectorPropertyDisplay : MonoBehaviour
             }
             else
             {
+                // TODO: Reused code from WCSiegeWaveHandler, fix
+                Sector.LevelEntity ent = new Sector.LevelEntity();
+                ent.assetID = "shellcore_blueprint";
+                ent.faction = field.Item2.value; // maybe change this later
                 try
                 {
                     EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
                     JsonUtility.FromJsonOverwrite(field.Item1.text, blueprint);
                     blueprint.intendedType = EntityBlueprint.IntendedType.ShellCore; // for good measure :)
 
-                    Sector.LevelEntity ent = new Sector.LevelEntity();
                     ent.name = blueprint.entityName;
-                    ent.assetID = "shellcore_blueprint";
                     ent.blueprintJSON = JsonUtility.ToJson(blueprint);
-                    ent.faction = field.Item2.value; // maybe change this later
-                    levelEntities.Add(ent);
+
                 } 
                 catch(System.Exception e)
                 {
-                    Debug.LogWarning(e);
-                    continue;
+                    // try and see if the name is an indirect reference
+                    var path = Application.streamingAssetsPath + "\\EntityPlaceholder";
+                    if(System.IO.Directory.GetFiles(path).Contains<string>(path + "\\" + field.Item1.text + ".json"))
+                    {
+                        ent.name = "ShellCore";
+                        ent.blueprintJSON = field.Item1.text;
+                    }
+                    else
+                    {
+                        Debug.LogWarning(e);
+                        continue;
+                    }
                 }
+                levelEntities.Add(ent);
             }
         }
 

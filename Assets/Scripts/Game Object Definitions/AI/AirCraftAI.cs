@@ -219,7 +219,7 @@ public class AirCraftAI : MonoBehaviour
         if (!craft.GetIsDead())
         {
             // find target
-            Entity target = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, craft.Terrain);
+            Entity target = getNearestEntity<Entity>(craft, true);
             craft.GetTargetingSystem().SetTarget(target ? target.transform : null);
             
             foreach (Ability a in craft.GetAbilities())
@@ -335,7 +335,7 @@ public class AirCraftAI : MonoBehaviour
                 {
                     if ((!retreatTargetFound && retreatSearchTimer < Time.time) || retreatSearchTimer < Time.time)
                     {
-                        Entity enemy = getNearestEntity<Entity>(craft.transform.position, craft.faction, true, Entity.TerrainType.All);
+                        Entity enemy = getNearestEntity<Entity>(craft, true);
                         if (enemy && (enemy.transform.position - craft.transform.position).sqrMagnitude < 1600f)
                         {
                             retreatTarget = craft.transform.position + (craft.transform.position - enemy.transform.position).normalized * 20f;
@@ -406,12 +406,16 @@ public class AirCraftAI : MonoBehaviour
         }
     }
 
-    public static T getNearestEntity<T>(Vector3 position, int faction = -1, bool enemy = true, Entity.TerrainType terrainType = Entity.TerrainType.All) where T : Entity
+    public static T getNearestEntity<T>(Entity craft, bool enemy = true) where T : Entity
     {
+        int faction = craft.faction;
+        Entity.TerrainType terrainType = craft.Terrain;
         float minD = float.MaxValue;
         T nearest = null;
         for (int i = 0; i < AIData.entities.Count; i++)
         {
+            if(AIData.entities[i] == craft)
+                continue;
             if (AIData.entities[i].GetIsDead())
                 continue;
             if (terrainType != Entity.TerrainType.All && AIData.entities[i].Terrain != terrainType)
@@ -423,7 +427,7 @@ public class AirCraftAI : MonoBehaviour
                 if ((FactionManager.IsAllied(AIData.entities[i].faction, faction) ^ !enemy) && faction != -1)
                     continue;
 
-                float d = (position - AIData.entities[i].transform.position).sqrMagnitude;
+                float d = (craft.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
                 if (d < minD)
                 {
                     minD = d;

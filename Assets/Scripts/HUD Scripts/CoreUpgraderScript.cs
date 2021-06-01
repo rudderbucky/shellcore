@@ -8,8 +8,8 @@ public class CoreUpgraderScript : GUIWindowScripts
 {
     public PlayerCore player;
     public static CoreUpgraderScript instance;
-    public static int[] maxAbilityCap = new int[] {15, 8, 15, 15};
-    private static int[] minAbilityCap = new int[] {10, 3, 10, 10};
+    public static int[] maxAbilityCap {get {return new int[] {15, 8, 15, 15};}}
+    public static int[] minAbilityCap {get {return new int[] {10, 3, 3, 10};}}
     public GameObject optionPrefab;
     public RectTransform reputationBar;
     public Text repText;
@@ -204,19 +204,20 @@ public class CoreUpgraderScript : GUIWindowScripts
     public static float[] GetRegens(string coreName) {
         switch(coreName) {
             case "core2_shell":
-                return new float[] {90, 0, 90};
+                return new float[] {90, 0, 45};
             case "core3skills_shell":
             case "core3weapons_shell":
-                return new float[] {120, 0, 120};
+                return new float[] {120, 0, 60};
             case "core4commando_shell":
             case "core4elite_shell":
             case "core4captain_shell":
             case "core4admiral_shell":
-                return new float[] {150, 0, 150};
+                return new float[] {150, 0, 75};
             default:
-                return new float[] {60, 0, 60};
+                return new float[] {60, 0, 30};
         }
     }
+    public static float[] defaultHealths {get {return new float[] {1000,250,500}; }}
     public static float[] GetNextRegens(string coreName) {
         switch(coreName) {
             case "core1_shell":

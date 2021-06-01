@@ -29,7 +29,6 @@ namespace NodeEditorFramework.Standard
 
         public void Init(int index)
         {
-            Debug.Log("Testsetess");
             SectorManager.OnSectorLoad += SectorLoaded;
 
             state = ConditionState.Listening;
@@ -39,7 +38,6 @@ namespace NodeEditorFramework.Standard
         {
             if (sector == sectorName)
             {
-                Debug.Log("Completimegousdrhndrtouhnt!");
                 state = ConditionState.Completed;
                 output.connection(0).body.Calculate();
             }

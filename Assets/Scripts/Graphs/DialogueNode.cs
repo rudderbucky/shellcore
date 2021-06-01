@@ -23,6 +23,7 @@ namespace NodeEditorFramework.Standard
 
         ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right);
 
+        public bool useEntityColor = true;
         public Color textColor = Color.white;
         public string text;
         public List<string> answers = new List<string>();
@@ -35,14 +36,18 @@ namespace NodeEditorFramework.Standard
         {
             GUILayout.Label("Text:");
             text = GUILayout.TextArea(text, GUILayout.ExpandHeight(false));
-            GUILayout.Label("Text Color:");
-            float r, g, b;
-            GUILayout.BeginHorizontal();
-            r = RTEditorGUI.FloatField(textColor.r);
-            g = RTEditorGUI.FloatField(textColor.g);
-            b = RTEditorGUI.FloatField(textColor.b);
-            GUILayout.EndHorizontal();
-            textColor = new Color(r, g, b);
+            if(!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
+            {
+                GUILayout.Label("Text Color:");
+                float r, g, b;
+                GUILayout.BeginHorizontal();
+                r = RTEditorGUI.FloatField(textColor.r);
+                g = RTEditorGUI.FloatField(textColor.g);
+                b = RTEditorGUI.FloatField(textColor.b);
+                GUILayout.EndHorizontal();
+                textColor = new Color(r, g, b);
+            }
+            
 
             GUILayout.Label("Answers:");
             for (int i = 0; i < answers.Count; i++)
