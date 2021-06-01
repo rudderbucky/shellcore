@@ -9,23 +9,31 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class ReticleScript : MonoBehaviour {
 
-    public Sprite[] shapeArray;
     private PlayerCore craft; // the player the reticle is assigned to
     private TargetingSystem targSys; // the targeting system of the player
     private bool initialized; // if the reticle has been initialized
-    private Transform shellimage; // the image representations of the target's shell and core health
-    private Transform coreimage;
-    public EventSystem system;
+    
+    [SerializeField]
+    private Image reticleImage;
+    [SerializeField]
+    private Image shellImage;
+    [SerializeField]
+    private Image coreImage;
+
     public QuantityDisplayScript quantityDisplay;
     public GameObject secondaryReticlePrefab;
-    public List<(Entity, Transform)> secondariesByObject = new List<(Entity, Transform)>();
+    public List<(Entity, Transform)> secondariesByObject;
 
     public bool DebugMode = false;
 
     public static ReticleScript instance;
     void Awake()
     {
-        instance = this;
+    }
+    
+    void Start()
+    {
+        secondariesByObject = new List<(Entity, Transform)>();
     }
 
     /// <summary>
@@ -35,9 +43,8 @@ public class ReticleScript : MonoBehaviour {
     {
         craft = player;
         targSys = craft.GetTargetingSystem(); // grab the targeting system
-        shellimage = transform.Find("Target Shell"); // grab the sprites
-        coreimage = transform.Find("Target Core");
         initialized = true; // initialization complete
+        instance = this;
     }
 
     /// <summary>
@@ -107,7 +114,6 @@ public class ReticleScript : MonoBehaviour {
                 }
                 else
                 {
-                    Debug.Log("test");
                     SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
                     if(!secondariesByObject.Contains((ent, draggableTarget.transform)))
                     {
@@ -161,23 +167,37 @@ public class ReticleScript : MonoBehaviour {
     public void SetTarget(Transform target)
     {
         targSys.SetTarget(target); // set the target to the transform
-        AdjustReticleBounds(GetComponent<SpriteRenderer>(), target);
+        if(target) AdjustReticleBounds(reticleImage, target);
     }
 
     /// <summary>
     /// Used to update the reticle representation
     /// </summary>
     private void SetTransform() {
+        if(targSys == null) return;
         Transform target = targSys.GetTarget(); // get the target
         if(target != null)
         {
-            transform.position = target.position; // update reticle position
-            GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
+            reticleImage.rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(target.position);
+            //transform.position = target.position; // update reticle position
+            reticleImage.enabled = true;
         }
-        else GetComponent<SpriteRenderer>().enabled = false;
-
+        else reticleImage.enabled = false;
+        
         ITargetable targetCraft = target ? target.GetComponent<ITargetable>() : null; // if target is an entity
-        UpdateReticleHealths(shellimage, coreimage, targetCraft);
+        UpdateReticleHealths(shellImage, coreImage, targetCraft);
+    }
+
+    public void Focus()
+    {
+        SetTransform();
+        var index = 0;
+        while(index < secondariesByObject.Count)
+        {
+            var oldCount = secondariesByObject.Count;
+            SetSecondaryReticleTransform(secondariesByObject[index].Item1, secondariesByObject[index].Item2, index + 1);
+            if(oldCount == secondariesByObject.Count) index++;
+        }
     }
 
 	// Update is called once per frame
@@ -209,7 +229,6 @@ public class ReticleScript : MonoBehaviour {
                     targSys.SetTarget(null); // if so remove the target lock
                 }
             }
-            SetTransform(); // update the transform of the reticle accordingly
 
             // Toggle tractor beam
             if (InputManager.GetKeyDown(KeyName.ToggleTractorBeam))
@@ -235,26 +254,25 @@ public class ReticleScript : MonoBehaviour {
     {
         if(ent != null && !ent.GetIsDead() && !ent.GetInvisible())
         {
-            reticle.transform.position = ent.transform.position; // update reticle position
+            reticle.GetComponent<RectTransform>().anchoredPosition = Camera.main.WorldToScreenPoint(ent.transform.position); // update reticle position
 
-            reticle.GetComponent<SpriteRenderer>().enabled = true; // enable the sprite renderers
-            reticle.Find("Number Marker").GetComponent<MeshRenderer>().enabled = true;
-            reticle.Find("Number Marker").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
-            reticle.Find("Number Marker").GetComponent<TextMesh>().text = count + "";
-            reticle.Find("Number Marker").GetComponent<TextMesh>().color = new Color32((byte)0, (byte)150, (byte)250, (byte)255);
+            reticle.Find("Number Marker").GetComponent<Text>().enabled = true;
+            reticle.Find("Number Marker").GetComponent<Text>().text = count + "";
+            reticle.Find("Number Marker").GetComponent<Text>().color = new Color32((byte)0, (byte)150, (byte)250, (byte)255);
         }
         else RemoveSecondaryTarget((ent, reticle));
 
-        var shellimage = reticle.Find("Target Shell");
-        var coreimage = reticle.Find("Target Core");
+        // TIL slashes allow Find searches to work like directories
+        var shellImage = reticle.Find("Container/ShellImage").GetComponent<Image>();
+        var coreImage = reticle.Find("Container/CoreImage").GetComponent<Image>();
 
         if (DebugMode)
         {
-            var energyimage = reticle.Find("Target Energy");
-            UpdateReticleHealths(shellimage, coreimage, ent, energyimage);
+            var energyimage = reticle.Find("Container/EnergyImage").GetComponent<Image>();
+            UpdateReticleHealths(shellImage, coreImage, ent, energyimage);
         }
         else
-            UpdateReticleHealths(shellimage, coreimage, ent);
+            UpdateReticleHealths(shellImage, coreImage, ent);
     }
 
     ///
@@ -284,69 +302,58 @@ public class ReticleScript : MonoBehaviour {
         return check;
     }
 
-    private void AdjustReticleBounds(SpriteRenderer renderer, Transform ent)
+    private void AdjustReticleBounds(Image image, Transform ent)
     {
         Vector3 targSize = ent.GetComponent<SpriteRenderer>().bounds.size; // adjust the size of the reticle
         float followedSize = Mathf.Max(targSize.x + 1.5F, targSize.y + 1.5F); // grab the maximum bounded size of the target
-        renderer.size = new Vector2(followedSize, followedSize); // set the scale to match the size of the target
-        if(renderer.transform.Find("Number Marker"))
+        image.rectTransform.sizeDelta = Vector2.one * followedSize * 33;
+        if(transform.Find("Number Marker"))
         {
-            renderer.transform.Find("Number Marker").localPosition = new Vector3(followedSize / 2 + 0.1F, followedSize / 2 + 0.05F, 0);
+            transform.Find("Number Marker").localPosition = new Vector3(followedSize / 2 + 0.1F, followedSize / 2 + 0.05F, 0);
         }
     }
 
-    private void UpdateReticleHealths(Transform shellHealth, Transform coreHealth, ITargetable targetCraft, Transform energy = null)
+    private void UpdateReticleHealths(Image shellImage, Image coreImage, ITargetable targetCraft, Image energyImage = null)
     {
         if(targetCraft != null)
         {
             // show craft related information
-
-            shellHealth.GetComponentInChildren<SpriteRenderer>().enabled = true;
-            shellHealth.GetComponentInChildren<SpriteRenderer>().color =
-                FactionManager.GetFactionColor(targetCraft.GetFaction());
-            coreHealth.GetComponentInChildren<SpriteRenderer>().enabled = true;
+            shellImage.enabled = coreImage.enabled = true;
+            shellImage.color = FactionManager.GetFactionColor(targetCraft.GetFaction());
+            coreImage.color = new Color(0.8F,0.8F,0.8F);
+           
 
             float[] targHealth = targetCraft.GetHealth(); // get the target current health
             float[] targMax = targetCraft.GetMaxHealth(); // get the target max health
 
+            shellImage.rectTransform.localScale = new Vector3(targHealth[0] / targMax[0],1,1);
+            coreImage.rectTransform.localScale = new Vector3(targHealth[1] / targMax[1],1,1);
+
             // adjust the image scales according to the health ratios
-            Vector3 scale = shellHealth.localScale;
 
-            scale.x = targHealth[0] / targMax[0];
 
-            shellHealth.localScale = scale;
 
-            scale = coreHealth.localScale;
-            scale.x = targHealth[1] / targMax[1];
-
-            coreHealth.localScale = scale;
 
             if (DebugMode)
             {
-                energy.GetComponentInChildren<SpriteRenderer>().enabled = true;
-                scale.x = targHealth[2] / targMax[2];
-                energy.localScale = scale;
-
-                var parent = shellHealth.parent;
-                parent.Find("Shell Number").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
-                parent.Find("Core Number").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
-                parent.Find("Energy Number").GetComponent<MeshRenderer>().sortingLayerName = "Particles";
-
-                var meshRenderers = parent.GetComponentsInChildren<MeshRenderer>();
-                foreach (MeshRenderer mr in meshRenderers)
-                    mr.enabled = true;
+                energyImage.enabled = true;
+                var parent = coreImage.transform.parent.parent;
+                var texts = parent.GetComponentsInChildren<Text>();
+                foreach (Text t in texts)
+                    t.enabled = true;
 
 
-                parent.Find("Shell Number").GetComponentInChildren<TextMesh>().text = Mathf.Round(targHealth[0]) + "/" + targMax[0];
-                parent.Find("Core Number").GetComponentInChildren<TextMesh>().text = Mathf.Round(targHealth[1]) + "/" + targMax[1];
-                parent.Find("Energy Number").GetComponentInChildren<TextMesh>().text = Mathf.Round(targHealth[2]) + "/" + targMax[2];
+                parent.Find("Shell Number").GetComponentInChildren<Text>().text = Mathf.Round(targHealth[0]) + "/" + targMax[0];
+                parent.Find("Core Number").GetComponentInChildren<Text>().text = Mathf.Round(targHealth[1]) + "/" + targMax[1];
+                parent.Find("Energy Number").GetComponentInChildren<Text>().text = Mathf.Round(targHealth[2]) + "/" + targMax[2];
             }
         }
         else
         {
             // disable the craft related info
-            shellHealth.GetComponentInChildren<SpriteRenderer>().enabled = false;
-            coreHealth.GetComponentInChildren<SpriteRenderer>().enabled = false;
+            shellImage.enabled = coreImage.enabled = false;
+            if(energyImage) energyImage.enabled = false;
+
         }
     }
 
@@ -356,8 +363,9 @@ public class ReticleScript : MonoBehaviour {
         if(success)
         {
             var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
-            AdjustReticleBounds(reticle.GetComponent<SpriteRenderer>(), ent.transform);
+            AdjustReticleBounds(secondaryReticlePrefab.GetComponent<Image>(), ent.transform);
             secondariesByObject.Add((ent, reticle.transform));
+            //SetSecondaryReticleTransform(ent, reticle.transform, secondariesByObject.Count);
             if (!DebugMode)
                 quantityDisplay.AddEntityInfo(ent, this);
         }

@@ -173,7 +173,7 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 foreach(var rend in item.obj.GetComponentsInChildren<SpriteRenderer>())
                 {
-                    rend.color = FactionManager.GetFactionColor(item.faction);
+                    rend.color = FactionManager.GetFactionColor(FactionManager.FactionExists(item.faction) ? item.faction : 0);
                 }
             }
         }
@@ -182,7 +182,7 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             foreach(var rend in current.obj.GetComponentsInChildren<SpriteRenderer>())
             {
-                rend.color = FactionManager.GetFactionColor(current.faction);
+                rend.color = FactionManager.GetFactionColor(FactionManager.FactionExists(current.faction) ? current.faction : 0);
             }
         }
     }
@@ -230,6 +230,10 @@ public class WorldCreatorCursor : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.C) && !system.IsPointerOverGameObject())
         {
             ActivateCharacterHandler();
+        }
+        if(Input.GetKeyDown(KeyCode.F) && !system.IsPointerOverGameObject())
+        {
+            ActivateFactionHandler();
         }
     }
 
@@ -292,9 +296,18 @@ public class WorldCreatorCursor : MonoBehaviour
         waveBuilder.ToggleActive();
     }
 
+    [SerializeField]
+    WCBasePropertyHandler basePropertyHandler;
     public void ActivateCharacterHandler()
     {
-        characterHandler.ToggleActive();
+        basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Characters);
+        basePropertyHandler.ToggleActive();    
+    }
+
+    public void ActivateFactionHandler()
+    {
+        basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Factions);
+        basePropertyHandler.ToggleActive();
     }
 
     public int flagID = 0;
@@ -376,7 +389,6 @@ public class WorldCreatorCursor : MonoBehaviour
             RemoveSector(sectors[0]);
         }
         characters.Clear();
-        characterHandler.ReflectButtonData();
     }
 
     void RemoveSector(SectorWCWrapper sector)

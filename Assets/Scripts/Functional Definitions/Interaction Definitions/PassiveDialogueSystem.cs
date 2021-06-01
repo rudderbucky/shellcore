@@ -104,7 +104,7 @@ public class PassiveDialogueSystem : MonoBehaviour
         }
 
         if(passiveDialogueContents != null && passiveDialogueContents.transform.childCount == 0 && InputManager.GetKeyDown(KeyName.ShowChatHistory)
-            && !DevConsoleScript.componentEnabled)
+            && !PlayerCore.Instance.GetIsInteracting())
         {
             var par = archiveContents.transform.parent.gameObject;
            par.SetActive(!par.activeSelf);

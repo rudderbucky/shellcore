@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Audio;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -55,6 +56,8 @@ public class ResourceManager : MonoBehaviour
         LoadResources(Application.streamingAssetsPath);
     }
 
+    public static string[] resourceHeaders {get {return new string[] {"sprites:", "parts:", "entities:",
+        "vending-options:", "paths:", "factions:", "audio:"}; }}
     public bool LoadResources(string path)
     {
         if (!path.Equals(Application.streamingAssetsPath))
@@ -85,48 +88,44 @@ public class ResourceManager : MonoBehaviour
                 string line = lines[i];
                 if (line == "")
                     continue;
-                if (line.ToLower().StartsWith("sprites:"))
-                    mode = 0;
-                else if (line.ToLower().StartsWith("parts:"))
-                    mode = 1;
-                else if (line.ToLower().StartsWith("entities:"))
-                    mode = 2;
-                else if (line.ToLower().StartsWith("vending-options:"))
-                    mode = 3;
-                else if (line.ToLower().StartsWith("paths:"))
-                    mode = 4;
-                else if (line.ToLower().StartsWith("factions:"))
-                    mode = 5;
-                else if (line.ToLower().StartsWith("audio:"))
-                    mode = 6;
+
+                var isMode = false;
+                for(int j = 0; j < resourceHeaders.Length; j++)
+                {
+                    if(line.ToLower().StartsWith(resourceHeaders[j]))
+                    {
+                        mode = j;
+                        isMode = true;
+                        break;
+                    }
+                }
+                if(isMode) continue;
+
+                string[] names = line.Split(':');
+                string resPath = System.IO.Path.Combine(path, names[1]);
+                if (File.Exists(resPath))
+                {
+                    fileNames.Add(resPath);
+                    switch (mode)
+                    {
+                        case 0: sprites.    Add((names[0], resPath)); break;
+                        case 1: parts.      Add((names[0], resPath)); break;
+                        case 2: entities.   Add((names[0], resPath)); break;
+                        case 3: vending.    Add((names[0], resPath)); break;
+                        case 4: paths.      Add((names[0], resPath)); break;
+                        case 5: factions.   Add((names[0], resPath)); break;
+                        case 6: sounds.     Add((names[0], resPath)); break;
+                        default:
+                            break;
+                    }
+                    if (!path.Equals(Application.streamingAssetsPath))
+                    {
+                        Debug.Log("Resource loaded: " + names[0]);
+                    }
+                }
                 else
                 {
-                    string[] names = line.Split(':');
-                    string resPath = System.IO.Path.Combine(path, names[1]);
-                    if (File.Exists(resPath))
-                    {
-                        fileNames.Add(resPath);
-                        switch (mode)
-                        {
-                            case 0: sprites.    Add((names[0], resPath)); break;
-                            case 1: parts.      Add((names[0], resPath)); break;
-                            case 2: entities.   Add((names[0], resPath)); break;
-                            case 3: vending.    Add((names[0], resPath)); break;
-                            case 4: paths.      Add((names[0], resPath)); break;
-                            case 5: factions.   Add((names[0], resPath)); break;
-                            case 6: sounds.     Add((names[0], resPath)); break;
-                            default:
-                                break;
-                        }
-                        if (!path.Equals(Application.streamingAssetsPath))
-                        {
-                            Debug.Log("Resource loaded: " + names[0]);
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", Application.streamingAssetsPath + "\\" + names[1], names[0]);
-                    }
+                    Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", Application.streamingAssetsPath + "\\" + names[1], names[0]);
                 }
             }
 
@@ -224,16 +223,8 @@ public class ResourceManager : MonoBehaviour
                 if (line == "")
                     continue;
                 string lower = line.ToLower();
-                if (lower.StartsWith("sprites:") ||
-                    lower.StartsWith("parts:") ||
-                    lower.StartsWith("entities:") ||
-                    lower.StartsWith("vending-options:") ||
-                    lower.StartsWith("paths:") ||
-                    lower.StartsWith("factions:") ||
-                    lower.StartsWith("audio:"))
-                {
-                    continue;
-                }
+                if(resourceHeaders.Any(header => lower.StartsWith(header))) continue;
+
                 string[] names = line.Split(':');
                 string resPath = System.IO.Path.Combine(path, names[1]);
                 if (File.Exists(resPath))

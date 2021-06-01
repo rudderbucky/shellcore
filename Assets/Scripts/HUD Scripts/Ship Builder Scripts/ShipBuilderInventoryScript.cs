@@ -44,7 +44,11 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
             count--;
             if(symmetryPart) count--;
             cursor.buildValue += EntityBlueprint.GetPartValue(part);
-            if(mode == BuilderMode.Trader) cursor.buildCost += EntityBlueprint.GetPartValue(part);
+            if(mode == BuilderMode.Trader) 
+            {
+                cursor.buildCost += EntityBlueprint.GetPartValue(part);
+                if(symmetryPart) cursor.buildCost += EntityBlueprint.GetPartValue(part);
+            }
 
             if(Input.GetKey(KeyCode.LeftShift)) 
             {

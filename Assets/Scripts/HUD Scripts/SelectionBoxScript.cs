@@ -10,7 +10,6 @@ using NodeEditorFramework.Standard;
 ///</summary>
 public class SelectionBoxScript : MonoBehaviour
 {
-
     public Image image;
     private Vector2 startPoint;
     private Vector2 pivotVec;
@@ -60,8 +59,8 @@ public class SelectionBoxScript : MonoBehaviour
             // Debug.Log(PlayerCore.Instance.GetIsInteracting() + " " + DialogueSystem.isInCutscene + " " + PlayerViewScript.paused + " " + PlayerViewScript.GetIsWindowActive());
             if(!PlayerViewScript.paused)
             {
-                PlayerCore.Instance.GetTargetingSystem().ClearSecondaryTargets();
-                PlayerCore.Instance.GetTargetingSystem().SetTarget(null);
+                reticleScript.ClearSecondaryTargets();
+                reticleScript.SetTarget(null);
             }
             image.enabled = false;
             clicking = false;
@@ -84,6 +83,7 @@ public class SelectionBoxScript : MonoBehaviour
         }
 
         // Right click clears targets
+        /*
         if(Input.GetMouseButtonDown(1))
         {
             if(Input.GetKey(KeyCode.LeftShift))
@@ -97,6 +97,7 @@ public class SelectionBoxScript : MonoBehaviour
                 else PlayerCore.Instance.GetTargetingSystem().SetTarget(null);
             }
         }
+        */
 
         if(Input.GetMouseButtonDown(0) && !eventSystem.IsPointerOverGameObject())
         {
@@ -157,6 +158,7 @@ public class SelectionBoxScript : MonoBehaviour
             }
         }
 
+        /*
         // Drones being commanded has a higher priority than mouse movement, so it should prevent the player themselves from moving.
         // This controls mouse movement, first it checks if the click was meant for mouse movement
         else if(!dronesChecked && Input.GetMouseButtonUp(0) 
@@ -182,6 +184,7 @@ public class SelectionBoxScript : MonoBehaviour
                 ContinuePathData(node, renderer);
             }
         } else if(Input.GetMouseButtonUp(0)) dronesChecked = false;
+        */
     }
 
     void BeginPathData(PathData.Node node, SpriteRenderer renderer)
@@ -222,7 +225,7 @@ public class SelectionBoxScript : MonoBehaviour
 
         while (current != null)
         {
-            if(PlayerCore.getDirectionalInput() != Vector2.zero || (currentPathData == null || !currentPathData.waypoints.Contains(current)))
+            if(PlayerCore.Instance.getDirectionalInput() != Vector2.zero || (currentPathData == null || !currentPathData.waypoints.Contains(current)))
             {
                 if(currentPathData == null || (!currentPathData.waypoints.Contains(current)))
                     yield break;

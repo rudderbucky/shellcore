@@ -45,8 +45,10 @@ public class PlayerCore : ShellCore {
     public AbilityHandler GetAbilityHandler() {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
     }
+
+    // "Interacting" means the player is in a situation where they SHOULDN'T BE MOVING
     public bool GetIsInteracting() {
-        return isInteracting;
+        return isInteracting || DevConsoleScript.componentEnabled;
     }
 
     public void SetIsInteracting(bool val) {
@@ -87,8 +89,18 @@ public class PlayerCore : ShellCore {
     /// The directional driver for the player core, returns a vector based on current inputs
     /// </summary>
     /// <returns>a directional vector based on current inputs</returns>
-    public static Vector2 getDirectionalInput()
+    public Vector2 getDirectionalInput()
     {
+        
+        if(Input.GetMouseButton(1))
+        {
+            var delta = (MouseMovementVisualScript.overMinimap ? CameraScript.instance.minimapCamera.ScreenToWorldPoint(MouseMovementVisualScript.GetMousePosOnMinimap())
+                 : CameraScript.instance.GetWorldPositionOfMouse()) - 
+                transform.position;
+            return delta.normalized;
+        }
+           
+
         //Sum up all inputs
         Vector2 direction = Vector2.zero;
         if (InputManager.GetKey(KeyName.Up))
@@ -231,7 +243,7 @@ public class PlayerCore : ShellCore {
             group.sortingOrder = ++maxAirLayer;
         }
         base.Update(); // base update
-        if(!isInteracting && !DialogueSystem.isInCutscene && !DevConsoleScript.componentEnabled) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+        if(!GetIsInteracting() && !DialogueSystem.isInCutscene) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
 	}
 
     public override void Warp(Vector3 point)

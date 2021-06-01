@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShellMax : PassiveAbility {
 
 	public int index;
-	public static readonly int max = 250;
+	public static readonly int max = 400;
 
 	public void Initialize() {
         switch(index)

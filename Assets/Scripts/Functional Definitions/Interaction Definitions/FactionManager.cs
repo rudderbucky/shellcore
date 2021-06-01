@@ -61,7 +61,7 @@ public class FactionManager : MonoBehaviour
 
     public static bool FactionExists(int faction)
     {
-        if (faction < 0 || faction >= 32)
+        if (faction < 0 || faction >= 32 || instance.factions.Length <= faction)
             return false;
         return instance.factions[faction] != null;
     }

@@ -52,7 +52,7 @@ public class MainMenu : MonoBehaviour
 
     public void OpenDiscord()
     {
-        Application.OpenURL("https://discord.gg/yZMG85r");
+        Application.OpenURL("https://discord.gg/TXaenta");
     }
 
     public void StartWorldCreator()

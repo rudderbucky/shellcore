@@ -95,9 +95,11 @@ public class WCBetterBarHandler : MonoBehaviour
             images.Add(img);
             if(itemHandler.itemPack.items[i].assetID != "")
             {
-                var print = ResourceManager.GetAsset<EntityBlueprint>(itemHandler.itemPack.items[i].assetID);
-                if(print)
+               
+                if(ResourceManager.Instance.resourceExists(itemHandler.itemPack.items[i].assetID) &&
+                     ResourceManager.GetAsset<Object>(itemHandler.itemPack.items[i].assetID) as EntityBlueprint)
                 {
+                     var print = ResourceManager.GetAsset<EntityBlueprint>(itemHandler.itemPack.items[i].assetID);
                     buttonObj.transform.Find("MaskObj").Find("StandardImage").gameObject.SetActive(false);
                     var scaler = buttonObj.transform.Find("MaskObj").Find("EntityDisplay").transform;
                     

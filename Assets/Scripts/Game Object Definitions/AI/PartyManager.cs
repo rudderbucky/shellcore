@@ -152,7 +152,10 @@ public class PartyManager : MonoBehaviour
             }
         }
 
-        partyMembers.Add(AIData.entities.Find(x => x.ID == charID) as ShellCore);
+        var core = AIData.entities.Find(x => x.ID == charID) as ShellCore;
+        partyMembers.Add(core);
+        partyIndicators.Add(core, Instantiate(partyIndicatorPrefab, indicatorTransform));
+        partyIndicators[core].GetComponentInChildren<Text>().text = core.name.ToUpper();
     }
 
     public void Unassign(string charID, Button assignButton)
@@ -166,6 +169,11 @@ public class PartyManager : MonoBehaviour
             partyResponses.Remove(charID);
             var clicked = new Button.ButtonClickedEvent();
             clicked.AddListener(() => AssignCharacter(charID, assignButton));
+            if(partyIndicators.ContainsKey(member))
+            {
+                Destroy(partyIndicators[member]);
+                partyIndicators.Remove(member);
+            }
             // sukratHealth.SetActive(false);
         }
         else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
@@ -173,7 +181,9 @@ public class PartyManager : MonoBehaviour
         UpdatePortraits();
     }
 
-    public GameObject sukratHealth;
+    public GameObject partyIndicatorPrefab;
+    public Dictionary<ShellCore, GameObject> partyIndicators = new Dictionary<ShellCore, GameObject>();
+    public Transform indicatorTransform;
 
     private void AddOption(string name, UnityAction action)
     {
@@ -283,12 +293,18 @@ public class PartyManager : MonoBehaviour
             wheel.SetActive(false);
         }
 
-        if(sukratHealth.activeSelf)
+        foreach(var kvp in partyIndicators)
         {
             for(int i = 0; i < 3; i++)
             {
+
                 sukratHealth.GetComponentsInChildren<Image>()[i+1].GetComponent<RectTransform>().sizeDelta = 
                     new Vector2(100 * partyMembers[0].GetCurrentHealth(i) / partyMembers[0].GetMaxHealth()[i], 5);
+
+                float barWidth = 160;
+                kvp.Value.GetComponentsInChildren<Image>()[i+1].GetComponent<RectTransform>().sizeDelta = 
+                        new Vector2(barWidth * kvp.Key.currentHealth[i] / kvp.Key.GetMaxHealth()[i], 5);
+
             }
         }
     }

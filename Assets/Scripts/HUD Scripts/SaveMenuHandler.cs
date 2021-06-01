@@ -329,13 +329,13 @@ public class SaveMenuHandler : GUIWindowScripts {
 		// is created.
 		EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 		blueprint.name = "Player Save Blueprint";
-		blueprint.baseRegen = new float[] {60,0,60};
-		blueprint.shellHealth = new float[] {1000,250,500};
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
 		blueprint.coreSpriteID = "core1_light";
 		blueprint.coreShellSpriteID = "core1_shell";
+		blueprint.baseRegen = CoreUpgraderScript.GetRegens(blueprint.coreShellSpriteID);
+		blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
-		save.abilityCaps = new int[] {10, 3, 10, 10};
+		save.abilityCaps = CoreUpgraderScript.minAbilityCap;
 		save.shards = 0;
 		save.version = currentVersion;
 		save.resourcePath = resourcePath;
