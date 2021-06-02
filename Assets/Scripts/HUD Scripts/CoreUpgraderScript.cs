@@ -15,6 +15,7 @@ public class CoreUpgraderScript : GUIWindowScripts
     public Text repText;
     public Transform optionHolder;
     public Text regenText;
+    private static int minLvShards = 0;
 
     public void initialize() {
         instance = this;
@@ -99,8 +100,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     }
 
     public static int GetUpgradeCost(int type) {
-        if ((instance.player.abilityCaps[type] - minAbilityCap[type]) > 3){
-            return 5 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type] - 3));
+        if ((instance.player.abilityCaps[type] - minAbilityCap[type]) > minLvShards){
+            return 5 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type] - minLvShards));
         }
         else {
             return 0;
