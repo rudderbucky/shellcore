@@ -29,6 +29,9 @@ public class TargetingSystem : ITargetingSystem
         target = null;
         this.parent = parent;
         faction = GetEntity().faction;
+
+        // sync up the reticle representations with the new targeting system
+        if(GetEntity() as PlayerCore && ReticleScript.instance) ReticleScript.instance.ClearSecondaryTargets();
     }
 
     /// <summary>
