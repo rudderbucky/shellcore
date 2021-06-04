@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShellRegen : PassiveAbility {
 
 	public int index;
-	public static readonly int[] regens = new int[] {50, 50, 20};
+	public static readonly int[] regens = new int[] {50, 50, 50};
 	public void Initialize() {
 		switch(index)
         {

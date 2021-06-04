@@ -195,6 +195,42 @@ public class DevConsoleScript : MonoBehaviour
                 updateLog = true;
                 textBox.text += "\n<color=lime>You're probably not gonna be able to see this.</color>";
             }
+            else if(command.Equals("Damacy", StringComparison.CurrentCultureIgnoreCase))
+            {
+                /* Adds all part/ability/tier/drone permutations to the player's inventory.*/
+                var parts = PlayerCore.Instance.GetInventory();
+                EntityBlueprint.PartInfo info;
+                for(int i = 0; i < 8; i++) 
+                {
+                    info = new EntityBlueprint.PartInfo();
+                    info.partID = "SmallCenter1";
+                    info.abilityID = 10;
+                    DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)i);
+                    info.secondaryData = JsonUtility.ToJson(data);
+                    if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
+                    parts.Add(info);
+                }
+
+                info = new EntityBlueprint.PartInfo();
+                foreach(string name in ResourceManager.allPartNames) {
+                    for(int i = 0; i < 38; i++) 
+                    {
+                        info.partID = name;
+                        info.abilityID = i;
+                        if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
+                        if(info.abilityID == 10) {
+                            DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)UnityEngine.Random.Range(0, 8));
+                            info.secondaryData = JsonUtility.ToJson(data);
+                        }
+                        if(info.abilityID == 0 || info.abilityID == 10 || info.abilityID == 21) info.tier = 0;
+                        else info.tier = 1;
+                        parts.Add(info);
+                        parts.Add(info);
+                        parts.Add(info);
+                    }
+                }
+                textBox.text += "\n<color=lime>Katamete korogasu I LOVE YOU!</color>";
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {

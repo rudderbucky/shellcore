@@ -43,6 +43,7 @@ public abstract class WeaponAbility : ActiveAbility {
 
     protected override void Awake()
     {
+        base.Awake();
         isEnabled = true; // initialize abilities to be active
         targetingSystem = new WeaponTargetingSystem();
         targetingSystem.ability = this;
