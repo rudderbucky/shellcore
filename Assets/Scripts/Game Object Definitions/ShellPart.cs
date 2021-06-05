@@ -46,7 +46,8 @@ public class ShellPart : MonoBehaviour {
         // try setting the part to shiny
         if(collectible)
         {
-             if(!transform.Find("Minimap Image"))
+            SetPartColor(FactionManager.GetFactionColor(GetFaction()));
+            if(!transform.Find("Minimap Image"))
             {
                 GameObject childObject = new GameObject("Minimap Image");
                 childObject.transform.SetParent(transform, false);
@@ -314,19 +315,12 @@ public class ShellPart : MonoBehaviour {
     private IEnumerator InitColorLerp(float lerpVal)
     {
         colorLerped = false;
-        ParticleSystem.ColorOverLifetimeModule partSysColorMod;
-        if(partSys) partSysColorMod = partSys.colorOverLifetime;
         while(lerpVal < 1)
         {
             lerpVal += 0.05F;
             lerpVal = Mathf.Min(lerpVal, 1);
             var lerpedColor = Color.Lerp(Color.gray, info.shiny ? FactionManager.GetFactionShinyColor(faction) : FactionManager.GetFactionColor(faction), lerpVal);
-            lerpedColor.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
-            
-            spriteRenderer.color = lerpedColor;
-            if(shooter) shooter.GetComponent<SpriteRenderer>().color = lerpedColor;
-
-            if(partSys) partSysColorMod.color = new ParticleSystem.MinMaxGradient(lerpedColor);
+            SetPartColor(lerpedColor);
             yield return new WaitForSeconds(0.025F);
         }
         colorLerped = true;
@@ -348,9 +342,18 @@ public class ShellPart : MonoBehaviour {
         {
             var color = Color.Lerp(Color.gray, info.shiny ? FactionManager.GetFactionShinyColor(faction) :
                 FactionManager.GetFactionColor(faction), currentHealth / partHealth);
-            color.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
-            spriteRenderer.color = color;
-            if(shooter) shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
+            SetPartColor(color);
         }
+    }
+
+    // ignores parameter alpha, since stealthing changes it
+    public void SetPartColor(Color color)
+    {
+        color.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f: 0f) : 1f);
+        spriteRenderer.color = color;
+        if(shooter) shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
+        ParticleSystem.ColorOverLifetimeModule partSysColorMod;
+        if(partSys) partSysColorMod = partSys.colorOverLifetime;
+        if(partSys) partSysColorMod.color = new ParticleSystem.MinMaxGradient(color);
     }
 }

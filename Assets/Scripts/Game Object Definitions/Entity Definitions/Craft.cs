@@ -66,6 +66,7 @@ public abstract class Craft : Entity
 
     protected override void BuildEntity()
     {
+        DestroyOldParts();
         speed = initSpeed;
         base.BuildEntity();
         CalculatePhysicsConstants();
@@ -142,7 +143,7 @@ public abstract class Craft : Entity
     {
         if (!isImmobile) // check for immobility
         {
-            physicsDirection = direction;
+            physicsDirection = direction; 
         }
     }
 

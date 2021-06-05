@@ -273,15 +273,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
         BuildEntity();
     }
 
-
-    /// <summary>
-    /// Generate shell parts in the blueprint, change ship stats accordingly
-    /// </summary>
-    protected virtual void BuildEntity()
+    // guarantees abilities deactivate on stack frame
+    protected void DestroyOldParts()
     {
-        // all created entities should have blueprints!
-        if (!blueprint) Debug.LogError(this + " does not have a blueprint! EVERY constructed entity should have one!");
-
         // Remove possible old parts from list
         foreach(var part in parts)
         {
@@ -292,6 +286,18 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
             }
 
         }
+    }
+
+    /// <summary>
+    /// Generate shell parts in the blueprint, change ship stats accordingly
+    /// </summary>
+    protected virtual void BuildEntity()
+    {
+        // all created entities should have blueprints!
+        if (!blueprint) Debug.LogError(this + " does not have a blueprint! EVERY constructed entity should have one!");
+
+        DestroyOldParts();
+        
         parts.Clear();
         blueprint.shellHealth.CopyTo(maxHealth, 0);
         blueprint.baseRegen.CopyTo(regenRate, 0);

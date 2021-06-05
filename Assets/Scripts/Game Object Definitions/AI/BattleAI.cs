@@ -229,7 +229,7 @@ public class BattleAI : AIModule
                 if((primaryTarget == null && nextSearchTime < Time.time) || nextSearchTime < Time.time - 3f)
                 {
                     // get nearest construct
-                    primaryTarget = AirCraftAI.getNearestEntity<AirConstruct>(craft.transform.position, craft.faction, true); //TODO: Exclude turrets?
+                    primaryTarget = AirCraftAI.getNearestEntity<AirConstruct>(craft, true); //TODO: Exclude turrets?
                     nextSearchTime = Time.time + 1f;
 
                     //if(primaryTarget)

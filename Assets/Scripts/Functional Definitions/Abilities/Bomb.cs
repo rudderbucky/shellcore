@@ -9,7 +9,7 @@ public class Bomb : WeaponAbility
     protected float survivalTime; // the time the bullet takes to delete itself
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
-    protected string bulletSound = "clip_bullet2";
+    protected string bombSound = "clip_bomb";
     public static readonly int bombDamage = 5000;
 
     protected override void Awake()
@@ -52,7 +52,7 @@ public class Bomb : WeaponAbility
     /// <param name="targetPos">The position to fire the bullet to</param>
     protected virtual void FireBullet(Vector3 targetPos)
     {
-        AudioManager.PlayClipByID(bulletSound, transform.position);
+        AudioManager.PlayClipByID(bombSound, transform.position);
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
         // Create the Bullet from the Bullet Prefab
         Vector3 diff = targetPos - originPos;
@@ -65,6 +65,7 @@ public class Bomb : WeaponAbility
 
         // Update its damage to match main bullet
         var script = bullet.GetComponent<BombScript>();
+        bullet.GetComponent<Rigidbody2D>().velocity = (targetPos - originPos).normalized * 5 * abilityTier;
         script.owner = GetComponentInParent<Entity>();
         script.SetDamage(GetDamage());
         script.SetCategory(category);

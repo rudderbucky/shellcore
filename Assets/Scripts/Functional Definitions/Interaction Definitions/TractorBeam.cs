@@ -59,7 +59,7 @@ public class TractorBeam : MonoBehaviour
     }
     protected void FixedUpdate()
     {
-        if (!IsValidTarget(target)) SetTractorTarget(null); // Make sure that you are still allowed to tractor the target
+        if (!IsValidDraggableTarget(target)) SetTractorTarget(null); // Make sure that you are still allowed to tractor the target
         if (target && !owner.GetIsDead()) // Update tractor beam physics
         {
             Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
@@ -159,7 +159,7 @@ public class TractorBeam : MonoBehaviour
         var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
         if(!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp)) AIData.strayParts.Add(targetComp);
 
-        if (IsValidTarget(newTarget))
+        if (IsValidDraggableTarget(newTarget))
         {
             if (lineRenderer)
                 lineRenderer.enabled = (newTarget != null);
@@ -171,7 +171,7 @@ public class TractorBeam : MonoBehaviour
         }  
     }
 
-    private bool IsValidTarget(Draggable newTarget)
+    private bool IsValidDraggableTarget(Draggable newTarget)
     {
         if (forcedTarget || !newTarget) 
             return true;
@@ -179,12 +179,17 @@ public class TractorBeam : MonoBehaviour
         if ((newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared && !(owner as Yard))
             return false;
 
+        return InvertTractorCheck(owner, newTarget);
+    }   
+
+    public static bool InvertTractorCheck(Entity owner, Draggable newTarget)
+    {
         Entity requestedTarget = newTarget.gameObject.GetComponent<Entity>(); 
         if (owner.tractorSwitched || !requestedTarget || ((requestedTarget.faction == owner.faction) && (requestedTarget is Drone || requestedTarget is Tank || requestedTarget is Turret)))
             return true;
 
         return false;
-    }    
+    } 
 
     public Draggable GetTractorTarget()
     {

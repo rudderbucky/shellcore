@@ -270,7 +270,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 savingLevelScreen.SetActive(false);
                                 saveState = 4;
                                 Debug.LogError("Two items in sectors " + container.sectorName + " and " 
-                                    + itemSectorsByID[ent.ID] + " were issued the same custom ID. Abort.");
+                                    + itemSectorsByID[ent.ID] + $" were issued the same custom ID ({ent.ID}). Abort.");
                                 yield break;
                             }
                             else itemSectorsByID.Add(ent.ID, container.sectorName);
@@ -690,12 +690,11 @@ public class WCGeneratorHandler : MonoBehaviour
                         string worlddatajson = System.IO.File.ReadAllText(file);
                         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
-
                         cursor.spawnPoint.position = wdata.initialSpawn;
                         // add characters into character handler
                         foreach(var ch in wdata.defaultCharacters)
                         {
-                            characterHandler.AddCharacter(ch);
+                            cursor.characters.Add(ch);
                         }
 
                         blueprintField.text = wdata.defaultBlueprintJSON;
