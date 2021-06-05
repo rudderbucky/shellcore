@@ -11,7 +11,7 @@ public class Ion : WeaponAbility {
         lineController = gObj.AddComponent<IonLineController>();
         ID = AbilityID.Ion;
         abilityName = "Ion";
-        cooldownDuration = 5f;
+        cooldownDuration = 15f;
         range = 15;
         category = Entity.EntityCategory.All;
         base.Awake();
