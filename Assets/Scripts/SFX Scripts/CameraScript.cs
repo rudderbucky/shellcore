@@ -24,6 +24,7 @@ public class CameraScript : MonoBehaviour {
 
     public void Initialize(PlayerCore player)
     {
+        if(zLevel > GetMaxZoomLevel()) zLevel = GetMaxZoomLevel();
         core = player;
         if(!initialized) sFXHandler.Initialize();
         initialized = true;

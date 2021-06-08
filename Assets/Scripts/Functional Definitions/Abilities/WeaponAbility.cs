@@ -27,6 +27,15 @@ public abstract class WeaponAbility : ActiveAbility {
     protected System.Type bonusDamageType = null;
     protected float bonusDamageMultiplier = 2f;
 
+    public string GetBonusDamageType()
+    {
+        if(bonusDamageType == typeof(AirConstruct)) return "Air Stations and Turrets";
+        if(bonusDamageType == typeof(GroundConstruct)) return "Ground Stations";
+        if(bonusDamageType == typeof(ShellCore)) return "ShellCores";
+        if(bonusDamageType == typeof(Drone)) return "Drones";
+        return bonusDamageType?.ToString();
+    }
+
     public bool CheckCategoryCompatibility(IDamageable entity)
     {
         if(type == WeaponDiversityType.Torpedo)
