@@ -129,7 +129,7 @@ public class TargetManager : MonoBehaviour
         //Find the closest enemy
         Transform closest = null;
         float closestD = float.MaxValue;
-        var pos = ts.GetEntity().transform.position;
+        var pos = ts.GetAbility() ? ts.GetAbility().transform.position : ts.GetEntity().transform.position;
 
         List<Entity> targets = new List<Entity>();
         for (int i = 0; i < FactionManager.FactionArrayLength; i++)

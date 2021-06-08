@@ -32,6 +32,8 @@ public class AbilityHandler : MonoBehaviour {
     public static string[] keybindList; // list of keys for ability binds
     public static AbilityHandler instance;
     public static float tileSpacing;
+    [SerializeField]
+    private CircleGraphic rangeCircle;
 
     public void SetCurrentVisible(AbilityTypes type) {
         if(currentVisibles != type) {
