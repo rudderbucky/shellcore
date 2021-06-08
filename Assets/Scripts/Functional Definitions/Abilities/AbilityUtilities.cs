@@ -185,7 +185,7 @@ public static class AbilityUtilities {
 				return $"Slow moving beam that deals {IonLineController.damageC * tier} damage per second for 5 seconds. "
 				+ $"\nBeam costs {IonLineController.energyC * tier} energy per second";
 			case 38:
-				return $"5 highly spread projectiles that each deal {Flak.bulletDamage * tier} damage.";
+				return $"Fires at most 5 projectiles at different targets that each deal {Flak.bulletDamage * tier} damage.";
             default:
 				return "Description unset";
 		}
@@ -215,7 +215,6 @@ public static class AbilityUtilities {
 			case 5:
 			case 14:
 			case 15:
-			case 38:
 				return "bulletshooter_sprite";
 			case 6:
 				return "cannonshooter_sprite";
@@ -229,6 +228,8 @@ public static class AbilityUtilities {
 				return "torpedoshooter_sprite";
 			case 9:
 				return "lasershooter_sprite";
+			case 38:
+				return "flakshooter_sprite";
 			default:
 				return "ability_indicator";
 		}
