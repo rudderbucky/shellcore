@@ -78,10 +78,11 @@ public class Ion : WeaponAbility {
             firing = true;
         }
         */
-
         if (!lineController.GetFiring()) // TODO: Use AbilityState.Charging instead
         {
-            AudioManager.PlayClipByID("clip_bullet2", transform.position);
+            var gObj = new GameObject("Sound");
+            gObj.transform.SetParent(transform);
+            AudioManager.PlayClipByID("clip_ion", transform.position, gObj);
             lineController.StartFiring(5);
             return true;
         }

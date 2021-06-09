@@ -57,12 +57,13 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.SetFloat("SFXVolume", newVol);
     }
 
-    public static void PlayClipByID(string ID, Vector3 pos) {
+    // sourcePoint = where the sound is played (moves along with object)
+    public static void PlayClipByID(string ID, Vector3 pos, GameObject sourcePoint=null) {
         if(instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
             return;
 
-        var source = new GameObject().AddComponent<AudioSource>();
-        source.transform.position = pos;
+        var source = (sourcePoint ? sourcePoint : new GameObject()).AddComponent<AudioSource>();
+        if(!sourcePoint) source.transform.position = pos;
         source.name = "Audio One-Shot";
         source.outputAudioMixerGroup = instance.sounds;
         source.clip = ResourceManager.GetAsset<AudioClip>(ID);

@@ -175,6 +175,14 @@ public class IonLineController : MonoBehaviour
         {
             if(line.startWidth > startWidth)
                 ThickenLine(-0.01F);
+
+            if(duration <= 0)
+            {
+                if(transform.parent.GetComponentInChildren<AudioSource>()) 
+                {
+                    Destroy(transform.parent.GetComponentInChildren<AudioSource>().gameObject);
+                }
+            }
         }
     }
 
