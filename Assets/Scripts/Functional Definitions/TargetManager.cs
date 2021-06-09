@@ -121,16 +121,18 @@ public class TargetManager : MonoBehaviour
         return Instance.GetTarget(ts, ec);
     }
 
-    Transform GetTarget(ITargetingSystem ts, Entity.EntityCategory ec)
+    public static List<Entity> GetTargetList(ITargetingSystem ts, Entity.EntityCategory ec)
     {
-        if (!trUpdated)
-            UpdateTargets();
-        
-        //Find the closest enemy
-        Transform closest = null;
-        float closestD = float.MaxValue;
-        var pos = ts.GetAbility() ? ts.GetAbility().transform.position : ts.GetEntity().transform.position;
+        return Instance.getTargetList(ts, ec);
+    }
 
+    public static Transform GetClosestFromList(List<Entity> targets, ITargetingSystem ts,  Entity.EntityCategory ec)
+    {
+        return Instance.getClosestFromList(targets, ts, ec);
+    }
+
+    private List<Entity> getTargetList(ITargetingSystem ts, Entity.EntityCategory ec)
+    {
         List<Entity> targets = new List<Entity>();
         for (int i = 0; i < FactionManager.FactionArrayLength; i++)
         {
@@ -158,11 +160,24 @@ public class TargetManager : MonoBehaviour
                 }
             }
         }
+        return targets;
+    }
+
+    private Transform getClosestFromList(List<Entity> targets, ITargetingSystem ts,  Entity.EntityCategory ec)
+    {
+        Transform closest = null;
+        float closestD = float.MaxValue;
+        var pos = ts.GetAbility() ? ts.GetAbility().transform.position : ts.GetEntity().transform.position;
+
         for (int i = 0; i < targets.Count; i++) // go through all entities and check them for several factors
         {
             // check if the target's category matches
             if (ec == Entity.EntityCategory.All || targets[i].category == ec)
             {
+                if(ts.GetAbility() as Flak)
+                {
+                    Debug.Log(closest);
+                }
                 // check if it is the closest entity that passed the checks so far
                 float sqrD = Vector3.SqrMagnitude(pos - targets[i].transform.position);
                 if (closest == null || sqrD < closestD)
@@ -179,8 +194,25 @@ public class TargetManager : MonoBehaviour
                     closestD = sqrD;
                     closest = targets[i].transform;
                 }
-            }
+            } else if(ts.GetAbility() as Flak)
+                {
+                    Debug.Log(ec + " " + targets[i].category);
+                }
         }
+        return closest;
+    }
+
+    Transform GetTarget(ITargetingSystem ts, Entity.EntityCategory ec)
+    {
+        if (!trUpdated)
+            UpdateTargets();
+        
+        //Find the closest enemy
+        
+
+        List<Entity> targets = getTargetList(ts, ec);
+        
+        var closest = getClosestFromList(targets, ts, ec);
         // set to the closest compatible target
         ts.SetTarget(closest);
         return closest;

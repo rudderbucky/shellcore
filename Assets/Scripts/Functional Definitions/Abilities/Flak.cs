@@ -9,7 +9,7 @@ public class Flak : WeaponAbility
     protected float survivalTime; // the time the bullet takes to delete itself
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
-    protected string bulletSound = "clip_bullet2";
+    protected string bulletSound = "clip_flak";
     public static readonly int bulletDamage = 100;
 
     protected override void Awake()
@@ -23,7 +23,7 @@ public class Flak : WeaponAbility
         range = bulletSpeed * survivalTime;
         ID = AbilityID.Flak;
         cooldownDuration = 1F;
-        energyCost = 50;
+        energyCost = 30;
         damage = bulletDamage;
         prefabScale = 0.5F * Vector3.one;
         category = Entity.EntityCategory.All;
@@ -51,25 +51,7 @@ public class Flak : WeaponAbility
     protected virtual bool FireBullet(Vector3 targetPos)
     {
         AudioManager.PlayClipByID(bulletSound, transform.position);
-        Vector3 originPos = part ? part.transform.position : Core.transform.position;
-    
-        // Calculate future target position
-        Vector2 targetVelocity = targetingSystem.GetTarget() ? targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
         
-        // Closed form solution to bullet lead problem involves finding t via a quadratic solved here.
-        Vector2 relativeDistance = targetPos - originPos;
-        var a = (bulletSpeed * bulletSpeed - Vector2.Dot(targetVelocity,targetVelocity));
-        var b = -(2*targetVelocity.x*relativeDistance.x + 2*targetVelocity.y*relativeDistance.y) ;
-        var c = -Vector2.Dot(relativeDistance,relativeDistance);
-
-        if(a == 0 || b*b-4*a*c<0) return false;
-
-        var t1 = (-b + Mathf.Sqrt(b*b - 4*a*c))/(2*a);
-        var t2 = (-b - Mathf.Sqrt(b*b - 4*a*c))/(2*a);
-        
-        float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1,t2));
-        if(t <= 0) return false;
-
         // Create the Bullet from the Bullet Prefab
         if(bulletPrefab == null)
         {
@@ -77,8 +59,43 @@ public class Flak : WeaponAbility
         }
         
         var bullets = 5;
+        // TODO: Highly suboptimal, this essentially makes the target check go twice
+        List<Entity> potentialTargets = TargetManager.GetTargetList(targetingSystem, category);
+        List<Transform> targets = new List<Transform>();
+        // Just get the 5 closest entities, the complexity is just O(N) instead of sorting which would be O(NlogN)
         for(int i = 0; i < bullets; i++)
         {
+            var target = TargetManager.GetClosestFromList(potentialTargets, targetingSystem, category);
+            if(target != null)
+            {
+                potentialTargets.Remove(target.GetComponentInChildren<Entity>());
+                targets.Add(target);
+            }
+            else break;
+        }
+
+
+        Vector3 originPos = part ? part.transform.position : Core.transform.position;
+        for(int i = 0; i < Mathf.Min(bullets, targets.Count); i++)
+        {
+            // Calculate future target position
+            Vector2 targetVelocity = targets[i] ? targets[i].GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
+            targetPos = targets[i].transform.position;
+            // Closed form solution to bullet lead problem involves finding t via a quadratic solved here.
+            Vector2 relativeDistance = targetPos - originPos;
+            var a = (bulletSpeed * bulletSpeed - Vector2.Dot(targetVelocity,targetVelocity));
+            var b = -(2*targetVelocity.x*relativeDistance.x + 2*targetVelocity.y*relativeDistance.y) ;
+            var c = -Vector2.Dot(relativeDistance,relativeDistance);
+
+            if(a == 0 || b*b-4*a*c<0) continue;
+
+            var t1 = (-b + Mathf.Sqrt(b*b - 4*a*c))/(2*a);
+            var t2 = (-b - Mathf.Sqrt(b*b - 4*a*c))/(2*a);
+            
+            float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1,t2));
+            if(t <= 0) continue;
+
+
             var totalSpreadInDegrees = bullets * 20;
             var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
             bullet.transform.localScale = prefabScale;
@@ -95,11 +112,11 @@ public class Flak : WeaponAbility
             script.missParticles = true;
 
             var normalizedVec = Vector3.Normalize(relativeDistance + targetVelocity*t);
-            var angle = (-(bullets / 2) + i) * 20;
-            var finalVec = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad + Mathf.Atan2(normalizedVec.y, normalizedVec.x)),
-                Mathf.Sin(angle * Mathf.Deg2Rad + Mathf.Atan2(normalizedVec.y, normalizedVec.x))).normalized;
+            //var angle = (-(bullets / 2) + i) * 20;
+            //var finalVec = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad + Mathf.Atan2(normalizedVec.y, normalizedVec.x)),
+            //    Mathf.Sin(angle * Mathf.Deg2Rad + Mathf.Atan2(normalizedVec.y, normalizedVec.x))).normalized;
             // Add velocity to the bullet
-            bullet.GetComponent<Rigidbody2D>().velocity = finalVec * bulletSpeed;
+            bullet.GetComponent<Rigidbody2D>().velocity = normalizedVec * bulletSpeed;
 
             // Destroy the bullet after survival time
             script.StartSurvivalTimer(survivalTime);
