@@ -148,6 +148,9 @@ public class WCWorldIO : MonoBehaviour
             }
             System.IO.Directory.Delete(Application.streamingAssetsPath + "\\FactionPlaceholder");
         }
+
+        if(System.IO.File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
+            File.Delete(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt"));
     }
 
     public void WCReadCurrentPath()

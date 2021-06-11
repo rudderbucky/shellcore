@@ -38,7 +38,6 @@ public class WCGeneratorHandler : MonoBehaviour
     List<WorldData.PartIndexData> partData = new List<WorldData.PartIndexData>();
     [SerializeField]
     FactionManager factionManager;
-    
 
     public static void DeleteTestWorld()
     {
@@ -521,7 +520,7 @@ public class WCGeneratorHandler : MonoBehaviour
         if(File.Exists(System.IO.Path.Combine(path, "ResourceData.txt")))
             File.Delete(System.IO.Path.Combine(path, "ResourceData.txt"));
         if(File.Exists(resourceTxtPath))
-            File.Move(resourceTxtPath, System.IO.Path.Combine(path, "ResourceData.txt"));
+            File.Copy(resourceTxtPath, System.IO.Path.Combine(path, "ResourceData.txt"));
 
         TryCopy(canvasPlaceholderPath, path + "\\Canvases\\");
         TryCopy(entityPlaceholderPath, path + "\\Entities\\");

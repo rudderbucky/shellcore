@@ -72,6 +72,7 @@ namespace NodeEditorFramework.Standard
         public void OnDialogue()
         {
             // draw objectives
+            if(TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
             TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
             TaskManager.DrawObjectiveLocations();
 

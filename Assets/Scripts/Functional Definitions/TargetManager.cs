@@ -174,10 +174,6 @@ public class TargetManager : MonoBehaviour
             // check if the target's category matches
             if (ec == Entity.EntityCategory.All || targets[i].category == ec)
             {
-                if(ts.GetAbility() as Flak)
-                {
-                    Debug.Log(closest);
-                }
                 // check if it is the closest entity that passed the checks so far
                 float sqrD = Vector3.SqrMagnitude(pos - targets[i].transform.position);
                 if (closest == null || sqrD < closestD)
@@ -194,10 +190,7 @@ public class TargetManager : MonoBehaviour
                     closestD = sqrD;
                     closest = targets[i].transform;
                 }
-            } else if(ts.GetAbility() as Flak)
-                {
-                    Debug.Log(ec + " " + targets[i].category);
-                }
+            }
         }
         return closest;
     }
