@@ -130,7 +130,6 @@ public class PlayerCore : ShellCore {
             if(Vector3.SqrMagnitude(transform.position - minimapPoint.Value) < PathAI.minDist)
             {
                 minimapPoint = null;
-                Debug.Log("test");
                 return Vector2.zero;
             }
             else return (minimapPoint.Value - transform.position).normalized;
