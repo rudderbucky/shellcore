@@ -116,6 +116,31 @@ public class AirCraftAI : MonoBehaviour
         }
     }
 
+    // used for party HUD visual
+    public string GetPartyBattleStateString()
+    {
+        if(module is BattleAI)
+        {
+            switch((module as BattleAI).GetState())
+            {
+                case BattleAI.BattleState.Attack:
+                    return "ATTACKING";
+                case BattleAI.BattleState.Defend:
+                    return "DEFENDING";
+                case BattleAI.BattleState.Collect:
+                    return "COLLECTING POWER";
+                case BattleAI.BattleState.Fortify:
+                    return "BUILDING TURRETS";
+            }
+        }
+        else if(module is FollowAI)
+        {
+            return "FOLLOWING";
+        }
+
+        return "IDLE";
+    }
+
     public AIMode getMode()
     {
         return mode;

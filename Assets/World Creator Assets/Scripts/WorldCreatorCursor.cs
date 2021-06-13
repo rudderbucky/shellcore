@@ -83,6 +83,8 @@ public class WorldCreatorCursor : MonoBehaviour
     // Update is called once per frame
     static int sortLayerNum = 1;
     public GUIWindowScripts manual;
+    [SerializeField]
+    private GUIWindowScripts search;
 
     public List<string> music;
     private float musicTimer;
@@ -124,6 +126,11 @@ public class WorldCreatorCursor : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.M) && !system.IsPointerOverGameObject())
         {
             manual.ToggleActive();
+        }
+
+        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F) && !system.IsPointerOverGameObject())
+        {
+            search.ToggleActive();
         }
 
         switch (mode)

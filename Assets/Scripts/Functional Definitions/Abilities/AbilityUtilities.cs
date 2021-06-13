@@ -183,7 +183,7 @@ public static class AbilityUtilities {
 				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:
 				return $"Slow moving beam that deals {IonLineController.damageC * tier} damage per second for 5 seconds. "
-				+ $"\nBeam costs {IonLineController.energyC * tier} energy per second";
+				+ $"\nBeam costs {IonLineController.energyC * tier} energy per second.";
 			case 38:
 				return $"Fires at most 5 projectiles at different targets that each deal {Flak.bulletDamage * tier} damage.";
             default:

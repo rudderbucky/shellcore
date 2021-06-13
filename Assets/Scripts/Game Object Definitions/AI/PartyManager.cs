@@ -15,6 +15,12 @@ public class PartyManager : MonoBehaviour
     public static PartyManager instance;
     public GameObject blocker;
     private Dictionary<string, WorldData.PartyData> partyResponses = new Dictionary<string, WorldData.PartyData>();
+    private bool overrideLock;
+    public bool PartyLocked {get {return SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone && overrideLock;}}
+    public void SetOverrideLock(bool val)
+    {
+        overrideLock = val;
+    }
     public void OrderAttack()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
@@ -96,7 +102,7 @@ public class PartyManager : MonoBehaviour
             return;
         }
 
-        if(SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
+        if(!PartyLocked)
         {
             AssignBackend(charID);
 
@@ -106,7 +112,7 @@ public class PartyManager : MonoBehaviour
             assignButton.onClick = clicked;
             // sukratHealth.SetActive(true);
         }
-        else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
+        else PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
 
         UpdatePortraits();
     }
@@ -160,7 +166,7 @@ public class PartyManager : MonoBehaviour
 
     public void Unassign(string charID, Button assignButton)
     {
-        if(SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
+        if(!PartyLocked)
         {
             var member = partyMembers.Find(c => c.ID == charID);
             if(member && member.GetAI() != null)
@@ -176,7 +182,7 @@ public class PartyManager : MonoBehaviour
             }
             // sukratHealth.SetActive(false);
         }
-        else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
+        else PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
 
         UpdatePortraits();
     }
@@ -295,6 +301,7 @@ public class PartyManager : MonoBehaviour
 
         foreach(var kvp in partyIndicators)
         {
+            kvp.Value.GetComponentsInChildren<Text>()[1].text = kvp.Key.GetAI().GetPartyBattleStateString();
             for(int i = 0; i < 3; i++)
             {
                 float barWidth = 160;

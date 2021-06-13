@@ -13,27 +13,43 @@ namespace NodeEditorFramework.Standard
         public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Finish Task"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
+        public override bool AutoLayout { get { return true; } }
+        public override Vector2 MinSize { get { return new Vector2(208, 50); } }
 
         //Task related
         public string rewardGiverID;
         public string rewardText;
         public Color textColor = Color.white;
+        public List<string> answers;
 
         float height = 0f;
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
         public ConnectionKnob inputLeft;
 
-        [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right, 20)]
+        [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputRight;
 
-        [ConnectionKnob("Output Up", Direction.Out, "Complete", ConnectionCount.Single, NodeSide.Top, 100f)]
+        [ConnectionKnob("Output Up", Direction.Out, "Complete", ConnectionCount.Single, NodeSide.Top, 104F)]
         public ConnectionKnob outputUp;
         public bool useEntityColor = true;
+        ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right);
 
         public override void NodeGUI()
         {
+            /*
+            if(answers == null)
+            {
+                answers = new List<string>();
+                answers.Add("Ok");
+            }
+            
+            if(outputRight && !outputRight.connected())
+            {
+                Destroy(outputRight);
+            }
+            */
+
             height = 180f;
             GUILayout.Label("Reward giver ID:");
             rewardGiverID = GUILayout.TextField(rewardGiverID, GUILayout.Width(200f));
@@ -59,6 +75,52 @@ namespace NodeEditorFramework.Standard
                 GUILayout.EndHorizontal();
                 textColor = new Color(r, g, b);
             }
+
+            GUILayout.Label("Answers:");
+            if(answers == null)
+            {
+                answers = new List<string>();
+                answers.Add("Ok");
+                CreateConnectionKnob(outputAttribute);
+                if(outputRight && outputRight.connected())
+                {
+                    //Debug.Log(outputRight.connections[0]);
+                    outputKnobs[2].ApplyConnection(outputRight.connections[0]);
+                    //outputKnobs[2].connections.Add(outputRight.connections[0]);
+                }
+                outputKnobs[1].DisplayLayout();
+            }
+
+            if(outputRight) DeleteConnectionPort(outputRight);
+
+            for (int i = 0; i < answers.Count; i++)
+            {
+                RTEditorGUI.Seperator();
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
+                {
+                    DeleteConnectionPort(outputPorts[i+1]);
+                    answers.RemoveAt(i);
+                    i--;
+                    if(i == -1) break;
+                    continue;
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                answers[i] = RTEditorGUI.TextField(answers[i]);
+
+
+                outputKnobs[i + 1].DisplayLayout();
+                
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
+            {
+                CreateConnectionKnob(outputAttribute);
+                answers.Add("");
+            }
+            GUILayout.EndHorizontal();
         }
 
         void SetEntityID(string ID)
@@ -69,18 +131,38 @@ namespace NodeEditorFramework.Standard
             WorldCreatorCursor.selectEntity -= SetEntityID;
         }
 
+        public void OnClick(int index)
+        {
+            DialogueSystem.OnDialogueCancel -= OnCancel;
+            DialogueSystem.OnDialogueEnd = null;
+
+            // hack: just increment index again to avoid upper port
+            if(outputRight && outputRight.connected())
+            {
+                TaskManager.Instance.setNode(outputRight);
+            }
+            else TaskManager.Instance.setNode(outputPorts[index+1]);
+            DialogueSystem.Instance.DialogueViewTransitionOut();
+
+        }
+
+        public void OnCancel()
+        {
+            OnClick(1);     
+        }
+
         public void OnDialogue()
         {
             // draw objectives
+            if(TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
             TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
             TaskManager.DrawObjectiveLocations();
 
-            DialogueSystem.ShowPopup(rewardText, textColor, SectorManager.instance.GetEntity(rewardGiverID));
-            DialogueSystem.OnDialogueEnd = (int _) =>
-            {
-                TaskManager.Instance.setNode(outputRight);
-                DialogueSystem.OnDialogueEnd = null;
-            };
+            DialogueSystem.ShowFinishTaskNode(this, SectorManager.instance.GetEntity(rewardGiverID));
+            //DialogueSystem.ShowPopup(rewardText, textColor, );
+
+            DialogueSystem.OnDialogueEnd = OnClick;
+            DialogueSystem.OnDialogueCancel = OnCancel;
             if (outputUp.connected())
             {
                 var taskNode = (outputUp.connection(0).body as StartTaskNode);
@@ -151,7 +233,6 @@ namespace NodeEditorFramework.Standard
                 Debug.Log("ADDED " + rewardGiverID);
             }
             TryAddObjective();
-
             return -1;
         }
 

@@ -15,14 +15,16 @@ public class BombScript : MonoBehaviour
     public GameObject hitPrefab;
     public readonly float explosionRadius = 10f;
     private GameObject explosionCirclePrefab;
+    private float timeInstantiated;
+    private float fuseTime = 3F;
 
      // Use this for initialization
     void Start () {
+        timeInstantiated = Time.time;
         if (!GetComponent<Collider2D>()) // no collider? no problem
         {
             var collider = gameObject.AddComponent<CircleCollider2D>(); // add collider component
             collider.radius = explosionRadius;
-            Debug.Log(collider.radius + " " + explosionRadius);
             collider.isTrigger = true; // set trigger
         }
 
@@ -95,6 +97,7 @@ public class BombScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if(Time.time < timeInstantiated + fuseTime) return;
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
         if (craft != null && !craft.GetIsDead()) // check if the component was obtained
