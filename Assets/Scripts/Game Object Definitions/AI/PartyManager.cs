@@ -301,6 +301,7 @@ public class PartyManager : MonoBehaviour
 
         foreach(var kvp in partyIndicators)
         {
+            kvp.Value.GetComponentsInChildren<Text>()[1].text = kvp.Key.GetAI().GetPartyBattleStateString();
             for(int i = 0; i < 3; i++)
             {
                 float barWidth = 160;

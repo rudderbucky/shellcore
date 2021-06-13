@@ -322,13 +322,18 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	{
 		if(currentPart) {
 			currentPart.SetMaskable(false);
+			var oldLoc = currentPart.info.location;
 			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
 			if(symmetryCurrentPart)
 				symmetryCurrentPart.info.location = GetSymmetrizedVector(currentPart.info.location, symmetryMode);
 			if(Input.GetMouseButtonUp(0)) {
 				PlaceCurrentPart();
 			}
-			builder.UpdateChain();
+			if(oldLoc != currentPart.info.location || Input.GetMouseButtonUp(0))
+			{
+				builder.UpdateChain();
+			}
+			
 		} else if(Input.GetMouseButtonDown(0)) {
 			grid2lastPos = grid.anchoredPosition;
 			grid2mousePos = Input.mousePosition;
