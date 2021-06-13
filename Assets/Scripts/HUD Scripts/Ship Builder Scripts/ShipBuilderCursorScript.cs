@@ -19,6 +19,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
 	public Canvas canvas;
 	public RectTransform grid;
+	[SerializeField]
 	ShipBuilderPart currentPart;
 	ShipBuilderPart lastPart;
 	public IBuilderInterface builder;
@@ -323,13 +324,14 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		if(currentPart) {
 			currentPart.SetMaskable(false);
 			var oldLoc = currentPart.info.location;
-			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
+			Vector2 newLoc;
+			currentPart.info.location = newLoc = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
 			if(symmetryCurrentPart)
 				symmetryCurrentPart.info.location = GetSymmetrizedVector(currentPart.info.location, symmetryMode);
 			if(Input.GetMouseButtonUp(0)) {
 				PlaceCurrentPart();
 			}
-			if(oldLoc != currentPart.info.location || Input.GetMouseButtonUp(0))
+			if(oldLoc != newLoc || Input.GetMouseButtonUp(0))
 			{
 				builder.UpdateChain();
 			}
