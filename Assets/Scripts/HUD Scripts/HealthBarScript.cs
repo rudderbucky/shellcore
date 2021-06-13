@@ -9,32 +9,48 @@ using UnityEngine.UI;
 public class HealthBarScript : MonoBehaviour {
 
     public GameObject inputBar;
-    private UnityEngine.UI.Image[] barsArray; // instantiated bars
-    private UnityEngine.UI.Image[] gleamArray; // instantiated bars
+    private Image[] barsArray; // instantiated bars
+    private Image[] oldBarsArray; // instantiated bars
+    private Image[] gleamArray; // instantiated bars
     private bool initialized; // if this GUI component is initialized
     private bool[] gleaming; // if the bar is gleaming
     private bool[] gleamed; // if the bar has already gleamed in the cycle
     private string[] names = new string[] {"SHELL ", "CORE ", "ENERGY "};
     private PlayerCore player; // associated player
+    private float hurtHudAlpha = 0;
+    public static HealthBarScript instance;
+    [SerializeField]
+    Image hurtHudImage;
 
     /// <summary>
     /// Initializes the Health Bar UI
     /// </summary>
     public void Initialize(PlayerCore player)
     {
+        instance = this;
         this.player = player;
-        barsArray = new UnityEngine.UI.Image[3]; // initialize arrays
-        gleamArray = new UnityEngine.UI.Image[3];
+        barsArray = new Image[3]; // initialize arrays
+        oldBarsArray = new Image[3];
+        gleamArray = new Image[3];
         gleaming = new bool[barsArray.Length];
         gleamed = new bool[barsArray.Length];
         Color[] colors = new Color[] { Color.green, new Color(0.8F,0.8F,0.8F), new Color(0.4F,0.8F,1.0F) };
+        Color[] oldColors = new Color[] { new Color(0F,0.3F,0F), new Color(0.3F,0.3F, 0.3F), new Color(0.1F,0.2F,0.3F) };
         for (int i = 0; i < barsArray.Length; i++) { // iterate through array
             barsArray[i] = Instantiate(inputBar).GetComponent<Image>(); // instantiate the image
             barsArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
             barsArray[i].color = colors[i];
+            oldBarsArray[i] = Instantiate(barsArray[i]).GetComponent<Image>(); // instantiate the image
+            for(int j = 0; j < oldBarsArray[i].transform.childCount; j++)
+            {
+                Destroy(oldBarsArray[i].transform.GetChild(j).gameObject);
+            }
+            oldBarsArray[i].fillAmount = 1;
+            oldBarsArray[i].color = oldColors[i];
             Vector3 tmp = barsArray[i].transform.position;
             tmp.y -= 24*i;
-            barsArray[i].transform.position = tmp;
+            barsArray[i].transform.position = oldBarsArray[i].transform.position = tmp;
+            oldBarsArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
             barsArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
 
             gleamArray[i] = Instantiate(inputBar).GetComponent<Image>(); // instantiate the image
@@ -97,6 +113,13 @@ public class HealthBarScript : MonoBehaviour {
         }
     }
 
+    public void StartHurtHud(Color color)
+    {
+        hurtHudAlpha = 1;
+        color.a = 1;
+        hurtHudImage.color = color;
+    }
+
     private void Update()
     {
         if (initialized) // check if it is safe to update
@@ -119,7 +142,19 @@ public class HealthBarScript : MonoBehaviour {
                     gleamed[i] = true; // update bool values if so
                     gleaming[i] = true;
                 }
-                barsArray[i].fillAmount = UpdateBar(barsArray[i].fillAmount, currentHealth[i], maxHealth[i]); 
+
+                
+                
+                var oldAmt = barsArray[i].fillAmount;
+                barsArray[i].fillAmount = UpdateBar(barsArray[i].fillAmount, currentHealth[i], maxHealth[i]);
+                
+                if(i != 2)
+                {
+                    hurtHudAlpha = Mathf.Max(0, hurtHudAlpha - Time.deltaTime);
+                    hurtHudImage.color = new Color(hurtHudImage.color.r,hurtHudImage.color.g,hurtHudImage.color.b,hurtHudAlpha);
+                }
+
+                //else oldBarsArray[i].fillAmount = barsArray[i].fillAmount;
                 if(barsArray[i].GetComponentInChildren<Text>()) {
                     var x = barsArray[i].GetComponentsInChildren<Text>();
                     x[0].text = (int)currentHealth[i] + "/" + maxHealth[i];

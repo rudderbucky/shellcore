@@ -281,4 +281,10 @@ public class PlayerCore : ShellCore {
 
         if(directionVector != Vector2.zero) CameraScript.instance.Focus(transform.position);
     }
+
+    public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
+    {
+        if(lastDamagedBy) HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
+        return base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
+    }
 }
