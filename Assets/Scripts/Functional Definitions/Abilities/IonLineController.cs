@@ -144,7 +144,7 @@ public class IonLineController : MonoBehaviour
             for(int i = 0; i < raycastHits.Length; i++)
             {
                 var damageable = raycastHits[i].transform.GetComponentInParent<IDamageable>();
-                if(raycastHits[i].transform && damageable != null && damageable.GetFaction() != Core.faction && !damageable.GetIsDead())
+                if(raycastHits[i].transform && damageable != null && damageable.GetFaction() != Core.faction && !damageable.GetIsDead() && damageable.GetTerrain() != Entity.TerrainType.Ground)
                 {
                     var hitTransform = raycastHits[i].transform;                   
 
