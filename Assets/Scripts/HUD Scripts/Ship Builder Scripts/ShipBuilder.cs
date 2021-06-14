@@ -748,7 +748,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 	}
 	public void LoadBlueprint(EntityBlueprint blueprint) {
-		cursorScript.ClearAllParts();
+		if(editorMode)
+			cursorScript.ClearAllParts();
+
 		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
 			var p = Instantiate(SBPrefab, cursorScript.transform.parent).GetComponent<ShipBuilderPart>();
 			p.cursorScript = cursorScript;
@@ -915,7 +917,6 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			trader.parts = new List<EntityBlueprint.PartInfo>();
 			foreach(var part in partDict.Keys)
 			{
-				Debug.Log("a");
 				trader.parts.Add(CullSpatialValues(part));
 			}
 			Debug.Log(JsonUtility.ToJson(trader));

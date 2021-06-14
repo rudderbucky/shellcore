@@ -333,6 +333,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			}
 			if(oldLoc != newLoc || Input.GetMouseButtonUp(0))
 			{
+				if(currentPart)	currentPart.ReflectLocation();
 				builder.UpdateChain();
 			}
 			
