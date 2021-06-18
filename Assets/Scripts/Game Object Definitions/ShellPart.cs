@@ -193,7 +193,7 @@ public class ShellPart : MonoBehaviour {
 
         if (GetComponent<Ability>())
         {
-            GetComponent<Ability>().Part = this;
+            
         }
 
         if(info.shiny && partSys) // shell does not have a Particle System, and it also can't be shiny
@@ -310,6 +310,9 @@ public class ShellPart : MonoBehaviour {
 
         StartCoroutine(InitColorLerp(0));
 
+    }
+    public void lerpColors(){
+        StartCoroutine(InitColorLerp(0));
     }
 
     private IEnumerator InitColorLerp(float lerpVal)

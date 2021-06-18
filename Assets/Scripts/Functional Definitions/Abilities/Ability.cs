@@ -45,8 +45,6 @@ public abstract class Ability : MonoBehaviour {
     protected int abilityTier;
     protected string description = "Does things";
     protected ShellPart part;
-
-    public ShellPart Part { set { part = value; } }
     public string abilityName = "Ability";
     public SpriteRenderer glow;
 
