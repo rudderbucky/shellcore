@@ -6,7 +6,7 @@ public class Cannon : WeaponAbility {
 
     public GameObject effectPrefab;
     public GameObject effect;
-    public Entity target;
+    public IDamageable target;
     public static readonly int cannonDamage = 200;
 
     protected override void Awake()
@@ -32,7 +32,7 @@ public class Cannon : WeaponAbility {
         // TODO: There was a check if the target was an entity. Is that necessary?
         if(!effectPrefab) effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
         AudioManager.PlayClipByID("clip_cannon", transform.position);
-        FireCannon(targetingSystem.GetTarget().GetComponent<Entity>()); // fire if there is
+        FireCannon(targetingSystem.GetTarget().GetComponent<IDamageable>()); // fire if there is
         return true;
     }
 
@@ -54,7 +54,7 @@ public class Cannon : WeaponAbility {
         }
     }
 
-    private void FireCannon(Entity target)
+    private void FireCannon(IDamageable target)
     {
         this.target = target;
         var shooter = transform.Find("Shooter");
@@ -63,6 +63,6 @@ public class Cannon : WeaponAbility {
         Destroy(effect, 0.2F);
         GetDamage();
         var residue = target.TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
-        target.TakeCoreDamage(residue);
+        if(target as Entity) (target as Entity).TakeCoreDamage(residue);
     }
 }

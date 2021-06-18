@@ -16,7 +16,7 @@ public class PartyManager : MonoBehaviour
     public GameObject blocker;
     private Dictionary<string, WorldData.PartyData> partyResponses = new Dictionary<string, WorldData.PartyData>();
     private bool overrideLock;
-    public bool PartyLocked {get {return SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone && overrideLock;}}
+    public bool PartyLocked {get {return SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone || overrideLock;}}
     public void SetOverrideLock(bool val)
     {
         overrideLock = val;
@@ -259,6 +259,7 @@ public class PartyManager : MonoBehaviour
         if(SectorManager.instance?.current?.type != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)
             foreach(var member in partyMembers)
             {
+                if(!member) continue;
                 if(member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
                 Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > partyMemberTeleportThreshold)
                 {

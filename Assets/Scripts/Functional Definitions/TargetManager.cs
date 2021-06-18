@@ -148,12 +148,12 @@ public class TargetManager : MonoBehaviour
             }
             else
             {
-                if ((ts.GetAbility().terrain & Entity.TerrainType.Air) != 0
+                if (ts.GetAbility().TerrainCheck(Entity.TerrainType.Air)
                     && airTargets.ContainsKey(i))
                 {
                     targets.AddRange(airTargets[i]);
                 }
-                if ((ts.GetAbility().terrain & Entity.TerrainType.Ground) != 0
+                if (ts.GetAbility().TerrainCheck(Entity.TerrainType.Ground)
                     && groundTargets.ContainsKey(i))
                 {
                     targets.AddRange(groundTargets[i]);

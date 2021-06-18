@@ -109,7 +109,7 @@ public class MinimapArrowScript : MonoBehaviour {
 				playerTargetArrow.GetComponent<SpriteRenderer>().enabled = false;
 			}
 		}
-		else
+		else if(playerTargetArrow)
 		{
 			playerTargetArrow.GetComponent<SpriteRenderer>().enabled = false;
 		}

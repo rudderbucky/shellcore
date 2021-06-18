@@ -228,10 +228,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             {
                 abilities[0].Activate();
             }
-            for (int i = 0; i < abilities.Count; i++)
-            {
-                abilities[i].Tick();
-            }
         }
             
         clicked = false;
@@ -293,7 +289,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         rect.SetParent(transform.parent, true);
         rect.SetAsLastSibling();
         ClearCircles();
-        if(abilities[0] as WeaponAbility)
+        if(abilities.Count > 0 && abilities[0] as WeaponAbility)
             foreach(var ability in abilities)
             {
                 if(!ability.IsDestroyed())

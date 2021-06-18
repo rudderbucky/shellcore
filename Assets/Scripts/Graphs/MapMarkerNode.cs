@@ -76,6 +76,7 @@ namespace NodeEditorFramework.Standard
                 ); 
             }
             TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(objectiveLocation);
+            TaskManager.DrawObjectiveLocations();
             return 0;
         }
 
