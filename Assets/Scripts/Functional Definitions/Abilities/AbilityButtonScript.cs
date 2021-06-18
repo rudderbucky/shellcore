@@ -228,10 +228,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             {
                 abilities[0].Activate();
             }
-            for (int i = 0; i < abilities.Count; i++)
-            {
-                abilities[i].Tick();
-            }
         }
             
         clicked = false;

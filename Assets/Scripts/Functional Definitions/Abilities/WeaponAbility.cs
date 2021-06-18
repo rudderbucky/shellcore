@@ -46,13 +46,25 @@ public abstract class WeaponAbility : ActiveAbility {
         if(type == WeaponDiversityType.Torpedo)
             return terrain == Entity.TerrainType.Ground;
         else
-            return (this.category == Entity.EntityCategory.All || this.category == category)
-            && (this.terrain == Entity.TerrainType.All || terrain == this.terrain);
+            return TerrainCheck(terrain)
+            && CategoryCheck(category);
+    }
+
+    public bool TerrainCheck(Entity.TerrainType targetTerrain)
+    {
+        if(type == WeaponDiversityType.Torpedo)
+            return targetTerrain == Entity.TerrainType.Ground;
+        return this.terrain == Entity.TerrainType.All || targetTerrain == this.terrain;
+    }
+
+    public bool CategoryCheck(Entity.EntityCategory targetCategory)
+    {
+        return this.category == Entity.EntityCategory.All || this.category == targetCategory;
     }
 
     public Transform GetTarget()
     {
-        return targetingSystem.target;
+        return targetingSystem.GetTarget();
     }
 
     protected override void Awake()
