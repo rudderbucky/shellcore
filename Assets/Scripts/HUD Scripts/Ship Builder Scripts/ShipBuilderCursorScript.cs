@@ -249,7 +249,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	ShipBuilderPart symmetryLastPart;
 
 	// flips the x/y value of the passed vector based on passed symmetry mode
-	private Vector2 GetSymmetrizedVector(Vector2 vec, SymmetryMode mode)
+	public Vector2 GetSymmetrizedVector(Vector2 vec, SymmetryMode mode)
 	{
 		switch(mode)
 		{
@@ -333,6 +333,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 			}
 			if(oldLoc != newLoc || Input.GetMouseButtonUp(0))
 			{
+				if(currentPart)	currentPart.ReflectLocation();
 				builder.UpdateChain();
 			}
 			
@@ -369,7 +370,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 
 	// Finds the part which contains the passed vector point
 	// symmetry mode enables checks based on symmetryPart - same part ID, ability ID, different mirrored
-	private ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart)
+	public ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart)
 	{
 		for(int i = parts.Count - 1; i >= 0; i--) {
 			Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);
