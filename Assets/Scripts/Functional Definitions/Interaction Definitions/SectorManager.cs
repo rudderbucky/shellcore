@@ -258,6 +258,14 @@ public class SectorManager : MonoBehaviour
                         spawnPoint = wdata.initialSpawn;
                         if(player.cursave == null || player.cursave.timePlayed == 0)
                         {
+                            if (wdata.defaultSlots == null || wdata.defaultSlots == new int[] {0,0,0,0}){
+                                player.cursave.abilityCaps = new int[] {6,3,6,6};
+                                player.abilityCaps = new int[] {6,3,6,6};
+                            }
+                            else {
+                                player.cursave.abilityCaps = wdata.defaultSlots;
+                                player.abilityCaps = wdata.defaultSlots;
+                            }
                             player.transform.position = player.spawnPoint = player.havenSpawnPoint = spawnPoint;
                             if(wdata.defaultBlueprintJSON != null && wdata.defaultBlueprintJSON != "")
                             {

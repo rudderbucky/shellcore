@@ -38,6 +38,8 @@ public class WorldData : ScriptableObject
     // initial spawn point for the player if the world is loaded for the first time.
     public Vector2 initialSpawn;
     public string defaultBlueprintJSON;
+    public int[] defaultSlots = new int[4];
+    public bool hasAccel;
     public string author;
     public string description;
     public PartIndexData[] partIndexDataArray;

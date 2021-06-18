@@ -26,6 +26,10 @@ public class WCGeneratorHandler : MonoBehaviour
     public InputField blueprintField;
     public InputField authorField;
     public InputField descriptionField;
+    public InputField baseAbilityField;
+    public InputField baseSpawnField;
+    public InputField baseWeaponField;
+    public InputField basePassiveField;
     public WCCharacterHandler characterHandler;
     public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
     public Item characterItem;
@@ -513,6 +517,36 @@ public class WCGeneratorHandler : MonoBehaviour
         wdata.defaultBlueprintJSON = blueprintField.text;
         wdata.author = authorField.text;
         wdata.description = descriptionField.text;
+        bool canParse;
+        int num;
+        canParse = int.TryParse(baseAbilityField.text,out num);
+        if (canParse && baseSpawnField.text != null && baseSpawnField.text != ""){
+            wdata.defaultSlots[0] = num;
+        }
+        else {
+            wdata.defaultSlots[0] = 6;
+        }
+        canParse = int.TryParse(baseSpawnField.text,out num);
+        if (canParse && baseSpawnField.text != null && baseSpawnField.text != ""){
+            wdata.defaultSlots[1] = num;
+        }
+        else {
+            wdata.defaultSlots[1] = 3;
+        }
+        canParse = int.TryParse(baseWeaponField.text,out num);
+        if (canParse && baseSpawnField.text != null && baseSpawnField.text != ""){
+            wdata.defaultSlots[2] = num;
+        }
+        else {
+            wdata.defaultSlots[2] = 6;
+        }
+        canParse = int.TryParse(basePassiveField.text,out num);
+        if (canParse && baseSpawnField.text != null && baseSpawnField.text != ""){
+            wdata.defaultSlots[3] = num;
+        }
+        else {
+            wdata.defaultSlots[3] = 6;
+        }
         wdata.partIndexDataArray = partData.ToArray();
 
         string wdjson = JsonUtility.ToJson(wdata);

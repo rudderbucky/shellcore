@@ -213,12 +213,20 @@ public class WCWorldIO : MonoBehaviour
             authors.text = wdata.author;
             description.text = wdata.description;
             defaultBlueprint.text = wdata.defaultBlueprintJSON;
+            baseAbility.text = wdata.defaultSlots[0].ToString();
+            baseSpawn.text = wdata.defaultSlots[1].ToString();
+            baseWeapon.text = wdata.defaultSlots[2].ToString();
+            basePassive.text = wdata.defaultSlots[3].ToString();
             Debug.Log(wdata.defaultBlueprintJSON);
         }
         catch(System.Exception e)
         {
             authors.text = 
             description.text = "";
+            baseAbility.text = "";
+            baseSpawn.text = "";
+            baseWeapon.text = "";
+            basePassive.text = "";
             Debug.Log(e);
         }
         originalReadPath = path;
@@ -255,9 +263,17 @@ public class WCWorldIO : MonoBehaviour
                 authors.text = "";
                 description.text = "";
                 defaultBlueprint.text = "";
+                baseAbility.text = "";
+                baseSpawn.text = "";
+                baseWeapon.text = "";
+                basePassive.text = "";
                 authors.placeholder.GetComponent<Text>().text = "World authors appear here";
                 description.placeholder.GetComponent<Text>().text = "World description appears here";
                 defaultBlueprint.placeholder.GetComponent<Text>().text = "Default blueprint appears here";
+                baseAbility.placeholder.GetComponent<Text>().text = "Base Ability Slots appear here";
+                baseSpawn.placeholder.GetComponent<Text>().text = "Base Spawn Slots appear here";
+                baseWeapon.placeholder.GetComponent<Text>().text = "Base Weapon Slots appear here";
+                basePassive.placeholder.GetComponent<Text>().text = "Base Passive Slots appear here";
                 directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
                 break;
             case IOMode.Write:
@@ -266,9 +282,17 @@ public class WCWorldIO : MonoBehaviour
                 authors.text = "";
                 description.text = "";
                 defaultBlueprint.text = "";
+                baseAbility.text = "";
+                baseSpawn.text = "";
+                baseWeapon.text = "";
+                basePassive.text = "";
                 authors.placeholder.GetComponent<Text>().text = "Enter world authors here";
                 description.placeholder.GetComponent<Text>().text = "Enter world description here";
                 defaultBlueprint.placeholder.GetComponent<Text>().text = "Enter default blueprint here";
+                baseAbility.placeholder.GetComponent<Text>().text = "Enter base ability slots here";
+                baseSpawn.placeholder.GetComponent<Text>().text = "Enter base spawn slots here";
+                baseWeapon.placeholder.GetComponent<Text>().text = "Enter base weapon slots here";
+                basePassive.placeholder.GetComponent<Text>().text = "Enter base passive slots here";
                 directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
                 break;
             case IOMode.ReadShipJSON:
@@ -327,6 +351,10 @@ public class WCWorldIO : MonoBehaviour
     public InputField authors;
     public InputField description;
     public InputField defaultBlueprint;
+    public InputField baseAbility;
+    public InputField baseSpawn;
+    public InputField baseWeapon;
+    public InputField basePassive;
     public InputField newWorldInputField;
 
     public void OpenNewWorldPrompt() {
