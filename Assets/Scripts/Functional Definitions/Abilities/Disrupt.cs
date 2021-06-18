@@ -36,6 +36,13 @@ public class Disrupt : Ability
                             ability.ResetCD();
                         }
                     }
+                    foreach(var part in AIData.entities[i].GetComponentsInChildren<ShellPart>()){
+                        if(part.GetComponent<Ability>() && !(part.GetComponent<Ability>() as PassiveAbility)){
+                            //part.SetPartColor(Color.grey);
+                            part.lerpColors();
+                        }
+
+                    }
                 }
             }
         }
