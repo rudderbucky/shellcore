@@ -38,11 +38,16 @@ public abstract class WeaponAbility : ActiveAbility {
 
     public bool CheckCategoryCompatibility(IDamageable entity)
     {
+        return CheckCategoryCompatibility(entity.GetTerrain(), entity.GetCategory());
+    }
+
+    public bool CheckCategoryCompatibility(Entity.TerrainType terrain, Entity.EntityCategory category)
+    {
         if(type == WeaponDiversityType.Torpedo)
-            return entity.GetTerrain() == Entity.TerrainType.Ground;
+            return terrain == Entity.TerrainType.Ground;
         else
-            return (category == Entity.EntityCategory.All || category == entity.GetCategory())
-            && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
+            return (this.category == Entity.EntityCategory.All || this.category == category)
+            && (this.terrain == Entity.TerrainType.All || terrain == this.terrain);
     }
 
     public Transform GetTarget()
