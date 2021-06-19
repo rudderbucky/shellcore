@@ -193,7 +193,7 @@ public class ShellPart : MonoBehaviour {
 
         if (GetComponent<Ability>())
         {
-            
+            GetComponent<Ability>().Part = this;
         }
 
         if(info.shiny && partSys) // shell does not have a Particle System, and it also can't be shiny

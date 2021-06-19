@@ -67,6 +67,10 @@ public class AudioManager : MonoBehaviour
         source.name = "Audio One-Shot";
         source.outputAudioMixerGroup = instance.sounds;
         source.clip = ResourceManager.GetAsset<AudioClip>(ID);
+        source.rolloffMode = AudioRolloffMode.Linear;
+        source.spatialBlend = 0.5F;
+        source.dopplerLevel = 0;
+        //source.maxDistance = ;
         source.Play();
         if(!instance.timePlayed.ContainsKey(ID))
             instance.timePlayed.Add(ID, Time.time);

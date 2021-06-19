@@ -6,7 +6,12 @@ using UnityEngine;
 /// </summary>
 public class Disrupt : Ability
 {
-    const float range = 100f;
+    const float range = 10f;
+
+    public override float GetRange()
+    {
+        return range;
+    }
 
     protected override void Awake()
     {
@@ -27,7 +32,7 @@ public class Disrupt : Ability
             if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction))
             {
                 float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
-                if (d < range)
+                if (d < range * range)
                 {
                     foreach (var ability in AIData.entities[i].GetAbilities())
                     {
