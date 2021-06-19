@@ -65,6 +65,30 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 		} 
 		else {
 			image.color = (isInChain && validPos ? mainColor : mainColor - new Color(0,0,0,0.5F));
+			switch(cursorScript.symmetryMode)
+			{
+				case ShipBuilderCursorScript.SymmetryMode.X:
+				case ShipBuilderCursorScript.SymmetryMode.Y:
+					var symVec = cursorScript.GetSymmetrizedVector(rectTransform.anchoredPosition, cursorScript.symmetryMode);
+					var symmetryPart = cursorScript.FindPart(symVec, this);
+					var onAxis = false;
+					if(cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
+					{
+						onAxis = rectTransform.anchoredPosition.y == 0;
+					}
+					if(cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
+					{
+						onAxis = rectTransform.anchoredPosition.x == 0;
+					}
+
+					if((!symmetryPart || symmetryPart.rectTransform.anchoredPosition != symVec) && !onAxis)
+					{
+						image.color = FactionManager.GetFactionColor(1);
+					}
+					break;
+				default:
+					break;
+			}
 			image.material = null;
 		}
 	}

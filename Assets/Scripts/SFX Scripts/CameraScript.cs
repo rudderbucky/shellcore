@@ -78,7 +78,7 @@ public class CameraScript : MonoBehaviour {
             }
             ProximityInteractScript.Focus();
             MouseMovementVisualScript.Focus();
-            ReticleScript.instance.Focus();
+            if(ReticleScript.instance) ReticleScript.instance.Focus();
         }
     }
 

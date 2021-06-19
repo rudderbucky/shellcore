@@ -8,6 +8,8 @@ public class DevConsoleScript : MonoBehaviour
     public Text textBox;
     public Image image;
     public InputField inputField;
+    public Scrollbar scrollbar;
+    public ScrollRect scrollRect;
 
     public static bool componentEnabled = false;
     public bool fullLog = false;
@@ -251,7 +253,6 @@ public class DevConsoleScript : MonoBehaviour
                 }
             }
         }
-
     }
 
     void Update()
@@ -259,10 +260,17 @@ public class DevConsoleScript : MonoBehaviour
         if(InputManager.GetKeyDown(KeyName.Console))
         {
             textBox.enabled = image.enabled = !image.enabled;
-            componentEnabled = image.enabled;
+            componentEnabled =  image.enabled;
+            scrollRect.enabled = image.enabled;
+            scrollbar.gameObject.SetActive(image.enabled);
             inputField.gameObject.SetActive(image.enabled);
             if (image.enabled)
+            {
+                scrollRect.verticalNormalizedPosition = 0;
                 inputField.ActivateInputField();
+            }
+                
+            
         }
 
         if (textBox)
