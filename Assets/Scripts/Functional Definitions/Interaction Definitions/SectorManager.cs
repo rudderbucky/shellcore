@@ -105,8 +105,7 @@ public class SectorManager : MonoBehaviour
             // jsonPath = customPath;
             jsonMode = true;
         }
-            
-		
+
 		if(SceneManager.GetActiveScene().name == "MainMenu")
 		{
             string currentPath;
@@ -125,7 +124,7 @@ public class SectorManager : MonoBehaviour
                 SetMainMenuSector(0);
             }
         }
-
+        Entity.partDropRate = 0.1f;
         jsonMode = false;
     }
 
