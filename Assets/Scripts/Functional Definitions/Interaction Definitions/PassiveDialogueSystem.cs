@@ -11,7 +11,7 @@ public class PassiveDialogueSystem : MonoBehaviour
     public Text passiveDialogueText;
     private DialogueSystem.DialogueState passiveDialogueState = DialogueSystem.DialogueState.Out;
     public RectTransform passiveDialogueScrollView;
-    Queue<(string, string)> passiveMessages = new Queue<(string, string)>();
+    Queue<(string, string, int)> passiveMessages = new Queue<(string, string, int)>();
     public GameObject passiveDialogueArchive;
     public Transform archiveContents;
     public static PassiveDialogueSystem Instance;
@@ -59,10 +59,10 @@ public class PassiveDialogueSystem : MonoBehaviour
         }
     }
 
-    public void PushPassiveDialogue(string id, string text)
+    public void PushPassiveDialogue(string id, string text, int soundType)
     {
         if(passiveDialogueState != DialogueSystem.DialogueState.In) passiveDialogueState = DialogueSystem.DialogueState.In;
-        passiveMessages.Enqueue((id, text));
+        passiveMessages.Enqueue((id, text, soundType));       
     }
     float queueTimer = 0;
 
@@ -83,6 +83,50 @@ public class PassiveDialogueSystem : MonoBehaviour
                 queueTimer = 3;
                 var dialogue = passiveMessages.Dequeue();
                 Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.Item1);
+                int sType = dialogue.Item3;
+                switch (sType){
+                    default:
+                    break;
+                    case 1:
+                    AudioManager.PlayClipByID("clip_passiveDialogue1");
+                    break;
+                    case 2:
+                    AudioManager.PlayClipByID("clip_passiveDialogue2");
+                    break;
+                    case 3:
+                    AudioManager.PlayClipByID("clip_passiveDialogue3");
+                    break;
+                    case 4:
+                    AudioManager.PlayClipByID("clip_passiveDialogue4");
+                    break;
+                    case 5:
+                    AudioManager.PlayClipByID("clip_passiveDialogue5");
+                    break;
+                    case 6:
+                    AudioManager.PlayClipByID("clip_passiveDialogue6");
+                    break;
+                    case 7:
+                    AudioManager.PlayClipByID("clip_passiveDialogue7");
+                    break;
+                    case 8:
+                    AudioManager.PlayClipByID("clip_passiveDialogue8");
+                    break;
+                    case 9:
+                    AudioManager.PlayClipByID("clip_passiveDialogue9");
+                    break;
+                    case 10:
+                    AudioManager.PlayClipByID("clip_passiveDialogue10");
+                    break;
+                    case 11:
+                    AudioManager.PlayClipByID("clip_passiveDialogue11");
+                    break;
+                    case 12:
+                    AudioManager.PlayClipByID("clip_passiveDialogue12");
+                    break;
+                    case 13:
+                    AudioManager.PlayClipByID("clip_passiveDialogue13");
+                    break;
+                }       
                 if (speaker != null)
                 {
                     var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
