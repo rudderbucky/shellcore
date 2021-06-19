@@ -83,7 +83,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         }
         if(ability.GetRange() > 0)
         {
-            description += $"Range: {(ability as WeaponAbility).GetRange()}\n";
+            description += $"Range: {ability.GetRange()}\n";
         }
         if((ability as WeaponAbility)?.GetBonusDamageType() != null)
         {

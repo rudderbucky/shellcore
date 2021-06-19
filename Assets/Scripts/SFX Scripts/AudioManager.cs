@@ -81,7 +81,7 @@ public class AudioManager : MonoBehaviour
     }
 
     // Plays the clip directly on the player
-    public static void PlayClipByID(string ID, bool clear=false) {
+    public static void PlayClipByID(string ID, bool clear=false, float volume = 1F) {
         
 
         if(instance.playerSource != null) {
@@ -92,7 +92,7 @@ public class AudioManager : MonoBehaviour
                     return;
 
                 var clip = ResourceManager.GetAsset<AudioClip>(ID);
-                instance.playerSource.PlayOneShot(clip, 1F);
+                instance.playerSource.PlayOneShot(clip, volume);
                 if(!instance.timePlayed.ContainsKey(ID))
                     instance.timePlayed.Add(ID, Time.time);
                 else

@@ -84,49 +84,9 @@ public class PassiveDialogueSystem : MonoBehaviour
                 var dialogue = passiveMessages.Dequeue();
                 Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.Item1);
                 int sType = dialogue.Item3;
-                switch (sType){
-                    default:
-                    break;
-                    case 1:
-                    AudioManager.PlayClipByID("clip_passiveDialogue1");
-                    break;
-                    case 2:
-                    AudioManager.PlayClipByID("clip_passiveDialogue2");
-                    break;
-                    case 3:
-                    AudioManager.PlayClipByID("clip_passiveDialogue3");
-                    break;
-                    case 4:
-                    AudioManager.PlayClipByID("clip_passiveDialogue4");
-                    break;
-                    case 5:
-                    AudioManager.PlayClipByID("clip_passiveDialogue5");
-                    break;
-                    case 6:
-                    AudioManager.PlayClipByID("clip_passiveDialogue6");
-                    break;
-                    case 7:
-                    AudioManager.PlayClipByID("clip_passiveDialogue7");
-                    break;
-                    case 8:
-                    AudioManager.PlayClipByID("clip_passiveDialogue8");
-                    break;
-                    case 9:
-                    AudioManager.PlayClipByID("clip_passiveDialogue9");
-                    break;
-                    case 10:
-                    AudioManager.PlayClipByID("clip_passiveDialogue10");
-                    break;
-                    case 11:
-                    AudioManager.PlayClipByID("clip_passiveDialogue11");
-                    break;
-                    case 12:
-                    AudioManager.PlayClipByID("clip_passiveDialogue12");
-                    break;
-                    case 13:
-                    AudioManager.PlayClipByID("clip_passiveDialogue13");
-                    break;
-                }       
+                if(sType > 0 && sType <= 13)
+                    AudioManager.PlayClipByID($"clip_passiveDialogue{sType}", false, 2.5F);
+                
                 if (speaker != null)
                 {
                     var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
