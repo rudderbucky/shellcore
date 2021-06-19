@@ -97,16 +97,13 @@ public class WCWorldIO : MonoBehaviour
         if(SceneManager.GetActiveScene().name == "WorldCreator")
         {
             var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+            DeletePlaceholderDirectories();
             if(Directory.Exists(path)) 
             {
                 generatorHandler.ReadWorld(path);
                 #if UNITY_EDITOR
                 if(instantTest) TestWorld();
                 #endif
-            }
-            else
-            {
-                DeletePlaceholderDirectories();
             }
         }
     }

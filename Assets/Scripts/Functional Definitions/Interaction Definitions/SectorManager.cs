@@ -877,6 +877,11 @@ public class SectorManager : MonoBehaviour
 
             if(spawnedChar)
                 continue;
+
+            // if it's an already collected shard do not spawn again
+            if(PlayerCore.Instance && PlayerCore.Instance.cursave.locationBasedShardsFound.Contains(current.entities[i].ID))
+                    continue;
+
             Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
 
             if(obj is GameObject)
@@ -892,7 +897,10 @@ public class SectorManager : MonoBehaviour
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
                 if(gObj.GetComponent<ShardRock>()) {
-                    gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].vendingID);
+                    if(current.entities[i].blueprintJSON != null
+                        && current.entities[i].blueprintJSON != "")
+                        gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].blueprintJSON);
+                    gObj.GetComponent<ShardRock>().ID = current.entities[i].ID;
                 }
                 objects.Add(current.entities[i].ID, gObj);
             }

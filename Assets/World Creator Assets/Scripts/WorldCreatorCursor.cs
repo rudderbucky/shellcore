@@ -687,7 +687,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 Debug.Log("under cursor assetID: " + item.assetID);
 
                 // TODO: Specify which type of item you are scanning for
-                if (underCursor.type == ItemType.Other || underCursor.type == ItemType.Decoration)
+                if (underCursor.type == ItemType.Other || underCursor.type == ItemType.Decoration || underCursor.type == ItemType.DecorationWithMetadata)
                 {
                     taskInterface.Activate();
                     SetMode(originalCursorMode);
