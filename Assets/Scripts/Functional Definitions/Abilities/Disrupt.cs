@@ -56,11 +56,11 @@ public class Disrupt : Ability
                             x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
                             x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
                             Destroy(x, 0.5f);
-                            base.Execute();
                         }
                     }
                 }
             }
         }
+        base.Execute();
     }
 }
