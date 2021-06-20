@@ -8,6 +8,7 @@ public class SettingsScript : MonoBehaviour {
 	public Slider masterSoundSlider;
 	public Slider musicSlider;
 	public Slider soundSlider;
+	public Slider hudDamageIndicatorSlider;
 	public Toggle HUDArrowScriptToggle;
 	public Toggle BackgroundScriptToggle;
 	public Toggle RectangleEffectScriptToggle;
@@ -33,6 +34,7 @@ public class SettingsScript : MonoBehaviour {
 		BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
 		RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";
 		masterSoundSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
+		hudDamageIndicatorSlider.value = PlayerPrefs.GetFloat("HealthBarScript_hudDamageIndicator", 0.5F);
 		musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
 		soundSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
 		dialogueStyle.value = PlayerPrefs.GetInt("DialogueSystem_dialogueStyle", 0);
@@ -91,6 +93,7 @@ public class SettingsScript : MonoBehaviour {
 		ChangeDialogueSystemDialogueStyle(dialogueStyle.value);
 		ChangeSimpleMouseMovementEnabled(simpleMouseMovementToggle.isOn);
 		ChangeShellPartPartShader(partShader.value);
+		ChangeHudDamageIndicator(hudDamageIndicatorSlider.value);
 
 		//for(int i = 0; i < 9; i++)
 		//{
@@ -155,6 +158,18 @@ public class SettingsScript : MonoBehaviour {
 	{
 		PlayerPrefs.SetInt("DialogueSystem_dialogueStyle", val);
 		DialogueSystem.dialogueStyle = (DialogueSystem.DialogueStyle)val;
+	}
+
+	public void ChangeHudDamageIndicator(float newVol)
+	{
+		PlayerPrefs.SetFloat("HealthBarScript_hudDamageIndicator", newVol);
+        if (HealthBarScript.instance)
+            HealthBarScript.instance.ChangeHudDamageIndicator(newVol);
+		var text = hudDamageIndicatorSlider.GetComponentInChildren<Text>();
+		text.text = "Damage Indicator ";
+		if(newVol == 0F) text.text += "(Disabled)";
+		else if(newVol <= 0.5F) text.text += $"({(int)(newVol * 200)}% Core)";
+		else text.text += $"({(int)((newVol - 0.5F) * 200)}% Shell)";
 	}
 
 	public void ChangeShellPartPartShader(int val)
