@@ -19,6 +19,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
 	public Canvas canvas;
 	public RectTransform grid;
+	[SerializeField]
 	ShipBuilderPart currentPart;
 	ShipBuilderPart lastPart;
 	public IBuilderInterface builder;
@@ -248,7 +249,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	ShipBuilderPart symmetryLastPart;
 
 	// flips the x/y value of the passed vector based on passed symmetry mode
-	private Vector2 GetSymmetrizedVector(Vector2 vec, SymmetryMode mode)
+	public Vector2 GetSymmetrizedVector(Vector2 vec, SymmetryMode mode)
 	{
 		switch(mode)
 		{
@@ -322,13 +323,20 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	{
 		if(currentPart) {
 			currentPart.SetMaskable(false);
-			currentPart.info.location = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
+			var oldLoc = currentPart.info.location;
+			Vector2 newLoc;
+			currentPart.info.location = newLoc = (GetComponent<RectTransform>().anchoredPosition + offset) / 100;
 			if(symmetryCurrentPart)
 				symmetryCurrentPart.info.location = GetSymmetrizedVector(currentPart.info.location, symmetryMode);
 			if(Input.GetMouseButtonUp(0)) {
 				PlaceCurrentPart();
 			}
-			builder.UpdateChain();
+			if(oldLoc != newLoc || Input.GetMouseButtonUp(0))
+			{
+				if(currentPart)	currentPart.ReflectLocation();
+				builder.UpdateChain();
+			}
+			
 		} else if(Input.GetMouseButtonDown(0)) {
 			grid2lastPos = grid.anchoredPosition;
 			grid2mousePos = Input.mousePosition;
@@ -362,7 +370,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 
 	// Finds the part which contains the passed vector point
 	// symmetry mode enables checks based on symmetryPart - same part ID, ability ID, different mirrored
-	private ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart)
+	public ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart)
 	{
 		for(int i = parts.Count - 1; i >= 0; i--) {
 			Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);

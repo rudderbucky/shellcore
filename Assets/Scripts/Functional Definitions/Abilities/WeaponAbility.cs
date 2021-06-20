@@ -27,22 +27,49 @@ public abstract class WeaponAbility : ActiveAbility {
     protected System.Type bonusDamageType = null;
     protected float bonusDamageMultiplier = 2f;
 
+    public string GetBonusDamageType()
+    {
+        if(bonusDamageType == typeof(AirConstruct)) return "Air Stations and Turrets";
+        if(bonusDamageType == typeof(GroundConstruct)) return "Ground Stations";
+        if(bonusDamageType == typeof(ShellCore)) return "ShellCores";
+        if(bonusDamageType == typeof(Drone)) return "Drones";
+        return bonusDamageType?.ToString();
+    }
+
     public bool CheckCategoryCompatibility(IDamageable entity)
     {
+        return CheckCategoryCompatibility(entity.GetTerrain(), entity.GetCategory());
+    }
+
+    public bool CheckCategoryCompatibility(Entity.TerrainType terrain, Entity.EntityCategory category)
+    {
         if(type == WeaponDiversityType.Torpedo)
-            return entity.GetTerrain() == Entity.TerrainType.Ground;
+            return terrain == Entity.TerrainType.Ground;
         else
-            return (category == Entity.EntityCategory.All || category == entity.GetCategory())
-            && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
+            return TerrainCheck(terrain)
+            && CategoryCheck(category);
+    }
+
+    public bool TerrainCheck(Entity.TerrainType targetTerrain)
+    {
+        if(type == WeaponDiversityType.Torpedo)
+            return targetTerrain == Entity.TerrainType.Ground;
+        return this.terrain == Entity.TerrainType.All || targetTerrain == this.terrain;
+    }
+
+    public bool CategoryCheck(Entity.EntityCategory targetCategory)
+    {
+        return this.category == Entity.EntityCategory.All || this.category == targetCategory;
     }
 
     public Transform GetTarget()
     {
-        return targetingSystem.target;
+        return targetingSystem.GetTarget();
     }
 
     protected override void Awake()
     {
+        base.Awake();
         isEnabled = true; // initialize abilities to be active
         targetingSystem = new WeaponTargetingSystem();
         targetingSystem.ability = this;
@@ -74,7 +101,7 @@ public abstract class WeaponAbility : ActiveAbility {
     /// Get the range of the weapon ability
     /// </summary>
     /// <returns>the range of the weapon ability</returns>
-    public float GetRange() {
+    public override float GetRange() {
         return range; // get range
     }
 

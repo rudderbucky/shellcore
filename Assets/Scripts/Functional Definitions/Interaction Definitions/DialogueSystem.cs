@@ -300,24 +300,34 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null)
     {
-        Instance.showDialogueNode(node, speaker);
+        Instance.showDialogue(node.text, node.answers, speaker, node.textColor, node.useEntityColor);
     }
 
-    private void showDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker)
+    public static void ShowFinishTaskNode(NodeEditorFramework.Standard.FinishTaskNode node, Entity speaker = null)
     {
-        CreateWindow(dialogueBoxPrefab, node.text, node.textColor, speaker);
+        if(node.answers == null)
+        {
+            node.answers = new List<string>();
+            node.answers.Add("Ok");
+        }
+        Instance.showDialogue(node.rewardText, node.answers, speaker, node.textColor, node.useEntityColor);
+    }
+
+    private void showDialogue(string text, List<string> answers, Entity speaker, Color textColor, bool useEntityColor=true)
+    {
+        CreateWindow(dialogueBoxPrefab, text, useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : textColor, speaker);
         DialogueViewTransitionIn(speaker);
 
         // create buttons
-        buttons = new GameObject[node.answers.Count];
+        buttons = new GameObject[answers.Count];
         
-        for (int i = 0; i < node.answers.Count; i++)
+        for (int i = 0; i < answers.Count; i++)
         {
             int index = i;
-            buttons[i] = CreateButton(node.answers[i], () => {
+            buttons[i] = CreateButton(answers[i], () => {
                 AudioManager.PlayClipByID("clip_select", true);
                 endDialogue(index + 1, false);// cancel is always first -> start from 1
-            }, 24 + 24 * (node.answers.Count - (i + 1)));
+            }, 24 + 24 * (answers.Count - (i + 1)));
         }
     }
 
@@ -329,7 +339,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker) //TODO: reward part image
     {
         if (window) endDialogue(0, false);
-        CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.dialogueColor, speaker);
+        CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : node.dialogueColor, speaker);
         DialogueViewTransitionIn(speaker);
         AudioManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
                                                      // so cover for its noise here

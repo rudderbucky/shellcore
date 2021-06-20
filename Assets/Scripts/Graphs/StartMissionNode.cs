@@ -13,7 +13,9 @@ namespace NodeEditorFramework.Standard
         public override string GetName { get { return ID; } }
 
         public override string Title { get { return "Start Mission"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(250, height); } }
+        public override Vector2 MinSize { get { return new Vector2(258, 250); } }
+        
+        public override bool AutoLayout { get { return true; } }
 
         [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputRight;
@@ -27,24 +29,20 @@ namespace NodeEditorFramework.Standard
         public bool overrideCheckpoint;
         public string overrideCheckpointName;
         public int episode = 0;
-        float height = 400f;
         public override void NodeGUI()
         {
            
-            GUILayout.BeginHorizontal();
             GUILayout.Label("Mission Name:");
-            missionName = GUILayout.TextArea(missionName, GUILayout.Width(100f));
+            missionName = GUILayout.TextField(missionName, GUILayout.Width(250));
             (Canvas as QuestCanvas).missionName = missionName;
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
+
             GUILayout.Label("Mission Rank:");
-            rank = GUILayout.TextArea(rank, GUILayout.Width(100f));
-            GUILayout.EndHorizontal();
+            rank = GUILayout.TextField(rank, GUILayout.Width(250));
             GUILayout.BeginHorizontal();
             GUILayout.Label("Entry Point Hint:");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            entryPoint = GUILayout.TextArea(entryPoint, GUILayout.Width(100f));
+            entryPoint = GUILayout.TextArea(entryPoint, GUILayout.Width(250));
             GUILayout.EndHorizontal();
 
             for (int i = 0; i < prerequisites.Count; i++)
@@ -55,21 +53,19 @@ namespace NodeEditorFramework.Standard
                     prerequisites.RemoveAt(i);
                     i--;
                     GUILayout.EndHorizontal();
-                    height -= 50;
                     continue;
                 }
                 GUILayout.Label("Prerequisite " + i);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                prerequisites[i] = GUILayout.TextArea(prerequisites[i], GUILayout.Width(100f));
+                prerequisites[i] = GUILayout.TextArea(prerequisites[i], GUILayout.Width(250));
                 GUILayout.EndHorizontal();
             }
             
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
+            if (GUILayout.Button("Add prerequisite missions", GUILayout.MinWidth(250)))
             {
                 prerequisites.Add("");
-                height += 50;
             }
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
@@ -79,7 +75,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Dialogue to show if prerequisites unsatisfied:");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            prerequisitesUnsatisifedText = GUILayout.TextArea(prerequisitesUnsatisifedText, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            prerequisitesUnsatisifedText = GUILayout.TextArea(prerequisitesUnsatisifedText, GUILayout.ExpandWidth(true));
             GUILayout.EndHorizontal();
             GUILayout.Label("Dialogue Text Color:");
             float r, g, b;
@@ -90,7 +86,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             textColor = new Color(r, g, b);
 
-            if(overrideCheckpoint = GUILayout.Toggle(overrideCheckpoint, "Override Checkpoint", GUILayout.MinWidth(100f)))
+            if(overrideCheckpoint = GUILayout.Toggle(overrideCheckpoint, "Override Checkpoint", GUILayout.MinWidth(250)))
             {
                 GUILayout.Label("Checkpoint name: ");
                 overrideCheckpointName = GUILayout.TextField(overrideCheckpointName);

@@ -46,6 +46,7 @@ public abstract class Ability : MonoBehaviour {
     protected string description = "Does things";
     protected ShellPart part;
     private bool autocast = false;
+
     public ShellPart Part { set { part = value; } }
     public string abilityName = "Ability";
     public SpriteRenderer glow;
@@ -324,6 +325,11 @@ public abstract class Ability : MonoBehaviour {
     virtual protected void Execute()
     {
         
+    }
+
+    // wrapper for whether the ability has a "range" to display in the HUD when the player mouses over the button
+    virtual public float GetRange() {
+        return -1; // get range
     }
 
     /// <summary>

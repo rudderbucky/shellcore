@@ -7,6 +7,12 @@ using UnityEngine;
 /// </summary>
 public class AreaRestore : Ability
 {
+    const float range = 10;
+    public override float GetRange()
+    {
+        return range;
+    }
+    
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -28,7 +34,7 @@ public class AreaRestore : Ability
             {
                 Entity ally = AIData.entities[i];
                 float d = (ally.transform.position - Core.transform.position).sqrMagnitude;
-                if (d < 100)
+                if (d < range * range)
                 {
                     if (ally.GetHealth()[0] < ally.GetMaxHealth()[0])
                     {

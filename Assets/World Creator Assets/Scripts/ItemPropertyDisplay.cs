@@ -79,9 +79,9 @@ public class ItemPropertyDisplay : MonoBehaviour
         rectTransform.anchoredPosition = pos;
         factionDropdown.value = item.faction;
         jsonField.text = currentItem.shellcoreJSON;
-        jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other);
+        jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other || item.type == ItemType.DecorationWithMetadata);
         rotationButtons.SetActive(item.type == ItemType.Platform);
-        factionDropdown.transform.parent.gameObject.SetActive(item.type != ItemType.Flag && item.type != ItemType.Platform);
+        factionDropdown.transform.parent.gameObject.SetActive(item.type != ItemType.Flag && item.type != ItemType.Platform && item.type != ItemType.DecorationWithMetadata);
         idField.text = currentItem.ID;
         nameField.text = currentItem.name;
         pathButton.SetActive(item.type == ItemType.Other);

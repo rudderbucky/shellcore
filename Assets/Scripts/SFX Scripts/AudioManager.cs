@@ -57,15 +57,20 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.SetFloat("SFXVolume", newVol);
     }
 
-    public static void PlayClipByID(string ID, Vector3 pos) {
+    // sourcePoint = where the sound is played (moves along with object)
+    public static void PlayClipByID(string ID, Vector3 pos, GameObject sourcePoint=null) {
         if(instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
             return;
 
-        var source = new GameObject().AddComponent<AudioSource>();
-        source.transform.position = pos;
+        var source = (sourcePoint ? sourcePoint : new GameObject()).AddComponent<AudioSource>();
+        if(!sourcePoint) source.transform.position = pos;
         source.name = "Audio One-Shot";
         source.outputAudioMixerGroup = instance.sounds;
         source.clip = ResourceManager.GetAsset<AudioClip>(ID);
+        source.rolloffMode = AudioRolloffMode.Linear;
+        source.spatialBlend = 0.5F;
+        source.dopplerLevel = 0;
+        //source.maxDistance = ;
         source.Play();
         if(!instance.timePlayed.ContainsKey(ID))
             instance.timePlayed.Add(ID, Time.time);
@@ -76,7 +81,7 @@ public class AudioManager : MonoBehaviour
     }
 
     // Plays the clip directly on the player
-    public static void PlayClipByID(string ID, bool clear=false) {
+    public static void PlayClipByID(string ID, bool clear=false, float volume = 1F) {
         
 
         if(instance.playerSource != null) {
@@ -87,7 +92,7 @@ public class AudioManager : MonoBehaviour
                     return;
 
                 var clip = ResourceManager.GetAsset<AudioClip>(ID);
-                instance.playerSource.PlayOneShot(clip, 1F);
+                instance.playerSource.PlayOneShot(clip, volume);
                 if(!instance.timePlayed.ContainsKey(ID))
                     instance.timePlayed.Add(ID, Time.time);
                 else

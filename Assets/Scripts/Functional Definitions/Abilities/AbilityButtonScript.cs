@@ -26,6 +26,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     Vector3 oldInputMousePos;
     KeyName keycode;
     public bool visualMode = false;
+    GameObject rangeCirclePrefab;
+    Dictionary<Ability, CircleGraphic> circles = new Dictionary<Ability, CircleGraphic>();
 
     string GetPrettyStringFromKeycode(KeyCode code)
     {
@@ -48,6 +50,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         ReflectTier(ability);
         ReflectHotkey(keycode);
 
+        rangeCirclePrefab = ResourceManager.GetAsset<GameObject>("range_circle_prefab");
         this.keycode = keycode;
 
         // set up image
@@ -78,9 +81,13 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         {
             description += "Cooldown duration: " + ability.GetCDDuration() + "\n";
         }
-        if((ability as WeaponAbility)?.GetRange() != null)
+        if(ability.GetRange() > 0)
         {
-            description += $"Range: {(ability as WeaponAbility).GetRange()}\n";
+            description += $"Range: {ability.GetRange()}\n";
+        }
+        if((ability as WeaponAbility)?.GetBonusDamageType() != null)
+        {
+            description += $"Deals bonus damage to: {(ability as WeaponAbility).GetBonusDamageType()}\n";
         }
         description += AbilityUtilities.GetDescription(ability);
         abilityInfo = description;
@@ -225,10 +232,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             {
                 abilities[0].Activate();
             }
-            for (int i = 0; i < abilities.Count; i++)
-            {
-                abilities[i].Tick();
-            }
         }
             
         clicked = false;
@@ -251,6 +254,36 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         }
     }
 
+    void LateUpdate()
+    {
+        if(tooltip) PollRangeCircle();
+    }
+
+    void PollRangeCircle()
+    {
+        foreach(var ability in abilities)
+            if(ability.GetRange() > 0 && circles.ContainsKey(ability)) 
+            {
+                if(ability.IsDestroyed())
+                {
+                    circles[ability].enabled = false;
+                    continue;
+                }
+                else circles[ability].enabled = true;
+                circles[ability].color = ability.TimeUntilReady() > 0 ? Color.gray : Color.green;
+                var range = ability.GetRange();
+                var cameraPos = CameraScript.instance.transform.position;
+                cameraPos.z = 0;
+                range = Camera.main.WorldToScreenPoint(cameraPos + new Vector3(0,range)).y - Camera.main.WorldToScreenPoint(cameraPos).y;
+                range *= 2;
+
+                circles[ability].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(ability.transform.position);
+                circles[ability].rectTransform.sizeDelta = new Vector2(range, range);
+                //Debug.Log(Camera.main.ScreenToWorldPoint((Vector3)rangeCircle.rectTransform.anchoredPosition +
+                //    new Vector3(0,range / 2,CameraScript.zLevel) ) - abilities[0].transform.position);
+            }
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         //create tooltip
@@ -259,11 +292,33 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         rect.position = eventData.position;
         rect.SetParent(transform.parent, true);
         rect.SetAsLastSibling();
-
+        ClearCircles();
+        if(abilities.Count > 0 && abilities[0].GetRange() > 0)
+            foreach(var ability in abilities)
+            {
+                if(!ability.IsDestroyed())
+                {
+                    circles.Add(ability, Instantiate(rangeCirclePrefab, transform.parent.parent.Find("Circle Holder")).GetComponent<CircleGraphic>());
+                    circles[ability].color = Color.green;
+                }
+                    
+            }
+        //rangeCircle.enabled = true;
+        PollRangeCircle();
         Text text = tooltip.transform.Find("Text").GetComponent<Text>();
         text.text = abilityInfo;
 
         rect.sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
+    }
+
+
+    private void ClearCircles()
+    {
+        foreach(var value in circles.Values)
+        {
+            Destroy(value.gameObject);
+        }
+        circles.Clear();
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -271,6 +326,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         //delete tooltip
         if (tooltip)
             Destroy(tooltip);
+        ClearCircles();
     }
 
     public void OnPointerClick(PointerEventData eventData)

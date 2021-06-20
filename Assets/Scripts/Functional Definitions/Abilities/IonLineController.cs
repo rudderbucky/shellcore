@@ -49,7 +49,8 @@ public class IonLineController : MonoBehaviour
         this.range = range;
         this.part = part;
         this.tier = tier;
-        energyCost = energyC / tier;
+        energyCost = energyC * tier;
+        damage = damageC * tier;
     }
 
     public bool GetFiring()
@@ -82,8 +83,9 @@ public class IonLineController : MonoBehaviour
     }
 
     float energyCost;
+    float damage;
     public static float damageC = 1500;
-    public static float energyC = 300;
+    public static float energyC = 150;
 
     void Update()
     {
@@ -142,7 +144,7 @@ public class IonLineController : MonoBehaviour
             for(int i = 0; i < raycastHits.Length; i++)
             {
                 var damageable = raycastHits[i].transform.GetComponentInParent<IDamageable>();
-                if(raycastHits[i].transform && damageable != null && damageable.GetFaction() != Core.faction && !damageable.GetIsDead())
+                if(raycastHits[i].transform && damageable != null && damageable.GetFaction() != Core.faction && !damageable.GetIsDead() && damageable.GetTerrain() != Entity.TerrainType.Ground)
                 {
                     var hitTransform = raycastHits[i].transform;                   
 
@@ -173,6 +175,14 @@ public class IonLineController : MonoBehaviour
         {
             if(line.startWidth > startWidth)
                 ThickenLine(-0.01F);
+
+            if(duration <= 0)
+            {
+                if(transform.parent.GetComponentInChildren<AudioSource>()) 
+                {
+                    Destroy(transform.parent.GetComponentInChildren<AudioSource>().gameObject);
+                }
+            }
         }
     }
 

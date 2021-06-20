@@ -297,6 +297,11 @@ namespace NodeEditorFramework
 
 		public override Type ConnectionType { get { return typeof(ConnectionKnob); } }
 
+		public ConnectionKnobAttribute(string name) : base(name)
+		{
+
+		}
+
 		public ConnectionKnobAttribute(string name, Direction direction) : base (name, direction)
 		{
 			Setup (direction == Direction.Out? NodeSide.Right : NodeSide.Left, 0);

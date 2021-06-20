@@ -38,7 +38,6 @@ public class WCGeneratorHandler : MonoBehaviour
     List<WorldData.PartIndexData> partData = new List<WorldData.PartIndexData>();
     [SerializeField]
     FactionManager factionManager;
-    
 
     public static void DeleteTestWorld()
     {
@@ -252,11 +251,22 @@ public class WCGeneratorHandler : MonoBehaviour
                     break;
                 case ItemType.Other:
                 case ItemType.Decoration:
+                case ItemType.DecorationWithMetadata:
                 case ItemType.Flag:
                     Sector.LevelEntity ent = new Sector.LevelEntity();
                     if(cursor.characters.TrueForAll((WorldData.CharacterData x) => {return x.ID != item.ID;})) 
                     {
                         // Debug.Log(item.ID + " is not a character. " + ID);
+                        if(item.type == ItemType.DecorationWithMetadata) 
+                        {
+                            int parsedId;
+                            if(item.assetID == "shard_rock" && int.TryParse(item.ID, out parsedId))
+                            {
+                                Debug.LogError($"Shard in sector {container.sectorName} has a numeric ID. Abort.");
+                                yield break;
+                            }
+                            ent.blueprintJSON = item.shellcoreJSON;
+                        }
                         int test;
                         if(item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
                         {
@@ -270,7 +280,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 savingLevelScreen.SetActive(false);
                                 saveState = 4;
                                 Debug.LogError("Two items in sectors " + container.sectorName + " and " 
-                                    + itemSectorsByID[ent.ID] + " were issued the same custom ID. Abort.");
+                                    + itemSectorsByID[ent.ID] + $" were issued the same custom ID ({ent.ID}). Abort.");
                                 yield break;
                             }
                             else itemSectorsByID.Add(ent.ID, container.sectorName);
@@ -521,7 +531,7 @@ public class WCGeneratorHandler : MonoBehaviour
         if(File.Exists(System.IO.Path.Combine(path, "ResourceData.txt")))
             File.Delete(System.IO.Path.Combine(path, "ResourceData.txt"));
         if(File.Exists(resourceTxtPath))
-            File.Move(resourceTxtPath, System.IO.Path.Combine(path, "ResourceData.txt"));
+            File.Copy(resourceTxtPath, System.IO.Path.Combine(path, "ResourceData.txt"));
 
         TryCopy(canvasPlaceholderPath, path + "\\Canvases\\");
         TryCopy(entityPlaceholderPath, path + "\\Entities\\");
@@ -653,6 +663,7 @@ public class WCGeneratorHandler : MonoBehaviour
             try
             {
                 // resource pack loading
+                // TODO: actually write these resources into the world instead of just not meddling with them
                 if (!ResourceManager.Instance.LoadResources(path) && SectorManager.testResourcePath != null)
                 {
                     ResourceManager.Instance.LoadResources(SectorManager.testResourcePath);
@@ -690,12 +701,11 @@ public class WCGeneratorHandler : MonoBehaviour
                         string worlddatajson = System.IO.File.ReadAllText(file);
                         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
-
                         cursor.spawnPoint.position = wdata.initialSpawn;
                         // add characters into character handler
                         foreach(var ch in wdata.defaultCharacters)
                         {
-                            characterHandler.AddCharacter(ch);
+                            cursor.characters.Add(ch);
                         }
 
                         blueprintField.text = wdata.defaultBlueprintJSON;

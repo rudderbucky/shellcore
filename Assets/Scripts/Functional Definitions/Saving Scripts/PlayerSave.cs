@@ -63,4 +63,5 @@ public class PlayerSave {
 	// Contains IDs of unlocked party members (there will be a node that unlocks members adding IDs into this list)
 	public List<string> unlockedPartyIDs;
 	public AbilityHotkeyStruct abilityHotkeys;
+	public List<string> locationBasedShardsFound;
 }

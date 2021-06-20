@@ -11,6 +11,7 @@ public class WorldCreatorCursor : MonoBehaviour
 	public readonly float tileSize = 10F;
     
     public GameObject borderPrefab;
+    [SerializeField]
     SectorWCWrapper currentSector;
 	public readonly Vector2 cursorOffset = new Vector2(5F, 5F);
     public int currentIndex;
@@ -82,6 +83,8 @@ public class WorldCreatorCursor : MonoBehaviour
     // Update is called once per frame
     static int sortLayerNum = 1;
     public GUIWindowScripts manual;
+    [SerializeField]
+    private GUIWindowScripts search;
 
     public List<string> music;
     private float musicTimer;
@@ -123,6 +126,11 @@ public class WorldCreatorCursor : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.M) && !system.IsPointerOverGameObject())
         {
             manual.ToggleActive();
+        }
+
+        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F) && !system.IsPointerOverGameObject())
+        {
+            search.ToggleActive();
         }
 
         switch (mode)
@@ -389,7 +397,6 @@ public class WorldCreatorCursor : MonoBehaviour
             RemoveSector(sectors[0]);
         }
         characters.Clear();
-        characterHandler.ReflectButtonData();
     }
 
     void RemoveSector(SectorWCWrapper sector)
@@ -424,6 +431,31 @@ public class WorldCreatorCursor : MonoBehaviour
     List<SectorWCWrapper> translatingSectors = new List<SectorWCWrapper>();
     Vector2 sectorTranslationStoredPos;
     float doubleClickTimer;
+
+    public void SymmetryCopy(Sector sector, bool xAxis)
+    {
+        var newItems = new List<Item>();
+        foreach(var item in placedItems)
+        {
+            if(sector.bounds.contains(item.pos))
+            {
+                var newPos = item.pos;
+                if(xAxis)
+                    newPos.x = sector.bounds.x + sector.bounds.w - (item.pos.x - sector.bounds.x);
+                else
+                    newPos.y = sector.bounds.y - item.pos.y + sector.bounds.y - sector.bounds.h;
+                if(placedItems.Exists(item => item.pos == newPos)) continue;
+                var itemCopy = handler.CopyItem(item);
+                if(itemCopy.type == ItemType.Platform && !itemCopy.name.Contains("2")) itemCopy.rotation = 3 - item.rotation;
+                itemCopy.obj.transform.rotation = Quaternion.identity;
+                itemCopy.obj.transform.RotateAround(itemCopy.pos, Vector3.forward, 90 * itemCopy.rotation);
+                itemCopy.pos = newPos;
+                itemCopy.obj.transform.position = newPos;
+                newItems.Add(itemCopy);
+            }
+        }
+        placedItems.AddRange(newItems);
+    }
 
     void PollSectors() 
     {
@@ -655,7 +687,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 Debug.Log("under cursor assetID: " + item.assetID);
 
                 // TODO: Specify which type of item you are scanning for
-                if (underCursor.type == ItemType.Other || underCursor.type == ItemType.Decoration)
+                if (underCursor.type == ItemType.Other || underCursor.type == ItemType.Decoration || underCursor.type == ItemType.DecorationWithMetadata)
                 {
                     taskInterface.Activate();
                     SetMode(originalCursorMode);

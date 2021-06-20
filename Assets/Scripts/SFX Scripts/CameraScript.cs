@@ -20,9 +20,11 @@ public class CameraScript : MonoBehaviour {
 
     public static float zLevel = 10;
     public EventSystem eventSystem;
+    public Camera minimapCamera;
 
     public void Initialize(PlayerCore player)
     {
+        if(zLevel > GetMaxZoomLevel()) zLevel = GetMaxZoomLevel();
         core = player;
         if(!initialized) sFXHandler.Initialize();
         initialized = true;
@@ -75,6 +77,8 @@ public class CameraScript : MonoBehaviour {
                 Focus(core.transform.position);
             }
             ProximityInteractScript.Focus();
+            MouseMovementVisualScript.Focus();
+            if(ReticleScript.instance) ReticleScript.instance.Focus();
         }
     }
 
@@ -94,5 +98,10 @@ public class CameraScript : MonoBehaviour {
         {
             if(callback != null) callback.Invoke();
         }
+    }
+
+    public Vector3 GetWorldPositionOfMouse()
+    {
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0,0,CameraScript.zLevel));
     }
 }

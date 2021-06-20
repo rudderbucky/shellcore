@@ -8,8 +8,14 @@ using UnityEngine;
 public class PinDown : ActiveAbility
 {
     Craft target;
-    float rangeSquared = 15f * 15f;
+    const float range = 15f;
+    float rangeSquared = range * range;
 
+    public override float GetRange()
+    {
+        return range;
+    }
+    
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -54,6 +60,26 @@ public class PinDown : ActiveAbility
         if (target != null)
         {
             target.AddPin();
+
+            
+            var missileLinePrefab = new GameObject("Missile Line"); // create prefab and set to parent
+            missileLinePrefab.transform.SetParent(transform, false);
+
+            var missileColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
+
+            // I use this prefab as one of the active lines on the missile 
+            // because what's the point in not doing it this way
+
+            LineRenderer lineRenderer = missileLinePrefab.AddComponent<LineRenderer>(); // add line renderer
+            lineRenderer.material = ResourceManager.GetAsset<Material>("white_material"); // get material
+            MissileAnimationScript comp = missileLinePrefab.AddComponent<MissileAnimationScript>(); // add the animation script
+            foreach(var part in target.GetComponentsInChildren<ShellPart>())
+            {
+                var x = Instantiate(missileLinePrefab, part.transform); // instantiate
+                x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
+                x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
+                Destroy(x, activeDuration);
+            }
         }
         base.Execute();
     }
