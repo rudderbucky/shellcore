@@ -32,14 +32,20 @@ public class MouseMovementVisualScript : MonoBehaviour
     public static void Focus()
     {
         overMinimap = GetMousePosOnMinimap().x > 0 && GetMousePosOnMinimap().y > 0;
+        instance.deltaLineRenderer.positionCount = 2;
+        instance.deltaLineRenderer.SetPosition(0, PlayerCore.Instance.transform.position);
         if(Input.GetMouseButton(1))
         {
-            instance.deltaLineRenderer.positionCount = 2;
-            instance.deltaLineRenderer.SetPosition(0, PlayerCore.Instance.transform.position);
-            var pos = instance.minimapCamera.ScreenToWorldPoint(Input.mousePosition + new Vector3(0,0,30));
-            //instance.deltaLineRenderer.SetPosition(1, CameraScript.instance.GetWorldPositionOfMouse());
-            instance.deltaLineRenderer.SetPosition(1, overMinimap ? instance.minimapCamera.ScreenToWorldPoint(GetMousePosOnMinimap()) :
+            instance.deltaLineRenderer.SetPosition(1, 
                 CameraScript.instance.GetWorldPositionOfMouse());
+        }
+        else if(Input.GetMouseButton(0) && overMinimap)
+        {
+            instance.deltaLineRenderer.SetPosition(1,instance.minimapCamera.ScreenToWorldPoint(GetMousePosOnMinimap()));
+        }
+        else if(PlayerCore.Instance.GetMinimapPoint().HasValue)
+        {
+            instance.deltaLineRenderer.SetPosition(1,PlayerCore.Instance.GetMinimapPoint().Value);
         }
         else
         {

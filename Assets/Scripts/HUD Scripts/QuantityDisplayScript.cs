@@ -11,12 +11,16 @@ public class QuantityDisplayScript : MonoBehaviour {
     public GameObject secondaryTargetInfoPrefab;
     int lastCredits;
     public CreditIncrementMarker marker;
+    
+    private TooltipManager tooltipManager;
 	// Use this for initialization
 
     public void Initialize(PlayerCore player)
     {
         this.player = player;
         initialized = true;
+        tooltipManager = gameObject.GetComponent<TooltipManager>();
+        if(!tooltipManager) tooltipManager = gameObject.AddComponent<TooltipManager>();
     }
 	// Update is called once per frame
 	void Update () {
@@ -31,6 +35,9 @@ public class QuantityDisplayScript : MonoBehaviour {
             texts[1].text = player.GetPower() + "";
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
             texts[5].text = GetCreditString(player.GetCredits()) + "";
+            var rect = texts[5].rectTransform.rect;
+            rect.center = texts[5].rectTransform.position;
+            tooltipManager.AddBounds(rect, $"CREDITS: {player.GetCredits()}");
 
             UpdatePrimaryTargetInfo();
 

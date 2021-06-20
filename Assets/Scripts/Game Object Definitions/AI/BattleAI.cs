@@ -47,6 +47,10 @@ public class BattleAI : AIModule
     Draggable waitingDraggable;
 
     List<AITarget> AITargets = new List<AITarget>();
+    public BattleState GetState()
+    {
+        return state;
+    }
 
     public void OrderModeChange(BattleState state)
     {

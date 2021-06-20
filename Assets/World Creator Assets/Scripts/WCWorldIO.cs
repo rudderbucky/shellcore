@@ -97,16 +97,13 @@ public class WCWorldIO : MonoBehaviour
         if(SceneManager.GetActiveScene().name == "WorldCreator")
         {
             var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+            DeletePlaceholderDirectories();
             if(Directory.Exists(path)) 
             {
                 generatorHandler.ReadWorld(path);
                 #if UNITY_EDITOR
                 if(instantTest) TestWorld();
                 #endif
-            }
-            else
-            {
-                DeletePlaceholderDirectories();
             }
         }
     }
@@ -148,6 +145,9 @@ public class WCWorldIO : MonoBehaviour
             }
             System.IO.Directory.Delete(Application.streamingAssetsPath + "\\FactionPlaceholder");
         }
+
+        if(System.IO.File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
+            File.Delete(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt"));
     }
 
     public void WCReadCurrentPath()

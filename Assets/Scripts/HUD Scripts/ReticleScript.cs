@@ -91,7 +91,7 @@ public class ReticleScript : MonoBehaviour {
         {
             Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
 
-            if (draggableTarget && draggableTarget.transform != craft.transform)
+            if (draggableTarget && TractorBeam.InvertTractorCheck(craft, draggableTarget) && draggableTarget.transform != craft.transform)
             {
                 if (targSys.GetTarget() == draggableTarget.transform)
                 {
@@ -363,7 +363,7 @@ public class ReticleScript : MonoBehaviour {
         if(success)
         {
             var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
-            AdjustReticleBounds(secondaryReticlePrefab.GetComponent<Image>(), ent.transform);
+            AdjustReticleBounds(reticle.GetComponent<Image>(), ent.transform);
             secondariesByObject.Add((ent, reticle.transform));
             //SetSecondaryReticleTransform(ent, reticle.transform, secondariesByObject.Count);
             if (!DebugMode)

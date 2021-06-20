@@ -10,7 +10,8 @@ public enum ItemType {
 		Platform,
         Flag,
         Decoration,
-        BackgroundDecoration
+        BackgroundDecoration,
+        DecorationWithMetadata
 }
 
 /// <summary>
@@ -197,6 +198,7 @@ public class ItemHandlerEditor : Editor
                 if(GUILayout.Button("Add Item")) {
                     if(handler.itemPack) {
                         handler.itemPack.items.Add(placeholder);
+                        placeholder = new Item();
                         ExportData();
                     }
                 };

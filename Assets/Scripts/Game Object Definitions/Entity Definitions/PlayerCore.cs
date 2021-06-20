@@ -85,6 +85,12 @@ public class PlayerCore : ShellCore {
                 (abilities[i] as WeaponAbility).SetActive(weaponActivationStates[weaponIndex++]);
         }
     }
+
+    private Vector3? minimapPoint = null;
+    public Vector3? GetMinimapPoint()
+    {
+        return minimapPoint;
+    }
     /// <summary>
     /// The directional driver for the player core, returns a vector based on current inputs
     /// </summary>
@@ -92,14 +98,21 @@ public class PlayerCore : ShellCore {
     public Vector2 getDirectionalInput()
     {
         
-        if(Input.GetMouseButton(1))
+        if(Input.GetMouseButton(1) && !(MouseMovementVisualScript.overMinimap && Input.GetMouseButton(0)))
         {
-            var delta = (MouseMovementVisualScript.overMinimap ? CameraScript.instance.minimapCamera.ScreenToWorldPoint(MouseMovementVisualScript.GetMousePosOnMinimap())
-                 : CameraScript.instance.GetWorldPositionOfMouse()) - 
-                transform.position;
+            minimapPoint = null;
+            var delta = CameraScript.instance.GetWorldPositionOfMouse() - transform.position;
             return delta.normalized;
         }
-           
+
+        if(Input.GetMouseButton(0) && MouseMovementVisualScript.overMinimap)
+        {
+            minimapPoint = CameraScript.instance.minimapCamera.ScreenToWorldPoint(MouseMovementVisualScript.GetMousePosOnMinimap());
+            minimapPoint = new Vector3(minimapPoint.Value.x,minimapPoint.Value.y, 0);
+            var delta = minimapPoint.Value - transform.position;
+            
+            return delta.normalized;
+        }
 
         //Sum up all inputs
         Vector2 direction = Vector2.zero;
@@ -111,6 +124,17 @@ public class PlayerCore : ShellCore {
             direction += new Vector2(0, -1);
         if (InputManager.GetKey(KeyName.Right))
             direction += new Vector2(1, 0);
+
+        if(minimapPoint != null && direction == Vector2.zero)
+        {
+            if(Vector3.SqrMagnitude(transform.position - minimapPoint.Value) < PathAI.minDist)
+            {
+                minimapPoint = null;
+                return Vector2.zero;
+            }
+            else return (minimapPoint.Value - transform.position).normalized;
+        }
+        else minimapPoint = null;
 
         //Send unit vector
         direction.Normalize();
@@ -242,6 +266,13 @@ public class PlayerCore : ShellCore {
         {
             group.sortingOrder = ++maxAirLayer;
         }
+
+        // update abilities
+        for (int i = 0; i < abilities.Count; i++)
+        {
+            if(abilities[i]) abilities[i].Tick();
+        }
+
         base.Update(); // base update
         if(!GetIsInteracting() && !DialogueSystem.isInCutscene) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
 	}
@@ -271,5 +302,10 @@ public class PlayerCore : ShellCore {
 
         if(directionVector != Vector2.zero) CameraScript.instance.Focus(transform.position);
     }
-    
+
+    public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
+    {
+        if(lastDamagedBy) HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
+        return base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
+    }
 }

@@ -60,7 +60,7 @@ public class Yard : AirConstruct, IShipBuilder {
             {
                 if (tractor.GetTractorTarget().GetComponent<ShellPart>())
                 {
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your part has been added into your inventory.</color>");
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your part has been added into your inventory.</color>",4);
                     var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
                     var info = shellPart.info;
                     info = ShipBuilder.CullSpatialValues(info);
@@ -75,7 +75,7 @@ public class Yard : AirConstruct, IShipBuilder {
                 }
                 else if(tractor.GetTractorTarget().GetComponent<Shard>())
                 {
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your shard has been added into your stash.</color>");
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your shard has been added into your stash.</color>",4);
                     var shard = tractor.GetTractorTarget().GetComponent<Shard>();
                     var tiers = new int[] {1, 5, 20};
                     PlayerCore.Instance.shards += tiers[shard.tier];

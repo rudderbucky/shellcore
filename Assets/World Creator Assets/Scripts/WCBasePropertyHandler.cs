@@ -228,6 +228,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
                     File.Create(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt"));
                 }
 
+                Directory.CreateDirectory(System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"));
                 File.WriteAllText(System.IO.Path.Combine(
                     System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"), $"{newFaction.factionName}.json"),
                         JsonUtility.ToJson(newFaction)

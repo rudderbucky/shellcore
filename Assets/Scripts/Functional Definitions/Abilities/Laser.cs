@@ -21,6 +21,7 @@ public class Laser : Bullet {
         terrain = Entity.TerrainType.All;
         category = Entity.EntityCategory.Unit;
         pierceFactor = laserPierceFactor;
+        bulletSound = "clip_laser";
     }
 
     protected override void Start() {

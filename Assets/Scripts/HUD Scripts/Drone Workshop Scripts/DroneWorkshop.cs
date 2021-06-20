@@ -56,18 +56,19 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	private void SetReconstructButton(ReconstructButtonStatus status) {
 		switch(status) {
 			case ReconstructButtonStatus.Valid:
-				reconstructImage.color = reconstructText.color = Color.green;
+				reconstructText.color = Color.green;
 				reconstructText.text = "Reconstruct";
 				break;
 			case ReconstructButtonStatus.PartInvalidPosition:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "A part is in an invalid position!";
 				break;
 			case ReconstructButtonStatus.PastPartLimit:
-				reconstructImage.color = reconstructText.color = Color.red;
+				reconstructText.color = Color.red;
 				reconstructText.text = "Core cannot handle so many parts!";
 				break;
 		}
+		reconstructText.text = reconstructText.text.ToUpper();
 	}
     public void InitializeSelectionPhase() {
 		searcherString = "";
@@ -230,23 +231,60 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	public void UpdateChain() {
 		SetReconstructButton(cursorScript.parts.Count > DroneUtilities.GetPartLimit(currentData.type) ? 
 			ReconstructButtonStatus.PastPartLimit : ReconstructButtonStatus.Valid);
-		var shellRect = ShipBuilder.GetRect(shellImage.rectTransform);
-		shellRect.Expand(10);
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			shipPart.isInChain = false;
-			var partBounds = ShipBuilder.GetRect(shipPart.rectTransform);
-			shipPart.isInChain = partBounds.Intersects(shellRect);
+			CheckPartIntersectsWithShell(shipPart);
 		}
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(shipPart.isInChain) UpdateChainHelper(shipPart);
 		}
-		
+
+		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
+			CheckPartIntersectsWithShell(shipPart);
+		}
+
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			if(part.validPos)
+			{
+				foreach(var part2 in cursorScript.parts)
+				{
+					if(part != part2 && PartIsTooClose(part, part2)) {
+						part.validPos = false;
+						break;
+					}
+				}
+			}
+			else
+			{
+				bool stillTouching = false;
+				foreach(ShipBuilderPart part2 in cursorScript.parts) {
+					if(part2 != part && PartIsTooClose(part, part2)) {
+						stillTouching = true;
+						break;
+					}
+				}
+				if(!stillTouching) part.validPos = true;
+			}
+		}
+
 		foreach(ShipBuilderPart shipPart in cursorScript.parts) {
 			if(!shipPart.isInChain || !shipPart.validPos) {
 				SetReconstructButton(ReconstructButtonStatus.PartInvalidPosition);
 				return;
 			}
 		}
+	}
+
+	bool PartIsTooClose(ShipBuilderPart part, ShipBuilderPart otherPart) {
+		var closeConstant = -2F;
+		var rect1 = ShipBuilder.GetRect(part.rectTransform);
+		var rect2 = ShipBuilder.GetRect(otherPart.rectTransform);
+		// add small number (0.005) to deal with floating point issues
+		rect1.Expand((closeConstant - 0.005F) * rect1.extents);
+		rect2.Expand((closeConstant - 0.005F) * rect2.extents);
+		return rect1.Intersects(rect2);
 	}
 
 	public EntityBlueprint.PartInfo? GetButtonPartCursorIsOn() {
@@ -274,8 +312,8 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 
 	public static DroneSpawnData ParseDronePart(EntityBlueprint.PartInfo part) {
 		if(part.abilityID != 10) Debug.Log("Passed part is not a drone spawner!");
-		var data = ScriptableObject.CreateInstance<DroneSpawnData>();
-		JsonUtility.FromJsonOverwrite(part.secondaryData, data);
+		var data = DroneUtilities.GetDroneSpawnDataByShorthand(part.secondaryData);
+		//JsonUtility.FromJsonOverwrite(part.secondaryData, data);
 		return data;
 	}
 	public void InitializeBuildPhase(EntityBlueprint blueprint, EntityBlueprint.PartInfo currentPart, DroneSpawnData data) {
@@ -293,6 +331,22 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		foreach(GameObject obj in contentTexts) {
 			obj.SetActive(false);
 		}
+
+		foreach(Transform inv in smallBuilderContents)
+		{
+			Destroy(inv.gameObject);
+		}
+		foreach(Transform inv in mediumBuilderContents)
+		{
+			Destroy(inv.gameObject);
+		}
+		foreach(Transform inv in largeBuilderContents)
+		{
+			Destroy(inv.gameObject);
+		}
+
+		partDict.Clear();
+
 
 		foreach(EntityBlueprint.PartInfo part in player.GetInventory()) {
 			if(part.abilityID != 10 && ResourceManager.GetAsset<PartBlueprint>(part.partID).size == 0)
@@ -357,7 +411,9 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	}
 
 	private void Export() {
-		var data = ParseDronePart(currentPart);
+		var data = ScriptableObject.CreateInstance<DroneSpawnData>();
+		JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(ParseDronePart(currentPart)), data);
+
 		var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
         JsonUtility.FromJsonOverwrite(DroneWorkshop.ParseDronePart(currentPart).drone, blueprint);
 		blueprint.parts = new List<EntityBlueprint.PartInfo>();
@@ -434,22 +490,25 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 	// TODO: Test this when the Drone Workshop is added into the game
 	public bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart)
 	{
-		/*
-		var shellRect = GetRect(shell.rectTransform);
 
-		shipPart.isInChain = false;
-		var partBounds = GetRect(shipPart.rectTransform);
+		var shellRect = ShipBuilder.GetRect(shellImage.rectTransform);
+
+		var partBounds = ShipBuilder.GetRect(shipPart.rectTransform);
 		if(partBounds.Intersects(shellRect)) {
-			bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <
-			0.18F*(shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
-			Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <
-			0.18F*(shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
-			shipPart.isInChain = !z;
-			return z;
+			/*
+			bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shellImage.rectTransform.anchoredPosition.x) <=
+			0.18F*(shipPart.rectTransform.sizeDelta.x + shellImage.rectTransform.sizeDelta.x) &&
+			Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shellImage.rectTransform.anchoredPosition.y) <=
+			0.18F*(shipPart.rectTransform.sizeDelta.y + shellImage.rectTransform.sizeDelta.y);
+			*/
+			shipPart.isInChain = true;//!z;
+
+			// reset sprite
+
+			//return true;
+			return true;//z;
 		}
-		return false;
-		*/
-		Debug.LogError("You need to create this method for the Drone Workshop!");
+
 		return false;
 	}
 }

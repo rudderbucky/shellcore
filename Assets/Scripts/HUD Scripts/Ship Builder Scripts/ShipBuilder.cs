@@ -456,41 +456,6 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 
 			abilityLimits = player.abilityCaps;
 		}
-		else
-		{
-			/* Adds all part/ability/tier/drone permutations to the player's inventory. Uncomment to cheat.
-			for(int i = 0; i < 8; i++) 
-			{
-				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
-				info.partID = "SmallCenter1";
-				info.abilityID = 10;
-				DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)i);
-				info.secondaryData = JsonUtility.ToJson(data);
-				if(info.abilityID == 0 || info.abilityID == 10) info.tier = 0;
-				parts.Add(info);
-			}
-			
-			if(parts.Count == 0) {
-				EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
-				foreach(string name in ResourceManager.allPartNames) {
-					for(int i = 0; i < 22; i++) 
-					{
-						info.partID = name;
-						info.abilityID = i;
-						if((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3) info.abilityID = 0;
-						if(info.abilityID == 10) {
-							DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)Random.Range(0, 8));
-							info.secondaryData = JsonUtility.ToJson(data);
-						}
-						if(info.abilityID == 0 || info.abilityID == 10 || info.abilityID == 21) info.tier = 0;
-						else info.tier = 1;
-						parts.Add(info);
-						parts.Add(info);
-						parts.Add(info);
-					}
-				}
-			}*/
-		}
 
 		if(mode == BuilderMode.Trader)
 		{
@@ -687,8 +652,12 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
     public void AddShard(Shard shard) {
+        AddShard(shard.tier);
+    }
+
+	public void AddShard(int tier) {
         var tiers = new int[] {1, 5, 20};
-        player.shards += tiers[shard.tier];
+        player.shards += tiers[tier];
     }
 	private void AddPart(EntityBlueprint.PartInfo part) {
 		if(!partDict.ContainsKey(part)) {
@@ -718,6 +687,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		var secondaryData = editorModeAddPartSection.transform.Find("Secondary Data").GetComponent<InputField>().text;
 		part.secondaryData = secondaryData != null ? secondaryData : "";
 		part.abilityID = editorModeAddPartSection.transform.Find("Ability ID").GetComponent<Dropdown>().value;
+		part.shiny = editorModeAddPartSection.transform.Find("Is Shiny").GetComponent<Toggle>().isOn;
 		var x = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
 		if(ResourceManager.allPartNames.Contains(x)) {
 			part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
@@ -782,7 +752,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		}
 	}
 	public void LoadBlueprint(EntityBlueprint blueprint) {
-		cursorScript.ClearAllParts();
+		if(editorMode)
+			cursorScript.ClearAllParts();
+
 		foreach(EntityBlueprint.PartInfo part in blueprint.parts) {
 			var p = Instantiate(SBPrefab, cursorScript.transform.parent).GetComponent<ShipBuilderPart>();
 			p.cursorScript = cursorScript;
@@ -949,7 +921,6 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			trader.parts = new List<EntityBlueprint.PartInfo>();
 			foreach(var part in partDict.Keys)
 			{
-				Debug.Log("a");
 				trader.parts.Add(CullSpatialValues(part));
 			}
 			Debug.Log(JsonUtility.ToJson(trader));

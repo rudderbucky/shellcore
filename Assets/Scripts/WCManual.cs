@@ -43,7 +43,6 @@ public class WCManualEditor : Editor
     WCManual manual;
     public void OnEnable() {
         manual = (WCManual)target;
-        Debug.Log(manual.manualEntries.Count);
     }
     public override void OnInspectorGUI ()
     {

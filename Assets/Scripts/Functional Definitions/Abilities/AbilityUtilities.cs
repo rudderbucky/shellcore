@@ -29,21 +29,22 @@ public enum AbilityID
 	EnergyMax, 
 	Command, 
 	CoreRegen,
-	CoreMax, 
-	Stealth, 
-	DamageBoost, 
-	AreaRestore, 
-	PinDown, 
-	Retreat, 
-	Absorb, 
-	ActiveShellRegen, 
-	ActiveCoreRegen, 
-	ActiveEnergyRegen, 
-	Disrupt, 
-	Control, 
-	InvertTractor, 
-	Bomb, 
-	Ion 
+	CoreMax,
+	Stealth,
+	DamageBoost,
+	AreaRestore,
+	PinDown,
+	Retreat,
+	Absorb,
+	ActiveShellRegen,
+	ActiveCoreRegen,
+	ActiveEnergyRegen,
+	Disrupt,
+	Control,
+	InvertTractor,
+	Bomb,
+	Ion,
+	Flak
 }
 public static class AbilityUtilities {
 
@@ -78,6 +79,7 @@ public static class AbilityUtilities {
 			case 9:
 			case 36:
 			case 37:
+			case 38:
 				return AbilityHandler.AbilityTypes.Weapons;
 			case 1:
 			case 2:
@@ -181,7 +183,9 @@ public static class AbilityUtilities {
 				return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
 			case 37:
 				return $"Slow moving beam that deals {IonLineController.damageC * tier} damage per second for 5 seconds. "
-				+ $"\nBeam costs {IonLineController.energyC * tier} energy per second";
+				+ $"\nBeam costs {IonLineController.energyC * tier} energy per second.";
+			case 38:
+				return $"Fires at most 5 projectiles at different targets that each deal {Flak.bulletDamage * tier} damage.";
             default:
 				return "Description unset";
 		}
@@ -224,6 +228,8 @@ public static class AbilityUtilities {
 				return "torpedoshooter_sprite";
 			case 9:
 				return "lasershooter_sprite";
+			case 38:
+				return "flakshooter_sprite";
 			default:
 				return "ability_indicator";
 		}
@@ -302,6 +308,8 @@ public static class AbilityUtilities {
 				return "Bomb";
 			case 37:
 				return "Ion";
+			case 38:
+				return "Flak";
             default:
                 return "Name unset";
         }
@@ -448,6 +456,9 @@ public static class AbilityUtilities {
 				break;
 			case 37:
 				ability = obj.AddComponent<Ion>();
+				break;
+			case 38:
+				ability = obj.AddComponent<Flak>();
 				break;
         }
 		if(ability) ability.SetTier(tier);

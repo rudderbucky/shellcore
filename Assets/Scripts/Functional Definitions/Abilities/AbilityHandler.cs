@@ -32,6 +32,8 @@ public class AbilityHandler : MonoBehaviour {
     public static string[] keybindList; // list of keys for ability binds
     public static AbilityHandler instance;
     public static float tileSpacing;
+    [SerializeField]
+    private CircleGraphic rangeCircle;
 
     public void SetCurrentVisible(AbilityTypes type) {
         if(currentVisibles != type) {
@@ -89,7 +91,6 @@ public class AbilityHandler : MonoBehaviour {
             // position them all, do not keep the world position
             var id = (AbilityID)visibleAbilities[i].GetID();
             var key = id != AbilityID.SpawnDrone ? $"{(int)id}" : GetAHSpawnData((visibleAbilities[i] as SpawnDrone).spawnData.drone);
-
             if(!betterBGboxArray.ContainsKey(key))
             {
                 Vector3 pos = new Vector3(GetAbilityPos(betterBGboxArray.Count), tileSpacing*0.8F, this.transform.position.z); // find where to position the images
@@ -187,8 +188,10 @@ public class AbilityHandler : MonoBehaviour {
         return Mathf.Min(Mathf.Max(0, Mathf.RoundToInt(((xPos / tileSpacing) - 0.5F) / 0.8F)), instance.betterBGboxArray.Count - 1);
     }
 
+    // adjusts the FRONT END ARRANGEMENT based on the SAVE DATA of abilities
     private void Rearrange()
     {
+
         if(!core.GetIsInteracting())
         {
             core.cursave.abilityHotkeys = visibleAbilityOrder;
@@ -196,7 +199,8 @@ public class AbilityHandler : MonoBehaviour {
     
 
         int i = 0;
-        var list =  visibleAbilityOrder.GetList((int)currentVisibles);
+        var list = visibleAbilityOrder.GetList((int)currentVisibles);
+        // get rid of abilities not in the front end
         while(i < list.Count)
         {
             string key = ConvertObjectToString(list, i);
@@ -225,7 +229,6 @@ public class AbilityHandler : MonoBehaviour {
                 } 
             }
         }
-
         ReorientAbilityBoxes();
     }
     

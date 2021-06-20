@@ -89,6 +89,11 @@ public class SectorPropertyDisplay : MonoBehaviour
         opening = false;
     }
 
+    public void ReflectCurrentSector(bool xAxis)
+    {
+        WorldCreatorCursor.instance.SymmetryCopy(currentSector, xAxis);
+    }
+
     public void DisplayProperties(Sector sector)
     {
         opening = true;

@@ -15,15 +15,21 @@ public class PartyManager : MonoBehaviour
     public static PartyManager instance;
     public GameObject blocker;
     private Dictionary<string, WorldData.PartyData> partyResponses = new Dictionary<string, WorldData.PartyData>();
+    private bool overrideLock;
+    public bool PartyLocked {get {return SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone || overrideLock;}}
+    public void SetOverrideLock(bool val)
+    {
+        overrideLock = val;
+    }
     public void OrderAttack()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].attackDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].attackDialogue}</color>",2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Attack);
             }
@@ -33,12 +39,12 @@ public class PartyManager : MonoBehaviour
     public void OrderDefendStation()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].defendDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].defendDialogue}</color>",2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Defend);
             }
@@ -48,12 +54,12 @@ public class PartyManager : MonoBehaviour
     public void OrderCollection()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].collectDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].collectDialogue}</color>",2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Collect);
             }
@@ -63,12 +69,12 @@ public class PartyManager : MonoBehaviour
     public void OrderBuildTurrets()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].buildDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].buildDialogue}</color>",2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Fortify);
             }
@@ -78,12 +84,12 @@ public class PartyManager : MonoBehaviour
     public void OrderFollow()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].followDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].followDialogue}</color>",2);
                 core.GetAI().follow(PlayerCore.Instance.transform);
             }
         }
@@ -96,7 +102,7 @@ public class PartyManager : MonoBehaviour
             return;
         }
 
-        if(SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
+        if(!PartyLocked)
         {
             AssignBackend(charID);
 
@@ -106,7 +112,7 @@ public class PartyManager : MonoBehaviour
             assignButton.onClick = clicked;
             // sukratHealth.SetActive(true);
         }
-        else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
+        else PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
 
         UpdatePortraits();
     }
@@ -160,7 +166,7 @@ public class PartyManager : MonoBehaviour
 
     public void Unassign(string charID, Button assignButton)
     {
-        if(SectorManager.instance.GetCurrentType() != Sector.SectorType.BattleZone)
+        if(!PartyLocked)
         {
             var member = partyMembers.Find(c => c.ID == charID);
             if(member && member.GetAI() != null)
@@ -176,7 +182,7 @@ public class PartyManager : MonoBehaviour
             }
             // sukratHealth.SetActive(false);
         }
-        else PlayerCore.Instance.alerter.showMessage("Cannot modify party in BattleZone!", "clip_alert");
+        else PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
 
         UpdatePortraits();
     }
@@ -253,6 +259,7 @@ public class PartyManager : MonoBehaviour
         if(SectorManager.instance?.current?.type != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)
             foreach(var member in partyMembers)
             {
+                if(!member) continue;
                 if(member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
                 Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > partyMemberTeleportThreshold)
                 {
@@ -295,6 +302,7 @@ public class PartyManager : MonoBehaviour
 
         foreach(var kvp in partyIndicators)
         {
+            kvp.Value.GetComponentsInChildren<Text>()[1].text = kvp.Key.GetAI().GetPartyBattleStateString();
             for(int i = 0; i < 3; i++)
             {
 
