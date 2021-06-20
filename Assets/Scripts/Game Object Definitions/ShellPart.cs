@@ -311,6 +311,9 @@ public class ShellPart : MonoBehaviour {
         StartCoroutine(InitColorLerp(0));
 
     }
+    public void lerpColors(){
+        StartCoroutine(InitColorLerp(0));
+    }
 
     private IEnumerator InitColorLerp(float lerpVal)
     {

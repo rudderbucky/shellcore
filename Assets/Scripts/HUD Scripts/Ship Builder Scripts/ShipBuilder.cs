@@ -652,8 +652,12 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
     public void AddShard(Shard shard) {
+        AddShard(shard.tier);
+    }
+
+	public void AddShard(int tier) {
         var tiers = new int[] {1, 5, 20};
-        player.shards += tiers[shard.tier];
+        player.shards += tiers[tier];
     }
 	private void AddPart(EntityBlueprint.PartInfo part) {
 		if(!partDict.ContainsKey(part)) {
