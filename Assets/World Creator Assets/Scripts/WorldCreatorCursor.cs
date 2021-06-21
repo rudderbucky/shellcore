@@ -199,6 +199,7 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         if(current == null) return;
         current.faction = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        if(!FactionManager.FactionExists(current.faction)) current.faction = 0;
         current.shellcoreJSON =  PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
         if(current.type == ItemType.Other || current.assetID == "core_gate" || current.assetID == "broken_core_gate")
         {

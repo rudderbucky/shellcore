@@ -25,6 +25,11 @@ public class ItemPropertyDisplay : MonoBehaviour
         rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
 
         factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        if(!FactionManager.FactionExists(factionDropdown.value)) 
+        {
+            factionDropdown.value = 0;
+            PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        }
         jsonField.text = PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
         foreach(var nonDefault in nonDefaults)
         {
@@ -51,6 +56,11 @@ public class ItemPropertyDisplay : MonoBehaviour
         if(editingDefaults)
         {
             factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+            if(!FactionManager.FactionExists(factionDropdown.value)) 
+            {
+                factionDropdown.value = 0;
+                PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", 0);
+            }
         }
         
     }
