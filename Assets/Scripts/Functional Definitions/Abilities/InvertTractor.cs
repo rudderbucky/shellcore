@@ -8,7 +8,6 @@ public class InvertTractor : ActiveAbility
     {
         base.SetTier(abilityTier);
         activeDuration = 5 * abilityTier;
-        print(activeDuration);
     }
 
     protected override void Awake()
