@@ -126,10 +126,23 @@ public class WCGeneratorHandler : MonoBehaviour
                 {
                     string[] names = s.Split(':');
                     string resPath = System.IO.Path.Combine(path, names[1]);
-                    // make sure the faction was not already copied in
-                    if(!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, names[0]+".json")))
+                    
+                    // try grabbing the faction name
+                    var faction = ScriptableObject.CreateInstance<Faction>();
+                    try
+                    {   
+                        JsonUtility.FromJsonOverwrite(File.ReadAllText(resPath), faction);
+                    }
+                    catch
                     {
-                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, names[0]+".json"));
+                        Debug.LogError("One of your factions is invalid. Abort.");
+                        return;
+                    }
+
+                    // make sure the faction was not already copied in
+                    if(!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, faction.factionName+".json")))
+                    {
+                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, faction.factionName+".json"));
                         legacyFactionFilesToDelete.Add(resPath);
                     }   
                 }
