@@ -15,8 +15,14 @@ public class Command : PassiveAbility
 
     public override void Deactivate()
     {
-        if(Core is IOwner)
-            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() - commandUnitIncrease * abilityTier);
+        if(Core is IOwner){
+            if (abilityTier > 1){
+                (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() - commandUnitIncrease * abilityTier);
+            }
+            else {
+                (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() - commandUnitIncrease);
+            }
+        }
         base.Deactivate();
     }
 
@@ -27,8 +33,14 @@ public class Command : PassiveAbility
 
     protected override void Execute()
     {
-        if(Core is IOwner)
-            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() + commandUnitIncrease * abilityTier);
+        if(Core is IOwner){
+            if (abilityTier > 1){
+                (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() + commandUnitIncrease * abilityTier);
+            }
+            else {
+                (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() + commandUnitIncrease);
+            }
+        }
         base.Execute();
     }
 }
