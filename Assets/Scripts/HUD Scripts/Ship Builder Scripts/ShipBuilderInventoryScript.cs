@@ -70,13 +70,10 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
 
     public void IncrementCount() {
         count++;
-        Debug.Log("Inc" + count);
     }
 
     public void DecrementCount() {
-        
         count--;
-        Debug.Log("Dec" + count);
     }
     public int GetCount() {
         return count;

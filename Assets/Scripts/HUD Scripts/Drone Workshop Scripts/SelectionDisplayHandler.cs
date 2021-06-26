@@ -9,11 +9,19 @@ public class SelectionDisplayHandler : MonoBehaviour
     public Image core;
     public Image miniDroneShooter;
     public GameObject partPrefab;
+    int faction = 0;
     protected List<DisplayPart> parts = new List<DisplayPart>();
     void Awake() {
         ClearDisplay();
     }
+
+    private void Update()
+    {
+        shell.color = core.color = miniDroneShooter.color = FactionManager.GetFactionColor(faction);
+    }
+
     public virtual void AssignDisplay(EntityBlueprint blueprint, DroneSpawnData data, int faction = 0) {
+        this.faction = 0;
         ClearDisplay();
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         if(shell.sprite) {

@@ -294,4 +294,9 @@ public class PlayerCore : ShellCore {
         if(lastDamagedBy) HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
         return base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
     }
+
+    public static Color GetPlayerFactionColor()
+    {
+        return PlayerCore.Instance ? FactionManager.GetFactionColor(PlayerCore.Instance.GetFaction()) : FactionManager.GetFactionColor(0);
+    }
 }

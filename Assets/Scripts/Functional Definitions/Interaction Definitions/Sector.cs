@@ -49,7 +49,7 @@ public class Sector : ScriptableObject
         DarkNeutral,
         SiegeZone
     }
-
+    public int dimension;
     public string sectorName;
     public IntRect bounds;
     public SectorType type;
