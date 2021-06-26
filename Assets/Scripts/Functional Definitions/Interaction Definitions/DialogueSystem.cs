@@ -551,7 +551,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         // radio image 
-        window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
+        window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
         window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
 
         // change text
