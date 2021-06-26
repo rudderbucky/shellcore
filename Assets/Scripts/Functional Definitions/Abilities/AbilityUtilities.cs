@@ -44,7 +44,8 @@ public enum AbilityID
 	InvertTractor,
 	Bomb,
 	Ion,
-	Flak
+	Flak,
+	Railgun
 }
 public static class AbilityUtilities {
 
@@ -80,6 +81,7 @@ public static class AbilityUtilities {
 			case 36:
 			case 37:
 			case 38:
+			case 39:
 				return AbilityHandler.AbilityTypes.Weapons;
 			case 1:
 			case 2:
@@ -186,6 +188,8 @@ public static class AbilityUtilities {
 				+ $"\nBeam costs {IonLineController.energyC * tier} energy per second.";
 			case 38:
 				return $"Fires at most 5 projectiles at different targets that each deal {Flak.bulletDamage * tier} damage.";
+			case 39:
+				return $"Long range beam attack that deals " + Railgun.beamDamage * tier + " damage after a " + Railgun.chargeTime * tier + " second delay.";
             default:
 				return "Description unset";
 		}
@@ -230,6 +234,8 @@ public static class AbilityUtilities {
 				return "lasershooter_sprite";
 			case 38:
 				return "flakshooter_sprite";
+			case 39:
+				return "ionshooter_sprite";
 			default:
 				return "ability_indicator";
 		}
@@ -310,6 +316,8 @@ public static class AbilityUtilities {
 				return "Ion";
 			case 38:
 				return "Flak";
+			case 39:
+				return "Railgun";
             default:
                 return "Name unset";
         }
@@ -459,6 +467,9 @@ public static class AbilityUtilities {
 				break;
 			case 38:
 				ability = obj.AddComponent<Flak>();
+				break;
+			case 39:
+				ability = obj.AddComponent<Railgun>();
 				break;
         }
 		if(ability) ability.SetTier(tier);
