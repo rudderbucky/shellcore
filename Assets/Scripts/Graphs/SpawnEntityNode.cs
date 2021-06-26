@@ -118,6 +118,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            count = Mathf.Max(1, count);
             if(issueID)
             {
                 Vector2 coords = coordinates;
