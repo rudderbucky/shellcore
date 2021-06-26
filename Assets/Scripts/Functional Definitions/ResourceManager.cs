@@ -54,6 +54,7 @@ public class ResourceManager : MonoBehaviour
         }
 
         LoadResources(Application.streamingAssetsPath);
+        FactionManager.defaultFactions = new List<Faction>(GetAssetsOfType<Faction>());
     }
 
     public static string[] resourceHeaders {get {return new string[] {"sprites:", "parts:", "entities:",

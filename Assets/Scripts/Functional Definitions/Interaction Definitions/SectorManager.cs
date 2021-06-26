@@ -105,8 +105,7 @@ public class SectorManager : MonoBehaviour
             // jsonPath = customPath;
             jsonMode = true;
         }
-            
-		
+
 		if(SceneManager.GetActiveScene().name == "MainMenu")
 		{
             string currentPath;
@@ -125,7 +124,7 @@ public class SectorManager : MonoBehaviour
                 SetMainMenuSector(0);
             }
         }
-
+        Entity.partDropRate = 0.1f;
         jsonMode = false;
     }
 
@@ -146,8 +145,8 @@ public class SectorManager : MonoBehaviour
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
-                player.TakeShellDamage(deadzoneDamage * player.GetMaxHealth()[0], 0, null);
-                player.TakeCoreDamage(deadzoneDamage * player.GetMaxHealth()[1]);
+                player.currentHealth[0] -= (deadzoneDamage * player.GetMaxHealth()[0]);
+                player.currentHealth[1] -= (deadzoneDamage * player.GetMaxHealth()[1]);
                 player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
                 deadzoneDamage += deadzoneDamageMult;
             } else dangerZoneTimer += Time.deltaTime;
@@ -215,6 +214,9 @@ public class SectorManager : MonoBehaviour
                 {
                     ResourceManager.Instance.LoadResources(testResourcePath);
                 }
+
+                // Clear DialogueSystem statics to prevent canvas reference persistence bugs
+                DialogueSystem.ClearStatics();
 
                 foreach (var canvas in Directory.GetFiles(path + "\\Canvases"))
                 {
@@ -618,6 +620,7 @@ public class SectorManager : MonoBehaviour
                         ShipBuilder.TraderInventory inventory = JsonUtility.FromJson<ShipBuilder.TraderInventory>(data.blueprintJSON);
                         if (inventory.parts != null)
                         blueprint.dialogue.traderInventory = inventory.parts;
+                        blueprint.dialogue.nodes.ForEach(n => n.textColor = FactionManager.GetFactionColor(data.faction));
                     }
                     else
                     {
@@ -878,6 +881,11 @@ public class SectorManager : MonoBehaviour
 
             if(spawnedChar)
                 continue;
+
+            // if it's an already collected shard do not spawn again
+            if(PlayerCore.Instance && PlayerCore.Instance.cursave.locationBasedShardsFound.Contains(current.entities[i].ID))
+                    continue;
+
             Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
 
             if(obj is GameObject)
@@ -893,7 +901,10 @@ public class SectorManager : MonoBehaviour
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
                 if(gObj.GetComponent<ShardRock>()) {
-                    gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].vendingID);
+                    if(current.entities[i].blueprintJSON != null
+                        && current.entities[i].blueprintJSON != "")
+                        gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].blueprintJSON);
+                    gObj.GetComponent<ShardRock>().ID = current.entities[i].ID;
                 }
                 objects.Add(current.entities[i].ID, gObj);
             }

@@ -564,7 +564,7 @@ namespace NodeEditorFramework.Utilities
 						TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 						editor.Copy();
 					}
-					else if (Event.current.keyCode == KeyCode.V)
+					else if (Input.GetKeyDown(KeyCode.V))
 					{
 						Event.current.Use();
 						TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);

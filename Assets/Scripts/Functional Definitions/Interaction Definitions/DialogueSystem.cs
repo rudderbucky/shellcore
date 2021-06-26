@@ -68,6 +68,20 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private static List<DialogueTraverser> traversers;
     public static string speakerID;
     private static bool initialized = false;
+
+    // Bugfixes dialogue canvas paths persisting post world reload in the WC
+    public static void ClearStatics()
+    {
+        if(dialogueCanvasPaths != null)
+            dialogueCanvasPaths.Clear();
+        if(speakerIDList != null)
+            speakerIDList.Clear();
+        if(interactionOverrides != null)
+            interactionOverrides.Clear();
+        if(traversers != null)
+            traversers.Clear();
+    }
+
     public static void InitCanvases()
     {
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();

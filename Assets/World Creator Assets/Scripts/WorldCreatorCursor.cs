@@ -199,6 +199,7 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         if(current == null) return;
         current.faction = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        if(!FactionManager.FactionExists(current.faction)) current.faction = 0;
         current.shellcoreJSON =  PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
         if(current.type == ItemType.Other || current.assetID == "core_gate" || current.assetID == "broken_core_gate")
         {
@@ -687,7 +688,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 Debug.Log("under cursor assetID: " + item.assetID);
 
                 // TODO: Specify which type of item you are scanning for
-                if (underCursor.type == ItemType.Other || underCursor.type == ItemType.Decoration)
+                if (underCursor.type == ItemType.Other || underCursor.type == ItemType.Decoration || underCursor.type == ItemType.DecorationWithMetadata)
                 {
                     taskInterface.Activate();
                     SetMode(originalCursorMode);

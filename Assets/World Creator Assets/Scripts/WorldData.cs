@@ -6,13 +6,17 @@ using UnityEngine;
 public class WorldData : ScriptableObject
 {
     [System.Serializable]
-    public class CharacterData {
+    public class CharacterData : IBaseProperty {
         public string ID;
         public string name;
         public string blueprintJSON;
         public int faction;
-
         public PartyData partyData;
+
+        public string GetName()
+        {
+            return name;
+        }
     }
 
     [System.Serializable]

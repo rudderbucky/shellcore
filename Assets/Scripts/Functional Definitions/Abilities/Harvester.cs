@@ -43,7 +43,7 @@ public class Harvester : WeaponAbility, IHarvester {
         if(owner && (owner.GetPower() + power) <= 5000){
             owner.AddPower(power);
         }
-        else if (owner.GetPower() <= 5000){
+        else if (owner && owner.GetPower() <= 5000){
             owner.AddPower(5000 - owner.GetPower());
         }
     }

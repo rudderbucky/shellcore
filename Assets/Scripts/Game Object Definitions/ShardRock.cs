@@ -30,7 +30,9 @@ public class ShardRock : MonoBehaviour, IDamageable
     public Sprite[] tierSprites;
     public GameObject shard;
     public static List<Shard> shards = new List<Shard>();
-    public int tier = 1;
+    public int tier = 0;
+    public string ID;
+    public bool LocationBasedShard {get {return ID != null;}}
     public void Start() {
         BuildRock();
     }
@@ -128,8 +130,16 @@ public class ShardRock : MonoBehaviour, IDamageable
             var shardComp = rend.GetComponent<Shard>();
             shards.Add(shardComp);
             shardComp.Detach();
-            shardComp.SetCollectible(i == 0);
+            if(!LocationBasedShard) shardComp.SetCollectible(i == 0);
+            if(PlayerCore.Instance) PlayerCore.Instance.cursave.locationBasedShardsFound.Add(ID);
             shardComp.tier = tier;
+        }
+                    
+        if(LocationBasedShard && PlayerCore.Instance) 
+        {
+            var tiers = new int[] {1, 5, 20};
+            PlayerCore.Instance.shards += tiers[tier];
+            ShardCountScript.DisplayCount(PlayerCore.Instance.shards);
         }
     }
     void Update() {

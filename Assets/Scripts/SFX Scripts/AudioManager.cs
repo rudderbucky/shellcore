@@ -67,6 +67,10 @@ public class AudioManager : MonoBehaviour
         source.name = "Audio One-Shot";
         source.outputAudioMixerGroup = instance.sounds;
         source.clip = ResourceManager.GetAsset<AudioClip>(ID);
+        source.rolloffMode = AudioRolloffMode.Linear;
+        source.spatialBlend = 0.5F;
+        source.dopplerLevel = 0;
+        //source.maxDistance = ;
         source.Play();
         if(!instance.timePlayed.ContainsKey(ID))
             instance.timePlayed.Add(ID, Time.time);
@@ -77,7 +81,7 @@ public class AudioManager : MonoBehaviour
     }
 
     // Plays the clip directly on the player
-    public static void PlayClipByID(string ID, bool clear=false) {
+    public static void PlayClipByID(string ID, bool clear=false, float volume = 1F) {
         
 
         if(instance.playerSource != null) {
@@ -88,7 +92,7 @@ public class AudioManager : MonoBehaviour
                     return;
 
                 var clip = ResourceManager.GetAsset<AudioClip>(ID);
-                instance.playerSource.PlayOneShot(clip, 1F);
+                instance.playerSource.PlayOneShot(clip, volume);
                 if(!instance.timePlayed.ContainsKey(ID))
                     instance.timePlayed.Add(ID, Time.time);
                 else

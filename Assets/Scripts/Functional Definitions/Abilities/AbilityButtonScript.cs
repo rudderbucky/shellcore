@@ -81,9 +81,9 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         {
             description += "Cooldown duration: " + ability.GetCDDuration() + "\n";
         }
-        if((ability as WeaponAbility)?.GetRange() != null)
+        if(ability.GetRange() > 0)
         {
-            description += $"Range: {(ability as WeaponAbility).GetRange()}\n";
+            description += $"Range: {ability.GetRange()}\n";
         }
         if((ability as WeaponAbility)?.GetBonusDamageType() != null)
         {
@@ -202,7 +202,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                  abilities[0].State == Ability.AbilityState.Charging ||
                  (abilities[0] is WeaponAbility && abilities[0].State == Ability.AbilityState.Ready)))
         {
-            image.color = Color.green;
+            image.color = PlayerCore.GetPlayerFactionColor();
         }
         else
         {
@@ -258,7 +258,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     void PollRangeCircle()
     {
         foreach(var ability in abilities)
-            if(ability as WeaponAbility && circles.ContainsKey(ability)) 
+            if(ability.GetRange() > 0 && circles.ContainsKey(ability)) 
             {
                 if(ability.IsDestroyed())
                 {
@@ -266,8 +266,8 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                     continue;
                 }
                 else circles[ability].enabled = true;
-                circles[ability].color = ability.TimeUntilReady() > 0 ? Color.gray : Color.green;
-                var range = (ability as WeaponAbility).GetRange();
+                circles[ability].color = ability.TimeUntilReady() > 0 ? Color.gray : PlayerCore.GetPlayerFactionColor();
+                var range = ability.GetRange();
                 var cameraPos = CameraScript.instance.transform.position;
                 cameraPos.z = 0;
                 range = Camera.main.WorldToScreenPoint(cameraPos + new Vector3(0,range)).y - Camera.main.WorldToScreenPoint(cameraPos).y;
@@ -289,13 +289,13 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         rect.SetParent(transform.parent, true);
         rect.SetAsLastSibling();
         ClearCircles();
-        if(abilities.Count > 0 && abilities[0] as WeaponAbility)
+        if(abilities.Count > 0 && abilities[0].GetRange() > 0)
             foreach(var ability in abilities)
             {
                 if(!ability.IsDestroyed())
                 {
                     circles.Add(ability, Instantiate(rangeCirclePrefab, transform.parent.parent.Find("Circle Holder")).GetComponent<CircleGraphic>());
-                    circles[ability].color = Color.green;
+                    circles[ability].color = PlayerCore.GetPlayerFactionColor();
                 }
                     
             }

@@ -126,10 +126,23 @@ public class WCGeneratorHandler : MonoBehaviour
                 {
                     string[] names = s.Split(':');
                     string resPath = System.IO.Path.Combine(path, names[1]);
-                    // make sure the faction was not already copied in
-                    if(!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, names[0]+".json")))
+                    
+                    // try grabbing the faction name
+                    var faction = ScriptableObject.CreateInstance<Faction>();
+                    try
+                    {   
+                        JsonUtility.FromJsonOverwrite(File.ReadAllText(resPath), faction);
+                    }
+                    catch
                     {
-                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, names[0]+".json"));
+                        Debug.LogError("One of your factions is invalid. Abort.");
+                        return;
+                    }
+
+                    // make sure the faction was not already copied in
+                    if(!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, faction.factionName+".json")))
+                    {
+                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, faction.factionName+".json"));
                         legacyFactionFilesToDelete.Add(resPath);
                     }   
                 }
@@ -251,11 +264,22 @@ public class WCGeneratorHandler : MonoBehaviour
                     break;
                 case ItemType.Other:
                 case ItemType.Decoration:
+                case ItemType.DecorationWithMetadata:
                 case ItemType.Flag:
                     Sector.LevelEntity ent = new Sector.LevelEntity();
                     if(cursor.characters.TrueForAll((WorldData.CharacterData x) => {return x.ID != item.ID;})) 
                     {
                         // Debug.Log(item.ID + " is not a character. " + ID);
+                        if(item.type == ItemType.DecorationWithMetadata) 
+                        {
+                            int parsedId;
+                            if(item.assetID == "shard_rock" && int.TryParse(item.ID, out parsedId))
+                            {
+                                Debug.LogError($"Shard in sector {container.sectorName} has a numeric ID. Abort.");
+                                yield break;
+                            }
+                            ent.blueprintJSON = item.shellcoreJSON;
+                        }
                         int test;
                         if(item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
                         {
@@ -434,7 +458,7 @@ public class WCGeneratorHandler : MonoBehaviour
             foreach(var faction in factionManager.factions)
             {
                 // avoid default factions
-                if(faction.ID <= 2) continue;
+                if(FactionManager.defaultFactions.Contains(faction) ) continue;
                 lines.Add($"{faction.factionName}:Factions/{faction.factionName}.json");
             }
             File.WriteAllLines(resourceTxtPath, lines);
@@ -652,6 +676,7 @@ public class WCGeneratorHandler : MonoBehaviour
             try
             {
                 // resource pack loading
+                // TODO: actually write these resources into the world instead of just not meddling with them
                 if (!ResourceManager.Instance.LoadResources(path) && SectorManager.testResourcePath != null)
                 {
                     ResourceManager.Instance.LoadResources(SectorManager.testResourcePath);

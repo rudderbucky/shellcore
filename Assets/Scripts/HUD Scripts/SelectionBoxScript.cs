@@ -18,7 +18,7 @@ public class SelectionBoxScript : MonoBehaviour
     public EventSystem eventSystem;
     public GameObject movementReticlePrefab;
     private PathData currentPathData;
-    private int nodeID = 1;
+    //private int nodeID = 1;
     private Vector2 lastPosition;
 
     private bool dronesChecked = false;
@@ -263,7 +263,7 @@ public class SelectionBoxScript : MonoBehaviour
             }
             yield return null;
         }
-        nodeID = 1;
+        //nodeID = 1;
         currentPathData = null;
     }
 
