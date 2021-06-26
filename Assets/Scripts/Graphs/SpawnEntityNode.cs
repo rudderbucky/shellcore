@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
 using UnityEngine;
 
-// TODO: Switch this node to work with IDs
-
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Actions/Spawn Entity")]
@@ -207,6 +205,7 @@ namespace NodeEditorFramework.Standard
                     if (AIData.flags[i].name == flagName)
                     {
                         coords = AIData.flags[i].transform.position;
+                        if(DevConsoleScript.fullLog) Debug.Log(coords);
                         break;
                     }
                 }
@@ -233,6 +232,7 @@ namespace NodeEditorFramework.Standard
                     ID = issueID ? entityID : "",
                 };
                 var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
+                if(DevConsoleScript.fullLog) Debug.Log(entity.transform.position + " " + entity.spawnPoint);
                 entity.name = entityName;
             }
             else

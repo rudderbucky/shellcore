@@ -12,7 +12,7 @@ public class DevConsoleScript : MonoBehaviour
     public ScrollRect scrollRect;
 
     public static bool componentEnabled = false;
-    public bool fullLog = false;
+    public static bool fullLog = false;
     public static bool godModeEnabled = false;
     public bool updateLog = false;
 
