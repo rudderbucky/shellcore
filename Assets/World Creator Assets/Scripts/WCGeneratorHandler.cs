@@ -458,7 +458,7 @@ public class WCGeneratorHandler : MonoBehaviour
             foreach(var faction in factionManager.factions)
             {
                 // avoid default factions
-                if(faction.ID <= 2) continue;
+                if(FactionManager.defaultFactions.Contains(faction) ) continue;
                 lines.Add($"{faction.factionName}:Factions/{faction.factionName}.json");
             }
             File.WriteAllLines(resourceTxtPath, lines);
