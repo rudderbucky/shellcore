@@ -19,6 +19,8 @@ public class PlayerCore : ShellCore {
     public static PlayerCore Instance;
     public List<ShellPart> partsToDestroy = new List<ShellPart>();
     public Vector2 havenSpawnPoint;
+    private int dimension;
+    public int Dimension {get {return dimension;} set {dimension = value;}}
 
     // Uses this method to generally add credits for the player.
     public void AddCredits(int amount)

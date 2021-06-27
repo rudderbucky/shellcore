@@ -27,7 +27,7 @@ namespace NodeEditorFramework.Standard
         public string blueprint;
         public string entityName;
         public int faction;
-        public int count;
+        public int count = 1;
         public string flagName;
         public Vector2 coordinates;
         public bool useCoordinates;

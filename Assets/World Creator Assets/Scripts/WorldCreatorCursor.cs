@@ -33,6 +33,8 @@ public class WorldCreatorCursor : MonoBehaviour
     WCPathCreator pathCreator;
     int cursorModeCount;
     public static WCCursorMode originalCursorMode;
+    public int DimensionCount {get; set;}
+    private int currentDim = 0;
 
     public enum WCCursorMode
     {
@@ -107,6 +109,18 @@ public class WorldCreatorCursor : MonoBehaviour
         }
     }
 
+    void UpdateDimension()
+    {
+        foreach(var sector in sectors)
+        {
+            sector.renderer.gameObject.SetActive(currentDim == sector.sector.dimension);
+        }
+        foreach(var item in placedItems)
+        {
+            item.obj.SetActive(item.dimension == currentDim);
+        }
+    }
+
     void Update() {
 		current.pos = CalcPos(current.type);
         if(current.obj) {
@@ -115,12 +129,19 @@ public class WorldCreatorCursor : MonoBehaviour
 
         UpdateEntityAppearances();
         UpdateMusic();
+        UpdateDimension();
 
         VisualizeMouseInSector();
 
         if(Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
         {
             ShiftMode(1);
+        }
+
+        if(Input.GetKeyDown(KeyCode.R) && !system.IsPointerOverGameObject())
+        {
+            if(Input.GetKey(KeyCode.LeftShift)) DimensionCount++;
+            currentDim = ++currentDim % DimensionCount;
         }
 
         if(Input.GetKeyDown(KeyCode.M) && !system.IsPointerOverGameObject())
@@ -280,7 +301,7 @@ public class WorldCreatorCursor : MonoBehaviour
         foreach(SectorWCWrapper sector in sectors) 
         {
             var renderer = sector.renderer;
-            if(CheckMouseContainsSector(renderer)) 
+            if(CheckMouseContainsSector(sector)) 
             {
                 if(renderer.sortingOrder < sortLayerNum) 
                     renderer.sortingOrder = ++sortLayerNum;
@@ -447,6 +468,7 @@ public class WorldCreatorCursor : MonoBehaviour
                     newPos.y = sector.bounds.y - item.pos.y + sector.bounds.y - sector.bounds.h;
                 if(placedItems.Exists(item => item.pos == newPos)) continue;
                 var itemCopy = handler.CopyItem(item);
+                itemCopy.dimension = sector.dimension;
                 if(itemCopy.type == ItemType.Platform && !itemCopy.name.Contains("2")) itemCopy.rotation = 3 - item.rotation;
                 itemCopy.obj.transform.rotation = Quaternion.identity;
                 itemCopy.obj.transform.RotateAround(itemCopy.pos, Vector3.forward, 90 * itemCopy.rotation);
@@ -472,7 +494,7 @@ public class WorldCreatorCursor : MonoBehaviour
             foreach(SectorWCWrapper sector in sectors)
             {
                 LineRenderer renderer = sector.renderer;
-                if(CheckMouseContainsSector(renderer)) 
+                if(CheckMouseContainsSector(sector)) 
                 {
                     origPos = GetSectorOriginalPosition(renderer);
                     lastSectorPos = new Vector3[4];
@@ -514,6 +536,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 if(currentSector == null) {
                     currentSector = new SectorWCWrapper();
                     currentSector.sector = ScriptableObject.CreateInstance<Sector>();
+                    currentSector.sector.dimension = currentDim;
                     currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
                     currentSector.sector.hasMusic = true; // sectors have music by default in WC
                     currentSector.sector.backgroundColor = GetDefaultColor((Sector.SectorType)0);
@@ -547,7 +570,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 foreach(SectorWCWrapper sector in sectors)
                 {
                     LineRenderer renderer = sector.renderer;
-                    if(CheckMouseContainsSector(renderer) && !Input.GetKey(KeyCode.LeftShift)) 
+                    if(CheckMouseContainsSector(sector) && !Input.GetKey(KeyCode.LeftShift)) 
                     {
                         sectorPropertyDisplay.DisplayProperties(sector.sector);
                         currentSector = null;
@@ -558,7 +581,7 @@ public class WorldCreatorCursor : MonoBehaviour
             }
             if(currentSector != null)
             {
-                if(!CheckForSectorOverlap(currentSector.renderer) && CheckSectorSize(currentSector.renderer)) 
+                if(!CheckForSectorOverlap(currentSector.renderer, currentSector.sector.dimension) && CheckSectorSize(currentSector.renderer)) 
                 {
                     if(lastSectorPos == null) sectors.Add(currentSector);
                 } else if(lastSectorPos != null) { // invalid position for current sector
@@ -582,7 +605,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 foreach(var sector in translatingSectors)
                 {
                     TranslateSector(sector, CalcSectorPos() - sectorTranslationStoredPos);
-                    if(CheckForSectorOverlap(sector.renderer)) 
+                    if(CheckForSectorOverlap(sector.renderer, sector.sector.dimension)) 
                     {
                         if(sector.renderer.sortingOrder < sortLayerNum)
                             sector.renderer.sortingOrder = ++sortLayerNum;
@@ -599,7 +622,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 renderer.SetPosition(3, new Vector3(CalcSectorPos().x, origPos.y, 0));
                 SyncSectorCoords(currentSector);
                 // check for overlap
-                if(CheckForSectorOverlap(renderer)) 
+                if(CheckForSectorOverlap(renderer, currentSector.sector.dimension)) 
                 {
                     if(renderer.sortingOrder < sortLayerNum)
                         renderer.sortingOrder = ++sortLayerNum;
@@ -613,7 +636,7 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 var renderer = sector.renderer;
                 renderer.startColor = renderer.endColor = Color.white;
-                if(CheckMouseContainsSector(renderer))
+                if(CheckMouseContainsSector(sector))
                 {
                     Destroy(renderer.gameObject);
                     if(sectors.Contains(sector)) 
@@ -631,7 +654,7 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         foreach(var sector in translatingSectors)
         {
-            if(CheckForSectorOverlap(sector.renderer))
+            if(CheckForSectorOverlap(sector.renderer, sector.sector.dimension))
             {
                 foreach(var sector2 in translatingSectors)
                 {
@@ -724,6 +747,11 @@ public class WorldCreatorCursor : MonoBehaviour
         return !((pos1.x == pos2.x) || (pos1.y == pos2.y));
     }
 
+    bool CheckMouseContainsSector(SectorWCWrapper sector)
+    {
+        return CheckMouseContainsSector(sector.renderer) && sector.sector.dimension == currentDim;
+    }
+
     bool CheckMouseContainsSector(LineRenderer renderer) {
         return renderer.bounds.Contains(GetMousePos()); 
     }
@@ -747,11 +775,11 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         foreach(var sector in sectors)
         {
-            if(CheckMouseContainsSector(sector.renderer)) return sector.renderer.bounds.center;
+            if(CheckMouseContainsSector(sector)) return sector.renderer.bounds.center;
         }
         return Vector2.zero;
     }
-    bool CheckForSectorOverlap(LineRenderer checkRenderer) 
+    bool CheckForSectorOverlap(LineRenderer checkRenderer, int dimension) 
     {
         foreach(SectorWCWrapper sector in sectors) 
         {
@@ -760,7 +788,7 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 Bounds rendBounds = renderer.bounds;
                 rendBounds.Expand(-cursorOffset);
-                if(rendBounds.Intersects(checkRenderer.bounds)) 
+                if(rendBounds.Intersects(checkRenderer.bounds) && dimension == sector.sector.dimension) 
                 {
                     return true;
                 }
@@ -785,6 +813,7 @@ public class WorldCreatorCursor : MonoBehaviour
     }
 
     void Add(Item item) {
+        item.dimension = currentDim;
         placedItems.Insert(0, item);
         propertyDisplay.Hide();
     }

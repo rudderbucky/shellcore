@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 // TODO: THIS CLASS HAS BEEN AWARDED THE "WORST CODE IN THIS PROJECT EVER" AWARD! It probably should be completely rewritten.
-public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerUpHandler {
+public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler {
 
 	public Image sectorPrefab;
 	public SectorManager manager;
@@ -31,14 +31,14 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	void OnEnable() 
 	{
 		instance = this;
-		playerCore = player.GetComponent<PlayerCore>();
-		Draw();
+		if(player) playerCore = player.GetComponent<PlayerCore>();
+		if(manager) Draw(manager.sectors);
 	}
 
 	// I have barely any idea why these constants are their values, but it works with these
-	int const1 = 150;
-	int const2 = 200;
-	int const4 = 200;
+	float const1 = 150 / 4;
+	int const2 = 50;
+	int const4 = 50;
 	const int distancePerTextMarker = 200;
 
 	float gridSizeX;
@@ -46,8 +46,20 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	Image gridImg;
 
 	Dictionary<TaskManager.ObjectiveLocation, RectTransform> arrows = new Dictionary<TaskManager.ObjectiveLocation, RectTransform>();
-	void Draw()
+	
+	public static void Redraw(List<Sector> sectors)
 	{
+		if(instance) instance.redraw(sectors);
+	}
+
+	public void redraw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0)
+	{
+		Destroy();
+		Draw(sectors, zoomoutFactor, dimension);
+	}
+	void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0)
+	{
+		this.zoomoutFactor = zoomoutFactor;
 		gridSizeX = canvas.sizeDelta.x;
 		gridSizeY = canvas.sizeDelta.y;
 		// this sets up the tiled grid
@@ -60,17 +72,22 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		gridImg.sprite = gridSprite;
 		gridImg.type = Image.Type.Tiled;
 		gridImg.color = new Color32(100, 100, 100, 255);
+		minX = int.MaxValue;
+		maxY = int.MinValue;
+		canvas.anchoredPosition = Vector2.zero;
 
 		// this sets up the top-left part of the map
-		foreach(var sector in manager.sectors) 
+		foreach(var sector in sectors) 
         {
+			if((playerCore && sector.dimension != playerCore.Dimension) || (!playerCore && sector.dimension != dimension)) continue;
             if(sector.bounds.x < minX) minX = sector.bounds.x;
             if(sector.bounds.y > maxY) maxY = sector.bounds.y;
 
 		}
 
-		foreach(var sector in manager.sectors)
+		foreach(var sector in sectors)
 		{
+			if((playerCore && sector.dimension != playerCore.Dimension) || (!playerCore && sector.dimension != dimension)) continue;
 			gridSizeX = Mathf.Max(gridSizeX, (sector.bounds.x + sector.bounds.w - minX) / zoomoutFactor);
 			gridSizeY = Mathf.Max(gridSizeY, -(sector.bounds.y - sector.bounds.h - maxY) / zoomoutFactor);			
 		}
@@ -80,9 +97,10 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		gridImg.rectTransform.sizeDelta = new Vector2(((int)gridImg.rectTransform.sizeDelta.x / 100 + 0.5F) * 100, 
 			((int)gridImg.rectTransform.sizeDelta.y / 100 + 0.5F) * 100);
 
-		foreach(Sector sector in manager.sectors) { // get every sector to find their representations
-			if(SectorManager.testJsonPath != null || (mapVisibleCheatEnabled || playerCore.cursave.sectorsSeen.Contains(sector.sectorName)))
+		foreach(Sector sector in sectors) { // get every sector to find their representations
+			if(SectorManager.testJsonPath != null || (mapVisibleCheatEnabled || (!playerCore || playerCore.cursave.sectorsSeen.Contains(sector.sectorName))))
 			{
+				if((playerCore && sector.dimension != playerCore.Dimension) || (!playerCore && sector.dimension != dimension)) continue;
 				// set up the sector image
 				Image sect = Instantiate(sectorPrefab, transform, false);
 				Image border = sect.GetComponentsInChildren<Image>()[1];
@@ -182,8 +200,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			textx.font = texty.font = shellcoreFont;
 			textx.transform.SetParent(transform,false);
 			texty.transform.SetParent(transform,false);
-			textx.rectTransform.anchoredPosition = new Vector2(i * distancePerTextMarker + const4, const1) / zoomoutFactor;
-			texty.rectTransform.anchoredPosition = new Vector2(const2, -i * distancePerTextMarker - const4) / zoomoutFactor;
+			textx.rectTransform.anchoredPosition = new Vector2(i * distancePerTextMarker + const4 * zoomoutFactor, const1 * zoomoutFactor) / zoomoutFactor;
+			texty.rectTransform.anchoredPosition = new Vector2(const2 * zoomoutFactor, -i * distancePerTextMarker - const4 * zoomoutFactor) / zoomoutFactor;
 			textx.rectTransform.localScale = texty.rectTransform.localScale = Vector3.one;
 			textx.alignment = TextAnchor.LowerLeft;
 			texty.alignment = TextAnchor.UpperLeft;
@@ -233,7 +251,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		if(instance)
 		{
 			instance.Destroy();
-			instance.Draw();
+			instance.Draw(instance.manager.sectors);
 		}
 	}
 
@@ -244,11 +262,11 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		canvas.anchoredPosition = new Vector3(0, 0);
 	}
 	void Update() {
-		if(playerCore.cursave.sectorsSeen.Count > sectorCount)
+		if(playerCore && playerCore.cursave.sectorsSeen.Count > sectorCount)
 		{
 			sectorCount = playerCore.cursave.sectorsSeen.Count;
 			Destroy();
-			Draw();
+			Draw(manager.sectors);
 		}
 		
 		if(clickedOnce)
@@ -286,7 +304,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
 
 			// Mouse over sector. Instantiate tooltip if necessary, move tooltip and set text up
-			if(newRect.Contains(Input.mousePosition))
+			
+			if(newRect.Contains(Input.mousePosition) && mouseInBounds)
 			{
 				if(!tooltipTransform) tooltipTransform = Instantiate(tooltipPrefab, transform.parent.parent).GetComponent<RectTransform>();
 				tooltipTransform.position = Input.mousePosition;
@@ -329,7 +348,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	{
 		canvas.anchorMin = new Vector2(0,1);
 		canvas.anchorMax = new Vector2(0,1);
-		Vector2 playerPos = new Vector2(player.transform.position.x - minX, player.transform.position.y - maxY);
 
 		// this is another egregious part that needs updating
 		if(updatePos)
@@ -343,7 +361,12 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				//(gridSizeY * zoomoutFactor + distancePerTextMarker) / zoomoutFactor - height )
 				Mathf.Min(canvas.anchoredPosition.y, gridImg.rectTransform.sizeDelta.y - height));
 		}
-		greenBox.anchoredPosition =  canvas.anchoredPosition + playerPos / zoomoutFactor;
+		if(player)
+		{
+			Vector2 playerPos = new Vector2(player.transform.position.x - minX, player.transform.position.y - maxY);
+			greenBox.anchoredPosition =  canvas.anchoredPosition + playerPos / zoomoutFactor;
+		}
+		
 	}
 	void Destroy()
 	{
@@ -427,5 +450,17 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			timer = 0;
 			clickedOnce = true;
 		}
+    }
+
+	bool mouseInBounds;
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        mouseInBounds = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        mouseInBounds = false;
     }
 }

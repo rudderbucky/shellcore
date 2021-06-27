@@ -44,6 +44,7 @@ public class SectorManager : MonoBehaviour
     public List<ShardRock> shardRocks = new List<ShardRock>();
     public GameObject shardRockPrefab;
     public Sector overrideProperties = null;
+    public SkirmishMenu skirmishMenu;
     int maxID = 0;
     public static Sector GetSectorByName(string sectorName) 
     {
@@ -133,10 +134,19 @@ public class SectorManager : MonoBehaviour
     private void Update()
     {
         if(jsonMode) player.SetIsInteracting(true);
-        if(!jsonMode && player && (current == null || (!current.bounds.contains(player.transform.position) && !player.GetIsOscillating())))
+        var inCurrentSector = player && current != null && 
+            (current.bounds.contains(player.transform.position) || player.GetIsOscillating()) && current.dimension == player.Dimension;
+        if(!jsonMode && player && (current == null || !inCurrentSector))
         {
             AttemptSectorLoad();
         }
+
+        // change minimap renderers to match current dimension.
+        if(minimapSectorBorders != null)
+            foreach(var kvp in minimapSectorBorders)
+            {
+                kvp.Value.gameObject.SetActive(kvp.Key.dimension == player.Dimension);
+            }
 
         // deadzone damage
         if(current && GetCurrentType() == Sector.SectorType.DangerZone)
@@ -175,12 +185,14 @@ public class SectorManager : MonoBehaviour
 
     public void AttemptSectorLoad(Sector.SectorType? lastSectorType = null)
     {
-        if(player && (current == null || (!current.bounds.contains(player.transform.position))))
+        var inCurrentSector = player && current != null && 
+            (current.bounds.contains(player.transform.position)) && current.dimension == player.Dimension;
+        if(player && (current == null || !inCurrentSector))
         {
             // load sector
             for(int i = 0; i < sectors.Count; i++)
             {
-                if(sectors[i].bounds.contains(player.transform.position))
+                if(sectors[i].bounds.contains(player.transform.position) && sectors[i].dimension == player.Dimension)
                 {
                     Sector.SectorType? oldType = null;
                     if(current != null) oldType = current.type;
