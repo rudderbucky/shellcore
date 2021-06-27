@@ -93,8 +93,10 @@ public class Tank : GroundCraft, IOwnable
         Entity target = null;
 
         List<Entity> targets = new List<Entity>(FindObjectsOfType<Entity>());
+        if(!Weapon) return;
         for (int i = 0; i < targets.Count; i++)
         {
+            if(!targets[i]) continue;
             if (FactionManager.IsAllied(targets[i].faction, faction) || !Weapon.CheckCategoryCompatibility(targets[i]))
             {
                 targets.RemoveAt(i);
