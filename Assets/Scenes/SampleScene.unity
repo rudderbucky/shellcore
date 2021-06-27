@@ -7010,32 +7010,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 609041461}
   m_CullTransparentMesh: 0
---- !u!1 &609528760 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1517696123555884, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-    type: 3}
-  m_PrefabInstance: {fileID: 615992207}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &609528762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609528760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 593987356a2ab4843bf81da926ec5ffc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  passiveDialogueRect: {fileID: 1313601249}
-  passiveDialogueInstancePrefab: {fileID: 7006660628512944260, guid: f17d11fd0d9f0884e99922747f4eb831,
-    type: 3}
-  passiveDialogueContents: {fileID: 2092215240}
-  passiveDialogueText: {fileID: 1319638319}
-  passiveDialogueScrollView: {fileID: 1282750775}
-  passiveDialogueArchive: {fileID: 2067045855}
-  archiveContents: {fileID: 1603576752}
 --- !u!1 &611485134
 GameObject:
   m_ObjectHideFlags: 0
@@ -7226,6 +7200,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 609528762, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
+      propertyPath: archiveContents
+      value: 
+      objectReference: {fileID: 1603576752}
+    - target: {fileID: 609528762, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
+      propertyPath: passiveDialogueRect
+      value: 
+      objectReference: {fileID: 1313601249}
+    - target: {fileID: 609528762, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
+      propertyPath: passiveDialogueText
+      value: 
+      objectReference: {fileID: 1319638319}
+    - target: {fileID: 609528762, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
+      propertyPath: passiveDialogueArchive
+      value: 
+      objectReference: {fileID: 2067045855}
+    - target: {fileID: 609528762, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
+      propertyPath: passiveDialogueContents
+      value: 
+      objectReference: {fileID: 2092215240}
+    - target: {fileID: 609528762, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
+      propertyPath: passiveDialogueScrollView
+      value: 
+      objectReference: {fileID: 1282750775}
     - target: {fileID: 1517696123555884, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
       propertyPath: m_Name
       value: Dialogue System
@@ -7311,57 +7309,9 @@ PrefabInstance:
       objectReference: {fileID: 1466997642}
     - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
         type: 3}
-      propertyPath: popupBoxPrefab
-      value: 
-      objectReference: {fileID: 1044089125355486785, guid: 27e93d4332ff7584bb2c96969c6c0315,
-        type: 3}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
       propertyPath: upgraderScript
       value: 
       objectReference: {fileID: 1386059222}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
-      propertyPath: archiveContents
-      value: 
-      objectReference: {fileID: 1603576752}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
-      propertyPath: passiveDialogueRect
-      value: 
-      objectReference: {fileID: 1313601249}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
-      propertyPath: passiveDialogueText
-      value: 
-      objectReference: {fileID: 1319638319}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
-      propertyPath: passiveDialogueArchive
-      value: 
-      objectReference: {fileID: 2067045855}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
-      propertyPath: passiveDialogueContents
-      value: 
-      objectReference: {fileID: 2092215240}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
-      propertyPath: missionCompleteBoxPrefab
-      value: 
-      objectReference: {fileID: 3918191948201697840, guid: fa84f95d28efef040acac08b0f61eff5,
-        type: 3}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
-      propertyPath: passiveDialogueScrollView
-      value: 
-      objectReference: {fileID: 1282750775}
-    - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
-        type: 3}
-      propertyPath: passiveDialogueInstancePrefab
-      value: 
-      objectReference: {fileID: 7006660628512944260, guid: f17d11fd0d9f0884e99922747f4eb831,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
 --- !u!1 &618609699
@@ -14691,7 +14641,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 615992207}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609528760}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0835d1a4d329b274790620c961722947, type: 3}
