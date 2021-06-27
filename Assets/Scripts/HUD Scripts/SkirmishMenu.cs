@@ -56,7 +56,11 @@ public class SkirmishMenu : GUIWindowScripts
                 LoadMap();
                 description.text = currentOption.mapDescription;
                 nameText.text = currentOption.sectorName;
-                creditLimitText.text = $"SHIP CREDIT LIMIT: {currentOption.creditLimit}";
+                if(currentOption.creditLimit < PlayerCore.Instance.GetBuildValue())
+                {
+                    creditLimitText.text = $"<color=red>SHIP CREDIT LIMIT: {currentOption.creditLimit} (CURRENTLY INELIGIBLE)</color>";
+                }
+                else creditLimitText.text = $"SHIP CREDIT LIMIT: {currentOption.creditLimit} ";
             });
         }
 
@@ -73,6 +77,7 @@ public class SkirmishMenu : GUIWindowScripts
 
     public void ActivateCurrentOption()
     {
+        if(currentOption.creditLimit < PlayerCore.Instance.GetBuildValue()) return;
         Flag.FindEntityAndWarpPlayer(currentOption.sectorName, currentOption.entityID);
         CloseUI();
     }

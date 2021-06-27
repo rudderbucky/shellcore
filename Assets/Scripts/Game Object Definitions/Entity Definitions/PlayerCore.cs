@@ -302,4 +302,14 @@ public class PlayerCore : ShellCore {
     {
         return PlayerCore.Instance ? FactionManager.GetFactionColor(PlayerCore.Instance.GetFaction()) : FactionManager.GetFactionColor(0);
     }
+
+    public int GetBuildValue()
+    {
+        var value = 0;
+        foreach(var part in blueprint.parts)
+        {
+            value += EntityBlueprint.GetPartValue(part);
+        }
+        return value;
+    }
 }
