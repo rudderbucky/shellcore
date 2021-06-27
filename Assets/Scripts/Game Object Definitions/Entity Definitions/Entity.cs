@@ -387,13 +387,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
 
-                // Drone shell and core health penalty
-                if(this as Drone)
-                {
-                    maxHealth[0] /= 2;
-                    maxHealth[1] /= 4;
-                }
-
                 string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
                 // Add shooter
                 if (shooterID != null)
@@ -431,6 +424,13 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 if(!(partObject.GetComponent<SpriteRenderer>() && partObject.GetComponent<SpriteRenderer>().sprite)
                     && partObject.GetComponent<Collider2D>() && !partObject.GetComponent<Harvester>()) 
                     partObject.GetComponent<Collider2D>().enabled = false;
+            }
+            
+            // Drone shell and core health penalty
+            if(this as Drone)
+            {
+                maxHealth[0] /= 2;
+                maxHealth[1] /= 4;
             }
         }
 

@@ -343,7 +343,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     public void OnPointerDown(PointerEventData eventData)
     {
         dragging = true;
-        movingImage.enabled = true;
+        if(movingImage) movingImage.enabled = true;
         oldInputMousePos = Input.mousePosition;
     }
 }
