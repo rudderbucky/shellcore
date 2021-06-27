@@ -59,10 +59,11 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 	}
 
 	public static int ExitRange = 100;
-	Vector3 lastPos;
+	Vector3? lastPos = null;
 
 	protected virtual void Update() {
-		if(exitOnPlayerRange && Vector3.SqrMagnitude(PlayerCore.Instance.transform.position - lastPos) > ExitRange) CloseUI();
+		if(exitOnPlayerRange && lastPos.HasValue && 
+			Vector3.SqrMagnitude(PlayerCore.Instance.transform.position - lastPos.Value) > ExitRange) CloseUI();
 		if(selected) {
 			GetComponent<RectTransform>().anchoredPosition = (Vector2)Input.mousePosition - mousePos;
 		}

@@ -23,11 +23,11 @@ public class SkirmishMenu : GUIWindowScripts
     [SerializeField]
     private GameObject optionButton;
     [SerializeField]
-    private InputField description;
+    private Text description;
     [SerializeField]
     private Text nameText;
     [SerializeField]
-    private InputField creditLimitText;
+    private Text creditLimitText;
 
     private SkirmishOption currentOption;
 
@@ -77,8 +77,10 @@ public class SkirmishMenu : GUIWindowScripts
 
     public void ActivateCurrentOption()
     {
+        //Debug.LogError(PlayerCore.Instance.currentHealth[0]);
         if(currentOption.creditLimit < PlayerCore.Instance.GetBuildValue()) return;
         Flag.FindEntityAndWarpPlayer(currentOption.sectorName, currentOption.entityID);
+        //Debug.LogError(PlayerCore.Instance.currentHealth[0]);
         CloseUI();
     }
 }

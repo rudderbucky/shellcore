@@ -118,7 +118,7 @@ public class HealthBarScript : MonoBehaviour {
     public void StartHurtHud(Color color)
     {
         var maxHealth = PlayerCore.Instance.GetMaxHealth();
-        var currentHealth = PlayerCore.Instance.currentHealth;
+        var currentHealth = PlayerCore.Instance.CurrentHealth;
         if((hurtHudThreshold <= 0.5F && currentHealth[0] <= 0 && (hurtHudThreshold * 2) * maxHealth[1] > currentHealth[1]) ||
         ((hurtHudThreshold - 0.5F) * 2 * maxHealth[0] > currentHealth[0]))
         {

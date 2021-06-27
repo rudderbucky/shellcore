@@ -212,7 +212,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		}
 
 		// draw objective locations
-		DrawObjectiveLocations();
+		if(player)
+			DrawObjectiveLocations();
 
 		// clear markers
 		PartIndexInventoryButton.partMarkerSectorNames.Clear();
@@ -290,10 +291,11 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 			canvas.anchoredPosition = new Vector2(-player.position.x + minX, maxY - player.position.y) / zoomoutFactor + greenBox.anchoredPosition;
 		}
 
-		foreach(var objective in arrows.Keys)
-		{
-			arrows[objective].anchoredPosition = new Vector2(objective.location.x - minX, objective.location.y - maxY) / zoomoutFactor;
-		}
+		if(player)
+			foreach(var objective in arrows.Keys)
+			{
+				arrows[objective].anchoredPosition = new Vector2(objective.location.x - minX, objective.location.y - maxY) / zoomoutFactor;
+			}
 
 		// Instantiate tooltip. Destroy tooltip if mouse is not over a sector image.
 		bool mouseOverSector = false;
