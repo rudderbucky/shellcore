@@ -293,8 +293,9 @@ public class PlayerCore : ShellCore {
 
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
+        var residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
         if(lastDamagedBy) HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
-        return base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
+        return residue;
     }
 
     public static Color GetPlayerFactionColor()
