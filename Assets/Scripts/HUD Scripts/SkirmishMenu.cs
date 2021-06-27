@@ -34,6 +34,7 @@ public class SkirmishMenu : GUIWindowScripts
     public static SkirmishMenu instance;
     public void Start()
     {
+        exitOnPlayerRange = true;
         instance = this;
     }
 

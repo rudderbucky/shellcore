@@ -282,7 +282,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		{
 			PollMouseFollow();
 		}
-		else
+		else if(player)
 		{
 			canvas.anchorMin = new Vector2(0, 1);
 			canvas.anchorMax = new Vector2(0, 1);
@@ -414,7 +414,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 				var pos = sect.Item1.rectTransform.position;
 				var sizeDelta = sect.Item1.rectTransform.sizeDelta;
 				var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
-				if(newRect.Contains(eventData.position))
+				if(newRect.Contains(eventData.position) && player)
 				{
 					player.GetComponent<PlayerCore>().Warp(sect.Item2);
 				}
@@ -435,7 +435,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 	private static bool mapVisibleCheatEnabled = false;
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(clickedOnce)
+        if(clickedOnce && player)
 		{
 			followPlayerMode = !followPlayerMode;
 			if(!followPlayerMode) 
