@@ -205,8 +205,8 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 break;
             case Mode.Factions:
                 if(ints[0] <= 2) {
-                    Debug.LogError("Cannot modify the default three factions");
-                    break;
+                    Debug.LogWarning("Modifying the default three factions");
+                    //break;
                 }
                 Faction newFaction = ScriptableObject.CreateInstance<Faction>();
                 newFaction.ID = ints[0];

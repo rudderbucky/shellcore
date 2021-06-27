@@ -262,6 +262,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 		}
 	}
 
+	public static readonly float stepSize = 0.1F;
+
 	void Update() {
 		UpdateCompact();
 

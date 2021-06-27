@@ -34,8 +34,8 @@ public class HealthBarScript : MonoBehaviour {
         gleamArray = new Image[3];
         gleaming = new bool[barsArray.Length];
         gleamed = new bool[barsArray.Length];
-        Color[] colors = new Color[] { Color.green, new Color(0.8F,0.8F,0.8F), new Color(0.4F,0.8F,1.0F) };
-        Color[] oldColors = new Color[] { new Color(0F,0.3F,0F), new Color(0.3F,0.3F, 0.3F), new Color(0.1F,0.2F,0.3F) };
+        Color[] colors = new Color[] { PlayerCore.GetPlayerFactionColor(), new Color(0.8F,0.8F,0.8F), new Color(0.4F,0.8F,1.0F) };
+        Color[] oldColors = new Color[] { colors[0] / 2, new Color(0.3F,0.3F, 0.3F), new Color(0.1F,0.2F,0.3F) };
         for (int i = 0; i < barsArray.Length; i++) 
         { // iterate through array
             barsArray[i] = Instantiate(inputBar).GetComponent<Image>(); // instantiate the image
@@ -118,8 +118,8 @@ public class HealthBarScript : MonoBehaviour {
     public void StartHurtHud(Color color)
     {
         var maxHealth = PlayerCore.Instance.GetMaxHealth();
-        var currentHealth = PlayerCore.Instance.currentHealth;
-        if((hurtHudThreshold <= 0.5F && (hurtHudThreshold * 2) * maxHealth[1] > currentHealth[1]) ||
+        var currentHealth = PlayerCore.Instance.CurrentHealth;
+        if((hurtHudThreshold <= 0.5F && currentHealth[0] <= 0 && (hurtHudThreshold * 2) * maxHealth[1] > currentHealth[1]) ||
         ((hurtHudThreshold - 0.5F) * 2 * maxHealth[0] > currentHealth[0]))
         {
             hurtHudAlpha = 1;

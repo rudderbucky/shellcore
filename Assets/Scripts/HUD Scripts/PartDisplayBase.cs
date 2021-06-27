@@ -19,7 +19,8 @@ public class PartDisplayBase : MonoBehaviour
             if(info.tier != 0) {
                 abilityTier.gameObject.SetActive(true);
                 abilityTier.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + info.tier);
-                abilityTier.rectTransform.sizeDelta = abilityTier.sprite.bounds.size * 20;
+                if(abilityTier.sprite) 
+                    abilityTier.rectTransform.sizeDelta = abilityTier.sprite.bounds.size * 20;
                 abilityTier.color = new Color(1,1,1,0.4F);
             } else abilityTier.gameObject.SetActive(false);
             abilityImage.sprite = AbilityUtilities.GetAbilityImageByID(info.abilityID, info.secondaryData);

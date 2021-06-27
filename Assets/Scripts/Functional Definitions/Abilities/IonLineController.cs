@@ -173,6 +173,8 @@ public class IonLineController : MonoBehaviour
         }
         else 
         {
+            if(!targetingSystem.GetTarget() && duration > 0) duration = 0;
+
             if(line.startWidth > startWidth)
                 ThickenLine(-0.01F);
 
