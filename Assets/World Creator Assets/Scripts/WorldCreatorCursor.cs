@@ -138,7 +138,7 @@ public class WorldCreatorCursor : MonoBehaviour
             ShiftMode(1);
         }
 
-        if(Input.GetKeyDown(KeyCode.R) && !system.IsPointerOverGameObject())
+        if(Input.GetKeyDown(KeyCode.G) && !system.IsPointerOverGameObject())
         {
             if(Input.GetKey(KeyCode.LeftShift)) DimensionCount++;
             currentDim = ++currentDim % DimensionCount;
