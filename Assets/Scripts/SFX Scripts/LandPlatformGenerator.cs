@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class LandPlatformGenerator : MonoBehaviour {
 
@@ -154,6 +155,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                             type = (byte)blueprint.tilemap[i],
                             rotation = (byte)blueprint.rotations[i],
                             directions = new Dictionary<Vector2Int, byte>(),
+                            distances = new Dictionary<Vector2Int, ushort>(),
                             colliders = obj.GetComponentsInChildren<Collider2D>()
                         });
                 }
@@ -185,7 +187,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                     // Get connected neighbors
 
                     var current = openList[0];
-                    int ends = GroundPlatform.GetPlatformEnds(current);
+                    int ends = GroundPlatform.GetPlatformOpenings(current);
 
                     //Debug.Log("Tile: " + new Vector2Int(current.pos.x, current.pos.y) + " type: " + current.type + " rot: " + current.rotation + " direction flags: " + (ends & 8) + " " + (ends & 4) + " " + (ends & 2) + " " + (ends & 1));
                     if ((ends & 1) == 1)
@@ -414,7 +416,9 @@ public class LandPlatformGenerator : MonoBehaviour {
 
         int iteration = 0;
         GroundPlatform.Tile current = start.Value;
-        
+        byte prevDir = 4;
+        Vector2? prevPos = null;
+
         while (current.pos != end.Value.pos && d > sqr)
         {
             byte dir = 0;
@@ -439,11 +443,52 @@ public class LandPlatformGenerator : MonoBehaviour {
                     default:
                         break;
                 }
-
                 if (next.HasValue)
                 {
-                    current = next.Value;
-                    path.Add(TileToWorldPos(current.pos));
+                    if (dir != prevDir && prevPos.HasValue)
+                    {
+                        Vector2 minusOne;
+                        switch (prevDir)
+                        {
+                            case 0:
+                                minusOne = prevPos.Value - Vector2.right * instance.tileSize;
+                                break;
+                            case 1:
+                                // Opposite because y-mirroring...
+                                minusOne = prevPos.Value - Vector2.up * instance.tileSize;
+                                break;
+                            case 2:
+                                minusOne = prevPos.Value - Vector2.left * instance.tileSize;
+                                break;
+                            case 3:
+                                minusOne = prevPos.Value - Vector2.down * instance.tileSize;
+                                break;
+                            default:
+                                minusOne = Vector2.zero;
+                                Debug.LogError("Problem in tank pathfinding, complain to Ormanus.");
+                                break;
+                        }
+
+                        current = next.Value;
+
+
+                        path.RemoveAt(path.Count - 1);
+
+                        var currentPos = TileToWorldPos(current.pos);
+
+                        path.Add(minusOne + (prevPos.Value - minusOne) * 0.75f);
+                        path.Add(prevPos.Value + (currentPos - prevPos.Value) * 0.25f);
+
+                        path.Add(currentPos);
+                    }
+                    else
+                    {
+                        current = next.Value;
+                        path.Add(TileToWorldPos(current.pos));
+                    }
+
+                    prevDir = dir;
+                    prevPos = path[path.Count -1];
                 }
                 else
                 {
@@ -484,11 +529,13 @@ public class LandPlatformGenerator : MonoBehaviour {
 
         path.Reverse();
 
-        string pathString = "";
-        for (int i = 0; i < path.Count; i++)
-        {
-            pathString += path[i].ToString();
-        }
+        // Debug
+        //string pathString = "";
+        //for (int i = 0; i < path.Count; i++)
+        //{
+        //    pathString += path[i].ToString();
+        //}
+        // Debug.Log("Path: " + pathString);
 
         if (path.Count > 1)
         {
@@ -497,14 +544,54 @@ public class LandPlatformGenerator : MonoBehaviour {
                 start.Value.type == 7 ||
                 start.Value.type == 5 ||
                 start.Value.type == 10 )
-                && d > instance.tileSize) // Don't skip turns
+                && d > instance.tileSize * 1.2f) // Don't skip turns
                 path.Add(TileToWorldPos(start.Value.pos));
         }
 
-
-        // Debug.Log("Path: " + pathString);
-
         return path.ToArray();
+    }
+
+    internal static Entity GetClosestTarget(Vector2 startPosition, Entity[] entities, float maxRange = 100f)
+    {
+        var plat = Instance.GetPlatformInPosition(startPosition);
+        
+        GroundPlatform.Tile? start = instance.GetNearestTile(plat, startPosition);
+
+        var closestTiles = new GroundPlatform.Tile?[entities.Length];
+
+        for (int i = 0; i < closestTiles.Length; i++)
+        {
+            closestTiles[i] = instance.GetNearestTile(plat, entities[i].transform.position, maxRange);
+
+            if (closestTiles[i] == start)
+            {
+                return entities[i];
+            }
+        }
+
+        int closestIndex = -1;
+        ushort minD = ushort.MaxValue;
+        for (int i = 0; i < closestTiles.Length; i++)
+        {
+            if (!closestTiles[i].HasValue)
+                continue;
+
+            if (!start.Value.distances.ContainsKey(closestTiles[i].Value.pos))
+                continue;
+
+            ushort d = start.Value.distances[closestTiles[i].Value.pos];
+
+            if (d < minD)
+            {
+                minD = d;
+                closestIndex = i;
+            }
+        }
+
+        if (closestIndex == -1)
+            return null;
+
+        return entities[closestIndex];
     }
 
     public static Vector2 TileToWorldPos(Vector2Int pos)
@@ -519,7 +606,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         relativePos.y = -relativePos.y;
 
         float minDist = maxDist * maxDist;
-        GroundPlatform.Tile? tile = null; // When would this return null? Max distance parameter?
+        GroundPlatform.Tile? tile = null; // Returns null if all tiles are outside max range
 
         for (int i = 0; i < platform.tiles.Count; i++)
         {
