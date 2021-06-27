@@ -799,7 +799,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
     Item GetItemUnderCursor(ItemType? type = null) {
         foreach(Item itemObj in placedItems) {
-            if(itemObj.pos == current.pos && (type == null || type == itemObj.type)) {
+            if(itemObj.pos == current.pos && (type == null || type == itemObj.type) && itemObj.dimension == currentDim) {
                 return itemObj;
             }
         }
