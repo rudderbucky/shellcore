@@ -259,7 +259,8 @@ public class WCGeneratorHandler : MonoBehaviour
                         pos = new Vector2Int(index.Item2, index.Item1),
                         type = (byte)item.placeablesIndex,
                         rotation = (byte)(((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4),
-                        directions = new Dictionary<Vector2Int, byte>()
+                        directions = new Dictionary<Vector2Int, byte>(),
+                        distances = new Dictionary<Vector2Int, ushort>()
                     });
                     break;
                 case ItemType.Other:
