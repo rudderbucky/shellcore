@@ -11,15 +11,15 @@ public class PassiveDialogueSystem : MonoBehaviour
     public Text passiveDialogueText;
     private DialogueSystem.DialogueState passiveDialogueState = DialogueSystem.DialogueState.Out;
     public RectTransform passiveDialogueScrollView;
-    Queue<(string, string)> passiveMessages = new Queue<(string, string)>();
+    Queue<(string, string, int)> passiveMessages = new Queue<(string, string, int)>();
     public GameObject passiveDialogueArchive;
     public Transform archiveContents;
     public static PassiveDialogueSystem Instance;
     private void Awake()
     {
         Instance = this;
-        archiveContents.transform.parent.gameObject.SetActive(false);
-        passiveDialogueScrollView.localScale = new Vector3(1, 0, 1);
+        if(archiveContents) archiveContents.transform.parent.gameObject.SetActive(false);
+        if(passiveDialogueScrollView) passiveDialogueScrollView.localScale = new Vector3(1, 0, 1);
     }
 
     public void SlidePassiveDialogueOut()
@@ -59,10 +59,10 @@ public class PassiveDialogueSystem : MonoBehaviour
         }
     }
 
-    public void PushPassiveDialogue(string id, string text)
+    public void PushPassiveDialogue(string id, string text, int soundType)
     {
         if(passiveDialogueState != DialogueSystem.DialogueState.In) passiveDialogueState = DialogueSystem.DialogueState.In;
-        passiveMessages.Enqueue((id, text));
+        passiveMessages.Enqueue((id, text, soundType));       
     }
     float queueTimer = 0;
 
@@ -83,6 +83,10 @@ public class PassiveDialogueSystem : MonoBehaviour
                 queueTimer = 3;
                 var dialogue = passiveMessages.Dequeue();
                 Entity speaker = AIData.entities.Find(e => e.GetID() == dialogue.Item1);
+                int sType = dialogue.Item3;
+                if(sType > 0 && sType <= 13)
+                    AudioManager.PlayClipByID($"clip_passiveDialogue{sType}", false, 2.5F);
+                
                 if (speaker != null)
                 {
                     var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);

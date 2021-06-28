@@ -8,8 +8,14 @@ using UnityEngine;
 public class PinDown : ActiveAbility
 {
     Craft target;
-    float rangeSquared = 15f * 15f;
+    const float range = 15f;
+    float rangeSquared = range * range;
 
+    public override float GetRange()
+    {
+        return range;
+    }
+    
     protected override void Awake()
     {
         base.Awake(); // base awake

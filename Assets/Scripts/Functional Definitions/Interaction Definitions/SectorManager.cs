@@ -44,6 +44,7 @@ public class SectorManager : MonoBehaviour
     public List<ShardRock> shardRocks = new List<ShardRock>();
     public GameObject shardRockPrefab;
     public Sector overrideProperties = null;
+    public SkirmishMenu skirmishMenu;
     int maxID = 0;
     public static Sector GetSectorByName(string sectorName) 
     {
@@ -105,8 +106,7 @@ public class SectorManager : MonoBehaviour
             // jsonPath = customPath;
             jsonMode = true;
         }
-            
-		
+
 		if(SceneManager.GetActiveScene().name == "MainMenu")
 		{
             string currentPath;
@@ -125,7 +125,7 @@ public class SectorManager : MonoBehaviour
                 SetMainMenuSector(0);
             }
         }
-
+        Entity.partDropRate = 0.1f;
         jsonMode = false;
     }
 
@@ -134,10 +134,19 @@ public class SectorManager : MonoBehaviour
     private void Update()
     {
         if(jsonMode) player.SetIsInteracting(true);
-        if(!jsonMode && player && (current == null || (!current.bounds.contains(player.transform.position) && !player.GetIsOscillating())))
+        var inCurrentSector = player && current != null && 
+            (current.bounds.contains(player.transform.position) || player.GetIsOscillating()) && current.dimension == player.Dimension;
+        if(!jsonMode && player && (current == null || !inCurrentSector))
         {
             AttemptSectorLoad();
         }
+
+        // change minimap renderers to match current dimension.
+        if(minimapSectorBorders != null)
+            foreach(var kvp in minimapSectorBorders)
+            {
+                kvp.Value.gameObject.SetActive(kvp.Key.dimension == player.Dimension);
+            }
 
         // deadzone damage
         if(current && GetCurrentType() == Sector.SectorType.DangerZone)
@@ -146,8 +155,8 @@ public class SectorManager : MonoBehaviour
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
-                player.TakeShellDamage(deadzoneDamage * player.GetMaxHealth()[0], 0, null);
-                player.TakeCoreDamage(deadzoneDamage * player.GetMaxHealth()[1]);
+                player.CurrentHealth[0] -= (deadzoneDamage * player.GetMaxHealth()[0]);
+                player.CurrentHealth[1] -= (deadzoneDamage * player.GetMaxHealth()[1]);
                 player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
                 deadzoneDamage += deadzoneDamageMult;
             } else dangerZoneTimer += Time.deltaTime;
@@ -176,17 +185,24 @@ public class SectorManager : MonoBehaviour
 
     public void AttemptSectorLoad(Sector.SectorType? lastSectorType = null)
     {
-        if(player && (current == null || (!current.bounds.contains(player.transform.position))))
+        var inCurrentSector = player && current != null && 
+            (current.bounds.contains(player.transform.position)) && current.dimension == player.Dimension;
+        if(player && (current == null || !inCurrentSector))
         {
             // load sector
             for(int i = 0; i < sectors.Count; i++)
             {
-                if(sectors[i].bounds.contains(player.transform.position))
+                if(sectors[i].bounds.contains(player.transform.position) && sectors[i].dimension == player.Dimension)
                 {
                     Sector.SectorType? oldType = null;
-                    if(current != null) oldType = current.type;
+                    int oldDimension = 0;
+                    if(current != null) 
+                    {
+                        oldType = current.type;
+                        oldDimension = current.dimension;
+                    }
                     current = sectors[i];
-                    loadSector(oldType);
+                    loadSector(oldType, oldDimension);
                     break;
                 }
             }
@@ -215,6 +231,9 @@ public class SectorManager : MonoBehaviour
                 {
                     ResourceManager.Instance.LoadResources(testResourcePath);
                 }
+
+                // Clear DialogueSystem statics to prevent canvas reference persistence bugs
+                DialogueSystem.ClearStatics();
 
                 foreach (var canvas in Directory.GetFiles(path + "\\Canvases"))
                 {
@@ -618,6 +637,7 @@ public class SectorManager : MonoBehaviour
                         ShipBuilder.TraderInventory inventory = JsonUtility.FromJson<ShipBuilder.TraderInventory>(data.blueprintJSON);
                         if (inventory.parts != null)
                         blueprint.dialogue.traderInventory = inventory.parts;
+                        blueprint.dialogue.nodes.ForEach(n => n.textColor = FactionManager.GetFactionColor(data.faction));
                     }
                     else
                     {
@@ -838,7 +858,7 @@ public class SectorManager : MonoBehaviour
     }
 
     private float bgSpawnTimer = 0;
-    void loadSector(Sector.SectorType? lastSectorType = null)
+    void loadSector(Sector.SectorType? lastSectorType = null, int lastDimension = 0)
     {
         #if UNITY_EDITOR
         if(Input.GetKey(KeyCode.LeftShift)) {
@@ -860,7 +880,7 @@ public class SectorManager : MonoBehaviour
 #endif
 
         //unload previous sector
-        UnloadCurrentSector(lastSectorType);
+        UnloadCurrentSector(lastSectorType, lastDimension);
 
         if (overrideProperties)
             Destroy(overrideProperties);
@@ -878,6 +898,11 @@ public class SectorManager : MonoBehaviour
 
             if(spawnedChar)
                 continue;
+
+            // if it's an already collected shard do not spawn again
+            if(PlayerCore.Instance && PlayerCore.Instance.cursave.locationBasedShardsFound.Contains(current.entities[i].ID))
+                    continue;
+
             Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
 
             if(obj is GameObject)
@@ -893,7 +918,10 @@ public class SectorManager : MonoBehaviour
                 gObj.transform.position = current.entities[i].position;
                 gObj.name = current.entities[i].name;
                 if(gObj.GetComponent<ShardRock>()) {
-                    gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].vendingID);
+                    if(current.entities[i].blueprintJSON != null
+                        && current.entities[i].blueprintJSON != "")
+                        gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].blueprintJSON);
+                    gObj.GetComponent<ShardRock>().ID = current.entities[i].ID;
                 }
                 objects.Add(current.entities[i].ID, gObj);
             }
@@ -985,7 +1013,7 @@ public class SectorManager : MonoBehaviour
 
     static float objectDespawnDistance = 1000f;
 
-    private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null)
+    private void UnloadCurrentSector(Sector.SectorType? lastSectorType = null, int lastDimension = 0)
     {
         // destroy existing shard rocks
         foreach(var rock in shardRocks)
@@ -1050,7 +1078,8 @@ public class SectorManager : MonoBehaviour
             var partyTractor = false;
             if(obj.Value) 
             {
-                notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance;
+                notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance 
+                    || current.dimension != lastDimension;
                 notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
                 partyDrone = PartyManager.instance.partyMembers.Exists(sc => sc.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
                 partyTractor =  PartyManager.instance.partyMembers.Exists(sc => sc.GetTractorTarget() == obj.Value.GetComponent<Draggable>());
@@ -1090,7 +1119,7 @@ public class SectorManager : MonoBehaviour
 			    }
                 if(!droneHasPart)
                 {
-                    if(Vector3.SqrMagnitude(part.transform.position - player.transform.position) < objectDespawnDistance)
+                    if(Vector3.SqrMagnitude(part.transform.position - player.transform.position) < objectDespawnDistance && current.dimension == lastDimension)
                     {
                         savedParts.Add(part);
                     }

@@ -101,7 +101,7 @@ public abstract class WeaponAbility : ActiveAbility {
     /// Get the range of the weapon ability
     /// </summary>
     /// <returns>the range of the weapon ability</returns>
-    public float GetRange() {
+    public override float GetRange() {
         return range; // get range
     }
 

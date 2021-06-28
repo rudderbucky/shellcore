@@ -12,7 +12,7 @@ public class DevConsoleScript : MonoBehaviour
     public ScrollRect scrollRect;
 
     public static bool componentEnabled = false;
-    public bool fullLog = false;
+    public static bool fullLog = false;
     public static bool godModeEnabled = false;
     public bool updateLog = false;
 
@@ -33,15 +33,42 @@ public class DevConsoleScript : MonoBehaviour
         Instance = null;
     }
  
+    void OnDestroy()
+    {
+        Application.logMessageReceived -= HandleLog;
+        updateErrors.Clear();
+    }
+
+    // stores update errors to prevent duplicates
+    static List<string> updateErrors = new List<string>();
     void HandleLog(string logString, string stackTrace, LogType type) {
         string startingColor = "<color=white>";
         if((type == LogType.Log || type == LogType.Assert) && !fullLog) return;
-        if(type == LogType.Exception || type == LogType.Error) startingColor = "<color=red>";
+        var isException = type == LogType.Exception || type == LogType.Error;
+        if(isException) {
+            startingColor = "<color=red>";
+        } 
         else if(type == LogType.Warning) startingColor = "<color=orange>";
 
         stackTrace = stackTrace.Trim("\n".ToCharArray());
-        if(!stackTrace.Contains("Update ()") || updateLog)
-            textToAdd.Enqueue("\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>");
+        var text = "\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>";
+        
+        if(isException)
+        {
+            var important = "<color=red>I</color><color=orange>M</color><color=yellow>P</color><color=lime>O</color><color=violet>R</color><color=cyan>T</color><color=grey>A</color><color=white>N</color><color=red>T</color>: ";
+            text += $"\n {important}In addition to screenshotting this error, please save a copy of Player.log and send it to rudderbucky/the ShellCore Command Discord at your earliest convenience."
+        + "\nThe file can be found at %APPDATA%/../LocalLow/rudderbucky_Ormanus/Shellcore Command/Player.log";
+        } 
+        
+        var enqueued = false;
+        if((!stackTrace.Contains("Update ()") || !updateErrors.Contains(logString)) || updateLog)
+        {
+            updateErrors.Add(logString);
+            textToAdd.Enqueue(text);
+            enqueued = true;
+        }
+        
+        if(isException && !componentEnabled && enqueued) ToggleActive();
         // Application.logMessageReceived -= HandleLog;
     }
 
@@ -233,6 +260,10 @@ public class DevConsoleScript : MonoBehaviour
                 }
                 textBox.text += "\n<color=lime>Katamete korogasu I LOVE YOU!</color>";
             }
+            else if(command.Equals("Win siege", StringComparison.CurrentCultureIgnoreCase))
+            {
+                NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(SectorManager.instance.current.sectorName);
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {
@@ -255,22 +286,25 @@ public class DevConsoleScript : MonoBehaviour
         }
     }
 
+    void ToggleActive()
+    {
+        textBox.enabled = image.enabled = !image.enabled;
+        componentEnabled =  image.enabled;
+        scrollRect.enabled = image.enabled;
+        scrollbar.gameObject.SetActive(image.enabled);
+        inputField.gameObject.SetActive(image.enabled);
+        if (image.enabled)
+        {
+            scrollRect.verticalNormalizedPosition = 0;
+            inputField.ActivateInputField();
+        }
+    }
+
     void Update()
     {
         if(InputManager.GetKeyDown(KeyName.Console))
         {
-            textBox.enabled = image.enabled = !image.enabled;
-            componentEnabled =  image.enabled;
-            scrollRect.enabled = image.enabled;
-            scrollbar.gameObject.SetActive(image.enabled);
-            inputField.gameObject.SetActive(image.enabled);
-            if (image.enabled)
-            {
-                scrollRect.verticalNormalizedPosition = 0;
-                inputField.ActivateInputField();
-            }
-                
-            
+           ToggleActive();
         }
 
         if (textBox)

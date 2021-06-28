@@ -10,7 +10,8 @@ public enum ItemType {
 		Platform,
         Flag,
         Decoration,
-        BackgroundDecoration
+        BackgroundDecoration,
+        DecorationWithMetadata
 }
 
 /// <summary>
@@ -18,19 +19,20 @@ public enum ItemType {
 /// </summary>
 [System.Serializable]
 public class Item {
-        public string name;
-    	public GameObject obj;
-        public ItemType type;
-		public string assetID;
-		public string shellcoreJSON;
-		public string vendingID;
-		public bool isTarget;
-		public int faction;
-		public int placeablesIndex;
-		public Vector3 pos;
-		public int rotation;
-        public NodeEditorFramework.Standard.PathData patrolPath;
-        public string ID;
+    public string name;
+    public GameObject obj;
+    public ItemType type;
+    public string assetID;
+    public string shellcoreJSON;
+    public string vendingID;
+    public bool isTarget;
+    public int faction;
+    public int placeablesIndex;
+    public Vector3 pos;
+    public int rotation;
+    public NodeEditorFramework.Standard.PathData patrolPath;
+    public string ID;
+    public int dimension;
 }
 
 public class ItemHandler : MonoBehaviour
@@ -197,6 +199,7 @@ public class ItemHandlerEditor : Editor
                 if(GUILayout.Button("Add Item")) {
                     if(handler.itemPack) {
                         handler.itemPack.items.Add(placeholder);
+                        placeholder = new Item();
                         ExportData();
                     }
                 };
