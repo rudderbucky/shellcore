@@ -92,6 +92,9 @@ public class WCWorldIO : MonoBehaviour
     private bool instantTest = false;
     #endif
 
+    [SerializeField]
+    private Text loadingText;
+
     void Start()
     {
         if(SceneManager.GetActiveScene().name == "WorldCreator")
@@ -202,6 +205,8 @@ public class WCWorldIO : MonoBehaviour
 
     void SetWorldIndicators(string path)
     {
+        StopAllCoroutines();
+        StartCoroutine(ReadAllSectors(path));
         worldPathName.text = "Currently selected: " + System.IO.Path.GetFileName(path);
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         try
@@ -225,7 +230,40 @@ public class WCWorldIO : MonoBehaviour
         }
     }
 
-    
+    public MapMakerScript mapMakerScript;
+
+    private string GetLoadingString()
+    {
+        float dots = (Time.time * 2) % 4;
+        var text = "Loading map";
+        for(int i = 0; i < (int)dots; i++)
+        {
+            text += ".";
+        }
+        return text;
+    }
+    IEnumerator ReadAllSectors(string path)
+    {
+        loadingText.gameObject.SetActive(true);
+        loadingText.text = GetLoadingString();
+        var skippedFiles = new List<string> {".meta",".worlddata",".taskdata",".dialoguedata",".sectordata","ResourceData.txt"};
+        List<Sector> sectors = new List<Sector>();
+        foreach(var str in System.IO.Directory.GetFiles(path))
+        { 
+            if(skippedFiles.Exists(s => str.Contains(s))) continue;
+            string sectorjson = System.IO.File.ReadAllText(str);
+            SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+            // Debug.Log("Platform JSON: " + data.platformjson);
+            // Debug.Log("Sector JSON: " + data.sectorjson);
+            Sector curSect = ScriptableObject.CreateInstance<Sector>();
+            JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
+            sectors.Add(curSect);
+            loadingText.text = GetLoadingString();
+            yield return null;
+        }
+        MapMakerScript.Redraw(sectors);
+        loadingText.gameObject.SetActive(false);
+    }
 
     public GameObject window;
     public GameObject newWorldStack;

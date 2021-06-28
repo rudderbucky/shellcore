@@ -10,13 +10,14 @@ public class Command : PassiveAbility
         ID = AbilityID.Command;
         base.Awake();
         abilityName = "Command";
-        description = "Passively increases the maximum allowed number of controlled units by " + commandUnitIncrease + ".";
+        description = "Passively increases the maximum allowed number of controlled units";
     }
 
     public override void Deactivate()
     {
-        if(Core is IOwner)
-            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() - commandUnitIncrease);
+        if(Core is IOwner){
+            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() - commandUnitIncrease * Mathf.Max(1,abilityTier));
+        }
         base.Deactivate();
     }
 
@@ -27,8 +28,9 @@ public class Command : PassiveAbility
 
     protected override void Execute()
     {
-        if(Core is IOwner)
-            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() + commandUnitIncrease);
+        if(Core is IOwner){
+            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() + commandUnitIncrease * Mathf.Max(1,abilityTier));
+        }
         base.Execute();
     }
 }

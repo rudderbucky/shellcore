@@ -22,7 +22,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public GameObject dialogueBoxPrefab;
     public GameObject taskDialogueBoxPrefab;
     public GameObject dialogueButtonPrefab;
-
+    public GameObject rewardBoxPrefab;
     public GameObject battleResultsBoxPrefab;
     public Font shellcorefont;
     GUIWindowScripts window;
@@ -68,6 +68,20 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private static List<DialogueTraverser> traversers;
     public static string speakerID;
     private static bool initialized = false;
+
+    // Bugfixes dialogue canvas paths persisting post world reload in the WC
+    public static void ClearStatics()
+    {
+        if(dialogueCanvasPaths != null)
+            dialogueCanvasPaths.Clear();
+        if(speakerIDList != null)
+            speakerIDList.Clear();
+        if(interactionOverrides != null)
+            interactionOverrides.Clear();
+        if(traversers != null)
+            traversers.Clear();
+    }
+
     public static void InitCanvases()
     {
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
@@ -336,7 +350,76 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         Instance.showTaskPrompt(node, speaker);
     }
 
-    private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker) //TODO: reward part image
+    private void SetupRewards(GameObject gameObject, RewardWrapper wrapper)
+    {
+        gameObject.transform.Find("Credit Reward Text").GetComponent<Text>().text =
+        "Credit reward: " + wrapper.creditReward;
+
+        gameObject.transform.Find("Reputation Reward Text").GetComponent<Text>().text =
+        "Reputation reward: " + wrapper.reputationReward;
+        // Part reward
+        if(wrapper.partReward)
+        {
+            // Part image:
+            PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(wrapper.partID);
+            if(!blueprint)
+            {
+                Debug.LogWarning("Part reward of Start Task wrapper not found!");
+            }
+            var partImage = gameObject.transform.Find("Part").GetComponent<Image>();
+            partImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
+            partImage.rectTransform.sizeDelta = partImage.sprite.bounds.size * 45;
+            partImage.color = Color.green;
+
+            // Ability image:
+            if(wrapper.partAbilityID > 0)
+            {
+                var backgroudBox = gameObject.transform.Find("backgroundbox");
+                var abilityIcon = backgroudBox.Find("Ability").GetComponent<Image>();
+                var tierIcon = backgroudBox.Find("Tier").GetComponent<Image>();
+                var type = backgroudBox.Find("Type").GetComponent<Text>();
+                var abilityTooltip = backgroudBox.GetComponent<AbilityButtonScript>();
+
+                abilityIcon.sprite = AbilityUtilities.GetAbilityImageByID(wrapper.partAbilityID, wrapper.partSecondaryData);
+                if(wrapper.partTier >= 1)
+                    tierIcon.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + Mathf.Clamp(wrapper.partTier, 1, 3));
+                else tierIcon.enabled = false;
+                type.text = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "");
+                string description = "";
+                description += AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "") + "\n";
+                description += AbilityUtilities.GetDescriptionByID(wrapper.partAbilityID, wrapper.partTier, null);
+                abilityTooltip.abilityInfo = description;
+            }
+            else
+            {
+                background.transform.Find("backgroundbox").gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            background.transform.Find("Part").GetComponent<Image>().enabled = false;
+            background.transform.Find("backgroundbox").gameObject.SetActive(false);
+        }
+
+    }
+
+    public static void ShowReward(RewardWrapper wrapper)
+    {
+        Instance.showReward(wrapper);
+    }
+
+    private void showReward(RewardWrapper wrapper)
+    {
+        if (window) endDialogue(0, false);
+        //create window
+        window = Instantiate(rewardBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.Activate();
+        window.transform.SetSiblingIndex(0);
+
+        SetupRewards(window.gameObject, wrapper);
+    }
+
+    private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker)
     {
         if (window) endDialogue(0, false);
         CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : node.dialogueColor, speaker);
@@ -348,6 +431,19 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         var objectiveList = background.transform.Find("ObjectiveList").GetComponent<Text>();
         objectiveList.text = node.objectiveList;
 
+        var wrapper = new RewardWrapper();
+        wrapper.creditReward = node.creditReward;
+        wrapper.partAbilityID = node.partAbilityID;
+        wrapper.partReward = node.partReward;
+        wrapper.partSecondaryData = node.partSecondaryData;
+        wrapper.partTier = node.partTier;
+        wrapper.reputationReward = node.reputationReward;
+        wrapper.shardReward = node.shardReward;
+        wrapper.partID = node.partID;
+
+        SetupRewards(background.gameObject, wrapper);
+
+        /*
         background.transform.Find("Credit Reward Text").GetComponent<Text>().text =
         "Credit reward: " + node.creditReward;
 
@@ -395,7 +491,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         {
             background.transform.Find("Part").GetComponent<Image>().enabled = false;
             background.transform.Find("backgroundbox").gameObject.SetActive(false);
-        }
+        }*/
 
         string[] answers =
         {
@@ -537,7 +633,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         // radio image 
-        window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null);
+        window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
         window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
 
         // change text

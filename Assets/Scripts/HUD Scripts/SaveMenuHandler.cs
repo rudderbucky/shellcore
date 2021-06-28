@@ -37,6 +37,8 @@ public class SaveMenuHandler : GUIWindowScripts {
 		"Alpha 4.3.0",
 	};
 
+	public Sprite[] episodeSprites;
+
 	// Use to check before world load if the format is correct. Helps prevent loading incorrectly installed worlds
 	private bool CheckWorldValidity(string dir)
 	{
@@ -128,6 +130,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 			if(saves[i] == null) 
 				continue;
 			SaveMenuIcon icon = Instantiate(saveIconPrefab, contents).GetComponent<SaveMenuIcon>();
+			icon.GetComponent<Image>().sprite = episodeSprites[Mathf.Min(Mathf.Max(1, saves[i].episode), episodeSprites.Length) - 1];
 			icon.save = saves[i];
 			icon.index = i;
 			icon.handler = this;

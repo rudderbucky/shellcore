@@ -202,7 +202,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                  abilities[0].State == Ability.AbilityState.Charging ||
                  (abilities[0] is WeaponAbility && abilities[0].State == Ability.AbilityState.Ready)))
         {
-            image.color = Color.green;
+            image.color = PlayerCore.GetPlayerFactionColor();
         }
         else
         {
@@ -266,7 +266,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                     continue;
                 }
                 else circles[ability].enabled = true;
-                circles[ability].color = ability.TimeUntilReady() > 0 ? Color.gray : Color.green;
+                circles[ability].color = ability.TimeUntilReady() > 0 ? Color.gray : PlayerCore.GetPlayerFactionColor();
                 var range = ability.GetRange();
                 var cameraPos = CameraScript.instance.transform.position;
                 cameraPos.z = 0;
@@ -295,7 +295,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                 if(!ability.IsDestroyed())
                 {
                     circles.Add(ability, Instantiate(rangeCirclePrefab, transform.parent.parent.Find("Circle Holder")).GetComponent<CircleGraphic>());
-                    circles[ability].color = Color.green;
+                    circles[ability].color = PlayerCore.GetPlayerFactionColor();
                 }
                     
             }
@@ -343,7 +343,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     public void OnPointerDown(PointerEventData eventData)
     {
         dragging = true;
-        movingImage.enabled = true;
+        if(movingImage) movingImage.enabled = true;
         oldInputMousePos = Input.mousePosition;
     }
 }

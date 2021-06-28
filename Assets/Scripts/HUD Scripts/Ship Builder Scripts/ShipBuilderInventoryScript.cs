@@ -26,12 +26,18 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
         if(Input.GetKey(KeyCode.LeftShift)) 
         {
             #if UNITY_EDITOR
-            Debug.Log(part.secondaryData);
             #endif
         }
 
         if(count > 0) {
             var builderPart = InstantiatePart();
+            DecrementCount();
+            if(Input.GetKey(KeyCode.LeftShift)) 
+            {
+                if(mode == BuilderMode.Yard && cursor.builder.GetMode() == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Sell);
+                else if(mode == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Buy);
+                return;
+            }
             ShipBuilderPart symmetryPart = count > 1 && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
             if(symmetryPart) 
             {
@@ -41,19 +47,12 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
                     symmetryPart.info.rotation = 180;
             }
             cursor.GrabPart(builderPart, symmetryPart);
-            count--;
-            if(symmetryPart) count--;
+            if(symmetryPart) DecrementCount();
             cursor.buildValue += EntityBlueprint.GetPartValue(part);
             if(mode == BuilderMode.Trader) 
             {
                 cursor.buildCost += EntityBlueprint.GetPartValue(part);
                 if(symmetryPart) cursor.buildCost += EntityBlueprint.GetPartValue(part);
-            }
-
-            if(Input.GetKey(KeyCode.LeftShift)) 
-            {
-                if(mode == BuilderMode.Yard && cursor.builder.GetMode() == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Sell);
-                else if(mode == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Buy);
             }
         }
     }

@@ -23,11 +23,10 @@ public class Control : PassiveAbility
             if (!entity)
                 continue;
             var maxHealths = entity.GetMaxHealth();
-            maxHealths[0] -= healthAddition * abilityTier;
-
             // Remove a percentage of health from the ship, based on what max health the core had before destruction
             var healths = entity.GetHealth();
             healths[0] -= (healths[0] / maxHealths[0]) * healthAddition * abilityTier;
+            maxHealths[0] -= healthAddition * abilityTier;
             entity.damageAddition -= damageAddition;
         }
         base.Deactivate();
@@ -38,14 +37,16 @@ public class Control : PassiveAbility
     {
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            Enhance(AIData.entities[i]);
+            if(!AIData.entities[i].GetIsDead())
+                Enhance(AIData.entities[i]);
         }
         Entity.OnEntitySpawn += EntitySpawn;
     }
 
     void EntitySpawn(Entity entity)
     {
-        Enhance(entity);
+        if(!entity.GetIsDead())
+            Enhance(entity);
     }
 
     void Enhance(Entity entity)

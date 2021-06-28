@@ -617,7 +617,7 @@ MonoBehaviour:
   jsonMode: 0
   sectors:
   - {fileID: 11400000, guid: db5d53667eba5974c927ca88b2a5446e, type: 2}
-  - {fileID: 11400000, guid: d358245d5252cf6409645bcec340d577, type: 2}
+  - {fileID: 11400000, guid: 3961ced5135c895448b3a00612f56db1, type: 2}
   player: {fileID: 0}
   current: {fileID: 0}
   background: {fileID: 241602156}
@@ -629,6 +629,7 @@ MonoBehaviour:
   shardRocks: []
   shardRockPrefab: {fileID: 0}
   overrideProperties: {fileID: 0}
+  skirmishMenu: {fileID: 0}
   damagePrefab: {fileID: 0}
   taskManager: {fileID: 0}
 --- !u!4 &160606979
@@ -1341,8 +1342,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1055.0658
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
+        type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 10
+      value: 537.5329
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
@@ -1457,6 +1463,11 @@ PrefabInstance:
     - target: {fileID: 4076859596742077409, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021821419448081131, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
+        type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5716020274788608452, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
@@ -4680,11 +4691,57 @@ MonoBehaviour:
   - ID: clip_bombexplosion
     obj: {fileID: 8300000, guid: b6b7ed91fbdca9c468d0ed33b5e28038, type: 3}
   - ID: AbilitySprite37
-    obj: {fileID: 21300000, guid: 827a83d6dd25ee540a1df2400c7ea102, type: 3}
+    obj: {fileID: 21300000, guid: 5c9006431ffe7094c9e9b3c5ea7dcc40, type: 3}
   - ID: music_overworld_enemy_short
     obj: {fileID: 8300000, guid: 33451f284f956cb46beee94092830fc8, type: 3}
   - ID: music_fast_2
     obj: {fileID: 8300000, guid: 3eb894b30ca4f5348aaf6d739924ae97, type: 3}
+  - ID: music_wc_1
+    obj: {fileID: 8300000, guid: 8a22f26be29c21b46808405e4b132215, type: 3}
+  - ID: music_wc_2
+    obj: {fileID: 8300000, guid: b93b8fafae2fdec47a840e42454cba65, type: 3}
+  - ID: tooltip_prefab
+    obj: {fileID: 1488837556019592, guid: 415e283b683408a41913b01ebeaee6e1, type: 3}
+  - ID: clip_laser
+    obj: {fileID: 8300000, guid: 608a1f2f18a853b4da6e12790cf0feb7, type: 3}
+  - ID: clip_bomb
+    obj: {fileID: 8300000, guid: 94ce5f90fb3a7b64983fbf0c2201e5bd, type: 3}
+  - ID: range_circle_prefab
+    obj: {fileID: 2900508077159232274, guid: b808a1c63da1d254aa31c92047dfdff6, type: 3}
+  - ID: AbilitySprite38
+    obj: {fileID: 21300000, guid: c30f7bbde2c70bc479024a93ed6dcf19, type: 3}
+  - ID: flakshooter_sprite
+    obj: {fileID: 21300000, guid: e291cec35c905954899da4eddd79e5bc, type: 3}
+  - ID: clip_flak
+    obj: {fileID: 8300000, guid: 23086ef7a76c7484595cd83e3314a060, type: 3}
+  - ID: clip_ion
+    obj: {fileID: 8300000, guid: b49312a652b900b45a4b6edd8653af5b, type: 3}
+  - ID: clip_passiveDialogue1
+    obj: {fileID: 8300000, guid: eb711370c894abb42b319df1153f967e, type: 3}
+  - ID: clip_passiveDialogue2
+    obj: {fileID: 8300000, guid: fb1c278c468865445a944b85bcd5cd8f, type: 3}
+  - ID: clip_passiveDialogue3
+    obj: {fileID: 8300000, guid: dd8f38e03b80eca47bb6187ebc04f8c8, type: 3}
+  - ID: clip_passiveDialogue4
+    obj: {fileID: 8300000, guid: 7e13036d8c9689c42a5691683ff90fb9, type: 3}
+  - ID: clip_passiveDialogue5
+    obj: {fileID: 8300000, guid: a8d827ef291f04f43962b235a2914a58, type: 3}
+  - ID: clip_passiveDialogue6
+    obj: {fileID: 8300000, guid: c50909a839ead4d4c86e9ff1d6da2b55, type: 3}
+  - ID: clip_passiveDialogue7
+    obj: {fileID: 8300000, guid: 0193a30b291cbc6408a4e6d642c67616, type: 3}
+  - ID: clip_passiveDialogue8
+    obj: {fileID: 8300000, guid: 25fbd77480a03e24a8564196c0397400, type: 3}
+  - ID: clip_passiveDialogue9
+    obj: {fileID: 8300000, guid: 712ec4af57dfca140ae6ce5ffe642645, type: 3}
+  - ID: clip_passiveDialogue10
+    obj: {fileID: 8300000, guid: ff6ce832851988b4cb9b8249a2f66a08, type: 3}
+  - ID: clip_passiveDialogue12
+    obj: {fileID: 8300000, guid: 19ac864ab39f2464d9ba1ecfbfa3fe92, type: 3}
+  - ID: clip_passiveDialogue13
+    obj: {fileID: 8300000, guid: 029700c24afa5e94597924484eb79f6a, type: 3}
+  - ID: clip_passiveDialogue11
+    obj: {fileID: 8300000, guid: 4bf42b1965159934d9c1ea86e7288b14, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
