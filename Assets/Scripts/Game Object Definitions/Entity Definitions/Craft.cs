@@ -148,6 +148,12 @@ public abstract class Craft : Entity
     protected Transform instantiatedRespawnPrefab;
     protected override void FixedUpdate()
     {
+        entityBody.drag = draggable.dragging ? 25F : 0;
+        if(draggable.dragging)
+        {
+            return;
+        }
+
         if(physicsDirection == Vector2.zero)
         {
             var dir = entityBody.velocity.normalized;

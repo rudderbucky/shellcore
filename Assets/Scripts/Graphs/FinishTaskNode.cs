@@ -3,6 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using NodeEditorFramework.Utilities;
 
+[System.Serializable]
+public struct RewardWrapper
+{
+    public int creditReward;
+    public int reputationReward;
+    public int shardReward;
+    public bool partReward;
+    public string partID;
+    public int partAbilityID;
+    public string partSecondaryData;
+    public int partTier;
+}
+
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Tasks/FinishTaskNode")]

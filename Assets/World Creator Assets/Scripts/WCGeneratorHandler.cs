@@ -242,7 +242,7 @@ public class WCGeneratorHandler : MonoBehaviour
         
         foreach(var item in items)
         {
-            Sector container = GetSurroundingSector(item.pos);
+            Sector container = GetSurroundingSector(item.pos, item.dimension);
             if(container == null)
             {
                 savingLevelScreen.SetActive(false);
@@ -259,7 +259,8 @@ public class WCGeneratorHandler : MonoBehaviour
                         pos = new Vector2Int(index.Item2, index.Item1),
                         type = (byte)item.placeablesIndex,
                         rotation = (byte)(((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4),
-                        directions = new Dictionary<Vector2Int, byte>()
+                        directions = new Dictionary<Vector2Int, byte>(),
+                        distances = new Dictionary<Vector2Int, ushort>()
                     });
                     break;
                 case ItemType.Other:
@@ -612,7 +613,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 break;
         } 
 
-        return typeRep + " " + x + "-" + y;
+        return typeRep + " " + x + "-" + y + (sector.dimension > 0 ? $" - Dimension {sector.dimension}" : "");
     }
 
     public static string GetDefaultMusic(Sector.SectorType type)
@@ -631,10 +632,10 @@ public class WCGeneratorHandler : MonoBehaviour
         } 
     }
 
-    Sector GetSurroundingSector(Vector2 pos) {
+    Sector GetSurroundingSector(Vector2 pos, int dim) {
         foreach(var sector in sectors)
         {
-            if(sector.bounds.contains(pos)) return sector;
+            if(sector.bounds.contains(pos) && sector.dimension == dim) return sector;
         }
         return null;
     }
@@ -703,7 +704,8 @@ public class WCGeneratorHandler : MonoBehaviour
 
                 cursor.placedItems = new List<Item>();
                 cursor.sectors = new List<WorldCreatorCursor.SectorWCWrapper>();
-                
+                cursor.DimensionCount = 1;
+
                 foreach (string file in files)
                 {
                     if(file.Contains(".meta")) continue;
@@ -751,6 +753,8 @@ public class WCGeneratorHandler : MonoBehaviour
                     Sector curSect = ScriptableObject.CreateInstance<Sector>();
                     JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
 
+                    cursor.DimensionCount = Mathf.Max(cursor.DimensionCount, curSect.dimension + 1);
+
                     // Try to load old land platform
                     if (data.platformjson != "" && curSect.platformData == null)
                     {
@@ -768,6 +772,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                     if (item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
                                     {
                                         Item copy = itemHandler.CopyItem(item);
+                                        copy.dimension = curSect.dimension;
                                         copy.pos = copy.obj.transform.position
                                             = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize,
                                                 -cursor.cursorOffset.y + curSect.bounds.y - i * cursor.tileSize);
@@ -796,6 +801,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                     if (item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
                                     {
                                         Item copy = itemHandler.CopyItem(item);
+                                        copy.dimension = curSect.dimension;
                                         copy.pos = copy.obj.transform.position
                                             = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + tiles[i].pos.x * cursor.tileSize,
                                                 -cursor.cursorOffset.y + curSect.bounds.y - tiles[i].pos.y * cursor.tileSize);
@@ -830,6 +836,7 @@ public class WCGeneratorHandler : MonoBehaviour
                             if(ent.assetID == item.assetID && ent.assetID != "")
                             {
                                 Item copy = itemHandler.CopyItem(item);
+                                copy.dimension = curSect.dimension;
                                 copy.faction = ent.faction;
                                 copy.ID = ent.ID;
                                 copy.name = ent.name;

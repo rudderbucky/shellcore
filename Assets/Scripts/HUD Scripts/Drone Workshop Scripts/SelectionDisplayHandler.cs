@@ -21,7 +21,7 @@ public class SelectionDisplayHandler : MonoBehaviour
     }
 
     public virtual void AssignDisplay(EntityBlueprint blueprint, DroneSpawnData data, int faction = 0) {
-        this.faction = 0;
+        this.faction = faction;
         ClearDisplay();
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         if(shell.sprite) {

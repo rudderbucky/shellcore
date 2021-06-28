@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
 using UnityEngine;
 
-// TODO: Switch this node to work with IDs
-
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Actions/Spawn Entity")]
@@ -29,7 +27,7 @@ namespace NodeEditorFramework.Standard
         public string blueprint;
         public string entityName;
         public int faction;
-        public int count;
+        public int count = 1;
         public string flagName;
         public Vector2 coordinates;
         public bool useCoordinates;
@@ -120,6 +118,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            count = Mathf.Max(1, count);
             if(issueID)
             {
                 Vector2 coords = coordinates;
@@ -207,6 +206,7 @@ namespace NodeEditorFramework.Standard
                     if (AIData.flags[i].name == flagName)
                     {
                         coords = AIData.flags[i].transform.position;
+                        if(DevConsoleScript.fullLog) Debug.Log(coords);
                         break;
                     }
                 }
@@ -233,6 +233,7 @@ namespace NodeEditorFramework.Standard
                     ID = issueID ? entityID : "",
                 };
                 var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
+                if(DevConsoleScript.fullLog) Debug.Log(entity.transform.position + " " + entity.spawnPoint);
                 entity.name = entityName;
             }
             else

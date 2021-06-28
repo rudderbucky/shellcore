@@ -36,7 +36,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     protected GameObject respawnImplosionPrefab;
     protected GameObject deathExplosionPrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
-    public float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    public float[] CurrentHealth {get {return currentHealth;} set 
+    {
+        currentHealth = value;
+    }}
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = olive...)
     public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
@@ -383,13 +387,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 maxHealth[0] += partBlueprint.health / 2;
                 maxHealth[1] += partBlueprint.health / 4;
 
-                // Drone shell and core health penalty
-                if(this as Drone)
-                {
-                    maxHealth[0] /= 2;
-                    maxHealth[1] /= 4;
-                }
-
                 string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
                 // Add shooter
                 if (shooterID != null)
@@ -427,6 +424,13 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
                 if(!(partObject.GetComponent<SpriteRenderer>() && partObject.GetComponent<SpriteRenderer>().sprite)
                     && partObject.GetComponent<Collider2D>() && !partObject.GetComponent<Harvester>()) 
                     partObject.GetComponent<Collider2D>().enabled = false;
+            }
+            
+            // Drone shell and core health penalty
+            if(this as Drone)
+            {
+                maxHealth[0] /= 2;
+                maxHealth[1] /= 4;
             }
         }
 

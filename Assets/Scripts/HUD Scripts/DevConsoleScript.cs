@@ -12,7 +12,7 @@ public class DevConsoleScript : MonoBehaviour
     public ScrollRect scrollRect;
 
     public static bool componentEnabled = false;
-    public bool fullLog = false;
+    public static bool fullLog = false;
     public static bool godModeEnabled = false;
     public bool updateLog = false;
 
@@ -259,6 +259,10 @@ public class DevConsoleScript : MonoBehaviour
                     }
                 }
                 textBox.text += "\n<color=lime>Katamete korogasu I LOVE YOU!</color>";
+            }
+            else if(command.Equals("Win siege", StringComparison.CurrentCultureIgnoreCase))
+            {
+                NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(SectorManager.instance.current.sectorName);
             }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")

@@ -90,19 +90,23 @@ public class Tank : GroundCraft, IOwnable
             return;
 
         // Find the closest ground target
-        Entity[] entities = FindObjectsOfType<Entity>();
         Entity target = null;
-        float minD = float.MaxValue;
-        for(int i = 0; i < entities.Length; i++)
+
+        List<Entity> targets = new List<Entity>(FindObjectsOfType<Entity>());
+        if(!Weapon) return;
+        for (int i = 0; i < targets.Count; i++)
         {
-            if (FactionManager.IsAllied(entities[i].faction, faction))
-                continue;
-            float d2 = (transform.position - entities[i].transform.position).sqrMagnitude;
-            if(d2 < minD && Weapon.CheckCategoryCompatibility(entities[i]))
+            if(!targets[i]) continue;
+            if (FactionManager.IsAllied(targets[i].faction, faction) || !Weapon.CheckCategoryCompatibility(targets[i]))
             {
-                minD = d2;
-                target = entities[i];
+                targets.RemoveAt(i);
+                i--;
             }
+        }
+
+        if (targets.Count > 0)
+        {
+            target = LandPlatformGenerator.GetClosestTarget(transform.position, targets.ToArray(), weapon.GetRange());
         }
 
         // If a target is found, find a path to it
@@ -120,6 +124,21 @@ public class Tank : GroundCraft, IOwnable
         }
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (hasPath && path.Length > 1)
+        {
+            Gizmos.color = Color.red;
+            for (int i = 0; i < path.Length - 1; i++)
+            {
+                if (i == index)
+                    Gizmos.color = Color.green;
+
+                Gizmos.DrawLine(path[i], path[i + 1]);
+            }
+        }
+    }
+
     protected virtual void drive()
     {
         if (!isOnGround)
@@ -128,6 +147,19 @@ public class Tank : GroundCraft, IOwnable
         if (hasPath)
         {
             Vector2 direction = path[index] - (Vector2)transform.position;
+
+            float dx = Mathf.Abs(direction.x);
+            float dy = Mathf.Abs(direction.y);
+
+            if (dx < dy && dx > 2.5f)
+            {
+                direction.y = 0;
+            }
+
+            if (dy < dx && dy > 2.5f)
+            {
+                direction.x = 0;
+            }
 
             const float minDistance = 2.0f;
 
@@ -142,14 +174,14 @@ public class Tank : GroundCraft, IOwnable
                     float d = (e.transform.position - (transform.position)).sqrMagnitude;
                     if (d < minDistance && pathfindTimer <= 0f)
                     {
-                        hasPath = false;
-                        pathfindTimer = 0.5f;
+                        //hasPath = false;
+                        //pathfindTimer = 0.5f;
                         return;
                     }
                 }
             }
 
-            if (direction.magnitude < 0.5f)
+            if (direction.magnitude < 0.4f)
             {
                 index--;
                 if (index < 0)
@@ -163,6 +195,11 @@ public class Tank : GroundCraft, IOwnable
             }
             else
                 MoveCraft(normalized * 0.5F);
+
+            if (pathfindTimer <= 0f)
+            {
+                pathfindTimer = 5f;
+            }
         }
         else if (pathfindTimer <= 0f)
         {
