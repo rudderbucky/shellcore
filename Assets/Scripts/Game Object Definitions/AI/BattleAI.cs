@@ -429,6 +429,9 @@ public class BattleAI : AIModule
         }
 
         // always drop harvester turrets on close energy rocks
+        turretIsHarvester = shellcore.GetTractorTarget() &&
+            shellcore.GetTractorTarget().GetComponent<Turret>() 
+                && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
         if(turretIsHarvester)
         {
             var turret = shellcore.GetTractorTarget().GetComponent<Turret>();
