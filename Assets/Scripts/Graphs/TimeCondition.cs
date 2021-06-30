@@ -18,13 +18,13 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
 
-        public int seconds = 0;
+        public float seconds = 0;
         Coroutine timer = null;
 
         public override void NodeGUI()
         {
             output.DisplayLayout();
-            seconds = Utilities.RTEditorGUI.IntField("Time: ", seconds);
+            seconds = Utilities.RTEditorGUI.FloatField("Time: ", seconds);
         }
 
         public void Init(int index)
