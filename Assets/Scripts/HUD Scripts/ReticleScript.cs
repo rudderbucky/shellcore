@@ -81,7 +81,8 @@ public class ReticleScript : MonoBehaviour {
 
         // This orders secondary target drones to move/follow accordingly.
         foreach(var ent in targSys.GetSecondaryTargets())
-            droneInteraction = DroneCheck(ent.transform, hits) || droneInteraction;
+            if(ent)
+                droneInteraction = DroneCheck(ent.transform, hits) || droneInteraction;
 
         // This orders primary target drones to move/follow accordingly.
         var primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits);

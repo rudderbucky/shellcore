@@ -34,9 +34,10 @@ public class HealthBarScript : MonoBehaviour {
         gleamArray = new Image[3];
         gleaming = new bool[barsArray.Length];
         gleamed = new bool[barsArray.Length];
-        Color[] colors = new Color[] { Color.green, new Color(0.8F,0.8F,0.8F), new Color(0.4F,0.8F,1.0F) };
-        Color[] oldColors = new Color[] { new Color(0F,0.3F,0F), new Color(0.3F,0.3F, 0.3F), new Color(0.1F,0.2F,0.3F) };
-        for (int i = 0; i < barsArray.Length; i++) { // iterate through array
+        Color[] colors = new Color[] { PlayerCore.GetPlayerFactionColor(), new Color(0.8F,0.8F,0.8F), new Color(0.4F,0.8F,1.0F) };
+        Color[] oldColors = new Color[] { colors[0] / 2, new Color(0.3F,0.3F, 0.3F), new Color(0.1F,0.2F,0.3F) };
+        for (int i = 0; i < barsArray.Length; i++) 
+        { // iterate through array
             barsArray[i] = Instantiate(inputBar).GetComponent<Image>(); // instantiate the image
             barsArray[i].fillAmount = 0; // initialize fill to 0 for cool animation
             barsArray[i].color = colors[i];
@@ -65,6 +66,7 @@ public class HealthBarScript : MonoBehaviour {
             gleamArray[i].transform.position = tmp;
             gleamArray[i].transform.SetParent(transform, false); // set as parent to the object this script is on
         }
+        ChangeHudDamageIndicator(PlayerPrefs.GetFloat("HealthBarScript_hudDamageIndicator", 0.5F));
         initialized = true; // set to initialized
     }
 
@@ -115,9 +117,21 @@ public class HealthBarScript : MonoBehaviour {
 
     public void StartHurtHud(Color color)
     {
-        hurtHudAlpha = 1;
-        color.a = 1;
-        hurtHudImage.color = color;
+        var maxHealth = PlayerCore.Instance.GetMaxHealth();
+        var currentHealth = PlayerCore.Instance.CurrentHealth;
+        if((hurtHudThreshold <= 0.5F && currentHealth[0] <= 0 && (hurtHudThreshold * 2) * maxHealth[1] > currentHealth[1]) ||
+        ((hurtHudThreshold - 0.5F) * 2 * maxHealth[0] > currentHealth[0]))
+        {
+            hurtHudAlpha = 1;
+            color.a = 1;
+            hurtHudImage.color = color;
+        }
+    }
+
+    public float hurtHudThreshold;
+    public void ChangeHudDamageIndicator(float val)
+    {
+        hurtHudThreshold = val;
     }
 
     private void Update()

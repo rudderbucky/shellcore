@@ -175,7 +175,12 @@ public class BattleZoneManager : MonoBehaviour
                             if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
                                 NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
                         }
-                        else AudioManager.PlayClipByID("clip_fail");
+                        else 
+                        {
+                            AudioManager.PlayClipByID("clip_fail");
+                            if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose != null)
+                                NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose.Invoke(sectorName);
+                        }
                     }
                 }
                 DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));

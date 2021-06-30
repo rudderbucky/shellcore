@@ -120,6 +120,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 				dictContentTexts = traderContentTexts;
 				break;
 			case TransferMode.Buy:
+				cursorScript.buildCost += EntityBlueprint.GetPartValue(part.info);
 				dictContentsArray = contentsArray;
 				dict = partDict;
 				dictContentTexts = contentTexts;
@@ -652,8 +653,12 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 	}
 
     public void AddShard(Shard shard) {
+        AddShard(shard.tier);
+    }
+
+	public void AddShard(int tier) {
         var tiers = new int[] {1, 5, 20};
-        player.shards += tiers[shard.tier];
+        player.shards += tiers[tier];
     }
 	private void AddPart(EntityBlueprint.PartInfo part) {
 		if(!partDict.ContainsKey(part)) {
@@ -695,6 +700,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 		if(ResourceManager.allPartNames.Contains(id)) {
 			var im = editorModeAddPartSection.transform.Find("Part Image").GetComponent<Image>();
 			im.sprite = ResourceManager.GetAsset<Sprite>(id + "_sprite");
+			im.color = PlayerCore.GetPlayerFactionColor();
 			im.rectTransform.sizeDelta = im.sprite.bounds.size * 50	;
 		}
 	}
@@ -943,7 +949,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface {
 			else
 				core.sprite = ResourceManager.GetAsset<Sprite>("core1_light");				
 			
-			shell.color = FactionManager.GetFactionColor(0);
+			shell.color = PlayerCore.GetPlayerFactionColor();
 			shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
 
 			// orient shell image so relative center stays the same regardless of shell tier

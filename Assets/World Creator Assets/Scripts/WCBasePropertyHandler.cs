@@ -205,8 +205,8 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 break;
             case Mode.Factions:
                 if(ints[0] <= 2) {
-                    Debug.LogError("Cannot modify the default three factions");
-                    break;
+                    Debug.LogWarning("Modifying the default three factions");
+                    //break;
                 }
                 Faction newFaction = ScriptableObject.CreateInstance<Faction>();
                 newFaction.ID = ints[0];
@@ -279,6 +279,36 @@ public class WCBasePropertyHandler : GUIWindowScripts
         }
     }
 
+    void DeleteSelectedProperty(int index)
+    {
+        switch(currentMode)
+        {
+            case Mode.Characters:
+                cursor.characters.RemoveAt(index);
+                break;
+            case Mode.Factions:
+                var newFaction = new Faction[manager.factions.Length - 1];
+                for(int i = 0; i < index; i++)
+                {
+                    newFaction[i] = manager.factions[i];
+                }
+                for(int i = index+1; i < manager.factions.Length; i++)
+                {
+                    newFaction[i-1] = manager.factions[i];
+                }
+                
+                var factionPath = System.IO.Path.Combine(
+                    System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"), $"{manager.factions[index].factionName}.json");
+                if(File.Exists(factionPath))
+                {
+                    File.Delete(factionPath);
+                }
+                manager.factions = newFaction;
+                break;
+        }
+        SetupMenu();
+    }
+
     // sets up the menu containing the relevant items
     void SetupMenu()
     {
@@ -286,33 +316,38 @@ public class WCBasePropertyHandler : GUIWindowScripts
         {
             Destroy(child.gameObject);
         }
+        IEnumerable<IBaseProperty> baseList = null;
         switch(currentMode)
         {
             case Mode.Characters:
-                for(int i = 0; i < cursor.characters.Count; i++)
-                {
-                    var index = i;
-                    var gObj = Instantiate(menuButton, menuContents);
-                    gObj.GetComponentInChildren<Text>().text = cursor.characters[i].name;
-                    gObj.GetComponentInChildren<Button>().onClick.AddListener(() =>
-                    {
-                        DisplaySelectedProperty(index);
-                    });
-                }
+                baseList = cursor.characters;
                 break;
             case Mode.Factions:
-                for(int i = 0; i < manager.factions.Length; i++)
-                {
-                    var index = i;
-                    var gObj = Instantiate(menuButton, menuContents);
-                    gObj.GetComponentInChildren<Text>().text = manager.factions[i].factionName;
-                    gObj.GetComponentInChildren<Button>().onClick.AddListener(() =>
-                    {
-                        DisplaySelectedProperty(index);
-                    });
-                }
+                baseList = manager.factions;
                 break;
+        }
+
+        int i = 0;
+        foreach(var obj in baseList)
+        {
+            var index = i;
+            i++;
+            var gObj = Instantiate(menuButton, menuContents);
+            gObj.GetComponentInChildren<Text>().text = obj.GetName();
+            gObj.GetComponentInChildren<Button>().onClick.AddListener(() =>
+            {
+                DisplaySelectedProperty(index);
+            });
+            gObj.transform.Find("Clear").GetComponentInChildren<Button>().onClick.AddListener(() =>
+            {
+                DeleteSelectedProperty(index);
+            });
         }
         SetupAdditionFields();
     }
+}
+
+public interface IBaseProperty
+{
+    public string GetName();
 }

@@ -126,10 +126,23 @@ public class WCGeneratorHandler : MonoBehaviour
                 {
                     string[] names = s.Split(':');
                     string resPath = System.IO.Path.Combine(path, names[1]);
-                    // make sure the faction was not already copied in
-                    if(!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, names[0]+".json")))
+                    
+                    // try grabbing the faction name
+                    var faction = ScriptableObject.CreateInstance<Faction>();
+                    try
+                    {   
+                        JsonUtility.FromJsonOverwrite(File.ReadAllText(resPath), faction);
+                    }
+                    catch
                     {
-                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, names[0]+".json"));
+                        Debug.LogError("One of your factions is invalid. Abort.");
+                        return;
+                    }
+
+                    // make sure the faction was not already copied in
+                    if(!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, faction.factionName+".json")))
+                    {
+                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, faction.factionName+".json"));
                         legacyFactionFilesToDelete.Add(resPath);
                     }   
                 }
@@ -229,7 +242,7 @@ public class WCGeneratorHandler : MonoBehaviour
         
         foreach(var item in items)
         {
-            Sector container = GetSurroundingSector(item.pos);
+            Sector container = GetSurroundingSector(item.pos, item.dimension);
             if(container == null)
             {
                 savingLevelScreen.SetActive(false);
@@ -246,16 +259,28 @@ public class WCGeneratorHandler : MonoBehaviour
                         pos = new Vector2Int(index.Item2, index.Item1),
                         type = (byte)item.placeablesIndex,
                         rotation = (byte)(((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4),
-                        directions = new Dictionary<Vector2Int, byte>()
+                        directions = new Dictionary<Vector2Int, byte>(),
+                        distances = new Dictionary<Vector2Int, ushort>()
                     });
                     break;
                 case ItemType.Other:
                 case ItemType.Decoration:
+                case ItemType.DecorationWithMetadata:
                 case ItemType.Flag:
                     Sector.LevelEntity ent = new Sector.LevelEntity();
                     if(cursor.characters.TrueForAll((WorldData.CharacterData x) => {return x.ID != item.ID;})) 
                     {
                         // Debug.Log(item.ID + " is not a character. " + ID);
+                        if(item.type == ItemType.DecorationWithMetadata) 
+                        {
+                            int parsedId;
+                            if(item.assetID == "shard_rock" && int.TryParse(item.ID, out parsedId))
+                            {
+                                Debug.LogError($"Shard in sector {container.sectorName} has a numeric ID. Abort.");
+                                yield break;
+                            }
+                            ent.blueprintJSON = item.shellcoreJSON;
+                        }
                         int test;
                         if(item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
                         {
@@ -434,7 +459,7 @@ public class WCGeneratorHandler : MonoBehaviour
             foreach(var faction in factionManager.factions)
             {
                 // avoid default factions
-                if(faction.ID <= 2) continue;
+                if(FactionManager.defaultFactions.Contains(faction) ) continue;
                 lines.Add($"{faction.factionName}:Factions/{faction.factionName}.json");
             }
             File.WriteAllLines(resourceTxtPath, lines);
@@ -588,7 +613,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 break;
         } 
 
-        return typeRep + " " + x + "-" + y;
+        return typeRep + " " + x + "-" + y + (sector.dimension > 0 ? $" - Dimension {sector.dimension}" : "");
     }
 
     public static string GetDefaultMusic(Sector.SectorType type)
@@ -607,10 +632,10 @@ public class WCGeneratorHandler : MonoBehaviour
         } 
     }
 
-    Sector GetSurroundingSector(Vector2 pos) {
+    Sector GetSurroundingSector(Vector2 pos, int dim) {
         foreach(var sector in sectors)
         {
-            if(sector.bounds.contains(pos)) return sector;
+            if(sector.bounds.contains(pos) && sector.dimension == dim) return sector;
         }
         return null;
     }
@@ -652,6 +677,7 @@ public class WCGeneratorHandler : MonoBehaviour
             try
             {
                 // resource pack loading
+                // TODO: actually write these resources into the world instead of just not meddling with them
                 if (!ResourceManager.Instance.LoadResources(path) && SectorManager.testResourcePath != null)
                 {
                     ResourceManager.Instance.LoadResources(SectorManager.testResourcePath);
@@ -678,7 +704,8 @@ public class WCGeneratorHandler : MonoBehaviour
 
                 cursor.placedItems = new List<Item>();
                 cursor.sectors = new List<WorldCreatorCursor.SectorWCWrapper>();
-                
+                cursor.DimensionCount = 1;
+
                 foreach (string file in files)
                 {
                     if(file.Contains(".meta")) continue;
@@ -726,6 +753,8 @@ public class WCGeneratorHandler : MonoBehaviour
                     Sector curSect = ScriptableObject.CreateInstance<Sector>();
                     JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
 
+                    cursor.DimensionCount = Mathf.Max(cursor.DimensionCount, curSect.dimension + 1);
+
                     // Try to load old land platform
                     if (data.platformjson != "" && curSect.platformData == null)
                     {
@@ -743,6 +772,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                     if (item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
                                     {
                                         Item copy = itemHandler.CopyItem(item);
+                                        copy.dimension = curSect.dimension;
                                         copy.pos = copy.obj.transform.position
                                             = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize,
                                                 -cursor.cursorOffset.y + curSect.bounds.y - i * cursor.tileSize);
@@ -771,6 +801,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                     if (item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
                                     {
                                         Item copy = itemHandler.CopyItem(item);
+                                        copy.dimension = curSect.dimension;
                                         copy.pos = copy.obj.transform.position
                                             = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + tiles[i].pos.x * cursor.tileSize,
                                                 -cursor.cursorOffset.y + curSect.bounds.y - tiles[i].pos.y * cursor.tileSize);
@@ -805,6 +836,7 @@ public class WCGeneratorHandler : MonoBehaviour
                             if(ent.assetID == item.assetID && ent.assetID != "")
                             {
                                 Item copy = itemHandler.CopyItem(item);
+                                copy.dimension = curSect.dimension;
                                 copy.faction = ent.faction;
                                 copy.ID = ent.ID;
                                 copy.name = ent.name;

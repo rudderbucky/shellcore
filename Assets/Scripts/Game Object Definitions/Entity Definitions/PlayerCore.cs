@@ -19,15 +19,18 @@ public class PlayerCore : ShellCore {
     public static PlayerCore Instance;
     public List<ShellPart> partsToDestroy = new List<ShellPart>();
     public Vector2 havenSpawnPoint;
+    private int dimension;
+    public int Dimension {get {return dimension;} set {dimension = value;}}
 
     // Uses this method to generally add credits for the player.
     public void AddCredits(int amount)
     {
         credits += amount;
+        credits = Mathf.Max(0, credits);
         var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
         if (BZM != null)
         {
-            BZM.CreditsCollected += 5;
+            BZM.CreditsCollected += amount;
         }
     }
 
@@ -291,7 +294,23 @@ public class PlayerCore : ShellCore {
 
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
+        var residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
         if(lastDamagedBy) HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
-        return base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
+        return residue;
+    }
+
+    public static Color GetPlayerFactionColor()
+    {
+        return PlayerCore.Instance ? FactionManager.GetFactionColor(PlayerCore.Instance.GetFaction()) : FactionManager.GetFactionColor(0);
+    }
+
+    public int GetBuildValue()
+    {
+        var value = 0;
+        foreach(var part in blueprint.parts)
+        {
+            value += EntityBlueprint.GetPartValue(part);
+        }
+        return value;
     }
 }
