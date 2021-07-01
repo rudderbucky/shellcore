@@ -24,7 +24,7 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             output.DisplayLayout();
-            seconds = Utilities.RTEditorGUI.FloatField("Time: ", seconds);
+            seconds = Utilities.RTEditorGUI.FloatField("Time (seconds): ", seconds);
         }
 
         public void Init(int index)
