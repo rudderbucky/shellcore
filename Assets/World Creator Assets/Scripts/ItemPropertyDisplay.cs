@@ -25,6 +25,11 @@ public class ItemPropertyDisplay : MonoBehaviour
         rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
 
         factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        if(!FactionManager.FactionExists(factionDropdown.value)) 
+        {
+            factionDropdown.value = 0;
+            PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", 0);
+        }
         jsonField.text = PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
         foreach(var nonDefault in nonDefaults)
         {
@@ -51,6 +56,11 @@ public class ItemPropertyDisplay : MonoBehaviour
         if(editingDefaults)
         {
             factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
+            if(!FactionManager.FactionExists(factionDropdown.value)) 
+            {
+                factionDropdown.value = 0;
+                PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", 0);
+            }
         }
         
     }
@@ -79,9 +89,9 @@ public class ItemPropertyDisplay : MonoBehaviour
         rectTransform.anchoredPosition = pos;
         factionDropdown.value = item.faction;
         jsonField.text = currentItem.shellcoreJSON;
-        jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other);
+        jsonField.transform.parent.gameObject.SetActive(item.type == ItemType.Other || item.type == ItemType.DecorationWithMetadata);
         rotationButtons.SetActive(item.type == ItemType.Platform);
-        factionDropdown.transform.parent.gameObject.SetActive(item.type != ItemType.Flag && item.type != ItemType.Platform);
+        factionDropdown.transform.parent.gameObject.SetActive(item.type != ItemType.Flag && item.type != ItemType.Platform && item.type != ItemType.DecorationWithMetadata);
         idField.text = currentItem.ID;
         nameField.text = currentItem.name;
         pathButton.SetActive(item.type == ItemType.Other);

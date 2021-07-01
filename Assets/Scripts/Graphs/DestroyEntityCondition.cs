@@ -9,7 +9,8 @@ namespace NodeEditorFramework.Standard
         public const string ID = "DestroyEntities";
         public override string GetName { get { return ID; } }
         public override string Title { get { return "Destroy Entities"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 180); } }
+        public override bool AutoLayout { get { return true; } }
+        public override Vector2 MinSize { get { return new Vector2(200, 180); } }
 
         private ConditionState state;
         public ConditionState State { get { return state; } set { state = value; } }
@@ -18,6 +19,7 @@ namespace NodeEditorFramework.Standard
         public string targetID;
         public int targetCount = 1;
         public int targetFaction = 1;
+        public bool passIfEntityDoesNotExist;
         public ConnectionKnob IDInput;
 
         int killCount;
@@ -73,6 +75,7 @@ namespace NodeEditorFramework.Standard
                         }
                     }
                 }
+                passIfEntityDoesNotExist = RTEditorGUI.Toggle(passIfEntityDoesNotExist, "Pass if entity does not exist");
             }
             targetCount = RTEditorGUI.IntField("Count: ", targetCount);
             targetFaction = RTEditorGUI.IntField("Faction: ", targetFaction);
@@ -93,6 +96,13 @@ namespace NodeEditorFramework.Standard
 
             killCount = 0;
             Entity.OnEntityDeath += updateState;
+
+            if(!nameMode && passIfEntityDoesNotExist && !AIData.entities.Exists(e => e.ID  == targetID))
+            {
+                state = ConditionState.Completed;
+                output.connection(0).body.Calculate();  
+                return;              
+            }
 
             state = ConditionState.Listening;
 

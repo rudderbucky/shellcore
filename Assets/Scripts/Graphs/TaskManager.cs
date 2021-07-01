@@ -226,6 +226,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         Entity.OnEntityDeath = null;
         UsePartCondition.OnPlayerReconstruct = new UnityEvent();
         WinBattleCondition.OnBattleWin = null;
+        WinBattleCondition.OnBattleLose = null;
 
         initialized = true;
     }

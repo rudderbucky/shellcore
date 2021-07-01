@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class FactionManager : MonoBehaviour
 {
     public Faction[] factions;
+    public static List<Faction> defaultFactions;
 
     static FactionManager instance;
 
@@ -43,9 +45,7 @@ public class FactionManager : MonoBehaviour
         factions = new Faction[maxID + 1];
         for (int i = 0; i < fs.Length; i++)
         {
-            if (factions[fs[i].ID] != null)
-                Debug.LogWarning("Faction ID conflict! [" + fs[i].ID + "]");
-            else
+            if (factions[fs[i].ID] == null)
                 factionCount++;
             factions[fs[i].ID] = fs[i];
         }

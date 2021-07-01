@@ -47,6 +47,7 @@ public class BattleAI : AIModule
     Draggable waitingDraggable;
 
     List<AITarget> AITargets = new List<AITarget>();
+    Dictionary<EnergyRock, Turret> harvesterTurrets = new Dictionary<EnergyRock, Turret>();
     public BattleState GetState()
     {
         return state;
@@ -68,6 +69,7 @@ public class BattleAI : AIModule
     public override void Init()
     {
         carriers = new List<Entity>();
+        harvesterTurrets = new Dictionary<EnergyRock, Turret>();
 
         Entity[] targetEntities = BattleZoneManager.getTargets();
         if(targetEntities == null)
@@ -88,6 +90,21 @@ public class BattleAI : AIModule
             shellcore = craft as ShellCore;
         else
             Debug.LogError("Battle zone AI should only be used by shellcores!");
+
+        foreach(Turret turret in shellcore.GetUnitsCommanding())
+        {
+            if(turret)
+            {
+                foreach(var rock in AIData.energyRocks)
+                {
+                    if(Vector3.SqrMagnitude(rock.transform.position - turret.transform.position) <= 200)
+                    {
+                        harvesterTurrets.Add(rock, turret);
+                        break;
+                    } 
+                }
+            }
+        }
 
         nextSearchTime = Time.time;
         nextStateCheckTime = Time.time;
@@ -114,6 +131,16 @@ public class BattleAI : AIModule
     public override void StateTick()
     {
         pState = state;
+        List<EnergyRock> deadRocks = new List<EnergyRock>();
+        foreach(var kvp in harvesterTurrets)
+        {
+            if(!kvp.Value || kvp.Value.GetIsDead()) deadRocks.Add(kvp.Key);
+        }
+
+        foreach(var key in deadRocks)
+        {
+            harvesterTurrets.Remove(key);
+        }
         if (nextStateCheckTime < Time.time) // Don't change state every tick
         {
             ai.aggression = AirCraftAI.AIAggression.FollowInRange; // usually, allow chasing after enemies
@@ -145,10 +172,17 @@ public class BattleAI : AIModule
                     break;
                 }
             }
+            var turretIsHarvester = shellcore.GetTractorTarget() &&
+                shellcore.GetTractorTarget().GetComponent<Turret>() 
+                    && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
             // if population is nearly capped, attack
             if (shellcore.GetTotalCommandLimit() < shellcore.GetUnitsCommanding().Count + 1) // TODO: OR if enemy base is weak
             {
                 state = BattleState.Attack;
+            }
+            else if(turretIsHarvester)
+            {
+                state = BattleState.Collect;
             }
             else if (shellcore.GetPower() >= 300)
             {
@@ -162,7 +196,9 @@ public class BattleAI : AIModule
                 {
                     collectTarget = null;
                 }
-                if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f)
+
+                if ((shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null 
+                    && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f) || harvesterTurrets.Count >= Mathf.Min(5, AIData.energyRocks.Count))
                 {
                     state = BattleState.Attack;
                 }
@@ -192,6 +228,11 @@ public class BattleAI : AIModule
                 shellcore.SetTractorTarget(waitingDraggable);
             }
         }
+
+        var turretIsHarvester = shellcore.GetTractorTarget() &&
+            shellcore.GetTractorTarget().GetComponent<Turret>() 
+                && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
+
         switch (state)
         {
             case BattleState.Attack:
@@ -298,7 +339,18 @@ public class BattleAI : AIModule
                 {
                     ai.movement.SetMoveTarget(collectTarget.transform.position);
                     if (ai.movement.targetIsInRange())
+                    {
+                        if(harvesterTurrets.ContainsKey(collectTarget) && 
+                            (!harvesterTurrets[collectTarget] || harvesterTurrets[collectTarget].GetIsDead()))
+                            harvesterTurrets.Remove(collectTarget);
+                        if(turretIsHarvester && !harvesterTurrets.ContainsKey(collectTarget))
+                        {
+                            harvesterTurrets.Add(collectTarget, shellcore.GetTractorTarget().GetComponent<Turret>());
+                            shellcore.SetTractorTarget(null);
+                        }
                         findNewTarget = true;
+                    }
+                        
                 }
                 break;
             case BattleState.Fortify:
@@ -376,6 +428,31 @@ public class BattleAI : AIModule
                 break;
         }
 
+        // always drop harvester turrets on close energy rocks
+        turretIsHarvester = shellcore.GetTractorTarget() &&
+            shellcore.GetTractorTarget().GetComponent<Turret>() 
+                && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
+        if(turretIsHarvester)
+        {
+            var turret = shellcore.GetTractorTarget().GetComponent<Turret>();
+            if(harvesterTurrets.ContainsValue(turret))
+            {
+                harvesterTurrets.Remove(harvesterTurrets.First(kvp => kvp.Value == turret).Key);
+            }
+            foreach(var rock in AIData.energyRocks)
+            {
+                if((rock.transform.position - shellcore.transform.position).sqrMagnitude > 150f) continue;
+                if(harvesterTurrets.ContainsKey(rock) && 
+                    (!harvesterTurrets[rock] || harvesterTurrets[rock].GetIsDead()))
+                        harvesterTurrets.Remove(rock);
+                if(!harvesterTurrets.ContainsKey(rock))
+                {
+                    harvesterTurrets.Add(rock, shellcore.GetTractorTarget().GetComponent<Turret>());
+                    shellcore.SetTractorTarget(null);
+                }
+            }
+        }
+                        
         int energyCount = 0;
         // always collect energy
         if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
@@ -415,7 +492,7 @@ public class BattleAI : AIModule
         {
             for (int i = 0; i < AIData.vendors.Count; i++)
             {
-                if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 380f && AIData.vendors[i].faction == craft.faction)
+                if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude < 100f && AIData.vendors[i].faction == craft.faction)
                 {
                     IVendor vendor = AIData.vendors[i] as IVendor;
 
@@ -454,7 +531,20 @@ public class BattleAI : AIModule
                     }
                     if (itemIndex == -1)
                     {
-                        for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+                        if(harvesterTurrets.Count < Mathf.Min(5, AIData.energyRocks.Count) 
+                            && shellcore.GetPower() >= 100)
+                        {
+                            itemIndex = vendor.GetVendingBlueprint().getItemIndex("Harvester Turret");
+                            foreach(var turret in harvesterTurrets.Values)
+                            {
+                                if(turret && Vector3.SqrMagnitude(turret.transform.position - shellcore.transform.position) <= 200)
+                                {
+                                    itemIndex = -1;
+                                }
+                            }
+                            
+                        }
+                        else for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
                         {
                             if (vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
                             {
@@ -473,7 +563,22 @@ public class BattleAI : AIModule
 
                     if (itemIndex != -1)
                     {
-                        VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
+                        var ent = VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
+                        if(itemIndex == vendor.GetVendingBlueprint().getItemIndex("Harvester Turret"))
+                        {
+                            EnergyRock closestRock = null;
+                            foreach(var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))
+                            {
+                                if(closestRock == null || Vector2.SqrMagnitude(rock.transform.position - shellcore.transform.position)
+                                < Vector2.SqrMagnitude(closestRock.transform.position - shellcore.transform.position))
+                                {
+                                    closestRock = rock;
+                                }
+                            }
+                            harvesterTurrets.Add(closestRock, ent as Turret);
+                            shellcore.SetTractorTarget(ent.GetComponent<Draggable>());
+                        }
+                            
                         break;
                     }
                 }

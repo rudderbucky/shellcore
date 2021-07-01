@@ -84,8 +84,8 @@ public class SaveHandler : MonoBehaviour {
 		} 
 		string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
 		save.position = player.spawnPoint;
-		save.currentHealths = player.currentHealth;
-		if(player.currentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
+		save.currentHealths = player.CurrentHealth;
+		if(player.CurrentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
 		save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
 		save.credits = player.GetCredits();
         save.abilityCaps = player.abilityCaps;

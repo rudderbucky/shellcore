@@ -24,12 +24,12 @@ public class PartyManager : MonoBehaviour
     public void OrderAttack()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].attackDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].attackDialogue}</color>",2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Attack);
             }
@@ -39,12 +39,12 @@ public class PartyManager : MonoBehaviour
     public void OrderDefendStation()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].defendDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].defendDialogue}</color>",2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Defend);
             }
@@ -54,12 +54,12 @@ public class PartyManager : MonoBehaviour
     public void OrderCollection()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].collectDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].collectDialogue}</color>",2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Collect);
             }
@@ -69,12 +69,12 @@ public class PartyManager : MonoBehaviour
     public void OrderBuildTurrets()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].buildDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].buildDialogue}</color>",2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Fortify);
             }
@@ -84,12 +84,12 @@ public class PartyManager : MonoBehaviour
     public void OrderFollow()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>");
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>",1);
         foreach(var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].followDialogue}</color>");
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].followDialogue}</color>",2);
                 core.GetAI().follow(PlayerCore.Instance.transform);
             }
         }
@@ -307,7 +307,7 @@ public class PartyManager : MonoBehaviour
             {
                 float barWidth = 160;
                 kvp.Value.GetComponentsInChildren<Image>()[i+1].GetComponent<RectTransform>().sizeDelta = 
-                        new Vector2(barWidth * kvp.Key.currentHealth[i] / kvp.Key.GetMaxHealth()[i], 5);
+                        new Vector2(barWidth * kvp.Key.CurrentHealth[i] / kvp.Key.GetMaxHealth()[i], 5);
             }
         }
     }

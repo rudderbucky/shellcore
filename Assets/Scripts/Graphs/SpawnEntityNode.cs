@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using NodeEditorFramework.Utilities;
 using UnityEngine;
-
-// TODO: Switch this node to work with IDs
 
 namespace NodeEditorFramework.Standard
 {
@@ -12,7 +11,7 @@ namespace NodeEditorFramework.Standard
         public override string GetName { get { return "SpawnEntityNode"; } }
         public override string Title { get { return "Spawn Entity"; } }
 
-        public override Vector2 DefaultSize { get { return new Vector2(400, 350); } }
+        public override Vector2 MinSize { get { return new Vector2(200, 350); } }
         public override bool AutoLayout { get { return true; } }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
@@ -28,12 +27,16 @@ namespace NodeEditorFramework.Standard
         public string blueprint;
         public string entityName;
         public int faction;
+        public int count = 1;
         public string flagName;
         public Vector2 coordinates;
         public bool useCoordinates;
         public bool issueID;
         public string entityID;
         public bool forceCharacterTeleport;
+
+        public List<string> additionalFlags = new List<string>();
+        public List<int> additionalCounts = new List<int>();
 
         public override void NodeGUI()
         {
@@ -72,26 +75,65 @@ namespace NodeEditorFramework.Standard
                 entityID = GUILayout.TextField(entityID);
             }
 
+            GUILayout.Label("Spawn count:");
+            count = Mathf.Max(1, Utilities.RTEditorGUI.IntField(count));
+
             forceCharacterTeleport = Utilities.RTEditorGUI.Toggle(forceCharacterTeleport, "Force Character Teleport");
+
+            GUILayout.Label("Additional spawn points:");
+            for (int i = 0; i < additionalFlags.Count; i++)
+            {
+                RTEditorGUI.Seperator();
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
+                {
+                    additionalFlags.RemoveAt(i);
+                    additionalCounts.RemoveAt(i);
+                    i--;
+                    if(i == -1) break;
+                    continue;
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Flag name:");
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                additionalFlags[i] = GUILayout.TextField(additionalFlags[i]);
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Spawn count:");
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                additionalCounts[i] = Mathf.Max(1, Utilities.RTEditorGUI.IntField(additionalCounts[i]));
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
+            {
+                additionalFlags.Add("");
+                additionalCounts.Add(1);
+            }
+            GUILayout.EndHorizontal();
         }
 
         public override int Traverse()
         {
-            Vector2 coords = coordinates;
-            if(!useCoordinates)
-            {
-                for (int i = 0; i < AIData.flags.Count; i++)
-                {
-                    if (AIData.flags[i].name == flagName)
-                    {
-                        coords = AIData.flags[i].transform.position;
-                        break;
-                    }
-                }
-            }
-
+            count = Mathf.Max(1, count);
             if(issueID)
             {
+                Vector2 coords = coordinates;
+                if(!useCoordinates)
+                {
+                    for (int i = 0; i < AIData.flags.Count; i++)
+                    {
+                        if (AIData.flags[i].name == flagName)
+                        {
+                            coords = AIData.flags[i].transform.position;
+                            break;
+                        }
+                    }
+                }
+
                 foreach(var data in SectorManager.instance.characters)
                 {
                     if(data.ID == entityID)
@@ -139,6 +181,48 @@ namespace NodeEditorFramework.Standard
                 blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
             }
 
+            for(int i = 0; i < count; i++)
+                SpawnAdditionalEntity(flagName);
+            if(additionalFlags != null)
+            {
+                for(int i = 0; i < additionalFlags.Count; i++)
+                {
+                    for(int j = 0; j < additionalCounts[i]; j++)
+                    {
+                        SpawnAdditionalEntity(additionalFlags[i]);
+                    }
+                }
+            }
+            return 0;
+        }
+
+        void SpawnAdditionalEntity(string flagName)
+        {
+            Vector2 coords = coordinates;
+            if(!useCoordinates)
+            {
+                for (int i = 0; i < AIData.flags.Count; i++)
+                {
+                    if (AIData.flags[i].name == flagName)
+                    {
+                        coords = AIData.flags[i].transform.position;
+                        if(DevConsoleScript.fullLog) Debug.Log(coords);
+                        break;
+                    }
+                }
+            }
+
+            EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+            try
+            {
+                JsonUtility.FromJsonOverwrite(this.blueprint, blueprint);
+            }
+            catch(System.Exception)
+            {
+                Debug.Log("Could not parse blueprint value as JSON. Now attempting to fetch blueprint through the Resource Manager.");
+                blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
+            }
+
             if (blueprint)
             {
                 Sector.LevelEntity entityData = new Sector.LevelEntity
@@ -149,13 +233,13 @@ namespace NodeEditorFramework.Standard
                     ID = issueID ? entityID : "",
                 };
                 var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
+                if(DevConsoleScript.fullLog) Debug.Log(entity.transform.position + " " + entity.spawnPoint);
                 entity.name = entityName;
             }
             else
             {
                 Debug.LogWarning("Blueprint not found!");
             }
-            return 0;
         }
     }
 }

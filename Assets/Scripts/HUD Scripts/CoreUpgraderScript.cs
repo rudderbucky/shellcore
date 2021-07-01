@@ -9,12 +9,13 @@ public class CoreUpgraderScript : GUIWindowScripts
     public PlayerCore player;
     public static CoreUpgraderScript instance;
     public static int[] maxAbilityCap {get {return new int[] {15, 8, 15, 15};}}
-    public static int[] minAbilityCap {get {return new int[] {10, 3, 3, 10};}}
+    public static int[] minAbilityCap {get {return new int[] {6, 3, 6, 6};}}
     public GameObject optionPrefab;
     public RectTransform reputationBar;
     public Text repText;
     public Transform optionHolder;
     public Text regenText;
+    private static int minLvShards = 0;
 
     public void initialize() {
         instance = this;
@@ -91,6 +92,7 @@ public class CoreUpgraderScript : GUIWindowScripts
     private void incrementAbilityCap(int type) {
         if(player.abilityCaps[type] < maxAbilityCap[type]) {
             player.shards -= GetUpgradeCost(type);
+            player.AddCredits(GetUpgradeCostCredits(type) * -1);
             player.abilityCaps[type]++;
             ShardCountScript.UpdateNumber(player.shards);
         }
@@ -98,7 +100,15 @@ public class CoreUpgraderScript : GUIWindowScripts
     }
 
     public static int GetUpgradeCost(int type) {
-        return 5 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type]));
+        if ((instance.player.abilityCaps[type] - minAbilityCap[type]) > minLvShards){
+            return 5 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type] - minLvShards));
+        }
+        else {
+            return 0;
+        }
+    }
+    public static int GetUpgradeCostCredits(int type){
+        return 1000 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type]));
     }
 
     public static int GetShards() {

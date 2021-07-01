@@ -105,11 +105,9 @@ public abstract class Craft : Entity
         // Deactivate abilities
         foreach (var ability in abilities)
         {
-            if (ability is ActiveAbility)
+            if (ability is ActiveAbility || ability is PassiveAbility)
             {
-                ActiveAbility aa = (ability as ActiveAbility);
-                if (aa.State == Ability.AbilityState.Active)
-                    aa.Deactivate();
+                ability.SetDestroyed(true);
             }
         }
         transform.rotation = Quaternion.identity; // reset rotation so part rotation can be reset
@@ -150,6 +148,12 @@ public abstract class Craft : Entity
     protected Transform instantiatedRespawnPrefab;
     protected override void FixedUpdate()
     {
+        entityBody.drag = draggable.dragging ? 25F : 0;
+        if(draggable.dragging)
+        {
+            return;
+        }
+
         if(physicsDirection == Vector2.zero)
         {
             var dir = entityBody.velocity.normalized;

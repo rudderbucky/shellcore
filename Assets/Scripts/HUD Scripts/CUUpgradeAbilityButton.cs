@@ -31,7 +31,7 @@ public class CUUpgradeAbilityButton : MonoBehaviour, IPointerEnterHandler, IPoin
     public void UpdateButtonCost(bool mouseOver) {
         if(CoreUpgraderScript.maxAbilityCap[type] > CoreUpgraderScript.instance.player.abilityCaps[type]) {
             if(mouseOver) {
-                text.text = CoreUpgraderScript.GetUpgradeCost(type) + " Shards";
+                text.text = CoreUpgraderScript.GetUpgradeCost(type) + " Shards " + CoreUpgraderScript.GetUpgradeCostCredits(type) + " Credits";
                 text.color = CoreUpgraderScript.GetUpgradeCost(type) - CoreUpgraderScript.GetShards() <= 0 ? Color.green : Color.red;  
             }
             else {
