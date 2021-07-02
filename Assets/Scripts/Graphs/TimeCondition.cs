@@ -29,13 +29,13 @@ namespace NodeEditorFramework.Standard
             output.DisplayLayout();
             seconds = Utilities.RTEditorGUI.IntField("Time (seconds): ", seconds);
             milliseconds = Utilities.RTEditorGUI.IntField("Time (milliseconds): ", milliseconds);
-            totalTime = seconds + (milliseconds / 1000f);
         }
 
         public void Init(int index)
         {
             Debug.Log("Initializing...");
             State = ConditionState.Listening;
+            totalTime = seconds + (milliseconds / 1000f);
             if (timer == null)
             {
                 timer = TaskManager.Instance.StartCoroutine(Timer(totalTime));
