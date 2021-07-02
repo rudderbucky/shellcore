@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-233.7,606.25" zoom="1.4" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-1492313856" type="StartDialogueNode" pos="-1200,-400">
+			<Port ID="-1467832192" name="input" dynamic="False" />
+			<Port ID="-946315008" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="650513995" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue Condition Check" ID="1044366080" type="DialogueConditionCheckNode" pos="-900,-400">
+			<Port ID="-344495232" name="input" dynamic="False" />
+			<Port ID="692944896" name="outputPass" dynamic="False" />
+			<Port ID="-1032211840" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="-1105748724" />
+			<Variable name="variableName" refID="371857150" />
+			<int name="variableType">0</int>
+			<int name="comparisonMode">0</int>
+			<int name="value">0</int>
+		</Node>
+		<Node name="Dialogue" ID="495084672" type="DialogueNode" pos="-500,-650">
+			<Port ID="5228288" name="input" dynamic="False" />
+			<Port ID="-1177418624" name="cancel" dynamic="False" />
+			<Port ID="526745472" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">217</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1564185600" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">273</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1219406146" />
+			<Variable name="answers" refID="1346007680" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-183712512" type="DialogueNode" pos="-500,-150">
+			<Port ID="2020798592" name="input" dynamic="False" />
+			<Port ID="-1381935360" name="cancel" dynamic="False" />
+			<Port ID="-1548134784" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">178</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1271123982" />
+			<Variable name="answers" refID="2101782272" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1173881856" type="DialogueNode" pos="-150,-800">
+			<Port ID="897461632" name="input" dynamic="False" />
+			<Port ID="1934901760" name="cancel" dynamic="False" />
+			<Port ID="-1693341568" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">243</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="2048264807" />
+			<Variable name="answers" refID="-912568064" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1852679040" type="DialogueNode" pos="-150,-400">
+			<Port ID="-1322625408" name="input" dynamic="False" />
+			<Port ID="-285185280" name="cancel" dynamic="False" />
+			<Port ID="-655901440" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">243</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="525894741" />
+			<Variable name="answers" refID="1123823488" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1763491072" type="DialogueNode" pos="200,-400">
+			<Port ID="752254848" name="input" dynamic="False" />
+			<Port ID="1789694976" name="cancel" dynamic="False" />
+			<Port ID="381538688" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">243</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1520246076" />
+			<Variable name="answers" refID="-1423002240" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="1675991296" type="EndDialogue" pos="550,-400">
+			<Port ID="-139978496" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-946315008" port2ID="-344495232" />
+		<Connection port1ID="692944896" port2ID="5228288" />
+		<Connection port1ID="-1032211840" port2ID="2020798592" />
+		<Connection port1ID="526745472" port2ID="897461632" />
+		<Connection port1ID="1564185600" port2ID="-1322625408" />
+		<Connection port1ID="-1548134784" port2ID="-139978496" />
+		<Connection port1ID="-1693341568" port2ID="-139978496" />
+		<Connection port1ID="-655901440" port2ID="752254848" />
+		<Connection port1ID="381538688" port2ID="-139978496" />
+	</Connections>
+	<Objects>
+		<Object refID="650513995" type="System.String">
+			<string>reinforcement-1</string>
+		</Object>
+		<Object refID="-1105748724" type="System.String">
+			<string>Trial By Combat-destroyed-daayo</string>
+		</Object>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="-1219406146" type="System.String">
+			<string>Newborn, words cannot express how much we are indebted to you. Answering any questions you may have is the very least I can do.</string>
+		</Object>
+		<Object refID="1346007680" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Why was I able to talk to that core?</string>
+				<string>What took you all so long?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1271123982" type="System.String">
+			<string>We should finish the fight first!</string>
+		</Object>
+		<Object refID="2101782272" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="2048264807" type="System.String">
+			<string>This is most fascinating. I have never heard of anyone being able to communicate with the Infected. I do not know why either, unfortunately. You should report this to Haven 2's Mission Control.</string>
+		</Object>
+		<Object refID="-912568064" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Alright.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="525894741" type="System.String">
+			<string>We were fighting off border skirmishes around Haven 3. They really did us in with this ambush tactic. Or perhaps, that Infected we destroyed is smarter than the rest of them and came up with this whole thing themselves.</string>
+		</Object>
+		<Object refID="1123823488" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Haven 3?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1520246076" type="System.String">
+			<string>Yes, you will get there soon. In the meantime, talk to Haven 2's Mission Control about your communication with the Infected. Your contribution here will not go unrewarded, newborn. I can assure you that.</string>
+		</Object>
+		<Object refID="-1423002240" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Great!</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

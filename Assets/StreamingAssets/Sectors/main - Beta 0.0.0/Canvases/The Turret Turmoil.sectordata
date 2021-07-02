@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-400.5999,93.60002" zoom="1.2" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="86892544" type="LoadSectorNode" pos="-283,-60">
+			<Port ID="-750752896" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1409355935" />
+		</Node>
+		<Node name="Conditions" ID="-1175569152" type="ConditionGroupNode" pos="-55,-50">
+			<Port ID="286687232" name="input" dynamic="False" />
+			<Port ID="1469334144" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1788193024" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Variable condition" ID="899311104" type="VariableConditionNode" pos="-100,100">
+			<Port ID="-535842176" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="739525727" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Delete Entity" ID="251062272" type="Delete" pos="150,-80">
+			<Port ID="-79229184" name="output" dynamic="False" />
+			<Port ID="958210944" name="IDOut" dynamic="False" />
+			<Port ID="1995651072" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-1090167970" />
+		</Node>
+		<Node name="Delete Entity" ID="-1503663744" type="Delete" pos="380,-80">
+			<Port ID="-965220864" name="output" dynamic="False" />
+			<Port ID="72219264" name="IDOut" dynamic="False" />
+			<Port ID="1109659392" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1638715385" />
+		</Node>
+		<Node name="Delete Entity" ID="1036577536" type="Delete" pos="630,-80">
+			<Port ID="585240320" name="output" dynamic="False" />
+			<Port ID="1622680448" name="IDOut" dynamic="False" />
+			<Port ID="-1634846720" name="input" dynamic="False" />
+			<Variable name="entityID" refID="72631444" />
+		</Node>
+		<Node name="Delete Entity" ID="-718148480" type="Delete" pos="880,-80">
+			<Port ID="-161786240" name="output" dynamic="False" />
+			<Port ID="875653888" name="IDOut" dynamic="False" />
+			<Port ID="1913094016" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-1493452497" />
+		</Node>
+		<Node name="Delete Entity" ID="1822092800" type="Delete" pos="1130,-80">
+			<Port ID="2147099520" name="output" dynamic="False" />
+			<Port ID="-1110427648" name="IDOut" dynamic="False" />
+			<Port ID="-72987520" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1235430858" />
+		</Node>
+		<Node name="Delete Entity" ID="67366784" type="Delete" pos="374,300.8">
+			<Port ID="819245824" name="output" dynamic="False" />
+			<Port ID="-1400841216" name="IDOut" dynamic="False" />
+			<Port ID="-363401088" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-330653083" />
+		</Node>
+		<Node name="Delete Entity" ID="-1687359232" type="Delete" pos="626,304.8">
+			<Port ID="211184384" name="output" dynamic="False" />
+			<Port ID="-2008902656" name="IDOut" dynamic="False" />
+			<Port ID="-971462528" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-1896737024" />
+		</Node>
+		<Node name="Delete Entity" ID="852882048" type="Delete" pos="875.6,303.2">
+			<Port ID="217426048" name="output" dynamic="False" />
+			<Port ID="1254866176" name="IDOut" dynamic="False" />
+			<Port ID="-2002660992" name="input" dynamic="False" />
+			<Variable name="entityID" refID="832146331" />
+		</Node>
+		<Node name="Delete Entity" ID="-901843968" type="Delete" pos="1128.4,303.2">
+			<Port ID="-2070467072" name="output" dynamic="False" />
+			<Port ID="-1033026944" name="IDOut" dynamic="False" />
+			<Port ID="4413184" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-733937610" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-750752896" port2ID="286687232" />
+		<Connection port1ID="1469334144" port2ID="-535842176" />
+		<Connection port1ID="-1788193024" port2ID="1995651072" />
+		<Connection port1ID="-79229184" port2ID="1109659392" />
+		<Connection port1ID="-965220864" port2ID="-1634846720" />
+		<Connection port1ID="585240320" port2ID="1913094016" />
+		<Connection port1ID="-161786240" port2ID="-72987520" />
+		<Connection port1ID="2147099520" port2ID="-363401088" />
+		<Connection port1ID="819245824" port2ID="-971462528" />
+		<Connection port1ID="211184384" port2ID="-2002660992" />
+		<Connection port1ID="217426048" port2ID="4413184" />
+	</Connections>
+	<Objects>
+		<Object refID="1409355935" type="System.String">
+			<string>Sector 1040-920</string>
+		</Object>
+		<Object refID="739525727" type="System.String">
+			<string>Sector_1040-920_turretdead</string>
+		</Object>
+		<Object refID="-1090167970" type="System.String">
+			<string>1040-920dturret1</string>
+		</Object>
+		<Object refID="1638715385" type="System.String">
+			<string>1040-920dturret2</string>
+		</Object>
+		<Object refID="72631444" type="System.String">
+			<string>1040-920dturret3</string>
+		</Object>
+		<Object refID="-1493452497" type="System.String">
+			<string>1040-920dturret4</string>
+		</Object>
+		<Object refID="1235430858" type="System.String">
+			<string>1040-920dturret5</string>
+		</Object>
+		<Object refID="-330653083" type="System.String">
+			<string>1040-920dturret6</string>
+		</Object>
+		<Object refID="-1896737024" type="System.String">
+			<string>1040-920dturret7</string>
+		</Object>
+		<Object refID="832146331" type="System.String">
+			<string>1040-920dturret8</string>
+		</Object>
+		<Object refID="-733937610" type="System.String">
+			<string>1040-920dturret9</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
