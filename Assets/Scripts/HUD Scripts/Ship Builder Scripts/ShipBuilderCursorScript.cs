@@ -73,7 +73,18 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
 	public void GrabPart(ShipBuilderPart part, ShipBuilderPart symmetryPart=null) {
 		lastPart = null;
 		symmetryLastPart = null;
-		if(parts.Contains(part)) {
+		if(symmetryPart)
+		{
+			if(parts.Contains(symmetryPart)) 
+			{
+				parts.Remove(symmetryPart);
+				parts.Add(symmetryPart);
+				symmetryPart.rectTransform.SetAsLastSibling();
+			}
+		}
+		
+		if(parts.Contains(part)) 
+		{
 			parts.Remove(part);
 			parts.Add(part);
 			part.rectTransform.SetAsLastSibling();

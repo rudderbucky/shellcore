@@ -161,9 +161,9 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         ClearVendor();
     }
 
-    public static void BuyItem(ShellCore core, int index, IVendor vendor)
+    public static Entity BuyItem(ShellCore core, int index, IVendor vendor)
     {
-        if (core.unitsCommanding.Count >= core.GetTotalCommandLimit()) return;
+        if (core.unitsCommanding.Count >= core.GetTotalCommandLimit()) return null;
         GameObject creation = new GameObject();
         creation.transform.position = vendor.GetPosition();
         var blueprint = vendor.GetVendingBlueprint();
@@ -188,6 +188,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         creation.name = blueprint.items[index].entityBlueprint.name;
         core.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
         core.AddPower(-blueprint.items[index].cost);
+        return creation.GetComponent<Entity>();
     }
 
     public void onButtonPressed(int index)

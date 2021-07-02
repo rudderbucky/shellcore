@@ -18,22 +18,27 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
 
+
         public int seconds = 0;
+        public int milliseconds = 0;
+        public float totalTime = 0;
         Coroutine timer = null;
 
         public override void NodeGUI()
         {
             output.DisplayLayout();
             seconds = Utilities.RTEditorGUI.IntField("Time (seconds): ", seconds);
+            milliseconds = Utilities.RTEditorGUI.IntField("Additional Time (milliseconds): ", milliseconds);
         }
 
         public void Init(int index)
         {
             Debug.Log("Initializing...");
             State = ConditionState.Listening;
+            totalTime = seconds + (milliseconds / 1000f);
             if (timer == null)
             {
-                timer = TaskManager.Instance.StartCoroutine(Timer(seconds));
+                timer = TaskManager.Instance.StartCoroutine(Timer(totalTime));
                 Debug.Log("Timer started!");
             }
         }

@@ -334,6 +334,7 @@ public class ShellPart : MonoBehaviour {
     /// </summary>
     /// <param name="damage">damage to deal</param>
     public void TakeDamage(float damage) {
+        if(!craft) return;
         if(!detachible) craft.TakeCoreDamage(damage); // undetachible = core part
         currentHealth -= damage;
         if (currentHealth <= 0 && detachible)

@@ -26,10 +26,11 @@ public class PlayerCore : ShellCore {
     public void AddCredits(int amount)
     {
         credits += amount;
+        credits = Mathf.Max(0, credits);
         var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
         if (BZM != null)
         {
-            BZM.CreditsCollected += 5;
+            BZM.CreditsCollected += amount;
         }
     }
 
