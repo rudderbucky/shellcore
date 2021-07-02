@@ -40,6 +40,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable {
     public float[] CurrentHealth {get {return currentHealth;} set 
     {
         currentHealth = value;
+        for(int i = 0; i < currentHealth.Length; i++)
+        {
+            currentHealth[i] = Mathf.Max(0, currentHealth[i]);
+        }
     }}
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = olive...)
     public EntityBlueprint blueprint; // blueprint of entity containing parts
