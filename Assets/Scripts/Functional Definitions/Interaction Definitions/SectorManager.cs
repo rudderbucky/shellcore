@@ -1021,12 +1021,12 @@ public class SectorManager : MonoBehaviour
             if(rock)
                 Destroy(rock.gameObject);
         }
-        foreach(var shard in ShardRock.shards)
+        foreach(var shard in AIData.rockFragments)
         {
-            if(shard && !shard.GetComponent<Draggable>().dragging)
+            if(shard && !shard.dragging)
                 Destroy(shard.gameObject);
         }
-        ShardRock.shards.Clear();
+        AIData.rockFragments.Clear();
         shardRocks.Clear();
 
         // clear minimap core arrows
