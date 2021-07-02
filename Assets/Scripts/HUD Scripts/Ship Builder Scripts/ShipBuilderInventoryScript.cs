@@ -38,7 +38,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
                 else if(mode == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Buy);
                 return;
             }
-            ShipBuilderPart symmetryPart = count > 1 && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
+            ShipBuilderPart symmetryPart = count > 0 && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
             if(symmetryPart) 
             {
                 //if(cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)

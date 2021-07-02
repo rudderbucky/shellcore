@@ -18,6 +18,7 @@ namespace NodeEditorFramework.Standard
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
 
+
         public int seconds = 0;
         public int milliseconds = 0;
         public float totalTime = 0;
