@@ -28,7 +28,7 @@ namespace NodeEditorFramework.Standard
         {
             output.DisplayLayout();
             seconds = Utilities.RTEditorGUI.IntField("Time (seconds): ", seconds);
-            milliseconds = Utilities.RTEditorGUI.IntField("Time (milliseconds): ", milliseconds);
+            milliseconds = Utilities.RTEditorGUI.IntField("Additional Time (milliseconds): ", milliseconds);
         }
 
         public void Init(int index)
