@@ -121,6 +121,8 @@ public class WorldCreatorCursor : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private Text dimensionText;
     void Update() {
 		current.pos = CalcPos(current.type);
         if(current.obj) {
@@ -140,8 +142,11 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.G) && !system.IsPointerOverGameObject())
         {
-            if(Input.GetKey(KeyCode.LeftShift)) DimensionCount++;
-            currentDim = ++currentDim % DimensionCount;
+            if(Input.GetKey(KeyCode.LeftShift)) 
+            {
+                AddDimension();
+            }
+            else IncrementDimension();
         }
 
         if(Input.GetKeyDown(KeyCode.M) && !system.IsPointerOverGameObject())
@@ -153,6 +158,8 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             search.ToggleActive();
         }
+
+        dimensionText.text = $"Dimension: {currentDim+1}/{DimensionCount}";
 
         switch (mode)
         {
@@ -191,7 +198,20 @@ public class WorldCreatorCursor : MonoBehaviour
 
         modeText.color = Camera.main.backgroundColor = modeColors[(int)mode];
         modeText.color += Color.gray;
+        dimensionText.color = modeText.color;
         modeText.text = modeText.text.ToUpper();
+    }
+
+    public void IncrementDimension()
+    {
+        currentDim = ++currentDim % DimensionCount;
+    }
+
+    // Also moves the current dimension to this newly created dimension for convenience
+    public void AddDimension()
+    {
+        DimensionCount++;
+        currentDim = DimensionCount - 1;
     }
 
     void UpdateEntityAppearances()
