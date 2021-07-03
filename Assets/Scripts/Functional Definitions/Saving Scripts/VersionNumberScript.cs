@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class VersionNumberScript : MonoBehaviour
 {
     public static string version = "Beta 0.0.0";
-    public static string mapVersion = "Alpha 5.4.1";
+    public static string mapVersion = "Beta 0.0.0";
     static VersionNumberScript instance;
     public Text episodeText;
 
