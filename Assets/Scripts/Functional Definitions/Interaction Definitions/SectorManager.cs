@@ -484,7 +484,6 @@ public class SectorManager : MonoBehaviour
                                 MinimapArrowScript.instance.AddCoreArrow(shellcore);
                             }   
                                 
-
                             // set the carrier of the shellcore to the associated faction's carrier
                             if(carriers.ContainsKey(data.faction))
                                 shellcore.SetCarrier(carriers[data.faction]);
@@ -936,10 +935,6 @@ public class SectorManager : MonoBehaviour
             }
         }
 
-        // Load sector graph
-        if (SectorGraphLoad != null)
-            SectorGraphLoad.Invoke(current.sectorName);
-
         //Load land platforms
         LoadSectorLandPlatforms();
 
@@ -983,9 +978,12 @@ public class SectorManager : MonoBehaviour
 
         if(current.backgroundSpawns != null)
             // background spawns
-            foreach(var bgSpawn in current.backgroundSpawns)
+            for(int i = 0; i < current.backgroundSpawns.Length; i++)
             {
-                bgSpawns.Add((GetBlueprintOfLevelEntity(bgSpawn.entity), bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
+                var bgSpawn = current.backgroundSpawns[i];
+                var print = GetBlueprintOfLevelEntity(bgSpawn.entity);
+                if(print.entityName != "Unnamed") bgSpawn.entity.name = print.entityName;
+                bgSpawns.Add((print, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
             }
 
 
@@ -1009,6 +1007,11 @@ public class SectorManager : MonoBehaviour
         if(info) info.showMessage("Entering sector '" + current.sectorName + "'");
         if (OnSectorLoad != null)
             OnSectorLoad.Invoke(current.sectorName);
+
+        // Load sector graph
+        if (SectorGraphLoad != null)
+            SectorGraphLoad.Invoke(current.sectorName);
+
     }
 
     static float objectDespawnDistance = 1000f;

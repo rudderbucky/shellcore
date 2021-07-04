@@ -91,13 +91,15 @@ public class BattleAI : AIModule
         else
             Debug.LogError("Battle zone AI should only be used by shellcores!");
 
-        foreach(Turret turret in shellcore.GetUnitsCommanding())
+        foreach(IOwnable ownable in shellcore.GetUnitsCommanding())
         {
-            if(turret)
+            var turret = ownable as Turret;
+            if(turret && turret.entityName == "Harvester Turret")
             {
                 foreach(var rock in AIData.energyRocks)
                 {
-                    if(Vector3.SqrMagnitude(rock.transform.position - turret.transform.position) <= 200)
+                    if(!harvesterTurrets.ContainsKey(rock) &&
+                        Vector3.SqrMagnitude(rock.transform.position - turret.transform.position) <= 200)
                     {
                         harvesterTurrets.Add(rock, turret);
                         break;
