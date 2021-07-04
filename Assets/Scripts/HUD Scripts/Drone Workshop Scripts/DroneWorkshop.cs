@@ -191,6 +191,28 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
     }
 
 	public void CloseUI(bool val) {
+		// try adding parts in the player's inventory and on their ship into the part index obtained list.
+		if(val && builderPartDict != null) 
+		{
+			var spawnParts = player.cursave.partInventory.FindAll(p => p.abilityID == 10);
+			player.cursave.partInventory = spawnParts;
+			foreach(EntityBlueprint.PartInfo info in builderPartDict.Keys) {
+				if(builderPartDict[info].GetCount() > 0) {
+					for(int i = 0; i < builderPartDict[info].GetCount(); i++)
+					{
+						player.cursave.partInventory.Add(info);
+						PartIndexScript.AttemptAddToPartsObtained(info);
+					}
+				}
+			}
+		}
+		if(builderPartDict != null) {
+			foreach(ShipBuilderInventoryScript inv in builderPartDict.Values) {
+				Destroy(inv.gameObject);
+			}
+			builderPartDict = null;
+		}
+
 		foreach(ShipBuilderPart part in cursorScript.parts) {
 			Destroy(part.gameObject);
 		}
@@ -201,12 +223,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 			}
 			partDict = null;
 		}
-		if(builderPartDict != null) {
-			foreach(ShipBuilderInventoryScript inv in builderPartDict.Values) {
-				Destroy(inv.gameObject);
-			}
-			builderPartDict = null;
-		}
+		
 		player.SetIsInteracting(false);
 		base.CloseUI();
 		player.Rebuild();
@@ -435,6 +452,21 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 			ShipBuilder.SaveBlueprint(blueprint);
 		#endif
 	}
+
+	public string GetCurrentJSON() {
+		var data = ScriptableObject.CreateInstance<DroneSpawnData>();
+		JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(ParseDronePart(currentPart)), data);
+
+		var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+        JsonUtility.FromJsonOverwrite(DroneWorkshop.ParseDronePart(currentPart).drone, blueprint);
+		blueprint.parts = new List<EntityBlueprint.PartInfo>();
+		foreach(ShipBuilderPart part in cursorScript.parts) {
+			blueprint.parts.Add(part.info);
+		}
+		data.drone = JsonUtility.ToJson(blueprint);
+		return JsonUtility.ToJson(data);
+	}
+
 	public void Deinitialize() {
 		if(cursorScript.parts.Count > DroneUtilities.GetPartLimit(currentData.type)) return;
 		bool invalidState = false;
@@ -446,7 +478,6 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
 		}
 		if(!invalidState) {
 			Export();
-			CloseUI(true);
 		}
 	}
 

@@ -99,7 +99,7 @@ public static class DroneUtilities
             case DroneType.Light:
                 return "60% LIGHTER THAN USUAL.\n";
             case DroneType.Gun:
-                return "WEAPONS COOLDOWN 66% FASTER.\n";
+                return "60% COOLDOWN TIMES.\n";
             case DroneType.Counter:
                 return "75% MORE WEAPON DAMAGE AGAINST DRONES.";
             case DroneType.Torpedo:

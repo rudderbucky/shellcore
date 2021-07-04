@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class ShipBuilderJSONButton : MonoBehaviour, IPointerClickHandler {
 
 	public InputField field;
-	public ShipBuilder builder;
+	public GUIWindowScripts builder;
 	public GUIWindowScripts window;
 
     public void OnPointerClick(PointerEventData eventData)
@@ -14,7 +14,7 @@ public class ShipBuilderJSONButton : MonoBehaviour, IPointerClickHandler {
 		if(window)
 		{
 			window.ToggleActive();
-			field.text = builder.GetCurrentJSON();
+			field.text = (builder as IBuilderInterface).GetCurrentJSON();
 		}
     }
 }
