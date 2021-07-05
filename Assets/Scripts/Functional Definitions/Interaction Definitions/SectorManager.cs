@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
+    private float abortTimer = 4;
     private static float deadzoneDamageMult = 0.1f;
     private static float deadzoneDamageBase = 0.2f;
     private static float deadzoneDamage = deadzoneDamageBase;
@@ -136,11 +137,20 @@ public class SectorManager : MonoBehaviour
         if(jsonMode) player.SetIsInteracting(true);
         var inCurrentSector = player && current != null && 
             (current.bounds.contains(player.transform.position) || player.GetIsOscillating()) && current.dimension == player.Dimension;
-        if(!jsonMode && player && (current == null || !inCurrentSector))
+        if(!jsonMode && player && (current == null || current.dimension != player.Dimension || (!inCurrentSector && GetCurrentType() != Sector.SectorType.BattleZone && GetCurrentType() != Sector.SectorType.SiegeZone) || !(current.bounds.contains(player.transform.position)) && abortTimer <= 1))
         {
             AttemptSectorLoad();
+            abortTimer = 6;
         }
-
+        else if (!jsonMode && player && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone)){
+            abortTimer -= Time.deltaTime;
+            if (abortTimer <= 4){
+                player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
+            }
+        }
+        else {
+            abortTimer = 6;
+        }
         // change minimap renderers to match current dimension.
         if(minimapSectorBorders != null)
             foreach(var kvp in minimapSectorBorders)
