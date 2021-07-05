@@ -488,7 +488,7 @@ public class WorldCreatorCursor : MonoBehaviour
         var newItems = new List<Item>();
         foreach (var item in placedItems)
         {
-            if (sector.bounds.contains(item.pos))
+            if (sector.dimension == item.dimension && sector.bounds.contains(item.pos))
             {
                 var newPos = item.pos;
                 if (xAxis)

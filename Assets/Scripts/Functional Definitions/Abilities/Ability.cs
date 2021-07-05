@@ -7,7 +7,8 @@ using UnityEngine;
 /// A trait that can be activated for a special effect; parts sometimes come with these
 /// All weapons have abilities that deal their effect
 /// </summary>
-public abstract class Ability : MonoBehaviour {
+public abstract class Ability : MonoBehaviour
+{
 
     Entity core;  // craft that uses this ability
     public Entity Core
@@ -45,19 +46,21 @@ public abstract class Ability : MonoBehaviour {
     protected int abilityTier;
     protected string description = "Does things";
     protected ShellPart part;
-    
+
     public ShellPart Part { set { part = value; } }
     public string abilityName = "Ability";
     public SpriteRenderer glow;
 
     public bool isEnabled { get; set; } = true;
 
-    public virtual void SetTier(int abilityTier) {
-        if(abilityTier > 3 || abilityTier < 0) Debug.LogError("An ability tier was set out of bounds!" + "number: " + abilityTier);
+    public virtual void SetTier(int abilityTier)
+    {
+        if (abilityTier > 3 || abilityTier < 0) Debug.LogWarning("An ability tier was set out of bounds!" + "number: " + abilityTier);
         this.abilityTier = abilityTier;
     }
 
-    public int GetTier() {
+    public int GetTier()
+    {
         return abilityTier;
     }
 
@@ -135,7 +138,8 @@ public abstract class Ability : MonoBehaviour {
     /// Get the image ID of the ability
     /// </summary>
     /// <returns>Image ID of the ability</returns>
-    public virtual int GetID() {
+    public virtual int GetID()
+    {
         return (int)ID; // ID
     }
 
@@ -143,7 +147,8 @@ public abstract class Ability : MonoBehaviour {
     /// Get the energy cost of the ability
     /// </summary>
     /// <returns>The energy cost of the ability</returns>
-    public float GetEnergyCost() {
+    public float GetEnergyCost()
+    {
         return energyCost; // energy cost
     }
 
@@ -160,7 +165,8 @@ public abstract class Ability : MonoBehaviour {
     /// Get the active time remaining on the ability; here defined as 0
     /// </summary>
     /// <returns>The active time remaining on the ability</returns>
-    public virtual float GetActiveTimeRemaining() {
+    public virtual float GetActiveTimeRemaining()
+    {
         return 0; // active time (unless overriden this is 0)
     }
 
@@ -173,7 +179,8 @@ public abstract class Ability : MonoBehaviour {
     /// Get the cooldown remaining on the ability
     /// </summary>
     /// <returns>The cooldown duration remaining on the ability</returns>
-    public float TimeUntilReady() {
+    public float TimeUntilReady()
+    {
         if (State == AbilityState.Cooldown || State == AbilityState.Charging || State == AbilityState.Active) // active or on cooldown
         {
             return Mathf.Max(cooldownDuration - (Time.time - startTime), 0); // return the cooldown remaining, calculated prior to this call via TickDown
@@ -226,8 +233,9 @@ public abstract class Ability : MonoBehaviour {
     /// Ability called to change the ability's state over time for players
     /// </summary>
     /// <param name="action">The associated button to press to activate</param>
-    virtual public void Tick() {
-        if(State == AbilityState.Destroyed)
+    virtual public void Tick()
+    {
+        if (State == AbilityState.Destroyed)
         {
             return; // Part has been destroyed, ability can't be used
         }
@@ -288,8 +296,8 @@ public abstract class Ability : MonoBehaviour {
 
             glow.color = newColor;
         }
-        else if(glow)
-                Destroy(glow.gameObject);
+        else if (glow)
+            Destroy(glow.gameObject);
     }
 
     protected SpriteRenderer GetBlinker()
@@ -313,11 +321,12 @@ public abstract class Ability : MonoBehaviour {
     /// </summary>
     virtual protected void Execute()
     {
-        
+
     }
 
     // wrapper for whether the ability has a "range" to display in the HUD when the player mouses over the button
-    virtual public float GetRange() {
+    virtual public float GetRange()
+    {
         return -1; // get range
     }
 

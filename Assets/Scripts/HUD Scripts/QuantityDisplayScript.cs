@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QuantityDisplayScript : MonoBehaviour {
+public class QuantityDisplayScript : MonoBehaviour
+{
 
     private PlayerCore player;
     private bool initialized;
@@ -11,22 +12,24 @@ public class QuantityDisplayScript : MonoBehaviour {
     public GameObject secondaryTargetInfoPrefab;
     int lastCredits;
     public CreditIncrementMarker marker;
-    
+
     private TooltipManager tooltipManager;
-	// Use this for initialization
+    // Use this for initialization
 
     public void Initialize(PlayerCore player)
     {
         this.player = player;
         initialized = true;
         tooltipManager = gameObject.GetComponent<TooltipManager>();
-        if(!tooltipManager) tooltipManager = gameObject.AddComponent<TooltipManager>();
+        if (!tooltipManager) tooltipManager = gameObject.AddComponent<TooltipManager>();
     }
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update()
+    {
         if (initialized)
         {
-            if(lastCredits != player.GetCredits()) {
+            if (lastCredits != player.GetCredits())
+            {
                 int diff = player.GetCredits() - lastCredits;
                 marker.DisplayText(diff);
             }
@@ -41,12 +44,12 @@ public class QuantityDisplayScript : MonoBehaviour {
 
             UpdatePrimaryTargetInfo();
 
-            foreach(var infos in secondaryInfosByEntity)
+            foreach (var infos in secondaryInfosByEntity)
             {
                 UpdateInfo(infos.Key ? infos.Key.gameObject : null, infos.Value);
             }
         }
-	}
+    }
 
     private Dictionary<Entity, GameObject> secondaryInfosByEntity = new Dictionary<Entity, GameObject>();
     public Transform content;
@@ -54,16 +57,16 @@ public class QuantityDisplayScript : MonoBehaviour {
     {
         var secondary = Instantiate(secondaryTargetInfoPrefab, content);
         secondary.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction
-        (() => 
+        (() =>
         {
-            if(Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift))
             {
                 reticle.RemoveSecondaryTarget(entity);
             }
             else
             {
                 var targSys = PlayerCore.Instance.GetTargetingSystem();
-                if(targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
+                if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
                 {
                     reticle.AddSecondaryTarget(targSys.GetTarget().GetComponent<Entity>());
                 }
@@ -73,22 +76,22 @@ public class QuantityDisplayScript : MonoBehaviour {
             }
 
         }));
-        
-        if(!secondaryInfosByEntity.ContainsKey(entity))
+
+        if (!secondaryInfosByEntity.ContainsKey(entity))
             secondaryInfosByEntity.Add(entity, secondary);
         else
         {
-            if(secondaryInfosByEntity[entity]) Destroy(secondaryInfosByEntity[entity].gameObject);
+            if (secondaryInfosByEntity[entity]) Destroy(secondaryInfosByEntity[entity].gameObject);
             secondaryInfosByEntity[entity] = secondary;
         }
     }
 
     public static string GetCreditString(int credits)
     {
-        if(credits < 100000) return $"{credits}";
-        else if(credits < 1000000)
+        if (credits < 100000) return $"{credits}";
+        else if (credits < 1000000)
             return $"{credits / 1000}K";
-        else if(credits < 1000000000)
+        else if (credits < 1000000000)
             return $"{credits / 1000000}M";
         else
             return "LOTS!";
@@ -96,7 +99,7 @@ public class QuantityDisplayScript : MonoBehaviour {
 
     public void RemoveEntityInfo(Entity entity)
     {
-        if(secondaryInfosByEntity.ContainsKey(entity))
+        if (secondaryInfosByEntity.ContainsKey(entity))
         {
             Destroy(secondaryInfosByEntity[entity]);
             secondaryInfosByEntity.Remove(entity);
@@ -115,9 +118,9 @@ public class QuantityDisplayScript : MonoBehaviour {
         var targetName = targetInfo.transform.Find("Target Name").GetComponent<Text>();
         var targetDesc = targetInfo.transform.Find("Name").GetComponent<Text>();
         Text targetNumber = null;
-        if(targetInfo.transform.Find("Number")) targetNumber = targetInfo.transform.Find("Number").GetComponent<Text>();
+        if (targetInfo.transform.Find("Number")) targetNumber = targetInfo.transform.Find("Number").GetComponent<Text>();
 
-        if(obj == null)
+        if (obj == null)
         {
             targetName.text = targetDesc.text = "";
             targetInfo.SetActive(false);
@@ -125,28 +128,30 @@ public class QuantityDisplayScript : MonoBehaviour {
         }
 
         var entity = obj.GetComponent<Entity>();
-        if(entity) {
+        if (entity)
+        {
             targetInfo.SetActive(true);
             description = (entity.Terrain + " ");
             description += (entity.category + "");
             targetName.text = entity.entityName;
             targetDesc.text = description;
             targetName.color = targetDesc.color = FactionManager.GetFactionColor(entity.faction);
-            if(targetNumber) 
+            if (targetNumber)
             {
                 targetNumber.color = targetName.color;
                 targetNumber.text = ReticleScript.instance.GetTargetIndex(entity) + 1 + "";
                 // targetShape.rectTransform.sizeDelta = targetShape.rectTransform.sizeDelta / 1.25F;
             }
-        } 
-        else if(obj.GetComponent<ShellPart>()) 
+        }
+        else if (obj.GetComponent<ShellPart>())
         {
             var info = obj.GetComponent<ShellPart>().info;
             targetInfo.SetActive(true);
-            if(PartIndexScript.CheckPartObtained(info))
+            if (PartIndexScript.CheckPartObtained(info))
             {
                 targetName.text = info.partID;
                 targetDesc.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, null) + " " + info.tier;
+                targetName.color = targetDesc.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
             }
             else
             {
@@ -154,7 +159,8 @@ public class QuantityDisplayScript : MonoBehaviour {
                 targetDesc.text = "Bring to Yard";
                 targetName.color = targetDesc.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
             }
-        } else
+        }
+        else
         {
             targetName.text = targetDesc.text = "";
             targetInfo.SetActive(false);
