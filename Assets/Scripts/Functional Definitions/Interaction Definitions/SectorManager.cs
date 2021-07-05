@@ -132,37 +132,21 @@ public class SectorManager : MonoBehaviour
 
     private float dangerZoneTimer;
     public GameObject damagePrefab;
-    private IEnumerator AbortMission(){
-        yield return new WaitForEndOfFrame();
-        abortTimer -= Time.deltaTime;
-        var inCurrentSector = player && current != null && 
-            (current.bounds.contains(player.transform.position)) && current.dimension == player.Dimension;
-        player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
-        if (!jsonMode && player && !inCurrentSector && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone) && abortTimer >= 1){
-            StartCoroutine("AbortMission");
-        }
-        else if (abortTimer <= 1){
-            AttemptSectorLoad();
-            abortTimer = 4;
-        }
-        else {
-            abortTimer = 4;
-        }
-    }
     private void Update()
     {
         if(jsonMode) player.SetIsInteracting(true);
         var inCurrentSector = player && current != null && 
             (current.bounds.contains(player.transform.position) || player.GetIsOscillating()) && current.dimension == player.Dimension;
-        if(!jsonMode && player && (current == null || (!inCurrentSector && GetCurrentType() != Sector.SectorType.BattleZone && GetCurrentType() != Sector.SectorType.SiegeZone) || (!inCurrentSector && abortTimer <= 1)))
+        if(!jsonMode && player && (current == null || current.dimension != player.Dimension || (!inCurrentSector && GetCurrentType() != Sector.SectorType.BattleZone && GetCurrentType() != Sector.SectorType.SiegeZone) || !(current.bounds.contains(player.transform.position)) && abortTimer <= 1))
         {
             AttemptSectorLoad();
             abortTimer = 4;
         }
-        else if (!jsonMode && player && !inCurrentSector && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone) && abortTimer == 4){
-            StartCoroutine("AbortMission");
+        else if (!jsonMode && player && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone)){
+            abortTimer -= Time.deltaTime;
+            player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
         }
-        else if (abortTimer <= 1){
+        else {
             abortTimer = 4;
         }
         // change minimap renderers to match current dimension.
