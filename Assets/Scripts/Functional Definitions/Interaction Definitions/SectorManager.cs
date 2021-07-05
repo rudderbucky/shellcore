@@ -140,14 +140,16 @@ public class SectorManager : MonoBehaviour
         if(!jsonMode && player && (current == null || current.dimension != player.Dimension || (!inCurrentSector && GetCurrentType() != Sector.SectorType.BattleZone && GetCurrentType() != Sector.SectorType.SiegeZone) || !(current.bounds.contains(player.transform.position)) && abortTimer <= 1))
         {
             AttemptSectorLoad();
-            abortTimer = 4;
+            abortTimer = 6;
         }
         else if (!jsonMode && player && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone)){
             abortTimer -= Time.deltaTime;
-            player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
+            if (abortTimer <= 4){
+                player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
+            }
         }
         else {
-            abortTimer = 4;
+            abortTimer = 6;
         }
         // change minimap renderers to match current dimension.
         if(minimapSectorBorders != null)
