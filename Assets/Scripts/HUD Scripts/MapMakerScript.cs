@@ -57,7 +57,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		Destroy();
 		Draw(sectors, zoomoutFactor, dimension);
 	}
-	void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0)
+	void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0, bool resetPosition = true)
 	{
 		this.zoomoutFactor = zoomoutFactor;
 		gridSizeX = canvas.sizeDelta.x;
@@ -68,13 +68,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		gridImg.transform.SetParent(transform, false);
 		gridImg.rectTransform.localScale = Vector3.one;
 		gridImg.rectTransform.pivot = new Vector2(0,1);
-		gridImg.rectTransform.anchoredPosition = Vector2.zero;
+		if(resetPosition) gridImg.rectTransform.anchoredPosition = Vector2.zero;
 		gridImg.sprite = gridSprite;
 		gridImg.type = Image.Type.Tiled;
 		gridImg.color = new Color32(100, 100, 100, 255);
 		minX = int.MaxValue;
 		maxY = int.MinValue;
-		canvas.anchoredPosition = Vector2.zero;
+		if(resetPosition) canvas.anchoredPosition = Vector2.zero;
 
 		// this sets up the top-left part of the map
 		foreach(var sector in sectors) 
@@ -267,7 +267,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 		{
 			sectorCount = playerCore.cursave.sectorsSeen.Count;
 			Destroy();
-			Draw(manager.sectors);
+			Draw(manager.sectors, 4, playerCore.Dimension, false);
 		}
 		
 		if(clickedOnce)

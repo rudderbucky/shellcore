@@ -128,9 +128,9 @@ public class ShardRock : MonoBehaviour, IDamageable
             rend.sprite = shardSprites[Random.Range(0, 3)];
             if(i == 0) rend.gameObject.AddComponent<Draggable>();
             var shardComp = rend.GetComponent<Shard>();
-            shards.Add(shardComp);
             shardComp.Detach();
             if(!LocationBasedShard) shardComp.SetCollectible(i == 0);
+            if(!LocationBasedShard) AIData.rockFragments.Add(shardComp.GetComponent<Draggable>());
             if(PlayerCore.Instance) PlayerCore.Instance.cursave.locationBasedShardsFound.Add(ID);
             shardComp.tier = tier;
         }

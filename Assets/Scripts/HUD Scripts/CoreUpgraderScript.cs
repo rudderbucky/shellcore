@@ -101,7 +101,7 @@ public class CoreUpgraderScript : GUIWindowScripts
 
     public static int GetUpgradeCost(int type) {
         if ((instance.player.abilityCaps[type] - minAbilityCap[type]) > minLvShards){
-            return 5 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type] - minLvShards));
+            return 5 + 5 * (instance.player.abilityCaps[type] - minAbilityCap[type] - minLvShards);
         }
         else {
             return 0;

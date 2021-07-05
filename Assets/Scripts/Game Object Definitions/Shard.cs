@@ -59,7 +59,8 @@ public class Shard : MonoBehaviour
                 if (!draggable)
                 {
                     draggable = gameObject.AddComponent<Draggable>();
-                    AIData.rockFragments.Add(draggable);
+                    if(!AIData.rockFragments.Contains(draggable))
+                        AIData.rockFragments.Add(draggable);
                 }
                 spriteRenderer.enabled = true;
                 spriteRenderer.sortingOrder = 0;

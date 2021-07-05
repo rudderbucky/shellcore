@@ -39,10 +39,8 @@ public class SelectionDisplayHandler : MonoBehaviour
             core.enabled = true;
             core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
             core.type = Image.Type.Sliced;
-            if(data == null) {
-                core.material = ResourceManager.GetAsset<Material>("material_color_swap");
-                core.color = FactionManager.GetFactionColor(faction);
-            }
+            core.material = ResourceManager.GetAsset<Material>("material_color_swap");
+            core.color = FactionManager.GetFactionColor(faction);
             // orient core image so relative center stays the same regardless of shell tier
 
         } else {

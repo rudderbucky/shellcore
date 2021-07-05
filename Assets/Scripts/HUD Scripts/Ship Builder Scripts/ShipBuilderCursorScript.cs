@@ -12,6 +12,7 @@ public interface IBuilderInterface {
 	EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
 	void SetSearcherString(string text);
 	bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart);
+	string GetCurrentJSON();
 }
 
 public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase {
