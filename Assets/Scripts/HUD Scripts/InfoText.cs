@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class InfoText : MonoBehaviour
@@ -17,17 +15,24 @@ public class InfoText : MonoBehaviour
     public void showMessage(string message, string soundID = null)
     {
         timer = 0;
-        if(soundID != null) {
+        if (soundID != null)
+        {
             AudioManager.PlayClipByID(soundID, true);
         }
+
         text.text = message;
         text.color = Color.white;
     }
 
-    void Update() {
-        if(text.color.a > 0) {
+    void Update()
+    {
+        if (text.color.a > 0)
+        {
             timer += Time.deltaTime;
-            if(timer > 3) text.color = text.color - new Color(0,0,0,1);
+            if (timer > 3)
+            {
+                text.color = text.color - new Color(0, 0, 0, 1);
+            }
         }
     }
 }

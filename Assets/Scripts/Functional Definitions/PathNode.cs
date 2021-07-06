@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PathNode : MonoBehaviour 
+public class PathNode : MonoBehaviour
 {
     public Vector3 position;
     public int index;

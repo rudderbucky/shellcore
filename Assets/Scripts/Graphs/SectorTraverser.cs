@@ -1,14 +1,12 @@
-﻿using NodeEditorFramework.Standard;
-using NodeEditorFramework.IO;
-using NodeEditorFramework;
-using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework;
+using NodeEditorFramework.Standard;
 using UnityEngine;
 
 public class SectorTraverser : Traverser
 {
     new SectorCanvas nodeCanvas;
     public LoadSectorNode startNode;
+
     public SectorTraverser(SectorCanvas canvas) : base(canvas)
     {
         nodeCanvas = canvas;
@@ -34,12 +32,21 @@ public class SectorTraverser : Traverser
             //Debug.Log("Dialogue Canvas " +  nodeCanvas + " now traversing: " + currentNode);
             SetDialogueState(currentNode, NodeEditorGUI.NodeEditorState.Dialogue);
             if (currentNode == null)
+            {
                 return;
+            }
+
             int outputIndex = currentNode.Traverse();
             if (outputIndex == -1)
+            {
                 break;
+            }
+
             if (!currentNode.outputKnobs[outputIndex].connected())
+            {
                 break;
+            }
+
             currentNode = currentNode.outputKnobs[outputIndex].connections[0].body;
         }
     }
@@ -59,7 +66,10 @@ public class SectorTraverser : Traverser
         else
         {
             if (currentNode is TimelineNode)
+            {
                 TaskManager.Instance.StopAllCoroutines();
+            }
+
             if (currentNode is ConditionGroupNode)
             {
                 var cgn = currentNode as ConditionGroupNode;

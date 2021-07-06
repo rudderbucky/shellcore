@@ -1,7 +1,5 @@
-﻿using NodeEditorFramework.Standard;
-using NodeEditorFramework.IO;
-using NodeEditorFramework;
-using System;
+﻿using NodeEditorFramework;
+using NodeEditorFramework.Standard;
 using UnityEngine;
 
 public class Traverser : NodeCanvasTraversal
@@ -17,7 +15,9 @@ public class Traverser : NodeCanvasTraversal
         {
             ConnectionPortManager.UpdateConnectionPorts(node);
             foreach (ConnectionPort port in node.connectionPorts)
+            {
                 port.Validate(node);
+            }
         }
     }
 
@@ -26,12 +26,21 @@ public class Traverser : NodeCanvasTraversal
         while (true)
         {
             if (currentNode == null)
+            {
                 return;
+            }
+
             int outputIndex = currentNode.Traverse();
             if (outputIndex == -1)
+            {
                 break;
+            }
+
             if (!currentNode.outputKnobs[outputIndex].connected())
+            {
                 break;
+            }
+
             currentNode = currentNode.outputKnobs[outputIndex].connections[0].body;
         }
     }
@@ -40,7 +49,6 @@ public class Traverser : NodeCanvasTraversal
     {
         if (currentNode != null)
         {
-
             Traverse();
             return;
         }
@@ -70,12 +78,17 @@ public class Traverser : NodeCanvasTraversal
                 return nodeCanvas.nodes[j];
             }
         }
+
         return null;
     }
 
     public virtual bool activateCheckpoint(string CPName)
     {
-        if(CPName == null || CPName == "") return false;
+        if (CPName == null || CPName == "")
+        {
+            return false;
+        }
+
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
             var node = nodeCanvas.nodes[i];
@@ -85,6 +98,7 @@ public class Traverser : NodeCanvasTraversal
                 return true;
             }
         }
+
         return false;
     }
 
@@ -92,8 +106,13 @@ public class Traverser : NodeCanvasTraversal
     {
         currentNode = node;
         if (SystemLoader.AllLoaded)
+        {
             Traverse();
-        else Debug.LogWarning("Traverser failed to traverse because system failed to load. Abort.");
+        }
+        else
+        {
+            Debug.LogWarning("Traverser failed to traverse because system failed to load. Abort.");
+        }
     }
 
     protected void SetDialogueState(Node node, NodeEditorGUI.NodeEditorState state)
@@ -102,9 +121,15 @@ public class Traverser : NodeCanvasTraversal
         {
             (node as StartDialogueNode).state = state;
         }
+
         if (node is DialogueNode)
+        {
             (node as DialogueNode).state = state;
+        }
+
         if (node is EndDialogue)
+        {
             (node as EndDialogue).state = state;
+        }
     }
 }

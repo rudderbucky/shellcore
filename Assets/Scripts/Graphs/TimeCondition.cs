@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace NodeEditorFramework.Standard
 {
@@ -9,15 +7,27 @@ namespace NodeEditorFramework.Standard
     public class TimeCondition : Node, ICondition
     {
         public const string ID = "TimeTrigger";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Time Trigger"; } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Time Trigger"; }
+        }
 
         public ConditionState state; // Property can't be serialized -> field
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
-
 
         public int seconds = 0;
         public int milliseconds = 0;
@@ -46,8 +56,11 @@ namespace NodeEditorFramework.Standard
         public void DeInit()
         {
             // TODO: Find why the timer is sometimes null
-            if(timer != null)
+            if (timer != null)
+            {
                 TaskManager.Instance.StopCoroutine(timer);
+            }
+
             timer = null;
             State = ConditionState.Uninitialized;
             Debug.Log("Timer stopped!");

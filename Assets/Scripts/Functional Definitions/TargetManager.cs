@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class TargetManager : MonoBehaviour
 {
@@ -23,12 +22,15 @@ public class TargetManager : MonoBehaviour
 
     public static void Enqueue(ITargetingSystem targetingSystem, Entity.EntityCategory targetCategory = Entity.EntityCategory.All)
     {
-        if(Instance) Instance.enqueue(targetingSystem, targetCategory);
+        if (Instance)
+        {
+            Instance.enqueue(targetingSystem, targetCategory);
+        }
     }
-    
+
     void enqueue(ITargetingSystem targetingSystem, Entity.EntityCategory targetCategory)
     {
-        if (targetSearchQueries.FindIndex((x)=>x.Item1 == targetingSystem) == -1)
+        if (targetSearchQueries.FindIndex((x) => x.Item1 == targetingSystem) == -1)
         {
             targetSearchQueries.Add((targetingSystem, targetCategory));
         }
@@ -37,7 +39,9 @@ public class TargetManager : MonoBehaviour
     private void Update()
     {
         if (!trUpdated)
+        {
             UpdateTargets();
+        }
 
         for (int i = 0; i < targetSearchQueries.Count; i++)
         {
@@ -57,6 +61,7 @@ public class TargetManager : MonoBehaviour
 
         UpdateColliders();
     }
+
     private void LateUpdate()
     {
         trUpdated = false;
@@ -70,18 +75,21 @@ public class TargetManager : MonoBehaviour
             for (int j = 0; j < positions.Length; j++)
             {
                 if (i == j)
+                {
                     continue;
+                }
 
                 if ((positions[i] - positions[j]).sqrMagnitude < 200 && !FactionManager.IsAllied(factions[i], factions[j]))
                 {
                     colliderNear = true;
                     break;
-                } 
+                }
             }
+
             AIData.entities[i].ToggleColliders(colliderNear);
         }
     }
-    
+
     void UpdateTargets()
     {
         airTargets = new Dictionary<int, List<Entity>>();
@@ -99,20 +107,29 @@ public class TargetManager : MonoBehaviour
             {
                 continue;
             }
+
             int faction = AIData.entities[i].faction;
             if ((AIData.entities[i].GetTerrain() & Entity.TerrainType.Air) != 0)
             {
                 if (!airTargets.ContainsKey(faction))
+                {
                     airTargets[faction] = new List<Entity>();
+                }
+
                 airTargets[faction].Add(AIData.entities[i]);
             }
+
             if ((AIData.entities[i].GetTerrain() & Entity.TerrainType.Ground) != 0)
             {
                 if (!groundTargets.ContainsKey(faction))
+                {
                     groundTargets[faction] = new List<Entity>();
+                }
+
                 groundTargets[faction].Add(AIData.entities[i]);
             }
         }
+
         trUpdated = true;
     }
 
@@ -126,7 +143,7 @@ public class TargetManager : MonoBehaviour
         return Instance.getTargetList(ts, ec);
     }
 
-    public static Transform GetClosestFromList(List<Entity> targets, ITargetingSystem ts,  Entity.EntityCategory ec)
+    public static Transform GetClosestFromList(List<Entity> targets, ITargetingSystem ts, Entity.EntityCategory ec)
     {
         return Instance.getClosestFromList(targets, ts, ec);
     }
@@ -137,14 +154,21 @@ public class TargetManager : MonoBehaviour
         for (int i = 0; i < FactionManager.FactionArrayLength; i++)
         {
             if (FactionManager.IsAllied(ts.GetEntity().faction, i) || !FactionManager.FactionExists(i))
+            {
                 continue;
+            }
 
             if (ts.GetAbility() == null)
             {
                 if (airTargets.ContainsKey(i))
+                {
                     targets.AddRange(airTargets[i]);
+                }
+
                 if (groundTargets.ContainsKey(i))
+                {
                     targets.AddRange(groundTargets[i]);
+                }
             }
             else
             {
@@ -153,6 +177,7 @@ public class TargetManager : MonoBehaviour
                 {
                     targets.AddRange(airTargets[i]);
                 }
+
                 if (ts.GetAbility().TerrainCheck(Entity.TerrainType.Ground)
                     && groundTargets.ContainsKey(i))
                 {
@@ -160,10 +185,11 @@ public class TargetManager : MonoBehaviour
                 }
             }
         }
+
         return targets;
     }
 
-    private Transform getClosestFromList(List<Entity> targets, ITargetingSystem ts,  Entity.EntityCategory ec)
+    private Transform getClosestFromList(List<Entity> targets, ITargetingSystem ts, Entity.EntityCategory ec)
     {
         Transform closest = null;
         float closestD = float.MaxValue;
@@ -182,29 +208,34 @@ public class TargetManager : MonoBehaviour
                     {
                         continue;
                     }
+
                     var ability = ts.GetAbility();
                     if (ability != null && sqrD >= ability.GetRange() * ability.GetRange())
                     {
                         continue;
                     }
+
                     closestD = sqrD;
                     closest = targets[i].transform;
                 }
             }
         }
+
         return closest;
     }
 
     Transform GetTarget(ITargetingSystem ts, Entity.EntityCategory ec)
     {
         if (!trUpdated)
+        {
             UpdateTargets();
-        
+        }
+
         //Find the closest enemy
-        
+
 
         List<Entity> targets = getTargetList(ts, ec);
-        
+
         var closest = getClosestFromList(targets, ts, ec);
         // set to the closest compatible target
         ts.SetTarget(closest);

@@ -1,6 +1,5 @@
-﻿using NodeEditorFramework.Utilities;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -9,12 +8,30 @@ namespace NodeEditorFramework.Standard
     public class RandomizerNode : Node
     {
         // Old name kept for backwards compatibility
-        public override string GetName { get { return "DialogueRouletteNode"; } }
-        public override string Title { get { return "Randomizer"; } }
+        public override string GetName
+        {
+            get { return "DialogueRouletteNode"; }
+        }
 
-        public override Vector2 MinSize { get { return new Vector2(200f, 100f); } }
-        public override bool AutoLayout { get { return true; } }
-        public override bool AllowRecursion { get { return true; } }
+        public override string Title
+        {
+            get { return "Randomizer"; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(200f, 100f); }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
 
         ConnectionKnobAttribute flowInAttribute = new ConnectionKnobAttribute("Input ", Direction.In, "TaskFlow", ConnectionCount.Multi, NodeSide.Left, 20);
         ConnectionKnobAttribute flowOutAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right);
@@ -42,6 +59,7 @@ namespace NodeEditorFramework.Standard
                     {
                         DeleteConnectionPort(outputKnobs[0]);
                     }
+
                     for (int i = 0; i < count; i++)
                     {
                         CreateConnectionKnob(dialogue ? dialogueOutAttribute : flowOutAttribute);
@@ -59,9 +77,13 @@ namespace NodeEditorFramework.Standard
                     input = inputKnobs[0];
                 }
                 else if (Canvas is DialogueCanvas || dialogue)
+                {
                     input = CreateConnectionKnob(dialogueInAttribute);
+                }
                 else
+                {
                     input = CreateConnectionKnob(flowInAttribute);
+                }
             }
 
             GUILayout.Label("Outputs and chance weights:");
@@ -76,18 +98,21 @@ namespace NodeEditorFramework.Standard
                     i--;
                     continue;
                 }
+
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 chances[i] = RTEditorGUI.FloatField(chances[i]);
                 outputKnobs[i].DisplayLayout();
                 GUILayout.EndHorizontal();
             }
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
             {
                 CreateConnectionKnob((dialogue || (Canvas is DialogueCanvas)) ? dialogueOutAttribute : flowOutAttribute);
                 chances.Add(0);
             }
+
             GUILayout.EndHorizontal();
         }
 
@@ -95,21 +120,27 @@ namespace NodeEditorFramework.Standard
         {
             float total = 0f;
             for (int i = 0; i < chances.Count; i++)
+            {
                 total += chances[i];
-           
+            }
+
             float roll = Random.Range(0, total);
             float originalRoll = roll;
-            for(int i = 0; i < chances.Count; i++)
+            for (int i = 0; i < chances.Count; i++)
             {
                 roll -= chances[i];
-                if(roll <= 0)
+                if (roll <= 0)
                 {
                     TaskManager.Instance.setNode(outputKnobs[i]);
                     if (PrintRandomRolls)
+                    {
                         DevConsoleScript.Print("Total weight: " + total + ", Random roll: " + originalRoll + ", Connection index: " + i);
+                    }
+
                     return -1;
                 }
             }
+
             // This might be possible due to floating point inaccuracies
             TaskManager.Instance.setNode(outputKnobs[chances.Count - 1]);
             //Debug.LogWarning("Something went wrong with the roulette. Double check the entered floats!");

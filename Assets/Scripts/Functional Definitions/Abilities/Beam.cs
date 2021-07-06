@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Beam : WeaponAbility
 {
@@ -29,13 +27,16 @@ public class Beam : WeaponAbility
         bonusDamageType = typeof(ShellCore);
         cooldownDuration = 3f;
     }
-    protected override void Start() {
+
+    protected override void Start()
+    {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
         particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
-        line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
-        line.startColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
+        line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
+        line.startColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         base.Start();
     }
+
     public void SetMaterial(Material material)
     {
         this.material = material;
@@ -48,25 +49,36 @@ public class Beam : WeaponAbility
         {
             line.startWidth = line.endWidth = 0.15F;
             line.SetPosition(0, transform.position); // draw and increment timer
-            if(nextTargetPart) line.SetPosition(1, partPos);
-            else if(targetingSystem.GetTarget()) line.SetPosition(1, targetingSystem.GetTarget().position);
-            else line.SetPosition(1, line.transform.position); // TODO: Fix
+            if (nextTargetPart)
+            {
+                line.SetPosition(1, partPos);
+            }
+            else if (targetingSystem.GetTarget())
+            {
+                line.SetPosition(1, targetingSystem.GetTarget().position);
+            }
+            else
+            {
+                line.SetPosition(1, line.transform.position); // TODO: Fix
+            }
+
             timer += Time.deltaTime;
         }
-        else if(firing && timer >= 0.1F)
+        else if (firing && timer >= 0.1F)
         {
-            if(line.startWidth > 0)
+            if (line.startWidth > 0)
             {
                 line.startWidth -= 0.01F;
                 line.endWidth -= 0.01F;
             }
-            if(line.startWidth < 0)
+
+            if (line.startWidth < 0)
             {
                 line.startWidth = line.endWidth = 0;
                 firing = false;
             }
-
-        } else 
+        }
+        else
         {
             line.positionCount = 0;
             firing = false;
@@ -75,7 +87,11 @@ public class Beam : WeaponAbility
 
     protected override bool Execute(Vector3 victimPos)
     {
-        if(!beamHitPrefab) beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+        if (!beamHitPrefab)
+        {
+            beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+        }
+
         AudioManager.PlayClipByID("clip_beam", transform.position);
         GetDamage();
         var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
@@ -86,6 +102,7 @@ public class Beam : WeaponAbility
             nextTargetPart.TakeDamage(residue);
             victimPos = partPos = nextTargetPart.transform.position;
         }
+
         // if(targetingSystem.GetTarget().GetComponent<Entity>())
         //   targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
         line.positionCount = 2; // render the beam line
@@ -105,7 +122,7 @@ public class Beam : WeaponAbility
         Vector3 distanceNormalized = distance.normalized;
         Vector3 currentPos = transform.position;
 
-        while((currentPos - transform.position).sqrMagnitude < distance.sqrMagnitude)
+        while ((currentPos - transform.position).sqrMagnitude < distance.sqrMagnitude)
         {
             Instantiate(particlePrefab, (Vector2)currentPos, Quaternion.identity);
             currentPos += distanceNormalized * 0.8F;
@@ -115,19 +132,27 @@ public class Beam : WeaponAbility
     ShellPart nextTargetPart;
     Vector2 partPos;
 
-    protected override bool DistanceCheck(Transform targetEntity) {
+    protected override bool DistanceCheck(Transform targetEntity)
+    {
         var parts = targetEntity.GetComponentsInChildren<ShellPart>();
-        if(parts.Length == 0) return base.DistanceCheck(targetEntity);
-        else {
+        if (parts.Length == 0)
+        {
+            return base.DistanceCheck(targetEntity);
+        }
+        else
+        {
             float closestD = range;
             nextTargetPart = null;
-            foreach(var part in parts) {
+            foreach (var part in parts)
+            {
                 var distance = Vector2.Distance(part.transform.position, transform.position);
-                if(distance < closestD) {
+                if (distance < closestD)
+                {
                     closestD = distance;
                     nextTargetPart = part;
                 }
             }
+
             return nextTargetPart;
         }
     }

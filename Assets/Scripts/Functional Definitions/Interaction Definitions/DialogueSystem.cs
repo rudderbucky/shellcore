@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
-using NodeEditorFramework.Standard;
-using NodeEditorFramework.IO;
 using NodeEditorFramework;
+using NodeEditorFramework.IO;
+using NodeEditorFramework.Standard;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 ///
 /// This class manages dialogue windows as well as dialogue traversers/canvases.
@@ -15,8 +15,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public static DialogueSystem Instance { get; private set; }
 
     public delegate void DialogueDelegate(int answer);
+
     public static DialogueDelegate OnDialogueEnd;
+
     public delegate void CancelDelegate();
+
     public static CancelDelegate OnDialogueCancel;
 
     public GameObject dialogueBoxPrefab;
@@ -47,13 +50,14 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         Remastered,
         Original
     }
+
     public static DialogueStyle dialogueStyle;
 
     public bool IsWindowActive()
     {
         return window;
     }
-    
+
     private void Awake()
     {
         Instance = this;
@@ -72,14 +76,25 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     // Bugfixes dialogue canvas paths persisting post world reload in the WC
     public static void ClearStatics()
     {
-        if(dialogueCanvasPaths != null)
+        if (dialogueCanvasPaths != null)
+        {
             dialogueCanvasPaths.Clear();
-        if(speakerIDList != null)
+        }
+
+        if (speakerIDList != null)
+        {
             speakerIDList.Clear();
-        if(interactionOverrides != null)
+        }
+
+        if (interactionOverrides != null)
+        {
             interactionOverrides.Clear();
-        if(traversers != null)
+        }
+
+        if (traversers != null)
+        {
             traversers.Clear();
+        }
     }
 
     public static void InitCanvases()
@@ -90,8 +105,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
 
-        if(Instance)
+        if (Instance)
+        {
             Instance.ClearCanvases();
+        }
 
         var XMLImport = new XMLImportExport();
 
@@ -115,7 +132,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         return initialized;
     }
 
-    public static void StartQuests() {
+    public static void StartQuests()
+    {
         Instance.startQuests();
     }
 
@@ -130,18 +148,18 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void Update()
     {
-        if(window && speakerPos != null && player && (player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 && !isInCutscene)
+        if (window && speakerPos != null && player && (player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 && !isInCutscene)
         {
             endDialogue();
         }
 
         // Add text
-        if(textRenderer && characterCount < text.Length)
+        if (textRenderer && characterCount < text.Length)
         {
-            if(Time.time > nextCharacterTime)
+            if (Time.time > nextCharacterTime)
             {
                 characterCount++;
-                nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
+                nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
                 textRenderer.text = text.Substring(0, characterCount);
             }
         }
@@ -167,12 +185,18 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     ///
     private void CreateWindow(GameObject prefab, string text, Color color, Entity speaker)
     {
-        if(window) Destroy(window.transform.parent.gameObject);
+        if (window)
+        {
+            Destroy(window.transform.parent.gameObject);
+        }
+
         //create window
         speakerPos = null;
 
-        if(speaker)
+        if (speaker)
+        {
             speakerPos = speaker.transform.position;
+        }
 
         window = Instantiate(prefab).GetComponentInChildren<GUIWindowScripts>();
 
@@ -181,18 +205,21 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window.transform.SetSiblingIndex(0);
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         var exit = background.transform.Find("Exit");
-        exit.GetComponent<Button>().onClick.AddListener(() => {
-            endDialogue();
-        });
-        if(isInCutscene) exit.gameObject.SetActive(false);
+        exit.GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
+        if (isInCutscene)
+        {
+            exit.gameObject.SetActive(false);
+        }
+
         window.OnCancelled.AddListener(() => { endDialogue(); });
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
         // radio image 
-        if(window.GetComponentInChildren<SelectionDisplayHandler>())
+        if (window.GetComponentInChildren<SelectionDisplayHandler>())
         {
-            if(speaker) {
+            if (speaker)
+            {
                 DialogueViewTransitionIn(speaker);
                 window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
                 window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
@@ -207,15 +234,17 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         // change text
         this.text = text.Replace("<br>", "\n");
         characterCount = 0;
-        nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
+        nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
 
         characterCount = 0;
-        nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
+        nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
 
         textRenderer.color = color;
 
-        if(speaker)
+        if (speaker)
+        {
             AudioManager.PlayClipByID("clip_typing");
+        }
     }
 
     ///
@@ -226,19 +255,23 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
         button.SetParent(background, false);
         button.anchoredPosition = new Vector2(0, ypos);
-        if(call != null)
+        if (call != null)
+        {
             button.GetComponent<Button>().onClick.AddListener(call);
+        }
+
         button.Find("Text").GetComponent<Text>().text = text;
 
         return button.gameObject;
     }
 
     public GameObject popupBoxPrefab;
+
     private void showPopup(string text, Color color, Entity speaker = null)
     {
         CreateWindow(speaker ? dialogueBoxPrefab : popupBoxPrefab, text, color, speaker);
 
-        if(!speaker)
+        if (!speaker)
         {
             textRenderer.text = this.text;
             characterCount = text.Length;
@@ -248,25 +281,40 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         buttons[0] = CreateButton("Ok", () => { endDialogue(); }, 24);
     }
 
-    public static void ShowBattleResults(bool victory) {
+    public static void ShowBattleResults(bool victory)
+    {
         Instance.showBattleResults(victory);
     }
 
-    private void showBattleResults(bool victory) {
-        if(window) endDialogue(0);
+    private void showBattleResults(bool victory)
+    {
+        if (window)
+        {
+            endDialogue(0);
+        }
+
         speakerPos = null;
-        
+
         //create window
         window = Instantiate(battleResultsBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
-        if(victory) window.transform.Find("Victory").GetComponent<Text>().text = "<color=lime>VICTORY!</color>";
-        else window.transform.Find("Victory").GetComponent<Text>().text = "<color=red>DEFEAT</color>";
+        if (victory)
+        {
+            window.transform.Find("Victory").GetComponent<Text>().text = "<color=lime>VICTORY!</color>";
+        }
+        else
+        {
+            window.transform.Find("Victory").GetComponent<Text>().text = "<color=red>DEFEAT</color>";
+        }
 
         battleZoneManager = FindObjectOfType<BattleZoneManager>();
         if (!battleZoneManager)
+        {
             return;
+        }
+
         string[] stats = battleZoneManager.GetStats();
         RectTransform scrollArea = window.transform.Find("Background/ViewBorder/Scroll View/Viewport/Content").GetComponent<RectTransform>();
         GameObject prefab = scrollArea.Find("Stats").gameObject;
@@ -286,27 +334,36 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
             text.text = stats[i];
         }
+
         scrollArea.sizeDelta = new Vector2(120f + 80f * stats.Length, scrollArea.sizeDelta.y);
     }
 
     public GameObject missionCompleteBoxPrefab;
-    public static void ShowMissionComplete(Mission mission, string rewardsText) {
+
+    public static void ShowMissionComplete(Mission mission, string rewardsText)
+    {
         Instance.showMissionComplete(mission, rewardsText);
     }
 
-    private void showMissionComplete(Mission mission, string rewardsText) {
+    private void showMissionComplete(Mission mission, string rewardsText)
+    {
         // if(window) endDialogue(0);
         speakerPos = null;
-        
+
         //create window
         window = Instantiate(missionCompleteBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
-        if(mission.name.Length <= 33)
+        if (mission.name.Length <= 33)
+        {
             window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper();
+        }
         else
-            window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper().Substring(0,30) + "...";
+        {
+            window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper().Substring(0, 30) + "...";
+        }
+
         window.transform.Find("Rank").GetComponent<Text>().text = mission.rank.ToUpper();
         window.transform.Find("Rank").GetComponent<Text>().color = TaskDisplayScript.rankColorsByString[mission.rank];
         window.transform.Find("Holder").Find("Rewards").GetComponent<Text>().text = rewardsText;
@@ -319,28 +376,30 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public static void ShowFinishTaskNode(NodeEditorFramework.Standard.FinishTaskNode node, Entity speaker = null)
     {
-        if(node.answers == null)
+        if (node.answers == null)
         {
             node.answers = new List<string>();
             node.answers.Add("Ok");
         }
+
         Instance.showDialogue(node.rewardText, node.answers, speaker, node.textColor, node.useEntityColor);
     }
 
-    private void showDialogue(string text, List<string> answers, Entity speaker, Color textColor, bool useEntityColor=true)
+    private void showDialogue(string text, List<string> answers, Entity speaker, Color textColor, bool useEntityColor = true)
     {
         CreateWindow(dialogueBoxPrefab, text, useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : textColor, speaker);
         DialogueViewTransitionIn(speaker);
 
         // create buttons
         buttons = new GameObject[answers.Count];
-        
+
         for (int i = 0; i < answers.Count; i++)
         {
             int index = i;
-            buttons[i] = CreateButton(answers[i], () => {
+            buttons[i] = CreateButton(answers[i], () =>
+            {
                 AudioManager.PlayClipByID("clip_select", true);
-                endDialogue(index + 1, false);// cancel is always first -> start from 1
+                endDialogue(index + 1, false); // cancel is always first -> start from 1
             }, 24 + 24 * (answers.Count - (i + 1)));
         }
     }
@@ -353,26 +412,27 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private void SetupRewards(GameObject gameObject, RewardWrapper wrapper)
     {
         gameObject.transform.Find("Credit Reward Text").GetComponent<Text>().text =
-        "Credit reward: " + wrapper.creditReward;
+            "Credit reward: " + wrapper.creditReward;
 
         gameObject.transform.Find("Reputation Reward Text").GetComponent<Text>().text =
-        "Reputation reward: " + wrapper.reputationReward;
+            "Reputation reward: " + wrapper.reputationReward;
         // Part reward
-        if(wrapper.partReward)
+        if (wrapper.partReward)
         {
             // Part image:
             PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(wrapper.partID);
-            if(!blueprint)
+            if (!blueprint)
             {
                 Debug.LogWarning("Part reward of Start Task wrapper not found!");
             }
+
             var partImage = gameObject.transform.Find("Part").GetComponent<Image>();
             partImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
             partImage.rectTransform.sizeDelta = partImage.sprite.bounds.size * 45;
             partImage.color = Color.green;
 
             // Ability image:
-            if(wrapper.partAbilityID > 0)
+            if (wrapper.partAbilityID > 0)
             {
                 var backgroudBox = gameObject.transform.Find("backgroundbox");
                 var abilityIcon = backgroudBox.Find("Ability").GetComponent<Image>();
@@ -381,9 +441,15 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 var abilityTooltip = backgroudBox.GetComponent<AbilityButtonScript>();
 
                 abilityIcon.sprite = AbilityUtilities.GetAbilityImageByID(wrapper.partAbilityID, wrapper.partSecondaryData);
-                if(wrapper.partTier >= 1)
+                if (wrapper.partTier >= 1)
+                {
                     tierIcon.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + Mathf.Clamp(wrapper.partTier, 1, 3));
-                else tierIcon.enabled = false;
+                }
+                else
+                {
+                    tierIcon.enabled = false;
+                }
+
                 type.text = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "");
                 string description = "";
                 description += AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "") + "\n";
@@ -400,7 +466,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             background.transform.Find("Part").GetComponent<Image>().enabled = false;
             background.transform.Find("backgroundbox").gameObject.SetActive(false);
         }
-
     }
 
     public static void ShowReward(RewardWrapper wrapper)
@@ -410,7 +475,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void showReward(RewardWrapper wrapper)
     {
-        if (window) endDialogue(0, false);
+        if (window)
+        {
+            endDialogue(0, false);
+        }
+
         //create window
         window = Instantiate(rewardBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
@@ -421,11 +490,15 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void showTaskPrompt(NodeEditorFramework.Standard.StartTaskNode node, Entity speaker)
     {
-        if (window) endDialogue(0, false);
+        if (window)
+        {
+            endDialogue(0, false);
+        }
+
         CreateWindow(taskDialogueBoxPrefab, node.dialogueText, node.useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : node.dialogueColor, speaker);
         DialogueViewTransitionIn(speaker);
         AudioManager.PlayClipByID("clip_select", true); // task button cannot create a noise because it launches endDialogue()
-                                                     // so cover for its noise here
+        // so cover for its noise here
 
         // Objective list
         var objectiveList = background.transform.Find("ObjectiveList").GetComponent<Text>();
@@ -506,20 +579,29 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         {
             //TODO: createButton()
             int index = i;
-            buttons[i] = CreateButton(answers[i], () => {
-                if(index == 1) 
+            buttons[i] = CreateButton(answers[i], () =>
+            {
+                if (index == 1)
                 {
-                    DialogueViewTransitionOut(); 
+                    DialogueViewTransitionOut();
                     SectorManager.instance.player.alerter.showMessage("New Task", "clip_victory");
                     endDialogue(index, false);
-                } else endDialogue(index, true);
+                }
+                else
+                {
+                    endDialogue(index, true);
+                }
             }, 24 + 24 * i);
         }
     }
 
     private void startDialogue(Dialogue dialogue, Entity speaker)
     {
-        if(window) endDialogue();
+        if (window)
+        {
+            endDialogue();
+        }
+
         speakerPos = speaker.transform.position;
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
@@ -560,14 +642,14 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public void next(Dialogue dialogue, int ID, Entity speaker)
     {
-        if(dialogue.nodes.Count == 0)
+        if (dialogue.nodes.Count == 0)
         {
             Debug.LogWarning("Empty dialogue: " + dialogue.name);
             endDialogue(0, false);
             return;
         }
 
-        if(player.GetIsDead())
+        if (player.GetIsDead())
         {
             Debug.Log("Dead player");
             endDialogue(0, false);
@@ -575,20 +657,23 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         // clear everything
-        if(buttons != null)
-            for(int i = 0; i < buttons.Length; i++)
+        if (buttons != null)
+        {
+            for (int i = 0; i < buttons.Length; i++)
             {
                 Destroy(buttons[i]);
             }
+        }
 
         // find dialogue index
         int currentIndex = getNodeIndex(dialogue, ID);
-        if(currentIndex == -1)
+        if (currentIndex == -1)
         {
             Debug.LogWarning("Missing node '" + ID + "' in " + dialogue.name);
             endDialogue();
             return;
         }
+
         Dialogue.Node current = dialogue.nodes[currentIndex];
 
         // check if the node has an action
@@ -599,13 +684,17 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 break;
             case Dialogue.DialogueAction.Outpost:
                 endDialogue(0, false);
-                if(speaker.faction != player.faction) {
+                if (speaker.faction != player.faction)
+                {
                     return;
                 }
-                if(((Vector3)speakerPos - player.transform.position).magnitude < dialogue.vendingBlueprint.range) {
+
+                if (((Vector3)speakerPos - player.transform.position).magnitude < dialogue.vendingBlueprint.range)
+                {
                     vendorUI.SetVendor(speaker as IVendor, player);
                     vendorUI.openUI();
                 }
+
                 endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Shop:
@@ -639,7 +728,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         // change text
         text = current.text.Replace("<br>", "\n");
         characterCount = 0;
-        nextCharacterTime = (float) (Time.time + timeBetweenCharacters);
+        nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
         textRenderer.color = current.textColor;
 
         // create buttons
@@ -654,16 +743,17 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 endDialogue();
                 return;
             }
+
             Dialogue.Node next = dialogue.nodes[nextIndex];
 
             Transform button = CreateButton(next.buttonText, null, 24 + 16 * (current.nextNodes.Count - (i + 1))).transform;
 
-            button.GetComponent<Button>().onClick.AddListener(()=> {
-                Next(dialogue, nextIndex, speaker);
-            });
-            if(dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit) {
-                button.GetComponent<Button>().onClick.AddListener(()=> {
-                    AudioManager.PlayClipByID("clip_select", true); 
+            button.GetComponent<Button>().onClick.AddListener(() => { Next(dialogue, nextIndex, speaker); });
+            if (dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit)
+            {
+                button.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    AudioManager.PlayClipByID("clip_select", true);
                     // need condition to ensure no sound clashes occur
                 });
             }
@@ -681,18 +771,23 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 return i;
             }
         }
+
         return -1;
     }
 
     private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
         // strange behavior here when tasks are checkpointed, look into this when bugs arise
-        if(answer == 0) 
+        if (answer == 0)
         {
-            if(OnDialogueCancel != null)
+            if (OnDialogueCancel != null)
+            {
                 OnDialogueCancel.Invoke();
+            }
+
             DialogueViewTransitionOut();
         }
+
         window.playSoundOnClose = soundOnClose;
         window.CloseUI();
         Destroy(window.transform.root.gameObject);
@@ -707,18 +802,21 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public RectTransform blackBarTop;
     public RectTransform blackBarBottom;
     public CanvasGroup hudGroup;
+
     public enum DialogueState
     {
         In,
         Out,
         Idle
     }
+
     private DialogueState currentState = DialogueState.Idle;
+
     private void DialogueViewTransitionIn(Entity speaker = null)
     {
         currentState = DialogueState.In;
         var windowRect = window.GetComponent<RectTransform>();
-        switch(dialogueStyle)
+        switch (dialogueStyle)
         {
             case DialogueStyle.Original:
                 windowRect.anchorMin = windowRect.anchorMax = new Vector2(0.5F, 0.5F);
@@ -726,9 +824,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 break;
             case DialogueStyle.Remastered:
             default:
-                if(speaker && player)
+                if (speaker && player)
                 {
-                    if(player.transform.position.y <= speaker.transform.position.y)
+                    if (player.transform.position.y <= speaker.transform.position.y)
                     {
                         windowRect.anchorMin = new Vector2(0, 0);
                         windowRect.anchorMax = new Vector2(1, 0);
@@ -740,12 +838,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                         windowRect.anchorMax = new Vector2(1, 1);
                         windowRect.anchoredPosition = new Vector2(0, -200);
                     }
-
                 }
+
                 FadeBarIn();
                 break;
         }
-        
     }
 
     public void FadeBarIn()
@@ -760,41 +857,64 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         blackBarBottom.gameObject.SetActive(true);
 
         float count = blackBarBottom.anchoredPosition.y;
-        while(count < blackBarBottom.sizeDelta.y)
+        while (count < blackBarBottom.sizeDelta.y)
         {
-            if(currentState != DialogueState.In) break;
+            if (currentState != DialogueState.In)
+            {
+                break;
+            }
+
             count += 0.1F * blackBarBottom.sizeDelta.y;
             hudGroup.alpha -= 0.1F;
             blackBarTop.anchoredPosition = new Vector2(0, -count);
             blackBarBottom.anchoredPosition = new Vector2(0, count);
             yield return new WaitForSeconds(0.0025F);
         }
-        if(currentState == DialogueState.In) currentState = DialogueState.Idle;
+
+        if (currentState == DialogueState.In)
+        {
+            currentState = DialogueState.Idle;
+        }
     }
 
     IEnumerator BarFadeOut()
     {
         if (blackBarTop == null || blackBarBottom == null)
+        {
             yield break;
+        }
+
         blackBarTop.gameObject.SetActive(true);
         blackBarBottom.gameObject.SetActive(true);
 
         float count = blackBarBottom.anchoredPosition.y;
-        while(count > 0)
+        while (count > 0)
         {
-            if(currentState != DialogueState.Out) break;
+            if (currentState != DialogueState.Out)
+            {
+                break;
+            }
+
             count -= 0.1F * blackBarBottom.sizeDelta.y;
-            if(!PlayerViewScript.hidingHUD) hudGroup.alpha += 0.1F;
+            if (!PlayerViewScript.hidingHUD)
+            {
+                hudGroup.alpha += 0.1F;
+            }
+
             blackBarTop.anchoredPosition = new Vector2(0, -count);
             blackBarBottom.anchoredPosition = new Vector2(0, count);
             yield return new WaitForSeconds(0.0025F);
         }
-        if(currentState == DialogueState.Out) currentState = DialogueState.Idle;
+
+        if (currentState == DialogueState.Out)
+        {
+            currentState = DialogueState.Idle;
+        }
     }
 
     public void DialogueViewTransitionOut()
     {
-        if(!isInCutscene)
+        if (!isInCutscene)
         {
             currentState = DialogueState.Out;
             StartCoroutine("BarFadeOut");
@@ -829,10 +949,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public void ClearCanvases()
     {
         if (traversers != null)
+        {
             for (int i = 0; i < traversers.Count; i++)
             {
                 traversers[i].nodeCanvas.Destroy();
             }
+        }
+
         dialogueCanvasPaths.Clear();
     }
 
@@ -842,7 +965,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         dialogueCanvasPaths.Add(path);
     }
 
-    public static Entity GetSpeaker() {
+    public static Entity GetSpeaker()
+    {
         var speakerObj = SectorManager.instance.GetEntity(speakerID);
         return speakerObj;
     }

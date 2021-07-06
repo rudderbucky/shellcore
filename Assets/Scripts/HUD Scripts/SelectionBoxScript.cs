@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using NodeEditorFramework.Standard;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 ///<summary>
 /// The box for selecting multiple entities from the overworld, this method handles overworld clicks for now
@@ -17,7 +17,9 @@ public class SelectionBoxScript : MonoBehaviour
     public ReticleScript reticleScript;
     public EventSystem eventSystem;
     public GameObject movementReticlePrefab;
+
     private PathData currentPathData;
+
     //private int nodeID = 1;
     private Vector2 lastPosition;
 
@@ -32,17 +34,18 @@ public class SelectionBoxScript : MonoBehaviour
     {
         simpleMouseMovement = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
     }
+
     void Update()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
         bool overTarget = false;
 
-        foreach(var hit in hits)
+        foreach (var hit in hits)
         {
             var hitTransforn = hit.transform;
             var ent = hitTransforn.GetComponent<Entity>();
-            if((hitTransforn.GetComponent<ITargetable>() != null && hitTransforn != PlayerCore.Instance.transform) 
+            if ((hitTransforn.GetComponent<ITargetable>() != null && hitTransforn != PlayerCore.Instance.transform)
                 || (hitTransforn.GetComponent<Draggable>() && (!ent || ent.faction == PlayerCore.Instance.faction)))
             {
                 Cursor.SetCursor(overTargetableCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
@@ -50,29 +53,33 @@ public class SelectionBoxScript : MonoBehaviour
                 break;
             }
         }
-        
-        if(!overTarget) Cursor.SetCursor(defaultCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
+
+        if (!overTarget)
+        {
+            Cursor.SetCursor(defaultCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
+        }
 
         // Clear targets if in cutscene/interacting
-        if(PlayerCore.Instance.GetIsInteracting() || DialogueSystem.isInCutscene || PlayerViewScript.paused || PlayerViewScript.GetIsWindowActive()) 
+        if (PlayerCore.Instance.GetIsInteracting() || DialogueSystem.isInCutscene || PlayerViewScript.paused || PlayerViewScript.GetIsWindowActive())
         {
             // Debug.Log(PlayerCore.Instance.GetIsInteracting() + " " + DialogueSystem.isInCutscene + " " + PlayerViewScript.paused + " " + PlayerViewScript.GetIsWindowActive());
-            if(!PlayerViewScript.paused)
+            if (!PlayerViewScript.paused)
             {
                 reticleScript.ClearSecondaryTargets();
                 reticleScript.SetTarget(null);
             }
+
             image.enabled = false;
             clicking = false;
             return;
         }
-        
+
         var targSys = PlayerCore.Instance.GetTargetingSystem();
 
         // Tab cycles primary target
-        if(Input.GetKeyDown(KeyCode.Tab) && targSys.GetSecondaryTargets().Count > 0)
+        if (Input.GetKeyDown(KeyCode.Tab) && targSys.GetSecondaryTargets().Count > 0)
         {
-            if(targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
+            if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
             {
                 reticleScript.AddSecondaryTarget(targSys.GetTarget().GetComponent<Entity>());
             }
@@ -99,7 +106,7 @@ public class SelectionBoxScript : MonoBehaviour
         }
         */
 
-        if(Input.GetMouseButtonDown(0) && !eventSystem.IsPointerOverGameObject())
+        if (Input.GetMouseButtonDown(0) && !eventSystem.IsPointerOverGameObject())
         {
             dronesChecked = reticleScript.FindTarget();
             reticleScript.ClearSecondaryTargets();
@@ -111,9 +118,9 @@ public class SelectionBoxScript : MonoBehaviour
             clicking = true;
         }
 
-        if(((Vector2)Input.mousePosition - startPoint).sqrMagnitude > 10) // Make sure the drag isn't interfering with clicks
+        if (((Vector2)Input.mousePosition - startPoint).sqrMagnitude > 10) // Make sure the drag isn't interfering with clicks
         {
-            if(Input.GetMouseButton(0) && clicking)
+            if (Input.GetMouseButton(0) && clicking)
             {
                 // Draw box
                 image.enabled = true;
@@ -121,25 +128,25 @@ public class SelectionBoxScript : MonoBehaviour
                 sizeVec.x = Mathf.Abs(sizeVec.x);
                 sizeVec.y = Mathf.Abs(sizeVec.y);
                 image.rectTransform.sizeDelta = sizeVec;
-                
+
                 // Change the pivot of the size delta when the mouse goes under/before the start point
                 pivotVec = new Vector2();
                 pivotVec.x = Input.mousePosition.x < startPoint.x ? 1 : 0;
                 pivotVec.y = Input.mousePosition.y < startPoint.y ? 1 : 0;
                 image.rectTransform.pivot = pivotVec;
-            } 
-            else if(Input.GetMouseButtonUp(0) && clicking)
+            }
+            else if (Input.GetMouseButtonUp(0) && clicking)
             {
                 // End selection, push entities in box into secondary targets
                 clicking = false;
                 // Grab the rect of the selection box
-                Vector2 boxStart = 
+                Vector2 boxStart =
                     Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, CameraScript.zLevel));
-                Vector2 boxExtents = 
+                Vector2 boxExtents =
                     Camera.main.ScreenToWorldPoint(
-                        new Vector3((1 - 2 * pivotVec.x) * sizeVec.x + startPoint.x, 
-                        (1 - 2 * pivotVec.y) * sizeVec.y + startPoint.y, 
-                        CameraScript.zLevel));
+                        new Vector3((1 - 2 * pivotVec.x) * sizeVec.x + startPoint.x,
+                            (1 - 2 * pivotVec.y) * sizeVec.y + startPoint.y,
+                            CameraScript.zLevel));
                 Rect finalBox = Rect.MinMaxRect(
                     Mathf.Min(boxStart.x, boxExtents.x),
                     Mathf.Min(boxStart.y, boxExtents.y),
@@ -148,12 +155,15 @@ public class SelectionBoxScript : MonoBehaviour
                 );
 
                 // Now scan for entities
-                foreach(var ent in AIData.entities)
+                foreach (var ent in AIData.entities)
                 {
-                    if(ent != PlayerCore.Instance && ent.transform != PlayerCore.Instance.GetTargetingSystem().GetTarget() 
-                    && finalBox.Contains(ent.transform.position))
+                    if (ent != PlayerCore.Instance && ent.transform != PlayerCore.Instance.GetTargetingSystem().GetTarget()
+                                                   && finalBox.Contains(ent.transform.position))
+                    {
                         reticleScript.AddSecondaryTarget(ent);
+                    }
                 }
+
                 image.enabled = false;
             }
         }
@@ -189,8 +199,14 @@ public class SelectionBoxScript : MonoBehaviour
 
     void BeginPathData(PathData.Node node, SpriteRenderer renderer)
     {
-        foreach(var rend in reticleRenderersByNode.Values) 
-            if(rend) Destroy(rend.gameObject);
+        foreach (var rend in reticleRenderersByNode.Values)
+        {
+            if (rend)
+            {
+                Destroy(rend.gameObject);
+            }
+        }
+
         reticleRenderersByNode.Clear();
         reticleRenderersByNode.Add(node, renderer);
         currentPathData = new PathData();
@@ -209,7 +225,8 @@ public class SelectionBoxScript : MonoBehaviour
         var lineRenderer = reticleRenderersByNode[lastNode].transform.GetComponent<LineRenderer>();
         lineRenderer.positionCount = 2;
         lineRenderer.SetPositions(
-            new Vector3[] {
+            new Vector3[]
+            {
                 lastNode.position,
                 (node.position - lastNode.position).normalized + lastNode.position
             }
@@ -217,6 +234,7 @@ public class SelectionBoxScript : MonoBehaviour
     }
 
     private Dictionary<PathData.Node, SpriteRenderer> reticleRenderersByNode = new Dictionary<PathData.Node, SpriteRenderer>();
+
     IEnumerator pathPlayer(PathData data)
     {
         var player = PlayerCore.Instance;
@@ -225,18 +243,27 @@ public class SelectionBoxScript : MonoBehaviour
 
         while (current != null)
         {
-            if(PlayerCore.Instance.getDirectionalInput() != Vector2.zero || (currentPathData == null || !currentPathData.waypoints.Contains(current)))
+            if (PlayerCore.Instance.getDirectionalInput() != Vector2.zero || (currentPathData == null || !currentPathData.waypoints.Contains(current)))
             {
-                if(currentPathData == null || (!currentPathData.waypoints.Contains(current)))
+                if (currentPathData == null || (!currentPathData.waypoints.Contains(current)))
+                {
                     yield break;
+                }
                 else
                 {
-                    foreach(var renderer in reticleRenderersByNode.Values) 
-                    if(renderer) Destroy(renderer.gameObject);
+                    foreach (var renderer in reticleRenderersByNode.Values)
+                    {
+                        if (renderer)
+                        {
+                            Destroy(renderer.gameObject);
+                        }
+                    }
+
                     reticleRenderersByNode.Clear();
                 }
+
                 break;
-            } 
+            }
 
             Vector2 delta = current.position - (Vector2)player.transform.position - (Vector2)player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
             Vector2 originalDelta = current.position - lastPosition + (Vector2)player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
@@ -246,7 +273,7 @@ public class SelectionBoxScript : MonoBehaviour
 
             reticleRenderersByNode[current].color = lineRenderer.startColor = lineRenderer.endColor
                 = Color.Lerp(new Color32((byte)100, (byte)100, (byte)100, (byte)255), Color.green,
-            (1 - (delta.magnitude / originalDelta.magnitude)));
+                    (1 - (delta.magnitude / originalDelta.magnitude)));
 
             if (delta.sqrMagnitude < PathAI.minDist)
             {
@@ -259,10 +286,14 @@ public class SelectionBoxScript : MonoBehaviour
                     current = GetNode(data, current.children[next]);
                 }
                 else
+                {
                     current = null;
+                }
             }
+
             yield return null;
         }
+
         //nodeID = 1;
         currentPathData = null;
     }
@@ -272,8 +303,11 @@ public class SelectionBoxScript : MonoBehaviour
         for (int i = 0; i < path.waypoints.Count; i++)
         {
             if (path.waypoints[i].ID == ID)
+            {
                 return path.waypoints[i];
+            }
         }
+
         return null;
     }
 }

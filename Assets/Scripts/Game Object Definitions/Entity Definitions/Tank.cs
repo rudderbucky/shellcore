@@ -1,51 +1,56 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Tank : GroundCraft, IOwnable
 {
     Vector2[] path; // positions for tank to move to
-    int index = 0; 
+    int index = 0;
     bool hasPath = false;
     IOwner owner;
     Vector2? pathfindTarget = null;
     float pathfindTimer = 0f;
 
     WeaponAbility weapon;
+
     WeaponAbility Weapon
     {
         get
         {
             if (weapon == null)
+            {
                 weapon = GetComponentInChildren<WeaponAbility>();
+            }
+
             return weapon;
         }
     }
 
     public override bool isImmobile
     {
-        get
-        {
-            return pins > 0 || forceImmobile || !isOnGround;
-        }
-        set
-        {
-            forceImmobile = true;
-        }
+        get { return pins > 0 || forceImmobile || !isOnGround; }
+        set { forceImmobile = true; }
     }
 
     protected override void OnDeath()
     {
-        if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+        if (owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+        {
             owner.GetUnitsCommanding().Remove(this);
+        }
+
         base.OnDeath();
     }
 
-    protected override void OnDestroy() {
-        if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+    protected override void OnDestroy()
+    {
+        if (owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+        {
             owner.GetUnitsCommanding().Remove(this);
+        }
+
         base.OnDestroy();
     }
+
     protected override void Start()
     {
         isDraggable = true;
@@ -53,6 +58,7 @@ public class Tank : GroundCraft, IOwnable
         {
             draggable = gameObject.AddComponent<Draggable>();
         }
+
         base.Start();
     }
 
@@ -76,6 +82,7 @@ public class Tank : GroundCraft, IOwnable
             {
                 Weapon.Tick();
             }
+
             drive();
         }
         else
@@ -87,16 +94,26 @@ public class Tank : GroundCraft, IOwnable
     private void pathfindToTarget()
     {
         if (!isOnGround)
+        {
             return;
+        }
 
         // Find the closest ground target
         Entity target = null;
 
         List<Entity> targets = new List<Entity>(FindObjectsOfType<Entity>());
-        if(!Weapon) return;
+        if (!Weapon)
+        {
+            return;
+        }
+
         for (int i = 0; i < targets.Count; i++)
         {
-            if(!targets[i]) continue;
+            if (!targets[i])
+            {
+                continue;
+            }
+
             if (FactionManager.IsAllied(targets[i].faction, faction) || !Weapon.CheckCategoryCompatibility(targets[i]))
             {
                 targets.RemoveAt(i);
@@ -116,11 +133,16 @@ public class Tank : GroundCraft, IOwnable
 
             path = null;
             if (target && (target.transform.position - transform.position).sqrMagnitude > 16)
+            {
                 path = LandPlatformGenerator.pathfind(transform.position, target.transform.position, Weapon.GetRange());
+            }
+
             hasPath = (path != null && path.Length > 0);
 
             if (hasPath)
+            {
                 index = path.Length - 1;
+            }
         }
     }
 
@@ -132,7 +154,9 @@ public class Tank : GroundCraft, IOwnable
             for (int i = 0; i < path.Length - 1; i++)
             {
                 if (i == index)
+                {
                     Gizmos.color = Color.green;
+                }
 
                 Gizmos.DrawLine(path[i], path[i + 1]);
             }
@@ -142,8 +166,10 @@ public class Tank : GroundCraft, IOwnable
     protected virtual void drive()
     {
         if (!isOnGround)
+        {
             return;
-            
+        }
+
         if (hasPath)
         {
             Vector2 direction = path[index] - (Vector2)transform.position;
@@ -189,12 +215,14 @@ public class Tank : GroundCraft, IOwnable
                     hasPath = false;
                 }
             }
-            else if (index > 0 || direction.magnitude > 2F) 
+            else if (index > 0 || direction.magnitude > 2F)
             {
                 MoveCraft(normalized);
             }
             else
+            {
                 MoveCraft(normalized * 0.5F);
+            }
 
             if (pathfindTimer <= 0f)
             {

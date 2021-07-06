@@ -7,13 +7,34 @@ namespace NodeEditorFramework.Standard
     public class DestroyEntityCondition : Node, ICondition
     {
         public const string ID = "DestroyEntities";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Destroy Entities"; } }
-        public override bool AutoLayout { get { return true; } }
-        public override Vector2 MinSize { get { return new Vector2(200, 180); } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Destroy Entities"; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(200, 180); }
+        }
 
         private ConditionState state;
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         public bool useIDInput;
         public string targetID;
@@ -30,24 +51,31 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob output;
 
         public bool nameMode;
+
         public override void NodeGUI()
         {
             GUILayout.BeginHorizontal();
-            if(useIDInput)
+            if (useIDInput)
             {
-                if(IDInput == null)
+                if (IDInput == null)
                 {
                     if (inputKnobs.Count == 0)
+                    {
                         IDInput = CreateConnectionKnob(IDInStyle);
+                    }
                     else
+                    {
                         IDInput = inputKnobs[0];
+                    }
                 }
+
                 IDInput.DisplayLayout();
             }
+
             output.DisplayLayout();
             GUILayout.EndHorizontal();
 
-            if(nameMode = RTEditorGUI.Toggle(nameMode, "Name Mode"))
+            if (nameMode = RTEditorGUI.Toggle(nameMode, "Name Mode"))
             {
                 GUILayout.Label("Target Name");
                 targetID = GUILayout.TextField(targetID);
@@ -58,10 +86,15 @@ namespace NodeEditorFramework.Standard
                 if (GUI.changed)
                 {
                     if (useIDInput)
+                    {
                         IDInput = CreateConnectionKnob(IDInStyle);
+                    }
                     else
+                    {
                         DeleteConnectionPort(IDInput);
+                    }
                 }
+
                 if (!useIDInput)
                 {
                     GUILayout.Label("Target ID");
@@ -75,8 +108,10 @@ namespace NodeEditorFramework.Standard
                         }
                     }
                 }
+
                 passIfEntityDoesNotExist = RTEditorGUI.Toggle(passIfEntityDoesNotExist, "Pass if entity does not exist");
             }
+
             targetCount = RTEditorGUI.IntField("Count: ", targetCount);
             targetFaction = RTEditorGUI.IntField("Faction: ", targetFaction);
         }
@@ -92,23 +127,25 @@ namespace NodeEditorFramework.Standard
         public void Init(int index)
         {
             if (useIDInput && IDInput == null)
+            {
                 IDInput = inputKnobs[0];
+            }
 
             killCount = 0;
             Entity.OnEntityDeath += updateState;
 
-            if(!nameMode && passIfEntityDoesNotExist && !AIData.entities.Exists(e => e.ID  == targetID))
+            if (!nameMode && passIfEntityDoesNotExist && !AIData.entities.Exists(e => e.ID == targetID))
             {
                 state = ConditionState.Completed;
-                output.connection(0).body.Calculate();  
-                return;              
+                output.connection(0).body.Calculate();
+                return;
             }
 
             state = ConditionState.Listening;
 
-            if(useIDInput)
+            if (useIDInput)
             {
-                if(IDInput.connected())
+                if (IDInput.connected())
                 {
                     targetID = (IDInput.connections[0].body as SpawnEntityNode).entityID;
                 }
@@ -133,7 +170,7 @@ namespace NodeEditorFramework.Standard
                 && entity.faction == targetFaction)
             {
                 killCount++;
-                if(targetFaction != 0)
+                if (targetFaction != 0)
                 {
                     SectorManager.instance.player.alerter.showMessage("ENEMIES DESTROYED: " + killCount + " / " + targetCount, "clip_victory");
                 }
@@ -141,6 +178,7 @@ namespace NodeEditorFramework.Standard
                 {
                     SectorManager.instance.player.alerter.showMessage("ALLIES DEAD: " + killCount + " / " + targetCount, "clip_alert");
                 }
+
                 if (killCount == targetCount)
                 {
                     state = ConditionState.Completed;

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
 using UnityEngine;
@@ -8,15 +7,29 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Actions/Skirmish Menu")]
     public class SkirmishMenuNode : Node
     {
-        public override string GetName { get { return "SkirmishMenuNode"; } }
-        public override string Title { get { return "Skirmish Menu"; } }
+        public override string GetName
+        {
+            get { return "SkirmishMenuNode"; }
+        }
 
-        public override Vector2 MinSize { get { return new Vector2(200, 50); } }
-        public override bool AutoLayout { get { return true; } }
+        public override string Title
+        {
+            get { return "Skirmish Menu"; }
+        }
 
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(200, 50); }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Input", Direction.In, "Dialogue", NodeSide.Left)]
         public ConnectionKnob input;
+
         public List<SkirmishOption> skirmishOptions = new List<SkirmishOption>();
 
         public override void NodeGUI()
@@ -30,9 +43,14 @@ namespace NodeEditorFramework.Standard
                 {
                     skirmishOptions.RemoveAt(i);
                     i--;
-                    if(i == -1) break;
+                    if (i == -1)
+                    {
+                        break;
+                    }
+
                     continue;
                 }
+
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Sector name:");
@@ -65,6 +83,7 @@ namespace NodeEditorFramework.Standard
             {
                 skirmishOptions.Add(new SkirmishOption());
             }
+
             GUILayout.EndHorizontal();
         }
 

@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace NodeEditorFramework.Standard
+﻿namespace NodeEditorFramework.Standard
 {
     [System.Serializable]
     public enum ConditionState
@@ -11,6 +7,7 @@ namespace NodeEditorFramework.Standard
         Listening,
         Completed
     }
+
     public interface ICondition
     {
         ConditionState State { get; set; }

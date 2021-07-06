@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 // Extra data stored for world logic
 public class WorldData : ScriptableObject
 {
     [System.Serializable]
-    public class CharacterData : IBaseProperty {
+    public class CharacterData : IBaseProperty
+    {
         public string ID;
         public string name;
         public string blueprintJSON;
@@ -20,7 +20,8 @@ public class WorldData : ScriptableObject
     }
 
     [System.Serializable]
-    public class PartyData {
+    public class PartyData
+    {
         public string attackDialogue;
         public string defendDialogue;
         public string collectDialogue;
@@ -29,7 +30,8 @@ public class WorldData : ScriptableObject
     }
 
     [System.Serializable]
-    public class PartIndexData {
+    public class PartIndexData
+    {
         public EntityBlueprint.PartInfo part;
         public List<string> origins;
     }

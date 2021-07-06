@@ -1,17 +1,31 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using NodeEditorFramework.Utilities;
+using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "AI/Rotate Craft")]
     public class RotateCraftNode : Node
     {
-        public override string GetName { get { return "RotateCraftNode"; } }
-        public override string Title { get { return "Rotate Craft"; } }
-        public override bool AllowRecursion { get { return true; } }
-        public override bool AutoLayout { get { return true; } }
+        public override string GetName
+        {
+            get { return "RotateCraftNode"; }
+        }
+
+        public override string Title
+        {
+            get { return "Rotate Craft"; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -45,12 +59,18 @@ namespace NodeEditorFramework.Standard
                 if (IDInput == null)
                 {
                     if (inputKnobs.Count == 1)
+                    {
                         IDInput = CreateConnectionKnob(IDInStyle);
+                    }
                     else
+                    {
                         IDInput = inputKnobs[1];
+                    }
                 }
+
                 IDInput.DisplayLayout();
             }
+
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -60,10 +80,15 @@ namespace NodeEditorFramework.Standard
             if (GUI.changed)
             {
                 if (useIDInput)
+                {
                     IDInput = CreateConnectionKnob(IDInStyle);
+                }
                 else
+                {
                     DeleteConnectionPort(IDInput);
+                }
             }
+
             if (!useIDInput)
             {
                 GUILayout.Label("Entity ID");
@@ -87,10 +112,15 @@ namespace NodeEditorFramework.Standard
                 if (GUI.changed)
                 {
                     if (useIDInputTarget)
+                    {
                         IDInput = CreateConnectionKnob(IDInStyle);
+                    }
                     else
+                    {
                         DeleteConnectionPort(IDInput);
+                    }
                 }
+
                 if (!useIDInputTarget)
                 {
                     GUILayout.Label("Entity ID");
@@ -136,12 +166,15 @@ namespace NodeEditorFramework.Standard
 
         AirCraft entity = null;
         Entity target = null;
+
         public override int Traverse()
         {
             if (useIDInput)
             {
                 if (useIDInput && IDInput == null)
+                {
                     IDInput = inputKnobs[1];
+                }
 
                 if (IDInput.connected())
                 {
@@ -156,29 +189,42 @@ namespace NodeEditorFramework.Standard
             Debug.Log("Entity ID: " + entityID);
             Debug.Log("Target ID: " + targetEntityID);
 
-            if(!(target && entity)) // room for improvement but probably unecessary
-            for (int i = 0; i < AIData.entities.Count; i++)
+            if (!(target && entity)) // room for improvement but probably unecessary
             {
-                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
-                    entity = AIData.entities[i] as AirCraft;
-                if (AIData.entities[i].ID == targetEntityID && AIData.entities[i] is AirCraft)
-                    target = AIData.entities[i];
+                for (int i = 0; i < AIData.entities.Count; i++)
+                {
+                    if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
+                    {
+                        entity = AIData.entities[i] as AirCraft;
+                    }
+
+                    if (AIData.entities[i].ID == targetEntityID && AIData.entities[i] is AirCraft)
+                    {
+                        target = AIData.entities[i];
+                    }
+                }
             }
 
-            if(!useNumericalAngle)
+            if (!useNumericalAngle)
             {
-                if(!(target && entity))
+                if (!(target && entity))
                 {
                     Debug.LogWarning("Could not find target/entity! " + target + " " + entity);
                     return 0;
                 }
 
-                Vector2 targetVector = target.transform.position - entity.transform.position; 
+                Vector2 targetVector = target.transform.position - entity.transform.position;
                 //calculate difference of angles and compare them to find the correct turning direction
                 if (!(entity is PlayerCore))
                 {
-                    if(!asynchronous) entity.GetAI().RotateTo(targetVector, continueTraversing);   
-                    else entity.GetAI().RotateTo(targetVector);
+                    if (!asynchronous)
+                    {
+                        entity.GetAI().RotateTo(targetVector, continueTraversing);
+                    }
+                    else
+                    {
+                        entity.GetAI().RotateTo(targetVector);
+                    }
                 }
                 else
                 {
@@ -190,9 +236,8 @@ namespace NodeEditorFramework.Standard
                 entity.transform.rotation = Quaternion.Euler(new Vector3(0, 0, float.Parse(angle)));
                 return 0;
             }
-                
 
-            
+
             return asynchronous ? 0 : -1;
         }
 
@@ -217,7 +262,10 @@ namespace NodeEditorFramework.Standard
 
             player.SetIsInteracting(true);
 
-            if(!asynchronous) continueTraversing();
+            if (!asynchronous)
+            {
+                continueTraversing();
+            }
         }
     }
 }

@@ -1,21 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using NodeEditorFramework.IO;
-using UnityEngine.Events;
-using NodeEditorFramework.Standard;
-using NodeEditorFramework;
-using System.Linq;
 using System.IO;
+using System.Linq;
+using NodeEditorFramework;
+using NodeEditorFramework.IO;
+using NodeEditorFramework.Standard;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class WCGeneratorHandler : MonoBehaviour
 {
-    public struct SectorData 
+    public struct SectorData
     {
-		public string sectorjson;
-		public string platformjson;
-	}
+        public string sectorjson;
+        public string platformjson;
+    }
+
     public WorldCreatorCursor cursor;
     List<Sector> sectors = new List<Sector>();
     public GameObject sectorPrefab;
@@ -36,26 +37,29 @@ public class WCGeneratorHandler : MonoBehaviour
 
     private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
     List<WorldData.PartIndexData> partData = new List<WorldData.PartIndexData>();
+
     [SerializeField]
     FactionManager factionManager;
 
     public static void DeleteTestWorld()
     {
-        if(System.IO.Directory.Exists(testPath))
+        if (System.IO.Directory.Exists(testPath))
         {
-            foreach(var dir in System.IO.Directory.GetDirectories(testPath))
+            foreach (var dir in System.IO.Directory.GetDirectories(testPath))
             {
-                foreach(var file in System.IO.Directory.GetFiles(dir))
+                foreach (var file in System.IO.Directory.GetFiles(dir))
                 {
                     System.IO.File.Delete(file);
                 }
+
                 System.IO.Directory.Delete(dir);
             }
 
-            foreach(var file in System.IO.Directory.GetFiles(testPath))
+            foreach (var file in System.IO.Directory.GetFiles(testPath))
             {
                 System.IO.File.Delete(file);
             }
+
             System.IO.Directory.Delete(testPath);
         }
 
@@ -67,34 +71,42 @@ public class WCGeneratorHandler : MonoBehaviour
     ///</summary>
     private void TryCopy(string path1, string path2)
     {
-        if(System.IO.Directory.Exists(path2))
+        if (System.IO.Directory.Exists(path2))
         {
-            foreach(var file in System.IO.Directory.GetFiles(path2))
+            foreach (var file in System.IO.Directory.GetFiles(path2))
             {
-                #if UNITY_EDITOR
-                if(!file.Contains(".meta"))
+#if UNITY_EDITOR
+                if (!file.Contains(".meta"))
                 {
                     System.IO.File.Delete(file);
                 }
-                #else
+#else
                 System.IO.File.Delete(file);
-                #endif
+#endif
             }
         }
-        else System.IO.Directory.CreateDirectory(path2);
+        else
+        {
+            System.IO.Directory.CreateDirectory(path2);
+        }
 
         System.IO.Directory.CreateDirectory(path1);
         string[] files = System.IO.Directory.GetFiles(path1);
-        foreach(string file in files)
+        foreach (string file in files)
         {
-            if(!file.Contains(".meta"))
+            if (!file.Contains(".meta"))
+            {
                 System.IO.File.Copy(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+            }
             else
+            {
                 System.IO.File.Move(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+            }
         }
     }
 
     List<string> legacyFactionFilesToDelete = new List<string>();
+
     // This method helps clear out legacy faction files, which were allowed to be anywhere in the world folder.
     // The game does not actually delete the legacy files until the folder is written to (with the appropriate method)
     private void ReadFactionsIntoFactionPlaceholder(string path)
@@ -102,35 +114,39 @@ public class WCGeneratorHandler : MonoBehaviour
         legacyFactionFilesToDelete.Clear();
         string resourceTxtPath = System.IO.Path.Combine(path, "ResourceData.txt");
         string factionPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder");
-        if(!Directory.Exists(factionPlaceholderPath)) Directory.CreateDirectory(factionPlaceholderPath);
-        using(StreamReader sr = File.OpenText(resourceTxtPath))
+        if (!Directory.Exists(factionPlaceholderPath))
+        {
+            Directory.CreateDirectory(factionPlaceholderPath);
+        }
+
+        using (StreamReader sr = File.OpenText(resourceTxtPath))
         {
             bool onFactions = false;
             string s;
-            while((s = sr.ReadLine()) != null)
+            while ((s = sr.ReadLine()) != null)
             {
-                if(ResourceManager.resourceHeaders.Any(header => s.ToLower().StartsWith(header)))
+                if (ResourceManager.resourceHeaders.Any(header => s.ToLower().StartsWith(header)))
                 {
-                    if(s.ToLower().StartsWith("factions:"))
+                    if (s.ToLower().StartsWith("factions:"))
                     {
                         onFactions = true;
                         continue;
                     }
-                    else if(onFactions) 
+                    else if (onFactions)
                     {
                         break;
                     }
                 }
-                
-                if(onFactions)
+
+                if (onFactions)
                 {
                     string[] names = s.Split(':');
                     string resPath = System.IO.Path.Combine(path, names[1]);
-                    
+
                     // try grabbing the faction name
                     var faction = ScriptableObject.CreateInstance<Faction>();
                     try
-                    {   
+                    {
                         JsonUtility.FromJsonOverwrite(File.ReadAllText(resPath), faction);
                     }
                     catch
@@ -140,22 +156,21 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
 
                     // make sure the faction was not already copied in
-                    if(!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, faction.factionName+".json")))
+                    if (!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, faction.factionName + ".json")))
                     {
-                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, faction.factionName+".json"));
+                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, faction.factionName + ".json"));
                         legacyFactionFilesToDelete.Add(resPath);
-                    }   
+                    }
                 }
             }
-            
         }
     }
 
     public void OnNameEdit(string tmpWworldName)
     {
-        invalidNameWarning.enabled = 
-            tmpWworldName == null 
-            || tmpWworldName == "" 
+        invalidNameWarning.enabled =
+            tmpWworldName == null
+            || tmpWworldName == ""
             || tmpWworldName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1;
     }
 
@@ -195,7 +210,7 @@ public class WCGeneratorHandler : MonoBehaviour
         sectors = new List<Sector>();
         var items = cursor.placedItems;
         var wrappers = cursor.sectors;
-        foreach(var wrapper in wrappers) 
+        foreach (var wrapper in wrappers)
         {
             sectors.Add(wrapper.sector);
         }
@@ -203,14 +218,21 @@ public class WCGeneratorHandler : MonoBehaviour
         int minX = int.MaxValue;
         int maxY = int.MinValue;
         // Get the world bounds
-        foreach(var sector in sectors) 
+        foreach (var sector in sectors)
         {
-            if(sector.bounds.x < minX) minX = sector.bounds.x;
-            if(sector.bounds.y > maxY) maxY = sector.bounds.y;
+            if (sector.bounds.x < minX)
+            {
+                minX = sector.bounds.x;
+            }
+
+            if (sector.bounds.y > maxY)
+            {
+                maxY = sector.bounds.y;
+            }
         }
 
         // ensure spawn point in some sector
-        if(sectors.TrueForAll(sector => !sector.bounds.contains(cursor.spawnPoint.position)))
+        if (sectors.TrueForAll(sector => !sector.bounds.contains(cursor.spawnPoint.position)))
         {
             Debug.LogError("Spawn point not in sector bounds. Abort.");
             yield break;
@@ -220,7 +242,7 @@ public class WCGeneratorHandler : MonoBehaviour
         int ID = 0;
         Dictionary<Sector, List<Sector.LevelEntity>> sectEnts = new Dictionary<Sector, List<Sector.LevelEntity>>();
         Dictionary<Sector, List<string>> sectTargetIDS = new Dictionary<Sector, List<string>>();
-        foreach(var sector in sectors)
+        foreach (var sector in sectors)
         {
             sectEnts.Add(sector, new List<Sector.LevelEntity>());
             sectTargetIDS.Add(sector, new List<string>());
@@ -229,28 +251,31 @@ public class WCGeneratorHandler : MonoBehaviour
 
         // Add background spawns to part index
         partData.Clear();
-        foreach(var sector in sectors)
+        foreach (var sector in sectors)
         {
             if (sector.backgroundSpawns != null)
-                foreach(var spawn in sector.backgroundSpawns)
+            {
+                foreach (var spawn in sector.backgroundSpawns)
                 {
                     AttemptAddShellCoreParts(spawn.entity, sector.sectorName, path);
                 }
+            }
         }
 
         Dictionary<string, string> itemSectorsByID = new Dictionary<string, string>();
-        
-        foreach(var item in items)
+
+        foreach (var item in items)
         {
             Sector container = GetSurroundingSector(item.pos, item.dimension);
-            if(container == null)
+            if (container == null)
             {
                 savingLevelScreen.SetActive(false);
                 saveState = 3;
                 Debug.LogError("No container for item. Abort.");
                 yield break;
             }
-            switch(item.type)
+
+            switch (item.type)
             {
                 case ItemType.Platform:
                     var index = GetPlatformIndices(container, item.pos);
@@ -268,99 +293,116 @@ public class WCGeneratorHandler : MonoBehaviour
                 case ItemType.DecorationWithMetadata:
                 case ItemType.Flag:
                     Sector.LevelEntity ent = new Sector.LevelEntity();
-                    if(cursor.characters.TrueForAll((WorldData.CharacterData x) => {return x.ID != item.ID;})) 
+                    if (cursor.characters.TrueForAll((WorldData.CharacterData x) => { return x.ID != item.ID; }))
                     {
                         // Debug.Log(item.ID + " is not a character. " + ID);
-                        if(item.type == ItemType.DecorationWithMetadata) 
+                        if (item.type == ItemType.DecorationWithMetadata)
                         {
                             int parsedId;
-                            if(item.assetID == "shard_rock" && int.TryParse(item.ID, out parsedId))
+                            if (item.assetID == "shard_rock" && int.TryParse(item.ID, out parsedId))
                             {
                                 Debug.LogError($"Shard in sector {container.sectorName} has a numeric ID. Abort.");
                                 yield break;
                             }
+
                             ent.blueprintJSON = item.shellcoreJSON;
                         }
+
                         int test;
-                        if(item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
+                        if (item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
                         {
                             ent.ID = ID++ + "";
                         }
-                        else 
+                        else
                         {
                             ent.ID = item.ID;
-                            if(itemSectorsByID.ContainsKey(ent.ID))
+                            if (itemSectorsByID.ContainsKey(ent.ID))
                             {
                                 savingLevelScreen.SetActive(false);
                                 saveState = 4;
-                                Debug.LogError("Two items in sectors " + container.sectorName + " and " 
-                                    + itemSectorsByID[ent.ID] + $" were issued the same custom ID ({ent.ID}). Abort.");
+                                Debug.LogError("Two items in sectors " + container.sectorName + " and "
+                                               + itemSectorsByID[ent.ID] + $" were issued the same custom ID ({ent.ID}). Abort.");
                                 yield break;
                             }
-                            else itemSectorsByID.Add(ent.ID, container.sectorName);
+                            else
+                            {
+                                itemSectorsByID.Add(ent.ID, container.sectorName);
+                            }
                         }
 
                         // Debug.Log(container.sectorName + " " + ent.ID);
                     }
-                    else 
+                    else
                     {
                         // TODO: adjust faction
                         Debug.Log("Character found. Adjusting ID and name");
                         ent.ID = item.ID;
                     }
+
                     // you can choose to give any object a custom name
-                    if(item.name != null && item.name != "")
+                    if (item.name != null && item.name != "")
+                    {
                         ent.name = item.name;
-                    else ent.name = item.obj.name;
+                    }
+                    else
+                    {
+                        ent.name = item.obj.name;
+                    }
+
                     ent.faction = item.faction;
                     ent.position = item.pos;
                     ent.assetID = item.assetID;
                     ent.vendingID = item.vendingID;
                     ent.patrolPath = item.patrolPath;
-                    if((item.isTarget && container.type != Sector.SectorType.SiegeZone)
+                    if ((item.isTarget && container.type != Sector.SectorType.SiegeZone)
                         || (container.type == Sector.SectorType.SiegeZone && item.assetID == "outpost_blueprint" && item.faction == 0)
-                        || (container.type == Sector.SectorType.SiegeZone && item.assetID == "bunker_blueprint" && item.faction == 0)) 
+                        || (container.type == Sector.SectorType.SiegeZone && item.assetID == "bunker_blueprint" && item.faction == 0))
+                    {
+                        sectTargetIDS[container].Add(ent.ID);
+                    }
+
+                    var charExists = cursor.characters.Exists(ch => ch.ID == ent.ID);
+                    if (ent.assetID == "shellcore_blueprint" || charExists)
+                    {
+                        if (container.type != Sector.SectorType.SiegeZone && !sectTargetIDS[container].Contains(ent.ID))
+                        {
                             sectTargetIDS[container].Add(ent.ID);
-                    var charExists = cursor.characters.Exists(ch => ch.ID == ent.ID );
-                    if(ent.assetID == "shellcore_blueprint" || charExists)
-                {
-                        if(container.type != Sector.SectorType.SiegeZone && !sectTargetIDS[container].Contains(ent.ID))
-                            sectTargetIDS[container].Add(ent.ID);
+                        }
+
                         ent.blueprintJSON = item.shellcoreJSON;
-                        if(!charExists)
+                        if (!charExists)
                         {
                             AttemptAddShellCoreParts(ent, container.sectorName, path);
                         }
                     }
-                    else if(ent.assetID == "trader_blueprint")
+                    else if (ent.assetID == "trader_blueprint")
                     {
                         ent.blueprintJSON = item.shellcoreJSON;
 
                         // Attempt to add trader parts into index.
-                        if(ent.blueprintJSON == null || ent.blueprintJSON == "")
+                        if (ent.blueprintJSON == null || ent.blueprintJSON == "")
                         {
                             var dialogueDataPath = $"{canvasPlaceholderPath}\\{ent.ID}.dialoguedata";
-                            
-                            if(System.IO.File.Exists(dialogueDataPath))
+
+                            if (System.IO.File.Exists(dialogueDataPath))
                             {
                                 var XMLImport = new XMLImportExport();
                                 var canvas = XMLImport.Import(dialogueDataPath) as DialogueCanvas;
-                                foreach(var node in canvas.nodes)
+                                foreach (var node in canvas.nodes)
                                 {
-                                    if(node is EndDialogue)
+                                    if (node is EndDialogue)
                                     {
                                         var endDialogue = node as EndDialogue;
-                                        if(endDialogue.openTrader)
+                                        if (endDialogue.openTrader)
                                         {
-                                            ShipBuilder.TraderInventory traderInventory = 
+                                            ShipBuilder.TraderInventory traderInventory =
                                                 JsonUtility.FromJson<ShipBuilder.TraderInventory>(endDialogue.traderJSON);
                                             AttemptAddPartArray(traderInventory.parts, container.sectorName);
                                         }
-                                        
                                     }
                                 }
                             }
-                            else 
+                            else
                             {
                                 ent.blueprintJSON = JsonUtility.ToJson(new ShipBuilder.TraderInventory());
                                 // Maybe make this error message more descriptive.
@@ -369,50 +411,55 @@ public class WCGeneratorHandler : MonoBehaviour
                         }
                         else
                         {
-                            ShipBuilder.TraderInventory traderInventory = 
+                            ShipBuilder.TraderInventory traderInventory =
                                 JsonUtility.FromJson<ShipBuilder.TraderInventory>(ent.blueprintJSON);
                             AttemptAddPartArray(traderInventory.parts, container.sectorName);
                         }
                     }
-                    else if(ent.assetID == "groundcarrier_blueprint" || ent.assetID == "carrier_blueprint" || ent.assetID == "outpost_blueprint"
-                        || ent.assetID == "bunker_blueprint")
+                    else if (ent.assetID == "groundcarrier_blueprint" || ent.assetID == "carrier_blueprint" || ent.assetID == "outpost_blueprint"
+                             || ent.assetID == "bunker_blueprint")
                     {
                         ent.blueprintJSON = item.shellcoreJSON;
                     }
 
                     sectEnts[container].Add(ent);
-                    break;   
+                    break;
                 default:
                     break;
             }
         }
 
-        if(!System.IO.Directory.Exists(canvasPlaceholderPath)) System.IO.Directory.CreateDirectory(canvasPlaceholderPath);
+        if (!System.IO.Directory.Exists(canvasPlaceholderPath))
+        {
+            System.IO.Directory.CreateDirectory(canvasPlaceholderPath);
+        }
+
         // Add reward parts from tasks.
         if (System.IO.Directory.Exists(canvasPlaceholderPath))
-            foreach(var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
+        {
+            foreach (var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
             {
-                if(System.IO.Path.GetExtension(canvasPath) == ".taskdata")
+                if (System.IO.Path.GetExtension(canvasPath) == ".taskdata")
                 {
                     var XMLImport = new XMLImportExport();
                     var canvas = XMLImport.Import(canvasPath) as QuestCanvas;
 
                     string missionName = null;
-                    foreach(var node in canvas.nodes)
+                    foreach (var node in canvas.nodes)
                     {
-                        if(node is StartMissionNode)
+                        if (node is StartMissionNode)
                         {
                             var startMission = node as StartMissionNode;
                             missionName = startMission.missionName;
                         }
                     }
 
-                    foreach(var node in canvas.nodes)
+                    foreach (var node in canvas.nodes)
                     {
-                        if(node is StartTaskNode)
+                        if (node is StartTaskNode)
                         {
                             var startTask = node as StartTaskNode;
-                            if(startTask.partReward)
+                            if (startTask.partReward)
                             {
                                 EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
                                 part.partID = startTask.partID;
@@ -423,49 +470,64 @@ public class WCGeneratorHandler : MonoBehaviour
 
                                 AddPart(part, missionName);
                             }
-                        
                         }
                     }
                 }
             }
+        }
 
         // try to write out resources. Factions are obtained from the FactionManager
-        if(!System.IO.Directory.Exists(factionPlaceholderPath)) System.IO.Directory.CreateDirectory(factionPlaceholderPath);
+        if (!System.IO.Directory.Exists(factionPlaceholderPath))
+        {
+            System.IO.Directory.CreateDirectory(factionPlaceholderPath);
+        }
+
         var resourceTxtPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt");
-        if(System.IO.File.Exists(resourceTxtPath))
+        if (System.IO.File.Exists(resourceTxtPath))
         {
             // first, extract all the lines without the factions.
             List<string> lines = new List<string>();
-            using(StreamReader sr = File.OpenText(resourceTxtPath))
+            using (StreamReader sr = File.OpenText(resourceTxtPath))
             {
                 string s;
                 bool onFactions = false;
-                while((s = sr.ReadLine()) != null)
+                while ((s = sr.ReadLine()) != null)
                 {
-                    if(ResourceManager.resourceHeaders.Any(header => s.ToLower().StartsWith(header)))
+                    if (ResourceManager.resourceHeaders.Any(header => s.ToLower().StartsWith(header)))
                     {
-                        if(s.ToLower().StartsWith("factions:"))
+                        if (s.ToLower().StartsWith("factions:"))
                         {
                             onFactions = true;
                         }
-                        else onFactions = false;
+                        else
+                        {
+                            onFactions = false;
+                        }
                     }
-                    if(!onFactions) lines.Add(s);
+
+                    if (!onFactions)
+                    {
+                        lines.Add(s);
+                    }
                 }
-                
             }
+
             //  we then reconstruct the factions tab with FM data
             lines.Add("factions:");
-            foreach(var faction in factionManager.factions)
+            foreach (var faction in factionManager.factions)
             {
                 // avoid default factions
-                if(FactionManager.defaultFactions.Contains(faction) ) continue;
+                if (FactionManager.defaultFactions.Contains(faction))
+                {
+                    continue;
+                }
+
                 lines.Add($"{faction.factionName}:Factions/{faction.factionName}.json");
             }
+
             File.WriteAllLines(resourceTxtPath, lines);
         }
 
-        
 
         // calculate land platform pathfinding directions
         foreach (var sector in sectors)
@@ -479,9 +541,10 @@ public class WCGeneratorHandler : MonoBehaviour
                     plat.GenerateDirections();
                     data.Add(plat.Encode());
                 }
+
                 sector.platformData = data.ToArray();
             }
-            else 
+            else
             {
                 sector.platforms = new GroundPlatform[0];
                 sector.platformData = new string[0];
@@ -489,12 +552,13 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
         // write all sectors into a file
-        if (!System.IO.Directory.Exists(path)) {
-			System.IO.Directory.CreateDirectory(path);
-		}
-        
+        if (!System.IO.Directory.Exists(path))
+        {
+            System.IO.Directory.CreateDirectory(path);
+        }
+
         // Delete all unnecessary files
-        if(System.IO.Directory.Exists(path))
+        if (System.IO.Directory.Exists(path))
         {
             string[] resPaths = ResourceManager.Instance.GetFileNames(path);
 
@@ -505,31 +569,37 @@ public class WCGeneratorHandler : MonoBehaviour
             }
 
             string[] directories = System.IO.Directory.GetDirectories(path);
-            foreach(var dir in directories)
+            foreach (var dir in directories)
             {
                 bool del = true;
-                foreach(var f in System.IO.Directory.GetFiles(dir))
+                foreach (var f in System.IO.Directory.GetFiles(dir))
                 {
                     Debug.Log("File in dir: " + System.IO.Path.Combine(dir, f));
                     if (!resPaths.Contains(System.IO.Path.Combine(dir, f).Replace('\\', '/')))
                     {
                         System.IO.File.Delete(f);
                     }
+
                     del = false;
                 }
+
                 if (del)
+                {
                     System.IO.Directory.Delete(dir);
+                }
             }
 
             string[] files = System.IO.Directory.GetFiles(path);
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 string f = file.Replace('\\', '/');
                 if ((!resPaths.Contains(f) && f != System.IO.Path.Combine(path, "ResourceData.txt").Replace('\\', '/'))
                     || legacyFactionFilesToDelete.Contains(file))
+                {
                     System.IO.File.Delete(file);
+                }
             }
-        }   
+        }
 
         // create world data
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
@@ -542,28 +612,33 @@ public class WCGeneratorHandler : MonoBehaviour
 
         string wdjson = JsonUtility.ToJson(wdata);
         System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
-        if(File.Exists(System.IO.Path.Combine(path, "ResourceData.txt")))
+        if (File.Exists(System.IO.Path.Combine(path, "ResourceData.txt")))
+        {
             File.Delete(System.IO.Path.Combine(path, "ResourceData.txt"));
-        if(File.Exists(resourceTxtPath))
+        }
+
+        if (File.Exists(resourceTxtPath))
+        {
             File.Copy(resourceTxtPath, System.IO.Path.Combine(path, "ResourceData.txt"));
+        }
 
         TryCopy(canvasPlaceholderPath, path + "\\Canvases\\");
         TryCopy(entityPlaceholderPath, path + "\\Entities\\");
         TryCopy(wavePlaceholderPath, path + "\\Waves\\");
         TryCopy(factionPlaceholderPath, path + "\\Factions\\");
 
-        foreach(var sector in sectors)
+        foreach (var sector in sectors)
         {
-            if(sector.sectorName == null || sector.sectorName == "")
+            if (sector.sectorName == null || sector.sectorName == "")
             {
                 sector.sectorName = GetDefaultName(sector, minX, maxY);
             }
 
-            if(sector.hasMusic && (sector.musicID == null || sector.musicID == ""))
+            if (sector.hasMusic && (sector.musicID == null || sector.musicID == ""))
             {
                 sector.musicID = GetDefaultMusic(sector.type);
             }
-            
+
             sector.entities = sectEnts[sector].ToArray();
             sector.targets = sectTargetIDS[sector].ToArray();
             // sector.backgroundColor = SectorColors.colors[(int)sector.type];
@@ -574,16 +649,18 @@ public class WCGeneratorHandler : MonoBehaviour
 
             string output = JsonUtility.ToJson(data);
 
-            string sectorPath = path + "\\." + sector.sectorName + ".json";                
+            string sectorPath = path + "\\." + sector.sectorName + ".json";
             System.IO.File.WriteAllText(sectorPath, output);
         }
 
-		Debug.Log("JSON written to location: " + path);
+        Debug.Log("JSON written to location: " + path);
         Debug.Log($"Index size: {partData.Count}");
         savingLevelScreen.SetActive(false);
         saveState = 2;
         if (OnSectorSaved != null)
+        {
             OnSectorSaved.Invoke();
+        }
     }
 
     string GetDefaultName(Sector sector, int minX, int maxY)
@@ -591,7 +668,7 @@ public class WCGeneratorHandler : MonoBehaviour
         int x = sector.bounds.x - minX;
         int y = maxY - sector.bounds.y;
         string typeRep;
-        switch(sector.type)
+        switch (sector.type)
         {
             case Sector.SectorType.BattleZone:
                 typeRep = "Battle Zone";
@@ -611,36 +688,41 @@ public class WCGeneratorHandler : MonoBehaviour
             default:
                 typeRep = "Sector";
                 break;
-        } 
+        }
 
         return typeRep + " " + x + "-" + y + (sector.dimension > 0 ? $" - Dimension {sector.dimension}" : "");
     }
 
     public static string GetDefaultMusic(Sector.SectorType type)
     {
-        switch(type)
+        switch (type)
         {
             case Sector.SectorType.BattleZone:
                 return PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{(int)type}", "music_fast");
             case Sector.SectorType.Capitol:
                 return PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{(int)type}", "music_funktify");
-                // Funktify made by Mr Spastic, website - http://www.mrspastic.com
+            // Funktify made by Mr Spastic, website - http://www.mrspastic.com
             case Sector.SectorType.SiegeZone:
                 return PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{(int)type}", "music_siege_1");
             default:
                 return PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{(int)type}", "music_overworld");
-        } 
+        }
     }
 
-    Sector GetSurroundingSector(Vector2 pos, int dim) {
-        foreach(var sector in sectors)
+    Sector GetSurroundingSector(Vector2 pos, int dim)
+    {
+        foreach (var sector in sectors)
         {
-            if(sector.bounds.contains(pos) && sector.dimension == dim) return sector;
+            if (sector.bounds.contains(pos) && sector.dimension == dim)
+            {
+                return sector;
+            }
         }
+
         return null;
     }
 
-    (int, int) GetPlatformIndices(Sector sector, Vector2 pos) 
+    (int, int) GetPlatformIndices(Sector sector, Vector2 pos)
     {
         int row = (sector.bounds.y - (int)pos.y) / (int)cursor.tileSize;
         int col = ((int)pos.x - sector.bounds.x) / (int)cursor.tileSize;
@@ -649,20 +731,20 @@ public class WCGeneratorHandler : MonoBehaviour
 
     public void WriteWorldFromEditorPrompt()
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         var str = UnityEditor.EditorUtility.SaveFolderPanel(
-        "Write World (You must create the folder you want to save into) ", 
-        Application.streamingAssetsPath + "\\Sectors", "DefaultWorldName");
+            "Write World (You must create the folder you want to save into) ",
+            Application.streamingAssetsPath + "\\Sectors", "DefaultWorldName");
         WriteWorld(str);
-        #endif
+#endif
     }
 
     public void ReadWorldFromEditorPrompt()
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         var str = UnityEditor.EditorUtility.OpenFolderPanel("Read World (Folder)", Application.streamingAssetsPath + "\\Sectors", "");
         ReadWorld(str);
-        #endif
+#endif
     }
 
     public void ReadWorldFromField()
@@ -670,7 +752,8 @@ public class WCGeneratorHandler : MonoBehaviour
         string path = worldReadPath.text;
         ReadWorld(path);
     }
-    public void ReadWorld(string path) 
+
+    public void ReadWorld(string path)
     {
         if (System.IO.Directory.Exists(path))
         {
@@ -696,9 +779,11 @@ public class WCGeneratorHandler : MonoBehaviour
                 TryCopy(path + "\\Factions\\", Application.streamingAssetsPath + "\\FactionPlaceholder");
 
                 var resourcePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt");
-                if(File.Exists(resourcePlaceholderPath))
+                if (File.Exists(resourcePlaceholderPath))
+                {
                     File.Delete(resourcePlaceholderPath);
-                    
+                }
+
                 // reading sectors
                 string[] files = System.IO.Directory.GetFiles(path);
 
@@ -708,17 +793,20 @@ public class WCGeneratorHandler : MonoBehaviour
 
                 foreach (string file in files)
                 {
-                    if(file.Contains(".meta")) continue;
-                    
+                    if (file.Contains(".meta"))
+                    {
+                        continue;
+                    }
+
                     // parse world data
-                    if(file.Contains(".worlddata"))
+                    if (file.Contains(".worlddata"))
                     {
                         string worlddatajson = System.IO.File.ReadAllText(file);
                         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
                         cursor.spawnPoint.position = wdata.initialSpawn;
                         // add characters into character handler
-                        foreach(var ch in wdata.defaultCharacters)
+                        foreach (var ch in wdata.defaultCharacters)
                         {
                             cursor.characters.Add(ch);
                         }
@@ -729,7 +817,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         continue;
                     }
 
-                    if(file.Contains(".taskdata") || file.Contains(".dialoguedata") || file.Contains(".sectordata"))
+                    if (file.Contains(".taskdata") || file.Contains(".dialoguedata") || file.Contains(".sectordata"))
                     {
                         continue;
                     }
@@ -783,6 +871,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 }
                             }
                         }
+
                         Destroy(plat);
                         curSect.platform = null;
                     }
@@ -815,7 +904,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
 
                     LineRenderer renderer = Instantiate(sectorPrefab).GetComponent<LineRenderer>();
-                    renderer.SetPositions(new Vector3[] 
+                    renderer.SetPositions(new Vector3[]
                         {
                             new Vector2(curSect.bounds.x, curSect.bounds.y),
                             new Vector2(curSect.bounds.x, curSect.bounds.y - curSect.bounds.h),
@@ -829,11 +918,11 @@ public class WCGeneratorHandler : MonoBehaviour
                     wrapper.renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = wrapper.sector;
                     cursor.sectors.Add(wrapper);
 
-                    foreach(Sector.LevelEntity ent in curSect.entities)
+                    foreach (Sector.LevelEntity ent in curSect.entities)
                     {
-                        foreach(Item item in itemHandler.itemPack.items)
+                        foreach (Item item in itemHandler.itemPack.items)
                         {
-                            if(ent.assetID == item.assetID && ent.assetID != "")
+                            if (ent.assetID == item.assetID && ent.assetID != "")
                             {
                                 Item copy = itemHandler.CopyItem(item);
                                 copy.dimension = curSect.dimension;
@@ -845,7 +934,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 copy.shellcoreJSON = ent.blueprintJSON;
                                 copy.patrolPath = ent.patrolPath;
                                 cursor.placedItems.Add(copy);
-                            }              
+                            }
                         }
                     }
                 }
@@ -878,15 +967,16 @@ public class WCGeneratorHandler : MonoBehaviour
             catch (System.Exception e)
             {
                 Debug.LogError(e);
-            };
+            }
+
+            ;
             Input.ResetInputAxes(); // clear the copy paste ctrl press if there was one
         }
     }
 
     public void AttemptAddPartArray(List<EntityBlueprint.PartInfo> parts, string sectorName)
     {
-        
-        foreach(var part in parts)
+        foreach (var part in parts)
         {
             AddPart(part, sectorName);
         }
@@ -907,19 +997,18 @@ public class WCGeneratorHandler : MonoBehaviour
                 (Application.streamingAssetsPath + "\\EntityPlaceholder\\" + entity.blueprintJSON + ".json"), blueprint);
         }
 
-        
-        if(blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore && entity.faction == 1)
+
+        if (blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore && entity.faction == 1)
         {
-            if(blueprint.parts != null)
+            if (blueprint.parts != null)
             {
-                foreach(var part in blueprint.parts)
+                foreach (var part in blueprint.parts)
                 {
                     AddPart(part, sectorName);
                 }
-            }       
+            }
         }
     }
-
 
     ///
     /// Attempt to add a part into the index, check if the player obtained/saw it
@@ -928,13 +1017,17 @@ public class WCGeneratorHandler : MonoBehaviour
     {
         part = PartIndexScript.CullToPartIndexValues(part);
         WorldData.PartIndexData data = partData.Find((pData) => pData.part.Equals(part));
-        if(data == null)
+        if (data == null)
         {
             data = new WorldData.PartIndexData();
             data.part = part;
             data.origins = new List<string>();
             partData.Add(data);
         }
-        if(!data.origins.Contains(origin)) data.origins.Add(origin);
+
+        if (!data.origins.Contains(origin))
+        {
+            data.origins.Add(origin);
+        }
     }
 }

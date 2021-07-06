@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using NodeEditorFramework.Utilities;
+﻿using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
@@ -13,10 +10,21 @@ namespace NodeEditorFramework.Standard
 
         //Node things
         public const string ID = "CheckpointNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Checkpoint"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(208, 100); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Checkpoint"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(208, 100); }
+        }
 
         public string checkpointName;
 

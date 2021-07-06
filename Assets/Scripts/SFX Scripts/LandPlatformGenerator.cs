@@ -1,36 +1,32 @@
-﻿using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using System;
 
-public class LandPlatformGenerator : MonoBehaviour {
-
-
-    public static string[] prefabNames = new string[] {
-                "New Junction",         // 0
-                "New 1 Entry",          // 1
-                "New 2 Entry",          // 2
-                "New 0 Entry",          // 3
-                "New 0 Entry Ghost",    // 4
-                "New 3 Entry",          // 5
-                "New 4 Entry",          // 6
-                "New Junction Ghost",   // 7
-                "New 1 Entry Ghost",    // 8
-                "New 2 Entry Ghost",    // 9
-                "New 3 Entry Ghost",    // 10
-                "New 4 Entry Ghost",    // 11
-            };
+public class LandPlatformGenerator : MonoBehaviour
+{
+    public static string[] prefabNames = new string[]
+    {
+        "New Junction", // 0
+        "New 1 Entry", // 1
+        "New 2 Entry", // 2
+        "New 0 Entry", // 3
+        "New 0 Entry Ghost", // 4
+        "New 3 Entry", // 5
+        "New 4 Entry", // 6
+        "New Junction Ghost", // 7
+        "New 1 Entry Ghost", // 8
+        "New 2 Entry Ghost", // 9
+        "New 3 Entry Ghost", // 10
+        "New 4 Entry Ghost" // 11
+    };
 
     // TODO: generate one mesh instead of multiple objects
 
     static LandPlatformGenerator instance;
+
     public static LandPlatformGenerator Instance
     {
-        private set
-        {
-            instance = value;
-        }
+        private set { instance = value; }
         get
         {
             if (instance == null || !instance)
@@ -38,13 +34,16 @@ public class LandPlatformGenerator : MonoBehaviour {
                 instance = FindObjectOfType<LandPlatformGenerator>();
                 instance.Initialize();
             }
+
             return instance;
         }
     }
 
     public GroundPlatform[] groundPlatforms;
+
     //private Dictionary<int, GameObject> tiles;
     private List<Rect> areas;
+
     //private List<NavigationNode> nodes;
     private Vector2 center;
 
@@ -57,7 +56,9 @@ public class LandPlatformGenerator : MonoBehaviour {
     public static bool IsOnGround(Vector3 position)
     {
         if (Instance.groundPlatforms == null)
+        {
             return false;
+        }
 
         Vector2 relativePos = ((Vector2)position - instance.Offset) / Instance.tileSize;
         relativePos.y = -relativePos.y;
@@ -80,6 +81,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                 }
             }
         }
+
         return false;
 
         //int index = Mathf.RoundToInt(relativePos.x) + Mathf.RoundToInt(relativePos.y) * cols;
@@ -94,22 +96,27 @@ public class LandPlatformGenerator : MonoBehaviour {
         //return false;
     }
 
-    public void SetColor(Color color) {
+    public void SetColor(Color color)
+    {
         this.color = color;
         if (groundPlatforms != null)
+        {
             for (int i = 0; i < groundPlatforms.Length; i++)
             {
                 for (int j = 0; j < groundPlatforms[i].tiles.Count; j++)
                 {
                     var obj = groundPlatforms[i].tiles?[j].colliders?[0];
                     if (obj)
+                    {
                         obj.GetComponent<SpriteRenderer>().color = color;
+                    }
                 }
             }
+        }
     }
 
-    public void BuildTiles(LandPlatform platform, Vector2 center) {
-
+    public void BuildTiles(LandPlatform platform, Vector2 center)
+    {
         this.center = center;
         var blueprint = platform;
 
@@ -117,10 +124,10 @@ public class LandPlatformGenerator : MonoBehaviour {
 
         var cols = blueprint.columns;
         var rows = blueprint.rows;
-        Offset = new Vector2 
+        Offset = new Vector2
         {
-            x = center.x - tileSize * (cols-1)/2F,
-            y = center.y + tileSize * (rows-1)/2F
+            x = center.x - tileSize * (cols - 1) / 2F,
+            y = center.y + tileSize * (rows - 1) / 2F
         };
         // TODO: read new data from file, for each platform
 
@@ -133,7 +140,6 @@ public class LandPlatformGenerator : MonoBehaviour {
             // Create tile objects
             for (int i = 0; i < blueprint.tilemap.Length; i++)
             {
-
                 var pos = new Vector3
                 {
                     x = Offset.x + tileSize * (i % cols),
@@ -160,6 +166,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                         });
                 }
             }
+
             groundPlatforms = DivideToPlatforms(tiles);
         }
     }
@@ -172,6 +179,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         {
             platNums[i] = -1;
         }
+
         int platIndex = 0;
         for (int i = 0; i < tiles.Count; i++)
         {
@@ -210,6 +218,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                             Debug.Log("Couldn't find a 1 tile");
                         }
                     }
+
                     if ((ends & 2) == 2)
                     {
                         int neighborIndex = tiles.FindIndex(t => t.pos == new Vector2Int(current.pos.x, current.pos.y - 1));
@@ -230,6 +239,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                             Debug.Log("Couldn't find a 2 tile");
                         }
                     }
+
                     if ((ends & 4) == 4)
                     {
                         int neighborIndex = tiles.FindIndex(t => t.pos == new Vector2Int(current.pos.x - 1, current.pos.y));
@@ -250,6 +260,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                             Debug.Log("Couldn't find a 4 tile");
                         }
                     }
+
                     if ((ends & 8) == 8)
                     {
                         int neighborIndex = tiles.FindIndex(t => t.pos == new Vector2Int(current.pos.x, current.pos.y + 1));
@@ -273,6 +284,7 @@ public class LandPlatformGenerator : MonoBehaviour {
 
                     openList.RemoveAt(0);
                 }
+
                 platIndex++;
             }
         }
@@ -285,8 +297,11 @@ public class LandPlatformGenerator : MonoBehaviour {
             for (int j = 0; j < platNums.Length; j++)
             {
                 if (platNums[j] == i)
+                {
                     platTiles.Add(tiles[j]);
+                }
             }
+
             platforms.Add(new GroundPlatform(platTiles.ToArray()));
         }
 
@@ -303,20 +318,25 @@ public class LandPlatformGenerator : MonoBehaviour {
     public void Unload()
     {
         if (groundPlatforms != null)
+        {
             foreach (var plat in groundPlatforms)
             {
                 plat.Clear();
             }
+        }
+
         groundPlatforms = null;
 
         //nodes.Clear();
     }
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         if (groundPlatforms == null)
+        {
             return;
+        }
 
         var v3 = Input.mousePosition;
         v3.z = 10.0f;
@@ -324,9 +344,14 @@ public class LandPlatformGenerator : MonoBehaviour {
         Vector2 mPos = v3;
 
         if (IsOnGround(mPos))
+        {
             Gizmos.color = Color.white;
+        }
         else
+        {
             Gizmos.color = Color.red;
+        }
+
         Gizmos.DrawSphere(mPos, 0.2f);
 
         Vector2 relativePos = ((Vector2)mPos - instance.Offset) / Instance.tileSize;
@@ -350,7 +375,7 @@ public class LandPlatformGenerator : MonoBehaviour {
         //    }
         //}
     }
-    #endif
+#endif
     bool isInLoS(Vector2 p1, Vector2 p2, bool reduceLongEdges = false)
     {
         // TODO: try using sub-divisions instead of a ray?
@@ -369,6 +394,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                 //Debug.Log("failed" + p1 + " " + p2);
                 return false;
             }
+
             //if (reduceLongEdges)
             //{
             //    for (int j = 0; j < nodes.Count; j++)
@@ -443,6 +469,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                     default:
                         break;
                 }
+
                 if (next.HasValue)
                 {
                     if (dir != prevDir && prevPos.HasValue)
@@ -488,7 +515,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                     }
 
                     prevDir = dir;
-                    prevPos = path[path.Count -1];
+                    prevPos = path[path.Count - 1];
                 }
                 else
                 {
@@ -541,11 +568,13 @@ public class LandPlatformGenerator : MonoBehaviour {
         {
             d = (startPos - path[path.Count - 1]).magnitude;
             if ((start.Value.type == 0 ||
-                start.Value.type == 7 ||
-                start.Value.type == 5 ||
-                start.Value.type == 10 )
+                 start.Value.type == 7 ||
+                 start.Value.type == 5 ||
+                 start.Value.type == 10)
                 && d > instance.tileSize * 1.2f) // Don't skip turns
+            {
                 path.Add(TileToWorldPos(start.Value.pos));
+            }
         }
 
         return path.ToArray();
@@ -554,7 +583,7 @@ public class LandPlatformGenerator : MonoBehaviour {
     internal static Entity GetClosestTarget(Vector2 startPosition, Entity[] entities, float maxRange = 100f)
     {
         var plat = Instance.GetPlatformInPosition(startPosition);
-        
+
         GroundPlatform.Tile? start = instance.GetNearestTile(plat, startPosition);
 
         var closestTiles = new GroundPlatform.Tile?[entities.Length];
@@ -574,10 +603,14 @@ public class LandPlatformGenerator : MonoBehaviour {
         for (int i = 0; i < closestTiles.Length; i++)
         {
             if (!closestTiles[i].HasValue)
+            {
                 continue;
+            }
 
             if (!start.Value.distances.ContainsKey(closestTiles[i].Value.pos))
+            {
                 continue;
+            }
 
             ushort d = start.Value.distances[closestTiles[i].Value.pos];
 
@@ -589,7 +622,9 @@ public class LandPlatformGenerator : MonoBehaviour {
         }
 
         if (closestIndex == -1)
+        {
             return null;
+        }
 
         return entities[closestIndex];
     }
@@ -617,6 +652,7 @@ public class LandPlatformGenerator : MonoBehaviour {
                 tile = platform.tiles[i];
             }
         }
+
         return tile;
     }
 
@@ -630,9 +666,13 @@ public class LandPlatformGenerator : MonoBehaviour {
             var plat = groundPlatforms[i];
             var tilePos = new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y));
             if (!plat.tiles.Exists(t => t.pos == tilePos))
+            {
                 continue;
+            }
+
             return plat;
         }
+
         return null;
     }
 

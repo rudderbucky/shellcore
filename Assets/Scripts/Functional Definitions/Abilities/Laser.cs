@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Laser : Bullet {
-
+public class Laser : Bullet
+{
     public static readonly int laserDamage = 75;
     public static readonly float laserPierceFactor = 0.25F;
+
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -24,7 +23,8 @@ public class Laser : Bullet {
         bulletSound = "clip_laser";
     }
 
-    protected override void Start() {
+    protected override void Start()
+    {
         bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
     }
 }

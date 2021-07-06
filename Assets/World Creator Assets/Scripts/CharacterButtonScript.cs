@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class CharacterButtonScript : MonoBehaviour
@@ -9,6 +7,7 @@ public class CharacterButtonScript : MonoBehaviour
     public WorldCreatorCursor cursor;
     public Text text;
     public GameObject itemObj;
+
     void Start()
     {
         text.text = character.name;
@@ -16,11 +15,12 @@ public class CharacterButtonScript : MonoBehaviour
 
     public void Instantiate()
     {
-        if(Input.GetMouseButton(1))
+        if (Input.GetMouseButton(1))
         {
             Remove();
             return;
         }
+
         Item item = new Item();
         item.ID = character.ID;
         item.name = character.name;
@@ -32,7 +32,11 @@ public class CharacterButtonScript : MonoBehaviour
 
     public void Remove()
     {
-        if(cursor.characters.Contains(character)) cursor.characters.Remove(character);
+        if (cursor.characters.Contains(character))
+        {
+            cursor.characters.Remove(character);
+        }
+
         Destroy(gameObject);
     }
 
