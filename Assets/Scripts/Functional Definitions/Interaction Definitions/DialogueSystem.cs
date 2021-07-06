@@ -300,14 +300,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
-        if (victory)
-        {
-            window.transform.Find("Victory").GetComponent<Text>().text = "<color=lime>VICTORY!</color>";
-        }
-        else
-        {
-            window.transform.Find("Victory").GetComponent<Text>().text = "<color=red>DEFEAT</color>";
-        }
+        window.transform.Find("Victory").GetComponent<Text>().text = $"<color={(victory ? "lime" : "red")}>{(victory ? "VICTORY!" : "DEFEAT")}</color>";
+
 
         battleZoneManager = FindObjectOfType<BattleZoneManager>();
         if (!battleZoneManager)
@@ -355,21 +349,23 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
+        var missionText = window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>();
         if (mission.name.Length <= 33)
         {
-            window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper();
+            missionText.text = mission.name.ToUpper();
         }
         else
         {
-            window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper().Substring(0, 30) + "...";
+            missionText.text = mission.name.ToUpper().Substring(0, 30) + "...";
         }
 
-        window.transform.Find("Rank").GetComponent<Text>().text = mission.rank.ToUpper();
-        window.transform.Find("Rank").GetComponent<Text>().color = TaskDisplayScript.rankColorsByString[mission.rank];
+        var rankText = window.transform.Find("Rank").GetComponent<Text>();
+        rankText.text = mission.rank.ToUpper();
+        rankText.color = TaskDisplayScript.rankColorsByString[mission.rank];
         window.transform.Find("Holder").Find("Rewards").GetComponent<Text>().text = rewardsText;
     }
 
-    public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null)
+    public static void ShowDialogueNode(DialogueNode node, Entity speaker = null)
     {
         Instance.showDialogue(node.text, node.answers, speaker, node.textColor, node.useEntityColor);
     }
@@ -378,8 +374,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     {
         if (node.answers == null)
         {
-            node.answers = new List<string>();
-            node.answers.Add("Ok");
+            node.answers = new List<string>() {"Ok"};
         }
 
         Instance.showDialogue(node.rewardText, node.answers, speaker, node.textColor, node.useEntityColor);
@@ -450,11 +445,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                     tierIcon.enabled = false;
                 }
 
-                type.text = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "");
-                string description = "";
-                description += AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "") + "\n";
-                description += AbilityUtilities.GetDescriptionByID(wrapper.partAbilityID, wrapper.partTier, null);
-                abilityTooltip.abilityInfo = description;
+                var abilityText = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "");
+                type.text = abilityText;
+                abilityTooltip.abilityInfo = abilityText + "\n" + AbilityUtilities.GetDescriptionByID(wrapper.partAbilityID, wrapper.partTier, null);
             }
             else
             {

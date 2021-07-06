@@ -21,25 +21,10 @@ public class SystemLoader : MonoBehaviour
         AllLoaded = false;
         Application.targetFrameRate = 60;
 
-        if (resourceManager)
-        {
-            resourceManager.Initialize();
-        }
-
-        if (factionManager)
-        {
-            factionManager.Initialize();
-        }
-
-        if (audioManager)
-        {
-            audioManager.Initialize();
-        }
-
-        if (sectorManager)
-        {
-            sectorManager.Initialize();
-        }
+        resourceManager?.Initialize();
+        factionManager?.Initialize();
+        audioManager?.Initialize();
+        sectorManager?.Initialize();
 
         // Save Handler will initialize dialogue canvases after sector loading if present.
         if (!saveHandler && dialogueSystem)
@@ -47,10 +32,7 @@ public class SystemLoader : MonoBehaviour
             DialogueSystem.InitCanvases();
         }
 
-        if (saveHandler)
-        {
-            saveHandler.Initialize();
-        }
+        saveHandler?.Initialize();
 
         // Save Handler will initialize mission canvases after sector loading if present.
         if (!saveHandler && taskManager)

@@ -335,7 +335,7 @@ public class SectorManager : MonoBehaviour
                         if (player.cursave == null || player.cursave.timePlayed == 0)
                         {
                             player.transform.position = player.spawnPoint = player.havenSpawnPoint = spawnPoint;
-                            if (wdata.defaultBlueprintJSON != null && wdata.defaultBlueprintJSON != "")
+                            if (!string.IsNullOrEmpty(wdata.defaultBlueprintJSON))
                             {
                                 if (player.cursave != null)
                                 {
@@ -547,7 +547,7 @@ public class SectorManager : MonoBehaviour
                     // Check if data has blueprint JSON, if it does override the current blueprint
                     // this now specifies the path to the JSON file instead of being the JSON itself
                     json = data.blueprintJSON;
-                    if (json != null && json != "")
+                    if (!string.IsNullOrEmpty(json))
                     {
                         blueprint = TryGettingEntityBlueprint(json);
 
@@ -614,7 +614,7 @@ public class SectorManager : MonoBehaviour
             case EntityBlueprint.IntendedType.Bunker:
             {
                 json = data.blueprintJSON;
-                if (json != null && json != "")
+                if (!string.IsNullOrEmpty(json))
                 {
                     var dialogueRef = blueprint.dialogue;
                     blueprint = TryGettingEntityBlueprint(json);
@@ -634,7 +634,7 @@ public class SectorManager : MonoBehaviour
             case EntityBlueprint.IntendedType.Outpost:
             {
                 json = data.blueprintJSON;
-                if (json != null && json != "")
+                if (!string.IsNullOrEmpty(json))
                 {
                     var dialogueRef = blueprint.dialogue;
                     blueprint = TryGettingEntityBlueprint(json);
@@ -662,7 +662,7 @@ public class SectorManager : MonoBehaviour
             }
             case EntityBlueprint.IntendedType.AirCarrier:
                 json = data.blueprintJSON;
-                if (json != null && json != "")
+                if (!string.IsNullOrEmpty(json))
                 {
                     blueprint = TryGettingEntityBlueprint(json);
                 }
@@ -678,7 +678,7 @@ public class SectorManager : MonoBehaviour
                 break;
             case EntityBlueprint.IntendedType.GroundCarrier:
                 json = data.blueprintJSON;
-                if (json != null && json != "")
+                if (!string.IsNullOrEmpty(json))
                 {
                     blueprint = TryGettingEntityBlueprint(json);
                 }
@@ -707,18 +707,14 @@ public class SectorManager : MonoBehaviour
                 trade.mode = BuilderMode.Trader;
                 try
                 {
-                    bool ok = true;
-                    if (blueprint.dialogue == null)
-                    {
-                        ok = false;
-                    }
+                    bool ok = !(blueprint.dialogue == null);
 
                     if (blueprint.dialogue.traderInventory == null)
                     {
                         ok = false;
                     }
 
-                    if (data.blueprintJSON == null || data.blueprintJSON == "")
+                    if (string.IsNullOrEmpty(data.blueprintJSON))
                     {
                         ok = false;
                     }
@@ -765,13 +761,13 @@ public class SectorManager : MonoBehaviour
         entity.spawnPoint = entity.transform.position = data.position;
         entity.blueprint = blueprint;
 
-        if (entity as AirCraft && data.patrolPath != null && data.patrolPath.waypoints != null && data.patrolPath.waypoints.Count > 0)
+        if (entity is AirCraft airCraft && data.patrolPath != null && data.patrolPath.waypoints != null && data.patrolPath.waypoints.Count > 0)
         {
             // patrolling
-            (entity as AirCraft).GetAI().setPath(data.patrolPath, null, true);
+            airCraft.GetAI().setPath(data.patrolPath, null, true);
         }
 
-        if (data.ID == "" || data.ID == null || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
+        if (string.IsNullOrEmpty(data.ID) || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
         {
             if (objects.Count <= maxID)
             {
@@ -841,19 +837,12 @@ public class SectorManager : MonoBehaviour
         {
             if (ch.ID == entity.ID)
             {
-                var skipTag = false;
                 foreach (var oj in objects)
                 {
                     if (oj.Value.GetComponentInChildren<Entity>() && oj.Value.GetComponentInChildren<Entity>().ID == ch.ID)
                     {
-                        skipTag = true;
                         return true;
                     }
-                }
-
-                if (skipTag)
-                {
-                    continue;
                 }
 
                 var print = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -1067,8 +1056,7 @@ public class SectorManager : MonoBehaviour
                 gObj.name = current.entities[i].name;
                 if (gObj.GetComponent<ShardRock>())
                 {
-                    if (current.entities[i].blueprintJSON != null
-                        && current.entities[i].blueprintJSON != "")
+                    if (!string.IsNullOrEmpty(current.entities[i].blueprintJSON))
                     {
                         gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].blueprintJSON);
                     }

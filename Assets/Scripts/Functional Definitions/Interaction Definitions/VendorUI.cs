@@ -101,8 +101,8 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             sr.sprite = blueprint.items[i].icon;
 
             Text[] texts = buttons[i].GetComponentsInChildren<Text>();
-            texts[0].text = i + 1 + "";
-            texts[1].text = blueprint.items[i].cost + "";
+            texts[0].text = (i + 1).ToString();
+            texts[1].text = blueprint.items[i].cost.ToString();
             texts[1].color = Color.cyan;
         }
 
