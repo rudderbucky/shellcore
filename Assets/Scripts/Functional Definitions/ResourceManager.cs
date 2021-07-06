@@ -359,7 +359,7 @@ public class ResourceManager : MonoBehaviour
 
     public T getAsset<T>(string ID) where T : Object
     {
-        if (ID == "" || ID == null)
+        if (string.IsNullOrEmpty(ID))
         {
             return null;
         }
@@ -385,7 +385,7 @@ public class ResourceManager : MonoBehaviour
 
     public bool resourceExists(string ID)
     {
-        if (ID == "" || ID == null)
+        if (string.IsNullOrEmpty(ID))
         {
             return false;
         }
