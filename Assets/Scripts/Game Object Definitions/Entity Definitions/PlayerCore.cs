@@ -73,9 +73,9 @@ public class PlayerCore : ShellCore
         List<bool> weaponActivationStates = new List<bool>();
         for (int i = 0; i < abilities.Count; i++)
         {
-            if (abilities[i] is WeaponAbility)
+            if (abilities[i] is WeaponAbility weapon)
             {
-                weaponActivationStates.Add((abilities[i] as WeaponAbility).GetActiveTimeRemaining() == -1);
+                weaponActivationStates.Add(weapon.GetActiveTimeRemaining() == -1);
             }
         }
 
@@ -99,9 +99,9 @@ public class PlayerCore : ShellCore
         int weaponIndex = 0;
         for (int i = 0; i < abilities.Count; i++)
         {
-            if (abilities[i] is WeaponAbility)
+            if (abilities[i] is WeaponAbility weapon)
             {
-                (abilities[i] as WeaponAbility).SetActive(weaponActivationStates[weaponIndex++]);
+                weapon.SetActive(weaponActivationStates[weaponIndex++]);
             }
         }
     }
@@ -164,15 +164,11 @@ public class PlayerCore : ShellCore
                 minimapPoint = null;
                 return Vector2.zero;
             }
-            else
-            {
-                return (minimapPoint.Value - transform.position).normalized;
-            }
+
+            return (minimapPoint.Value - transform.position).normalized;
         }
-        else
-        {
-            minimapPoint = null;
-        }
+
+        minimapPoint = null;
 
         //Send unit vector
         direction.Normalize();
@@ -304,10 +300,8 @@ public class PlayerCore : ShellCore
         {
             return cursave.partInventory;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     // Update is called once per frame

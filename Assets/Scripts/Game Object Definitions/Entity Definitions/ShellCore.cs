@@ -51,9 +51,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public void AddPower(float power)
     {
         totalPower = Mathf.Min(5000, totalPower + power);
-        if (power > 0 && OnPowerCollected != null)
+        if (power > 0)
         {
-            OnPowerCollected.Invoke(faction, Mathf.RoundToInt(power));
+            OnPowerCollected?.Invoke(faction, Mathf.RoundToInt(power));
         }
     }
 
@@ -165,7 +165,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public Draggable GetTractorTarget()
     {
-        return tractor ? tractor.GetTractorTarget() : null;
+        return tractor?.GetTractorTarget();
     }
 
     public List<IOwnable> GetUnitsCommanding()

@@ -69,10 +69,12 @@ public class Drone : AirCraft, IOwnable
                 // TODO: LOL THESE TWO ARE DIFFERENT, unify them
                 foreach (var point in path.waypoints)
                 {
-                    var node2 = new NodeEditorFramework.Standard.PathData.Node();
-                    node2.ID = point.ID;
-                    node2.children = point.children;
-                    node2.position = point.position;
+                    var node2 = new NodeEditorFramework.Standard.PathData.Node()
+                    {
+                        ID = point.ID,
+                        children = point.children,
+                        position = point.position
+                    };
                     data.waypoints.Add(node2);
                 }
 
@@ -99,9 +101,11 @@ public class Drone : AirCraft, IOwnable
         }
 
         base.OnDestroy();
-        if (GetComponentInChildren<TractorBeam>())
+
+        var tractorBeam = GetComponentInChildren<TractorBeam>();
+        if (tractorBeam)
         {
-            GetComponentInChildren<TractorBeam>().SetTractorTarget(null);
+            tractorBeam.SetTractorTarget(null);
         }
     }
 

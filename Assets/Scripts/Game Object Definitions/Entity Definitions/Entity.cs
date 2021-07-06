@@ -416,7 +416,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         entityName = blueprint.entityName;
         name = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
-        weight = this as Drone ? 25 : coreWeight;
+        weight = this is Drone ? 25 : coreWeight;
 
         var isLightDrone = this as Drone && (this as Drone).type == DroneType.Light; // used for light drone weight reduction
         //For shellcores, create the tractor beam
@@ -578,10 +578,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         maxHealth.CopyTo(currentHealth, 0);
         ActivatePassives(); // activate passive abilities here to avoid race condition BS
 
-        if (OnEntitySpawn != null)
-        {
-            OnEntitySpawn.Invoke(this);
-        }
+        OnEntitySpawn?.Invoke(this);
     }
 
     public bool GetIsDead()
@@ -648,28 +645,22 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
 
-        if (lastDamagedBy as PlayerCore)
+        if (lastDamagedBy is PlayerCore player)
         {
-            (lastDamagedBy as PlayerCore).AddCredits(Random.Range(1, 5));
+            player.AddCredits(Random.Range(1, 5));
 
             if (this as ShellCore && !FactionManager.IsAllied(0, faction))
             {
                 foreach (var part in blueprint.parts)
                 {
-                    (lastDamagedBy as PlayerCore).cursave.partsSeen.Add(PartIndexScript.CullToPartIndexValues(part));
+                    player.cursave.partsSeen.Add(PartIndexScript.CullToPartIndexValues(part));
                 }
             }
         }
 
-        if (OnEntityDeath != null)
-        {
-            OnEntityDeath.Invoke(this, lastDamagedBy);
-        }
+        OnEntityDeath?.Invoke(this, lastDamagedBy);
 
-        if (BZM != null)
-        {
-            BZM.UpdateCounters();
-        }
+        BZM?.UpdateCounters();
 
         GameObject deathExplosion = Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
     }
@@ -744,9 +735,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         foreach (var ability in abilities)
         {
-            if (ability as PassiveAbility)
+            if (ability is PassiveAbility passive)
             {
-                (ability as PassiveAbility).Activate();
+                passive.Activate();
             }
         }
     }
@@ -802,18 +793,18 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             deathTimer += Time.deltaTime; // add time since last frame
             if (deathTimer >= 0.5F)
             {
-                if (this as PlayerCore && (deathTimer > 2))
+                if (this is PlayerCore player && (deathTimer > 2))
                 {
-                    ((PlayerCore)this).alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
-                                                           + ((5 - deathTimer) > 1 ? "s." : "."));
+                    player.alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
+                                               + ((5 - deathTimer) > 1 ? "s." : "."));
                 }
             }
 
             if (deathTimer >= 5F)
             {
-                if (this as PlayerCore)
+                if (this is PlayerCore player)
                 {
-                    ((PlayerCore)this).alerter.showMessage("");
+                    player.alerter.showMessage("");
                 }
 
                 PostDeath();
@@ -882,9 +873,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         entityBody.mass -= part.partMass;
         weight -= part.partMass * weightMultiplier;
-        if (this as Craft)
+        if (this is Craft craft)
         {
-            (this as Craft).CalculatePhysicsConstants();
+            craft.CalculatePhysicsConstants();
         }
 
         Domino(part);
