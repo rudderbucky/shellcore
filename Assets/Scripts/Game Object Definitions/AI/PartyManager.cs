@@ -152,11 +152,13 @@ public class PartyManager : MonoBehaviour
                     var print = ScriptableObject.CreateInstance<EntityBlueprint>();
                     JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
                     print.intendedType = EntityBlueprint.IntendedType.ShellCore;
-                    var levelEnt = new Sector.LevelEntity();
-                    levelEnt.ID = charID;
-                    levelEnt.name = ch.name;
-                    levelEnt.faction = ch.faction;
-                    levelEnt.position = PlayerCore.Instance.transform.position + new Vector3(0, 5);
+                    var levelEnt = new Sector.LevelEntity()
+                    {
+                        ID = charID,
+                        name = ch.name,
+                        faction = ch.faction,
+                        position = PlayerCore.Instance.transform.position + new Vector3(0, 5)
+                    };
                     SectorManager.instance.SpawnEntity(print, levelEnt);
                 }
 
@@ -312,7 +314,7 @@ public class PartyManager : MonoBehaviour
                 x = 360 + x;
             }
 
-            index = Mathf.RoundToInt((x) / (360 / options.Count));
+            index = Mathf.RoundToInt(x * options.Count / 360);
         }
         else if (initialized)
         {

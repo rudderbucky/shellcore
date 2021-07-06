@@ -70,9 +70,9 @@ public class AirCraftAI : MonoBehaviour
                 module = new BattleAI();
                 break;
             case AIMode.Inactive:
-                if (module is TractorAI)
+                if (module is TractorAI tractor)
                 {
-                    (module as TractorAI).StopFollowing();
+                    tractor.StopFollowing();
                     movement.StopMoving();
                 }
 
@@ -110,19 +110,18 @@ public class AirCraftAI : MonoBehaviour
 
     public void ChatOrderStateChange(BattleAI.BattleState state)
     {
-        if (module is BattleAI)
+        if (module is BattleAI battle)
         {
-            var mod = module as BattleAI;
-            mod.OrderModeChange(state);
+            battle.OrderModeChange(state);
         }
     }
 
     // used for party HUD visual
     public string GetPartyBattleStateString()
     {
-        if (module is BattleAI)
+        if (module is BattleAI battle)
         {
-            switch ((module as BattleAI).GetState())
+            switch (battle.GetState())
             {
                 case BattleAI.BattleState.Attack:
                     return "ATTACKING";
@@ -312,9 +311,9 @@ public class AirCraftAI : MonoBehaviour
                                 aggroTarget = null;
                             }
 
-                            if (module is FollowAI && (module as FollowAI).followTarget)
+                            if (module is FollowAI follow && follow.followTarget)
                             {
-                                if (((module as FollowAI).followTarget.position - craft.transform.position).sqrMagnitude > 150f)
+                                if ((follow.followTarget.position - craft.transform.position).sqrMagnitude > 150f)
                                 {
                                     aggroTarget = null;
                                 }

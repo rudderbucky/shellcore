@@ -156,9 +156,11 @@ public class PathAI : AIModule
         path.waypoints = new List<Path.Node>();
         for (int i = 0; i < nodes.Count; i++)
         {
-            var node = new Path.Node();
-            node.ID = nodes.Count - i - 1;
-            node.position = nodes[i].construct.spawnPoint;
+            var node = new Path.Node()
+            {
+                ID = nodes.Count - i - 1,
+                position = nodes[i].construct.spawnPoint
+            };
             List<int> children = new List<int>();
             for (int j = 0; j < nodes.Count; j++)
             {
