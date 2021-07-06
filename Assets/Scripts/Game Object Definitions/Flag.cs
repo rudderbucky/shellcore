@@ -32,7 +32,6 @@ public class Flag : MonoBehaviour, IInteractable
         {
             if (ent.ID == entityID)
             {
-                ;
                 // position is a global vector (i.e., not local to the sector itself), so this should work
                 PlayerCore.Instance.Warp(ent.position);
             }

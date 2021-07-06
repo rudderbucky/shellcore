@@ -21,8 +21,7 @@ public class Shard : MonoBehaviour
     {
         detachedTime = Time.time; // update detached time
         hasDetached = true; // has detached now
-        gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
-        rigid = GetComponent<Rigidbody2D>();
+        rigid = gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
         rigid.gravityScale = 0; // adjust the rigid body
         rigid.angularDrag = 0;
         float randomDir = Random.Range(0f, 360f);

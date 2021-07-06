@@ -90,9 +90,11 @@ public class ShellPart : MonoBehaviour
     {
         if (shaderMaterials == null)
         {
-            shaderMaterials = new List<Material>();
-            shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader0"));
-            shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader1"));
+            shaderMaterials = new List<Material>()
+            {
+                ResourceManager.GetAsset<Material>("part_shader0"),
+                ResourceManager.GetAsset<Material>("part_shader1")
+            };
         }
 
         GameObject holder;
@@ -124,7 +126,7 @@ public class ShellPart : MonoBehaviour
         var sh = partSys.shape;
         if (spriteRenderer.sprite)
         {
-            sh.scale = (Vector3)spriteRenderer.sprite.bounds.extents * 2;
+            sh.scale = spriteRenderer.sprite.bounds.extents * 2;
         }
 
         var e = partSys.emission;
@@ -211,7 +213,7 @@ public class ShellPart : MonoBehaviour
         // Drone part health penalty
         if (craft as Drone)
         {
-            currentHealth /= 4;
+            currentHealth *= 0.25f;
         }
 
         craft = transform.root.GetComponent<Entity>();
@@ -340,9 +342,9 @@ public class ShellPart : MonoBehaviour
                 }
                 else
                 {
-                    if (craft as PlayerCore && name != "Shell Sprite")
+                    if (craft is PlayerCore player && name != "Shell Sprite")
                     {
-                        (craft as PlayerCore).partsToDestroy.Add(this);
+                        player.partsToDestroy.Add(this);
                     }
 
                     spriteRenderer.enabled = false; // disable sprite renderer

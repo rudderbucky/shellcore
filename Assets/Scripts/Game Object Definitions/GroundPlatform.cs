@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class GroundPlatform
@@ -14,9 +15,9 @@ public class GroundPlatform
 
         public override bool Equals(object obj)
         {
-            if (obj is Tile)
+            if (obj is Tile tile)
             {
-                return ((Tile)obj).pos == pos;
+                return tile.pos == pos;
             }
             else
             {
@@ -85,27 +86,27 @@ public class GroundPlatform
 
     public string Encode()
     {
-        string s = "+";
-        s += numToString(1); // Version number
-        s += numToString((ushort)tiles.Count);
+        StringBuilder s = new StringBuilder("+");
+        s.Append(numToString(1)); // Version number
+        s.Append(numToString((ushort)tiles.Count));
         for (int i = 0; i < tiles.Count; i++)
         {
-            s += numToString((ushort)tiles[i].pos.x);
-            s += numToString((ushort)tiles[i].pos.y);
-            s += numToString((ushort)tiles[i].type);
-            s += numToString((ushort)tiles[i].rotation);
+            s.Append(numToString((ushort)tiles[i].pos.x));
+            s.Append(numToString((ushort)tiles[i].pos.y));
+            s.Append(numToString((ushort)tiles[i].type));
+            s.Append(numToString((ushort)tiles[i].rotation));
 
-            s += numToString((ushort)tiles[i].directions.Count);
+            s.Append(numToString((ushort)tiles[i].directions.Count));
             foreach (var pair in tiles[i].directions)
             {
-                s += numToString((ushort)pair.Key.x);
-                s += numToString((ushort)pair.Key.y);
-                s += numToString(pair.Value);
-                s += numToString(tiles[i].distances[pair.Key]);
+                s.Append(numToString((ushort)pair.Key.x));
+                s.Append(numToString((ushort)pair.Key.y));
+                s.Append(numToString(pair.Value));
+                s.Append(numToString(tiles[i].distances[pair.Key]));
             }
         }
 
-        return s;
+        return s.ToString();
     }
 
     public void AddTile(Tile addition)
