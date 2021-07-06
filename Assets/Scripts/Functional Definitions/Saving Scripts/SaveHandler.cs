@@ -47,7 +47,7 @@ public class SaveHandler : MonoBehaviour
 
             player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             player.blueprint.name = "Player Save Blueprint";
-            if (save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "")
+            if (!string.IsNullOrEmpty(save.currentPlayerBlueprint))
             {
                 JsonUtility.FromJsonOverwrite(save.currentPlayerBlueprint, player.blueprint);
             }
