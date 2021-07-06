@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine.UI;
 
 public class DWSelectionDisplayHandler : SelectionDisplayHandler, IShipStatsDatabase
@@ -18,13 +20,17 @@ public class DWSelectionDisplayHandler : SelectionDisplayHandler, IShipStatsData
         base.AssignDisplay(blueprint, data);
         statsDisplay.gameObject.SetActive(true);
         droneDesc.enabled = true;
-        droneDesc.text = ("DRONE TYPE: " + data.type).ToUpper()
-                         + "\nUNIQUE CHARACTERISTIC:\n" + "<color=lime>"
-                         + DroneUtilities.GetUniqueCharacteristic(data.type) + "</color>"
-                         + "\nPART LIMIT: " + DroneUtilities.GetPartLimit(data.type)
-                         + "\nSPAWNING COOLDOWN: " + DroneUtilities.GetCooldown(data.type)
-                         + "\nSPAWNING DELAY: " + DroneUtilities.GetDelay(data.type)
-                         + "\nSPAWNING ENERGY COST: " + DroneUtilities.GetEnergyCost(data.type);
+
+        StringBuilder description = new StringBuilder();
+        description.Append(($"DRONE TYPE: {data.type}").ToUpper());
+        description.AppendLine("UNIQUE CHARACTERISTIC:");
+        description.AppendLine($"<color=lime>{DroneUtilities.GetUniqueCharacteristic(data.type)}</color>");
+        description.AppendLine($"PART LIMIT: {DroneUtilities.GetPartLimit(data.type)}");
+        description.AppendLine($"SPAWNING COOLDOWN: {DroneUtilities.GetCooldown(data.type)}");
+        description.AppendLine($"SPAWNING DELAY: {DroneUtilities.GetDelay(data.type)}");
+        description.AppendLine($"SPAWNING ENERGY COST: {DroneUtilities.GetEnergyCost(data.type)}");
+        droneDesc.text = description.ToString();
+
         foreach (DisplayPart part in parts)
         {
             buildValue += EntityBlueprint.GetPartValue(part.info);
