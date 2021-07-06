@@ -61,13 +61,15 @@ public class Bullet : WeaponAbility
         var b = -(2 * targetVelocity.x * relativeDistance.x + 2 * targetVelocity.y * relativeDistance.y);
         var c = -Vector2.Dot(relativeDistance, relativeDistance);
 
-        if (a == 0 || b * b - 4 * a * c < 0)
+        var delta = b * b - 4 * a * c;
+        if (a == 0 || delta < 0)
         {
             return false;
         }
 
-        var t1 = (-b + Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a);
-        var t2 = (-b - Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a);
+        var deltaSqrt = Mathf.Sqrt(delta);
+        var t1 = (-b + deltaSqrt) / (2 * a);
+        var t2 = (-b - deltaSqrt) / (2 * a);
 
         float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1, t2));
         if (t <= 0)

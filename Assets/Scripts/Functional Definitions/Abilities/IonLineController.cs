@@ -135,16 +135,7 @@ public class IonLineController : MonoBehaviour
                 originalBearing += goForwards ? c : -c;
             }
 
-            beamBearing = originalBearing;
-            if (beamBearing > 360)
-            {
-                beamBearing -= 360;
-            }
-
-            if (beamBearing < 0)
-            {
-                beamBearing += 360;
-            }
+            beamBearing = originalBearing % 360;
 
             var newAngle = GetAngleFromBearing(originalBearing) * Mathf.Deg2Rad;
 

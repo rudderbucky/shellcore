@@ -50,9 +50,6 @@ public class Ion : WeaponAbility
 
     void Update()
     {
-        /*
-        
-        */
     }
 
     Vector3 GetMousePos()

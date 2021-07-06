@@ -24,10 +24,8 @@ public abstract class ActiveAbility : Ability
         {
             return activeDuration - (Time.time - startTime); // return active time remaining
         }
-        else
-        {
-            return 0; // not active
-        }
+
+        return 0; // not active
     }
 
     public override void SetDestroyed(bool input)

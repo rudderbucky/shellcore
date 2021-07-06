@@ -85,7 +85,7 @@ public class SpawnDrone : ActiveAbility
         drone.Init();
         drone.SetOwner(craft);
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);
-        if (craft as ICarrier != null)
+        if (craft is ICarrier)
         {
             drone.getAI().setMode(AirCraftAI.AIMode.Path);
         }
