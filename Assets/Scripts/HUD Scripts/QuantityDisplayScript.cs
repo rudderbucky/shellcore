@@ -60,8 +60,7 @@ public class QuantityDisplayScript : MonoBehaviour
     public void AddEntityInfo(Entity entity, ReticleScript reticle)
     {
         var secondary = Instantiate(secondaryTargetInfoPrefab, content);
-        secondary.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction
-        (() =>
+        secondary.GetComponent<Button>().onClick.AddListener(() =>
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
@@ -78,7 +77,7 @@ public class QuantityDisplayScript : MonoBehaviour
                 reticle.SetTarget(entity.transform);
                 reticle.RemoveSecondaryTarget(entity);
             }
-        }));
+        });
 
         if (!secondaryInfosByEntity.ContainsKey(entity))
         {
@@ -101,18 +100,16 @@ public class QuantityDisplayScript : MonoBehaviour
         {
             return $"{credits}";
         }
-        else if (credits < 1000000)
+        if (credits < 1000000)
         {
             return $"{credits / 1000}K";
         }
-        else if (credits < 1000000000)
+        if (credits < 1000000000)
         {
             return $"{credits / 1000000}M";
         }
-        else
-        {
-            return "LOTS!";
-        }
+
+        return "LOTS!";
     }
 
     public void RemoveEntityInfo(Entity entity)
@@ -132,7 +129,6 @@ public class QuantityDisplayScript : MonoBehaviour
 
     public void UpdateInfo(GameObject obj, GameObject targetInfo, int index = 0)
     {
-        string description;
         var targetName = targetInfo.transform.Find("Target Name").GetComponent<Text>();
         var targetDesc = targetInfo.transform.Find("Name").GetComponent<Text>();
         Text targetNumber = null;
@@ -152,15 +148,13 @@ public class QuantityDisplayScript : MonoBehaviour
         if (entity)
         {
             targetInfo.SetActive(true);
-            description = (entity.Terrain + " ");
-            description += (entity.category + "");
             targetName.text = entity.entityName;
-            targetDesc.text = description;
+            targetDesc.text = entity.Terrain + " " + entity.category;
             targetName.color = targetDesc.color = FactionManager.GetFactionColor(entity.faction);
             if (targetNumber)
             {
                 targetNumber.color = targetName.color;
-                targetNumber.text = ReticleScript.instance.GetTargetIndex(entity) + 1 + "";
+                targetNumber.text = (ReticleScript.instance.GetTargetIndex(entity) + 1).ToString();
                 // targetShape.rectTransform.sizeDelta = targetShape.rectTransform.sizeDelta / 1.25F;
             }
         }

@@ -171,7 +171,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             interactible = false;
         }
 
-        if (this as ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone)
+        if (this is ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone)
         {
             interactible = false;
         }

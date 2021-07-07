@@ -285,9 +285,11 @@ public class ShellPart : MonoBehaviour
         {
             if (shaderMaterials == null)
             {
-                shaderMaterials = new List<Material>();
-                shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader0"));
-                shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader1"));
+                shaderMaterials = new List<Material>()
+                {
+                    ResourceManager.GetAsset<Material>("part_shader0"),
+                    ResourceManager.GetAsset<Material>("part_shader1")
+                };
             }
 
             spriteRenderer.material = shaderMaterials[partShader];
