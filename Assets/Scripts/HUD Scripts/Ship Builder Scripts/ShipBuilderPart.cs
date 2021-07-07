@@ -22,8 +22,9 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 
     public override void Initialize()
     {
-        base.Initialize();
+        image = GetComponent<Image>();
         rectTransform = image.rectTransform;
+        base.Initialize();
     }
 
     public void SetLastValidPos(Vector3? lastPos)
