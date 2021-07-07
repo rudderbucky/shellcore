@@ -6,7 +6,8 @@ using UnityEngine;
 /// <summary>
 /// A player ShellCore.
 /// </summary>
-public class PlayerCore : ShellCore {
+public class PlayerCore : ShellCore
+{
     public HUDScript hud;
     public InfoText alerter;
     public PlayerSave cursave;
@@ -20,7 +21,9 @@ public class PlayerCore : ShellCore {
     public List<ShellPart> partsToDestroy = new List<ShellPart>();
     public Vector2 havenSpawnPoint;
     private int dimension;
-    public int Dimension {get {return dimension;} set {dimension = value;}}
+    public int Dimension { get { return dimension; } set { dimension = value; } }
+    private int lastDimension = 0;
+    public int LastDimension { get { return lastDimension; } set { lastDimension = value; } }
 
     // Uses this method to generally add credits for the player.
     public void AddCredits(int amount)
@@ -45,29 +48,33 @@ public class PlayerCore : ShellCore {
         this.credits = val;
     }
 
-    public AbilityHandler GetAbilityHandler() {
+    public AbilityHandler GetAbilityHandler()
+    {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();
     }
 
     // "Interacting" means the player is in a situation where they SHOULDN'T BE MOVING
-    public bool GetIsInteracting() {
+    public bool GetIsInteracting()
+    {
         return isInteracting || DevConsoleScript.componentEnabled;
     }
 
-    public void SetIsInteracting(bool val) {
+    public void SetIsInteracting(bool val)
+    {
         isInteracting = val;
     }
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
     /// </summary>
-    public override void Respawn() {
+    public override void Respawn()
+    {
         List<bool> weaponActivationStates = new List<bool>();
         for (int i = 0; i < abilities.Count; i++)
         {
             if (abilities[i] is WeaponAbility)
                 weaponActivationStates.Add((abilities[i] as WeaponAbility).GetActiveTimeRemaining() == -1);
         }
-        if(hud) hud.DeinitializeHUD(); // deinitialize HUD
+        if (hud) hud.DeinitializeHUD(); // deinitialize HUD
 
         carrier = FindCarrier();
         if (carrier != null)
@@ -77,10 +84,12 @@ public class PlayerCore : ShellCore {
         else
         {
             spawnPoint = havenSpawnPoint;
+            dimension = lastDimension;
         }
-        
+
         transform.position = spawnPoint; // reset position to spawn point
         base.Respawn(); // this will reinitialize the HUD
+        spawnPoint = havenSpawnPoint; // reset spawn point
         int weaponIndex = 0;
         for (int i = 0; i < abilities.Count; i++)
         {
@@ -100,20 +109,20 @@ public class PlayerCore : ShellCore {
     /// <returns>a directional vector based on current inputs</returns>
     public Vector2 getDirectionalInput()
     {
-        
-        if(Input.GetMouseButton(1) && !(MouseMovementVisualScript.overMinimap && Input.GetMouseButton(0)))
+
+        if (Input.GetMouseButton(1) && !(MouseMovementVisualScript.overMinimap && Input.GetMouseButton(0)))
         {
             minimapPoint = null;
             var delta = CameraScript.instance.GetWorldPositionOfMouse() - transform.position;
             return delta.normalized;
         }
 
-        if(Input.GetMouseButton(0) && MouseMovementVisualScript.overMinimap)
+        if (Input.GetMouseButton(0) && MouseMovementVisualScript.overMinimap)
         {
             minimapPoint = CameraScript.instance.minimapCamera.ScreenToWorldPoint(MouseMovementVisualScript.GetMousePosOnMinimap());
-            minimapPoint = new Vector3(minimapPoint.Value.x,minimapPoint.Value.y, 0);
+            minimapPoint = new Vector3(minimapPoint.Value.x, minimapPoint.Value.y, 0);
             var delta = minimapPoint.Value - transform.position;
-            
+
             return delta.normalized;
         }
 
@@ -128,9 +137,9 @@ public class PlayerCore : ShellCore {
         if (InputManager.GetKey(KeyName.Right))
             direction += new Vector2(1, 0);
 
-        if(minimapPoint != null && direction == Vector2.zero)
+        if (minimapPoint != null && direction == Vector2.zero)
         {
-            if(Vector3.SqrMagnitude(transform.position - minimapPoint.Value) < PathAI.minDist)
+            if (Vector3.SqrMagnitude(transform.position - minimapPoint.Value) < PathAI.minDist)
             {
                 minimapPoint = null;
                 return Vector2.zero;
@@ -141,7 +150,7 @@ public class PlayerCore : ShellCore {
 
         //Send unit vector
         direction.Normalize();
-        return direction; 
+        return direction;
     }
 
     ICarrier FindCarrier()
@@ -151,8 +160,8 @@ public class PlayerCore : ShellCore {
             var targets = BattleZoneManager.getTargets();
             for (int i = 0; i < targets.Length; i++)
             {
-                if (targets[i] && 
-                    !targets[i].GetIsDead() && 
+                if (targets[i] &&
+                    !targets[i].GetIsDead() &&
                     targets[i] is ICarrier &&
                     targets[i].faction == faction)
                 {
@@ -172,9 +181,10 @@ public class PlayerCore : ShellCore {
         ID = "player";
     }
     // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
-    protected override void Start () {
-        
-        foreach(var part in partsToDestroy)
+    protected override void Start()
+    {
+
+        foreach (var part in partsToDestroy)
         {
             Destroy(part.gameObject);
         }
@@ -188,7 +198,8 @@ public class PlayerCore : ShellCore {
             Camera.main.GetComponent<CameraScript>().Initialize(this);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(this);
         } // initialize the HUD
-        if(!loaded) {
+        if (!loaded)
+        {
             LoadSave(cursave);
             loaded = true;
         }
@@ -198,15 +209,17 @@ public class PlayerCore : ShellCore {
 
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";
-	}
+    }
 
-    public override void Rebuild() {
+    public override void Rebuild()
+    {
         if (!initialized)
             Awake();
         initialized = true;
         hud.DeinitializeHUD();
-        for(int i = 0; i < parts.Count; i++) {
-            if(parts[i].gameObject.name != "Shell Sprite")
+        for (int i = 0; i < parts.Count; i++)
+        {
+            if (parts[i].gameObject.name != "Shell Sprite")
             {
                 parts[i].GetComponentInChildren<Ability>()?.SetDestroyed(true);
                 Destroy(parts[i].gameObject);
@@ -221,16 +234,16 @@ public class PlayerCore : ShellCore {
 
     public void LoadSave(PlayerSave save)
     {
-        if(save.timePlayed != 0) 
+        if (save.timePlayed != 0)
         {
-            if(save.characters != null && save.characters.Length != 0)
+            if (save.characters != null && save.characters.Length != 0)
             {
                 // use the save's characters combined with any new characters in the Sector Manager character set
                 var sectoManagerChars = new List<WorldData.CharacterData>(SectorManager.instance.characters);
                 var newChars = new List<WorldData.CharacterData>(save.characters);
-                foreach(var ch in sectoManagerChars)
+                foreach (var ch in sectoManagerChars)
                 {
-                    if(newChars.TrueForAll(c => c.ID != ch.ID))
+                    if (newChars.TrueForAll(c => c.ID != ch.ID))
                     {
                         newChars.Add(ch);
                     }
@@ -243,15 +256,17 @@ public class PlayerCore : ShellCore {
         name = entityName = "player";
         positionBeforeOscillation = transform.position.y;
     }
-    public List<EntityBlueprint.PartInfo> GetInventory() {
-        if(cursave != null) return cursave.partInventory;
-        else return null; 
+    public List<EntityBlueprint.PartInfo> GetInventory()
+    {
+        if (cursave != null) return cursave.partInventory;
+        else return null;
     }
-    
-	// Update is called once per frame
-	protected override void Update () {
+
+    // Update is called once per frame
+    protected override void Update()
+    {
         // call methods
-        if(group.sortingOrder < maxAirLayer) // player must always be above other entities
+        if (group.sortingOrder < maxAirLayer) // player must always be above other entities
         {
             group.sortingOrder = ++maxAirLayer;
         }
@@ -259,18 +274,18 @@ public class PlayerCore : ShellCore {
         // update abilities
         for (int i = 0; i < abilities.Count; i++)
         {
-            if(abilities[i]) abilities[i].Tick();
+            if (abilities[i]) abilities[i].Tick();
         }
 
         base.Update(); // base update
-        if(!GetIsInteracting() && !DialogueSystem.isInCutscene) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
-	}
+        if (!GetIsInteracting() && !DialogueSystem.isInCutscene) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+    }
 
     public override void Warp(Vector3 point)
     {
         base.Warp(point);
         CameraScript.instance.Focus(transform.position);
-        foreach(var instance in RectangleEffectScript.instances)
+        foreach (var instance in RectangleEffectScript.instances)
         {
             instance.Start();
         }
@@ -289,13 +304,13 @@ public class PlayerCore : ShellCore {
     {
         base.CraftMover(directionVector);
 
-        if(directionVector != Vector2.zero) CameraScript.instance.Focus(transform.position);
+        if (directionVector != Vector2.zero) CameraScript.instance.Focus(transform.position);
     }
 
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
         var residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
-        if(lastDamagedBy) HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
+        if (lastDamagedBy) HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
         return residue;
     }
 
@@ -307,7 +322,7 @@ public class PlayerCore : ShellCore {
     public int GetBuildValue()
     {
         var value = 0;
-        foreach(var part in blueprint.parts)
+        foreach (var part in blueprint.parts)
         {
             value += EntityBlueprint.GetPartValue(part);
         }
