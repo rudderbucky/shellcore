@@ -2,8 +2,6 @@
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-
-
 public interface IWindow
 {
     void CloseUI();
@@ -29,7 +27,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
     public virtual void CloseUI()
     {
-        if ((transform && transform.parent && transform.parent.gameObject.activeSelf) ? transform.parent.gameObject.activeSelf : false)
+        if (transform && transform.parent && transform.parent.gameObject.activeSelf)
         {
             if (playSoundOnClose)
             {
@@ -68,7 +66,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
     public virtual bool GetActive()
     {
-        return transform && transform.parent ? transform.parent.gameObject.activeSelf : false;
+        return transform && transform.parent && transform.parent.gameObject.activeSelf;
     }
 
     public virtual void OnPointerDown(PointerEventData eventData)
