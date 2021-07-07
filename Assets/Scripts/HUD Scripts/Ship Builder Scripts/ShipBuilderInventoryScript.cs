@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-
-
 public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 {
     public GameObject SBPrefab;
@@ -14,7 +12,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
     protected override void Start()
     {
         base.Start();
-        val.text = count + "";
+        val.text = count.ToString();
         val.enabled = (mode == BuilderMode.Yard || mode == BuilderMode.Workshop);
         // button border size is handled specifically by the grid layout components
     }
@@ -102,7 +100,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 
     void Update()
     {
-        val.text = count + "";
+        val.text = count.ToString();
         image.color = count > 0 ? activeColor : Color.gray;
         if (shooter)
         {

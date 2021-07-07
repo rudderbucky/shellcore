@@ -121,9 +121,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     public static EntityBlueprint.PartInfo CullSpatialValues(EntityBlueprint.PartInfo partToCull)
     {
-        var part = new EntityBlueprint.PartInfo();
-        part.partID = partToCull.partID;
-        part.abilityID = partToCull.abilityID;
+        var part = new EntityBlueprint.PartInfo()
+        {
+            partID = partToCull.partID,
+            abilityID = partToCull.abilityID
+        };
         if (part.abilityID == 10)
         {
             part.secondaryData = partToCull.secondaryData;
@@ -456,8 +458,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     {
         if (!originsofParts.ContainsKey(part.droppedSectorName))
         {
-            var list = new List<(string, int)>();
-            list.Add((part.info.partID, part.info.abilityID));
+            var list = new List<(string, int)>()
+            {
+                (part.info.partID, part.info.abilityID)
+            };
             originsofParts.Add(part.droppedSectorName, list);
         }
         else
@@ -472,10 +476,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         {
             return originsofParts[sectorName].Contains(tuple);
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public static void RemoveOrigin(string sectorName, (string, int) tuple)
@@ -800,7 +802,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     private void OrientShellAndCore()
     {
-        shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
+        shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta * 0.5f;
         core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
     }
 
@@ -1017,16 +1019,17 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             foreach (var name in ResourceManager.allPartNames)
             {
                 var size = ResourceManager.GetAsset<PartBlueprint>(name).size;
-                GameObject invButton = Instantiate(buttonPrefab,
-                    partSelectTransforms[size]);
+                GameObject invButton = Instantiate(buttonPrefab, partSelectTransforms[size]);
 
                 // remove the inventory button and add a name select button. Carry over the refs in the inventory button
                 var oldComp = invButton.GetComponent<ShipBuilderInventoryScript>();
                 var shiny = oldComp.isShiny;
                 Destroy(oldComp);
                 var comp = invButton.AddComponent<ShipBuilderInventoryNameSelect>();
-                comp.part = new EntityBlueprint.PartInfo();
-                comp.part.partID = name;
+                comp.part = new EntityBlueprint.PartInfo()
+                {
+                    partID = name
+                };
                 comp.isShiny = shiny;
                 comp.builder = this;
                 comp.field = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>();

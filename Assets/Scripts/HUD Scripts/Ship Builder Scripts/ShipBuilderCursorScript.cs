@@ -2,8 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
 public interface IBuilderInterface
 {
     BuilderMode GetMode();
