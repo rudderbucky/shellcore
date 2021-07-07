@@ -61,9 +61,9 @@ public class CoreUpgraderScript : GUIWindowScripts
         if (repReq > 0)
         {
             var regens = GetNextRegens(player.blueprint.coreShellSpriteID);
-            regenText.text = "Next tier Regeneration\nSHELL: " + regens[0] + "   ENERGY: " + regens[2];
+            regenText.text = $"Next tier Regeneration\nSHELL: {regens[0]}   ENERGY: {regens[2]}";
             reputationBar.sizeDelta = new Vector2(Mathf.Min(player.reputation * 800 / repReq, 800), 30);
-            repText.text = "Reputation: " + player.reputation + "/" + repReq;
+            repText.text = $"Reputation: {player.reputation}/{repReq}";
         }
         else
         {

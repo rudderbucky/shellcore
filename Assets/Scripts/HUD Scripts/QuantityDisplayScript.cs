@@ -38,9 +38,9 @@ public class QuantityDisplayScript : MonoBehaviour
 
             lastCredits = player.GetCredits();
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
-            texts[1].text = player.GetPower() + "";
+            texts[1].text = player.GetPower().ToString();
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
-            texts[5].text = GetCreditString(player.GetCredits()) + "";
+            texts[5].text = GetCreditString(player.GetCredits()).ToString();
             var rect = texts[5].rectTransform.rect;
             rect.center = texts[5].rectTransform.position;
             tooltipManager.AddBounds(rect, $"CREDITS: {player.GetCredits()}");

@@ -19,7 +19,7 @@ public class TaskDisplayScript : MonoBehaviour
     {
         ["C"] = Color.cyan,
         ["B"] = Color.yellow,
-        ["A"] = Color.red + Color.green / 2,
+        ["A"] = Color.red + Color.green * 0.5f,
         ["S"] = Color.magenta,
         ["X"] = Color.green
     };
@@ -67,25 +67,26 @@ public class TaskDisplayScript : MonoBehaviour
         loadedMissions.Add(mission);
         var button = Instantiate(instance.missionButtonPrefab,
             instance.missionListContents[rankNumberByString[mission.rank]]).GetComponent<Button>();
+        var buttonText = button.GetComponentInChildren<Text>();
         if (mission.name.Length <= 33)
         {
-            button.GetComponentInChildren<Text>().text = mission.name;
+            buttonText.text = mission.name;
         }
         else
         {
-            button.GetComponentInChildren<Text>().text = mission.name.Substring(0, 30) + "...";
+            buttonText.text = mission.name.Substring(0, 30) + "...";
         }
 
         switch (mission.status)
         {
             case Mission.MissionStatus.Inactive:
-                button.GetComponentInChildren<Text>().color = Color.red;
+                buttonText.color = Color.red;
                 break;
             case Mission.MissionStatus.Ongoing:
-                button.GetComponentInChildren<Text>().color = Color.cyan;
+                buttonText.color = Color.cyan;
                 break;
             case Mission.MissionStatus.Complete:
-                button.GetComponentInChildren<Text>().color = Color.green;
+                buttonText.color = Color.green;
                 break;
         }
 #if UNITY_EDITOR
@@ -95,10 +96,7 @@ public class TaskDisplayScript : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 mission.status = Mission.MissionStatus.Complete;
-                if (NodeEditorFramework.Standard.MissionCondition.OnMissionStatusChange != null)
-                {
-                    NodeEditorFramework.Standard.MissionCondition.OnMissionStatusChange.Invoke(mission);
-                }
+                NodeEditorFramework.Standard.MissionCondition.OnMissionStatusChange?.Invoke(mission);
             }
         }));
 #else

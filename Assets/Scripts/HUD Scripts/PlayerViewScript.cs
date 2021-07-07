@@ -80,7 +80,7 @@ public class PlayerViewScript : MonoBehaviour
                     return;
                 }
 
-                bool shouldReturn = currentWindow.Peek().Equals(null) ? false : currentWindow.Peek().GetActive();
+                bool shouldReturn = !currentWindow.Peek().Equals(null) && currentWindow.Peek().GetActive();
 
                 if (shouldReturn)
                 {
@@ -104,14 +104,7 @@ public class PlayerViewScript : MonoBehaviour
                 escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
                 paused = escapeMenu.activeSelf;
                 escapeCanvas.sortingOrder = ++currentLayer;
-                if (escapeMenu.activeSelf)
-                {
-                    Time.timeScale = 0;
-                }
-                else
-                {
-                    Time.timeScale = 1;
-                }
+                Time.timeScale = escapeMenu.activeSelf ? 0 : 1;
             }
         }
     }

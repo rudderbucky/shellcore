@@ -122,10 +122,8 @@ public class HealthBarScript : MonoBehaviour
         {
             return currentHealth / maxHealth; // return the ratio between the health values
         }
-        else
-        {
-            return fillAmount; // otherwise return the new fill amount
-        }
+
+        return fillAmount; // otherwise return the new fill amount
     }
 
     public void StartHurtHud(Color color)

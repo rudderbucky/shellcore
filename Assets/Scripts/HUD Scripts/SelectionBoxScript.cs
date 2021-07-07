@@ -130,9 +130,11 @@ public class SelectionBoxScript : MonoBehaviour
                 image.rectTransform.sizeDelta = sizeVec;
 
                 // Change the pivot of the size delta when the mouse goes under/before the start point
-                pivotVec = new Vector2();
-                pivotVec.x = Input.mousePosition.x < startPoint.x ? 1 : 0;
-                pivotVec.y = Input.mousePosition.y < startPoint.y ? 1 : 0;
+                pivotVec = new Vector2()
+                {
+                    x = Input.mousePosition.x < startPoint.x ? 1 : 0,
+                    y = Input.mousePosition.y < startPoint.y ? 1 : 0
+                };
                 image.rectTransform.pivot = pivotVec;
             }
             else if (Input.GetMouseButtonUp(0) && clicking)
@@ -144,9 +146,12 @@ public class SelectionBoxScript : MonoBehaviour
                     Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, CameraScript.zLevel));
                 Vector2 boxExtents =
                     Camera.main.ScreenToWorldPoint(
-                        new Vector3((1 - 2 * pivotVec.x) * sizeVec.x + startPoint.x,
+                        new Vector3(
+                            (1 - 2 * pivotVec.x) * sizeVec.x + startPoint.x,
                             (1 - 2 * pivotVec.y) * sizeVec.y + startPoint.y,
-                            CameraScript.zLevel));
+                            CameraScript.zLevel
+                        )
+                    );
                 Rect finalBox = Rect.MinMaxRect(
                     Mathf.Min(boxStart.x, boxExtents.x),
                     Mathf.Min(boxStart.y, boxExtents.y),
@@ -209,8 +214,10 @@ public class SelectionBoxScript : MonoBehaviour
 
         reticleRenderersByNode.Clear();
         reticleRenderersByNode.Add(node, renderer);
-        currentPathData = new PathData();
-        currentPathData.waypoints = new List<PathData.Node>();
+        currentPathData = new PathData()
+        {
+            waypoints = new List<PathData.Node>()
+        };
         currentPathData.waypoints.Add(node);
         lastPosition = PlayerCore.Instance.transform.position;
         StartCoroutine(pathPlayer(currentPathData));

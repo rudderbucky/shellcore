@@ -29,7 +29,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         coreImage.material = ResourceManager.GetAsset<Material>("material_color_swap");
         shellImage.color = coreImage.color = FactionManager.GetFactionColor(0);
         shellImage.rectTransform.anchoredPosition = new Vector2(shellImage.rectTransform.anchoredPosition.x,
-            (shellImage.rectTransform.sizeDelta.y - (shellImage.sprite.pivot).y) / 2);
+            (shellImage.rectTransform.sizeDelta.y - (shellImage.sprite.pivot).y) * 0.5f);
 
         saveName.text = save.name;
         episodeNumber.text = $"Episode: {Mathf.Max(1, save.episode)}";

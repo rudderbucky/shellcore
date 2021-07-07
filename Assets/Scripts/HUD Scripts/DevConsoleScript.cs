@@ -63,7 +63,7 @@ public class DevConsoleScript : MonoBehaviour
         }
 
         stackTrace = stackTrace.Trim("\n".ToCharArray());
-        var text = "\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>";
+        var text = $"\n{startingColor}{logString}\n    Stack Trace: {stackTrace}</color>";
 
         if (isException)
         {
@@ -89,7 +89,7 @@ public class DevConsoleScript : MonoBehaviour
 
     public static void Print(string logString)
     {
-        Instance.textToAdd.Enqueue("\n <color=white>" + logString + "</color>");
+        Instance.textToAdd.Enqueue($"\n <color=white>{logString}</color>");
     }
 
     public void EnterCommand(string command)

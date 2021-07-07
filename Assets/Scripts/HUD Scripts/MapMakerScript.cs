@@ -44,7 +44,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     }
 
     // I have barely any idea why these constants are their values, but it works with these
-    float const1 = 150 / 4;
+    float const1 = 37.5f; // 150 / 4;
     int const2 = 50;
     int const4 = 50;
     const int distancePerTextMarker = 200;
@@ -162,7 +162,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
                 // set up the border image
                 border.rectTransform.sizeDelta = sect.rectTransform.sizeDelta = new Vector2(sector.bounds.w, sector.bounds.h) / zoomoutFactor;
-                sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2)));
+                sectorImages.Add((sect, new Vector3(sector.bounds.x + sector.bounds.w * 0.5f, sector.bounds.y - sector.bounds.h * 0.5f)));
                 sectorInfo.Add(sect, (sector.sectorName, sector.type));
 
                 // set up land platforms
@@ -176,12 +176,12 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                     var cols = sector.bounds.h / (int)tileSize;
                     var rows = sector.bounds.w / (int)tileSize;
 
-                    Vector2 center = new Vector2(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2);
+                    Vector2 center = new Vector2(sector.bounds.x + sector.bounds.w * 0.5f, sector.bounds.y - sector.bounds.h * 0.5f);
 
                     Vector2 offset = new Vector2
                     {
-                        x = center.x - tileSize * (rows - 1) / 2F,
-                        y = center.y + tileSize * (cols - 1) / 2F
+                        x = center.x - tileSize * (rows - 1) * 0.5f,
+                        y = center.y + tileSize * (cols - 1) * 0.5f
                     };
 
                     lpg.Offset = offset;
@@ -280,7 +280,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 foreach (var loc in ls)
                 {
                     var arrow = Instantiate(instance.mapArrowPrefab, instance.transform, false);
-                    arrow.GetComponent<Image>().color = Color.red + Color.green / 2;
+                    arrow.GetComponent<Image>().color = Color.red + Color.green * 0.5f;
                     instance.arrows.Add(loc, arrow.GetComponent<RectTransform>());
                     arrow.GetComponent<RectTransform>().anchoredPosition =
                         new Vector2(loc.location.x - instance.minX, loc.location.y - instance.maxY) / instance.zoomoutFactor;
@@ -336,7 +336,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         {
             canvas.anchorMin = new Vector2(0, 1);
             canvas.anchorMax = new Vector2(0, 1);
-            greenBox.anchoredPosition = new Vector2(canvas.sizeDelta.x, -canvas.sizeDelta.y) / 2;
+            greenBox.anchoredPosition = new Vector2(canvas.sizeDelta.x, -canvas.sizeDelta.y) * 0.5f;
             canvas.anchoredPosition = new Vector2(-player.position.x + minX, maxY - player.position.y) / zoomoutFactor + greenBox.anchoredPosition;
         }
 
@@ -376,7 +376,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                     var img = arrows[objective].GetComponent<Image>();
                     var imgpos = img.rectTransform.position;
                     var imgsizeDelta = img.rectTransform.sizeDelta;
-                    var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
+                    var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x * 0.5f, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
                     if (imgnewRect.Contains(Input.mousePosition))
                     {
                         text.text += $"\nCLICK TO VIEW MISSION: {objective.missionName.ToUpper()}";
@@ -469,7 +469,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             var img = arrows[objective].GetComponent<Image>();
             var imgpos = img.rectTransform.position;
             var imgsizeDelta = img.rectTransform.sizeDelta;
-            var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
+            var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x * 0.5f, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
             if (imgnewRect.Contains(Input.mousePosition))
             {
                 StatusMenu.instance.SwitchSections(1);

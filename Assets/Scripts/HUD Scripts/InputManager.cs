@@ -57,36 +57,36 @@ public class InputManager : MonoBehaviour
     // TODO: Move to a scriptable object?
     public static Dictionary<KeyName, Key> keys = new Dictionary<KeyName, Key>
     {
-        {KeyName.Up, new Key(KeyCode.W, "Move up")},
-        {KeyName.Left, new Key(KeyCode.A, "Move left")},
-        {KeyName.Down, new Key(KeyCode.S, "Move down")},
-        {KeyName.Right, new Key(KeyCode.D, "Move right")},
-        {KeyName.Interact, new Key(KeyCode.Q, "Interact")},
-        {KeyName.ToggleTractorBeam, new Key(KeyCode.Space, "Toggle tractor beam")},
-        {KeyName.Exit, new Key(KeyCode.Escape, "Exit/Cancel")},
-        {KeyName.StatusMenu, new Key(KeyCode.E, "Status menu")},
-        {KeyName.PauseMenu, new Key(KeyCode.Escape, "Pause menu")},
-        {KeyName.Console, new Key(KeyCode.F3, "Open developer console")},
-        {KeyName.CommandWheel, new Key(KeyCode.LeftControl, "Party command wheel")},
-        {KeyName.HideHUD, new Key(KeyCode.F1, "Hide HUD")},
-        {KeyName.ShowChatHistory, new Key(KeyCode.Return, "Show chat history")},
-        {KeyName.TurretQuickPurchase, new Key(KeyCode.LeftShift, "Turret quick purchase (+ number)")},
+        {KeyName.Up,                    new Key(KeyCode.W,              "Move up")},
+        {KeyName.Left,                  new Key(KeyCode.A,              "Move left")},
+        {KeyName.Down,                  new Key(KeyCode.S,              "Move down")},
+        {KeyName.Right,                 new Key(KeyCode.D,              "Move right")},
+        {KeyName.Interact,              new Key(KeyCode.Q,              "Interact")},
+        {KeyName.ToggleTractorBeam,     new Key(KeyCode.Space,          "Toggle tractor beam")},
+        {KeyName.Exit,                  new Key(KeyCode.Escape,         "Exit/Cancel")},
+        {KeyName.StatusMenu,            new Key(KeyCode.E,              "Status menu")},
+        {KeyName.PauseMenu,             new Key(KeyCode.Escape,         "Pause menu")},
+        {KeyName.Console,               new Key(KeyCode.F3,             "Open developer console")},
+        {KeyName.CommandWheel,          new Key(KeyCode.LeftControl,    "Party command wheel")},
+        {KeyName.HideHUD,               new Key(KeyCode.F1,             "Hide HUD")},
+        {KeyName.ShowChatHistory,       new Key(KeyCode.Return,         "Show chat history")},
+        {KeyName.TurretQuickPurchase,   new Key(KeyCode.LeftShift,      "Turret quick purchase (+ number)")},
 
-        {KeyName.ShowSkills, new Key(KeyCode.Z, "Switch to skill hotbar")},
-        {KeyName.ShowSpawns, new Key(KeyCode.X, "Switch to spawn hotbar")},
-        {KeyName.ShowWeapons, new Key(KeyCode.C, "Switch to weapon hotbar")},
-        {KeyName.ShowPassives, new Key(KeyCode.V, "Switch to passive hotbar")},
+        {KeyName.ShowSkills,            new Key(KeyCode.Z,              "Switch to skill hotbar")},
+        {KeyName.ShowSpawns,            new Key(KeyCode.X,              "Switch to spawn hotbar")},
+        {KeyName.ShowWeapons,           new Key(KeyCode.C,              "Switch to weapon hotbar")},
+        {KeyName.ShowPassives,          new Key(KeyCode.V,              "Switch to passive hotbar")},
 
-        {KeyName.Ability0, new Key(KeyCode.Alpha1, "Use ability #1")},
-        {KeyName.Ability1, new Key(KeyCode.Alpha2, "Use ability #2")},
-        {KeyName.Ability2, new Key(KeyCode.Alpha3, "Use ability #3")},
-        {KeyName.Ability3, new Key(KeyCode.Alpha4, "Use ability #4")},
-        {KeyName.Ability4, new Key(KeyCode.Alpha5, "Use ability #5")},
-        {KeyName.Ability5, new Key(KeyCode.Alpha6, "Use ability #6")},
-        {KeyName.Ability6, new Key(KeyCode.Alpha7, "Use ability #7")},
-        {KeyName.Ability7, new Key(KeyCode.Alpha8, "Use ability #8")},
-        {KeyName.Ability8, new Key(KeyCode.Alpha9, "Use ability #9")},
-        {KeyName.Ability9, new Key(KeyCode.Alpha0, "Use ability #10")}
+        {KeyName.Ability0,              new Key(KeyCode.Alpha1,         "Use ability #1")},
+        {KeyName.Ability1,              new Key(KeyCode.Alpha2,         "Use ability #2")},
+        {KeyName.Ability2,              new Key(KeyCode.Alpha3,         "Use ability #3")},
+        {KeyName.Ability3,              new Key(KeyCode.Alpha4,         "Use ability #4")},
+        {KeyName.Ability4,              new Key(KeyCode.Alpha5,         "Use ability #5")},
+        {KeyName.Ability5,              new Key(KeyCode.Alpha6,         "Use ability #6")},
+        {KeyName.Ability6,              new Key(KeyCode.Alpha7,         "Use ability #7")},
+        {KeyName.Ability7,              new Key(KeyCode.Alpha8,         "Use ability #8")},
+        {KeyName.Ability8,              new Key(KeyCode.Alpha9,         "Use ability #9")},
+        {KeyName.Ability9,              new Key(KeyCode.Alpha0,         "Use ability #10")}
     };
 
     static InputManager instance;
@@ -166,7 +166,7 @@ public class InputManager : MonoBehaviour
                         AbilityHandler.instance.ReorientAbilityBoxes();
                     }
 
-                    Debug.Log("Set binding for " + inputToChange.Value + " to " + (KeyCode)key);
+                    Debug.Log($"Set binding for {inputToChange.Value} to {(KeyCode)key}");
                     inputToChange = null;
 
                     break;

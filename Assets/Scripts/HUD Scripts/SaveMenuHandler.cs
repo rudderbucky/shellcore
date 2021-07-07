@@ -327,7 +327,7 @@ public class SaveMenuHandler : GUIWindowScripts
     public void AddSave()
     {
         string name = inputField.text.Trim();
-        string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
+        string path = Application.persistentDataPath + "\\Saves\\" + name;
         inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
         if (name == "" || name == "TestSave" ||
             paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1)
@@ -407,7 +407,7 @@ public class SaveMenuHandler : GUIWindowScripts
         save.version = currentVersion;
         save.resourcePath = resourcePath;
         save.abilityHotkeys = new AbilityHotkeyStruct();
-        File.WriteAllText(Application.persistentDataPath + "\\Saves" + "\\" + name, JsonUtility.ToJson(save));
+        File.WriteAllText(Application.persistentDataPath + "\\Saves\\" + name, JsonUtility.ToJson(save));
         return save;
     }
 }

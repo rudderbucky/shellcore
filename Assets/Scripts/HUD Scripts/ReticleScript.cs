@@ -202,7 +202,7 @@ public class ReticleScript : MonoBehaviour
             reticleImage.enabled = false;
         }
 
-        ITargetable targetCraft = target ? target.GetComponent<ITargetable>() : null; // if target is an entity
+        ITargetable targetCraft = target?.GetComponent<ITargetable>(); // if target is an entity
         UpdateReticleHealths(shellImage, coreImage, targetCraft);
     }
 
@@ -290,7 +290,7 @@ public class ReticleScript : MonoBehaviour
             reticle.GetComponent<RectTransform>().anchoredPosition = Camera.main.WorldToScreenPoint(ent.transform.position); // update reticle position
 
             reticle.Find("Number Marker").GetComponent<Text>().enabled = true;
-            reticle.Find("Number Marker").GetComponent<Text>().text = count + "";
+            reticle.Find("Number Marker").GetComponent<Text>().text = count.ToString();
             reticle.Find("Number Marker").GetComponent<Text>().color = new Color32((byte)0, (byte)150, (byte)250, (byte)255);
         }
         else
