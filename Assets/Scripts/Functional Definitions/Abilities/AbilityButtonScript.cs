@@ -87,7 +87,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         if (abilityTier > 0)
         {
-            description.Append($" {ability.GetTier()}");
+            description.AppendLine($" {ability.GetTier()}");
         }
 
         var abilityEnergyCost = ability.GetEnergyCost();

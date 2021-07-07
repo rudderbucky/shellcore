@@ -22,7 +22,7 @@ public class DWSelectionDisplayHandler : SelectionDisplayHandler, IShipStatsData
         droneDesc.enabled = true;
 
         StringBuilder description = new StringBuilder();
-        description.Append(($"DRONE TYPE: {data.type}").ToUpper());
+        description.AppendLine(($"DRONE TYPE: {data.type}").ToUpper());
         description.AppendLine("UNIQUE CHARACTERISTIC:");
         description.AppendLine($"<color=lime>{DroneUtilities.GetUniqueCharacteristic(data.type)}</color>");
         description.AppendLine($"PART LIMIT: {DroneUtilities.GetPartLimit(data.type)}");
