@@ -25,13 +25,12 @@ public class WaveBuilder : GUIWindowScripts
     public WCSiegeWaveHandler AddWaveAndReturnHandler()
     {
         var waveHandler = Instantiate(wavePrefab, contents).GetComponent<WCSiegeWaveHandler>();
-        waveHandler.exit.onClick.AddListener(new UnityEngine.Events.UnityAction(
-            () =>
+        waveHandler.exit.onClick.AddListener(() =>
             {
                 waveHandlers.Remove(waveHandler);
                 Destroy(waveHandler.gameObject);
             }
-        ));
+        );
         waveHandlers.Add(waveHandler);
         return waveHandler;
     }
@@ -43,8 +42,10 @@ public class WaveBuilder : GUIWindowScripts
 
     public void ParseWaves(string path)
     {
-        WaveSet set = new WaveSet();
-        set.waves = new SiegeWave[waveHandlers.Count];
+        WaveSet set = new WaveSet()
+        {
+            waves = new SiegeWave[waveHandlers.Count]
+        };
 
         for (int i = 0; i < set.waves.Length; i++)
         {
@@ -57,8 +58,10 @@ public class WaveBuilder : GUIWindowScripts
 
     public static void CopyToClipboard(string s)
     {
-        TextEditor te = new TextEditor();
-        te.text = s;
+        TextEditor te = new TextEditor()
+        {
+            text = s
+        };
         te.SelectAll();
         te.Copy();
     }

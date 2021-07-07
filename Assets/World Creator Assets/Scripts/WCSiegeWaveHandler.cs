@@ -45,13 +45,12 @@ public class WCSiegeWaveHandler : MonoBehaviour
 
         var button = gObj.GetComponentInChildren<Button>();
         button.onClick = new Button.ButtonClickedEvent();
-        button.onClick.AddListener(new UnityEngine.Events.UnityAction(
-            () =>
+        button.onClick.AddListener(() =>
             {
                 waveEntities.Remove((inField1, inField2, inField3, dropdown));
                 Destroy(inField1.transform.parent.gameObject);
             }
-        ));
+        );
 
         waveEntities.Add((inField1, inField2, inField3, dropdown));
         Canvas.ForceUpdateCanvases();
@@ -61,8 +60,10 @@ public class WCSiegeWaveHandler : MonoBehaviour
 
     public SiegeWave Parse()
     {
-        SiegeWave wave = new SiegeWave();
-        wave.entities = new List<SiegeEntity>();
+        SiegeWave wave = new SiegeWave()
+        {
+            entities = new List<SiegeEntity>()
+        };
         foreach (var item in waveEntities)
         {
             wave.entities.Add(TryParseFields(item));
@@ -73,7 +74,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
 
     private SiegeEntity TryParseFields((InputField, InputField, InputField, Dropdown) field)
     {
-        if (field.Item1.text == null || field.Item1.text == "")
+        if (string.IsNullOrEmpty(field.Item1.text))
         {
             return null;
         }
@@ -85,7 +86,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
         if (item != null)
         {
             // you can choose to give any object a custom name
-            if (item.name != null && item.name != "")
+            if (!string.IsNullOrEmpty(item.name))
             {
                 ent.name = item.name;
             }
@@ -115,7 +116,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
             {
                 // try and see if the name is an indirect reference
                 var path = Application.streamingAssetsPath + "\\EntityPlaceholder";
-                if (System.IO.Directory.GetFiles(path).Contains<string>(path + "\\" + field.Item1.text + ".json"))
+                if (System.IO.Directory.GetFiles(path).Contains<string>($"{path}\\{field.Item1.text}.json"))
                 {
                     ent.name = "ShellCore";
                     ent.blueprintJSON = field.Item1.text;

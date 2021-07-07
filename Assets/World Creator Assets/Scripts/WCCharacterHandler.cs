@@ -23,8 +23,10 @@ public class WCCharacterHandler : GUIWindowScripts
 
     void ClearFieldData()
     {
-        currentData = new WorldData.CharacterData();
-        currentData.partyData = new WorldData.PartyData();
+        currentData = new WorldData.CharacterData()
+        {
+            partyData = new WorldData.PartyData()
+        };
         reflectData();
     }
 
@@ -128,8 +130,10 @@ public class WCCharacterHandler : GUIWindowScripts
             }));
         }
 
-        currentData = new WorldData.CharacterData();
-        currentData.partyData = new WorldData.PartyData();
+        currentData = new WorldData.CharacterData()
+        {
+            partyData = new WorldData.PartyData()
+        };
         charID.text = charName.text = charBlueprint.text = "";
         charPartyMember.isOn = false;
         ClearFieldData();
@@ -187,11 +191,7 @@ public class WCCharacterHandler : GUIWindowScripts
         }
         else
         {
-            attackDialogue.text =
-                defendDialogue.text =
-                    collectDialogue.text =
-                        buildDialogue.text =
-                            followDialogue.text = "";
+            attackDialogue.text = defendDialogue.text = collectDialogue.text = buildDialogue.text = followDialogue.text = "";
         }
     }
 

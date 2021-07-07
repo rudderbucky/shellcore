@@ -56,20 +56,14 @@ public class SectorPropertyDisplay : MonoBehaviour
         }
 
         rectTransform.gameObject.SetActive(true);
-        rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
+        rectTransform.position = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
 
         type.value = 0;
-        sectorMusicBool.isOn = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultMusicOn", 1) == 1 ? true : false;
-        sectorMusicID.text = PlayerPrefs.GetString("WCSectorPropertyDisplay_defaultMusic0", WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)0));
-        colorR.text =
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR0",
-                SectorColors.colors[0].r) + "";
-        colorB.text =
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB0",
-                SectorColors.colors[0].b) + "";
-        colorG.text =
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG0",
-                SectorColors.colors[0].g) + "";
+        sectorMusicBool.isOn = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultMusicOn", 1) == 1;
+        sectorMusicID.text = PlayerPrefs.GetString("WCSectorPropertyDisplay_defaultMusic0", WCGeneratorHandler.GetDefaultMusic(Sector.SectorType.Neutral));
+        colorR.text = PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR0", SectorColors.colors[0].r).ToString();
+        colorB.text = PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB0", SectorColors.colors[0].b).ToString();
+        colorG.text = PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG0", SectorColors.colors[0].g).ToString();
 
         particles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
         tiles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
@@ -146,16 +140,16 @@ public class SectorPropertyDisplay : MonoBehaviour
 
         waveSet.text = sector.waveSetPath;
 
-        x.text = currentSector.bounds.x + "";
-        y.text = currentSector.bounds.y + "";
-        w.text = currentSector.bounds.w + "";
-        h.text = currentSector.bounds.h + "";
-        colorR.text = currentSector.backgroundColor.r + "";
-        colorG.text = currentSector.backgroundColor.g + "";
-        colorB.text = currentSector.backgroundColor.b + "";
+        x.text = currentSector.bounds.x.ToString();
+        y.text = currentSector.bounds.y.ToString();
+        w.text = currentSector.bounds.w.ToString();
+        h.text = currentSector.bounds.h.ToString();
+        colorR.text = currentSector.backgroundColor.r.ToString();
+        colorG.text = currentSector.backgroundColor.g.ToString();
+        colorB.text = currentSector.backgroundColor.b.ToString();
         for (int i = 0; i < shardCounts.Count; i++)
         {
-            shardCounts[i].text = currentSector.shardCountSet[i] + "";
+            shardCounts[i].text = currentSector.shardCountSet[i].ToString();
         }
 
         opening = false;
@@ -170,10 +164,10 @@ public class SectorPropertyDisplay : MonoBehaviour
             pos += new Vector3(300, 0);
             rectTransform.anchoredPosition = pos;
 
-            x.text = currentSector.bounds.x + "";
-            y.text = currentSector.bounds.y + "";
-            w.text = currentSector.bounds.w + "";
-            h.text = currentSector.bounds.h + "";
+            x.text = currentSector.bounds.x.ToString();
+            y.text = currentSector.bounds.y.ToString();
+            w.text = currentSector.bounds.w.ToString();
+            h.text = currentSector.bounds.h.ToString();
         }
     }
 
@@ -190,23 +184,17 @@ public class SectorPropertyDisplay : MonoBehaviour
                 PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{type.value}",
                     WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)type.value));
 
-            colorR.text =
-                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{type.value}",
-                    SectorColors.colors[type.value].r) + "";
-            colorB.text =
-                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{type.value}",
-                    SectorColors.colors[type.value].b) + "";
-            colorG.text =
-                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{type.value}",
-                    SectorColors.colors[type.value].g) + "";
+            colorR.text = PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{type.value}", SectorColors.colors[type.value].r).ToString();
+            colorB.text = PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{type.value}", SectorColors.colors[type.value].b).ToString();
+            colorG.text = PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{type.value}", SectorColors.colors[type.value].g).ToString();
             return;
         }
 
         currentSector.type = (Sector.SectorType)type.value;
         currentSector.backgroundColor = WorldCreatorCursor.GetDefaultColor((Sector.SectorType)type.value);
-        colorR.text = currentSector.backgroundColor.r + "";
-        colorG.text = currentSector.backgroundColor.g + "";
-        colorB.text = currentSector.backgroundColor.b + "";
+        colorR.text = currentSector.backgroundColor.r.ToString();
+        colorG.text = currentSector.backgroundColor.g.ToString();
+        colorB.text = currentSector.backgroundColor.b.ToString();
     }
 
     public void UpdateName()
@@ -366,7 +354,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         List<Sector.LevelEntity> levelEntities = new List<Sector.LevelEntity>();
         foreach (var field in bgSpawnInputFields)
         {
-            if (field.Item1.text == null || field.Item1.text == "")
+            if (string.IsNullOrEmpty(field.Item1.text))
             {
                 continue;
             }
@@ -378,7 +366,7 @@ public class SectorPropertyDisplay : MonoBehaviour
                 Sector.LevelEntity ent = new Sector.LevelEntity();
 
                 // you can choose to give any object a custom name
-                if (item.name != null && item.name != "")
+                if (!string.IsNullOrEmpty(item.name))
                 {
                     ent.name = item.name;
                 }
@@ -394,9 +382,11 @@ public class SectorPropertyDisplay : MonoBehaviour
             else
             {
                 // TODO: Reused code from WCSiegeWaveHandler, fix
-                Sector.LevelEntity ent = new Sector.LevelEntity();
-                ent.assetID = "shellcore_blueprint";
-                ent.faction = field.Item2.value; // maybe change this later
+                Sector.LevelEntity ent = new Sector.LevelEntity()
+                {
+                    assetID = "shellcore_blueprint",
+                    faction = field.Item2.value // maybe change this later
+                };
                 try
                 {
                     EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();

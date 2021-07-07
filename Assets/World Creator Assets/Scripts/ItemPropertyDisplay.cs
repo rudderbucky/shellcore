@@ -25,7 +25,7 @@ public class ItemPropertyDisplay : MonoBehaviour
         }
 
         rectTransform.gameObject.SetActive(true);
-        rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
+        rectTransform.position = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
 
         factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
         if (!FactionManager.FactionExists(factionDropdown.value))

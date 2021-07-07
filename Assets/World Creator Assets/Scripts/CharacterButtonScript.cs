@@ -21,11 +21,13 @@ public class CharacterButtonScript : MonoBehaviour
             return;
         }
 
-        Item item = new Item();
-        item.ID = character.ID;
-        item.name = character.name;
-        item.type = ItemType.Other;
-        item.obj = Instantiate(itemObj);
+        Item item = new Item()
+        {
+            ID = character.ID,
+            name = character.name,
+            type = ItemType.Other,
+            obj = Instantiate(itemObj)
+        };
 
         cursor.SetCurrent(item);
     }

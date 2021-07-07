@@ -84,31 +84,35 @@ public class ItemHandler : MonoBehaviour
     public Item CopyItem(int index)
     {
         var toCopy = itemPack.items[index];
-        Item item = new Item();
-        item.assetID = toCopy.assetID;
-        item.isTarget = toCopy.isTarget;
-        item.type = toCopy.type;
-        item.shellcoreJSON = toCopy.shellcoreJSON;
-        item.placeablesIndex = toCopy.placeablesIndex;
-        item.name = toCopy.name;
-        item.obj = Instantiate(toCopy.obj);
+        Item item = new Item()
+        {
+            assetID = toCopy.assetID,
+            isTarget = toCopy.isTarget,
+            type = toCopy.type,
+            shellcoreJSON = toCopy.shellcoreJSON,
+            placeablesIndex = toCopy.placeablesIndex,
+            name = toCopy.name,
+            obj = Instantiate(toCopy.obj)
+        };
         return item;
     }
 
     // hard copy
     public Item CopyItem(Item toCopy)
     {
-        Item item = new Item();
-        item.ID = toCopy.ID;
-        item.assetID = toCopy.assetID;
-        item.isTarget = toCopy.isTarget;
-        item.type = toCopy.type;
-        item.faction = toCopy.faction;
-        item.shellcoreJSON = toCopy.shellcoreJSON;
-        item.placeablesIndex = toCopy.placeablesIndex;
-        item.pos = toCopy.pos;
-        item.name = toCopy.name;
-        item.obj = Instantiate(toCopy.obj);
+        Item item = new Item()
+        {
+            ID = toCopy.ID,
+            assetID = toCopy.assetID,
+            isTarget = toCopy.isTarget,
+            type = toCopy.type,
+            faction = toCopy.faction,
+            shellcoreJSON = toCopy.shellcoreJSON,
+            placeablesIndex = toCopy.placeablesIndex,
+            pos = toCopy.pos,
+            name = toCopy.name,
+            obj = Instantiate(toCopy.obj)
+        };
         return item;
     }
 }

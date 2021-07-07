@@ -119,47 +119,47 @@ public class WCWorldIO : MonoBehaviour
 
     public static void DeletePlaceholderDirectories()
     {
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+        if (Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+            foreach (var file in Directory.GetFiles(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
             {
-                System.IO.File.Delete(file);
+                File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\CanvasPlaceholder");
+            Directory.Delete(Application.streamingAssetsPath + "\\CanvasPlaceholder");
         }
 
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\EntityPlaceholder"))
+        if (Directory.Exists(Application.streamingAssetsPath + "\\EntityPlaceholder"))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\EntityPlaceholder"))
+            foreach (var file in Directory.GetFiles(Application.streamingAssetsPath + "\\EntityPlaceholder"))
             {
-                System.IO.File.Delete(file);
+                File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\EntityPlaceholder");
+            Directory.Delete(Application.streamingAssetsPath + "\\EntityPlaceholder");
         }
 
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\WavePlaceholder"))
+        if (Directory.Exists(Application.streamingAssetsPath + "\\WavePlaceholder"))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\WavePlaceholder"))
+            foreach (var file in Directory.GetFiles(Application.streamingAssetsPath + "\\WavePlaceholder"))
             {
-                System.IO.File.Delete(file);
+                File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\WavePlaceholder");
+            Directory.Delete(Application.streamingAssetsPath + "\\WavePlaceholder");
         }
 
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\FactionPlaceholder"))
+        if (Directory.Exists(Application.streamingAssetsPath + "\\FactionPlaceholder"))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\FactionPlaceholder"))
+            foreach (var file in Directory.GetFiles(Application.streamingAssetsPath + "\\FactionPlaceholder"))
             {
-                System.IO.File.Delete(file);
+                File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\FactionPlaceholder");
+            Directory.Delete(Application.streamingAssetsPath + "\\FactionPlaceholder");
         }
 
-        if (System.IO.File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
+        if (File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
         {
             File.Delete(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt"));
         }
@@ -232,7 +232,7 @@ public class WCWorldIO : MonoBehaviour
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         try
         {
-            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
+            JsonUtility.FromJsonOverwrite(File.ReadAllText(path + "\\world.worlddata"), wdata);
             authors.text = wdata.author;
             description.text = wdata.description;
             defaultBlueprint.text = wdata.defaultBlueprintJSON;
@@ -240,8 +240,7 @@ public class WCWorldIO : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            authors.text =
-                description.text = "";
+            authors.text = description.text = "";
             Debug.Log(e);
         }
 
@@ -272,14 +271,14 @@ public class WCWorldIO : MonoBehaviour
         loadingText.text = GetLoadingString();
         var skippedFiles = new List<string> {".meta", ".worlddata", ".taskdata", ".dialoguedata", ".sectordata", "ResourceData.txt"};
         List<Sector> sectors = new List<Sector>();
-        foreach (var str in System.IO.Directory.GetFiles(path))
+        foreach (var str in Directory.GetFiles(path))
         {
             if (skippedFiles.Exists(s => str.Contains(s)))
             {
                 continue;
             }
 
-            string sectorjson = System.IO.File.ReadAllText(str);
+            string sectorjson = File.ReadAllText(str);
             SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
             // Debug.Log("Platform JSON: " + data.platformjson);
             // Debug.Log("Sector JSON: " + data.sectorjson);
@@ -359,7 +358,7 @@ public class WCWorldIO : MonoBehaviour
                             SetWorldIndicators(dir);
                             break;
                         case IOMode.ReadShipJSON:
-                            builder.LoadBlueprint(System.IO.File.ReadAllText(dir));
+                            builder.LoadBlueprint(File.ReadAllText(dir));
                             Hide();
                             break;
                         case IOMode.WriteShipJSON:
@@ -367,7 +366,7 @@ public class WCWorldIO : MonoBehaviour
                             Hide();
                             break;
                         case IOMode.ReadWaveJSON:
-                            waveBuilder.ReadWaves(JsonUtility.FromJson<WaveSet>(System.IO.File.ReadAllText(dir)));
+                            waveBuilder.ReadWaves(JsonUtility.FromJson<WaveSet>(File.ReadAllText(dir)));
                             Hide();
                             break;
                         case IOMode.WriteWaveJSON:
@@ -441,7 +440,7 @@ public class WCWorldIO : MonoBehaviour
                 WCReadCurrentPath();
                 break;
             case IOMode.ReadShipJSON:
-                builder.LoadBlueprint(System.IO.File.ReadAllText(path));
+                builder.LoadBlueprint(File.ReadAllText(path));
                 Hide();
                 break;
             case IOMode.WriteShipJSON:
@@ -449,7 +448,7 @@ public class WCWorldIO : MonoBehaviour
                 Hide();
                 break;
             case IOMode.ReadWaveJSON:
-                waveBuilder.ReadWaves(JsonUtility.FromJson<WaveSet>(System.IO.File.ReadAllText(path)));
+                waveBuilder.ReadWaves(JsonUtility.FromJson<WaveSet>(File.ReadAllText(path)));
                 Hide();
                 break;
             case IOMode.WriteWaveJSON:
