@@ -64,7 +64,7 @@ public class BackgroundScript : MonoBehaviour
     {
         if (tile)
         {
-            float limit = dimension == 0 ? gridWidth * tileSpacing.x / 2 : gridHeight * tileSpacing.y / 2;
+            float limit = dimension == 0 ? gridWidth * tileSpacing.x * 0.5f : gridHeight * tileSpacing.y * 0.5f;
             // the limit before the tile should wrap
 
             if (Mathf.Abs(tile.transform.position[dimension] - mcamera.position[dimension]) > limit) // this means it is at an axis edge
@@ -106,8 +106,8 @@ public class BackgroundScript : MonoBehaviour
             ingameTiles = new GameObject[gridWidth * gridHeight]; // create an array of tile references
             tileStartPos = new Vector2 // get the tile start position (this project needs the tiles to center at 0,0)
             {
-                x = mcamera.position.x - tileSpacing.x * (gridWidth - 1) / 2,
-                y = mcamera.position.y - tileSpacing.y * (gridHeight - 1) / 2
+                x = mcamera.position.x - tileSpacing.x * (gridWidth - 1) * 0.5f,
+                y = mcamera.position.y - tileSpacing.y * (gridHeight - 1) * 0.5f
             };
             int count = 0; // used for array assignment (to keep a 1d count in the 2d loop)
             for (int i = 0; i < gridHeight; i++)
@@ -168,7 +168,7 @@ public class BackgroundScript : MonoBehaviour
 
     public void setColor(Color color, bool force = false)
     {
-        Camera.main.backgroundColor = color / 2F;
+        Camera.main.backgroundColor = color * 0.5f;
         if (ingameTiles == null)
         {
             bgCol = lastColor = color;

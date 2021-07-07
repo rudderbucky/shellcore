@@ -6,18 +6,18 @@ public class LandPlatformGenerator : MonoBehaviour
 {
     public static string[] prefabNames = new string[]
     {
-        "New Junction", // 0
-        "New 1 Entry", // 1
-        "New 2 Entry", // 2
-        "New 0 Entry", // 3
-        "New 0 Entry Ghost", // 4
-        "New 3 Entry", // 5
-        "New 4 Entry", // 6
-        "New Junction Ghost", // 7
-        "New 1 Entry Ghost", // 8
-        "New 2 Entry Ghost", // 9
-        "New 3 Entry Ghost", // 10
-        "New 4 Entry Ghost" // 11
+        "New Junction",         // 0
+        "New 1 Entry",          // 1
+        "New 2 Entry",          // 2
+        "New 0 Entry",          // 3
+        "New 0 Entry Ghost",    // 4
+        "New 3 Entry",          // 5
+        "New 4 Entry",          // 6
+        "New Junction Ghost",   // 7
+        "New 1 Entry Ghost",    // 8
+        "New 2 Entry Ghost",    // 9
+        "New 3 Entry Ghost",    // 10
+        "New 4 Entry Ghost"     // 11
     };
 
     // TODO: generate one mesh instead of multiple objects
@@ -126,8 +126,8 @@ public class LandPlatformGenerator : MonoBehaviour
         var rows = blueprint.rows;
         Offset = new Vector2
         {
-            x = center.x - tileSize * (cols - 1) / 2F,
-            y = center.y + tileSize * (rows - 1) / 2F
+            x = center.x - tileSize * (cols - 1) * 0.5f,
+            y = center.y + tileSize * (rows - 1) * 0.5f
         };
         // TODO: read new data from file, for each platform
 
