@@ -129,7 +129,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     // prevents interaction while entities are in paths
     public bool isPathing = false;
-    public static float partDropRate = 0.1f;
+    public static readonly float DefaultPartRate = 0.1f;
+    public static float partDropRate = DefaultPartRate;
 
     // Code run on reticle double-click/proximity hotkey press
     public void Interact()
