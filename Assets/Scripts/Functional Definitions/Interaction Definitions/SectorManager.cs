@@ -195,8 +195,10 @@ public class SectorManager : MonoBehaviour
             {
                 dangerZoneTimer = 0;
                 Instantiate(damagePrefab, player.transform.position, Quaternion.identity);
-                player.CurrentHealth[0] -= (deadzoneDamage * player.GetMaxHealth()[0]);
-                player.CurrentHealth[1] -= (deadzoneDamage * player.GetMaxHealth()[1]);
+                var curHealth = player.CurrentHealth;
+                curHealth[0] -= (deadzoneDamage * player.GetMaxHealth()[0]);
+                curHealth[1] -= (deadzoneDamage * player.GetMaxHealth()[1]);
+                player.CurrentHealth = curHealth;
                 player.alerter.showMessage("WARNING: Leave Sector!", "clip_stationlost");
                 deadzoneDamage += deadzoneDamageMult;
             }
@@ -975,6 +977,7 @@ public class SectorManager : MonoBehaviour
             case Sector.SectorType.Haven:
             case Sector.SectorType.Capitol:
                 player.havenSpawnPoint = player.spawnPoint = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
+                player.LastDimension = current.dimension;
                 break;
             case Sector.SectorType.SiegeZone:
                 siegeZone.enabled = true;

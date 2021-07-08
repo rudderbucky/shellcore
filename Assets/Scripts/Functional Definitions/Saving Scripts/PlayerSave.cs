@@ -65,4 +65,5 @@ public class PlayerSave
     public List<string> unlockedPartyIDs;
     public AbilityHotkeyStruct abilityHotkeys;
     public List<string> locationBasedShardsFound;
+    public int lastDimension;
 }

@@ -33,7 +33,6 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob input;
 
         public float dropRate;
-        private static float oldDropRate;
         public string sectorName;
         public bool restoreOld;
         static SectorManager.SectorLoadDelegate del;
@@ -64,7 +63,12 @@ namespace NodeEditorFramework.Standard
         {
             if (!restoreOld)
             {
-                oldDropRate = Entity.partDropRate;
+                if (del != null)
+                {
+                    SectorManager.OnSectorLoad -= del;
+                    del = null;
+                }
+
                 Entity.partDropRate = dropRate;
                 del = RestoreOldValue;
                 SectorManager.OnSectorLoad += del;
@@ -73,7 +77,7 @@ namespace NodeEditorFramework.Standard
             {
                 SectorManager.OnSectorLoad -= del;
                 del = null;
-                Entity.partDropRate = oldDropRate;
+                Entity.partDropRate = Entity.DefaultPartRate;
             }
 
             return 0;
@@ -84,7 +88,7 @@ namespace NodeEditorFramework.Standard
             if (sectorName != this.sectorName)
             {
                 Debug.Log("Left part drop rate sector");
-                Entity.partDropRate = oldDropRate;
+                Entity.partDropRate = Entity.DefaultPartRate;
             }
             else
             {

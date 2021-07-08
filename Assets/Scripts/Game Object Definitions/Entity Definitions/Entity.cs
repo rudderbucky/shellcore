@@ -43,7 +43,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     public float[] CurrentHealth
     {
-        get { return currentHealth; }
+        get { return (float[])currentHealth.Clone(); }
         set
         {
             currentHealth = value;

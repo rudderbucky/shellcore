@@ -26,6 +26,14 @@ public class PlayerCore : ShellCore
         set { dimension = value; }
     }
 
+    private int lastDimension = 0;
+
+    public int LastDimension
+    {
+        get { return lastDimension; }
+        set { lastDimension = value; }
+    }
+
     // Uses this method to generally add credits for the player.
     public void AddCredits(int amount)
     {
@@ -92,10 +100,12 @@ public class PlayerCore : ShellCore
         else
         {
             spawnPoint = havenSpawnPoint;
+            dimension = lastDimension;
         }
 
         transform.position = spawnPoint; // reset position to spawn point
         base.Respawn(); // this will reinitialize the HUD
+        spawnPoint = havenSpawnPoint; // reset spawn point
         int weaponIndex = 0;
         for (int i = 0; i < abilities.Count; i++)
         {
