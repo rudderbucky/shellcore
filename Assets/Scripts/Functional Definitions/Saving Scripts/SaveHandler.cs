@@ -28,6 +28,7 @@ public class SaveHandler : MonoBehaviour
             if (save.timePlayed != 0)
             {
                 player.spawnPoint = save.position;
+                player.Dimension = save.lastDimension;
             }
 
             if (SectorManager.testJsonPath != null)
@@ -109,6 +110,7 @@ public class SaveHandler : MonoBehaviour
 
         string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
         save.position = player.spawnPoint;
+        save.lastDimension = player.LastDimension;
         save.currentHealths = player.CurrentHealth;
         if (player.CurrentHealth[1] <= 0)
         {
