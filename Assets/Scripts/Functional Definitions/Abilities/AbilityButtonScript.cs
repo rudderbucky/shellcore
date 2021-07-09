@@ -227,10 +227,9 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                 return 1;
             }
 
-            if (a.TimeUntilReady() > b.TimeUntilReady())
+            if (!Mathf.Approximately(a.TimeUntilReady(), b.TimeUntilReady()))
             {
-                var diff = a.TimeUntilReady() - b.TimeUntilReady();
-                return (int)Mathf.Sign(diff) * Mathf.CeilToInt(Mathf.Abs(diff));
+                return (int)Mathf.Sign(a.TimeUntilReady() - b.TimeUntilReady());
             }
             else if (a.GetTier() != b.GetTier())
             {

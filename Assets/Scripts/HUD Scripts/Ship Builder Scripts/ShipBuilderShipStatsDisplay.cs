@@ -85,7 +85,7 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
         }
 
         StringBuilder displayText = new StringBuilder();
-        displayText.AppendLine($"SHELL: {totalHealths[0]}");
+        displayText.Append($"SHELL: {totalHealths[0]}");
         displayText.AppendLine($"CORE: {totalHealths[1]}");
         displayText.AppendLine($"ENERGY: {totalHealths[2]}");
         displayText.AppendLine($"SPEED: {(int)Craft.GetPhysicsSpeed(speed, weight)}");

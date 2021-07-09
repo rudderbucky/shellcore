@@ -191,18 +191,19 @@ public class ReticleScript : MonoBehaviour
         }
 
         Transform target = targSys.GetTarget(); // get the target
+        ITargetable targetCraft = null;
         if (target != null)
         {
             reticleImage.rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(target.position);
             //transform.position = target.position; // update reticle position
             reticleImage.enabled = true;
+            targetCraft = target.GetComponent<ITargetable>(); // if target is an entity
         }
         else
         {
             reticleImage.enabled = false;
         }
 
-        ITargetable targetCraft = target?.GetComponent<ITargetable>(); // if target is an entity
         UpdateReticleHealths(shellImage, coreImage, targetCraft);
     }
 
