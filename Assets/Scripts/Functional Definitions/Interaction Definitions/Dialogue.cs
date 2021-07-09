@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public interface IDialogueable
 {
-
 }
 
 [CreateAssetMenu(fileName = "Dialogue", menuName = "ShellCore/Dialogue", order = 3)]

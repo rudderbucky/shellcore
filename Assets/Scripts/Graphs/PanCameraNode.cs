@@ -1,17 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Cutscenes/Pan Camera")]
     public class PanCameraNode : Node
     {
-        public override string GetName { get { return "PanCameraNode"; } }
-        public override string Title { get { return "Pan Camera"; } }
+        public override string GetName
+        {
+            get { return "PanCameraNode"; }
+        }
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, 240); } }
+        public override string Title
+        {
+            get { return "Pan Camera"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 240); }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -33,7 +41,7 @@ namespace NodeEditorFramework.Standard
             output.DisplayLayout();
             GUILayout.EndHorizontal();
 
-            if(!(endPanning = GUILayout.Toggle(endPanning, "End Panning")))
+            if (!(endPanning = GUILayout.Toggle(endPanning, "End Panning")))
             {
                 if (useCoordinates = Utilities.RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
                 {
@@ -59,7 +67,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             Vector3 coords = coordinates;
-            if(!useCoordinates)
+            if (!useCoordinates)
             {
                 for (int i = 0; i < AIData.flags.Count; i++)
                 {
@@ -70,11 +78,19 @@ namespace NodeEditorFramework.Standard
                     }
                 }
             }
-            if(endPanning)
+
+            if (endPanning)
             {
                 CameraScript.panning = false;
                 CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
-                foreach(var rect in RectangleEffectScript.instances) if(rect) rect.Start();
+                foreach (var rect in RectangleEffectScript.instances)
+                {
+                    if (rect)
+                    {
+                        rect.Start();
+                    }
+                }
+
                 return 0;
             }
             else
@@ -83,7 +99,11 @@ namespace NodeEditorFramework.Standard
                 coords.z = -CameraScript.zLevel;
                 CameraScript.panning = true;
                 CameraScript.target = coords;
-                if(!asynchronous) CameraScript.callback = continueTraversing;
+                if (!asynchronous)
+                {
+                    CameraScript.callback = continueTraversing;
+                }
+
                 return asynchronous ? 0 : -1;
             }
         }

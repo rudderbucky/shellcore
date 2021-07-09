@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
+using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
@@ -13,10 +12,21 @@ namespace NodeEditorFramework.Standard
 
         //Node things
         public const string ID = "SectorLimiterNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Sector Limiter"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Sector Limiter"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(208, height); }
+        }
 
         public string sectorName;
         public bool freeSector;
@@ -34,7 +44,7 @@ namespace NodeEditorFramework.Standard
         {
             height = 40f;
             freeSector = RTEditorGUI.Toggle(freeSector, "Free sector");
-            if(!freeSector)
+            if (!freeSector)
             {
                 height = 84f;
                 GUILayout.Label("Sector Name:");
@@ -51,7 +61,7 @@ namespace NodeEditorFramework.Standard
             LimitedSector = sectorName ?? "";
 
 
-            if(sectorName == "" || freeSector)
+            if (sectorName == "" || freeSector)
             {
                 (Canvas.Traversal as MissionTraverser).traverserLimiterDelegate = null;
                 return 0;
@@ -68,7 +78,7 @@ namespace NodeEditorFramework.Standard
 
         void SectorUpdate(string name)
         {
-            if(name == sectorName)
+            if (name == sectorName)
             {
                 TaskManager.Instance.setNode(output);
             }
@@ -78,19 +88,23 @@ namespace NodeEditorFramework.Standard
                 if (current != this)
                 {
                     if (current is TimelineNode)
+                    {
                         TaskManager.Instance.StopAllCoroutines();
+                    }
+
                     if (current is ConditionGroupNode)
                     {
                         var cgn = current as ConditionGroupNode;
                         cgn.DeInit();
                     }
+
                     TaskManager.Instance.taskVariables = savedVariables;
                     TaskManager.Instance.setNode(this);
                 }
             }
         }
 
-        public Dictionary<string,int> GetVariables()
+        public Dictionary<string, int> GetVariables()
         {
             return savedVariables;
         }
@@ -101,7 +115,7 @@ namespace NodeEditorFramework.Standard
             TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
             TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(new TaskManager.ObjectiveLocation
             (
-                new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2), 
+                new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2),
                 true,
                 (Canvas as QuestCanvas).missionName
             ));

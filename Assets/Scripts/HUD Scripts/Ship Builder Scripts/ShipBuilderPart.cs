@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /*
 	This class exists to streamline the process of displaying an image representation of a part, and storing actual data.
@@ -10,7 +8,6 @@ using UnityEngine.EventSystems;
  */
 public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHandler
 {
-
     public RectTransform rectTransform;
     public ShipBuilderCursorScript cursorScript;
     public Image boundImage;
@@ -40,16 +37,27 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
     public void SetMaskable(bool maskable)
     {
         if (image)
+        {
             image.maskable = maskable;
+        }
+
         if (shooter)
+        {
             shooter.maskable = maskable;
+        }
+
         if (boundImage)
+        {
             boundImage.maskable = maskable;
+        }
     }
 
     public void Snapback()
     {
-        if (lastValidPos != null) info.location = (Vector3)lastValidPos;
+        if (lastValidPos != null)
+        {
+            info.location = (Vector3)lastValidPos;
+        }
     }
 
     protected override void Awake()
@@ -95,6 +103,7 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
                     {
                         onAxis = rectTransform.anchoredPosition.y == 0;
                     }
+
                     if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
                     {
                         onAxis = rectTransform.anchoredPosition.x == 0;
@@ -105,17 +114,22 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
                     {
                         image.color = FactionManager.GetFactionColor(1);
                     }
+
                     break;
                 default:
                     break;
             }
+
             image.material = null;
         }
     }
 
     void OnDestroy()
     {
-        if (shooter) Destroy(shooter.gameObject);
+        if (shooter)
+        {
+            Destroy(shooter.gameObject);
+        }
     }
 
     void Update()

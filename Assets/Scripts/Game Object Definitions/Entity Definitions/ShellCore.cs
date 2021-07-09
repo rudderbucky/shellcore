@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// All "human-like" craft are considered ShellCores. These crafts are intelligent and all air-borne. This includes player ShellCores.
 /// </summary>
-public class ShellCore : AirCraft, IHarvester, IOwner {
-
+public class ShellCore : AirCraft, IHarvester, IOwner
+{
     public delegate void PowerCollectDelegate(int faction, int amount);
+
     public static PowerCollectDelegate OnPowerCollected;
 
     protected ICarrier carrier;
@@ -30,11 +30,16 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public ICarrier GetCarrier()
     {
-        if(carrier == null || carrier.Equals(null) || carrier.GetIsDead()) return null;
+        if (carrier == null || carrier.Equals(null) || carrier.GetIsDead())
+        {
+            return null;
+        }
+
         return carrier;
     }
 
-    public void ResetPower() {
+    public void ResetPower()
+    {
         totalPower = 0;
     }
 
@@ -45,9 +50,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
 
     public void AddPower(float power)
     {
-        totalPower = Mathf.Min(5000,totalPower + power);
+        totalPower = Mathf.Min(5000, totalPower + power);
         if (power > 0 && OnPowerCollected != null)
+        {
             OnPowerCollected.Invoke(faction, Mathf.RoundToInt(power));
+        }
     }
 
     protected override void OnDeath()
@@ -56,16 +63,18 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         base.OnDeath();
     }
 
-
-    public SectorManager GetSectorManager() {
+    public SectorManager GetSectorManager()
+    {
         return sectorMngr;
     }
+
     protected override void Start()
     {
         if ((carrier != null && !carrier.Equals(null)) && carrier.GetIsInitialized())
         {
             spawnPoint = carrier.GetSpawnPoint();
         }
+
         transform.position = spawnPoint;
         // initialize instance fields
         base.Start(); // base start
@@ -73,7 +82,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
         ai = GetAI();
         if (ai && ai.getMode() == AirCraftAI.AIMode.Inactive)
         {
-            if(sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
+            if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
             {
                 ai.setMode(AirCraftAI.AIMode.Battle);
             }
@@ -81,6 +90,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
             {
                 ai.setMode(AirCraftAI.AIMode.Inactive);
             }
+
             ai.allowRetreat = true;
         }
     }
@@ -100,9 +110,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     protected override void BuildEntity()
     {
         intrinsicCommandLimit = 0;
-        if(!tractor.initialized) {
+        if (!tractor.initialized)
+        {
             tractor.BuildTractor();
-            switch (CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID)) {
+            switch (CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID))
+            {
                 case 0:
                     tractor.maxRangeSquared = 225;
                     tractor.energyPickupRangeSquared = 160;
@@ -125,21 +137,24 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
                     break;
             }
         }
+
         base.BuildEntity();
     }
 
     protected override void Awake()
     {
         respawns = true;
-        if(!tractor)
+        if (!tractor)
         {
             tractor = gameObject.AddComponent<TractorBeam>();
             tractor.owner = this;
         }
+
         base.Awake(); // base awake
     }
 
-    protected override void Update() {
+    protected override void Update()
+    {
         base.Update(); // base update
     }
 
@@ -152,7 +167,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner {
     {
         return tractor ? tractor.GetTractorTarget() : null;
     }
-
 
     public List<IOwnable> GetUnitsCommanding()
     {

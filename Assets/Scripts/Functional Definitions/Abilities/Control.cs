@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class Control : PassiveAbility
 {
-
     const float healthAddition = 200;
     const float damageAddition = 200;
     List<Entity> boosted = new List<Entity>();
@@ -21,7 +18,10 @@ public class Control : PassiveAbility
         {
             var entity = boosted[i];
             if (!entity)
+            {
                 continue;
+            }
+
             var maxHealths = entity.GetMaxHealth();
             // Remove a percentage of health from the ship, based on what max health the core had before destruction
             var healths = entity.GetHealth();
@@ -29,6 +29,7 @@ public class Control : PassiveAbility
             maxHealths[0] -= healthAddition * abilityTier;
             entity.damageAddition -= damageAddition;
         }
+
         base.Deactivate();
         Entity.OnEntitySpawn -= EntitySpawn;
     }
@@ -37,16 +38,21 @@ public class Control : PassiveAbility
     {
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if(!AIData.entities[i].GetIsDead())
+            if (!AIData.entities[i].GetIsDead())
+            {
                 Enhance(AIData.entities[i]);
+            }
         }
+
         Entity.OnEntitySpawn += EntitySpawn;
     }
 
     void EntitySpawn(Entity entity)
     {
-        if(!entity.GetIsDead())
+        if (!entity.GetIsDead())
+        {
             Enhance(entity);
+        }
     }
 
     void Enhance(Entity entity)

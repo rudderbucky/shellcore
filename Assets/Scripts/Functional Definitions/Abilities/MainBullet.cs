@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// The main bullet ability that every shellcore has as a basic ability (this will inherit from the base bullet ability)
 /// </summary>
-public class MainBullet : Bullet {
-
+public class MainBullet : Bullet
+{
     public GameObject muzzleFlash;
     public static readonly int mbDamage = 150;
+
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -32,6 +31,7 @@ public class MainBullet : Bullet {
     }
 
     private GameObject muzzle;
+
     protected override bool FireBullet(Vector3 targetPos)
     {
         muzzle = Instantiate(muzzleFlash, transform.position, Quaternion.identity);
@@ -48,6 +48,9 @@ public class MainBullet : Bullet {
 
     void Update()
     {
-        if(muzzle) muzzle.transform.position = transform.position;
+        if (muzzle)
+        {
+            muzzle.transform.position = transform.position;
+        }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Speed : PassiveAbility {
+public class Speed : PassiveAbility
+{
     public static readonly float boost = 10;
+
     protected override void Awake()
     {
         ID = AbilityID.Speed;
@@ -14,21 +14,25 @@ public class Speed : PassiveAbility {
 
     public override void Deactivate()
     {
-        if(Core as Craft)
+        if (Core as Craft)
         {
             (Core as Craft).speed -= boost * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         }
+
         base.Deactivate();
     }
 
     protected override void Execute()
     {
-        if(Core as Craft)
+        if (Core as Craft)
         {
             (Core as Craft).speed += boost * abilityTier;
             (Core as Craft).CalculatePhysicsConstants();
         }
-        else if(Core) Debug.LogError("Why did you add a Speed part to a non-moving entity? Weirdo!");
+        else if (Core)
+        {
+            Debug.LogError("Why did you add a Speed part to a non-moving entity? Weirdo!");
+        }
     }
 }

@@ -1,7 +1,4 @@
-﻿using NodeEditorFramework.Utilities;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
@@ -11,11 +8,25 @@ namespace NodeEditorFramework.Standard
         public static StartDialogueNode missionCanvasNode = null;
         public static StartDialogueNode dialogueCanvasNode = null;
 
-        public override string GetName { get { return "LoadSectorNode"; } }
-        public override string Title { get { return "Enter Sector"; } }
+        public override string GetName
+        {
+            get { return "LoadSectorNode"; }
+        }
 
-        public override bool AutoLayout { get { return true; } }
-        public override bool AllowRecursion { get { return true; } }
+        public override string Title
+        {
+            get { return "Enter Sector"; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right)]
         public ConnectionKnob output;

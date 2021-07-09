@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bullet : WeaponAbility
 {
@@ -30,7 +28,8 @@ public class Bullet : WeaponAbility
         bonusDamageType = typeof(AirConstruct);
     }
 
-    protected override void Start() {
+    protected override void Start()
+    {
         bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         base.Start();
     }
@@ -52,29 +51,36 @@ public class Bullet : WeaponAbility
     {
         AudioManager.PlayClipByID(bulletSound, transform.position);
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
-    
+
         // Calculate future target position
         Vector2 targetVelocity = targetingSystem.GetTarget() ? targetingSystem.GetTarget().GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
-        
+
         // Closed form solution to bullet lead problem involves finding t via a quadratic solved here.
         Vector2 relativeDistance = targetPos - originPos;
-        var a = (bulletSpeed * bulletSpeed - Vector2.Dot(targetVelocity,targetVelocity));
-        var b = -(2*targetVelocity.x*relativeDistance.x + 2*targetVelocity.y*relativeDistance.y) ;
-        var c = -Vector2.Dot(relativeDistance,relativeDistance);
+        var a = (bulletSpeed * bulletSpeed - Vector2.Dot(targetVelocity, targetVelocity));
+        var b = -(2 * targetVelocity.x * relativeDistance.x + 2 * targetVelocity.y * relativeDistance.y);
+        var c = -Vector2.Dot(relativeDistance, relativeDistance);
 
-        if(a == 0 || b*b-4*a*c<0) return false;
+        if (a == 0 || b * b - 4 * a * c < 0)
+        {
+            return false;
+        }
 
-        var t1 = (-b + Mathf.Sqrt(b*b - 4*a*c))/(2*a);
-        var t2 = (-b - Mathf.Sqrt(b*b - 4*a*c))/(2*a);
-        
-        float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1,t2));
-        if(t <= 0) return false;
+        var t1 = (-b + Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a);
+        var t2 = (-b - Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a);
+
+        float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1, t2));
+        if (t <= 0)
+        {
+            return false;
+        }
 
         // Create the Bullet from the Bullet Prefab
-        if(bulletPrefab == null)
+        if (bulletPrefab == null)
         {
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
+
         var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
 
@@ -86,11 +92,11 @@ public class Bullet : WeaponAbility
         script.SetTerrain(terrain);
         script.SetShooterFaction(Core.faction);
         script.SetPierceFactor(pierceFactor);
-        script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
+        script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         script.missParticles = true;
 
         // Add velocity to the bullet
-        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity*t) * bulletSpeed;
+        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity * t) * bulletSpeed;
 
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);

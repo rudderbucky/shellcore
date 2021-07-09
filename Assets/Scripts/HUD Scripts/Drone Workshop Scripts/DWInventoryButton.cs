@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems; // Required when using Event data.
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
+
+
 
 public class DWInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
@@ -9,8 +9,9 @@ public class DWInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler,
     public DroneWorkshop workshop;
     public EntityBlueprint blueprint;
     private DroneSpawnData data;
-    
-    protected override void Start() {
+
+    protected override void Start()
+    {
         data = DroneWorkshop.ParseDronePart(part);
         blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
         JsonUtility.FromJsonOverwrite(data.drone, blueprint);
@@ -21,11 +22,14 @@ public class DWInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler,
     {
         handler.AssignDisplay(blueprint, data);
     }
-    public void OnPointerExit(PointerEventData eventData) {
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
         handler.ClearDisplay();
     }
 
-    public void OnPointerClick(PointerEventData eventData) {
+    public void OnPointerClick(PointerEventData eventData)
+    {
         workshop.InitializeBuildPhase(blueprint, part, data);
     }
 }

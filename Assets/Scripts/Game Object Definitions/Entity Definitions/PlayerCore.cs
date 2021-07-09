@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-
 
 /// <summary>
 /// A player ShellCore.
@@ -21,9 +19,20 @@ public class PlayerCore : ShellCore
     public List<ShellPart> partsToDestroy = new List<ShellPart>();
     public Vector2 havenSpawnPoint;
     private int dimension;
-    public int Dimension { get { return dimension; } set { dimension = value; } }
+
+    public int Dimension
+    {
+        get { return dimension; }
+        set { dimension = value; }
+    }
+
     private int lastDimension = 0;
-    public int LastDimension { get { return lastDimension; } set { lastDimension = value; } }
+
+    public int LastDimension
+    {
+        get { return lastDimension; }
+        set { lastDimension = value; }
+    }
 
     // Uses this method to generally add credits for the player.
     public void AddCredits(int amount)
@@ -63,6 +72,7 @@ public class PlayerCore : ShellCore
     {
         isInteracting = val;
     }
+
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
     /// </summary>
@@ -72,9 +82,15 @@ public class PlayerCore : ShellCore
         for (int i = 0; i < abilities.Count; i++)
         {
             if (abilities[i] is WeaponAbility)
+            {
                 weaponActivationStates.Add((abilities[i] as WeaponAbility).GetActiveTimeRemaining() == -1);
+            }
         }
-        if (hud) hud.DeinitializeHUD(); // deinitialize HUD
+
+        if (hud)
+        {
+            hud.DeinitializeHUD(); // deinitialize HUD
+        }
 
         carrier = FindCarrier();
         if (carrier != null)
@@ -94,22 +110,25 @@ public class PlayerCore : ShellCore
         for (int i = 0; i < abilities.Count; i++)
         {
             if (abilities[i] is WeaponAbility)
+            {
                 (abilities[i] as WeaponAbility).SetActive(weaponActivationStates[weaponIndex++]);
+            }
         }
     }
 
     private Vector3? minimapPoint = null;
+
     public Vector3? GetMinimapPoint()
     {
         return minimapPoint;
     }
+
     /// <summary>
     /// The directional driver for the player core, returns a vector based on current inputs
     /// </summary>
     /// <returns>a directional vector based on current inputs</returns>
     public Vector2 getDirectionalInput()
     {
-
         if (Input.GetMouseButton(1) && !(MouseMovementVisualScript.overMinimap && Input.GetMouseButton(0)))
         {
             minimapPoint = null;
@@ -129,13 +148,24 @@ public class PlayerCore : ShellCore
         //Sum up all inputs
         Vector2 direction = Vector2.zero;
         if (InputManager.GetKey(KeyName.Up))
+        {
             direction += new Vector2(0, 1);
+        }
+
         if (InputManager.GetKey(KeyName.Left))
+        {
             direction += new Vector2(-1, 0);
+        }
+
         if (InputManager.GetKey(KeyName.Down))
+        {
             direction += new Vector2(0, -1);
+        }
+
         if (InputManager.GetKey(KeyName.Right))
+        {
             direction += new Vector2(1, 0);
+        }
 
         if (minimapPoint != null && direction == Vector2.zero)
         {
@@ -144,9 +174,15 @@ public class PlayerCore : ShellCore
                 minimapPoint = null;
                 return Vector2.zero;
             }
-            else return (minimapPoint.Value - transform.position).normalized;
+            else
+            {
+                return (minimapPoint.Value - transform.position).normalized;
+            }
         }
-        else minimapPoint = null;
+        else
+        {
+            minimapPoint = null;
+        }
 
         //Send unit vector
         direction.Normalize();
@@ -169,6 +205,7 @@ public class PlayerCore : ShellCore
                 }
             }
         }
+
         return null;
     }
 
@@ -177,27 +214,35 @@ public class PlayerCore : ShellCore
         Instance = this;
         name = entityName = "player";
         if (!initialized)
+        {
             base.Awake();
+        }
+
         ID = "player";
     }
+
     // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
     protected override void Start()
     {
-
         foreach (var part in partsToDestroy)
         {
             Destroy(part.gameObject);
         }
+
         partsToDestroy.Clear();
 
         base.Start();
 
-        if (hud) hud.InitializeHUD(this);
+        if (hud)
+        {
+            hud.InitializeHUD(this);
+        }
         else
         {
             Camera.main.GetComponent<CameraScript>().Initialize(this);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(this);
         } // initialize the HUD
+
         if (!loaded)
         {
             LoadSave(cursave);
@@ -214,7 +259,10 @@ public class PlayerCore : ShellCore
     public override void Rebuild()
     {
         if (!initialized)
+        {
             Awake();
+        }
+
         initialized = true;
         hud.DeinitializeHUD();
         for (int i = 0; i < parts.Count; i++)
@@ -225,6 +273,7 @@ public class PlayerCore : ShellCore
                 Destroy(parts[i].gameObject);
             }
         }
+
         // UnityEditor.AssetDatabase.CreateAsset(blueprint, "Assets/Core Upgrades.asset");
         BuildEntity();
         // the player needs a predictable name for task interactions, so its object will always be called this
@@ -248,18 +297,27 @@ public class PlayerCore : ShellCore
                         newChars.Add(ch);
                     }
                 }
+
                 SectorManager.instance.characters = newChars.ToArray();
             }
+
             transform.position = save.position;
         }
 
         name = entityName = "player";
         positionBeforeOscillation = transform.position.y;
     }
+
     public List<EntityBlueprint.PartInfo> GetInventory()
     {
-        if (cursave != null) return cursave.partInventory;
-        else return null;
+        if (cursave != null)
+        {
+            return cursave.partInventory;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     // Update is called once per frame
@@ -274,11 +332,17 @@ public class PlayerCore : ShellCore
         // update abilities
         for (int i = 0; i < abilities.Count; i++)
         {
-            if (abilities[i]) abilities[i].Tick();
+            if (abilities[i])
+            {
+                abilities[i].Tick();
+            }
         }
 
         base.Update(); // base update
-        if (!GetIsInteracting() && !DialogueSystem.isInCutscene) MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+        if (!GetIsInteracting() && !DialogueSystem.isInCutscene)
+        {
+            MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+        }
     }
 
     public override void Warp(Vector3 point)
@@ -289,6 +353,7 @@ public class PlayerCore : ShellCore
         {
             instance.Start();
         }
+
         instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
         instantiatedRespawnPrefab.position = transform.position;
         AudioManager.PlayClipByID("clip_respawn", transform.position);
@@ -304,13 +369,20 @@ public class PlayerCore : ShellCore
     {
         base.CraftMover(directionVector);
 
-        if (directionVector != Vector2.zero) CameraScript.instance.Focus(transform.position);
+        if (directionVector != Vector2.zero)
+        {
+            CameraScript.instance.Focus(transform.position);
+        }
     }
 
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
         var residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
-        if (lastDamagedBy) HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
+        if (lastDamagedBy)
+        {
+            HealthBarScript.instance.StartHurtHud(FactionManager.GetFactionColor(lastDamagedBy.faction));
+        }
+
         return residue;
     }
 
@@ -326,6 +398,7 @@ public class PlayerCore : ShellCore
         {
             value += EntityBlueprint.GetPartValue(part);
         }
+
         return value;
     }
 }

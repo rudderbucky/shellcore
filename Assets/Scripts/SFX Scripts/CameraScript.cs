@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// <summary>
 /// Scripts for camera
 /// </summary>
-public class CameraScript : MonoBehaviour {
-
+public class CameraScript : MonoBehaviour
+{
     public static CameraScript instance;
     public static UnityEngine.Events.UnityAction callback;
     private PlayerCore core; // the target for the camera to follow
@@ -24,12 +22,21 @@ public class CameraScript : MonoBehaviour {
 
     public void Initialize(PlayerCore player)
     {
-        if(zLevel > GetMaxZoomLevel()) zLevel = GetMaxZoomLevel();
+        if (zLevel > GetMaxZoomLevel())
+        {
+            zLevel = GetMaxZoomLevel();
+        }
+
         core = player;
-        if(!initialized) sFXHandler.Initialize();
+        if (!initialized)
+        {
+            sFXHandler.Initialize();
+        }
+
         initialized = true;
         Start();
     }
+
     public void Start()
     {
         instance = this;
@@ -38,9 +45,12 @@ public class CameraScript : MonoBehaviour {
             Vector3 goalPos = core.transform.position; // update vector
             goalPos.z = -zLevel;
             transform.position = goalPos; // set position
-            foreach(var rect in RectangleEffectScript.instances) 
+            foreach (var rect in RectangleEffectScript.instances)
             {
-                if(rect) rect.Start();
+                if (rect)
+                {
+                    rect.Start();
+                }
             }
         }
     }
@@ -48,60 +58,79 @@ public class CameraScript : MonoBehaviour {
     // returns max zoom level based on player core tier
     public static float GetMaxZoomLevel()
     {
-        if(!PlayerCore.Instance) return 10;
-        return 10 + 2.5F * (1+
-                        CoreUpgraderScript.GetCoreTier(PlayerCore.Instance.blueprint.coreShellSpriteID));
+        if (!PlayerCore.Instance)
+        {
+            return 10;
+        }
+
+        return 10 + 2.5F * (1 +
+                            CoreUpgraderScript.GetCoreTier(PlayerCore.Instance.blueprint.coreShellSpriteID));
     }
 
     private void LateUpdate()
     {
-     if(initialized)
+        if (initialized)
         {
-            if(eventSystem && !eventSystem.IsPointerOverGameObject())
+            if (eventSystem && !eventSystem.IsPointerOverGameObject())
             {
-                if(Input.GetAxis("Mouse ScrollWheel") < 0f) 
-                { 
+                if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+                {
                     zLevel = Mathf.Min(GetMaxZoomLevel(), zLevel + 0.5F);
                     Focus(transform.position);
                 }
-                else if(Input.GetAxis("Mouse ScrollWheel") > 0f) 
+                else if (Input.GetAxis("Mouse ScrollWheel") > 0f)
                 {
                     zLevel = Mathf.Max(5, zLevel - 0.5F);
                     Focus(transform.position);
                 }
-            }    
+            }
 
-            if(panning) Pan();
+            if (panning)
+            {
+                Pan();
+            }
             else if (core.IsMoving()) // lock camera
             {
                 Focus(core.transform.position);
             }
+
             ProximityInteractScript.Focus();
             MouseMovementVisualScript.Focus();
-            if(ReticleScript.instance) ReticleScript.instance.Focus();
+            if (ReticleScript.instance)
+            {
+                ReticleScript.instance.Focus();
+            }
         }
     }
 
-    public void Focus(Vector3 pos) {
+    public void Focus(Vector3 pos)
+    {
         Vector3 goalPos = pos; // update vector
         goalPos.z = -zLevel;
         transform.position = goalPos; // set position
     }
 
-    public void Pan() {
+    public void Pan()
+    {
         var vec = ((Vector2)target - (Vector2)transform.position).normalized;
         transform.position += (Vector3)vec * velocityFactor;
         var vec2 = ((Vector2)target - (Vector2)transform.position).normalized;
-        if(vec2 != vec) transform.position = new Vector3(target.x, target.y, -zLevel);
-
-        if(transform.position == target)
+        if (vec2 != vec)
         {
-            if(callback != null) callback.Invoke();
+            transform.position = new Vector3(target.x, target.y, -zLevel);
+        }
+
+        if (transform.position == target)
+        {
+            if (callback != null)
+            {
+                callback.Invoke();
+            }
         }
     }
 
     public Vector3 GetWorldPositionOfMouse()
     {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0,0,CameraScript.zLevel));
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, CameraScript.zLevel));
     }
 }

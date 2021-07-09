@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 [CreateAssetMenu(fileName = "Path", menuName = "ShellCore/Path", order = 5)]
@@ -16,6 +16,7 @@ public class Path : ScriptableObject
         public int ID;
         public List<int> children;
     }
+
     public List<Node> waypoints;
 }
 
@@ -81,6 +82,7 @@ class PathEditor : Editor
                 childArray.GetArrayElementAtIndex(j).intValue = EditorGUILayout.DelayedIntField("Child " + j + ": ", childArray.GetArrayElementAtIndex(j).intValue);
             }
         }
+
         serializedObject.ApplyModifiedProperties();
     }
 
@@ -106,7 +108,7 @@ class PathEditor : Editor
             for (int j = 0; j < path.waypoints[i].children.Count; j++)
             {
                 int childID = getWaypointByID(path.waypoints[i].children[j]);
-                if(childID != -1)
+                if (childID != -1)
                 {
                     Handles.DrawLine(path.waypoints[i].position, path.waypoints[childID].position);
                 }
@@ -118,11 +120,12 @@ class PathEditor : Editor
     {
         for (int i = 0; i < path.waypoints.Count; i++)
         {
-            if(path.waypoints[i].ID == ID)
+            if (path.waypoints[i].ID == ID)
             {
                 return i;
             }
         }
+
         return -1;
     }
 }

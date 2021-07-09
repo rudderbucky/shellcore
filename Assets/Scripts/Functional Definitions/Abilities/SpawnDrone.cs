@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-
 
 public interface IOwner
 {
@@ -12,7 +10,7 @@ public interface IOwner
     void SetIntrinsicCommandLimit(int val);
     int GetTotalCommandLimit();
     SectorManager GetSectorManager();
-    Draggable GetTractorTarget(); 
+    Draggable GetTractorTarget();
 }
 
 /// <summary>
@@ -23,6 +21,7 @@ public class SpawnDrone : ActiveAbility
     public DroneSpawnData spawnData;
     EntityBlueprint blueprint;
     IOwner craft;
+
     public void Init()
     {
         ID = AbilityID.SpawnDrone;
@@ -39,7 +38,9 @@ public class SpawnDrone : ActiveAbility
     {
         base.Awake(); // base awake
         if (spawnData)
+        {
             Init();
+        }
     }
 
     private void Start()
@@ -53,16 +54,19 @@ public class SpawnDrone : ActiveAbility
                     craft = aircarrier;
                 }
             }
+
             if (craft == null)
             {
                 craft = PlayerCore.Instance;
             }
         }
+
         if (craft == null)
         {
             craft = Core as IOwner;
         }
     }
+
     /// <summary>
     /// Creates a drone
     /// </summary>
@@ -87,7 +91,7 @@ public class SpawnDrone : ActiveAbility
         }
         else
         {
-            if(drone.type != DroneType.Worker)
+            if (drone.type != DroneType.Worker)
             {
                 drone.getAI().follow(craft.GetTransform());
             }

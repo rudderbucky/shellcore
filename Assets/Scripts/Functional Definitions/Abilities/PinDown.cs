@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Immobilizes the nearest enemy
@@ -15,11 +13,11 @@ public class PinDown : ActiveAbility
     {
         return range;
     }
-    
+
     protected override void Awake()
     {
         base.Awake(); // base awake
-                      // hardcoded values here
+        // hardcoded values here
         ID = AbilityID.PinDown;
         energyCost = 100f;
         cooldownDuration = 10f;
@@ -61,7 +59,7 @@ public class PinDown : ActiveAbility
         {
             target.AddPin();
 
-            
+
             var missileLinePrefab = new GameObject("Missile Line"); // create prefab and set to parent
             missileLinePrefab.transform.SetParent(transform, false);
 
@@ -73,7 +71,7 @@ public class PinDown : ActiveAbility
             LineRenderer lineRenderer = missileLinePrefab.AddComponent<LineRenderer>(); // add line renderer
             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material"); // get material
             MissileAnimationScript comp = missileLinePrefab.AddComponent<MissileAnimationScript>(); // add the animation script
-            foreach(var part in target.GetComponentsInChildren<ShellPart>())
+            foreach (var part in target.GetComponentsInChildren<ShellPart>())
             {
                 var x = Instantiate(missileLinePrefab, part.transform); // instantiate
                 x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
@@ -81,6 +79,7 @@ public class PinDown : ActiveAbility
                 Destroy(x, activeDuration);
             }
         }
+
         base.Execute();
     }
 }

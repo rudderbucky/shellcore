@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Immobilizes the craft and converts all damage to energy
@@ -39,7 +37,7 @@ public class AbsorptionField : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        if(craft)
+        if (craft)
         {
             craft.entityBody.velocity = Vector2.zero;
             craft.absorptions++;
@@ -51,6 +49,7 @@ public class AbsorptionField : ActiveAbility
             sr.sprite = ResourceManager.GetAsset<Sprite>("absorption_sprite");
             sr.sortingOrder = 1000;
         }
+
         AudioManager.PlayClipByID("clip_buff", transform.position);
         // adjust fields
         base.Execute();

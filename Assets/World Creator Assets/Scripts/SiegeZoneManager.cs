@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -22,7 +21,6 @@ public class WaveSet
     public SiegeWave[] waves;
 }
 
-
 public class SiegeZoneManager : MonoBehaviour
 {
     public Queue<SiegeWave> waves;
@@ -36,6 +34,7 @@ public class SiegeZoneManager : MonoBehaviour
     public List<PlayerCore> players;
     private bool playing = false;
     public string sectorName;
+
     void OnEnable()
     {
         timer = 0;
@@ -50,34 +49,39 @@ public class SiegeZoneManager : MonoBehaviour
         playing = true;
     }
 
-    public void AlertPlayers(string message) {
-        foreach(PlayerCore player in players) {
+    public void AlertPlayers(string message)
+    {
+        foreach (PlayerCore player in players)
+        {
             player.alerter.showMessage(message, null);
         }
     }
 
     void Update()
     {
-        #if UNITY_EDITOR
-        if(Input.GetKeyDown(KeyCode.K))
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.K))
         {
             playing = false;
-            if(NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
+            if (NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
+            {
                 NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(sectorName);
+            }
+
             Debug.Log("Victory!");
             return;
         }
-        #endif
+#endif
 
-        if(playing && enabled)
+        if (playing && enabled)
         {
             timer += Time.deltaTime;
             entitiesToRemove.Clear();
             entitiesRemainingToRemove.Clear();
 
-            if((current == null || (current.entities.Count == 0 && entitiesRemaining.Count == 0)))
+            if ((current == null || (current.entities.Count == 0 && entitiesRemaining.Count == 0)))
             {
-                if(waves.Count > 0)
+                if (waves.Count > 0)
                 {
                     entitiesRemaining.Clear();
                     current = waves.Dequeue();
@@ -85,11 +89,14 @@ public class SiegeZoneManager : MonoBehaviour
                     AlertPlayers("WAVE " + waveCount + "/" + (waves.Count + waveCount));
                     timer = 0;
                 }
-                else if((current.entities.Count == 0 && entitiesRemaining.Count == 0))
+                else if ((current.entities.Count == 0 && entitiesRemaining.Count == 0))
                 {
                     playing = false;
-                    if(NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
+                    if (NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin != null)
+                    {
                         NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(sectorName);
+                    }
+
                     Debug.Log("Victory!");
                     return;
                 }
@@ -97,11 +104,11 @@ public class SiegeZoneManager : MonoBehaviour
 
             // Debug.Log(current.entities.Count + " - " + entitiesRemaining.Count);
 
-            foreach(var ent in current.entities)
+            foreach (var ent in current.entities)
             {
-                if(timer >= ent.timeSinceWaveStartToSpawn)
+                if (timer >= ent.timeSinceWaveStartToSpawn)
                 {
-                    if(!AIData.flags.Exists((f) => f.name == ent.flagName))
+                    if (!AIData.flags.Exists((f) => f.name == ent.flagName))
                     {
                         Debug.LogError("<SiegeZoneManager> Invalid flag name.");
                         continue;
@@ -109,39 +116,47 @@ public class SiegeZoneManager : MonoBehaviour
 
                     ent.entity.position = AIData.flags.Find((f) => f.name == ent.flagName).transform.position;
                     var sectorEntity = SectorManager.instance.SpawnEntity(SectorManager.GetBlueprintOfLevelEntity(ent.entity), ent.entity);
-                    if(sectorEntity as Drone || sectorEntity as ShellCore) 
+                    if (sectorEntity as Drone || sectorEntity as ShellCore)
                     {
                         Path path = ScriptableObject.CreateInstance<Path>();
                         path.waypoints = new List<Path.Node>();
                         Path.Node node = new Path.Node();
                         var currentTargets = targets.FindAll(targ => targ.faction != sectorEntity.faction);
-                        if(currentTargets.Count > 0) node.position = currentTargets[Random.Range(0, currentTargets.Count)].transform.position;
-                        else if(players.Count > 0) node.position = players[Random.Range(0, players.Count)].transform.position;
+                        if (currentTargets.Count > 0)
+                        {
+                            node.position = currentTargets[Random.Range(0, currentTargets.Count)].transform.position;
+                        }
+                        else if (players.Count > 0)
+                        {
+                            node.position = players[Random.Range(0, players.Count)].transform.position;
+                        }
+
                         node.children = new List<int>();
                         path.waypoints.Add(node);
 
                         (sectorEntity as AirCraft).GetAI().setPath(path);
                     }
+
                     entitiesToRemove.Add(ent);
                     entitiesRemaining.Add(sectorEntity);
                 }
             }
 
-            foreach(var ent in entitiesToRemove)
+            foreach (var ent in entitiesToRemove)
             {
                 current.entities.Remove(ent);
             }
 
 
-            foreach(var ent in entitiesRemaining)
+            foreach (var ent in entitiesRemaining)
             {
-                if(ent.GetIsDead())
+                if (ent.GetIsDead())
                 {
                     entitiesRemainingToRemove.Add(ent);
                 }
             }
 
-            foreach(var ent in entitiesRemainingToRemove)
+            foreach (var ent in entitiesRemainingToRemove)
             {
                 entitiesRemaining.Remove(ent);
             }
@@ -152,11 +167,20 @@ public class SiegeZoneManager : MonoBehaviour
     {
         Debug.Log("target " + target.name);
         if (targets == null)
+        {
             targets = new List<Entity>();
+        }
+
         if (!playing)
+        {
             targets.Clear();
+        }
+
         if (target)
+        {
             playing = true;
+        }
+
         targets.Add(target);
     }
 }

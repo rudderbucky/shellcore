@@ -1,16 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class WeaponStation : GroundConstruct {
-
-	// Use this for initialization
-	protected override void Start()
+﻿public class WeaponStation : GroundConstruct
+{
+    // Use this for initialization
+    protected override void Start()
     {
         category = EntityCategory.Station;
         base.Start();
     }
-	protected override void Update()
+
+    protected override void Update()
     {
         base.Update();
         TargetManager.Enqueue(targeter);

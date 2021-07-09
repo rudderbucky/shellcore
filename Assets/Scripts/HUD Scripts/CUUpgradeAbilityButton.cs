@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -24,21 +22,28 @@ public class CUUpgradeAbilityButton : MonoBehaviour, IPointerEnterHandler, IPoin
         UpdateButtonCost(false);
     }
 
-    public void OnEnable() {
+    public void OnEnable()
+    {
         UpdateButtonCost(false);
     }
 
-    public void UpdateButtonCost(bool mouseOver) {
-        if(CoreUpgraderScript.maxAbilityCap[type] > CoreUpgraderScript.instance.player.abilityCaps[type]) {
-            if(mouseOver) {
+    public void UpdateButtonCost(bool mouseOver)
+    {
+        if (CoreUpgraderScript.maxAbilityCap[type] > CoreUpgraderScript.instance.player.abilityCaps[type])
+        {
+            if (mouseOver)
+            {
                 text.text = CoreUpgraderScript.GetUpgradeCost(type) + " Shards " + CoreUpgraderScript.GetUpgradeCostCredits(type) + " Credits";
-                text.color = CoreUpgraderScript.GetUpgradeCost(type) - CoreUpgraderScript.GetShards() <= 0 ? Color.green : Color.red;  
+                text.color = CoreUpgraderScript.GetUpgradeCost(type) - CoreUpgraderScript.GetShards() <= 0 ? Color.green : Color.red;
             }
-            else {
+            else
+            {
                 text.text = "Upgrade";
-                text.color = Color.white;                   
+                text.color = Color.white;
             }
-        } else {
+        }
+        else
+        {
             text.text = "MAX";
             text.color = Color.yellow;
         }

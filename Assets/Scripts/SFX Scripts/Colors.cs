@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public struct SectorColors
 {
@@ -12,6 +10,6 @@ public struct SectorColors
         new Color(0.65F, 0, 0),
         new Color(0, 0.8F, 0),
         new Color(0.15F, 0.15F, 0.15F),
-        new Color(0.15F, 0.15F, 0.15F),
+        new Color(0.15F, 0.15F, 0.15F)
     };
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -8,11 +7,12 @@ using UnityEngine.Rendering;
 /// </summary>
 public class Entity : MonoBehaviour, IDamageable, IInteractable
 {
-
     public delegate void EntitySpawnDelegate(Entity entity);
+
     public static EntitySpawnDelegate OnEntitySpawn;
 
     public delegate void EntityDeathDelegate(Entity entity, Entity murderer);
+
     public static EntityDeathDelegate OnEntityDeath;
 
     public ShellPart shell;
@@ -20,8 +20,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected static int maxGroundLayer = 1;
     protected SortingGroup group;
     protected float[] maxHealth; // maximum health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+
     [SerializeField]
     protected float[] regenRate; // regeneration rate of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+
     protected List<Ability> abilities; // abilities
     public Rigidbody2D entityBody; // entity to modify with this script
     protected Collider2D hitbox; // the hitbox of the entity (excluding extra parts)
@@ -38,6 +40,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected GameObject deathExplosionPrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
     protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+
     public float[] CurrentHealth
     {
         get { return (float[])currentHealth.Clone(); }
@@ -50,6 +53,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
         }
     }
+
     public int faction; // What side the entity belongs to (0 = green, 1 = red, 2 = olive...)
     public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
@@ -61,27 +65,23 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public string ID; // used in tasks
     public int stealths = 0;
     public bool invisible = false;
+
     public bool IsInvisible
     {
-        get
-        {
-            return stealths > 0 || invisible;
-        }
-        set
-        {
-            invisible = value;
-        }
+        get { return stealths > 0 || invisible; }
+        set { invisible = value; }
     }
+
     public float damageAddition = 0f;
+
     [HideInInspector]
     public int absorptions = 0;
+
     public bool isAbsorbing // if true, all incoming damage is converted to energy
     {
-        get
-        {
-            return absorptions > 0;
-        }
+        get { return absorptions > 0; }
     }
+
     bool collidersEnabled = true;
     public bool tractorSwitched = false;
 
@@ -105,7 +105,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         Unset,
         Ground,
         Air,
-        All,
+        All
     }
 
     public enum EntityCategory // category of entity (carriers, outposts and bunkers are stations, everything else are units)
@@ -117,14 +117,18 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     }
 
     TerrainType terrain = TerrainType.Unset;
-    public TerrainType Terrain { get { return terrain; } protected set { terrain = value; } }
+
+    public TerrainType Terrain
+    {
+        get { return terrain; }
+        protected set { terrain = value; }
+    }
 
     // boolean used to check if proximity and reticle interactions should trigger for this entity
     private bool interactible = false;
 
     // prevents interaction while entities are in paths
     public bool isPathing = false;
-
     public static readonly float DefaultPartRate = 0.1f;
     public static float partDropRate = DefaultPartRate;
 
@@ -139,7 +143,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             DialogueSystem.interactionOverrides[ID].Peek().Invoke();
         }
-        else DialogueSystem.StartDialogue(dialogue, this);
+        else
+        {
+            DialogueSystem.StartDialogue(dialogue, this);
+        }
     }
 
     public void UpdateInteractible()
@@ -149,16 +156,31 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         // These are implications, not a biconditional; interactibility is not necessarily true/false if there are no
         // task overrides or pathing set up. Hence the if statements are needed here
         if (ID != null && TaskManager.interactionOverrides.ContainsKey(ID)
-            && TaskManager.interactionOverrides[ID].Count > 0) interactible = true;
+                       && TaskManager.interactionOverrides[ID].Count > 0)
+        {
+            interactible = true;
+        }
 
         if (ID != null && DialogueSystem.interactionOverrides.ContainsKey(ID)
-            && DialogueSystem.interactionOverrides[ID].Count > 0) interactible = true;
+                       && DialogueSystem.interactionOverrides[ID].Count > 0)
+        {
+            interactible = true;
+        }
 
-        if (isPathing || DialogueSystem.isInCutscene) interactible = false;
+        if (isPathing || DialogueSystem.isInCutscene)
+        {
+            interactible = false;
+        }
 
-        if (this as ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone) interactible = false;
+        if (this as ShellCore && SectorManager.instance.current.type == Sector.SectorType.BattleZone)
+        {
+            interactible = false;
+        }
 
-        if (isDead) interactible = false;
+        if (isDead)
+        {
+            interactible = false;
+        }
     }
 
     public bool GetInteractible()
@@ -181,7 +203,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 group.sortingLayerName = "Ground Entities";
                 group.sortingOrder = ++maxGroundLayer;
             }
-
         }
 
         if (!transform.Find("Shell Sprite")) // no shell in hierarchy yet? no problem
@@ -193,10 +214,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>(); // add renderer
             renderer.sortingOrder = 100; // hardcoded max shell sprite value TODO: change this to being dynamic with the other parts
             if (blueprint)
-            { // check if it contains a blueprint (it should)
+            {
+                // check if it contains a blueprint (it should)
                 renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
             }
-            else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_shell"); // set to default shellcore sprite
+            else
+            {
+                renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_shell"); // set to default shellcore sprite
+            }
+
             ShellPart part = childObject.AddComponent<ShellPart>();
             part.detachible = false;
             shell = part;
@@ -219,6 +245,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             explosionCirclePrefab.AddComponent<DrawCircleScript>().SetStartColor(FactionManager.GetFactionColor(faction));
             explosionCirclePrefab.SetActive(false);
         }
+
         if (!explosionLinePrefab)
         {
             explosionLinePrefab = new GameObject("Explosion Line");
@@ -228,22 +255,27 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             explosionLinePrefab.AddComponent<DrawLineScript>().SetStartColor(FactionManager.GetFactionColor(faction));
             explosionLinePrefab.SetActive(false);
         }
+
         if (!deathExplosionPrefab)
         {
             deathExplosionPrefab = ResourceManager.GetAsset<GameObject>("death_explosion");
         }
+
         if (!respawnImplosionPrefab)
         {
             respawnImplosionPrefab = ResourceManager.GetAsset<GameObject>("respawn_implosion");
         }
+
         if (!GetComponent<SpriteRenderer>())
         {
             SpriteRenderer renderer = gameObject.AddComponent<SpriteRenderer>();
             renderer.material = ResourceManager.GetAsset<Material>("material_color_swap");
             renderer.color = FactionManager.GetFactionColor(faction);
-
         }
-        else GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(faction); // needed to reset outpost colors
+        else
+        {
+            GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(faction); // needed to reset outpost colors
+        }
 
         if (!GetComponent<Rigidbody2D>())
         {
@@ -268,9 +300,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         else if (GetComponent<Draggable>() && !draggable)
         {
             Debug.LogWarning("Draggable was added to an entity manually, " +
-                "it should be added automatically by setting isDraggable to true!");
+                             "it should be added automatically by setting isDraggable to true!");
         }
-
     }
 
     /// <summary>
@@ -279,14 +310,19 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public virtual void Rebuild()
     {
         if (!initialized)
+        {
             Awake();
+        }
+
         initialized = true;
 
         // destroy existing parts except the shell and rebuild
         for (int i = 0; i < parts.Count; i++)
         {
             if (parts[i].gameObject.name != "Shell Sprite")
+            {
                 Destroy(parts[i].gameObject);
+            }
         }
 
         stealths = 0;
@@ -306,7 +342,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 part.GetComponentInChildren<Ability>()?.SetDestroyed(true);
                 Destroy(part.gameObject);
             }
-
         }
     }
 
@@ -316,7 +351,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected virtual void BuildEntity()
     {
         // all created entities should have blueprints!
-        if (!blueprint) Debug.LogError(this + " does not have a blueprint! EVERY constructed entity should have one!");
+        if (!blueprint)
+        {
+            Debug.LogError(this + " does not have a blueprint! EVERY constructed entity should have one!");
+        }
 
         DestroyOldParts();
 
@@ -324,21 +362,30 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         blueprint.shellHealth.CopyTo(maxHealth, 0);
         blueprint.baseRegen.CopyTo(regenRate, 0);
 
-        if (blueprint) this.dialogue = blueprint.dialogue;
+        if (blueprint)
+        {
+            this.dialogue = blueprint.dialogue;
+        }
 
         AttemptAddComponents();
         var renderer = GetComponent<SpriteRenderer>();
         if (blueprint)
-        { // check if it contains a blueprint (it should)
+        {
+            // check if it contains a blueprint (it should)
 
             if (blueprint.coreSpriteID == "" && blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore)
             {
                 Debug.Log(this + "'s blueprint does not contain a core sprite ID!");
                 // check if the blueprint does not contain a core sprite ID (it should) 
             }
+
             renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
         }
-        else renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+        else
+        {
+            renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+        }
+
         renderer.sortingOrder = 101;
 
         renderer = transform.Find("Minimap Image").GetComponent<SpriteRenderer>();
@@ -356,9 +403,13 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
             }
+
             renderer.transform.localScale = new Vector3(3.5F, 3.5F, 3.5F);
         }
-        else renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+        else
+        {
+            renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+        }
 
 
         abilities = new List<Ability>();
@@ -375,7 +426,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             for (int i = 0; i < blueprint.parts.Count; i++)
             {
-
                 EntityBlueprint.PartInfo part = blueprint.parts[i];
                 PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(part.partID);
 
@@ -389,9 +439,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
                 WeaponAbility ab = AbilityUtilities.AddAbilityToGameObjectByID(partObject, part.abilityID, part.secondaryData, part.tier) as WeaponAbility;
                 if (ab)
-                { // add weapon diversity
+                {
+                    // add weapon diversity
                     ab.type = DroneUtilities.GetDiversityTypeByEntity(this);
                 }
+
                 partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
                 partObject.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
                 SpriteRenderer sr = partObject.GetComponent<SpriteRenderer>();
@@ -420,29 +472,40 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     shooterSprite.sortingOrder = 500;
                     shellPart.shooter = shooter;
                     if (AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons)
+                    {
                         shellPart.weapon = true;
+                    }
                 }
 
                 var weaponAbility = partObject.GetComponent<WeaponAbility>();
                 if (weaponAbility)
                 {
-
                     // if the terrain and category wasn't preset set to the enitity's properties
 
                     if (weaponAbility.terrain == TerrainType.Unset)
+                    {
                         weaponAbility.terrain = Terrain;
+                    }
+
                     if (weaponAbility.category == EntityCategory.Unset)
+                    {
                         weaponAbility.category = category;
+                    }
                 }
 
 
                 parts.Add(partObject.GetComponent<ShellPart>());
-                if (partObject.GetComponent<Ability>()) abilities.Insert(0, partObject.GetComponent<Ability>());
+                if (partObject.GetComponent<Ability>())
+                {
+                    abilities.Insert(0, partObject.GetComponent<Ability>());
+                }
 
                 // Disable collider if no sprite
                 if (!(partObject.GetComponent<SpriteRenderer>() && partObject.GetComponent<SpriteRenderer>().sprite)
                     && partObject.GetComponent<Collider2D>() && !partObject.GetComponent<Harvester>())
+                {
                     partObject.GetComponent<Collider2D>().enabled = false;
+                }
             }
 
             // Drone shell and core health penalty
@@ -496,23 +559,30 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     break;
             }
         }
+
         IsInvisible = false;
 
         // check to see if the entity is interactible
-        if (dialogue && faction == 0) interactible = true;
+        if (dialogue && faction == 0)
+        {
+            interactible = true;
+        }
 
         Transform shellSprite = shell.transform;
         if (shellSprite)
         {
             parts.Add(shellSprite.GetComponent<ShellPart>());
         }
+
         ConnectedTreeCreator();
 
         maxHealth.CopyTo(currentHealth, 0);
         ActivatePassives(); // activate passive abilities here to avoid race condition BS
 
         if (OnEntitySpawn != null)
+        {
             OnEntitySpawn.Invoke(this);
+        }
     }
 
     public bool GetIsDead()
@@ -537,7 +607,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         foreach (var ability in abilities)
         {
             if (ability)
+            {
                 ability.SetDestroyed(true);
+            }
         }
 
         interactible = false;
@@ -555,14 +627,19 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
             if (selectedParts.Count > 0)
+            {
                 foreach (var part in selectedParts)
                 {
                     if (Random.value < partDropRate)
                     {
                         part.SetCollectible(true);
-                        if (sectorMngr) AIData.strayParts.Add(part);
+                        if (sectorMngr)
+                        {
+                            AIData.strayParts.Add(part);
+                        }
                     }
                 }
+            }
         }
 
         for (int i = 0; i < parts.Count; i++)
@@ -586,7 +663,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         if (OnEntityDeath != null)
+        {
             OnEntityDeath.Invoke(this, lastDamagedBy);
+        }
 
         if (BZM != null)
         {
@@ -617,23 +696,35 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             AIData.entities.Add(this);
         }
+
         if (!AIData.interactables.Contains(this))
         {
             AIData.interactables.Add(this);
         }
 
         if (this is IVendor)
+        {
             AIData.vendors.Add(this);
+        }
     }
 
     protected virtual void OnDestroy()
     {
         if (AIData.entities.Contains(this))
+        {
             AIData.entities.Remove(this);
+        }
+
         if (AIData.interactables.Contains(this))
+        {
             AIData.interactables.Remove(this);
+        }
+
         if (this is IVendor)
+        {
             AIData.vendors.Remove(this);
+        }
+
         SectorManager.instance.RemoveObject(ID, gameObject);
     }
 
@@ -663,7 +754,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     protected virtual void Update()
     {
-        if (initialized) TickState(); // tick state
+        if (initialized)
+        {
+            TickState(); // tick state
+        }
     }
 
     /// <summary>
@@ -690,10 +784,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     virtual protected void DeathHandler()
     {
         if (currentHealth[1] <= 0 && !isDead)
-        { // craft has been killed
+        {
+            // craft has been killed
             OnDeath(); // call death helper method
         }
     }
+
     /// <summary>
     /// Used to update the state of the craft- regeneration, timers, etc
     /// </summary>
@@ -710,17 +806,23 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 if (this as PlayerCore && (deathTimer > 2))
                 {
                     ((PlayerCore)this).alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
-                    + ((5 - deathTimer) > 1 ? "s." : "."));
+                                                           + ((5 - deathTimer) > 1 ? "s." : "."));
                 }
             }
+
             if (deathTimer >= 5F)
             {
-                if (this as PlayerCore) ((PlayerCore)this).alerter.showMessage("");
+                if (this as PlayerCore)
+                {
+                    ((PlayerCore)this).alerter.showMessage("");
+                }
+
                 PostDeath();
             }
         }
         else
-        { // not dead, continue normal state changing
+        {
+            // not dead, continue normal state changing
             // regenerate
             RegenHealth(ref currentHealth[0], regenRate[0], maxHealth[0]);
             RegenHealth(ref currentHealth[1], regenRate[1], maxHealth[1]);
@@ -730,19 +832,26 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 weaponGCDTimer += Time.deltaTime; // tick GCD timer
             }
+
             // check if busy state changing is due
             if (busyTimer > 5)
             {
                 isBusy = false; // change state if it is
             }
-            else busyTimer += Time.deltaTime; // otherwise continue ticking timer
+            else
+            {
+                busyTimer += Time.deltaTime; // otherwise continue ticking timer
+            }
 
             // check if combat state changing is due
             if (combatTimer > 5)
             {
                 isInCombat = false; // change state if it is
             }
-            else combatTimer += Time.deltaTime; // otherwise continue ticking timer
+            else
+            {
+                combatTimer += Time.deltaTime; // otherwise continue ticking timer
+            }
         }
     }
 
@@ -751,12 +860,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     public bool RequestGCD()
     {
-        if (DialogueSystem.isInCutscene) return false; // Entities should be controlled entirely by the cutscene, i.e. no siccing!
+        if (DialogueSystem.isInCutscene)
+        {
+            return false; // Entities should be controlled entirely by the cutscene, i.e. no siccing!
+        }
+
         if (weaponGCDTimer >= weaponGCD)
         {
             weaponGCDTimer = 0;
             return true;
         }
+
         return false;
     }
 
@@ -766,12 +880,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             part.GetComponent<Ability>().SetDestroyed(true);
         }
+
         entityBody.mass -= part.partMass;
         weight -= part.partMass * weightMultiplier;
         if (this as Craft)
         {
             (this as Craft).CalculatePhysicsConstants();
         }
+
         Domino(part);
         part.Detach();
         parts.Remove(part);
@@ -858,7 +974,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public virtual float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
+        {
             Debug.Log("Damage: " + amount + " (f " + lastDamagedBy?.faction + " -> " + faction + ")");
+        }
 
         if (isAbsorbing && amount > 0f)
         {
@@ -868,19 +986,31 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         // counter drone fighting another drone, multiply damage accordingly
         if (this as Drone && lastDamagedBy as Drone && (lastDamagedBy as Drone).type == DroneType.Counter)
+        {
             amount *= 1.75F;
-        if (lastDamagedBy != this && amount > 0) this.lastDamagedBy = lastDamagedBy; // heals require this check
-        if (amount > 0) SetIntoCombat();
+        }
+
+        if (lastDamagedBy != this && amount > 0)
+        {
+            this.lastDamagedBy = lastDamagedBy; // heals require this check
+        }
+
+        if (amount > 0)
+        {
+            SetIntoCombat();
+        }
 
         // pierce now goes directly to core first
         TakeCoreDamage(shellPiercingFactor * amount);
         float residue = 0; // get initial residual damage
         currentHealth[0] -= amount * (1 - shellPiercingFactor); // subtract amount from shell
         if (currentHealth[0] < 0)
-        { // if shell has dipped below 0
+        {
+            // if shell has dipped below 0
             residue -= currentHealth[0]; // add residue
             currentHealth[0] = 0; // set shell to zero
         }
+
         currentHealth[0] = currentHealth[0] > maxHealth[0] ? maxHealth[0] : currentHealth[0];
         // reset health if beyond max
         return residue;
@@ -891,7 +1021,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     public virtual void TakeCoreDamage(float amount)
     {
-
         if (isAbsorbing && amount > 0f)
         {
             TakeEnergy(-amount);
@@ -899,7 +1028,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         currentHealth[1] -= amount;
-        if (currentHealth[1] < 0) currentHealth[1] = 0;
+        if (currentHealth[1] < 0)
+        {
+            currentHealth[1] = 0;
+        }
+
         currentHealth[1] = currentHealth[1] > maxHealth[1] ? maxHealth[1] : currentHealth[1];
     }
 
@@ -922,7 +1055,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         shell.children.Clear();
         foreach (ShellPart part in parts)
         {
-            if (part == shell) continue;
+            if (part == shell)
+            {
+                continue;
+            }
+
             part.children.Clear();
 
             // attach all core-connected parts to the shell as well
@@ -932,26 +1069,35 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 shell.children.Add(part);
             }
         }
+
         ConnectedTreeHelper(shell);
     }
 
     private void ConnectedTreeHelper(ShellPart parent)
     {
         if (parent != shell)
+        {
             foreach (ShellPart part in parts)
             {
-                if (part.parent || part == parent || part == shell) continue;
+                if (part.parent || part == parent || part == shell)
+                {
+                    continue;
+                }
+
                 if (part.IsAdjacent(parent))
                 {
                     part.parent = parent;
                     parent.children.Add(part);
                 }
             }
+        }
+
         foreach (ShellPart part in parent.children)
         {
             ConnectedTreeHelper(part);
         }
     }
+
     private void DominoHelper(ShellPart parent)
     {
         foreach (ShellPart part in parent.children.ToArray())
@@ -969,6 +1115,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             part.parent.children.Remove(part);
         }
+
         DominoHelper(part);
     }
 
@@ -985,12 +1132,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public void SetMaxHealth(float[] maxHealths, bool healToMaxHealth)
     {
         maxHealth = maxHealths;
-        if (healToMaxHealth) maxHealth.CopyTo(currentHealth, 0);
+        if (healToMaxHealth)
+        {
+            maxHealth.CopyTo(currentHealth, 0);
+        }
     }
 
     protected virtual void FixedUpdate()
     {
-
     }
 
     public string GetID()
@@ -1040,8 +1189,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             foreach (Collider2D c in GetComponentsInChildren<Collider2D>())
             {
                 if (c.gameObject.name != "Shell Sprite")
+                {
                     c.enabled = enable;
+                }
             }
+
             collidersEnabled = enable;
         }
     }

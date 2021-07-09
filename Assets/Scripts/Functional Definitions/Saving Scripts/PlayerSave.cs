@@ -26,6 +26,7 @@ public struct AbilityHotkeyStruct
             case 3:
                 return passive;
         }
+
         return null;
     }
 }
@@ -33,7 +34,6 @@ public struct AbilityHotkeyStruct
 [System.Serializable]
 public class PlayerSave
 {
-
     public string name;
     public string resourcePath;
     public Vector2 position;

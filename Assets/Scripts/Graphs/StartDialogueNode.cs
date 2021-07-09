@@ -1,6 +1,5 @@
-﻿using NodeEditorFramework.Utilities;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -11,11 +10,25 @@ namespace NodeEditorFramework.Standard
         public static StartDialogueNode missionCanvasNode = null;
         public static StartDialogueNode dialogueCanvasNode = null;
 
-        public override string GetName { get { return "StartDialogueNode"; } }
-        public override string Title { get { return "Start Dialogue"; } }
+        public override string GetName
+        {
+            get { return "StartDialogueNode"; }
+        }
 
-        public override bool AutoLayout { get { return true; } }
-        public override bool AllowRecursion { get { return true; } }
+        public override string Title
+        {
+            get { return "Start Dialogue"; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
@@ -36,17 +49,18 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
-            if(NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Dialogue) 
+            if (NodeEditorGUI.state == NodeEditorGUI.NodeEditorState.Dialogue)
             {
                 DeleteConnectionPort(input);
                 input = null;
-            } 
-            else if(NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue && input == null)
+            }
+            else if (NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue && input == null)
             {
                 input = CreateConnectionKnob(inputInStyle);
             }
+
             SpeakToEntity = RTEditorGUI.Toggle(SpeakToEntity, "Speak to entity");
-            if(SpeakToEntity)
+            if (SpeakToEntity)
             {
                 GUILayout.Label("Entity ID");
                 EntityID = GUILayout.TextField(EntityID);
@@ -64,10 +78,14 @@ namespace NodeEditorFramework.Standard
 
                 if (GUI.changed)
                 {
-                if (allowAfterSpeaking)
-                    flowOutput = CreateConnectionKnob(flowInStyle);
-                else
-                    DeleteConnectionPort(flowOutput);
+                    if (allowAfterSpeaking)
+                    {
+                        flowOutput = CreateConnectionKnob(flowInStyle);
+                    }
+                    else
+                    {
+                        DeleteConnectionPort(flowOutput);
+                    }
                 }
             }
         }
@@ -75,21 +93,37 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             IDialogueOverrideHandler handler = null;
-            if(state != NodeEditorGUI.NodeEditorState.Dialogue)
+            if (state != NodeEditorGUI.NodeEditorState.Dialogue)
+            {
                 handler = TaskManager.Instance;
-            else handler = DialogueSystem.Instance;
-            
+            }
+            else
+            {
+                handler = DialogueSystem.Instance;
+            }
+
 
             if (SpeakToEntity)
             {
                 handler.GetSpeakerIDList().Add(EntityID);
-                if(handler as TaskManager) TryAddObjective();
+                if (handler as TaskManager)
+                {
+                    TryAddObjective();
+                }
+
                 if (handler.GetInteractionOverrides().ContainsKey(EntityID))
                 {
-                    handler.GetInteractionOverrides()[EntityID].Push(() => {
+                    handler.GetInteractionOverrides()[EntityID].Push(() =>
+                    {
+                        if (handler as TaskManager)
+                        {
+                            missionCanvasNode = this;
+                        }
+                        else
+                        {
+                            dialogueCanvasNode = this;
+                        }
 
-                        if(handler as TaskManager) missionCanvasNode = this;
-                        else dialogueCanvasNode = this;
                         handler.SetSpeakerID(EntityID);
                         handler.SetNode(output);
                     });
@@ -97,35 +131,54 @@ namespace NodeEditorFramework.Standard
                 else
                 {
                     var stack = new Stack<UnityEngine.Events.UnityAction>();
-                    stack.Push(() => {
+                    stack.Push(() =>
+                    {
+                        /* Theoretically, I do not believe you need to check for prerequisites at the bottom of the stack.
+                           I may be wrong though. */
 
-                            /* Theoretically, I do not believe you need to check for prerequisites at the bottom of the stack.
-                               I may be wrong though. */
+                        if (handler as TaskManager)
+                        {
+                            missionCanvasNode = this;
+                        }
+                        else
+                        {
+                            dialogueCanvasNode = this;
+                        }
 
-                            if(handler as TaskManager) missionCanvasNode = this;
-                            else dialogueCanvasNode = this;
-
-                            handler.SetSpeakerID(EntityID);
-                            handler.SetNode(output);
-                        });
+                        handler.SetSpeakerID(EntityID);
+                        handler.SetNode(output);
+                    });
                     handler.GetInteractionOverrides().Add(EntityID, stack);
                 }
 
-                if(!allowAfterSpeaking)
+                if (!allowAfterSpeaking)
                 {
-                    if(forceStart)
+                    if (forceStart)
                     {
-                        if(handler as TaskManager) missionCanvasNode = this;
-                        else dialogueCanvasNode = this;
+                        if (handler as TaskManager)
+                        {
+                            missionCanvasNode = this;
+                        }
+                        else
+                        {
+                            dialogueCanvasNode = this;
+                        }
+
                         handler.SetSpeakerID(EntityID);
                         return 0;
                     }
-                   else return -1;
+                    else
+                    {
+                        return -1;
+                    }
                 }
                 else
                 {
-                    if(flowOutput == null)
+                    if (flowOutput == null)
+                    {
                         flowOutput = outputKnobs[1];
+                    }
+
                     handler.SetNode(flowOutput);
                     return -1;
                 }
@@ -144,10 +197,14 @@ namespace NodeEditorFramework.Standard
 
         void TryAddObjective()
         {
-            foreach(var ent in AIData.entities)
+            foreach (var ent in AIData.entities)
             {
-                if(!ent) continue;
-                if(ent.ID == EntityID)
+                if (!ent)
+                {
+                    continue;
+                }
+
+                if (ent.ID == EntityID)
                 {
                     TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
                     TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(new TaskManager.ObjectiveLocation(

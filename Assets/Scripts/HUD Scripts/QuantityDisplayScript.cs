@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class QuantityDisplayScript : MonoBehaviour
 {
-
     private PlayerCore player;
     private bool initialized;
     public GameObject targetInfo;
@@ -21,8 +19,12 @@ public class QuantityDisplayScript : MonoBehaviour
         this.player = player;
         initialized = true;
         tooltipManager = gameObject.GetComponent<TooltipManager>();
-        if (!tooltipManager) tooltipManager = gameObject.AddComponent<TooltipManager>();
+        if (!tooltipManager)
+        {
+            tooltipManager = gameObject.AddComponent<TooltipManager>();
+        }
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -33,6 +35,7 @@ public class QuantityDisplayScript : MonoBehaviour
                 int diff = player.GetCredits() - lastCredits;
                 marker.DisplayText(diff);
             }
+
             lastCredits = player.GetCredits();
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
             texts[1].text = player.GetPower() + "";
@@ -53,6 +56,7 @@ public class QuantityDisplayScript : MonoBehaviour
 
     private Dictionary<Entity, GameObject> secondaryInfosByEntity = new Dictionary<Entity, GameObject>();
     public Transform content;
+
     public void AddEntityInfo(Entity entity, ReticleScript reticle)
     {
         var secondary = Instantiate(secondaryTargetInfoPrefab, content);
@@ -74,27 +78,41 @@ public class QuantityDisplayScript : MonoBehaviour
                 reticle.SetTarget(entity.transform);
                 reticle.RemoveSecondaryTarget(entity);
             }
-
         }));
 
         if (!secondaryInfosByEntity.ContainsKey(entity))
+        {
             secondaryInfosByEntity.Add(entity, secondary);
+        }
         else
         {
-            if (secondaryInfosByEntity[entity]) Destroy(secondaryInfosByEntity[entity].gameObject);
+            if (secondaryInfosByEntity[entity])
+            {
+                Destroy(secondaryInfosByEntity[entity].gameObject);
+            }
+
             secondaryInfosByEntity[entity] = secondary;
         }
     }
 
     public static string GetCreditString(int credits)
     {
-        if (credits < 100000) return $"{credits}";
+        if (credits < 100000)
+        {
+            return $"{credits}";
+        }
         else if (credits < 1000000)
+        {
             return $"{credits / 1000}K";
+        }
         else if (credits < 1000000000)
+        {
             return $"{credits / 1000000}M";
+        }
         else
+        {
             return "LOTS!";
+        }
     }
 
     public void RemoveEntityInfo(Entity entity)
@@ -118,7 +136,10 @@ public class QuantityDisplayScript : MonoBehaviour
         var targetName = targetInfo.transform.Find("Target Name").GetComponent<Text>();
         var targetDesc = targetInfo.transform.Find("Name").GetComponent<Text>();
         Text targetNumber = null;
-        if (targetInfo.transform.Find("Number")) targetNumber = targetInfo.transform.Find("Number").GetComponent<Text>();
+        if (targetInfo.transform.Find("Number"))
+        {
+            targetNumber = targetInfo.transform.Find("Number").GetComponent<Text>();
+        }
 
         if (obj == null)
         {

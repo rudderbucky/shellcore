@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 //Temporary main menu, will be redesigned later
@@ -10,9 +8,11 @@ public class MainMenu : MonoBehaviour
     public GameObject settings;
     public GameObject discordPopup;
 
-    public void StartSectorCreator() {
+    public void StartSectorCreator()
+    {
         SceneManager.LoadScene("SectorCreator");
     }
+
     public static void StartGame(bool nullifyTestJsonPath = false)
     {
         if (nullifyTestJsonPath)
@@ -20,15 +20,20 @@ public class MainMenu : MonoBehaviour
             SectorManager.testJsonPath = null;
             SectorManager.testResourcePath = null;
         }
+
         SceneManager.LoadScene("SampleScene");
     }
 
     public void OpenSettings()
     {
-        if(settings) settings.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+        if (settings)
+        {
+            settings.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+        }
     }
 
-    public void Quit() {
+    public void Quit()
+    {
         Application.Quit();
     }
 
@@ -38,7 +43,7 @@ public class MainMenu : MonoBehaviour
             "Programming by Ormanus and rudderbucky\n"
             + "Art by rudderbucky\n"
             + "Music by Avocato, FlightWish and Mr Spastic\n"
-            + "Story by Flashbacker and rudderbucky\n" 
+            + "Story by Flashbacker and rudderbucky\n"
             + "Skirmish Minisode by Vansten\n"
             + "Playtesting by YOU!\n"
             + "Special thanks to Flashbacker"
@@ -47,7 +52,10 @@ public class MainMenu : MonoBehaviour
 
     public void OpenCommunityPopup()
     {
-        if (discordPopup) discordPopup.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+        if (discordPopup)
+        {
+            discordPopup.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+        }
     }
 
     public void OpenDiscord()

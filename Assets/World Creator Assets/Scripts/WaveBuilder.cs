@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class WaveBuilder : GUIWindowScripts
 {
@@ -16,19 +14,19 @@ public class WaveBuilder : GUIWindowScripts
 
     void ClearWaves()
     {
-        for(int i = 0; i < contents.childCount; i++)
+        for (int i = 0; i < contents.childCount; i++)
         {
             Destroy(contents.GetChild(i).gameObject);
         }
 
-        waveHandlers = new List<WCSiegeWaveHandler>();  
+        waveHandlers = new List<WCSiegeWaveHandler>();
     }
 
     public WCSiegeWaveHandler AddWaveAndReturnHandler()
     {
         var waveHandler = Instantiate(wavePrefab, contents).GetComponent<WCSiegeWaveHandler>();
         waveHandler.exit.onClick.AddListener(new UnityEngine.Events.UnityAction(
-            () => 
+            () =>
             {
                 waveHandlers.Remove(waveHandler);
                 Destroy(waveHandler.gameObject);
@@ -48,7 +46,7 @@ public class WaveBuilder : GUIWindowScripts
         WaveSet set = new WaveSet();
         set.waves = new SiegeWave[waveHandlers.Count];
 
-        for(int i = 0; i < set.waves.Length; i++)
+        for (int i = 0; i < set.waves.Length; i++)
         {
             set.waves[i] = waveHandlers[i].Parse();
         }
@@ -69,7 +67,7 @@ public class WaveBuilder : GUIWindowScripts
     {
         ClearWaves();
 
-        foreach(var wave in waves.waves)
+        foreach (var wave in waves.waves)
         {
             var waveHandler = AddWaveAndReturnHandler();
             waveHandler.Initialize(wave.entities);

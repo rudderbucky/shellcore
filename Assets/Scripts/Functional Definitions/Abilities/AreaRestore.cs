@@ -1,22 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// Heals all allies in range
 /// </summary>
 public class AreaRestore : Ability
 {
     const float range = 10;
+
     public override float GetRange()
     {
         return range;
     }
-    
+
     protected override void Awake()
     {
         base.Awake(); // base awake
-                      // hardcoded values here
+        // hardcoded values here
         ID = AbilityID.AreaRestore;
         energyCost = 150;
         cooldownDuration = 10;
@@ -40,7 +37,6 @@ public class AreaRestore : Ability
                     {
                         ally.TakeShellDamage(-500f, 0f, GetComponentInParent<Entity>());
                     }
-                    
                 }
             }
         }

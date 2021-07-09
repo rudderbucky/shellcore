@@ -1,16 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// Temporarily increases the craft's damage multiplier
 /// </summary>
-public class DamageBoost: ActiveAbility
+public class DamageBoost : ActiveAbility
 {
     protected override void Awake()
     {
         base.Awake(); // base awake
-                      // hardcoded values here
+        // hardcoded values here
         ID = AbilityID.DamageBoost;
         cooldownDuration = 20;
         activeDuration = 5;
@@ -22,7 +18,7 @@ public class DamageBoost: ActiveAbility
     /// </summary>
     public override void Deactivate()
     {
-        if(Core)
+        if (Core)
         {
             Core.damageAddition -= 150;
             base.Deactivate();

@@ -1,24 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
-public enum ItemType {
-		Other,
-		Platform,
-        Flag,
-        Decoration,
-        BackgroundDecoration,
-        DecorationWithMetadata
+public enum ItemType
+{
+    Other,
+    Platform,
+    Flag,
+    Decoration,
+    BackgroundDecoration,
+    DecorationWithMetadata
 }
 
 /// <summary>
 /// The base type of object that is placeable in the world.
 /// </summary>
 [System.Serializable]
-public class Item {
+public class Item
+{
     public string name;
     public GameObject obj;
     public ItemType type;
@@ -37,16 +39,23 @@ public class Item {
 
 public class ItemHandler : MonoBehaviour
 {
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
 
     [HideInInspector]
     public string text;
 
-    #endif
-    
-    public void GenerateItemList() {
-        if(!itemPack) items = new List<Item>();
-        else items = itemPack.items;
+#endif
+
+    public void GenerateItemList()
+    {
+        if (!itemPack)
+        {
+            items = new List<Item>();
+        }
+        else
+        {
+            items = itemPack.items;
+        }
     }
 
     public List<Item> items;
@@ -62,16 +71,18 @@ public class ItemHandler : MonoBehaviour
         GenerateItemList();
     }
 
-    void Start() {
-        
+    void Start()
+    {
     }
 
-    public Item GetItemByIndex(int index) {
+    public Item GetItemByIndex(int index)
+    {
         return CopyItem(index);
     }
 
     // soft copy of seeded items
-    public Item CopyItem(int index) {
+    public Item CopyItem(int index)
+    {
         var toCopy = itemPack.items[index];
         Item item = new Item();
         item.assetID = toCopy.assetID;
@@ -85,7 +96,8 @@ public class ItemHandler : MonoBehaviour
     }
 
     // hard copy
-    public Item CopyItem(Item toCopy) {
+    public Item CopyItem(Item toCopy)
+    {
         Item item = new Item();
         item.ID = toCopy.ID;
         item.assetID = toCopy.assetID;
@@ -103,7 +115,7 @@ public class ItemHandler : MonoBehaviour
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(ItemHandler))]
-public class ItemHandlerEditor : Editor 
+public class ItemHandlerEditor : Editor
 {
     ItemHandler handler;
     SerializedProperty builtIns;
@@ -115,7 +127,9 @@ public class ItemHandlerEditor : Editor
     SerializedProperty cursor;
     SerializedProperty viewContent;
     int testIndex;
-    private void OnEnable() {
+
+    private void OnEnable()
+    {
         objRef = new Object();
         placeholder = new Item();
         handler = (ItemHandler)target;
@@ -126,7 +140,9 @@ public class ItemHandlerEditor : Editor
         cursor = serializedObject.FindProperty("cursor");
         viewContent = serializedObject.FindProperty("viewContent");
     }
-    public override void OnInspectorGUI() {
+
+    public override void OnInspectorGUI()
+    {
         serializedObject.Update();
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Item Handler");
@@ -138,34 +154,37 @@ public class ItemHandlerEditor : Editor
         EditorGUILayout.PropertyField(pack, new GUIContent("Item Pack: "));
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
-            mode = GUILayout.Toolbar(mode, new string[] {"Add Mode", "View Mode"});
+        mode = GUILayout.Toolbar(mode, new string[] {"Add Mode", "View Mode"});
         EditorGUILayout.EndHorizontal();
-        
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Index:");
         testIndex = EditorGUILayout.IntField(testIndex);
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
-            if(GUILayout.Button("Shift Up"))
-            {
-                var entry = handler.itemPack.items[testIndex];
-                handler.itemPack.items.RemoveAt(testIndex);
-                testIndex--;
-                handler.itemPack.items.Insert(testIndex, entry);
-            }
-            if(GUILayout.Button("Shift Down"))
-            {
-                var entry = handler.itemPack.items[testIndex];
-                handler.itemPack.items.RemoveAt(testIndex);
-                testIndex++;
-                handler.itemPack.items.Insert(testIndex, entry);
-            }
+        if (GUILayout.Button("Shift Up"))
+        {
+            var entry = handler.itemPack.items[testIndex];
+            handler.itemPack.items.RemoveAt(testIndex);
+            testIndex--;
+            handler.itemPack.items.Insert(testIndex, entry);
+        }
+
+        if (GUILayout.Button("Shift Down"))
+        {
+            var entry = handler.itemPack.items[testIndex];
+            handler.itemPack.items.RemoveAt(testIndex);
+            testIndex++;
+            handler.itemPack.items.Insert(testIndex, entry);
+        }
+
         EditorGUILayout.EndHorizontal();
-        switch(mode) {
+        switch (mode)
+        {
             case 0:
                 EditorGUILayout.BeginHorizontal();
                 placeholder.obj = EditorGUILayout.ObjectField("Item appearance:",
-                placeholder.obj, typeof(GameObject), true) as GameObject;
+                    placeholder.obj, typeof(GameObject), true) as GameObject;
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
                 placeholder.type = (ItemType)EditorGUILayout.EnumPopup("Item type: ", placeholder.type);
@@ -196,27 +215,35 @@ public class ItemHandlerEditor : Editor
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
                 GUI.SetNextControlName("add");
-                if(GUILayout.Button("Add Item")) {
-                    if(handler.itemPack) {
+                if (GUILayout.Button("Add Item"))
+                {
+                    if (handler.itemPack)
+                    {
                         handler.itemPack.items.Add(placeholder);
                         placeholder = new Item();
                         ExportData();
                     }
-                };
+                }
+
+                ;
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
                 GUI.SetNextControlName("update");
-                if(GUILayout.Button("Force Update Item Pack")) {
-                    if(handler.itemPack) {
+                if (GUILayout.Button("Force Update Item Pack"))
+                {
+                    if (handler.itemPack)
+                    {
                         ExportData();
                     }
-                };
+                }
+
+                ;
                 EditorGUILayout.EndHorizontal();
                 break;
             default:
                 break;
         }
-        
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PropertyField(builtIns, new GUIContent("Built-ins by type"), true);
         EditorGUILayout.EndHorizontal();
@@ -233,13 +260,15 @@ public class ItemHandlerEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 
-    private void ExportData() {
+    private void ExportData()
+    {
         ItemPack pack = CreateInstance<ItemPack>();
         pack.items = new List<Item>();
         foreach (Item i in handler.itemPack.items)
         {
             pack.items.Add(i);
         }
+
         string path = "Assets/World Creator Assets/DefaultItems.asset";
         AssetDatabase.CreateAsset(pack, path);
         AssetDatabase.SaveAssets();

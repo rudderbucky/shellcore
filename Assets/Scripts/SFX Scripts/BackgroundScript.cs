@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum BackgroundTileSkin
@@ -8,8 +7,8 @@ public enum BackgroundTileSkin
     Clouds
 }
 
-public class BackgroundScript : MonoBehaviour {
-
+public class BackgroundScript : MonoBehaviour
+{
     public GameObject[] tile; // array of tile images, prefabbed into sprites
     public static BackgroundTileSkin currentSkin = BackgroundTileSkin.Squares;
     private Vector2 tileStartPos; // the start position of the background (lower left tile)
@@ -31,9 +30,13 @@ public class BackgroundScript : MonoBehaviour {
         active = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
     }
 
-    public static void SetActive(bool act) {
+    public static void SetActive(bool act)
+    {
         active = act;
-        if(instance) instance.Restart();
+        if (instance)
+        {
+            instance.Restart();
+        }
     }
 
     /// <summary>
@@ -42,11 +45,13 @@ public class BackgroundScript : MonoBehaviour {
     /// <param name="tile">the array of tiles</param>
     private void TileUpdate(GameObject[] tile)
     {
-        if(tile != null)
-        for (int i = 0; i < tile.Length; i++) // iterate through every tile
+        if (tile != null)
         {
-            TileWrapper(tile[i], 0); // update each tile for both dimensions
-            TileWrapper(tile[i], 1); 
+            for (int i = 0; i < tile.Length; i++) // iterate through every tile
+            {
+                TileWrapper(tile[i], 0); // update each tile for both dimensions
+                TileWrapper(tile[i], 1);
+            }
         }
     }
 
@@ -57,8 +62,9 @@ public class BackgroundScript : MonoBehaviour {
     /// <param name="dimension">the dimension (0 is x, 1 is y)</param>
     private void TileWrapper(GameObject tile, int dimension)
     {
-        if(tile) {
-            float limit = dimension == 0 ? gridWidth * tileSpacing.x / 2 : gridHeight * tileSpacing.y / 2; 
+        if (tile)
+        {
+            float limit = dimension == 0 ? gridWidth * tileSpacing.x / 2 : gridHeight * tileSpacing.y / 2;
             // the limit before the tile should wrap
 
             if (Mathf.Abs(tile.transform.position[dimension] - mcamera.position[dimension]) > limit) // this means it is at an axis edge
@@ -75,31 +81,39 @@ public class BackgroundScript : MonoBehaviour {
     }
 
     Rect pixelRect;
+
     // Use this for initialization
     void Build()
     {
-        if(active) {
+        if (active)
+        {
             pixelRect = Camera.main.pixelRect;
-            if(transform.Find("Tile Holder")) Destroy(transform.Find("Tile Holder").gameObject);
+            if (transform.Find("Tile Holder"))
+            {
+                Destroy(transform.Find("Tile Holder").gameObject);
+            }
+
             mcamera = Camera.main.transform;
-            tileSpacing = tile[4 * (int)currentSkin].GetComponent<Renderer>().bounds.size; 
+            tileSpacing = tile[4 * (int)currentSkin].GetComponent<Renderer>().bounds.size;
             GameObject parent = new GameObject("Tile Holder");
             parent.transform.SetParent(transform, true);
             // grab tile spacing (this should be constant between the tile sprites given)
             Vector3 dimensions = Camera.main.ScreenToWorldPoint(
                 new Vector3(Camera.main.pixelWidth, Camera.main.pixelHeight, gridDepth + CameraScript.GetMaxZoomLevel()));
             // grab camera dimensions
-            gridWidth = 1 + (int)Mathf.Ceil((dimensions.x - mcamera.position.x) * 2/ tileSpacing.x); // calculate height and width using camera dimensions
+            gridWidth = 1 + (int)Mathf.Ceil((dimensions.x - mcamera.position.x) * 2 / tileSpacing.x); // calculate height and width using camera dimensions
             gridHeight = 1 + (int)Mathf.Ceil((dimensions.y - mcamera.position.y) * 2 / tileSpacing.y);
             ingameTiles = new GameObject[gridWidth * gridHeight]; // create an array of tile references
             tileStartPos = new Vector2 // get the tile start position (this project needs the tiles to center at 0,0)
             {
-                x = mcamera.position.x -tileSpacing.x * (gridWidth-1)/2,
-                y = mcamera.position.y -tileSpacing.y * (gridHeight-1)/2
+                x = mcamera.position.x - tileSpacing.x * (gridWidth - 1) / 2,
+                y = mcamera.position.y - tileSpacing.y * (gridHeight - 1) / 2
             };
             int count = 0; // used for array assignment (to keep a 1d count in the 2d loop)
-            for (int i = 0; i < gridHeight; i++) {
-                for (int j = 0; j < gridWidth; j++) {
+            for (int i = 0; i < gridHeight; i++)
+            {
+                for (int j = 0; j < gridWidth; j++)
+                {
                     int randomTile = Random.Range(4 * (int)currentSkin, 4 * (int)currentSkin + 4); // grabs a random tile from the array of sprites
                     instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
                     // the position of the tile
@@ -107,7 +121,7 @@ public class BackgroundScript : MonoBehaviour {
                     go.transform.SetParent(parent.transform, true);
                     go.transform.localScale = new Vector3(Random.Range(0, 1) > 0.5F ? 1 : -1, 1, 1);
                     // create the tile, no rotation desired
-                    
+
                     ingameTiles[count] = go; // assign to array
                     count++; // increment count
                     // I don't want the tiles to be a child of the object using this script 
@@ -116,14 +130,17 @@ public class BackgroundScript : MonoBehaviour {
             }
         }
     }
+
     // Update is called once per frame
     void LateUpdate()
     {
-        if(active) {
-            if(Camera.main.pixelRect != pixelRect)
+        if (active)
+        {
+            if (Camera.main.pixelRect != pixelRect)
             {
                 Restart();
-            } 
+            }
+
             TileUpdate(ingameTiles); // tile update called on tile array
         }
     }
@@ -133,32 +150,45 @@ public class BackgroundScript : MonoBehaviour {
         Build();
     }
 
-    public void Restart() {
-        if(GameObject.Find("Tile Holder")) Destroy(GameObject.Find("Tile Holder"));
-        if(active) {
+    public void Restart()
+    {
+        if (GameObject.Find("Tile Holder"))
+        {
+            Destroy(GameObject.Find("Tile Holder"));
+        }
+
+        if (active)
+        {
             Build();
             setColor(bgCol);
         }
     }
 
     Color lastColor; // used like bgCol, just without the static attribute
-    public void setColor(Color color, bool force=false)
+
+    public void setColor(Color color, bool force = false)
     {
         Camera.main.backgroundColor = color / 2F;
-        if(ingameTiles == null) {
+        if (ingameTiles == null)
+        {
             bgCol = lastColor = color;
-            return;
-        }
-        if(lastColor == Color.clear || force) {
-            bgCol = lastColor = color;
-            foreach (GameObject tile in ingameTiles) {
-                tile.GetComponent<SpriteRenderer>().color = color;
-            }
             return;
         }
 
-        if(active) {
-            for(int i = 0; i < ingameTiles.Length; i++)
+        if (lastColor == Color.clear || force)
+        {
+            bgCol = lastColor = color;
+            foreach (GameObject tile in ingameTiles)
+            {
+                tile.GetComponent<SpriteRenderer>().color = color;
+            }
+
+            return;
+        }
+
+        if (active)
+        {
+            for (int i = 0; i < ingameTiles.Length; i++)
             {
                 var renderer = ingameTiles[i].GetComponent<SpriteRenderer>();
                 renderer.color = lastColor;
@@ -167,13 +197,15 @@ public class BackgroundScript : MonoBehaviour {
             }
         }
 
-        bgCol = lastColor = color; 
+        bgCol = lastColor = color;
         // this entire method happens in 1 frame so these are updated even while the renderers are lerping
     }
 
-    private IEnumerator FadeColor(Color newColor, SpriteRenderer renderer) {
+    private IEnumerator FadeColor(Color newColor, SpriteRenderer renderer)
+    {
         float beginLerp = 0;
-        while(renderer && renderer.color != newColor) {
+        while (renderer && renderer.color != newColor)
+        {
             renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
             beginLerp += 0.0125F;
             if (beginLerp > 1)
@@ -182,6 +214,7 @@ public class BackgroundScript : MonoBehaviour {
                 renderer.color = Color.Lerp(renderer.color, newColor, beginLerp);
                 break;
             }
+
             yield return null;
         }
     }
