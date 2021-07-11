@@ -338,7 +338,7 @@ public class SaveMenuHandler : GUIWindowScripts {
 		blueprint.baseRegen = CoreUpgraderScript.GetRegens(blueprint.coreShellSpriteID);
 		blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
 		save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
-		save.abilityCaps = CoreUpgraderScript.minAbilityCap;
+		//save.abilityCaps = CoreUpgraderScript.minAbilityCap;
 		save.shards = 0;
 		save.version = currentVersion;
 		save.resourcePath = resourcePath;

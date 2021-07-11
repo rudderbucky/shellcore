@@ -129,6 +129,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
     {
         Characters,
         Factions,
+        Experimental,
         Miscellaneous
     }
     Mode currentMode;
@@ -173,6 +174,14 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 colors.Add(faction.shinyColor);
                 strings.Add(faction.colorName);
                 ints.Add(faction.relations);
+                SetupAdditionFields();
+                break;
+            case Mode.Experimental:
+                var experimentalData = cursor.expData;
+                ints.Add(experimentalData.defaultAbl);
+                ints.Add(experimentalData.defaultDrn);
+                ints.Add(experimentalData.defaultWpn);
+                ints.Add(experimentalData.defaultPsv);
                 SetupAdditionFields();
                 break;
         }
@@ -235,6 +244,12 @@ public class WCBasePropertyHandler : GUIWindowScripts
                     );
                 SetupMenu();
                 break;
+            case Mode.Experimental:
+                cursor.expData.defaultAbl = ints[0];
+                cursor.expData.defaultDrn = ints[1];
+                cursor.expData.defaultWpn = ints[2];
+                cursor.expData.defaultPsv = ints[3];
+                break;
             case Mode.Miscellaneous:
                 break;
         }
@@ -273,6 +288,12 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 DisplayColors(1,"Shiny color: ");
                 DisplayString(1,"Color name: ");
                 DisplayInt(1, "Relations: ");
+                break;
+            case Mode.Experimental:
+                DisplayInt(0, "Default Abilities: ");
+                DisplayInt(1, "Default Drones: ");
+                DisplayInt(2, "Default Weapons: ");
+                DisplayInt(3, "Default Passives: ");
                 break;
             case Mode.Miscellaneous:
                 break;
@@ -325,9 +346,12 @@ public class WCBasePropertyHandler : GUIWindowScripts
             case Mode.Factions:
                 baseList = manager.factions;
                 break;
+            case Mode.Experimental:
+                break;
         }
 
         int i = 0;
+        if (currentMode != Mode.Experimental){
         foreach(var obj in baseList)
         {
             var index = i;
@@ -342,6 +366,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
             {
                 DeleteSelectedProperty(index);
             });
+        }
         }
         SetupAdditionFields();
     }

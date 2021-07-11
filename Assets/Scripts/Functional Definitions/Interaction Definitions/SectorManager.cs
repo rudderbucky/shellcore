@@ -19,6 +19,7 @@ public class SectorManager : MonoBehaviour
     public bool jsonMode;
     public List<Sector> sectors;
     public PlayerCore player;
+    public SaveMenuHandler save;
     public Sector current;
     public BackgroundScript background;
     public InfoText info;
@@ -39,6 +40,7 @@ public class SectorManager : MonoBehaviour
     private bool sectorLoaded = false;
     public Vector2 spawnPoint;
     public WorldData.CharacterData[] characters; // Unity initializes public arrays, remember!
+    public WorldData.ExperimentalData expData;
     public DialogueSystem dialogueSystem;
 
     public List<ShardRock> shardRocks = new List<ShardRock>();
@@ -278,6 +280,12 @@ public class SectorManager : MonoBehaviour
                         if(player.cursave == null || player.cursave.timePlayed == 0)
                         {
                             player.transform.position = player.spawnPoint = player.havenSpawnPoint = spawnPoint;
+                            if (wdata.experimentalData != null){
+                                player.abilityCaps = new int[] {wdata.experimentalData.defaultAbl,wdata.experimentalData.defaultDrn,wdata.experimentalData.defaultWpn,wdata.experimentalData.defaultPsv};
+                            }
+                            else {
+                                player.abilityCaps = CoreUpgraderScript.minAbilityCap;
+                            }
                             if(wdata.defaultBlueprintJSON != null && wdata.defaultBlueprintJSON != "")
                             {
                                 if(player.cursave != null)
@@ -285,7 +293,7 @@ public class SectorManager : MonoBehaviour
                                 Debug.Log("Default blueprint set");
                             }
                         }
-                            
+                        expData = wdata.experimentalData;
                         if(characters == null || characters.Length == 0) characters = wdata.defaultCharacters;
                         else
                         {

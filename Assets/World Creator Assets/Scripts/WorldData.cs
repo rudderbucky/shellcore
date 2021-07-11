@@ -18,7 +18,18 @@ public class WorldData : ScriptableObject
             return name;
         }
     }
-
+    [System.Serializable]
+    public class ExperimentalData : IBaseProperty {
+        public int defaultAbl = 6;
+        public int defaultDrn = 3;
+        public int defaultWpn = 6;
+        public int defaultPsv = 6;
+        public bool hasAccel = false;
+        public string GetName()
+        {
+            return "Test";
+        }
+    }
     [System.Serializable]
     public class PartyData {
         public string attackDialogue;
@@ -38,7 +49,7 @@ public class WorldData : ScriptableObject
     // spawned at a time in the entire world. Party members are an example though
     // not all characters are party members. Characters may be spawned independently of sector entities.
     public CharacterData[] defaultCharacters;
-
+    public ExperimentalData experimentalData;
     // initial spawn point for the player if the world is loaded for the first time.
     public Vector2 initialSpawn;
     public string defaultBlueprintJSON;

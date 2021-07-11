@@ -535,6 +535,7 @@ public class WCGeneratorHandler : MonoBehaviour
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         wdata.initialSpawn = cursor.spawnPoint.position;
         wdata.defaultCharacters = cursor.characters.ToArray();
+        wdata.experimentalData = cursor.expData;
         wdata.defaultBlueprintJSON = blueprintField.text;
         wdata.author = authorField.text;
         wdata.description = descriptionField.text;
@@ -717,6 +718,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
                         cursor.spawnPoint.position = wdata.initialSpawn;
+                        cursor.expData = wdata.experimentalData;
                         // add characters into character handler
                         foreach(var ch in wdata.defaultCharacters)
                         {

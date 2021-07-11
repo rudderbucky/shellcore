@@ -2243,6 +2243,25 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - tooltip: 'Change experimental settings. '
+    sprite: {fileID: 21300000, guid: 9faf73abf1bbb5749974b092bd0d82f1, type: 3}
+    imgRef: {fileID: 0}
+    mode: 2
+    action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2091568000}
+          m_TargetAssemblyTypeName: WorldCreatorCursor, Assembly-CSharp
+          m_MethodName: ActivateExperimentalSettings
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &138597683
 GameObject:
   m_ObjectHideFlags: 0
@@ -23654,7 +23673,7 @@ PrefabInstance:
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
@@ -33204,6 +33223,12 @@ MonoBehaviour:
   characterHandler: {fileID: 0}
   modeText: {fileID: 1288189855}
   characters: []
+  expData:
+    defaultAbl: 0
+    defaultDrn: 0
+    defaultWpn: 0
+    defaultPsv: 0
+    hasAccel: 0
   manual: {fileID: 693301125}
   search: {fileID: 644541775}
   music:

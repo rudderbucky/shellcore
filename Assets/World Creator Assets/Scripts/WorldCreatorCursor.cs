@@ -57,6 +57,7 @@ public class WorldCreatorCursor : MonoBehaviour
     WCCursorMode mode = WCCursorMode.Item;
     public Text modeText;
     public List<WorldData.CharacterData> characters = new List<WorldData.CharacterData>();
+    public WorldData.ExperimentalData expData;
 
     public WCCursorMode GetMode()
     {
@@ -365,6 +366,10 @@ public class WorldCreatorCursor : MonoBehaviour
     public void ActivateFactionHandler()
     {
         basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Factions);
+        basePropertyHandler.ToggleActive();
+    }
+    public void ActivateExperimentalSettings(){
+        basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Experimental);
         basePropertyHandler.ToggleActive();
     }
 
