@@ -258,9 +258,9 @@ public static class AbilityUtilities
                 return "lasershooter_sprite";
             case 38:
                 return "flakshooter_sprite";
-            case 36
-                return "bombshooter_sprite";
-            case 2:
+			case 36:
+				return "bombshooter_sprite";
+			case 2:
 				return "ability_indicator2";
 			case 11:
 			case 12:
