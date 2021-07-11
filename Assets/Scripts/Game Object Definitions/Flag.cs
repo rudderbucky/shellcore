@@ -23,10 +23,8 @@ public class Flag : MonoBehaviour, IInteractable
             Debug.LogWarning("<Flag> Cannot find specified sector");
             return;
         }
-        else
-        {
-            PlayerCore.Instance.Dimension = sector.dimension;
-        }
+
+        PlayerCore.Instance.Dimension = sector.dimension;
 
         foreach (var ent in sector.entities)
         {
@@ -60,7 +58,8 @@ public class Flag : MonoBehaviour, IInteractable
 
     private void OnEnable()
     {
-        if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
+        var sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName != "SectorCreator" && sceneName != "WorldCreator")
         {
             AIData.flags.Add(this);
             AIData.interactables.Add(this);
@@ -69,7 +68,8 @@ public class Flag : MonoBehaviour, IInteractable
 
     private void OnDisable()
     {
-        if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
+        var sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName != "SectorCreator" && sceneName != "WorldCreator")
         {
             AIData.flags.Remove(this);
             AIData.interactables.Remove(this);

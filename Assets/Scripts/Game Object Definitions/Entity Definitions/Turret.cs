@@ -19,7 +19,7 @@
 
     protected override void OnDeath()
     {
-        if (owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+        if (owner != null && owner.GetUnitsCommanding().Contains(this))
         {
             owner.GetUnitsCommanding().Remove(this);
         }
@@ -29,7 +29,7 @@
 
     protected override void OnDestroy()
     {
-        if (owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+        if (owner != null && owner.GetUnitsCommanding().Contains(this))
         {
             owner.GetUnitsCommanding().Remove(this);
         }

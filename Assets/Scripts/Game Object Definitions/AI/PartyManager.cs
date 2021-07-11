@@ -302,8 +302,8 @@ public class PartyManager : MonoBehaviour
         if (InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member) => { return member; }))
         {
             wheel.SetActive(true);
-            arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight / 2),
-                (Input.mousePosition.x - Camera.main.pixelWidth / 2)) * Mathf.Rad2Deg);
+            arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight * 0.5f),
+                (Input.mousePosition.x - Camera.main.pixelWidth * 0.5f)) * Mathf.Rad2Deg);
             var x = 90 - arrow.rotation.eulerAngles.z;
             if (x < -180)
             {

@@ -67,11 +67,6 @@ public abstract class Craft : Entity
         CalculatePhysicsConstants();
     }
 
-    protected override void OnDeath()
-    {
-        base.OnDeath();
-    }
-
     protected override void PostDeath()
     {
         if (respawns)

@@ -48,10 +48,8 @@ public class AirCarrier : AirConstruct, ICarrier
         {
             return intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction);
         }
-        else
-        {
-            return intrinsicCommandLimit;
-        }
+
+        return intrinsicCommandLimit;
     }
 
     public SectorManager GetSectorManager()

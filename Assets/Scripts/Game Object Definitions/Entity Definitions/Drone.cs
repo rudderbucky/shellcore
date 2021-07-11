@@ -64,8 +64,10 @@ public class Drone : AirCraft, IOwnable
             }
             else
             {
-                NodeEditorFramework.Standard.PathData data = new NodeEditorFramework.Standard.PathData();
-                data.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
+                NodeEditorFramework.Standard.PathData data = new NodeEditorFramework.Standard.PathData()
+                {
+                    waypoints = new List<NodeEditorFramework.Standard.PathData.Node>()
+                };
                 // TODO: LOL THESE TWO ARE DIFFERENT, unify them
                 foreach (var point in path.waypoints)
                 {

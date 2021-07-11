@@ -18,11 +18,6 @@ public class Outpost : AirConstruct, IVendor
         BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
     }
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
     public override void RemovePart(ShellPart part)
     {
         if (part)
