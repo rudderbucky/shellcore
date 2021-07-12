@@ -61,8 +61,13 @@ public class ResourceManager : MonoBehaviour
         {
             return new string[]
             {
-                "sprites:", "parts:", "entities:",
-                "vending-options:", "paths:", "factions:", "audio:"
+                "sprites:",
+                "parts:",
+                "entities:",
+                "vending-options:",
+                "paths:",
+                "factions:",
+                "audio:"
             };
         }
     }
@@ -155,17 +160,19 @@ public class ResourceManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", Application.streamingAssetsPath + "\\" + names[1], names[0]);
+                    Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", $"{Application.streamingAssetsPath}\\{names[1]}", names[0]);
                 }
             }
 
             //load sprites
             for (int i = 0; i < sprites.Count; i++)
             {
-                Texture2D texture = new Texture2D(2, 2);
-                texture.wrapMode = TextureWrapMode.Mirror;
+                Texture2D texture = new Texture2D(2, 2)
+                {
+                    wrapMode = TextureWrapMode.Mirror,
+                    filterMode = FilterMode.Trilinear
+                };
                 texture.LoadImage(File.ReadAllBytes(sprites[i].Item2));
-                texture.filterMode = FilterMode.Trilinear;
                 resources[sprites[i].Item1] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
             }
 
@@ -236,7 +243,7 @@ public class ResourceManager : MonoBehaviour
     {
         if (!path.Equals(Application.streamingAssetsPath))
         {
-            Debug.Log("Attempting to load resource names from: \"" + path + "\"");
+            Debug.Log($"Attempting to load resource names from: \"{path}\"");
         }
 
         string resDataPath = System.IO.Path.Combine(path, "ResourceData.txt");
@@ -366,18 +373,16 @@ public class ResourceManager : MonoBehaviour
 
         if (resources.ContainsKey(ID))
         {
-            if (resources[ID] is T)
+            if (resources[ID] is T t)
             {
-                return resources[ID] as T;
+                return t;
             }
-            else
-            {
-                Debug.LogWarning("Trying to get " + ID + " (" + resources[ID].GetType() + ") as " + typeof(T).FullName);
-            }
+
+            Debug.LogWarning($"Trying to get {ID} ({resources[ID].GetType()}) as {typeof(T).FullName}");
         }
         else
         {
-            Debug.LogWarning("Resource ID " + ID + " not found");
+            Debug.LogWarning($"Resource ID {ID} not found");
         }
 
         return null;
@@ -398,9 +403,9 @@ public class ResourceManager : MonoBehaviour
         List<T> results = new List<T>();
         foreach (var resource in Instance.resources)
         {
-            if (resource.Value is T)
+            if (resource.Value is T t)
             {
-                results.Add(resource.Value as T);
+                results.Add(t);
             }
         }
 
@@ -487,9 +492,11 @@ public class ResourceManagerEditor : Editor
         GUI.SetNextControlName("add");
         if (GUILayout.Button("Add/Modify Resource by ID!"))
         {
-            ResourceManager.Resource resource = new ResourceManager.Resource();
-            resource.ID = manager.fieldID;
-            resource.obj = manager.newObject;
+            ResourceManager.Resource resource = new ResourceManager.Resource()
+            {
+                ID = manager.fieldID,
+                obj = manager.newObject
+            };
             for (int i = 0; i < manager.resourcePack.resources.Count; i++)
             {
                 if (manager.resourcePack.resources[i].ID == manager.fieldID)
@@ -605,7 +612,7 @@ public class ResourceManagerEditor : Editor
                 {
                     if (lines[i].StartsWith(type))
                     {
-                        lines.Insert(i + 1, manager.fieldID + ":" + manager.newObject.name + ".json");
+                        lines.Insert(i + 1, $"{manager.fieldID}:{manager.newObject.name}.json");
                         sectionFound = true;
                         break;
                     }
@@ -614,7 +621,7 @@ public class ResourceManagerEditor : Editor
                 if (!sectionFound)
                 {
                     lines.Add(type + ":");
-                    lines.Add(manager.fieldID + ":" + manager.newObject.name + ".json");
+                    lines.Add($"{manager.fieldID}:{manager.newObject.name}.json");
                 }
 
                 File.WriteAllLines("ResourceData.txt", lines.ToArray());
