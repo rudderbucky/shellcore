@@ -486,7 +486,7 @@ public class GroundPlatform
 
             if (tiles[i].directions.Count < tiles.Count - 1)
             {
-                Debug.LogWarning(tiles[i].pos + " has too few directions (" + tiles[i].directions.Count + ")!");
+                Debug.LogWarning($"{tiles[i].pos} has too few directions ({tiles[i].directions.Count})!");
             }
         }
     }

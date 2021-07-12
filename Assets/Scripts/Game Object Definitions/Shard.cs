@@ -42,10 +42,7 @@ public class Shard : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (AIData.rockFragments.Contains(draggable))
-        {
-            AIData.rockFragments.Remove(draggable);
-        }
+        AIData.rockFragments.Remove(draggable);
     }
 
     void Update()

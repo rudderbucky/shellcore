@@ -183,16 +183,16 @@ public class AirCraftAI : MonoBehaviour
         (module as PathAI).setPath(path, patrolling);
         if (OnPathEnd == null)
         {
-            OnPathEnd = new UnityAction(() => craft.isPathing = false);
+            OnPathEnd = () => craft.isPathing = false;
         }
         else
         {
             var OldOnPathEnd = OnPathEnd;
-            OnPathEnd = new UnityAction(() =>
+            OnPathEnd = () =>
             {
                 OldOnPathEnd.Invoke();
                 craft.isPathing = false;
-            });
+            };
         }
 
         (module as PathAI).OnPathEnd = OnPathEnd;
@@ -243,10 +243,7 @@ public class AirCraftAI : MonoBehaviour
 
         targetVector = Vector2.zero;
 
-        if (OnEnd != null)
-        {
-            OnEnd.Invoke();
-        }
+        OnEnd?.Invoke();
     }
 
     float timer = 0.3F;
