@@ -130,7 +130,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     void PlaceCurrentPart()
     {
         currentPart.SetMaskable(true);
-        var editorMode = (builder as ShipBuilder) != null && !(builder as ShipBuilder).Equals(null) && (builder as ShipBuilder).editorMode;
+        var editorMode = (builder as ShipBuilder) != null && (builder as ShipBuilder).editorMode;
         var dispatch = false;
         ShipBuilder.TransferMode mode = ShipBuilder.TransferMode.Return;
         if (cursorMode != BuilderMode.Workshop)
@@ -295,8 +295,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         {
             symmetryLastPart.info.rotation = -lastPart.info.rotation + 180;
         }
-
-        return;
     }
 
     public void FlipLastPart()
@@ -427,7 +425,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         UpdateCurrentPart();
 
         // drag grid
-        Vector2 bounds = grid.sizeDelta / 2 - grid2mask.sizeDelta / 2;
+        Vector2 bounds = (grid.sizeDelta - grid2mask.sizeDelta) * 0.5f;
         if (grid.GetComponent<DragDetector>().dragging
             && Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
         {

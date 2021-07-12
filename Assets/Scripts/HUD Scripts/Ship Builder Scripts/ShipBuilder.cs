@@ -97,7 +97,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             {
                 return false;
             }
-            else if (--counts[p] < 0)
+            
+            if (--counts[p] < 0)
             {
                 return false;
             }
@@ -113,10 +114,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             partDict[CullSpatialValues(info)].DecrementCount();
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public static EntityBlueprint.PartInfo CullSpatialValues(EntityBlueprint.PartInfo partToCull)
@@ -210,7 +209,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     {
         Bounds rect = RectTransformUtility.CalculateRelativeRectTransformBounds(rectTransform.parent, rectTransform);
         rect.center = rectTransform.anchoredPosition;
-        rect.size = rect.size * 1F;
+        //rect.size = rect.size * 1F;
         return rect;
     }
 
@@ -790,8 +789,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         {
             foreach (var id in System.Enum.GetValues(typeof(AbilityID)))
             {
-                dropdown.options.Add(new Dropdown.OptionData
-                    (id.ToString()));
+                dropdown.options.Add(new Dropdown.OptionData(id.ToString()));
             }
         }
 
@@ -1057,14 +1055,14 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 #if UNITY_EDITOR
     public void SavePrintWithPrompt()
     {
-        var path = UnityEditor.EditorUtility.SaveFilePanel("Save Blueprint", Application.streamingAssetsPath + "\\Entities",
+        var path = EditorUtility.SaveFilePanel("Save Blueprint", Application.streamingAssetsPath + "\\Entities",
             "DefaultPrint", "json");
         SaveBlueprint(null, path, GetCurrentJSON());
     }
 
     public void LoadPrintWithPrompt()
     {
-        var path = UnityEditor.EditorUtility.OpenFilePanel("Load Blueprint", Application.streamingAssetsPath + "\\Entities", "json");
+        var path = EditorUtility.OpenFilePanel("Load Blueprint", Application.streamingAssetsPath + "\\Entities", "json");
         LoadBlueprint(System.IO.File.ReadAllText(path));
     }
 
@@ -1169,8 +1167,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
         if (editorMode && Input.GetKeyDown(KeyCode.H))
         {
-            TraderInventory trader = new TraderInventory();
-            trader.parts = new List<EntityBlueprint.PartInfo>();
+            TraderInventory trader = new TraderInventory()
+            {
+                parts = new List<EntityBlueprint.PartInfo>()
+            };
             foreach (var part in partDict.Keys)
             {
                 trader.parts.Add(CullSpatialValues(part));
