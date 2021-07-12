@@ -46,7 +46,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             version.text += " - Click save to attempt migration";
         }
 
-        timePlayed.text = "Time Played: " + (((int)save.timePlayed / 60 >= 10) ? (int)save.timePlayed / 60 + "" : "0" + (int)save.timePlayed / 60) + ":" + (((int)save.timePlayed % 60 >= 10) ? (int)save.timePlayed % 60 + "" : "0" + (int)save.timePlayed % 60);
+        timePlayed.text = string.Format("Time Played: {0:D2}:{1:D2}", (int)save.timePlayed / 60, (int)save.timePlayed % 60);
     }
 
     public void LoadSave()

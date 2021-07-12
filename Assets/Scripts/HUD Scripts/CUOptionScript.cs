@@ -23,7 +23,7 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
         }
         else
         {
-            Debug.Log("Not enough reputation!" + player.reputation + " " + repCost);
+            Debug.Log($"Not enough reputation!{player.reputation} {repCost}");
         }
     }
 
@@ -56,7 +56,7 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
     {
         shell.sprite = ResourceManager.GetAsset<Sprite>(coreID);
         shell.SetNativeSize();
-        shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
+        shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta * 0.5f;
     }
 
     // Update is called once per frame

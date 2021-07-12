@@ -31,7 +31,7 @@ public class InfoText : MonoBehaviour
             timer += Time.deltaTime;
             if (timer > 3)
             {
-                text.color = text.color - new Color(0, 0, 0, 1);
+                text.color -= new Color(0, 0, 0, 1);
             }
         }
     }

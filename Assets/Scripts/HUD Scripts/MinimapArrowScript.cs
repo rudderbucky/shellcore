@@ -64,7 +64,7 @@ public class MinimapArrowScript : MonoBehaviour
         // viewport position, which is done here
 
         var pos = minicam.WorldToViewportPoint(realPos);
-        Vector3 arrowpos = new Vector3(0, 0, 0);
+        Vector3 arrowpos = Vector3.zero;
 
         // demarcates whether the position is off the minimap screent
         bool xlim = false;
@@ -80,14 +80,14 @@ public class MinimapArrowScript : MonoBehaviour
         if (pos.x > 1)
         {
             arrow.gameObject.GetComponent<SpriteRenderer>().enabled = !hideIfOffViewport;
-            arrowpos.x = minicam.ViewportToWorldPoint(new Vector3(1, 0, 0)).x;
+            arrowpos.x = minicam.ViewportToWorldPoint(Vector3.right).x;
             arrow.transform.eulerAngles = new Vector3(0, 0, -90);
             xlim = true;
         }
         else if (pos.x < 0)
         {
             arrow.gameObject.GetComponent<SpriteRenderer>().enabled = !hideIfOffViewport;
-            arrowpos.x = minicam.ViewportToWorldPoint(new Vector3(0, 0, 0)).x;
+            arrowpos.x = minicam.ViewportToWorldPoint(Vector3.zero).x;
             arrow.transform.eulerAngles = new Vector3(0, 0, 90);
             xlim = true;
         }
@@ -99,14 +99,14 @@ public class MinimapArrowScript : MonoBehaviour
         if (pos.y > 1)
         {
             arrow.gameObject.GetComponent<SpriteRenderer>().enabled = !hideIfOffViewport;
-            arrowpos.y = minicam.ViewportToWorldPoint(new Vector3(0, 1, 0)).y;
+            arrowpos.y = minicam.ViewportToWorldPoint(Vector3.up).y;
             arrow.transform.eulerAngles = new Vector3(0, 0, 0);
             ylim = true;
         }
         else if (pos.y < 0)
         {
             arrow.gameObject.GetComponent<SpriteRenderer>().enabled = !hideIfOffViewport;
-            arrowpos.y = minicam.ViewportToWorldPoint(new Vector3(0, 0, 0)).y;
+            arrowpos.y = minicam.ViewportToWorldPoint(Vector3.zero).y;
             arrow.transform.eulerAngles = new Vector3(0, 0, 180);
             ylim = true;
         }

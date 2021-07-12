@@ -34,7 +34,7 @@ public class HealthBarScript : MonoBehaviour
         gleaming = new bool[barsArray.Length];
         gleamed = new bool[barsArray.Length];
         Color[] colors = new Color[] {PlayerCore.GetPlayerFactionColor(), new Color(0.8F, 0.8F, 0.8F), new Color(0.4F, 0.8F, 1.0F)};
-        Color[] oldColors = new Color[] {colors[0] / 2, new Color(0.3F, 0.3F, 0.3F), new Color(0.1F, 0.2F, 0.3F)};
+        Color[] oldColors = new Color[] {colors[0] * 0.5f, new Color(0.3F, 0.3F, 0.3F), new Color(0.1F, 0.2F, 0.3F)};
         for (int i = 0; i < barsArray.Length; i++)
         {
             // iterate through array
@@ -113,14 +113,15 @@ public class HealthBarScript : MonoBehaviour
     /// <returns>the new fill amount for the bar</returns>
     private float UpdateBar(float fillAmount, float currentHealth, float maxHealth)
     {
-        if (fillAmount < currentHealth / maxHealth) // bar is too short
+        var ratio = currentHealth / maxHealth;
+        if (fillAmount < ratio) // bar is too short
         {
             fillAmount += 4 * Time.deltaTime; // increment fill amount 
         }
 
-        if (fillAmount >= currentHealth / maxHealth) // if the fill amount overshot
+        if (fillAmount >= ratio) // if the fill amount overshot
         {
-            return currentHealth / maxHealth; // return the ratio between the health values
+            return ratio; // return the ratio between the health values
         }
 
         return fillAmount; // otherwise return the new fill amount
@@ -187,7 +188,7 @@ public class HealthBarScript : MonoBehaviour
                 if (barsArray[i].GetComponentInChildren<Text>())
                 {
                     var x = barsArray[i].GetComponentsInChildren<Text>();
-                    x[0].text = (int)currentHealth[i] + "/" + maxHealth[i];
+                    x[0].text = $"{(int)currentHealth[i]}/{maxHealth[i]}";
                     x[1].text = names[i];
                 }
             }

@@ -39,7 +39,7 @@ public class QuantityDisplayScript : MonoBehaviour
             lastCredits = player.GetCredits();
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
             texts[1].text = player.GetPower().ToString();
-            texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
+            texts[3].text = $"{player.unitsCommanding.Count}/{player.GetTotalCommandLimit()}";
             texts[5].text = GetCreditString(player.GetCredits()).ToString();
             var rect = texts[5].rectTransform.rect;
             rect.center = texts[5].rectTransform.position;
@@ -149,7 +149,7 @@ public class QuantityDisplayScript : MonoBehaviour
         {
             targetInfo.SetActive(true);
             targetName.text = entity.entityName;
-            targetDesc.text = entity.Terrain + " " + entity.category;
+            targetDesc.text = $"{entity.Terrain} {entity.category}";
             targetName.color = targetDesc.color = FactionManager.GetFactionColor(entity.faction);
             if (targetNumber)
             {
@@ -160,20 +160,20 @@ public class QuantityDisplayScript : MonoBehaviour
         }
         else if (obj.GetComponent<ShellPart>())
         {
-            var info = obj.GetComponent<ShellPart>().info;
+            var shellPart = obj.GetComponent<ShellPart>();
+            var info = shellPart.info;
             targetInfo.SetActive(true);
             if (PartIndexScript.CheckPartObtained(info))
             {
                 targetName.text = info.partID;
-                targetDesc.text = AbilityUtilities.GetAbilityNameByID(info.abilityID, null) + " " + info.tier;
-                targetName.color = targetDesc.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
+                targetDesc.text = $"{AbilityUtilities.GetAbilityNameByID(info.abilityID, null)} {info.tier}";
             }
             else
             {
                 targetName.text = "Unobtained Part";
                 targetDesc.text = "Bring to Yard";
-                targetName.color = targetDesc.color = FactionManager.GetFactionColor(obj.GetComponent<ShellPart>().GetFaction());
             }
+            targetName.color = targetDesc.color = FactionManager.GetFactionColor(shellPart.GetFaction());
         }
         else
         {

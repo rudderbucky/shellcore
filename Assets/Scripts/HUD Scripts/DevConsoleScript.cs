@@ -250,9 +250,11 @@ public class DevConsoleScript : MonoBehaviour
                 EntityBlueprint.PartInfo info;
                 for (int i = 0; i < 8; i++)
                 {
-                    info = new EntityBlueprint.PartInfo();
-                    info.partID = "SmallCenter1";
-                    info.abilityID = 10;
+                    info = new EntityBlueprint.PartInfo()
+                    {
+                        partID = "SmallCenter1",
+                        abilityID = 10
+                    };
                     DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)i);
                     info.secondaryData = JsonUtility.ToJson(data);
                     if (info.abilityID == 0 || info.abilityID == 10)

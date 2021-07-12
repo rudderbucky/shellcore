@@ -14,7 +14,7 @@ public class PlayerViewScript : MonoBehaviour
     {
         foreach (var window in instance.currentWindow)
         {
-            if (window != null && !window.Equals(null) && window.GetActive())
+            if (window != null && window.GetActive())
             {
                 return true;
             }
@@ -93,10 +93,8 @@ public class PlayerViewScript : MonoBehaviour
 
                     return; // prevents the escape menu code from running
                 }
-                else
-                {
-                    currentWindow.Pop(); // pop through the already closed windows
-                }
+
+                currentWindow.Pop(); // pop through the already closed windows
             }
 
             if (escapeMenu)

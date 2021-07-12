@@ -134,7 +134,6 @@ public class SaveMenuHandler : GUIWindowScripts
                 catch (System.Exception e)
                 {
                     Debug.LogError(e);
-                    continue;
                 }
             }
         }
@@ -327,7 +326,7 @@ public class SaveMenuHandler : GUIWindowScripts
     public void AddSave()
     {
         string name = inputField.text.Trim();
-        string path = Application.persistentDataPath + "\\Saves\\" + name;
+        string path = $"{Application.persistentDataPath}\\Saves\\{name}";
         inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
         if (name == "" || name == "TestSave" ||
             paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1)
@@ -357,15 +356,14 @@ public class SaveMenuHandler : GUIWindowScripts
 
     public void BackupSave(PlayerSave save)
     {
-        string origPath = Application.persistentDataPath + "\\Saves\\" + save.name + " - Backup";
-        string path = origPath + " ";
+        string path = $"{Application.persistentDataPath}\\Saves\\{save.name} - Backup ";
         int i = 1;
         while (File.Exists(path + i))
         {
             i++;
         }
 
-        path = path + i;
+        path += i;
         File.WriteAllText(path, JsonUtility.ToJson(save));
 
         saves.Add(save);
@@ -383,14 +381,16 @@ public class SaveMenuHandler : GUIWindowScripts
     public static PlayerSave CreateSave(string name, string checkpointName = null, string resourcePath = "")
     {
         string currentVersion = VersionNumberScript.version;
-        PlayerSave save = new PlayerSave();
-        save.name = name;
-        save.timePlayed = 0;
-        save.presetBlueprints = new string[5];
-        save.currentHealths = new float[] {1000, 250, 500};
-        save.partInventory = new List<EntityBlueprint.PartInfo>();
-        save.sectorsSeen = new List<string>();
-        save.missions = new List<Mission>();
+        PlayerSave save = new PlayerSave()
+        {
+            name = name,
+            timePlayed = 0,
+            presetBlueprints = new string[5],
+            currentHealths = new float[] {1000, 250, 500},
+            partInventory = new List<EntityBlueprint.PartInfo>(),
+            sectorsSeen = new List<string>(),
+            missions = new List<Mission>()
+        };
 
         // this section contains default information for a new save. Edit this to change how the default save
         // is created.
@@ -407,7 +407,7 @@ public class SaveMenuHandler : GUIWindowScripts
         save.version = currentVersion;
         save.resourcePath = resourcePath;
         save.abilityHotkeys = new AbilityHotkeyStruct();
-        File.WriteAllText(Application.persistentDataPath + "\\Saves\\" + name, JsonUtility.ToJson(save));
+        File.WriteAllText($"{Application.persistentDataPath}\\Saves\\{name}", JsonUtility.ToJson(save));
         return save;
     }
 }

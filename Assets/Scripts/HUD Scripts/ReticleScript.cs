@@ -292,7 +292,7 @@ public class ReticleScript : MonoBehaviour
 
             reticle.Find("Number Marker").GetComponent<Text>().enabled = true;
             reticle.Find("Number Marker").GetComponent<Text>().text = count.ToString();
-            reticle.Find("Number Marker").GetComponent<Text>().color = new Color32((byte)0, (byte)150, (byte)250, (byte)255);
+            reticle.Find("Number Marker").GetComponent<Text>().color = new Color32(0, 150, 250, 255);
         }
         else
         {
@@ -351,7 +351,7 @@ public class ReticleScript : MonoBehaviour
         image.rectTransform.sizeDelta = Vector2.one * followedSize * 33;
         if (transform.Find("Number Marker"))
         {
-            transform.Find("Number Marker").localPosition = new Vector3(followedSize / 2 + 0.1F, followedSize / 2 + 0.05F, 0);
+            transform.Find("Number Marker").localPosition = new Vector3(followedSize * 0.5f + 0.1F, followedSize * 0.5f + 0.05F, 0);
         }
     }
 
@@ -385,9 +385,9 @@ public class ReticleScript : MonoBehaviour
                 }
 
 
-                parent.Find("Shell Number").GetComponentInChildren<Text>().text = Mathf.Round(targHealth[0]) + "/" + targMax[0];
-                parent.Find("Core Number").GetComponentInChildren<Text>().text = Mathf.Round(targHealth[1]) + "/" + targMax[1];
-                parent.Find("Energy Number").GetComponentInChildren<Text>().text = Mathf.Round(targHealth[2]) + "/" + targMax[2];
+                parent.Find("Shell Number").GetComponentInChildren<Text>().text = $"{Mathf.Round(targHealth[0])}/{targMax[0]}";
+                parent.Find("Core Number").GetComponentInChildren<Text>().text = $"{Mathf.Round(targHealth[1])}/{targMax[1]}";
+                parent.Find("Energy Number").GetComponentInChildren<Text>().text = $"{Mathf.Round(targHealth[2])}/{targMax[2]}";
             }
         }
         else

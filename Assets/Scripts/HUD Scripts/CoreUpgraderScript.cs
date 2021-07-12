@@ -97,12 +97,6 @@ public class CoreUpgraderScript : GUIWindowScripts
         CUAbilityCapDisplay.Initialize(player.abilityCaps, currentID);
     }
 
-    /// prevent dragging the window if the mouse is on the grid
-    public override void OnPointerDown(PointerEventData eventData)
-    {
-        base.OnPointerDown(eventData);
-    }
-
     public static void IncrementAbilityCap(int type)
     {
         instance.incrementAbilityCap(type);
@@ -125,10 +119,8 @@ public class CoreUpgraderScript : GUIWindowScripts
         {
             return 5 + 5 * (instance.player.abilityCaps[type] - minAbilityCap[type] - minLvShards);
         }
-        else
-        {
-            return 0;
-        }
+
+        return 0;
     }
 
     public static int GetUpgradeCostCredits(int type)
@@ -291,8 +283,14 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         return new string[]
         {
-            "core1_shell", "core2_shell", "core3skills_shell", "core3weapons_shell",
-            "core4commando_shell", "core4elite_shell", "core4captain_shell", "core4admiral_shell"
+            "core1_shell",
+            "core2_shell",
+            "core3skills_shell",
+            "core3weapons_shell",
+            "core4commando_shell",
+            "core4elite_shell",
+            "core4captain_shell",
+            "core4admiral_shell"
         };
     }
 }
