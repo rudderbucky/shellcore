@@ -276,17 +276,18 @@ public static class AbilityUtilities
 			case 25:
 				return "ability_indicator5";
 			case 27:
-			case 29:
 				return "ability_indicator6";
 			case 14:
 				if (data != "siege2shooter_sprite")
-                {
-                    return "bulletshooter_sprite";
-                }
-                else
-                {
-                    return "siege2shooter_sprite";
-                }
+				{
+					return "bulletshooter_sprite";
+				}
+				else
+				{
+					return "siege2shooter_sprite";
+				}
+			case 29:
+				return "ability_indicator7";
             default:
                 return "ability_indicator";
         }
