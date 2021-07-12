@@ -645,7 +645,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             parts[i].Detach();
         }
 
-        var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
+        BattleZoneManager BZM = SectorManager.instance ? SectorManager.instance.GetComponent<BattleZoneManager>() : null;
 
         if (lastDamagedBy is PlayerCore player)
         {
@@ -662,7 +662,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         OnEntityDeath?.Invoke(this, lastDamagedBy);
 
-        BZM?.UpdateCounters();
+        if (BZM)
+        {
+            BZM.UpdateCounters();
+        }
 
         GameObject deathExplosion = Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
     }
@@ -702,15 +705,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     protected virtual void OnDestroy()
     {
-        if (AIData.entities.Contains(this))
-        {
-            AIData.entities.Remove(this);
-        }
-
-        if (AIData.interactables.Contains(this))
-        {
-            AIData.interactables.Remove(this);
-        }
+        AIData.entities.Remove(this);
+        AIData.interactables.Remove(this);
 
         if (this is IVendor)
         {

@@ -130,7 +130,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     void PlaceCurrentPart()
     {
         currentPart.SetMaskable(true);
-        var editorMode = (builder as ShipBuilder) != null && (builder as ShipBuilder).editorMode;
+        var editorMode = (builder as ShipBuilder) != null && !(builder as ShipBuilder).Equals(null) && (builder as ShipBuilder).editorMode;
         var dispatch = false;
         ShipBuilder.TransferMode mode = ShipBuilder.TransferMode.Return;
         if (cursorMode != BuilderMode.Workshop)

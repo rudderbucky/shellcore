@@ -14,7 +14,7 @@ public class PlayerViewScript : MonoBehaviour
     {
         foreach (var window in instance.currentWindow)
         {
-            if (window != null && window.GetActive())
+            if(window != null && !window.Equals(null) && window.GetActive())
             {
                 return true;
             }

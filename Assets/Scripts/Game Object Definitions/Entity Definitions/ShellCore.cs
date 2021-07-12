@@ -30,7 +30,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public ICarrier GetCarrier()
     {
-        if (carrier == null || carrier.GetIsDead())
+        if (carrier == null || carrier.Equals(null) || carrier.GetIsDead())
         {
             return null;
         }
@@ -70,7 +70,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     protected override void Start()
     {
-        if (carrier != null && carrier.GetIsInitialized())
+        if ((carrier != null && !carrier.Equals(null)) && carrier.GetIsInitialized())
         {
             spawnPoint = carrier.GetSpawnPoint();
         }
@@ -160,7 +160,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public Draggable GetTractorTarget()
     {
-        return tractor?.GetTractorTarget();
+        return tractor ? tractor.GetTractorTarget() : null;
     }
 
     public List<IOwnable> GetUnitsCommanding()

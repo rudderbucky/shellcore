@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -66,7 +66,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
     public virtual bool GetActive()
     {
-        return transform && transform.parent && transform.parent.gameObject.activeSelf;
+        return this && transform&& transform.parent && transform.parent.gameObject.activeSelf;
     }
 
     public virtual void OnPointerDown(PointerEventData eventData)

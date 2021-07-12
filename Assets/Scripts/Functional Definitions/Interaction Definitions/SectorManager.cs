@@ -1200,7 +1200,7 @@ public class SectorManager : MonoBehaviour
             MinimapArrowScript.instance.ClearCoreArrows();
         }
 
-        var tractorTarget = player.GetTractorTarget();
+        var tractorTarget = player ? player.GetTractorTarget() : null;
 
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var obj in objects)
