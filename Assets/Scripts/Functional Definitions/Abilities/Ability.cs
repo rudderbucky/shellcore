@@ -97,7 +97,7 @@ public abstract class Ability : MonoBehaviour
     /// Setter method for isDestroyed
     /// </summary>
     /// <param name="input">boolean to set to</param>
-    virtual public void SetDestroyed(bool input)
+    public virtual void SetDestroyed(bool input)
     {
         if (input)
         {
@@ -262,7 +262,7 @@ public abstract class Ability : MonoBehaviour
     /// Ability called to change the ability's state over time for players
     /// </summary>
     /// <param name="action">The associated button to press to activate</param>
-    virtual public void Tick()
+    public virtual void Tick()
     {
         if (State == AbilityState.Destroyed)
         {
@@ -360,12 +360,12 @@ public abstract class Ability : MonoBehaviour
     /// <summary>
     /// Used to activate whatever effect the ability has, almost always overriden
     /// </summary>
-    virtual protected void Execute()
+    protected virtual void Execute()
     {
     }
 
     // wrapper for whether the ability has a "range" to display in the HUD when the player mouses over the button
-    virtual public float GetRange()
+    public virtual float GetRange()
     {
         return -1; // get range
     }
@@ -373,7 +373,7 @@ public abstract class Ability : MonoBehaviour
     /// <summary>
     /// Remove effects of an ability
     /// </summary>
-    virtual public void Deactivate()
+    public virtual void Deactivate()
     {
     }
 }

@@ -25,12 +25,12 @@ public class IonLineController : MonoBehaviour
         line.startWidth = line.endWidth = 0;
         line.useWorldSpace = true;
         var col = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
-        Gradient gradient = new Gradient();
-        gradient.mode = GradientMode.Fixed;
-        gradient.SetKeys(
-            new GradientColorKey[] {new GradientColorKey(col, 0), new GradientColorKey(col, 1)},
-            new GradientAlphaKey[] {new GradientAlphaKey(0.5F, 0), new GradientAlphaKey(1F, 0.1F), new GradientAlphaKey(1, 1)}
-        );
+        Gradient gradient = new Gradient
+        {
+            mode = GradientMode.Fixed,
+            colorKeys = new GradientColorKey[] { new GradientColorKey(col, 0), new GradientColorKey(col, 1) },
+            alphaKeys = new GradientAlphaKey[] { new GradientAlphaKey(0.5F, 0), new GradientAlphaKey(1F, 0.1F), new GradientAlphaKey(1, 1) }
+        };
         line.colorGradient = gradient;
     }
 

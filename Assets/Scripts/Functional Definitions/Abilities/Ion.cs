@@ -41,17 +41,6 @@ public class Ion : WeaponAbility
         }
     }
 
-    void LateUpdate()
-    {
-        if (lineController)
-        {
-        }
-    }
-
-    void Update()
-    {
-    }
-
     Vector3 GetMousePos()
     {
         Vector3 vec = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraScript.zLevel));

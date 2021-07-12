@@ -113,9 +113,9 @@ public class SpawnDrone : ActiveAbility
             Core.TakeEnergy(-energyCost);
             base.Activate();
         }
-        else if (craft as PlayerCore && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
+        else if (craft is PlayerCore player && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
         {
-            (craft as PlayerCore).alerter.showMessage("Unit limit reached!", "clip_alert");
+            player.alerter.showMessage("Unit limit reached!", "clip_alert");
         }
     }
 }

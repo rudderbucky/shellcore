@@ -177,7 +177,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         if (offCDCountText)
         {
             offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() &&
-                                                         (a.TimeUntilReady() == 0 || a.GetAbilityType() == AbilityHandler.AbilityTypes.Passive)).Count + "";
+                                                         (a.TimeUntilReady() == 0 || a.GetAbilityType() == AbilityHandler.AbilityTypes.Passive)).Count.ToString();
         }
 
         if (tooltip)

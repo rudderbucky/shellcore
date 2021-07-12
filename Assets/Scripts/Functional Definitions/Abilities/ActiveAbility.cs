@@ -46,11 +46,11 @@ public abstract class ActiveAbility : Ability
     /// <summary>
     /// Called when active time hits 0, used to rollback whatever change was done on the core
     /// </summary>
-    override public void Deactivate()
+    public override void Deactivate()
     {
     }
 
-    override protected void Execute()
+    protected override void Execute()
     {
         base.Execute();
     }

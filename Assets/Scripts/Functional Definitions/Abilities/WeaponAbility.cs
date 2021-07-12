@@ -62,10 +62,8 @@ public abstract class WeaponAbility : ActiveAbility
         {
             return terrain == Entity.TerrainType.Ground;
         }
-        else
-        {
-            return TerrainCheck(terrain) && CategoryCheck(category);
-        }
+
+        return TerrainCheck(terrain) && CategoryCheck(category);
     }
 
     public bool TerrainCheck(Entity.TerrainType targetTerrain)
@@ -203,7 +201,7 @@ public abstract class WeaponAbility : ActiveAbility
         if (State == AbilityState.Ready && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
         {
             Transform target = targetingSystem.GetTarget();
-            if (target == null || !target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
+            if (!target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
             {
                 TargetManager.Enqueue(targetingSystem, category);
             }
