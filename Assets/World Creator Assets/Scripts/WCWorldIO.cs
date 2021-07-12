@@ -176,7 +176,7 @@ public class WCWorldIO : MonoBehaviour
         {
             if (originalReadPath.Contains("main"))
             {
-                generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(originalReadPath) + "\\main - " + VersionNumberScript.version);
+                generatorHandler.WriteWorld($"{System.IO.Path.GetDirectoryName(originalReadPath)}\\main - {VersionNumberScript.version}");
             }
             else
             {
@@ -416,15 +416,15 @@ public class WCWorldIO : MonoBehaviour
         {
             case IOMode.Read:
             case IOMode.Write:
-                path = Application.streamingAssetsPath + "\\Sectors\\" + field.text;
+                path = $"{Application.streamingAssetsPath}\\Sectors\\{field.text}";
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                path = Application.streamingAssetsPath + "\\EntityPlaceholder\\" + field.text + ".json";
+                path = $"{Application.streamingAssetsPath}\\EntityPlaceholder\\{field.text}.json";
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
-                path = Application.streamingAssetsPath + "\\WavePlaceholder\\" + field.text + ".json";
+                path = $"{Application.streamingAssetsPath}\\WavePlaceholder\\{field.text}.json";
                 break;
         }
 

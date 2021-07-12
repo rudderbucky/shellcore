@@ -39,7 +39,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
         var dropdown = gObj.GetComponentInChildren<Dropdown>();
 
         inField1.text = name;
-        inField2.text = time + "";
+        inField2.text = time.ToString();
         inField3.text = flagName;
         dropdown.value = faction;
 
@@ -116,7 +116,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
             {
                 // try and see if the name is an indirect reference
                 var path = Application.streamingAssetsPath + "\\EntityPlaceholder";
-                if (System.IO.Directory.GetFiles(path).Contains<string>($"{path}\\{field.Item1.text}.json"))
+                if (System.IO.Directory.GetFiles(path).Contains($"{path}\\{field.Item1.text}.json"))
                 {
                     ent.name = "ShellCore";
                     ent.blueprintJSON = field.Item1.text;

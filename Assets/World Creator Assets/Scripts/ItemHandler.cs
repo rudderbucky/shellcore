@@ -71,10 +71,6 @@ public class ItemHandler : MonoBehaviour
         GenerateItemList();
     }
 
-    void Start()
-    {
-    }
-
     public Item GetItemByIndex(int index)
     {
         return CopyItem(index);
@@ -229,7 +225,6 @@ public class ItemHandlerEditor : Editor
                     }
                 }
 
-                ;
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
                 GUI.SetNextControlName("update");
@@ -241,7 +236,6 @@ public class ItemHandlerEditor : Editor
                     }
                 }
 
-                ;
                 EditorGUILayout.EndHorizontal();
                 break;
             default:

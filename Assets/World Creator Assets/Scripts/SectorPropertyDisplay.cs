@@ -400,7 +400,7 @@ public class SectorPropertyDisplay : MonoBehaviour
                 {
                     // try and see if the name is an indirect reference
                     var path = Application.streamingAssetsPath + "\\EntityPlaceholder";
-                    if (System.IO.Directory.GetFiles(path).Contains<string>(path + "\\" + field.Item1.text + ".json"))
+                    if (System.IO.Directory.GetFiles(path).Contains<string>($"{path}\\{field.Item1.text}.json"))
                     {
                         ent.name = "ShellCore";
                         ent.blueprintJSON = field.Item1.text;

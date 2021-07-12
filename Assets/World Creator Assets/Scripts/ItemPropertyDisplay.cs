@@ -138,8 +138,10 @@ public class ItemPropertyDisplay : MonoBehaviour
     {
         if (currentItem.patrolPath == null)
         {
-            currentItem.patrolPath = new NodeEditorFramework.Standard.PathData();
-            currentItem.patrolPath.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
+            currentItem.patrolPath = new NodeEditorFramework.Standard.PathData()
+            {
+                waypoints = new List<NodeEditorFramework.Standard.PathData.Node>()
+            };
         }
 
         WorldCreatorCursor.finishPath += SetPath;

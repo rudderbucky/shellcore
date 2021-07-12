@@ -456,7 +456,7 @@ public class WorldCreatorCursor : MonoBehaviour
             Item underCursor = GetItemUnderCursor(current.type);
             if (Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject() && current.obj)
             {
-                if (((Item)underCursor).type == current.type)
+                if (underCursor.type == current.type)
                 {
                     propertyDisplay.DisplayProperties(underCursor);
                 }
@@ -469,12 +469,12 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 if (underCursor.type == ItemType.Platform)
                 {
-                    Rotate((Item)underCursor);
+                    Rotate(underCursor);
                 }
             }
             else if ((Input.GetMouseButtonUp(1) || (Input.GetMouseButton(1) && underCursor.type == ItemType.Platform)) && !system.IsPointerOverGameObject())
             {
-                Remove((Item)underCursor);
+                Remove(underCursor);
             }
         }
         else
@@ -494,7 +494,7 @@ public class WorldCreatorCursor : MonoBehaviour
         }
     }
 
-    Vector3 origPos = new Vector3();
+    Vector3 origPos;
     Vector3[] lastSectorPos = null;
 
     public class SectorWCWrapper
@@ -826,12 +826,9 @@ public class WorldCreatorCursor : MonoBehaviour
     public static Color GetDefaultColor(Sector.SectorType type)
     {
         return new Color(
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{(int)type}",
-                SectorColors.colors[(int)type].r),
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{(int)type}",
-                SectorColors.colors[(int)type].g),
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{(int)type}",
-                SectorColors.colors[(int)type].b)
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{(int)type}", SectorColors.colors[(int)type].r),
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{(int)type}", SectorColors.colors[(int)type].g),
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{(int)type}", SectorColors.colors[(int)type].b)
         );
     }
 

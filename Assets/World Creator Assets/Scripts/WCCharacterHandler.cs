@@ -123,11 +123,11 @@ public class WCCharacterHandler : GUIWindowScripts
             var button = Instantiate(buttonPrefab, content).GetComponentInChildren<CharacterButtonScript>();
             button.character = currentData;
             button.cursor = cursor;
-            button.transform.Find("Clear").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
+            button.transform.Find("Clear").GetComponent<Button>().onClick.AddListener(() =>
             {
                 DeleteCharacter(button.character);
                 Destroy(button.gameObject);
-            }));
+            });
         }
 
         currentData = new WorldData.CharacterData()
