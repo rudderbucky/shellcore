@@ -222,6 +222,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             {
                 return -1;
             }
+
             if (a.IsDestroyed() && !b.IsDestroyed())
             {
                 return 1;

@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-
-
 public class DWInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public DWSelectionDisplayHandler handler;

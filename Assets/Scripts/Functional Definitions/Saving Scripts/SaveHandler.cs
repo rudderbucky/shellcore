@@ -83,7 +83,7 @@ public class SaveHandler : MonoBehaviour
             save = new PlayerSave
             {
                 presetBlueprints = new string[5],
-                currentHealths = new float[] { 1000, 250, 500 },
+                currentHealths = new float[] {1000, 250, 500},
                 partInventory = new List<EntityBlueprint.PartInfo>()
             };
 

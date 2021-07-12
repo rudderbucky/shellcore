@@ -28,8 +28,8 @@ public class IonLineController : MonoBehaviour
         Gradient gradient = new Gradient
         {
             mode = GradientMode.Fixed,
-            colorKeys = new GradientColorKey[] { new GradientColorKey(col, 0), new GradientColorKey(col, 1) },
-            alphaKeys = new GradientAlphaKey[] { new GradientAlphaKey(0.5F, 0), new GradientAlphaKey(1F, 0.1F), new GradientAlphaKey(1, 1) }
+            colorKeys = new GradientColorKey[] {new GradientColorKey(col, 0), new GradientColorKey(col, 1)},
+            alphaKeys = new GradientAlphaKey[] {new GradientAlphaKey(0.5F, 0), new GradientAlphaKey(1F, 0.1F), new GradientAlphaKey(1, 1)}
         };
         line.colorGradient = gradient;
     }
