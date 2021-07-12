@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
-    private static string CurrentSavePath;
     private float abortTimer = 4;
     private static float deadzoneDamageMult = 0.1f;
     private static float deadzoneDamageBase = 0.2f;
@@ -126,6 +125,7 @@ public class SectorManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
             string currentPath = null;
+            var CurrentSavePath = Application.persistentDataPath + "\\CurrentSavePath";
             if (File.Exists(CurrentSavePath))
             {
                 currentPath = File.ReadAllLines(CurrentSavePath)[0];
@@ -472,7 +472,6 @@ public class SectorManager : MonoBehaviour
 
     private void Start()
     {
-        CurrentSavePath = Application.persistentDataPath + "\\CurrentSavePath";
         if (ResourceManager.Instance)
         {
             sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");

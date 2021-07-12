@@ -7,17 +7,15 @@ public class SaveHandler : MonoBehaviour
     public PlayerCore player;
     public TaskManager taskManager;
     PlayerSave save;
+    private static string CurrentSavePath;
 
     public void Initialize()
     {
-        string currentPath;
-        if (!File.Exists(Application.persistentDataPath + "\\CurrentSavePath"))
+        string currentPath = Application.persistentDataPath + "\\TestSave";
+        CurrentSavePath = Application.persistentDataPath + "\\CurrentSavePath";
+        if (File.Exists(CurrentSavePath))
         {
-            currentPath = Application.persistentDataPath + "\\TestSave";
-        }
-        else
-        {
-            currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+            currentPath = File.ReadAllLines(CurrentSavePath)[0];
         }
 
         if (File.Exists(currentPath))
@@ -82,10 +80,12 @@ public class SaveHandler : MonoBehaviour
         else
         {
             Debug.LogError("There was not a save or test save that was ready on load.");
-            save = new PlayerSave();
-            save.presetBlueprints = new string[5];
-            save.currentHealths = new float[] {1000, 250, 500};
-            save.partInventory = new List<EntityBlueprint.PartInfo>();
+            save = new PlayerSave
+            {
+                presetBlueprints = new string[5],
+                currentHealths = new float[] { 1000, 250, 500 },
+                partInventory = new List<EntityBlueprint.PartInfo>()
+            };
 
             player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             player.blueprint.name = "Player Save Blueprint";
@@ -108,7 +108,6 @@ public class SaveHandler : MonoBehaviour
             SaveMenuHandler.migratedTimePlayed = null;
         }
 
-        string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
         save.position = player.spawnPoint;
         save.lastDimension = player.LastDimension;
         save.currentHealths = player.CurrentHealth;
@@ -166,6 +165,7 @@ public class SaveHandler : MonoBehaviour
         save.taskVariableValues = values;
         save.reputation = player.reputation;
 
+        string currentPath = File.ReadAllLines(CurrentSavePath)[0];
         string saveJson = JsonUtility.ToJson(save);
         File.WriteAllText(currentPath, saveJson);
     }
