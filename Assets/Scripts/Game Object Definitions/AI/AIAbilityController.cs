@@ -173,10 +173,8 @@ public class AIAbilityController
             }
         }
 
-        if (craft is IOwner && target != null && target)
+        if (craft is IOwner owner && target != null && target)
         {
-            IOwner owner = craft as IOwner;
-
             if (owner.GetUnitsCommanding().Count < owner.GetTotalCommandLimit())
             {
                 var droneSpawns = GetAbilities(10); // drone spawn

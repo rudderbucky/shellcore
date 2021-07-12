@@ -102,8 +102,7 @@ public class TargetManager : MonoBehaviour
             positions[i] = AIData.entities[i].transform.position;
             factions[i] = AIData.entities[i].faction;
 
-            if (AIData.entities[i].GetIsDead()
-                || AIData.entities[i].IsInvisible)
+            if (AIData.entities[i].GetIsDead() || AIData.entities[i].IsInvisible)
             {
                 continue;
             }

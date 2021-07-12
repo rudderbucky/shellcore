@@ -25,11 +25,10 @@ public class AreaRestore : Ability
     protected override void Execute()
     {
         AudioManager.PlayClipByID("clip_healeffect", transform.position);
-        for (int i = 0; i < AIData.entities.Count; i++)
+        foreach (Entity ally in AIData.entities)
         {
-            if (AIData.entities[i].faction == Core.GetFaction())
+            if (ally.faction == Core.GetFaction())
             {
-                Entity ally = AIData.entities[i];
                 float d = (ally.transform.position - Core.transform.position).sqrMagnitude;
                 if (d < range * range)
                 {

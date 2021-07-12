@@ -152,11 +152,13 @@ public class PartyManager : MonoBehaviour
                     var print = ScriptableObject.CreateInstance<EntityBlueprint>();
                     JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
                     print.intendedType = EntityBlueprint.IntendedType.ShellCore;
-                    var levelEnt = new Sector.LevelEntity();
-                    levelEnt.ID = charID;
-                    levelEnt.name = ch.name;
-                    levelEnt.faction = ch.faction;
-                    levelEnt.position = PlayerCore.Instance.transform.position + new Vector3(0, 5);
+                    var levelEnt = new Sector.LevelEntity()
+                    {
+                        ID = charID,
+                        name = ch.name,
+                        faction = ch.faction,
+                        position = PlayerCore.Instance.transform.position + new Vector3(0, 5)
+                    };
                     SectorManager.instance.SpawnEntity(print, levelEnt);
                 }
 
@@ -300,8 +302,8 @@ public class PartyManager : MonoBehaviour
         if (InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member) => { return member; }))
         {
             wheel.SetActive(true);
-            arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight / 2),
-                (Input.mousePosition.x - Camera.main.pixelWidth / 2)) * Mathf.Rad2Deg);
+            arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight * 0.5f),
+                (Input.mousePosition.x - Camera.main.pixelWidth * 0.5f)) * Mathf.Rad2Deg);
             var x = 90 - arrow.rotation.eulerAngles.z;
             if (x < -180)
             {
@@ -312,7 +314,7 @@ public class PartyManager : MonoBehaviour
                 x = 360 + x;
             }
 
-            index = Mathf.RoundToInt((x) / (360 / options.Count));
+            index = Mathf.RoundToInt(x * options.Count / 360);
         }
         else if (initialized)
         {

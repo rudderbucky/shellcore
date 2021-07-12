@@ -85,7 +85,7 @@ public class SpawnDrone : ActiveAbility
         drone.Init();
         drone.SetOwner(craft);
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);
-        if (craft as ICarrier != null)
+        if (craft is ICarrier)
         {
             drone.getAI().setMode(AirCraftAI.AIMode.Path);
         }
@@ -113,9 +113,9 @@ public class SpawnDrone : ActiveAbility
             Core.TakeEnergy(-energyCost);
             base.Activate();
         }
-        else if (craft as PlayerCore && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
+        else if (craft is PlayerCore player && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
         {
-            (craft as PlayerCore).alerter.showMessage("Unit limit reached!", "clip_alert");
+            player.alerter.showMessage("Unit limit reached!", "clip_alert");
         }
     }
 }

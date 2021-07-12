@@ -133,7 +133,7 @@ namespace NodeEditorFramework.Standard
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             entityID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
@@ -141,7 +141,7 @@ namespace NodeEditorFramework.Standard
 
         void SetTargetID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             targetEntityID = ID;
             WorldCreatorCursor.selectEntity -= SetTargetID;
@@ -200,7 +200,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                Debug.LogError(entity + " " + entity.GetComponentInChildren<TractorBeam>());
+                Debug.LogError($"{entity} {entity.GetComponentInChildren<TractorBeam>()}");
             }
 
             return 0;

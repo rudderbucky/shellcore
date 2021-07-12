@@ -64,15 +64,15 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Entity Name:");
             entityName = GUILayout.TextField(entityName);
             GUILayout.Label("Faction number:");
-            faction = Utilities.RTEditorGUI.IntField(faction);
+            faction = RTEditorGUI.IntField(faction);
 
-            if (useCoordinates = Utilities.RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
+            if (useCoordinates = RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
             {
                 GUILayout.Label("Coordinates:");
                 float x = coordinates.x, y = coordinates.y;
                 GUILayout.BeginHorizontal();
-                x = Utilities.RTEditorGUI.FloatField("X", x);
-                y = Utilities.RTEditorGUI.FloatField("Y", y);
+                x = RTEditorGUI.FloatField("X", x);
+                y = RTEditorGUI.FloatField("Y", y);
                 coordinates = new Vector2(x, y);
                 GUILayout.EndHorizontal();
             }
@@ -82,16 +82,16 @@ namespace NodeEditorFramework.Standard
                 flagName = GUILayout.TextField(flagName);
             }
 
-            if (issueID = Utilities.RTEditorGUI.Toggle(issueID, "Issue ID"))
+            if (issueID = RTEditorGUI.Toggle(issueID, "Issue ID"))
             {
                 GUILayout.Label("Entity ID:");
                 entityID = GUILayout.TextField(entityID);
             }
 
             GUILayout.Label("Spawn count:");
-            count = Mathf.Max(1, Utilities.RTEditorGUI.IntField(count));
+            count = Mathf.Max(1, RTEditorGUI.IntField(count));
 
-            forceCharacterTeleport = Utilities.RTEditorGUI.Toggle(forceCharacterTeleport, "Force Character Teleport");
+            forceCharacterTeleport = RTEditorGUI.Toggle(forceCharacterTeleport, "Force Character Teleport");
 
             GUILayout.Label("Additional spawn points:");
             for (int i = 0; i < additionalFlags.Count; i++)
@@ -122,7 +122,7 @@ namespace NodeEditorFramework.Standard
                 GUILayout.Label("Spawn count:");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                additionalCounts[i] = Mathf.Max(1, Utilities.RTEditorGUI.IntField(additionalCounts[i]));
+                additionalCounts[i] = Mathf.Max(1, RTEditorGUI.IntField(additionalCounts[i]));
                 GUILayout.EndHorizontal();
             }
 
@@ -188,7 +188,7 @@ namespace NodeEditorFramework.Standard
                     }
                 }
 
-                Debug.Log("Spawn Entity ID ( " + entityID + " ) does not correspond with a character. Performing normal operations.");
+                Debug.Log($"Spawn Entity ID ( {entityID} ) does not correspond with a character. Performing normal operations.");
             }
 
             EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -264,7 +264,7 @@ namespace NodeEditorFramework.Standard
                 var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
                 if (DevConsoleScript.fullLog)
                 {
-                    Debug.Log(entity.transform.position + " " + entity.spawnPoint);
+                    Debug.Log($"{entity.transform.position} {entity.spawnPoint}");
                 }
 
                 entity.name = entityName;

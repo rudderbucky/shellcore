@@ -2,8 +2,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-
-
 public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
 {
     public EntityBlueprint.PartInfo part;

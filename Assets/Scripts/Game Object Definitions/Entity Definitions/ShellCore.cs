@@ -51,9 +51,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public void AddPower(float power)
     {
         totalPower = Mathf.Min(5000, totalPower + power);
-        if (power > 0 && OnPowerCollected != null)
+        if (power > 0)
         {
-            OnPowerCollected.Invoke(faction, Mathf.RoundToInt(power));
+            OnPowerCollected?.Invoke(faction, Mathf.RoundToInt(power));
         }
     }
 
@@ -153,11 +153,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         base.Awake(); // base awake
     }
 
-    protected override void Update()
-    {
-        base.Update(); // base update
-    }
-
     public void SetTractorTarget(Draggable newTarget)
     {
         tractor.SetTractorTarget(newTarget);
@@ -175,9 +170,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public void PowerHeal()
     {
-        TakeShellDamage(-0.05F * GetMaxHealth()[0], 0, null);
-        TakeCoreDamage(-0.05F * GetMaxHealth()[1]);
-        TakeEnergy(-0.05F * GetMaxHealth()[2]);
+        var healths = GetMaxHealth();
+        TakeShellDamage(-0.05F * healths[0], 0, null);
+        TakeCoreDamage(-0.05F * healths[1]);
+        TakeEnergy(-0.05F * healths[2]);
     }
 
     public int GetIntrinsicCommandLimit()

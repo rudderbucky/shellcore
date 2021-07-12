@@ -24,10 +24,8 @@ public abstract class ActiveAbility : Ability
         {
             return activeDuration - (Time.time - startTime); // return active time remaining
         }
-        else
-        {
-            return 0; // not active
-        }
+
+        return 0; // not active
     }
 
     public override void SetDestroyed(bool input)
@@ -48,11 +46,11 @@ public abstract class ActiveAbility : Ability
     /// <summary>
     /// Called when active time hits 0, used to rollback whatever change was done on the core
     /// </summary>
-    override public void Deactivate()
+    public override void Deactivate()
     {
     }
 
-    override protected void Execute()
+    protected override void Execute()
     {
         base.Execute();
     }

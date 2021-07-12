@@ -11,7 +11,6 @@ public class WeaponTargetingSystem : ITargetingSystem
     /// <summary>
     /// Get the target of the targeting system
     /// </summary>
-    /// <param name="findNew">Whether or not the targeting system should find a new target</param>
     /// <returns>The target of the targeting system</returns>
     public Transform GetTarget()
     {
@@ -51,7 +50,7 @@ public class WeaponTargetingSystem : ITargetingSystem
     // if it's dead, if it is weapon-compatible, if it is invisible
     bool IsValidTarget(Transform t)
     {
-        if (t == null || !t)
+        if (!t)
         {
             return false;
         }

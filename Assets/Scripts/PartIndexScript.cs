@@ -204,8 +204,7 @@ public class PartIndexScript : MonoBehaviour
             }
         }
 
-        // Just found out about string interpolation. Damn that stuff rocks.
-        statsTotalTally.text = $"{statsNumbers[3]}";
+        statsTotalTally.text = statsNumbers[3].ToString();
     }
 
     public static void AttemptAddToPartsObtained(EntityBlueprint.PartInfo part)
@@ -236,9 +235,11 @@ public class PartIndexScript : MonoBehaviour
     ///
     public static EntityBlueprint.PartInfo CullToPartIndexValues(EntityBlueprint.PartInfo partToCull)
     {
-        var part = new EntityBlueprint.PartInfo();
-        part.partID = partToCull.partID;
-        part.abilityID = partToCull.abilityID;
+        var part = new EntityBlueprint.PartInfo()
+        {
+            partID = partToCull.partID,
+            abilityID = partToCull.abilityID
+        };
         if (part.abilityID != 10)
         {
             part.secondaryData = null;

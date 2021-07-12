@@ -15,7 +15,7 @@ public class WCManual : GUIWindowScripts
         {
             var button = Instantiate(buttonPrefab, listContents).GetComponent<Button>();
             button.GetComponentInChildren<Text>().text = entry.title;
-            button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => { contentText.text = entry.contents; }));
+            button.onClick.AddListener(() => { contentText.text = entry.contents; });
         }
     }
 

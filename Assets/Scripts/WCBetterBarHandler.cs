@@ -91,11 +91,11 @@ public class WCBetterBarHandler : MonoBehaviour
         {
             var buttonObj = Instantiate(betterBarButtonPrefab, betterBarContents, false);
             var x = i;
-            buttonObj.AddComponent<Button>().onClick.AddListener(new UnityAction(() =>
+            buttonObj.AddComponent<Button>().onClick.AddListener(() =>
             {
                 currentActiveButton = x;
                 cursor.SetCurrent(x);
-            }));
+            });
             var img = buttonObj.GetComponent<Image>();
             images.Add(img);
             if (itemHandler.itemPack.items[i].assetID != "")
@@ -220,7 +220,7 @@ public class WCBetterBarHandler : MonoBehaviour
 
             pos = optionButton.imgRef.rectTransform.position;
             sizeDelta = optionButton.imgRef.rectTransform.sizeDelta;
-            newRect = new Rect(pos.x - sizeDelta.x / 2, pos.y - sizeDelta.y / 2, sizeDelta.x, sizeDelta.y);
+            newRect = new Rect(pos.x - sizeDelta.x * 0.5f, pos.y - sizeDelta.y * 0.5f, sizeDelta.x, sizeDelta.y);
             // Mouse over sector. Instantiate tooltip if necessary, move tooltip and set text up
             if (newRect.Contains(Input.mousePosition))
             {

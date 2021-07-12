@@ -18,7 +18,7 @@ public class DebugMeter : MonoBehaviour
 
     private void addDataPoint(float data)
     {
-        rend.SetPosition(index, new Vector3(step * index, data / 100f, 0f));
+        rend.SetPosition(index, new Vector3(step * index, data * 0.01f, 0f));
         index = (index + 1) % pointCount;
     }
 
@@ -49,7 +49,7 @@ public class DebugMeter : MonoBehaviour
     {
         if (mode == Mode.Count)
         {
-            rend.SetPosition(index, new Vector3(step * index, (float)count / 10f, 0f));
+            rend.SetPosition(index, new Vector3(step * index, count * 0.1f, 0f));
             index = (index + 1) % pointCount;
             count = 0;
         }

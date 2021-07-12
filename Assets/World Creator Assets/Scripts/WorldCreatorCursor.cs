@@ -453,11 +453,10 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if (GetItemUnderCursor(current.type) != null)
         {
-            Item underCursor;
-            underCursor = (Item)GetItemUnderCursor(current.type);
+            Item underCursor = GetItemUnderCursor(current.type);
             if (Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject() && current.obj)
             {
-                if (((Item)underCursor).type == current.type)
+                if (underCursor.type == current.type)
                 {
                     propertyDisplay.DisplayProperties(underCursor);
                 }
@@ -470,12 +469,12 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 if (underCursor.type == ItemType.Platform)
                 {
-                    Rotate((Item)underCursor);
+                    Rotate(underCursor);
                 }
             }
             else if ((Input.GetMouseButtonUp(1) || (Input.GetMouseButton(1) && underCursor.type == ItemType.Platform)) && !system.IsPointerOverGameObject())
             {
-                Remove((Item)underCursor);
+                Remove(underCursor);
             }
         }
         else
@@ -495,7 +494,7 @@ public class WorldCreatorCursor : MonoBehaviour
         }
     }
 
-    Vector3 origPos = new Vector3();
+    Vector3 origPos;
     Vector3[] lastSectorPos = null;
 
     public class SectorWCWrapper
@@ -665,8 +664,10 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 if (currentSector == null)
                 {
-                    currentSector = new SectorWCWrapper();
-                    currentSector.sector = ScriptableObject.CreateInstance<Sector>();
+                    currentSector = new SectorWCWrapper()
+                    {
+                        sector = ScriptableObject.CreateInstance<Sector>()
+                    };
                     currentSector.sector.dimension = currentDim;
                     currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
                     currentSector.sector.hasMusic = true; // sectors have music by default in WC
@@ -698,7 +699,6 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 foreach (SectorWCWrapper sector in sectors)
                 {
-                    LineRenderer renderer = sector.renderer;
                     if (CheckMouseContainsSector(sector) && !Input.GetKey(KeyCode.LeftShift))
                     {
                         sectorPropertyDisplay.DisplayProperties(sector.sector);
@@ -826,12 +826,9 @@ public class WorldCreatorCursor : MonoBehaviour
     public static Color GetDefaultColor(Sector.SectorType type)
     {
         return new Color(
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{(int)type}",
-                SectorColors.colors[(int)type].r),
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{(int)type}",
-                SectorColors.colors[(int)type].g),
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{(int)type}",
-                SectorColors.colors[(int)type].b)
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{(int)type}", SectorColors.colors[(int)type].r),
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{(int)type}", SectorColors.colors[(int)type].g),
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{(int)type}", SectorColors.colors[(int)type].b)
         );
     }
 
@@ -848,8 +845,7 @@ public class WorldCreatorCursor : MonoBehaviour
             var item = GetItemUnderCursor();
             if (item != null)
             {
-                Item underCursor = new Item();
-                underCursor = item;
+                Item underCursor = item;
 
                 Debug.Log("under cursor: " + item);
                 Debug.Log("under cursor name: " + item.name);
@@ -992,8 +988,8 @@ public class WorldCreatorCursor : MonoBehaviour
         Vector3 mousePos = GetMousePos();
         if (type == ItemType.Platform)
         {
-            mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x / 2 > 0 ? 0.5F : -0.5F));
-            mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y / 2 > 0 ? 0.5F : -0.5F));
+            mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x * 0.5f > 0 ? 0.5F : -0.5F));
+            mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y * 0.5f > 0 ? 0.5F : -0.5F));
         }
         else
         {
@@ -1015,8 +1011,8 @@ public class WorldCreatorCursor : MonoBehaviour
     public Vector2 CalcSectorPos()
     {
         Vector3 mousePos = GetMousePos();
-        mousePos.x = tileSize * (int)((mousePos.x) / tileSize + (mousePos.x / 2 > 0 ? 0.5F : -0.5F));
-        mousePos.y = tileSize * (int)((mousePos.y) / tileSize + (mousePos.y / 2 > 0 ? 0.5F : -0.5F));
+        mousePos.x = tileSize * (int)((mousePos.x) / tileSize + (mousePos.x * 0.5f > 0 ? 0.5F : -0.5F));
+        mousePos.y = tileSize * (int)((mousePos.y) / tileSize + (mousePos.y * 0.5f > 0 ? 0.5F : -0.5F));
         return mousePos;
     }
 

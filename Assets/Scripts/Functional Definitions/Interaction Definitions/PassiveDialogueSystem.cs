@@ -77,10 +77,7 @@ public class PassiveDialogueSystem : MonoBehaviour
 
     public void PushPassiveDialogue(string id, string text, int soundType)
     {
-        if (passiveDialogueState != DialogueSystem.DialogueState.In)
-        {
-            passiveDialogueState = DialogueSystem.DialogueState.In;
-        }
+        passiveDialogueState = DialogueSystem.DialogueState.In;
 
         passiveMessages.Enqueue((id, text, soundType));
     }
@@ -114,9 +111,9 @@ public class PassiveDialogueSystem : MonoBehaviour
                 {
                     var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
                     var name = speaker.name;
-                    if (speaker as PlayerCore)
+                    if (speaker is PlayerCore player)
                     {
-                        name = (speaker as PlayerCore).cursave.name;
+                        name = player.cursave.name;
                     }
 
                     instance.transform.Find("Name").GetComponent<Text>().text = name;

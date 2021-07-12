@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -80,30 +81,42 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
     void ReflectDescription(Ability ability)
     {
-        string description = "";
-        description += AbilityUtilities.GetAbilityName(ability) + (ability.GetTier() > 0 ? " " + ability.GetTier() : "") + "\n";
-        if (ability.GetEnergyCost() > 0)
+        StringBuilder description = new StringBuilder();
+        description.Append(AbilityUtilities.GetAbilityName(ability));
+        var abilityTier = ability.GetTier();
+
+        if (abilityTier > 0)
         {
-            description += "Energy cost: " + ability.GetEnergyCost() + "\n";
+            description.AppendLine($" {ability.GetTier()}");
         }
 
-        if (ability.GetCDDuration() != 0)
+        var abilityEnergyCost = ability.GetEnergyCost();
+        if (abilityEnergyCost > 0)
         {
-            description += "Cooldown duration: " + ability.GetCDDuration() + "\n";
+            description.AppendLine($"Energy cost: {abilityEnergyCost}");
         }
 
-        if (ability.GetRange() > 0)
+        var abilityCDDuration = ability.GetCDDuration();
+        if (abilityCDDuration != 0)
         {
-            description += $"Range: {ability.GetRange()}\n";
+            description.AppendLine($"Cooldown duration: {abilityCDDuration}");
         }
 
-        if ((ability as WeaponAbility)?.GetBonusDamageType() != null)
+        var abilityRange = ability.GetRange();
+        if (abilityRange > 0)
         {
-            description += $"Deals bonus damage to: {(ability as WeaponAbility).GetBonusDamageType()}\n";
+            description.AppendLine($"Range: {ability.GetRange()}");
         }
 
-        description += AbilityUtilities.GetDescription(ability);
-        abilityInfo = description;
+        var abilityBonusDamageType = (ability as WeaponAbility)?.GetBonusDamageType();
+        if (abilityBonusDamageType != null)
+        {
+            description.AppendLine($"Deals bonus damage to: {abilityBonusDamageType}");
+        }
+
+        description.AppendLine(AbilityUtilities.GetDescription(ability));
+        abilityInfo = description.ToString();
+
         if (tooltip)
         {
             tooltip.transform.Find("Text").GetComponent<Text>().text = abilityInfo;
@@ -164,7 +177,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         if (offCDCountText)
         {
             offCDCountText.text = abilities.FindAll(a => a && !a.IsDestroyed() &&
-                                                         (a.TimeUntilReady() == 0 || a.GetAbilityType() == AbilityHandler.AbilityTypes.Passive)).Count + "";
+                                                         (a.TimeUntilReady() == 0 || a.GetAbilityType() == AbilityHandler.AbilityTypes.Passive)).Count.ToString();
         }
 
         if (tooltip)
@@ -209,26 +222,19 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             {
                 return -1;
             }
-            else if (a.IsDestroyed() && !b.IsDestroyed())
+
+            if (a.IsDestroyed() && !b.IsDestroyed())
             {
                 return 1;
             }
 
-            if (a.TimeUntilReady() > b.TimeUntilReady())
+            if (!Mathf.Approximately(a.TimeUntilReady(), b.TimeUntilReady()))
             {
-                return 1;
+                return (int)Mathf.Sign(a.TimeUntilReady() - b.TimeUntilReady());
             }
-            else if (a.TimeUntilReady() < b.TimeUntilReady())
+            else if (a.GetTier() != b.GetTier())
             {
-                return -1;
-            }
-            else if (a.GetTier() > b.GetTier())
-            {
-                return -1;
-            }
-            else if (a.GetTier() < b.GetTier())
-            {
-                return 1;
+                return b.GetTier() - a.GetTier();
             }
             else
             {

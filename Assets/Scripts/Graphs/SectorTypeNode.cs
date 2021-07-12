@@ -46,7 +46,7 @@ namespace NodeEditorFramework.Standard
             SectorManager.instance.overrideProperties.type = (Sector.SectorType)sectorType;
 
             string[] types = System.Enum.GetNames(typeof(Sector.SectorType));
-            Debug.Log("Sector type set to: " + types[sectorType] + " (" + sectorType + ")");
+            Debug.Log($"Sector type set to: {types[sectorType]} ({sectorType})");
 
             return 0;
         }

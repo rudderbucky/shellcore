@@ -2,7 +2,6 @@
 using UnityEngine.SceneManagement;
 
 //Temporary main menu, will be redesigned later
-
 public class MainMenu : MonoBehaviour
 {
     public GameObject settings;
@@ -40,13 +39,13 @@ public class MainMenu : MonoBehaviour
     public void OpenCredits()
     {
         DialogueSystem.ShowPopup(
-            "Programming by Ormanus and rudderbucky\n"
-            + "Art by rudderbucky\n"
-            + "Music by Avocato, FlightWish and Mr Spastic\n"
-            + "Story by Flashbacker and rudderbucky\n"
-            + "Skirmish Minisode by Vansten\n"
-            + "Playtesting by YOU!\n"
-            + "Special thanks to Flashbacker"
+@"Programming by Ormanus and rudderbucky
+Art by rudderbucky
+Music by Avocato, FlightWish and Mr Spastic
+Story by Flashbacker and rudderbucky
+Skirmish Minisode by Vansten
+Playtesting by YOU!
+Special thanks to Flashbacker"
         );
     }
 

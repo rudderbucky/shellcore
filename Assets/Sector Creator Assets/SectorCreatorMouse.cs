@@ -279,7 +279,7 @@ public class SectorCreatorMouse : MonoBehaviour
 
     bool GetIsFactable(PlaceableObject placeable)
     {
-        return !(placeable.type == ObjectTypes.Platform) && placeable.assetID != "energy_rock" && placeable.assetID != "flag";
+        return placeable.type != ObjectTypes.Platform && placeable.assetID != "energy_rock" && placeable.assetID != "flag";
     }
 
     void DeleteObject()
@@ -337,8 +337,8 @@ public class SectorCreatorMouse : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
         if (cursor.type == ObjectTypes.Platform)
         {
-            mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x / 2 > 0 ? 0.5F : -0.5F));
-            mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y / 2 > 0 ? 0.5F : -0.5F));
+            mousePos.x = cursorOffset.x + tileSize * (int)((mousePos.x - cursorOffset.x) / tileSize + (mousePos.x * 0.5f > 0 ? 0.5F : -0.5F));
+            mousePos.y = cursorOffset.y + tileSize * (int)((mousePos.y - cursorOffset.y) / tileSize + (mousePos.y * 0.5f > 0 ? 0.5F : -0.5F));
         }
         else
         {
@@ -377,9 +377,11 @@ public class SectorCreatorMouse : MonoBehaviour
         {
             if (Input.GetKeyDown("space"))
             {
-                Command com = new Command();
-                com.position = Camera.main.transform.position;
-                com.type = CommandTypes.Center;
+                Command com = new Command()
+                {
+                    position = Camera.main.transform.position,
+                    type = CommandTypes.Center
+                };
                 undoStack.Push(com);
                 redoStack.Clear();
                 Vector3 pos = center;
@@ -536,8 +538,8 @@ public class SectorCreatorMouse : MonoBehaviour
         sctName = sectorProps.transform.Find("Sector Name").GetComponentsInChildren<Text>()[1].text;
         center = new Vector3
         {
-            x = this.x + (width / 2),
-            y = this.y + (height / 2),
+            x = this.x + width * 0.5f,
+            y = this.y + height * 0.5f,
             z = 0
         };
         var rend = GameObject.Find("SectorBorders").GetComponent<LineRenderer>();
@@ -607,19 +609,19 @@ public class SectorCreatorMouse : MonoBehaviour
 
         Vector2 offset = new Vector2
         {
-            x = center.x + -(columns - 1) * tileSize / 2,
-            y = center.y + (rows - 1) * tileSize / 2
+            x = center.x + -(columns - 1) * tileSize * 0.5f,
+            y = center.y + (rows - 1) * tileSize * 0.5f
         };
         int[] coordinates = new int[2];
 
         coordinates[1] = Mathf.RoundToInt((pos.x - offset.x) / tileSize);
         coordinates[0] = -Mathf.RoundToInt((pos.y - offset.y) / tileSize);
-        Debug.Log("row: " + coordinates[0] + " column: " + coordinates[1] + " of a square with " + rows + " rows and " + columns + " columns");
+        Debug.Log($"row: {coordinates[0]} column: {coordinates[1]} of a square with {rows} rows and {columns} columns");
     }
 
     public void ToJSON()
     {
-        if (sctName == null || sctName == "")
+        if (string.IsNullOrEmpty(sctName))
         {
             Debug.Log("Name your damn sector!");
             return;
@@ -682,8 +684,8 @@ public class SectorCreatorMouse : MonoBehaviour
 
         Vector2 offset = new Vector2
         {
-            x = center.x + -(columns - 1) * tileSize / 2,
-            y = center.y + (rows - 1) * tileSize / 2
+            x = center.x + -(columns - 1) * tileSize * 0.5f,
+            y = center.y + (rows - 1) * tileSize * 0.5f
         };
 
         platform.rows = rows;
@@ -718,12 +720,14 @@ public class SectorCreatorMouse : MonoBehaviour
         {
             if (oj.type != ObjectTypes.Platform)
             {
-                Sector.LevelEntity ent = new Sector.LevelEntity();
-                ent.ID = ID++ + "";
-                ent.faction = oj.faction;
-                ent.position = oj.obj.transform.position;
-                ent.assetID = oj.assetID;
-                ent.vendingID = oj.vendingID;
+                Sector.LevelEntity ent = new Sector.LevelEntity
+                {
+                    ID = (ID++).ToString(),
+                    faction = oj.faction,
+                    position = oj.obj.transform.position,
+                    assetID = oj.assetID,
+                    vendingID = oj.vendingID
+                };
                 if (oj.isTarget)
                 {
                     targetIDS.Add(ent.ID);
@@ -753,9 +757,11 @@ public class SectorCreatorMouse : MonoBehaviour
         sct.targets = targetIDS.ToArray();
         sct.backgroundColor = currentColor;
 
-        SectorData data = new SectorData();
-        data.sectorjson = JsonUtility.ToJson(sct);
-        data.platformjson = JsonUtility.ToJson(platform);
+        SectorData data = new SectorData()
+        {
+            sectorjson = JsonUtility.ToJson(sct),
+            platformjson = JsonUtility.ToJson(platform)
+        };
 
         string output = JsonUtility.ToJson(data);
 
@@ -764,12 +770,12 @@ public class SectorCreatorMouse : MonoBehaviour
             System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\");
         }
 
-        string path = Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName;
+        string path = $"{Application.streamingAssetsPath}\\Sectors\\{sct.sectorName}";
         System.IO.File.WriteAllText(path, output);
         System.IO.Path.ChangeExtension(path, ".json");
         mainMenu.ToggleActive();
         successBox.ToggleActive();
-        Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName);
+        Debug.Log("JSON written to location: " + path);
     }
 
     public void FromJSON()
@@ -797,10 +803,10 @@ public class SectorCreatorMouse : MonoBehaviour
             height = sectorDataWrapper.bounds.h;
 
             sectorProps.ToggleActive();
-            sectorProps.transform.Find("Beginning X").GetComponentInChildren<InputField>().text = x + "";
-            sectorProps.transform.Find("Beginning Y").GetComponentInChildren<InputField>().text = "" + y;
-            sectorProps.transform.Find("Height").GetComponentInChildren<InputField>().text = "" + height;
-            sectorProps.transform.Find("Width").GetComponentInChildren<InputField>().text = "" + width;
+            sectorProps.transform.Find("Beginning X").GetComponentInChildren<InputField>().text = x.ToString();
+            sectorProps.transform.Find("Beginning Y").GetComponentInChildren<InputField>().text = y.ToString();
+            sectorProps.transform.Find("Height").GetComponentInChildren<InputField>().text = height.ToString();
+            sectorProps.transform.Find("Width").GetComponentInChildren<InputField>().text = width.ToString();
             sectorProps.transform.Find("Sector Name").GetComponentInChildren<InputField>().text = sctName;
             sectorProps.transform.Find("Sector Type").GetComponent<Dropdown>().value = (int)sectorDataWrapper.type;
             sectorProps.ToggleActive();
@@ -816,14 +822,14 @@ public class SectorCreatorMouse : MonoBehaviour
 
             center = new Vector3
             {
-                x = this.x + width / 2F,
-                y = this.y + height / 2F
+                x = this.x + width * 0.5f,
+                y = this.y + height * 0.5f
             };
 
             Vector2 offset = new Vector2
             {
-                x = center.x - tileSize * (cols - 1) / 2,
-                y = center.y + tileSize * (rows - 1) / 2
+                x = center.x - tileSize * (cols - 1) * 0.5f,
+                y = center.y + tileSize * (rows - 1) * 0.5f
             };
             for (int i = 0; i < platformDataWrapper.tilemap.Length; i++)
             {
@@ -853,15 +859,17 @@ public class SectorCreatorMouse : MonoBehaviour
 
             foreach (Sector.LevelEntity ent in sectorDataWrapper.entities)
             {
-                PlaceableObject obj = new PlaceableObject();
-                obj.pos = ent.position;
-                obj.faction = ent.faction;
-                obj.shellcoreJSON = ent.blueprintJSON;
-                obj.ID = ent.ID;
+                PlaceableObject obj = new PlaceableObject()
+                {
+                    pos = ent.position,
+                    faction = ent.faction,
+                    shellcoreJSON = ent.blueprintJSON,
+                    ID = ent.ID,
 
-                obj.assetID = ent.assetID;
-                obj.type = ObjectTypes.Other;
-                obj.vendingID = ent.vendingID;
+                    assetID = ent.assetID,
+                    type = ObjectTypes.Other,
+                    vendingID = ent.vendingID
+                };
                 for (int i = 0; i < placeables.Length; i++)
                 {
                     if (placeables[i].assetID == obj.assetID)
@@ -892,7 +900,7 @@ public class SectorCreatorMouse : MonoBehaviour
         }
         else
         {
-            Debug.Log("File " + path + " doesn't exist.");
+            Debug.Log($"File {path} doesn't exist.");
         }
     }
 }

@@ -19,7 +19,7 @@ public class MainBullet : Bullet
         cooldownDuration = 0.4F;
         energyCost = 10;
         damage = GetDamage(abilityTier);
-        description = "Projectile that deals " + GetDamage(abilityTier) + " damage. \nStays with you no matter what.";
+        description = $"Projectile that deals {GetDamage(abilityTier)} damage. \nStays with you no matter what.";
         abilityName = "Main Bullet";
         bulletSound = "clip_bullet";
         muzzleFlash = ResourceManager.GetAsset<GameObject>("main_bullet_muzzle_flash");

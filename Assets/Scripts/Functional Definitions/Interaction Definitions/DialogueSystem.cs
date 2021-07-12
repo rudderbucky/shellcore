@@ -76,25 +76,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     // Bugfixes dialogue canvas paths persisting post world reload in the WC
     public static void ClearStatics()
     {
-        if (dialogueCanvasPaths != null)
-        {
-            dialogueCanvasPaths.Clear();
-        }
-
-        if (speakerIDList != null)
-        {
-            speakerIDList.Clear();
-        }
-
-        if (interactionOverrides != null)
-        {
-            interactionOverrides.Clear();
-        }
-
-        if (traversers != null)
-        {
-            traversers.Clear();
-        }
+        dialogueCanvasPaths?.Clear();
+        speakerIDList?.Clear();
+        interactionOverrides?.Clear();
+        traversers?.Clear();
     }
 
     public static void InitCanvases()
@@ -300,14 +285,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
-        if (victory)
-        {
-            window.transform.Find("Victory").GetComponent<Text>().text = "<color=lime>VICTORY!</color>";
-        }
-        else
-        {
-            window.transform.Find("Victory").GetComponent<Text>().text = "<color=red>DEFEAT</color>";
-        }
+        window.transform.Find("Victory").GetComponent<Text>().text = $"<color={(victory ? "lime" : "red")}>{(victory ? "VICTORY!" : "DEFEAT")}</color>";
+
 
         battleZoneManager = FindObjectOfType<BattleZoneManager>();
         if (!battleZoneManager)
@@ -355,21 +334,23 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
+        var missionText = window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>();
         if (mission.name.Length <= 33)
         {
-            window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper();
+            missionText.text = mission.name.ToUpper();
         }
         else
         {
-            window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper().Substring(0, 30) + "...";
+            missionText.text = mission.name.ToUpper().Substring(0, 30) + "...";
         }
 
-        window.transform.Find("Rank").GetComponent<Text>().text = mission.rank.ToUpper();
-        window.transform.Find("Rank").GetComponent<Text>().color = TaskDisplayScript.rankColorsByString[mission.rank];
+        var rankText = window.transform.Find("Rank").GetComponent<Text>();
+        rankText.text = mission.rank.ToUpper();
+        rankText.color = TaskDisplayScript.rankColorsByString[mission.rank];
         window.transform.Find("Holder").Find("Rewards").GetComponent<Text>().text = rewardsText;
     }
 
-    public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null)
+    public static void ShowDialogueNode(DialogueNode node, Entity speaker = null)
     {
         Instance.showDialogue(node.text, node.answers, speaker, node.textColor, node.useEntityColor);
     }
@@ -378,8 +359,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     {
         if (node.answers == null)
         {
-            node.answers = new List<string>();
-            node.answers.Add("Ok");
+            node.answers = new List<string>() {"Ok"};
         }
 
         Instance.showDialogue(node.rewardText, node.answers, speaker, node.textColor, node.useEntityColor);
@@ -450,11 +430,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                     tierIcon.enabled = false;
                 }
 
-                type.text = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "");
-                string description = "";
-                description += AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "") + "\n";
-                description += AbilityUtilities.GetDescriptionByID(wrapper.partAbilityID, wrapper.partTier, null);
-                abilityTooltip.abilityInfo = description;
+                var abilityText = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "");
+                type.text = abilityText;
+                abilityTooltip.abilityInfo = $"{abilityText}\n{AbilityUtilities.GetDescriptionByID(wrapper.partAbilityID, wrapper.partTier, null)}";
             }
             else
             {
@@ -625,13 +603,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public void OpenBuilder(Vector3 speakerPos)
     {
-        builder.yardPosition = (Vector3)speakerPos;
+        builder.yardPosition = speakerPos;
         builder.Initialize(BuilderMode.Yard, null);
     }
 
     public void OpenTrader(Vector3 speakerPos, List<EntityBlueprint.PartInfo> traderInventory)
     {
-        builder.yardPosition = (Vector3)speakerPos;
+        builder.yardPosition = speakerPos;
         builder.Initialize(BuilderMode.Trader, traderInventory);
     }
 
@@ -669,7 +647,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         int currentIndex = getNodeIndex(dialogue, ID);
         if (currentIndex == -1)
         {
-            Debug.LogWarning("Missing node '" + ID + "' in " + dialogue.name);
+            Debug.LogWarning($"Missing node '{ID}' in {dialogue.name}");
             endDialogue();
             return;
         }
@@ -739,7 +717,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             int nextIndex = getNodeIndex(dialogue, current.nextNodes[i]);
             if (nextIndex == -1)
             {
-                Debug.LogWarning("Missing node '" + current.nextNodes[i] + "' in " + dialogue.name);
+                Debug.LogWarning($"Missing node '{current.nextNodes[i]}' in {dialogue.name}");
                 endDialogue();
                 return;
             }

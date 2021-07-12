@@ -64,16 +64,17 @@ namespace NodeEditorFramework.Standard
             OnYardCollect -= (CheckParts);
             State = ConditionState.Uninitialized;
 
-            if (TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
+            var missionName = (Canvas as QuestCanvas).missionName;
+            if (TaskManager.objectiveLocations[missionName].Contains(objectiveLocation))
             {
-                TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
+                TaskManager.objectiveLocations[missionName].Remove(objectiveLocation);
                 TaskManager.DrawObjectiveLocations();
             }
         }
 
         public void CheckParts(string partId, int abilityId, string sector)
         {
-            if (sectorName == "" || sectorName == null || sectorName == sector)
+            if (string.IsNullOrEmpty(sectorName) || sectorName == sector)
             {
                 if (partId == partID && abilityId == abilityID)
                 {
@@ -90,18 +91,19 @@ namespace NodeEditorFramework.Standard
                 // TODO: Disambiguate name and entityName
                 if (ent.name == "Yard" || ent.entityName == "Yard")
                 {
+                    var missionName = (Canvas as QuestCanvas).missionName;
                     if (clear)
                     {
-                        TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
+                        TaskManager.objectiveLocations[missionName].Clear();
                     }
 
                     objectiveLocation = new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,
-                        (Canvas as QuestCanvas).missionName,
+                        missionName,
                         ent
                     );
-                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(objectiveLocation);
+                    TaskManager.objectiveLocations[missionName].Add(objectiveLocation);
                     TaskManager.DrawObjectiveLocations();
                 }
             }

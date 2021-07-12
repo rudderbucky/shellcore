@@ -67,6 +67,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            var missionName = (Canvas as QuestCanvas).missionName;
             var ent = SectorManager.instance.GetEntity(entityID);
             TaskManager.ObjectiveLocation objectiveLocation;
             if (ent)
@@ -74,7 +75,7 @@ namespace NodeEditorFramework.Standard
                 objectiveLocation = new TaskManager.ObjectiveLocation(
                     ent.transform.position,
                     true,
-                    (Canvas as QuestCanvas).missionName,
+                    missionName,
                     ent
                 );
             }
@@ -82,13 +83,13 @@ namespace NodeEditorFramework.Standard
             {
                 var bounds = SectorManager.GetSectorByName(sectorName).bounds;
                 objectiveLocation = new TaskManager.ObjectiveLocation(
-                    new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2),
+                    new Vector2(bounds.x + bounds.w * 0.5f, bounds.y - bounds.h * 0.5f),
                     true,
-                    (Canvas as QuestCanvas).missionName
+                    missionName
                 );
             }
 
-            TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(objectiveLocation);
+            TaskManager.objectiveLocations[missionName].Add(objectiveLocation);
             TaskManager.DrawObjectiveLocations();
             return 0;
         }

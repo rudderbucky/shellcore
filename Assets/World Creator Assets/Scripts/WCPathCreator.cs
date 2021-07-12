@@ -146,7 +146,7 @@ public class WCPathCreator : MonoBehaviour
 
                     pathNodes.Remove(from);
 
-                    Debug.Log("Combined " + from.ID + " to " + to.ID);
+                    Debug.Log($"Combined {from.ID} to {to.ID}");
 
                     CleanPath();
                     UpdateMesh();
@@ -165,14 +165,16 @@ public class WCPathCreator : MonoBehaviour
             {
                 RemoveNode(closest);
                 UpdateMesh();
-                Debug.Log("Node " + closest + " removed!");
+                Debug.Log($"Node {closest} removed!");
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            var pathData = new NodeEditorFramework.Standard.PathData();
-            pathData.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
+            var pathData = new NodeEditorFramework.Standard.PathData()
+            {
+                waypoints = new List<NodeEditorFramework.Standard.PathData.Node>()
+            };
             for (int i = 0; i < pathNodes.Count; i++)
             {
                 pathData.waypoints.Add(new NodeEditorFramework.Standard.PathData.Node()
@@ -235,8 +237,7 @@ public class WCPathCreator : MonoBehaviour
 
         // remove unconnected nodes
         var closedList = new List<int>();
-        var openList = new List<int>();
-        openList.Add(0);
+        var openList = new List<int>() {0};
 
         while (openList.Count > 0)
         {
@@ -268,7 +269,7 @@ public class WCPathCreator : MonoBehaviour
 
             if (!found)
             {
-                Debug.Log("Node " + pathNodes[i].ID + " removed!");
+                Debug.Log($"Node {pathNodes[i].ID} removed!");
                 pathNodes.RemoveAt(i--);
             }
         }

@@ -74,7 +74,7 @@ namespace NodeEditorFramework.Standard
                 GUILayout.Label("Credit limit:");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                skirmishOptions[i].creditLimit = Mathf.Max(0, Utilities.RTEditorGUI.IntField(skirmishOptions[i].creditLimit));
+                skirmishOptions[i].creditLimit = Mathf.Max(0, RTEditorGUI.IntField(skirmishOptions[i].creditLimit));
                 GUILayout.EndHorizontal();
             }
 

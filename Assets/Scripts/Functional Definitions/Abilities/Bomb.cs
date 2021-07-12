@@ -14,7 +14,7 @@ public class Bomb : WeaponAbility
     {
         base.Awake(); // base awake
         // hardcoded values here
-        description = "Projectile that deals " + damage + " damage.";
+        description = $"Projectile that deals {damage} damage.";
         abilityName = "Bomb";
         bombSpeed = 2;
         survivalTime = 45F;

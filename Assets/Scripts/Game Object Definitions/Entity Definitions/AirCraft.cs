@@ -14,28 +14,10 @@ public abstract class AirCraft : Craft
     private bool oscillating;
     public GameObject energySpherePrefab;
 
-    protected override void Update()
-    {
-        base.Update(); // base update
-    }
-
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
         Oscillator();
-    }
-
-    /// <summary>
-    /// Respawns the given aircraft at its spawn point
-    /// </summary>
-    public override void Respawn()
-    {
-        base.Respawn(); // base respawn
-    }
-
-    protected override void Awake()
-    {
-        base.Awake(); // base awake
     }
 
     protected override void Start()

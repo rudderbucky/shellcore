@@ -3,13 +3,15 @@ using UnityEngine.SceneManagement;
 
 public class FloaterScript : MonoBehaviour
 {
-    // Use this for initialization
+    private SpriteRenderer spriteRenderer;
+
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         if (SceneManager.GetActiveScene().name == "SampleScene" || SceneManager.GetActiveScene().name == "MainMenu")
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, 5);
-            GetComponent<SpriteRenderer>().color = SectorManager.instance.current.backgroundColor + Color.grey;
+            spriteRenderer.color = SectorManager.instance.current.backgroundColor + Color.grey;
         }
     }
 
@@ -22,11 +24,11 @@ public class FloaterScript : MonoBehaviour
 
         if (SectorManager.instance.overrideProperties != null)
         {
-            GetComponent<SpriteRenderer>().color = SectorManager.instance.overrideProperties.backgroundColor + Color.grey;
+            spriteRenderer.color = SectorManager.instance.overrideProperties.backgroundColor + Color.grey;
         }
         else
         {
-            GetComponent<SpriteRenderer>().color = SectorManager.instance.current.backgroundColor + Color.grey;
+            spriteRenderer.color = SectorManager.instance.current.backgroundColor + Color.grey;
         }
     }
 }

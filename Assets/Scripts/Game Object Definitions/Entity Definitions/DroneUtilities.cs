@@ -77,12 +77,7 @@ public static class DroneUtilities
 
     public static WeaponDiversityType GetDiversityTypeByEntity(Entity ent)
     {
-        Drone drone = ent as Drone;
-        if (!drone)
-        {
-            return WeaponDiversityType.None;
-        }
-        else
+        if (ent is Drone drone)
         {
             switch (drone.type)
             {
@@ -96,6 +91,8 @@ public static class DroneUtilities
                     return WeaponDiversityType.None;
             }
         }
+
+        return WeaponDiversityType.None;
     }
 
     public static string GetUniqueCharacteristic(DroneType type)

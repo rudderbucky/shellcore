@@ -24,11 +24,6 @@ public class MouseMovementVisualScript : MonoBehaviour
         instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public static void Focus()
     {
         overMinimap = GetMousePosOnMinimap().x > 0 && GetMousePosOnMinimap().y > 0;

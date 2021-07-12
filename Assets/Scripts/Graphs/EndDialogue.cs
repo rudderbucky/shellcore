@@ -111,12 +111,13 @@ namespace NodeEditorFramework.Standard
 
             if (handler as TaskManager)
             {
-                foreach (var objectiveLocation in TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName])
+                var missionName = (Canvas as QuestCanvas).missionName;
+                foreach (var objectiveLocation in TaskManager.objectiveLocations[missionName])
                 {
                     if (objectiveLocation.followEntity &&
                         objectiveLocation.followEntity.ID == StartDialogueNode.missionCanvasNode?.EntityID)
                     {
-                        TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
+                        TaskManager.objectiveLocations[missionName].Remove(objectiveLocation);
                         TaskManager.DrawObjectiveLocations();
                         break;
                     }
@@ -151,7 +152,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                if (node && node.EntityID != null && node.EntityID != "")
+                if (node && !string.IsNullOrEmpty(node.EntityID))
                 {
                     handler.GetInteractionOverrides()[node.EntityID].Pop();
                     DialogueSystem.Instance.DialogueViewTransitionOut();

@@ -63,7 +63,7 @@ public class DevConsoleScript : MonoBehaviour
         }
 
         stackTrace = stackTrace.Trim("\n".ToCharArray());
-        var text = "\n" + startingColor + logString + "\n    Stack Trace: " + stackTrace + "</color>";
+        var text = $"\n{startingColor}{logString}\n    Stack Trace: {stackTrace}</color>";
 
         if (isException)
         {
@@ -89,7 +89,7 @@ public class DevConsoleScript : MonoBehaviour
 
     public static void Print(string logString)
     {
-        Instance.textToAdd.Enqueue("\n <color=white>" + logString + "</color>");
+        Instance.textToAdd.Enqueue($"\n <color=white>{logString}</color>");
     }
 
     public void EnterCommand(string command)
@@ -250,9 +250,11 @@ public class DevConsoleScript : MonoBehaviour
                 EntityBlueprint.PartInfo info;
                 for (int i = 0; i < 8; i++)
                 {
-                    info = new EntityBlueprint.PartInfo();
-                    info.partID = "SmallCenter1";
-                    info.abilityID = 10;
+                    info = new EntityBlueprint.PartInfo()
+                    {
+                        partID = "SmallCenter1",
+                        abilityID = 10
+                    };
                     DroneSpawnData data = DroneUtilities.GetDefaultData((DroneType)i);
                     info.secondaryData = JsonUtility.ToJson(data);
                     if (info.abilityID == 0 || info.abilityID == 10)

@@ -2,8 +2,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-
-
 public class PartPropertyButtonScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public ShipBuilderCursorScript cursor;
@@ -18,12 +16,12 @@ public class PartPropertyButtonScript : MonoBehaviour, IPointerDownHandler, IPoi
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if ((int)type == 0)
+        if (type == ButtonType.Flip)
         {
             cursor.FlipLastPart();
         }
 
-        if ((int)type == 1)
+        if (type == ButtonType.Rotate)
         {
             cursor.rotateMode = true;
         }
@@ -31,7 +29,7 @@ public class PartPropertyButtonScript : MonoBehaviour, IPointerDownHandler, IPoi
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if ((int)type == 1)
+        if (type == ButtonType.Rotate)
         {
             cursor.rotateMode = false;
         }
@@ -43,7 +41,7 @@ public class PartPropertyButtonScript : MonoBehaviour, IPointerDownHandler, IPoi
         {
             GetComponent<Image>().enabled = true;
             var tmp = ((EntityBlueprint.PartInfo)cursor.GetLastInfo()).location * 100;
-            tmp.x += ((int)type == 1 ? 25 : -25);
+            tmp.x += (type == ButtonType.Rotate ? 25 : -25);
             tmp.y += 100;
             ((RectTransform)transform).anchoredPosition = tmp;
         }

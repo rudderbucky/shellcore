@@ -62,11 +62,8 @@ public abstract class WeaponAbility : ActiveAbility
         {
             return terrain == Entity.TerrainType.Ground;
         }
-        else
-        {
-            return TerrainCheck(terrain)
-                   && CategoryCheck(category);
-        }
+
+        return TerrainCheck(terrain) && CategoryCheck(category);
     }
 
     public bool TerrainCheck(Entity.TerrainType targetTerrain)
@@ -93,8 +90,10 @@ public abstract class WeaponAbility : ActiveAbility
     {
         base.Awake();
         isEnabled = true; // initialize abilities to be active
-        targetingSystem = new WeaponTargetingSystem();
-        targetingSystem.ability = this;
+        targetingSystem = new WeaponTargetingSystem()
+        {
+            ability = this
+        };
         if (abilityName == null)
         {
             abilityName = "Weapon Ability";
@@ -166,14 +165,7 @@ public abstract class WeaponAbility : ActiveAbility
     /// <returns>a float value that is directly based on isActive rather than a duration</returns>
     public override float GetActiveTimeRemaining()
     {
-        if (isEnabled)
-        {
-            return -1; // -1 is not zero so the ability is active
-        }
-        else
-        {
-            return 0; // inactive ability
-        }
+        return isEnabled ? -1 : 0; // -1 is not zero so the ability is active
     }
 
     public override void Activate()
@@ -209,7 +201,7 @@ public abstract class WeaponAbility : ActiveAbility
         if (State == AbilityState.Ready && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
         {
             Transform target = targetingSystem.GetTarget();
-            if (target == null || !target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
+            if (!target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
             {
                 TargetManager.Enqueue(targetingSystem, category);
             }

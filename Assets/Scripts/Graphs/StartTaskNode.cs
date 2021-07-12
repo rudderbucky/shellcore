@@ -178,7 +178,7 @@ namespace NodeEditorFramework.Standard
                 height += 160f;
             }
 
-            forceTask = Utilities.RTEditorGUI.Toggle(forceTask, "Force Task Acceptance");
+            forceTask = RTEditorGUI.Toggle(forceTask, "Force Task Acceptance");
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 50f);
 
             GUILayout.BeginHorizontal();
@@ -220,16 +220,22 @@ namespace NodeEditorFramework.Standard
         {
             Dialogue dialogue = ScriptableObject.CreateInstance<Dialogue>();
             dialogue.nodes = new List<Dialogue.Node>();
-            var node = new Dialogue.Node();
-            node.ID = 0;
-            node.text = taskConfirmedDialogue != null ? taskConfirmedDialogue : "Complete the task."; // TODO: Why is this (and the color(?)) sometimes null? Is the task node not loaded correctly?
-            node.textColor = dialogueColor;
-            node.nextNodes = new List<int>() {1};
+            var node = new Dialogue.Node()
+            {
+                ID = 0,
+                text = taskConfirmedDialogue != null ? taskConfirmedDialogue : "Complete the task.",
+                textColor = dialogueColor,
+                nextNodes = new List<int>() {1}
+            };
+            // TODO: Why is this (and the color(?)) sometimes null? Is the task node not loaded correctly?
 
-            var node1 = new Dialogue.Node();
-            node1.ID = 1;
-            node1.action = Dialogue.DialogueAction.Exit;
-            node1.buttonText = "Alright."; // TODO: allow customizing in World Creator?
+            var node1 = new Dialogue.Node()
+            {
+                ID = 1,
+                action = Dialogue.DialogueAction.Exit,
+                buttonText = "Alright."
+            };
+            // TODO: allow customizing in World Creator?
             dialogue.nodes.Add(node);
             dialogue.nodes.Add(node1);
             TaskManager.speakerID = entityIDforConfirmedResponse;
@@ -300,7 +306,7 @@ namespace NodeEditorFramework.Standard
             TaskManager.Instance.AttemptAutoSave();
 
 
-            if (entityIDforConfirmedResponse != null && entityIDforConfirmedResponse != "")
+            if (!string.IsNullOrEmpty(entityIDforConfirmedResponse))
             {
                 if (TaskManager.interactionOverrides.ContainsKey(entityIDforConfirmedResponse))
                 {

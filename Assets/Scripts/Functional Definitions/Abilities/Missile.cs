@@ -9,7 +9,7 @@ public class Missile : WeaponAbility
     {
         base.Awake();
         damage = missileDamage;
-        description = "Homing projectile that deals " + damage + " damage.";
+        description = $"Homing projectile that deals {damage} damage.";
         abilityName = "Missile";
         ID = AbilityID.Missile;
         cooldownDuration = 5F;

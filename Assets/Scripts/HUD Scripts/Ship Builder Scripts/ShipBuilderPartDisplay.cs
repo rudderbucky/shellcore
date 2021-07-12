@@ -31,11 +31,9 @@ public class ShipBuilderPartDisplay : PartDisplayBase
         abilityTier.gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         // Gets the part to diplsay using the method GetButtonPartCursorIsOn() in IBuilderInterface
-
         if (initialized)
         {
             EntityBlueprint.PartInfo? part = null;

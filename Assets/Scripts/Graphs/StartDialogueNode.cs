@@ -167,10 +167,8 @@ namespace NodeEditorFramework.Standard
                         handler.SetSpeakerID(EntityID);
                         return 0;
                     }
-                    else
-                    {
-                        return -1;
-                    }
+                    
+                    return -1;
                 }
                 else
                 {
@@ -183,10 +181,8 @@ namespace NodeEditorFramework.Standard
                     return -1;
                 }
             }
-            else
-            {
-                return 0;
-            }
+
+            return 0;
         }
 
         void SetEntityID(string newID)
@@ -206,11 +202,12 @@ namespace NodeEditorFramework.Standard
 
                 if (ent.ID == EntityID)
                 {
-                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
-                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(new TaskManager.ObjectiveLocation(
+                    var missionName = (Canvas as QuestCanvas).missionName;
+                    TaskManager.objectiveLocations[missionName].Clear();
+                    TaskManager.objectiveLocations[missionName].Add(new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,
-                        (Canvas as QuestCanvas).missionName,
+                        missionName,
                         ent
                     ));
                     TaskManager.DrawObjectiveLocations();

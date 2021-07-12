@@ -165,7 +165,7 @@ namespace NodeEditorFramework.Standard
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             rewardGiverID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
@@ -197,10 +197,7 @@ namespace NodeEditorFramework.Standard
         public void OnDialogue()
         {
             // draw objectives
-            if (TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
-            {
-                TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
-            }
+            TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
 
             TaskManager.DrawObjectiveLocations();
 
@@ -241,7 +238,7 @@ namespace NodeEditorFramework.Standard
             if (outputUp.connected())
             {
                 var taskNode = (outputUp.connection(0).body as StartTaskNode);
-                if (taskNode && taskNode.entityIDforConfirmedResponse != null && taskNode.entityIDforConfirmedResponse != "")
+                if (taskNode && !string.IsNullOrEmpty(taskNode.entityIDforConfirmedResponse))
                 {
                     if (TaskManager.interactionOverrides.ContainsKey(taskNode.entityIDforConfirmedResponse))
                     {
@@ -298,14 +295,15 @@ namespace NodeEditorFramework.Standard
 
                 if (ent.ID == rewardGiverID)
                 {
-                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
+                    var missionName = (Canvas as QuestCanvas).missionName;
+                    TaskManager.objectiveLocations[missionName].Clear();
                     objectiveLocation = new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,
-                        (Canvas as QuestCanvas).missionName,
+                        missionName,
                         ent
                     );
-                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(objectiveLocation);
+                    TaskManager.objectiveLocations[missionName].Add(objectiveLocation);
                     TaskManager.DrawObjectiveLocations();
                     break;
                 }

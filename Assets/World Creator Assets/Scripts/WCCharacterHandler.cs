@@ -23,8 +23,10 @@ public class WCCharacterHandler : GUIWindowScripts
 
     void ClearFieldData()
     {
-        currentData = new WorldData.CharacterData();
-        currentData.partyData = new WorldData.PartyData();
+        currentData = new WorldData.CharacterData()
+        {
+            partyData = new WorldData.PartyData()
+        };
         reflectData();
     }
 
@@ -121,15 +123,17 @@ public class WCCharacterHandler : GUIWindowScripts
             var button = Instantiate(buttonPrefab, content).GetComponentInChildren<CharacterButtonScript>();
             button.character = currentData;
             button.cursor = cursor;
-            button.transform.Find("Clear").GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
+            button.transform.Find("Clear").GetComponent<Button>().onClick.AddListener(() =>
             {
                 DeleteCharacter(button.character);
                 Destroy(button.gameObject);
-            }));
+            });
         }
 
-        currentData = new WorldData.CharacterData();
-        currentData.partyData = new WorldData.PartyData();
+        currentData = new WorldData.CharacterData()
+        {
+            partyData = new WorldData.PartyData()
+        };
         charID.text = charName.text = charBlueprint.text = "";
         charPartyMember.isOn = false;
         ClearFieldData();
@@ -187,11 +191,7 @@ public class WCCharacterHandler : GUIWindowScripts
         }
         else
         {
-            attackDialogue.text =
-                defendDialogue.text =
-                    collectDialogue.text =
-                        buildDialogue.text =
-                            followDialogue.text = "";
+            attackDialogue.text = defendDialogue.text = collectDialogue.text = buildDialogue.text = followDialogue.text = "";
         }
     }
 

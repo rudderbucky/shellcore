@@ -20,7 +20,7 @@ public class SectorTraverser : Traverser
 
     public override void SetNode(Node node)
     {
-        Debug.Log("Sector Canvas " + nodeCanvas + " now setting node: " + node);
+        Debug.Log($"Sector Canvas {nodeCanvas} now setting node: {node}");
         SetDialogueState(currentNode, NodeEditorGUI.NodeEditorState.Dialogue);
         base.SetNode(node);
     }
@@ -70,9 +70,8 @@ public class SectorTraverser : Traverser
                 TaskManager.Instance.StopAllCoroutines();
             }
 
-            if (currentNode is ConditionGroupNode)
+            if (currentNode is ConditionGroupNode cgn)
             {
-                var cgn = currentNode as ConditionGroupNode;
                 cgn.DeInit();
             }
         }

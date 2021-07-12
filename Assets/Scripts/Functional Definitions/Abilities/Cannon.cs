@@ -11,7 +11,7 @@ public class Cannon : WeaponAbility
     {
         base.Awake();
         abilityName = "Cannon";
-        description = "Instant attack that deals " + damage + " damage.";
+        description = $"Instant attack that deals {damage} damage.";
         ID = AbilityID.Cannon;
         damage = cannonDamage;
         cooldownDuration = 2F;
@@ -72,9 +72,9 @@ public class Cannon : WeaponAbility
         Destroy(effect, 0.2F);
         GetDamage();
         var residue = target.TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
-        if (target as Entity)
+        if (target is Entity entity)
         {
-            (target as Entity).TakeCoreDamage(residue);
+            entity.TakeCoreDamage(residue);
         }
     }
 }

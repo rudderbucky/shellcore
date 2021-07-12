@@ -28,7 +28,7 @@ public class WCGeneratorHandler : MonoBehaviour
     public InputField authorField;
     public InputField descriptionField;
     public WCCharacterHandler characterHandler;
-    public NodeEditorFramework.Standard.RTNodeEditor nodeEditor;
+    public RTNodeEditor nodeEditor;
     public Item characterItem;
     public GameObject savingLevelScreen;
     public UnityEvent OnSectorSaved;
@@ -43,24 +43,24 @@ public class WCGeneratorHandler : MonoBehaviour
 
     public static void DeleteTestWorld()
     {
-        if (System.IO.Directory.Exists(testPath))
+        if (Directory.Exists(testPath))
         {
-            foreach (var dir in System.IO.Directory.GetDirectories(testPath))
+            foreach (var dir in Directory.GetDirectories(testPath))
             {
-                foreach (var file in System.IO.Directory.GetFiles(dir))
+                foreach (var file in Directory.GetFiles(dir))
                 {
-                    System.IO.File.Delete(file);
+                    File.Delete(file);
                 }
 
-                System.IO.Directory.Delete(dir);
+                Directory.Delete(dir);
             }
 
-            foreach (var file in System.IO.Directory.GetFiles(testPath))
+            foreach (var file in Directory.GetFiles(testPath))
             {
-                System.IO.File.Delete(file);
+                File.Delete(file);
             }
 
-            System.IO.Directory.Delete(testPath);
+            Directory.Delete(testPath);
         }
 
         WCWorldIO.DeletePlaceholderDirectories();
@@ -71,36 +71,36 @@ public class WCGeneratorHandler : MonoBehaviour
     ///</summary>
     private void TryCopy(string path1, string path2)
     {
-        if (System.IO.Directory.Exists(path2))
+        if (Directory.Exists(path2))
         {
-            foreach (var file in System.IO.Directory.GetFiles(path2))
+            foreach (var file in Directory.GetFiles(path2))
             {
 #if UNITY_EDITOR
                 if (!file.Contains(".meta"))
                 {
-                    System.IO.File.Delete(file);
+                    File.Delete(file);
                 }
 #else
-                System.IO.File.Delete(file);
+                File.Delete(file);
 #endif
             }
         }
         else
         {
-            System.IO.Directory.CreateDirectory(path2);
+            Directory.CreateDirectory(path2);
         }
 
-        System.IO.Directory.CreateDirectory(path1);
-        string[] files = System.IO.Directory.GetFiles(path1);
+        Directory.CreateDirectory(path1);
+        string[] files = Directory.GetFiles(path1);
         foreach (string file in files)
         {
             if (!file.Contains(".meta"))
             {
-                System.IO.File.Copy(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+                File.Copy(file, $"{path2}\\{System.IO.Path.GetFileName(file)}");
             }
             else
             {
-                System.IO.File.Move(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+                File.Move(file, $"{path2}\\{System.IO.Path.GetFileName(file)}");
             }
         }
     }
@@ -168,10 +168,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
     public void OnNameEdit(string tmpWworldName)
     {
-        invalidNameWarning.enabled =
-            tmpWworldName == null
-            || tmpWworldName == ""
-            || tmpWworldName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1;
+        invalidNameWarning.enabled = string.IsNullOrEmpty(tmpWworldName) || tmpWworldName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1;
     }
 
     public bool WriteWorld(string path)
@@ -309,7 +306,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         }
 
                         int test;
-                        if (item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
+                        if (string.IsNullOrEmpty(item.ID) || int.TryParse(item.ID, out test))
                         {
                             ent.ID = ID++ + "";
                         }
@@ -320,8 +317,7 @@ public class WCGeneratorHandler : MonoBehaviour
                             {
                                 savingLevelScreen.SetActive(false);
                                 saveState = 4;
-                                Debug.LogError("Two items in sectors " + container.sectorName + " and "
-                                               + itemSectorsByID[ent.ID] + $" were issued the same custom ID ({ent.ID}). Abort.");
+                                Debug.LogError($"Two items in sectors {container.sectorName} and {itemSectorsByID[ent.ID]} were issued the same custom ID ({ent.ID}). Abort.");
                                 yield break;
                             }
                             else
@@ -340,7 +336,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
 
                     // you can choose to give any object a custom name
-                    if (item.name != null && item.name != "")
+                    if (!string.IsNullOrEmpty(item.name))
                     {
                         ent.name = item.name;
                     }
@@ -380,19 +376,18 @@ public class WCGeneratorHandler : MonoBehaviour
                         ent.blueprintJSON = item.shellcoreJSON;
 
                         // Attempt to add trader parts into index.
-                        if (ent.blueprintJSON == null || ent.blueprintJSON == "")
+                        if (string.IsNullOrEmpty(ent.blueprintJSON))
                         {
                             var dialogueDataPath = $"{canvasPlaceholderPath}\\{ent.ID}.dialoguedata";
 
-                            if (System.IO.File.Exists(dialogueDataPath))
+                            if (File.Exists(dialogueDataPath))
                             {
                                 var XMLImport = new XMLImportExport();
                                 var canvas = XMLImport.Import(dialogueDataPath) as DialogueCanvas;
                                 foreach (var node in canvas.nodes)
                                 {
-                                    if (node is EndDialogue)
+                                    if (node is EndDialogue endDialogue)
                                     {
-                                        var endDialogue = node as EndDialogue;
                                         if (endDialogue.openTrader)
                                         {
                                             ShipBuilder.TraderInventory traderInventory =
@@ -429,15 +424,15 @@ public class WCGeneratorHandler : MonoBehaviour
             }
         }
 
-        if (!System.IO.Directory.Exists(canvasPlaceholderPath))
+        if (!Directory.Exists(canvasPlaceholderPath))
         {
-            System.IO.Directory.CreateDirectory(canvasPlaceholderPath);
+            Directory.CreateDirectory(canvasPlaceholderPath);
         }
 
         // Add reward parts from tasks.
-        if (System.IO.Directory.Exists(canvasPlaceholderPath))
+        if (Directory.Exists(canvasPlaceholderPath))
         {
-            foreach (var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
+            foreach (var canvasPath in Directory.GetFiles(canvasPlaceholderPath))
             {
                 if (System.IO.Path.GetExtension(canvasPath) == ".taskdata")
                 {
@@ -447,25 +442,25 @@ public class WCGeneratorHandler : MonoBehaviour
                     string missionName = null;
                     foreach (var node in canvas.nodes)
                     {
-                        if (node is StartMissionNode)
+                        if (node is StartMissionNode startMission)
                         {
-                            var startMission = node as StartMissionNode;
                             missionName = startMission.missionName;
                         }
                     }
 
                     foreach (var node in canvas.nodes)
                     {
-                        if (node is StartTaskNode)
+                        if (node is StartTaskNode startTask)
                         {
-                            var startTask = node as StartTaskNode;
                             if (startTask.partReward)
                             {
-                                EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
-                                part.partID = startTask.partID;
-                                part.abilityID = startTask.partAbilityID;
-                                part.tier = startTask.partTier;
-                                part.secondaryData = startTask.partSecondaryData;
+                                EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo()
+                                {
+                                    partID = startTask.partID,
+                                    abilityID = startTask.partAbilityID,
+                                    tier = startTask.partTier,
+                                    secondaryData = startTask.partSecondaryData
+                                };
                                 part = PartIndexScript.CullToPartIndexValues(part);
 
                                 AddPart(part, missionName);
@@ -477,13 +472,13 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
         // try to write out resources. Factions are obtained from the FactionManager
-        if (!System.IO.Directory.Exists(factionPlaceholderPath))
+        if (!Directory.Exists(factionPlaceholderPath))
         {
-            System.IO.Directory.CreateDirectory(factionPlaceholderPath);
+            Directory.CreateDirectory(factionPlaceholderPath);
         }
 
         var resourceTxtPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt");
-        if (System.IO.File.Exists(resourceTxtPath))
+        if (File.Exists(resourceTxtPath))
         {
             // first, extract all the lines without the factions.
             List<string> lines = new List<string>();
@@ -495,14 +490,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 {
                     if (ResourceManager.resourceHeaders.Any(header => s.ToLower().StartsWith(header)))
                     {
-                        if (s.ToLower().StartsWith("factions:"))
-                        {
-                            onFactions = true;
-                        }
-                        else
-                        {
-                            onFactions = false;
-                        }
+                        onFactions = s.ToLower().StartsWith("factions:");
                     }
 
                     if (!onFactions)
@@ -552,13 +540,13 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
         // write all sectors into a file
-        if (!System.IO.Directory.Exists(path))
+        if (!Directory.Exists(path))
         {
-            System.IO.Directory.CreateDirectory(path);
+            Directory.CreateDirectory(path);
         }
 
         // Delete all unnecessary files
-        if (System.IO.Directory.Exists(path))
+        if (Directory.Exists(path))
         {
             string[] resPaths = ResourceManager.Instance.GetFileNames(path);
 
@@ -568,16 +556,16 @@ public class WCGeneratorHandler : MonoBehaviour
                 Debug.Log("Res path: " + resPaths[i]);
             }
 
-            string[] directories = System.IO.Directory.GetDirectories(path);
+            string[] directories = Directory.GetDirectories(path);
             foreach (var dir in directories)
             {
                 bool del = true;
-                foreach (var f in System.IO.Directory.GetFiles(dir))
+                foreach (var f in Directory.GetFiles(dir))
                 {
                     Debug.Log("File in dir: " + System.IO.Path.Combine(dir, f));
                     if (!resPaths.Contains(System.IO.Path.Combine(dir, f).Replace('\\', '/')))
                     {
-                        System.IO.File.Delete(f);
+                        File.Delete(f);
                     }
 
                     del = false;
@@ -585,18 +573,18 @@ public class WCGeneratorHandler : MonoBehaviour
 
                 if (del)
                 {
-                    System.IO.Directory.Delete(dir);
+                    Directory.Delete(dir);
                 }
             }
 
-            string[] files = System.IO.Directory.GetFiles(path);
+            string[] files = Directory.GetFiles(path);
             foreach (var file in files)
             {
                 string f = file.Replace('\\', '/');
                 if ((!resPaths.Contains(f) && f != System.IO.Path.Combine(path, "ResourceData.txt").Replace('\\', '/'))
                     || legacyFactionFilesToDelete.Contains(file))
                 {
-                    System.IO.File.Delete(file);
+                    File.Delete(file);
                 }
             }
         }
@@ -611,7 +599,7 @@ public class WCGeneratorHandler : MonoBehaviour
         wdata.partIndexDataArray = partData.ToArray();
 
         string wdjson = JsonUtility.ToJson(wdata);
-        System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
+        File.WriteAllText(path + "\\world.worlddata", wdjson);
         if (File.Exists(System.IO.Path.Combine(path, "ResourceData.txt")))
         {
             File.Delete(System.IO.Path.Combine(path, "ResourceData.txt"));
@@ -629,12 +617,12 @@ public class WCGeneratorHandler : MonoBehaviour
 
         foreach (var sector in sectors)
         {
-            if (sector.sectorName == null || sector.sectorName == "")
+            if (string.IsNullOrEmpty(sector.sectorName))
             {
                 sector.sectorName = GetDefaultName(sector, minX, maxY);
             }
 
-            if (sector.hasMusic && (sector.musicID == null || sector.musicID == ""))
+            if (sector.hasMusic && string.IsNullOrEmpty(sector.musicID))
             {
                 sector.musicID = GetDefaultMusic(sector.type);
             }
@@ -643,24 +631,24 @@ public class WCGeneratorHandler : MonoBehaviour
             sector.targets = sectTargetIDS[sector].ToArray();
             // sector.backgroundColor = SectorColors.colors[(int)sector.type];
 
-            SectorData data = new SectorData();
-            data.sectorjson = JsonUtility.ToJson(sector);
-            data.platformjson = ""; // For backwards compatibility...
+            SectorData data = new SectorData()
+            {
+                sectorjson = JsonUtility.ToJson(sector),
+                platformjson = ""
+            };
+            // For backwards compatibility...
 
             string output = JsonUtility.ToJson(data);
 
-            string sectorPath = path + "\\." + sector.sectorName + ".json";
-            System.IO.File.WriteAllText(sectorPath, output);
+            string sectorPath = $"{path}\\.{sector.sectorName}.json";
+            File.WriteAllText(sectorPath, output);
         }
 
         Debug.Log("JSON written to location: " + path);
         Debug.Log($"Index size: {partData.Count}");
         savingLevelScreen.SetActive(false);
         saveState = 2;
-        if (OnSectorSaved != null)
-        {
-            OnSectorSaved.Invoke();
-        }
+        OnSectorSaved?.Invoke();
     }
 
     string GetDefaultName(Sector sector, int minX, int maxY)
@@ -690,7 +678,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 break;
         }
 
-        return typeRep + " " + x + "-" + y + (sector.dimension > 0 ? $" - Dimension {sector.dimension}" : "");
+        return $"{typeRep} {x}-{y}{(sector.dimension > 0 ? $" - Dimension {sector.dimension}" : "")}";
     }
 
     public static string GetDefaultMusic(Sector.SectorType type)
@@ -785,7 +773,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 }
 
                 // reading sectors
-                string[] files = System.IO.Directory.GetFiles(path);
+                string[] files = Directory.GetFiles(path);
 
                 cursor.placedItems = new List<Item>();
                 cursor.sectors = new List<WorldCreatorCursor.SectorWCWrapper>();
@@ -801,7 +789,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     // parse world data
                     if (file.Contains(".worlddata"))
                     {
-                        string worlddatajson = System.IO.File.ReadAllText(file);
+                        string worlddatajson = File.ReadAllText(file);
                         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
                         JsonUtility.FromJsonOverwrite(worlddatajson, wdata);
                         cursor.spawnPoint.position = wdata.initialSpawn;
@@ -834,7 +822,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         continue;
                     }
 
-                    string sectorjson = System.IO.File.ReadAllText(file);
+                    string sectorjson = File.ReadAllText(file);
                     SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
                     // Debug.Log("Platform JSON: " + data.platformjson);
                     // Debug.Log("Sector JSON: " + data.sectorjson);
@@ -912,9 +900,11 @@ public class WCGeneratorHandler : MonoBehaviour
                             new Vector2(curSect.bounds.x + curSect.bounds.w, curSect.bounds.y)
                         }
                     );
-                    var wrapper = new WorldCreatorCursor.SectorWCWrapper();
-                    wrapper.sector = curSect;
-                    wrapper.renderer = renderer;
+                    var wrapper = new WorldCreatorCursor.SectorWCWrapper()
+                    {
+                        sector = curSect, 
+                        renderer = renderer
+                    };
                     wrapper.renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = wrapper.sector;
                     cursor.sectors.Add(wrapper);
 
@@ -969,7 +959,6 @@ public class WCGeneratorHandler : MonoBehaviour
                 Debug.LogError(e);
             }
 
-            ;
             Input.ResetInputAxes(); // clear the copy paste ctrl press if there was one
         }
     }
@@ -993,8 +982,7 @@ public class WCGeneratorHandler : MonoBehaviour
         }
         catch
         {
-            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (Application.streamingAssetsPath + "\\EntityPlaceholder\\" + entity.blueprintJSON + ".json"), blueprint);
+            JsonUtility.FromJsonOverwrite(File.ReadAllText($"{Application.streamingAssetsPath}\\EntityPlaceholder\\{entity.blueprintJSON}.json"), blueprint);
         }
 
 
@@ -1019,9 +1007,11 @@ public class WCGeneratorHandler : MonoBehaviour
         WorldData.PartIndexData data = partData.Find((pData) => pData.part.Equals(part));
         if (data == null)
         {
-            data = new WorldData.PartIndexData();
-            data.part = part;
-            data.origins = new List<string>();
+            data = new WorldData.PartIndexData()
+            {
+                part = part,
+                origins = new List<string>()
+            };
             partData.Add(data);
         }
 

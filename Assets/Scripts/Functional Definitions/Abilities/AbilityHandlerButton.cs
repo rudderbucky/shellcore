@@ -2,8 +2,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-
-
 public class AbilityHandlerButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public AbilityHandler.AbilityTypes type;
@@ -56,8 +54,7 @@ public class AbilityHandlerButton : MonoBehaviour, IPointerClickHandler, IPointe
         tooltipTransform.position = Input.mousePosition;
         var text = tooltipTransform.GetComponentInChildren<Text>();
         tooltipTransform.localScale = text.rectTransform.localScale = new Vector3(scale, 1, 1);
-        text.text =
-            $"{displayText}".ToUpper();
+        text.text = $"{displayText}".ToUpper();
         tooltipTransform.GetComponent<RectTransform>().sizeDelta = new Vector2(text.preferredWidth + 16, text.preferredHeight + 16);
     }
 }

@@ -486,7 +486,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
             shellImage.rectTransform.sizeDelta = shellImage.sprite.bounds.size * 100;
             shellImage.type = Image.Type.Sliced;
             // orient shell image so relative center stays the same regardless of shell tier
-            shellImage.rectTransform.anchoredPosition = -shellImage.sprite.pivot + shellImage.rectTransform.sizeDelta / 2;
+            shellImage.rectTransform.anchoredPosition = -shellImage.sprite.pivot + shellImage.rectTransform.sizeDelta * 0.5f;
         }
         else
         {

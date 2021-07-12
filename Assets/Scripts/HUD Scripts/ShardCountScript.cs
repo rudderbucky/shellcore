@@ -32,7 +32,7 @@ public class ShardCountScript : MonoBehaviour
 
     public static void UpdateNumber(int count)
     {
-        instance.number.text = count + "";
+        instance.number.text = count.ToString();
     }
 
     float origX;

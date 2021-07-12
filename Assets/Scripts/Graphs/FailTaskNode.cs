@@ -48,7 +48,7 @@ namespace NodeEditorFramework.Standard
             if (outputUp.connected())
             {
                 var taskNode = (outputUp.connection(0).body as StartTaskNode);
-                if (taskNode && taskNode.entityIDforConfirmedResponse != null && taskNode.entityIDforConfirmedResponse != "")
+                if (taskNode && !string.IsNullOrEmpty(taskNode.entityIDforConfirmedResponse))
                 {
                     TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse].Pop();
                 }

@@ -53,37 +53,37 @@ public class Yard : AirConstruct, IShipBuilder
             if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= 75)
             {
                 var player = PlayerCore.Instance;
-                if (player.GetTractorTarget() && (player.GetTractorTarget().GetComponent<ShellPart>()
-                                                  || player.GetTractorTarget().GetComponent<Shard>()) && !tractor.GetTractorTarget())
+                var playerTarget = player.GetTractorTarget();
+                if (playerTarget && (playerTarget.GetComponent<ShellPart>()
+                                     || playerTarget.GetComponent<Shard>()) && !tractor.GetTractorTarget())
                 {
-                    tractor.SetTractorTarget(player.GetTractorTarget());
+                    tractor.SetTractorTarget(playerTarget);
                     player.SetTractorTarget(null);
                 }
             }
 
-            if (tractor.GetTractorTarget() && (transform.position - tractor.GetTractorTarget().transform.position).sqrMagnitude <= 10)
+            var tractorTarget = tractor.GetTractorTarget();
+            if (tractorTarget && (transform.position - tractorTarget.transform.position).sqrMagnitude <= 10)
             {
-                if (tractor.GetTractorTarget().GetComponent<ShellPart>())
+                if (tractorTarget.GetComponent<ShellPart>())
                 {
                     PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
-                    var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
+                    var shellPart = tractorTarget.GetComponent<ShellPart>();
                     var info = shellPart.info;
                     info = ShipBuilder.CullSpatialValues(info);
                     ShipBuilder.AddOriginToDictionary(shellPart);
                     PlayerCore.Instance.cursave.partInventory.Add(info);
                     PartIndexScript.AttemptAddToPartsObtained(info);
                     PartIndexScript.AttemptAddToPartsSeen(info);
-                    if (NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect != null)
-                    {
-                        NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
-                    }
+
+                    NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect?.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
 
                     Destroy(shellPart.gameObject);
                 }
-                else if (tractor.GetTractorTarget().GetComponent<Shard>())
+                else if (tractorTarget.GetComponent<Shard>())
                 {
                     PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your shard has been added into your stash.</color>", 4);
-                    var shard = tractor.GetTractorTarget().GetComponent<Shard>();
+                    var shard = tractorTarget.GetComponent<Shard>();
                     var tiers = new int[] {1, 5, 20};
                     PlayerCore.Instance.shards += tiers[shard.tier];
                     ShardCountScript.DisplayCount(PlayerCore.Instance.shards);

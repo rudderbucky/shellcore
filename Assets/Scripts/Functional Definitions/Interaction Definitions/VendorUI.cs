@@ -90,7 +90,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             }
 
             vendorUIButton.blueprint = blueprint.items[i].entityBlueprint;
-            vendorUIButton.costText = "POWER COST: <color=cyan>" + blueprint.items[i].cost + "</color>";
+            vendorUIButton.costText = $"POWER COST: <color=cyan>{blueprint.items[i].cost}</color>";
             vendorUIButton.descriptionText = blueprint.items[i].description;
             vendorUIButton.tooltipPrefab = tooltipPrefab;
             vendorUIButton.costInfo = costInfo;
@@ -101,8 +101,8 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             sr.sprite = blueprint.items[i].icon;
 
             Text[] texts = buttons[i].GetComponentsInChildren<Text>();
-            texts[0].text = i + 1 + "";
-            texts[1].text = blueprint.items[i].cost + "";
+            texts[0].text = (i + 1).ToString();
+            texts[1].text = blueprint.items[i].cost.ToString();
             texts[1].color = Color.cyan;
         }
 
@@ -155,13 +155,14 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
             for (int i = 0; i < blueprint.items.Count; i++)
             {
+                var image = buttons[i].GetComponent<Image>();
                 if (player.GetPower() < blueprint.items[i].cost)
                 {
-                    buttons[i].GetComponent<Image>().color = new Color(0, 0, 0.4F);
+                    image.color = new Color(0, 0, 0.4F);
                 }
                 else
                 {
-                    buttons[i].GetComponent<Image>().color = Color.white;
+                    image.color = Color.white;
                 }
             }
         }

@@ -29,7 +29,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         coreImage.material = ResourceManager.GetAsset<Material>("material_color_swap");
         shellImage.color = coreImage.color = FactionManager.GetFactionColor(0);
         shellImage.rectTransform.anchoredPosition = new Vector2(shellImage.rectTransform.anchoredPosition.x,
-            (shellImage.rectTransform.sizeDelta.y - (shellImage.sprite.pivot).y) / 2);
+            (shellImage.rectTransform.sizeDelta.y - (shellImage.sprite.pivot).y) * 0.5f);
 
         saveName.text = save.name;
         episodeNumber.text = $"Episode: {Mathf.Max(1, save.episode)}";
@@ -46,7 +46,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             version.text += " - Click save to attempt migration";
         }
 
-        timePlayed.text = "Time Played: " + (((int)save.timePlayed / 60 >= 10) ? (int)save.timePlayed / 60 + "" : "0" + (int)save.timePlayed / 60) + ":" + (((int)save.timePlayed % 60 >= 10) ? (int)save.timePlayed % 60 + "" : "0" + (int)save.timePlayed % 60);
+        timePlayed.text = string.Format("Time Played: {0:D2}:{1:D2}", (int)save.timePlayed / 60, (int)save.timePlayed % 60);
     }
 
     public void LoadSave()

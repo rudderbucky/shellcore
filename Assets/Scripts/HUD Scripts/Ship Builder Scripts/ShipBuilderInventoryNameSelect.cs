@@ -1,8 +1,6 @@
 ﻿using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-
-
 public class ShipBuilderInventoryNameSelect : ShipBuilderInventoryBase
 {
     public InputField field;

@@ -63,8 +63,7 @@ public class CameraScript : MonoBehaviour
             return 10;
         }
 
-        return 10 + 2.5F * (1 +
-                            CoreUpgraderScript.GetCoreTier(PlayerCore.Instance.blueprint.coreShellSpriteID));
+        return 10 + 2.5F * (1 + CoreUpgraderScript.GetCoreTier(PlayerCore.Instance.blueprint.coreShellSpriteID));
     }
 
     private void LateUpdate()

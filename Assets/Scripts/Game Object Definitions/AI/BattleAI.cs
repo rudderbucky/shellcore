@@ -90,9 +90,9 @@ public class BattleAI : AIModule
             }
         }
 
-        if (craft is ShellCore)
+        if (craft is ShellCore core)
         {
-            shellcore = craft as ShellCore;
+            shellcore = core;
         }
         else
         {
@@ -101,8 +101,7 @@ public class BattleAI : AIModule
 
         foreach (IOwnable ownable in shellcore.GetUnitsCommanding())
         {
-            var turret = ownable as Turret;
-            if (turret && turret.entityName == "Harvester Turret")
+            if (ownable is Turret turret && turret.entityName == "Harvester Turret")
             {
                 foreach (var rock in AIData.energyRocks)
                 {
@@ -548,10 +547,12 @@ public class BattleAI : AIModule
                 {
                     IVendor vendor = AIData.vendors[i] as IVendor;
 
-                    if (vendor.GetVendingBlueprint() == null)
+                    var vendingBlueprint = vendor.GetVendingBlueprint();
+                    if (vendingBlueprint == null)
                     {
                         continue;
                     }
+
 
                     int itemIndex = -1;
 
@@ -570,17 +571,17 @@ public class BattleAI : AIModule
                         if (!ownGroundExists && enemyGroundTargets(true) && shellcore.GetPower() >= 150)
                         {
                             // Attack & enemy holds all ground
-                            itemIndex = vendor.GetVendingBlueprint().getItemIndex("Torpedo Turret");
+                            itemIndex = vendingBlueprint.getItemIndex("Torpedo Turret");
                         }
                         else
                         {
                             if (shellcore.GetPower() >= 200)
                             {
-                                itemIndex = vendor.GetVendingBlueprint().getItemIndex("Missile Turret");
+                                itemIndex = vendingBlueprint.getItemIndex("Missile Turret");
                             }
                             else if (shellcore.GetPower() >= 100)
                             {
-                                itemIndex = vendor.GetVendingBlueprint().getItemIndex("Defense Turret");
+                                itemIndex = vendingBlueprint.getItemIndex("Defense Turret");
                             }
                         }
                     }
@@ -590,7 +591,7 @@ public class BattleAI : AIModule
                         if (harvesterTurrets.Count < Mathf.Min(5, AIData.energyRocks.Count)
                             && shellcore.GetPower() >= 100)
                         {
-                            itemIndex = vendor.GetVendingBlueprint().getItemIndex("Harvester Turret");
+                            itemIndex = vendingBlueprint.getItemIndex("Harvester Turret");
                             foreach (var turret in harvesterTurrets.Values)
                             {
                                 if (turret && Vector3.SqrMagnitude(turret.transform.position - shellcore.transform.position) <= 200)
@@ -601,16 +602,16 @@ public class BattleAI : AIModule
                         }
                         else
                         {
-                            for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+                            for (int j = 0; j < vendingBlueprint.items.Count; j++)
                             {
-                                if (vendor.GetVendingBlueprint().items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
+                                if (vendingBlueprint.items[j].cost <= shellcore.GetPower() && shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit())
                                 {
-                                    if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
+                                    if (itemIndex != -1 && vendingBlueprint.items[j].cost <= vendingBlueprint.items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
                                     {
                                         continue;
                                     }
 
-                                    if (vendor.GetVendingBlueprint().items[j].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank && !enemyGroundTargets(true)) //TODO: get turret / tank attack category from somewhere else
+                                    if (vendingBlueprint.items[j].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank && !enemyGroundTargets(true)) //TODO: get turret / tank attack category from somewhere else
                                     {
                                         continue;
                                     }
@@ -624,7 +625,7 @@ public class BattleAI : AIModule
                     if (itemIndex != -1)
                     {
                         var ent = VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
-                        if (itemIndex == vendor.GetVendingBlueprint().getItemIndex("Harvester Turret"))
+                        if (itemIndex == vendingBlueprint.getItemIndex("Harvester Turret"))
                         {
                             EnergyRock closestRock = null;
                             foreach (var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))

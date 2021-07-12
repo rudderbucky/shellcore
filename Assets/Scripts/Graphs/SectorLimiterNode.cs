@@ -111,13 +111,14 @@ namespace NodeEditorFramework.Standard
 
         void TryAddObjective()
         {
+            var missionName = (Canvas as QuestCanvas).missionName;
             var bounds = SectorManager.GetSectorByName(sectorName).bounds;
-            TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
-            TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(new TaskManager.ObjectiveLocation
+            TaskManager.objectiveLocations[missionName].Clear();
+            TaskManager.objectiveLocations[missionName].Add(new TaskManager.ObjectiveLocation
             (
-                new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2),
+                new Vector2(bounds.x + bounds.w * 0.5f, bounds.y - bounds.h * 0.5f),
                 true,
-                (Canvas as QuestCanvas).missionName
+                missionName
             ));
             TaskManager.DrawObjectiveLocations();
         }

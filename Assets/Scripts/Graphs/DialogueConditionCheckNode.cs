@@ -123,7 +123,7 @@ namespace NodeEditorFramework.Standard
 
             if (checkpointName != "")
             {
-                GUILayout.Label("<color=red>Deprecated data detected! Checkpoint name = '" + checkpointName + "'</color>\n");
+                GUILayout.Label($"<color=red>Deprecated data detected! Checkpoint name = '{checkpointName}'</color>\n");
             }
 
             if (variableType > 0)
@@ -177,12 +177,10 @@ namespace NodeEditorFramework.Standard
                 {
                     return 0;
                 }
-                else
-                {
-                    return 1;
-                }
+                return 1;
             }
-            else if (variableType == 5)
+            
+            if (variableType == 5)
             {
                 for (int i = 0; i < PlayerCore.Instance.cursave.missions.Count; i++)
                 {

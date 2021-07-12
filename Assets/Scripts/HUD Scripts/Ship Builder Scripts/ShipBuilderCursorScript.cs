@@ -2,8 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
 public interface IBuilderInterface
 {
     BuilderMode GetMode();
@@ -59,6 +57,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     void OnEnable()
     {
         compactMode = Screen.width == 1024;
+        UpdateCompact();
         buildCost = 0;
         currentAbilities = new List<Ability>();
 
@@ -296,8 +295,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         {
             symmetryLastPart.info.rotation = -lastPart.info.rotation + 180;
         }
-
-        return;
     }
 
     public void FlipLastPart()
@@ -375,8 +372,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     void Update()
     {
-        UpdateCompact();
-
         if (clickedOnce)
         {
             if (timer > 0.2F)
@@ -393,9 +388,9 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
         if (Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active))
         {
-            if (builder as ShipBuilder == null || !(builder as ShipBuilder).Equals(null))
+            if (builder is ShipBuilder shipBuilder)
             {
-                if (!(new List<InputField>((builder as ShipBuilder).GetComponentsInChildren<InputField>())).Exists(f => f.isFocused))
+                if (!(new List<InputField>(shipBuilder.GetComponentsInChildren<InputField>()).Exists(f => f.isFocused)))
                 {
                     ClearAllParts();
                 }
@@ -407,7 +402,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             part.boundImage.enabled = Input.GetKey(KeyCode.LeftShift);
         }
 
-        System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / (int)y), z * ((int)x.y / (int)z), 0);
+        System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / y), z * ((int)x.y / z), 0);
         var newOffset = roundToRatios(grid.position, baseMoveSize, baseMoveSize) - grid.position;
         transform.position = roundToRatios(Input.mousePosition, baseMoveSize, baseMoveSize) - newOffset;
         var oldPos = GetComponent<RectTransform>().anchoredPosition;
@@ -430,7 +425,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         UpdateCurrentPart();
 
         // drag grid
-        Vector2 bounds = grid.sizeDelta / 2 - grid2mask.sizeDelta / 2;
+        Vector2 bounds = (grid.sizeDelta - grid2mask.sizeDelta) * 0.5f;
         if (grid.GetComponent<DragDetector>().dragging
             && Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
         {
