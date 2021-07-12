@@ -90,7 +90,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             }
 
             vendorUIButton.blueprint = blueprint.items[i].entityBlueprint;
-            vendorUIButton.costText = "POWER COST: <color=cyan>" + blueprint.items[i].cost + "</color>";
+            vendorUIButton.costText = $"POWER COST: <color=cyan>{blueprint.items[i].cost}</color>";
             vendorUIButton.descriptionText = blueprint.items[i].description;
             vendorUIButton.tooltipPrefab = tooltipPrefab;
             vendorUIButton.costInfo = costInfo;

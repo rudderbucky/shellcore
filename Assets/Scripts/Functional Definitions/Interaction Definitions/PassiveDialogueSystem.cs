@@ -77,10 +77,7 @@ public class PassiveDialogueSystem : MonoBehaviour
 
     public void PushPassiveDialogue(string id, string text, int soundType)
     {
-        if (passiveDialogueState != DialogueSystem.DialogueState.In)
-        {
-            passiveDialogueState = DialogueSystem.DialogueState.In;
-        }
+        passiveDialogueState = DialogueSystem.DialogueState.In;
 
         passiveMessages.Enqueue((id, text, soundType));
     }

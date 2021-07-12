@@ -76,25 +76,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     // Bugfixes dialogue canvas paths persisting post world reload in the WC
     public static void ClearStatics()
     {
-        if (dialogueCanvasPaths != null)
-        {
-            dialogueCanvasPaths.Clear();
-        }
-
-        if (speakerIDList != null)
-        {
-            speakerIDList.Clear();
-        }
-
-        if (interactionOverrides != null)
-        {
-            interactionOverrides.Clear();
-        }
-
-        if (traversers != null)
-        {
-            traversers.Clear();
-        }
+        dialogueCanvasPaths?.Clear();
+        speakerIDList?.Clear();
+        interactionOverrides?.Clear();
+        traversers?.Clear();
     }
 
     public static void InitCanvases()
@@ -447,7 +432,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
                 var abilityText = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null) + (wrapper.partTier > 0 ? " " + wrapper.partTier : "");
                 type.text = abilityText;
-                abilityTooltip.abilityInfo = abilityText + "\n" + AbilityUtilities.GetDescriptionByID(wrapper.partAbilityID, wrapper.partTier, null);
+                abilityTooltip.abilityInfo = $"{abilityText}\n{AbilityUtilities.GetDescriptionByID(wrapper.partAbilityID, wrapper.partTier, null)}";
             }
             else
             {
@@ -662,7 +647,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         int currentIndex = getNodeIndex(dialogue, ID);
         if (currentIndex == -1)
         {
-            Debug.LogWarning("Missing node '" + ID + "' in " + dialogue.name);
+            Debug.LogWarning($"Missing node '{ID}' in {dialogue.name}");
             endDialogue();
             return;
         }
@@ -732,7 +717,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             int nextIndex = getNodeIndex(dialogue, current.nextNodes[i]);
             if (nextIndex == -1)
             {
-                Debug.LogWarning("Missing node '" + current.nextNodes[i] + "' in " + dialogue.name);
+                Debug.LogWarning($"Missing node '{current.nextNodes[i]}' in {dialogue.name}");
                 endDialogue();
                 return;
             }

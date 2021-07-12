@@ -48,7 +48,6 @@ public class TargetingSystem : ITargetingSystem
     /// <summary>
     /// Get the target of the targeting system
     /// </summary>
-    /// <param name="findNew">Whether or not the targeting system should find a new target</param>
     /// <returns>The target of the targeting system</returns>
     public Transform GetTarget()
     {
