@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(CanvasRenderer))]

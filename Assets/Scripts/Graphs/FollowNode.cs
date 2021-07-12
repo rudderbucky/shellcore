@@ -1,17 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "AI/Follow")]
     public class AIFollowNode : Node
     {
-        public override string GetName { get { return "AIFollowNode"; } }
-        public override string Title { get { return "AI Follow"; } }
-        public override bool AllowRecursion { get { return true; } }
-        public override bool AutoLayout { get { return true; } }
+        public override string GetName
+        {
+            get { return "AIFollowNode"; }
+        }
+
+        public override string Title
+        {
+            get { return "AI Follow"; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -61,7 +74,7 @@ namespace NodeEditorFramework.Standard
             {
                 if (FollowerInput == null)
                 {
-                    ConnectionKnob input = connectionKnobs.Find((x)=> { return x.name == "FollowerInput"; });
+                    ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "FollowerInput"; });
 
                     if (input == null)
                     {
@@ -69,10 +82,14 @@ namespace NodeEditorFramework.Standard
                         FollowerInput.name = "FollowerInput";
                     }
                     else
+                    {
                         FollowerInput = input;
+                    }
                 }
+
                 FollowerInput.DisplayLayout();
             }
+
             GUILayout.EndHorizontal();
 
             if (!stopFollowing)
@@ -90,10 +107,14 @@ namespace NodeEditorFramework.Standard
                             TargetInput.name = "TargetInput";
                         }
                         else
+                        {
                             TargetInput = input;
+                        }
                     }
+
                     TargetInput.DisplayLayout();
                 }
+
                 GUILayout.EndHorizontal();
             }
 
@@ -106,12 +127,13 @@ namespace NodeEditorFramework.Standard
                     FollowerInput = CreateConnectionKnob(IDInStyle);
                     FollowerInput.name = "FollowerInput";
                 }
-                else if(!useFollowerInput && FollowerInput != null)
+                else if (!useFollowerInput && FollowerInput != null)
                 {
                     DeleteConnectionPort(FollowerInput);
                     FollowerInput = null;
                 }
             }
+
             if (!useFollowerInput)
             {
                 GUILayout.Label("Follower ID");
@@ -138,12 +160,13 @@ namespace NodeEditorFramework.Standard
                         TargetInput = CreateConnectionKnob(IDInStyle);
                         TargetInput.name = "TargetInput";
                     }
-                    else if(!useTargetInput && TargetInput != null)
+                    else if (!useTargetInput && TargetInput != null)
                     {
                         DeleteConnectionPort(TargetInput);
                         TargetInput = null;
                     }
                 }
+
                 if (!useTargetInput)
                 {
                     GUILayout.Label("Target ID");
@@ -166,17 +189,12 @@ namespace NodeEditorFramework.Standard
 
         void SetFollowerID(string ID)
         {
-
-
             followerID = ID;
             WorldCreatorCursor.selectEntity -= SetFollowerID;
         }
 
-
         void SetTargetID(string ID)
         {
-
-
             followerID = ID;
             WorldCreatorCursor.selectEntity -= SetTargetID;
         }
@@ -188,7 +206,9 @@ namespace NodeEditorFramework.Standard
                 ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "FollowerInput"; });
 
                 if (useFollowerInput && FollowerInput == null)
+                {
                     FollowerInput = input;
+                }
 
                 if (FollowerInput.connected())
                 {
@@ -205,7 +225,9 @@ namespace NodeEditorFramework.Standard
                 ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "TargetInput"; });
 
                 if (useTargetInput && TargetInput == null)
+                {
                     TargetInput = input;
+                }
 
                 if (TargetInput.connected())
                 {
@@ -230,7 +252,10 @@ namespace NodeEditorFramework.Standard
                             (AIData.entities[i] as AirCraft).GetAI().follow(target.transform);
 
 
-                            if(disallowAggression) (AIData.entities[i] as AirCraft).GetAI().aggression = AirCraftAI.AIAggression.KeepMoving;
+                            if (disallowAggression)
+                            {
+                                (AIData.entities[i] as AirCraft).GetAI().aggression = AirCraftAI.AIAggression.KeepMoving;
+                            }
                         }
                     }
                 }

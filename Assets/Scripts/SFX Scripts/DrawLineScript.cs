@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Script used to draw a line on a craft's death
 /// </summary>
-public class DrawLineScript : MonoBehaviour {
+public class DrawLineScript : MonoBehaviour
+{
     LineRenderer line; // line renderer
     private float timer; // used for transparency and projection
     private float startAngle; // angle to project the line
@@ -23,7 +22,8 @@ public class DrawLineScript : MonoBehaviour {
         line.useWorldSpace = false;
     }
 
-    public void SetStartColor(Color color) {
+    public void SetStartColor(Color color)
+    {
         GetComponent<LineRenderer>().startColor = color;
     }
 
@@ -31,7 +31,7 @@ public class DrawLineScript : MonoBehaviour {
     {
         initialized = true;
     }
- 
+
     private void Update()
     {
         if (initialized)
@@ -49,7 +49,7 @@ public class DrawLineScript : MonoBehaviour {
                     ShortenLine(speed * (timer - 0.5F), 0, startAngle);
                 }
             }
-        }  
+        }
     }
 
     /// <summary>
@@ -58,9 +58,9 @@ public class DrawLineScript : MonoBehaviour {
     /// <param name="length">the length to shorten by</param>
     /// <param name="index">the index of the vertex to shorten with</param>
     /// <param name="angle">the angle at which to shorten</param>
-    void ShortenLine(float length, int index, float angle) {
-
-        line.startWidth += 2 * Time.deltaTime; 
+    void ShortenLine(float length, int index, float angle)
+    {
+        line.startWidth += 2 * Time.deltaTime;
         // widen the start of the line to help create a 3D effect
 
         Vector2 pos = new Vector2(length * Mathf.Cos(angle), -length * Mathf.Sin(angle));
@@ -84,8 +84,8 @@ public class DrawLineScript : MonoBehaviour {
     /// <param name="length">the length to lengthen by</param>
     /// <param name="index">the index of the vertex to lengthen with</param>
     /// <param name="angle">the angle at which to lengthen</param>
-    void DrawLine(float length, int index, float angle) {
-
+    void DrawLine(float length, int index, float angle)
+    {
         line.endWidth += 2 * Time.deltaTime;
         // widen the end of the line to help create a 3D effect
 
@@ -98,7 +98,7 @@ public class DrawLineScript : MonoBehaviour {
         Vector2 pos = new Vector2(length * Mathf.Cos(angle), -length * Mathf.Sin(angle));
         // find the new position to place the front vertex
 
-        line.SetPosition(index+1, pos);
+        line.SetPosition(index + 1, pos);
         // extend the front vertex
     }
 }

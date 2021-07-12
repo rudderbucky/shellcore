@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// A trait that can be activated for a special effect; parts sometimes come with these
 /// All weapons have abilities that deal their effect
 /// </summary>
-public abstract class Ability : MonoBehaviour {
+public abstract class Ability : MonoBehaviour
+{
+    Entity core; // craft that uses this ability
 
-    Entity core;  // craft that uses this ability
     public Entity Core
     {
         get
         {
             if (core == null)
+            {
                 core = GetComponentInParent<Entity>();
+            }
+
             return core;
         }
-        set
-        {
-            core = value;
-        }
+        set { core = value; }
     }
+
     public enum AbilityState
     {
         Ready,
@@ -37,7 +36,7 @@ public abstract class Ability : MonoBehaviour {
 
     protected AbilityID ID; // Image ID, perhaps also ability ID if that were ever to be useful (it was)
     protected float chargeDuration; // delay before activation
-    protected float activeDuration;  // active time ( + charge)
+    protected float activeDuration; // active time ( + charge)
     protected float cooldownDuration; // cooldown of the ability (+ charge and active time)
     protected float energyCost; // energy cost of the ability
     protected float startTime; // the time the ability was activated by the entity
@@ -45,19 +44,29 @@ public abstract class Ability : MonoBehaviour {
     protected int abilityTier;
     protected string description = "Does things";
     protected ShellPart part;
-    
-    public ShellPart Part { set { part = value; } }
+
+    public ShellPart Part
+    {
+        set { part = value; }
+    }
+
     public string abilityName = "Ability";
     public SpriteRenderer glow;
 
     public bool isEnabled { get; set; } = true;
 
-    public virtual void SetTier(int abilityTier) {
-        if(abilityTier > 3 || abilityTier < 0) Debug.LogError("An ability tier was set out of bounds!" + "number: " + abilityTier);
+    public virtual void SetTier(int abilityTier)
+    {
+        if (abilityTier > 3 || abilityTier < 0)
+        {
+            Debug.LogWarning("An ability tier was set out of bounds!" + "number: " + abilityTier);
+        }
+
         this.abilityTier = abilityTier;
     }
 
-    public int GetTier() {
+    public int GetTier()
+    {
         return abilityTier;
     }
 
@@ -94,10 +103,15 @@ public abstract class Ability : MonoBehaviour {
         {
             // delete glow from ability
             if (glow)
+            {
                 Destroy(glow.gameObject);
+            }
 
             if (State == AbilityState.Active)
+            {
                 Deactivate();
+            }
+
             State = AbilityState.Destroyed;
         }
         else
@@ -109,7 +123,9 @@ public abstract class Ability : MonoBehaviour {
     void OnDestroy()
     {
         if (State != AbilityState.Destroyed && Core)
+        {
             SetDestroyed(true);
+        }
     }
 
     /// <summary>
@@ -120,7 +136,6 @@ public abstract class Ability : MonoBehaviour {
     {
         return State == AbilityState.Destroyed;
     }
-
 
     /// <summary>
     /// Initialization of every ability
@@ -135,7 +150,8 @@ public abstract class Ability : MonoBehaviour {
     /// Get the image ID of the ability
     /// </summary>
     /// <returns>Image ID of the ability</returns>
-    public virtual int GetID() {
+    public virtual int GetID()
+    {
         return (int)ID; // ID
     }
 
@@ -143,7 +159,8 @@ public abstract class Ability : MonoBehaviour {
     /// Get the energy cost of the ability
     /// </summary>
     /// <returns>The energy cost of the ability</returns>
-    public float GetEnergyCost() {
+    public float GetEnergyCost()
+    {
         return energyCost; // energy cost
     }
 
@@ -160,7 +177,8 @@ public abstract class Ability : MonoBehaviour {
     /// Get the active time remaining on the ability; here defined as 0
     /// </summary>
     /// <returns>The active time remaining on the ability</returns>
-    public virtual float GetActiveTimeRemaining() {
+    public virtual float GetActiveTimeRemaining()
+    {
         return 0; // active time (unless overriden this is 0)
     }
 
@@ -173,14 +191,17 @@ public abstract class Ability : MonoBehaviour {
     /// Get the cooldown remaining on the ability
     /// </summary>
     /// <returns>The cooldown duration remaining on the ability</returns>
-    public float TimeUntilReady() {
+    public float TimeUntilReady()
+    {
         if (State == AbilityState.Cooldown || State == AbilityState.Charging || State == AbilityState.Active) // active or on cooldown
         {
             return Mathf.Max(cooldownDuration - (Time.time - startTime), 0); // return the cooldown remaining, calculated prior to this call via TickDown
         }
-        else return 0; // not on cooldown
+        else
+        {
+            return 0; // not on cooldown
+        }
     }
-
 
     /// <summary>
     /// Updates the internal state of the ability
@@ -188,17 +209,30 @@ public abstract class Ability : MonoBehaviour {
     public void UpdateState()
     {
         if (State == AbilityState.Destroyed)
+        {
             return;
+        }
+
         if (!isEnabled)
+        {
             State = AbilityState.Disabled;
+        }
         else if (Time.time >= startTime + cooldownDuration)
+        {
             State = AbilityState.Ready;
+        }
         else if (Time.time >= startTime + activeDuration)
+        {
             State = AbilityState.Cooldown;
+        }
         else if (Time.time >= startTime + chargeDuration)
+        {
             State = AbilityState.Active;
+        }
         else
+        {
             State = AbilityState.Charging;
+        }
 
         if (!Core || Core.GetIsDead())
         {
@@ -218,7 +252,9 @@ public abstract class Ability : MonoBehaviour {
             UpdateState(); // Update state
             // If there's no charge time, execute immediately
             if (State == AbilityState.Active || State == AbilityState.Cooldown)
+            {
                 Execute();
+            }
         }
     }
 
@@ -226,8 +262,9 @@ public abstract class Ability : MonoBehaviour {
     /// Ability called to change the ability's state over time for players
     /// </summary>
     /// <param name="action">The associated button to press to activate</param>
-    virtual public void Tick() {
-        if(State == AbilityState.Destroyed)
+    virtual public void Tick()
+    {
+        if (State == AbilityState.Destroyed)
         {
             return; // Part has been destroyed, ability can't be used
         }
@@ -262,7 +299,10 @@ public abstract class Ability : MonoBehaviour {
             if (ID == AbilityID.Stealth && core.faction != 0)
             {
                 if (glow)
+                {
                     Destroy(glow.gameObject);
+                }
+
                 return;
             }
 
@@ -277,19 +317,27 @@ public abstract class Ability : MonoBehaviour {
             {
                 // Invisible player
                 if (Core.faction == 0)
+                {
                     newColor.a = 0.1f;
+                }
                 // Invisible enemy
                 else
+                {
                     newColor.a = 0f;
+                }
             }
             // Visible entity
             else
+            {
                 newColor.a = 0.5f;
+            }
 
             glow.color = newColor;
         }
-        else if(glow)
-                Destroy(glow.gameObject);
+        else if (glow)
+        {
+            Destroy(glow.gameObject);
+        }
     }
 
     protected SpriteRenderer GetBlinker()
@@ -305,6 +353,7 @@ public abstract class Ability : MonoBehaviour {
                 glow.color = new Color(1, 1, 1, 0.5F);
             }
         }
+
         return glow;
     }
 
@@ -313,11 +362,11 @@ public abstract class Ability : MonoBehaviour {
     /// </summary>
     virtual protected void Execute()
     {
-        
     }
 
     // wrapper for whether the ability has a "range" to display in the HUD when the player mouses over the button
-    virtual public float GetRange() {
+    virtual public float GetRange()
+    {
         return -1; // get range
     }
 
@@ -326,6 +375,5 @@ public abstract class Ability : MonoBehaviour {
     /// </summary>
     virtual public void Deactivate()
     {
-
     }
 }

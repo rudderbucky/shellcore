@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NodeEditorFramework.Utilities;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -8,10 +6,20 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Actions/Set Sector Color", typeof(SectorCanvas), typeof(QuestCanvas))]
     public class SectorColorNode : Node
     {
-        public override string GetName { get { return "SectorColorNode"; } }
-        public override string Title { get { return "Set Sector Color"; } }
+        public override string GetName
+        {
+            get { return "SectorColorNode"; }
+        }
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, 120); } }
+        public override string Title
+        {
+            get { return "Set Sector Color"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 120); }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;

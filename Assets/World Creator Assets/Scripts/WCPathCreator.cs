@@ -1,7 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class WCPathCreator : MonoBehaviour
 {
@@ -54,7 +52,9 @@ public class WCPathCreator : MonoBehaviour
 
         // add child
         if (closest >= 0)
+        {
             pathNodes[closest].children.Add(ID);
+        }
 
         UpdateMesh();
     }
@@ -76,6 +76,7 @@ public class WCPathCreator : MonoBehaviour
                 UpdateMesh();
             }
         }
+
         if (Input.GetMouseButtonDown(0))
         {
             int closest = GetClosestNodeIndex(pos);
@@ -94,11 +95,11 @@ public class WCPathCreator : MonoBehaviour
                     UpdateMesh();
                 }
             }
-            if(!grabbed)
+
+            if (!grabbed)
             {
                 AddPoint(pos);
             }
-
         }
         else if (Input.GetMouseButtonUp(0))
         {
@@ -118,9 +119,12 @@ public class WCPathCreator : MonoBehaviour
                         for (int j = 0; j < pathNodes[i].children.Count; j++)
                         {
                             if (pathNodes[i].children[j] == from.ID)
+                            {
                                 pathNodes[i].children[j] = to.ID;
+                            }
                         }
                     }
+
                     to.children.AddRange(from.children);
 
                     for (int i = 0; i < to.children.Count; i++)
@@ -130,6 +134,7 @@ public class WCPathCreator : MonoBehaviour
                             to.children.RemoveAt(i--);
                             continue;
                         }
+
                         for (int j = 0; j < to.children.Count; j++)
                         {
                             if (i != j && to.children[i] == to.children[j])
@@ -151,6 +156,7 @@ public class WCPathCreator : MonoBehaviour
             dragging = false;
             selectedNode = null;
         }
+
         if (Input.GetMouseButtonUp(1))
         {
             int closest = GetClosestNodeID(pos);
@@ -187,7 +193,9 @@ public class WCPathCreator : MonoBehaviour
     void CleanPath()
     {
         if (pathNodes.Count == 0)
+        {
             return;
+        }
 
         // make sure there's a node 0
         int zeroIndex = -1;
@@ -199,13 +207,16 @@ public class WCPathCreator : MonoBehaviour
                 break;
             }
         }
+
         if (zeroIndex == -1)
         {
             int minID = int.MaxValue;
             for (int i = 0; i < pathNodes.Count; i++)
             {
                 if (pathNodes[i].ID < minID)
+                {
                     minID = pathNodes[i].ID;
+                }
             }
 
             pathNodes[GetNodeIndex(minID)].ID = 0;
@@ -215,7 +226,9 @@ public class WCPathCreator : MonoBehaviour
                 for (int j = 0; j < pathNodes[i].children.Count; j++)
                 {
                     if (pathNodes[i].children[j] == minID)
+                    {
                         pathNodes[i].children[j] = 0;
+                    }
                 }
             }
         }
@@ -232,7 +245,9 @@ public class WCPathCreator : MonoBehaviour
             for (int i = 0; i < current.children.Count; i++)
             {
                 if (!closedList.Contains(current.ID))
+                {
                     openList.Add(current.children[i]);
+                }
             }
 
             closedList.Add(current.ID);
@@ -250,6 +265,7 @@ public class WCPathCreator : MonoBehaviour
                     break;
                 }
             }
+
             if (!found)
             {
                 Debug.Log("Node " + pathNodes[i].ID + " removed!");
@@ -272,6 +288,7 @@ public class WCPathCreator : MonoBehaviour
                 }
             }
         }
+
         CleanPath();
     }
 
@@ -289,7 +306,9 @@ public class WCPathCreator : MonoBehaviour
                 int childIndex = GetNodeIndex(pathNodes[i].children[j]);
 
                 if (childIndex < 0)
+                {
                     continue;
+                }
 
                 Vector2 pos2 = pathNodes[childIndex].position;
                 Vector2 d = pos1 - pos2;
@@ -310,6 +329,7 @@ public class WCPathCreator : MonoBehaviour
                 count++;
             }
         }
+
         lines.SetIndices(new int[0], MeshTopology.Triangles, 0);
         lines.SetVertices(vertices);
         lines.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0);
@@ -320,8 +340,11 @@ public class WCPathCreator : MonoBehaviour
         for (int i = 0; i < pathNodes.Count; i++)
         {
             if (pathNodes[i].ID == ID)
+            {
                 return i;
+            }
         }
+
         return -1;
     }
 
@@ -370,7 +393,10 @@ public class WCPathCreator : MonoBehaviour
             for (int i = 0; i < data.waypoints.Count; i++)
             {
                 if (IDCount < data.waypoints[i].ID)
+                {
                     IDCount = data.waypoints[i].ID + 1;
+                }
+
                 pathNodes.Add(new Path.Node()
                 {
                     ID = data.waypoints[i].ID,

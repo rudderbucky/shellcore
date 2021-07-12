@@ -1,14 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿public class ShellMax : PassiveAbility
+{
+    public int index;
+    public static readonly int max = 400;
 
-public class ShellMax : PassiveAbility {
-
-	public int index;
-	public static readonly int max = 400;
-
-	public void Initialize() {
-        switch(index)
+    public void Initialize()
+    {
+        switch (index)
         {
             case 0:
                 ID = AbilityID.ShellMax;
@@ -30,7 +27,7 @@ public class ShellMax : PassiveAbility {
         Core.SetMaxHealth(maxHealths, false);
 
         // Remove a percentage of health from the ship, based on what max health the core had before destruction
-        switch(index)
+        switch (index)
         {
             case 0:
                 Core.TakeShellDamage(percentage * max * abilityTier, 0, null);
@@ -39,16 +36,17 @@ public class ShellMax : PassiveAbility {
                 Core.TakeCoreDamage(percentage * max * abilityTier);
                 break;
             case 2:
-                Core.TakeEnergy(percentage* max * abilityTier);
+                Core.TakeEnergy(percentage * max * abilityTier);
                 break;
         }
+
         base.Deactivate();
     }
 
     protected override void Execute()
     {
         float[] maxHealths = Core.GetMaxHealth();
-		maxHealths[index] += max * abilityTier;
-		Core.SetMaxHealth(maxHealths, true);
+        maxHealths[index] += max * abilityTier;
+        Core.SetMaxHealth(maxHealths, true);
     }
 }

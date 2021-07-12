@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Turret : AirConstruct, IOwnable
+﻿public class Turret : AirConstruct, IOwnable
 {
     public IOwner owner;
 
@@ -11,26 +7,36 @@ public class Turret : AirConstruct, IOwnable
         category = EntityCategory.Station;
         base.Awake();
     }
+
     protected override void Start()
     {
-
         base.Start();
         if (entityBody)
+        {
             entityBody.drag = 25f;
+        }
     }
 
     protected override void OnDeath()
     {
-        if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+        if (owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+        {
             owner.GetUnitsCommanding().Remove(this);
+        }
+
         base.OnDeath();
     }
 
-    protected override void OnDestroy() {
-        if(owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+    protected override void OnDestroy()
+    {
+        if (owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
+        {
             owner.GetUnitsCommanding().Remove(this);
+        }
+
         base.OnDestroy();
     }
+
     public void SetOwner(IOwner owner)
     {
         this.owner = owner;
@@ -47,6 +53,7 @@ public class Turret : AirConstruct, IOwnable
         {
             GetComponentInChildren<ActiveAbility>().Activate();
         }
+
         base.Update();
     }
 }

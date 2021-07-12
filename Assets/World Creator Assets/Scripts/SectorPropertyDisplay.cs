@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
+
 public class SectorPropertyDisplay : MonoBehaviour
 {
     public RectTransform rectTransform;
@@ -37,9 +37,12 @@ public class SectorPropertyDisplay : MonoBehaviour
     bool opening = false;
     bool editingDefaults = false;
 
-    void Start() 
+    void Start()
     {
-        if(!rectTransform) rectTransform = GetComponent<RectTransform>();
+        if (!rectTransform)
+        {
+            rectTransform = GetComponent<RectTransform>();
+        }
     }
 
     public void SetDefaults()
@@ -47,23 +50,27 @@ public class SectorPropertyDisplay : MonoBehaviour
         opening = true;
         editingDefaults = true;
 
-        if (!rectTransform) rectTransform = GetComponent<RectTransform>();
+        if (!rectTransform)
+        {
+            rectTransform = GetComponent<RectTransform>();
+        }
+
         rectTransform.gameObject.SetActive(true);
         rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
 
         type.value = 0;
         sectorMusicBool.isOn = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultMusicOn", 1) == 1 ? true : false;
         sectorMusicID.text = PlayerPrefs.GetString("WCSectorPropertyDisplay_defaultMusic0", WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)0));
-        colorR.text = 
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR0", 
+        colorR.text =
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR0",
                 SectorColors.colors[0].r) + "";
-        colorB.text = 
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB0", 
+        colorB.text =
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB0",
                 SectorColors.colors[0].b) + "";
-        colorG.text = 
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG0", 
+        colorG.text =
+            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG0",
                 SectorColors.colors[0].g) + "";
-        
+
         particles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
         tiles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
 
@@ -81,7 +88,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         clearBGSpawnsButton.SetActive(false);
         parseBGSpawnsButton.SetActive(false);
         deleteButton.SetActive(false);
-        for(int i = 0; i < shardCounts.Count; i++)
+        for (int i = 0; i < shardCounts.Count; i++)
         {
             shardCounts[i].gameObject.SetActive(false);
         }
@@ -98,7 +105,11 @@ public class SectorPropertyDisplay : MonoBehaviour
     {
         opening = true;
 
-        if (!rectTransform) rectTransform = GetComponent<RectTransform>();
+        if (!rectTransform)
+        {
+            rectTransform = GetComponent<RectTransform>();
+        }
+
         currentSector = sector;
         rectTransform.gameObject.SetActive(true);
         mousePos = WorldCreatorCursor.GetMousePos();
@@ -127,7 +138,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         clearBGSpawnsButton.SetActive(true);
         parseBGSpawnsButton.SetActive(true);
         deleteButton.SetActive(true);
-        for(int i = 0; i < shardCounts.Count; i++)
+        for (int i = 0; i < shardCounts.Count; i++)
         {
             shardCounts[i].gameObject.SetActive(true);
         }
@@ -142,16 +153,18 @@ public class SectorPropertyDisplay : MonoBehaviour
         colorR.text = currentSector.backgroundColor.r + "";
         colorG.text = currentSector.backgroundColor.g + "";
         colorB.text = currentSector.backgroundColor.b + "";
-        for(int i = 0; i < shardCounts.Count; i++)
+        for (int i = 0; i < shardCounts.Count; i++)
         {
             shardCounts[i].text = currentSector.shardCountSet[i] + "";
         }
+
         opening = false;
         UpdateBGSpawns();
     }
 
-    void Update() {
-        if(!editingDefaults)
+    void Update()
+    {
+        if (!editingDefaults)
         {
             var pos = Camera.main.WorldToScreenPoint(mousePos);
             pos += new Vector3(300, 0);
@@ -163,25 +176,29 @@ public class SectorPropertyDisplay : MonoBehaviour
             h.text = currentSector.bounds.h + "";
         }
     }
-    public void UpdateType() 
+
+    public void UpdateType()
     {
         if (opening)
-            return;
-        if(editingDefaults)
         {
-            sectorMusicID.text = 
-            PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{type.value}", 
-                WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)type.value));
+            return;
+        }
 
-            colorR.text = 
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{type.value}", 
-                SectorColors.colors[type.value].r) + "";
-            colorB.text = 
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{type.value}", 
-                SectorColors.colors[type.value].b) + "";
-            colorG.text = 
-            PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{type.value}", 
-                SectorColors.colors[type.value].g) + "";
+        if (editingDefaults)
+        {
+            sectorMusicID.text =
+                PlayerPrefs.GetString($"WCSectorPropertyDisplay_defaultMusic{type.value}",
+                    WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)type.value));
+
+            colorR.text =
+                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{type.value}",
+                    SectorColors.colors[type.value].r) + "";
+            colorB.text =
+                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{type.value}",
+                    SectorColors.colors[type.value].b) + "";
+            colorG.text =
+                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{type.value}",
+                    SectorColors.colors[type.value].g) + "";
             return;
         }
 
@@ -192,31 +209,42 @@ public class SectorPropertyDisplay : MonoBehaviour
         colorB.text = currentSector.backgroundColor.b + "";
     }
 
-    public void UpdateName() 
+    public void UpdateName()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
+
         currentSector.sectorName = sectorName.text;
     }
 
-    public void UpdateMusic() 
+    public void UpdateMusic()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
+
         currentSector.musicID = sectorMusicID.text;
     }
 
     public void UpdateMusicBool()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
+
         currentSector.hasMusic = sectorMusicBool.isOn;
     }
 
     public void UpdateColor()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
 
         currentSector.backgroundColor = new Color(float.Parse(colorR.text), float.Parse(colorG.text), float.Parse(colorB.text), 1);
     }
@@ -224,59 +252,85 @@ public class SectorPropertyDisplay : MonoBehaviour
     public void UpdateParticles()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
+
         currentSector.rectangleEffectSkin = (RectangleEffectSkin)particles.value;
     }
 
     public void UpdateTiles()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
+
         currentSector.backgroundTileSkin = (BackgroundTileSkin)tiles.value;
     }
 
     public void UpdateShardCounts()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
 
-        for(int i = 0; i < shardCounts.Count; i++)
+        for (int i = 0; i < shardCounts.Count; i++)
         {
             currentSector.shardCountSet[i] = int.Parse(shardCounts[i].text);
         }
     }
 
-    public void Hide() 
+    public void Hide()
     {
         rectTransform.gameObject.SetActive(false);
-        if(editingDefaults)
+        if (editingDefaults)
         {
             PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultMusicOn", sectorMusicBool.isOn ? 1 : 0);
-            if(sectorMusicID.text != "")
+            if (sectorMusicID.text != "")
+            {
                 PlayerPrefs.SetString($"WCSectorPropertyDisplay_defaultMusic{type.value}", sectorMusicID.text);
+            }
+
             PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultParticles", particles.value);
             PlayerPrefs.SetInt("WCSectorPropertyDisplay_defaultTiles", tiles.value);
-            if(colorR.text != "")
+            if (colorR.text != "")
+            {
                 PlayerPrefs.SetFloat($"WCSectorPropertyDisplay_defaultR{type.value}", float.Parse(colorR.text));
-            if(colorG.text != "")
+            }
+
+            if (colorG.text != "")
+            {
                 PlayerPrefs.SetFloat($"WCSectorPropertyDisplay_defaultG{type.value}", float.Parse(colorG.text));
-            if(colorB.text != "")
+            }
+
+            if (colorB.text != "")
+            {
                 PlayerPrefs.SetFloat($"WCSectorPropertyDisplay_defaultB{type.value}", float.Parse(colorB.text));
+            }
         }
+
         editingDefaults = false;
     }
 
     public void AddBGSpawn()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
+
         AddBGSpawn(null, 1);
     }
 
-    public void AddBGSpawn(string text = null, int faction = 1) 
+    public void AddBGSpawn(string text = null, int faction = 1)
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
+
         var field = Instantiate(bgSpawnInputFieldPrefab, bgSpawnScrollContents).GetComponentInChildren<InputField>();
         var drop = field.transform.parent.GetComponentInChildren<Dropdown>();
         bgSpawnInputFields.Add((field, drop));
@@ -287,35 +341,52 @@ public class SectorPropertyDisplay : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(mainContents);
     }
 
-    public void ClearBGSpawns() 
+    public void ClearBGSpawns()
     {
         if (opening || editingDefaults)
+        {
             return;
-        foreach(var field in bgSpawnInputFields)
+        }
+
+        foreach (var field in bgSpawnInputFields)
         {
             Destroy(field.Item1.transform.parent.gameObject);
         }
+
         bgSpawnInputFields.Clear();
     }
 
     public void TryParseBGSpawns()
     {
         if (opening || editingDefaults)
-            return;
-        List<Sector.LevelEntity> levelEntities = new List<Sector.LevelEntity>();
-        foreach(var field in bgSpawnInputFields)
         {
-            if(field.Item1.text == null || field.Item1.text == "") continue;
-            var item = ItemHandler.instance.items.Find((it) => {return it.assetID == field.Item1.text;});
+            return;
+        }
 
-            if(item != null)
+        List<Sector.LevelEntity> levelEntities = new List<Sector.LevelEntity>();
+        foreach (var field in bgSpawnInputFields)
+        {
+            if (field.Item1.text == null || field.Item1.text == "")
+            {
+                continue;
+            }
+
+            var item = ItemHandler.instance.items.Find((it) => { return it.assetID == field.Item1.text; });
+
+            if (item != null)
             {
                 Sector.LevelEntity ent = new Sector.LevelEntity();
 
                 // you can choose to give any object a custom name
-                if(item.name != null && item.name != "")
+                if (item.name != null && item.name != "")
+                {
                     ent.name = item.name;
-                else ent.name = item.obj.name;
+                }
+                else
+                {
+                    ent.name = item.obj.name;
+                }
+
                 ent.faction = field.Item2.value; // maybe change this later
                 ent.assetID = item.assetID;
                 levelEntities.Add(ent);
@@ -334,13 +405,12 @@ public class SectorPropertyDisplay : MonoBehaviour
 
                     ent.name = blueprint.entityName;
                     ent.blueprintJSON = JsonUtility.ToJson(blueprint);
-
-                } 
-                catch(System.Exception e)
+                }
+                catch (System.Exception e)
                 {
                     // try and see if the name is an indirect reference
                     var path = Application.streamingAssetsPath + "\\EntityPlaceholder";
-                    if(System.IO.Directory.GetFiles(path).Contains<string>(path + "\\" + field.Item1.text + ".json"))
+                    if (System.IO.Directory.GetFiles(path).Contains<string>(path + "\\" + field.Item1.text + ".json"))
                     {
                         ent.name = "ShellCore";
                         ent.blueprintJSON = field.Item1.text;
@@ -351,13 +421,14 @@ public class SectorPropertyDisplay : MonoBehaviour
                         continue;
                     }
                 }
+
                 levelEntities.Add(ent);
             }
         }
 
         currentSector.backgroundSpawns = new Sector.BackgroundSpawn[levelEntities.Count];
         var i = 0;
-        foreach(var ent in levelEntities)
+        foreach (var ent in levelEntities)
         {
             currentSector.backgroundSpawns[i].entity = ent;
             currentSector.backgroundSpawns[i].timePerSpawn = 8;
@@ -371,23 +442,32 @@ public class SectorPropertyDisplay : MonoBehaviour
     public void UpdateBGSpawns()
     {
         if (opening || editingDefaults)
-            return;
-        ClearBGSpawns();
-        foreach(var bgSpawn in currentSector.backgroundSpawns)
         {
-            if(bgSpawn.entity.assetID != "shellcore_blueprint" 
-                && ItemHandler.instance.items.Exists((item) => {return item.assetID == bgSpawn.entity.assetID;}))
+            return;
+        }
+
+        ClearBGSpawns();
+        foreach (var bgSpawn in currentSector.backgroundSpawns)
+        {
+            if (bgSpawn.entity.assetID != "shellcore_blueprint"
+                && ItemHandler.instance.items.Exists((item) => { return item.assetID == bgSpawn.entity.assetID; }))
             {
                 AddBGSpawn(bgSpawn.entity.assetID, bgSpawn.entity.faction);
             }
-            else AddBGSpawn(bgSpawn.entity.blueprintJSON, bgSpawn.entity.faction);
+            else
+            {
+                AddBGSpawn(bgSpawn.entity.blueprintJSON, bgSpawn.entity.faction);
+            }
         }
     }
 
     public void UpdateWaveSet()
     {
         if (opening || editingDefaults)
+        {
             return;
+        }
+
         currentSector.waveSetPath = waveSet.text;
     }
 }

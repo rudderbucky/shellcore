@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class IonLineController : MonoBehaviour
 {
@@ -18,6 +16,7 @@ public class IonLineController : MonoBehaviour
 
     float startWidth = 0f;
     float poweredWidth = 0.3F;
+
     public void Awake()
     {
         line = gameObject.AddComponent<LineRenderer>();
@@ -25,13 +24,13 @@ public class IonLineController : MonoBehaviour
         line.material = material;
         line.startWidth = line.endWidth = 0;
         line.useWorldSpace = true;
-        var col = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
+        var col = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         Gradient gradient = new Gradient();
         gradient.mode = GradientMode.Fixed;
         gradient.SetKeys(
             new GradientColorKey[] {new GradientColorKey(col, 0), new GradientColorKey(col, 1)},
             new GradientAlphaKey[] {new GradientAlphaKey(0.5F, 0), new GradientAlphaKey(1F, 0.1F), new GradientAlphaKey(1, 1)}
-            );
+        );
         line.colorGradient = gradient;
     }
 
@@ -58,12 +57,11 @@ public class IonLineController : MonoBehaviour
         return duration > 0;
     }
 
-
     void Start()
     {
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
-        
     }
+
     public void SetMaterial(Material material)
     {
         this.material = material;
@@ -73,9 +71,12 @@ public class IonLineController : MonoBehaviour
     public void ThickenLine(float amount)
     {
         line.startWidth = line.endWidth += amount;
-        if(line.startWidth > poweredWidth)
+        if (line.startWidth > poweredWidth)
+        {
             line.startWidth = line.endWidth = poweredWidth;
-        if(line.startWidth < 0)
+        }
+
+        if (line.startWidth < 0)
         {
             line.startWidth = line.endWidth = 0;
             line.positionCount = 0;
@@ -90,13 +91,14 @@ public class IonLineController : MonoBehaviour
     void Update()
     {
         line.gameObject.transform.position = gameObject.transform.position;
-        if(initialized && targetingSystem.GetTarget() && !Core.IsInvisible && duration > 0)
+        if (initialized && targetingSystem.GetTarget() && !Core.IsInvisible && duration > 0)
         {
-            if(Core.GetHealth()[2] < energyCost * Time.deltaTime) 
+            if (Core.GetHealth()[2] < energyCost * Time.deltaTime)
             {
                 duration = 0;
                 return;
             }
+
             duration -= Time.deltaTime;
             var pos = targetingSystem.GetTarget().position;
             line.positionCount = 2;
@@ -104,18 +106,17 @@ public class IonLineController : MonoBehaviour
             var vec = (pos - line.gameObject.transform.position).normalized;
             //var angle = Mathf.Atan(vec.y / vec.x);
             var targetBearing = GetBearingFromVector(vec);
-            
 
 
             // vec = (GetMousePos() - transform.position).normalized;
             var originalBearing = beamBearing;
-            
+
             var diff = targetBearing - originalBearing;
-            
+
             var c = 65 * Time.deltaTime;
             bool goForwards = false;
 
-            if(originalBearing < 180)
+            if (originalBearing < 180)
             {
                 goForwards = targetBearing - originalBearing < 180 && targetBearing - originalBearing > 0;
             }
@@ -124,29 +125,41 @@ public class IonLineController : MonoBehaviour
                 var limit = originalBearing + 180 - 360;
                 goForwards = targetBearing < 180 ? (targetBearing < limit) : (targetBearing > originalBearing);
             }
-        
-            if(Mathf.Abs(diff) <= c) originalBearing = targetBearing;
-            else originalBearing += goForwards ? c : -c;
+
+            if (Mathf.Abs(diff) <= c)
+            {
+                originalBearing = targetBearing;
+            }
+            else
+            {
+                originalBearing += goForwards ? c : -c;
+            }
+
             beamBearing = originalBearing;
-            if(beamBearing > 360)
+            if (beamBearing > 360)
+            {
                 beamBearing -= 360;
-            if(beamBearing < 0)
+            }
+
+            if (beamBearing < 0)
+            {
                 beamBearing += 360;
+            }
 
             var newAngle = GetAngleFromBearing(originalBearing) * Mathf.Deg2Rad;
-        
+
             // Debug.LogError(angle * Mathf.Rad2Deg + " " + GetBearingFromVector(vec) + " " + GetAngleFromBearing(GetBearingFromVector(vec)));
             line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * range);
             ThickenLine(0.005F);
-            
+
             var damage = damageC * Time.deltaTime;
             var raycastHits = Physics2D.RaycastAll(transform.position, GetVectorByBearing(originalBearing), range);
-            for(int i = 0; i < raycastHits.Length; i++)
+            for (int i = 0; i < raycastHits.Length; i++)
             {
                 var damageable = raycastHits[i].transform.GetComponentInParent<IDamageable>();
-                if(raycastHits[i].transform && damageable != null && damageable.GetFaction() != Core.faction && !damageable.GetIsDead() && damageable.GetTerrain() != Entity.TerrainType.Ground)
+                if (raycastHits[i].transform && damageable != null && damageable.GetFaction() != Core.faction && !damageable.GetIsDead() && damageable.GetTerrain() != Entity.TerrainType.Ground)
                 {
-                    var hitTransform = raycastHits[i].transform;                   
+                    var hitTransform = raycastHits[i].transform;
 
                     var magnitude = (hitTransform.position - transform.position).magnitude;
                     line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * magnitude);
@@ -154,11 +167,12 @@ public class IonLineController : MonoBehaviour
 
                     var part = hitTransform.GetComponentInChildren<ShellPart>();
 
-                    var residue = damageable.TakeShellDamage(damage, 0, GetComponentInParent<Entity>()); 
-                    
+                    var residue = damageable.TakeShellDamage(damage, 0, GetComponentInParent<Entity>());
+
                     // deal instant damage
 
-                    if(part) {
+                    if (part)
+                    {
                         part.TakeDamage(residue);
                     }
 
@@ -166,21 +180,31 @@ public class IonLineController : MonoBehaviour
                 }
             }
 
-            if(!hitPrefab) hitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle"); 
-            if(line.positionCount > 1)
-                Instantiate(hitPrefab, line.GetPosition(1), Quaternion.identity); // instantiate hit effect
-            
-        }
-        else 
-        {
-            if(!targetingSystem.GetTarget() && duration > 0) duration = 0;
-
-            if(line.startWidth > startWidth)
-                ThickenLine(-0.01F);
-
-            if(duration <= 0)
+            if (!hitPrefab)
             {
-                if(transform.parent.GetComponentInChildren<AudioSource>()) 
+                hitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+            }
+
+            if (line.positionCount > 1)
+            {
+                Instantiate(hitPrefab, line.GetPosition(1), Quaternion.identity); // instantiate hit effect
+            }
+        }
+        else
+        {
+            if (!targetingSystem.GetTarget() && duration > 0)
+            {
+                duration = 0;
+            }
+
+            if (line.startWidth > startWidth)
+            {
+                ThickenLine(-0.01F);
+            }
+
+            if (duration <= 0)
+            {
+                if (transform.parent.GetComponentInChildren<AudioSource>())
                 {
                     Destroy(transform.parent.GetComponentInChildren<AudioSource>().gameObject);
                 }
@@ -191,38 +215,45 @@ public class IonLineController : MonoBehaviour
     float GetBearingFromVector(Vector2 vec)
     {
         var angle = Mathf.Atan(vec.y / vec.x) * Mathf.Rad2Deg;
-        if(vec.x > 0)
+        if (vec.x > 0)
         {
-            if(angle > 0)
+            if (angle > 0)
             {
                 return angle;
             }
-            else return 360 + angle;
+            else
+            {
+                return 360 + angle;
+            }
         }
         else
         {
-            if(angle > 0)
+            if (angle > 0)
             {
                 return 180 + angle;
             }
-            else return 180 + angle;
+            else
+            {
+                return 180 + angle;
+            }
         }
     }
 
     float GetAngleFromBearing(float bearing)
     {
-        if(bearing < 90)
+        if (bearing < 90)
         {
             return bearing;
         }
-        else if(bearing < 180)
+        else if (bearing < 180)
         {
             return bearing - 180;
         }
-        else if(bearing < 270)
+        else if (bearing < 270)
         {
             return bearing - 180;
         }
+
         return bearing - 360;
     }
 
@@ -231,7 +262,6 @@ public class IonLineController : MonoBehaviour
         var xsign = bearing < 90 || bearing > 270 ? 1 : -1;
         var angle = GetAngleFromBearing(bearing) * Mathf.Deg2Rad;
         return new Vector3(Mathf.Cos(angle) * xsign, Mathf.Sin(angle) * xsign);
-
     }
 
     Vector3 GetVectorByAngle(Vector2 vec, float angle)

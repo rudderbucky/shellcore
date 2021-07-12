@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BombScript : MonoBehaviour
@@ -18,8 +17,9 @@ public class BombScript : MonoBehaviour
     private float timeInstantiated;
     private float fuseTime = 3F;
 
-     // Use this for initialization
-    void Start () {
+    // Use this for initialization
+    void Start()
+    {
         timeInstantiated = Time.time;
         if (!GetComponent<Collider2D>()) // no collider? no problem
         {
@@ -29,7 +29,7 @@ public class BombScript : MonoBehaviour
         }
 
         GetComponent<SpriteRenderer>().color = bombColor;
-        ParticleSystem.MainModule mainModule = GetComponentInChildren<ParticleSystem>().main; 
+        ParticleSystem.MainModule mainModule = GetComponentInChildren<ParticleSystem>().main;
         mainModule.startColor = bombColor;
 
         if (!explosionCirclePrefab)
@@ -45,8 +45,7 @@ public class BombScript : MonoBehaviour
             script.color = bombColor;
         }
     }
-	
-    
+
     /// <summary>
     /// Set the target of the missile projectile
     /// </summary>
@@ -84,7 +83,7 @@ public class BombScript : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0,
-                0 * Mathf.Rad2Deg));
+            0 * Mathf.Rad2Deg));
         Destroy(gameObject);
     }
 
@@ -97,7 +96,11 @@ public class BombScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if(Time.time < timeInstantiated + fuseTime || fired) return;
+        if (Time.time < timeInstantiated + fuseTime || fired)
+        {
+            return;
+        }
+
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
         if (craft != null && !craft.GetIsDead()) // check if the component was obtained
@@ -105,29 +108,30 @@ public class BombScript : MonoBehaviour
             if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && (!owner || (craft.GetTransform() != owner.transform)))
             {
                 var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
-                                                        // if the shell is low, damage the part
+                // if the shell is low, damage the part
 
                 ShellPart part = collision.transform.GetComponent<ShellPart>();
                 if (part)
                 {
                     part.TakeDamage(residue); // damage the part
                 }
-                if(!fired)
+
+                if (!fired)
                 {
                     AudioManager.PlayClipByID("clip_bombexplosion", transform.position);
                     GameObject tmp = Instantiate(explosionCirclePrefab); // instantiate circle explosion
                     tmp.SetActive(true);
                     tmp.transform.position = transform.position;
                     tmp.GetComponent<DrawCircleScript>().Initialize();
-                    for(int i = 0; i < 15; i++)
+                    for (int i = 0; i < 15; i++)
                     {
-                        Instantiate(hitPrefab, transform.position + new Vector3(Random.Range(-explosionRadius, explosionRadius), 
+                        Instantiate(hitPrefab, transform.position + new Vector3(Random.Range(-explosionRadius, explosionRadius),
                             Random.Range(-explosionRadius, explosionRadius)), Quaternion.identity).transform.localScale *= 2;
                     }
                 }
-                    
+
                 fired = true;
-                
+
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
         }

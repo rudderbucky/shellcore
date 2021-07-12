@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
@@ -13,10 +11,21 @@ namespace NodeEditorFramework.Standard
 
         //Node things
         public const string ID = "PartyManagementNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Party Manager"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Party Manager"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(208, height); }
+        }
 
         public bool clearParty;
         public string entityID;
@@ -32,7 +41,7 @@ namespace NodeEditorFramework.Standard
         {
             height = 40f;
             clearParty = RTEditorGUI.Toggle(clearParty, "Clear Party");
-            if(!clearParty)
+            if (!clearParty)
             {
                 height = 84f;
                 GUILayout.Label("Add ShellCore by ID:");
@@ -46,13 +55,20 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            if(clearParty) PartyManager.instance.ClearParty();
-            else 
+            if (clearParty)
             {
-                if(!PlayerCore.Instance.cursave.unlockedPartyIDs.Contains(entityID))
+                PartyManager.instance.ClearParty();
+            }
+            else
+            {
+                if (!PlayerCore.Instance.cursave.unlockedPartyIDs.Contains(entityID))
+                {
                     PlayerCore.Instance.cursave.unlockedPartyIDs.Add(entityID);
+                }
+
                 PartyManager.instance.AssignBackend(entityID);
             }
+
             return 0;
         }
     }

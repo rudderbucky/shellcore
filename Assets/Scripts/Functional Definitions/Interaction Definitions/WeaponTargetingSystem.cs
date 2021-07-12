@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// The targeting system of each weapon ability
@@ -8,7 +6,7 @@ using UnityEngine;
 public class WeaponTargetingSystem : ITargetingSystem
 {
     public WeaponAbility ability; // owner ability of the targeting system
-    public Transform target;// target of the targeting system
+    public Transform target; // target of the targeting system
 
     /// <summary>
     /// Get the target of the targeting system
@@ -17,7 +15,10 @@ public class WeaponTargetingSystem : ITargetingSystem
     /// <returns>The target of the targeting system</returns>
     public Transform GetTarget()
     {
-        if(DialogueSystem.isInCutscene) return null; // TODO: remove the hack and prevent weapons from firing somehow else
+        if (DialogueSystem.isInCutscene)
+        {
+            return null; // TODO: remove the hack and prevent weapons from firing somehow else
+        }
 
         Transform tmp = ability?.Core?.GetTargetingSystem()?.GetTarget(); // get the core's target if it has one
 
@@ -51,15 +52,18 @@ public class WeaponTargetingSystem : ITargetingSystem
     bool IsValidTarget(Transform t)
     {
         if (t == null || !t)
+        {
             return false;
+        }
+
         IDamageable damageable = t.GetComponent<IDamageable>();
         return (damageable != null
-            && !damageable.GetIsDead()
-            && damageable.GetTransform() != ability.Core.GetTransform()
-            && !FactionManager.IsAllied(damageable.GetFaction(), ability.Core.faction)
-            && ability.CheckCategoryCompatibility(damageable)
-            && (t.position - ability.transform.position).magnitude <= ability.GetRange()
-            && !damageable.GetInvisible());
+                && !damageable.GetIsDead()
+                && damageable.GetTransform() != ability.Core.GetTransform()
+                && !FactionManager.IsAllied(damageable.GetFaction(), ability.Core.faction)
+                && ability.CheckCategoryCompatibility(damageable)
+                && (t.position - ability.transform.position).magnitude <= ability.GetRange()
+                && !damageable.GetInvisible());
     }
 
     public Entity GetEntity()

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,26 +19,35 @@ public class ItemPropertyDisplay : MonoBehaviour
     public void SetDefaults()
     {
         editingDefaults = true;
-        if (!rectTransform) rectTransform = GetComponent<RectTransform>();
+        if (!rectTransform)
+        {
+            rectTransform = GetComponent<RectTransform>();
+        }
+
         rectTransform.gameObject.SetActive(true);
         rectTransform.position = new Vector2(Screen.width / 2, Screen.height / 2);
 
         factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
-        if(!FactionManager.FactionExists(factionDropdown.value)) 
+        if (!FactionManager.FactionExists(factionDropdown.value))
         {
             factionDropdown.value = 0;
             PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", 0);
         }
+
         jsonField.text = PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
-        foreach(var nonDefault in nonDefaults)
+        foreach (var nonDefault in nonDefaults)
         {
             nonDefault.SetActive(false);
         }
     }
 
-    void Awake() 
+    void Awake()
     {
-        if(!rectTransform) rectTransform = GetComponent<RectTransform>();
+        if (!rectTransform)
+        {
+            rectTransform = GetComponent<RectTransform>();
+        }
+
         factionDropdown.ClearOptions();
         List<string> options = new List<string>();
         factionIDs = new List<int>();
@@ -52,38 +60,40 @@ public class ItemPropertyDisplay : MonoBehaviour
                 factionIDs.Add(i);
             }
         }
+
         factionDropdown.AddOptions(options);
-        if(editingDefaults)
+        if (editingDefaults)
         {
             factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
-            if(!FactionManager.FactionExists(factionDropdown.value)) 
+            if (!FactionManager.FactionExists(factionDropdown.value))
             {
                 factionDropdown.value = 0;
                 PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", 0);
             }
         }
-        
     }
 
-    void Update() 
+    void Update()
     {
-        if(editingDefaults)
+        if (editingDefaults)
         {
             return;
         }
-        
+
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
     }
-    public void DisplayProperties(Item item) 
+
+    public void DisplayProperties(Item item)
     {
         currentItem = item;
         rectTransform.gameObject.SetActive(true);
-        foreach(var nonDefault in nonDefaults)
+        foreach (var nonDefault in nonDefaults)
         {
             nonDefault.SetActive(true);
         }
+
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
@@ -97,9 +107,9 @@ public class ItemPropertyDisplay : MonoBehaviour
         pathButton.SetActive(item.type == ItemType.Other);
     }
 
-    public void UpdateFaction() 
+    public void UpdateFaction()
     {
-        if(editingDefaults)
+        if (editingDefaults)
         {
             return;
         }
@@ -110,7 +120,7 @@ public class ItemPropertyDisplay : MonoBehaviour
 
     public void UpdateBlueprint()
     {
-        if(editingDefaults)
+        if (editingDefaults)
         {
             return;
         }
@@ -126,19 +136,20 @@ public class ItemPropertyDisplay : MonoBehaviour
 
     public void UpdatePatrolPath()
     {
-        if(currentItem.patrolPath == null)
+        if (currentItem.patrolPath == null)
         {
             currentItem.patrolPath = new NodeEditorFramework.Standard.PathData();
             currentItem.patrolPath.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
         }
-        
+
         WorldCreatorCursor.finishPath += SetPath;
         WorldCreatorCursor.instance.pathDrawing(WorldCreatorCursor.WCCursorMode.Item, currentItem.patrolPath);
         rectTransform.gameObject.SetActive(false);
     }
 
-    public void Hide() {
-        if(editingDefaults)
+    public void Hide()
+    {
+        if (editingDefaults)
         {
             //Debug.LogWarning(factionDropdown.value);
             PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", factionDropdown.value);

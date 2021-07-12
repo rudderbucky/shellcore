@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class EnergySphereScript : MonoBehaviour {
-
+public class EnergySphereScript : MonoBehaviour
+{
     // TODO: make undraggable if already being dragged
     private bool collected = false;
+
     private void OnEnable()
     {
         AIData.energySpheres.Add(this);
@@ -17,10 +16,12 @@ public class EnergySphereScript : MonoBehaviour {
     }
 
     float timer;
+
     private void Update()
     {
         timer += Time.deltaTime;
-        if (timer > 10) {
+        if (timer > 10)
+        {
             Destroy(gameObject);
         }
         else if (timer > 7)
@@ -40,16 +41,19 @@ public class EnergySphereScript : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (((collision.gameObject.name == "Shell Sprite" && collision.GetComponentInParent<IHarvester>() != null)
-            || collision.transform.root.GetComponentInChildren<Harvester>() != null) && !collected)
+             || collision.transform.root.GetComponentInChildren<Harvester>() != null) && !collected)
         {
             AudioManager.PlayClipByID("clip_powerup", transform.position);
             var harvester = collision.GetComponentInParent<IHarvester>();
-            if(harvester == null) harvester = collision.transform.root.GetComponentInChildren<IHarvester>();
+            if (harvester == null)
+            {
+                harvester = collision.transform.root.GetComponentInChildren<IHarvester>();
+            }
+
             collected = true;
             harvester.AddPower(20);
             harvester.PowerHeal();
             Destroy(gameObject);
         }
     }
-	
 }

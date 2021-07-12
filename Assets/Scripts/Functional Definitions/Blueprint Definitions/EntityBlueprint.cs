@@ -21,11 +21,13 @@ public class EntityBlueprint : ScriptableObject
         public string partID; //Part blueprint ID
         public bool shiny;
     }
+
     public string entityName = "Unnamed";
     public string coreSpriteID;
     public string coreShellSpriteID;
     public float[] shellHealth = CoreUpgraderScript.defaultHealths;
     public float[] baseRegen = {60, 0, 30};
+
     public enum IntendedType
     {
         ShellCore,
@@ -49,7 +51,8 @@ public class EntityBlueprint : ScriptableObject
     public List<PartInfo> parts;
     public Dialogue dialogue;
 
-    public static int GetPartValue(PartInfo info) {
+    public static int GetPartValue(PartInfo info)
+    {
         return (int)ResourceManager.GetAsset<PartBlueprint>(info.partID).health + info.tier * 200 + (info.abilityID == 0 ? 0 : 300);
     }
 

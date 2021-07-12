@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NodeEditorFramework.Utilities;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -9,17 +7,39 @@ namespace NodeEditorFramework.Standard
     public class WinBattleCondition : Node, ICondition
     {
         public const string ID = "WinBattleCondition";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Battle Zone Condition"; } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Battle Zone Condition"; }
+        }
 
         private ConditionState state;
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         public delegate void BattlezoneWonDelegate(string sectorName);
+
         public static BattlezoneWonDelegate OnBattleWin;
         public static BattlezoneWonDelegate OnBattleLose;
-        public override bool AutoLayout { get { return true; } }
-        public override Vector2 MinSize { get { return new Vector2(200, 50); } }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(200, 50); }
+        }
 
         public string sectorName;
 
@@ -38,15 +58,29 @@ namespace NodeEditorFramework.Standard
 
         public void Init(int index)
         {
-            if(!loseMode) OnBattleWin += BattleEnd;
-            else OnBattleLose += BattleEnd;
+            if (!loseMode)
+            {
+                OnBattleWin += BattleEnd;
+            }
+            else
+            {
+                OnBattleLose += BattleEnd;
+            }
+
             state = ConditionState.Listening;
         }
 
         public void DeInit()
         {
-            if(!loseMode) OnBattleWin -= BattleEnd;
-            else OnBattleLose -= BattleEnd;
+            if (!loseMode)
+            {
+                OnBattleWin -= BattleEnd;
+            }
+            else
+            {
+                OnBattleLose -= BattleEnd;
+            }
+
             state = ConditionState.Uninitialized;
         }
 

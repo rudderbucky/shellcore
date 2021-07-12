@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
+using UnityEngine;
 
 [System.Serializable]
 public struct RewardWrapper
@@ -23,11 +22,26 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "FinishTaskNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Finish Task"; } }
-        public override bool AutoLayout { get { return true; } }
-        public override Vector2 MinSize { get { return new Vector2(208, 50); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Finish Task"; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(208, 50); }
+        }
 
         //Task related
         public string rewardGiverID;
@@ -45,6 +59,7 @@ namespace NodeEditorFramework.Standard
 
         [ConnectionKnob("Output Up", Direction.Out, "Complete", ConnectionCount.Single, NodeSide.Top, 104F)]
         public ConnectionKnob outputUp;
+
         public bool useEntityColor = true;
         ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right);
 
@@ -74,10 +89,11 @@ namespace NodeEditorFramework.Standard
                     WorldCreatorCursor.instance.EntitySelection();
                 }
             }
+
             GUILayout.Label("Reward text:");
             rewardText = GUILayout.TextArea(rewardText, GUILayout.ExpandHeight(false), GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
-            if(!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
+            if (!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
             {
                 GUILayout.Label("Text Color:");
                 float r, g, b;
@@ -90,21 +106,25 @@ namespace NodeEditorFramework.Standard
             }
 
             GUILayout.Label("Answers:");
-            if(answers == null)
+            if (answers == null)
             {
                 answers = new List<string>();
                 answers.Add("Ok");
                 CreateConnectionKnob(outputAttribute);
-                if(outputRight && outputRight.connected())
+                if (outputRight && outputRight.connected())
                 {
                     //Debug.Log(outputRight.connections[0]);
                     outputKnobs[2].ApplyConnection(outputRight.connections[0]);
                     //outputKnobs[2].connections.Add(outputRight.connections[0]);
                 }
+
                 outputKnobs[1].DisplayLayout();
             }
 
-            if(outputRight) DeleteConnectionPort(outputRight);
+            if (outputRight)
+            {
+                DeleteConnectionPort(outputRight);
+            }
 
             for (int i = 0; i < answers.Count; i++)
             {
@@ -112,27 +132,34 @@ namespace NodeEditorFramework.Standard
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
                 {
-                    DeleteConnectionPort(outputPorts[i+1]);
+                    DeleteConnectionPort(outputPorts[i + 1]);
                     answers.RemoveAt(i);
                     i--;
-                    if(i == -1) break;
+                    if (i == -1)
+                    {
+                        break;
+                    }
+
                     continue;
                 }
+
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 answers[i] = RTEditorGUI.TextField(answers[i]);
 
 
                 outputKnobs[i + 1].DisplayLayout();
-                
+
                 GUILayout.EndHorizontal();
             }
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
             {
                 CreateConnectionKnob(outputAttribute);
                 answers.Add("");
             }
+
             GUILayout.EndHorizontal();
         }
 
@@ -150,25 +177,31 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.OnDialogueEnd = null;
 
             // hack: just increment index again to avoid upper port
-            if(outputRight && outputRight.connected())
+            if (outputRight && outputRight.connected())
             {
                 TaskManager.Instance.setNode(outputRight);
             }
-            else TaskManager.Instance.setNode(outputPorts[index+1]);
-            DialogueSystem.Instance.DialogueViewTransitionOut();
+            else
+            {
+                TaskManager.Instance.setNode(outputPorts[index + 1]);
+            }
 
+            DialogueSystem.Instance.DialogueViewTransitionOut();
         }
 
         public void OnCancel()
         {
-            OnClick(1);     
+            OnClick(1);
         }
 
         public void OnDialogue()
         {
             // draw objectives
-            if(TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
-            TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
+            if (TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
+            {
+                TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
+            }
+
             TaskManager.DrawObjectiveLocations();
 
             DialogueSystem.ShowFinishTaskNode(this, SectorManager.instance.GetEntity(rewardGiverID));
@@ -187,7 +220,7 @@ namespace NodeEditorFramework.Standard
                     SectorManager.instance.player.AddCredits(taskNode.creditReward);
                     SectorManager.instance.player.reputation += taskNode.reputationReward;
                     SectorManager.instance.player.shards += taskNode.shardReward;
-                    if(taskNode.partReward)
+                    if (taskNode.partReward)
                     {
                         SectorManager.instance.player.cursave.partInventory.Add(
                             new EntityBlueprint.PartInfo
@@ -230,7 +263,8 @@ namespace NodeEditorFramework.Standard
             if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
             {
                 Debug.Log("Contains key");
-                TaskManager.interactionOverrides[rewardGiverID].Push(() => {
+                TaskManager.interactionOverrides[rewardGiverID].Push(() =>
+                {
                     TaskManager.interactionOverrides[rewardGiverID].Pop();
                     OnDialogue();
                 });
@@ -238,24 +272,31 @@ namespace NodeEditorFramework.Standard
             else
             {
                 var stack = new Stack<UnityEngine.Events.UnityAction>();
-                stack.Push(() => {
-                        TaskManager.interactionOverrides[rewardGiverID].Pop();
-                        OnDialogue();
-                    });
+                stack.Push(() =>
+                {
+                    TaskManager.interactionOverrides[rewardGiverID].Pop();
+                    OnDialogue();
+                });
                 TaskManager.interactionOverrides.Add(rewardGiverID, stack);
                 Debug.Log("ADDED " + rewardGiverID);
             }
+
             TryAddObjective();
             return -1;
         }
 
         TaskManager.ObjectiveLocation objectiveLocation;
+
         void TryAddObjective()
-		{
-            foreach(var ent in AIData.entities)
+        {
+            foreach (var ent in AIData.entities)
             {
-                if(!ent) continue;
-                if(ent.ID == rewardGiverID)
+                if (!ent)
+                {
+                    continue;
+                }
+
+                if (ent.ID == rewardGiverID)
                 {
                     TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
                     objectiveLocation = new TaskManager.ObjectiveLocation(
@@ -269,6 +310,6 @@ namespace NodeEditorFramework.Standard
                     break;
                 }
             }
-		}
+        }
     }
 }

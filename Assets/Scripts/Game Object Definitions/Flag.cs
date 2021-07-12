@@ -11,28 +11,37 @@ public class Flag : MonoBehaviour, IInteractable
     public static void FindEntityAndWarpPlayer(string sectorName, string entityID)
     {
         // need player to warp
-        if(!PlayerCore.Instance) return;
+        if (!PlayerCore.Instance)
+        {
+            return;
+        }
+
         // use sectorName and entityID to find the transform to warp to
         var sector = SectorManager.GetSectorByName(sectorName);
-        if(sector == null)
+        if (sector == null)
         {
             Debug.LogWarning("<Flag> Cannot find specified sector");
             return;
         }
-        else PlayerCore.Instance.Dimension = sector.dimension;
-        foreach(var ent in sector.entities)
+        else
         {
-            if(ent.ID == entityID)
-            {;
+            PlayerCore.Instance.Dimension = sector.dimension;
+        }
+
+        foreach (var ent in sector.entities)
+        {
+            if (ent.ID == entityID)
+            {
+                ;
                 // position is a global vector (i.e., not local to the sector itself), so this should work
                 PlayerCore.Instance.Warp(ent.position);
             }
-        }  
+        }
     }
 
     public void Interact()
     {
-        switch(interactibility)
+        switch (interactibility)
         {
             case FlagInteractibility.Warp:
                 FindEntityAndWarpPlayer(sectorName, entityID);
@@ -70,7 +79,7 @@ public class Flag : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        if(SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
+        if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
         {
             GetComponent<SpriteRenderer>().enabled = false;
         }

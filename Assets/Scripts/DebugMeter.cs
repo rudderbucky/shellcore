@@ -1,19 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DebugMeter : MonoBehaviour {
-
+public class DebugMeter : MonoBehaviour
+{
     public enum Mode
     {
         Points,
         Count
     }
 
-	public static void AddDataPoint(float data)
+    public static void AddDataPoint(float data)
     {
         if (instance)
+        {
             instance.addDataPoint(data);
+        }
     }
 
     private void addDataPoint(float data)
@@ -25,7 +25,9 @@ public class DebugMeter : MonoBehaviour {
     public static void IncreaseCount()
     {
         if (instance)
+        {
             instance.increaseCount();
+        }
     }
 
     private void increaseCount()
@@ -45,7 +47,7 @@ public class DebugMeter : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if(mode == Mode.Count)
+        if (mode == Mode.Count)
         {
             rend.SetPosition(index, new Vector3(step * index, (float)count / 10f, 0f));
             index = (index + 1) % pointCount;

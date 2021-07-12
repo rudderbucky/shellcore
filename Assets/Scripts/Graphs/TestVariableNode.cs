@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
@@ -17,12 +15,26 @@ namespace NodeEditorFramework.Standard
 
         //Node things
         public const string ID = "TestVariableNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Test Variable"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 256); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
 
-        public override bool AllowRecursion { get { return true; } }
+        public override string Title
+        {
+            get { return "Test Variable"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 256); }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
 
         //Data
         public string variableName;
@@ -34,6 +46,7 @@ namespace NodeEditorFramework.Standard
 
         [ConnectionKnob("Comparison true", Direction.Out, "TaskFlow", NodeSide.Right, 32)]
         public ConnectionKnob outputTrue;
+
         [ConnectionKnob("Comparison false", Direction.Out, "TaskFlow", NodeSide.Right, 48)]
         public ConnectionKnob outputFalse;
 

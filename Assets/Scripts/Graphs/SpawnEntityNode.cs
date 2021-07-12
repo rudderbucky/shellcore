@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
 using UnityEngine;
 
@@ -8,11 +7,25 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Actions/Spawn Entity")]
     public class SpawnEntityNode : Node
     {
-        public override string GetName { get { return "SpawnEntityNode"; } }
-        public override string Title { get { return "Spawn Entity"; } }
+        public override string GetName
+        {
+            get { return "SpawnEntityNode"; }
+        }
 
-        public override Vector2 MinSize { get { return new Vector2(200, 350); } }
-        public override bool AutoLayout { get { return true; } }
+        public override string Title
+        {
+            get { return "Spawn Entity"; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(200, 350); }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -45,7 +58,7 @@ namespace NodeEditorFramework.Standard
             output.DisplayLayout();
             GUILayout.EndHorizontal();
             GUILayout.Label("Note: Using the ID of a character will spawn the " +
-                "character, rendering the blueprint, faction and entity name fields obsolete.");
+                            "character, rendering the blueprint, faction and entity name fields obsolete.");
             GUILayout.Label("Blueprint:");
             blueprint = GUILayout.TextField(blueprint);
             GUILayout.Label("Entity Name:");
@@ -90,9 +103,14 @@ namespace NodeEditorFramework.Standard
                     additionalFlags.RemoveAt(i);
                     additionalCounts.RemoveAt(i);
                     i--;
-                    if(i == -1) break;
+                    if (i == -1)
+                    {
+                        break;
+                    }
+
                     continue;
                 }
+
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Flag name:");
@@ -107,22 +125,24 @@ namespace NodeEditorFramework.Standard
                 additionalCounts[i] = Mathf.Max(1, Utilities.RTEditorGUI.IntField(additionalCounts[i]));
                 GUILayout.EndHorizontal();
             }
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
             {
                 additionalFlags.Add("");
                 additionalCounts.Add(1);
             }
+
             GUILayout.EndHorizontal();
         }
 
         public override int Traverse()
         {
             count = Mathf.Max(1, count);
-            if(issueID)
+            if (issueID)
             {
                 Vector2 coords = coordinates;
-                if(!useCoordinates)
+                if (!useCoordinates)
                 {
                     for (int i = 0; i < AIData.flags.Count; i++)
                     {
@@ -134,21 +154,22 @@ namespace NodeEditorFramework.Standard
                     }
                 }
 
-                foreach(var data in SectorManager.instance.characters)
+                foreach (var data in SectorManager.instance.characters)
                 {
-                    if(data.ID == entityID)
+                    if (data.ID == entityID)
                     {
                         Debug.Log("Spawn Entity ID given matches with a character name! Spawning character...");
-                        
-                        foreach(var oj in AIData.entities)
+
+                        foreach (var oj in AIData.entities)
                         {
-                            if(oj && oj.ID == data.ID)
+                            if (oj && oj.ID == data.ID)
                             {
                                 Debug.Log("Character already found. Not spawning.");
-                                if(forceCharacterTeleport)
+                                if (forceCharacterTeleport)
                                 {
                                     (oj as AirCraft).Warp(coords); // hack for now, all the characters are AirCrafts so this should be fine.
                                 }
+
                                 return 0;
                             }
                         }
@@ -160,7 +181,7 @@ namespace NodeEditorFramework.Standard
                             faction = data.faction,
                             name = data.name,
                             position = coords,
-                            ID = data.ID,
+                            ID = data.ID
                         };
                         SectorManager.instance.SpawnEntity(characterBlueprint, entityData);
                         return 0;
@@ -169,44 +190,52 @@ namespace NodeEditorFramework.Standard
 
                 Debug.Log("Spawn Entity ID ( " + entityID + " ) does not correspond with a character. Performing normal operations.");
             }
-            
+
             EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             try
             {
                 JsonUtility.FromJsonOverwrite(this.blueprint, blueprint);
             }
-            catch(System.Exception)
+            catch (System.Exception)
             {
                 Debug.Log("Could not parse blueprint value as JSON. Now attempting to fetch blueprint through the Resource Manager.");
                 blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
             }
 
-            for(int i = 0; i < count; i++)
-                SpawnAdditionalEntity(flagName);
-            if(additionalFlags != null)
+            for (int i = 0; i < count; i++)
             {
-                for(int i = 0; i < additionalFlags.Count; i++)
+                SpawnAdditionalEntity(flagName);
+            }
+
+            if (additionalFlags != null)
+            {
+                for (int i = 0; i < additionalFlags.Count; i++)
                 {
-                    for(int j = 0; j < additionalCounts[i]; j++)
+                    for (int j = 0; j < additionalCounts[i]; j++)
                     {
                         SpawnAdditionalEntity(additionalFlags[i]);
                     }
                 }
             }
+
             return 0;
         }
 
         void SpawnAdditionalEntity(string flagName)
         {
             Vector2 coords = coordinates;
-            if(!useCoordinates)
+            if (!useCoordinates)
             {
                 for (int i = 0; i < AIData.flags.Count; i++)
                 {
                     if (AIData.flags[i].name == flagName)
                     {
                         coords = AIData.flags[i].transform.position;
-                        if(DevConsoleScript.fullLog) Debug.Log(coords);
+                        if (DevConsoleScript.fullLog)
+                        {
+                            Debug.Log(coords);
+                        }
+
                         break;
                     }
                 }
@@ -217,7 +246,7 @@ namespace NodeEditorFramework.Standard
             {
                 JsonUtility.FromJsonOverwrite(this.blueprint, blueprint);
             }
-            catch(System.Exception)
+            catch (System.Exception)
             {
                 Debug.Log("Could not parse blueprint value as JSON. Now attempting to fetch blueprint through the Resource Manager.");
                 blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
@@ -230,10 +259,14 @@ namespace NodeEditorFramework.Standard
                     faction = faction,
                     name = entityName,
                     position = coords,
-                    ID = issueID ? entityID : "",
+                    ID = issueID ? entityID : ""
                 };
                 var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
-                if(DevConsoleScript.fullLog) Debug.Log(entity.transform.position + " " + entity.spawnPoint);
+                if (DevConsoleScript.fullLog)
+                {
+                    Debug.Log(entity.transform.position + " " + entity.spawnPoint);
+                }
+
                 entity.name = entityName;
             }
             else

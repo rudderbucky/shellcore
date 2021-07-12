@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// Temporarily increases the craft's regen
 /// </summary>
 public class ActiveRegen : ActiveAbility

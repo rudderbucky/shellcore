@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems; // Required when using Event data.
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+
 
 public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
 {
@@ -17,7 +17,8 @@ public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
     {
     }
 
-    protected virtual void Start() {
+    protected virtual void Start()
+    {
         image = GetComponentsInChildren<Image>()[1];
         shooter = GetComponentsInChildren<Image>()[2];
         val = GetComponentInChildren<Text>();
@@ -25,19 +26,25 @@ public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
         isShiny.enabled = part.shiny;
 
         image.color = activeColor = FactionManager.GetFactionColor(0);
-        if(part.shiny) 
+        if (part.shiny)
         {
             activeColor += new Color32(0, 0, 150, 0);
             image.color = activeColor;
         }
+
         image.GetComponent<RectTransform>().sizeDelta = image.sprite.bounds.size * 100;
         // button border size is handled specifically by the grid layout components
-    
+
         string shooterID = AbilityUtilities.GetShooterByID(part.abilityID);
-        if(shooterID != null) {
+        if (shooterID != null)
+        {
             shooter.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
             shooter.color = activeColor;
             shooter.rectTransform.sizeDelta = shooter.sprite.bounds.size * 100;
-        } else shooter.enabled = false;
+        }
+        else
+        {
+            shooter.enabled = false;
+        }
     }
 }

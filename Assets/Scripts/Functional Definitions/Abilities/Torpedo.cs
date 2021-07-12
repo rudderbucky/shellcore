@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Torpedo : Bullet {
-
+public class Torpedo : Bullet
+{
     public static readonly int torpedoDamage = 600;
+
     protected override void Awake()
     {
         base.Awake(); // base awake

@@ -1,18 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Audio;
-using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 public class ResourceManager : MonoBehaviour
 {
-
-
     [System.Serializable]
     public struct Resource
     {
@@ -20,15 +18,15 @@ public class ResourceManager : MonoBehaviour
         public Object obj;
     }
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     public List<Resource> segmentedBuiltIns;
-    
 
     [HideInInspector]
     public string fieldID;
+
     [HideInInspector]
     public Object newObject;
-    #endif
+#endif
 
     //List<Resource> builtInResources;
     public static List<string> allPartNames;
@@ -57,8 +55,18 @@ public class ResourceManager : MonoBehaviour
         FactionManager.defaultFactions = new List<Faction>(GetAssetsOfType<Faction>());
     }
 
-    public static string[] resourceHeaders {get {return new string[] {"sprites:", "parts:", "entities:",
-        "vending-options:", "paths:", "factions:", "audio:"}; }}
+    public static string[] resourceHeaders
+    {
+        get
+        {
+            return new string[]
+            {
+                "sprites:", "parts:", "entities:",
+                "vending-options:", "paths:", "factions:", "audio:"
+            };
+        }
+    }
+
     public bool LoadResources(string path)
     {
         if (!path.Equals(Application.streamingAssetsPath))
@@ -88,19 +96,25 @@ public class ResourceManager : MonoBehaviour
             {
                 string line = lines[i];
                 if (line == "")
+                {
                     continue;
+                }
 
                 var isMode = false;
-                for(int j = 0; j < resourceHeaders.Length; j++)
+                for (int j = 0; j < resourceHeaders.Length; j++)
                 {
-                    if(line.ToLower().StartsWith(resourceHeaders[j]))
+                    if (line.ToLower().StartsWith(resourceHeaders[j]))
                     {
                         mode = j;
                         isMode = true;
                         break;
                     }
                 }
-                if(isMode) continue;
+
+                if (isMode)
+                {
+                    continue;
+                }
 
                 string[] names = line.Split(':');
                 string resPath = System.IO.Path.Combine(path, names[1]);
@@ -109,16 +123,31 @@ public class ResourceManager : MonoBehaviour
                     fileNames.Add(resPath);
                     switch (mode)
                     {
-                        case 0: sprites.    Add((names[0], resPath)); break;
-                        case 1: parts.      Add((names[0], resPath)); break;
-                        case 2: entities.   Add((names[0], resPath)); break;
-                        case 3: vending.    Add((names[0], resPath)); break;
-                        case 4: paths.      Add((names[0], resPath)); break;
-                        case 5: factions.   Add((names[0], resPath)); break;
-                        case 6: sounds.     Add((names[0], resPath)); break;
+                        case 0:
+                            sprites.Add((names[0], resPath));
+                            break;
+                        case 1:
+                            parts.Add((names[0], resPath));
+                            break;
+                        case 2:
+                            entities.Add((names[0], resPath));
+                            break;
+                        case 3:
+                            vending.Add((names[0], resPath));
+                            break;
+                        case 4:
+                            paths.Add((names[0], resPath));
+                            break;
+                        case 5:
+                            factions.Add((names[0], resPath));
+                            break;
+                        case 6:
+                            sounds.Add((names[0], resPath));
+                            break;
                         default:
                             break;
                     }
+
                     if (!path.Equals(Application.streamingAssetsPath))
                     {
                         Debug.Log("Resource loaded: " + names[0]);
@@ -222,9 +251,15 @@ public class ResourceManager : MonoBehaviour
             {
                 string line = lines[i];
                 if (line == "")
+                {
                     continue;
+                }
+
                 string lower = line.ToLower();
-                if(resourceHeaders.Any(header => lower.StartsWith(header))) continue;
+                if (resourceHeaders.Any(header => lower.StartsWith(header)))
+                {
+                    continue;
+                }
 
                 string[] names = line.Split(':');
                 string resPath = System.IO.Path.Combine(path, names[1]);
@@ -234,6 +269,7 @@ public class ResourceManager : MonoBehaviour
                 }
             }
         }
+
         return fileNames.ToArray();
     }
 
@@ -264,42 +300,58 @@ public class ResourceManager : MonoBehaviour
          */
         segmentedBuiltIns = new List<Resource>();
         if (resourcePack == null)
+        {
             return;
-        switch (type) {
+        }
+
+        switch (type)
+        {
             case ResourceManagerEditor.ResourcesByType.entity:
-                foreach(Resource res in resourcePack.resources) {
-                    if(res.obj as EntityBlueprint) {
+                foreach (Resource res in resourcePack.resources)
+                {
+                    if (res.obj as EntityBlueprint)
+                    {
                         segmentedBuiltIns.Add(res);
                     }
                 }
+
                 break;
             case ResourceManagerEditor.ResourcesByType.part:
-                foreach(Resource res in resourcePack.resources) {
-                    if(res.obj as PartBlueprint) {
+                foreach (Resource res in resourcePack.resources)
+                {
+                    if (res.obj as PartBlueprint)
+                    {
                         segmentedBuiltIns.Add(res);
                     }
                 }
+
                 break;
             case ResourceManagerEditor.ResourcesByType.sprite:
-                foreach(Resource res in resourcePack.resources) {
-                    if(res.obj as Sprite) {
+                foreach (Resource res in resourcePack.resources)
+                {
+                    if (res.obj as Sprite)
+                    {
                         segmentedBuiltIns.Add(res);
                     }
                 }
+
                 break;
             case ResourceManagerEditor.ResourcesByType.prefab:
-                foreach(Resource res in resourcePack.resources) {
-                    if(res.obj as GameObject) {
+                foreach (Resource res in resourcePack.resources)
+                {
+                    if (res.obj as GameObject)
+                    {
                         segmentedBuiltIns.Add(res);
                     }
                 }
+
                 break;
             case ResourceManagerEditor.ResourcesByType.all:
                 segmentedBuiltIns = resourcePack.resources;
                 break;
         }
     }
-    #endif
+#endif
     public static T GetAsset<T>(string ID) where T : Object
     {
         return Instance.getAsset<T>(ID);
@@ -308,22 +360,36 @@ public class ResourceManager : MonoBehaviour
     public T getAsset<T>(string ID) where T : Object
     {
         if (ID == "" || ID == null)
+        {
             return null;
+        }
 
         if (resources.ContainsKey(ID))
+        {
             if (resources[ID] is T)
+            {
                 return resources[ID] as T;
+            }
             else
+            {
                 Debug.LogWarning("Trying to get " + ID + " (" + resources[ID].GetType() + ") as " + typeof(T).FullName);
+            }
+        }
         else
+        {
             Debug.LogWarning("Resource ID " + ID + " not found");
+        }
+
         return null;
     }
 
     public bool resourceExists(string ID)
     {
         if (ID == "" || ID == null)
+        {
             return false;
+        }
+
         return resources.ContainsKey(ID);
     }
 
@@ -333,8 +399,11 @@ public class ResourceManager : MonoBehaviour
         foreach (var resource in Instance.resources)
         {
             if (resource.Value is T)
+            {
                 results.Add(resource.Value as T);
+            }
         }
+
         return results.ToArray();
     }
 }
@@ -343,14 +412,13 @@ public class ResourceManager : MonoBehaviour
 [CustomEditor(typeof(ResourceManager))]
 public class ResourceManagerEditor : Editor
 {
-
     public enum ResourcesByType
     {
         part,
         sprite,
         entity,
         prefab,
-        all,
+        all
     }
 
     enum EditorState
@@ -362,6 +430,7 @@ public class ResourceManagerEditor : Editor
         None,
         successModify
     }
+
     EditorState state = EditorState.None;
     ResourcesByType displayType = ResourcesByType.all;
     SerializedProperty IDField;
@@ -372,6 +441,7 @@ public class ResourceManagerEditor : Editor
     SerializedProperty playerMusicSource;
     SerializedProperty masterVolume;
     ResourceManager manager;
+
     private void OnEnable()
     {
         manager = (ResourceManager)target;
@@ -394,22 +464,24 @@ public class ResourceManagerEditor : Editor
         EditorGUILayout.EndHorizontal();
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(resourcePack, new GUIContent("Resource pack: "));
-        if(EditorGUI.EndChangeCheck())
+        if (EditorGUI.EndChangeCheck())
         {
             manager.GenerateSegmentedList(ResourcesByType.all);
             segmentedBuiltIns = serializedObject.FindProperty("segmentedBuiltIns");
         }
-        if(manager.resourcePack == null)
+
+        if (manager.resourcePack == null)
         {
             serializedObject.ApplyModifiedProperties();
             return;
         }
+
         EditorGUILayout.BeginHorizontal();
         manager.fieldID = EditorGUILayout.TextField("Resource ID:", IDField.stringValue) as string;
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         manager.newObject = EditorGUILayout.ObjectField("Resource Object:",
-        ObjectField.objectReferenceValue, typeof(Object), true) as Object;
+            ObjectField.objectReferenceValue, typeof(Object), true) as Object;
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         GUI.SetNextControlName("add");
@@ -428,12 +500,13 @@ public class ResourceManagerEditor : Editor
                     break;
                 }
             }
+
             if (state != EditorState.successModify)
             {
-                
                 manager.resourcePack.resources.Add(resource);
                 state = EditorState.successAdd;
             }
+
             manager.GenerateSegmentedList(displayType);
             IDField.stringValue = null;
             manager.fieldID = null;
@@ -441,6 +514,7 @@ public class ResourceManagerEditor : Editor
             GUI.FocusControl("add");
             serializedObject.Update();
         }
+
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         GUI.SetNextControlName("delete");
@@ -462,6 +536,7 @@ public class ResourceManagerEditor : Editor
                 }
             }
         }
+
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Find Resource by ID!"))
@@ -476,8 +551,10 @@ public class ResourceManagerEditor : Editor
                     break;
                 }
             }
+
             serializedObject.Update();
         }
+
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Export all to ResourcePack"))
@@ -494,6 +571,7 @@ public class ResourceManagerEditor : Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
@@ -505,28 +583,34 @@ public class ResourceManagerEditor : Editor
             {
                 type = "entities";
             }
-            else if(manager.newObject is PartBlueprint)
+            else if (manager.newObject is PartBlueprint)
             {
                 type = "parts";
             }
-            if(type != null)
+
+            if (type != null)
             {
                 // Create JSON
                 File.WriteAllText(manager.newObject.name + ".json", JsonUtility.ToJson(manager.newObject));
 
                 // Add path and ID to resource data
                 if (!File.Exists("ResourceData.txt"))
+                {
                     File.Create("ResourceData.txt").Close();
+                }
 
                 List<string> lines = new List<string>(File.ReadAllLines("ResourceData.txt"));
                 bool sectionFound = false;
                 for (int i = 0; i < lines.Count; i++)
-                    if(lines[i].StartsWith(type))
+                {
+                    if (lines[i].StartsWith(type))
                     {
                         lines.Insert(i + 1, manager.fieldID + ":" + manager.newObject.name + ".json");
                         sectionFound = true;
                         break;
                     }
+                }
+
                 if (!sectionFound)
                 {
                     lines.Add(type + ":");
@@ -543,6 +627,7 @@ public class ResourceManagerEditor : Editor
                 Debug.Log("Can't serialize that asset to json format!");
             }
         }
+
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
