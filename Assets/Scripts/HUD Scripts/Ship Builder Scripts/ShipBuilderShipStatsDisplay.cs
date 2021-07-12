@@ -37,13 +37,13 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour {
 					totalRegens[0] += 50 * part.info.tier;
 					break;
 				case 18:
-					totalHealths[0] += 250 * part.info.tier;
+					totalHealths[0] += 400 * part.info.tier;
 					break;
 				case 19:
 					totalRegens[2] += 50 * part.info.tier;
 					break;
 				case 20:
-					totalHealths[2] += 250 * part.info.tier;
+					totalHealths[2] += 400 * part.info.tier;
 					break;
 			}
 			PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(part.info.partID);
