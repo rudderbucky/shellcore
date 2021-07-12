@@ -74,10 +74,8 @@ public class LandPlatformGenerator : MonoBehaviour
                     {
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
+
+                    return false;
                 }
             }
         }
@@ -428,7 +426,7 @@ public class LandPlatformGenerator : MonoBehaviour
         float d = (startPos - targetPos).sqrMagnitude;
         float sqr = distance * distance;
         List<Vector2> path = new List<Vector2>();
-        if (end.Value.pos == start.Value.pos && end.HasValue)
+        if (end.HasValue && end.Value.pos == start.Value.pos)
         {
             if (d > sqr)
             {
@@ -519,7 +517,7 @@ public class LandPlatformGenerator : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("Pathfinding failed because of corrupted direction data at " + current.pos + " with direction " + dir);
+                    Debug.LogError($"Pathfinding failed because of corrupted direction data at {current.pos} with direction {dir}");
                     return null;
                 }
             }
