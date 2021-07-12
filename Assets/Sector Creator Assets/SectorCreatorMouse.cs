@@ -616,7 +616,7 @@ public class SectorCreatorMouse : MonoBehaviour
 
         coordinates[1] = Mathf.RoundToInt((pos.x - offset.x) / tileSize);
         coordinates[0] = -Mathf.RoundToInt((pos.y - offset.y) / tileSize);
-        Debug.Log("row: " + coordinates[0] + " column: " + coordinates[1] + " of a square with " + rows + " rows and " + columns + " columns");
+        Debug.Log($"row: {coordinates[0]} column: {coordinates[1]} of a square with {rows} rows and {columns} columns");
     }
 
     public void ToJSON()
@@ -770,12 +770,12 @@ public class SectorCreatorMouse : MonoBehaviour
             System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\");
         }
 
-        string path = Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName;
+        string path = $"{Application.streamingAssetsPath}\\Sectors\\{sct.sectorName}";
         System.IO.File.WriteAllText(path, output);
         System.IO.Path.ChangeExtension(path, ".json");
         mainMenu.ToggleActive();
         successBox.ToggleActive();
-        Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName);
+        Debug.Log("JSON written to location: " + path);
     }
 
     public void FromJSON()
@@ -803,10 +803,10 @@ public class SectorCreatorMouse : MonoBehaviour
             height = sectorDataWrapper.bounds.h;
 
             sectorProps.ToggleActive();
-            sectorProps.transform.Find("Beginning X").GetComponentInChildren<InputField>().text = x + "";
-            sectorProps.transform.Find("Beginning Y").GetComponentInChildren<InputField>().text = "" + y;
-            sectorProps.transform.Find("Height").GetComponentInChildren<InputField>().text = "" + height;
-            sectorProps.transform.Find("Width").GetComponentInChildren<InputField>().text = "" + width;
+            sectorProps.transform.Find("Beginning X").GetComponentInChildren<InputField>().text = x.ToString();
+            sectorProps.transform.Find("Beginning Y").GetComponentInChildren<InputField>().text = y.ToString();
+            sectorProps.transform.Find("Height").GetComponentInChildren<InputField>().text = height.ToString();
+            sectorProps.transform.Find("Width").GetComponentInChildren<InputField>().text = width.ToString();
             sectorProps.transform.Find("Sector Name").GetComponentInChildren<InputField>().text = sctName;
             sectorProps.transform.Find("Sector Type").GetComponent<Dropdown>().value = (int)sectorDataWrapper.type;
             sectorProps.ToggleActive();
@@ -859,15 +859,17 @@ public class SectorCreatorMouse : MonoBehaviour
 
             foreach (Sector.LevelEntity ent in sectorDataWrapper.entities)
             {
-                PlaceableObject obj = new PlaceableObject();
-                obj.pos = ent.position;
-                obj.faction = ent.faction;
-                obj.shellcoreJSON = ent.blueprintJSON;
-                obj.ID = ent.ID;
+                PlaceableObject obj = new PlaceableObject()
+                {
+                    pos = ent.position,
+                    faction = ent.faction,
+                    shellcoreJSON = ent.blueprintJSON,
+                    ID = ent.ID,
 
-                obj.assetID = ent.assetID;
-                obj.type = ObjectTypes.Other;
-                obj.vendingID = ent.vendingID;
+                    assetID = ent.assetID,
+                    type = ObjectTypes.Other,
+                    vendingID = ent.vendingID
+                };
                 for (int i = 0; i < placeables.Length; i++)
                 {
                     if (placeables[i].assetID == obj.assetID)
@@ -898,7 +900,7 @@ public class SectorCreatorMouse : MonoBehaviour
         }
         else
         {
-            Debug.Log("File " + path + " doesn't exist.");
+            Debug.Log($"File {path} doesn't exist.");
         }
     }
 }
