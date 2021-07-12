@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
+    private static string CurrentSavePath;
     private float abortTimer = 4;
     private static float deadzoneDamageMult = 0.1f;
     private static float deadzoneDamageBase = 0.2f;
@@ -86,7 +87,7 @@ public class SectorManager : MonoBehaviour
 
     public static string testJsonPath = null;
     public static string testResourcePath = null;
-    public static string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main - " + VersionNumberScript.mapVersion;
+    public static string jsonPath = $"{Application.streamingAssetsPath}\\Sectors\\main - {VersionNumberScript.mapVersion}";
 
     public void Initialize()
     {
@@ -125,9 +126,9 @@ public class SectorManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
             string currentPath = null;
-            if (File.Exists(Application.persistentDataPath + "\\CurrentSavePath"))
+            if (File.Exists(CurrentSavePath))
             {
-                currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+                currentPath = File.ReadAllLines(CurrentSavePath)[0];
             }
 
             if (File.Exists(currentPath))
@@ -471,6 +472,7 @@ public class SectorManager : MonoBehaviour
 
     private void Start()
     {
+        CurrentSavePath = Application.persistentDataPath + "\\CurrentSavePath";
         if (ResourceManager.Instance)
         {
             sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
@@ -855,7 +857,7 @@ public class SectorManager : MonoBehaviour
     {
         lpg.SetColor(overrideProperties.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
 
-        Vector2 center = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
+        Vector2 center = new Vector2(current.bounds.x + current.bounds.w * 0.5f, current.bounds.y - current.bounds.h * 0.5f);
 
         if (current.platform) // Old data
         {
@@ -877,8 +879,8 @@ public class SectorManager : MonoBehaviour
 
             Vector2 offset = new Vector2
             {
-                x = center.x - tileSize * (rows - 1) / 2F,
-                y = center.y + tileSize * (cols - 1) / 2F
+                x = center.x - tileSize * (rows - 1) * 0.5f,
+                y = center.y + tileSize * (cols - 1) * 0.5f
             };
 
             lpg.Offset = offset;
