@@ -189,10 +189,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
             taskVariables[name] = value;
         }
 
-        if (VariableConditionNode.OnVariableUpdate != null)
-        {
-            VariableConditionNode.OnVariableUpdate.Invoke(name);
-        }
+        VariableConditionNode.OnVariableUpdate?.Invoke(name);
     }
 
     public int GetTaskVariable(string name)

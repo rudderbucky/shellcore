@@ -134,7 +134,7 @@ namespace NodeEditorFramework.Standard
                     TaskManager.Instance.setNode(outputKnobs[i]);
                     if (PrintRandomRolls)
                     {
-                        DevConsoleScript.Print("Total weight: " + total + ", Random roll: " + originalRoll + ", Connection index: " + i);
+                        DevConsoleScript.Print($"Total weight: {total}, Random roll: {originalRoll}, Connection index: {i}");
                     }
 
                     return -1;

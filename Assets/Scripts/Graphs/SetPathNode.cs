@@ -108,8 +108,10 @@ namespace NodeEditorFramework.Standard
             {
                 if (path == null)
                 {
-                    path = new PathData();
-                    path.waypoints = new List<PathData.Node>();
+                    path = new PathData()
+                    {
+                        waypoints = new List<PathData.Node>()
+                    };
                 }
 
                 WorldCreatorCursor.finishPath += SetPath;
@@ -122,13 +124,13 @@ namespace NodeEditorFramework.Standard
             if (useCustomMass = GUILayout.Toggle(useCustomMass, "Use Custom Weight", GUILayout.MinWidth(400)))
             {
                 GUILayout.Label("Weight");
-                mass = float.Parse(GUILayout.TextField(mass + "", GUILayout.MinWidth(400)));
+                mass = float.Parse(GUILayout.TextField(mass.ToString(), GUILayout.MinWidth(400)));
             }
         }
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected " + ID + "!");
+            Debug.Log($"selected {ID}!");
 
             entityID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
@@ -163,30 +165,30 @@ namespace NodeEditorFramework.Standard
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
+                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft airCraft)
                 {
-                    if (AIData.entities[i] is PlayerCore)
+                    if (AIData.entities[i] is PlayerCore player)
                     {
-                        AIData.entities[i].StartCoroutine(pathPlayer(AIData.entities[i] as PlayerCore));
+                        AIData.entities[i].StartCoroutine(pathPlayer(player));
                     }
                     else
                     {
-                        AIData.entities[i].isPathing = false; // override any previous paths given to it immediately
+                        airCraft.isPathing = false; // override any previous paths given to it immediately
                         if (!asynchronous)
                         {
-                            (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
+                            airCraft.GetAI().setPath(path, continueTraversing);
                         }
                         else
                         {
-                            (AIData.entities[i] as AirCraft).GetAI().setPath(path);
+                            airCraft.GetAI().setPath(path);
                         }
 
                         if (useCustomMass)
                         {
-                            AIData.entities[i].weight = mass;
+                            airCraft.weight = mass;
                         }
 
-                        (AIData.entities[i] as AirCraft).rotateWhileMoving = !doNotRotate;
+                        airCraft.rotateWhileMoving = !doNotRotate;
                     }
                 }
             }
@@ -206,7 +208,7 @@ namespace NodeEditorFramework.Standard
 
             while (current != null)
             {
-                Vector2 delta = current.position - (Vector2)player.transform.position - (Vector2)player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
+                Vector2 delta = current.position - (Vector2)player.transform.position - player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
                 player.MoveCraft(delta.normalized);
                 if (delta.sqrMagnitude < PathAI.minDist)
                 {

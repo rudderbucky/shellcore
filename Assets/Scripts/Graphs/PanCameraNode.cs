@@ -43,13 +43,13 @@ namespace NodeEditorFramework.Standard
 
             if (!(endPanning = GUILayout.Toggle(endPanning, "End Panning")))
             {
-                if (useCoordinates = Utilities.RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
+                if (useCoordinates = RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
                 {
                     GUILayout.Label("Coordinates:");
                     float x = coordinates.x, y = coordinates.y;
                     GUILayout.BeginHorizontal();
-                    x = Utilities.RTEditorGUI.FloatField("X", x);
-                    y = Utilities.RTEditorGUI.FloatField("Y", y);
+                    x = RTEditorGUI.FloatField("X", x);
+                    y = RTEditorGUI.FloatField("Y", y);
                     coordinates = new Vector2(x, y);
                     GUILayout.EndHorizontal();
                 }
@@ -59,7 +59,7 @@ namespace NodeEditorFramework.Standard
                     flagName = GUILayout.TextField(flagName);
                 }
 
-                velocityFactor = Utilities.RTEditorGUI.FloatField("Velocity Factor", velocityFactor);
+                velocityFactor = RTEditorGUI.FloatField("Velocity Factor", velocityFactor);
                 asynchronous = RTEditorGUI.Toggle(asynchronous, "Asynchronous Mode", GUILayout.MinWidth(400));
             }
         }

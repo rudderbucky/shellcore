@@ -103,7 +103,7 @@ namespace NodeEditorFramework.Standard
             if (customDialogueSpeed = GUILayout.Toggle(customDialogueSpeed, "Use custom typing speed", GUILayout.MinWidth(40f)))
             {
                 GUILayout.Label("Time between characters (seconds)");
-                speed = double.Parse(GUILayout.TextField(speed + "", GUILayout.MinWidth(40f)));
+                speed = double.Parse(GUILayout.TextField(speed.ToString(), GUILayout.MinWidth(40f)));
             }
 
             cancel.DisplayLayout();
@@ -154,8 +154,8 @@ namespace NodeEditorFramework.Standard
                 var node = state != NodeEditorGUI.NodeEditorState.Dialogue
                     ? StartDialogueNode.missionCanvasNode
                     : StartDialogueNode.dialogueCanvasNode;
-                Debug.Log(node?.EntityID + " " + StartDialogueNode.missionCanvasNode?.EntityID);
-                if (node && node.EntityID != null && node.EntityID != "")
+                Debug.Log($"{node?.EntityID} {StartDialogueNode.missionCanvasNode?.EntityID}");
+                if (node && !string.IsNullOrEmpty(node.EntityID))
                 {
                     handler.GetInteractionOverrides()[node.EntityID].Pop();
                     // DialogueSystem.Instance.DialogueViewTransitionOut();

@@ -118,7 +118,7 @@ namespace NodeEditorFramework.Standard
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             targetID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
@@ -172,11 +172,11 @@ namespace NodeEditorFramework.Standard
                 killCount++;
                 if (targetFaction != 0)
                 {
-                    SectorManager.instance.player.alerter.showMessage("ENEMIES DESTROYED: " + killCount + " / " + targetCount, "clip_victory");
+                    SectorManager.instance.player.alerter.showMessage($"ENEMIES DESTROYED: {killCount} / {targetCount}", "clip_victory");
                 }
                 else
                 {
-                    SectorManager.instance.player.alerter.showMessage("ALLIES DEAD: " + killCount + " / " + targetCount, "clip_alert");
+                    SectorManager.instance.player.alerter.showMessage($"ALLIES DEAD: {killCount} / {targetCount}", "clip_alert");
                 }
 
                 if (killCount == targetCount)

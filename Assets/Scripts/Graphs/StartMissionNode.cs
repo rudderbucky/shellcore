@@ -119,15 +119,17 @@ namespace NodeEditorFramework.Standard
         {
             if (PlayerCore.Instance.cursave.missions.TrueForAll((x) => { return x.name != missionName; }))
             {
-                var mission = new Mission();
-                mission.name = missionName;
-                mission.rank = rank;
-                mission.status = Mission.MissionStatus.Inactive;
-                mission.tasks = new List<Task>();
-                mission.prerequisites = prerequisites;
-                mission.entryPoint = entryPoint;
-                mission.textColor = textColor;
-                mission.episode = episode;
+                var mission = new Mission()
+                {
+                    name = missionName,
+                    rank = rank,
+                    status = Mission.MissionStatus.Inactive,
+                    tasks = new List<Task>(),
+                    prerequisites = prerequisites,
+                    entryPoint = entryPoint,
+                    textColor = textColor,
+                    episode = episode
+                };
                 PlayerCore.Instance.cursave.missions.Add(mission);
             }
             else

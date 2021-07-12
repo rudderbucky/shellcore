@@ -35,16 +35,17 @@ public class MissionTraverser : Traverser
             {
                 foreach (var node in nodeCanvas.nodes)
                 {
-                    if (node is StartTaskNode)
+                    if (node is StartTaskNode startTask)
                     {
-                        var startTask = node as StartTaskNode;
                         if (startTask.partReward)
                         {
-                            EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
-                            part.partID = startTask.partID;
-                            part.abilityID = startTask.partAbilityID;
-                            part.tier = startTask.partTier;
-                            part.secondaryData = startTask.partSecondaryData;
+                            EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo()
+                            {
+                                partID = startTask.partID,
+                                abilityID = startTask.partAbilityID,
+                                tier = startTask.partTier,
+                                secondaryData = startTask.partSecondaryData
+                            };
                             part = PartIndexScript.CullToPartIndexValues(part);
 
                             if (!PlayerCore.Instance.cursave.partsObtained.Contains(part))
@@ -67,10 +68,7 @@ public class MissionTraverser : Traverser
         base.StartQuest();
         SectorManager.OnSectorLoad += ((val) =>
         {
-            if (traverserLimiterDelegate != null)
-            {
-                traverserLimiterDelegate.Invoke(val);
-            }
+            traverserLimiterDelegate?.Invoke(val);
         });
         if (currentNode == null)
         {
@@ -91,7 +89,7 @@ public class MissionTraverser : Traverser
             return true;
         }
 
-        if (CPName == null || CPName == "")
+        if (string.IsNullOrEmpty(CPName))
         {
             return false;
         }
@@ -105,15 +103,15 @@ public class MissionTraverser : Traverser
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
             var node = nodeCanvas.nodes[i];
-            if (node is StartTaskNode && (node as StartTaskNode).taskName == CPName)
+            if (node is StartTaskNode startTask && startTask.taskName == CPName)
             {
-                (node as StartTaskNode).forceTask = true;
+                startTask.forceTask = true;
                 currentNode = node;
                 return true;
             }
         }
 
-        Debug.LogWarning("Could not find checkpoint: " + CPName + " " + nodeCanvas.missionName);
+        Debug.LogWarning($"Could not find checkpoint: {CPName} {nodeCanvas.missionName}");
         return false;
     }
 

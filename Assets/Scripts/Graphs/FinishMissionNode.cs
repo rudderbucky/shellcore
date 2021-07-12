@@ -47,9 +47,10 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            var missionName = (Canvas as QuestCanvas).missionName;
             // TODO: prevent using this node in DialogueCanvases
             var mission = PlayerCore.Instance.cursave.missions.Find(
-                (m) => m.name == (Canvas as QuestCanvas).missionName);
+                (m) => m.name == missionName);
             mission.status = Mission.MissionStatus.Complete;
             if (MissionCondition.OnMissionStatusChange != null)
             {
@@ -59,9 +60,9 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.ShowMissionComplete(mission, rewardsText);
             AudioManager.OverrideMusicTemporarily(jingleID);
 
-            if (TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))
+            if (TaskManager.objectiveLocations.ContainsKey(missionName))
             {
-                TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
+                TaskManager.objectiveLocations[missionName].Clear();
             }
 
             (Canvas.Traversal as Traverser).lastCheckpointName = mission.name + "_complete";

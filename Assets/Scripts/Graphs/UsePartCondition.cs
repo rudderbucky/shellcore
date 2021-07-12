@@ -64,16 +64,17 @@ namespace NodeEditorFramework.Standard
             OnPlayerReconstruct.RemoveListener(CheckParts);
             State = ConditionState.Uninitialized;
 
-            if (TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
+            var missionName = (Canvas as QuestCanvas).missionName;
+            if (TaskManager.objectiveLocations[missionName].Contains(objectiveLocation))
             {
-                TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
+                TaskManager.objectiveLocations[missionName].Remove(objectiveLocation);
                 TaskManager.DrawObjectiveLocations();
             }
         }
 
         public void CheckParts()
         {
-            if (sectorName == "" || sectorName == null || ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
+            if (string.IsNullOrEmpty(sectorName) || ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
             {
                 var parts = SectorManager.instance.player.blueprint.parts;
                 for (int i = 0; i < parts.Count; i++)
@@ -99,18 +100,19 @@ namespace NodeEditorFramework.Standard
                 // TODO: Disambiguate name and entityName
                 if (ent.name == "Yard" || ent.entityName == "Yard")
                 {
+                    var missionName = (Canvas as QuestCanvas).missionName;
                     if (clear)
                     {
-                        TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
+                        TaskManager.objectiveLocations[missionName].Clear();
                     }
 
                     objectiveLocation = new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,
-                        (Canvas as QuestCanvas).missionName,
+                        missionName,
                         ent
                     );
-                    TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(objectiveLocation);
+                    TaskManager.objectiveLocations[missionName].Add(objectiveLocation);
                     TaskManager.DrawObjectiveLocations();
                 }
             }

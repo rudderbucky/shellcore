@@ -150,7 +150,7 @@ namespace NodeEditorFramework.Standard
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             entityID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
@@ -158,7 +158,7 @@ namespace NodeEditorFramework.Standard
 
         void SetTargetID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             targetEntityID = ID;
             WorldCreatorCursor.selectEntity -= SetTargetID;
@@ -191,16 +191,19 @@ namespace NodeEditorFramework.Standard
 
             if (!(target && entity)) // room for improvement but probably unecessary
             {
-                for (int i = 0; i < AIData.entities.Count; i++)
+                foreach (var e in AIData.entities)
                 {
-                    if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
+                    if (e is AirCraft airCraft)
                     {
-                        entity = AIData.entities[i] as AirCraft;
-                    }
+                        if (e.ID == entityID)
+                        {
+                            entity = airCraft;
+                        }
 
-                    if (AIData.entities[i].ID == targetEntityID && AIData.entities[i] is AirCraft)
-                    {
-                        target = AIData.entities[i];
+                        if (e.ID == targetEntityID)
+                        {
+                            target = e;
+                        }
                     }
                 }
             }
@@ -209,7 +212,7 @@ namespace NodeEditorFramework.Standard
             {
                 if (!(target && entity))
                 {
-                    Debug.LogWarning("Could not find target/entity! " + target + " " + entity);
+                    Debug.LogWarning($"Could not find target/entity! {target} {entity}");
                     return 0;
                 }
 

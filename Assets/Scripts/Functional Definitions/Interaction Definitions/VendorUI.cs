@@ -155,13 +155,14 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
             for (int i = 0; i < blueprint.items.Count; i++)
             {
+                var image = buttons[i].GetComponent<Image>();
                 if (player.GetPower() < blueprint.items[i].cost)
                 {
-                    buttons[i].GetComponent<Image>().color = new Color(0, 0, 0.4F);
+                    image.color = new Color(0, 0, 0.4F);
                 }
                 else
                 {
-                    buttons[i].GetComponent<Image>().color = Color.white;
+                    image.color = Color.white;
                 }
             }
         }
