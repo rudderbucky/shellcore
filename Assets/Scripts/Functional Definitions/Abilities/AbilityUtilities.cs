@@ -235,7 +235,7 @@ public static class AbilityUtilities
             case 34:
                 return null;
             case 4:
-				if (data != "beamgroundshooter_sprite")
+		if (data != "beamgroundshooter_sprite")
                 {
                     return "beamshooter_sprite";
                 }
@@ -264,30 +264,30 @@ public static class AbilityUtilities
                 return "lasershooter_sprite";
             case 38:
                 return "flakshooter_sprite";
-			case 36:
-				return "bombshooter_sprite";
-			case 2:
-				return "ability_indicator2";
-			case 11:
-			case 12:
-				return "ability_indicator3";
-			case 28:
-				return "ability_indicator4";
-			case 25:
-				return "ability_indicator5";
-			case 27:
-				return "ability_indicator6";
-			case 14:
-				if (data != "siegegroundshooter_sprite")
-				{
-					return "bulletshooter_sprite";
-				}
-				else
-				{
-					return "siegegroundshooter_sprite";
-				}
-			case 29:
-				return "ability_indicator7";
+	    case 36:
+		return "bombshooter_sprite";
+	    case 14:
+		 if (data != "siegegroundshooter_sprite")
+		 {
+		     return "bulletshooter_sprite";
+		 }
+		 else
+		 {
+		     return "siegegroundshooter_sprite";
+		 }
+	    case 2:
+		return "ability_indicatorshell";
+	    case 11:
+	    case 12:
+		return "ability_indicatorcore";
+	    case 28:
+		return "ability_indicatorrtt";
+	    case 25:
+		return "ability_indicatordm";
+	    case 27:
+		return "ability_indicatorpin";
+	    case 29:
+		return "ability_indicatorabs";
             default:
                 return "ability_indicator";
         }
