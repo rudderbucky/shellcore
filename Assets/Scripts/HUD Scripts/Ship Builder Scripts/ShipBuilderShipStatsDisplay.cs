@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,9 +10,9 @@ public interface IShipStatsDatabase
     int GetBuildValue();
     int GetBuildCost();
 }
-
 public class ShipBuilderShipStatsDisplay : MonoBehaviour
 {
+
     public ShipBuilderCursorScript cursorScript;
     public IShipStatsDatabase statsDatabase;
     public Text display;
@@ -19,12 +20,8 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
 
     void Start()
     {
-        if (statsDatabase == null)
-        {
-            statsDatabase = cursorScript;
-        }
+        if (statsDatabase == null) statsDatabase = cursorScript;
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -43,26 +40,24 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
                     speed += 15 * part.info.tier;
                     break;
                 case 17:
-                    totalRegens[0] += 50 * part.info.tier;
+                    totalRegens[0] += ShellRegen.regens[0] * part.info.tier;
                     break;
                 case 18:
-                    totalHealths[0] += 250 * part.info.tier;
+                    totalHealths[0] += ShellMax.max * part.info.tier;
                     break;
                 case 19:
-                    totalRegens[2] += 50 * part.info.tier;
+                    totalRegens[2] += ShellRegen.regens[2] * part.info.tier;
                     break;
                 case 20:
-                    totalHealths[2] += 250 * part.info.tier;
+                    totalHealths[2] += ShellMax.max * part.info.tier;
                     break;
             }
-
             PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(part.info.partID);
             totalHealths[0] += blueprint.health / 2;
             totalHealths[1] += blueprint.health / 4;
             shipMass += blueprint.mass;
             weight += blueprint.mass * Entity.weightMultiplier;
         }
-
         string buildStat = "";
         if (statsDatabase.GetMode() == BuilderMode.Yard || statsDatabase.GetMode() == BuilderMode.Workshop)
         {
@@ -71,24 +66,16 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
         else
         {
             string colorTag = "<color=white>";
-            if (cursorScript.buildCost > 0)
-            {
-                colorTag = "<color=red>";
-            }
-            else if (cursorScript.buildCost < 0)
-            {
-                colorTag = "<color=lime>";
-            }
-
+            if (cursorScript.buildCost > 0) colorTag = "<color=red>";
+            else if (cursorScript.buildCost < 0) colorTag = "<color=lime>";
             buildStat = "TOTAL BUILD COST: " + "\n" + colorTag + statsDatabase.GetBuildCost() + " CREDITS</color>";
         }
-
         display.text = "SHELL: " + totalHealths[0] + "\n"
-                       + "CORE: " + totalHealths[1] + "\n"
-                       + "ENERGY: " + totalHealths[2] + "\n"
-                       + "SPEED: " + (int)Craft.GetPhysicsSpeed(speed, weight) + "\n"
-                       + "WEIGHT: " + (int)weight + "\n"
-                       + buildStat;
+        + "CORE: " + totalHealths[1] + "\n"
+        + "ENERGY: " + totalHealths[2] + "\n"
+        + "SPEED: " + (int)Craft.GetPhysicsSpeed(speed, weight) + "\n"
+        + "WEIGHT: " + (int)weight + "\n"
+        + buildStat;
         regenDisplay.text = "REGEN: " + totalRegens[0] + "\n\n" + "REGEN: " + totalRegens[2];
     }
 }
