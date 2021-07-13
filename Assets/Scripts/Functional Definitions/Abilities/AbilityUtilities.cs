@@ -267,13 +267,17 @@ public static class AbilityUtilities
 	    case 36:
 		return "bombshooter_sprite";
 	    case 14:
-		 if (data != "siegegroundshooter_sprite")
+		 if (data == "siegegroundshooter_sprite")
 		 {
-		     return "bulletshooter_sprite";
+		     return "siegegroundshooter_sprite";
+		 }
+		 else if (data != "siegeshooter_sprite")
+		 {
+		     return "bulletshooter_sprite";	 
 		 }
 		 else
 		 {
-		     return "siegegroundshooter_sprite";
+		     return "siegeshooter_sprite";
 		 }
 	    case 2:
 		return "ability_indicatorshell";
