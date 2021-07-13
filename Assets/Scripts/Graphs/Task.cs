@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -22,6 +21,7 @@ public class Mission
     public string name;
     public string rank;
     public string entryPoint;
+
     public enum MissionStatus
     {
         Inactive,

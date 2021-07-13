@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using NodeEditorFramework.Utilities;
+using UnityEngine;
 
 public enum FlagInteractibility
 {
@@ -15,10 +13,25 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Actions/Set Flag Interactibility")]
     public class SetFlagInteractibilityNode : Node
     {
-        public override string GetName { get { return "SetFlagInteractibilityNode"; } }
-        public override string Title { get { return "Set Flag Interactibility"; } }
-        public override bool AllowRecursion { get { return true; } }
-        public override bool AutoLayout { get { return true; } }
+        public override string GetName
+        {
+            get { return "SetFlagInteractibilityNode"; }
+        }
+
+        public override string Title
+        {
+            get { return "Set Flag Interactibility"; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -38,13 +51,12 @@ namespace NodeEditorFramework.Standard
             "Warp"
         };
 
-
         public override void NodeGUI()
         {
             // Params: Flag name, Flag interactibility enum
             // If warp: grab entity ID and sector through entity selection
             flagName = GUILayout.TextField(flagName);
-            
+
 
             GUILayout.Label("Interactibility type:");
             if (GUILayout.Button(intStrings[(int)interactibility]))
@@ -55,9 +67,11 @@ namespace NodeEditorFramework.Standard
                 {
                     typePopup.AddItem(new GUIContent(intStrings[i]), false, SelectType, i);
                 }
+
                 typePopup.Show(GUIScaleUtility.GUIToScreenSpace(GUILayoutUtility.GetLastRect().max));
             }
-            if(interactibility == FlagInteractibility.Warp)
+
+            if (interactibility == FlagInteractibility.Warp)
             {
                 GUILayout.Label("Sector name: ");
                 sectorName = GUILayout.TextField(sectorName);
@@ -71,9 +85,7 @@ namespace NodeEditorFramework.Standard
                         WorldCreatorCursor.instance.EntitySelection();
                     }
                 }
-            }   
-            
-
+            }
         }
 
         // type select for node interactibility dropdown
@@ -85,12 +97,12 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            switch(interactibility)
+            switch (interactibility)
             {
                 case FlagInteractibility.Warp:
-                    foreach(var flag in AIData.flags)
+                    foreach (var flag in AIData.flags)
                     {
-                        if(flag.name == flagName)
+                        if (flag.name == flagName)
                         {
                             Debug.Log("Set flag interactibility");
                             flag.sectorName = sectorName;
@@ -99,9 +111,10 @@ namespace NodeEditorFramework.Standard
                             break;
                         }
                     }
-                    
+
                     break;
             }
+
             return 0;
         }
 
@@ -109,14 +122,15 @@ namespace NodeEditorFramework.Standard
         {
             this.entityID = entityID;
             // search for entity sector for autofilling
-            foreach(var ent in WorldCreatorCursor.instance.placedItems)
+            foreach (var ent in WorldCreatorCursor.instance.placedItems)
             {
-                if(ent.ID == entityID)
+                if (ent.ID == entityID)
                 {
                     var sectorWrapper = WorldCreatorCursor.instance.GetWrapperByPos(ent);
                     this.sectorName = sectorWrapper.sector.sectorName;
                 }
             }
+
             WorldCreatorCursor.selectEntity -= SelectEntity;
         }
     }

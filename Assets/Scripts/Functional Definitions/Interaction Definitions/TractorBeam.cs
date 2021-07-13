@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 // Tractor beam wrapper class.
 public class TractorBeam : MonoBehaviour
@@ -16,24 +14,42 @@ public class TractorBeam : MonoBehaviour
     public Entity owner;
     Draggable target;
     private float energyPickupTimer = 10.0f; // Energy pickup timer
-	protected float energyPickupSpeed = 61.0f;
+    protected float energyPickupSpeed = 61.0f;
     public bool initialized;
     private bool energyEnabled = true;
     private GameObject tractorBeamPrefab;
-    
-    public void SetEnergyEnabled(bool val) {
+
+    public void SetEnergyEnabled(bool val)
+    {
         energyEnabled = val;
     }
-    public void BuildTractor() {
+
+    public void BuildTractor()
+    {
         if (!glowPrefab)
+        {
             glowPrefab = ResourceManager.GetAsset<GameObject>("glow_prefab");
+        }
+
         if (!tractorMaterial)
+        {
             tractorMaterial = ResourceManager.GetAsset<Material>("tractor_material");
-        if(!coreGlow)
+        }
+
+        if (!coreGlow)
+        {
             coreGlow = Instantiate(glowPrefab, null, true).transform;
-        if(owner as Drone) coreGlow.localScale *= 0.5F;
+        }
+
+        if (owner as Drone)
+        {
+            coreGlow.localScale *= 0.5F;
+        }
+
         if (!targetGlow)
+        {
             targetGlow = Instantiate(glowPrefab, null, true).transform;
+        }
 
         coreGlow.gameObject.SetActive(false);
         targetGlow.gameObject.SetActive(false);
@@ -51,15 +67,25 @@ public class TractorBeam : MonoBehaviour
         lineRenderer.sortingOrder = 1;
         lineRenderer.sortingLayerName = "Projectiles";
         childObject.name = "TractorBeam";
-	    tractorBeamPrefab = childObject;
+        tractorBeamPrefab = childObject;
         initialized = true;
     }
-    private void Update() {
-        if(initialized) TractorBeamUpdate();
+
+    private void Update()
+    {
+        if (initialized)
+        {
+            TractorBeamUpdate();
+        }
     }
+
     protected void FixedUpdate()
     {
-        if (!IsValidDraggableTarget(target)) SetTractorTarget(null); // Make sure that you are still allowed to tractor the target
+        if (!IsValidDraggableTarget(target))
+        {
+            SetTractorTarget(null); // Make sure that you are still allowed to tractor the target
+        }
+
         if (target && !owner.GetIsDead()) // Update tractor beam physics
         {
             Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
@@ -73,34 +99,44 @@ public class TractorBeam : MonoBehaviour
 
                 if (target.GetComponent<EnergySphereScript>() || owner as Yard)
                 {
-                    if(dir.sqrMagnitude <= 0.36F)
+                    if (dir.sqrMagnitude <= 0.36F)
                     {
                         rigidbody.position = transform.position;
                         rigidbody.velocity = Vector2.zero;
                         target = null;
-                    }    
+                    }
                     else
+                    {
                         rigidbody.position += (Vector2)dir.normalized * 0.6F;
+                    }
+
                     if (owner.IsInvisible)
+                    {
                         target = null;
+                    }
                 }
                 else if (dist > 2f)
                 {
-                    if(!owner.tractorSwitched)
-                        rigidbody.AddForce(dir.normalized * (dist - 2F)  * rigidbody.mass * tractorStrength / Time.fixedDeltaTime);
+                    if (!owner.tractorSwitched)
+                    {
+                        rigidbody.AddForce(dir.normalized * (dist - 2F) * rigidbody.mass * tractorStrength / Time.fixedDeltaTime);
+                    }
                     else
+                    {
                         owner.GetComponent<Rigidbody2D>().AddForce(-dir.normalized * (dist - 2F) *
                             rigidbody.mass * tractorStrength / Time.fixedDeltaTime);
+                    }
                 }
             }
         }
     }
+
     private static float tractorStrength = 1.5F;
 
     protected void TractorBeamUpdate()
     {
-        lineRenderer.material.color = owner.tractorSwitched ? new Color32(255,32,255,128) : new Color32(88, 239, 255, 128);
-		this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
+        lineRenderer.material.color = owner.tractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128);
+        this.energyPickupTimer -= Time.fixedDeltaTime * this.energyPickupSpeed;
         // Grab energy automatically after a while when the craft is not pulling something more important
         if (energyEnabled && (!target) && (this.energyPickupTimer < 0) && !owner.IsInvisible && !owner.isAbsorbing)
         {
@@ -118,21 +154,26 @@ public class TractorBeam : MonoBehaviour
                     closest = energies[i].transform;
                 }
             }
+
             if (closest && closestD < energyPickupRangeSquared && target == null)
+            {
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
-			this.energyPickupTimer = 0.0f; // Can change this to a non-zero value to add the timing element back
+            }
+
+            this.energyPickupTimer = 0.0f; // Can change this to a non-zero value to add the timing element back
         }
 
         if ((target && !owner.GetIsDead() && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead()))) // Update tractor beam graphics
         {
-            if(!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > maxBreakRangeSquared && !(owner as Yard)) 
+            if (!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > maxBreakRangeSquared && !(owner as Yard))
             {
                 SetTractorTarget(null); // break tractor if too far away
-            } else 
+            }
+            else
             {
                 lineRenderer.positionCount = 2;
                 lineRenderer.sortingOrder = 103;
-                lineRenderer.SetPositions(new Vector3[] { transform.position, target.transform.position });
+                lineRenderer.SetPositions(new Vector3[] {transform.position, target.transform.position});
 
                 coreGlow.gameObject.SetActive(true);
                 targetGlow.gameObject.SetActive(true);
@@ -157,52 +198,78 @@ public class TractorBeam : MonoBehaviour
         //    Debug.Log("AI Dropped something!");
         //}
         var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
-        if(!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp)) AIData.strayParts.Add(targetComp);
+        if (!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp))
+        {
+            AIData.strayParts.Add(targetComp);
+        }
 
         if (IsValidDraggableTarget(newTarget))
         {
             if (lineRenderer)
+            {
                 lineRenderer.enabled = (newTarget != null);
+            }
+
             if (target)
+            {
                 target.dragging = false;
+            }
+
             target = newTarget;
             if (target)
+            {
                 target.dragging = true;
-        }  
+            }
+        }
     }
 
     private bool IsValidDraggableTarget(Draggable newTarget)
     {
-        if (forcedTarget || !newTarget) 
+        if (forcedTarget || !newTarget)
+        {
             return true;
+        }
 
         if ((newTarget.transform.position - transform.position).sqrMagnitude > maxRangeSquared && !(owner as Yard))
+        {
             return false;
+        }
 
         return InvertTractorCheck(owner, newTarget);
-    }   
+    }
 
     public static bool InvertTractorCheck(Entity owner, Draggable newTarget)
     {
-        Entity requestedTarget = newTarget.gameObject.GetComponent<Entity>(); 
+        Entity requestedTarget = newTarget.gameObject.GetComponent<Entity>();
         if (owner.tractorSwitched || !requestedTarget || ((requestedTarget.faction == owner.faction) && (requestedTarget is Drone || requestedTarget is Tank || requestedTarget is Turret)))
+        {
             return true;
+        }
 
         return false;
-    } 
+    }
 
     public Draggable GetTractorTarget()
     {
         return target;
     }
+
     protected void OnDestroy()
     {
-        if(coreGlow)
+        if (coreGlow)
+        {
             Destroy(coreGlow.gameObject);
-        if(targetGlow)
+        }
+
+        if (targetGlow)
+        {
             Destroy(targetGlow.gameObject);
-	    if(tractorBeamPrefab)
+        }
+
+        if (tractorBeamPrefab)
+        {
             Destroy(tractorBeamPrefab);
+        }
     }
 
     bool forcedTargetHadDraggable = false;
@@ -210,10 +277,18 @@ public class TractorBeam : MonoBehaviour
 
     public void ForceTarget(Transform obj)
     {
-        if(!initialized) BuildTractor();
-        if(obj == null)
+        if (!initialized)
         {
-            if(forcedTarget && !forcedTargetHadDraggable) Destroy(forcedTarget.GetComponent<Draggable>());
+            BuildTractor();
+        }
+
+        if (obj == null)
+        {
+            if (forcedTarget && !forcedTargetHadDraggable)
+            {
+                Destroy(forcedTarget.GetComponent<Draggable>());
+            }
+
             forcedTarget = null;
             forcedTargetHadDraggable = false;
             SetTractorTarget(null);
@@ -222,7 +297,11 @@ public class TractorBeam : MonoBehaviour
         {
             forcedTargetHadDraggable = obj.GetComponentInChildren<Draggable>();
             forcedTarget = obj;
-            if(!forcedTargetHadDraggable) obj.gameObject.AddComponent<Draggable>();
+            if (!forcedTargetHadDraggable)
+            {
+                obj.gameObject.AddComponent<Draggable>();
+            }
+
             SetTractorTarget(obj.GetComponentInChildren<Draggable>());
         }
     }

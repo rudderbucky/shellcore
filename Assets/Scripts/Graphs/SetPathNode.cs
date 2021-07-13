@@ -1,17 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using NodeEditorFramework.Utilities;
+using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "AI/Set Path")]
     public class SetPathNode : Node
     {
-        public override string GetName { get { return "SetPathNode"; } }
-        public override string Title { get { return "Set Path"; } }
-        public override bool AllowRecursion { get { return true; } }
-        public override bool AutoLayout { get { return true; } }
+        public override string GetName
+        {
+            get { return "SetPathNode"; }
+        }
+
+        public override string Title
+        {
+            get { return "Set Path"; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -44,22 +59,33 @@ namespace NodeEditorFramework.Standard
                 if (IDInput == null)
                 {
                     if (inputKnobs.Count == 1)
+                    {
                         IDInput = CreateConnectionKnob(IDInStyle);
+                    }
                     else
+                    {
                         IDInput = inputKnobs[1];
+                    }
                 }
+
                 IDInput.DisplayLayout();
             }
+
             GUILayout.EndHorizontal();
 
             useIDInput = RTEditorGUI.Toggle(useIDInput, "Use ID Input", GUILayout.MinWidth(400));
             if (GUI.changed)
             {
                 if (useIDInput)
+                {
                     IDInput = CreateConnectionKnob(IDInStyle);
+                }
                 else
+                {
                     DeleteConnectionPort(IDInput);
+                }
             }
+
             if (!useIDInput)
             {
                 GUILayout.Label("Entity ID");
@@ -85,6 +111,7 @@ namespace NodeEditorFramework.Standard
                     path = new PathData();
                     path.waypoints = new List<PathData.Node>();
                 }
+
                 WorldCreatorCursor.finishPath += SetPath;
                 WorldCreatorCursor.instance.pathDrawing(WorldCreatorCursor.WCCursorMode.Control, path);
             }
@@ -92,12 +119,11 @@ namespace NodeEditorFramework.Standard
             GUILayout.BeginHorizontal();
             doNotRotate = GUILayout.Toggle(doNotRotate, "Do Not Rotate", GUILayout.MinWidth(400));
             GUILayout.EndHorizontal();
-            if(useCustomMass = GUILayout.Toggle(useCustomMass, "Use Custom Weight", GUILayout.MinWidth(400)))
+            if (useCustomMass = GUILayout.Toggle(useCustomMass, "Use Custom Weight", GUILayout.MinWidth(400)))
             {
                 GUILayout.Label("Weight");
                 mass = float.Parse(GUILayout.TextField(mass + "", GUILayout.MinWidth(400)));
             }
-
         }
 
         void SetEntityID(string ID)
@@ -119,7 +145,9 @@ namespace NodeEditorFramework.Standard
             if (useIDInput)
             {
                 if (useIDInput && IDInput == null)
+                {
                     IDInput = inputKnobs[1];
+                }
 
                 if (IDInput.connected())
                 {
@@ -144,13 +172,25 @@ namespace NodeEditorFramework.Standard
                     else
                     {
                         AIData.entities[i].isPathing = false; // override any previous paths given to it immediately
-                        if(!asynchronous) (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
-                        else (AIData.entities[i] as AirCraft).GetAI().setPath(path);
-                        if(useCustomMass) AIData.entities[i].weight = mass;
+                        if (!asynchronous)
+                        {
+                            (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
+                        }
+                        else
+                        {
+                            (AIData.entities[i] as AirCraft).GetAI().setPath(path);
+                        }
+
+                        if (useCustomMass)
+                        {
+                            AIData.entities[i].weight = mass;
+                        }
+
                         (AIData.entities[i] as AirCraft).rotateWhileMoving = !doNotRotate;
                     }
                 }
             }
+
             return asynchronous ? 0 : -1;
         }
 
@@ -176,14 +216,20 @@ namespace NodeEditorFramework.Standard
                         current = GetNode(current.children[next]);
                     }
                     else
+                    {
                         current = null;
+                    }
                 }
+
                 yield return null;
             }
 
             player.SetIsInteracting(true);
 
-            if(!asynchronous) continueTraversing();
+            if (!asynchronous)
+            {
+                continueTraversing();
+            }
         }
 
         PathData.Node GetNode(int ID)
@@ -191,8 +237,11 @@ namespace NodeEditorFramework.Standard
             for (int i = 0; i < path.waypoints.Count; i++)
             {
                 if (path.waypoints[i].ID == ID)
+                {
                     return path.waypoints[i];
+                }
             }
+
             return null;
         }
     }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class AIMovement
 {
@@ -15,10 +14,12 @@ public class AIMovement
     bool requireRangeUpdate = false;
     Vector2? moveTarget;
     float minDist = 10000f;
+
     public void StopMoving()
     {
         moveTarget = null;
     }
+
     public void SetMoveTarget(Vector2 target, float minDistance = 64f)
     {
         if (moveTarget != target || minDistance != minDist)
@@ -28,11 +29,10 @@ public class AIMovement
             minDist = minDistance;
         }
     }
+
     bool inRange = false;
-    public float DistanceToTarget
-    {
-        get; private set;
-    }
+    public float DistanceToTarget { get; private set; }
+
     public bool targetIsInRange()
     {
         if (requireRangeUpdate && moveTarget != null)
@@ -41,6 +41,7 @@ public class AIMovement
             inRange = DistanceToTarget < minDist;
             requireRangeUpdate = false;
         }
+
         return inRange;
     }
 

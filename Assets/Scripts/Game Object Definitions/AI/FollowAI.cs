@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FollowAI : AIModule
 {
@@ -8,6 +6,7 @@ public class FollowAI : AIModule
     public Transform followTarget;
     float timer = 0.3F;
     Vector2 direction = Vector2.zero;
+
     public override void Init()
     {
         initialized = true;
@@ -16,7 +15,7 @@ public class FollowAI : AIModule
     public override void ActionTick()
     {
         Transform target;
-        if(owner != null && !owner.Equals(null))
+        if (owner != null && !owner.Equals(null))
         {
             target = owner.GetTransform();
         }
@@ -27,12 +26,15 @@ public class FollowAI : AIModule
 
         if (target != null)
         {
-            if(timer >= 0.3F)
+            if (timer >= 0.3F)
             {
                 timer = 0;
                 ai.movement.SetMoveTarget(target.position + new Vector3(Random.Range(-1F, 1F), Random.Range(-1F, 1F)));
             }
-            else timer += Time.deltaTime;
+            else
+            {
+                timer += Time.deltaTime;
+            }
         }
     }
 

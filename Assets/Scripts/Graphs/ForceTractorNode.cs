@@ -1,17 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "AI/Force Tractor")]
     public class ForceTractorNode : Node
     {
-        public override string GetName { get { return "ForceTractorNode"; } }
-        public override string Title { get { return "Force Tractor"; } }
-        public override bool AllowRecursion { get { return true; } }
-        public override bool AutoLayout { get { return true; } }
+        public override string GetName
+        {
+            get { return "ForceTractorNode"; }
+        }
+
+        public override string Title
+        {
+            get { return "Force Tractor"; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
@@ -41,12 +54,18 @@ namespace NodeEditorFramework.Standard
                 if (IDInput == null)
                 {
                     if (inputKnobs.Count == 1)
+                    {
                         IDInput = CreateConnectionKnob(IDInStyle);
+                    }
                     else
+                    {
                         IDInput = inputKnobs[1];
+                    }
                 }
+
                 IDInput.DisplayLayout();
             }
+
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -56,10 +75,15 @@ namespace NodeEditorFramework.Standard
             if (GUI.changed)
             {
                 if (useIDInput)
+                {
                     IDInput = CreateConnectionKnob(IDInStyle);
+                }
                 else
+                {
                     DeleteConnectionPort(IDInput);
+                }
             }
+
             if (!useIDInput)
             {
                 GUILayout.Label("Entity ID");
@@ -81,10 +105,15 @@ namespace NodeEditorFramework.Standard
             if (GUI.changed)
             {
                 if (useIDInputTarget)
+                {
                     IDInput = CreateConnectionKnob(IDInStyle);
+                }
                 else
+                {
                     DeleteConnectionPort(IDInput);
+                }
             }
+
             if (!useIDInputTarget)
             {
                 GUILayout.Label("Entity ID");
@@ -120,12 +149,15 @@ namespace NodeEditorFramework.Standard
 
         AirCraft entity = null;
         Entity target = null;
+
         public override int Traverse()
         {
             if (useIDInput)
             {
                 if (useIDInput && IDInput == null)
+                {
                     IDInput = inputKnobs[1];
+                }
 
                 if (IDInput.connected())
                 {
@@ -140,26 +172,36 @@ namespace NodeEditorFramework.Standard
             Debug.Log("Entity ID: " + entityID);
             Debug.Log("Target ID: " + targetEntityID);
 
-            if(!(target && entity)) // room for improvement but probably unecessary
-            for (int i = 0; i < AIData.entities.Count; i++)
+            if (!(target && entity)) // room for improvement but probably unecessary
             {
-                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
-                    entity = AIData.entities[i] as AirCraft;
-                if (AIData.entities[i].ID == targetEntityID && AIData.entities[i] is AirCraft)
-                    target = AIData.entities[i];
+                for (int i = 0; i < AIData.entities.Count; i++)
+                {
+                    if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
+                    {
+                        entity = AIData.entities[i] as AirCraft;
+                    }
+
+                    if (AIData.entities[i].ID == targetEntityID && AIData.entities[i] is AirCraft)
+                    {
+                        target = AIData.entities[i];
+                    }
+                }
             }
 
             //Debug.LogError(target + " " + entity);
 
-            if(entity && entity.GetComponent<TractorBeam>() && target)
+            if (entity && entity.GetComponent<TractorBeam>() && target)
             {
                 entity.GetComponentInChildren<TractorBeam>().ForceTarget(target.transform);
             }
-            else if(entity && entity.GetComponent<TractorBeam>())
+            else if (entity && entity.GetComponent<TractorBeam>())
             {
                 entity.GetComponentInChildren<TractorBeam>().ForceTarget(null);
             }
-            else Debug.LogError(entity + " " + entity.GetComponentInChildren<TractorBeam>());
+            else
+            {
+                Debug.LogError(entity + " " + entity.GetComponentInChildren<TractorBeam>());
+            }
 
             return 0;
         }

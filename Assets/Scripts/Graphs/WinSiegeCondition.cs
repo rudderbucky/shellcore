@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NodeEditorFramework.Utilities;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -9,13 +7,27 @@ namespace NodeEditorFramework.Standard
     public class WinSiegeCondition : Node, ICondition
     {
         public const string ID = "WinSiegeCondition";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Win Siege Zone"; } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Win Siege Zone"; }
+        }
 
         private ConditionState state;
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         public delegate void SiegeZoneWonDelegate(string sectorName);
+
         public static SiegeZoneWonDelegate OnSiegeWin;
 
         public string sectorName;

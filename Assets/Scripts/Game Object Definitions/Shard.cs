@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Shard : MonoBehaviour
 {
@@ -13,10 +11,14 @@ public class Shard : MonoBehaviour
     private float rotationOffset;
     private bool hasDetached; // is the part detached
     public int tier;
-    public void SetCollectible(bool collectible) {
+
+    public void SetCollectible(bool collectible)
+    {
         this.collectible = collectible;
     }
-    public void Detach() {
+
+    public void Detach()
+    {
         detachedTime = Time.time; // update detached time
         hasDetached = true; // has detached now
         gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
@@ -34,24 +36,30 @@ public class Shard : MonoBehaviour
     /// <summary>
     /// Makes the part blink like in the original game
     /// </summary>
-    void Blink() {
+    void Blink()
+    {
         spriteRenderer.enabled = Time.time % 0.25F > 0.125F; // math stuff that blinks the part
     }
 
     private void OnDestroy()
     {
-        if(AIData.rockFragments.Contains(draggable))
+        if (AIData.rockFragments.Contains(draggable))
+        {
             AIData.rockFragments.Remove(draggable);
+        }
     }
 
-    void Update() {
+    void Update()
+    {
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)
         {
             Blink(); // blink
             //rigid.rotation = rigid.rotation + (rotationDirection ? 1f : -1.0f) * 360f * Time.deltaTime;
             transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
         }
-        else if (hasDetached) { // if it has actually detached
+        else if (hasDetached)
+        {
+            // if it has actually detached
             if (collectible)
             {
                 rigid.drag = 20;
@@ -59,14 +67,21 @@ public class Shard : MonoBehaviour
                 if (!draggable)
                 {
                     draggable = gameObject.AddComponent<Draggable>();
-                    if(!AIData.rockFragments.Contains(draggable))
+                    if (!AIData.rockFragments.Contains(draggable))
+                    {
                         AIData.rockFragments.Add(draggable);
+                    }
                 }
+
                 spriteRenderer.enabled = true;
                 spriteRenderer.sortingOrder = 0;
                 transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
                 //rigid.angularVelocity = rigid.angularVelocity > 0 ? 200 : -200;
-            } else Destroy(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

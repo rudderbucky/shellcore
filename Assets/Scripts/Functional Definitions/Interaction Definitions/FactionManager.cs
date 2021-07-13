@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class FactionManager : MonoBehaviour
 {
@@ -14,7 +13,9 @@ public class FactionManager : MonoBehaviour
     public static void UpdateFactions()
     {
         if (instance)
+        {
             instance.Initialize();
+        }
     }
 
     public void Initialize()
@@ -28,25 +29,40 @@ public class FactionManager : MonoBehaviour
         for (int i = 0; i < fs.Length; i++)
         {
             if (!isValid(fs[i]))
+            {
                 Debug.Log("Invalid faction: " + fs[i].factionName);
+            }
 
             if (maxID < fs[i].ID)
+            {
                 maxID = fs[i].ID;
+            }
 
             if (fs[i].ID == 0)
+            {
                 playerFound = true;
+            }
         }
+
         if (!playerFound)
+        {
             Debug.LogError("Player faction not loaded!");
+        }
+
         if (maxID == -1)
+        {
             Debug.LogError("No valid factions loaded!");
+        }
 
         // This may leave some empty indices in-between, but it should be fast
         factions = new Faction[maxID + 1];
         for (int i = 0; i < fs.Length; i++)
         {
             if (factions[fs[i].ID] == null)
+            {
                 factionCount++;
+            }
+
             factions[fs[i].ID] = fs[i];
         }
     }
@@ -55,14 +71,20 @@ public class FactionManager : MonoBehaviour
     {
         // validate faction data
         if (f.ID < 0 || f.ID >= 32)
+        {
             return false;
+        }
+
         return true;
     }
 
     public static bool FactionExists(int faction)
     {
         if (faction < 0 || faction >= 32 || instance.factions.Length <= faction)
+        {
             return false;
+        }
+
         return instance.factions[faction] != null;
     }
 

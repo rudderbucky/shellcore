@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class InvertTractor : ActiveAbility
+﻿public class InvertTractor : ActiveAbility
 {
     public override void SetTier(int abilityTier)
     {
@@ -13,7 +9,7 @@ public class InvertTractor : ActiveAbility
     protected override void Awake()
     {
         base.Awake(); // base awake
-                      // hardcoded values here
+        // hardcoded values here
         ID = AbilityID.InvertTractor;
         cooldownDuration = 20;
         energyCost = 250;

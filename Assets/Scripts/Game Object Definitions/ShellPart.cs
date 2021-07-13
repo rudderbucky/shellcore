@@ -8,7 +8,6 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class ShellPart : MonoBehaviour
 {
-
     float detachedTime; // time since detachment
     public ShellPart parent = null;
     public List<ShellPart> children = new List<ShellPart>();
@@ -38,6 +37,7 @@ public class ShellPart : MonoBehaviour
     {
         return hasDetached;
     }
+
     public int GetFaction()
     {
         return faction;
@@ -65,7 +65,6 @@ public class ShellPart : MonoBehaviour
                 ShinyCheck();
             }
         }
-
     }
 
     public float GetPartMass()
@@ -101,7 +100,10 @@ public class ShellPart : MonoBehaviour
         {
             holder = new GameObject("Part Holder");
         }
-        else holder = GameObject.Find("Part Holder");
+        else
+        {
+            holder = GameObject.Find("Part Holder");
+        }
 
 
         GameObject obj = Instantiate(ResourceManager.GetAsset<GameObject>("base_part"));
@@ -120,7 +122,11 @@ public class ShellPart : MonoBehaviour
 
         var partSys = obj.GetComponent<ParticleSystem>();
         var sh = partSys.shape;
-        if (spriteRenderer.sprite) sh.scale = (Vector3)spriteRenderer.sprite.bounds.extents * 2;
+        if (spriteRenderer.sprite)
+        {
+            sh.scale = (Vector3)spriteRenderer.sprite.bounds.extents * 2;
+        }
+
         var e = partSys.emission;
         e.rateOverTime = new ParticleSystem.MinMaxCurve(3 * (blueprint.size + 1));
         e.enabled = false;
@@ -134,7 +140,9 @@ public class ShellPart : MonoBehaviour
     public void Detach(bool drop = false)
     {
         if (name != "Shell Sprite")
+        {
             transform.SetParent(null, true);
+        }
 
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -143,6 +151,7 @@ public class ShellPart : MonoBehaviour
                 Destroy(transform.GetChild(i).gameObject);
             }
         }
+
         detachedTime = Time.time; // update detached time
         hasDetached = true; // has detached now
         gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
@@ -158,7 +167,10 @@ public class ShellPart : MonoBehaviour
         droppedSectorName = SectorManager.instance.current.sectorName;
         spriteRenderer.sortingLayerName = "Air Entities";
         if (shooter)
+        {
             shooter.GetComponent<SpriteRenderer>().sortingLayerName = "Air Entities";
+        }
+
         GetComponent<Collider2D>().enabled = true;
 
         // when a part detaches it should always be completely visible
@@ -171,10 +183,17 @@ public class ShellPart : MonoBehaviour
 
     void OnDestroy()
     {
-        if (parent) parent.children.Remove(this);
+        if (parent)
+        {
+            parent.children.Remove(this);
+        }
+
         if (AIData.strayParts.Contains(this))
+        {
             AIData.strayParts.Remove(this);
+        }
     }
+
     public void Awake()
     {
         //Find sprite renderer
@@ -230,18 +249,28 @@ public class ShellPart : MonoBehaviour
                     Vector3 diff = targeterPos - shooter.transform.position;
                     shooter.transform.eulerAngles = new Vector3(0, 0, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) - 90);
                 }
-                else shooter.transform.eulerAngles = new Vector3(0, 0, 0);
+                else
+                {
+                    shooter.transform.eulerAngles = new Vector3(0, 0, 0);
+                }
             }
-            else shooter.transform.eulerAngles = new Vector3(0, 0, 0);
+            else
+            {
+                shooter.transform.eulerAngles = new Vector3(0, 0, 0);
+            }
         }
     }
+
     /// <summary>
     /// Makes the part blink like in the original game
     /// </summary>
     void Blink()
     {
         spriteRenderer.enabled = Time.time % 0.125F > 0.0625F; // math stuff that blinks the part
-        if (shooter) shooter.GetComponent<SpriteRenderer>().enabled = spriteRenderer.enabled;
+        if (shooter)
+        {
+            shooter.GetComponent<SpriteRenderer>().enabled = spriteRenderer.enabled;
+        }
     }
 
     private bool shinyCheck = false;
@@ -250,8 +279,6 @@ public class ShellPart : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
         if (spriteRenderer)
         {
             if (shaderMaterials == null)
@@ -260,29 +287,46 @@ public class ShellPart : MonoBehaviour
                 shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader0"));
                 shaderMaterials.Add(ResourceManager.GetAsset<Material>("part_shader1"));
             }
+
             spriteRenderer.material = shaderMaterials[partShader];
         }
+
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)
         {
-            if (name != "Shell Sprite" && spriteRenderer.sprite) Blink(); // blink
+            if (name != "Shell Sprite" && spriteRenderer.sprite)
+            {
+                Blink(); // blink
+            }
             else
             {
                 spriteRenderer.enabled = false; // disable sprite renderer
-                if (shooter) shooter.SetActive(false);
+                if (shooter)
+                {
+                    shooter.SetActive(false);
+                }
             }
+
             //rigid.rotation = rigid.rotation + (rotationDirection ? 1f : -1.0f) * 360f * Time.deltaTime;
             transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
         }
         else if (hasDetached)
-        { // if it has actually detached
+        {
+            // if it has actually detached
             if (collectible && detachible && !SectorManager.instance.current.partDropsDisabled)
             {
-
                 rigid.drag = 25;
                 // add "Draggable" component so that shellcores can grab the part
-                if (!draggable) draggable = gameObject.AddComponent<Draggable>();
+                if (!draggable)
+                {
+                    draggable = gameObject.AddComponent<Draggable>();
+                }
+
                 spriteRenderer.enabled = true;
-                if (shooter) shooter.GetComponent<SpriteRenderer>().enabled = true;
+                if (shooter)
+                {
+                    shooter.GetComponent<SpriteRenderer>().enabled = true;
+                }
+
                 spriteRenderer.sortingOrder = 0;
                 transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
 
@@ -297,14 +341,22 @@ public class ShellPart : MonoBehaviour
                 else
                 {
                     if (craft as PlayerCore && name != "Shell Sprite")
+                    {
                         (craft as PlayerCore).partsToDestroy.Add(this);
+                    }
+
                     spriteRenderer.enabled = false; // disable sprite renderer
-                    if (shooter) shooter.SetActive(false);
+                    if (shooter)
+                    {
+                        shooter.SetActive(false);
+                    }
                 }
             }
         }
         else if (weapon)
+        {
             AimShooter();
+        }
     }
 
     private void ShinyCheck()
@@ -322,8 +374,8 @@ public class ShellPart : MonoBehaviour
         emission.enabled = true;
 
         StartCoroutine(InitColorLerp(0));
-
     }
+
     public void lerpColors()
     {
         StartCoroutine(InitColorLerp(0));
@@ -340,6 +392,7 @@ public class ShellPart : MonoBehaviour
             SetPartColor(lerpedColor);
             yield return new WaitForSeconds(0.025F);
         }
+
         colorLerped = true;
     }
 
@@ -349,8 +402,16 @@ public class ShellPart : MonoBehaviour
     /// <param name="damage">damage to deal</param>
     public void TakeDamage(float damage)
     {
-        if (!craft) return;
-        if (!detachible) craft.TakeCoreDamage(damage); // undetachible = core part
+        if (!craft)
+        {
+            return;
+        }
+
+        if (!detachible)
+        {
+            craft.TakeCoreDamage(damage); // undetachible = core part
+        }
+
         currentHealth -= damage;
         if (currentHealth <= 0 && detachible)
         {
@@ -359,8 +420,7 @@ public class ShellPart : MonoBehaviour
 
         if (partHealth != 0 && colorLerped)
         {
-            var color = Color.Lerp(Color.gray, info.shiny ? FactionManager.GetFactionShinyColor(faction) :
-                FactionManager.GetFactionColor(faction), currentHealth / partHealth);
+            var color = Color.Lerp(Color.gray, info.shiny ? FactionManager.GetFactionShinyColor(faction) : FactionManager.GetFactionColor(faction), currentHealth / partHealth);
             SetPartColor(color);
         }
     }
@@ -370,9 +430,20 @@ public class ShellPart : MonoBehaviour
     {
         color.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : 1f);
         spriteRenderer.color = color;
-        if (shooter) shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
+        if (shooter)
+        {
+            shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
+        }
+
         ParticleSystem.ColorOverLifetimeModule partSysColorMod;
-        if (partSys) partSysColorMod = partSys.colorOverLifetime;
-        if (partSys) partSysColorMod.color = new ParticleSystem.MinMaxGradient(color);
+        if (partSys)
+        {
+            partSysColorMod = partSys.colorOverLifetime;
+        }
+
+        if (partSys)
+        {
+            partSysColorMod.color = new ParticleSystem.MinMaxGradient(color);
+        }
     }
 }

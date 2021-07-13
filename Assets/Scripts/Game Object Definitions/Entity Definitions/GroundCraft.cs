@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GroundCraft : Craft
 {
@@ -28,7 +26,7 @@ public class GroundCraft : Craft
                 time = Time.time;
                 initialzangle = transform.localEulerAngles.z;
             }
-            
+
             isOnGround = false;
 
             transform.localEulerAngles = new Vector3(0, 0, initialzangle + (Time.time - time) * -180f);

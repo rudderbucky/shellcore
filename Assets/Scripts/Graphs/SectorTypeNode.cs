@@ -1,17 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NodeEditorFramework.Utilities;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Actions/Set Sector Type", typeof(SectorCanvas))]
     public class SectorTypeNode : Node
     {
-        public override string GetName { get { return "SectorTypeNode"; } }
-        public override string Title { get { return "Set Sector Type"; } }
+        public override string GetName
+        {
+            get { return "SectorTypeNode"; }
+        }
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, 240); } }
+        public override string Title
+        {
+            get { return "Set Sector Type"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 240); }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;

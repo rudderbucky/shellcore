@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using System.IO;
-using UnityEngine.UI;
+using UnityEngine;
+
 public class SaveHandler : MonoBehaviour
 {
-
     public PlayerCore player;
     public TaskManager taskManager;
     PlayerSave save;
@@ -17,7 +15,10 @@ public class SaveHandler : MonoBehaviour
         {
             currentPath = Application.persistentDataPath + "\\TestSave";
         }
-        else currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+        else
+        {
+            currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+        }
 
         if (File.Exists(currentPath))
         {
@@ -30,8 +31,15 @@ public class SaveHandler : MonoBehaviour
                 player.Dimension = save.lastDimension;
             }
 
-            if (SectorManager.testJsonPath != null) save.resourcePath = SectorManager.testJsonPath;
-            else if (save.resourcePath == "") save.resourcePath = SectorManager.jsonPath;
+            if (SectorManager.testJsonPath != null)
+            {
+                save.resourcePath = SectorManager.testJsonPath;
+            }
+            else if (save.resourcePath == "")
+            {
+                save.resourcePath = SectorManager.jsonPath;
+            }
+
             player.cursave = save;
 
             SectorManager.instance.LoadSectorFile(save.resourcePath);
@@ -53,6 +61,7 @@ public class SaveHandler : MonoBehaviour
                 player.blueprint.baseRegen = CoreUpgraderScript.GetRegens(player.blueprint.coreShellSpriteID);
                 player.blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
             }
+
             player.abilityCaps = save.abilityCaps;
             player.shards = save.shards;
             player.SetCredits(save.credits);
@@ -61,6 +70,7 @@ public class SaveHandler : MonoBehaviour
             {
                 save.presetBlueprints = new string[5];
             }
+
             Camera.main.GetComponent<CameraScript>().Initialize(player);
 
             taskManager.taskVariables.Clear();
@@ -74,7 +84,7 @@ public class SaveHandler : MonoBehaviour
             Debug.LogError("There was not a save or test save that was ready on load.");
             save = new PlayerSave();
             save.presetBlueprints = new string[5];
-            save.currentHealths = new float[] { 1000, 250, 500 };
+            save.currentHealths = new float[] {1000, 250, 500};
             save.partInventory = new List<EntityBlueprint.PartInfo>();
 
             player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -97,16 +107,25 @@ public class SaveHandler : MonoBehaviour
             save.timePlayed += (int)SaveMenuHandler.migratedTimePlayed;
             SaveMenuHandler.migratedTimePlayed = null;
         }
+
         string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
         save.position = player.spawnPoint;
         save.lastDimension = player.LastDimension;
         save.currentHealths = player.CurrentHealth;
-        if (player.CurrentHealth[1] <= 0) save.currentHealths = player.GetMaxHealth();
+        if (player.CurrentHealth[1] <= 0)
+        {
+            save.currentHealths = player.GetMaxHealth();
+        }
+
         save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
         save.credits = player.GetCredits();
         save.abilityCaps = player.abilityCaps;
         save.shards = player.shards;
-        if (save.resourcePath == "" || save.resourcePath.Contains("main")) save.resourcePath = SectorManager.instance.resourcePath;
+        if (save.resourcePath == "" || save.resourcePath.Contains("main"))
+        {
+            save.resourcePath = SectorManager.instance.resourcePath;
+        }
+
         save.characters = SectorManager.instance.characters;
         save.version = VersionNumberScript.version;
 
@@ -124,7 +143,12 @@ public class SaveHandler : MonoBehaviour
         foreach (var mission in save.missions)
         {
             if (mission.status != Mission.MissionStatus.Inactive)
-                if (save.episode < mission.episode) save.episode = mission.episode;
+            {
+                if (save.episode < mission.episode)
+                {
+                    save.episode = mission.episode;
+                }
+            }
         }
 
         Dictionary<string, int> variables = taskManager.taskVariables;
@@ -137,6 +161,7 @@ public class SaveHandler : MonoBehaviour
             values[index] = pair.Value;
             index++;
         }
+
         save.taskVariableNames = keys;
         save.taskVariableValues = values;
         save.reputation = player.reputation;

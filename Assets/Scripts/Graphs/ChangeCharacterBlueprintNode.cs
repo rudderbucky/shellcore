@@ -1,24 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "AI/Change Character Blueprint")]
     public class ChangeCharacterBlueprintNode : Node
     {
-        public override string GetName { get { return "ChangeCharacterBlueprint"; } }
-        public override string Title { get { return "Change Character Blueprint"; } }
+        public override string GetName
+        {
+            get { return "ChangeCharacterBlueprint"; }
+        }
 
-        public override Vector2 MinSize { get { return new Vector2(200f, 100f); } }
-        public override bool AutoLayout { get { return true; } }
+        public override string Title
+        {
+            get { return "Change Character Blueprint"; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(200f, 100f); }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
 
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
+
         public string charID;
         public string blueprintJSON;
         public bool forceReconstruct;
@@ -37,15 +50,15 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             var charList = new List<WorldData.CharacterData>(SectorManager.instance.characters);
-            if(charList.Exists(c => c.ID == charID))
+            if (charList.Exists(c => c.ID == charID))
             {
                 Debug.Log("<Change Character Blueprint Node> Character found, changing blueprint");
                 var character = charList.Find(c => c.ID == charID);
                 character.blueprintJSON = blueprintJSON;
 
-                if(forceReconstruct)
+                if (forceReconstruct)
                 {
-                    if(AIData.entities.Exists(c => c.ID == charID))
+                    if (AIData.entities.Exists(c => c.ID == charID))
                     {
                         Debug.Log("<Change Character Blueprint Node> Forcing reconstruct");
                         var ent = AIData.entities.Find(c => c.ID == charID);

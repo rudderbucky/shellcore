@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Script used to draw the circle on a craft death
 /// </summary>
-public class DrawCircleScript : MonoBehaviour {
+public class DrawCircleScript : MonoBehaviour
+{
     private float alpha; // used to store the circle's transparency value
     private float speed; // the speed at which the circle expands
     private LineRenderer line; // line renderer used to generate the circle
@@ -16,14 +15,17 @@ public class DrawCircleScript : MonoBehaviour {
     private float yrad = 3F;
     public float timeMin = 0.5F;
     public Color color = new Color(1, 1, 1);
+
     public void Initialize()
     {
         initialized = true;
     }
 
-    public void SetRespawnMode(bool mode) {
+    public void SetRespawnMode(bool mode)
+    {
         respawnMode = mode;
-        if(mode) {
+        if (mode)
+        {
             // initialize instance fields for respawning
             speed = 20F;
             alpha = 1;
@@ -37,7 +39,8 @@ public class DrawCircleScript : MonoBehaviour {
         }
     }
 
-    public void SetStartColor(Color color) {
+    public void SetStartColor(Color color)
+    {
         GetComponent<LineRenderer>().startColor = color;
     }
 
@@ -48,9 +51,12 @@ public class DrawCircleScript : MonoBehaviour {
 
     private void Start()
     {
-        if(respawnMode) {
-        } else {
-        // initialize instance fields
+        if (respawnMode)
+        {
+        }
+        else
+        {
+            // initialize instance fields
             alpha = 1;
             speed = Random.Range(30, 40);
             line = gameObject.GetComponent<LineRenderer>();
@@ -63,15 +69,22 @@ public class DrawCircleScript : MonoBehaviour {
     {
         if (initialized)
         {
-            if(respawnMode) {
+            if (respawnMode)
+            {
                 line.enabled = true;
                 xrad -= Time.deltaTime * speed;
                 yrad -= Time.deltaTime * speed;
-                if(xrad < 0) {
+                if (xrad < 0)
+                {
                     Destroy(gameObject);
-                } else
-                CreatePoints(xrad, yrad);
-            } else {
+                }
+                else
+                {
+                    CreatePoints(xrad, yrad);
+                }
+            }
+            else
+            {
                 timer += Time.deltaTime; // increment time
                 if (timer > timeMin && timer < timeMin + 0.75F) // time to draw
                 {
@@ -93,7 +106,7 @@ public class DrawCircleScript : MonoBehaviour {
     /// <param name="yradius">current y radius of the circle</param>
     void CreatePoints(float xradius, float yradius)
     {
-        alpha -= 4*Time.deltaTime; // decrease alpha
+        alpha -= 4 * Time.deltaTime; // decrease alpha
         line.startColor = new Color(line.startColor.r, line.startColor.g, line.startColor.b, alpha);
         line.endColor = new Color(color.r, color.g, color.b, alpha);
         // declare some storage fields
@@ -110,7 +123,7 @@ public class DrawCircleScript : MonoBehaviour {
 
             line.SetPosition(i, new Vector3(x, y, z));
 
-            angle += 360f / line.positionCount+1; // update angle for next vertex
+            angle += 360f / line.positionCount + 1; // update angle for next vertex
         }
     }
 }

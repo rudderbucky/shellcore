@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -16,20 +15,26 @@ public class PartyManager : MonoBehaviour
     public GameObject blocker;
     private Dictionary<string, WorldData.PartyData> partyResponses = new Dictionary<string, WorldData.PartyData>();
     private bool overrideLock;
-    public bool PartyLocked {get {return SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone || overrideLock;}}
+
+    public bool PartyLocked
+    {
+        get { return SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone || overrideLock; }
+    }
+
     public void SetOverrideLock(bool val)
     {
         overrideLock = val;
     }
+
     public void OrderAttack()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>",1);
-        foreach(var core in partyMembers)
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Attack the enemy now!</color>", 1);
+        foreach (var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].attackDialogue}</color>",2);
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].attackDialogue}</color>", 2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Attack);
             }
@@ -39,12 +44,12 @@ public class PartyManager : MonoBehaviour
     public void OrderDefendStation()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>",1);
-        foreach(var core in partyMembers)
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Defend our station!</color>", 1);
+        foreach (var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].defendDialogue}</color>",2);
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].defendDialogue}</color>", 2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Defend);
             }
@@ -54,12 +59,12 @@ public class PartyManager : MonoBehaviour
     public void OrderCollection()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>",1);
-        foreach(var core in partyMembers)
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Collect more power.</color>", 1);
+        foreach (var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].collectDialogue}</color>",2);
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].collectDialogue}</color>", 2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Collect);
             }
@@ -69,12 +74,12 @@ public class PartyManager : MonoBehaviour
     public void OrderBuildTurrets()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>",1);
-        foreach(var core in partyMembers)
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Build Turrets!</color>", 1);
+        foreach (var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].buildDialogue}</color>",2);
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].buildDialogue}</color>", 2);
                 core.GetAI().setMode(AirCraftAI.AIMode.Battle);
                 core.GetAI().ChatOrderStateChange(BattleAI.BattleState.Fortify);
             }
@@ -84,25 +89,26 @@ public class PartyManager : MonoBehaviour
     public void OrderFollow()
     {
         PassiveDialogueSystem.Instance.ResetPassiveDialogueQueueTime();
-        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>",1);
-        foreach(var core in partyMembers)
+        PassiveDialogueSystem.Instance.PushPassiveDialogue("player", "<color=lime>Follow me!</color>", 1);
+        foreach (var core in partyMembers)
         {
             if (core && !core.GetIsDead())
             {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].followDialogue}</color>",2);
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(core.ID, $"<color=lime>{partyResponses[core.ID].followDialogue}</color>", 2);
                 core.GetAI().follow(PlayerCore.Instance.transform);
             }
         }
     }
+
     public void AssignCharacter(string charID, Button assignButton)
     {
-        if(partyMembers.Count >= 2)
+        if (partyMembers.Count >= 2)
         {
             PlayerCore.Instance.alerter.showMessage("Cannot assign more than 2 party members!", "clip_alert");
             return;
         }
 
-        if(!PartyLocked)
+        if (!PartyLocked)
         {
             AssignBackend(charID);
 
@@ -112,7 +118,10 @@ public class PartyManager : MonoBehaviour
             assignButton.onClick = clicked;
             // sukratHealth.SetActive(true);
         }
-        else PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
+        else
+        {
+            PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
+        }
 
         UpdatePortraits();
     }
@@ -125,7 +134,7 @@ public class PartyManager : MonoBehaviour
 
     public void AssignBackend(string charID)
     {
-        if(partyMembers.Count >= 2)
+        if (partyMembers.Count >= 2)
         {
             PlayerCore.Instance.alerter.showMessage("Cannot assign more than 2 party members!", "clip_alert");
             return;
@@ -134,11 +143,11 @@ public class PartyManager : MonoBehaviour
         PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
 
         // check if it is a character
-        foreach(var ch in SectorManager.instance.characters)
+        foreach (var ch in SectorManager.instance.characters)
         {
-            if(ch.ID == charID)
+            if (ch.ID == charID)
             {
-                if(!AIData.entities.Exists(x => x.ID == charID))
+                if (!AIData.entities.Exists(x => x.ID == charID))
                 {
                     var print = ScriptableObject.CreateInstance<EntityBlueprint>();
                     JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
@@ -151,8 +160,10 @@ public class PartyManager : MonoBehaviour
                     SectorManager.instance.SpawnEntity(print, levelEnt);
                 }
 
-                if(!partyResponses.ContainsKey(charID))
+                if (!partyResponses.ContainsKey(charID))
+                {
                     partyResponses.Add(charID, ch.partyData);
+                }
 
                 break;
             }
@@ -166,23 +177,29 @@ public class PartyManager : MonoBehaviour
 
     public void Unassign(string charID, Button assignButton)
     {
-        if(!PartyLocked)
+        if (!PartyLocked)
         {
             var member = partyMembers.Find(c => c.ID == charID);
-            if(member && member.GetAI() != null)
+            if (member && member.GetAI() != null)
+            {
                 member.GetAI().follow(null);
+            }
+
             partyMembers.Remove(member);
             partyResponses.Remove(charID);
             var clicked = new Button.ButtonClickedEvent();
             clicked.AddListener(() => AssignCharacter(charID, assignButton));
-            if(partyIndicators.ContainsKey(member))
+            if (partyIndicators.ContainsKey(member))
             {
                 Destroy(partyIndicators[member]);
                 partyIndicators.Remove(member);
             }
             // sukratHealth.SetActive(false);
         }
-        else PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
+        else
+        {
+            PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
+        }
 
         UpdatePortraits();
     }
@@ -197,11 +214,11 @@ public class PartyManager : MonoBehaviour
         text.text = name;
         texts.Add(text);
         options.Add(action);
-         
 
-        for(int i = 0; i < texts.Count; i++)
+
+        for (int i = 0; i < texts.Count; i++)
         {
-            float angle = Mathf.Deg2Rad * i * 360f/texts.Count;
+            float angle = Mathf.Deg2Rad * i * 360f / texts.Count;
             texts[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(250 * Mathf.Sin(angle), 250 * Mathf.Cos(angle));
         }
     }
@@ -209,6 +226,7 @@ public class PartyManager : MonoBehaviour
     bool initialized = false;
     public GameObject characterBarPrefab;
     public GameObject characterScrollContents;
+
     void Start()
     {
         AddOption("Attack Enemy", OrderAttack);
@@ -222,116 +240,131 @@ public class PartyManager : MonoBehaviour
 
     public void CharacterScrollSetup()
     {
-        for(int i = 0; i < characterScrollContents.transform.childCount; i++)
+        for (int i = 0; i < characterScrollContents.transform.childCount; i++)
         {
             Destroy(characterScrollContents.transform.GetChild(i).gameObject);
         }
 
-        foreach(var id in PlayerCore.Instance.cursave.unlockedPartyIDs)
+        foreach (var id in PlayerCore.Instance.cursave.unlockedPartyIDs)
         {
             var inst = Instantiate(characterBarPrefab, characterScrollContents.transform).transform;
             var button = inst.Find("Assign").GetComponent<Button>();
             var name = inst.Find("Name").GetComponent<Text>();
-            foreach(var ch in SectorManager.instance.characters)
+            foreach (var ch in SectorManager.instance.characters)
             {
-                if(ch.ID == id)
+                if (ch.ID == id)
+                {
                     name.text = ch.name.ToUpper();
+                }
             }
-            
-            if(partyMembers.Exists(c => c.ID == id))
+
+            if (partyMembers.Exists(c => c.ID == id))
             {
                 button.GetComponentInChildren<Text>().text = "UNASSIGN";
                 button.onClick.AddListener(() => Unassign(id, button));
             }
-            else 
+            else
+            {
                 button.onClick.AddListener(() => AssignCharacter(id, button));
+            }
         }
     }
 
     private int index = -1;
     private float partyMemberTeleportThreshold = 2500;
+
     void Update()
     {
-
         blocker.SetActive(false);
 
         // distance maximum for party members - teleport them close to the player
-        if(SectorManager.instance?.current?.type != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)
-            foreach(var member in partyMembers)
+        if (SectorManager.instance?.current?.type != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)
+        {
+            foreach (var member in partyMembers)
             {
-                if(!member) continue;
-                if(member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
-                Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > partyMemberTeleportThreshold)
+                if (!member)
+                {
+                    continue;
+                }
+
+                if (member.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
+                    Vector3.SqrMagnitude(member.transform.position - PlayerCore.Instance.transform.position) > partyMemberTeleportThreshold)
                 {
                     // Use warp to teleport AirCraft
                     member.Warp(PlayerCore.Instance.transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));
-                }   
+                }
             }
+        }
 
 
-        if(InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member)=> { return member; }))
+        if (InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member) => { return member; }))
         {
             wheel.SetActive(true);
-            arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight / 2), 
+            arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight / 2),
                 (Input.mousePosition.x - Camera.main.pixelWidth / 2)) * Mathf.Rad2Deg);
             var x = 90 - arrow.rotation.eulerAngles.z;
-            if(x < -180)
+            if (x < -180)
             {
                 x = 360 + x;
             }
-            else if(x < 0)
+            else if (x < 0)
             {
                 x = 360 + x;
             }
-            index = Mathf.RoundToInt((x) / (360/options.Count));
+
+            index = Mathf.RoundToInt((x) / (360 / options.Count));
         }
-        else if(initialized)
+        else if (initialized)
         {
-            
-            if(index != -1)
+            if (index != -1)
             {
-                if(index == 0 || index == options.Count) 
+                if (index == 0 || index == options.Count)
                 {
                     options[0].Invoke();
                 }
-                else options[index].Invoke();
+                else
+                {
+                    options[index].Invoke();
+                }
+
                 index = -1;
             }
+
             wheel.SetActive(false);
         }
 
-        foreach(var kvp in partyIndicators)
+        foreach (var kvp in partyIndicators)
         {
             kvp.Value.GetComponentsInChildren<Text>()[1].text = kvp.Key.GetAI().GetPartyBattleStateString();
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 float barWidth = 160;
-                kvp.Value.GetComponentsInChildren<Image>()[i+1].GetComponent<RectTransform>().sizeDelta = 
-                        new Vector2(barWidth * kvp.Key.CurrentHealth[i] / kvp.Key.GetMaxHealth()[i], 5);
+                kvp.Value.GetComponentsInChildren<Image>()[i + 1].GetComponent<RectTransform>().sizeDelta =
+                    new Vector2(barWidth * kvp.Key.CurrentHealth[i] / kvp.Key.GetMaxHealth()[i], 5);
             }
         }
     }
 
     public Transform[] portraits;
+
     public void UpdatePortraits()
     {
         portraits[0].GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(PlayerCore.Instance.blueprint, null, 0);
         portraits[0].GetComponentInChildren<Text>().text = PlayerCore.Instance.cursave.name.ToUpper();
-        for(int i = 1; i < 3; i++)
+        for (int i = 1; i < 3; i++)
         {
-            if(i > partyMembers.Count) 
+            if (i > partyMembers.Count)
             {
                 portraits[i].GetComponentInChildren<SelectionDisplayHandler>().ClearDisplay();
                 portraits[i].GetComponentInChildren<Text>().text = "";
             }
-            else 
+            else
             {
-                portraits[i].GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(partyMembers[i-1].blueprint, null, 0);
-                portraits[i].GetComponentInChildren<Text>().text = partyMembers[i-1].entityName.ToUpper();
+                portraits[i].GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(partyMembers[i - 1].blueprint, null, 0);
+                portraits[i].GetComponentInChildren<Text>().text = partyMembers[i - 1].entityName.ToUpper();
             }
         }
 
         CharacterScrollSetup();
     }
-
 }

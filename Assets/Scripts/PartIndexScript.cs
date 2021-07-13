@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +24,7 @@ public class PartIndexScript : MonoBehaviour
     public Image[] statsBar;
     public int[] statsNumbers;
     public Text statsTotalTally;
+
     public enum PartStatus
     {
         Unseen,
@@ -35,31 +35,32 @@ public class PartIndexScript : MonoBehaviour
     public static int GetNumberOfPartsObtained()
     {
         int count = 0;
-        foreach(var part in index)
+        foreach (var part in index)
         {
             var part2 = CullToPartIndexValues(part.part);
-            if(CheckPartObtained(part2))
+            if (CheckPartObtained(part2))
             {
                 count++;
             }
         }
+
         return count;
     }
 
     public static int GetNumberOfPartsSeen()
     {
         int count = 0;
-        foreach(var part in index)
+        foreach (var part in index)
         {
             var part2 = CullToPartIndexValues(part.part);
-            if(CheckPartObtained(part2))
+            if (CheckPartObtained(part2))
             {
                 count++;
             }
         }
+
         return count;
     }
-
 
     ///
     /// Attempt to add a part into the index, check if the player obtained/saw it
@@ -67,47 +68,59 @@ public class PartIndexScript : MonoBehaviour
     public void AttemptAddPart(EntityBlueprint.PartInfo part, List<string> origins)
     {
         part = CullToPartIndexValues(part);
-        if(!parts.ContainsKey(part))
+        if (!parts.ContainsKey(part))
         {
             var button = Instantiate(inventoryPrefab, contents[ResourceManager.GetAsset<PartBlueprint>(part.partID).size]).GetComponent<PartIndexInventoryButton>();
             parts.Add(part, button.gameObject);
             button.part = part;
-            if(CheckPartObtained(part)) 
+            if (CheckPartObtained(part))
             {
                 button.status = PartStatus.Obtained;
                 button.displayShiny = PlayerCore.Instance.cursave.partsObtained.Find(x => CullToPartIndexValues(x).Equals(part)).shiny;
 
                 // Update stats on 3 tallies, possibly the shiny tally
-                if(button.displayShiny) statsNumbers[0]++;
+                if (button.displayShiny)
+                {
+                    statsNumbers[0]++;
+                }
+
                 statsNumbers[1]++;
                 statsNumbers[2]++;
             }
-            else if(CheckPartSeen(part)) 
+            else if (CheckPartSeen(part))
             {
                 button.status = PartStatus.Seen;
                 button.displayShiny = false;
                 // Update only the seen tally
                 statsNumbers[2]++;
             }
-            else 
+            else
             {
                 button.status = PartStatus.Unseen;
                 button.displayShiny = false;
             }
+
             button.infoBox = infoBox;
             button.partDisplay = partDisplay;
             // Update total number
             statsNumbers[3]++;
         }
-        foreach(var origin in origins)
+
+        foreach (var origin in origins)
+        {
             parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(origin);
+        }
     }
 
     public static bool partsObtainedCheat;
 
     public static bool CheckPartObtained(EntityBlueprint.PartInfo part)
     {
-        if(partsObtainedCheat) return true;
+        if (partsObtainedCheat)
+        {
+            return true;
+        }
+
         part = CullToPartIndexValues(part);
         return PlayerCore.Instance.cursave.partsObtained.Exists(x => CullToPartIndexValues(x).Equals(part));
     }
@@ -121,41 +134,42 @@ public class PartIndexScript : MonoBehaviour
     void OnEnable()
     {
         statsNumbers = new int[] {0, 0, 0, 0};
-        foreach(var content in contents)
+        foreach (var content in contents)
         {
-            for(int i = 0; i < content.childCount; i++)
+            for (int i = 0; i < content.childCount; i++)
             {
                 Destroy(content.GetChild(i).gameObject);
             }
         }
+
         parts.Clear();
 
-        if(index == null)
+        if (index == null)
         {
             Debug.LogWarning("The Part Index cache has not been set up for this world. Please rewrite this world, it will rebuild automatically.");
             return;
         }
 
         // player metadata
-        if(PlayerCore.Instance.cursave.partsObtained == null || PlayerCore.Instance.cursave.partsObtained.Count == 0)
+        if (PlayerCore.Instance.cursave.partsObtained == null || PlayerCore.Instance.cursave.partsObtained.Count == 0)
         {
             PlayerCore.Instance.cursave.partsObtained = new List<EntityBlueprint.PartInfo>();
-            foreach(var part in PlayerCore.Instance.GetInventory())
+            foreach (var part in PlayerCore.Instance.GetInventory())
             {
                 AttemptAddToPartsObtained(part);
             }
 
-            foreach(var part in PlayerCore.Instance.blueprint.parts)
+            foreach (var part in PlayerCore.Instance.blueprint.parts)
             {
                 AttemptAddToPartsObtained(part);
             }
         }
-        
-        if(PlayerCore.Instance.cursave.partsSeen == null || PlayerCore.Instance.cursave.partsSeen.Count == 0)
+
+        if (PlayerCore.Instance.cursave.partsSeen == null || PlayerCore.Instance.cursave.partsSeen.Count == 0)
         {
             PlayerCore.Instance.cursave.partsSeen = new List<EntityBlueprint.PartInfo>();
             var partsSeen = PlayerCore.Instance.cursave.partsSeen;
-            foreach(var part in PlayerCore.Instance.cursave.partsObtained)
+            foreach (var part in PlayerCore.Instance.cursave.partsObtained)
             {
                 AttemptAddToPartsSeen(CullToPartIndexValues(part));
             }
@@ -163,20 +177,20 @@ public class PartIndexScript : MonoBehaviour
 
         // index assembly
 
-        foreach(var partData in index)
+        foreach (var partData in index)
         {
             AttemptAddPart(partData.part, partData.origins);
         }
 
-        for(int i = 0; i < contents.Length; i++)
+        for (int i = 0; i < contents.Length; i++)
         {
             texts[i].SetActive(contents[i].childCount > 0);
         }
 
         // Update tally graphic bar
-        if(statsNumbers[3] > 0)
+        if (statsNumbers[3] > 0)
         {
-            for(int i = 0; i < statsBar.Length; i++)
+            for (int i = 0; i < statsBar.Length; i++)
             {
                 statsBar[i].rectTransform.sizeDelta = new Vector2(statsNumbers[i] * 800 / statsNumbers[3], 20);
             }
@@ -184,7 +198,7 @@ public class PartIndexScript : MonoBehaviour
         else
         {
             // no parts in world, just hide the bars
-            for(int i = 0; i < statsBar.Length; i++)
+            for (int i = 0; i < statsBar.Length; i++)
             {
                 statsBar[i].gameObject.SetActive(false);
             }
@@ -197,11 +211,11 @@ public class PartIndexScript : MonoBehaviour
     public static void AttemptAddToPartsObtained(EntityBlueprint.PartInfo part)
     {
         var partsObtained = PlayerCore.Instance.cursave.partsObtained;
-        if(!partsObtained.Exists(x => CullToPartIndexValues(x).Equals( CullToPartIndexValues(part) ) ))
+        if (!partsObtained.Exists(x => CullToPartIndexValues(x).Equals(CullToPartIndexValues(part))))
         {
             partsObtained.Add(part);
         }
-        else if(part.shiny)
+        else if (part.shiny)
         {
             partsObtained[partsObtained.FindIndex(x => CullToPartIndexValues(x).Equals(CullToPartIndexValues(part)))] = part;
         }
@@ -210,7 +224,7 @@ public class PartIndexScript : MonoBehaviour
     public static void AttemptAddToPartsSeen(EntityBlueprint.PartInfo part)
     {
         var partsSeen = PlayerCore.Instance.cursave.partsSeen;
-        if(!partsSeen.Exists(x => CullToPartIndexValues(x).Equals( CullToPartIndexValues(part) ) ))
+        if (!partsSeen.Exists(x => CullToPartIndexValues(x).Equals(CullToPartIndexValues(part))))
         {
             partsSeen.Add(part);
         }
@@ -223,11 +237,15 @@ public class PartIndexScript : MonoBehaviour
     public static EntityBlueprint.PartInfo CullToPartIndexValues(EntityBlueprint.PartInfo partToCull)
     {
         var part = new EntityBlueprint.PartInfo();
-		part.partID = partToCull.partID;
-		part.abilityID = partToCull.abilityID;
-		if(part.abilityID != 10) part.secondaryData = null;
-		part.tier = partToCull.tier;
-		part.shiny = false;
-		return part;
+        part.partID = partToCull.partID;
+        part.abilityID = partToCull.abilityID;
+        if (part.abilityID != 10)
+        {
+            part.secondaryData = null;
+        }
+
+        part.tier = partToCull.tier;
+        part.shiny = false;
+        return part;
     }
 }

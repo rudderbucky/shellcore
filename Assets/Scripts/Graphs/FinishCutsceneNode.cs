@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
@@ -8,10 +7,21 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "FinishCutsceneNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Finish Cutscene"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Finish Cutscene"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(208, height); }
+        }
 
         float height = 50f;
 

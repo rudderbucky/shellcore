@@ -1,8 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Text;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GroundPlatform
 {
@@ -37,7 +34,7 @@ public class GroundPlatform
             return hashCode;
         }
 
-        public static bool operator== (Tile a, Tile b)
+        public static bool operator ==(Tile a, Tile b)
         {
             return a.pos == b.pos;
         }
@@ -63,7 +60,9 @@ public class GroundPlatform
         if (tileGrid != null)
         {
             if (pos.x < offset.x || pos.y < offset.y || pos.x - offset.x >= size.x || pos.y - offset.y >= size.y)
+            {
                 return null;
+            }
 
             // TODO: use profiler to check if this is an effective optimization
             //Debug.Log(pos.x + ", " + pos.y + " -> " + (pos.x - offset.x + (pos.y - offset.y) * size.x) + " / " + tileGrid.Length);
@@ -80,6 +79,7 @@ public class GroundPlatform
                 }
             }
         }
+
         return null;
     }
 
@@ -104,6 +104,7 @@ public class GroundPlatform
                 s += numToString(tiles[i].distances[pair.Key]);
             }
         }
+
         return s;
     }
 
@@ -174,6 +175,7 @@ public class GroundPlatform
                     colliders = null
                 });
         }
+
         tiles = tileList;
     }
 
@@ -252,6 +254,7 @@ public class GroundPlatform
                     colliders = tileObj?.GetComponentsInChildren<Collider2D>()
                 });
         }
+
         tiles = tileList;
 
         // Generate grid
@@ -272,6 +275,7 @@ public class GroundPlatform
     }
 
     int pointer = 0;
+
     void resetPointer()
     {
         pointer = 0;
@@ -314,7 +318,9 @@ public class GroundPlatform
     static ushort stringToNum(string str)
     {
         if (str.Length != 2)
+        {
             Debug.LogError("Decoding failed!");
+        }
 
         ushort result = 0;
         result += (ushort)(encoding.IndexOf(str[0]) * encoding.Length);
@@ -356,6 +362,7 @@ public class GroundPlatform
                 ends = 1 | 2 | 4 | 8;
                 break;
         }
+
         for (int j = 0; j < tile.rotation; j++)
         {
             ends *= 2;
@@ -376,6 +383,7 @@ public class GroundPlatform
             this.tile = tile;
             this.dist = dist;
         }
+
         public Tile tile;
         public ushort dist;
     }
@@ -441,7 +449,9 @@ public class GroundPlatform
 
                 byte dir = 0;
                 if (tiles[i].directions.ContainsKey(current.tile.pos))
+                {
                     dir = tiles[i].directions[current.tile.pos];
+                }
 
                 int openings = GetPlatformOpenings(current.tile);
                 //Debug.Log("Tile: " + new Vector2Int(current.pos.x, current.pos.y) + " type: " + current.type + " rot: " + current.rotation + " direction flags: " + (ends & 8) + " " + (ends & 4) + " " + (ends & 2) + " " + (ends & 1));
@@ -452,18 +462,24 @@ public class GroundPlatform
                     {
                         var tile = GetTile(current.tile.pos + vectors[j]);
                         if (tile == tiles[i] || !tile.HasValue)
+                        {
                             continue;
+                        }
 
                         if (!tiles[i].directions.ContainsKey(tile.Value.pos))
                         {
                             if (current.tile == tiles[i])
+                            {
                                 dir = (byte)j;
+                            }
+
                             tiles[i].directions.Add(tile.Value.pos, dir);
                             tiles[i].distances.Add(tile.Value.pos, dist);
                             openList.Add(new Node(tile.Value, dist));
                         }
                     }
                 }
+
                 openList.RemoveAt(0);
             }
 
@@ -479,7 +495,9 @@ public class GroundPlatform
         for (int i = 0; i < tiles.Count; i++)
         {
             if (tiles[i].colliders.Length > 0)
+            {
                 UnityEngine.Object.Destroy(tiles[i].colliders[0].gameObject);
+            }
         }
     }
 }

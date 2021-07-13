@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "VendingBlueprint", menuName = "ShellCore/VendingBlueprint", order = 6)]
-public class VendingBlueprint : ScriptableObject {
+public class VendingBlueprint : ScriptableObject
+{
     [System.Serializable]
     public struct Item
     {
@@ -20,11 +20,12 @@ public class VendingBlueprint : ScriptableObject {
     {
         for (int i = 0; i < items.Count; i++)
         {
-            if(items[i].entityBlueprint.entityName.Equals(entityName))
+            if (items[i].entityBlueprint.entityName.Equals(entityName))
             {
                 return i;
             }
         }
+
         return -1;
     }
 }

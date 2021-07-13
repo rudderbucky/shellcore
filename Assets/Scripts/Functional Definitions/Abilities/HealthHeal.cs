@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Heals the shell of the associated craft
 /// </summary>
 public class HealthHeal : Ability
 {
-
-    public void Initialize() {
+    public void Initialize()
+    {
         switch (type)
         {
             case HealingType.shell:
@@ -29,6 +27,7 @@ public class HealthHeal : Ability
                 break;
         }
     }
+
     public enum HealingType
     {
         shell,
@@ -41,7 +40,7 @@ public class HealthHeal : Ability
     protected override void Awake()
     {
         base.Awake(); // base awake
-                      // hardcoded values here
+        // hardcoded values here
 
         energyCost = 35;
 
@@ -57,7 +56,7 @@ public class HealthHeal : Ability
     /// </summary>
     protected override void Execute()
     {
-        if (Core.GetHealth()[(int)type] < Core.GetMaxHealth()[(int)type]) 
+        if (Core.GetHealth()[(int)type] < Core.GetMaxHealth()[(int)type])
         {
             AudioManager.PlayClipByID("clip_healeffect", transform.position);
             switch (type)
@@ -72,9 +71,11 @@ public class HealthHeal : Ability
                     Core.TakeShellDamage(-heals[0] * abilityTier, 0, GetComponentInParent<Entity>()); // heal energy
                     break;
             }
+
             base.Execute();
         }
-        else {
+        else
+        {
             Core.TakeEnergy(-energyCost); // refund energy
             startTime = Time.time - cooldownDuration;
         }

@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class VendorUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -42,17 +39,23 @@ public class VendorUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         // destroy tooltip
         if (tooltip)
+        {
             Destroy(tooltip);
+        }
     }
 
-    public void OnDisable() {
+    public void OnDisable()
+    {
         // destroy tooltip
         if (tooltip)
+        {
             Destroy(tooltip);
+        }
     }
+
     private void Update()
     {
-        if(tooltip)
+        if (tooltip)
         {
             tooltip.transform.position = Input.mousePosition;
         }

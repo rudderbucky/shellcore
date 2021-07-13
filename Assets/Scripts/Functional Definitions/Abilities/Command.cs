@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Command : PassiveAbility
 {
     public static readonly int commandUnitIncrease = 3;
+
     protected override void Awake()
     {
         ID = AbilityID.Command;
@@ -15,9 +14,11 @@ public class Command : PassiveAbility
 
     public override void Deactivate()
     {
-        if(Core is IOwner){
-            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() - commandUnitIncrease * Mathf.Max(1,abilityTier));
+        if (Core is IOwner)
+        {
+            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() - commandUnitIncrease * Mathf.Max(1, abilityTier));
         }
+
         base.Deactivate();
     }
 
@@ -28,9 +29,11 @@ public class Command : PassiveAbility
 
     protected override void Execute()
     {
-        if(Core is IOwner){
-            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() + commandUnitIncrease * Mathf.Max(1,abilityTier));
+        if (Core is IOwner)
+        {
+            (Core as IOwner).SetIntrinsicCommandLimit((Core as IOwner).GetIntrinsicCommandLimit() + commandUnitIncrease * Mathf.Max(1, abilityTier));
         }
+
         base.Execute();
     }
 }

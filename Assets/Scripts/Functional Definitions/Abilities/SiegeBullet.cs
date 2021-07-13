@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SiegeBullet : Bullet {
-
+public class SiegeBullet : Bullet
+{
     protected override void Awake()
     {
         base.Awake(); // base awake
