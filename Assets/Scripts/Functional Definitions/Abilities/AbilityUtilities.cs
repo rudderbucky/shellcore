@@ -269,29 +269,29 @@ public static class AbilityUtilities
 	    case 14:
 		 if (data == "siegegroundshooter_sprite")
 		 {
-		     return "siegegroundshooter_sprite";
+		 return "siegegroundshooter_sprite";
 		 }
 		 else if (data != "siegeshooter_sprite")
 		 {
-		     return "bulletshooter_sprite";	 
+		 return "bulletshooter_sprite";	 
 		 }
 		 else
 		 {
-		     return "siegeshooter_sprite";
+		 return "siegeshooter_sprite";
 		 }
 	    case 2:
-		return "ability_indicatorshell";
+		return "ability_indicator_shell";
 	    case 11:
 	    case 12:
-		return "ability_indicatorcore";
+		return "ability_indicator_core";
 	    case 28:
-		return "ability_indicatorrtt";
+		return "ability_indicator_retreat";
 	    case 25:
-		return "ability_indicatordm";
+		return "ability_indicator_damage_boost";
 	    case 27:
-		return "ability_indicatorpin";
+		return "ability_indicator_pin_down";
 	    case 29:
-		return "ability_indicatorabs";
+		return "ability_indicator_absorb_field";
             default:
                 return "ability_indicator";
         }
