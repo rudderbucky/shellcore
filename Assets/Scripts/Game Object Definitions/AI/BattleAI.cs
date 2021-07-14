@@ -536,36 +536,26 @@ public class BattleAI : AIModule
 
                     int itemIndex = -1;
                     int ownGroundStation = 0;
-                    
-                    for (int j = 0; j < AIData.entities.Count; j++)
-                    {
-                        if (AIData.entities[j].faction == craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Station)
-                        {
-                            ownGroundStation += 1;
-                        }
-                    }
                     int ownTank = 0;
-                    for (int j = 0; j < AIData.entities.Count; j++)
-                    {
-                        if (AIData.entities[j].faction == craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Unit)
-                        {
-                            ownTank += 1;
-                        }
-                    }
                     int enemyTank = 0;
-                    for (int j = 0; j < AIData.entities.Count; j++)
-                    {
-                        if (AIData.entities[j].faction != craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Unit)
-                        {
-                            enemyTank += 1;
-                        }
-                    }
                     int enemyGroundStation = 0;
                     for (int j = 0; j < AIData.entities.Count; j++)
                     {
-                        if (AIData.entities[j].faction != craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Station)
+                        if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Station)
+                        {
+                            ownGroundStation += 1;
+                        }
+                        if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Station)
                         {
                             enemyGroundStation += 1;
+                        }
+                        if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Unit)
+                        {
+                            ownTank += 1;
+                        }
+                        if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Unit)
+                        {
+                            enemyTank += 1;
                         }
                     }
                     if (mostNeeded == null){
