@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -29,7 +28,10 @@ public class PathAI : AIModule
         this.path = path;
         this.patrolling = patrolling;
         if (path == null)
+        {
             createPath();
+        }
+
         StartPath();
     }
 
@@ -44,7 +46,9 @@ public class PathAI : AIModule
         waypointID = -1;
         initialized = true;
         if (path)
+        {
             StartPath();
+        }
     }
 
     public static readonly float minDist = 4f;
@@ -61,11 +65,13 @@ public class PathAI : AIModule
         }
         else
         {
-            if(!patrolling)
+            if (!patrolling)
             {
                 ai.setMode(AirCraftAI.AIMode.Inactive);
                 if (OnPathEnd != null)
+                {
                     OnPathEnd.Invoke();
+                }
             }
             else
             {
@@ -82,7 +88,6 @@ public class PathAI : AIModule
 
     public override void StateTick()
     {
-
     }
 
     void createPath()
@@ -97,7 +102,7 @@ public class PathAI : AIModule
             //TODO: find carrier (Add to blackboard)
             if (!FactionManager.IsAllied(constructs[i].faction, craft.faction))
             {
-                nodes.Add(new AutoNode() { construct = constructs[i], index = 0 });
+                nodes.Add(new AutoNode() {construct = constructs[i], index = 0});
                 constructs.RemoveAt(i);
             }
         }
@@ -114,7 +119,9 @@ public class PathAI : AIModule
             for (int i = 0; i < nodes.Count; i++)
             {
                 if (nodes[i].index != index)
+                {
                     continue;
+                }
 
                 Vector3 zero = nodes[i].construct.spawnPoint;
                 AirConstruct nearest = null;
@@ -135,12 +142,13 @@ public class PathAI : AIModule
                     float d = (constructs[j].spawnPoint - zero).magnitude;
                     if (d < trueDistance + 1f)
                     {
-                        nodes.Add(new AutoNode() { construct = constructs[j], index = index + 1 });
+                        nodes.Add(new AutoNode() {construct = constructs[j], index = index + 1});
                         constructs.RemoveAt(j);
                         j--;
                     }
                 }
             }
+
             index++;
         }
 
@@ -160,10 +168,12 @@ public class PathAI : AIModule
                     //Debug.Log("ID " + (nodes.Count - i - 1) + "'s child: " + (nodes.Count - j - 1));
                 }
             }
+
             node.children = children;
             path.waypoints.Add(node);
             //Debug.Log("Created a node (index " + nodes[i].index + ") @ " + node.position + " with ID " + node.ID + " and " + children.Count + "children.");
         }
+
         waypointID = 0;
     }
 
@@ -191,11 +201,13 @@ public class PathAI : AIModule
                             break;
                         }
                     }
+
                     //Debug.Log("New waypoint ID: " + waypointID + " @ " + currentTargetPos);
                     return;
                 }
             }
         }
+
         waypointID = -1;
     }
 
@@ -217,6 +229,7 @@ public class PathAI : AIModule
                 return;
             }
         }
+
         waypointID = -1;
     }
 }

@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Missile : WeaponAbility {
-
+public class Missile : WeaponAbility
+{
     public GameObject missilePrefab;
     public static readonly int missileDamage = 1000;
+
     protected override void Awake()
     {
         base.Awake();
@@ -21,15 +20,20 @@ public class Missile : WeaponAbility {
         bonusDamageType = typeof(ShellCore);
     }
 
-    protected override void Start() {
+    protected override void Start()
+    {
         missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
         base.Start();
     }
+
     protected override bool Execute(Vector3 victimPos)
     {
         AudioManager.PlayClipByID("clip_bullet2", transform.position);
         if (missilePrefab == null)
+        {
             missilePrefab = ResourceManager.GetAsset<GameObject>("missile_prefab");
+        }
+
         var missile = Instantiate(missilePrefab, transform.position, Quaternion.identity);
         var script = missile.GetComponent<MissileScript>();
         script.owner = GetComponentInParent<Entity>();

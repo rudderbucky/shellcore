@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NodeEditorFramework;
+using NodeEditorFramework.IO;
+using NodeEditorFramework.Standard;
 using UnityEngine;
 using UnityEngine.Events;
-using NodeEditorFramework.Standard;
-using NodeEditorFramework.IO;
-using NodeEditorFramework;
-using System;
 
 public interface IDialogueOverrideHandler
 {
@@ -13,7 +11,7 @@ public interface IDialogueOverrideHandler
     Dictionary<string, Stack<UnityAction>> GetInteractionOverrides();
     void SetNode(ConnectionPort node);
     void SetNode(Node node);
-    void SetSpeakerID(string ID); 
+    void SetSpeakerID(string ID);
 }
 
 public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
@@ -33,12 +31,13 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     public static bool loading = false;
 
     // objective locations for visualization of tasks in the main map and minimap
-    public class ObjectiveLocation 
+    public class ObjectiveLocation
     {
         public Vector2 location;
         public bool exactLocation;
         public Entity followEntity;
         public string missionName;
+
         public ObjectiveLocation(Vector2 location, bool exactLocation, string missionName, Entity followEntity = null)
         {
             this.missionName = missionName;
@@ -49,10 +48,13 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     }
 
     public static Dictionary<string, List<ObjectiveLocation>> objectiveLocations = new Dictionary<string, List<ObjectiveLocation>>();
+
     // Move to Dialogue System?
     public static string speakerID = null;
     public static List<string> speakerIDList = new List<string>();
-    public static Entity GetSpeaker() {
+
+    public static Entity GetSpeaker()
+    {
         var speakerObj = SectorManager.instance.GetEntity(speakerID);
         return speakerObj;
     }
@@ -63,6 +65,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         {
             Destroy(gameObject);
         }
+
         Instance = this;
         objectiveLocations = new Dictionary<string, List<ObjectiveLocation>>();
         speakerID = null;
@@ -74,11 +77,11 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     void Update()
     {
-        foreach(var ls in objectiveLocations.Values)
+        foreach (var ls in objectiveLocations.Values)
         {
-            foreach(var loc in ls)
+            foreach (var loc in ls)
             {
-                if(loc.followEntity)
+                if (loc.followEntity)
                 {
                     loc.location = loc.followEntity.transform.position;
                 }
@@ -88,28 +91,41 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     public static bool TraversersContainCheckpoint(string checkpointName)
     {
-        foreach(var traverser in Instance.traversers)
+        foreach (var traverser in Instance.traversers)
         {
-            if(traverser.lastCheckpointName == checkpointName) return true;
+            if (traverser.lastCheckpointName == checkpointName)
+            {
+                return true;
+            }
         }
+
         return false;
     }
 
     public void ClearCanvases(bool doNotClearCanvasPaths = false)
     {
         if (traversers != null)
+        {
             for (int i = 0; i < traversers.Count; i++)
             {
                 traversers[i].nodeCanvas.Destroy();
             }
+        }
+
         if (sectorTraversers != null)
+        {
             for (int i = 0; i < sectorTraversers.Count; i++)
             {
                 sectorTraversers[i].nodeCanvas.Destroy();
             }
+        }
+
         sectorTraversers = new List<SectorTraverser>();
         traversers = new List<MissionTraverser>();
-        if(!doNotClearCanvasPaths) questCanvasPaths.Clear();
+        if (!doNotClearCanvasPaths)
+        {
+            questCanvasPaths.Clear();
+        }
     }
 
     public void AddCanvasPath(string path)
@@ -117,11 +133,13 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         questCanvasPaths.Add(path);
     }
 
-    public static void StartQuests() {
+    public static void StartQuests()
+    {
         loading = true;
         Instance.startQuests();
         loading = false;
     }
+
     public void AddTask(Task t)
     {
         activeTasks.Add(t);
@@ -143,9 +161,9 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     public void endTask(string taskID)
     {
-        for(int i = 0; i < activeTasks.Count; i++)
+        for (int i = 0; i < activeTasks.Count; i++)
         {
-            if(activeTasks[i].taskID == taskID)
+            if (activeTasks[i].taskID == taskID)
             {
                 activeTasks.RemoveAt(i);
                 updateTaskList();
@@ -162,19 +180,28 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     public void SetTaskVariable(string name, int value, bool incrementMode)
     {
-        if(incrementMode)
+        if (incrementMode)
+        {
             taskVariables[name] += value;
-        else taskVariables[name] = value;
+        }
+        else
+        {
+            taskVariables[name] = value;
+        }
+
         if (VariableConditionNode.OnVariableUpdate != null)
+        {
             VariableConditionNode.OnVariableUpdate.Invoke(name);
+        }
     }
 
     public int GetTaskVariable(string name)
     {
-        if(taskVariables.ContainsKey(name))
+        if (taskVariables.ContainsKey(name))
         {
             return taskVariables[name];
         }
+
         Debug.LogWarningFormat("Tried to read unknown task variable '{0}'", name);
         return 0;
     }
@@ -182,25 +209,28 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     void initCanvases(bool forceReInit)
     {
         if (initialized && !forceReInit)
+        {
             return;
+        }
+
         traversers = new List<MissionTraverser>();
         sectorTraversers = new List<SectorTraverser>();
         NodeCanvasManager.FetchCanvasTypes();
         NodeTypes.FetchNodeTypes();
         ConnectionPortManager.FetchNodeConnectionDeclarations();
 
-        if(Instance)
+        if (Instance)
         {
             Instance.ClearCanvases(true);
         }
-            
+
 
         var XMLImport = new XMLImportExport();
 
         for (int i = 0; i < questCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
-            
+
             if (finalPath.Contains(".taskdata"))
             {
                 var canvas = XMLImport.Import(finalPath) as QuestCanvas;
@@ -234,23 +264,24 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     // Traverse quest graph
     public void startQuests()
     {
-        for(int i = 0; i < traversers.Count; i++)
+        for (int i = 0; i < traversers.Count; i++)
         {
             var start = traversers[i].findRoot();
             if (start != null)
+            {
                 start.TryAddMission();
+            }
         }
 
         // tasks
         var missions = PlayerCore.Instance.cursave.missions;
 
-        foreach(var mission in missions)
+        foreach (var mission in missions)
         {
-            
-            if(traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))
+            if (traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))
             {
                 var traverser = traversers.Find((t) => t.nodeCanvas.missionName == mission.name);
-                if(traverser.findRoot().overrideCheckpoint)
+                if (traverser.findRoot().overrideCheckpoint)
                 {
                     traverser.activateCheckpoint(traverser.findRoot().overrideCheckpointName);
                 }
@@ -269,7 +300,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
                         traverser.ActivateTask(start.taskID);
                     }
                 }
-            }   
+            }
         }
 
         for (int i = 0; i < traversers.Count; i++)
@@ -298,7 +329,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     {
         for (int i = 0; i < canvas.nodes.Count; i++)
         {
-            if(canvas.nodes[i].GetID() == ID)
+            if (canvas.nodes[i].GetID() == ID)
             {
                 setNode(canvas.nodes[i]);
             }
@@ -314,12 +345,18 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     {
         NodeCanvas canvas = node.Canvas;
         // Debug.Log("Node: " + node.name + " Canvas: " + node.Canvas);
-        if(node.Canvas is QuestCanvas)
+        if (node.Canvas is QuestCanvas)
+        {
             (canvas.Traversal as MissionTraverser).SetNode(node);
-        else if(node.Canvas is DialogueCanvas)
+        }
+        else if (node.Canvas is DialogueCanvas)
+        {
             (canvas.Traversal as DialogueTraverser).SetNode(node);
+        }
         else
+        {
             (canvas.Traversal as SectorTraverser).SetNode(node);
+        }
     }
 
     public static void DrawObjectiveLocations()
@@ -339,7 +376,10 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     public void AttemptAutoSave()
     {
-        if(autoSaveEnabled && !loading) saveHandler.Save();
+        if (autoSaveEnabled && !loading)
+        {
+            saveHandler.Save();
+        }
     }
 
     public void RemoveTraverser(MissionTraverser traverser)

@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class VersionNumberScript : MonoBehaviour
 {
     public static string version = "Beta 0.0.0";
-    public static string mapVersion = "Alpha 5.4.1";
+    public static string mapVersion = "Beta 0.0.0";
     static VersionNumberScript instance;
     public Text episodeText;
 
@@ -33,10 +31,10 @@ public class VersionNumberScript : MonoBehaviour
 
     public static void SetEpisodeName(int episode)
     {
-       if (instance && instance.episodeText)
+        if (instance && instance.episodeText)
         {
             string trc = "TACTICAL RETRO COMBAT.\n";
-            switch(episode)
+            switch (episode)
             {
                 case 1:
                     instance.episodeText.text = $"{trc}<color=red>EPISODE 2: INFECTION</color>";
@@ -45,9 +43,7 @@ public class VersionNumberScript : MonoBehaviour
                 default:
                     instance.episodeText.text = $"{trc}<color=lime>EPISODE 1: NEWBORN</color>";
                     break;
-                
             }
-        } 
+        }
     }
-
 }

@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class GroundCarrier : GroundConstruct, ICarrier {
+public class GroundCarrier : GroundConstruct, ICarrier
+{
     private float coreAlertThreshold;
     private float shellAlertThreshold;
 
@@ -18,8 +18,9 @@ public class GroundCarrier : GroundConstruct, ICarrier {
     {
         var tmp = transform.position;
         tmp.y -= 3;
-        return tmp; 
+        return tmp;
     }
+
     protected override void Start()
     {
         category = EntityCategory.Station;
@@ -28,7 +29,6 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         coreAlertThreshold = maxHealth[1] * 0.8f;
         shellAlertThreshold = maxHealth[0] * 0.8f;
     }
-
 
     public List<IOwnable> GetUnitsCommanding()
     {
@@ -41,32 +41,37 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         {
             return intrinsicCommandLimit + sectorMngr.GetExtraCommandUnits(faction);
         }
-        else return intrinsicCommandLimit;
+        else
+        {
+            return intrinsicCommandLimit;
+        }
     }
 
-    public SectorManager GetSectorManager() {
+    public SectorManager GetSectorManager()
+    {
         return sectorMngr;
     }
+
     protected override void Update()
     {
         if (initialized)
         {
             var enemyTargetFound = false;
-            if(BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
+            if (BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
             {
-                foreach(var target in BattleZoneManager.getTargets())
+                foreach (var target in BattleZoneManager.getTargets())
                 {
-                    if(!FactionManager.IsAllied(target.faction, faction) && !target.GetIsDead())
+                    if (!FactionManager.IsAllied(target.faction, faction) && !target.GetIsDead())
                     {
                         enemyTargetFound = true;
                         break;
                     }
                 }
-            } 
+            }
 
             foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
             {
-                if(!(active is SpawnDrone) || enemyTargetFound) 
+                if (!(active is SpawnDrone) || enemyTargetFound)
                 {
                     active.Tick();
                     active.Activate();
@@ -78,7 +83,8 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         }
     }
 
-    public Draggable GetTractorTarget() {
+    public Draggable GetTractorTarget()
+    {
         return null;
     }
 
@@ -92,23 +98,28 @@ public class GroundCarrier : GroundConstruct, ICarrier {
         intrinsicCommandLimit = val;
     }
 
-    public override void TakeCoreDamage(float amount){
+    public override void TakeCoreDamage(float amount)
+    {
         base.TakeCoreDamage(amount);
-        if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction)) {
-            int temp = (int)(Mathf.Floor((currentHealth[1]/maxHealth[1]) * 5) + 1) * 20;
+        if (currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction))
+        {
+            int temp = (int)(Mathf.Floor((currentHealth[1] / maxHealth[1]) * 5) + 1) * 20;
             shellAlertThreshold -= (maxHealth[1] * 0.2f);
             PlayerCore.Instance.alerter.showMessage("Base is at " + temp + "% core", "clip_alert");
         }
     }
-    public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy){
+
+    public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
+    {
         //this is bad code but idk how to do better
-        float residue = base.TakeShellDamage(amount,shellPiercingFactor,lastDamagedBy);
-        if(currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction)){
-            int temp = (int)(Mathf.Floor((currentHealth[0]/maxHealth[0]) * 5) + 1) * 20;
+        float residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
+        if (currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction))
+        {
+            int temp = (int)(Mathf.Floor((currentHealth[0] / maxHealth[0]) * 5) + 1) * 20;
             shellAlertThreshold -= (maxHealth[0] * 0.2f);
             PlayerCore.Instance.alerter.showMessage("Base is at " + temp + "% shell", "clip_alert");
         }
+
         return residue;
     }
-
 }

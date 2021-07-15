@@ -1,25 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 
 public class WCManual : GUIWindowScripts
 {
-
     public Transform listContents;
     public GameObject buttonPrefab;
     public Text contentText;
 
     void Start()
     {
-        foreach(var entry in manualEntries)
+        foreach (var entry in manualEntries)
         {
             var button = Instantiate(buttonPrefab, listContents).GetComponent<Button>();
             button.GetComponentInChildren<Text>().text = entry.title;
-            button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => {
-                contentText.text = entry.contents;
-            }));
+            button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => { contentText.text = entry.contents; }));
         }
     }
 
@@ -29,22 +25,25 @@ public class WCManual : GUIWindowScripts
         public string title;
         public string contents;
     }
+
     public ManualEntry placeholder;
 
     public List<ManualEntry> manualEntries;
 }
 
-
 #if UNITY_EDITOR
 [CustomEditor(typeof(WCManual))]
-public class WCManualEditor : Editor 
-{   
+public class WCManualEditor : Editor
+{
     int testIndex;
     WCManual manual;
-    public void OnEnable() {
+
+    public void OnEnable()
+    {
         manual = (WCManual)target;
     }
-    public override void OnInspectorGUI ()
+
+    public override void OnInspectorGUI()
     {
         var areaStyle = new GUIStyle(GUI.skin.textArea);
         EditorGUILayout.BeginHorizontal();
@@ -52,20 +51,22 @@ public class WCManualEditor : Editor
         testIndex = EditorGUILayout.IntField(testIndex);
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
-            if(GUILayout.Button("Shift Up"))
-            {
-                var entry = manual.manualEntries[testIndex];
-                manual.manualEntries.RemoveAt(testIndex);
-                testIndex--;
-                manual.manualEntries.Insert(testIndex, entry);
-            }
-            if(GUILayout.Button("Shift Down"))
-            {
-                var entry = manual.manualEntries[testIndex];
-                manual.manualEntries.RemoveAt(testIndex);
-                testIndex++;
-                manual.manualEntries.Insert(testIndex, entry);
-            }
+        if (GUILayout.Button("Shift Up"))
+        {
+            var entry = manual.manualEntries[testIndex];
+            manual.manualEntries.RemoveAt(testIndex);
+            testIndex--;
+            manual.manualEntries.Insert(testIndex, entry);
+        }
+
+        if (GUILayout.Button("Shift Down"))
+        {
+            var entry = manual.manualEntries[testIndex];
+            manual.manualEntries.RemoveAt(testIndex);
+            testIndex++;
+            manual.manualEntries.Insert(testIndex, entry);
+        }
+
         EditorGUILayout.EndHorizontal();
 
 
@@ -90,20 +91,22 @@ public class WCManualEditor : Editor
         manual.placeholder.contents = EditorGUILayout.TextArea(manual.placeholder.contents, areaStyle, GUILayout.MinHeight(height));
 
         EditorGUILayout.BeginHorizontal();
-        if(GUILayout.Button("Add"))
+        if (GUILayout.Button("Add"))
         {
             manual.manualEntries.Add(manual.placeholder);
             manual.placeholder = new WCManual.ManualEntry();
         }
+
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
-        if(GUILayout.Button("Delete"))
+        if (GUILayout.Button("Delete"))
         {
-            manual.manualEntries.RemoveAt(manual.manualEntries.Count-1);
+            manual.manualEntries.RemoveAt(manual.manualEntries.Count - 1);
         }
+
         EditorGUILayout.EndHorizontal();
 
-        foreach(var entry in manual.manualEntries)
+        foreach (var entry in manual.manualEntries)
         {
             EditorGUILayout.BeginHorizontal();
             entry.title = EditorGUILayout.TextField("Title:", entry.title);
@@ -114,6 +117,7 @@ public class WCManualEditor : Editor
             var theight = new GUIStyle(GUI.skin.textArea).CalcHeight(new GUIContent(entry.contents), Screen.width);
             entry.contents = EditorGUILayout.TextArea(entry.contents, areaStyle, GUILayout.MinHeight(theight));
         }
+
         serializedObject.ApplyModifiedProperties();
     }
 }

@@ -1,23 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public enum WeaponDiversityType {
+public enum WeaponDiversityType
+{
     Strike,
     Gun,
-    
+
     Torpedo,
     None
 }
-
 
 /// <summary>
 /// Every ability that is used explicitly to attack other crafts is a weapon ability. 
 /// These all have a respective range at which they are effective as well.
 /// Their active status also does not depend on a duration and can be directly toggled on and off by the craft.
 /// </summary>
-public abstract class WeaponAbility : ActiveAbility {
-
+public abstract class WeaponAbility : ActiveAbility
+{
     protected float range; // the range of the ability
     protected float damage;
     protected WeaponTargetingSystem targetingSystem;
@@ -29,10 +28,26 @@ public abstract class WeaponAbility : ActiveAbility {
 
     public string GetBonusDamageType()
     {
-        if(bonusDamageType == typeof(AirConstruct)) return "Air Stations and Turrets";
-        if(bonusDamageType == typeof(GroundConstruct)) return "Ground Stations";
-        if(bonusDamageType == typeof(ShellCore)) return "ShellCores";
-        if(bonusDamageType == typeof(Drone)) return "Drones";
+        if (bonusDamageType == typeof(AirConstruct))
+        {
+            return "Air Stations and Turrets";
+        }
+
+        if (bonusDamageType == typeof(GroundConstruct))
+        {
+            return "Ground Stations";
+        }
+
+        if (bonusDamageType == typeof(ShellCore))
+        {
+            return "ShellCores";
+        }
+
+        if (bonusDamageType == typeof(Drone))
+        {
+            return "Drones";
+        }
+
         return bonusDamageType?.ToString();
     }
 
@@ -43,17 +58,24 @@ public abstract class WeaponAbility : ActiveAbility {
 
     public bool CheckCategoryCompatibility(Entity.TerrainType terrain, Entity.EntityCategory category)
     {
-        if(type == WeaponDiversityType.Torpedo)
+        if (type == WeaponDiversityType.Torpedo)
+        {
             return terrain == Entity.TerrainType.Ground;
+        }
         else
+        {
             return TerrainCheck(terrain)
-            && CategoryCheck(category);
+                   && CategoryCheck(category);
+        }
     }
 
     public bool TerrainCheck(Entity.TerrainType targetTerrain)
     {
-        if(type == WeaponDiversityType.Torpedo)
+        if (type == WeaponDiversityType.Torpedo)
+        {
             return targetTerrain == Entity.TerrainType.Ground;
+        }
+
         return this.terrain == Entity.TerrainType.All || targetTerrain == this.terrain;
     }
 
@@ -73,19 +95,24 @@ public abstract class WeaponAbility : ActiveAbility {
         isEnabled = true; // initialize abilities to be active
         targetingSystem = new WeaponTargetingSystem();
         targetingSystem.ability = this;
-        if(abilityName == null) abilityName = "Weapon Ability";
+        if (abilityName == null)
+        {
+            abilityName = "Weapon Ability";
+        }
     }
 
     List<AbilityID> damageUnaffectedByTier = new List<AbilityID> {AbilityID.MainBullet, AbilityID.Bomb};
 
-    protected virtual void Start() {
-        if(abilityTier != 0) 
+    protected virtual void Start()
+    {
+        if (abilityTier != 0)
         {
             damage *= (damageUnaffectedByTier.Contains(ID)) ? 1 : abilityTier;
             energyCost *= abilityTier;
         }
 
-        switch(type) {
+        switch (type)
+        {
             case WeaponDiversityType.Strike:
                 energyCost *= 0.6F;
                 break;
@@ -96,12 +123,13 @@ public abstract class WeaponAbility : ActiveAbility {
                 break;
         }
     }
-    
+
     /// <summary>
     /// Get the range of the weapon ability
     /// </summary>
     /// <returns>the range of the weapon ability</returns>
-    public override float GetRange() {
+    public override float GetRange()
+    {
         return range; // get range
     }
 
@@ -127,6 +155,7 @@ public abstract class WeaponAbility : ActiveAbility {
                 return (damage + Core.damageAddition) * bonusDamageMultiplier;
             }
         }
+
         return damage + Core.damageAddition;
     }
 
@@ -137,8 +166,14 @@ public abstract class WeaponAbility : ActiveAbility {
     /// <returns>a float value that is directly based on isActive rather than a duration</returns>
     public override float GetActiveTimeRemaining()
     {
-        if (isEnabled) return -1; // -1 is not zero so the ability is active
-        else return 0; // inactive ability
+        if (isEnabled)
+        {
+            return -1; // -1 is not zero so the ability is active
+        }
+        else
+        {
+            return 0; // inactive ability
+        }
     }
 
     public override void Activate()
@@ -158,11 +193,12 @@ public abstract class WeaponAbility : ActiveAbility {
         {
             return; // Part has been destroyed, ability can't be used
         }
+
         if (Core.IsInvisible || Core.isAbsorbing)
         {
             return; // Core is in stealth mode, weapons are disabled
         }
-        
+
         UpdateState(); // Update state
 
         Shoot();
@@ -178,7 +214,8 @@ public abstract class WeaponAbility : ActiveAbility {
                 TargetManager.Enqueue(targetingSystem, category);
             }
             else if (target && target.GetComponent<IDamageable>() != null)
-            { // check if there is a target
+            {
+                // check if there is a target
                 Core.SetIntoCombat(); // now in combat
                 IDamageable tmp = target.GetComponent<IDamageable>();
 
@@ -199,7 +236,8 @@ public abstract class WeaponAbility : ActiveAbility {
         }
     }
 
-    protected virtual bool DistanceCheck(Transform targetEntity) {
+    protected virtual bool DistanceCheck(Transform targetEntity)
+    {
         return Vector2.SqrMagnitude(transform.position - targetEntity.position) <= GetRange() * GetRange();
     }
 

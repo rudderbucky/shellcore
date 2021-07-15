@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Any ability that has a specific active time is an active ability (abilities that are simply click for effect that does not expire are not active abilities)
@@ -10,10 +8,12 @@ public abstract class ActiveAbility : Ability
     /// <summary>
     /// Initialization of every active ability
     /// </summary>
-    protected override void Awake() {
+    protected override void Awake()
+    {
         base.Awake(); // base awake
         abilityName = "Active Ability";
     }
+
     /// <summary>
     /// Get the active time remaining
     /// </summary>
@@ -24,7 +24,10 @@ public abstract class ActiveAbility : Ability
         {
             return activeDuration - (Time.time - startTime); // return active time remaining
         }
-        else return 0; // not active
+        else
+        {
+            return 0; // not active
+        }
     }
 
     public override void SetDestroyed(bool input)
@@ -37,15 +40,16 @@ public abstract class ActiveAbility : Ability
     private void OnDestroy()
     {
         if (State != AbilityState.Destroyed)
+        {
             SetDestroyed(true);
+        }
     }
 
     /// <summary>
     /// Called when active time hits 0, used to rollback whatever change was done on the core
     /// </summary>
     override public void Deactivate()
-    { 
-
+    {
     }
 
     override protected void Execute()
@@ -62,4 +66,3 @@ public abstract class ActiveAbility : Ability
         base.Tick();
     }
 }
-

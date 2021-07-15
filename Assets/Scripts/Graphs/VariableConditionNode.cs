@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
@@ -16,16 +14,33 @@ namespace NodeEditorFramework.Standard
         };
 
         public delegate void VariableChangedDelegate(string variable);
+
         public static VariableChangedDelegate OnVariableUpdate;
 
         public const string ID = "VariableConditionNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Variable condition"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 200); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Variable condition"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 200); }
+        }
 
         private ConditionState state;
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         //Data
         public string variableName;
@@ -58,18 +73,21 @@ namespace NodeEditorFramework.Standard
                     {
                         state = ConditionState.Completed;
                     }
+
                     break;
                 case 1:
                     if (i > value)
                     {
                         state = ConditionState.Completed;
                     }
+
                     break;
                 case 2:
                     if (i < value)
                     {
                         state = ConditionState.Completed;
                     }
+
                     break;
             }
         }
@@ -87,23 +105,29 @@ namespace NodeEditorFramework.Standard
                 int i = TaskManager.Instance.GetTaskVariable(variableName);
                 switch (mode)
                 {
-                    case 0: if (i == value)
+                    case 0:
+                        if (i == value)
                         {
                             state = ConditionState.Completed;
                             outputRight.connection(0).body.Calculate();
                         }
+
                         break;
-                    case 1: if (i > value)
+                    case 1:
+                        if (i > value)
                         {
                             state = ConditionState.Completed;
                             outputRight.connection(0).body.Calculate();
                         }
+
                         break;
-                    case 2: if (i < value)
+                    case 2:
+                        if (i < value)
                         {
                             state = ConditionState.Completed;
                             outputRight.connection(0).body.Calculate();
                         }
+
                         break;
                 }
             }

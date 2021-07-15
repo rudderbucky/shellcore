@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace NodeEditorFramework.Standard
@@ -10,11 +8,24 @@ namespace NodeEditorFramework.Standard
     {
         public static UnityEvent OnCoreUpgrade = new UnityEvent();
         public const string ID = "UpgradeCoreCondition";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Upgrade Core Condition"; } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Upgrade Core Condition"; }
+        }
 
         public ConditionState state; // Property can't be serialized -> field
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
@@ -30,7 +41,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
         }
 
-       public void Init(int index)
+        public void Init(int index)
         {
             OnCoreUpgrade.AddListener(CheckShell);
             State = ConditionState.Listening;
@@ -45,7 +56,7 @@ namespace NodeEditorFramework.Standard
 
         public void CheckShell()
         {
-            if(PlayerCore.Instance.blueprint.coreShellSpriteID == ShellID)
+            if (PlayerCore.Instance.blueprint.coreShellSpriteID == ShellID)
             {
                 State = ConditionState.Completed;
                 connectionKnobs[0].connection(0).body.Calculate();

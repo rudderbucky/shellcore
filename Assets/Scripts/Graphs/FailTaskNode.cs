@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using NodeEditorFramework.Utilities;
+﻿using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
@@ -10,10 +7,21 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "FailTaskNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Fail Task"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Fail Task"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(208, height); }
+        }
 
         float height = 0f;
 
@@ -57,6 +65,7 @@ namespace NodeEditorFramework.Standard
                     TaskManager.Instance.endTask(taskID);
                 }
             }
+
             return 0;
         }
     }

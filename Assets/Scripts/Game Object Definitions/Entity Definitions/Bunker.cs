@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Bunker : GroundConstruct, IVendor {
-
+public class Bunker : GroundConstruct, IVendor
+{
     public VendingBlueprint vendingBlueprint;
     BattleZoneManager BZManager;
 
@@ -17,10 +15,12 @@ public class Bunker : GroundConstruct, IVendor {
     public override void RemovePart(ShellPart part)
     {
         if (part)
+        {
             if (part.gameObject.name != "Shell Sprite")
             {
                 Destroy(part.gameObject);
             }
+        }
     }
 
     protected override void Update()
@@ -50,12 +50,14 @@ public class Bunker : GroundConstruct, IVendor {
         {
             RemovePart(parts[i]);
         }
+
         targeter.SetTarget(null);
-        if(sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
+        if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             BZManager.UpdateCounters();
             BZManager.AlertPlayers(otherFaction, "WARNING: Bunker lost!");
         }
+
         Start();
         foreach (var part in parts)
         {
@@ -68,7 +70,8 @@ public class Bunker : GroundConstruct, IVendor {
         return vendingBlueprint;
     }
 
-    public Vector3 GetPosition() {
+    public Vector3 GetPosition()
+    {
         return transform.position;
     }
 }

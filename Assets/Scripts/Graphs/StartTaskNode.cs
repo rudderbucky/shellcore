@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
@@ -9,22 +9,39 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "StartTaskNode";
-        public override string GetName { get { return ID; } }
 
-        public override bool AutoLayout { get { return true; } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
 
-        public override string Title { get { return "Start Task"; } }
-        public override Vector2 MinSize { get { return new Vector2(208, 50); } }
-    
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override string Title
+        {
+            get { return "Start Task"; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(208, 50); }
+        }
+
         //Task related
         public string taskID
         {
             get { return "Task_" + GetID(); }
         }
+
         public string dialogueText = "";
         public Color dialogueColor = Color.white;
         public string objectiveList = "";
+
         public int creditReward = 100;
+
         //public EntityBlueprint.PartInfo partReward;
         public bool partReward = false;
         public string entityIDforConfirmedResponse;
@@ -44,14 +61,12 @@ namespace NodeEditorFramework.Standard
         float height = 320f;
         public bool forceTask = false;
 
-        
         [ConnectionKnob("Input Left", Direction.In, "Dialogue", NodeSide.Left)]
         public ConnectionKnob inputLeft;
 
-        
         [ConnectionKnob("Output Accept", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputAccept;
-        
+
         [ConnectionKnob("Output Decline", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputDecline;
 
@@ -80,7 +95,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Dialogue:");
             dialogueText = GUILayout.TextArea(dialogueText, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 200f);
-            if(!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
+            if (!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
             {
                 GUILayout.Label("Text Color:");
                 float r, g, b;
@@ -91,6 +106,7 @@ namespace NodeEditorFramework.Standard
                 GUILayout.EndHorizontal();
                 dialogueColor = new Color(r, g, b);
             }
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Accept Player Response:");
             GUILayout.EndHorizontal();
@@ -114,7 +130,7 @@ namespace NodeEditorFramework.Standard
             shardReward = RTEditorGUI.IntField(shardReward, GUILayout.Width(208f));
 
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));
-            if(partReward)
+            if (partReward)
             {
                 height += 320f;
                 GUILayout.Label("Part ID:");
@@ -123,7 +139,7 @@ namespace NodeEditorFramework.Standard
                 {
                     init = true;
                     PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(partID);
-                    if(partBlueprint != null)
+                    if (partBlueprint != null)
                     {
                         partTexture = ResourceManager.GetAsset<Sprite>(partBlueprint.spriteID).texture;
                     }
@@ -132,7 +148,8 @@ namespace NodeEditorFramework.Standard
                         partTexture = null;
                     }
                 }
-                if(partTexture != null)
+
+                if (partTexture != null)
                 {
                     GUILayout.Label(partTexture);
                     height += partTexture.height + 8f;
@@ -143,6 +160,7 @@ namespace NodeEditorFramework.Standard
                     GUILayout.Label("<Part not found>");
                     NodeEditorGUI.nodeSkin.label.normal.textColor = NodeEditorGUI.NE_TextColor;
                 }
+
                 partAbilityID = RTEditorGUI.IntField("Ability ID", partAbilityID, GUILayout.Width(200f));
                 string abilityName = AbilityUtilities.GetAbilityNameByID(partAbilityID, null);
                 if (abilityName != "Name unset")
@@ -150,6 +168,7 @@ namespace NodeEditorFramework.Standard
                     GUILayout.Label("Ability: " + abilityName);
                     height += 24f;
                 }
+
                 partTier = RTEditorGUI.IntField("Part tier", partTier, GUILayout.Width(200f));
                 GUILayout.Label("Part Secondary Data:");
                 partSecondaryData = GUILayout.TextField(partSecondaryData, GUILayout.Width(200f));
@@ -158,6 +177,7 @@ namespace NodeEditorFramework.Standard
             {
                 height += 160f;
             }
+
             forceTask = Utilities.RTEditorGUI.Toggle(forceTask, "Force Task Acceptance");
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 50f);
 
@@ -186,9 +206,13 @@ namespace NodeEditorFramework.Standard
             else
             {
                 if (outputDecline.connected())
+                {
                     TaskManager.Instance.setNode(outputDecline);
+                }
                 else
+                {
                     TaskManager.Instance.setNode(StartDialogueNode.missionCanvasNode);
+                }
             }
         }
 
@@ -214,8 +238,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-
-            if(!forceTask)
+            if (!forceTask)
             {
                 DialogueSystem.ShowTaskPrompt(this, TaskManager.GetSpeaker());
                 DialogueSystem.OnDialogueEnd += OnClick;
@@ -223,11 +246,12 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                if(StartDialogueNode.missionCanvasNode && StartDialogueNode.missionCanvasNode.EntityID != null
-                    && TaskManager.interactionOverrides.ContainsKey(StartDialogueNode.missionCanvasNode.EntityID))
+                if (StartDialogueNode.missionCanvasNode && StartDialogueNode.missionCanvasNode.EntityID != null
+                                                        && TaskManager.interactionOverrides.ContainsKey(StartDialogueNode.missionCanvasNode.EntityID))
                 {
                     TaskManager.interactionOverrides[StartDialogueNode.missionCanvasNode.EntityID].Pop();
                 }
+
                 StartDialogueNode.missionCanvasNode = null;
                 StartTask();
                 return 0;
@@ -244,7 +268,7 @@ namespace NodeEditorFramework.Standard
                 dialogue = dialogueText,
                 dialogueColor = dialogueColor,
                 reputationReward = reputationReward,
-                shardReward = shardReward,
+                shardReward = shardReward
             };
             if (partReward)
             {
@@ -258,26 +282,31 @@ namespace NodeEditorFramework.Standard
 
             // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
             var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
-            if(mission != null)
+            if (mission != null)
             {
                 mission.status = Mission.MissionStatus.Ongoing;
                 if (MissionCondition.OnMissionStatusChange != null)
+                {
                     MissionCondition.OnMissionStatusChange.Invoke(mission);
-                if(!mission.tasks.Exists((x) => x.dialogue == task.dialogue)) mission.tasks.Add(task);
+                }
+
+                if (!mission.tasks.Exists((x) => x.dialogue == task.dialogue))
+                {
+                    mission.tasks.Add(task);
+                }
             }
 
             (Canvas.Traversal as Traverser).lastCheckpointName = taskName;
             TaskManager.Instance.AttemptAutoSave();
 
 
-
-            if(entityIDforConfirmedResponse != null && entityIDforConfirmedResponse != "")
+            if (entityIDforConfirmedResponse != null && entityIDforConfirmedResponse != "")
             {
-                if(TaskManager.interactionOverrides.ContainsKey(entityIDforConfirmedResponse))
+                if (TaskManager.interactionOverrides.ContainsKey(entityIDforConfirmedResponse))
                 {
                     TaskManager.interactionOverrides[entityIDforConfirmedResponse].Push(() => OnConfirmed());
                 }
-                else 
+                else
                 {
                     var stack = new Stack<UnityEngine.Events.UnityAction>();
                     stack.Push(() => OnConfirmed());

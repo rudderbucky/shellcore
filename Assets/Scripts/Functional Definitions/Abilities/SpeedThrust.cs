@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Gives a temporary increase to the core's engine power
@@ -9,25 +7,31 @@ public class SpeedThrust : ActiveAbility
 {
     Craft craft;
     public static readonly float boost = 20;
+
     protected override void Awake()
     {
         base.Awake(); // base awake
-                      // hardcoded values here
+        // hardcoded values here
         abilityName = "Speed Thrust";
         description = "Temporarily increases speed.";
         ID = AbilityID.SpeedThrust;
         cooldownDuration = 10;
         activeDuration = 5;
         energyCost = 50;
-        if(Core && !(Core as Craft)) Debug.LogError("Why did you add Speed Thrust to a non-moving entity? Weirdo!");
+        if (Core && !(Core as Craft))
+        {
+            Debug.LogError("Why did you add Speed Thrust to a non-moving entity? Weirdo!");
+        }
+
         craft = Core as Craft;
     }
+
     /// <summary>
     /// Returns the engine power to the original value
     /// </summary>
     public override void Deactivate()
     {
-        if(craft)
+        if (craft)
         {
             craft.speed -= boost * abilityTier;
             craft.CalculatePhysicsConstants();
@@ -40,7 +44,7 @@ public class SpeedThrust : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        if(craft)
+        if (craft)
         {
             craft.speed += boost * abilityTier;
             craft.CalculatePhysicsConstants();

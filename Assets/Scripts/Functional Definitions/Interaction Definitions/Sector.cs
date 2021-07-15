@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-
 
 [System.Serializable]
 public struct IntRect
 {
     public int x, y, w, h;
+
     public IntRect(int X, int Y, int W, int H)
     {
         x = X;
@@ -49,6 +48,7 @@ public class Sector : ScriptableObject
         DarkNeutral,
         SiegeZone
     }
+
     public int dimension;
     public string sectorName;
     public IntRect bounds;
@@ -64,9 +64,10 @@ public class Sector : ScriptableObject
 
     [System.NonSerialized]
     public GroundPlatform[] platforms;
+
     [System.NonSerialized]
     public List<GroundPlatform.Tile> tiles;
-    
+
     [System.Serializable]
     public struct BackgroundSpawn
     {
@@ -74,6 +75,7 @@ public class Sector : ScriptableObject
         public int timePerSpawn;
         public float radius;
     }
+
     public BackgroundSpawn[] backgroundSpawns;
     public string waveSetPath;
     public RectangleEffectSkin rectangleEffectSkin;

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -8,8 +6,17 @@ public class CoreUpgraderScript : GUIWindowScripts
 {
     public PlayerCore player;
     public static CoreUpgraderScript instance;
-    public static int[] maxAbilityCap {get {return new int[] {15, 8, 15, 15};}}
-    public static int[] minAbilityCap {get {return new int[] {6, 3, 6, 6};}}
+
+    public static int[] maxAbilityCap
+    {
+        get { return new int[] {15, 8, 15, 15}; }
+    }
+
+    public static int[] minAbilityCap
+    {
+        get { return new int[] {6, 3, 6, 6}; }
+    }
+
     public GameObject optionPrefab;
     public RectTransform reputationBar;
     public Text repText;
@@ -17,7 +24,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     public Text regenText;
     private static int minLvShards = 0;
 
-    public void initialize() {
+    public void initialize()
+    {
         instance = this;
         player.SetIsInteracting(true);
 
@@ -26,10 +34,10 @@ public class CoreUpgraderScript : GUIWindowScripts
         drawScreen();
         // TODO: Fix the shard count script
         ShardCountScript.StickySlideIn(player.shards);
-
     }
 
-    public override void CloseUI() {
+    public override void CloseUI()
+    {
         ShardCountScript.StickySlideOut();
         player.SetIsInteracting(false);
         gameObject.SetActive(false);
@@ -41,33 +49,42 @@ public class CoreUpgraderScript : GUIWindowScripts
         return gameObject.activeSelf;
     }
 
-    public static void DrawScreen() {
+    public static void DrawScreen()
+    {
         instance.drawScreen();
     }
 
-    private void drawScreen() {
+    private void drawScreen()
+    {
         // reputation display
         var repReq = GetReputationRequirement(player.blueprint.coreShellSpriteID);
-        if(repReq > 0) {
+        if (repReq > 0)
+        {
             var regens = GetNextRegens(player.blueprint.coreShellSpriteID);
             regenText.text = "Next tier Regeneration\nSHELL: " + regens[0] + "   ENERGY: " + regens[2];
             reputationBar.sizeDelta = new Vector2(Mathf.Min(player.reputation * 800 / repReq, 800), 30);
             repText.text = "Reputation: " + player.reputation + "/" + repReq;
-        } else {
+        }
+        else
+        {
             regenText.gameObject.SetActive(false);
             reputationBar.sizeDelta = new Vector2(800, 30);
             repText.text = "Core fully upgraded!";
         }
 
-        for(int i = 0; i < optionHolder.childCount; i++) {
+        for (int i = 0; i < optionHolder.childCount; i++)
+        {
             Destroy(optionHolder.GetChild(i).gameObject);
         }
+
         // create option icons
         var currentID = player.blueprint.coreShellSpriteID;
         var nextIDs = GetNextUpgrades(currentID);
-        if(nextIDs != null) {
+        if (nextIDs != null)
+        {
             var offset = -500 * (nextIDs.Length - 1);
-            for(int i = 0; i < nextIDs.Length; i++) {
+            for (int i = 0; i < nextIDs.Length; i++)
+            {
                 var option = Instantiate(optionPrefab, optionHolder, false).GetComponent<RectTransform>();
                 option.anchoredPosition = new Vector2((offset - offset * 2 * i) / nextIDs.Length, 20);
                 var script = option.GetComponent<CUOptionScript>();
@@ -81,42 +98,53 @@ public class CoreUpgraderScript : GUIWindowScripts
     }
 
     /// prevent dragging the window if the mouse is on the grid
-	public override void OnPointerDown(PointerEventData eventData) {
-		base.OnPointerDown(eventData);
-	}
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        base.OnPointerDown(eventData);
+    }
 
-    public static void IncrementAbilityCap(int type) {
+    public static void IncrementAbilityCap(int type)
+    {
         instance.incrementAbilityCap(type);
-    } 
+    }
 
-    private void incrementAbilityCap(int type) {
-        if(player.abilityCaps[type] < maxAbilityCap[type]) {
+    private void incrementAbilityCap(int type)
+    {
+        if (player.abilityCaps[type] < maxAbilityCap[type])
+        {
             player.shards -= GetUpgradeCost(type);
             player.AddCredits(GetUpgradeCostCredits(type) * -1);
             player.abilityCaps[type]++;
             ShardCountScript.UpdateNumber(player.shards);
         }
-
     }
 
-    public static int GetUpgradeCost(int type) {
-        if ((instance.player.abilityCaps[type] - minAbilityCap[type]) > minLvShards){
-            return 5 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type] - minLvShards));
+    public static int GetUpgradeCost(int type)
+    {
+        if ((instance.player.abilityCaps[type] - minAbilityCap[type]) > minLvShards)
+        {
+            return 5 + 5 * (instance.player.abilityCaps[type] - minAbilityCap[type] - minLvShards);
         }
-        else {
+        else
+        {
             return 0;
         }
     }
-    public static int GetUpgradeCostCredits(int type){
+
+    public static int GetUpgradeCostCredits(int type)
+    {
         return 1000 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type]));
     }
 
-    public static int GetShards() {
+    public static int GetShards()
+    {
         return instance.player.shards;
     }
 
-    public static string[] GetNextUpgrades(string coreName) {
-        switch(coreName) {
+    public static string[] GetNextUpgrades(string coreName)
+    {
+        switch (coreName)
+        {
             case "core1_shell":
                 return new string[] {"core2_shell"};
             case "core2_shell":
@@ -131,8 +159,10 @@ public class CoreUpgraderScript : GUIWindowScripts
     }
 
     // reputation to upgrade to any core of the next tier, based on the tier of the core passed
-    public static int GetReputationRequirement(string coreName) {
-        switch(coreName) {
+    public static int GetReputationRequirement(string coreName)
+    {
+        switch (coreName)
+        {
             case "core1_shell":
                 return 100;
             case "core2_shell":
@@ -145,12 +175,15 @@ public class CoreUpgraderScript : GUIWindowScripts
         }
     }
 
-    public static int GetPartTierLimit(string coreName) {
+    public static int GetPartTierLimit(string coreName)
+    {
         return Mathf.Min(GetCoreTier(coreName), 2);
     }
 
-    public static int GetCoreTier(string coreName) {
-        switch(coreName) {
+    public static int GetCoreTier(string coreName)
+    {
+        switch (coreName)
+        {
             case "core1_shell":
                 return 0;
             case "core2_shell":
@@ -168,8 +201,10 @@ public class CoreUpgraderScript : GUIWindowScripts
         }
     }
 
-    public static string GetDescription(string coreName) {
-        switch(coreName) {
+    public static string GetDescription(string coreName)
+    {
+        switch (coreName)
+        {
             case "core1_shell":
                 return "Size-S Core\nThis basic core can handle only small-size parts, but is the building block for all further upgrades.";
             case "core2_shell":
@@ -188,12 +223,13 @@ public class CoreUpgraderScript : GUIWindowScripts
                 return "Size-XL Admiral Core\nAdding afterburners and structural padding\nto your core allows for an additional 3 passives.";
             default:
                 return "No description.";
-
         }
     }
 
-    public static int[] GetExtraAbilities(string coreName) {
-        switch(coreName) {
+    public static int[] GetExtraAbilities(string coreName)
+    {
+        switch (coreName)
+        {
             case "core3skills_shell":
                 return new int[] {3, 0, 0, 0};
             case "core3weapons_shell":
@@ -211,8 +247,10 @@ public class CoreUpgraderScript : GUIWindowScripts
         }
     }
 
-    public static float[] GetRegens(string coreName) {
-        switch(coreName) {
+    public static float[] GetRegens(string coreName)
+    {
+        switch (coreName)
+        {
             case "core2_shell":
                 return new float[] {90, 0, 45};
             case "core3skills_shell":
@@ -227,9 +265,16 @@ public class CoreUpgraderScript : GUIWindowScripts
                 return new float[] {60, 0, 30};
         }
     }
-    public static float[] defaultHealths {get {return new float[] {1000,250,500}; }}
-    public static float[] GetNextRegens(string coreName) {
-        switch(coreName) {
+
+    public static float[] defaultHealths
+    {
+        get { return new float[] {1000, 250, 500}; }
+    }
+
+    public static float[] GetNextRegens(string coreName)
+    {
+        switch (coreName)
+        {
             case "core1_shell":
                 return new float[] {90, 0, 90};
             case "core2_shell":
@@ -244,8 +289,10 @@ public class CoreUpgraderScript : GUIWindowScripts
 
     public static string[] GetCoreNames()
     {
-        return new string[] {"core1_shell", "core2_shell", "core3skills_shell", "core3weapons_shell",
-				"core4commando_shell", "core4elite_shell", "core4captain_shell", "core4admiral_shell"};
-
+        return new string[]
+        {
+            "core1_shell", "core2_shell", "core3skills_shell", "core3weapons_shell",
+            "core4commando_shell", "core4elite_shell", "core4captain_shell", "core4admiral_shell"
+        };
     }
 }

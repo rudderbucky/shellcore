@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Cannon : WeaponAbility {
-
+public class Cannon : WeaponAbility
+{
     public GameObject effectPrefab;
     public GameObject effect;
     public IDamageable target;
@@ -30,7 +28,11 @@ public class Cannon : WeaponAbility {
     protected override bool Execute(Vector3 victimPos)
     {
         // TODO: There was a check if the target was an entity. Is that necessary?
-        if(!effectPrefab) effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+        if (!effectPrefab)
+        {
+            effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+        }
+
         AudioManager.PlayClipByID("clip_cannon", transform.position);
         FireCannon(targetingSystem.GetTarget().GetComponent<IDamageable>()); // fire if there is
         return true;
@@ -44,10 +46,13 @@ public class Cannon : WeaponAbility {
         }
     }
 
-    private void FixedUpdate() {
-        if(effect) {
+    private void FixedUpdate()
+    {
+        if (effect)
+        {
             var rate = 0.15F;
-            if(effect.transform.localScale.x > 0F) {
+            if (effect.transform.localScale.x > 0F)
+            {
                 effect.transform.localScale = new Vector3(Mathf.Max(effect.transform.localScale.x - rate, 0),
                     Mathf.Min(effect.transform.localScale.y + 2 * rate, 2), 1);
             }
@@ -58,11 +63,18 @@ public class Cannon : WeaponAbility {
     {
         this.target = target;
         var shooter = transform.Find("Shooter");
-        if (effect) Destroy(effect);
+        if (effect)
+        {
+            Destroy(effect);
+        }
+
         effect = Instantiate(effectPrefab, shooter, false);
         Destroy(effect, 0.2F);
         GetDamage();
         var residue = target.TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
-        if(target as Entity) (target as Entity).TakeCoreDamage(residue);
+        if (target as Entity)
+        {
+            (target as Entity).TakeCoreDamage(residue);
+        }
     }
 }

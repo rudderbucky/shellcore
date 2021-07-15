@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 [CreateAssetMenu(fileName = "LandPlatform", menuName = "ShellCore/LandPlatform", order = 3)]
@@ -19,6 +18,7 @@ public class LandPlatform : ScriptableObject
 
     //public LandPlatform blueprint;
     public string[] prefabs;
+
     [HideInInspector]
     public int rows = 1, columns = 1;
 
@@ -39,6 +39,7 @@ class LandPlatformEditor : Editor
     SerializedProperty columns;
 
     Vector2 scrollPos;
+
     private void OnEnable()
     {
         tilemap = serializedObject.FindProperty("tilemap");
@@ -72,14 +73,21 @@ class LandPlatformEditor : Editor
         EditorGUILayout.PrefixLabel("Columns: ");
         columns.intValue = EditorGUILayout.IntField(columns.intValue);
         if (rows.intValue <= 0)
+        {
             rows.intValue = 1;
+        }
+
         if (columns.intValue <= 0)
+        {
             columns.intValue = 1;
+        }
 
         EditorGUILayout.EndHorizontal();
 
         if (rows.intValue != oldRows || columns.intValue != oldColumns)
+        {
             tilemap.arraySize = rows.intValue * columns.intValue;
+        }
 
         using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, GUILayout.Width(columns.intValue * 20 + 16), GUILayout.Height(rows.intValue * 20 + 16)))
         {
@@ -93,9 +101,11 @@ class LandPlatformEditor : Editor
                     SerializedProperty type = tilemap.GetArrayElementAtIndex(index);
                     type.intValue = EditorGUILayout.IntField(type.intValue, GUILayout.Width(16), GUILayout.Height(16));
                 }
+
                 EditorGUILayout.EndHorizontal();
             }
         }
+
         serializedObject.ApplyModifiedProperties();
     }
 }

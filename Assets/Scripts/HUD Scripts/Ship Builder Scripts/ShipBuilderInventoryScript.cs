@@ -1,58 +1,75 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems; // Required when using Event data.
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 
-public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
-
+public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
+{
     public GameObject SBPrefab;
     public ShipBuilderCursorScript cursor;
     public BuilderMode mode;
-    
+
     int count;
 
-    protected override void Start() {
+    protected override void Start()
+    {
         base.Start();
         val.text = count + "";
         val.enabled = (mode == BuilderMode.Yard || mode == BuilderMode.Workshop);
         // button border size is handled specifically by the grid layout components
     }
+
     public override void OnPointerDown(PointerEventData eventData)
     {
-        if(Input.GetKey(KeyCode.LeftShift)) 
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            #if UNITY_EDITOR
-            #endif
+#if UNITY_EDITOR
+#endif
         }
 
-        if(count > 0) {
+        if (count > 0)
+        {
             var builderPart = InstantiatePart();
             DecrementCount();
-            if(Input.GetKey(KeyCode.LeftShift)) 
+            if (Input.GetKey(KeyCode.LeftShift))
             {
-                if(mode == BuilderMode.Yard && cursor.builder.GetMode() == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Sell);
-                else if(mode == BuilderMode.Trader) cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Buy);
+                if (mode == BuilderMode.Yard && cursor.builder.GetMode() == BuilderMode.Trader)
+                {
+                    cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Sell);
+                }
+                else if (mode == BuilderMode.Trader)
+                {
+                    cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Buy);
+                }
+
                 return;
             }
-            ShipBuilderPart symmetryPart = count > 1 && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
-            if(symmetryPart) 
+
+            ShipBuilderPart symmetryPart = count > 0 && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
+            if (symmetryPart)
             {
                 //if(cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
                 symmetryPart.info.mirrored = !builderPart.info.mirrored;
-                if(cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.Y)
+                if (cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.Y)
+                {
                     symmetryPart.info.rotation = 180;
+                }
             }
+
             cursor.GrabPart(builderPart, symmetryPart);
-            if(symmetryPart) DecrementCount();
+            if (symmetryPart)
+            {
+                DecrementCount();
+            }
+
             cursor.buildValue += EntityBlueprint.GetPartValue(part);
-            if(mode == BuilderMode.Trader) 
+            if (mode == BuilderMode.Trader)
             {
                 cursor.buildCost += EntityBlueprint.GetPartValue(part);
-                if(symmetryPart) cursor.buildCost += EntityBlueprint.GetPartValue(part);
+                if (symmetryPart)
+                {
+                    cursor.buildCost += EntityBlueprint.GetPartValue(part);
+                }
             }
         }
     }
@@ -68,19 +85,28 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase {
         return builderPart;
     }
 
-    public void IncrementCount() {
+    public void IncrementCount()
+    {
         count++;
     }
 
-    public void DecrementCount() {
+    public void DecrementCount()
+    {
         count--;
     }
-    public int GetCount() {
+
+    public int GetCount()
+    {
         return count;
     }
-    void Update() {
+
+    void Update()
+    {
         val.text = count + "";
         image.color = count > 0 ? activeColor : Color.gray;
-        if(shooter) shooter.color = count > 0 ? activeColor : Color.gray;
+        if (shooter)
+        {
+            shooter.color = count > 0 ? activeColor : Color.gray;
+        }
     }
 }

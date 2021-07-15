@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Resets active cooldowns of nearby enemies
@@ -16,7 +15,7 @@ public class Disrupt : Ability
     protected override void Awake()
     {
         base.Awake(); // base awake
-                      // hardcoded values here
+        // hardcoded values here
         ID = AbilityID.Disrupt;
         energyCost = 200;
         cooldownDuration = 30;
@@ -29,7 +28,7 @@ public class Disrupt : Ability
     {
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction))
+            if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction) && !AIData.entities[i].invisible)
             {
                 float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
                 if (d < range * range)
@@ -41,8 +40,11 @@ public class Disrupt : Ability
                             ability.ResetCD();
                         }
                     }
-                    foreach(var part in AIData.entities[i].GetComponentsInChildren<ShellPart>()){
-                        if(part.GetComponent<Ability>() && !(part.GetComponent<Ability>() as PassiveAbility)){
+
+                    foreach (var part in AIData.entities[i].GetComponentsInChildren<ShellPart>())
+                    {
+                        if (part.GetComponent<Ability>() && !(part.GetComponent<Ability>() as PassiveAbility))
+                        {
                             //part.SetPartColor(Color.grey);
                             part.lerpColors();
                             var missileLinePrefab = new GameObject("Missile Line"); // create prefab and set to parent
@@ -56,7 +58,7 @@ public class Disrupt : Ability
                             LineRenderer lineRenderer = missileLinePrefab.AddComponent<LineRenderer>(); // add line renderer
                             lineRenderer.material = ResourceManager.GetAsset<Material>("white_material"); // get material
                             MissileAnimationScript comp = missileLinePrefab.AddComponent<MissileAnimationScript>(); // add the animation script
-            
+
                             var x = Instantiate(missileLinePrefab, part.transform); // instantiate
                             x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
                             x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
@@ -66,6 +68,7 @@ public class Disrupt : Ability
                 }
             }
         }
+
         base.Execute();
     }
 }

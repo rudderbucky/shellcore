@@ -1,12 +1,11 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Script for the bullet projectile of the Bullet and MainBullet ability
 /// </summary>
-public class BulletScript : MonoBehaviour {
-
+public class BulletScript : MonoBehaviour
+{
     public bool missParticles = false;
     public GameObject hitPrefab;
     public GameObject missPrefab;
@@ -23,7 +22,8 @@ public class BulletScript : MonoBehaviour {
     /// Sets the damage value of the spawned buller
     /// </summary>
     /// <param name="damage">The damage the bullet does</param>
-    public void SetDamage(float damage) {
+    public void SetDamage(float damage)
+    {
         this.damage = damage; // set damage
     }
 
@@ -62,13 +62,14 @@ public class BulletScript : MonoBehaviour {
             if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && craft.GetTransform() != owner.GetTransform())
             {
                 var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration  
-                                    
+
                 // if the shell is low, damage the part
                 ShellPart part = collision.transform.GetComponent<ShellPart>();
                 if (part)
                 {
                     part.TakeDamage(residue); // damage the part
                 }
+
                 damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
                 Instantiate(hitPrefab, transform.position, Quaternion.identity);
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
@@ -76,14 +77,17 @@ public class BulletScript : MonoBehaviour {
         }
     }
 
-    public void OnDestroy() {
-        if(transform.GetComponentInChildren<TrailRenderer>()) {
+    public void OnDestroy()
+    {
+        if (transform.GetComponentInChildren<TrailRenderer>())
+        {
             transform.GetComponentInChildren<TrailRenderer>().autodestruct = true;
             transform.DetachChildren();
         }
     }
 
-    void Start() {
+    void Start()
+    {
         vector = GetComponent<Rigidbody2D>().velocity;
         GetComponent<SpriteRenderer>().color = particleColor;
     }
@@ -97,7 +101,10 @@ public class BulletScript : MonoBehaviour {
     {
         yield return new WaitForSeconds(time);
         if (missParticles)
+        {
             Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg));
+        }
+
         Destroy(gameObject);
     }
 }

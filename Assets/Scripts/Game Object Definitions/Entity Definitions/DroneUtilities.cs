@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public static class DroneUtilities
 {
-    public static DroneSpawnData GetDefaultData(DroneType type) {
+    public static DroneSpawnData GetDefaultData(DroneType type)
+    {
         DroneSpawnData data;
         // pretty much the same thing repeated multiple times so that if one part ever becomes different it doesn't break
-        switch(type) {
+        switch (type)
+        {
             case DroneType.Mini:
                 data = ResourceManager.GetAsset<DroneSpawnData>("mini_drone_spawn");
                 data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("mini_drone_blueprint"));
@@ -44,13 +43,16 @@ public static class DroneUtilities
             default:
                 return null;
         }
+
         data.cooldown = GetCooldown(type);
         data.energyCost = GetEnergyCost(type);
         return data;
     }
 
-    public static Sprite GetAbilitySpriteBySpawnData(DroneSpawnData data) {
-        switch(data.type) {
+    public static Sprite GetAbilitySpriteBySpawnData(DroneSpawnData data)
+    {
+        switch (data.type)
+        {
             // similarity for reasons described above
             case DroneType.Mini:
                 return ResourceManager.GetAsset<Sprite>("mini_drone_ability");
@@ -73,23 +75,33 @@ public static class DroneUtilities
         }
     }
 
-    public static WeaponDiversityType GetDiversityTypeByEntity(Entity ent) {
+    public static WeaponDiversityType GetDiversityTypeByEntity(Entity ent)
+    {
         Drone drone = ent as Drone;
-        if(!drone) return WeaponDiversityType.None;
-        else switch(drone.type) {
-            case DroneType.Gun:
-                return WeaponDiversityType.Gun;
-            case DroneType.Strike:
-                return WeaponDiversityType.Strike;
-            case DroneType.Torpedo:
-                return WeaponDiversityType.Torpedo;
-            default:
-                return WeaponDiversityType.None;
+        if (!drone)
+        {
+            return WeaponDiversityType.None;
+        }
+        else
+        {
+            switch (drone.type)
+            {
+                case DroneType.Gun:
+                    return WeaponDiversityType.Gun;
+                case DroneType.Strike:
+                    return WeaponDiversityType.Strike;
+                case DroneType.Torpedo:
+                    return WeaponDiversityType.Torpedo;
+                default:
+                    return WeaponDiversityType.None;
+            }
         }
     }
 
-    public static string GetUniqueCharacteristic(DroneType type) {
-        switch(type) {
+    public static string GetUniqueCharacteristic(DroneType type)
+    {
+        switch (type)
+        {
             case DroneType.Mini:
                 return "FREE CANNON.\n";
             case DroneType.Worker:
@@ -99,7 +111,7 @@ public static class DroneUtilities
             case DroneType.Light:
                 return "60% LIGHTER THAN USUAL.\n";
             case DroneType.Gun:
-                return "WEAPONS COOLDOWN 66% FASTER.\n";
+                return "60% COOLDOWN TIMES.\n";
             case DroneType.Counter:
                 return "75% MORE WEAPON DAMAGE AGAINST DRONES.";
             case DroneType.Torpedo:
@@ -107,12 +119,14 @@ public static class DroneUtilities
             case DroneType.Heavy:
                 return "REGENERATES 20 CORE PER SECOND.\n";
             default:
-                return "";       
+                return "";
         }
     }
 
-    public static int GetPartLimit(DroneType type) {
-        switch(type) {
+    public static int GetPartLimit(DroneType type)
+    {
+        switch (type)
+        {
             case DroneType.Mini:
             case DroneType.Worker:
                 return 2;
@@ -130,8 +144,10 @@ public static class DroneUtilities
         }
     }
 
-    public static int GetEnergyCost(DroneType type) {
-        switch(type) {
+    public static int GetEnergyCost(DroneType type)
+    {
+        switch (type)
+        {
             case DroneType.Mini:
             case DroneType.Worker:
                 return 100;
@@ -149,8 +165,10 @@ public static class DroneUtilities
         }
     }
 
-    public static int GetCooldown(DroneType type) {
-        switch(type) {
+    public static int GetCooldown(DroneType type)
+    {
+        switch (type)
+        {
             case DroneType.Mini:
             case DroneType.Worker:
                 return 10;
@@ -168,8 +186,10 @@ public static class DroneUtilities
         }
     }
 
-    public static int GetDelay(DroneType type) {
-        switch(type) {
+    public static int GetDelay(DroneType type)
+    {
+        switch (type)
+        {
             case DroneType.Mini:
             case DroneType.Worker:
                 return 2;
@@ -187,8 +207,10 @@ public static class DroneUtilities
         }
     }
 
-    public static string GetAbilityNameByType(DroneType type) {
-        switch(type) {
+    public static string GetAbilityNameByType(DroneType type)
+    {
+        switch (type)
+        {
             case DroneType.Mini:
                 return "Mini Drone";
             case DroneType.Worker:
@@ -206,12 +228,14 @@ public static class DroneUtilities
             case DroneType.Heavy:
                 return "Heavy Drone";
             default:
-                return "Spawn Drone";    
+                return "Spawn Drone";
         }
     }
 
-    public static string GetDescriptionByType(DroneType type) {
-        switch(type) {
+    public static string GetDescriptionByType(DroneType type)
+    {
+        switch (type)
+        {
             case DroneType.Mini:
                 return "Spawns a Mini Drone, which have free cannons.";
             case DroneType.Worker:
@@ -232,9 +256,9 @@ public static class DroneUtilities
                 return "Spawns a drone.";
         }
     }
+
     public static DroneSpawnData GetDroneSpawnDataByShorthand(string secondaryData)
     {
-
         switch (secondaryData)
         {
             case "mini_drone":

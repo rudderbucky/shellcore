@@ -1,7 +1,5 @@
-using UnityEngine;
 using NodeEditorFramework.Utilities;
-using System.Collections.Generic;
-
+using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
@@ -12,25 +10,37 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "AddRewardNode";
-        public override string GetName { get { return ID; } }
 
-        public override bool AutoLayout { get { return true; } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
 
-        public override string Title { get { return "Add Reward"; } }
-        public override Vector2 MinSize { get { return new Vector2(208, 50); } }
-    
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override string Title
+        {
+            get { return "Add Reward"; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(208, 50); }
+        }
+
         public RewardWrapper wrapper;
         public bool showPopup = true;
-        
+
         bool init = false;
         Texture2D partTexture;
         float height = 320f;
 
-        
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob inputLeft;
 
-        
         [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputRight;
 
@@ -50,7 +60,7 @@ namespace NodeEditorFramework.Standard
             wrapper.shardReward = RTEditorGUI.IntField(wrapper.shardReward, GUILayout.Width(208f));
 
             wrapper.partReward = RTEditorGUI.Toggle(wrapper.partReward, "Part reward", GUILayout.Width(200f));
-            if(wrapper.partReward)
+            if (wrapper.partReward)
             {
                 height += 320f;
                 GUILayout.Label("Part ID:");
@@ -59,7 +69,7 @@ namespace NodeEditorFramework.Standard
                 {
                     init = true;
                     PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(wrapper.partID);
-                    if(partBlueprint != null)
+                    if (partBlueprint != null)
                     {
                         partTexture = ResourceManager.GetAsset<Sprite>(partBlueprint.spriteID).texture;
                     }
@@ -68,7 +78,8 @@ namespace NodeEditorFramework.Standard
                         partTexture = null;
                     }
                 }
-                if(partTexture != null)
+
+                if (partTexture != null)
                 {
                     GUILayout.Label(partTexture);
                     height += partTexture.height + 8f;
@@ -79,6 +90,7 @@ namespace NodeEditorFramework.Standard
                     GUILayout.Label("<Part not found>");
                     NodeEditorGUI.nodeSkin.label.normal.textColor = NodeEditorGUI.NE_TextColor;
                 }
+
                 wrapper.partAbilityID = RTEditorGUI.IntField("Ability ID", wrapper.partAbilityID, GUILayout.Width(200f));
                 string abilityName = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null);
                 if (abilityName != "Name unset")
@@ -86,6 +98,7 @@ namespace NodeEditorFramework.Standard
                     GUILayout.Label("Ability: " + abilityName);
                     height += 24f;
                 }
+
                 wrapper.partTier = RTEditorGUI.IntField("Part tier", wrapper.partTier, GUILayout.Width(200f));
                 GUILayout.Label("Part Secondary Data:");
                 wrapper.partSecondaryData = GUILayout.TextField(wrapper.partSecondaryData, GUILayout.Width(200f));
@@ -98,15 +111,16 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            if(showPopup) 
+            if (showPopup)
             {
                 AudioManager.PlayClipByID("clip_victory", true);
                 DialogueSystem.ShowReward(wrapper);
             }
+
             SectorManager.instance.player.AddCredits(wrapper.creditReward);
             SectorManager.instance.player.reputation += wrapper.reputationReward;
             SectorManager.instance.player.shards += wrapper.shardReward;
-            if(wrapper.partReward)
+            if (wrapper.partReward)
             {
                 SectorManager.instance.player.cursave.partInventory.Add(
                     new EntityBlueprint.PartInfo
@@ -117,6 +131,7 @@ namespace NodeEditorFramework.Standard
                         secondaryData = wrapper.partSecondaryData
                     });
             }
+
             return 0;
         }
     }

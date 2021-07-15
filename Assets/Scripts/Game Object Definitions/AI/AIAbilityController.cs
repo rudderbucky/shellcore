@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Linq;
+﻿using System.Linq;
+using UnityEngine;
 
 public class AIAbilityController
 {
@@ -25,10 +24,15 @@ public class AIAbilityController
         // TODO: timers & member boolean variables to reduce checks each frame
 
         if (!useAbilities)
+        {
             return;
+        }
 
         if (timer > Time.time)
+        {
             return;
+        }
+
         timer = Time.time + interval;
 
         // Use abilities if needed
@@ -45,6 +49,7 @@ public class AIAbilityController
                     float playerD = ((Vector2)ai.movement.GetTarget() - (Vector2)PlayerCore.Instance.transform.position).sqrMagnitude;
                     allowSpeed = playerD < ownD;
                 }
+
                 if (allowSpeed)
                 {
                     var speeds = GetAbilities(1);
@@ -64,16 +69,21 @@ public class AIAbilityController
                 }
             }
         }
+
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.8f)
         {
             var shellBoosts = GetAbilities(2, 17, 26, 29, 30, 31); // shell heal, shell regen, area restore
             foreach (var booster in shellBoosts)
             {
                 if (craft.GetHealth()[0] > craft.GetMaxHealth()[0] * 0.9f)
+                {
                     break;
+                }
+
                 booster.Activate();
             }
         }
+
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.25f && Time.time > nextStealth)
         {
             var escapeAbilities = GetAbilities(24, 29, 27); // stealth, absorption, pin down
@@ -87,6 +97,7 @@ public class AIAbilityController
                 }
             }
         }
+
         if (craft.GetHealth()[0] < craft.GetMaxHealth()[0] * 0.2f)
         {
             var retreats = GetAbilities(28); // retreat
@@ -97,10 +108,13 @@ public class AIAbilityController
                 {
                     retreat.Activate();
                     if (retreat.TimeUntilReady() > 0f)
+                    {
                         break;
+                    }
                 }
             }
         }
+
         if (craft.GetHealth()[1] < craft.GetMaxHealth()[1] * 0.5f)
         {
             var core = GetAbilities(11, 31); // core heal & regen
@@ -108,9 +122,12 @@ public class AIAbilityController
             {
                 ability.Activate();
                 if (ability.GetActiveTimeRemaining() > 0)
+                {
                     break;
+                }
             }
         }
+
         if (craft.GetHealth()[2] < craft.GetMaxHealth()[2] * 0.5f)
         {
             var energy = GetAbilities(12, 32); // energy add & regen
@@ -118,9 +135,12 @@ public class AIAbilityController
             {
                 ability.Activate();
                 if (ability.GetActiveTimeRemaining() > 0)
+                {
                     break;
+                }
             }
         }
+
         var target = craft.GetTargetingSystem().GetTarget();
         if (target != null && target)
         {
@@ -132,6 +152,7 @@ public class AIAbilityController
                 {
                     damageBoost.Activate();
                 }
+
                 // TODO: use only if the enemy is close enough!
                 var pinDown = GetAbilities(27); // pin down
                 if (Time.time > nextPin)
@@ -143,7 +164,7 @@ public class AIAbilityController
                             pin.Activate();
                             if (pin.GetActiveTimeRemaining() > 0f)
                             {
-                                nextPin = Time.time + pin.GetActiveTimeRemaining() -1.5f; // 2 sec activation time, leave 0.5 sec for fleeing
+                                nextPin = Time.time + pin.GetActiveTimeRemaining() - 1.5f; // 2 sec activation time, leave 0.5 sec for fleeing
                                 break;
                             }
                         }
@@ -151,6 +172,7 @@ public class AIAbilityController
                 }
             }
         }
+
         if (craft is IOwner && target != null && target)
         {
             IOwner owner = craft as IOwner;
@@ -170,6 +192,7 @@ public class AIAbilityController
     {
         return craft.GetAbilities().Where((x) => { return (x != null) && IDs.Contains(x.GetID()); }).ToArray();
     }
+
     Ability[] GetAbilities(int ID)
     {
         return craft.GetAbilities().Where((x) => { return (x != null) && x.GetID() == ID; }).ToArray();

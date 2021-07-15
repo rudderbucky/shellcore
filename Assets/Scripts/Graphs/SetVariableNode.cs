@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
@@ -10,12 +8,26 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "SetVariableNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Set Variable"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 150); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
 
-        public override bool ContinueCalculation { get { return true; } }
+        public override string Title
+        {
+            get { return "Set Variable"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 150); }
+        }
+
+        public override bool ContinueCalculation
+        {
+            get { return true; }
+        }
 
         //Data
         public string variableName;
@@ -39,7 +51,7 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
-            if(input == null)
+            if (input == null)
             {
                 if (inputKnobs.Count > 0)
                 {
@@ -69,7 +81,7 @@ namespace NodeEditorFramework.Standard
             variableName = GUILayout.TextField(variableName);
             GUILayout.Label("Value:");
             value = RTEditorGUI.IntField(value);
-            incrementMode = GUILayout.Toggle(incrementMode,"Increment mode: ");
+            incrementMode = GUILayout.Toggle(incrementMode, "Increment mode: ");
         }
 
         public override int Traverse()

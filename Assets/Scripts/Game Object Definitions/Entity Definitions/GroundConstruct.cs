@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// Constructs on the ground
 /// </summary>
 public class GroundConstruct : Construct
@@ -13,8 +9,8 @@ public class GroundConstruct : Construct
         base.Start();
     }
 
-    protected override void Update ()
+    protected override void Update()
     {
         base.Update();
-	}
+    }
 }

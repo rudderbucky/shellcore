@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Crafts that are air-borne are known as Aircrafts. These crafts bob up and down in the air when they are not moving, and can't normally attack
@@ -8,7 +6,6 @@ using UnityEngine;
 /// </summary>
 public abstract class AirCraft : Craft
 {
-
     protected float timePassed; // float that stores the time passed since the last aircraft movement, used for idle oscillation and perhaps more down the line
     protected Vector2 oscillatorVector; // vector used to oscillate the aircraft during idle time
     protected float positionBeforeOscillation; // used for oscillation y-coordination resetting
@@ -17,7 +14,8 @@ public abstract class AirCraft : Craft
     private bool oscillating;
     public GameObject energySpherePrefab;
 
-    protected override void Update() {
+    protected override void Update()
+    {
         base.Update(); // base update
     }
 
@@ -52,7 +50,7 @@ public abstract class AirCraft : Craft
 
     protected override void OnDeath()
     {
-        if(!FactionManager.IsAllied(0, faction) && Random.Range(0, 1F) <= 0.2F)
+        if (!FactionManager.IsAllied(0, faction) && Random.Range(0, 1F) <= 0.2F)
         {
             var x = Instantiate(energySpherePrefab, transform.position, Quaternion.identity);
 
@@ -68,7 +66,9 @@ public abstract class AirCraft : Craft
     /// </summary>
     protected void Oscillator()
     {
-        if (isDead) { // if aircraft is dead
+        if (isDead)
+        {
+            // if aircraft is dead
             // reset all fields
             storedPos = spawnPoint;
             timePassed = 0;
@@ -80,21 +80,26 @@ public abstract class AirCraft : Craft
         if (IsMoving()) // if core is supposed to be moving 
         {
             if (timePassed != 0)
-            { // need to reset the position due to the oscillator
+            {
+                // need to reset the position due to the oscillator
                 storedPos = entityBody.position;
                 storedPos.y = positionBeforeOscillation;
                 entityBody.position = storedPos;
             }
+
             timePassed = 0; // reset time passed
             oscillating = false;
         }
         else if ((!draggable || !draggable.dragging) && entityBody.velocity.y == 0)
-        { // idle oscillation time
+        {
+            // idle oscillation time
             oscillating = true;
             OscillatorFunction();
         }
+
         if (entityBody.velocity.y != 0)
-        { // store the last core position before oscillator is triggered
+        {
+            // store the last core position before oscillator is triggered
             positionBeforeOscillation = entityBody.position.y;
         }
     }
@@ -118,6 +123,7 @@ public abstract class AirCraft : Craft
             ai = gameObject.AddComponent<AirCraftAI>();
             ai.Init(this);
         }
+
         return ai;
     }
 
@@ -137,11 +143,13 @@ public abstract class AirCraft : Craft
         if (directionVector != Vector2.zero) // if core is supposed to be moving 
         {
             if (timePassed != 0)
-            { // need to reset the position due to the oscillator
+            {
+                // need to reset the position due to the oscillator
                 storedPos = entityBody.position;
                 storedPos.y = positionBeforeOscillation;
                 entityBody.position = storedPos;
             }
+
             timePassed = 0; // reset time passed
         }
     }

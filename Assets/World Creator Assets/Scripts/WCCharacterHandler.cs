@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class WCCharacterHandler : GUIWindowScripts
@@ -57,27 +55,51 @@ public class WCCharacterHandler : GUIWindowScripts
 
     void UpdateAttackDialogue()
     {
-        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        if (currentData.partyData == null)
+        {
+            currentData.partyData = new WorldData.PartyData();
+        }
+
         currentData.partyData.attackDialogue = attackDialogue.text;
     }
+
     void UpdateDefendDialogue()
     {
-        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        if (currentData.partyData == null)
+        {
+            currentData.partyData = new WorldData.PartyData();
+        }
+
         currentData.partyData.defendDialogue = defendDialogue.text;
     }
+
     void UpdateCollectDialogue()
     {
-        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        if (currentData.partyData == null)
+        {
+            currentData.partyData = new WorldData.PartyData();
+        }
+
         currentData.partyData.collectDialogue = collectDialogue.text;
     }
+
     void UpdateBuildDialogue()
     {
-        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        if (currentData.partyData == null)
+        {
+            currentData.partyData = new WorldData.PartyData();
+        }
+
         currentData.partyData.buildDialogue = buildDialogue.text;
     }
+
     void UpdateFollowDialogue()
     {
-        if(currentData.partyData == null) currentData.partyData = new WorldData.PartyData();
+        if (currentData.partyData == null)
+        {
+            currentData.partyData = new WorldData.PartyData();
+        }
+
         currentData.partyData.followDialogue = followDialogue.text;
     }
 
@@ -86,14 +108,14 @@ public class WCCharacterHandler : GUIWindowScripts
         instance = this;
     }
 
-    public void AddCharacter(bool updateFields=true)
+    public void AddCharacter(bool updateFields = true)
     {
-        if(updateFields)
+        if (updateFields)
         {
             UpdateFields();
         }
 
-        if(!cursor.characters.Contains(currentData))
+        if (!cursor.characters.Contains(currentData))
         {
             cursor.characters.Add(currentData);
             var button = Instantiate(buttonPrefab, content).GetComponentInChildren<CharacterButtonScript>();
@@ -126,7 +148,6 @@ public class WCCharacterHandler : GUIWindowScripts
         UpdateFollowDialogue();
     }
 
-
     public void DeleteCharacter(WorldData.CharacterData character)
     {
         cursor.characters.Remove(character);
@@ -134,12 +155,12 @@ public class WCCharacterHandler : GUIWindowScripts
 
     public void ReflectButtonData()
     {
-        for(int i = 0; i < content.childCount; i++)
+        for (int i = 0; i < content.childCount; i++)
         {
             Destroy(content.GetChild(i).gameObject);
         }
-        
-        foreach(var ch in cursor.characters)
+
+        foreach (var ch in cursor.characters)
         {
             AddCharacter(ch);
         }
@@ -156,7 +177,7 @@ public class WCCharacterHandler : GUIWindowScripts
         charName.text = currentData.name;
         charBlueprint.text = currentData.blueprintJSON;
         charFaction.value = currentData.faction;
-        if(currentData != null && currentData.partyData != null)
+        if (currentData != null && currentData.partyData != null)
         {
             attackDialogue.text = currentData.partyData.attackDialogue;
             defendDialogue.text = currentData.partyData.defendDialogue;
@@ -166,11 +187,11 @@ public class WCCharacterHandler : GUIWindowScripts
         }
         else
         {
-            attackDialogue.text = 
-            defendDialogue.text = 
-            collectDialogue.text = 
-            buildDialogue.text = 
-            followDialogue.text = "";
+            attackDialogue.text =
+                defendDialogue.text =
+                    collectDialogue.text =
+                        buildDialogue.text =
+                            followDialogue.text = "";
         }
     }
 

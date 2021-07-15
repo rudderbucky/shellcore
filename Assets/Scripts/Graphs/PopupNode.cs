@@ -1,19 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Dialogue/PopupNode")]
     public class PopupNode : Node
     {
-        public override string GetName { get { return "PopupNode"; } }
-        public override string Title { get { return "Popup dialogue"; } }
+        public override string GetName
+        {
+            get { return "PopupNode"; }
+        }
+
+        public override string Title
+        {
+            get { return "Popup dialogue"; }
+        }
 
         float height = 0f;
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, height); } }
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, height); }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;

@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class SystemLoader : MonoBehaviour
 {
@@ -24,23 +22,41 @@ public class SystemLoader : MonoBehaviour
         Application.targetFrameRate = 60;
 
         if (resourceManager)
+        {
             resourceManager.Initialize();
+        }
+
         if (factionManager)
+        {
             factionManager.Initialize();
+        }
+
         if (audioManager)
+        {
             audioManager.Initialize();
+        }
+
         if (sectorManager)
+        {
             sectorManager.Initialize();
+        }
 
         // Save Handler will initialize dialogue canvases after sector loading if present.
         if (!saveHandler && dialogueSystem)
+        {
             DialogueSystem.InitCanvases();
+        }
+
         if (saveHandler)
+        {
             saveHandler.Initialize();
+        }
 
         // Save Handler will initialize mission canvases after sector loading if present.
         if (!saveHandler && taskManager)
+        {
             taskManager.Initialize();
+        }
 
         AllLoaded = true;
     }
@@ -54,8 +70,13 @@ public class SystemLoader : MonoBehaviour
     {
         yield return null;
         if (TaskManager.Instance)
+        {
             TaskManager.StartQuests();
+        }
+
         if (DialogueSystem.Instance && DialogueSystem.GetInitialized())
+        {
             DialogueSystem.StartQuests();
+        }
     }
 }
