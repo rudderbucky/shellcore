@@ -37,13 +37,15 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         public bool exactLocation;
         public Entity followEntity;
         public string missionName;
+        public int dimension;
 
-        public ObjectiveLocation(Vector2 location, bool exactLocation, string missionName, Entity followEntity = null)
+        public ObjectiveLocation(Vector2 location, bool exactLocation, string missionName, int dimension, Entity followEntity = null)
         {
             this.missionName = missionName;
             this.location = location;
             this.exactLocation = exactLocation;
             this.followEntity = followEntity;
+            this.dimension = dimension;
         }
     }
 
