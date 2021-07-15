@@ -670,7 +670,7 @@ public class BattleAI : AIModule
                                     break;
                                 }
                             }
-                            else if (shellcore.GetPower() >= 100)
+                            if (!ownGroundExists && enemyGroundTargets(true) && shellcore.GetPower() >= 150)
                             {
                                 // Attack & enemy holds all ground
                                 itemIndex = vendor.GetVendingBlueprint().getItemIndex("Torpedo Turret");
@@ -797,5 +797,6 @@ public class BattleAI : AIModule
         }
 
         return false;
+    }
     }
 }
