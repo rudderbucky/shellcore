@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Ion : WeaponAbility {
+public class Ion : WeaponAbility
+{
     IonLineController lineController;
+
     protected override void Awake()
     {
         GameObject gObj = new GameObject("Line Renderer");
@@ -17,46 +17,43 @@ public class Ion : WeaponAbility {
         base.Awake();
     }
 
-    
-
-    protected override void Start() {
+    protected override void Start()
+    {
         base.Start();
         lineController.Init(targetingSystem, Core, range, part, abilityTier);
     }
 
     public override void SetDestroyed(bool destroyed)
     {
-        if(destroyed && lineController)
+        if (destroyed && lineController)
         {
             Destroy(lineController.gameObject);
         }
+
         base.SetDestroyed(true);
     }
 
     void OnDestroy()
     {
-        if(lineController)
+        if (lineController)
+        {
             Destroy(lineController.gameObject);
+        }
     }
 
     void LateUpdate()
     {
-        if(lineController)
+        if (lineController)
         {
-            
-        }  
+        }
     }
 
     void Update()
     {
-        
-        
         /*
         
         */
     }
-
-    
 
     Vector3 GetMousePos()
     {
@@ -64,8 +61,6 @@ public class Ion : WeaponAbility {
         vec.z = 0;
         return vec;
     }
- 
-   
 
     protected override bool Execute(Vector3 victimPos)
     {
@@ -86,6 +81,7 @@ public class Ion : WeaponAbility {
             lineController.StartFiring(5);
             return true;
         }
+
         return false;
     }
 }

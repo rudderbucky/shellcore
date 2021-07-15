@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SpeederBullet : Bullet {
-
+public class SpeederBullet : Bullet
+{
     protected override void Awake()
     {
         base.Awake(); // base awake

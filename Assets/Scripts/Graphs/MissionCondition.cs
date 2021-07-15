@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NodeEditorFramework.Utilities;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -9,12 +7,29 @@ namespace NodeEditorFramework.Standard
     public class MissionCondition : Node, ICondition
     {
         public const string ID = "MissionCondition";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Mission Condition"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 200); } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Mission Condition"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 200); }
+        }
 
         private ConditionState state;
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         readonly string[] missionStatusTexts =
         {
@@ -24,6 +39,7 @@ namespace NodeEditorFramework.Standard
         };
 
         public delegate void MissionStatusDelegate(Mission mission);
+
         public static MissionStatusDelegate OnMissionStatusChange;
 
         public string missionName;

@@ -1,6 +1,4 @@
 ﻿using NodeEditorFramework.Utilities;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -8,19 +6,37 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Dialogue/Condition Check Node")]
     public class DialogueConditionCheckNode : Node
     {
-        public override string GetName { get { return "DialogueConditionCheckNode"; } }
-        public override string Title { get { return "Dialogue Condition Check"; } }
+        public override string GetName
+        {
+            get { return "DialogueConditionCheckNode"; }
+        }
 
-        public override Vector2 MinSize { get { return new Vector2(200f, 100f); } }
-        public override bool AutoLayout { get { return true; } }
-        public override bool AllowRecursion { get { return true; } }
+        public override string Title
+        {
+            get { return "Dialogue Condition Check"; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(200f, 100f); }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Input", Direction.In, "Dialogue", NodeSide.Left)]
         public ConnectionKnob input;
 
         [ConnectionKnob("Pass", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right, 20)]
         public ConnectionKnob outputPass;
-        
+
         [ConnectionKnob("Fail", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right, 60)]
         public ConnectionKnob outputFail;
 
@@ -42,11 +58,11 @@ namespace NodeEditorFramework.Standard
         };
 
         readonly string[] missionStatus = new string[]
-{
+        {
             "Inactive",
             "Ongoing",
             "Complete"
-};
+        };
 
         readonly string[] variableTypes = new string[]
         {
@@ -79,11 +95,12 @@ namespace NodeEditorFramework.Standard
                 {
                     typePopup.AddItem(new GUIContent(variableTypes[i]), false, SelectType, i);
                 }
+
                 typePopup.Show(GUIScaleUtility.GUIToScreenSpace(GUILayoutUtility.GetLastRect().max));
             }
             //variableType = GUILayout.SelectionGrid(variableType, variableTypes, 1, GUILayout.Width(128f));
 
-            if(variableType <= 1 || variableType == 5)
+            if (variableType <= 1 || variableType == 5)
             {
                 GUILayout.Label("Variable Name:");
                 GUILayout.BeginHorizontal();
@@ -100,7 +117,9 @@ namespace NodeEditorFramework.Standard
 
 
             if (variableName.Equals(checkpointName, System.StringComparison.CurrentCulture))
+            {
                 checkpointName = "";
+            }
 
             if (checkpointName != "")
             {
@@ -127,6 +146,7 @@ namespace NodeEditorFramework.Standard
                     {
                         comparisonPopup.AddItem(new GUIContent(comparisonTexts[i]), false, SelectMode, i);
                     }
+
                     comparisonPopup.Show(GUIScaleUtility.GUIToScreenSpace(GUILayoutUtility.GetLastRect().max));
                 }
             }
@@ -152,12 +172,15 @@ namespace NodeEditorFramework.Standard
                 {
                     variableName = checkpointName;
                 }
+
                 if (TaskManager.TraversersContainCheckpoint(checkpointName))
                 {
                     return 0;
                 }
                 else
+                {
                     return 1;
+                }
             }
             else if (variableType == 5)
             {
@@ -176,12 +199,13 @@ namespace NodeEditorFramework.Standard
                         }
                     }
                 }
+
                 return 0;
             }
             else
             {
                 int variableToCompare = 0;
-                switch(variableType)
+                switch (variableType)
                 {
                     case 1:
                         if (TaskManager.Instance.taskVariables.ContainsKey(variableName))
@@ -193,6 +217,7 @@ namespace NodeEditorFramework.Standard
                             Debug.LogWarning("Unknown task variable: " + variableName);
                             return 1;
                         }
+
                         break;
                     case 2:
                         variableToCompare = PlayerCore.Instance.reputation;
@@ -202,16 +227,18 @@ namespace NodeEditorFramework.Standard
                         break;
                     case 4:
                         variableToCompare = PartIndexScript.GetNumberOfPartsObtained();
-                        #if UNITY_EDITOR
-                        if(Input.GetKey(KeyCode.J))
+#if UNITY_EDITOR
+                        if (Input.GetKey(KeyCode.J))
+                        {
                             variableToCompare = 1000;
-                        #endif
+                        }
+#endif
                         break;
                     case 5:
-                        return PlayerCore.Instance.cursave.missions.Exists(m => m.name == variableName) && 
-                            PlayerCore.Instance.cursave.missions.Find(m => m.name == variableName).status == Mission.MissionStatus.Complete ?
-                                0 : 1;
-
+                        return PlayerCore.Instance.cursave.missions.Exists(m => m.name == variableName) &&
+                               PlayerCore.Instance.cursave.missions.Find(m => m.name == variableName).status == Mission.MissionStatus.Complete
+                            ? 0
+                            : 1;
                 }
 
                 switch (comparisonMode)

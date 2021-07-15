@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleZoneManager : MonoBehaviour
 {
-
     static List<Entity> targets;
     public string sectorName;
     bool playing;
@@ -19,6 +16,7 @@ public class BattleZoneManager : MonoBehaviour
         {
             this.faction = faction;
         }
+
         public int faction = 0;
         public int kills = 0;
         public int deaths = 0;
@@ -50,14 +48,17 @@ public class BattleZoneManager : MonoBehaviour
 
     void OnEntityDeath(Entity killed, Entity killer)
     {
-        Stats killedStats = stats.Find((x)=>{ return x.faction == killed.faction; });
+        Stats killedStats = stats.Find((x) => { return x.faction == killed.faction; });
         if (killedStats == null)
         {
             killedStats = new Stats(killed.faction);
             stats.Add(killedStats);
         }
+
         if (killed is ShellCore)
+        {
             killedStats.deaths++;
+        }
 
         if (killer != null)
         {
@@ -67,23 +68,31 @@ public class BattleZoneManager : MonoBehaviour
                 killerStats = new Stats(killer.faction);
                 stats.Add(killerStats);
             }
+
             if (killed is ShellCore)
+            {
                 killerStats.kills++;
+            }
             else if (killed is Drone)
+            {
                 killerStats.droneKills++;
+            }
             else if (killed is Turret)
+            {
                 killerStats.turretKills++;
+            }
         }
     }
 
     void OnPowerCollected(int faction, int amount)
     {
-        Stats block = stats.Find((x)=>{ return x.faction == faction; });
+        Stats block = stats.Find((x) => { return x.faction == faction; });
         if (block == null)
         {
             block = new Stats(faction);
             stats.Add(block);
         }
+
         block.power += amount;
     }
 
@@ -120,6 +129,7 @@ public class BattleZoneManager : MonoBehaviour
 
             strings[index++] = str;
         }
+
         return strings;
     }
 
@@ -130,16 +140,23 @@ public class BattleZoneManager : MonoBehaviour
             PlayerCore.Instance.alerter.showMessage(message, "clip_stationlost");
         }
     }
+
     public void UpdateCounters()
     {
         if (playing && enabled)
         {
-            foreach(var target in targets)
+            foreach (var target in targets)
             {
-                if(!SectorManager.instance.carriers.ContainsKey(target.faction)) continue;
+                if (!SectorManager.instance.carriers.ContainsKey(target.faction))
+                {
+                    continue;
+                }
+
                 var carrier = SectorManager.instance.carriers[target.faction];
-                if(target as ShellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead()) 
+                if (target as ShellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead())
+                {
                     (target as ShellCore).SetCarrier(SectorManager.instance.carriers[target.faction]);
+                }
             }
 
             List<int> livingFactions = new List<int>();
@@ -148,7 +165,9 @@ public class BattleZoneManager : MonoBehaviour
             for (int i = 0; i < targets.Count; i++)
             {
                 if (targets[i] && !targets[i].GetIsDead() && !livingFactions.Contains(targets[i].faction))
+                {
                     livingFactions.Add(targets[i].faction);
+                }
             }
 
             bool allAllied = true;
@@ -168,21 +187,29 @@ public class BattleZoneManager : MonoBehaviour
 
             if (livingFactions.Count < 2 || allAllied)
             {
-                foreach(Entity playerEntity in targets) {
-                    if(playerEntity as PlayerCore) {
-                        if(livingFactions.Contains(playerEntity.faction)) {
+                foreach (Entity playerEntity in targets)
+                {
+                    if (playerEntity as PlayerCore)
+                    {
+                        if (livingFactions.Contains(playerEntity.faction))
+                        {
                             AudioManager.PlayClipByID("clip_victory");
-                            if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
+                            if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
+                            {
                                 NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
+                            }
                         }
-                        else 
+                        else
                         {
                             AudioManager.PlayClipByID("clip_fail");
-                            if(NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose != null)
+                            if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose != null)
+                            {
                                 NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose.Invoke(sectorName);
+                            }
                         }
                     }
                 }
+
                 DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
                 playing = false;
             }
@@ -192,12 +219,24 @@ public class BattleZoneManager : MonoBehaviour
     public void AddTarget(Entity target)
     {
         if (targets == null)
+        {
             targets = new List<Entity>();
+        }
+
         if (!playing)
+        {
             targets.Clear();
+        }
+
         if (target)
+        {
             playing = true;
-        if(!targets.Contains(target)) targets.Add(target);
+        }
+
+        if (!targets.Contains(target))
+        {
+            targets.Add(target);
+        }
     }
 
     public static Entity[] getTargets()

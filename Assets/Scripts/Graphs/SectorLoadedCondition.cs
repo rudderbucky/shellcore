@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NodeEditorFramework.Utilities;
+﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -9,11 +7,24 @@ namespace NodeEditorFramework.Standard
     public class SectorLoadedCondition : Node, ICondition
     {
         public const string ID = "SectorLoadedCondition";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Sector Loaded Condition"; } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Sector Loaded Condition"; }
+        }
 
         private ConditionState state;
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         public string sectorName;
 
@@ -46,7 +57,7 @@ namespace NodeEditorFramework.Standard
         public void DeInit()
         {
             SectorManager.OnSectorLoad -= SectorLoaded;
-            
+
             state = ConditionState.Uninitialized;
         }
     }

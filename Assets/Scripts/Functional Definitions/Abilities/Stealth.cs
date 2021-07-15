@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Makes the craft temporarily invisible
@@ -46,6 +44,7 @@ public class Stealth : ActiveAbility
                 c.a = 1f;
                 renderers[i].color = c;
             }
+
             Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
             for (int i = 0; i < colliders.Length; i++)
             {
@@ -59,7 +58,7 @@ public class Stealth : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        if(craft)
+        if (craft)
         {
             // change visibility
             craft.stealths++;
@@ -70,6 +69,7 @@ public class Stealth : ActiveAbility
                 c.a = Core.faction == 0 ? 0.2f : 0f;
                 renderers[i].color = c;
             }
+
             Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
             for (int i = 0; i < colliders.Length; i++)
             {

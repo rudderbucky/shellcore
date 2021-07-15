@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
+using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
@@ -23,12 +22,26 @@ namespace NodeEditorFramework.Standard
 
         //Node things
         public const string ID = "ConditionGroupNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Conditions"; } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
 
-        public override bool AllowRecursion { get { return true; } }
-        public override bool AutoLayout { get { return true; } }
+        public override string Title
+        {
+            get { return "Conditions"; }
+        }
+
+        public override bool AllowRecursion
+        {
+            get { return true; }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         public override int Traverse()
         {
@@ -42,6 +55,7 @@ namespace NodeEditorFramework.Standard
                 });
                 groupCount++;
             }
+
             for (int i = 0; i < groups.Count; i++)
             {
                 if (groups[i].input.connected())
@@ -50,28 +64,35 @@ namespace NodeEditorFramework.Standard
                     for (int j = 0; j < connections.Count; j++)
                     {
                         if (!(connections[j].body is ICondition))
+                        {
                             continue;
+                        }
+
                         ICondition condition = connections[j].body as ICondition;
                         condition.Init(0);
                     }
                 }
             }
+
             Calculate();
             return -1;
         }
 
         public override bool Calculate()
         {
-            for(int i = 0; i < groups.Count; i++)
+            for (int i = 0; i < groups.Count; i++)
             {
-                if(groups[i].input.connected())
+                if (groups[i].input.connected())
                 {
                     int completed = 0;
                     int conditionCount = 0;
-                    for(int j = 0; j < groups[i].input.connections.Count; j++)
+                    for (int j = 0; j < groups[i].input.connections.Count; j++)
                     {
                         if (!(groups[i].input.connections[j].body is ICondition))
+                        {
                             continue;
+                        }
+
                         ICondition condition = groups[i].input.connections[j].body as ICondition;
                         conditionCount++;
                         if (condition.State == ConditionState.Completed)
@@ -79,18 +100,23 @@ namespace NodeEditorFramework.Standard
                             completed++;
                         }
                     }
-                    if(completed == conditionCount)
+
+                    if (completed == conditionCount)
                     {
                         Debug.Log("All conditions passed!");
                         // Tell all condition nodes to unsub
                         DeInit();
                         // Continue to next node
-                        if(groups[i].output.connected())
+                        if (groups[i].output.connected())
+                        {
                             TaskManager.Instance.setNode(groups[i].output);
+                        }
+
                         return true;
                     }
                 }
             }
+
             return true;
         }
 
@@ -101,7 +127,10 @@ namespace NodeEditorFramework.Standard
                 for (int j = 0; j < groups[i].input.connections.Count; j++)
                 {
                     if (!(groups[i].input.connection(j).body is ICondition))
+                    {
                         continue;
+                    }
+
                     ICondition node = groups[i].input.connection(j).body as ICondition;
                     node.DeInit();
                 }
@@ -128,7 +157,8 @@ namespace NodeEditorFramework.Standard
                 RTEditorGUI.Seperator();
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
-                { // Remove current label
+                {
+                    // Remove current label
                     DeleteConnectionPort(groups[i].input);
                     DeleteConnectionPort(groups[i].output);
                     groups.RemoveAt(i);
@@ -136,6 +166,7 @@ namespace NodeEditorFramework.Standard
                     GUILayout.EndHorizontal();
                     continue;
                 }
+
                 GUILayout.Label("Group " + i);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
@@ -143,6 +174,7 @@ namespace NodeEditorFramework.Standard
                 groups[i].output.DisplayLayout();
                 GUILayout.EndHorizontal();
             }
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
             {
@@ -154,6 +186,7 @@ namespace NodeEditorFramework.Standard
                 groups.Add(group);
                 groupCount++;
             }
+
             GUILayout.EndHorizontal();
         }
     }

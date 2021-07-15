@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,8 +10,10 @@ public class WorldCreatorCursor : MonoBehaviour
     public readonly float tileSize = 10F;
 
     public GameObject borderPrefab;
+
     [SerializeField]
     SectorWCWrapper currentSector;
+
     public readonly Vector2 cursorOffset = new Vector2(5F, 5F);
     public int currentIndex;
     int maxIndex;
@@ -22,9 +23,11 @@ public class WorldCreatorCursor : MonoBehaviour
     public SectorPropertyDisplay sectorPropertyDisplay;
 
     public delegate void SelectEntityDelegate(string EntityID);
+
     public static SelectEntityDelegate selectEntity;
 
     public delegate void FinishPathDelegate(NodeEditorFramework.Standard.PathData path);
+
     public static FinishPathDelegate finishPath;
     public static WorldCreatorCursor instance;
     public ShipBuilder shipBuilder;
@@ -46,13 +49,13 @@ public class WorldCreatorCursor : MonoBehaviour
     }
 
     public readonly Color[] modeColors = new Color[]
-        {
-            new Color32(28, 42, 63, 255),
-            new Color32(63, 28, 42, 255),
-            new Color32(42, 63, 28, 255),
-            new Color32(42, 64, 64, 255),
-            new Color32(42, 64, 64, 255),
-        };
+    {
+        new Color32(28, 42, 63, 255),
+        new Color32(63, 28, 42, 255),
+        new Color32(42, 63, 28, 255),
+        new Color32(42, 64, 64, 255),
+        new Color32(42, 64, 64, 255)
+    };
 
     WCCursorMode mode = WCCursorMode.Item;
     public Text modeText;
@@ -66,7 +69,10 @@ public class WorldCreatorCursor : MonoBehaviour
     private void Awake()
     {
         if (instance != null)
+        {
             Debug.LogError("Too many WorldCreatorCursor instances!");
+        }
+
         instance = this;
         DimensionCount = 1;
         cursorModeCount = System.Enum.GetValues(typeof(WCCursorMode)).Length;
@@ -84,9 +90,11 @@ public class WorldCreatorCursor : MonoBehaviour
         pathCreator = gameObject.AddComponent<WCPathCreator>();
         AudioManager.StopMusic();
     }
+
     // Update is called once per frame
     static int sortLayerNum = 1;
     public GUIWindowScripts manual;
+
     [SerializeField]
     private GUIWindowScripts search;
 
@@ -98,9 +106,15 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         // time music so that it does not immediately start (5 seconds for now)
         // play a random song (might make it so that it doesn't play the same song twice)
-        if (music.Count == 0 || !AudioManager.instance) return;
+        if (music.Count == 0 || !AudioManager.instance)
+        {
+            return;
+        }
+
         if (!AudioManager.instance.playerMusicSource.isPlaying)
+        {
             musicTimer += Time.deltaTime;
+        }
 
         // TODO: Add null logic to AudioManager when the song is done playing
         if (musicTimer >= musicTimerThreshold)
@@ -117,6 +131,7 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             sector.renderer.gameObject.SetActive(currentDim == sector.sector.dimension);
         }
+
         foreach (var item in placedItems)
         {
             item.obj.SetActive(item.dimension == currentDim);
@@ -125,6 +140,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
     [SerializeField]
     private Text dimensionText;
+
     void Update()
     {
         current.pos = CalcPos(current.type);
@@ -150,7 +166,10 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 AddDimension();
             }
-            else IncrementDimension();
+            else
+            {
+                IncrementDimension();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.M) && !system.IsPointerOverGameObject())
@@ -177,14 +196,20 @@ public class WorldCreatorCursor : MonoBehaviour
                 current.obj.SetActive(false);
                 modeText.text = "Sector Mode";
                 if (!system.IsPointerOverGameObject())
+                {
                     PollSectors();
+                }
+
                 break;
             case WCCursorMode.Control:
                 RemovePendingSector();
                 current.obj.SetActive(false);
                 modeText.text = "Control Mode";
                 if (!system.IsPointerOverGameObject())
+                {
                     PollControls();
+                }
+
                 break;
             case WCCursorMode.SelectEntity:
                 modeText.text = "Select Entity Mode"; // change only when mode changes?
@@ -242,9 +267,17 @@ public class WorldCreatorCursor : MonoBehaviour
 
     public void UpdateCurrentAppearanceToDefault()
     {
-        if (current == null) return;
+        if (current == null)
+        {
+            return;
+        }
+
         current.faction = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
-        if (!FactionManager.FactionExists(current.faction)) current.faction = 0;
+        if (!FactionManager.FactionExists(current.faction))
+        {
+            current.faction = 0;
+        }
+
         current.shellcoreJSON = PlayerPrefs.GetString("WCItemPropertyDisplay_defaultJSON", "");
         if (current.type == ItemType.Other || current.assetID == "core_gate" || current.assetID == "broken_core_gate")
         {
@@ -258,11 +291,15 @@ public class WorldCreatorCursor : MonoBehaviour
     public Transform spawnPoint;
     bool changingSpawnPoint = false;
     public GUIWindowScripts taskInterface;
+
     void PollControls()
     {
         if (Input.GetMouseButtonUp(0))
         {
-            if (changingSpawnPoint) changingSpawnPoint = false;
+            if (changingSpawnPoint)
+            {
+                changingSpawnPoint = false;
+            }
             else if (spawnPoint.GetComponent<SpriteRenderer>().bounds.Contains(GetMousePos()))
             {
                 changingSpawnPoint = true;
@@ -277,7 +314,10 @@ public class WorldCreatorCursor : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.T))
         {
             if (taskInterface.GetActive())
+            {
                 taskInterface.GetComponentInChildren<NodeEditorFramework.Standard.RTNodeEditor>().AutoSave();
+            }
+
             taskInterface.ToggleActive();
         }
 
@@ -285,6 +325,7 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             ActivateCharacterHandler();
         }
+
         if (Input.GetKeyDown(KeyCode.F) && !system.IsPointerOverGameObject())
         {
             ActivateFactionHandler();
@@ -302,6 +343,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 {
                     currentSector.renderer.SetPosition(i, lastSectorPos[i]);
                 }
+
                 SyncSectorCoords(currentSector);
                 currentSector = null;
                 lastSectorPos = null;
@@ -314,13 +356,13 @@ public class WorldCreatorCursor : MonoBehaviour
             }
         }
     }
+
     void SyncSectorCoords(SectorWCWrapper wrapper)
     {
         wrapper.sector.bounds.x = Mathf.Min((int)wrapper.renderer.GetPosition(0).x, (int)wrapper.renderer.GetPosition(2).x);
         wrapper.sector.bounds.y = Mathf.Max((int)wrapper.renderer.GetPosition(0).y, (int)wrapper.renderer.GetPosition(2).y);
         wrapper.sector.bounds.w = Mathf.Abs((int)wrapper.renderer.GetPosition(2).x - (int)wrapper.renderer.GetPosition(0).x);
         wrapper.sector.bounds.h = Mathf.Abs((int)wrapper.renderer.GetPosition(2).y - (int)wrapper.renderer.GetPosition(0).y);
-
     }
 
     // check if mouse is in a sector
@@ -332,14 +374,27 @@ public class WorldCreatorCursor : MonoBehaviour
             if (CheckMouseContainsSector(sector))
             {
                 if (renderer.sortingOrder < sortLayerNum)
+                {
                     renderer.sortingOrder = ++sortLayerNum;
+                }
+
                 if (translatingSectors.Contains(sector))
+                {
                     renderer.startColor = renderer.endColor = Color.yellow;
-                else renderer.startColor = renderer.endColor = Color.green;
+                }
+                else
+                {
+                    renderer.startColor = renderer.endColor = Color.green;
+                }
             }
             else if (translatingSectors.Contains(sector))
+            {
                 renderer.startColor = renderer.endColor = Color.yellow;
-            else renderer.startColor = renderer.endColor = Color.white;
+            }
+            else
+            {
+                renderer.startColor = renderer.endColor = Color.white;
+            }
         }
     }
 
@@ -356,6 +411,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
     [SerializeField]
     WCBasePropertyHandler basePropertyHandler;
+
     public void ActivateCharacterHandler()
     {
         basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Characters);
@@ -369,12 +425,14 @@ public class WorldCreatorCursor : MonoBehaviour
     }
 
     public int flagID = 0;
+
     void PollItems()
     {
         if (Input.GetKeyDown(KeyCode.B) && !system.IsPointerOverGameObject())
         {
             ActivateShipBuilder();
         }
+
         if (Input.GetKeyDown(KeyCode.V) && !system.IsPointerOverGameObject())
         {
             ActivateWaveBuilder();
@@ -382,8 +440,14 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if (!Input.GetKey(KeyCode.LeftControl) && !system.IsPointerOverGameObject())
         {
-            if (Input.mouseScrollDelta.y < 0 && currentIndex > 0) SetCurrent(--currentIndex % maxIndex);
-            else if (Input.mouseScrollDelta.y > 0 && currentIndex < maxIndex - 1) SetCurrent(++currentIndex % maxIndex);
+            if (Input.mouseScrollDelta.y < 0 && currentIndex > 0)
+            {
+                SetCurrent(--currentIndex % maxIndex);
+            }
+            else if (Input.mouseScrollDelta.y > 0 && currentIndex < maxIndex - 1)
+            {
+                SetCurrent(++currentIndex % maxIndex);
+            }
         }
 
 
@@ -394,12 +458,16 @@ public class WorldCreatorCursor : MonoBehaviour
             if (Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject() && current.obj)
             {
                 if (((Item)underCursor).type == current.type)
+                {
                     propertyDisplay.DisplayProperties(underCursor);
-                else Add(CopyCurrent());
+                }
+                else
+                {
+                    Add(CopyCurrent());
+                }
             }
             else if (Input.GetKeyUp(KeyCode.R) && !system.IsPointerOverGameObject())
             {
-
                 if (underCursor.type == ItemType.Platform)
                 {
                     Rotate((Item)underCursor);
@@ -416,10 +484,13 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 Rotate(current);
             }
+
             if (!system.IsPointerOverGameObject() && current.obj)
             {
                 if (Input.GetMouseButtonUp(0) || (Input.GetMouseButton(0) && current.type == ItemType.Platform))
+                {
                     Add(CopyCurrent());
+                }
             }
         }
     }
@@ -443,17 +514,22 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             Remove(placedItems[0]);
         }
+
         while (sectors.Count > 0)
         {
             RemoveSector(sectors[0]);
         }
+
         characters.Clear();
     }
 
     void RemoveSector(SectorWCWrapper sector)
     {
         Destroy(sector.renderer.gameObject);
-        if (sectors.Contains(sector)) sectors.Remove(sector);
+        if (sectors.Contains(sector))
+        {
+            sectors.Remove(sector);
+        }
     }
 
     Vector2 sectorStoredMousePos;
@@ -465,7 +541,7 @@ public class WorldCreatorCursor : MonoBehaviour
             renderer.GetPosition(0),
             renderer.GetPosition(1),
             renderer.GetPosition(2),
-            renderer.GetPosition(3),
+            renderer.GetPosition(3)
         };
 
         var vec = GetMousePos();
@@ -473,7 +549,9 @@ public class WorldCreatorCursor : MonoBehaviour
         foreach (var origin in origins)
         {
             if ((origin - vec).sqrMagnitude > (finalOrigin - vec).sqrMagnitude)
+            {
                 finalOrigin = origin;
+            }
         }
 
         return finalOrigin;
@@ -488,17 +566,30 @@ public class WorldCreatorCursor : MonoBehaviour
         var newItems = new List<Item>();
         foreach (var item in placedItems)
         {
-            if (sector.bounds.contains(item.pos))
+            if (sector.dimension == item.dimension && sector.bounds.contains(item.pos))
             {
                 var newPos = item.pos;
                 if (xAxis)
+                {
                     newPos.x = sector.bounds.x + sector.bounds.w - (item.pos.x - sector.bounds.x);
+                }
                 else
+                {
                     newPos.y = sector.bounds.y - item.pos.y + sector.bounds.y - sector.bounds.h;
-                if (placedItems.Exists(item => item.pos == newPos)) continue;
+                }
+
+                if (placedItems.Exists(item => item.pos == newPos))
+                {
+                    continue;
+                }
+
                 var itemCopy = handler.CopyItem(item);
                 itemCopy.dimension = sector.dimension;
-                if (itemCopy.type == ItemType.Platform && !itemCopy.name.Contains("2")) itemCopy.rotation = 3 - item.rotation;
+                if (itemCopy.type == ItemType.Platform && !itemCopy.name.Contains("2"))
+                {
+                    itemCopy.rotation = 3 - item.rotation;
+                }
+
                 itemCopy.obj.transform.rotation = Quaternion.identity;
                 itemCopy.obj.transform.RotateAround(itemCopy.pos, Vector3.forward, 90 * itemCopy.rotation);
                 itemCopy.pos = newPos;
@@ -506,6 +597,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 newItems.Add(itemCopy);
             }
         }
+
         placedItems.AddRange(newItems);
     }
 
@@ -531,20 +623,28 @@ public class WorldCreatorCursor : MonoBehaviour
                     {
                         lastSectorPos[i] = renderer.GetPosition(i);
                     }
+
                     //renderer.SetPosition(0, origPos);
                     if (Input.GetKey(KeyCode.LeftShift) && Time.time - doubleClickTimer < 0.2F)
                     {
                         if (!translatingSectors.Contains(sector))
+                        {
                             translatingSectors.Add(sector);
+                        }
                         else
+                        {
                             translatingSectors.Remove(sector);
+                        }
+
                         doubleClickTimer = 0;
                     }
                     else
+                    {
                         currentSector = sector;
+                    }
+
                     doubleClickTimer = Time.time;
                     break;
-
                 }
             }
 
@@ -554,14 +654,15 @@ public class WorldCreatorCursor : MonoBehaviour
                 foreach (var sector in translatingSectors)
                 {
                     for (int i = 0; i < 4; i++)
+                    {
                         sector.originalRendererPos[i] = sector.renderer.GetPosition(i);
+                    }
                 }
+
                 sectorTranslationStoredPos = CalcSectorPos();
             }
             else
             {
-
-
                 if (currentSector == null)
                 {
                     currentSector = new SectorWCWrapper();
@@ -585,7 +686,6 @@ public class WorldCreatorCursor : MonoBehaviour
                     SyncSectorCoords(currentSector);
                 }
             }
-
         }
         else if (Input.GetMouseButtonUp(0))
         {
@@ -596,7 +696,6 @@ public class WorldCreatorCursor : MonoBehaviour
 
             if ((Vector2)Input.mousePosition == sectorStoredMousePos)
             {
-
                 foreach (SectorWCWrapper sector in sectors)
                 {
                     LineRenderer renderer = sector.renderer;
@@ -607,30 +706,35 @@ public class WorldCreatorCursor : MonoBehaviour
                         return;
                     }
                 }
-
             }
+
             if (currentSector != null)
             {
                 if (!CheckForSectorOverlap(currentSector.renderer, currentSector.sector.dimension) && CheckSectorSize(currentSector.renderer))
                 {
-                    if (lastSectorPos == null) sectors.Add(currentSector);
+                    if (lastSectorPos == null)
+                    {
+                        sectors.Add(currentSector);
+                    }
                 }
                 else if (lastSectorPos != null)
-                { // invalid position for current sector
+                {
+                    // invalid position for current sector
                     for (int i = 0; i < 4; i++)
                     {
                         currentSector.renderer.SetPosition(i, lastSectorPos[i]);
                     }
+
                     SyncSectorCoords(currentSector);
                     lastSectorPos = null;
                 }
-                else  // delete sector
+                else // delete sector
                 {
                     RemoveSector(currentSector);
                 }
+
                 currentSector = null; // reset reference
             }
-
         }
         else if (Input.GetMouseButton(0))
         {
@@ -642,7 +746,10 @@ public class WorldCreatorCursor : MonoBehaviour
                     if (CheckForSectorOverlap(sector.renderer, sector.sector.dimension))
                     {
                         if (sector.renderer.sortingOrder < sortLayerNum)
+                        {
                             sector.renderer.sortingOrder = ++sortLayerNum;
+                        }
+
                         sector.renderer.startColor = sector.renderer.endColor = Color.red;
                     }
                 }
@@ -659,7 +766,10 @@ public class WorldCreatorCursor : MonoBehaviour
                 if (CheckForSectorOverlap(renderer, currentSector.sector.dimension))
                 {
                     if (renderer.sortingOrder < sortLayerNum)
+                    {
                         renderer.sortingOrder = ++sortLayerNum;
+                    }
+
                     renderer.startColor = renderer.endColor = Color.red;
                 }
             }
@@ -697,6 +807,7 @@ public class WorldCreatorCursor : MonoBehaviour
                         sector2.renderer.SetPosition(i, sector2.originalRendererPos[i]);
                     }
                 }
+
                 break;
             }
         }
@@ -708,6 +819,7 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             sector.renderer.SetPosition(i, sector.originalRendererPos[i] + offset);
         }
+
         SyncSectorCoords(sector);
     }
 
@@ -753,6 +865,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 }
             }
         }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             taskInterface.Activate();
@@ -796,8 +909,12 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         foreach (var sector in sectors)
         {
-            if (sector.sector.bounds.contains(pos)) return sector;
+            if (sector.sector.bounds.contains(pos))
+            {
+                return sector;
+            }
         }
+
         return null;
     }
 
@@ -810,10 +927,15 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         foreach (var sector in sectors)
         {
-            if (CheckMouseContainsSector(sector)) return sector.renderer.bounds.center;
+            if (CheckMouseContainsSector(sector))
+            {
+                return sector.renderer.bounds.center;
+            }
         }
+
         return Vector2.zero;
     }
+
     bool CheckForSectorOverlap(LineRenderer checkRenderer, int dimension)
     {
         foreach (SectorWCWrapper sector in sectors)
@@ -829,6 +951,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 }
             }
         }
+
         return false;
     }
 
@@ -841,6 +964,7 @@ public class WorldCreatorCursor : MonoBehaviour
                 return itemObj;
             }
         }
+
         return null;
     }
 
@@ -876,6 +1000,7 @@ public class WorldCreatorCursor : MonoBehaviour
             mousePos.x = 0.25F * tileSize * Mathf.RoundToInt((mousePos.x) / (0.25F * tileSize));
             mousePos.y = 0.25F * tileSize * Mathf.RoundToInt((mousePos.y) / (0.25F * tileSize));
         }
+
         return mousePos;
     }
 
@@ -886,6 +1011,7 @@ public class WorldCreatorCursor : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
         return mousePos;
     }
+
     public Vector2 CalcSectorPos()
     {
         Vector3 mousePos = GetMousePos();
@@ -913,13 +1039,20 @@ public class WorldCreatorCursor : MonoBehaviour
     public void BumpCurrent(int val)
     {
         if (currentIndex + val < 0 || currentIndex + val >= handler.items.Count)
+        {
             return;
+        }
+
         SetCurrent(currentIndex + val);
     }
 
     public void SetCurrent(int index)
     {
-        if (current != null && current.obj) Destroy(current.obj);
+        if (current != null && current.obj)
+        {
+            Destroy(current.obj);
+        }
+
         currentIndex = index;
         current = handler.GetItemByIndex(index);
         current.pos = CalcPos(current.type);
@@ -932,7 +1065,11 @@ public class WorldCreatorCursor : MonoBehaviour
 
     public void SetCurrent(Item item)
     {
-        if (current != null && current.obj) Destroy(current.obj);
+        if (current != null && current.obj)
+        {
+            Destroy(current.obj);
+        }
+
         current = item;
         current.pos = CalcPos(current.type);
         current.obj.transform.position = current.pos;

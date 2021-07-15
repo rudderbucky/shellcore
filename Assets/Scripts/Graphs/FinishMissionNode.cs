@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
@@ -8,15 +7,27 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "FinishMissionNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Finish Mission"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(208, height); } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Finish Mission"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(208, height); }
+        }
 
         float height = 300f;
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob inputLeft;
+
         public string rewardsText;
         public string jingleID;
 
@@ -41,13 +52,18 @@ namespace NodeEditorFramework.Standard
                 (m) => m.name == (Canvas as QuestCanvas).missionName);
             mission.status = Mission.MissionStatus.Complete;
             if (MissionCondition.OnMissionStatusChange != null)
+            {
                 MissionCondition.OnMissionStatusChange.Invoke(mission);
+            }
+
             DialogueSystem.ShowMissionComplete(mission, rewardsText);
             AudioManager.OverrideMusicTemporarily(jingleID);
 
-            if(TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))
+            if (TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))
+            {
                 TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
-                
+            }
+
             (Canvas.Traversal as Traverser).lastCheckpointName = mission.name + "_complete";
             TaskManager.Instance.AttemptAutoSave();
             return -1;

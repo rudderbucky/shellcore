@@ -6,16 +6,27 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Actions/Delete Faction Entities")]
     public class DestroyFactionEntitiesNode : Node
     {
-        public override string GetName { get { return "DeleteFactionEntities"; } }
-        public override string Title { get { return "Delete Faction Entities"; } }
+        public override string GetName
+        {
+            get { return "DeleteFactionEntities"; }
+        }
 
-        public override Vector2 DefaultSize { get { return new Vector2(200, 120); } }
+        public override string Title
+        {
+            get { return "Delete Faction Entities"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 120); }
+        }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob output;
 
         [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
+
         public int targetFaction;
 
         public override void NodeGUI()
@@ -35,12 +46,16 @@ namespace NodeEditorFramework.Standard
             foreach (var ent in AIData.entities)
             {
                 if (ent == PlayerCore.Instance)
+                {
                     continue;
+                }
+
                 if (ent.GetFaction() == targetFaction)
                 {
                     Destroy(ent.gameObject);
                 }
             }
+
             return 0;
         }
     }

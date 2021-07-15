@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "Part", menuName = "ShellCore/Part", order = 2)]
 public class PartBlueprint : ScriptableObject

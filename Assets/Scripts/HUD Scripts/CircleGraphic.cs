@@ -6,6 +6,7 @@ public class CircleGraphic : MaskableGraphic
 {
     [SerializeField]
     private int vertices = 3;
+
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         Vector2 corner1 = Vector2.zero;
@@ -32,23 +33,22 @@ public class CircleGraphic : MaskableGraphic
 
         UIVertex vert = UIVertex.simpleVert;
         var degree = 360f / vertices;
-        for(int i = 0; i < vertices; i++)
+        for (int i = 0; i < vertices; i++)
         {
-            
             var x = xRadius * Mathf.Cos(degree * Mathf.Deg2Rad * i);
-            var y =  yRadius * Mathf.Sin(degree  * Mathf.Deg2Rad * i);
+            var y = yRadius * Mathf.Sin(degree * Mathf.Deg2Rad * i);
             vert.position = new Vector2(x, y);
             vert.color = color;
             vh.AddVert(vert);
         }
 
-        for(int i = 0; i < vertices-2; i++)
+        for (int i = 0; i < vertices - 2; i++)
         {
-            vh.AddTriangle(i, i+1, i+2);
+            vh.AddTriangle(i, i + 1, i + 2);
         }
 
-        vh.AddTriangle(vertices-2, vertices-1, 0);
-        vh.AddTriangle(vertices-1,0, 1);
+        vh.AddTriangle(vertices - 2, vertices - 1, 0);
+        vh.AddTriangle(vertices - 1, 0, 1);
 
         /*
         vert.position = new Vector2(corner1.x, corner1.y);
@@ -68,8 +68,7 @@ public class CircleGraphic : MaskableGraphic
         vh.AddVert(vert);
         */
 
-        
-        
+
         //vh.AddTriangle(2, 3, 0);
     }
 }

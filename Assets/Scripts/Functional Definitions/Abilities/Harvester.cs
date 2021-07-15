@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface IHarvester
 {
@@ -8,8 +6,8 @@ public interface IHarvester
     void PowerHeal();
 }
 
-public class Harvester : WeaponAbility, IHarvester {
-
+public class Harvester : WeaponAbility, IHarvester
+{
     public ShellCore owner;
     private TractorBeam tractor;
 
@@ -17,11 +15,13 @@ public class Harvester : WeaponAbility, IHarvester {
     {
         ID = AbilityID.Harvester;
 
-        if(!owner)
+        if (!owner)
         {
             owner = (Core as Turret).owner as ShellCore;
         }
-        if(!tractor) {
+
+        if (!tractor)
+        {
             tractor = gameObject.AddComponent<TractorBeam>();
             tractor.owner = Core;
             tractor.BuildTractor();
@@ -40,10 +40,12 @@ public class Harvester : WeaponAbility, IHarvester {
 
     public void AddPower(float power)
     {
-        if(owner && (owner.GetPower() + power) <= 5000){
+        if (owner && (owner.GetPower() + power) <= 5000)
+        {
             owner.AddPower(power);
         }
-        else if (owner && owner.GetPower() <= 5000){
+        else if (owner && owner.GetPower() <= 5000)
+        {
             owner.AddPower(5000 - owner.GetPower());
         }
     }
@@ -60,12 +62,11 @@ public class Harvester : WeaponAbility, IHarvester {
 
     public void PowerHeal()
     {
-        if(owner && !owner.GetIsDead())
+        if (owner && !owner.GetIsDead())
         {
             owner.TakeShellDamage(-0.025F * owner.GetMaxHealth()[0], 0, null);
             owner.TakeCoreDamage(-0.025F * owner.GetMaxHealth()[1]);
             owner.TakeEnergy(-0.025F * owner.GetMaxHealth()[2]);
         }
-        
     }
 }

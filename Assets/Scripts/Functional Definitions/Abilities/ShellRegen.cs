@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿public class ShellRegen : PassiveAbility
+{
+    public int index;
+    public static readonly int[] regens = new int[] {50, 50, 50};
 
-public class ShellRegen : PassiveAbility {
-
-	public int index;
-	public static readonly int[] regens = new int[] {50, 50, 50};
-	public void Initialize() {
-		switch(index)
+    public void Initialize()
+    {
+        switch (index)
         {
             case 0:
                 ID = AbilityID.ShellRegen;
@@ -19,7 +17,7 @@ public class ShellRegen : PassiveAbility {
                 ID = AbilityID.EnergyRegen;
                 break;
         }
-	}
+    }
 
     public override void Deactivate()
     {
@@ -29,11 +27,10 @@ public class ShellRegen : PassiveAbility {
         base.Deactivate();
     }
 
-
     protected override void Execute()
     {
         float[] coreRegens = Core.GetRegens();
-		coreRegens[index] += regens[index] * abilityTier;
-		Core.SetRegens(coreRegens);
+        coreRegens[index] += regens[index] * abilityTier;
+        Core.SetRegens(coreRegens);
     }
 }

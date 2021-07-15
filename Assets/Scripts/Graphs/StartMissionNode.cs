@@ -1,6 +1,5 @@
-﻿using NodeEditorFramework.Utilities;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -10,12 +9,26 @@ namespace NodeEditorFramework.Standard
     {
         //Node things
         public const string ID = "StartMissionNode";
-        public override string GetName { get { return ID; } }
 
-        public override string Title { get { return "Start Mission"; } }
-        public override Vector2 MinSize { get { return new Vector2(258, 250); } }
-        
-        public override bool AutoLayout { get { return true; } }
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Start Mission"; }
+        }
+
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(258, 250); }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right)]
         public ConnectionKnob outputRight;
@@ -29,9 +42,9 @@ namespace NodeEditorFramework.Standard
         public bool overrideCheckpoint;
         public string overrideCheckpointName;
         public int episode = 0;
+
         public override void NodeGUI()
         {
-           
             GUILayout.Label("Mission Name:");
             missionName = GUILayout.TextField(missionName, GUILayout.Width(250));
             (Canvas as QuestCanvas).missionName = missionName;
@@ -49,24 +62,27 @@ namespace NodeEditorFramework.Standard
             {
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
-                { // Remove current label
+                {
+                    // Remove current label
                     prerequisites.RemoveAt(i);
                     i--;
                     GUILayout.EndHorizontal();
                     continue;
                 }
+
                 GUILayout.Label("Prerequisite " + i);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 prerequisites[i] = GUILayout.TextArea(prerequisites[i], GUILayout.Width(250));
                 GUILayout.EndHorizontal();
             }
-            
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add prerequisite missions", GUILayout.MinWidth(250)))
             {
                 prerequisites.Add("");
             }
+
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             episode = RTEditorGUI.IntField("Episode:", episode);
@@ -86,7 +102,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             textColor = new Color(r, g, b);
 
-            if(overrideCheckpoint = GUILayout.Toggle(overrideCheckpoint, "Override Checkpoint", GUILayout.MinWidth(250)))
+            if (overrideCheckpoint = GUILayout.Toggle(overrideCheckpoint, "Override Checkpoint", GUILayout.MinWidth(250)))
             {
                 GUILayout.Label("Checkpoint name: ");
                 overrideCheckpointName = GUILayout.TextField(overrideCheckpointName);
@@ -101,9 +117,8 @@ namespace NodeEditorFramework.Standard
 
         public void TryAddMission()
         {
-            if(PlayerCore.Instance.cursave.missions.TrueForAll((x) => {return x.name != missionName;}))
+            if (PlayerCore.Instance.cursave.missions.TrueForAll((x) => { return x.name != missionName; }))
             {
-
                 var mission = new Mission();
                 mission.name = missionName;
                 mission.rank = rank;
@@ -117,8 +132,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-
-                var mission = PlayerCore.Instance.cursave.missions.Find((x) => {return x.name == missionName;});
+                var mission = PlayerCore.Instance.cursave.missions.Find((x) => { return x.name == missionName; });
                 mission.rank = rank;
                 mission.prerequisites = prerequisites;
                 mission.entryPoint = entryPoint;

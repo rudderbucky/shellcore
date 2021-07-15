@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class MissileAnimationScript : MonoBehaviour {
-
+public class MissileAnimationScript : MonoBehaviour
+{
     LineRenderer line; // line renderer
     private float timer; // used for transparency and projection
     private float startAngle; // angle to project the line
@@ -40,7 +38,7 @@ public class MissileAnimationScript : MonoBehaviour {
         if (initialized)
         {
             timer += Time.deltaTime; // update timer
-            switch(iteration)
+            switch (iteration)
             {
                 case 3:
                     Start();
@@ -58,6 +56,7 @@ public class MissileAnimationScript : MonoBehaviour {
                         initialPos = line.GetPosition(iteration);
                         startAngle = Random.Range(0, 2 * Mathf.PI);
                     }
+
                     break;
             }
         }
@@ -71,7 +70,6 @@ public class MissileAnimationScript : MonoBehaviour {
     /// <param name="angle">the angle at which to lengthen</param>
     void DrawLine(float length, int index, float angle, Vector3 initialPosition)
     {
-
         line.SetPosition(index, initialPosition);
         // set the back vertex position to zero
 

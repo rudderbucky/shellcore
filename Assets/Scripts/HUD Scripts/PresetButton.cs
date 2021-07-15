@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.EventSystems; // Required when using Event data.
-using UnityEngine.SceneManagement;
+
+
+
 public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-
     public GameObject SBPrefab;
     public ShipBuilder builder;
     public ShipBuilderCursorScript cursorScript;
@@ -22,7 +22,11 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void ClearPreset()
     {
-        if (player.cursave.presetBlueprints != null) player.cursave.presetBlueprints[number - 1] = null;
+        if (player.cursave.presetBlueprints != null)
+        {
+            player.cursave.presetBlueprints[number - 1] = null;
+        }
+
         blueprint = null;
         valid = true;
         currentPartHandler.SetActive(true);
@@ -36,7 +40,12 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
             ClearPreset();
             return;
         }
-        if(!valid) return; // allow user to left shift out blueprint so return after that
+
+        if (!valid)
+        {
+            return; // allow user to left shift out blueprint so return after that
+        }
+
         // TODO: check if adding a part back into your inventory validates the preset
         if (!blueprint && (builder.reconstructStatus == ShipBuilder.ReconstructButtonStatus.Valid))
         {
@@ -46,21 +55,24 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
             blueprint.parts = new List<EntityBlueprint.PartInfo>();
             foreach (ShipBuilderPart part in cursorScript.parts)
             {
-                if(!part.isInChain || !part.validPos) 
+                if (!part.isInChain || !part.validPos)
                 {
                     blueprint = null;
                     return;
                 }
+
                 blueprint.parts.Add(part.info);
             }
-            if (player.cursave.presetBlueprints == null || (player.cursave.presetBlueprints != null 
-                && player.cursave.presetBlueprints.Length < 5))
+
+            if (player.cursave.presetBlueprints == null || (player.cursave.presetBlueprints != null
+                                                            && player.cursave.presetBlueprints.Length < 5))
             {
                 player.cursave.presetBlueprints = new string[5];
             }
+
             player.cursave.presetBlueprints[number - 1] = JsonUtility.ToJson(blueprint);
         }
-        else if(blueprint)
+        else if (blueprint)
         {
             cursorScript.ClearAllParts();
             foreach (EntityBlueprint.PartInfo info in blueprint.parts)
@@ -72,6 +84,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
                     return;
                 }
             }
+
             var x = new EntityBlueprint.PartInfo[blueprint.parts.Count];
             blueprint.parts.CopyTo(x);
             player.blueprint.parts = new List<EntityBlueprint.PartInfo>(x);
@@ -87,14 +100,22 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         image = GetComponent<Image>();
         text = GetComponentInChildren<Text>();
         blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-        if (player.cursave.presetBlueprints != null && player.cursave.presetBlueprints.Length >= number 
-            && player.cursave.presetBlueprints[number - 1] != null)
+        if (player.cursave.presetBlueprints != null && player.cursave.presetBlueprints.Length >= number
+                                                    && player.cursave.presetBlueprints[number - 1] != null)
+        {
             JsonUtility.FromJsonOverwrite(player.cursave.presetBlueprints[number - 1], blueprint);
-        if (blueprint.parts == null) blueprint = null;
+        }
+
+        if (blueprint.parts == null)
+        {
+            blueprint = null;
+        }
+
         initialized = true;
     }
 
-    void CheckEmpty() {
+    void CheckEmpty()
+    {
         if (!blueprint)
         {
             text.color = Color.gray;
@@ -112,25 +133,29 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
                 text.color = Color.green;
                 text.text = " LOAD PRESET " + number;
             }
-
         }
     }
 
-    public void CheckValid() {
-        if(blueprint && blueprint.parts != null && !builder.ContainsParts(blueprint.parts)) 
-        {   
+    public void CheckValid()
+    {
+        if (blueprint && blueprint.parts != null && !builder.ContainsParts(blueprint.parts))
+        {
             valid = false;
             text.color = Color.red;
             text.text = " INADEQUATE PARTS ";
-        } else {
+        }
+        else
+        {
             valid = true;
             CheckEmpty();
         }
     }
+
     // Update is called once per frame
     void Update()
     {
-        if(initialized && valid) {
+        if (initialized && valid)
+        {
             CheckEmpty();
         }
     }
@@ -139,7 +164,8 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     // fix that eventually
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(blueprint && valid) {
+        if (blueprint && valid)
+        {
             currentPartHandler.SetActive(false);
             displayHandler.AssignDisplay(blueprint, null);
         }
@@ -147,7 +173,8 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if(blueprint && valid) {
+        if (blueprint && valid)
+        {
             currentPartHandler.SetActive(true);
             displayHandler.ClearDisplay();
         }

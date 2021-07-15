@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-
     public GameObject tooltipPrefab;
     public string coreID;
     public Image shell;
@@ -16,13 +13,18 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(player.reputation >= repCost) {
+        if (player.reputation >= repCost)
+        {
             player.blueprint.coreShellSpriteID = coreID;
             player.blueprint.baseRegen = CoreUpgraderScript.GetRegens(coreID);
             player.Rebuild();
             CoreUpgraderScript.DrawScreen();
             NodeEditorFramework.Standard.UpgradeCoreCondition.OnCoreUpgrade.Invoke();
-        } else Debug.Log("Not enough reputation!" + player.reputation + " " + repCost);
+        }
+        else
+        {
+            Debug.Log("Not enough reputation!" + player.reputation + " " + repCost);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -36,7 +38,7 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
         Text text = tooltip.transform.Find("Text").GetComponent<Text>();
         text.text = CoreUpgraderScript.GetDescription(coreID);
-        
+
         rect.sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
     }
 
@@ -44,12 +46,14 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
     {
         //delete tooltip
         if (tooltip)
+        {
             Destroy(tooltip);
+        }
     }
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
         shell.sprite = ResourceManager.GetAsset<Sprite>(coreID);
         shell.SetNativeSize();
         shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
@@ -58,9 +62,9 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
     // Update is called once per frame
     void Update()
     {
-        if(tooltip)
+        if (tooltip)
         {
             tooltip.transform.position = Input.mousePosition;
-        }        
+        }
     }
 }

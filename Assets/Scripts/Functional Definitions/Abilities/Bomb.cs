@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bomb : WeaponAbility
 {
@@ -30,7 +28,8 @@ public class Bomb : WeaponAbility
         bonusDamageType = typeof(AirConstruct);
     }
 
-    protected override void Start() {
+    protected override void Start()
+    {
         bombPrefab = ResourceManager.GetAsset<GameObject>("bomb_prefab");
         survivalTime = 45F * abilityTier;
         base.Start();
@@ -56,10 +55,11 @@ public class Bomb : WeaponAbility
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
         // Create the Bullet from the Bullet Prefab
         Vector3 diff = targetPos - originPos;
-        if(bombPrefab == null)
+        if (bombPrefab == null)
         {
             bombPrefab = ResourceManager.GetAsset<GameObject>("bomb_prefab");
         }
+
         var bullet = Instantiate(bombPrefab, originPos, Quaternion.identity);
         bullet.transform.localScale = prefabScale;
 
@@ -70,7 +70,7 @@ public class Bomb : WeaponAbility
         script.SetDamage(GetDamage());
         script.SetCategory(category);
         script.SetTerrain(terrain);
-        script.bombColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F,1F,1F,0.9F);
+        script.bombColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         script.faction = Core.faction;
 
         // Destroy the bullet after survival time

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
@@ -9,14 +6,32 @@ namespace NodeEditorFramework.Standard
     public class YardCollectCondition : Node, ICondition
     {
         public delegate void YardCollectDelegate(string partId, int abilityId, string sector);
+
         public static YardCollectDelegate OnYardCollect;
         public const string ID = "YardCollectCondition";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Yard Collect Condition"; } }
-        public override Vector2 DefaultSize { get { return new Vector2(200, 180); } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Yard Collect Condition"; }
+        }
+
+        public override Vector2 DefaultSize
+        {
+            get { return new Vector2(200, 180); }
+        }
 
         public ConditionState state; // Property can't be serialized -> field
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         [ConnectionKnob("Output Right", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob output;
@@ -49,7 +64,7 @@ namespace NodeEditorFramework.Standard
             OnYardCollect -= (CheckParts);
             State = ConditionState.Uninitialized;
 
-            if(TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
+            if (TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Contains(objectiveLocation))
             {
                 TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Remove(objectiveLocation);
                 TaskManager.DrawObjectiveLocations();
@@ -58,9 +73,9 @@ namespace NodeEditorFramework.Standard
 
         public void CheckParts(string partId, int abilityId, string sector)
         {
-            if(sectorName == "" || sectorName == null || sectorName == sector)
+            if (sectorName == "" || sectorName == null || sectorName == sector)
             {
-                if(partId == partID && abilityId == abilityID)
+                if (partId == partID && abilityId == abilityID)
                 {
                     State = ConditionState.Completed;
                     connectionKnobs[0].connection(0).body.Calculate();
@@ -70,12 +85,16 @@ namespace NodeEditorFramework.Standard
 
         void TryAddObjective(bool clear)
         {
-            foreach(var ent in AIData.entities)
+            foreach (var ent in AIData.entities)
             {
                 // TODO: Disambiguate name and entityName
-                if(ent.name == "Yard" || ent.entityName == "Yard")
+                if (ent.name == "Yard" || ent.entityName == "Yard")
                 {
-                    if(clear) TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
+                    if (clear)
+                    {
+                        TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
+                    }
+
                     objectiveLocation = new TaskManager.ObjectiveLocation(
                         ent.transform.position,
                         true,

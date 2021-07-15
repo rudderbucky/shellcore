@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
 
 namespace NodeEditorFramework.Standard
 {
@@ -11,11 +8,24 @@ namespace NodeEditorFramework.Standard
         public static UnityEvent TestTrigger = new UnityEvent();
 
         public const string ID = "TestTrigger";
-        public override string GetName { get { return ID; } }
-        public override string Title { get { return "Test Trigger"; } }
+
+        public override string GetName
+        {
+            get { return ID; }
+        }
+
+        public override string Title
+        {
+            get { return "Test Trigger"; }
+        }
 
         public ConditionState state; // Property can't be serialized -> field
-        public ConditionState State { get { return state; } set { state = value; } }
+
+        public ConditionState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         [ConnectionKnob("Output Right", Direction.Out, "Condition", NodeSide.Right)]
         public ConnectionKnob outputRight;

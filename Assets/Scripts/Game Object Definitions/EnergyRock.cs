@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class EnergyRock : MonoBehaviour {
+public class EnergyRock : MonoBehaviour
+{
     public GameObject energySpherePrefab;
-
 
     float maxTime = 8f;
     float targetTime = 0f;
@@ -12,7 +10,7 @@ public class EnergyRock : MonoBehaviour {
     private void Start()
     {
         targetTime = Time.fixedTime + maxTime;
-        if(!transform.Find("Minimap Image"))
+        if (!transform.Find("Minimap Image"))
         {
             GameObject childObject = new GameObject("Minimap Image");
             childObject.transform.SetParent(transform, false);
@@ -33,8 +31,10 @@ public class EnergyRock : MonoBehaviour {
         AIData.energyRocks.Remove(this);
     }
 
-    void Update () {
-        if (Time.fixedTime > targetTime) {
+    void Update()
+    {
+        if (Time.fixedTime > targetTime)
+        {
             targetTime = Time.fixedTime + maxTime;
 
             var x = Instantiate(energySpherePrefab, null, false);
@@ -44,5 +44,5 @@ public class EnergyRock : MonoBehaviour {
             float dir = Random.Range(0f, 2 * Mathf.PI);
             x.GetComponent<Rigidbody2D>().AddForce(new Vector2(Mathf.Sin(dir), Mathf.Cos(dir)) * Random.Range(180f, 240f));
         }
-	}
+    }
 }

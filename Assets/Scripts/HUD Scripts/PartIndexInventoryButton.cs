@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
@@ -20,15 +19,23 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
         val.enabled = false;
         isShiny.enabled = displayShiny;
 
-        switch(status)
+        switch (status)
         {
             case PartIndexScript.PartStatus.Unseen:
                 image.enabled = false;
-                if(shooter) shooter.enabled = false;
+                if (shooter)
+                {
+                    shooter.enabled = false;
+                }
+
                 break;
             case PartIndexScript.PartStatus.Seen:
                 image.color = Color.gray;
-                if(shooter) shooter.color = Color.gray;
+                if (shooter)
+                {
+                    shooter.color = Color.gray;
+                }
+
                 break;
             default:
                 break;
@@ -38,24 +45,27 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
     public void OnPointerEnter(PointerEventData eventData)
     {
         infoBox.SetActive(true);
-        if(status != PartIndexScript.PartStatus.Unseen)
+        if (status != PartIndexScript.PartStatus.Unseen)
         {
             var textComponent = infoBox.GetComponentInChildren<Text>();
             textComponent.text = "Sector Origins: (Click part to mark on map)";
-            foreach(var origin in origins)
+            foreach (var origin in origins)
             {
-                if(!textComponent.text.Contains(origin)) 
+                if (!textComponent.text.Contains(origin))
                 {
                     textComponent.text += "\n" + origin;
                 }
             }
 
-            if(status == PartIndexScript.PartStatus.Obtained)
+            if (status == PartIndexScript.PartStatus.Obtained)
             {
                 partDisplay.gameObject.SetActive(true);
                 partDisplay.DisplayPartInfo(part);
             }
-            else partDisplay.gameObject.SetActive(false);
+            else
+            {
+                partDisplay.gameObject.SetActive(false);
+            }
         }
         else
         {
@@ -69,7 +79,7 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
     ///
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(status != PartIndexScript.PartStatus.Unseen)
+        if (status != PartIndexScript.PartStatus.Unseen)
         {
             partMarkerSectorNames = origins.Distinct().ToList();
             StatusMenu.instance.SwitchSections(0);
