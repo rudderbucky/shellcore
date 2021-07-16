@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="17.5,1.25" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="1432959488" type="StartDialogueNode" pos="-800,-250">
+			<Port ID="-655665536" name="input" dynamic="False" />
+			<Port ID="91361024" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-2007311859" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1250171264" type="DialogueNode" pos="-500,-250">
+			<Port ID="-2128726016" name="input" dynamic="False" />
+			<Port ID="-1091285888" name="cancel" dynamic="False" />
+			<Port ID="1274007936" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">241</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1501886418" />
+			<Variable name="answers" refID="-1855126016" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-659416832" type="EndDialogue" pos="-150,-100">
+			<Port ID="1128801152" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="91361024" port2ID="-2128726016" />
+		<Connection port1ID="1274007936" port2ID="1128801152" />
+	</Connections>
+	<Objects>
+		<Object refID="-2007311859" type="System.String">
+			<string>haven3-hopelessexplainer</string>
+		</Object>
+		<Object refID="1501886418" type="System.String">
+			<string>Quite frankly, continuing this war seems hopeless... Our only option is to travel to the Core Sectors and try to find out what caused the infection. Maybe we can figure out a way to stop it.</string>
+		</Object>
+		<Object refID="-1855126016" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>
