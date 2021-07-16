@@ -31,7 +31,7 @@ public class ShellPart : MonoBehaviour
     public static int partShader = 0;
     public static List<Material> shaderMaterials = null;
 
-    public bool weapon { get; set; } = false;
+    public bool weapon = false;
 
     public bool GetDetached()
     {
