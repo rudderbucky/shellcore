@@ -24,6 +24,8 @@ public abstract class Craft : Entity
     public float physicsAccel;
     public static readonly float weightNumeratorConstant = 40;
 
+    Vector2 oldPosition = Vector2.zero;
+
     public void AddPin()
     {
         pins++;
@@ -214,9 +216,8 @@ public abstract class Craft : Entity
     protected const float maxVelocity = 40f;
 
     /// <summary>
-    /// Applies a force to the craft on the vector given
+    /// Applies a force to the craft on the given vector
     /// </summary>
-    /// <param name="directionVector">vector given</param>
     protected virtual void CraftMover(Vector2 directionVector)
     {
         if (isImmobile)
@@ -227,7 +228,7 @@ public abstract class Craft : Entity
 
         if (rotateWhileMoving)
         {
-            RotateCraft(directionVector / weight); // rotate craft
+            RotateCraft(directionVector / weight);
         }
 
         entityBody.velocity += directionVector * physicsAccel * Time.fixedDeltaTime;
@@ -235,6 +236,12 @@ public abstract class Craft : Entity
         if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)
         {
             entityBody.velocity = entityBody.velocity.normalized * Mathf.Min(physicsSpeed, maxVelocity);
+        }
+
+        if (((Vector2)transform.position - oldPosition).sqrMagnitude > 2f)
+        {
+            oldPosition = transform.position;
+            LandPlatformGenerator.EnqueueEntity(this);
         }
     }
 

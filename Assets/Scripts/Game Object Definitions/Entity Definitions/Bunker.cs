@@ -74,4 +74,35 @@ public class Bunker : GroundConstruct, IVendor
     {
         return transform.position;
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        // Draw lines to the closest ground tiles
+
+        for (int i = 0; i < LandPlatformGenerator.Instance.groundPlatforms.Length; i++)
+        {
+            Vector2 pos0 = transform.position;
+            GroundPlatform.Tile? tile = LandPlatformGenerator.Instance.GetNearestTile(LandPlatformGenerator.Instance.groundPlatforms[i], pos0);
+            if (tile.HasValue && tile.Value != null)
+            {
+                if (tile.Value.colliders == null)
+                {
+                    string brokenTiles = "";
+                    var tileList = LandPlatformGenerator.Instance.groundPlatforms[i].tiles;
+                    for (int j = 0; j < tileList.Count; j++)
+                    {
+                        if (tileList[j].colliders == null)
+                        {
+                            brokenTiles += tileList[j].pos + " ";
+                        }
+                    }
+                    Debug.LogError($"Platform [{i}]'s tile at {tile.Value.pos} has no collider. Total tile count: {tileList.Count} Broken tile list: {brokenTiles}");
+                }
+
+                Vector2 pos1 = LandPlatformGenerator.TileToWorldPos(tile.Value.pos);
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawLine(pos0, pos1);
+            }
+        }
+    }
 }

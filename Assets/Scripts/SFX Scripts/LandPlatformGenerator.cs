@@ -1,24 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class LandPlatformGenerator : MonoBehaviour
 {
-    public static string[] prefabNames = new string[]
-    {
-        "New Junction", // 0
-        "New 1 Entry", // 1
-        "New 2 Entry", // 2
-        "New 0 Entry", // 3
-        "New 0 Entry Ghost", // 4
-        "New 3 Entry", // 5
-        "New 4 Entry", // 6
-        "New Junction Ghost", // 7
-        "New 1 Entry Ghost", // 8
-        "New 2 Entry Ghost", // 9
-        "New 3 Entry Ghost", // 10
-        "New 4 Entry Ghost" // 11
-    };
+
+
+    public static string[] prefabNames = new string[] {
+                "New Junction",         // 0
+                "New 1 Entry",          // 1
+                "New 2 Entry",          // 2
+                "New 0 Entry",          // 3
+                "New 0 Entry Ghost",    // 4
+                "New 3 Entry",          // 5
+                "New 4 Entry",          // 6
+                "New Junction Ghost",   // 7
+                "New 1 Entry Ghost",    // 8
+                "New 2 Entry Ghost",    // 9
+                "New 3 Entry Ghost",    // 10
+                "New 4 Entry Ghost",    // 11
+            };
 
     // TODO: generate one mesh instead of multiple objects
 
@@ -41,17 +44,16 @@ public class LandPlatformGenerator : MonoBehaviour
 
     public GroundPlatform[] groundPlatforms;
 
-    //private Dictionary<int, GameObject> tiles;
-    private List<Rect> areas;
-
-    //private List<NavigationNode> nodes;
-    private Vector2 center;
-
-    //private Dictionary<NavigationNode, int> areaIDByNode;
-    // private Dictionary<GameObject, int> areaIDByTile; // TODO: Add areaIDByTile
     public float tileSize { get; set; }
     public Color color { get; private set; }
     public Vector2 Offset { get; set; }
+    public Vector2Int Size { get; set; }
+
+    private Queue<Entity> searchQueue = new Queue<Entity>();
+    private short[,] directionMap;
+    private Vector2 center;
+    
+    // private Dictionary<GameObject, int> areaIDByTile; // TODO: Add platIDByTile
 
     public static bool IsOnGround(Vector3 position)
     {
@@ -66,34 +68,15 @@ public class LandPlatformGenerator : MonoBehaviour
         for (int i = 0; i < Instance.groundPlatforms.Length; i++)
         {
             var plat = Instance.groundPlatforms[i];
-            for (int j = 0; j < plat.tiles.Count; j++)
+
+            GroundPlatform.Tile? tile = plat.GetTile(new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y)));
+            if (tile.HasValue && tile.Value.colliders.Any(x => x.OverlapPoint(position)))
             {
-                if (plat.tiles[j].pos == new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y)))
-                {
-                    if (plat.tiles[j].colliders.Any(x => x.OverlapPoint(position)))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                return true;
             }
         }
 
         return false;
-
-        //int index = Mathf.RoundToInt(relativePos.x) + Mathf.RoundToInt(relativePos.y) * cols;
-        //if (Instance.tiles.ContainsKey(index))
-        //{
-        //    GameObject tile = Instance.tiles[index];
-        //    if (tile.GetComponents<Collider2D>().Any(x => x.OverlapPoint(position)))
-        //    {
-        //        return true;
-        //    }
-        //}
-        //return false;
     }
 
     public void SetColor(Color color)
@@ -115,6 +98,110 @@ public class LandPlatformGenerator : MonoBehaviour
         }
     }
 
+    public void LoadSector(Sector sector)
+    {
+        searchQueue.Clear();
+        for (int i = 0; i < AIData.entities.Count; i++)
+        {
+            searchQueue.Enqueue(AIData.entities[i]);
+        }
+
+        Vector2 center = new Vector2(sector.bounds.x + sector.bounds.w / 2, sector.bounds.y - sector.bounds.h / 2);
+
+        if (sector.platform) // Old data
+        {
+            BuildTiles(sector.platform, center);
+        }
+        else if (sector.platformData.Length > 0)
+        {
+            GameObject[] prefabs = new GameObject[LandPlatformGenerator.prefabNames.Length];
+            for (int i = 0; i < LandPlatformGenerator.prefabNames.Length; i++)
+            {
+                prefabs[i] = ResourceManager.GetAsset<GameObject>(LandPlatformGenerator.prefabNames[i]);
+            }
+
+            tileSize = prefabs[0].GetComponent<SpriteRenderer>().bounds.size.x;
+
+            var cols = sector.bounds.w / (int)tileSize;
+            var rows = sector.bounds.h / (int)tileSize;
+
+            Offset = new Vector2
+            {
+                x = center.x - tileSize * (cols - 1) / 2F,
+                y = center.y + tileSize * (rows - 1) / 2F
+            };
+
+            Size = new Vector2Int
+            {
+                x = cols,
+                y = rows
+            };
+
+            directionMap = new short[cols, rows];
+            for (int i = 0; i < cols; i++)
+            {
+                for (int j = 0; j < rows; j++)
+                {
+                    directionMap[i, j] = -1;
+                }
+            }
+
+            // Assemble platforms from tile prefabs
+            sector.platforms = new GroundPlatform[sector.platformData.Length];
+            for (int i = 0; i < sector.platformData.Length; i++)
+            {
+                var plat = new GroundPlatform(sector.platformData[i], prefabs, this);
+                sector.platforms[i] = plat;
+            }
+
+            groundPlatforms = sector.platforms;
+
+            // Create the direction map
+            for (int i = 0; i < groundPlatforms.Length; i++)
+            {
+                for (int j = 0; j < groundPlatforms[i].tiles.Count; j++)
+                {
+                    GroundPlatform.Tile t = groundPlatforms[i].tiles[j];
+                    if (t.pos.x >= cols || t.pos.y >= rows || t.pos.x < 0 || t.pos.y < 0)
+                    {
+                        Debug.LogWarning($"Invalid tile position: { t.pos } Bounds: {cols}, {rows}");
+                        continue;
+                    }
+                    directionMap[t.pos.x, t.pos.y] = GroundPlatform.GetPlatformOpenings(t);
+                }
+            }
+
+
+            // Direction map debug
+            string str = "";
+            for (int j = 0; j < rows; j++)
+            {
+                for (int i = 0; i < cols; i++)
+                {
+                    str += directionMap[i, j].ToString().PadLeft(2, '0') + ' ';
+                }
+                str += '\n';
+            }
+            Debug.Log(str);
+        }
+    }
+
+    private void Update()
+    {
+        if (searchQueue.Count > 0)
+        {
+            // Search closest tiles
+            Entity ent = searchQueue.Dequeue();
+
+            for (int i = 0; i < groundPlatforms.Length; i++)
+            {
+                // Is this algorithm optimal?
+                if (ent && !ent.GetIsDead())
+                groundPlatforms[i].GetClosestTile(ent); 
+            }
+        }
+    }
+
     public void BuildTiles(LandPlatform platform, Vector2 center)
     {
         this.center = center;
@@ -130,8 +217,6 @@ public class LandPlatformGenerator : MonoBehaviour
             y = center.y + tileSize * (rows - 1) / 2F
         };
         // TODO: read new data from file, for each platform
-
-        areas = new List<Rect>();
 
         var tiles = new List<GroundPlatform.Tile>();
 
@@ -160,8 +245,6 @@ public class LandPlatformGenerator : MonoBehaviour
                             pos = new Vector2Int(i % cols, i / cols),
                             type = (byte)blueprint.tilemap[i],
                             rotation = (byte)blueprint.rotations[i],
-                            directions = new Dictionary<Vector2Int, byte>(),
-                            distances = new Dictionary<Vector2Int, ushort>(),
                             colliders = obj.GetComponentsInChildren<Collider2D>()
                         });
                 }
@@ -195,7 +278,7 @@ public class LandPlatformGenerator : MonoBehaviour
                     // Get connected neighbors
 
                     var current = openList[0];
-                    int ends = GroundPlatform.GetPlatformOpenings(current);
+                    short ends = GroundPlatform.GetPlatformOpenings(current);
 
                     //Debug.Log("Tile: " + new Vector2Int(current.pos.x, current.pos.y) + " type: " + current.type + " rot: " + current.rotation + " direction flags: " + (ends & 8) + " " + (ends & 4) + " " + (ends & 2) + " " + (ends & 1));
                     if ((ends & 1) == 1)
@@ -311,8 +394,8 @@ public class LandPlatformGenerator : MonoBehaviour
     public void Initialize()
     {
         Instance = this;
-        //nodes = new List<NavigationNode>();
         groundPlatforms = null;
+        Entity.OnEntitySpawn += EnqueueEntity;
     }
 
     public void Unload()
@@ -326,8 +409,7 @@ public class LandPlatformGenerator : MonoBehaviour
         }
 
         groundPlatforms = null;
-
-        //nodes.Clear();
+        searchQueue.Clear();
     }
 
 #if UNITY_EDITOR
@@ -357,23 +439,34 @@ public class LandPlatformGenerator : MonoBehaviour
         Vector2 relativePos = ((Vector2)mPos - instance.Offset) / Instance.tileSize;
         relativePos.y = -relativePos.y;
 
+        Vector2Int tilePos = new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y));
 
-        //if (areas != null)
-        //{
-        //    for (int i = 0; i < areas.Count; i++)
-        //    {
-        //        if (new Rect(-0.5f * tileSize + Offset.x, -0.5f * tileSize - Offset.y, blueprint.columns * tileSize, blueprint.rows * tileSize).Contains(mPos))
-        //        {
-        //            int x = -Mathf.FloorToInt((mPos.y - Offset.y )/ tileSize + 0.5f);
-        //            int y = Mathf.FloorToInt((mPos.x - Offset.x) / tileSize + 0.5f);
-        //            if (isValidTile(x, y))
-        //            {
-        //                Gizmos.color = new Color(0.1f, 0.8f, 1f, 0.01f);
-        //                Gizmos.DrawCube(new Vector3(y * tileSize, -x * tileSize, 0) + (Vector3)Offset, new Vector3(tileSize, tileSize, 0));
-        //            }
-        //        }
-        //    }
-        //}
+        Gizmos.DrawCube(TileToWorldPos(tilePos), Vector3.one * tileSize);
+
+        // Initialize direction vectors
+        Vector2Int[] unitVectors = new Vector2Int[]
+        {
+            new Vector2Int(1, 0),
+            new Vector2Int(0, -1),
+            new Vector2Int(-1, 0),
+            new Vector2Int(0, 1)
+        };
+
+        Gizmos.color = Color.white;
+
+        for (int i = 0; i < Size.x; i++)
+        {
+            for (int j = 0; j < Size.y; j++)
+            {
+                if (directionMap[i, j] != -1)
+                {
+                    if ((directionMap[i, j] & (1 << i)) == (1 << i))
+                    {
+                        Gizmos.DrawCube(TileToWorldPos(new Vector2Int(i, j)) + (Vector2)unitVectors[i] * (tileSize / 3f), Vector3.one * tileSize / 8f);
+                    }
+                }
+            }
+        }
     }
 #endif
     bool isInLoS(Vector2 p1, Vector2 p2, bool reduceLongEdges = false)
@@ -417,216 +510,159 @@ public class LandPlatformGenerator : MonoBehaviour
         return true;
     }
 
-    public static Vector2[] pathfind(Vector2 startPos, Vector2 targetPos, float distance = 0f)
+    class Node
+    {
+        public Vector2Int pos;
+        public short directions;
+        public Node parent;
+    }
+
+    public static Vector2[] pathfind(Vector2 startPos, Entity[] targets, float maxDistance = 0f)
+    {
+        float sqrDist = maxDistance * maxDistance;
+
+        // Get correct platform and the starting tile
+        var plat = Instance.GetPlatformInPosition(startPos);
+        Vector2Int startTilePos = WorldToTilePos(startPos);
+
+        // Get end tiles
+        List<Vector2Int> endTiles = new List<Vector2Int>();
+        for (int i = 0; i < targets.Length; i++)
+        {
+            var t = plat.GetClosestTile(targets[i]);
+            if ((TileToWorldPos(t.pos) - (Vector2)targets[i].transform.position).sqrMagnitude < sqrDist)
+            {
+                endTiles.Add(t.pos);
+            }
+        }
+
+        if (endTiles.Count == 0)
+        {
+            Debug.Log("No valid targets in range");
+            return null;
+        }
+        
+        // Initialize node lists
+        // TODO: Queue instead of List?
+        List<Node> openList = new List<Node>
+        {
+            new Node
+            {
+                pos = startTilePos,
+                directions = instance.GetDirections(startTilePos),
+                parent = null
+            }
+        };
+        List<Vector2Int> closedList = new List<Vector2Int>();
+
+        // Initialize direction vectors
+        Vector2Int[] unitVectors = new Vector2Int[]
+        {
+            new Vector2Int(1, 0),
+            new Vector2Int(0, -1),
+            new Vector2Int(-1, 0),
+            new Vector2Int(0, 1)
+        };
+
+        // Start flood fill
+        while (openList.Count > 0)
+        {
+            Node current = openList[0];
+
+            // Check for end tiles
+            for (int i = 0; i < endTiles.Count; i++)
+            {
+                if (current.pos == endTiles[i])
+                {
+                    // Path found!
+                    List<Vector2> path = new List<Vector2>();
+                    while (current.parent != null)
+                    {
+                        path.Add(TileToWorldPos(current.pos));
+                        current = current.parent;
+
+                        if (path.Count > 10000)
+                        {
+                            Debug.LogError("Infinite loop at path construction.");
+                            return null;
+                        }
+                    }
+
+                    // Path from end to start. Tanks start fron the last node index.
+                    return path.ToArray();
+                }
+            }
+
+            // Add new nodes
+            for (int i = 0; i < 4; i++)
+            {
+                if ((current.directions & (1 << i)) == (1 << i))
+                {
+                    Vector2Int nextPos = current.pos + unitVectors[i];
+                    short dirs = instance.GetDirections(nextPos);
+                    if (dirs == -1)
+                    {
+                        Debug.LogError("Invalid tile position reached during pathfinding.");
+                        return null;
+                    }
+                    if (!closedList.Contains(nextPos))
+                    {
+                        bool found = false;
+                        for (int j = 0; j < openList.Count; j++)
+                        {
+                            if (openList[j].pos == nextPos)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            openList.Add(
+                                new Node
+                                {
+                                    pos = nextPos,
+                                    directions = dirs,
+                                    parent = current
+                                });
+                        }
+                    }
+                }
+            }
+
+            openList.RemoveAt(0);
+        }
+
+        Debug.LogError($"No viable path found to any of the [{endTiles.Count}] destinations.");
+        return null;
+    }
+
+    /// <summary>
+    /// Get which directions are available from this tile position
+    /// </summary>
+    short GetDirections(Vector2Int pos)
+    {
+        return GetDirections(pos.x, pos.y);
+    }
+
+    short GetDirections(int x, int y)
+    {
+        if (x >= Size.x || y >= Size.y || x < 0 || y < 0)
+        {
+            return -1;
+        }
+        return directionMap[x, y];
+    }
+
+    internal static Vector2[] SeekAndPathfind(Vector2 startPos, Entity[] entities, float maxRange = 100f)
     {
         // Get platform
         var plat = Instance.GetPlatformInPosition(startPos);
 
-        GroundPlatform.Tile? end = instance.GetNearestTile(plat, targetPos);
-        GroundPlatform.Tile? start = instance.GetNearestTile(plat, startPos);
+        // Get Entities' closest tiles from platform
+        // Flood fill
 
-        float d = (startPos - targetPos).sqrMagnitude;
-        float sqr = distance * distance;
-        List<Vector2> path = new List<Vector2>();
-        if (end.Value.pos == start.Value.pos && end.HasValue)
-        {
-            if (d > sqr)
-            {
-                path.Add(TileToWorldPos(end.Value.pos));
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        int iteration = 0;
-        GroundPlatform.Tile current = start.Value;
-        byte prevDir = 4;
-        Vector2? prevPos = null;
-
-        while (current.pos != end.Value.pos && d > sqr)
-        {
-            byte dir = 0;
-            if (current.directions.ContainsKey(end.Value.pos))
-            {
-                dir = current.directions[end.Value.pos];
-                GroundPlatform.Tile? next = null;
-                switch (dir)
-                {
-                    case 0:
-                        next = plat.GetTile(current.pos + Vector2Int.right);
-                        break;
-                    case 1:
-                        next = plat.GetTile(current.pos + Vector2Int.down);
-                        break;
-                    case 2:
-                        next = plat.GetTile(current.pos + Vector2Int.left);
-                        break;
-                    case 3:
-                        next = plat.GetTile(current.pos + Vector2Int.up);
-                        break;
-                    default:
-                        break;
-                }
-
-                if (next.HasValue)
-                {
-                    if (dir != prevDir && prevPos.HasValue)
-                    {
-                        Vector2 minusOne;
-                        switch (prevDir)
-                        {
-                            case 0:
-                                minusOne = prevPos.Value - Vector2.right * instance.tileSize;
-                                break;
-                            case 1:
-                                // Opposite because y-mirroring...
-                                minusOne = prevPos.Value - Vector2.up * instance.tileSize;
-                                break;
-                            case 2:
-                                minusOne = prevPos.Value - Vector2.left * instance.tileSize;
-                                break;
-                            case 3:
-                                minusOne = prevPos.Value - Vector2.down * instance.tileSize;
-                                break;
-                            default:
-                                minusOne = Vector2.zero;
-                                Debug.LogError("Problem in tank pathfinding, complain to Ormanus.");
-                                break;
-                        }
-
-                        current = next.Value;
-
-
-                        path.RemoveAt(path.Count - 1);
-
-                        var currentPos = TileToWorldPos(current.pos);
-
-                        path.Add(minusOne + (prevPos.Value - minusOne) * 0.75f);
-                        path.Add(prevPos.Value + (currentPos - prevPos.Value) * 0.25f);
-
-                        path.Add(currentPos);
-                    }
-                    else
-                    {
-                        current = next.Value;
-                        path.Add(TileToWorldPos(current.pos));
-                    }
-
-                    prevDir = dir;
-                    prevPos = path[path.Count - 1];
-                }
-                else
-                {
-                    Debug.LogError("Pathfinding failed because of corrupted direction data at " + current.pos + " with direction " + dir);
-                    return null;
-                }
-            }
-            else
-            {
-                Debug.LogError("Pathfinding failed because of incomplete ground platform generation.");
-                return null;
-            }
-
-            d = (targetPos - TileToWorldPos(current.pos)).sqrMagnitude;
-
-            iteration++;
-            if (iteration > 10000)
-            {
-                string s = "";
-                for (int i = 0; i < path.Count; i++)
-                {
-                    s += path[i].ToString() + '\n';
-                }
-
-                Debug.Log(s);
-
-                Debug.LogError("Infinite loop in pathfinding!");
-                return null;
-            }
-        }
-
-        // Get closer from the tile center if needed
-        //d = (current.pos - targetPos).magnitude;
-        //if (d > distance && path.Count > 0)
-        //{
-        //    path[path.Count - 1] = current.pos + (current.pos - targetPos).normalized * (d - distance);
-        //}
-
-        path.Reverse();
-
-        // Debug
-        //string pathString = "";
-        //for (int i = 0; i < path.Count; i++)
-        //{
-        //    pathString += path[i].ToString();
-        //}
-        // Debug.Log("Path: " + pathString);
-
-        if (path.Count > 1)
-        {
-            d = (startPos - path[path.Count - 1]).magnitude;
-            if ((start.Value.type == 0 ||
-                 start.Value.type == 7 ||
-                 start.Value.type == 5 ||
-                 start.Value.type == 10)
-                && d > instance.tileSize * 1.2f) // Don't skip turns
-            {
-                path.Add(TileToWorldPos(start.Value.pos));
-            }
-        }
-
-        return path.ToArray();
-    }
-
-    internal static Entity GetClosestTarget(Vector2 startPosition, Entity[] entities, float maxRange = 100f)
-    {
-        var plat = Instance.GetPlatformInPosition(startPosition);
-
-        GroundPlatform.Tile? start = instance.GetNearestTile(plat, startPosition);
-
-        var closestTiles = new GroundPlatform.Tile?[entities.Length];
-
-        for (int i = 0; i < closestTiles.Length; i++)
-        {
-            closestTiles[i] = instance.GetNearestTile(plat, entities[i].transform.position, maxRange);
-
-            if (closestTiles[i] == start)
-            {
-                return entities[i];
-            }
-        }
-
-        int closestIndex = -1;
-        ushort minD = ushort.MaxValue;
-        for (int i = 0; i < closestTiles.Length; i++)
-        {
-            if (!closestTiles[i].HasValue)
-            {
-                continue;
-            }
-
-            if (!start.Value.distances.ContainsKey(closestTiles[i].Value.pos))
-            {
-                continue;
-            }
-
-            ushort d = start.Value.distances[closestTiles[i].Value.pos];
-
-            if (d < minD)
-            {
-                minD = d;
-                closestIndex = i;
-            }
-        }
-
-        if (closestIndex == -1)
-        {
-            return null;
-        }
-
-        return entities[closestIndex];
+        return null;
     }
 
     public static Vector2 TileToWorldPos(Vector2Int pos)
@@ -635,12 +671,32 @@ public class LandPlatformGenerator : MonoBehaviour
         return sectorPos;
     }
 
-    GroundPlatform.Tile? GetNearestTile(GroundPlatform platform, Vector2 pos, float maxDist = float.MaxValue)
+    public static Vector2Int WorldToTilePos(Vector2 pos)
     {
         Vector2 relativePos = (pos - instance.Offset) / Instance.tileSize;
         relativePos.y = -relativePos.y;
 
-        float minDist = maxDist * maxDist;
+        Vector2Int intPos = new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y));
+        return intPos;
+    }
+
+    // TODO: move this to Ground platform?
+    public GroundPlatform.Tile? GetNearestTile(GroundPlatform platform, Vector2 pos, float maxDist = 1000f)
+    {
+        Vector2 relativePos = (pos - instance.Offset) / Instance.tileSize;
+        relativePos.y = -relativePos.y;
+
+        Vector2Int intPos = new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y));
+        GroundPlatform.Tile? tileUnderPos = platform.GetTile(intPos);
+        if (tileUnderPos.HasValue)
+        {
+            //Debug.Log($"Tile of {platform.offset} platform under start pos returned at {relativePos}");
+            return tileUnderPos;
+        }
+
+        float scaledDistance = maxDist / Instance.tileSize;
+
+        float minDist = scaledDistance * scaledDistance;
         GroundPlatform.Tile? tile = null; // Returns null if all tiles are outside max range
 
         for (int i = 0; i < platform.tiles.Count; i++)
@@ -674,6 +730,15 @@ public class LandPlatformGenerator : MonoBehaviour
         }
 
         return null;
+    }
+
+    public static void EnqueueEntity(Entity ent)
+    {
+        if (instance != null)
+        {
+            if (!Instance.searchQueue.Contains(ent))
+                Instance.searchQueue.Enqueue(ent);
+        }
     }
 
     /*

@@ -283,9 +283,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     {
                         pos = new Vector2Int(index.Item2, index.Item1),
                         type = (byte)item.placeablesIndex,
-                        rotation = (byte)(((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4),
-                        directions = new Dictionary<Vector2Int, byte>(),
-                        distances = new Dictionary<Vector2Int, ushort>()
+                        rotation = (byte)(((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4)
                     });
                     break;
                 case ItemType.Other:
@@ -538,7 +536,6 @@ public class WCGeneratorHandler : MonoBehaviour
                 List<string> data = new List<string>();
                 foreach (var plat in sector.platforms)
                 {
-                    plat.GenerateDirections();
                     data.Add(plat.Encode());
                 }
 

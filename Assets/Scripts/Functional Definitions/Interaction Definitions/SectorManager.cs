@@ -875,43 +875,7 @@ public class SectorManager : MonoBehaviour
     {
         lpg.SetColor(overrideProperties.backgroundColor + new Color(0.5F, 0.5F, 0.5F));
 
-        Vector2 center = new Vector2(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2);
-
-        if (current.platform) // Old data
-        {
-            lpg.BuildTiles(current.platform, center);
-        }
-        else if (current.platformData.Length > 0)
-        {
-            GameObject[] prefabs = new GameObject[LandPlatformGenerator.prefabNames.Length];
-            for (int i = 0; i < LandPlatformGenerator.prefabNames.Length; i++)
-            {
-                prefabs[i] = ResourceManager.GetAsset<GameObject>(LandPlatformGenerator.prefabNames[i]);
-            }
-
-            float tileSize = prefabs[0].GetComponent<SpriteRenderer>().bounds.size.x;
-            lpg.tileSize = tileSize;
-
-            var cols = current.bounds.h / (int)tileSize;
-            var rows = current.bounds.w / (int)tileSize;
-
-            Vector2 offset = new Vector2
-            {
-                x = center.x - tileSize * (rows - 1) / 2F,
-                y = center.y + tileSize * (cols - 1) / 2F
-            };
-
-            lpg.Offset = offset;
-
-            current.platforms = new GroundPlatform[current.platformData.Length];
-            for (int i = 0; i < current.platformData.Length; i++)
-            {
-                var plat = new GroundPlatform(current.platformData[i], prefabs, lpg);
-                current.platforms[i] = plat;
-            }
-
-            lpg.groundPlatforms = current.platforms;
-        }
+        lpg.LoadSector(current);
     }
 
     private void SetSectorTypeBehavior()

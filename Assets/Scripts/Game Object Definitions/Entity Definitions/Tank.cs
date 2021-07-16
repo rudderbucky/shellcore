@@ -7,7 +7,6 @@ public class Tank : GroundCraft, IOwnable
     int index = 0;
     bool hasPath = false;
     IOwner owner;
-    Vector2? pathfindTarget = null;
     float pathfindTimer = 0f;
 
     WeaponAbility weapon;
@@ -98,44 +97,31 @@ public class Tank : GroundCraft, IOwnable
             return;
         }
 
-        // Find the closest ground target
-        Entity target = null;
-
-        List<Entity> targets = new List<Entity>(FindObjectsOfType<Entity>());
         if (!Weapon)
         {
             return;
         }
 
+        // Find valid ground targets
+        List<Entity> targets = new List<Entity>(AIData.entities);
+
         for (int i = 0; i < targets.Count; i++)
         {
-            if (!targets[i])
-            {
-                continue;
-            }
-
-            if (FactionManager.IsAllied(targets[i].faction, faction) || !Weapon.CheckCategoryCompatibility(targets[i]))
+            if (!targets[i] || 
+                targets[i].IsInvisible || 
+                targets[i] == this || 
+                FactionManager.IsAllied(faction, targets[i].faction) || 
+                !Weapon.CheckCategoryCompatibility(targets[i]))
             {
                 targets.RemoveAt(i);
                 i--;
             }
         }
 
+        // Find a path to the closest one
         if (targets.Count > 0)
         {
-            target = LandPlatformGenerator.GetClosestTarget(transform.position, targets.ToArray(), weapon.GetRange());
-        }
-
-        // If a target is found, find a path to it
-        if (target != null)
-        {
-            pathfindTarget = target.transform.position;
-
-            path = null;
-            if (target && (target.transform.position - transform.position).sqrMagnitude > 16)
-            {
-                path = LandPlatformGenerator.pathfind(transform.position, target.transform.position, Weapon.GetRange());
-            }
+            path = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), weapon.GetRange());
 
             hasPath = (path != null && path.Length > 0);
 
@@ -143,6 +129,10 @@ public class Tank : GroundCraft, IOwnable
             {
                 index = path.Length - 1;
             }
+        }
+        else
+        {
+            Debug.Log("No valid targets.");
         }
     }
 
