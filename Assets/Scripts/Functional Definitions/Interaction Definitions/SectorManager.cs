@@ -1156,6 +1156,10 @@ public class SectorManager : MonoBehaviour
                 {
                     bgSpawn.entity.name = print.entityName;
                 }
+                else if (bgSpawn.entity.name == "Unnamed")
+                {
+                    bgSpawn.entity.name = "ShellCore";
+                }
 
                 bgSpawns.Add((print, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
             }
