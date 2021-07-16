@@ -8,8 +8,6 @@ public class GroundPlatform
         public Vector2Int pos;
         public byte type;
         public byte rotation;
-        public Dictionary<Vector2Int, byte> directions; // 0 = right, 1 = up, 2 = left, 3 = down
-        public Dictionary<Vector2Int, ushort> distances;
         public Collider2D[] colliders;
 
         public override bool Equals(object obj)
@@ -29,8 +27,6 @@ public class GroundPlatform
         {
             var hashCode = -1929533107;
             hashCode = hashCode * -1521134295 + EqualityComparer<Vector2Int>.Default.GetHashCode(pos);
-            hashCode = hashCode * -1521134295 + type.GetHashCode();
-            hashCode = hashCode * -1521134295 + rotation.GetHashCode();
             return hashCode;
         }
 
@@ -47,13 +43,14 @@ public class GroundPlatform
 
     public List<Tile> tiles;
 
-    Tile[] tileGrid;
+    Tile?[] tileGrid;
+    Dictionary<Entity, Tile> closestTiles = new Dictionary<Entity, Tile>();
 
     public Vector2Int offset { get; private set; }
     Vector2Int size;
 
     const string encoding = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 62 chars
-    const ushort versionNumber = 1;
+    const ushort versionNumber = 2;
 
     public Tile? GetTile(Vector2Int pos)
     {
@@ -83,10 +80,35 @@ public class GroundPlatform
         return null;
     }
 
+    public void SetClosestTile(Entity ent, Tile t)
+    {
+        closestTiles[ent] = t;
+    }
+
+    public void RemoveClosestTile(Entity ent)
+    {
+        if (closestTiles.ContainsKey(ent))
+            closestTiles.Remove(ent);
+    }
+
+    public Tile GetClosestTile(Entity ent)
+    {
+        if (closestTiles.ContainsKey(ent))
+        {
+            return closestTiles[ent];
+        }
+        else
+        {
+            Tile tile = LandPlatformGenerator.Instance.GetNearestTile(this, ent.transform.position).Value;
+            SetClosestTile(ent, tile);
+            return tile;
+        }
+    }
+
     public string Encode()
     {
         string s = "+";
-        s += numToString(1); // Version number
+        s += numToString(versionNumber);
         s += numToString((ushort)tiles.Count);
         for (int i = 0; i < tiles.Count; i++)
         {
@@ -94,15 +116,6 @@ public class GroundPlatform
             s += numToString((ushort)tiles[i].pos.y);
             s += numToString((ushort)tiles[i].type);
             s += numToString((ushort)tiles[i].rotation);
-
-            s += numToString((ushort)tiles[i].directions.Count);
-            foreach (var pair in tiles[i].directions)
-            {
-                s += numToString((ushort)pair.Key.x);
-                s += numToString((ushort)pair.Key.y);
-                s += numToString(pair.Value);
-                s += numToString(tiles[i].distances[pair.Key]);
-            }
         }
 
         return s;
@@ -121,7 +134,33 @@ public class GroundPlatform
     public GroundPlatform(Tile[] tiles)
     {
         this.tiles = new List<Tile>(tiles);
-        GenerateDirections();
+        // Generate grid
+        int minX = int.MaxValue;
+        int minY = int.MaxValue;
+        int maxX = int.MinValue;
+        int maxY = int.MinValue;
+
+        for (ushort i = 0; i < tiles.Length; i++)
+        {
+            minX = Mathf.Min(minX, tiles[i].pos.x);
+            minY = Mathf.Min(minY, tiles[i].pos.y);
+            maxX = Mathf.Max(maxX, tiles[i].pos.x);
+            maxY = Mathf.Max(maxY, tiles[i].pos.y);
+        }
+
+        offset = new Vector2Int(minX, minY);
+        int w = maxX - minX + 1;
+        int h = maxY - minY + 1;
+        size = new Vector2Int(w, h);
+
+        tileGrid = new Tile?[w * h];
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            Vector2Int pos = tiles[i].pos - offset;
+            tileGrid[pos.x + pos.y * w] = tiles[i];
+        }
+
+        //GenerateDirections();
     }
 
     /// <summary>
@@ -151,17 +190,14 @@ public class GroundPlatform
             ushort type = getNext(data);
             byte rotation = (byte)getNext(data);
 
-            ushort dirCount = getNext(data);
-
-            // Skip direction and distance data (useless in Editor)
-            pointer += dirCount * 6;
-            if (version == 1)
+            if (version < 2)
             {
-                pointer += dirCount * 2;
+                ushort dirCount = getNext(data);
+                
+                pointer += dirCount * 6; // Directions
+                if (version == 1)
+                    pointer += dirCount * 2; // Distances
             }
-
-            var dirs = new Dictionary<Vector2Int, byte>();
-            var dists = new Dictionary<Vector2Int, ushort>();
 
             Vector2Int pos = new Vector2Int(x, y);
             tileList.Add(
@@ -170,8 +206,6 @@ public class GroundPlatform
                     pos = pos,
                     type = (byte)type,
                     rotation = (byte)rotation,
-                    directions = dirs,
-                    distances = dists,
                     colliders = null
                 });
         }
@@ -190,9 +224,9 @@ public class GroundPlatform
             pointer += 1;
             version = getNext(data);
         }
-        else
+        if (version < versionNumber)
         {
-            Debug.LogWarning("Warning: Ground pathfinding data missing due to an old level file version. Tanks won't be able to move. To update the file format, open and save the level in the world creator.");
+            Debug.LogWarning($"Warning: Old ground platform data! (version: {version})");
         }
 
         List<Tile> tileList = new List<Tile>();
@@ -216,19 +250,14 @@ public class GroundPlatform
 
             ushort type = getNext(data);
             byte rotation = (byte)getNext(data);
-            ushort dirCount = getNext(data);
 
-            var dirs = new Dictionary<Vector2Int, byte>();
-            var dists = new Dictionary<Vector2Int, ushort>();
-
-            for (int j = 0; j < dirCount; j++)
+            if (version < 2)
             {
-                Vector2Int destination = new Vector2Int(getNext(data), getNext(data));
-                dirs.Add(destination, (byte)getNext(data));
-                if (version > 0)
-                {
-                    dists.Add(destination, getNext(data));
-                }
+                ushort dirCount = getNext(data);
+
+                pointer += dirCount * 6;
+                if (version == 1)
+                    pointer += dirCount * 2;
             }
 
             Vector2Int pos = new Vector2Int(x, y);
@@ -242,15 +271,12 @@ public class GroundPlatform
                 tileObj.transform.SetParent(lpg.transform);
             }
 
-
             tileList.Add(
                 new Tile()
                 {
                     pos = pos,
                     type = (byte)type,
                     rotation = (byte)rotation,
-                    directions = dirs,
-                    distances = dists,
                     colliders = tileObj?.GetComponentsInChildren<Collider2D>()
                 });
         }
@@ -263,9 +289,9 @@ public class GroundPlatform
         int h = maxY - minY + 1;
         size = new Vector2Int(w, h);
 
-        //Debug.Log(w + ", " + h + " -> " + (w * h));
+        //Debug.Log("Tile grid: " + w + ", " + h + " -> " + (w * h));
 
-        tileGrid = new Tile[w * h];
+        tileGrid = new Tile?[w * h];
         for (int i = 0; i < tiles.Count; i++)
         {
             Vector2Int pos = tiles[i].pos - offset;
@@ -328,9 +354,9 @@ public class GroundPlatform
         return result;
     }
 
-    public static int GetPlatformOpenings(Tile tile)
+    public static short GetPlatformOpenings(Tile tile)
     {
-        int ends = 0; // 1 = right, 2 = up, 4 = left, 8 = down
+        short ends = 0; // 1 = right, 2 = up, 4 = left, 8 = down
         switch (tile.type)
         {
             case 0:
@@ -386,108 +412,6 @@ public class GroundPlatform
 
         public Tile tile;
         public ushort dist;
-    }
-
-    public void GenerateDirections()
-    {
-        //Debug.Log("Generating directions for " + tiles.Count + " tiles...");
-
-        // Initialize direction vectors
-        Vector2Int[] vectors = new Vector2Int[]
-        {
-            new Vector2Int(1, 0),
-            new Vector2Int(0, -1),
-            new Vector2Int(-1, 0),
-            new Vector2Int(0, 1)
-        };
-
-        // Generate grid
-        int minX = int.MaxValue;
-        int minY = int.MaxValue;
-        int maxX = int.MinValue;
-        int maxY = int.MinValue;
-
-        for (ushort i = 0; i < tiles.Count; i++)
-        {
-            minX = Mathf.Min(minX, tiles[i].pos.x);
-            minY = Mathf.Min(minY, tiles[i].pos.y);
-            maxX = Mathf.Max(maxX, tiles[i].pos.x);
-            maxY = Mathf.Max(maxY, tiles[i].pos.y);
-        }
-
-        offset = new Vector2Int(minX, minY);
-        int w = maxX - minX + 1;
-        int h = maxY - minY + 1;
-        size = new Vector2Int(w, h);
-
-        tileGrid = new Tile[w * h];
-        for (int i = 0; i < tiles.Count; i++)
-        {
-            Vector2Int pos = tiles[i].pos - offset;
-            tileGrid[pos.x + pos.y * w] = tiles[i];
-        }
-
-        // Calculate directions
-        for (int i = 0; i < tiles.Count; i++)
-        {
-            var openList = new List<Node>();
-            openList.Add(new Node(tiles[i], 0));
-
-            int count = 0;
-
-            while (openList.Count > 0)
-            {
-                if (count++ > 10000)
-                {
-                    Debug.LogError("Infinite loop in direction flooding");
-                    return;
-                }
-
-                Node current = openList[0];
-                ushort dist = current.dist;
-                dist++;
-
-                byte dir = 0;
-                if (tiles[i].directions.ContainsKey(current.tile.pos))
-                {
-                    dir = tiles[i].directions[current.tile.pos];
-                }
-
-                int openings = GetPlatformOpenings(current.tile);
-                //Debug.Log("Tile: " + new Vector2Int(current.pos.x, current.pos.y) + " type: " + current.type + " rot: " + current.rotation + " direction flags: " + (ends & 8) + " " + (ends & 4) + " " + (ends & 2) + " " + (ends & 1));
-
-                for (int j = 0; j < 4; j++)
-                {
-                    if ((openings & (1 << j)) == (1 << j))
-                    {
-                        var tile = GetTile(current.tile.pos + vectors[j]);
-                        if (tile == tiles[i] || !tile.HasValue)
-                        {
-                            continue;
-                        }
-
-                        if (!tiles[i].directions.ContainsKey(tile.Value.pos))
-                        {
-                            if (current.tile == tiles[i])
-                            {
-                                dir = (byte)j;
-                            }
-
-                            tiles[i].directions.Add(tile.Value.pos, dir);
-                            tiles[i].distances.Add(tile.Value.pos, dist);
-                            openList.Add(new Node(tile.Value, dist));
-                        }
-                    }
-                }
-
-                openList.RemoveAt(0);
-            }
-
-            if (tiles[i].directions.Count < tiles.Count - 1)
-            {
-                Debug.LogWarning(tiles[i].pos + " has too few directions (" + tiles[i].directions.Count + ")!");
-            }
-        }
     }
 
     public void Clear()
