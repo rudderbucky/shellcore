@@ -211,6 +211,7 @@ namespace NodeEditorFramework.Standard
                         ent.transform.position,
                         true,
                         (Canvas as QuestCanvas).missionName,
+                        SectorManager.instance.current.dimension,
                         ent
                     ));
                     TaskManager.DrawObjectiveLocations();

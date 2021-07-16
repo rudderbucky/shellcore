@@ -145,7 +145,7 @@ public class SectorManager : MonoBehaviour
             }
         }
 
-        Entity.partDropRate = 0.1f;
+        Entity.partDropRate = Entity.DefaultPartRate;
         jsonMode = false;
     }
 
@@ -542,126 +542,126 @@ public class SectorManager : MonoBehaviour
         switch (blueprint.intendedType)
         {
             case EntityBlueprint.IntendedType.ShellCore:
-            {
-                ShellCore shellcore = gObj.AddComponent<ShellCore>();
-                try
                 {
-                    // Check if data has blueprint JSON, if it does override the current blueprint
-                    // this now specifies the path to the JSON file instead of being the JSON itself
-                    json = data.blueprintJSON;
-                    if (json != null && json != "")
+                    ShellCore shellcore = gObj.AddComponent<ShellCore>();
+                    try
                     {
-                        blueprint = TryGettingEntityBlueprint(json);
+                        // Check if data has blueprint JSON, if it does override the current blueprint
+                        // this now specifies the path to the JSON file instead of being the JSON itself
+                        json = data.blueprintJSON;
+                        if (json != null && json != "")
+                        {
+                            blueprint = TryGettingEntityBlueprint(json);
 
-                        //Debug.Log(data.name);
-                        blueprint.entityName = data.name;
+                            //Debug.Log(data.name);
+                            blueprint.entityName = data.name;
+                        }
+                        else
+                        {
+                            shellcore.entityName = blueprint.entityName = data.name;
+                        }
+
+                        if (GetCurrentType() == Sector.SectorType.BattleZone)
+                        {
+                            // add core arrow
+                            if (MinimapArrowScript.instance && !(shellcore is PlayerCore))
+                            {
+                                shellcore.faction = data.faction;
+                                MinimapArrowScript.instance.AddCoreArrow(shellcore);
+                            }
+
+                            // set the carrier of the shellcore to the associated faction's carrier
+                            if (carriers.ContainsKey(data.faction))
+                            {
+                                shellcore.SetCarrier(carriers[data.faction]);
+                            }
+
+                            battleZone.AddTarget(shellcore);
+                        }
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.Log(e.Message);
+                        //blueprint = obj as EntityBlueprint;
+                    }
+
+                    shellcore.sectorMngr = this;
+                    break;
+                }
+            case EntityBlueprint.IntendedType.PlayerCore:
+                {
+                    if (player == null)
+                    {
+                        player = gObj.AddComponent<PlayerCore>();
+                        player.sectorMngr = this;
                     }
                     else
                     {
-                        shellcore.entityName = blueprint.entityName = data.name;
+                        Destroy(gObj);
+                        return null;
                     }
 
-                    if (GetCurrentType() == Sector.SectorType.BattleZone)
-                    {
-                        // add core arrow
-                        if (MinimapArrowScript.instance && !(shellcore is PlayerCore))
-                        {
-                            shellcore.faction = data.faction;
-                            MinimapArrowScript.instance.AddCoreArrow(shellcore);
-                        }
-
-                        // set the carrier of the shellcore to the associated faction's carrier
-                        if (carriers.ContainsKey(data.faction))
-                        {
-                            shellcore.SetCarrier(carriers[data.faction]);
-                        }
-
-                        battleZone.AddTarget(shellcore);
-                    }
+                    break;
                 }
-                catch (System.Exception e)
-                {
-                    Debug.Log(e.Message);
-                    //blueprint = obj as EntityBlueprint;
-                }
-
-                shellcore.sectorMngr = this;
-                break;
-            }
-            case EntityBlueprint.IntendedType.PlayerCore:
-            {
-                if (player == null)
-                {
-                    player = gObj.AddComponent<PlayerCore>();
-                    player.sectorMngr = this;
-                }
-                else
-                {
-                    Destroy(gObj);
-                    return null;
-                }
-
-                break;
-            }
             case EntityBlueprint.IntendedType.Turret:
-            {
-                gObj.AddComponent<Turret>();
-                break;
-            }
+                {
+                    gObj.AddComponent<Turret>();
+                    break;
+                }
             case EntityBlueprint.IntendedType.Tank:
-            {
-                gObj.AddComponent<Tank>();
-                break;
-            }
+                {
+                    gObj.AddComponent<Tank>();
+                    break;
+                }
             case EntityBlueprint.IntendedType.Bunker:
-            {
-                json = data.blueprintJSON;
-                if (json != null && json != "")
                 {
-                    var dialogueRef = blueprint.dialogue;
-                    blueprint = TryGettingEntityBlueprint(json);
+                    json = data.blueprintJSON;
+                    if (json != null && json != "")
+                    {
+                        var dialogueRef = blueprint.dialogue;
+                        blueprint = TryGettingEntityBlueprint(json);
 
-                    blueprint.dialogue = dialogueRef;
+                        blueprint.dialogue = dialogueRef;
+                    }
+
+                    blueprint.entityName = data.name;
+                    Bunker bunker = gObj.AddComponent<Bunker>();
+                    stations.Add(bunker);
+                    bunker.vendingBlueprint =
+                        blueprint.dialogue != null
+                            ? blueprint.dialogue.vendingBlueprint
+                            : ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
+                    break;
                 }
-
-                blueprint.entityName = data.name;
-                Bunker bunker = gObj.AddComponent<Bunker>();
-                stations.Add(bunker);
-                bunker.vendingBlueprint =
-                    blueprint.dialogue != null
-                        ? blueprint.dialogue.vendingBlueprint
-                        : ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
-                break;
-            }
             case EntityBlueprint.IntendedType.Outpost:
-            {
-                json = data.blueprintJSON;
-                if (json != null && json != "")
                 {
-                    var dialogueRef = blueprint.dialogue;
-                    blueprint = TryGettingEntityBlueprint(json);
-                    blueprint.dialogue = dialogueRef;
-                }
+                    json = data.blueprintJSON;
+                    if (json != null && json != "")
+                    {
+                        var dialogueRef = blueprint.dialogue;
+                        blueprint = TryGettingEntityBlueprint(json);
+                        blueprint.dialogue = dialogueRef;
+                    }
 
-                blueprint.entityName = data.name;
-                Outpost outpost = gObj.AddComponent<Outpost>();
-                stations.Add(outpost);
-                outpost.vendingBlueprint =
-                    blueprint.dialogue != null
-                        ? blueprint.dialogue.vendingBlueprint
-                        : ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
-                break;
-            }
+                    blueprint.entityName = data.name;
+                    Outpost outpost = gObj.AddComponent<Outpost>();
+                    stations.Add(outpost);
+                    outpost.vendingBlueprint =
+                        blueprint.dialogue != null
+                            ? blueprint.dialogue.vendingBlueprint
+                            : ResourceManager.GetAsset<VendingBlueprint>(data.vendingID);
+                    break;
+                }
             case EntityBlueprint.IntendedType.Tower:
-            {
-                break;
-            }
+                {
+                    break;
+                }
             case EntityBlueprint.IntendedType.Drone:
-            {
-                Drone drone = gObj.AddComponent<Drone>();
-                //drone.path = ResourceManager.GetAsset<Path>(data.pathID);
-                break;
-            }
+                {
+                    Drone drone = gObj.AddComponent<Drone>();
+                    //drone.path = ResourceManager.GetAsset<Path>(data.pathID);
+                    break;
+                }
             case EntityBlueprint.IntendedType.AirCarrier:
                 json = data.blueprintJSON;
                 if (json != null && json != "")
@@ -1110,7 +1110,7 @@ public class SectorManager : MonoBehaviour
         SetSectorTypeBehavior();
 
         if (current.backgroundSpawns != null)
-            // background spawns
+        // background spawns
         {
             for (int i = 0; i < current.backgroundSpawns.Length; i++)
             {
@@ -1119,6 +1119,10 @@ public class SectorManager : MonoBehaviour
                 if (print.entityName != "Unnamed")
                 {
                     bgSpawn.entity.name = print.entityName;
+                }
+                else if (bgSpawn.entity.name == "Unnamed")
+                {
+                    bgSpawn.entity.name = "ShellCore";
                 }
 
                 bgSpawns.Add((print, bgSpawn.entity, bgSpawn.timePerSpawn, bgSpawn.radius));
@@ -1189,6 +1193,12 @@ public class SectorManager : MonoBehaviour
         {
             MinimapArrowScript.instance.ClearCoreArrows();
         }
+
+        foreach (var orb in AIData.energySpheres)
+        {
+            Destroy(orb.gameObject);
+        }
+        AIData.energySpheres.Clear();
 
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var obj in objects)

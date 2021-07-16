@@ -129,6 +129,12 @@ public class PartyManager : MonoBehaviour
     public void ClearParty()
     {
         partyMembers.Clear();
+        foreach (var val in partyIndicators.Values)
+        {
+            if (val)
+                Destroy(val);
+        }
+        partyIndicators.Clear();
         partyResponses.Clear();
     }
 
@@ -139,8 +145,6 @@ public class PartyManager : MonoBehaviour
             PlayerCore.Instance.alerter.showMessage("Cannot assign more than 2 party members!", "clip_alert");
             return;
         }
-
-        PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
 
         // check if it is a character
         foreach (var ch in SectorManager.instance.characters)
@@ -170,8 +174,13 @@ public class PartyManager : MonoBehaviour
         }
 
         var core = AIData.entities.Find(x => x.ID == charID) as ShellCore;
+        if (partyMembers.Contains(core))
+            return;
+
+        PlayerCore.Instance.alerter.showMessage("PARTY MEMBER ASSIGNED", "clip_victory");
         partyMembers.Add(core);
-        partyIndicators.Add(core, Instantiate(partyIndicatorPrefab, indicatorTransform));
+        if (!partyIndicators.ContainsKey(core))
+            partyIndicators.Add(core, Instantiate(partyIndicatorPrefab, indicatorTransform));
         partyIndicators[core].GetComponentInChildren<Text>().text = core.name.ToUpper();
     }
 
