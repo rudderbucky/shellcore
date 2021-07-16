@@ -188,7 +188,7 @@ public class LandPlatformGenerator : MonoBehaviour
 
     private void Update()
     {
-        if (searchQueue.Count > 0)
+        if (searchQueue.Count > 0 && groundPlatforms != null)
         {
             // Search closest tiles
             Entity ent = searchQueue.Dequeue();
@@ -681,7 +681,7 @@ public class LandPlatformGenerator : MonoBehaviour
     }
 
     // TODO: move this to Ground platform?
-    public GroundPlatform.Tile? GetNearestTile(GroundPlatform platform, Vector2 pos, float maxDist = 1000f)
+    public GroundPlatform.Tile? GetNearestTile(GroundPlatform platform, Vector2 pos, float maxDist = 100000f)
     {
         Vector2 relativePos = (pos - instance.Offset) / Instance.tileSize;
         relativePos.y = -relativePos.y;
