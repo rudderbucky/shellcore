@@ -1228,8 +1228,9 @@ public class SectorManager : MonoBehaviour
 
         foreach (var orb in AIData.energySpheres)
         {
-            Destroy(orb);
+            Destroy(orb.gameObject);
         }
+        AIData.energySpheres.Clear();
 
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var obj in objects)
