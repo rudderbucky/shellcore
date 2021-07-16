@@ -1,0 +1,1200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-123.5997,-143.6001" zoom="1.2" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="945227264" type="LoadSectorNode" pos="-210,-60">
+			<Port ID="2141055744" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="2018840239" />
+		</Node>
+		<Node name="Start Dialogue" ID="517405696" type="StartDialogueNode" pos="-20,-60">
+			<Port ID="-1116471424" name="input" dynamic="False" />
+			<Port ID="-79031296" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1146603319" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-611105024" type="EndDialogue" pos="410,-60">
+			<Port ID="958408832" name="input" dynamic="False" />
+			<Port ID="1346649344" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1910877824" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="501559936" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Time Trigger" ID="1713562880" type="TimeTrigger" pos="650,-50">
+			<Port ID="1995848960" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="1463775232" type="ConditionGroupNode" pos="870,-170">
+			<Port ID="-1261678208" name="input" dynamic="False" />
+			<Port ID="-126411136" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="911028992" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-41163136" type="SectorColorNode" pos="1040,-170">
+			<Port ID="-224238080" name="output" dynamic="False" />
+			<Port ID="813202048" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.33</r>
+				<g>0.33</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="-1795889152" type="TimeTrigger" pos="1040,-50">
+			<Port ID="1850642176" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="-756311808" type="ConditionGroupNode" pos="1260,-170">
+			<Port ID="-1406884992" name="input" dynamic="False" />
+			<Port ID="1765290624" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1492236544" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-408554112" type="SectorColorNode" pos="1430,-170">
+			<Port ID="-369444864" name="output" dynamic="False" />
+			<Port ID="667995264" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.5</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="1318568448" type="ConditionGroupNode" pos="1650,-170">
+			<Port ID="1705435392" name="input" dynamic="False" />
+			<Port ID="-454796416" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="582643712" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="2131687168" type="TimeTrigger" pos="1430,-50">
+			<Port ID="-1552091776" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Set Sector Color" ID="376961152" type="SectorColorNode" pos="1820,-170">
+			<Port ID="-514651648" name="output" dynamic="False" />
+			<Port ID="522788480" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.33</g>
+				<b>0.33</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="-901518592" type="ConditionGroupNode" pos="2040,-170">
+			<Port ID="1560228608" name="input" dynamic="False" />
+			<Port ID="1620083840" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">61</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1637443328" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">61</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="-1377764864" type="TimeTrigger" pos="1820,-50">
+			<Port ID="-1697298560" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="1162476416" type="TimeTrigger" pos="2210,-50">
+			<Port ID="-659858432" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Set Sector Color" ID="-592249600" type="SectorColorNode" pos="2210,-170">
+			<Port ID="-805065216" name="output" dynamic="False" />
+			<Port ID="-950272000" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0</g>
+				<b>0.5</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="1254525440" type="ConditionGroupNode" pos="2430,-170">
+			<Port ID="342973312" name="input" dynamic="False" />
+			<Port ID="-600003200" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="437436928" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-1557568256" type="SectorColorNode" pos="2600,-170">
+			<Port ID="1380413440" name="output" dynamic="False" />
+			<Port ID="-1877113728" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.33</r>
+				<g>0</g>
+				<b>0.33</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Set Sector Color" ID="982673024" type="SectorColorNode" pos="650,-170">
+			<Port ID="-839673600" name="output" dynamic="False" />
+			<Port ID="197766528" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.5</r>
+				<g>0</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="-965561600" type="ConditionGroupNode" pos="2820,-170">
+			<Port ID="1235206656" name="input" dynamic="False" />
+			<Port ID="1474877056" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1782650112" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="-772052992" type="TimeTrigger" pos="2600,-50">
+			<Port ID="-2022320512" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="End Dialogue" ID="1109318656" type="EndDialogue" pos="410,40">
+			<Port ID="52559744" name="input" dynamic="False" />
+			<Port ID="-745209984" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="292230144" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1539000064" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Set Sector Color" ID="1768188288" type="SectorColorNode" pos="650,50">
+			<Port ID="1089999872" name="output" dynamic="False" />
+			<Port ID="2127440000" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.5</r>
+				<g>0</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="13462272" type="TimeTrigger" pos="650,170">
+			<Port ID="-1130087168" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">666</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="-1110768384" type="ConditionGroupNode" pos="870,50">
+			<Port ID="-92647040" name="input" dynamic="False" />
+			<Port ID="1329670272" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1927856896" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="615282048" type="SectorColorNode" pos="1040,50">
+			<Port ID="944793088" name="output" dynamic="False" />
+			<Port ID="-1275293952" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.33</r>
+				<g>0.33</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="-1139443968" type="TimeTrigger" pos="1040,170">
+			<Port ID="-237853824" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">666</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="964111872" type="ConditionGroupNode" pos="1260,50">
+			<Port ID="799586304" name="input" dynamic="False" />
+			<Port ID="-890416768" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="147023360" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="1400797312" type="SectorColorNode" pos="1430,50">
+			<Port ID="1837026432" name="output" dynamic="False" />
+			<Port ID="-1420500736" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.5</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="-353928704" type="TimeTrigger" pos="1430,170">
+			<Port ID="-383060608" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">666</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="-1255975168" type="ConditionGroupNode" pos="1650,50">
+			<Port ID="654379520" name="input" dynamic="False" />
+			<Port ID="1184463488" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-2073063680" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-2108654720" type="SectorColorNode" pos="1820,50">
+			<Port ID="-528267392" name="output" dynamic="False" />
+			<Port ID="509172736" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.33</g>
+				<b>0.33</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="818905088" type="ConditionGroupNode" pos="2040,50">
+			<Port ID="1546612864" name="input" dynamic="False" />
+			<Port ID="-1035623552" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">61</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1816576" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">61</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="431586560" type="TimeTrigger" pos="1820,170">
+			<Port ID="-1710914304" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">666</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Set Sector Color" ID="-1421056768" type="SectorColorNode" pos="2210,50">
+			<Port ID="-673474176" name="output" dynamic="False" />
+			<Port ID="363965952" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0</g>
+				<b>0.5</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="1119184512" type="TimeTrigger" pos="2210,170">
+			<Port ID="1401406080" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">666</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="1502332672" type="ConditionGroupNode" pos="2430,50">
+			<Port ID="-1856121088" name="input" dynamic="False" />
+			<Port ID="1039256704" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="2076696832" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-635541504" type="SectorColorNode" pos="2600,50">
+			<Port ID="-818680960" name="output" dynamic="False" />
+			<Port ID="1605486336" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.33</r>
+				<g>0</g>
+				<b>0.33</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="1904699776" type="TimeTrigger" pos="2600,170">
+			<Port ID="-1652040832" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">666</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="-717754368" type="ConditionGroupNode" pos="2820,50">
+			<Port ID="-614600704" name="input" dynamic="False" />
+			<Port ID="-1180830336" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-143390208" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="End Dialogue" ID="1357125888" type="EndDialogue" pos="410,140">
+			<Port ID="422839424" name="input" dynamic="False" />
+			<Port ID="894049920" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1931490048" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="356353152" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Time Trigger" ID="149973760" type="TimeTrigger" pos="650,390">
+			<Port ID="1460279552" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">500</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Set Sector Color" ID="-1604752256" type="SectorColorNode" pos="1430,270">
+			<Port ID="-1797247616" name="output" dynamic="False" />
+			<Port ID="-759807488" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.5</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="-862961152" type="ConditionGroupNode" pos="1650,270">
+			<Port ID="277632640" name="input" dynamic="False" />
+			<Port ID="-1326037120" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-288596992" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="935489024" type="TimeTrigger" pos="1430,390">
+			<Port ID="1315072768" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">500</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Set Sector Color" ID="-819236992" type="SectorColorNode" pos="1820,270">
+			<Port ID="-1942454400" name="output" dynamic="False" />
+			<Port ID="-905014272" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.33</g>
+				<b>0.33</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="1721004288" type="TimeTrigger" pos="1820,390">
+			<Port ID="132425856" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">500</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="1211919104" type="ConditionGroupNode" pos="2040,270">
+			<Port ID="1169865984" name="input" dynamic="False" />
+			<Port ID="748843136" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">61</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1786283264" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">61</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-33721728" type="SectorColorNode" pos="2210,270">
+			<Port ID="-2087661184" name="output" dynamic="False" />
+			<Port ID="1024659200" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0</g>
+				<b>0.5</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="-1008167936" type="ConditionGroupNode" pos="2430,270">
+			<Port ID="2062099328" name="input" dynamic="False" />
+			<Port ID="-1471243904" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-433803776" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-1788447744" type="SectorColorNode" pos="2600,270">
+			<Port ID="-1195427840" name="output" dynamic="False" />
+			<Port ID="-157987712" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.33</r>
+				<g>0</g>
+				<b>0.33</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Conditions" ID="1066712320" type="ConditionGroupNode" pos="2820,270">
+			<Port ID="879452416" name="input" dynamic="False" />
+			<Port ID="-305614208" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="731825920" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="751793536" type="TimeTrigger" pos="2600,390">
+			<Port ID="1916892544" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">500</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="-1002932480" type="TimeTrigger" pos="2210,390">
+			<Port ID="734245632" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">500</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="End Dialogue" ID="-1153374720" type="EndDialogue" pos="410,240">
+			<Port ID="1771685760" name="input" dynamic="False" />
+			<Port ID="5792000" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1043232128" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1393793280" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Time Trigger" ID="1100145920" type="TimeTrigger" pos="650,610">
+			<Port ID="589038848" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">250</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Set Sector Color" ID="-654580096" type="SectorColorNode" pos="650,490">
+			<Port ID="1626478976" name="output" dynamic="False" />
+			<Port ID="-1631048192" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.5</r>
+				<g>0</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="End Dialogue" ID="921505536" type="EndDialogue" pos="410,340">
+			<Port ID="-593608064" name="input" dynamic="False" />
+			<Port ID="-1322061696" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1863733888" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Conditions" ID="-1298581504" type="ConditionGroupNode" pos="870,490">
+			<Port ID="443832064" name="input" dynamic="False" />
+			<Port ID="-284621568" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="752818560" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Conditions" ID="776298752" type="ConditionGroupNode" pos="1260,270">
+			<Port ID="1481272192" name="input" dynamic="False" />
+			<Port ID="1790258688" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1467268480" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Conditions" ID="-1443788288" type="ConditionGroupNode" pos="870,270">
+			<Port ID="-1776254976" name="input" dynamic="False" />
+			<Port ID="-429828352" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="607611776" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="1885661184" type="SectorColorNode" pos="1040,270">
+			<Port ID="-251258624" name="output" dynamic="False" />
+			<Port ID="-1433905536" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.33</r>
+				<g>0.33</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="-420151296" type="TimeTrigger" pos="1040,390">
+			<Port ID="-396465408" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">500</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Set Sector Color" ID="787605888" type="SectorColorNode" pos="1040,490">
+			<Port ID="640974720" name="output" dynamic="False" />
+			<Port ID="1678414848" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.33</r>
+				<g>0.33</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="-967120128" type="TimeTrigger" pos="1040,610">
+			<Port ID="-1579112320" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">250</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="631091968" type="ConditionGroupNode" pos="1260,490">
+			<Port ID="-541672192" name="input" dynamic="False" />
+			<Port ID="1645051904" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1394029184" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="1573121152" type="SectorColorNode" pos="1430,490">
+			<Port ID="1533208064" name="output" dynamic="False" />
+			<Port ID="-1724319104" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.5</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="-181604864" type="TimeTrigger" pos="1430,610">
+			<Port ID="350561152" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">250</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="1614726912" type="ConditionGroupNode" pos="1650,490">
+			<Port ID="1388001280" name="input" dynamic="False" />
+			<Port ID="-1863497984" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-826057856" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-1936330880" type="SectorColorNode" pos="1820,490">
+			<Port ID="-1869525888" name="output" dynamic="False" />
+			<Port ID="-832085760" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0.33</g>
+				<b>0.33</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="603910400" type="TimeTrigger" pos="1820,610">
+			<Port ID="1242794496" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">250</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="-605360128" type="ConditionGroupNode" pos="2040,490">
+			<Port ID="-2014732672" name="input" dynamic="False" />
+			<Port ID="211382272" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">61</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1248822400" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">61</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-1150815616" type="SectorColorNode" pos="2210,490">
+			<Port ID="-977292544" name="output" dynamic="False" />
+			<Port ID="60147584" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>0</g>
+				<b>0.5</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="1389425664" type="TimeTrigger" pos="2210,610">
+			<Port ID="2135027840" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">250</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="1469520128" type="ConditionGroupNode" pos="2430,490">
+			<Port ID="-1122499328" name="input" dynamic="False" />
+			<Port ID="-2008704768" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-971264640" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="-365300352" type="SectorColorNode" pos="2600,490">
+			<Port ID="-85059200" name="output" dynamic="False" />
+			<Port ID="952380928" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.33</r>
+				<g>0</g>
+				<b>0.33</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Time Trigger" ID="-2120026368" type="TimeTrigger" pos="2600,610">
+			<Port ID="1989821056" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">250</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="-750566912" type="ConditionGroupNode" pos="2820,490">
+			<Port ID="-1267706112" name="input" dynamic="False" />
+			<Port ID="66175488" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1103615616" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Color" ID="420214912" type="SectorColorNode" pos="650,270">
+			<Port ID="-230265984" name="output" dynamic="False" />
+			<Port ID="807174144" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.5</r>
+				<g>0</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Dialogue" ID="-1538850304" type="DialogueNode" pos="170,-60">
+			<Port ID="-1485841408" name="input" dynamic="False" />
+			<Port ID="-448401280" name="cancel" dynamic="False" />
+			<Port ID="2080672256" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">242</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1176854912" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">297</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-139414784" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">352</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="898025344" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">407</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1935465472" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">462</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1564747626" />
+			<Variable name="answers" refID="383428352" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="2141055744" port2ID="-1116471424" />
+		<Connection port1ID="-1116471424" port2ID="-448401280" />
+		<Connection port1ID="-1116471424" port2ID="-1322061696" />
+		<Connection port1ID="-79031296" port2ID="-1485841408" />
+		<Connection port1ID="958408832" port2ID="2080672256" />
+		<Connection port1ID="1346649344" port2ID="197766528" />
+		<Connection port1ID="1995848960" port2ID="-126411136" />
+		<Connection port1ID="-1261678208" port2ID="-839673600" />
+		<Connection port1ID="911028992" port2ID="813202048" />
+		<Connection port1ID="-224238080" port2ID="-1406884992" />
+		<Connection port1ID="1850642176" port2ID="1765290624" />
+		<Connection port1ID="-1492236544" port2ID="667995264" />
+		<Connection port1ID="-369444864" port2ID="1705435392" />
+		<Connection port1ID="-454796416" port2ID="-1552091776" />
+		<Connection port1ID="582643712" port2ID="522788480" />
+		<Connection port1ID="-514651648" port2ID="1560228608" />
+		<Connection port1ID="1620083840" port2ID="-1697298560" />
+		<Connection port1ID="-1637443328" port2ID="-950272000" />
+		<Connection port1ID="-659858432" port2ID="-600003200" />
+		<Connection port1ID="-805065216" port2ID="342973312" />
+		<Connection port1ID="437436928" port2ID="-1877113728" />
+		<Connection port1ID="1380413440" port2ID="1235206656" />
+		<Connection port1ID="197766528" port2ID="-1782650112" />
+		<Connection port1ID="1474877056" port2ID="-2022320512" />
+		<Connection port1ID="52559744" port2ID="-1176854912" />
+		<Connection port1ID="-745209984" port2ID="2127440000" />
+		<Connection port1ID="1089999872" port2ID="-92647040" />
+		<Connection port1ID="2127440000" port2ID="-143390208" />
+		<Connection port1ID="-1130087168" port2ID="1329670272" />
+		<Connection port1ID="-1927856896" port2ID="-1275293952" />
+		<Connection port1ID="944793088" port2ID="799586304" />
+		<Connection port1ID="-237853824" port2ID="-890416768" />
+		<Connection port1ID="147023360" port2ID="-1420500736" />
+		<Connection port1ID="1837026432" port2ID="654379520" />
+		<Connection port1ID="-383060608" port2ID="1184463488" />
+		<Connection port1ID="-2073063680" port2ID="509172736" />
+		<Connection port1ID="-528267392" port2ID="1546612864" />
+		<Connection port1ID="-1035623552" port2ID="-1710914304" />
+		<Connection port1ID="1816576" port2ID="363965952" />
+		<Connection port1ID="-673474176" port2ID="-1856121088" />
+		<Connection port1ID="1401406080" port2ID="1039256704" />
+		<Connection port1ID="2076696832" port2ID="1605486336" />
+		<Connection port1ID="-818680960" port2ID="-614600704" />
+		<Connection port1ID="-1652040832" port2ID="-1180830336" />
+		<Connection port1ID="422839424" port2ID="-139414784" />
+		<Connection port1ID="894049920" port2ID="807174144" />
+		<Connection port1ID="1460279552" port2ID="-429828352" />
+		<Connection port1ID="-1797247616" port2ID="277632640" />
+		<Connection port1ID="-759807488" port2ID="-1467268480" />
+		<Connection port1ID="-1326037120" port2ID="1315072768" />
+		<Connection port1ID="-288596992" port2ID="-905014272" />
+		<Connection port1ID="-1942454400" port2ID="1169865984" />
+		<Connection port1ID="132425856" port2ID="748843136" />
+		<Connection port1ID="1786283264" port2ID="1024659200" />
+		<Connection port1ID="-2087661184" port2ID="2062099328" />
+		<Connection port1ID="-1471243904" port2ID="734245632" />
+		<Connection port1ID="-433803776" port2ID="-157987712" />
+		<Connection port1ID="-1195427840" port2ID="879452416" />
+		<Connection port1ID="-305614208" port2ID="1916892544" />
+		<Connection port1ID="731825920" port2ID="807174144" />
+		<Connection port1ID="1771685760" port2ID="898025344" />
+		<Connection port1ID="5792000" port2ID="-1631048192" />
+		<Connection port1ID="589038848" port2ID="-284621568" />
+		<Connection port1ID="1626478976" port2ID="443832064" />
+		<Connection port1ID="-1631048192" port2ID="1103615616" />
+		<Connection port1ID="-593608064" port2ID="1935465472" />
+		<Connection port1ID="752818560" port2ID="1678414848" />
+		<Connection port1ID="1481272192" port2ID="-251258624" />
+		<Connection port1ID="1790258688" port2ID="-396465408" />
+		<Connection port1ID="-1776254976" port2ID="-230265984" />
+		<Connection port1ID="607611776" port2ID="-1433905536" />
+		<Connection port1ID="640974720" port2ID="-541672192" />
+		<Connection port1ID="-1579112320" port2ID="1645051904" />
+		<Connection port1ID="1394029184" port2ID="-1724319104" />
+		<Connection port1ID="1533208064" port2ID="1388001280" />
+		<Connection port1ID="350561152" port2ID="-1863497984" />
+		<Connection port1ID="-826057856" port2ID="-832085760" />
+		<Connection port1ID="-1869525888" port2ID="-2014732672" />
+		<Connection port1ID="1242794496" port2ID="211382272" />
+		<Connection port1ID="1248822400" port2ID="60147584" />
+		<Connection port1ID="-977292544" port2ID="-1122499328" />
+		<Connection port1ID="2135027840" port2ID="-2008704768" />
+		<Connection port1ID="-971264640" port2ID="952380928" />
+		<Connection port1ID="-85059200" port2ID="-1267706112" />
+		<Connection port1ID="1989821056" port2ID="66175488" />
+	</Connections>
+	<Objects>
+		<Object refID="2018840239" type="System.String">
+			<string>MusicZone Alpha</string>
+		</Object>
+		<Object refID="-1146603319" type="System.String">
+			<string>RaveBase</string>
+		</Object>
+		<Object refID="-1564747626" type="System.String">
+			<string>Please select a background option.
+
+Higher BPMs may cause those with epilepsy to spontaneously combust.
+
+You may have to re-enter this sector in order to get this dialogue to appear again.</string>
+		</Object>
+		<Object refID="383428352" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Rainbow 60BPM</string>
+				<string>Rainbow 90BPM</string>
+				<string>Rainbow 120BPM</string>
+				<string>Rainbow 240BPM</string>
+				<string>Nevermind.</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

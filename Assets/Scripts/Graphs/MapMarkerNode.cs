@@ -75,16 +75,19 @@ namespace NodeEditorFramework.Standard
                     ent.transform.position,
                     true,
                     (Canvas as QuestCanvas).missionName,
+                    SectorManager.instance.current.dimension,
                     ent
                 );
             }
             else
             {
-                var bounds = SectorManager.GetSectorByName(sectorName).bounds;
+                var sect = SectorManager.GetSectorByName(sectorName);
+                var bounds = sect.bounds;
                 objectiveLocation = new TaskManager.ObjectiveLocation(
                     new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2),
                     true,
-                    (Canvas as QuestCanvas).missionName
+                    (Canvas as QuestCanvas).missionName,
+                    sect.dimension
                 );
             }
 

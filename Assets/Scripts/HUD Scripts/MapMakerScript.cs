@@ -279,6 +279,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             {
                 foreach (var loc in ls)
                 {
+                    if (loc.dimension != PlayerCore.Instance.Dimension) return;
                     var arrow = Instantiate(instance.mapArrowPrefab, instance.transform, false);
                     arrow.GetComponent<Image>().color = Color.red + Color.green / 2;
                     instance.arrows.Add(loc, arrow.GetComponent<RectTransform>());
@@ -292,7 +293,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     public static void EnableMapCheat()
     {
         mapVisibleCheatEnabled = true;
-        if (instance)
+        if (instance && instance.manager)
         {
             instance.Destroy();
             instance.Draw(instance.manager.sectors);

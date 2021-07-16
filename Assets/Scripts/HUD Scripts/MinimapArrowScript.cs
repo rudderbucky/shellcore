@@ -44,6 +44,7 @@ public class MinimapArrowScript : MonoBehaviour
             {
                 foreach (var loc in ls)
                 {
+                    if (loc.dimension != PlayerCore.Instance.Dimension) continue;
                     var arrow = Instantiate(instance.arrowPrefab, instance.transform, false);
                     arrow.GetComponent<SpriteRenderer>().color = Color.red + Color.green / 2; // orange
                     arrow.GetComponent<SpriteRenderer>().enabled = true;
