@@ -552,6 +552,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
                     shooterSprite.sortingOrder = 500;
                     shellObj.GetComponent<ShellPart>().shooter = shooter;
+                    shellObj.GetComponent<ShellPart>().weapon = ab as WeaponAbility;
                     (ab as WeaponAbility).terrain = TerrainType.Air;
                     abilities.Insert(0, ab);
                     break;

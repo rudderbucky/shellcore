@@ -90,6 +90,8 @@ public static class AbilityUtilities
             case 7:
             case 8:
             case 9:
+            case 14:
+            case 15:
             case 36:
             case 37:
             case 38:
