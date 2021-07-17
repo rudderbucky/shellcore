@@ -135,7 +135,7 @@ public class ReticleScript : MonoBehaviour
             ITargetable curTarg = hits[0].transform.gameObject.GetComponent<ITargetable>();
             // grab the first one's craft component, others don't matter
             if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft)
-                // if it is not null, dead or the player itself and is interactible
+            // if it is not null, dead or the player itself and is interactible
             {
                 // TODO: synchronize this with the proximity script
                 if (!craft.GetIsInteracting() && targSys.GetTarget() == curTarg.GetTransform()
@@ -372,8 +372,8 @@ public class ReticleScript : MonoBehaviour
 
             // adjust the image scales according to the health ratios
 
-
-            if (DebugMode)
+            // Warning: does not account for the shell/core/energy number objects not on primary reticle
+            if (DebugMode && energyImage)
             {
                 energyImage.enabled = true;
                 var parent = coreImage.transform.parent.parent;

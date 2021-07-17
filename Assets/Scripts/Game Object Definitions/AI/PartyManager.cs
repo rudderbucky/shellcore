@@ -291,7 +291,7 @@ public class PartyManager : MonoBehaviour
         {
             foreach (var member in partyMembers)
             {
-                if (!member)
+                if (!member || !member.GetAI())
                 {
                     continue;
                 }
@@ -344,6 +344,7 @@ public class PartyManager : MonoBehaviour
 
         foreach (var kvp in partyIndicators)
         {
+            if (!kvp.Key || !kvp.Key.GetAI()) continue;
             kvp.Value.GetComponentsInChildren<Text>()[1].text = kvp.Key.GetAI().GetPartyBattleStateString();
             for (int i = 0; i < 3; i++)
             {

@@ -185,7 +185,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     ///
     private void CreateWindow(GameObject prefab, string text, Color color, Entity speaker)
     {
-        if (window)
+        if (window && window.transform.parent)
         {
             Destroy(window.transform.parent.gameObject);
         }
@@ -232,7 +232,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         // change text
-        this.text = text.Replace("<br>", "\n");
+        if (text != null)
+            this.text = text.Replace("<br>", "\n");
         characterCount = 0;
         nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
 
@@ -788,9 +789,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             DialogueViewTransitionOut();
         }
 
-        window.playSoundOnClose = soundOnClose;
-        window.CloseUI();
-        Destroy(window.transform.root.gameObject);
+        if (window)
+        {
+            window.playSoundOnClose = soundOnClose;
+            window.CloseUI();
+            Destroy(window.transform.root.gameObject);
+        }
+
         if (OnDialogueEnd != null)
         {
             // Debug.Log(OnDialogueEnd);

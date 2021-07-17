@@ -36,7 +36,7 @@ public class BattleAI : AIModule
 
     float nextSearchTime; //timer to reduce the frequency of heavy search functions
     float nextStateCheckTime; //timer to reduce the frequency of heavy search functions
-    string mostNeeded = null; 
+    string mostNeeded = null;
 
     Entity primaryTarget;
     Entity fortificationTarget;
@@ -217,15 +217,17 @@ public class BattleAI : AIModule
                         break;
                     }
                 }
-                if (enemyGround){
+                if (enemyGround)
+                {
                     state = BattleState.ReinforceGround;
                     primaryTarget = null;
                 }
-                else {
+                else
+                {
                     state = BattleState.Fortify;
                     primaryTarget = null;
                 }
-                
+
             }
             // if there's no need for more population space, try to create turrets to protect owned outposts and stations
             else
@@ -485,7 +487,7 @@ public class BattleAI : AIModule
 
                 break;
             case BattleState.ReinforceGround:
-            //head to nearest bunker to produce tanks
+                //head to nearest bunker to produce tanks
                 float dist = float.MaxValue;
                 int index = -1;
                 for (int i = 0; i < AITargets.Count; i++)
@@ -496,13 +498,14 @@ public class BattleAI : AIModule
                         index = i;
                     }
                 }
-                if (index != -1 && dist >= 100f){
+                if (index != -1 && dist >= 100f)
+                {
                     ai.movement.SetMoveTarget(AITargets[index].entity.transform.position);
                     dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[index].entity.transform.position);
                     Debug.Log("Moving to bunker");
                     Debug.Log(dist);
                 }
-            break;
+                break;
             default:
                 break;
         }
@@ -536,6 +539,7 @@ public class BattleAI : AIModule
                 {
                     harvesterTurrets.Add(rock, shellcore.GetTractorTarget().GetComponent<Turret>());
                     shellcore.SetTractorTarget(null);
+                    break;
                 }
             }
         }
@@ -615,52 +619,69 @@ public class BattleAI : AIModule
                             enemyTank += 1;
                         }
                     }
-                    if (mostNeeded == null){
-                    if (enemyTank > ownTank){
-                        if ((shellcore.GetPower() >= 150 && Random.Range(0,5) < 4) || Random.Range(0,3) == 1){
-                            if (Random.Range(0,2) == 0){
-                                mostNeeded = ("Beam Tank");
+                    if (mostNeeded == null)
+                    {
+                        if (enemyTank > ownTank)
+                        {
+                            if ((shellcore.GetPower() >= 150 && Random.Range(0, 5) < 4) || Random.Range(0, 3) == 1)
+                            {
+                                if (Random.Range(0, 2) == 0)
+                                {
+                                    mostNeeded = ("Beam Tank");
+                                }
+                                else
+                                {
+                                    mostNeeded = ("Laser Tank");
+                                }
                             }
-                            else {
+                            else if (shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)
+                            {
+                                mostNeeded = ("Bullet Tank");
+                            }
+                            else
+                            {
+                                mostNeeded = ("Speeder Tank");
+                            }
+                        }
+                        else if (enemyGroundStation + enemyTank > ownTank)
+                        {
+                            if (shellcore.GetPower() >= 150 || Random.Range(0, 3) == 1)
+                            {
+                                if (Random.Range(0, 3) == 0)
+                                {
+                                    mostNeeded = ("Beam Tank");
+                                }
+                                else
+                                {
+                                    mostNeeded = ("Siege Tank");
+                                }
+                            }
+                            else if (shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)
+                            {
+                                mostNeeded = ("Bullet Tank");
+                            }
+                            else
+                            {
+                                mostNeeded = ("Speeder Tank");
+                            }
+                        }
+                        else
+                        {
+                            if ((shellcore.GetPower() >= 200 && Random.Range(0, 4) < 3) || Random.Range(0, 2) == 1)
+                            {
+                                mostNeeded = ("Missile Tank");
+                            }
+                            else
+                            {
                                 mostNeeded = ("Laser Tank");
                             }
                         }
-                        else if (shellcore.GetPower() >= 100 || Random.Range(0,2) == 1){
-                            mostNeeded = ("Bullet Tank");
-                        }
-                        else {
-                            mostNeeded = ("Speeder Tank");
-                        }
-                    }
-                    else if (enemyGroundStation + enemyTank > ownTank){
-                        if (shellcore.GetPower() >= 150 || Random.Range(0,3) == 1){
-                            if (Random.Range(0,3) == 0){
-                                mostNeeded = ("Beam Tank");
-                            }
-                            else {
-                                mostNeeded = ("Siege Tank");
-                            }
-                        }
-                        else if (shellcore.GetPower() >= 100 || Random.Range(0,2) == 1){
-                            mostNeeded = ("Bullet Tank");
-                        }
-                        else {
-                            mostNeeded = ("Speeder Tank");
-                        }
-                    }
-                    else{
-                        if ((shellcore.GetPower() >= 200 && Random.Range(0,4) < 3) || Random.Range(0,2) == 1){
-                            mostNeeded = ("Missile Tank");
-                        }
-                        else {
-                            mostNeeded = ("Laser Tank");
-                        }
-                    }
                     }
 
                     if (state == BattleState.Attack)
                     {
-                        if (vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Turret){
+                        if (vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Turret)
+                        {
                             bool ownGroundExists = false;
                             for (int j = 0; j < AIData.entities.Count; j++)
                             {
@@ -681,17 +702,19 @@ public class BattleAI : AIModule
                                 {
                                     itemIndex = vendor.GetVendingBlueprint().getItemIndex("Missile Turret");
                                 }
-                                else if(shellcore.GetPower() >= 100)
+                                else if (shellcore.GetPower() >= 100)
                                 {
                                     itemIndex = vendor.GetVendingBlueprint().getItemIndex("Defense Turret");
                                 }
                             }
                         }
-                        else if (vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank){
+                        else if (vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank)
+                        {
                             itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded);
                         }
                     }
-                    if (state == BattleState.ReinforceGround){
+                    if (state == BattleState.ReinforceGround)
+                    {
                         itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded);
                     }
                     if (itemIndex == -1)
@@ -719,84 +742,86 @@ public class BattleAI : AIModule
                                         continue;
                                     }
 
-                                if (vendor.GetVendingBlueprint().items[j].entityBlueprint.name != mostNeeded && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank) //TODO: get turret / tank attack category from somewhere else
-                                    continue;
+                                    if (vendor.GetVendingBlueprint().items[j].entityBlueprint.name != mostNeeded && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank) //TODO: get turret / tank attack category from somewhere else
+                                        continue;
 
-                                itemIndex = j;
-                            }
-                        }
-                    }
-
-                    if (itemIndex != -1)
-                    {
-                        Debug.Log(mostNeeded);
-                        if (vendor.GetVendingBlueprint().items[itemIndex].cost <= shellcore.GetPower()){
-                            mostNeeded = null;
-                        }
-                        else {
-                            break;
-                        }
-                        var ent = VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
-                        if(itemIndex == vendor.GetVendingBlueprint().getItemIndex("Harvester Turret"))
-                        {
-                            EnergyRock closestRock = null;
-                            foreach (var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))
-                            {
-                                if (closestRock == null || Vector2.SqrMagnitude(rock.transform.position - shellcore.transform.position)
-                                    < Vector2.SqrMagnitude(closestRock.transform.position - shellcore.transform.position))
-                                {
-                                    closestRock = rock;
+                                    itemIndex = j;
                                 }
                             }
-
-                            harvesterTurrets.Add(closestRock, ent as Turret);
-                            shellcore.SetTractorTarget(ent.GetComponent<Draggable>());
                         }
 
-                        break;
+                        if (itemIndex != -1)
+                        {
+                            Debug.Log(mostNeeded);
+                            if (vendor.GetVendingBlueprint().items[itemIndex].cost <= shellcore.GetPower())
+                            {
+                                mostNeeded = null;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                            var ent = VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
+                            if (itemIndex == vendor.GetVendingBlueprint().getItemIndex("Harvester Turret"))
+                            {
+                                EnergyRock closestRock = null;
+                                foreach (var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))
+                                {
+                                    if (closestRock == null || Vector2.SqrMagnitude(rock.transform.position - shellcore.transform.position)
+                                        < Vector2.SqrMagnitude(closestRock.transform.position - shellcore.transform.position))
+                                    {
+                                        closestRock = rock;
+                                    }
+                                }
+
+                                harvesterTurrets.Add(closestRock, ent as Turret);
+                                shellcore.SetTractorTarget(ent.GetComponent<Draggable>());
+                            }
+
+                            break;
+                        }
                     }
                 }
             }
         }
-    }
 
-    void UpdateTargetInfluences()
-    {
-        for (int i = 0; i < AITargets.Count; i++)
+        void UpdateTargetInfluences()
         {
-            var t = AITargets[i];
-            if (t.entity == null || t.entity.GetIsDead())
+            for (int i = 0; i < AITargets.Count; i++)
             {
-                Debug.LogWarning("AI Warning: AI target null or dead!");
-                continue;
-            }
-
-            t.influence = 0f;
-            for (int j = 0; j < AIData.entities.Count; j++)
-            {
-                if (AIData.entities[j] is Turret)
+                var t = AITargets[i];
+                if (t.entity == null || t.entity.GetIsDead())
                 {
-                    if ((AIData.entities[j].transform.position - t.entity.transform.position).sqrMagnitude < 150f)
+                    Debug.LogWarning("AI Warning: AI target null or dead!");
+                    continue;
+                }
+
+                t.influence = 0f;
+                for (int j = 0; j < AIData.entities.Count; j++)
+                {
+                    if (AIData.entities[j] is Turret)
                     {
-                        t.influence += FactionManager.IsAllied(AIData.entities[j].faction, t.entity.faction) ? 1f : -1f;
+                        if ((AIData.entities[j].transform.position - t.entity.transform.position).sqrMagnitude < 150f)
+                        {
+                            t.influence += FactionManager.IsAllied(AIData.entities[j].faction, t.entity.faction) ? 1f : -1f;
+                        }
                     }
                 }
             }
         }
-    }
 
-    bool enemyGroundTargets(bool allEntities)
-    {
-        Entity[] targets = allEntities ? AIData.entities.ToArray() : BattleZoneManager.getTargets();
-        for (int i = 0; i < targets.Length; i++)
+        bool enemyGroundTargets(bool allEntities)
         {
-            if (!FactionManager.IsAllied(targets[i].faction, craft.faction) && targets[i].Terrain == Entity.TerrainType.Ground)
+            Entity[] targets = allEntities ? AIData.entities.ToArray() : BattleZoneManager.getTargets();
+            for (int i = 0; i < targets.Length; i++)
             {
-                return true;
+                if (!FactionManager.IsAllied(targets[i].faction, craft.faction) && targets[i].Terrain == Entity.TerrainType.Ground)
+                {
+                    return true;
+                }
             }
-        }
 
-        return false;
-    }
+            return false;
+        }
     }
 }
