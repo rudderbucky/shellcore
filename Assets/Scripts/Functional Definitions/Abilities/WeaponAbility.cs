@@ -101,7 +101,7 @@ public abstract class WeaponAbility : ActiveAbility
         }
     }
 
-    List<AbilityID> damageUnaffectedByTier = new List<AbilityID> {AbilityID.MainBullet, AbilityID.Bomb};
+    List<AbilityID> damageUnaffectedByTier = new List<AbilityID> { AbilityID.MainBullet, AbilityID.Bomb };
 
     protected virtual void Start()
     {
@@ -117,7 +117,7 @@ public abstract class WeaponAbility : ActiveAbility
                 energyCost *= 0.6F;
                 break;
             case WeaponDiversityType.Gun:
-                cooldownDuration *= 0.6F;
+                cooldownDuration *= 0.8F;
                 break;
             default:
                 break;

@@ -29,7 +29,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
     public virtual void CloseUI()
     {
-        if ((transform && transform.parent && transform.parent.gameObject.activeSelf) ? transform.parent.gameObject.activeSelf : false)
+        if (transform && transform.parent && transform.parent.gameObject && transform.parent.gameObject.activeSelf)
         {
             if (playSoundOnClose)
             {
