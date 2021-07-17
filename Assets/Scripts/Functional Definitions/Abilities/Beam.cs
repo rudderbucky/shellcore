@@ -30,6 +30,7 @@ public class Beam : WeaponAbility
 
     protected override void Start()
     {
+        if (Core as Tank) bonusDamageType = typeof(Tank);
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
         particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
         line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
@@ -93,7 +94,6 @@ public class Beam : WeaponAbility
         }
 
         AudioManager.PlayClipByID("clip_beam", transform.position);
-        GetDamage();
         var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
         // deal instant damage
 
