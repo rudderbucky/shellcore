@@ -541,6 +541,11 @@ public class LandPlatformGenerator : MonoBehaviour
             Debug.Log("No valid targets in range");
             return null;
         }
+
+        if (endTiles.Contains(startTilePos))
+        {
+            return new Vector2[] { TileToWorldPos(startTilePos) };
+        }
         
         // Initialize node lists
         // TODO: Queue instead of List?
@@ -588,8 +593,59 @@ public class LandPlatformGenerator : MonoBehaviour
                         }
                     }
 
+                    // Add parentless start position
+                    if ((current.directions == 3 ||
+                        current.directions == 6 ||
+                        current.directions == 9 ||
+                        current.directions == 12) && 
+                        path.Count > 1)
+                    {
+                        Vector2 last = (TileToWorldPos(current.pos));
+                        Vector2 smoothed = (path[path.Count - 1] * 0.35f) + (last * 0.65f);
+                        path.Add(smoothed);
+                    }
+                    else
+                    {
+                        path.Add(TileToWorldPos(current.pos));
+                    }
+
+                    if (path.Count > 1)
+                    {
+                        if (instance.isInLoS(startPos, path[path.Count - 2]))
+                        {
+                            path.RemoveAt(path.Count - 1);
+                        }
+                    }
+
+
+                    List<Vector2> smooth = new List<Vector2>{ path[0] };
+
+                    // Path smoothing
+                    if (path.Count > 2)
+                    {
+                        for (int j = 1; j < path.Count - 1; j++)
+                        {
+                            if (path[j - 1].x != path[j + 1].x && path[j - 1].y != path[j + 1].y)
+                            {
+                                Vector2 prev = (path[j - 1] * 0.35f) + (path[j] * 0.65f);
+                                Vector2 next = (path[j + 1] * 0.35f) + (path[j] * 0.65f);
+
+                                smooth.Add(prev);
+                                smooth.Add(next);
+                            }
+                            else
+                            {
+                                smooth.Add(path[j]);
+                            }
+                        }
+                    }
+                    if (path.Count > 1)
+                    {
+                        smooth.Add(path[path.Count - 1]);
+                    }
+
                     // Path from end to start. Tanks start fron the last node index.
-                    return path.ToArray();
+                    return smooth.ToArray();
                 }
             }
 
