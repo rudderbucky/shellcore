@@ -63,13 +63,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         }
     }
 
-    public void redraw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0)
+    public void redraw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0, bool displayStations = false)
     {
         Destroy();
-        Draw(sectors, zoomoutFactor, dimension);
+        Draw(sectors, zoomoutFactor, dimension, true, displayStations);
     }
 
-    void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0, bool resetPosition = true)
+    void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0, bool resetPosition = true, bool displayStations = false)
     {
         this.zoomoutFactor = zoomoutFactor;
         gridSizeX = canvas.sizeDelta.x;
@@ -142,11 +142,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 }
 
                 // set up the sector image
+                var sectorStartX = sector.bounds.x - minX;
+                var sectorStartY = -maxY + sector.bounds.y;
                 Image sect = Instantiate(sectorPrefab, transform, false);
                 Image border = sect.GetComponentsInChildren<Image>()[1];
                 sect.color = 1.2F * sector.backgroundColor - new Color(0.2F, 0.2F, 0.2F, 0.75F);
                 border.color = new Color(1F, 1F, 1F, 0.5F);
-                sect.rectTransform.anchoredPosition = new Vector2(sector.bounds.x - minX, -maxY + sector.bounds.y) / zoomoutFactor;
+                sect.rectTransform.anchoredPosition = new Vector2(sectorStartX, sectorStartY) / zoomoutFactor;
 
                 // Set up markers.
                 if (PartIndexInventoryButton.partMarkerSectorNames.Contains(sector.sectorName))
@@ -228,10 +230,53 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                         }
                     }
                 }
+
+                // set up minimap images if necessary
+                if (displayStations)
+                    foreach (var ent in sector.entities)
+                    {
+                        bool carrier = false;
+                        if (ent.assetID == "carrier_blueprint" || ent.assetID == "groundcarrier_blueprint")
+                        {
+                            carrier = true;
+                        }
+                        var markerResourceName = "";
+                        switch (ent.assetID)
+                        {
+                            case "outpost_blueprint":
+                                markerResourceName = "outpost_minimap_sprite";
+                                break;
+                            case "bunker_blueprint":
+                                markerResourceName = "bunker_minimap_sprite";
+                                break;
+                            case "carrier_blueprint":
+                            case "groundcarrier_blueprint":
+                            case "missile_station":
+                                markerResourceName = "minimap_sprite";
+                                break;
+                        }
+
+                        switch (ent.assetID)
+                        {
+                            case "outpost_blueprint":
+                            case "bunker_blueprint":
+                            case "carrier_blueprint":
+                            case "groundcarrier_blueprint":
+                            case "missile_station":
+                                var gObj = new GameObject();
+                                gObj.transform.SetParent(transform, false);
+                                var img = gObj.AddComponent<Image>();
+                                img.sprite = ResourceManager.GetAsset<Sprite>(markerResourceName);
+                                img.color = FactionManager.GetFactionColor(ent.faction);
+                                gObj.GetComponent<RectTransform>().sizeDelta = new Vector2(7, 7) / zoomoutFactor;
+                                if (carrier) gObj.GetComponent<RectTransform>().sizeDelta *= 1.25F;
+                                gObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(ent.position.x - minX, -maxY + ent.position.y) / zoomoutFactor;
+                                break;
+                        }
+                    }
             }
         }
 
-        // The most egregious part. Make this variable
         for (int i = 0; i < Mathf.Max(gridSizeX, gridSizeY) * zoomoutFactor / distancePerTextMarker + 1; i++)
         {
             Text textx = new GameObject().AddComponent<Text>();
@@ -410,7 +455,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         canvas.anchorMin = new Vector2(0, 1);
         canvas.anchorMax = new Vector2(0, 1);
 
-        // this is another egregious part that needs updating
         if (updatePos)
         {
             var width = canvas.sizeDelta.x;

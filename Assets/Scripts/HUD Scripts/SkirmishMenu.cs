@@ -82,8 +82,8 @@ public class SkirmishMenu : GUIWindowScripts
             return;
         }
 
-        List<Sector> sectors = new List<Sector>() {sector};
-        GetComponentInChildren<MapMakerScript>().redraw(sectors, 1, sector.dimension);
+        List<Sector> sectors = new List<Sector>() { sector };
+        GetComponentInChildren<MapMakerScript>().redraw(sectors, 1, sector.dimension, true);
     }
 
     public void ActivateCurrentOption()
