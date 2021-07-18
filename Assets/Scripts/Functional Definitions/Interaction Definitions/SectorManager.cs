@@ -166,17 +166,21 @@ public class SectorManager : MonoBehaviour
             AttemptSectorLoad();
             abortTimer = 6;
         }
-        else if (!jsonMode && player && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone))
-        {
-            abortTimer -= Time.deltaTime;
-            if (abortTimer <= 4)
-            {
-                player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
-            }
-        }
         else
         {
-            abortTimer = 6;
+            var inSector = sectors.Exists(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension);
+            if (!jsonMode && player && !player.GetIsDead() && inSector && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone))
+            {
+                abortTimer -= Time.deltaTime;
+                if (abortTimer <= 4)
+                {
+                    player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
+                }
+            }
+            else
+            {
+                abortTimer = 6;
+            }
         }
 
         // change minimap renderers to match current dimension.

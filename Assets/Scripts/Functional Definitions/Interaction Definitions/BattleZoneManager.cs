@@ -10,7 +10,7 @@ public class BattleZoneManager : MonoBehaviour
     float startTime = 0f;
     public int CreditsCollected = 0;
 
-    class Stats
+    public class Stats
     {
         public Stats(int faction)
         {
@@ -27,7 +27,7 @@ public class BattleZoneManager : MonoBehaviour
         public int turretKills = 0;
     }
 
-    List<Stats> stats = new List<Stats>();
+    public List<Stats> stats = new List<Stats>();
 
     void OnEnable()
     {
