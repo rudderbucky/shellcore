@@ -85,6 +85,17 @@ public class SpawnDrone : ActiveAbility
         drone.Init();
         drone.SetOwner(craft);
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);
+        if (SectorManager.instance && SectorManager.instance.GetComponentInChildren<BattleZoneManager>())
+        {
+            var stats = SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Find(s => s.faction == Core.faction);
+            if (stats == null)
+            {
+                stats = new BattleZoneManager.Stats(Core.faction);
+                SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Add(stats);
+            }
+            stats.droneSpawns++;
+        }
+
         if (craft as ICarrier != null)
         {
             drone.getAI().setMode(AirCraftAI.AIMode.Path);

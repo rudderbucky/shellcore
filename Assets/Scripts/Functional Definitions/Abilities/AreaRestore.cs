@@ -4,6 +4,7 @@
 public class AreaRestore : Ability
 {
     const float range = 10;
+    public const float heal = 500;
 
     public override float GetRange()
     {
@@ -35,7 +36,7 @@ public class AreaRestore : Ability
                 {
                     if (ally.GetHealth()[0] < ally.GetMaxHealth()[0])
                     {
-                        ally.TakeShellDamage(-500f, 0f, GetComponentInParent<Entity>());
+                        ally.TakeShellDamage(-heal, 0f, GetComponentInParent<Entity>());
                     }
                 }
             }

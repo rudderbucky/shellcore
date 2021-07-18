@@ -495,7 +495,6 @@ public class ResourceManagerEditor : Editor
                 if (manager.resourcePack.resources[i].ID == manager.fieldID)
                 {
                     manager.resourcePack.resources[i] = resource;
-                    Debug.Log(manager.fieldID);
                     state = EditorState.successModify;
                     break;
                 }
@@ -542,13 +541,29 @@ public class ResourceManagerEditor : Editor
         if (GUILayout.Button("Find Resource by ID!"))
         {
             state = EditorState.failedToFind;
+            bool exactMatch = false;
             foreach (ResourceManager.Resource res in manager.resourcePack.resources)
             {
                 if (res.ID == manager.fieldID)
                 {
                     manager.newObject = res.obj;
                     state = EditorState.successFind;
+                    exactMatch = true;
                     break;
+                }
+            }
+
+            if (!exactMatch)
+            {
+                foreach (ResourceManager.Resource res in manager.resourcePack.resources)
+                {
+                    if (res.ID.Contains(manager.fieldID))
+                    {
+                        manager.newObject = res.obj;
+                        manager.fieldID = res.ID;
+                        state = EditorState.successFind;
+                        break;
+                    }
                 }
             }
 

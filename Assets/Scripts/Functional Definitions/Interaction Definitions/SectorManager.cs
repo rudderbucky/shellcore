@@ -166,17 +166,21 @@ public class SectorManager : MonoBehaviour
             AttemptSectorLoad();
             abortTimer = 6;
         }
-        else if (!jsonMode && player && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone))
-        {
-            abortTimer -= Time.deltaTime;
-            if (abortTimer <= 4)
-            {
-                player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
-            }
-        }
         else
         {
-            abortTimer = 6;
+            var inSector = player && sectors.Exists(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension);
+            if (!jsonMode && player && !player.GetIsDead() && inSector && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone))
+            {
+                abortTimer -= Time.deltaTime;
+                if (abortTimer <= 4)
+                {
+                    player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
+                }
+            }
+            else
+            {
+                abortTimer = 6;
+            }
         }
 
         // change minimap renderers to match current dimension.
@@ -1253,16 +1257,18 @@ public class SectorManager : MonoBehaviour
             var notClose = false;
             var partyDrone = false;
             var partyTractor = false;
+            var wrongDim = false;
             if (obj.Value)
             {
+                wrongDim = current.dimension != lastDimension;
                 notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance
-                           || current.dimension != lastDimension;
+                           || wrongDim;
                 notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
                 partyDrone = PartyManager.instance.partyMembers.Exists(sc => sc.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
                 partyTractor = PartyManager.instance.partyMembers.Exists(sc => sc.GetTractorTarget() == obj.Value.GetComponent<Draggable>());
             }
 
-            if ((player && obj.Value && notPlayerTractorTarget
+            if ((player && obj.Value && (notPlayerTractorTarget || wrongDim)
                  && obj.Value != player.gameObject
                  && (notPlayerDrone || notClose)) && !(partyDrone || partyTractor))
             {
@@ -1280,7 +1286,8 @@ public class SectorManager : MonoBehaviour
         List<ShellPart> savedParts = new List<ShellPart>();
         foreach (ShellPart part in AIData.strayParts)
         {
-            if (part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part))
+            if (part && !(player && player.GetTractorTarget() && player.GetTractorTarget().GetComponent<ShellPart>() == part &&
+                current.dimension == lastDimension))
             {
                 var droneHasPart = false;
                 foreach (Entity ent in player.GetUnitsCommanding())

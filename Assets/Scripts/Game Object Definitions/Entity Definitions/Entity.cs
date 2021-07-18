@@ -63,6 +63,62 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected bool initialized; // is the entity safe to call update() on?
     public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
     public string ID; // used in tasks
+    private float[] baseMaxHealth = new float[3];
+    private int controlStacks;
+
+    public int ControlStacks
+    {
+        get { return controlStacks; }
+        set
+        {
+            controlStacks = value;
+            CalculateMaxHealth();
+            CalculateDamageBoost();
+        }
+    }
+
+    private int[] passiveMaxStacks = new int[3];
+    public int[] PassiveMaxStacks
+    {
+        get { return (int[])passiveMaxStacks.Clone(); }
+        set
+        {
+            passiveMaxStacks = value;
+            CalculateMaxHealth();
+        }
+    }
+    private int damageBoostStacks;
+    public int DamageBoostStacks
+    {
+        get { return damageBoostStacks; }
+        set
+        {
+            damageBoostStacks = value;
+            CalculateDamageBoost();
+        }
+    }
+
+    // Performs calculations based on current control and shell max stats to determine final health
+    private void CalculateMaxHealth()
+    {
+        var fracs = new float[3] { currentHealth[0] / maxHealth[0], currentHealth[1] / maxHealth[1], currentHealth[2] / maxHealth[2] };
+        maxHealth[0] = (baseMaxHealth[0] + passiveMaxStacks[0] * ShellMax.max) * (1 + controlStacks * Control.baseControlFractionBoost);
+        maxHealth[1] = (baseMaxHealth[1] + passiveMaxStacks[1] * ShellMax.max);
+        maxHealth[2] = (baseMaxHealth[2] + passiveMaxStacks[2] * ShellMax.max);
+
+        for (int i = 0; i < 3; i++)
+        {
+            fracs[i] *= maxHealth[i];
+        }
+        CurrentHealth = fracs;
+    }
+
+    // Performs calculations based on current damage boost and control stats to determine final damage addition
+    private void CalculateDamageBoost()
+    {
+        damageAddition = controlStacks * Control.damageAddition + damageBoostStacks * DamageBoost.damageAddition;
+    }
+
     public int stealths = 0;
     public bool invisible = false;
 
@@ -72,7 +128,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         set { invisible = value; }
     }
 
-    public float damageAddition = 0f;
+    private float damageAddition = 0f;
+    public float GetDamageAddition()
+    {
+        return damageAddition;
+    }
 
     [HideInInspector]
     public int absorptions = 0;
@@ -514,6 +574,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 maxHealth[0] /= 2;
                 maxHealth[1] /= 4;
             }
+
+            maxHealth.CopyTo(baseMaxHealth, 0);
         }
 
         if (this as ShellCore)

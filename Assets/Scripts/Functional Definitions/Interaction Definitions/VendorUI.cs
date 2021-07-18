@@ -192,6 +192,17 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 tur.blueprint = blueprint.items[index].entityBlueprint;
                 core.SetTractorTarget(creation.GetComponent<Draggable>());
                 tur.SetOwner(core);
+
+                if (SectorManager.instance && SectorManager.instance.GetComponentInChildren<BattleZoneManager>())
+                {
+                    var stats = SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Find(s => s.faction == core.faction);
+                    if (stats == null)
+                    {
+                        stats = new BattleZoneManager.Stats(core.faction);
+                        SectorManager.instance.GetComponentInChildren<BattleZoneManager>().stats.Add(stats);
+                    }
+                    stats.turretSpawns++;
+                }
                 break;
             case EntityBlueprint.IntendedType.Tank:
                 Tank tank = creation.AddComponent<Tank>();
