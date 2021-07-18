@@ -102,12 +102,12 @@ public class DevConsoleScript : MonoBehaviour
             if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
             {
                 var player = PlayerCore.Instance;
-                player.SetMaxHealth(new float[] {99999, 99999, 99999}, true);
-                player.SetRegens(new float[] {99999, 99999, 99999});
+                player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
+                player.SetRegens(new float[] { 99999, 99999, 99999 });
                 player.AddCredits(999999);
                 player.speed = 9999f;
                 player.CalculatePhysicsConstants();
-                player.damageAddition = 99999f;
+                player.DamageBoostStacks += 1000;
                 player.AddPower(10000);
                 godModeEnabled = true;
                 MapMakerScript.EnableMapCheat();
@@ -116,8 +116,8 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.Equals("Immortality", StringComparison.CurrentCultureIgnoreCase))
             {
                 var player = PlayerCore.Instance;
-                player.SetMaxHealth(new float[] {99999, 99999, 99999}, true);
-                player.SetRegens(new float[] {99999, 99999, 99999});
+                player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
+                player.SetRegens(new float[] { 99999, 99999, 99999 });
                 textBox.text += "\n<color=lime>Immortality is an illusion, enjoy it while it lasts.</color>";
             }
             else if (command.Equals("Skynet will rise", StringComparison.CurrentCultureIgnoreCase))

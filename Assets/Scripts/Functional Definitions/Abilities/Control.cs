@@ -3,7 +3,8 @@
 public class Control : PassiveAbility
 {
     const float healthAddition = 200;
-    const float damageAddition = 200;
+    public const float damageAddition = 50;
+    public const float baseControlFractionBoost = 0.2F;
     List<Entity> boosted = new List<Entity>();
 
     protected override void Awake()
@@ -22,12 +23,7 @@ public class Control : PassiveAbility
                 continue;
             }
 
-            var maxHealths = entity.GetMaxHealth();
-            // Remove a percentage of health from the ship, based on what max health the core had before destruction
-            var healths = entity.GetHealth();
-            healths[0] -= (healths[0] / maxHealths[0]) * healthAddition * abilityTier;
-            maxHealths[0] -= healthAddition * abilityTier;
-            entity.damageAddition -= damageAddition;
+            Core.ControlStacks -= abilityTier;
         }
 
         base.Deactivate();
@@ -59,11 +55,7 @@ public class Control : PassiveAbility
     {
         if (!(entity is Turret) && entity.faction == Core.faction && entity != Core && !boosted.Contains(entity))
         {
-            var maxHealths = entity.GetMaxHealth();
-            maxHealths[0] += healthAddition * abilityTier;
-            var healths = entity.GetHealth();
-            healths[0] += healthAddition * abilityTier;
-            entity.damageAddition += damageAddition;
+            Core.ControlStacks += abilityTier;
             boosted.Add(entity);
         }
     }

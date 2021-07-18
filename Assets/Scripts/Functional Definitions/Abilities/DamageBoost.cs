@@ -1,8 +1,10 @@
-﻿/// <summary>
+﻿using UnityEngine;
+/// <summary>
 /// Temporarily increases the craft's damage multiplier
 /// </summary>
 public class DamageBoost : ActiveAbility
 {
+    public const float damageAddition = 150;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -20,7 +22,7 @@ public class DamageBoost : ActiveAbility
     {
         if (Core)
         {
-            Core.damageAddition -= 150;
+            Core.DamageBoostStacks -= Mathf.Min(1, abilityTier);
             base.Deactivate();
         }
     }
@@ -32,7 +34,7 @@ public class DamageBoost : ActiveAbility
     {
         if (Core)
         {
-            Core.damageAddition += 150;
+            Core.DamageBoostStacks += Mathf.Min(1, abilityTier);
             AudioManager.PlayClipByID("clip_buff", transform.position);
             base.Execute();
         }
