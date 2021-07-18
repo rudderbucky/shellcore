@@ -168,7 +168,7 @@ public class SectorManager : MonoBehaviour
         }
         else
         {
-            var inSector = sectors.Exists(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension);
+            var inSector = player && sectors.Exists(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension);
             if (!jsonMode && player && !player.GetIsDead() && inSector && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone))
             {
                 abortTimer -= Time.deltaTime;
