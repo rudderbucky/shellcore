@@ -71,6 +71,14 @@ public class Tank : GroundCraft, IOwnable
             if (pathfindTimer <= 0f)
             {
                 pathfindToTarget();
+                if (hasPath)
+                {
+                    pathfindTimer = 3.0f;
+                }
+                else
+                {
+                    pathfindTimer = 1f;
+                }
             }
         }
 
@@ -121,13 +129,28 @@ public class Tank : GroundCraft, IOwnable
         // Find a path to the closest one
         if (targets.Count > 0)
         {
-            path = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), weapon.GetRange());
+            Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), weapon.GetRange());
 
-            hasPath = (path != null && path.Length > 0);
-
-            if (hasPath)
+            if (newPath != null && path != null && newPath.Length > 0 && path.Length > 0)
             {
-                index = path.Length - 1;
+                if (newPath[0] != path[0])
+                {
+                    path = newPath;
+                    hasPath = (path != null && path.Length > 0);
+                    if (hasPath)
+                    {
+                        index = path.Length - 1;
+                    }
+                }
+            }
+            else
+            {
+                path = newPath;
+                hasPath = (path != null && path.Length > 0);
+                if (hasPath)
+                {
+                    index = path.Length - 1;
+                }
             }
         }
         else
@@ -188,7 +211,7 @@ public class Tank : GroundCraft, IOwnable
                 if (e is GroundCraft && e != this && e.GetInstanceID() > GetInstanceID())
                 {
                     float d = (e.transform.position - (transform.position)).sqrMagnitude;
-                    if (d < minDistance && pathfindTimer <= 0f)
+                    if (d < minDistance)
                     {
                         //hasPath = false;
                         //pathfindTimer = 0.5f;
@@ -213,15 +236,6 @@ public class Tank : GroundCraft, IOwnable
             {
                 MoveCraft(normalized * 0.5F);
             }
-
-            if (pathfindTimer <= 0f)
-            {
-                pathfindTimer = 5f;
-            }
-        }
-        else if (pathfindTimer <= 0f)
-        {
-            pathfindTimer = 0.5f;
         }
     }
 
