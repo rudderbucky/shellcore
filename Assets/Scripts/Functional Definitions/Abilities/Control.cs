@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Control : PassiveAbility
 {
@@ -23,7 +24,7 @@ public class Control : PassiveAbility
                 continue;
             }
 
-            Core.ControlStacks -= abilityTier;
+            entity.ControlStacks -= abilityTier;
         }
 
         base.Deactivate();
@@ -55,7 +56,7 @@ public class Control : PassiveAbility
     {
         if (!(entity is Turret) && entity.faction == Core.faction && entity != Core && !boosted.Contains(entity))
         {
-            Core.ControlStacks += abilityTier;
+            entity.ControlStacks += abilityTier;
             boosted.Add(entity);
         }
     }

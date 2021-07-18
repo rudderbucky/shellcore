@@ -179,9 +179,9 @@ public static class AbilityUtilities
             case 24:
                 return "Become invisible to enemies.";
             case 25:
-                return "All weapon damage increased by 150.";
+                return $"All weapon damage increased by {DamageBoost.damageAddition}.";
             case 26:
-                return "Instantly heals self and nearby allies by +500 shell";
+                return $"Instantly heals self and nearby allies by {AreaRestore.heal} shell";
             case 27:
                 return "Immobilizes the target.";
             case 28:
@@ -197,7 +197,7 @@ public static class AbilityUtilities
             case 33:
                 return "Disrupt enemy ability cooldowns.";
             case 34:
-                return "Makes allies stronger.";
+                return $"Gives allies additional {Control.baseControlFractionBoost * 100}% shell and {Control.damageAddition} weapon damage.";
             case 35:
                 return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
             case 36:
@@ -237,7 +237,7 @@ public static class AbilityUtilities
             case 34:
                 return null;
             case 4:
-		if (data != "beamgroundshooter_sprite")
+                if (data != "beamgroundshooter_sprite")
                 {
                     return "beamshooter_sprite";
                 }
@@ -266,34 +266,34 @@ public static class AbilityUtilities
                 return "lasershooter_sprite";
             case 38:
                 return "flakshooter_sprite";
-	    case 36:
-		return "bombshooter_sprite";
-	    case 14:
-		 if (data == "siegegroundshooter_sprite")
-		 {
-		 return "siegegroundshooter_sprite";
-		 }
-		 else if (data != "siegeshooter_sprite")
-		 {
-		 return "bulletshooter_sprite";	 
-		 }
-		 else
-		 {
-		 return "siegeshooter_sprite";
-		 }
-	    case 2:
-		return "ability_indicator_shell";
-	    case 11:
-	    case 12:
-		return "ability_indicator_core";
-	    case 28:
-		return "ability_indicator_retreat";
-	    case 25:
-		return "ability_indicator_damage_boost";
-	    case 27:
-		return "ability_indicator_pin_down";
-	    case 29:
-		return "ability_indicator_absorb_field";
+            case 36:
+                return "bombshooter_sprite";
+            case 14:
+                if (data == "siegegroundshooter_sprite")
+                {
+                    return "siegegroundshooter_sprite";
+                }
+                else if (data != "siegeshooter_sprite")
+                {
+                    return "bulletshooter_sprite";
+                }
+                else
+                {
+                    return "siegeshooter_sprite";
+                }
+            case 2:
+                return "ability_indicator_shell";
+            case 11:
+            case 12:
+                return "ability_indicator_core";
+            case 28:
+                return "ability_indicator_retreat";
+            case 25:
+                return "ability_indicator_damage_boost";
+            case 27:
+                return "ability_indicator_pin_down";
+            case 29:
+                return "ability_indicator_absorb_field";
             default:
                 return "ability_indicator";
         }

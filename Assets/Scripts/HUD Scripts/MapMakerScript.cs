@@ -252,6 +252,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                             case "carrier_blueprint":
                             case "groundcarrier_blueprint":
                             case "missile_station":
+                            case "energy_rock":
                                 markerResourceName = "minimap_sprite";
                                 break;
                         }
@@ -263,12 +264,19 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                             case "carrier_blueprint":
                             case "groundcarrier_blueprint":
                             case "missile_station":
+                            case "energy_rock":
                                 var gObj = new GameObject();
                                 gObj.transform.SetParent(transform, false);
                                 var img = gObj.AddComponent<Image>();
                                 img.sprite = ResourceManager.GetAsset<Sprite>(markerResourceName);
                                 img.color = FactionManager.GetFactionColor(ent.faction);
                                 gObj.GetComponent<RectTransform>().sizeDelta = new Vector2(7, 7) / zoomoutFactor;
+                                if (ent.assetID == "energy_rock")
+                                {
+                                    gObj.GetComponent<RectTransform>().sizeDelta /= 2;
+                                    img.color = new Color32(0, 163, 255, 255);
+                                }
+
                                 if (carrier) gObj.GetComponent<RectTransform>().sizeDelta *= 1.25F;
                                 gObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(ent.position.x - minX, -maxY + ent.position.y) / zoomoutFactor;
                                 break;
@@ -503,12 +511,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!followPlayerMode)
-        {
-            updatePos = true;
-            mousePos = Input.mousePosition;
-        }
-
         foreach (var objective in arrows.Keys)
         {
             var img = arrows[objective].GetComponent<Image>();
@@ -522,6 +524,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 return;
             }
         }
+
+        if (!followPlayerMode)
+        {
+            updatePos = true;
+            mousePos = Input.mousePosition;
+        }
+
 
         if (SectorManager.testJsonPath != null || DevConsoleScript.godModeEnabled == true)
         {

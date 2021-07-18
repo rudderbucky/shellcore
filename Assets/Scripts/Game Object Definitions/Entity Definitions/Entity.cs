@@ -98,6 +98,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    // Performs calculations based on current control and shell max stats to determine final health
     private void CalculateMaxHealth()
     {
         var fracs = new float[3] { currentHealth[0] / maxHealth[0], currentHealth[1] / maxHealth[1], currentHealth[2] / maxHealth[2] };
@@ -112,6 +113,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         CurrentHealth = fracs;
     }
 
+    // Performs calculations based on current damage boost and control stats to determine final damage addition
     private void CalculateDamageBoost()
     {
         damageAddition = controlStacks * Control.damageAddition + damageBoostStacks * DamageBoost.damageAddition;
@@ -187,7 +189,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     // prevents interaction while entities are in paths
     public bool isPathing = false;
-    public static readonly float DefaultPartRate = 1f;
+    public static readonly float DefaultPartRate = 0.1f;
     public static float partDropRate = DefaultPartRate;
 
     // Code run on reticle double-click/proximity hotkey press
