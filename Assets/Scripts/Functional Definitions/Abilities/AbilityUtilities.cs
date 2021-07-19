@@ -266,7 +266,14 @@ public static class AbilityUtilities
             case 38:
                 return "flakshooter_sprite";
             case 37:
-                return "ionshooter_sprite";
+				if (data != "ion_station_shooter")
+                {
+					return "ionshooter_sprite";
+				}
+				else
+                {
+                    return "ion_station_shooter";
+                }
             case 36:
                 return "bombshooter_sprite";
             case 14:
