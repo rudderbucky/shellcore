@@ -123,7 +123,7 @@ namespace NodeEditorFramework.Standard
 
             if (checkpointName != "")
             {
-                GUILayout.Label("<color=red>Deprecated data detected! Checkpoint name = '" + checkpointName + "'</color>\n");
+                GUILayout.Label($"<color=red>Deprecated data detected! Checkpoint name = '{checkpointName}'</color>\n");
             }
 
             if (variableType > 0)

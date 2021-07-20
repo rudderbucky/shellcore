@@ -150,7 +150,7 @@ namespace NodeEditorFramework.Standard
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             entityID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
@@ -158,7 +158,7 @@ namespace NodeEditorFramework.Standard
 
         void SetTargetID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             targetEntityID = ID;
             WorldCreatorCursor.selectEntity -= SetTargetID;
@@ -209,7 +209,7 @@ namespace NodeEditorFramework.Standard
             {
                 if (!(target && entity))
                 {
-                    Debug.LogWarning("Could not find target/entity! " + target + " " + entity);
+                    Debug.LogWarning($"Could not find target/entity! {target} {entity}");
                     return 0;
                 }
 
