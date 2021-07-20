@@ -13,7 +13,7 @@ public class TipsFromTheYard : MonoBehaviour
         int DaysSinceFeb3_2019 = (int)(System.DateTime.UtcNow - new System.DateTime(2019, 2, 3, 0, 0, 0, System.DateTimeKind.Utc)).TotalDays;
         text = GetComponent<Text>();
         tipsList = new List<string>();
-        tipsList.Add("It's been " + DaysSinceFeb3_2019 + " days since we first started trying to find something to place here!");
+        tipsList.Add($"It's been {DaysSinceFeb3_2019} days since we first started trying to find something to place here!");
         tipsList.Add("You can hold Shift while placing a part in an invalid location to snap it back to its last location! Use this to layer parts to your will!");
         tipsList.Add("You can press 'C' to clear all parts from the grid! All parts are technologically swept into your inventory!");
         tipsList.Add("ShellCores that travel to havens through deadzones are clearly delusional!");

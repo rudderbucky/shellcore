@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -58,24 +59,35 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
             shipMass += blueprint.mass;
             weight += blueprint.mass * Entity.weightMultiplier;
         }
-        string buildStat = "";
+
+        string buildStat;
         if (statsDatabase.GetMode() == BuilderMode.Yard || statsDatabase.GetMode() == BuilderMode.Workshop)
         {
-            buildStat = "\nTOTAL BUILD VALUE: \n" + statsDatabase.GetBuildValue() + " CREDITS";
+            buildStat = $"\nTOTAL BUILD VALUE: \n{statsDatabase.GetBuildValue()} CREDITS";
         }
         else
         {
             string colorTag = "<color=white>";
-            if (cursorScript.buildCost > 0) colorTag = "<color=red>";
-            else if (cursorScript.buildCost < 0) colorTag = "<color=lime>";
-            buildStat = "TOTAL BUILD COST: " + "\n" + colorTag + statsDatabase.GetBuildCost() + " CREDITS</color>";
+            if (cursorScript.buildCost > 0)
+            {
+                colorTag = "<color=red>";
+            }
+            else if (cursorScript.buildCost < 0)
+            {
+                colorTag = "<color=lime>";
+            }
+
+            buildStat = $"TOTAL BUILD COST: \n{colorTag}{statsDatabase.GetBuildCost()} CREDITS</color>";
         }
-        display.text = "SHELL: " + totalHealths[0] + "\n"
-        + "CORE: " + totalHealths[1] + "\n"
-        + "ENERGY: " + totalHealths[2] + "\n"
-        + "SPEED: " + (int)Craft.GetPhysicsSpeed(speed, weight) + "\n"
-        + "WEIGHT: " + (int)weight + "\n"
-        + buildStat;
-        regenDisplay.text = "REGEN: " + totalRegens[0] + "\n\n" + "REGEN: " + totalRegens[2];
+
+        StringBuilder displayText = new StringBuilder();
+        displayText.Append($"SHELL: {totalHealths[0]}");
+        displayText.AppendLine($"CORE: {totalHealths[1]}");
+        displayText.AppendLine($"ENERGY: {totalHealths[2]}");
+        displayText.AppendLine($"SPEED: {(int)Craft.GetPhysicsSpeed(speed, weight)}");
+        displayText.AppendLine($"WEIGHT: {(int)weight}");
+        displayText.AppendLine(buildStat);
+        display.text = displayText.ToString();
+        regenDisplay.text = $"REGEN: {totalRegens[0]}\n\nREGEN: {totalRegens[2]}";
     }
 }
