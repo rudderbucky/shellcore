@@ -263,20 +263,13 @@ public static class AbilityUtilities
                 return "torpedoshooter_sprite";
             case 9:
                 return "lasershooter_sprite";
-            case 38:
-                return "flakshooter_sprite";
-            case 37:
-		if (data != "ion_station_shooter")
-                {
-		    return "ionshooter_sprite";
-		}
-		else
-                {
-                    return "ion_station_shooter";
-                }
             case 36:
                 return "bombshooter_sprite";
-            case 14:
+            case 37:
+		return "ionshooter_sprite";
+            case 38:
+                return "flakshooter_sprite";
+	    case 14:
                 if (data == "siegegroundshooter_sprite")
                 {
                     return "siegegroundshooter_sprite";
