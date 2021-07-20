@@ -60,7 +60,7 @@ public class StatusMenu : GUIWindowScripts
         AudioManager.PlayClipByID("clip_select");
         PlayerViewScript.SetCurrentWindow(this);
         GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
-        playerName.text = "<color=yellow>" + player.cursave.name + "</color>";
+        playerName.text = $"<color=yellow>{player.cursave.name}</color>";
         base.Activate();
     }
 

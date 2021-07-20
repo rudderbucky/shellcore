@@ -297,7 +297,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             textx.rectTransform.localScale = texty.rectTransform.localScale = Vector3.one;
             textx.alignment = TextAnchor.LowerLeft;
             texty.alignment = TextAnchor.UpperLeft;
-            textx.text = texty.text = i * distancePerTextMarker + "";
+            textx.text = texty.text = (i * distancePerTextMarker).ToString();
             textx.fontSize = texty.fontSize = 12;
             textx.color = texty.color = gridImg.color + Color.gray;
         }
