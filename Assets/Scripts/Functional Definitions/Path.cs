@@ -79,7 +79,7 @@ class PathEditor : Editor
 
             for (int j = 0; j < childArray.arraySize; j++)
             {
-                childArray.GetArrayElementAtIndex(j).intValue = EditorGUILayout.DelayedIntField("Child " + j + ": ", childArray.GetArrayElementAtIndex(j).intValue);
+                childArray.GetArrayElementAtIndex(j).intValue = EditorGUILayout.DelayedIntField($"Child {j}: ", childArray.GetArrayElementAtIndex(j).intValue);
             }
         }
 
