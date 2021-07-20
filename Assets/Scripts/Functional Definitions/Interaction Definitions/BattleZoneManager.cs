@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class BattleZoneManager : MonoBehaviour
@@ -106,28 +107,31 @@ public class BattleZoneManager : MonoBehaviour
 
         foreach (var statBlock in stats)
         {
-            string str = "";
-            str += "<color=" + FactionManager.GetFactionColorName(statBlock.faction) + ">" + (statBlock.faction == 0 ? "PLAYER" : "ENEMY") + "</color>\n\n";
-            str += statBlock.kills + "\n";
-            str += statBlock.deaths + "\n";
-            str += (statBlock.deaths > 0 ? (statBlock.kills / statBlock.deaths).ToString() : "-") + "\n";
-            str += "\n";
-            str += statBlock.power + "\n";
-            str += "\n";
-            str += statBlock.droneSpawns + "\n";
-            str += statBlock.droneKills + "\n";
-            str += statBlock.turretSpawns + "\n";
-            str += statBlock.turretKills + "\n";
+            StringBuilder str = new StringBuilder();
+            str.Append($"<color={FactionManager.GetFactionColorName(statBlock.faction)}>{(statBlock.faction == 0 ? "PLAYER" : "ENEMY")}</color>");
+            str.AppendLine().AppendLine();
+            str.AppendLine(statBlock.kills.ToString());
+            str.AppendLine(statBlock.deaths.ToString());
+            str.AppendLine(statBlock.deaths > 0 ? (statBlock.kills / statBlock.deaths).ToString() : "-");
+            str.AppendLine();
+            str.AppendLine(statBlock.power.ToString());
+            str.AppendLine();
+            str.AppendLine(statBlock.droneSpawns.ToString());
+            str.AppendLine(statBlock.droneKills.ToString());
+            str.AppendLine(statBlock.turretSpawns.ToString());
+            str.AppendLine(statBlock.turretKills.ToString());
 
             if (index == 0)
             {
-                str += "\n";
-                str += Mathf.RoundToInt(Time.time - startTime) + "s\n";
-                str += "\n";
-                str += CreditsCollected + "\n";
+                str.AppendLine();
+                str.AppendLine(Mathf.RoundToInt(Time.time - startTime) + "s");
+                str.AppendLine();
+                str.AppendLine(CreditsCollected.ToString());
             }
 
-            strings[index++] = str;
+            str.AppendLine();
+
+            strings[index++] = str.ToString();
         }
 
         return strings;
