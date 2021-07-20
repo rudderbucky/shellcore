@@ -146,7 +146,7 @@ public class WCPathCreator : MonoBehaviour
 
                     pathNodes.Remove(from);
 
-                    Debug.Log("Combined " + from.ID + " to " + to.ID);
+                    Debug.Log($"Combined {from.ID} to {to.ID}");
 
                     CleanPath();
                     UpdateMesh();
@@ -165,7 +165,7 @@ public class WCPathCreator : MonoBehaviour
             {
                 RemoveNode(closest);
                 UpdateMesh();
-                Debug.Log("Node " + closest + " removed!");
+                Debug.Log($"Node {closest} removed!");
             }
         }
 
@@ -268,7 +268,7 @@ public class WCPathCreator : MonoBehaviour
 
             if (!found)
             {
-                Debug.Log("Node " + pathNodes[i].ID + " removed!");
+                Debug.Log($"Node {pathNodes[i].ID} removed!");
                 pathNodes.RemoveAt(i--);
             }
         }

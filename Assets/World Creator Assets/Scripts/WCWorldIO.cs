@@ -102,7 +102,7 @@ public class WCWorldIO : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name == "WorldCreator")
         {
-            var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+            var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
             DeletePlaceholderDirectories();
             if (Directory.Exists(path))
             {
@@ -119,44 +119,48 @@ public class WCWorldIO : MonoBehaviour
 
     public static void DeletePlaceholderDirectories()
     {
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+        var CanvasPlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
+        if (System.IO.Directory.Exists(CanvasPlaceholder))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\CanvasPlaceholder"))
+            foreach (var file in System.IO.Directory.GetFiles(CanvasPlaceholder))
             {
                 System.IO.File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\CanvasPlaceholder");
+            System.IO.Directory.Delete(CanvasPlaceholder);
         }
 
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\EntityPlaceholder"))
+        var EntityPlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
+        if (System.IO.Directory.Exists(EntityPlaceholder))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\EntityPlaceholder"))
+            foreach (var file in System.IO.Directory.GetFiles(EntityPlaceholder))
             {
                 System.IO.File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\EntityPlaceholder");
+            System.IO.Directory.Delete(EntityPlaceholder);
         }
 
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\WavePlaceholder"))
+        var WavePlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder");
+        if (System.IO.Directory.Exists(WavePlaceholder))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\WavePlaceholder"))
+            foreach (var file in System.IO.Directory.GetFiles(WavePlaceholder))
             {
                 System.IO.File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\WavePlaceholder");
+            System.IO.Directory.Delete(WavePlaceholder);
         }
 
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\FactionPlaceholder"))
+        var FactionPlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder");
+        if (System.IO.Directory.Exists(FactionPlaceholder))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\FactionPlaceholder"))
+            foreach (var file in System.IO.Directory.GetFiles(FactionPlaceholder))
             {
                 System.IO.File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\FactionPlaceholder");
+            System.IO.Directory.Delete(FactionPlaceholder);
         }
 
         if (System.IO.File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
@@ -176,7 +180,7 @@ public class WCWorldIO : MonoBehaviour
         {
             if (originalReadPath.Contains("main"))
             {
-                generatorHandler.WriteWorld(System.IO.Path.GetDirectoryName(originalReadPath) + "\\main - " + VersionNumberScript.version);
+                generatorHandler.WriteWorld(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(originalReadPath), "main - " + VersionNumberScript.version));
             }
             else
             {
@@ -190,7 +194,7 @@ public class WCWorldIO : MonoBehaviour
     public void TestWorld()
     {
         // TODO: copy custom resources
-        var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
         if (generatorHandler.WriteWorld(path))
         {
             generatorHandler.OnSectorSaved.AddListener(OnWorldSaved);
@@ -211,8 +215,8 @@ public class WCWorldIO : MonoBehaviour
 
     void LoadTestSave()
     {
-        var path = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
-        var savePath = Application.persistentDataPath + "\\Saves\\TestSave";
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
+        var savePath = System.IO.Path.Combine(Application.persistentDataPath, "Saves", "TestSave");
         if (File.Exists(savePath))
         {
             File.Delete(savePath);
@@ -232,7 +236,7 @@ public class WCWorldIO : MonoBehaviour
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         try
         {
-            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(path + "\\world.worlddata"), wdata);
+            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText(System.IO.Path.Combine(path, "world.worlddata")), wdata);
             authors.text = wdata.author;
             description.text = wdata.description;
             defaultBlueprint.text = wdata.defaultBlueprintJSON;
@@ -240,8 +244,7 @@ public class WCWorldIO : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            authors.text =
-                description.text = "";
+            authors.text = description.text = "";
             Debug.Log(e);
         }
 
@@ -323,7 +326,7 @@ public class WCWorldIO : MonoBehaviour
                 authors.placeholder.GetComponent<Text>().text = "World authors appear here";
                 description.placeholder.GetComponent<Text>().text = "World description appears here";
                 defaultBlueprint.placeholder.GetComponent<Text>().text = "Default blueprint appears here";
-                directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
+                directories = Directory.GetDirectories(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors"));
                 break;
             case IOMode.Write:
                 readButton.text = "Write world";
@@ -334,15 +337,15 @@ public class WCWorldIO : MonoBehaviour
                 authors.placeholder.GetComponent<Text>().text = "Enter world authors here";
                 description.placeholder.GetComponent<Text>().text = "Enter world description here";
                 defaultBlueprint.placeholder.GetComponent<Text>().text = "Enter default blueprint here";
-                directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
+                directories = Directory.GetDirectories(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors"));
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                directories = Directory.GetFiles(Application.streamingAssetsPath + "\\EntityPlaceholder");
+                directories = Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder"));
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
-                directories = Directory.GetFiles(Application.streamingAssetsPath + "\\WavePlaceholder");
+                directories = Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder"));
                 break;
         }
 
@@ -417,15 +420,15 @@ public class WCWorldIO : MonoBehaviour
         {
             case IOMode.Read:
             case IOMode.Write:
-                path = Application.streamingAssetsPath + "\\Sectors\\" + field.text;
+                path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", field.text);
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                path = Application.streamingAssetsPath + "\\EntityPlaceholder\\" + field.text + ".json";
+                path = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", field.text + ".json");
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
-                path = Application.streamingAssetsPath + "\\WavePlaceholder\\" + field.text + ".json";
+                path = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder", field.text + ".json");
                 break;
         }
 
