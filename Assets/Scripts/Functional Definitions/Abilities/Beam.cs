@@ -14,7 +14,7 @@ public class Beam : WeaponAbility
         // set instance fields 
         base.Awake();
         abilityName = "Beam";
-        description = "Instant attack that deals " + damage + " damage.";
+        description = $"Instant attack that deals {damage} damage.";
         line = GetComponent<LineRenderer>() ? GetComponent<LineRenderer>() : gameObject.AddComponent<LineRenderer>();
         line.sortingLayerName = "Projectiles";
         line.material = material;

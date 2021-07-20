@@ -11,7 +11,7 @@ public class Cannon : WeaponAbility
     {
         base.Awake();
         abilityName = "Cannon";
-        description = "Instant attack that deals " + damage + " damage.";
+        description = $"Instant attack that deals {damage} damage.";
         ID = AbilityID.Cannon;
         damage = cannonDamage;
         cooldownDuration = 2F;

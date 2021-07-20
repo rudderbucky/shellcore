@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -80,30 +81,30 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
     void ReflectDescription(Ability ability)
     {
-        string description = "";
-        description += AbilityUtilities.GetAbilityName(ability) + (ability.GetTier() > 0 ? " " + ability.GetTier() : "") + "\n";
+        StringBuilder description = new StringBuilder();
+        description.Append(AbilityUtilities.GetAbilityName(ability) + (ability.GetTier() > 0 ? " " + ability.GetTier() : ""));
         if (ability.GetEnergyCost() > 0)
         {
-            description += "Energy cost: " + ability.GetEnergyCost() + "\n";
+            description.AppendLine($"Energy cost: {ability.GetEnergyCost()}");
         }
 
         if (ability.GetCDDuration() != 0)
         {
-            description += "Cooldown duration: " + ability.GetCDDuration() + "\n";
+            description.AppendLine($"Cooldown duration: {ability.GetCDDuration()}");
         }
 
         if (ability.GetRange() > 0)
         {
-            description += $"Range: {ability.GetRange()}\n";
+            description.AppendLine($"Range: {ability.GetRange()}");
         }
 
         if ((ability as WeaponAbility)?.GetBonusDamageType() != null)
         {
-            description += $"Deals bonus damage to: {(ability as WeaponAbility).GetBonusDamageType()}\n";
+            description.AppendLine($"Deals bonus damage to: {(ability as WeaponAbility).GetBonusDamageType()}");
         }
 
-        description += AbilityUtilities.GetDescription(ability);
-        abilityInfo = description;
+        description.AppendLine(AbilityUtilities.GetDescription(ability));
+        abilityInfo = description.ToString();
         if (tooltip)
         {
             tooltip.transform.Find("Text").GetComponent<Text>().text = abilityInfo;

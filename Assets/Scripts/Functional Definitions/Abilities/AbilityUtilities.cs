@@ -135,25 +135,25 @@ public static class AbilityUtilities
             case 0:
                 return "Does nothing.";
             case 1:
-                return "+" + SpeedThrust.boost * tier + " speed for 10 seconds.";
+                return $"+{SpeedThrust.boost * tier} speed for 10 seconds.";
             case 2:
-                return "Instantly heal " + HealthHeal.heals[0] * tier + " shell.";
+                return $"Instantly heal {HealthHeal.heals[0] * tier} shell.";
             case 3:
-                return "Projectile that deals " + MainBullet.GetDamage(tier) + " damage. \nStays with you no matter what.";
+                return $"Projectile that deals {MainBullet.GetDamage(tier)} damage. \nStays with you no matter what.";
             case 4:
-                return "Instant attack that deals " + Beam.beamDamage * tier + " damage.";
+                return $"Instant attack that deals {Beam.beamDamage * tier} damage.";
             case 5:
-                return "Projectile that deals " + Bullet.bulletDamage * tier + " damage.";
+                return $"Projectile that deals {Bullet.bulletDamage * tier} damage.";
             case 6:
-                return "Instant attack that deals " + Cannon.cannonDamage * tier + " damage.";
+                return $"Instant attack that deals {Cannon.cannonDamage * tier} damage.";
             case 7:
-                return "Slow homing projectile that deals " + Missile.missileDamage * tier + " damage.";
+                return $"Slow homing projectile that deals {Missile.missileDamage * tier} damage.";
             case 8:
-                return "Slow projectile that deals " + Torpedo.torpedoDamage * tier + " damage to ground entities.";
+                return $"Slow projectile that deals {Torpedo.torpedoDamage * tier} damage to ground entities.";
             case 9:
-                return "Fast projectile that deals " + Laser.laserDamage * tier + " damage. 25% pierces to core.";
+                return $"Fast projectile that deals {Laser.laserDamage * tier} damage. 25% pierces to core.";
             case 10:
-                if (secondaryData == null || secondaryData == "")
+                if (string.IsNullOrEmpty(secondaryData))
                 {
                     return "Spawns a drone.";
                 }
@@ -161,21 +161,21 @@ public static class AbilityUtilities
                 DroneSpawnData data = DroneUtilities.GetDroneSpawnDataByShorthand(secondaryData);
                 return DroneUtilities.GetDescriptionByType(data.type);
             case 11:
-                return "Instantly heal " + HealthHeal.heals[1] * tier + " core.";
+                return $"Instantly heal {HealthHeal.heals[1] * tier} core.";
             case 12:
-                return "Instantly heal " + HealthHeal.heals[2] * tier + " energy.";
+                return $"Instantly heal {HealthHeal.heals[2] * tier} energy.";
             case 13:
-                return "+" + Speed.boost * tier + " speed.";
+                return $"+{Speed.boost * tier} speed.";
             case 17:
-                return "Passively increases shell regen by " + ShellRegen.regens[0] * tier + " points.";
+                return $"Passively increases shell regen by {ShellRegen.regens[0] * tier} points.";
             case 18:
-                return "Passively increases maximum shell by " + ShellMax.max * tier + " points.";
+                return $"Passively increases maximum shell by {ShellMax.max * tier} points.";
             case 19:
-                return "Passively increases energy regen by " + ShellRegen.regens[2] * tier + " points.";
+                return $"Passively increases energy regen by {ShellRegen.regens[2] * tier} points.";
             case 20:
-                return "Passively increases maximum energy by " + ShellMax.max * tier + " points.";
+                return $"Passively increases maximum energy by {ShellMax.max * tier} points.";
             case 21:
-                return "Passively increases the maximum allowed number of controlled units by " + Command.commandUnitIncrease + ".";
+                return $"Passively increases the maximum allowed number of controlled units by {Command.commandUnitIncrease}.";
             case 24:
                 return "Become invisible to enemies.";
             case 25:
