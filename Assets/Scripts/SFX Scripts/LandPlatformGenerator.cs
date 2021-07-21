@@ -114,10 +114,10 @@ public class LandPlatformGenerator : MonoBehaviour
         }
         else if (sector.platformData.Length > 0)
         {
-            GameObject[] prefabs = new GameObject[LandPlatformGenerator.prefabNames.Length];
-            for (int i = 0; i < LandPlatformGenerator.prefabNames.Length; i++)
+            GameObject[] prefabs = new GameObject[prefabNames.Length];
+            for (int i = 0; i < prefabNames.Length; i++)
             {
-                prefabs[i] = ResourceManager.GetAsset<GameObject>(LandPlatformGenerator.prefabNames[i]);
+                prefabs[i] = ResourceManager.GetAsset<GameObject>(prefabNames[i]);
             }
 
             tileSize = prefabs[0].GetComponent<SpriteRenderer>().bounds.size.x;
