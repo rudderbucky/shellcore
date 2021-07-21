@@ -428,7 +428,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         AttemptAddComponents();
-        var renderer = GetComponent<SpriteRenderer>();
+        var coreRenderer = GetComponent<SpriteRenderer>();
         if (blueprint)
         {
             // check if it contains a blueprint (it should)
@@ -439,16 +439,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 // check if the blueprint does not contain a core sprite ID (it should) 
             }
 
-            renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+            coreRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
         }
         else
         {
-            renderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
+            coreRenderer.sprite = ResourceManager.GetAsset<Sprite>("core1_light");
         }
 
-        renderer.sortingOrder = 101;
-
-        renderer = transform.Find("Minimap Image").GetComponent<SpriteRenderer>();
+        var renderer = transform.Find("Minimap Image").GetComponent<SpriteRenderer>();
         if (category == EntityCategory.Station && !(this is Turret))
         {
             if (this as Outpost)
@@ -480,6 +478,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         weight = this as Drone ? 25 : coreWeight;
 
         var isLightDrone = this as Drone && (this as Drone).type == DroneType.Light; // used for light drone weight reduction
+
+        int sortingOrder = 1;
         //For shellcores, create the tractor beam
         // Create shell parts
         if (blueprint != null)
@@ -511,7 +511,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 var tmp = partObject.transform.localScale;
                 tmp.x = part.mirrored ? -1 : 1;
                 partObject.transform.localScale = tmp;
-                sr.sortingOrder = i + 2;
+                sr.sortingOrder = ++sortingOrder;
                 //entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
                 var partWeight = isLightDrone ? partBlueprint.mass * 0.6F * weightMultiplier : partBlueprint.mass * weightMultiplier;
                 weight += partWeight;
@@ -525,6 +525,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     var shooter = new GameObject("Shooter");
                     shooter.transform.SetParent(partObject.transform);
                     shooter.transform.localPosition = Vector3.zero;
+                    shooter.transform.localRotation = Quaternion.identity;
                     var shooterSprite = shooter.AddComponent<SpriteRenderer>();
                     shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
                     // if(blueprint.parts.Count < 2) shooterSprite.sortingOrder = 500; TODO: Figure out what these lines do
@@ -577,6 +578,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
             maxHealth.CopyTo(baseMaxHealth, 0);
         }
+
+        var shellRenderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
+        if (shellRenderer)
+            shellRenderer.sortingOrder = ++sortingOrder;
+        coreRenderer.sortingOrder = ++sortingOrder;
 
         if (this as ShellCore)
         {
