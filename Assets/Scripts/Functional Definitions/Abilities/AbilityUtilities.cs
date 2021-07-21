@@ -282,9 +282,12 @@ public static class AbilityUtilities
                     return "siegeshooter_sprite";
                 }
             case 2:
+            case 30:
                 return "ability_indicator_shell";
             case 11:
             case 12:
+            case 31:
+            case 32:
                 return "ability_indicator_core";
             case 28:
                 return "ability_indicator_retreat";
