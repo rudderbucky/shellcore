@@ -266,7 +266,7 @@ public static class AbilityUtilities
             case 36:
                 return "bombshooter_sprite";
             case 37:
-                return "ionbeamshooter_sprite";
+                return "ionshooter_sprite";
             case 38:
                 return "flakshooter_sprite";
             case 14:
