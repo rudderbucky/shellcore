@@ -5,7 +5,7 @@ public class BattleZoneManager : MonoBehaviour
 {
     static List<Entity> targets;
     public string sectorName;
-    bool playing;
+    public bool playing;
 
     float startTime = 0f;
     public int CreditsCollected = 0;

@@ -161,7 +161,7 @@ public class SectorManager : MonoBehaviour
 
         var inCurrentSector = player && current != null &&
                               (current.bounds.contains(player.transform.position) || player.GetIsOscillating()) && current.dimension == player.Dimension;
-        if (!jsonMode && player && (current == null || current.dimension != player.Dimension || (!inCurrentSector && GetCurrentType() != Sector.SectorType.BattleZone && GetCurrentType() != Sector.SectorType.SiegeZone) || !(current.bounds.contains(player.transform.position)) && abortTimer <= 1))
+        if (!jsonMode && player && (current == null || current.dimension != player.Dimension || (!inCurrentSector && GetCurrentType() != Sector.SectorType.BattleZone && GetCurrentType() != Sector.SectorType.SiegeZone) || (!(current.bounds.contains(player.transform.position)) && abortTimer <= 1)) || (!(current.bounds.contains(player.transform.position)) && !battleZone.playing) || (!(current.bounds.contains(player.transform.position)) && !siegeZone.playing))
         {
             AttemptSectorLoad();
             abortTimer = 6;

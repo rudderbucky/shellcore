@@ -32,7 +32,7 @@ public class SiegeZoneManager : MonoBehaviour
     private List<Entity> entitiesRemaining;
     private int waveCount = 0;
     public List<PlayerCore> players;
-    private bool playing = false;
+    public bool playing = false;
     public string sectorName;
 
     void OnEnable()
