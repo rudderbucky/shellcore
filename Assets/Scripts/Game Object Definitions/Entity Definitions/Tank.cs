@@ -5,9 +5,11 @@ public class Tank : GroundCraft, IOwnable
 {
     Vector2[] path; // positions for tank to move to
     int index = 0;
-    public bool hasPath = false;
+    public bool HasPath = false;
     IOwner owner;
     float pathfindTimer = 0f;
+
+    public bool IsInRange = false;
 
     WeaponAbility weapon;
 
@@ -71,7 +73,7 @@ public class Tank : GroundCraft, IOwnable
             if (pathfindTimer <= 0f)
             {
                 pathfindToTarget();
-                if (hasPath)
+                if (HasPath)
                 {
                     pathfindTimer = 3.0f;
                 }
@@ -95,7 +97,7 @@ public class Tank : GroundCraft, IOwnable
         else
         {
             pathfindTimer = 1f;
-            hasPath = false;
+            HasPath = false;
         }
     }
 
@@ -132,11 +134,11 @@ public class Tank : GroundCraft, IOwnable
         {
             Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), weapon.GetRange());
 
-            if (!hasPath)
+            if (!HasPath)
             {
                 path = newPath;
-                hasPath = (path != null && path.Length > 0);
-                if (hasPath)
+                HasPath = (path != null && path.Length > 0);
+                if (HasPath)
                 {
                     index = path.Length - 1;
                 }
@@ -146,8 +148,8 @@ public class Tank : GroundCraft, IOwnable
                 if (newPath[0] != path[0])
                 {
                     path = newPath;
-                    hasPath = (path != null && path.Length > 0);
-                    if (hasPath)
+                    HasPath = (path != null && path.Length > 0);
+                    if (HasPath)
                     {
                         index = path.Length - 1;
                     }
@@ -156,8 +158,8 @@ public class Tank : GroundCraft, IOwnable
             else
             {
                 path = newPath;
-                hasPath = (path != null && path.Length > 0);
-                if (hasPath)
+                HasPath = (path != null && path.Length > 0);
+                if (HasPath)
                 {
                     index = path.Length - 1;
                 }
@@ -171,7 +173,7 @@ public class Tank : GroundCraft, IOwnable
 
     private void OnDrawGizmosSelected()
     {
-        if (hasPath && path.Length > 1)
+        if (HasPath && path.Length > 1)
         {
             Gizmos.color = Color.red;
             for (int i = 0; i < path.Length - 1; i++)
@@ -193,7 +195,7 @@ public class Tank : GroundCraft, IOwnable
             return;
         }
 
-        if (hasPath)
+        if (HasPath)
         {
             Vector2 direction = path[index] - (Vector2)transform.position;
 
@@ -210,16 +212,28 @@ public class Tank : GroundCraft, IOwnable
                 direction.x = 0;
             }
 
-            const float minDistance = 2.0f;
+            IsInRange = false;
+            var target = weapon.GetTarget();
+            if (target != null)
+            {
+                float r2 = weapon.GetRange();
+                r2 = r2 * r2;
+                IsInRange = (target.transform.position - transform.position).sqrMagnitude < r2;
+            }
 
-            // TODO: optimize?
+            if (IsInRange)
+            {
+                return;
+            }
 
             // Don't move if there's another tank with higher instance ID in range (give way and form a line)
+            const float minDistance = 2.0f;
             var normalized = direction.normalized;
             for (int i = 0; i < AIData.entities.Count; i++)
             {
                 Entity e = AIData.entities[i];
-                if (e is GroundCraft && e != this && e.GetInstanceID() > GetInstanceID())
+                Tank t = e as Tank;
+                if (t != null && e != this && e.GetInstanceID() > GetInstanceID() && !t.IsInRange && t.HasPath)
                 {
                     float d = (e.transform.position - (transform.position)).sqrMagnitude;
                     if (d < minDistance)
@@ -236,7 +250,7 @@ public class Tank : GroundCraft, IOwnable
                 index--;
                 if (index < 0)
                 {
-                    hasPath = false;
+                    HasPath = false;
                 }
             }
             else if (index > 0 || direction.magnitude > 2F)
