@@ -202,6 +202,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         cursorScript.buildValue -= EntityBlueprint.GetPartValue(part.info);
         cursorScript.parts.Remove(part);
         Destroy(part.gameObject);
+        UpdateChain();
     }
 
     public static Bounds GetRect(RectTransform rectTransform)
