@@ -37,6 +37,7 @@ namespace NodeEditorFramework.Standard
         }
 
         public bool useIDInput;
+        public bool progressionFeedback = true;
         public string targetID;
         public int targetCount = 1;
         public int targetFaction = 1;
@@ -114,6 +115,7 @@ namespace NodeEditorFramework.Standard
 
             targetCount = RTEditorGUI.IntField("Count: ", targetCount);
             targetFaction = RTEditorGUI.IntField("Faction: ", targetFaction);
+            progressionFeedback = RTEditorGUI.Toggle(progressionFeedback, "Progression Feedback");
         }
 
         void SetEntityID(string ID)
@@ -170,13 +172,17 @@ namespace NodeEditorFramework.Standard
                 && entity.faction == targetFaction)
             {
                 killCount++;
-                if (targetFaction != 0)
+
+                if (progressionFeedback)
                 {
-                    SectorManager.instance.player.alerter.showMessage("ENEMIES DESTROYED: " + killCount + " / " + targetCount, "clip_victory");
-                }
-                else
-                {
-                    SectorManager.instance.player.alerter.showMessage("ALLIES DEAD: " + killCount + " / " + targetCount, "clip_alert");
+                    if (!FactionManager.IsAllied(0, targetFaction))
+                    {
+                        SectorManager.instance.player.alerter.showMessage("ENEMIES DESTROYED: " + killCount + " / " + targetCount, "clip_victory");
+                    }
+                    else
+                    {
+                        SectorManager.instance.player.alerter.showMessage("ALLIES DEAD: " + killCount + " / " + targetCount, "clip_alert");
+                    }
                 }
 
                 if (killCount == targetCount)
