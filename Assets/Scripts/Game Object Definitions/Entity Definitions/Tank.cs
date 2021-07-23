@@ -5,7 +5,7 @@ public class Tank : GroundCraft, IOwnable
 {
     Vector2[] path; // positions for tank to move to
     int index = 0;
-    bool hasPath = false;
+    public bool hasPath = false;
     IOwner owner;
     float pathfindTimer = 0f;
 
@@ -65,7 +65,7 @@ public class Tank : GroundCraft, IOwnable
     {
         base.Update();
 
-        if (pathfindTimer >= 0f)
+        if (isOnGround && pathfindTimer >= 0f)
         {
             pathfindTimer -= Time.deltaTime;
             if (pathfindTimer <= 0f)
@@ -94,6 +94,7 @@ public class Tank : GroundCraft, IOwnable
         }
         else
         {
+            pathfindTimer = 1f;
             hasPath = false;
         }
     }
@@ -131,7 +132,16 @@ public class Tank : GroundCraft, IOwnable
         {
             Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), weapon.GetRange());
 
-            if (newPath != null && path != null && newPath.Length > 0 && path.Length > 0)
+            if (!hasPath)
+            {
+                path = newPath;
+                hasPath = (path != null && path.Length > 0);
+                if (hasPath)
+                {
+                    index = path.Length - 1;
+                }
+            }
+            else if (newPath != null && path != null && newPath.Length > 0 && path.Length > 0)
             {
                 if (newPath[0] != path[0])
                 {
@@ -204,6 +214,7 @@ public class Tank : GroundCraft, IOwnable
 
             // TODO: optimize?
 
+            // Don't move if there's another tank with higher instance ID in range (give way and form a line)
             var normalized = direction.normalized;
             for (int i = 0; i < AIData.entities.Count; i++)
             {
