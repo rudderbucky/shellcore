@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Conditions/Check Entity")]
+    [Node(false, "Conditions/Check Entity Existence")]
     public class CheckEntityCondition : Node, ICondition
     {
         public const string ID = "CheckEntityCondition";
@@ -15,12 +15,12 @@ namespace NodeEditorFramework.Standard
 
         public override string Title
         {
-            get { return "Check Entity"; }
+            get { return "Check Entity Existence"; }
         }
 
         public override Vector2 DefaultSize
         {
-            get { return new Vector2(200, 120); }
+            get { return new Vector2(240, 130); }
         }
 
         public ConditionState state; // Property can't be serialized -> field
@@ -35,8 +35,8 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob output;
 
         public string entityID;
-        bool rangeCheck;
-        int distanceFromPlayer;
+        public bool rangeCheck;
+        public int distanceFromPlayer;
 
         public override void NodeGUI()
         {
@@ -46,7 +46,7 @@ namespace NodeEditorFramework.Standard
             rangeCheck = RTEditorGUI.Toggle(rangeCheck, "Range check", GUILayout.Width(200f));
             if (rangeCheck)
             {
-                distanceFromPlayer = RTEditorGUI.IntField("Distance (squared): ", distanceFromPlayer);
+                distanceFromPlayer = RTEditorGUI.IntField("Distance from player: ", distanceFromPlayer);
             }
         }
 
@@ -64,7 +64,7 @@ namespace NodeEditorFramework.Standard
                 if (rangeCheck)
                 {
                     var player = AIData.entities.Find(ent => ent.ID == "player");
-                    if ((player.transform.position - match.transform.position).sqrMagnitude > distanceFromPlayer)
+                    if ((player.transform.position - match.transform.position).sqrMagnitude > distanceFromPlayer * distanceFromPlayer)
                     {
                         continue;
                     }
