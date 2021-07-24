@@ -30,16 +30,24 @@ public class SelectionBoxScript : MonoBehaviour
     public Texture2D defaultCursor;
     public Texture2D overTargetableCursor;
 
+    public static SelectionBoxScript instance;
+
+    public static bool GetClicking()
+    {
+        return instance && instance.clicking;
+
+    }
+
     void Awake()
     {
+        instance = this;
         simpleMouseMovement = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
     }
 
-    void Update()
+    private bool GetMouseOverTarget()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
-        bool overTarget = false;
 
         foreach (var hit in hits)
         {
@@ -48,32 +56,88 @@ public class SelectionBoxScript : MonoBehaviour
             if ((hitTransforn.GetComponent<ITargetable>() != null && hitTransforn != PlayerCore.Instance.transform)
                 || (hitTransforn.GetComponent<Draggable>() && (!ent || ent.faction == PlayerCore.Instance.faction)))
             {
-                Cursor.SetCursor(overTargetableCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
-                overTarget = true;
-                break;
+                return true;
             }
         }
 
-        if (!overTarget)
-        {
-            Cursor.SetCursor(defaultCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
-        }
+        return false;
+    }
 
-        // Clear targets if in cutscene/interacting
+    private void SetClicking(bool val)
+    {
+        clicking = image.enabled = val;
+        if (val)
+        {
+            dronesChecked = reticleScript.FindTarget();
+            reticleScript.ClearSecondaryTargets();
+
+            // Get reference point of selection box for drawing
+            startPoint = Input.mousePosition;
+            image.rectTransform.anchoredPosition = startPoint;
+            DrawBoxAndPivot();
+        }
+    }
+
+    private void ClearTargetsIfInCutsceneOrInteracting()
+    {
         if (PlayerCore.Instance.GetIsInteracting() || DialogueSystem.isInCutscene || PlayerViewScript.paused || PlayerViewScript.GetIsWindowActive())
         {
-            // Debug.Log(PlayerCore.Instance.GetIsInteracting() + " " + DialogueSystem.isInCutscene + " " + PlayerViewScript.paused + " " + PlayerViewScript.GetIsWindowActive());
             if (!PlayerViewScript.paused)
             {
                 reticleScript.ClearSecondaryTargets();
                 reticleScript.SetTarget(null);
             }
 
-            image.enabled = false;
-            clicking = false;
+            SetClicking(false);
             return;
         }
+    }
 
+    private void DrawBoxAndPivot()
+    {
+        // Draw box
+        image.enabled = true;
+        sizeVec = (Vector2)Input.mousePosition - startPoint;
+        sizeVec.x = Mathf.Abs(sizeVec.x);
+        sizeVec.y = Mathf.Abs(sizeVec.y);
+        image.rectTransform.sizeDelta = sizeVec;
+
+        // Change the pivot of the size delta when the mouse goes under/before the start point
+        pivotVec = new Vector2();
+        pivotVec.x = Input.mousePosition.x < startPoint.x ? 1 : 0;
+        pivotVec.y = Input.mousePosition.y < startPoint.y ? 1 : 0;
+        image.rectTransform.pivot = pivotVec;
+    }
+
+    private void GrabSelectionAndScanForEntities()
+    {
+        Vector2 boxStart =
+                               Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, CameraScript.zLevel));
+        Vector2 boxExtents =
+            Camera.main.ScreenToWorldPoint(
+                new Vector3((1 - 2 * pivotVec.x) * sizeVec.x + startPoint.x,
+                    (1 - 2 * pivotVec.y) * sizeVec.y + startPoint.y,
+                    CameraScript.zLevel));
+        Rect finalBox = Rect.MinMaxRect(
+            Mathf.Min(boxStart.x, boxExtents.x),
+            Mathf.Min(boxStart.y, boxExtents.y),
+            Mathf.Max(boxStart.x, boxExtents.x),
+            Mathf.Max(boxStart.y, boxExtents.y)
+        );
+
+        // Now scan for entities
+        foreach (var ent in AIData.entities)
+        {
+            if (ent != PlayerCore.Instance && ent.transform != PlayerCore.Instance.GetTargetingSystem().GetTarget()
+                                           && finalBox.Contains(ent.transform.position))
+            {
+                reticleScript.AddSecondaryTarget(ent);
+            }
+        }
+    }
+
+    private void CycleTarget()
+    {
         var targSys = PlayerCore.Instance.GetTargetingSystem();
 
         // Tab cycles primary target
@@ -88,113 +152,57 @@ public class SelectionBoxScript : MonoBehaviour
             reticleScript.SetTarget(newTarget.transform);
             reticleScript.RemoveSecondaryTarget(newTarget);
         }
+    }
 
-        // Right click clears targets
-        /*
-        if(Input.GetMouseButtonDown(1))
+    void Update()
+    {
+        bool overTarget = GetMouseOverTarget();
+
+        if (overTarget)
         {
-            if(Input.GetKey(KeyCode.LeftShift))
-            {
-                PlayerCore.Instance.GetTargetingSystem().SetTarget(null);
-            }
-            else
-            {
-                if(PlayerCore.Instance.GetTargetingSystem().GetSecondaryTargets().Count > 0)
-                    reticleScript.ClearSecondaryTargets();
-                else PlayerCore.Instance.GetTargetingSystem().SetTarget(null);
-            }
+            Cursor.SetCursor(overTargetableCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
         }
-        */
+        else
+        {
+            Cursor.SetCursor(defaultCursor, new Vector2(-0.16F, 0.16F), CursorMode.Auto);
+        }
+
+        ClearTargetsIfInCutsceneOrInteracting();
+
+        CycleTarget();
 
         if (Input.GetMouseButtonDown(0) && !eventSystem.IsPointerOverGameObject())
         {
-            dronesChecked = reticleScript.FindTarget();
-            reticleScript.ClearSecondaryTargets();
-
-            // Get reference point of selection box for drawing
-            startPoint = Input.mousePosition;
-            image.rectTransform.anchoredPosition = startPoint;
-
-            clicking = true;
+            SetClicking(true);
         }
 
         if (((Vector2)Input.mousePosition - startPoint).sqrMagnitude > 10) // Make sure the drag isn't interfering with clicks
         {
             if (Input.GetMouseButton(0) && clicking)
             {
-                // Draw box
-                image.enabled = true;
-                sizeVec = (Vector2)Input.mousePosition - startPoint;
-                sizeVec.x = Mathf.Abs(sizeVec.x);
-                sizeVec.y = Mathf.Abs(sizeVec.y);
-                image.rectTransform.sizeDelta = sizeVec;
-
-                // Change the pivot of the size delta when the mouse goes under/before the start point
-                pivotVec = new Vector2();
-                pivotVec.x = Input.mousePosition.x < startPoint.x ? 1 : 0;
-                pivotVec.y = Input.mousePosition.y < startPoint.y ? 1 : 0;
-                image.rectTransform.pivot = pivotVec;
+                DrawBoxAndPivot();
             }
-            else if (Input.GetMouseButtonUp(0) && clicking)
+            else if (Input.GetMouseButtonUp(0))
             {
-                // End selection, push entities in box into secondary targets
-                clicking = false;
-                // Grab the rect of the selection box
-                Vector2 boxStart =
-                    Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, CameraScript.zLevel));
-                Vector2 boxExtents =
-                    Camera.main.ScreenToWorldPoint(
-                        new Vector3((1 - 2 * pivotVec.x) * sizeVec.x + startPoint.x,
-                            (1 - 2 * pivotVec.y) * sizeVec.y + startPoint.y,
-                            CameraScript.zLevel));
-                Rect finalBox = Rect.MinMaxRect(
-                    Mathf.Min(boxStart.x, boxExtents.x),
-                    Mathf.Min(boxStart.y, boxExtents.y),
-                    Mathf.Max(boxStart.x, boxExtents.x),
-                    Mathf.Max(boxStart.y, boxExtents.y)
-                );
-
-                // Now scan for entities
-                foreach (var ent in AIData.entities)
+                if (clicking)
                 {
-                    if (ent != PlayerCore.Instance && ent.transform != PlayerCore.Instance.GetTargetingSystem().GetTarget()
-                                                   && finalBox.Contains(ent.transform.position))
-                    {
-                        reticleScript.AddSecondaryTarget(ent);
-                    }
-                }
+                    // End selection, push entities in box into secondary targets
+                    SetClicking(false);
+                    // Grab the rect of the selection box
 
-                image.enabled = false;
+                    GrabSelectionAndScanForEntities();
+                }
             }
         }
-
-        /*
-        // Drones being commanded has a higher priority than mouse movement, so it should prevent the player themselves from moving.
-        // This controls mouse movement, first it checks if the click was meant for mouse movement
-        else if(!dronesChecked && Input.GetMouseButtonUp(0) 
-            && !PlayerCore.Instance.GetIsDead() && !PlayerCore.Instance.GetTargetingSystem().GetTarget()
-                && (Input.GetKey(KeyCode.LeftShift) || simpleMouseMovement) && !DialogueSystem.isInCutscene)
+        else if (Input.GetMouseButtonUp(0) && clicking)
         {
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0,0,CameraScript.zLevel));
-            var renderer = Instantiate(movementReticlePrefab, mouseWorldPos, Quaternion.identity).GetComponent<SpriteRenderer>();
-            renderer.color = new Color32((byte)100, (byte)100, (byte)100, (byte)255);
+            SetClicking(false);
+        }
 
-            var node = new PathData.Node();
-            node.children = new List<int>();
-            node.position = mouseWorldPos;
-            node.ID = nodeID++;
-
-            if(currentPathData == null
-                || (!Input.GetKey(KeyCode.LeftShift) && simpleMouseMovement))
-            {
-                BeginPathData(node, renderer);
-            }
-            else
-            {
-                ContinuePathData(node, renderer);
-            }
-        } else if(Input.GetMouseButtonUp(0)) dronesChecked = false;
-        */
+        if (!Input.GetMouseButton(0) && clicking)
+        {
+            SetClicking(false);
+        }
     }
 
     void BeginPathData(PathData.Node node, SpriteRenderer renderer)

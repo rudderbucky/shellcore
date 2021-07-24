@@ -136,7 +136,7 @@ public class PlayerCore : ShellCore
             return delta.normalized;
         }
 
-        if (Input.GetMouseButton(0) && MouseMovementVisualScript.overMinimap)
+        if (Input.GetMouseButton(0) && MouseMovementVisualScript.overMinimap && !SelectionBoxScript.GetClicking())
         {
             minimapPoint = CameraScript.instance.minimapCamera.ScreenToWorldPoint(MouseMovementVisualScript.GetMousePosOnMinimap());
             minimapPoint = new Vector3(minimapPoint.Value.x, minimapPoint.Value.y, 0);
