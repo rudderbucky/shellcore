@@ -158,12 +158,10 @@ public class SectorManager : MonoBehaviour
         {
             player.SetIsInteracting(true);
         }
-
-        var inCurrentSector = player && current != null &&
-                              (current.bounds.contains(player.transform.position) || player.GetIsOscillating()) && current.dimension == player.Dimension;
-
         var isBz = GetCurrentType() == Sector.SectorType.BattleZone;
         var isSiege = GetCurrentType() == Sector.SectorType.SiegeZone;
+        var inCurrentSector = player && current != null &&
+                              (current.bounds.contains(player.transform.position) || (player.GetIsOscillating() && !isBz && !isSiege)) && current.dimension == player.Dimension;
         var abortTimerFinished = abortTimer <= 1;
         var playing = (isBz && battleZone.playing) || (isSiege && siegeZone.playing);
 
