@@ -237,8 +237,8 @@ public class BattleAI : AIModule
                     collectTarget = null;
                 }
 
-                if ((shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null
-                                                          && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f) || harvesterTurrets.Count >= Mathf.Min(5, AIData.energyRocks.Count))
+                if ((shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && !turretIsHarvester
+                                                          && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f) || harvesterTurrets.Count >= Mathf.Min(1, AIData.energyRocks.Count))
                 {
                     state = BattleState.Attack;
                 }
@@ -247,7 +247,6 @@ public class BattleAI : AIModule
                     state = BattleState.Collect;
                 }
             }
-            Debug.Log(state);
 
             nextStateCheckTime = Time.time + 1f;
         }
@@ -407,6 +406,7 @@ public class BattleAI : AIModule
                         {
                             harvesterTurrets.Add(collectTarget, shellcore.GetTractorTarget().GetComponent<Turret>());
                             shellcore.SetTractorTarget(null);
+                            state = BattleState.Attack;
                         }
 
                         findNewTarget = true;
@@ -502,8 +502,6 @@ public class BattleAI : AIModule
                 {
                     ai.movement.SetMoveTarget(AITargets[index].entity.transform.position);
                     dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[index].entity.transform.position);
-                    Debug.Log("Moving to bunker");
-                    Debug.Log(dist);
                 }
                 break;
             default:
@@ -749,38 +747,38 @@ public class BattleAI : AIModule
                                 }
                             }
                         }
+                    }
 
-                        if (itemIndex != -1)
+                    if (itemIndex != -1)
+                    {
+                        if (vendor.GetVendingBlueprint().items[itemIndex].cost <= shellcore.GetPower())
                         {
-                            Debug.Log(mostNeeded);
-                            if (vendor.GetVendingBlueprint().items[itemIndex].cost <= shellcore.GetPower())
-                            {
-                                mostNeeded = null;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                            var ent = VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
-                            if (itemIndex == vendor.GetVendingBlueprint().getItemIndex("Harvester Turret"))
-                            {
-                                EnergyRock closestRock = null;
-                                foreach (var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))
-                                {
-                                    if (closestRock == null || Vector2.SqrMagnitude(rock.transform.position - shellcore.transform.position)
-                                        < Vector2.SqrMagnitude(closestRock.transform.position - shellcore.transform.position))
-                                    {
-                                        closestRock = rock;
-                                    }
-                                }
-
-                                harvesterTurrets.Add(closestRock, ent as Turret);
-                                shellcore.SetTractorTarget(ent.GetComponent<Draggable>());
-                            }
-
+                            mostNeeded = null;
+                        }
+                        else
+                        {
                             break;
                         }
+                        var ent = VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
+                        if (itemIndex == vendor.GetVendingBlueprint().getItemIndex("Harvester Turret"))
+                        {
+                            EnergyRock closestRock = null;
+                            foreach (var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))
+                            {
+                                if (closestRock == null || Vector2.SqrMagnitude(rock.transform.position - shellcore.transform.position)
+                                    < Vector2.SqrMagnitude(closestRock.transform.position - shellcore.transform.position))
+                                {
+                                    closestRock = rock;
+                                }
+                            }
+
+                            harvesterTurrets.Add(closestRock, ent as Turret);
+                            shellcore.SetTractorTarget(ent.GetComponent<Draggable>());
+                        }
+
+                        break;
                     }
+
                 }
             }
         }
