@@ -429,7 +429,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             return true;
         }
 
-        var currentAbilitynumbers = new int[] {0, 0, 0, 0, 0};
+        var currentAbilitynumbers = new int[] { 0, 0, 0, 0, 0 };
 
         foreach (ShipBuilderPart shipBuilderPart in cursorScript.parts)
         {
@@ -521,10 +521,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         this.mode = mode;
         cursorScript.SetMode(mode);
         searcherString = "";
-        contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
-        traderContentsArray = new Transform[] {traderSmallContents, traderMediumContents, traderLargeContents};
-        contentTexts = new GameObject[] {smallText, mediumText, largeText};
-        traderContentTexts = new GameObject[] {traderSmallText, traderMediumText, traderLargeText};
+        contentsArray = new Transform[] { smallContents, mediumContents, largeContents };
+        traderContentsArray = new Transform[] { traderSmallContents, traderMediumContents, traderLargeContents };
+        contentTexts = new GameObject[] { smallText, mediumText, largeText };
+        traderContentTexts = new GameObject[] { traderSmallText, traderMediumText, traderLargeText };
         foreach (GameObject obj in contentTexts)
         {
             obj.SetActive(false);
@@ -535,7 +535,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             traderObj.SetActive(false);
         }
 
-        displayingTypes = new bool[] {true, true, true, true, true};
+        displayingTypes = new bool[] { true, true, true, true, true };
         if (player)
         {
             player.SetIsInteracting(true);
@@ -812,7 +812,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     public void AddShard(int tier)
     {
-        var tiers = new int[] {1, 5, 20};
+        var tiers = new int[] { 1, 5, 20 };
         player.shards += tiers[tier];
     }
 
@@ -955,6 +955,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         if (editorMode)
         {
             cursorScript.ClearAllParts();
+            cursorScript.buildValue = 0;
         }
 
         foreach (EntityBlueprint.PartInfo part in blueprint.parts)
@@ -966,6 +967,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             p.SetLastValidPos(part.location);
             p.isInChain = true;
             p.validPos = true;
+            if (editorMode)
+                cursorScript.buildValue += EntityBlueprint.GetPartValue(part);
             p.Initialize();
         }
 
