@@ -158,7 +158,7 @@ public class SectorManager : MonoBehaviour
         {
             player.SetIsInteracting(true);
         }
-        var inBoundsOscillating = current.bounds.contains(player.GetSectorPosition());
+        var inBoundsOscillating = player && current.bounds.contains(player.GetSectorPosition());
         var inCurrentSector = player && current != null &&
             (inBoundsOscillating) && current.dimension == player.Dimension;
 
