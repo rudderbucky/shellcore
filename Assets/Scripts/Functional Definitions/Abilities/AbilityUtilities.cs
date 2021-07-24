@@ -40,7 +40,8 @@ public enum AbilityID
     InvertTractor,
     Bomb,
     Ion,
-    Flak
+    Flak,
+    Rocket
 }
 
 public static class AbilityUtilities
@@ -95,6 +96,7 @@ public static class AbilityUtilities
             case 36:
             case 37:
             case 38:
+            case 39:
                 return AbilityHandler.AbilityTypes.Weapons;
             case 1:
             case 2:
@@ -297,6 +299,8 @@ public static class AbilityUtilities
                 return "ability_indicator_pin_down";
             case 29:
                 return "ability_indicator_absorb_field";
+            case 39:
+                return "rocketshooter_sprite";
             default:
                 return "ability_indicator";
         }
@@ -541,6 +545,9 @@ public static class AbilityUtilities
                 break;
             case 38:
                 ability = obj.AddComponent<Flak>();
+                break;
+            case 39:
+                ability = obj.AddComponent<Rocket>();
                 break;
         }
 
