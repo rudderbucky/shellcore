@@ -158,17 +158,18 @@ public class SectorManager : MonoBehaviour
         {
             player.SetIsInteracting(true);
         }
-
+        var inBoundsOscillating = current.bounds.contains(player.GetSectorPosition());
         var inCurrentSector = player && current != null &&
-                              (current.bounds.contains(player.transform.position) || player.GetIsOscillating()) && current.dimension == player.Dimension;
+            (inBoundsOscillating) && current.dimension == player.Dimension;
 
         var isBz = GetCurrentType() == Sector.SectorType.BattleZone;
         var isSiege = GetCurrentType() == Sector.SectorType.SiegeZone;
         var abortTimerFinished = abortTimer <= 1;
         var playing = (isBz && battleZone.playing) || (isSiege && siegeZone.playing);
 
-        var abortCheck = !((isBz || isSiege) && playing && !abortTimerFinished);
-        if (!jsonMode && player && (current == null || !inCurrentSector) && abortCheck)
+        var abortCheck = !playing || abortTimerFinished;
+
+        if (!jsonMode && player && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
         {
             AttemptSectorLoad();
             abortTimer = 6;
@@ -176,7 +177,8 @@ public class SectorManager : MonoBehaviour
         else
         {
             var inSector = player && sectors.Exists(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension);
-            if (!jsonMode && player && !player.GetIsDead() && inSector && !(current.bounds.contains(player.transform.position)) && (GetCurrentType() == Sector.SectorType.BattleZone || GetCurrentType() == Sector.SectorType.SiegeZone))
+            if (!jsonMode && player && !player.GetIsDead() && inSector
+                && !inCurrentSector && (isBz || isSiege))
             {
                 abortTimer -= Time.deltaTime;
                 if (abortTimer <= 4)
@@ -244,13 +246,13 @@ public class SectorManager : MonoBehaviour
     public void AttemptSectorLoad(Sector.SectorType? lastSectorType = null)
     {
         var inCurrentSector = player && current != null &&
-                              (current.bounds.contains(player.transform.position)) && current.dimension == player.Dimension;
+                              (current.bounds.contains(player.GetSectorPosition())) && current.dimension == player.Dimension;
         if (player && (current == null || !inCurrentSector))
         {
             // load sector
             for (int i = 0; i < sectors.Count; i++)
             {
-                if (sectors[i].bounds.contains(player.transform.position) && sectors[i].dimension == player.Dimension)
+                if (sectors[i].bounds.contains(player.GetSectorPosition()) && sectors[i].dimension == player.Dimension)
                 {
                     Sector.SectorType? oldType = null;
                     int oldDimension = 0;

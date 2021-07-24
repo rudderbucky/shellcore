@@ -14,6 +14,18 @@ public abstract class AirCraft : Craft
     private bool oscillating;
     public GameObject energySpherePrefab;
 
+    // This method returns the last position the player was not oscillating from.
+    public Vector2 GetSectorPosition()
+    {
+        if (oscillating)
+        {
+            var vec = entityBody.position;
+            vec.y = positionBeforeOscillation;
+            return vec;
+        }
+        else return transform.position;
+    }
+
     protected override void Update()
     {
         base.Update(); // base update
