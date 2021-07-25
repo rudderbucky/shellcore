@@ -239,13 +239,13 @@ public static class AbilityUtilities
             case 34:
                 return null;
             case 4:
-                if (data != "beamgroundshooter_sprite")
+                if (data == "beamgroundshooter_sprite")
                 {
-                    return "beamshooter_sprite";
+                    return "beamgroundshooter_sprite";
                 }
                 else
                 {
-                    return "beamgroundshooter_sprite";
+                    return "beamshooter_sprite";
                 }
             case 5:
             case 15:
@@ -254,13 +254,13 @@ public static class AbilityUtilities
                 return "cannonshooter_sprite";
             case 7:
             case 37:
-                if (data != "missile_station_shooter")
+                if (data == "missile_station_shooter")
                 {
-                    return "missileshooter_sprite";
+                    return "missile_station_shooter";
                 }
                 else
                 {
-                    return "missile_station_shooter";
+                    return "missileshooter_sprite";
                 }
             case 8:
                 return "torpedoshooter_sprite";
@@ -275,13 +275,13 @@ public static class AbilityUtilities
                 {
                     return "siegegroundshooter_sprite";
                 }
-                else if (data != "siegeshooter_sprite")
+                else if (data == "siegeshooter_sprite")
                 {
-                    return "bulletshooter_sprite";
+                    return "siegeshooter_sprite";
                 }
                 else
                 {
-                    return "siegeshooter_sprite";
+                    return "bulletshooter_sprite";
                 }
             case 2:
             case 30:

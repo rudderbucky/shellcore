@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public interface IShipBuilder
 {
     BuilderMode GetBuilderMode();
@@ -84,7 +86,7 @@ public class Yard : AirConstruct, IShipBuilder
                 {
                     PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your shard has been added into your stash.</color>", 4);
                     var shard = tractor.GetTractorTarget().GetComponent<Shard>();
-                    var tiers = new int[] {1, 5, 20};
+                    var tiers = new int[] { 1, 5, 20 };
                     PlayerCore.Instance.shards += tiers[shard.tier];
                     ShardCountScript.DisplayCount(PlayerCore.Instance.shards);
                     Destroy(shard.gameObject);

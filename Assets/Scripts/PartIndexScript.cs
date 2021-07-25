@@ -133,7 +133,7 @@ public class PartIndexScript : MonoBehaviour
 
     void OnEnable()
     {
-        statsNumbers = new int[] {0, 0, 0, 0};
+        statsNumbers = new int[] { 0, 0, 0, 0 };
         foreach (var content in contents)
         {
             for (int i = 0; i < content.childCount; i++)
@@ -239,9 +239,9 @@ public class PartIndexScript : MonoBehaviour
         var part = new EntityBlueprint.PartInfo();
         part.partID = partToCull.partID;
         part.abilityID = partToCull.abilityID;
-        if (part.abilityID != 10)
+        if (!ShipBuilder.CheckSecondaryDataPurge(partToCull))
         {
-            part.secondaryData = null;
+            part.secondaryData = partToCull.secondaryData;
         }
 
         part.tier = partToCull.tier;
