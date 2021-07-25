@@ -124,7 +124,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         var part = new EntityBlueprint.PartInfo();
         part.partID = partToCull.partID;
         part.abilityID = partToCull.abilityID;
-        if (part.abilityID == 10)
+        if (!CheckSecondaryDataPurge(partToCull))
         {
             part.secondaryData = partToCull.secondaryData;
         }
@@ -132,6 +132,20 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         part.tier = partToCull.tier;
         part.shiny = partToCull.shiny;
         return part;
+    }
+
+    // Does calculation on whether the part's secondary data should be purged
+    public static bool CheckSecondaryDataPurge(EntityBlueprint.PartInfo part)
+    {
+        if (part.abilityID == (int)AbilityID.SpawnDrone) return false;
+        if (part.abilityID == (int)AbilityID.Missile && part.secondaryData == "missile_station_shooter")
+            return false;
+        if (part.abilityID == (int)AbilityID.Beam && part.secondaryData == "beamgroundshooter_sprite")
+            return false;
+        if (part.abilityID == (int)AbilityID.SiegeBullet
+            && (part.secondaryData == "siegegroundshooter_sprite" || part.secondaryData == "siegeshooter_sprite"))
+            return false;
+        return true;
     }
 
     public enum TransferMode
