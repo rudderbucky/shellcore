@@ -275,13 +275,13 @@ public static class AbilityUtilities
                 {
                     return "siegegroundshooter_sprite";
                 }
-                else if (data != "siegeshooter_sprite")
+                else if (data != "bulletshooter_sprite")
                 {
-                    return "bulletshooter_sprite";
+                    return "siegeshooter_sprite";
                 }
                 else
                 {
-                    return "siegeshooter_sprite";
+                    return "bulletshooter_sprite";
                 }
             case 2:
             case 30:
@@ -300,7 +300,14 @@ public static class AbilityUtilities
             case 29:
                 return "ability_indicator_absorb_field";
             case 39:
-                return "rocketshooter_sprite";
+				if (data != "rocketgroundshooter_sprite")
+                {
+                    return "rocketshooter_sprite";
+				}
+				else
+				{
+				    return "rocketgroundshooter_sprite";
+				}
             default:
                 return "ability_indicator";
         }
