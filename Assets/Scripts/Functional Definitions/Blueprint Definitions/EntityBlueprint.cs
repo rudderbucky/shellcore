@@ -26,7 +26,7 @@ public class EntityBlueprint : ScriptableObject
     public string coreSpriteID;
     public string coreShellSpriteID;
     public float[] shellHealth = CoreUpgraderScript.defaultHealths;
-    public float[] baseRegen = {60, 0, 30};
+    public float[] baseRegen = { 60, 0, 30 };
 
     public enum IntendedType
     {
