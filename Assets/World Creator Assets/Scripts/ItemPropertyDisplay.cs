@@ -164,8 +164,10 @@ public class ItemPropertyDisplay : MonoBehaviour
     public void SetPath(NodeEditorFramework.Standard.PathData path)
     {
         rectTransform.gameObject.SetActive(true);
-        currentItem.patrolPath = path;
-        WorldCreatorCursor.finishPath -= SetPath;
+        if (currentItem != null)
+            currentItem.patrolPath = path;
+        if (WorldCreatorCursor.finishPath != null)
+            WorldCreatorCursor.finishPath -= SetPath;
     }
 
     public void SetRotation(int rotation)
