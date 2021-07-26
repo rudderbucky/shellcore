@@ -91,16 +91,6 @@ namespace NodeEditorFramework.IO
 						NodeEditorGUI.Init();
 					});
 				}
-				/*
-				foreach (FileInfo file in files)
-					fileSelectionMenu.AddItem(new GUIContent(file.Name), false, () => 
-					{
-						if(file.Name.Contains("taskdata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Mission;
-						if(file.Name.Contains("dialoguedata")) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Dialogue;
-						fileSelection = Path.GetFileName(file.Name);
-						NodeEditorGUI.Init();
-					});
-				*/
 				fileSelectionMenu.DropDown(fileSelectionMenuRect);
 				fileSelectionMenuRect.height = 500;
 				width = fileSelectionMenuRect.width;
@@ -113,9 +103,9 @@ namespace NodeEditorFramework.IO
 			else if(files != null && Event.current.delta != Vector2.zero && Event.current.isScrollWheel)
 			{
 				if(Event.current.delta.y > 0)
-					currentMin = Mathf.Min(currentMin + 1, files.Count - 1);
+					currentMin = Mathf.Min(currentMin + 3, files.Count - (Mathf.Min(files.Count, limit)));
 				else
-					currentMin = Mathf.Max(0, currentMin - 1);
+					currentMin = Mathf.Max(0, currentMin - 3);
 				GenericMenu fileSelectionMenu = new GenericMenu(false);
 				for(int i = currentMin; i < Mathf.Min(currentMin + limit, files.Count); i++)
 				{
