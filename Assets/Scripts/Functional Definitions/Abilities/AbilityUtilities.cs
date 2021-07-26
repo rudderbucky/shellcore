@@ -265,12 +265,10 @@ public static class AbilityUtilities
                 return "torpedoshooter_sprite";
             case 9:
                 return "lasershooter_sprite";
-            case 36:
-                return "bombshooter_sprite";
-            case 37:
-                return "ionshooter_sprite";
             case 38:
                 return "flakshooter_sprite";
+            case 36:
+                return "bombshooter_sprite";
             case 14:
                 if (data == "siegegroundshooter_sprite")
                 {
@@ -302,6 +300,8 @@ public static class AbilityUtilities
                 return "ability_indicator_absorb_field";
             case 39:
                 return "rocketshooter_sprite";
+            case 37:
+                return "ionshooter_sprite";
             default:
                 return "ability_indicator";
         }
