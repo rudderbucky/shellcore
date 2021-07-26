@@ -117,4 +117,17 @@ public class FactionManager : MonoBehaviour
     {
         get { return instance.factions.Length; }
     }
+
+    public static void SetFactionRelations(int faction, int sum)
+    {
+        if (FactionExists(faction))
+            instance.factions[faction].relations = sum;
+    }
+
+    public static int GetFactionRelations(int faction)
+    {
+        if (FactionExists(faction))
+            return instance.factions[faction].relations;
+        return -1;
+    }
 }
