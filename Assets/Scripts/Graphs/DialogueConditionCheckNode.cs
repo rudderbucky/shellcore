@@ -71,7 +71,8 @@ namespace NodeEditorFramework.Standard
             "Reputation",
             "Parts Seen",
             "Parts Obtained",
-            "Mission Status"
+            "Mission Status",
+            "Shards"
         };
 
         public override void NodeGUI()
@@ -239,6 +240,9 @@ namespace NodeEditorFramework.Standard
                                PlayerCore.Instance.cursave.missions.Find(m => m.name == variableName).status == Mission.MissionStatus.Complete
                             ? 0
                             : 1;
+                    case 6:
+                        variableToCompare = PlayerCore.Instance.shards;
+                        break;
                 }
 
                 switch (comparisonMode)
