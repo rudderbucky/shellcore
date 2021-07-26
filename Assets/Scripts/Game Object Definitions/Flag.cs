@@ -25,7 +25,26 @@ public class Flag : MonoBehaviour, IInteractable
         }
         else
         {
+            var dimensionChanged = PlayerCore.Instance.Dimension != sector.dimension;
             PlayerCore.Instance.Dimension = sector.dimension;
+
+            // TODO: We currently nuke all characters when teleporting to a different dimension. It would be nicer to have
+            // a set dimension for each character which is appropriately used.
+            if (dimensionChanged)
+            {
+                foreach (var ent in AIData.entities)
+                {
+                    if (!(PartyManager.instance && PartyManager.instance.partyMembers != null && ent is ShellCore &&
+                            PartyManager.instance.partyMembers.Contains(ent as ShellCore)))
+                        foreach (var data in SectorManager.instance.characters)
+                        {
+                            if (data.ID == ent.ID)
+                            {
+                                Destroy(ent.gameObject);
+                            }
+                        }
+                }
+            }
         }
 
         foreach (var ent in sector.entities)
