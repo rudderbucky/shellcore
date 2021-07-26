@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Actions/SetVariable")]
-    public class SetVariableNode : Node
+    [Node(false, "Actions/Set Faction Relations")]
+    public class SetFactionRelations : Node
     {
         //Node things
-        public const string ID = "SetVariableNode";
+        public const string ID = "SetFactionRelations";
 
         public override string GetName
         {
@@ -16,7 +16,7 @@ namespace NodeEditorFramework.Standard
 
         public override string Title
         {
-            get { return "Set Variable"; }
+            get { return "Set Faction Relations"; }
         }
 
         public override Vector2 DefaultSize
@@ -30,9 +30,8 @@ namespace NodeEditorFramework.Standard
         }
 
         //Data
-        public string variableName;
-        public int value;
-        public bool incrementMode;
+        public int factionID;
+        public int relationsSum;
 
         ConnectionKnobAttribute flowIn = new ConnectionKnobAttribute("Input ", Direction.In, "TaskFlow", ConnectionCount.Multi, NodeSide.Left, 20);
         ConnectionKnobAttribute flowOut = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
@@ -42,12 +41,6 @@ namespace NodeEditorFramework.Standard
 
         ConnectionKnob input;
         ConnectionKnob output;
-
-        //[ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
-        //public ConnectionKnob inputLeft;
-
-        //[ConnectionKnob("Output Right", Direction.Out, "TaskFlow", NodeSide.Right, 20)]
-        //public ConnectionKnob outputRight;
 
         public override void NodeGUI()
         {
@@ -77,16 +70,15 @@ namespace NodeEditorFramework.Standard
                 GUILayout.EndHorizontal();
             }
 
-            GUILayout.Label("Variable Name:");
-            variableName = GUILayout.TextField(variableName);
-            GUILayout.Label("Value:");
-            value = RTEditorGUI.IntField(value);
-            incrementMode = GUILayout.Toggle(incrementMode, "Increment mode: ");
+            GUILayout.Label("Faction Number");
+            factionID = RTEditorGUI.IntField(factionID);
+            GUILayout.Label("Relations sum:");
+            relationsSum = RTEditorGUI.IntField(relationsSum);
         }
 
         public override int Traverse()
         {
-            TaskManager.Instance.SetTaskVariable(variableName, value, incrementMode);
+            FactionManager.SetFactionRelations(factionID, relationsSum);
             return 0;
         }
     }
