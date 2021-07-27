@@ -56,31 +56,35 @@ public class WorldCreatorCamera : MonoBehaviour
                 transform.position = new Vector3(vec.x, vec.y, transform.position.z);
             }
 
-            if (Input.GetKeyDown(KeyCode.PageDown))
+            if (cursor.sectors.Count > 0)
             {
-                sectorIndex--;
-                if (sectorIndex < 0)
+                if (Input.GetKeyDown(KeyCode.PageDown))
                 {
-                    sectorIndex = cursor.sectors.Count - 1;
+                    sectorIndex--;
+                    if (sectorIndex < 0)
+                    {
+                        sectorIndex = cursor.sectors.Count - 1;
+                    }
+
+                    var vec = cursor.sectors[sectorIndex].renderer.bounds.center;
+                    vec.z = transform.position.z;
+                    transform.position = vec;
                 }
 
-                var vec = cursor.sectors[sectorIndex].renderer.bounds.center;
-                vec.z = transform.position.z;
-                transform.position = vec;
-            }
-
-            if (Input.GetKeyDown(KeyCode.PageUp))
-            {
-                sectorIndex++;
-                if (sectorIndex >= cursor.sectors.Count)
+                if (Input.GetKeyDown(KeyCode.PageUp))
                 {
-                    sectorIndex = 0;
-                }
+                    sectorIndex++;
+                    if (sectorIndex >= cursor.sectors.Count)
+                    {
+                        sectorIndex = 0;
+                    }
 
-                var vec = cursor.sectors[sectorIndex].renderer.bounds.center;
-                vec.z = transform.position.z;
-                transform.position = vec;
+                    var vec = cursor.sectors[sectorIndex].renderer.bounds.center;
+                    vec.z = transform.position.z;
+                    transform.position = vec;
+                }
             }
+
         }
     }
 }
