@@ -32,7 +32,7 @@ namespace NodeEditorFramework.Standard
         //Data
         public string variableName;
         public int value;
-        bool incrementMode;
+        public bool incrementMode;
 
         ConnectionKnobAttribute flowIn = new ConnectionKnobAttribute("Input ", Direction.In, "TaskFlow", ConnectionCount.Multi, NodeSide.Left, 20);
         ConnectionKnobAttribute flowOut = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);

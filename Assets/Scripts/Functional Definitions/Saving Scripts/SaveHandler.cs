@@ -43,6 +43,12 @@ public class SaveHandler : MonoBehaviour
 
             player.cursave = save;
 
+            if (save.factions != null)
+                for (int i = 0; i < save.factions.Length; i++)
+                {
+                    FactionManager.SetFactionRelations(save.factions[i], save.relations[i]);
+                }
+
             SectorManager.instance.LoadSectorFile(save.resourcePath);
             taskManager.Initialize(true); // Re-init
             DialogueSystem.InitCanvases();
@@ -129,6 +135,19 @@ public class SaveHandler : MonoBehaviour
 
         save.characters = SectorManager.instance.characters;
         save.version = VersionNumberScript.version;
+
+        List<int> factions = new List<int>();
+        List<int> relations = new List<int>();
+        for (int i = 0; i < FactionManager.FactionArrayLength; i++)
+        {
+            if (FactionManager.FactionExists(i))
+            {
+                factions.Add(i);
+                relations.Add(FactionManager.GetFactionRelations(i));
+            }
+        }
+        save.factions = factions.ToArray();
+        save.relations = relations.ToArray();
 
 
         for (int i = 0; i < taskManager.traversers.Count; i++)

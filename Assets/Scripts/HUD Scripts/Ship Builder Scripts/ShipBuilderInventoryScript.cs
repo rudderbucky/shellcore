@@ -39,6 +39,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
                 }
                 else if (mode == BuilderMode.Trader)
                 {
+                    cursor.buildCost += EntityBlueprint.GetPartValue(builderPart.info);
                     cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Buy);
                 }
 
@@ -63,6 +64,11 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
             }
 
             cursor.buildValue += EntityBlueprint.GetPartValue(part);
+            if (symmetryPart)
+            {
+                cursor.buildValue += EntityBlueprint.GetPartValue(part);
+            }
+
             if (mode == BuilderMode.Trader)
             {
                 cursor.buildCost += EntityBlueprint.GetPartValue(part);

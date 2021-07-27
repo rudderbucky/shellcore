@@ -18,6 +18,7 @@ public class GroundCraft : Craft
         if (draggable && LandPlatformGenerator.IsOnGround(transform.position) && !draggable.dragging)
         {
             isOnGround = true;
+            Terrain = TerrainType.Ground;
         }
         else
         {
@@ -28,6 +29,7 @@ public class GroundCraft : Craft
             }
 
             isOnGround = false;
+            Terrain = TerrainType.Air;
 
             transform.localEulerAngles = new Vector3(0, 0, initialzangle + (Time.time - time) * -180f);
         }

@@ -163,6 +163,16 @@ public class WCWorldIO : MonoBehaviour
             System.IO.Directory.Delete(FactionPlaceholder);
         }
 
+        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\ResourcePlaceholder"))
+        {
+            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\ResourcePlaceholder"))
+            {
+                System.IO.File.Delete(file);
+            }
+
+            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\ResourcePlaceholder");
+        }
+
         if (System.IO.File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
         {
             File.Delete(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt"));
@@ -273,7 +283,7 @@ public class WCWorldIO : MonoBehaviour
     {
         loadingText.gameObject.SetActive(true);
         loadingText.text = GetLoadingString();
-        var skippedFiles = new List<string> {".meta", ".worlddata", ".taskdata", ".dialoguedata", ".sectordata", "ResourceData.txt"};
+        var skippedFiles = new List<string> { ".meta", ".worlddata", ".taskdata", ".dialoguedata", ".sectordata", "ResourceData.txt" };
         List<Sector> sectors = new List<Sector>();
         foreach (var str in System.IO.Directory.GetFiles(path))
         {

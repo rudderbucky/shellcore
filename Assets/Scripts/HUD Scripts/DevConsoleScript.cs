@@ -130,7 +130,16 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.StartsWith("Add power ", StringComparison.CurrentCultureIgnoreCase))
             {
                 int number = int.Parse(command.Substring(10).Trim());
-                PlayerCore.Instance.AddPower(number);
+                if (PlayerCore.Instance)
+                    PlayerCore.Instance.AddPower(number);
+                else
+                {
+                    foreach (ShellCore core in AIData.entities)
+                    {
+                        if (core)
+                            core.AddPower(number);
+                    }
+                }
             }
             else if (command.StartsWith("Add rep ", StringComparison.CurrentCultureIgnoreCase))
             {

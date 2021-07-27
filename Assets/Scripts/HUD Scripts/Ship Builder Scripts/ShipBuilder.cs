@@ -124,7 +124,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         var part = new EntityBlueprint.PartInfo();
         part.partID = partToCull.partID;
         part.abilityID = partToCull.abilityID;
-        if (part.abilityID == 10)
+        if (!CheckSecondaryDataPurge(partToCull))
         {
             part.secondaryData = partToCull.secondaryData;
         }
@@ -132,6 +132,20 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         part.tier = partToCull.tier;
         part.shiny = partToCull.shiny;
         return part;
+    }
+
+    // Does calculation on whether the part's secondary data should be purged
+    public static bool CheckSecondaryDataPurge(EntityBlueprint.PartInfo part)
+    {
+        if (part.abilityID == (int)AbilityID.SpawnDrone) return false;
+        if (part.abilityID == (int)AbilityID.Missile && part.secondaryData == "missile_station_shooter")
+            return false;
+        if (part.abilityID == (int)AbilityID.Beam && part.secondaryData == "beamgroundshooter_sprite")
+            return false;
+        if (part.abilityID == (int)AbilityID.SiegeBullet
+            && (part.secondaryData == "siegegroundshooter_sprite" || part.secondaryData == "siegeshooter_sprite"))
+            return false;
+        return true;
     }
 
     public enum TransferMode
@@ -156,7 +170,6 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 dictContentTexts = traderContentTexts;
                 break;
             case TransferMode.Buy:
-                cursorScript.buildCost += EntityBlueprint.GetPartValue(part.info);
                 dictContentsArray = contentsArray;
                 dict = partDict;
                 dictContentTexts = contentTexts;
@@ -202,6 +215,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         cursorScript.buildValue -= EntityBlueprint.GetPartValue(part.info);
         cursorScript.parts.Remove(part);
         Destroy(part.gameObject);
+        UpdateChain();
     }
 
     public static Bounds GetRect(RectTransform rectTransform)
@@ -428,7 +442,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             return true;
         }
 
-        var currentAbilitynumbers = new int[] {0, 0, 0, 0, 0};
+        var currentAbilitynumbers = new int[] { 0, 0, 0, 0, 0 };
 
         foreach (ShipBuilderPart shipBuilderPart in cursorScript.parts)
         {
@@ -520,10 +534,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         this.mode = mode;
         cursorScript.SetMode(mode);
         searcherString = "";
-        contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
-        traderContentsArray = new Transform[] {traderSmallContents, traderMediumContents, traderLargeContents};
-        contentTexts = new GameObject[] {smallText, mediumText, largeText};
-        traderContentTexts = new GameObject[] {traderSmallText, traderMediumText, traderLargeText};
+        contentsArray = new Transform[] { smallContents, mediumContents, largeContents };
+        traderContentsArray = new Transform[] { traderSmallContents, traderMediumContents, traderLargeContents };
+        contentTexts = new GameObject[] { smallText, mediumText, largeText };
+        traderContentTexts = new GameObject[] { traderSmallText, traderMediumText, traderLargeText };
         foreach (GameObject obj in contentTexts)
         {
             obj.SetActive(false);
@@ -534,7 +548,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             traderObj.SetActive(false);
         }
 
-        displayingTypes = new bool[] {true, true, true, true, true};
+        displayingTypes = new bool[] { true, true, true, true, true };
         if (player)
         {
             player.SetIsInteracting(true);
@@ -811,7 +825,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     public void AddShard(int tier)
     {
-        var tiers = new int[] {1, 5, 20};
+        var tiers = new int[] { 1, 5, 20 };
         player.shards += tiers[tier];
     }
 
@@ -954,6 +968,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         if (editorMode)
         {
             cursorScript.ClearAllParts();
+            cursorScript.buildValue = 0;
         }
 
         foreach (EntityBlueprint.PartInfo part in blueprint.parts)
@@ -965,6 +980,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             p.SetLastValidPos(part.location);
             p.isInChain = true;
             p.validPos = true;
+            if (editorMode)
+                cursorScript.buildValue += EntityBlueprint.GetPartValue(part);
             p.Initialize();
         }
 

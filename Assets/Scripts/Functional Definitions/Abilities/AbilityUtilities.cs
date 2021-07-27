@@ -40,7 +40,8 @@ public enum AbilityID
     InvertTractor,
     Bomb,
     Ion,
-    Flak
+    Flak,
+    Rocket
 }
 
 public static class AbilityUtilities
@@ -95,6 +96,7 @@ public static class AbilityUtilities
             case 36:
             case 37:
             case 38:
+            case 39:
                 return AbilityHandler.AbilityTypes.Weapons;
             case 1:
             case 2:
@@ -237,13 +239,13 @@ public static class AbilityUtilities
             case 34:
                 return null;
             case 4:
-                if (data != "beamgroundshooter_sprite")
+                if (data == "beamgroundshooter_sprite")
                 {
-                    return "beamshooter_sprite";
+                    return "beamgroundshooter_sprite";
                 }
                 else
                 {
-                    return "beamgroundshooter_sprite";
+                    return "beamshooter_sprite";
                 }
             case 5:
             case 15:
@@ -252,13 +254,13 @@ public static class AbilityUtilities
                 return "cannonshooter_sprite";
             case 7:
             case 37:
-                if (data != "missile_station_shooter")
+                if (data == "missile_station_shooter")
                 {
-                    return "missileshooter_sprite";
+                    return "missile_station_shooter";
                 }
                 else
                 {
-                    return "missile_station_shooter";
+                    return "missileshooter_sprite";
                 }
             case 8:
                 return "torpedoshooter_sprite";
@@ -273,18 +275,21 @@ public static class AbilityUtilities
                 {
                     return "siegegroundshooter_sprite";
                 }
-                else if (data != "siegeshooter_sprite")
-                {
-                    return "bulletshooter_sprite";
-                }
-                else
+                else if (data == "siegeshooter_sprite")
                 {
                     return "siegeshooter_sprite";
                 }
+                else
+                {
+                    return "bulletshooter_sprite";
+                }
             case 2:
+            case 30:
                 return "ability_indicator_shell";
             case 11:
             case 12:
+            case 31:
+            case 32:
                 return "ability_indicator_core";
             case 28:
                 return "ability_indicator_retreat";
@@ -294,6 +299,8 @@ public static class AbilityUtilities
                 return "ability_indicator_pin_down";
             case 29:
                 return "ability_indicator_absorb_field";
+            case 39:
+                return "rocketshooter_sprite";
             default:
                 return "ability_indicator";
         }
@@ -538,6 +545,9 @@ public static class AbilityUtilities
                 break;
             case 38:
                 ability = obj.AddComponent<Flak>();
+                break;
+            case 39:
+                ability = obj.AddComponent<Rocket>();
                 break;
         }
 

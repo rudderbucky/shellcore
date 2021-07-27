@@ -32,7 +32,7 @@ public class SiegeZoneManager : MonoBehaviour
     private List<Entity> entitiesRemaining;
     private int waveCount = 0;
     public List<PlayerCore> players;
-    private bool playing = false;
+    public bool playing = false;
     public string sectorName;
 
     void OnEnable()
@@ -121,7 +121,7 @@ public class SiegeZoneManager : MonoBehaviour
                         Path path = ScriptableObject.CreateInstance<Path>();
                         path.waypoints = new List<Path.Node>();
                         Path.Node node = new Path.Node();
-                        var currentTargets = targets.FindAll(targ => targ.faction != sectorEntity.faction);
+                        var currentTargets = targets.FindAll(targ => targ && !FactionManager.IsAllied(sectorEntity.faction, targ.faction));
                         if (currentTargets.Count > 0)
                         {
                             node.position = currentTargets[Random.Range(0, currentTargets.Count)].transform.position;

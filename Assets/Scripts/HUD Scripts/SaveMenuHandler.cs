@@ -336,7 +336,6 @@ public class SaveMenuHandler : GUIWindowScripts
             return;
         }
 
-        Debug.Log(this.resourcePath);
         var save = CreateSave(name, null, this.resourcePath);
 
         if (save.resourcePath == "")
@@ -387,7 +386,7 @@ public class SaveMenuHandler : GUIWindowScripts
         save.name = name;
         save.timePlayed = 0;
         save.presetBlueprints = new string[5];
-        save.currentHealths = new float[] {1000, 250, 500};
+        save.currentHealths = new float[] { 1000, 250, 500 };
         save.partInventory = new List<EntityBlueprint.PartInfo>();
         save.sectorsSeen = new List<string>();
         save.missions = new List<Mission>();
@@ -407,7 +406,11 @@ public class SaveMenuHandler : GUIWindowScripts
         save.version = currentVersion;
         save.resourcePath = resourcePath;
         save.abilityHotkeys = new AbilityHotkeyStruct();
-        File.WriteAllText(System.IO.Path.Combine(Application.persistentDataPath, "Saves", name), JsonUtility.ToJson(save));
+
+        var savesDir = System.IO.Path.Combine(Application.persistentDataPath, "Saves");
+        Directory.CreateDirectory(savesDir);
+        File.WriteAllText(System.IO.Path.Combine(savesDir, name), JsonUtility.ToJson(save));
+
         return save;
     }
 }

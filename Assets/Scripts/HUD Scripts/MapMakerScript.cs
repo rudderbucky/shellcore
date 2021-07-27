@@ -131,6 +131,9 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         gridImg.rectTransform.sizeDelta = new Vector2(((int)gridImg.rectTransform.sizeDelta.x / 100 + 0.5F) * 100,
             ((int)gridImg.rectTransform.sizeDelta.y / 100 + 0.5F) * 100);
 
+        var lpg = LandPlatformGenerator.Instance;
+        Vector2 oldLPGOffset = lpg.Offset;
+
         foreach (Sector sector in sectors)
         {
             // get every sector to find their representations
@@ -168,7 +171,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 sectorInfo.Add(sect, (sector.sectorName, sector.type));
 
                 // set up land platforms
-                var lpg = LandPlatformGenerator.Instance;
                 if (sector.platforms == null && sector.platformData.Length > 0)
                 {
                     GameObject prefab = ResourceManager.GetAsset<GameObject>(LandPlatformGenerator.prefabNames[0]);
@@ -284,6 +286,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                     }
             }
         }
+        lpg.Offset = oldLPGOffset;
 
         for (int i = 0; i < Mathf.Max(gridSizeX, gridSizeY) * zoomoutFactor / distancePerTextMarker + 1; i++)
         {

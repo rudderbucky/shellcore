@@ -54,6 +54,8 @@ public class PlayerSave
     public List<EntityBlueprint.PartInfo> partsObtained;
     public List<Mission> missions;
     public int reputation;
+    public int[] factions;
+    public int[] relations;
 
     // Episode count is slightly non-trivial.
     // Episode 1 is 0, episode 2 is 1, and so on.

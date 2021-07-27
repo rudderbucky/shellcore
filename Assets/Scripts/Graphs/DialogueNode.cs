@@ -45,8 +45,11 @@ namespace NodeEditorFramework.Standard
         public string text;
         public List<string> answers = new List<string>();
         public bool customDialogueSpeed;
+
+        // deprecated speed field
         public double speed;
         private double oldSpeed;
+        public float floatSpeed;
 
         public NodeEditorGUI.NodeEditorState state;
 
@@ -102,8 +105,13 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             if (customDialogueSpeed = GUILayout.Toggle(customDialogueSpeed, "Use custom typing speed", GUILayout.MinWidth(40f)))
             {
-                GUILayout.Label("Time between characters (seconds)");
-                speed = double.Parse(GUILayout.TextField(speed.ToString(), GUILayout.MinWidth(40f)));
+                GUILayout.Label("");
+                floatSpeed = RTEditorGUI.FloatField("Typing speed (seconds)", floatSpeed);
+                if (speed != -2)
+                {
+                    floatSpeed = (float)speed;
+                    speed = -2;
+                }
             }
 
             cancel.DisplayLayout();
@@ -178,7 +186,7 @@ namespace NodeEditorFramework.Standard
             oldSpeed = DialogueSystem.Instance.timeBetweenCharacters;
             if (customDialogueSpeed)
             {
-                DialogueSystem.Instance.timeBetweenCharacters = speed;
+                DialogueSystem.Instance.timeBetweenCharacters = floatSpeed;
             }
 
             if (state != NodeEditorGUI.NodeEditorState.Dialogue)

@@ -773,6 +773,9 @@ public class WCGeneratorHandler : MonoBehaviour
                 // copying factions
                 TryCopy(System.IO.Path.Combine(path, "Factions"), System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"));
 
+                // copying resources
+                TryCopy(path + "\\Resources\\", Application.streamingAssetsPath + "\\ResourcePlaceholder");
+
                 var resourcePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt");
                 if (File.Exists(resourcePlaceholderPath))
                 {

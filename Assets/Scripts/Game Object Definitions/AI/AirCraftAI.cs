@@ -469,6 +469,15 @@ public class AirCraftAI : MonoBehaviour
     {
         int faction = craft.faction;
         Entity.TerrainType terrainType = craft.Terrain;
+        if (craft is Drone drone)
+        {
+            var type = drone.type;
+            if (type == DroneType.Torpedo)
+            {
+                terrainType = Entity.TerrainType.Ground;
+            }
+        }
+
         float minD = float.MaxValue;
         T nearest = null;
         for (int i = 0; i < AIData.entities.Count; i++)

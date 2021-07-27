@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditor;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -12,7 +13,15 @@ namespace NodeEditorFramework.Standard
         {
             get { return ID; }
         }
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
+        public override Vector2 MinSize
+        {
+            get { return new Vector2(300F, 100f); }
+        }
         public override string Title
         {
             get { return "Time Trigger"; }
@@ -38,7 +47,7 @@ namespace NodeEditorFramework.Standard
         {
             output.DisplayLayout();
             seconds = Utilities.RTEditorGUI.IntField("Time (seconds): ", seconds);
-            milliseconds = Utilities.RTEditorGUI.IntField("Additional Time (milliseconds): ", milliseconds);
+            milliseconds = Utilities.RTEditorGUI.IntField("Additional Time (milliseconds): ", milliseconds, GUILayout.Width(300F));
         }
 
         public void Init(int index)
