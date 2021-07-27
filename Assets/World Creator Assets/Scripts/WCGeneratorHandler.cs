@@ -200,6 +200,7 @@ public class WCGeneratorHandler : MonoBehaviour
         var entityPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
         var wavePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder");
         var factionPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder");
+        var resourcePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourcePlaceholder");
 
         // Reinitialize node editor
         NodeEditor.ReInit(false);
@@ -621,6 +622,7 @@ public class WCGeneratorHandler : MonoBehaviour
         TryCopy(entityPlaceholderPath, System.IO.Path.Combine(path, "Entities"));
         TryCopy(wavePlaceholderPath, System.IO.Path.Combine(path, "Waves"));
         TryCopy(factionPlaceholderPath, System.IO.Path.Combine(path, "Factions"));
+        TryCopy(resourcePlaceholderPath, System.IO.Path.Combine(path, "Resources"));
 
         foreach (var sector in sectors)
         {
@@ -774,7 +776,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 TryCopy(System.IO.Path.Combine(path, "Factions"), System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"));
 
                 // copying resources
-                TryCopy(path + "\\Resources\\", Application.streamingAssetsPath + "\\ResourcePlaceholder");
+                TryCopy(System.IO.Path.Combine(path, "Resources"), System.IO.Path.Combine(Application.streamingAssetsPath, "ResourcePlaceholder"));
 
                 var resourcePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt");
                 if (File.Exists(resourcePlaceholderPath))
