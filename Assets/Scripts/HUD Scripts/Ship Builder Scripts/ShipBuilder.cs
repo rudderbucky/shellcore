@@ -170,7 +170,6 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 dictContentTexts = traderContentTexts;
                 break;
             case TransferMode.Buy:
-                cursorScript.buildCost += EntityBlueprint.GetPartValue(part.info);
                 dictContentsArray = contentsArray;
                 dict = partDict;
                 dictContentTexts = contentTexts;

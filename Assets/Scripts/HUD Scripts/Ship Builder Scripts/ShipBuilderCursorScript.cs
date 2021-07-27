@@ -519,7 +519,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             var origPos = transform.position;
             transform.position = Input.mousePosition;
             if (bound.Contains(vector) && (!symmetryPart || (parts[i].info.partID == symmetryPart.info.partID &&
-                                                             (symmetryMode != SymmetryMode.X || parts[i].info.mirrored != symmetryPart.info.mirrored))))
+                (symmetryMode != SymmetryMode.X
+                    || CheckOrientationCompatibility(parts[i].info, symmetryPart.info)))))
             {
                 transform.position = origPos;
                 return parts[i];
@@ -529,6 +530,54 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         }
 
         return null;
+    }
+
+    private enum PartSymmetry
+    {
+        None,
+        MirrorXAxis,
+        MirrorYAxis,
+        MirrorBothAxes
+    }
+
+    // Hardcodes axial symmetry for specific part IDs
+    private static PartSymmetry GetPartSymmetry(string partID)
+    {
+        switch (partID)
+        {
+            case "SmallSide1":
+                return PartSymmetry.MirrorXAxis;
+            case "MediumExtra1":
+                return PartSymmetry.MirrorYAxis;
+            case "SmallSide2":
+                return PartSymmetry.MirrorBothAxes;
+            default:
+                if (partID.Contains("Center")) return PartSymmetry.MirrorYAxis;
+                return PartSymmetry.None;
+        }
+    }
+
+    // Currently only does something for X-axis checks.
+    private bool CheckOrientationCompatibility(EntityBlueprint.PartInfo part, EntityBlueprint.PartInfo symmetryPart)
+    {
+        var partID = part.partID;
+        switch (GetPartSymmetry(part.partID))
+        {
+            case PartSymmetry.MirrorYAxis:
+            case PartSymmetry.MirrorBothAxes:
+                return part.rotation + symmetryPart.rotation == 0;
+            case PartSymmetry.MirrorXAxis:
+                // There are cases where the parts are symmetrically aligned for both same-mirror and opposite-mirror pairs
+                var diff = Mathf.Abs(part.rotation + symmetryPart.rotation);
+                if (part.mirrored != symmetryPart.mirrored)
+                {
+                    return diff == 0;
+                }
+                return diff == 180;
+            case PartSymmetry.None:
+            default:
+                return part.mirrored != symmetryPart.mirrored;
+        }
     }
 
     public void ToggleCompact()
