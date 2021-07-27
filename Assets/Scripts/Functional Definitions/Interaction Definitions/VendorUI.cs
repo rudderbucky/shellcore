@@ -234,7 +234,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
             ClearVendor();
         }
-        else if (player as PlayerCore && player.GetUnitsCommanding().Count >= player.GetTotalCommandLimit())
+        else if (player && player.GetUnitsCommanding().Count >= player.GetTotalCommandLimit())
         {
             player.alerter.showMessage("Unit limit reached!", "clip_alert");
         }

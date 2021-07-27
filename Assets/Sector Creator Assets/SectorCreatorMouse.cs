@@ -93,7 +93,7 @@ public class SectorCreatorMouse : MonoBehaviour
         windowEnabled = true;
         objects = new List<PlaceableObject>();
         cursor = placeables[0];
-        cursor.obj = Instantiate(placeables[0].obj) as GameObject;
+        cursor.obj = Instantiate(placeables[0].obj);
         cursor.obj.transform.position = cursorOffset;
         mainMenu = transform.Find("MenuBox").GetComponentInChildren<GUIWindowScripts>();
         sectorProps = transform.Find("SectorProps").GetComponentInChildren<GUIWindowScripts>();
@@ -418,7 +418,7 @@ public class SectorCreatorMouse : MonoBehaviour
                 }
 
                 cursor = placeables[cursorCount % placeables.Length];
-                cursor.obj = Instantiate(placeables[cursorCount % placeables.Length].obj, cursor.obj.transform.position, Quaternion.identity) as GameObject;
+                cursor.obj = Instantiate(placeables[cursorCount % placeables.Length].obj, cursor.obj.transform.position, Quaternion.identity);
             }
 
             if (Input.GetKeyDown("c"))
@@ -442,7 +442,7 @@ public class SectorCreatorMouse : MonoBehaviour
             {
                 Destroy(cursor.obj);
                 cursor = placeables[++cursorCount % placeables.Length];
-                cursor.obj = Instantiate(placeables[cursorCount % placeables.Length].obj, cursor.obj.transform.position, Quaternion.identity) as GameObject;
+                cursor.obj = Instantiate(placeables[cursorCount % placeables.Length].obj, cursor.obj.transform.position, Quaternion.identity);
             }
 
             if (Input.GetKeyDown("r") || Input.GetMouseButtonDown(1))

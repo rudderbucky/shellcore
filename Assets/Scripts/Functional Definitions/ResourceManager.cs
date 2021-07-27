@@ -477,11 +477,11 @@ public class ResourceManagerEditor : Editor
         }
 
         EditorGUILayout.BeginHorizontal();
-        manager.fieldID = EditorGUILayout.TextField("Resource ID:", IDField.stringValue) as string;
+        manager.fieldID = EditorGUILayout.TextField("Resource ID:", IDField.stringValue);
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         manager.newObject = EditorGUILayout.ObjectField("Resource Object:",
-            ObjectField.objectReferenceValue, typeof(Object), true) as Object;
+            ObjectField.objectReferenceValue, typeof(Object), true);
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
         GUI.SetNextControlName("add");

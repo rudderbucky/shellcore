@@ -436,7 +436,7 @@ public class LandPlatformGenerator : MonoBehaviour
 
         Gizmos.DrawSphere(mPos, 0.2f);
 
-        Vector2 relativePos = ((Vector2)mPos - instance.Offset) / Instance.tileSize;
+        Vector2 relativePos = (mPos - instance.Offset) / Instance.tileSize;
         relativePos.y = -relativePos.y;
 
         Vector2Int tilePos = new Vector2Int(Mathf.RoundToInt(relativePos.x), Mathf.RoundToInt(relativePos.y));

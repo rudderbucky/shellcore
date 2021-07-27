@@ -60,7 +60,7 @@ public class SectorPropertyDisplay : MonoBehaviour
 
         type.value = 0;
         sectorMusicBool.isOn = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultMusicOn", 1) == 1 ? true : false;
-        sectorMusicID.text = PlayerPrefs.GetString("WCSectorPropertyDisplay_defaultMusic0", WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)0));
+        sectorMusicID.text = PlayerPrefs.GetString("WCSectorPropertyDisplay_defaultMusic0", WCGeneratorHandler.GetDefaultMusic(Sector.SectorType.Neutral));
         colorR.text =
             PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR0",
                 SectorColors.colors[0].r) + "";

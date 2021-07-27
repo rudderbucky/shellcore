@@ -291,7 +291,7 @@ public class ReticleScript : MonoBehaviour
 
             reticle.Find("Number Marker").GetComponent<Text>().enabled = true;
             reticle.Find("Number Marker").GetComponent<Text>().text = count + "";
-            reticle.Find("Number Marker").GetComponent<Text>().color = new Color32((byte)0, (byte)150, (byte)250, (byte)255);
+            reticle.Find("Number Marker").GetComponent<Text>().color = new Color32(0, 150, 250, 255);
         }
         else
         {

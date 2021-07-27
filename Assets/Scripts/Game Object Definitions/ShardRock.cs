@@ -46,9 +46,9 @@ public class ShardRock : MonoBehaviour, IDamageable
 
     private Color[] rockColors = new Color[]
     {
-        new Color32((byte)51, (byte)153, (byte)204, (byte)255),
-        new Color32((byte)153, (byte)204, (byte)51, (byte)255),
-        new Color32((byte)204, (byte)51, (byte)153, (byte)255)
+        new Color32(51, 153, 204, 255),
+        new Color32(153, 204, 51, 255),
+        new Color32(204, 51, 153, 255)
     };
 
     private void BuildRock()

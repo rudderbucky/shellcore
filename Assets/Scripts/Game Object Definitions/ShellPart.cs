@@ -124,7 +124,7 @@ public class ShellPart : MonoBehaviour
         var sh = partSys.shape;
         if (spriteRenderer.sprite)
         {
-            sh.scale = (Vector3)spriteRenderer.sprite.bounds.extents * 2;
+            sh.scale = spriteRenderer.sprite.bounds.extents * 2;
         }
 
         var e = partSys.emission;

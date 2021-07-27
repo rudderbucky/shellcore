@@ -407,7 +407,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             part.boundImage.enabled = Input.GetKey(KeyCode.LeftShift);
         }
 
-        System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / (int)y), z * ((int)x.y / (int)z), 0);
+        System.Func<Vector3, int, int, Vector3> roundToRatios = (x, y, z) => new Vector3(y * ((int)x.x / y), z * ((int)x.y / z), 0);
         var newOffset = roundToRatios(grid.position, baseMoveSize, baseMoveSize) - grid.position;
         transform.position = roundToRatios(Input.mousePosition, baseMoveSize, baseMoveSize) - newOffset;
         var oldPos = GetComponent<RectTransform>().anchoredPosition;
