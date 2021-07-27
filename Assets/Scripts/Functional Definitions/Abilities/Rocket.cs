@@ -8,6 +8,8 @@ public class Rocket : Torpedo
         ID = AbilityID.Rocket;
         terrain = Entity.TerrainType.Air;
         category = Entity.EntityCategory.Station;
+        survivalTime = 2.5F;
+        range = bulletSpeed * survivalTime;
         bonusDamageType = typeof(AirConstruct);
     }
 }
