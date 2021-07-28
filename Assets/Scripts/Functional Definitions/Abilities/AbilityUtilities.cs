@@ -236,6 +236,8 @@ public static class AbilityUtilities
             case 19:
             case 20:
             case 21:
+			case 22:
+			case 23:
             case 34:
                 return null;
             case 4:
@@ -303,7 +305,7 @@ public static class AbilityUtilities
                 return "rocketshooter_sprite";
             default:
                 return "ability_indicator";
-                }
+        }
     }
 
     public static string GetAbilityNameByID(int ID, string secondaryData)
