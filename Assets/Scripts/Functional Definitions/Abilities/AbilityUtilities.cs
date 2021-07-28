@@ -300,14 +300,7 @@ public static class AbilityUtilities
             case 29:
                 return "ability_indicator_absorb_field";
             case 39:
-                if (data == "rocketgroundshooter_sprite")
-                {
-                return "rocketgroundshooter_sprite";
-                }
-                else
-                {
                 return "rocketshooter_sprite";
-                }
             default:
                 return "ability_indicator";
                 }
