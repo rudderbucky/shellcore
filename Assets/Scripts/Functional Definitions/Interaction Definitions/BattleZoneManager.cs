@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 public class BattleZoneManager : MonoBehaviour
@@ -107,31 +106,23 @@ public class BattleZoneManager : MonoBehaviour
 
         foreach (var statBlock in stats)
         {
-            StringBuilder str = new StringBuilder();
-            str.Append($"<color={FactionManager.GetFactionColorName(statBlock.faction)}>{(statBlock.faction == 0 ? "PLAYER" : "ENEMY")}</color>");
-            str.AppendLine().AppendLine();
-            str.AppendLine(statBlock.kills.ToString());
-            str.AppendLine(statBlock.deaths.ToString());
-            str.AppendLine(statBlock.deaths > 0 ? (statBlock.kills / statBlock.deaths).ToString() : "-");
-            str.AppendLine();
-            str.AppendLine(statBlock.power.ToString());
-            str.AppendLine();
-            str.AppendLine(statBlock.droneSpawns.ToString());
-            str.AppendLine(statBlock.droneKills.ToString());
-            str.AppendLine(statBlock.turretSpawns.ToString());
-            str.AppendLine(statBlock.turretKills.ToString());
+            string str =
+                $"<color={FactionManager.GetFactionColorName(statBlock.faction)}>{(statBlock.faction == 0 ? "PLAYER" : "ENEMY")}</color>\n\n"
+                + statBlock.kills + "\n"
+                + statBlock.deaths + "\n"
+                + (statBlock.deaths > 0 ? (statBlock.kills / statBlock.deaths).ToString() : "-") + "\n\n"
+                + statBlock.power + "\n\n"
+                + statBlock.droneSpawns + "\n"
+                + statBlock.droneKills + "\n"
+                + statBlock.turretSpawns + "\n"
+                + statBlock.turretKills + "\n";
 
             if (index == 0)
             {
-                str.AppendLine();
-                str.AppendLine(Mathf.RoundToInt(Time.time - startTime) + "s");
-                str.AppendLine();
-                str.AppendLine(CreditsCollected.ToString());
+                str += $"{Mathf.RoundToInt(Time.time - startTime)}s\n{CreditsCollected}\n";
             }
 
-            str.AppendLine();
-
-            strings[index++] = str.ToString();
+            strings[index++] = str;
         }
 
         return strings;

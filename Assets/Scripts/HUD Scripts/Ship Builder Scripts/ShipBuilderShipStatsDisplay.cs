@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -80,14 +79,16 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
             buildStat = $"TOTAL BUILD COST: \n{colorTag}{statsDatabase.GetBuildCost()} CREDITS</color>";
         }
 
-        StringBuilder displayText = new StringBuilder();
-        displayText.Append($"SHELL: {totalHealths[0]}");
-        displayText.AppendLine($"CORE: {totalHealths[1]}");
-        displayText.AppendLine($"ENERGY: {totalHealths[2]}");
-        displayText.AppendLine($"SPEED: {(int)Craft.GetPhysicsSpeed(speed, weight)}");
-        displayText.AppendLine($"WEIGHT: {(int)weight}");
-        displayText.AppendLine(buildStat);
-        display.text = displayText.ToString();
+        string displayText = string.Join("\n", new string[]
+        {
+            $"SHELL: {totalHealths[0]}",
+            $"CORE: {totalHealths[1]}",
+            $"ENERGY: {totalHealths[2]}",
+            $"SPEED: {(int)Craft.GetPhysicsSpeed(speed, weight)}",
+            $"WEIGHT: {(int)weight}",
+            buildStat
+        });
+        display.text = displayText;
         regenDisplay.text = $"REGEN: {totalRegens[0]}\n\nREGEN: {totalRegens[2]}";
     }
 }
