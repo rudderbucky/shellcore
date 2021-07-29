@@ -28,7 +28,7 @@ public class Disrupt : Ability
     {
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction) && !AIData.entities[i].invisible)
+            if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction) && !AIData.entities[i].IsInvisible)
             {
                 float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
                 if (d < range * range)
