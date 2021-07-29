@@ -313,7 +313,7 @@ public abstract class Ability : MonoBehaviour
 
             // Update alpha
             Color newColor = glow.color;
-            if (Core.invisible)
+            if (Core.IsInvisible)
             {
                 // Invisible player
                 if (Core.faction == 0)
