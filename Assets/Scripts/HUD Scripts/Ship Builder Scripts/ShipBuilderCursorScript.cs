@@ -546,8 +546,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         switch (partID)
         {
             case "SmallSide1":
+            case "SmallSide3":
+            case "SmallSide4":
                 return PartSymmetry.MirrorXAxis;
             case "MediumExtra1":
+            case "MediumSide2":
                 return PartSymmetry.MirrorYAxis;
             case "SmallSide2":
                 return PartSymmetry.MirrorBothAxes;
@@ -576,7 +579,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                 return diff == 180;
             case PartSymmetry.None:
             default:
-                return part.mirrored != symmetryPart.mirrored;
+                return part.mirrored != symmetryPart.mirrored && (part.rotation + symmetryPart.rotation == 0);
         }
     }
 

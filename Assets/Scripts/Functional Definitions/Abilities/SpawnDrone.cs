@@ -43,7 +43,7 @@ public class SpawnDrone : ActiveAbility
         }
     }
 
-    private void Start()
+    protected override void Start()
     {
         if (GetComponentInParent<Turret>())
         {
@@ -65,6 +65,7 @@ public class SpawnDrone : ActiveAbility
         {
             craft = Core as IOwner;
         }
+        base.Start();
     }
 
     /// <summary>
