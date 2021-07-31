@@ -983,7 +983,6 @@ public class SectorManager : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            // What does this do?
 
             SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
             data.platformjson = JsonUtility.ToJson(current.platforms);

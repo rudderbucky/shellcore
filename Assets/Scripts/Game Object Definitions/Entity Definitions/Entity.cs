@@ -148,9 +148,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     private void CalculateMaxHealth()
     {
         var fracs = new float[3] { currentHealth[0] / maxHealth[0], currentHealth[1] / maxHealth[1], currentHealth[2] / maxHealth[2] };
-        maxHealth[0] = (baseMaxHealth[0] + passiveMaxStacks[0] * ShellMax.max) * (1 + controlStacks * Control.baseControlFractionBoost);
-        maxHealth[1] = (baseMaxHealth[1] + passiveMaxStacks[1] * ShellMax.max);
-        maxHealth[2] = (baseMaxHealth[2] + passiveMaxStacks[2] * ShellMax.max);
+        maxHealth[0] = (baseMaxHealth[0] + passiveMaxStacks[0] * ShellMax.maxes[0]) * (1 + controlStacks * Control.baseControlFractionBoost);
+        maxHealth[1] = (baseMaxHealth[1] + passiveMaxStacks[1] * ShellMax.maxes[1]);
+        maxHealth[2] = (baseMaxHealth[2] + passiveMaxStacks[2] * ShellMax.maxes[2]);
 
         for (int i = 0; i < 3; i++)
         {
