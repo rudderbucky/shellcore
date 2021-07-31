@@ -16,9 +16,10 @@ public class Stealth : ActiveAbility
         energyCost = 100;
     }
 
-    private void Start()
+    protected override void Start()
     {
         craft = Core as Craft;
+        base.Start();
     }
 
     /// <summary>
