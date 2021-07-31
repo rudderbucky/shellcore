@@ -546,6 +546,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         switch (partID)
         {
             case "SmallSide1":
+            case "SmallSide3":
+            case "SmallSide4":
                 return PartSymmetry.MirrorXAxis;
             case "MediumExtra1":
                 return PartSymmetry.MirrorYAxis;
