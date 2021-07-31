@@ -191,11 +191,11 @@ public static class AbilityUtilities
             case 29:
                 return "Absorb damage and turn it into energy.";
             case 30:
-                return "Temporarily increase shell regen.";
+                return $"Temporarily increase shell regen by { ActiveRegen.healAmounts[0] } per second.";
             case 31:
                 return "Temporarily increase core... wait, this isn't supposed to exist!";
             case 32:
-                return "Temporarily increase energy regen.";
+                return $"Temporarily increase energy regen by { ActiveRegen.healAmounts[2] } per second.";
             case 33:
                 return "Disrupt enemy ability cooldowns.";
             case 34:
