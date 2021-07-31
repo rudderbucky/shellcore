@@ -171,11 +171,11 @@ public static class AbilityUtilities
             case 17:
                 return "Passively increases shell regen by " + ShellRegen.regens[0] * tier + " points.";
             case 18:
-                return "Passively increases maximum shell by " + ShellMax.max * tier + " points.";
+                return "Passively increases maximum shell by " + ShellMax.maxes[0] * tier + " points.";
             case 19:
                 return "Passively increases energy regen by " + ShellRegen.regens[2] * tier + " points.";
             case 20:
-                return "Passively increases maximum energy by " + ShellMax.max * tier + " points.";
+                return "Passively increases maximum energy by " + ShellMax.maxes[2] * tier + " points.";
             case 21:
                 return "Passively increases the maximum allowed number of controlled units by " + Command.commandUnitIncrease + ".";
             case 24:

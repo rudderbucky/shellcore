@@ -1,7 +1,7 @@
 ﻿public class ShellMax : PassiveAbility
 {
     public int index;
-    public static readonly int max = 400;
+    public static readonly int[] maxes = new int[3] { 1000, 400, 400 };
 
     public void Initialize()
     {
