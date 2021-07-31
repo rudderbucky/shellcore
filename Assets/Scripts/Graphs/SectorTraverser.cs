@@ -54,6 +54,10 @@ public class SectorTraverser : Traverser
     public override void StartQuest()
     {
         SectorManager.SectorGraphLoad += LoadSector;
+        if (SectorManager.instance.current != null)
+        {
+            LoadSector(SectorManager.instance.current.sectorName);
+        }
     }
 
     void LoadSector(string name)
