@@ -1,4 +1,5 @@
-﻿/// <summary>
+﻿using UnityEngine;
+/// <summary>
 /// Heals all allies in range
 /// </summary>
 public class AreaRestore : Ability
@@ -36,7 +37,7 @@ public class AreaRestore : Ability
                 {
                     if (ally.GetHealth()[0] < ally.GetMaxHealth()[0])
                     {
-                        ally.TakeShellDamage(-heal, 0f, GetComponentInParent<Entity>());
+                        ally.TakeShellDamage(-heal * Mathf.Max(1, abilityTier), 0f, GetComponentInParent<Entity>());
                     }
                 }
             }

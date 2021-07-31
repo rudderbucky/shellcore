@@ -103,17 +103,17 @@ public abstract class WeaponAbility : ActiveAbility
 
     List<AbilityID> damageUnaffectedByTier = new List<AbilityID> { AbilityID.MainBullet, AbilityID.Bomb };
 
-    protected virtual void Start()
+    protected override void Start()
     {
         if (abilityTier != 0)
         {
             damage *= (damageUnaffectedByTier.Contains(ID)) ? 1 : abilityTier;
-            energyCost *= abilityTier;
         }
 
         switch (type)
         {
             case WeaponDiversityType.Strike:
+                // strike only multiplies tier 1 energy cost
                 energyCost *= 0.6F;
                 break;
             case WeaponDiversityType.Gun:
@@ -122,6 +122,7 @@ public abstract class WeaponAbility : ActiveAbility
             default:
                 break;
         }
+        base.Start();
     }
 
     /// <summary>
