@@ -181,9 +181,9 @@ public static class AbilityUtilities
             case 24:
                 return "Become invisible to enemies.";
             case 25:
-                return $"All weapon damage increased by {DamageBoost.damageAddition}.";
+                return $"All weapon damage increased by {DamageBoost.damageAddition * Mathf.Max(1, tier)}.";
             case 26:
-                return $"Instantly heals self and nearby allies by {AreaRestore.heal} shell";
+                return $"Instantly heals self and nearby allies by {AreaRestore.heal * Mathf.Max(1, tier)} shell";
             case 27:
                 return "Immobilizes the target.";
             case 28:
