@@ -110,7 +110,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             for (int i = 0; i < renderers.Length; i++)
             {
                 var c = renderers[i].color;
-                c.a = 1f;
+                c.a = FactionManager.GetFactionColor(faction).a;
                 renderers[i].color = c;
             }
 

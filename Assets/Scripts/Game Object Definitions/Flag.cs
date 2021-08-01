@@ -7,6 +7,16 @@ public class Flag : MonoBehaviour, IInteractable
     public FlagInteractibility interactibility;
     public string sectorName;
     public string entityID;
+    public delegate void EntityRangeCheckDelegate(float range);
+    public EntityRangeCheckDelegate RangeCheckDelegate;
+
+    private void Update()
+    {
+        if (RangeCheckDelegate != null && PlayerCore.Instance)
+        {
+            RangeCheckDelegate.Invoke(Vector2.SqrMagnitude(PlayerCore.Instance.transform.position - transform.position));
+        }
+    }
 
     public static void FindEntityAndWarpPlayer(string sectorName, string entityID)
     {
@@ -51,7 +61,6 @@ public class Flag : MonoBehaviour, IInteractable
         {
             if (ent.ID == entityID)
             {
-                ;
                 // position is a global vector (i.e., not local to the sector itself), so this should work
                 PlayerCore.Instance.Warp(ent.position);
             }

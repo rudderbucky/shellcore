@@ -1,4 +1,6 @@
-﻿using NodeEditorFramework.Utilities;
+﻿using System.Collections.Generic;
+using NodeEditorFramework.Utilities;
+using System.Linq;
 using UnityEngine;
 
 namespace NodeEditorFramework.Standard
@@ -61,14 +63,21 @@ namespace NodeEditorFramework.Standard
             {
                 entity.RangeCheckDelegate -= RangeCheck;
             }
+            if (flag)
+            {
+                flag.RangeCheckDelegate -= RangeCheck;
+            }
         }
 
         private Entity entity;
+        private Flag flag;
 
         public void Init(int index)
         {
             // TODO: Disambiguate name and entityName
-            var possibleMatches = AIData.entities.FindAll(ent => ent.ID == entityID && !ent.GetIsDead());
+            List<GameObject> possibleMatches = new List<GameObject>();
+            AIData.entities.FindAll(ent => ent.ID == entityID && !ent.GetIsDead()).ForEach(x => possibleMatches.Add(x.gameObject));
+            AIData.flags.FindAll(f => f.entityID == entityID).ForEach(f => possibleMatches.Add(f.gameObject));
             foreach (var match in possibleMatches)
             {
                 if (rangeCheck)
@@ -87,7 +96,14 @@ namespace NodeEditorFramework.Standard
 
             entity = AIData.entities.Find(e => e.ID == entityID);
             Entity.OnEntitySpawn += GrabEntity;
-            entity.RangeCheckDelegate += RangeCheck;
+            if (entity)
+                entity.RangeCheckDelegate += RangeCheck;
+            flag = AIData.flags.Find(f => f.name == entityID);
+            if (flag)
+            {
+                flag.RangeCheckDelegate += RangeCheck;
+            }
+
         }
 
         private void GrabEntity(Entity entity)
