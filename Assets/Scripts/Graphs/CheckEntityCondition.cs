@@ -53,7 +53,17 @@ namespace NodeEditorFramework.Standard
         public void DeInit()
         {
             State = ConditionState.Uninitialized;
+            if (Entity.OnEntitySpawn != null)
+            {
+                Entity.OnEntitySpawn -= GrabEntity;
+            }
+            if (entity)
+            {
+                entity.RangeCheckDelegate -= RangeCheck;
+            }
         }
+
+        private Entity entity;
 
         public void Init(int index)
         {
@@ -72,8 +82,34 @@ namespace NodeEditorFramework.Standard
 
                 State = ConditionState.Completed;
                 connectionKnobs[0].connection(0).body.Calculate();
-                break;
+                return;
             } // TODO: Implement failure when I understand how it works or when Ormanus adds failure if it isn't added
+
+            entity = AIData.entities.Find(e => e.ID == entityID);
+            Entity.OnEntitySpawn += GrabEntity;
+            entity.RangeCheckDelegate += RangeCheck;
+        }
+
+        private void GrabEntity(Entity entity)
+        {
+            if (!entity && entity.ID == entityID)
+            {
+                this.entity = entity;
+                entity.RangeCheckDelegate += RangeCheck;
+            }
+        }
+
+        private void RangeCheck(float range)
+        {
+            if (rangeCheck)
+            {
+                var player = AIData.entities.Find(ent => ent.ID == "player");
+                if (range <= distanceFromPlayer * distanceFromPlayer)
+                {
+                    State = ConditionState.Completed;
+                    connectionKnobs[0].connection(0).body.Calculate();
+                }
+            }
         }
     }
 }

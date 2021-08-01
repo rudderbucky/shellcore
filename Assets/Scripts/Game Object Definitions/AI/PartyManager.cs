@@ -114,7 +114,7 @@ public class PartyManager : MonoBehaviour
 
             assignButton.GetComponentInChildren<Text>().text = "UNASSIGN";
             var clicked = new Button.ButtonClickedEvent();
-            clicked.AddListener(() => Unassign(charID, assignButton));
+            clicked.AddListener(() => Unassign(charID));
             assignButton.onClick = clicked;
             // sukratHealth.SetActive(true);
         }
@@ -184,7 +184,7 @@ public class PartyManager : MonoBehaviour
         partyIndicators[core].GetComponentInChildren<Text>().text = core.name.ToUpper();
     }
 
-    public void Unassign(string charID, Button assignButton)
+    public void Unassign(string charID)
     {
         if (!PartyLocked)
         {
@@ -196,8 +196,7 @@ public class PartyManager : MonoBehaviour
 
             partyMembers.Remove(member);
             partyResponses.Remove(charID);
-            var clicked = new Button.ButtonClickedEvent();
-            clicked.AddListener(() => AssignCharacter(charID, assignButton));
+
             if (partyIndicators.ContainsKey(member))
             {
                 Destroy(partyIndicators[member]);
@@ -249,6 +248,7 @@ public class PartyManager : MonoBehaviour
 
     public void CharacterScrollSetup()
     {
+        // This method destroys all party bars and reconstructs it after assigning, for some reason.
         for (int i = 0; i < characterScrollContents.transform.childCount; i++)
         {
             Destroy(characterScrollContents.transform.GetChild(i).gameObject);
@@ -270,11 +270,19 @@ public class PartyManager : MonoBehaviour
             if (partyMembers.Exists(c => c.ID == id))
             {
                 button.GetComponentInChildren<Text>().text = "UNASSIGN";
-                button.onClick.AddListener(() => Unassign(id, button));
+                button.onClick.AddListener(() => Unassign(id));
             }
             else
             {
-                button.onClick.AddListener(() => AssignCharacter(id, button));
+                if (!PlayerCore.Instance.cursave.disabledPartyIDs.Contains(id))
+                {
+                    button.onClick.AddListener(() => AssignCharacter(id, button));
+                }
+                else
+                {
+                    button.GetComponentInChildren<Text>().text = "DISABLED";
+                    button.GetComponentInChildren<Text>().color = Color.red;
+                }
             }
         }
     }
