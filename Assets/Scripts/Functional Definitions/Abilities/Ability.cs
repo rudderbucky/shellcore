@@ -146,6 +146,14 @@ public abstract class Ability : MonoBehaviour
         startTime = -100f; // 0 would trigger the ability at start
     }
 
+    protected virtual void Start()
+    {
+        if (abilityTier != 0)
+        {
+            energyCost *= abilityTier;
+        }
+    }
+
     /// <summary>
     /// Get the image ID of the ability
     /// </summary>
@@ -313,7 +321,7 @@ public abstract class Ability : MonoBehaviour
 
             // Update alpha
             Color newColor = glow.color;
-            if (Core.invisible)
+            if (Core.IsInvisible)
             {
                 // Invisible player
                 if (Core.faction == 0)

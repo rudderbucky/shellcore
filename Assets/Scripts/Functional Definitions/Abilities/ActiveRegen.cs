@@ -3,7 +3,7 @@
 /// </summary>
 public class ActiveRegen : ActiveAbility
 {
-    const float healAmount = 100f;
+    public static readonly float[] healAmounts = { 150, 100, 150 };
     public int index;
 
     public void Initialize()
@@ -37,7 +37,7 @@ public class ActiveRegen : ActiveAbility
         if (Core)
         {
             float[] regens = Core.GetRegens();
-            regens[index] -= healAmount * abilityTier;
+            regens[index] -= healAmounts[index] * abilityTier;
             Core.SetRegens(regens);
         }
     }
@@ -49,7 +49,7 @@ public class ActiveRegen : ActiveAbility
     {
         AudioManager.PlayClipByID("clip_activateability", transform.position);
         float[] regens = Core.GetRegens();
-        regens[index] += healAmount * abilityTier;
+        regens[index] += healAmounts[index] * abilityTier;
         Core.SetRegens(regens);
         base.Execute();
     }

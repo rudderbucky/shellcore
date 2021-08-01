@@ -16,9 +16,10 @@ public class Stealth : ActiveAbility
         energyCost = 100;
     }
 
-    private void Start()
+    protected override void Start()
     {
         craft = Core as Craft;
+        base.Start();
     }
 
     /// <summary>
@@ -28,28 +29,10 @@ public class Stealth : ActiveAbility
     {
         base.Deactivate();
 
-        craft.stealths--;
-
-        if (craft.stealths < 0)
+        craft.StealthStacks--;
+        if (craft.StealthStacks < 0)
         {
-            Debug.LogError($"Stealth is bugged, complain to Ormanus [entity name: {craft.name}, faction: {craft.faction}, count: {craft.stealths}");
-        }
-
-        if (craft.stealths == 0)
-        {
-            SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                var c = renderers[i].color;
-                c.a = 1f;
-                renderers[i].color = c;
-            }
-
-            Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                colliders[i].enabled = true;
-            }
+            Debug.LogError($"Stealth is bugged, complain to Ormanus [entity name: {craft.name}, faction: {craft.faction}, count: {craft.StealthStacks}");
         }
     }
 
@@ -61,20 +44,7 @@ public class Stealth : ActiveAbility
         if (craft)
         {
             // change visibility
-            craft.stealths++;
-            SpriteRenderer[] renderers = craft.GetComponentsInChildren<SpriteRenderer>(true);
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                var c = renderers[i].color;
-                c.a = Core.faction == 0 ? 0.2f : 0f;
-                renderers[i].color = c;
-            }
-
-            Collider2D[] colliders = craft.GetComponentsInChildren<Collider2D>(true);
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                colliders[i].enabled = false;
-            }
+            craft.StealthStacks++;
 
             AudioManager.PlayClipByID("clip_activateability", transform.position);
             base.Execute();

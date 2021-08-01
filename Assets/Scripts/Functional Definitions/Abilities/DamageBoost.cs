@@ -4,7 +4,7 @@
 /// </summary>
 public class DamageBoost : ActiveAbility
 {
-    public const float damageAddition = 150;
+    public const float damageAddition = 100;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -22,7 +22,7 @@ public class DamageBoost : ActiveAbility
     {
         if (Core)
         {
-            Core.DamageBoostStacks -= Mathf.Min(1, abilityTier);
+            Core.DamageBoostStacks -= Mathf.Max(1, abilityTier);
             base.Deactivate();
         }
     }
@@ -34,7 +34,7 @@ public class DamageBoost : ActiveAbility
     {
         if (Core)
         {
-            Core.DamageBoostStacks += Mathf.Min(1, abilityTier);
+            Core.DamageBoostStacks += Mathf.Max(1, abilityTier);
             AudioManager.PlayClipByID("clip_buff", transform.position);
             base.Execute();
         }

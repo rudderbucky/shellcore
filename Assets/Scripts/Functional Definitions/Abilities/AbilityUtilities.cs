@@ -171,19 +171,19 @@ public static class AbilityUtilities
             case 17:
                 return $"Passively increases shell regen by {ShellRegen.regens[0] * tier} points.";
             case 18:
-                return $"Passively increases maximum shell by {ShellMax.max * tier} points.";
+                return $"Passively increases maximum shell by {ShellMax.maxes[0] * tier} points.";
             case 19:
                 return $"Passively increases energy regen by {ShellRegen.regens[2] * tier} points.";
             case 20:
-                return $"Passively increases maximum energy by {ShellMax.max * tier} points.";
+                return $"Passively increases maximum energy by {ShellMax.maxes[2] * tier} points.";
             case 21:
                 return $"Passively increases the maximum allowed number of controlled units by {Command.commandUnitIncrease}.";
             case 24:
                 return "Become invisible to enemies.";
             case 25:
-                return $"All weapon damage increased by {DamageBoost.damageAddition}.";
+                return $"All weapon damage increased by {DamageBoost.damageAddition * Mathf.Max(1, tier)}.";
             case 26:
-                return $"Instantly heals self and nearby allies by {AreaRestore.heal} shell";
+                return $"Instantly heals self and nearby allies by {AreaRestore.heal * Mathf.Max(1, tier)} shell";
             case 27:
                 return "Immobilizes the target.";
             case 28:
@@ -191,11 +191,11 @@ public static class AbilityUtilities
             case 29:
                 return "Absorb damage and turn it into energy.";
             case 30:
-                return "Temporarily increase shell regen.";
+                return $"Temporarily increase shell regen by { ActiveRegen.healAmounts[0] } per second.";
             case 31:
                 return "Temporarily increase core... wait, this isn't supposed to exist!";
             case 32:
-                return "Temporarily increase energy regen.";
+                return $"Temporarily increase energy regen by { ActiveRegen.healAmounts[2] } per second.";
             case 33:
                 return "Disrupt enemy ability cooldowns.";
             case 34:
