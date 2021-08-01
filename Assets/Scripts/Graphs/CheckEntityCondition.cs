@@ -98,9 +98,12 @@ namespace NodeEditorFramework.Standard
             Entity.OnEntitySpawn += GrabEntity;
             if (entity)
                 entity.RangeCheckDelegate += RangeCheck;
-            flag = AIData.flags.Find(f => f.entityID == entityID);
+            flag = AIData.flags.Find(f => f.name == entityID);
             if (flag)
+            {
                 flag.RangeCheckDelegate += RangeCheck;
+            }
+
         }
 
         private void GrabEntity(Entity entity)
