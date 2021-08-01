@@ -98,6 +98,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+
+    public delegate void EntityRangeCheckDelegate(float range);
+    public EntityRangeCheckDelegate RangeCheckDelegate;
+
     private void UpdateInvisibleGraphics()
     {
         if (!IsInvisible)
@@ -970,6 +974,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             else
             {
                 combatTimer += Time.deltaTime; // otherwise continue ticking timer
+            }
+
+            if (RangeCheckDelegate != null && PlayerCore.Instance)
+            {
+                RangeCheckDelegate.Invoke(Vector2.SqrMagnitude(PlayerCore.Instance.transform.position - transform.position));
             }
         }
     }

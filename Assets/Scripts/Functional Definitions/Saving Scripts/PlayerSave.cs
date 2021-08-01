@@ -65,6 +65,8 @@ public class PlayerSave
 
     // Contains IDs of unlocked party members (there will be a node that unlocks members adding IDs into this list)
     public List<string> unlockedPartyIDs;
+    // Disabled party members. Saved so that EP3 persistent party locking does not need constant checkpoints
+    public List<string> disabledPartyIDs;
     public AbilityHotkeyStruct abilityHotkeys;
     public List<string> locationBasedShardsFound;
     public int lastDimension;

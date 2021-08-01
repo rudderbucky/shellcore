@@ -20,11 +20,11 @@ public class EnergySphereScript : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
-        if (timer > 10)
+        if (timer > 20)
         {
             Destroy(gameObject);
         }
-        else if (timer > 7)
+        else if (timer > 17)
         {
             Blink();
         }
