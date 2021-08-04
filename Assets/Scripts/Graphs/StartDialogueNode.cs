@@ -133,9 +133,6 @@ namespace NodeEditorFramework.Standard
                     var stack = new Stack<UnityEngine.Events.UnityAction>();
                     stack.Push(() =>
                     {
-                        /* Theoretically, I do not believe you need to check for prerequisites at the bottom of the stack.
-                           I may be wrong though. */
-
                         if (handler as TaskManager)
                         {
                             missionCanvasNode = this;

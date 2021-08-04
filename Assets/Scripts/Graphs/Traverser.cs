@@ -131,5 +131,9 @@ public class Traverser : NodeCanvasTraversal
         {
             (node as EndDialogue).state = state;
         }
+        if (node is ClearDialogueNode)
+        {
+            (node as ClearDialogueNode).state = state;
+        }
     }
 }
