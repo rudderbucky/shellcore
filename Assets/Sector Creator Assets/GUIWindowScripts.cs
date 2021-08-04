@@ -22,6 +22,13 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
     // does a rudimentary check for if the player moves too far from the position they were in before
     protected bool exitOnPlayerRange = false;
 
+    private bool destroyOnClose;
+    public bool DestroyOnClose
+    {
+        get { return destroyOnClose; }
+        set { destroyOnClose = value; }
+    }
+
     public UnityEvent GetOnCancelled()
     {
         return OnCancelled;
@@ -37,6 +44,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
             }
 
             transform.parent.gameObject.SetActive(false);
+            if (DestroyOnClose) Destroy(gameObject);
         }
     }
 

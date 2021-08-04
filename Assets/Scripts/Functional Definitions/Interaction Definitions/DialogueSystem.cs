@@ -298,6 +298,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         //create window
         window = Instantiate(battleResultsBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.DestroyOnClose = true;
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
