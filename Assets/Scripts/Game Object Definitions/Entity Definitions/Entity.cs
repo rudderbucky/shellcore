@@ -928,7 +928,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 if (this as PlayerCore && (deathTimer > 2))
                 {
-                    ((PlayerCore)this).alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
+                    ((PlayerCore)this).alerter.showMessage($"Respawning in {(5 - (int)deathTimer)} second"
                                                            + ((5 - deathTimer) > 1 ? "s." : "."));
                 }
             }
@@ -1103,7 +1103,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
         {
-            Debug.Log("Damage: " + amount + " (f " + lastDamagedBy?.faction + " -> " + faction + ")");
+            Debug.Log($"Damage: {amount} (f {lastDamagedBy?.faction} -> {faction})");
         }
 
         if (isAbsorbing && amount > 0f)

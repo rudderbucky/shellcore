@@ -91,7 +91,7 @@ public class MissionTraverser : Traverser
             return true;
         }
 
-        if (CPName == null || CPName == "")
+        if (string.IsNullOrEmpty(CPName))
         {
             return false;
         }
@@ -113,7 +113,7 @@ public class MissionTraverser : Traverser
             }
         }
 
-        Debug.LogWarning("Could not find checkpoint: " + CPName + " " + nodeCanvas.missionName);
+        Debug.LogWarning($"Could not find checkpoint: {CPName} {nodeCanvas.missionName}");
         return false;
     }
 

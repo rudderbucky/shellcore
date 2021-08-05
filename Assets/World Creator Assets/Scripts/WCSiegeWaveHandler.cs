@@ -73,7 +73,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
 
     private SiegeEntity TryParseFields((InputField, InputField, InputField, Dropdown) field)
     {
-        if (field.Item1.text == null || field.Item1.text == "")
+        if (string.IsNullOrEmpty(field.Item1.text))
         {
             return null;
         }
@@ -85,7 +85,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
         if (item != null)
         {
             // you can choose to give any object a custom name
-            if (item.name != null && item.name != "")
+            if (!string.IsNullOrEmpty(item.name))
             {
                 ent.name = item.name;
             }
@@ -114,8 +114,8 @@ public class WCSiegeWaveHandler : MonoBehaviour
             catch (System.Exception e)
             {
                 // try and see if the name is an indirect reference
-                var path = Application.streamingAssetsPath + "\\EntityPlaceholder";
-                if (System.IO.Directory.GetFiles(path).Contains<string>(path + "\\" + field.Item1.text + ".json"))
+                var path = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
+                if (System.IO.Directory.GetFiles(path).Contains<string>(System.IO.Path.Combine(path , field.Item1.text + ".json")))
                 {
                     ent.name = "ShellCore";
                     ent.blueprintJSON = field.Item1.text;

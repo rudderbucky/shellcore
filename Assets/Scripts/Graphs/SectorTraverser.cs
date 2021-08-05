@@ -20,7 +20,7 @@ public class SectorTraverser : Traverser
 
     public override void SetNode(Node node)
     {
-        Debug.Log("Sector Canvas " + nodeCanvas + " now setting node: " + node);
+        Debug.Log($"Sector Canvas {nodeCanvas} now setting node: {node}");
         SetDialogueState(currentNode, NodeEditorGUI.NodeEditorState.Dialogue);
         base.SetNode(node);
     }

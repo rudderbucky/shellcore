@@ -300,7 +300,7 @@ namespace NodeEditorFramework.Standard
             TaskManager.Instance.AttemptAutoSave();
 
 
-            if (entityIDforConfirmedResponse != null && entityIDforConfirmedResponse != "")
+            if (!string.IsNullOrEmpty(entityIDforConfirmedResponse))
             {
                 if (TaskManager.interactionOverrides.ContainsKey(entityIDforConfirmedResponse))
                 {

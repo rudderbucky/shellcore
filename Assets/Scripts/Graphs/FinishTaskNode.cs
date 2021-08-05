@@ -165,7 +165,7 @@ namespace NodeEditorFramework.Standard
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             rewardGiverID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;

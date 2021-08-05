@@ -113,7 +113,7 @@ public class AirCarrier : AirConstruct, ICarrier
         {
             int temp = (int)(Mathf.Floor((currentHealth[1] / maxHealth[1]) * 5) + 1) * 20;
             coreAlertThreshold -= (maxHealth[1] * 0.2f);
-            PlayerCore.Instance.alerter.showMessage("Carrier is at " + temp + "% core", "clip_alert");
+            PlayerCore.Instance.alerter.showMessage($"Carrier is at {temp}% core", "clip_alert");
         }
     }
 
@@ -125,7 +125,7 @@ public class AirCarrier : AirConstruct, ICarrier
         {
             int temp = (int)(Mathf.Floor((currentHealth[0] / maxHealth[0]) * 5) + 1) * 20;
             shellAlertThreshold -= (maxHealth[0] * 0.2f);
-            PlayerCore.Instance.alerter.showMessage("Carrier is at " + temp + "% shell", "clip_alert");
+            PlayerCore.Instance.alerter.showMessage($"Carrier is at {temp}% shell", "clip_alert");
         }
 
         return residue;

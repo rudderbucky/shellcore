@@ -109,7 +109,7 @@ public class AbilityHandler : MonoBehaviour
         keybindList = new string[10];
         for (int i = 0; i < 9; i++)
         {
-            keybindList[i] = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1) + "");
+            keybindList[i] = PlayerPrefs.GetString("AbilityHandler_abilityKeybind" + i, (i + 1).ToString());
         }
 
         betterBGboxArray = new Dictionary<string, AbilityButtonScript>();
@@ -126,14 +126,14 @@ public class AbilityHandler : MonoBehaviour
 
             // position them all, do not keep the world position
             var id = (AbilityID)visibleAbilities[i].GetID();
-            var key = id != AbilityID.SpawnDrone ? $"{(int)id}" : GetAHSpawnData((visibleAbilities[i] as SpawnDrone).spawnData.drone);
+            var key = id != AbilityID.SpawnDrone ? ((int)id).ToString() : GetAHSpawnData((visibleAbilities[i] as SpawnDrone).spawnData.drone);
             if (!betterBGboxArray.ContainsKey(key))
             {
                 Vector3 pos = new Vector3(GetAbilityPos(betterBGboxArray.Count), tileSpacing * 0.8F, this.transform.position.z); // find where to position the images
                 betterBGboxArray.Add(key,
                     Instantiate(betterBGbox, pos, Quaternion.identity).GetComponent<AbilityButtonScript>());
                 betterBGboxArray[key].transform.SetParent(transform, false); // set parent (do not keep world position)
-                betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count - 1] + "" : null, core,
+                betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count - 1] : null, core,
                     KeyName.Ability0 + (betterBGboxArray.Count - 1), displayAbilities != null);
             }
             else
@@ -310,7 +310,7 @@ public class AbilityHandler : MonoBehaviour
         var spawnList = visibleAbilityOrder.GetList((int)currentVisibles) as List<string>;
         if (idList != null)
         {
-            return $"{(int)idList[i]}";
+            return ((int)idList[i]).ToString();
         }
         else
         {

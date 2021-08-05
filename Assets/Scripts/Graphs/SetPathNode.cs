@@ -122,13 +122,13 @@ namespace NodeEditorFramework.Standard
             if (useCustomMass = GUILayout.Toggle(useCustomMass, "Use Custom Weight", GUILayout.MinWidth(400)))
             {
                 GUILayout.Label("Weight");
-                mass = float.Parse(GUILayout.TextField(mass + "", GUILayout.MinWidth(400)));
+                mass = float.Parse(GUILayout.TextField(mass.ToString(), GUILayout.MinWidth(400)));
             }
         }
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected " + ID + "!");
+            Debug.Log($"selected {ID}!");
 
             entityID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;

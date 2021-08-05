@@ -59,7 +59,7 @@ public abstract class Ability : MonoBehaviour
     {
         if (abilityTier > 3 || abilityTier < 0)
         {
-            Debug.LogWarning("An ability tier was set out of bounds!" + "number: " + abilityTier);
+            Debug.LogWarning("An ability tier was set out of bounds! number: " + abilityTier);
         }
 
         this.abilityTier = abilityTier;

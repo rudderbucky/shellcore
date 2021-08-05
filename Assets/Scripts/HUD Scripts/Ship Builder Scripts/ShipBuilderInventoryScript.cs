@@ -108,7 +108,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 
     void Update()
     {
-        val.text = count + "";
+        val.text = count.ToString();
         image.color = count > 0 ? activeColor : Color.gray;
         if (shooter)
         {

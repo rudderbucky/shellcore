@@ -85,7 +85,7 @@ public class SectorManager : MonoBehaviour
 
     public static string testJsonPath = null;
     public static string testResourcePath = null;
-    public static string jsonPath = Application.streamingAssetsPath + "\\Sectors\\main - " + VersionNumberScript.mapVersion;
+    public static string jsonPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "main - " + VersionNumberScript.mapVersion);
 
     public void Initialize()
     {
@@ -124,13 +124,14 @@ public class SectorManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
             string currentPath;
-            if (!File.Exists(Application.persistentDataPath + "\\CurrentSavePath"))
+            var CurrentSavePath = System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath");
+            if (!File.Exists(CurrentSavePath))
             {
                 currentPath = null;
             }
             else
             {
-                currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+                currentPath = File.ReadAllLines(CurrentSavePath)[0];
             }
 
             if (File.Exists(currentPath))
@@ -301,7 +302,7 @@ public class SectorManager : MonoBehaviour
                 // Clear DialogueSystem statics to prevent canvas reference persistence bugs
                 DialogueSystem.ClearStatics();
 
-                foreach (var canvas in Directory.GetFiles(path + "\\Canvases"))
+                foreach (var canvas in Directory.GetFiles(System.IO.Path.Combine(path, "Canvases")))
                 {
                     if (canvas.Contains(".meta"))
                     {
@@ -350,7 +351,7 @@ public class SectorManager : MonoBehaviour
                         if (player.cursave == null || player.cursave.timePlayed == 0)
                         {
                             player.transform.position = player.spawnPoint = player.havenSpawnPoint = spawnPoint;
-                            if (wdata.defaultBlueprintJSON != null && wdata.defaultBlueprintJSON != "")
+                            if (!string.IsNullOrEmpty(wdata.defaultBlueprintJSON))
                             {
                                 if (player.cursave != null)
                                 {
@@ -542,7 +543,7 @@ public class SectorManager : MonoBehaviour
         catch
         {
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (resourcePath + "\\Entities\\" + jsonOrName + ".json"), blueprint);
+                (System.IO.Path.Combine(resourcePath, "Entities", jsonOrName + ".json")), blueprint);
         }
 
         return blueprint;
@@ -562,7 +563,7 @@ public class SectorManager : MonoBehaviour
                         // Check if data has blueprint JSON, if it does override the current blueprint
                         // this now specifies the path to the JSON file instead of being the JSON itself
                         json = data.blueprintJSON;
-                        if (json != null && json != "")
+                        if (!string.IsNullOrEmpty(json))
                         {
                             blueprint = TryGettingEntityBlueprint(json);
 
@@ -629,7 +630,7 @@ public class SectorManager : MonoBehaviour
             case EntityBlueprint.IntendedType.Bunker:
                 {
                     json = data.blueprintJSON;
-                    if (json != null && json != "")
+                    if (!string.IsNullOrEmpty(json))
                     {
                         var dialogueRef = blueprint.dialogue;
                         blueprint = TryGettingEntityBlueprint(json);
@@ -649,7 +650,7 @@ public class SectorManager : MonoBehaviour
             case EntityBlueprint.IntendedType.Outpost:
                 {
                     json = data.blueprintJSON;
-                    if (json != null && json != "")
+                    if (!string.IsNullOrEmpty(json))
                     {
                         var dialogueRef = blueprint.dialogue;
                         blueprint = TryGettingEntityBlueprint(json);
@@ -677,7 +678,7 @@ public class SectorManager : MonoBehaviour
                 }
             case EntityBlueprint.IntendedType.AirCarrier:
                 json = data.blueprintJSON;
-                if (json != null && json != "")
+                if (!string.IsNullOrEmpty(json))
                 {
                     blueprint = TryGettingEntityBlueprint(json);
                 }
@@ -693,7 +694,7 @@ public class SectorManager : MonoBehaviour
                 break;
             case EntityBlueprint.IntendedType.GroundCarrier:
                 json = data.blueprintJSON;
-                if (json != null && json != "")
+                if (!string.IsNullOrEmpty(json))
                 {
                     blueprint = TryGettingEntityBlueprint(json);
                 }
@@ -733,7 +734,7 @@ public class SectorManager : MonoBehaviour
                         ok = false;
                     }
 
-                    if (data.blueprintJSON == null || data.blueprintJSON == "")
+                    if (string.IsNullOrEmpty(data.blueprintJSON))
                     {
                         ok = false;
                     }
@@ -786,7 +787,7 @@ public class SectorManager : MonoBehaviour
             (entity as AirCraft).GetAI().setPath(data.patrolPath, null, true);
         }
 
-        if (data.ID == "" || data.ID == null || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
+        if (string.IsNullOrEmpty(data.ID) || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
         {
             if (objects.Count <= maxID)
             {
@@ -1046,8 +1047,7 @@ public class SectorManager : MonoBehaviour
                 gObj.name = current.entities[i].name;
                 if (gObj.GetComponent<ShardRock>())
                 {
-                    if (current.entities[i].blueprintJSON != null
-                        && current.entities[i].blueprintJSON != "")
+                    if (!string.IsNullOrEmpty(current.entities[i].blueprintJSON))
                     {
                         gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].blueprintJSON);
                     }
@@ -1161,7 +1161,7 @@ public class SectorManager : MonoBehaviour
 
         if (info)
         {
-            info.showMessage("Entering sector '" + current.sectorName + "'");
+            info.showMessage($"Entering sector '{current.sectorName}'");
         }
 
         if (OnSectorLoad != null)
@@ -1432,7 +1432,7 @@ public class SectorManager : MonoBehaviour
 
     public GameObject GetObject(string name)
     {
-        Debug.Log("Getting object: '" + name + "'");
+        Debug.Log($"Getting object: '{name}'");
         foreach (var pair in objects)
         {
             if (pair.Value == null)

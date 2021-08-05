@@ -72,7 +72,7 @@ public class SaveMenuHandler : GUIWindowScripts
     {
         worldButtons = new List<Button>();
         selectIndicatorText.text = "SELECT WORLD";
-        string[] directories = Directory.GetDirectories(Application.streamingAssetsPath + "\\Sectors");
+        string[] directories = Directory.GetDirectories(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors"));
         foreach (var dir in directories)
         {
             if (dir.Contains("main") && !dir.Contains(VersionNumberScript.mapVersion))
@@ -109,7 +109,7 @@ public class SaveMenuHandler : GUIWindowScripts
         saves = new List<PlayerSave>();
         paths = new List<string>();
         icons = new List<SaveMenuIcon>();
-        string path = Application.persistentDataPath + "\\Saves";
+        string path = System.IO.Path.Combine(Application.persistentDataPath, "Saves");
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
@@ -146,9 +146,10 @@ public class SaveMenuHandler : GUIWindowScripts
         selectIndicatorText.text = "SELECT SAVE";
         string curpath = null;
 
-        if (File.Exists(Application.persistentDataPath + "\\CurrentSavePath"))
+        var CurrentSavePath = System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath");
+        if (File.Exists(CurrentSavePath))
         {
-            curpath = File.ReadAllText(Application.persistentDataPath + "\\CurrentSavePath");
+            curpath = File.ReadAllText(CurrentSavePath);
         }
 
         for (int i = 0; i < saves.Count; i++)
@@ -327,7 +328,7 @@ public class SaveMenuHandler : GUIWindowScripts
     public void AddSave()
     {
         string name = inputField.text.Trim();
-        string path = Application.persistentDataPath + "\\Saves" + "\\" + name;
+        string path = System.IO.Path.Combine(Application.persistentDataPath, "Saves", name);
         inputField.transform.parent.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
         if (name == "" || name == "TestSave" ||
             paths.Contains(path) || name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1)
@@ -356,8 +357,7 @@ public class SaveMenuHandler : GUIWindowScripts
 
     public void BackupSave(PlayerSave save)
     {
-        string origPath = Application.persistentDataPath + "\\Saves\\" + save.name + " - Backup";
-        string path = origPath + " ";
+        string path = System.IO.Path.Combine(Application.persistentDataPath, "Saves", save.name + " - Backup ");
         int i = 1;
         while (File.Exists(path + i))
         {
@@ -406,8 +406,11 @@ public class SaveMenuHandler : GUIWindowScripts
         save.version = currentVersion;
         save.resourcePath = resourcePath;
         save.abilityHotkeys = new AbilityHotkeyStruct();
-        Directory.CreateDirectory(Application.persistentDataPath + "\\Saves");
-        File.WriteAllText(Application.persistentDataPath + "\\Saves" + "\\" + name, JsonUtility.ToJson(save));
+
+        var savesDir = System.IO.Path.Combine(Application.persistentDataPath, "Saves");
+        Directory.CreateDirectory(savesDir);
+        File.WriteAllText(System.IO.Path.Combine(savesDir, name), JsonUtility.ToJson(save));
+
         return save;
     }
 }

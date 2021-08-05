@@ -84,7 +84,7 @@ public class Traverser : NodeCanvasTraversal
 
     public virtual bool activateCheckpoint(string CPName)
     {
-        if (CPName == null || CPName == "")
+        if (string.IsNullOrEmpty(CPName))
         {
             return false;
         }

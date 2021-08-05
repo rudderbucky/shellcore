@@ -1012,7 +1012,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 #if UNITY_EDITOR
         else
         {
-            AssetDatabase.CreateAsset(blueprint, "Assets\\SavedPrint.asset");
+            AssetDatabase.CreateAsset(blueprint, System.IO.Path.Combine("Assets", "SavedPrint.asset"));
         }
 #endif
     }

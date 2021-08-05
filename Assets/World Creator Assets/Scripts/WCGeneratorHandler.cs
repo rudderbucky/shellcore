@@ -35,7 +35,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
     public int saveState = 0; // 0 : not saving, 1 : saving, 2 : completed successfully, > 2 : something went wrong
 
-    private static string testPath = Application.streamingAssetsPath + "\\Sectors\\TestWorld";
+    private static string testPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
     List<WorldData.PartIndexData> partData = new List<WorldData.PartIndexData>();
 
     [SerializeField]
@@ -96,11 +96,11 @@ public class WCGeneratorHandler : MonoBehaviour
         {
             if (!file.Contains(".meta"))
             {
-                System.IO.File.Copy(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+                System.IO.File.Copy(file, System.IO.Path.Combine(path2, System.IO.Path.GetFileName(file)));
             }
             else
             {
-                System.IO.File.Move(file, path2 + "\\" + System.IO.Path.GetFileName(file));
+                System.IO.File.Move(file, System.IO.Path.Combine(path2, System.IO.Path.GetFileName(file)));
             }
         }
     }
@@ -169,8 +169,7 @@ public class WCGeneratorHandler : MonoBehaviour
     public void OnNameEdit(string tmpWworldName)
     {
         invalidNameWarning.enabled =
-            tmpWworldName == null
-            || tmpWworldName == ""
+            string.IsNullOrEmpty(tmpWworldName)
             || tmpWworldName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) > -1;
     }
 
@@ -197,11 +196,11 @@ public class WCGeneratorHandler : MonoBehaviour
         Debug.Log("Writing world...");
 
         // Folder paths
-        var canvasPlaceholderPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
-        var entityPlaceholderPath = Application.streamingAssetsPath + "\\EntityPlaceholder";
-        var wavePlaceholderPath = Application.streamingAssetsPath + "\\WavePlaceholder";
-        var factionPlaceholderPath = Application.streamingAssetsPath + "\\FactionPlaceholder";
-        var resourcePlaceholderPath = Application.streamingAssetsPath + "\\ResourcePlaceholder";
+        var canvasPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
+        var entityPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
+        var wavePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder");
+        var factionPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder");
+        var resourcePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourcePlaceholder");
 
         // Reinitialize node editor
         NodeEditor.ReInit(false);
@@ -308,9 +307,9 @@ public class WCGeneratorHandler : MonoBehaviour
                         }
 
                         int test;
-                        if (item.ID == null || item.ID == "" || int.TryParse(item.ID, out test))
+                        if (string.IsNullOrEmpty(item.ID) || int.TryParse(item.ID, out test))
                         {
-                            ent.ID = ID++ + "";
+                            ent.ID = (ID++).ToString();
                         }
                         else
                         {
@@ -319,8 +318,7 @@ public class WCGeneratorHandler : MonoBehaviour
                             {
                                 savingLevelScreen.SetActive(false);
                                 saveState = 4;
-                                Debug.LogError("Two items in sectors " + container.sectorName + " and "
-                                               + itemSectorsByID[ent.ID] + $" were issued the same custom ID ({ent.ID}). Abort.");
+                                Debug.LogError($"Two items in sectors {container.sectorName} and {itemSectorsByID[ent.ID]} were issued the same custom ID ({ent.ID}). Abort.");
                                 yield break;
                             }
                             else
@@ -339,7 +337,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
 
                     // you can choose to give any object a custom name
-                    if (item.name != null && item.name != "")
+                    if (!string.IsNullOrEmpty(item.name))
                     {
                         ent.name = item.name;
                     }
@@ -379,9 +377,9 @@ public class WCGeneratorHandler : MonoBehaviour
                         ent.blueprintJSON = item.shellcoreJSON;
 
                         // Attempt to add trader parts into index.
-                        if (ent.blueprintJSON == null || ent.blueprintJSON == "")
+                        if (string.IsNullOrEmpty(ent.blueprintJSON))
                         {
-                            var dialogueDataPath = $"{canvasPlaceholderPath}\\{ent.ID}.dialoguedata";
+                            var dialogueDataPath = System.IO.Path.Combine(canvasPlaceholderPath, ent.ID, ".dialoguedata");
 
                             if (System.IO.File.Exists(dialogueDataPath))
                             {
@@ -609,7 +607,7 @@ public class WCGeneratorHandler : MonoBehaviour
         wdata.partIndexDataArray = partData.ToArray();
 
         string wdjson = JsonUtility.ToJson(wdata);
-        System.IO.File.WriteAllText(path + "\\world.worlddata", wdjson);
+        System.IO.File.WriteAllText(System.IO.Path.Combine(path, "world.worlddata"), wdjson);
         if (File.Exists(System.IO.Path.Combine(path, "ResourceData.txt")))
         {
             File.Delete(System.IO.Path.Combine(path, "ResourceData.txt"));
@@ -620,20 +618,20 @@ public class WCGeneratorHandler : MonoBehaviour
             File.Copy(resourceTxtPath, System.IO.Path.Combine(path, "ResourceData.txt"));
         }
 
-        TryCopy(canvasPlaceholderPath, path + "\\Canvases\\");
-        TryCopy(entityPlaceholderPath, path + "\\Entities\\");
-        TryCopy(wavePlaceholderPath, path + "\\Waves\\");
-        TryCopy(factionPlaceholderPath, path + "\\Factions\\");
-        TryCopy(resourcePlaceholderPath, path + "\\Resources\\");
+        TryCopy(canvasPlaceholderPath, System.IO.Path.Combine(path, "Canvases"));
+        TryCopy(entityPlaceholderPath, System.IO.Path.Combine(path, "Entities"));
+        TryCopy(wavePlaceholderPath, System.IO.Path.Combine(path, "Waves"));
+        TryCopy(factionPlaceholderPath, System.IO.Path.Combine(path, "Factions"));
+        TryCopy(resourcePlaceholderPath, System.IO.Path.Combine(path, "Resources"));
 
         foreach (var sector in sectors)
         {
-            if (sector.sectorName == null || sector.sectorName == "")
+            if (string.IsNullOrEmpty(sector.sectorName))
             {
                 sector.sectorName = GetDefaultName(sector, minX, maxY);
             }
 
-            if (sector.hasMusic && (sector.musicID == null || sector.musicID == ""))
+            if (sector.hasMusic && string.IsNullOrEmpty(sector.musicID))
             {
                 sector.musicID = GetDefaultMusic(sector.type);
             }
@@ -648,7 +646,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
             string output = JsonUtility.ToJson(data);
 
-            string sectorPath = path + "\\." + sector.sectorName + ".json";
+            string sectorPath = System.IO.Path.Combine(path, sector.sectorName + ".json");
             System.IO.File.WriteAllText(sectorPath, output);
         }
 
@@ -689,7 +687,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 break;
         }
 
-        return typeRep + " " + x + "-" + y + (sector.dimension > 0 ? $" - Dimension {sector.dimension}" : "");
+        return $"{typeRep} {x}-{y}{(sector.dimension > 0 ? $" - Dimension {sector.dimension}" : "")}";
     }
 
     public static string GetDefaultMusic(Sector.SectorType type)
@@ -733,7 +731,7 @@ public class WCGeneratorHandler : MonoBehaviour
 #if UNITY_EDITOR
         var str = UnityEditor.EditorUtility.SaveFolderPanel(
             "Write World (You must create the folder you want to save into) ",
-            Application.streamingAssetsPath + "\\Sectors", "DefaultWorldName");
+            System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors"), "DefaultWorldName");
         WriteWorld(str);
 #endif
     }
@@ -741,7 +739,7 @@ public class WCGeneratorHandler : MonoBehaviour
     public void ReadWorldFromEditorPrompt()
     {
 #if UNITY_EDITOR
-        var str = UnityEditor.EditorUtility.OpenFolderPanel("Read World (Folder)", Application.streamingAssetsPath + "\\Sectors", "");
+        var str = UnityEditor.EditorUtility.OpenFolderPanel("Read World (Folder)", System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors"), "");
         ReadWorld(str);
 #endif
     }
@@ -766,19 +764,19 @@ public class WCGeneratorHandler : MonoBehaviour
                 }
 
                 // copying canvases
-                TryCopy(path + "\\Canvases\\", Application.streamingAssetsPath + "\\CanvasPlaceholder");
+                TryCopy(System.IO.Path.Combine(path, "Canvases"), System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder"));
 
                 // copying entities
-                TryCopy(path + "\\Entities\\", Application.streamingAssetsPath + "\\EntityPlaceholder");
+                TryCopy(System.IO.Path.Combine(path, "Entities"), System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder"));
 
                 // copying waves
-                TryCopy(path + "\\Waves\\", Application.streamingAssetsPath + "\\WavePlaceholder");
+                TryCopy(System.IO.Path.Combine(path, "Waves"), System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder"));
 
                 // copying factions
-                TryCopy(path + "\\Factions\\", Application.streamingAssetsPath + "\\FactionPlaceholder");
+                TryCopy(System.IO.Path.Combine(path, "Factions"), System.IO.Path.Combine(Application.streamingAssetsPath, "FactionPlaceholder"));
 
                 // copying resources
-                TryCopy(path + "\\Resources\\", Application.streamingAssetsPath + "\\ResourcePlaceholder");
+                TryCopy(System.IO.Path.Combine(path, "Resources"), System.IO.Path.Combine(Application.streamingAssetsPath, "ResourcePlaceholder"));
 
                 var resourcePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt");
                 if (File.Exists(resourcePlaceholderPath))
@@ -962,7 +960,7 @@ public class WCGeneratorHandler : MonoBehaviour
                 }
                 */
 
-                ImportExportFormat.RuntimeIOPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
+                ImportExportFormat.RuntimeIOPath = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
                 Debug.Log("World loaded");
                 return;
             }
@@ -996,7 +994,7 @@ public class WCGeneratorHandler : MonoBehaviour
         catch
         {
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (Application.streamingAssetsPath + "\\EntityPlaceholder\\" + entity.blueprintJSON + ".json"), blueprint);
+                (System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", entity.blueprintJSON + ".json")), blueprint);
         }
 
 

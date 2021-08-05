@@ -23,7 +23,7 @@ public class CUOptionScript : MonoBehaviour, IPointerClickHandler, IPointerEnter
         }
         else
         {
-            Debug.Log("Not enough reputation!" + player.reputation + " " + repCost);
+            Debug.Log($"Not enough reputation!{player.reputation} {repCost}");
         }
     }
 

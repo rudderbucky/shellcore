@@ -38,9 +38,9 @@ public class QuantityDisplayScript : MonoBehaviour
 
             lastCredits = player.GetCredits();
             var texts = GetComponentsInChildren<UnityEngine.UI.Text>();
-            texts[1].text = player.GetPower() + "";
+            texts[1].text = player.GetPower().ToString();
             texts[3].text = player.unitsCommanding.Count + "/" + player.GetTotalCommandLimit();
-            texts[5].text = GetCreditString(player.GetCredits()) + "";
+            texts[5].text = GetCreditString(player.GetCredits()).ToString();
             var rect = texts[5].rectTransform.rect;
             rect.center = texts[5].rectTransform.position;
             tooltipManager.AddBounds(rect, $"CREDITS: {player.GetCredits()}");
@@ -152,15 +152,14 @@ public class QuantityDisplayScript : MonoBehaviour
         if (entity)
         {
             targetInfo.SetActive(true);
-            description = (entity.Terrain + " ");
-            description += (entity.category + "");
+            description = entity.Terrain + " " + entity.category;
             targetName.text = entity.entityName;
             targetDesc.text = description;
             targetName.color = targetDesc.color = FactionManager.GetFactionColor(entity.faction);
             if (targetNumber)
             {
                 targetNumber.color = targetName.color;
-                targetNumber.text = ReticleScript.instance.GetTargetIndex(entity) + 1 + "";
+                targetNumber.text = (ReticleScript.instance.GetTargetIndex(entity) + 1).ToString();
                 // targetShape.rectTransform.sizeDelta = targetShape.rectTransform.sizeDelta / 1.25F;
             }
         }

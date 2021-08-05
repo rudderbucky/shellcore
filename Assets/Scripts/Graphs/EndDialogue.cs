@@ -151,7 +151,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                if (node && node.EntityID != null && node.EntityID != "")
+                if (node && !string.IsNullOrEmpty(node.EntityID))
                 {
                     handler.GetInteractionOverrides()[node.EntityID].Pop();
                     DialogueSystem.Instance.DialogueViewTransitionOut();

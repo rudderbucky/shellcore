@@ -73,7 +73,7 @@ namespace NodeEditorFramework.Standard
 
         public void CheckParts(string partId, int abilityId, string sector)
         {
-            if (sectorName == "" || sectorName == null || sectorName == sector)
+            if (string.IsNullOrEmpty(sectorName) || sectorName == sector)
             {
                 if (partId == partID && abilityId == abilityID)
                 {

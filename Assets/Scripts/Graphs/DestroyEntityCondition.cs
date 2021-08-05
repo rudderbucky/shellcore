@@ -120,7 +120,7 @@ namespace NodeEditorFramework.Standard
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             targetID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
@@ -177,11 +177,11 @@ namespace NodeEditorFramework.Standard
                 {
                     if (!FactionManager.IsAllied(0, targetFaction))
                     {
-                        SectorManager.instance.player.alerter.showMessage("ENEMIES DESTROYED: " + killCount + " / " + targetCount, "clip_victory");
+                        SectorManager.instance.player.alerter.showMessage($"ENEMIES DESTROYED: {killCount} / {targetCount}", "clip_victory");
                     }
                     else
                     {
-                        SectorManager.instance.player.alerter.showMessage("ALLIES DEAD: " + killCount + " / " + targetCount, "clip_alert");
+                        SectorManager.instance.player.alerter.showMessage($"ALLIES DEAD: {killCount} / {targetCount}", "clip_alert");
                     }
                 }
 

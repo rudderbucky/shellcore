@@ -80,30 +80,30 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
     void ReflectDescription(Ability ability)
     {
-        string description = "";
-        description += AbilityUtilities.GetAbilityName(ability) + (ability.GetTier() > 0 ? " " + ability.GetTier() : "") + "\n";
+        string description = AbilityUtilities.GetAbilityName(ability) + (ability.GetTier() > 0 ? " " + ability.GetTier() : "");
         if (ability.GetEnergyCost() > 0)
         {
-            description += "Energy cost: " + ability.GetEnergyCost() + "\n";
+            description += $"\nEnergy cost: {ability.GetEnergyCost()}";
         }
 
         if (ability.GetCDDuration() != 0)
         {
-            description += "Cooldown duration: " + ability.GetCDDuration() + "\n";
+            description += $"\nCooldown duration: {ability.GetCDDuration()}";
         }
 
         if (ability.GetRange() > 0)
         {
-            description += $"Range: {ability.GetRange()}\n";
+            description += $"\nRange: {ability.GetRange()}";
         }
 
         if ((ability as WeaponAbility)?.GetBonusDamageType() != null)
         {
-            description += $"Deals bonus damage to: {(ability as WeaponAbility).GetBonusDamageType()}\n";
+            description += $"\nDeals bonus damage to: {(ability as WeaponAbility).GetBonusDamageType()}";
         }
 
-        description += AbilityUtilities.GetDescription(ability);
+        description += $"\n{AbilityUtilities.GetDescription(ability)}";
         abilityInfo = description;
+
         if (tooltip)
         {
             tooltip.transform.Find("Text").GetComponent<Text>().text = abilityInfo;

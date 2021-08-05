@@ -166,7 +166,7 @@ public class InputManager : MonoBehaviour
                         AbilityHandler.instance.ReorientAbilityBoxes();
                     }
 
-                    Debug.Log("Set binding for " + inputToChange.Value + " to " + (KeyCode)key);
+                    Debug.Log($"Set binding for {inputToChange.Value} to {(KeyCode)key}");
                     inputToChange = null;
 
                     break;

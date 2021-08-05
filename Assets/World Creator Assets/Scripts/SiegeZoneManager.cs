@@ -86,7 +86,7 @@ public class SiegeZoneManager : MonoBehaviour
                     entitiesRemaining.Clear();
                     current = waves.Dequeue();
                     waveCount++;
-                    AlertPlayers("WAVE " + waveCount + "/" + (waves.Count + waveCount));
+                    AlertPlayers($"WAVE {waveCount}/{(waves.Count + waveCount)}");
                     timer = 0;
                 }
                 else if ((current.entities.Count == 0 && entitiesRemaining.Count == 0))

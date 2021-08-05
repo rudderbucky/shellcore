@@ -148,19 +148,19 @@ public class SettingsScript : MonoBehaviour
 
     public void ChangeHUDArrowScriptActive(bool val)
     {
-        PlayerPrefs.SetString("HUDArrowScript_active", val + "");
+        PlayerPrefs.SetString("HUDArrowScript_active", val.ToString());
         HUDArrowScript.SetActive(val);
     }
 
     public void ChangeBackgroundScriptActive(bool val)
     {
-        PlayerPrefs.SetString("BackgroundScript_active", val + "");
+        PlayerPrefs.SetString("BackgroundScript_active", val.ToString());
         BackgroundScript.SetActive(val);
     }
 
     public void ChangeRectangleEffectScriptActive(bool val)
     {
-        PlayerPrefs.SetString("RectangleEffectScript_active", val + "");
+        PlayerPrefs.SetString("RectangleEffectScript_active", val.ToString());
         RectangleEffectScript.SetActive(val);
     }
 
@@ -202,13 +202,13 @@ public class SettingsScript : MonoBehaviour
 
     public void ChangeTaskManagerAutoSaveEnabled(bool val)
     {
-        PlayerPrefs.SetString("TaskManager_autoSaveEnabled", val + "");
+        PlayerPrefs.SetString("TaskManager_autoSaveEnabled", val.ToString());
         TaskManager.autoSaveEnabled = val;
     }
 
     public void ChangeSimpleMouseMovementEnabled(bool val)
     {
-        PlayerPrefs.SetString("SelectionBoxScript_simpleMouseMovement", val + "");
+        PlayerPrefs.SetString("SelectionBoxScript_simpleMouseMovement", val.ToString());
         SelectionBoxScript.simpleMouseMovement = val;
     }
 
