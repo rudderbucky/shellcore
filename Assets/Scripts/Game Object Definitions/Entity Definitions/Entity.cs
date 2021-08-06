@@ -1325,4 +1325,30 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             collidersEnabled = enable;
         }
     }
+
+    // Used by "dumb" stations, that just use their abilities whenever possible
+    protected void TickAbilitiesAsStation()
+    {
+        var enemyTargetFound = false;
+        if (BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
+        {
+            foreach (var target in BattleZoneManager.getTargets())
+            {
+                if (!FactionManager.IsAllied(target.faction, faction) && !target.GetIsDead())
+                {
+                    enemyTargetFound = true;
+                    break;
+                }
+            }
+        }
+
+        foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
+        {
+            if (!(active is SpawnDrone) || enemyTargetFound)
+            {
+                active.Tick();
+                active.Activate();
+            }
+        }
+    }
 }

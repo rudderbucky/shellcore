@@ -713,7 +713,24 @@ public class SectorManager : MonoBehaviour
                 yard.mode = BuilderMode.Yard;
                 break;
             case EntityBlueprint.IntendedType.WeaponStation:
-                gObj.AddComponent<WeaponStation>();
+                json = data.blueprintJSON;
+                if (!string.IsNullOrEmpty(json))
+                {
+                    blueprint = TryGettingEntityBlueprint(json);
+                }
+
+                blueprint.entityName = data.name;
+                gObj.AddComponent<GroundWeaponStation>();
+                break;
+            case EntityBlueprint.IntendedType.AirWeaponStation:
+                json = data.blueprintJSON;
+                if (!string.IsNullOrEmpty(json))
+                {
+                    blueprint = TryGettingEntityBlueprint(json);
+                }
+
+                blueprint.entityName = data.name;
+                gObj.AddComponent<AirWeaponStation>();
                 break;
             case EntityBlueprint.IntendedType.CoreUpgrader:
                 gObj.AddComponent<CoreUpgrader>();

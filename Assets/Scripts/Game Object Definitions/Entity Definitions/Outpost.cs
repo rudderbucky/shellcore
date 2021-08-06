@@ -37,12 +37,7 @@ public class Outpost : AirConstruct, IVendor
     protected override void Update()
     {
         base.Update();
-        TargetManager.Enqueue(targeter);
-        WeaponAbility[] weapons = GetComponentsInChildren<WeaponAbility>();
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            weapons[i].Tick();
-        }
+        TickAbilitiesAsStation();
     }
 
     protected override void DeathHandler()

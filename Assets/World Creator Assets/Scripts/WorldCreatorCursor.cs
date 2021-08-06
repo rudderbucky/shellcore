@@ -440,13 +440,18 @@ public class WorldCreatorCursor : MonoBehaviour
 
         if (!Input.GetKey(KeyCode.LeftControl) && !system.IsPointerOverGameObject())
         {
-            if (Input.mouseScrollDelta.y < 0 && currentIndex > 0)
+            if (Input.mouseScrollDelta.y < 0)
             {
-                SetCurrent(--currentIndex % maxIndex);
+                currentIndex--;
+                if (currentIndex < 0) currentIndex += maxIndex;
+                SetCurrent(currentIndex);
             }
-            else if (Input.mouseScrollDelta.y > 0 && currentIndex < maxIndex - 1)
+            else if (Input.mouseScrollDelta.y > 0)
             {
-                SetCurrent(++currentIndex % maxIndex);
+
+                currentIndex++;
+                currentIndex %= maxIndex;
+                SetCurrent(currentIndex);
             }
         }
 
