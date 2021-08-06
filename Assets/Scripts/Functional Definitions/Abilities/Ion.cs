@@ -13,6 +13,7 @@ public class Ion : WeaponAbility
         abilityName = "Ion";
         cooldownDuration = 15f;
         range = 15;
+        terrain = Entity.TerrainType.Air;
         category = Entity.EntityCategory.All;
         base.Awake();
     }

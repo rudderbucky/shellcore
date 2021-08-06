@@ -301,7 +301,14 @@ public static class AbilityUtilities
             case 39:
                 return "rocketshooter_sprite";
             case 37:
+                if (data == "ion_station_shooter")
+                {
+                    return "ion_station_shooter";
+                }
+                else
+                {
                 return "ionshooter_sprite";
+                }
             default:
                 return "ability_indicator";
         }
