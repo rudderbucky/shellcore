@@ -56,30 +56,9 @@ public class GroundCarrier : GroundConstruct, ICarrier
     {
         if (initialized)
         {
-            var enemyTargetFound = false;
-            if (BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
-            {
-                foreach (var target in BattleZoneManager.getTargets())
-                {
-                    if (!FactionManager.IsAllied(target.faction, faction) && !target.GetIsDead())
-                    {
-                        enemyTargetFound = true;
-                        break;
-                    }
-                }
-            }
-
-            foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
-            {
-                if (!(active is SpawnDrone) || enemyTargetFound)
-                {
-                    active.Tick();
-                    active.Activate();
-                }
-            }
-
-
+            TickAbilitiesAsStation();
             base.Update();
+            TargetManager.Enqueue(targeter);
         }
     }
 

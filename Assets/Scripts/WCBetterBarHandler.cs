@@ -187,18 +187,28 @@ public class WCBetterBarHandler : MonoBehaviour
 
             var test = betterBarContents.GetChild(currentActiveButton).GetComponent<Image>();
             test.sprite = betterButtonActive;
-            if ((currentActiveButton > maxButton - padding) && currentActiveButton < images.Count - 1)
+            while ((currentActiveButton > maxButton - padding) && (currentActiveButton < images.Count - 1))
             {
                 minButton++;
                 maxButton++;
-                (betterBarContents as RectTransform).anchoredPosition = new Vector2(-(maxButton - 7) * 125, 0);
+
             }
-            else if (currentActiveButton < minButton + padding && currentActiveButton > 0)
+            while (currentActiveButton < minButton + padding && (currentActiveButton > 0))
             {
                 minButton--;
                 maxButton--;
-                (betterBarContents as RectTransform).anchoredPosition = new Vector2(-(maxButton - 7) * 125, 0);
             }
+            if (currentActiveButton == 0)
+            {
+                minButton = 0;
+                maxButton = 7;
+            }
+            if (currentActiveButton == images.Count - 1)
+            {
+                minButton = images.Count - 1 - 7;
+                maxButton = images.Count - 1;
+            }
+            (betterBarContents as RectTransform).anchoredPosition = new Vector2(-(maxButton - 7) * 125, 0);
 
             itemName.text = itemHandler.itemPack.items[currentActiveButton].name.ToUpper();
         }

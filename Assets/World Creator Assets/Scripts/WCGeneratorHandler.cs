@@ -414,7 +414,7 @@ public class WCGeneratorHandler : MonoBehaviour
                         }
                     }
                     else if (ent.assetID == "groundcarrier_blueprint" || ent.assetID == "carrier_blueprint" || ent.assetID == "outpost_blueprint"
-                             || ent.assetID == "bunker_blueprint")
+                             || ent.assetID == "bunker_blueprint" || ent.assetID == "missile_station" || ent.assetID == "air_weapon_station")
                     {
                         ent.blueprintJSON = item.shellcoreJSON;
                     }
