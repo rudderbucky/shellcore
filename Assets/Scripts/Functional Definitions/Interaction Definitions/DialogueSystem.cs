@@ -460,7 +460,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             }
             else
             {
-                background.transform.Find("backgroundbox").gameObject.SetActive(false);
+                gameObject.transform.Find("backgroundbox").gameObject.SetActive(false);
             }
         }
         else

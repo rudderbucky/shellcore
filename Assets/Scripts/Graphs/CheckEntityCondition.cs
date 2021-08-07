@@ -14,16 +14,17 @@ namespace NodeEditorFramework.Standard
         {
             get { return ID; }
         }
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
+
 
         public override string Title
         {
             get { return "Check Entity Existence"; }
         }
 
-        public override Vector2 DefaultSize
-        {
-            get { return new Vector2(240, 130); }
-        }
 
         public ConditionState state; // Property can't be serialized -> field
 
@@ -39,17 +40,20 @@ namespace NodeEditorFramework.Standard
         public string entityID;
         public bool rangeCheck;
         public int distanceFromPlayer;
+        public bool lessThan = true;
 
         public override void NodeGUI()
         {
             output.DisplayLayout();
             GUILayout.Label("Entity ID:");
             entityID = RTEditorGUI.TextField(entityID);
-            rangeCheck = RTEditorGUI.Toggle(rangeCheck, "Range check", GUILayout.Width(200f));
+            rangeCheck = RTEditorGUI.Toggle(rangeCheck, "Range check from player", GUILayout.Width(200f));
             if (rangeCheck)
             {
-                distanceFromPlayer = RTEditorGUI.IntField("Distance from player: ", distanceFromPlayer);
+                distanceFromPlayer = RTEditorGUI.IntField("Distance: ", distanceFromPlayer);
+                lessThan = GUILayout.SelectionGrid(lessThan ? 0 : 1, new string[] { "Less", "Greater" }, 1) == 0;
             }
+
         }
 
         public void DeInit()
@@ -83,7 +87,8 @@ namespace NodeEditorFramework.Standard
                 if (rangeCheck)
                 {
                     var player = AIData.entities.Find(ent => ent.ID == "player");
-                    if ((player.transform.position - match.transform.position).sqrMagnitude > distanceFromPlayer * distanceFromPlayer)
+                    var diff = (player.transform.position - match.transform.position).sqrMagnitude - distanceFromPlayer * distanceFromPlayer;
+                    if ((lessThan && diff > 0) || (!lessThan && diff <= 0))
                     {
                         continue;
                     }
@@ -120,7 +125,8 @@ namespace NodeEditorFramework.Standard
             if (rangeCheck)
             {
                 var player = AIData.entities.Find(ent => ent.ID == "player");
-                if (range <= distanceFromPlayer * distanceFromPlayer)
+                var diff = range - distanceFromPlayer * distanceFromPlayer;
+                if ((lessThan && diff <= 0) || (!lessThan && diff > 0))
                 {
                     State = ConditionState.Completed;
                     connectionKnobs[0].connection(0).body.Calculate();
