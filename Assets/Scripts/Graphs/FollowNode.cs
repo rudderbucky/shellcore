@@ -183,7 +183,7 @@ namespace NodeEditorFramework.Standard
             }
 
             GUILayout.BeginHorizontal();
-            disallowAggression = GUILayout.Toggle(disallowAggression, "Diasallow Aggression", GUILayout.MinWidth(40));
+            disallowAggression = GUILayout.Toggle(disallowAggression, "Disallow Aggression", GUILayout.MinWidth(40));
             GUILayout.EndHorizontal();
         }
 

@@ -106,25 +106,20 @@ public class BattleZoneManager : MonoBehaviour
 
         foreach (var statBlock in stats)
         {
-            string str = "";
-            str += "<color=" + FactionManager.GetFactionColorName(statBlock.faction) + ">" + (statBlock.faction == 0 ? "PLAYER" : "ENEMY") + "</color>\n\n";
-            str += statBlock.kills + "\n";
-            str += statBlock.deaths + "\n";
-            str += (statBlock.deaths > 0 ? (statBlock.kills / statBlock.deaths).ToString() : "-") + "\n";
-            str += "\n";
-            str += statBlock.power + "\n";
-            str += "\n";
-            str += statBlock.droneSpawns + "\n";
-            str += statBlock.droneKills + "\n";
-            str += statBlock.turretSpawns + "\n";
-            str += statBlock.turretKills + "\n";
+            string str =
+                $"<color={FactionManager.GetFactionColorName(statBlock.faction)}>{(statBlock.faction == 0 ? "PLAYER" : "ENEMY")}</color>\n\n"
+                + statBlock.kills + "\n"
+                + statBlock.deaths + "\n"
+                + (statBlock.deaths > 0 ? (statBlock.kills / statBlock.deaths).ToString() : "-") + "\n\n"
+                + statBlock.power + "\n\n"
+                + statBlock.droneSpawns + "\n"
+                + statBlock.droneKills + "\n"
+                + statBlock.turretSpawns + "\n"
+                + statBlock.turretKills + "\n";
 
             if (index == 0)
             {
-                str += "\n";
-                str += Mathf.RoundToInt(Time.time - startTime) + "s\n";
-                str += "\n";
-                str += CreditsCollected + "\n";
+                str += $"{Mathf.RoundToInt(Time.time - startTime)}s\n{CreditsCollected}\n";
             }
 
             strings[index++] = str;

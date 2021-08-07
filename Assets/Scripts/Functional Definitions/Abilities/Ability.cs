@@ -59,7 +59,7 @@ public abstract class Ability : MonoBehaviour
     {
         if (abilityTier > 3 || abilityTier < 0)
         {
-            Debug.LogWarning("An ability tier was set out of bounds!" + "number: " + abilityTier);
+            Debug.LogWarning("An ability tier was set out of bounds! number: " + abilityTier);
         }
 
         this.abilityTier = abilityTier;
@@ -144,6 +144,14 @@ public abstract class Ability : MonoBehaviour
     {
         State = AbilityState.Ready;
         startTime = -100f; // 0 would trigger the ability at start
+    }
+
+    protected virtual void Start()
+    {
+        if (abilityTier != 0)
+        {
+            energyCost *= abilityTier;
+        }
     }
 
     /// <summary>
@@ -313,7 +321,7 @@ public abstract class Ability : MonoBehaviour
 
             // Update alpha
             Color newColor = glow.color;
-            if (Core.invisible)
+            if (Core.IsInvisible)
             {
                 // Invisible player
                 if (Core.faction == 0)

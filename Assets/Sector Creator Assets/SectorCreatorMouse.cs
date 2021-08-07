@@ -614,12 +614,12 @@ public class SectorCreatorMouse : MonoBehaviour
 
         coordinates[1] = Mathf.RoundToInt((pos.x - offset.x) / tileSize);
         coordinates[0] = -Mathf.RoundToInt((pos.y - offset.y) / tileSize);
-        Debug.Log("row: " + coordinates[0] + " column: " + coordinates[1] + " of a square with " + rows + " rows and " + columns + " columns");
+        Debug.Log($"row: {coordinates[0]} column: {coordinates[1]} of a square with {rows} rows and {columns} columns");
     }
 
     public void ToJSON()
     {
-        if (sctName == null || sctName == "")
+        if (string.IsNullOrEmpty(sctName))
         {
             Debug.Log("Name your damn sector!");
             return;
@@ -719,7 +719,7 @@ public class SectorCreatorMouse : MonoBehaviour
             if (oj.type != ObjectTypes.Platform)
             {
                 Sector.LevelEntity ent = new Sector.LevelEntity();
-                ent.ID = ID++ + "";
+                ent.ID = (ID++).ToString();
                 ent.faction = oj.faction;
                 ent.position = oj.obj.transform.position;
                 ent.assetID = oj.assetID;
@@ -759,17 +759,18 @@ public class SectorCreatorMouse : MonoBehaviour
 
         string output = JsonUtility.ToJson(data);
 
-        if (!System.IO.Directory.Exists(Application.streamingAssetsPath + "\\Sectors\\"))
+        var sectorsDir = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors");
+        if (!System.IO.Directory.Exists(sectorsDir))
         {
-            System.IO.Directory.CreateDirectory(Application.streamingAssetsPath + "\\Sectors\\");
+            System.IO.Directory.CreateDirectory(sectorsDir);
         }
 
-        string path = Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName;
+        string path = System.IO.Path.Combine(sectorsDir, sct.sectorName);
         System.IO.File.WriteAllText(path, output);
         System.IO.Path.ChangeExtension(path, ".json");
         mainMenu.ToggleActive();
         successBox.ToggleActive();
-        Debug.Log("JSON written to location: " + Application.streamingAssetsPath + "\\Sectors\\" + sct.sectorName);
+        Debug.Log("JSON written to location: " + path);
     }
 
     public void FromJSON()
@@ -797,10 +798,10 @@ public class SectorCreatorMouse : MonoBehaviour
             height = sectorDataWrapper.bounds.h;
 
             sectorProps.ToggleActive();
-            sectorProps.transform.Find("Beginning X").GetComponentInChildren<InputField>().text = x + "";
-            sectorProps.transform.Find("Beginning Y").GetComponentInChildren<InputField>().text = "" + y;
-            sectorProps.transform.Find("Height").GetComponentInChildren<InputField>().text = "" + height;
-            sectorProps.transform.Find("Width").GetComponentInChildren<InputField>().text = "" + width;
+            sectorProps.transform.Find("Beginning X").GetComponentInChildren<InputField>().text = x.ToString();
+            sectorProps.transform.Find("Beginning Y").GetComponentInChildren<InputField>().text = y.ToString();
+            sectorProps.transform.Find("Height").GetComponentInChildren<InputField>().text = height.ToString();
+            sectorProps.transform.Find("Width").GetComponentInChildren<InputField>().text = width.ToString();
             sectorProps.transform.Find("Sector Name").GetComponentInChildren<InputField>().text = sctName;
             sectorProps.transform.Find("Sector Type").GetComponent<Dropdown>().value = (int)sectorDataWrapper.type;
             sectorProps.ToggleActive();
@@ -892,7 +893,7 @@ public class SectorCreatorMouse : MonoBehaviour
         }
         else
         {
-            Debug.Log("File " + path + " doesn't exist.");
+            Debug.Log($"File {path} doesn't exist.");
         }
     }
 }

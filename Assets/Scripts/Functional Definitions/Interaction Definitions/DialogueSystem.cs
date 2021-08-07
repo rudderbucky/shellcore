@@ -298,6 +298,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         //create window
         window = Instantiate(battleResultsBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
+        window.DestroyOnClose = true;
         window.Activate();
         window.transform.SetSiblingIndex(0);
 
@@ -459,7 +460,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             }
             else
             {
-                background.transform.Find("backgroundbox").gameObject.SetActive(false);
+                gameObject.transform.Find("backgroundbox").gameObject.SetActive(false);
             }
         }
         else
@@ -670,7 +671,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         int currentIndex = getNodeIndex(dialogue, ID);
         if (currentIndex == -1)
         {
-            Debug.LogWarning("Missing node '" + ID + "' in " + dialogue.name);
+            Debug.LogWarning($"Missing node '{ID}' in {dialogue.name}");
             endDialogue();
             return;
         }
@@ -740,7 +741,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             int nextIndex = getNodeIndex(dialogue, current.nextNodes[i]);
             if (nextIndex == -1)
             {
-                Debug.LogWarning("Missing node '" + current.nextNodes[i] + "' in " + dialogue.name);
+                Debug.LogWarning($"Missing node '{current.nextNodes[i]}' in {dialogue.name}");
                 endDialogue();
                 return;
             }

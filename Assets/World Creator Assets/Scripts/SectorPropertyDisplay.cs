@@ -146,16 +146,16 @@ public class SectorPropertyDisplay : MonoBehaviour
 
         waveSet.text = sector.waveSetPath;
 
-        x.text = currentSector.bounds.x + "";
-        y.text = currentSector.bounds.y + "";
-        w.text = currentSector.bounds.w + "";
-        h.text = currentSector.bounds.h + "";
-        colorR.text = currentSector.backgroundColor.r + "";
-        colorG.text = currentSector.backgroundColor.g + "";
-        colorB.text = currentSector.backgroundColor.b + "";
+        x.text = currentSector.bounds.x.ToString();
+        y.text = currentSector.bounds.y.ToString();
+        w.text = currentSector.bounds.w.ToString();
+        h.text = currentSector.bounds.h.ToString();
+        colorR.text = currentSector.backgroundColor.r.ToString();
+        colorG.text = currentSector.backgroundColor.g.ToString();
+        colorB.text = currentSector.backgroundColor.b.ToString();
         for (int i = 0; i < shardCounts.Count; i++)
         {
-            shardCounts[i].text = currentSector.shardCountSet[i] + "";
+            shardCounts[i].text = currentSector.shardCountSet[i].ToString();
         }
 
         opening = false;
@@ -170,10 +170,10 @@ public class SectorPropertyDisplay : MonoBehaviour
             pos += new Vector3(300, 0);
             rectTransform.anchoredPosition = pos;
 
-            x.text = currentSector.bounds.x + "";
-            y.text = currentSector.bounds.y + "";
-            w.text = currentSector.bounds.w + "";
-            h.text = currentSector.bounds.h + "";
+            x.text = currentSector.bounds.x.ToString();
+            y.text = currentSector.bounds.y.ToString();
+            w.text = currentSector.bounds.w.ToString();
+            h.text = currentSector.bounds.h.ToString();
         }
     }
 
@@ -191,22 +191,19 @@ public class SectorPropertyDisplay : MonoBehaviour
                     WCGeneratorHandler.GetDefaultMusic((Sector.SectorType)type.value));
 
             colorR.text =
-                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{type.value}",
-                    SectorColors.colors[type.value].r) + "";
+                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultR{type.value}", SectorColors.colors[type.value].r).ToString();
             colorB.text =
-                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{type.value}",
-                    SectorColors.colors[type.value].b) + "";
+                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultB{type.value}", SectorColors.colors[type.value].b).ToString();
             colorG.text =
-                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{type.value}",
-                    SectorColors.colors[type.value].g) + "";
+                PlayerPrefs.GetFloat($"WCSectorPropertyDisplay_defaultG{type.value}", SectorColors.colors[type.value].g).ToString();
             return;
         }
 
         currentSector.type = (Sector.SectorType)type.value;
         currentSector.backgroundColor = WorldCreatorCursor.GetDefaultColor((Sector.SectorType)type.value);
-        colorR.text = currentSector.backgroundColor.r + "";
-        colorG.text = currentSector.backgroundColor.g + "";
-        colorB.text = currentSector.backgroundColor.b + "";
+        colorR.text = currentSector.backgroundColor.r.ToString();
+        colorG.text = currentSector.backgroundColor.g.ToString();
+        colorB.text = currentSector.backgroundColor.b.ToString();
     }
 
     public void UpdateName()
@@ -366,7 +363,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         List<Sector.LevelEntity> levelEntities = new List<Sector.LevelEntity>();
         foreach (var field in bgSpawnInputFields)
         {
-            if (field.Item1.text == null || field.Item1.text == "")
+            if (string.IsNullOrEmpty(field.Item1.text))
             {
                 continue;
             }
@@ -378,7 +375,7 @@ public class SectorPropertyDisplay : MonoBehaviour
                 Sector.LevelEntity ent = new Sector.LevelEntity();
 
                 // you can choose to give any object a custom name
-                if (item.name != null && item.name != "")
+                if (!string.IsNullOrEmpty(item.name))
                 {
                     ent.name = item.name;
                 }
@@ -409,8 +406,8 @@ public class SectorPropertyDisplay : MonoBehaviour
                 catch (System.Exception e)
                 {
                     // try and see if the name is an indirect reference
-                    var path = Application.streamingAssetsPath + "\\EntityPlaceholder";
-                    if (System.IO.Directory.GetFiles(path).Contains<string>(path + "\\" + field.Item1.text + ".json"))
+                    var path = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
+                    if (System.IO.Directory.GetFiles(path).Contains<string>(System.IO.Path.Combine(path, field.Item1.text + ".json")))
                     {
                         ent.name = "ShellCore";
                         ent.blueprintJSON = field.Item1.text;

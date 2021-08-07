@@ -428,7 +428,7 @@ public class ShellPart : MonoBehaviour
     // ignores parameter alpha, since stealthing changes it
     public void SetPartColor(Color color)
     {
-        color.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : 1f);
+        color.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : color.a);
         spriteRenderer.color = color;
         if (shooter)
         {

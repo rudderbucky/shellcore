@@ -84,7 +84,7 @@ public class Traverser : NodeCanvasTraversal
 
     public virtual bool activateCheckpoint(string CPName)
     {
-        if (CPName == null || CPName == "")
+        if (string.IsNullOrEmpty(CPName))
         {
             return false;
         }
@@ -130,6 +130,10 @@ public class Traverser : NodeCanvasTraversal
         if (node is EndDialogue)
         {
             (node as EndDialogue).state = state;
+        }
+        if (node is ClearDialogueNode)
+        {
+            (node as ClearDialogueNode).state = state;
         }
     }
 }

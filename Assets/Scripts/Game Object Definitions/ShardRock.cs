@@ -187,7 +187,7 @@ public class ShardRock : MonoBehaviour, IDamageable
 
     public string GetID()
     {
-        return -1 + "";
+        return "-1";
     }
 
     public bool GetInvisible()

@@ -224,7 +224,7 @@ namespace NodeEditorFramework.Standard
             node.ID = 0;
             node.text = taskConfirmedDialogue != null ? taskConfirmedDialogue : "Complete the task."; // TODO: Why is this (and the color(?)) sometimes null? Is the task node not loaded correctly?
             node.textColor = dialogueColor;
-            node.nextNodes = new List<int>() {1};
+            node.nextNodes = new List<int>() { 1 };
 
             var node1 = new Dialogue.Node();
             node1.ID = 1;
@@ -300,7 +300,7 @@ namespace NodeEditorFramework.Standard
             TaskManager.Instance.AttemptAutoSave();
 
 
-            if (entityIDforConfirmedResponse != null && entityIDforConfirmedResponse != "")
+            if (!string.IsNullOrEmpty(entityIDforConfirmedResponse))
             {
                 if (TaskManager.interactionOverrides.ContainsKey(entityIDforConfirmedResponse))
                 {

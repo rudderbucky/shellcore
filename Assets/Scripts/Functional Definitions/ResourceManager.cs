@@ -61,8 +61,13 @@ public class ResourceManager : MonoBehaviour
         {
             return new string[]
             {
-                "sprites:", "parts:", "entities:",
-                "vending-options:", "paths:", "factions:", "audio:"
+                "sprites:",
+                "parts:",
+                "entities:",
+                "vending-options:",
+                "paths:",
+                "factions:",
+                "audio:"
             };
         }
     }
@@ -155,7 +160,7 @@ public class ResourceManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", Application.streamingAssetsPath + "\\" + names[1], names[0]);
+                    Debug.LogWarningFormat("File '{0}' for resource '{1}' does not exist", System.IO.Path.Combine(Application.streamingAssetsPath, names[1]), names[0]);
                 }
             }
 
@@ -236,7 +241,7 @@ public class ResourceManager : MonoBehaviour
     {
         if (!path.Equals(Application.streamingAssetsPath))
         {
-            Debug.Log("Attempting to load resource names from: \"" + path + "\"");
+            Debug.Log($"Attempting to load resource names from: \"{path}\"");
         }
 
         string resDataPath = System.IO.Path.Combine(path, "ResourceData.txt");
@@ -359,7 +364,7 @@ public class ResourceManager : MonoBehaviour
 
     public T getAsset<T>(string ID) where T : Object
     {
-        if (ID == "" || ID == null)
+        if (string.IsNullOrEmpty(ID))
         {
             return null;
         }
@@ -372,12 +377,12 @@ public class ResourceManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Trying to get " + ID + " (" + resources[ID].GetType() + ") as " + typeof(T).FullName);
+                Debug.LogWarning($"Trying to get {ID} ({resources[ID].GetType()}) as {typeof(T).FullName}");
             }
         }
         else
         {
-            Debug.LogWarning("Resource ID " + ID + " not found");
+            Debug.LogWarning($"Resource ID {ID} not found");
         }
 
         return null;
@@ -385,7 +390,7 @@ public class ResourceManager : MonoBehaviour
 
     public bool resourceExists(string ID)
     {
-        if (ID == "" || ID == null)
+        if (string.IsNullOrEmpty(ID))
         {
             return false;
         }
@@ -620,7 +625,7 @@ public class ResourceManagerEditor : Editor
                 {
                     if (lines[i].StartsWith(type))
                     {
-                        lines.Insert(i + 1, manager.fieldID + ":" + manager.newObject.name + ".json");
+                        lines.Insert(i + 1, $"{manager.fieldID}:{manager.newObject.name}.json");
                         sectionFound = true;
                         break;
                     }
@@ -629,7 +634,7 @@ public class ResourceManagerEditor : Editor
                 if (!sectionFound)
                 {
                     lines.Add(type + ":");
-                    lines.Add(manager.fieldID + ":" + manager.newObject.name + ".json");
+                    lines.Add($"{manager.fieldID}:{manager.newObject.name}.json");
                 }
 
                 File.WriteAllLines("ResourceData.txt", lines.ToArray());

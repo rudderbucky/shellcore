@@ -73,7 +73,7 @@ namespace NodeEditorFramework.Standard
 
         public void CheckParts()
         {
-            if (sectorName == "" || sectorName == null || ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
+            if (string.IsNullOrEmpty(sectorName) || ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
             {
                 var parts = SectorManager.instance.player.blueprint.parts;
                 for (int i = 0; i < parts.Count; i++)

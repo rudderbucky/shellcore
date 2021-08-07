@@ -98,13 +98,63 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+
+    public delegate void EntityRangeCheckDelegate(float range);
+    public EntityRangeCheckDelegate RangeCheckDelegate;
+
+    private void UpdateInvisibleGraphics()
+    {
+        if (!IsInvisible)
+        {
+            SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                var c = renderers[i].color;
+                c.a = FactionManager.GetFactionColor(faction).a;
+                renderers[i].color = c;
+            }
+
+            Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = true;
+            }
+        }
+        else
+        {
+            SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                var c = renderers[i].color;
+                c.a = FactionManager.IsAllied(0, faction) ? 0.2f : 0f;
+                renderers[i].color = c;
+            }
+
+            Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                colliders[i].enabled = false;
+            }
+        }
+    }
+
+    public int StealthStacks
+    {
+        get { return stealths; }
+        set
+        {
+            stealths = value;
+            UpdateInvisibleGraphics();
+        }
+    }
+
     // Performs calculations based on current control and shell max stats to determine final health
     private void CalculateMaxHealth()
     {
         var fracs = new float[3] { currentHealth[0] / maxHealth[0], currentHealth[1] / maxHealth[1], currentHealth[2] / maxHealth[2] };
-        maxHealth[0] = (baseMaxHealth[0] + passiveMaxStacks[0] * ShellMax.max) * (1 + controlStacks * Control.baseControlFractionBoost);
-        maxHealth[1] = (baseMaxHealth[1] + passiveMaxStacks[1] * ShellMax.max);
-        maxHealth[2] = (baseMaxHealth[2] + passiveMaxStacks[2] * ShellMax.max);
+        maxHealth[0] = (baseMaxHealth[0] + passiveMaxStacks[0] * ShellMax.maxes[0]) * (1 + controlStacks * Control.baseControlFractionBoost);
+        maxHealth[1] = (baseMaxHealth[1] + passiveMaxStacks[1] * ShellMax.maxes[1]);
+        maxHealth[2] = (baseMaxHealth[2] + passiveMaxStacks[2] * ShellMax.maxes[2]);
 
         for (int i = 0; i < 3; i++)
         {
@@ -119,13 +169,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         damageAddition = controlStacks * Control.damageAddition + damageBoostStacks * DamageBoost.damageAddition;
     }
 
-    public int stealths = 0;
-    public bool invisible = false;
+    private int stealths = 0;
+    private bool invisible = false;
 
     public bool IsInvisible
     {
-        get { return stealths > 0 || invisible; }
-        set { invisible = value; }
+        get { return StealthStacks > 0 || invisible; }
+        set
+        {
+            invisible = value;
+            UpdateInvisibleGraphics();
+        }
     }
 
     private float damageAddition = 0f;
@@ -211,7 +265,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     public void UpdateInteractible()
     {
-        interactible = GetDialogue() && faction == 0;
+        interactible = GetDialogue() && FactionManager.IsAllied(0, faction);
 
         // These are implications, not a biconditional; interactibility is not necessarily true/false if there are no
         // task overrides or pathing set up. Hence the if statements are needed here
@@ -632,7 +686,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         IsInvisible = false;
 
         // check to see if the entity is interactible
-        if (dialogue && faction == 0)
+        if (dialogue && FactionManager.IsAllied(0, faction))
         {
             interactible = true;
         }
@@ -874,7 +928,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 if (this as PlayerCore && (deathTimer > 2))
                 {
-                    ((PlayerCore)this).alerter.showMessage("Respawning in " + (5 - (int)deathTimer) + " second"
+                    ((PlayerCore)this).alerter.showMessage($"Respawning in {(5 - (int)deathTimer)} second"
                                                            + ((5 - deathTimer) > 1 ? "s." : "."));
                 }
             }
@@ -920,6 +974,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             else
             {
                 combatTimer += Time.deltaTime; // otherwise continue ticking timer
+            }
+
+            if (RangeCheckDelegate != null && PlayerCore.Instance)
+            {
+                RangeCheckDelegate.Invoke(Vector2.SqrMagnitude(PlayerCore.Instance.transform.position - transform.position));
             }
         }
     }
@@ -1044,7 +1103,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
         {
-            Debug.Log("Damage: " + amount + " (f " + lastDamagedBy?.faction + " -> " + faction + ")");
+            Debug.Log($"Damage: {amount} (f {lastDamagedBy?.faction} -> {faction})");
         }
 
         if (isAbsorbing && amount > 0f)
@@ -1264,6 +1323,32 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
 
             collidersEnabled = enable;
+        }
+    }
+
+    // Used by "dumb" stations, that just use their abilities whenever possible
+    protected void TickAbilitiesAsStation()
+    {
+        var enemyTargetFound = false;
+        if (BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
+        {
+            foreach (var target in BattleZoneManager.getTargets())
+            {
+                if (!FactionManager.IsAllied(target.faction, faction) && !target.GetIsDead())
+                {
+                    enemyTargetFound = true;
+                    break;
+                }
+            }
+        }
+
+        foreach (ActiveAbility active in GetComponentsInChildren<ActiveAbility>())
+        {
+            if (!(active is SpawnDrone) || enemyTargetFound)
+            {
+                active.Tick();
+                active.Activate();
+            }
         }
     }
 }

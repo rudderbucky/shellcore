@@ -11,13 +11,14 @@ public class SaveHandler : MonoBehaviour
     public void Initialize()
     {
         string currentPath;
-        if (!File.Exists(Application.persistentDataPath + "\\CurrentSavePath"))
+        var CurrentSavePath = System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath");
+        if (!File.Exists(CurrentSavePath))
         {
-            currentPath = Application.persistentDataPath + "\\TestSave";
+            currentPath = System.IO.Path.Combine(Application.persistentDataPath, "TestSave");
         }
         else
         {
-            currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+            currentPath = File.ReadAllLines(CurrentSavePath)[0];
         }
 
         if (File.Exists(currentPath))
@@ -54,7 +55,7 @@ public class SaveHandler : MonoBehaviour
 
             player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             player.blueprint.name = "Player Save Blueprint";
-            if (save.currentPlayerBlueprint != null && save.currentPlayerBlueprint != "")
+            if (!string.IsNullOrEmpty(save.currentPlayerBlueprint))
             {
                 JsonUtility.FromJsonOverwrite(save.currentPlayerBlueprint, player.blueprint);
             }
@@ -114,7 +115,7 @@ public class SaveHandler : MonoBehaviour
             SaveMenuHandler.migratedTimePlayed = null;
         }
 
-        string currentPath = File.ReadAllLines(Application.persistentDataPath + "\\CurrentSavePath")[0];
+        string currentPath = File.ReadAllLines(System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath"))[0];
         save.position = player.spawnPoint;
         save.lastDimension = player.LastDimension;
         save.currentHealths = player.CurrentHealth;

@@ -61,8 +61,7 @@ public class PartDisplayBase : MonoBehaviour
         float mass = blueprint.mass;
         float health = blueprint.health;
         int value = EntityBlueprint.GetPartValue(info);
-        partStats.text = "PART SHELL: " + health / 2 + "\nPART CORE: " + health / 4 + "\nPART WEIGHT: " + mass * Entity.weightMultiplier
-                         + "\nPART VALUE: \n" + value + " CREDITS";
+        partStats.text = $"PART SHELL: {health / 2}\nPART CORE: {health / 4}\nPART WEIGHT: {mass * Entity.weightMultiplier}\nPART VALUE: \n{value} CREDITS";
         image.sprite = ResourceManager.GetAsset<Sprite>(partID + "_sprite");
         image.rectTransform.sizeDelta = image.sprite.bounds.size * 50;
         image.color = info.shiny ? FactionManager.GetFactionShinyColor(0) : FactionManager.GetFactionColor(0);

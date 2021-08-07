@@ -43,13 +43,13 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
                     totalRegens[0] += ShellRegen.regens[0] * part.info.tier;
                     break;
                 case 18:
-                    totalHealths[0] += ShellMax.max * part.info.tier;
+                    totalHealths[0] += ShellMax.maxes[0] * part.info.tier;
                     break;
                 case 19:
                     totalRegens[2] += ShellRegen.regens[2] * part.info.tier;
                     break;
                 case 20:
-                    totalHealths[2] += ShellMax.max * part.info.tier;
+                    totalHealths[2] += ShellMax.maxes[2] * part.info.tier;
                     break;
             }
             PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(part.info.partID);
@@ -58,24 +58,37 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
             shipMass += blueprint.mass;
             weight += blueprint.mass * Entity.weightMultiplier;
         }
-        string buildStat = "";
+
+        string buildStat;
         if (statsDatabase.GetMode() == BuilderMode.Yard || statsDatabase.GetMode() == BuilderMode.Workshop)
         {
-            buildStat = "\nTOTAL BUILD VALUE: \n" + statsDatabase.GetBuildValue() + " CREDITS";
+            buildStat = $"\nTOTAL BUILD VALUE: \n{statsDatabase.GetBuildValue()} CREDITS";
         }
         else
         {
             string colorTag = "<color=white>";
-            if (cursorScript.buildCost > 0) colorTag = "<color=red>";
-            else if (cursorScript.buildCost < 0) colorTag = "<color=lime>";
-            buildStat = "TOTAL BUILD COST: " + "\n" + colorTag + statsDatabase.GetBuildCost() + " CREDITS</color>";
+            if (cursorScript.buildCost > 0)
+            {
+                colorTag = "<color=red>";
+            }
+            else if (cursorScript.buildCost < 0)
+            {
+                colorTag = "<color=lime>";
+            }
+
+            buildStat = $"TOTAL BUILD COST: \n{colorTag}{statsDatabase.GetBuildCost()} CREDITS</color>";
         }
-        display.text = "SHELL: " + totalHealths[0] + "\n"
-        + "CORE: " + totalHealths[1] + "\n"
-        + "ENERGY: " + totalHealths[2] + "\n"
-        + "SPEED: " + (int)Craft.GetPhysicsSpeed(speed, weight) + "\n"
-        + "WEIGHT: " + (int)weight + "\n"
-        + buildStat;
-        regenDisplay.text = "REGEN: " + totalRegens[0] + "\n\n" + "REGEN: " + totalRegens[2];
+
+        string displayText = string.Join("\n", new string[]
+        {
+            $"SHELL: {totalHealths[0]}",
+            $"CORE: {totalHealths[1]}",
+            $"ENERGY: {totalHealths[2]}",
+            $"SPEED: {(int)Craft.GetPhysicsSpeed(speed, weight)}",
+            $"WEIGHT: {(int)weight}",
+            buildStat
+        });
+        display.text = displayText;
+        regenDisplay.text = $"REGEN: {totalRegens[0]}\n\nREGEN: {totalRegens[2]}";
     }
 }

@@ -61,6 +61,7 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob outputUp;
 
         public bool useEntityColor = true;
+        public bool speakToEntity = true;
         ConnectionKnobAttribute outputAttribute = new ConnectionKnobAttribute("Output ", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right);
 
         public override void NodeGUI()
@@ -79,93 +80,114 @@ namespace NodeEditorFramework.Standard
             */
 
             height = 180f;
-            GUILayout.Label("Reward giver ID:");
-            rewardGiverID = GUILayout.TextField(rewardGiverID, GUILayout.Width(200f));
-            if (WorldCreatorCursor.instance != null)
+            if ((speakToEntity = GUILayout.Toggle(speakToEntity, "Speak to entity")))
             {
-                if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                GUILayout.Label("Reward giver ID:");
+                rewardGiverID = GUILayout.TextField(rewardGiverID, GUILayout.Width(200f));
+                if (WorldCreatorCursor.instance != null)
                 {
-                    WorldCreatorCursor.selectEntity += SetEntityID;
-                    WorldCreatorCursor.instance.EntitySelection();
-                }
-            }
-
-            GUILayout.Label("Reward text:");
-            rewardText = GUILayout.TextArea(rewardText, GUILayout.ExpandHeight(false), GUILayout.Width(200f));
-            height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
-            if (!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
-            {
-                GUILayout.Label("Text Color:");
-                float r, g, b;
-                GUILayout.BeginHorizontal();
-                r = RTEditorGUI.FloatField(textColor.r);
-                g = RTEditorGUI.FloatField(textColor.g);
-                b = RTEditorGUI.FloatField(textColor.b);
-                GUILayout.EndHorizontal();
-                textColor = new Color(r, g, b);
-            }
-
-            GUILayout.Label("Answers:");
-            if (answers == null)
-            {
-                answers = new List<string>();
-                answers.Add("Ok");
-                CreateConnectionKnob(outputAttribute);
-                if (outputRight && outputRight.connected())
-                {
-                    //Debug.Log(outputRight.connections[0]);
-                    outputKnobs[2].ApplyConnection(outputRight.connections[0]);
-                    //outputKnobs[2].connections.Add(outputRight.connections[0]);
-                }
-
-                outputKnobs[1].DisplayLayout();
-            }
-
-            if (outputRight)
-            {
-                DeleteConnectionPort(outputRight);
-            }
-
-            for (int i = 0; i < answers.Count; i++)
-            {
-                RTEditorGUI.Seperator();
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
-                {
-                    DeleteConnectionPort(outputPorts[i + 1]);
-                    answers.RemoveAt(i);
-                    i--;
-                    if (i == -1)
+                    if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
                     {
-                        break;
+                        WorldCreatorCursor.selectEntity += SetEntityID;
+                        WorldCreatorCursor.instance.EntitySelection();
+                    }
+                }
+
+                GUILayout.Label("Reward text:");
+                rewardText = GUILayout.TextArea(rewardText, GUILayout.ExpandHeight(false), GUILayout.Width(200f));
+                height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
+                if (!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))
+                {
+                    GUILayout.Label("Text Color:");
+                    float r, g, b;
+                    GUILayout.BeginHorizontal();
+                    r = RTEditorGUI.FloatField(textColor.r);
+                    g = RTEditorGUI.FloatField(textColor.g);
+                    b = RTEditorGUI.FloatField(textColor.b);
+                    GUILayout.EndHorizontal();
+                    textColor = new Color(r, g, b);
+                }
+
+                GUILayout.Label("Answers:");
+                if (answers == null)
+                {
+                    answers = new List<string>();
+                    answers.Add("Ok");
+                    if (outputKnobs.Count == 2 && outputRight != null)
+                        CreateConnectionKnob(outputAttribute);
+                    if (outputRight && outputRight.connected())
+                    {
+                        //Debug.Log(outputRight.connections[0]);
+                        outputKnobs[2].ApplyConnection(outputRight.connections[0]);
+                        //outputKnobs[2].connections.Add(outputRight.connections[0]);
                     }
 
-                    continue;
+                    outputKnobs[1].DisplayLayout();
+                }
+
+                if (outputRight)
+                {
+                    DeleteConnectionPort(outputRight);
+                }
+
+                for (int i = 0; i < answers.Count; i++)
+                {
+                    RTEditorGUI.Seperator();
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button("x", GUILayout.ExpandWidth(false)))
+                    {
+                        DeleteConnectionPort(outputPorts[i + 1]);
+                        answers.RemoveAt(i);
+                        i--;
+                        if (i == -1)
+                        {
+                            break;
+                        }
+
+                        continue;
+                    }
+
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    answers[i] = RTEditorGUI.TextField(answers[i]);
+
+
+                    outputKnobs[i + 1].DisplayLayout();
+
+                    GUILayout.EndHorizontal();
+                }
+
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
+                {
+                    CreateConnectionKnob(outputAttribute);
+                    answers.Add("");
                 }
 
                 GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                answers[i] = RTEditorGUI.TextField(answers[i]);
-
-
-                outputKnobs[i + 1].DisplayLayout();
-
-                GUILayout.EndHorizontal();
             }
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add", GUILayout.ExpandWidth(false), GUILayout.MinWidth(100f)))
+            else
             {
-                CreateConnectionKnob(outputAttribute);
-                answers.Add("");
+                if (outputRight)
+                {
+                    DeleteConnectionPort(outputRight);
+                }
+                if (outputKnobs.Count == 1)
+                {
+                    CreateConnectionKnob(outputAttribute);
+                }
+                outputKnobs[1].DisplayLayout();
+                answers = null;
+                for (int i = 1; i < outputKnobs.Count - 1; i++)
+                {
+                    DeleteConnectionPort(outputPorts[i]);
+                }
             }
-
-            GUILayout.EndHorizontal();
         }
 
         void SetEntityID(string ID)
         {
-            Debug.Log("selected ID " + ID + "!");
+            Debug.Log($"selected ID {ID}!");
 
             rewardGiverID = ID;
             WorldCreatorCursor.selectEntity -= SetEntityID;
@@ -211,32 +233,45 @@ namespace NodeEditorFramework.Standard
             DialogueSystem.OnDialogueCancel = OnCancel;
             if (outputUp.connected())
             {
-                var taskNode = (outputUp.connection(0).body as StartTaskNode);
-                if (taskNode)
+                RewardPlayer();
+            }
+        }
+
+        private void RewardPlayer()
+        {
+            var taskNode = (outputUp.connection(0).body as StartTaskNode);
+            if (taskNode)
+            {
+                string taskID = taskNode.taskID;
+                TaskManager.Instance.endTask(taskID);
+                Debug.Log("Task complete!");
+                SectorManager.instance.player.AddCredits(taskNode.creditReward);
+                SectorManager.instance.player.reputation += taskNode.reputationReward;
+                SectorManager.instance.player.shards += taskNode.shardReward;
+                if (taskNode.partReward)
                 {
-                    string taskID = taskNode.taskID;
-                    TaskManager.Instance.endTask(taskID);
-                    Debug.Log("Task complete!");
-                    SectorManager.instance.player.AddCredits(taskNode.creditReward);
-                    SectorManager.instance.player.reputation += taskNode.reputationReward;
-                    SectorManager.instance.player.shards += taskNode.shardReward;
-                    if (taskNode.partReward)
-                    {
-                        SectorManager.instance.player.cursave.partInventory.Add(
-                            new EntityBlueprint.PartInfo
-                            {
-                                partID = taskNode.partID,
-                                abilityID = taskNode.partAbilityID,
-                                tier = taskNode.partTier,
-                                secondaryData = taskNode.partSecondaryData
-                            });
-                    }
+                    SectorManager.instance.player.cursave.partInventory.Add(
+                        new EntityBlueprint.PartInfo
+                        {
+                            partID = taskNode.partID,
+                            abilityID = taskNode.partAbilityID,
+                            tier = taskNode.partTier,
+                            secondaryData = taskNode.partSecondaryData
+                        });
                 }
             }
         }
 
         public override int Traverse()
         {
+
+            SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
+            if (!speakToEntity)
+            {
+                RewardPlayer();
+                return 2;
+            }
+
             // Pop the pending text
             if (outputUp.connected())
             {
@@ -255,8 +290,6 @@ namespace NodeEditorFramework.Standard
 
                 var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
             }
-
-            SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
 
 
             TaskManager.speakerIDList.Add(rewardGiverID);

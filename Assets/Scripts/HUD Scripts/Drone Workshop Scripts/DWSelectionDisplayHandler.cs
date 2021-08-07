@@ -18,13 +18,19 @@ public class DWSelectionDisplayHandler : SelectionDisplayHandler, IShipStatsData
         base.AssignDisplay(blueprint, data);
         statsDisplay.gameObject.SetActive(true);
         droneDesc.enabled = true;
-        droneDesc.text = ("DRONE TYPE: " + data.type).ToUpper()
-                         + "\nUNIQUE CHARACTERISTIC:\n" + "<color=lime>"
-                         + DroneUtilities.GetUniqueCharacteristic(data.type) + "</color>"
-                         + "\nPART LIMIT: " + DroneUtilities.GetPartLimit(data.type)
-                         + "\nSPAWNING COOLDOWN: " + DroneUtilities.GetCooldown(data.type)
-                         + "\nSPAWNING DELAY: " + DroneUtilities.GetDelay(data.type)
-                         + "\nSPAWNING ENERGY COST: " + DroneUtilities.GetEnergyCost(data.type);
+
+        string description = string.Join("\n", new string[]
+        {
+            ($"DRONE TYPE: {data.type}").ToUpper(),
+            "UNIQUE CHARACTERISTIC:",
+            $"<color=lime>{DroneUtilities.GetUniqueCharacteristic(data.type)}</color>",
+            $"PART LIMIT: {DroneUtilities.GetPartLimit(data.type)}",
+            $"SPAWNING COOLDOWN: {DroneUtilities.GetCooldown(data.type)}",
+            $"SPAWNING DELAY: {DroneUtilities.GetDelay(data.type)}",
+            $"SPAWNING ENERGY COST: {DroneUtilities.GetEnergyCost(data.type)}",
+        });
+        droneDesc.text = description;
+
         foreach (DisplayPart part in parts)
         {
             buildValue += EntityBlueprint.GetPartValue(part.info);
