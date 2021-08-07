@@ -266,12 +266,6 @@ namespace NodeEditorFramework.Standard
         {
 
             SectorManager.instance.player.alerter.showMessage("TASK COMPLETE", "clip_victory");
-            if (!speakToEntity)
-            {
-                RewardPlayer();
-                return 2;
-            }
-
             // Pop the pending text
             if (outputUp.connected())
             {
@@ -291,6 +285,11 @@ namespace NodeEditorFramework.Standard
                 var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
             }
 
+            if (!speakToEntity)
+            {
+                RewardPlayer();
+                return 2;
+            }
 
             TaskManager.speakerIDList.Add(rewardGiverID);
             if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
