@@ -429,7 +429,7 @@ public class SectorManager : MonoBehaviour
                         new Vector3(curSect.bounds.x, curSect.bounds.y - curSect.bounds.h, 0)
                     });
                     border.enabled = player.cursave.sectorsSeen.Contains(curSect.sectorName);
-                    border.startColor = border.endColor = new Color32((byte)135, (byte)135, (byte)135, (byte)255);
+                    border.startColor = border.endColor = new Color32(135, 135, 135, 255);
                     minimapSectorBorders.Add(curSect, border);
 
                     sectors.Add(curSect);
@@ -1131,7 +1131,7 @@ public class SectorManager : MonoBehaviour
             new Vector3(current.bounds.x + current.bounds.w, current.bounds.y - current.bounds.h, 0),
             new Vector3(current.bounds.x, current.bounds.y - current.bounds.h, 0)
         });
-        sectorBorders.startColor = sectorBorders.endColor = new Color32((byte)85, (byte)100, (byte)85, (byte)255);
+        sectorBorders.startColor = sectorBorders.endColor = new Color32(85, 100, 85, 255);
         battleZone.enabled = false;
         siegeZone.enabled = false;
 
@@ -1288,8 +1288,8 @@ public class SectorManager : MonoBehaviour
                 wrongDim = current.dimension != lastDimension;
                 notClose = Vector3.SqrMagnitude(obj.Value.transform.position - player.transform.position) > objectDespawnDistance
                            || wrongDim;
-                notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
-                partyDrone = PartyManager.instance.partyMembers.Exists(sc => sc.unitsCommanding.Contains(obj.Value.GetComponent<Drone>() as IOwnable));
+                notPlayerDrone = !(player.unitsCommanding.Contains(obj.Value.GetComponent<Drone>()));
+                partyDrone = PartyManager.instance.partyMembers.Exists(sc => sc.unitsCommanding.Contains(obj.Value.GetComponent<Drone>()));
                 partyTractor = PartyManager.instance.partyMembers.Exists(sc => sc.GetTractorTarget() == obj.Value.GetComponent<Draggable>());
             }
 
@@ -1395,14 +1395,14 @@ public class SectorManager : MonoBehaviour
 
     private bool CheckIsRelevantOwnedDrone(GameObject obj)
     {
-        if (player.unitsCommanding.Contains(obj.GetComponent<Drone>() as IOwnable))
+        if (player.unitsCommanding.Contains(obj.GetComponent<Drone>()))
         {
             return true;
         }
 
         foreach (var partyMember in PartyManager.instance.partyMembers)
         {
-            if (partyMember.unitsCommanding.Contains(obj.GetComponent<Drone>() as IOwnable))
+            if (partyMember.unitsCommanding.Contains(obj.GetComponent<Drone>()))
             {
                 return true;
             }

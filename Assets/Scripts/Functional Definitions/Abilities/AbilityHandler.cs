@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -377,22 +377,22 @@ public class AbilityHandler : MonoBehaviour
 
             if (InputManager.GetKeyDown(KeyName.ShowSkills))
             {
-                SetCurrentVisible((AbilityTypes)(0));
+                SetCurrentVisible(AbilityTypes.Skills);
             }
 
             if (InputManager.GetKeyDown(KeyName.ShowSpawns))
             {
-                SetCurrentVisible((AbilityTypes)(1));
+                SetCurrentVisible(AbilityTypes.Spawns);
             }
 
             if (InputManager.GetKeyDown(KeyName.ShowWeapons))
             {
-                SetCurrentVisible((AbilityTypes)(2));
+                SetCurrentVisible(AbilityTypes.Weapons);
             }
 
             if (InputManager.GetKeyDown(KeyName.ShowPassives))
             {
-                SetCurrentVisible((AbilityTypes)(3));
+                SetCurrentVisible(AbilityTypes.Passive);
             }
         }
     }

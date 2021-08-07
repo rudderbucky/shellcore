@@ -273,14 +273,14 @@ public class SelectionBoxScript : MonoBehaviour
                 break;
             }
 
-            Vector2 delta = current.position - (Vector2)player.transform.position - (Vector2)player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
-            Vector2 originalDelta = current.position - lastPosition + (Vector2)player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
+            Vector2 delta = current.position - (Vector2)player.transform.position - player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
+            Vector2 originalDelta = current.position - lastPosition + player.GetComponent<Rigidbody2D>().velocity * Time.fixedDeltaTime;
             player.MoveCraft(delta.normalized);
             var lastNode = current.ID - 1 > 0 ? GetNode(currentPathData, current.ID - 1) : null;
             var lineRenderer = reticleRenderersByNode[current].GetComponent<LineRenderer>();
 
             reticleRenderersByNode[current].color = lineRenderer.startColor = lineRenderer.endColor
-                = Color.Lerp(new Color32((byte)100, (byte)100, (byte)100, (byte)255), Color.green,
+                = Color.Lerp(new Color32(100, 100, 100, 255), Color.green,
                     (1 - (delta.magnitude / originalDelta.magnitude)));
 
             if (delta.sqrMagnitude < PathAI.minDist)

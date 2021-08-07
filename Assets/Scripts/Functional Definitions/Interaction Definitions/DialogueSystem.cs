@@ -627,13 +627,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public void OpenBuilder(Vector3 speakerPos)
     {
-        builder.yardPosition = (Vector3)speakerPos;
+        builder.yardPosition = speakerPos;
         builder.Initialize(BuilderMode.Yard, null);
     }
 
     public void OpenTrader(Vector3 speakerPos, List<EntityBlueprint.PartInfo> traderInventory)
     {
-        builder.yardPosition = (Vector3)speakerPos;
+        builder.yardPosition = speakerPos;
         builder.Initialize(BuilderMode.Trader, traderInventory);
     }
 
