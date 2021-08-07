@@ -56,7 +56,7 @@ public class Retreat : Ability
             }
 
             // prior to Awake activation since Respawn was set on this stack. We therefore search for 0 here
-            Retreat r = newRetreats.Find((a) => { return a.startTime == 0; }) as Retreat;
+            Retreat r = newRetreats.Find((a) => { return a.startTime == 0; });
             if (r != null)
             {
                 r.startTime = Time.time - activeDuration + 0.1f;

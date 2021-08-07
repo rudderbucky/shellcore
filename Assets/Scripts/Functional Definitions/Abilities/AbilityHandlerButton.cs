@@ -24,7 +24,7 @@ public class AbilityHandlerButton : MonoBehaviour, IPointerClickHandler, IPointe
         }
         else
         {
-            GetComponent<Image>().color = new Color32((byte)33, (byte)33, (byte)33, (byte)255);
+            GetComponent<Image>().color = new Color32(33, 33, 33, 255);
         }
 
         if (tooltipTransform)

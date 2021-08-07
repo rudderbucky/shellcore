@@ -117,7 +117,7 @@ public class BackgroundScript : MonoBehaviour
                     int randomTile = Random.Range(4 * (int)currentSkin, 4 * (int)currentSkin + 4); // grabs a random tile from the array of sprites
                     instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
                     // the position of the tile
-                    GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity) as GameObject;
+                    GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity);
                     go.transform.SetParent(parent.transform, true);
                     go.transform.localScale = new Vector3(Random.Range(0, 1) > 0.5F ? 1 : -1, 1, 1);
                     // create the tile, no rotation desired
