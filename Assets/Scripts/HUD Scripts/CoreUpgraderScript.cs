@@ -145,8 +145,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         switch (coreName)
         {
-			case "core0_shell":
-                return new string[] {"core1_shell"};
+			//case "core0_shell":
+                //return new string[] {"core1_shell"};
 			case "core1_shell":
                 return new string[] {"core2_shell"};
             case "core2_shell":
@@ -165,8 +165,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         switch (coreName)
         {
-            case "core0_shell": //This is left like this intentional since i can't figure out how to fix the core light, if it is fixed set it to 0
-                return 99999999;
+            //case "core0_shell": //There is a bug with the core light, doesn't change when the shell does change
+                //return 0;
             case "core1_shell":
                 return 100;
             case "core2_shell":
@@ -188,8 +188,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         switch (coreName)
         {
-            case "core0_shell":
-			    return 0;
+            //case "core0_shell":
+			    //return 0;
             case "core1_shell":
                 return 1;
             case "core2_shell":
@@ -211,8 +211,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         switch (coreName)
         {
-            case "core0_shell":
-                return "Size-XS Core\nThis core is the smallest you can ever get, handling only small-size parts. However, it is very limited.";
+            //case "core0_shell":
+                //return "Size-XS Core\nThis core is the smallest you can ever get, handling only small-size parts. However, it is very limited.";
             case "core1_shell":
                 return "Size-S Core\nThis basic core can handle only small-size parts, but is the building block for all further upgrades.";
             case "core2_shell":
@@ -238,8 +238,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         switch (coreName)
         {
-            case "core3skills_shell":
-                return new int[] {3, 0, 0, 0};
+            //case "core3skills_shell":
+                //return new int[] {3, 0, 0, 0};
             case "core3weapons_shell":
                 return new int[] {0, 0, 3, 0};
             case "core4commando_shell":
@@ -259,8 +259,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         switch (coreName)
         {
-            case "core0_shell":
-                return new float[] {48, 0, 28};
+            //case "core0_shell":
+                //return new float[] {48, 0, 28};
             case "core2_shell":
                 return new float[] {90, 0, 45};
             case "core3skills_shell":
@@ -285,8 +285,8 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         switch (coreName)
         {
-            case "core0_shell":
-                return new float[] {0, 0, 0};
+            //case "core0_shell":
+                //return new float[] {0, 0, 0};
             case "core1_shell":
                 return new float[] {90, 0, 90};
             case "core2_shell":
@@ -311,7 +311,7 @@ public class CoreUpgraderScript : GUIWindowScripts
             "core4elite_shell",
             "core4captain_shell",
             "core4admiral_shell",
-            "core0_shell"
+            //"core0_shell"
         };
     }
 }
