@@ -459,10 +459,10 @@ public class WorldCreatorCursor : MonoBehaviour
         if (GetItemUnderCursor(current.type) != null)
         {
             Item underCursor;
-            underCursor = (Item)GetItemUnderCursor(current.type);
+            underCursor = GetItemUnderCursor(current.type);
             if (Input.GetMouseButtonDown(0) && !system.IsPointerOverGameObject() && current.obj)
             {
-                if (((Item)underCursor).type == current.type)
+                if ((underCursor).type == current.type)
                 {
                     propertyDisplay.DisplayProperties(underCursor);
                 }
@@ -475,12 +475,12 @@ public class WorldCreatorCursor : MonoBehaviour
             {
                 if (underCursor.type == ItemType.Platform)
                 {
-                    Rotate((Item)underCursor);
+                    Rotate(underCursor);
                 }
             }
             else if ((Input.GetMouseButtonUp(1) || (Input.GetMouseButton(1) && underCursor.type == ItemType.Platform)) && !system.IsPointerOverGameObject())
             {
-                Remove((Item)underCursor);
+                Remove(underCursor);
             }
         }
         else
@@ -675,7 +675,7 @@ public class WorldCreatorCursor : MonoBehaviour
                     currentSector.sector.dimension = currentDim;
                     currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
                     currentSector.sector.hasMusic = true; // sectors have music by default in WC
-                    currentSector.sector.backgroundColor = GetDefaultColor((Sector.SectorType)0);
+                    currentSector.sector.backgroundColor = GetDefaultColor(Sector.SectorType.Neutral);
                     currentSector.sector.rectangleEffectSkin = (RectangleEffectSkin)
                         PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
                     currentSector.sector.backgroundTileSkin = (BackgroundTileSkin)
