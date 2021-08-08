@@ -1210,7 +1210,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             editorCoreTier++;
             editorCoreTier %= cores.Count;
             shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier]);
-            if (editorCoreTier == cores.Count - 2)
+            if (editorCoreTier == cores.Count - 3)
+            {
+                core.sprite = ResourceManager.GetAsset<Sprite>("core0_light");
+            }
+            else if (editorCoreTier == cores.Count - 2)
             {
                 core.sprite = ResourceManager.GetAsset<Sprite>("groundcarriercore");
             }
@@ -1314,7 +1318,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     private string GetEditorCoreString()
     {
         var cores = GetEditorCoreList();
-        if (editorCoreTier == cores.Count - 2)
+        if (editorCoreTier == cores.Count - 3)
+        {
+            return "core0_light";
+        }
+        else if (editorCoreTier == cores.Count - 2)
         {
             return "groundcarriercore";
         }
