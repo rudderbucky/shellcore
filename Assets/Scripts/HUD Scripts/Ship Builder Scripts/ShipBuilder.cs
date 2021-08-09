@@ -1204,7 +1204,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             }
 
             var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
-            cores.Add("core0_shell");
+            cores.Add("semicore_shell");
             cores.Add("groundcarriershell");
             cores.Add("drone_shell");
 
@@ -1213,7 +1213,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier]);
             if (editorCoreTier == cores.Count - 3)
             {
-                core.sprite = ResourceManager.GetAsset<Sprite>("core0_light");
+                core.sprite = ResourceManager.GetAsset<Sprite>("semicore_light");
             }
             else if (editorCoreTier == cores.Count - 2)
             {
@@ -1305,7 +1305,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     private List<string> GetEditorCoreList()
     {
         var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
-        cores.Add("core0_shell");
+        cores.Add("semicore_shell");
         cores.Add("groundcarriershell");
         cores.Add("drone_shell");
         return cores;
@@ -1322,7 +1322,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         var cores = GetEditorCoreList();
         if (editorCoreTier == cores.Count - 3)
         {
-            return "core0_light";
+            return "semicore_light";
         }
         else if (editorCoreTier == cores.Count - 2)
         {
