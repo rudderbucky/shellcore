@@ -205,7 +205,7 @@ public class GroundPlatform
                 {
                     pos = pos,
                     type = (byte)type,
-                    rotation = (byte)rotation,
+                    rotation = rotation,
                     colliders = null
                 });
         }
@@ -276,7 +276,7 @@ public class GroundPlatform
                 {
                     pos = pos,
                     type = (byte)type,
-                    rotation = (byte)rotation,
+                    rotation = rotation,
                     colliders = tileObj?.GetComponentsInChildren<Collider2D>()
                 });
         }
