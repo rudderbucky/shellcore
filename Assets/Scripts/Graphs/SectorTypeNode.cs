@@ -44,7 +44,7 @@ namespace NodeEditorFramework.Standard
         public override int Traverse()
         {
             SectorManager.instance.overrideProperties.type = (Sector.SectorType)sectorType;
-
+            SectorManager.instance.SetSectorTypeBehavior();
             string[] types = System.Enum.GetNames(typeof(Sector.SectorType));
             Debug.Log($"Sector type set to: {types[sectorType]} ({sectorType})");
 

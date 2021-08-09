@@ -909,8 +909,10 @@ public class SectorManager : MonoBehaviour
         lpg.LoadSector(current);
     }
 
-    private void SetSectorTypeBehavior()
+    public void SetSectorTypeBehavior()
     {
+        siegeZone.enabled = false;
+        battleZone.enabled = false;
         switch (overrideProperties.type)
         {
             case Sector.SectorType.BattleZone:
