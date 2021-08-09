@@ -911,6 +911,8 @@ public class SectorManager : MonoBehaviour
 
     private void SetSectorTypeBehavior()
     {
+        siegeZone.enabled = false;
+        battleZone.enabled = false;
         switch (overrideProperties.type)
         {
             case Sector.SectorType.BattleZone:
