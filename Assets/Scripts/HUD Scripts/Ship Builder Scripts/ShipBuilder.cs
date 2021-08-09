@@ -997,9 +997,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
 
         core.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+        editorCoreTier = Mathf.Max(GetEditorCoreList().FindIndex(x => x == blueprint.coreShellSpriteID), 0);
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         shell.color = FactionManager.GetFactionColor(0);
         shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
+        core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
         OrientShellAndCore();
     }
 
@@ -1296,7 +1298,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
     }
 
-    // The following 3 methods use editorCoreTier to set the editor core sprites correctly;
+    // The following 3 methods use editorCoreTier to set the editor core SHELL (idk why it's shell) sprites correctly
     private List<string> GetEditorCoreList()
     {
         var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
