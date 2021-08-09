@@ -997,11 +997,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
 
         core.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
-        editorCoreTier = Mathf.Max(GetEditorCoreList().FindIndex(x => x == blueprint.coreShellSpriteID), 0);
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         shell.color = FactionManager.GetFactionColor(0);
         shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
-        core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
         OrientShellAndCore();
     }
 
@@ -1206,13 +1204,18 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             }
 
             var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
+            cores.Add("core0_shell");
             cores.Add("groundcarriershell");
             cores.Add("drone_shell");
 
             editorCoreTier++;
             editorCoreTier %= cores.Count;
             shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier]);
-            if (editorCoreTier == cores.Count - 2)
+            if (editorCoreTier == cores.Count - 3)
+            {
+                core.sprite = ResourceManager.GetAsset<Sprite>("core0_light");
+            }
+            else if (editorCoreTier == cores.Count - 2)
             {
                 core.sprite = ResourceManager.GetAsset<Sprite>("groundcarriercore");
             }
@@ -1298,10 +1301,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
     }
 
-    // The following 3 methods use editorCoreTier to set the editor core SHELL (idk why it's shell) sprites correctly
+    // The following 3 methods use editorCoreTier to set the editor core sprites correctly;
     private List<string> GetEditorCoreList()
     {
         var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
+        cores.Add("core0_shell");
         cores.Add("groundcarriershell");
         cores.Add("drone_shell");
         return cores;
@@ -1316,7 +1320,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     private string GetEditorCoreString()
     {
         var cores = GetEditorCoreList();
-        if (editorCoreTier == cores.Count - 2)
+        if (editorCoreTier == cores.Count - 3)
+        {
+            return "core0_light";
+        }
+        else if (editorCoreTier == cores.Count - 2)
         {
             return "groundcarriercore";
         }
