@@ -1303,7 +1303,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
     }
 
-    // The following 3 methods use editorCoreTier to set the editor core SHELL (idk why it's shell) sprites correctly;
+    // The following 3 methods use editorCoreTier to set the editor core SHELL (idk why it's shell) sprites correctly
     private List<string> GetEditorCoreList()
     {
         var cores = new List<string>(CoreUpgraderScript.GetCoreNames());
