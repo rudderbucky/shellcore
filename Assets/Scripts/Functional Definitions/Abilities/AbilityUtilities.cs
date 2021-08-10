@@ -276,13 +276,13 @@ public static class AbilityUtilities
                 {
                     return "siegegroundshooter_sprite";
                 }
-                else if (data == "siegeshooter_sprite")
+                else if (data == "bulletshooter_sprite")
                 {
-                    return "siegeshooter_sprite";
+                    return "bulletshooter_sprite";
                 }
                 else
                 {
-                    return "bulletshooter_sprite";
+                    return "siegeshooter_sprite";
                 }
             case 2:
             case 30:
