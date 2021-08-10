@@ -21,6 +21,7 @@ public class Laser : Bullet
         category = Entity.EntityCategory.Unit;
         pierceFactor = laserPierceFactor;
         bulletSound = "clip_laser";
+        bonusDamageType = null;
     }
 
     protected override void Start()
