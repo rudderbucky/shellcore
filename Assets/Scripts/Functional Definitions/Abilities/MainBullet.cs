@@ -6,7 +6,6 @@
 public class MainBullet : Bullet
 {
     public GameObject muzzleFlash;
-    public static readonly int mbDamage = 150;
 
     protected override void Awake()
     {
@@ -18,11 +17,16 @@ public class MainBullet : Bullet
         ID = AbilityID.MainBullet;
         cooldownDuration = 0.4F;
         energyCost = 10;
-        damage = GetDamage(abilityTier);
         description = $"Projectile that deals {GetDamage(abilityTier)} damage. \nStays with you no matter what.";
         abilityName = "Main Bullet";
         bulletSound = "clip_bullet";
         muzzleFlash = ResourceManager.GetAsset<GameObject>("main_bullet_muzzle_flash");
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        damage = GetDamage(abilityTier);
     }
 
     public static int GetDamage(int tier)
