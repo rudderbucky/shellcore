@@ -403,9 +403,9 @@ public class ResourceManager : MonoBehaviour
         List<T> results = new List<T>();
         foreach (var resource in Instance.resources)
         {
-            if (resource.Value is T)
+            if (resource.Value is T value)
             {
-                results.Add(resource.Value as T);
+                results.Add(value);
             }
         }
 

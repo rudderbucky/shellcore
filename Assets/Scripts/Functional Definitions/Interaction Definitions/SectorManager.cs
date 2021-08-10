@@ -798,10 +798,10 @@ public class SectorManager : MonoBehaviour
         entity.spawnPoint = entity.transform.position = data.position;
         entity.blueprint = blueprint;
 
-        if (entity as AirCraft && data.patrolPath != null && data.patrolPath.waypoints != null && data.patrolPath.waypoints.Count > 0)
+        if (entity is AirCraft airCraft && data.patrolPath != null && data.patrolPath.waypoints != null && data.patrolPath.waypoints.Count > 0)
         {
             // patrolling
-            (entity as AirCraft).GetAI().setPath(data.patrolPath, null, true);
+            airCraft.GetAI().setPath(data.patrolPath, null, true);
         }
 
         if (string.IsNullOrEmpty(data.ID) || (objects.ContainsKey(data.ID) && !objects.ContainsValue(gObj)))
@@ -1052,9 +1052,9 @@ public class SectorManager : MonoBehaviour
 
             Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
 
-            if (obj is GameObject)
+            if (obj is GameObject go)
             {
-                GameObject gObj = Instantiate(obj as GameObject);
+                GameObject gObj = Instantiate(go);
 
                 // TODO: Make some property for level entities that dictates whether they change on faction or not
                 if (!gObj.GetComponent<EnergyRock>() && !gObj.GetComponent<Flag>())
@@ -1076,12 +1076,12 @@ public class SectorManager : MonoBehaviour
 
                 objects.Add(current.entities[i].ID, gObj);
             }
-            else if (obj is EntityBlueprint)
+            else if (obj is EntityBlueprint blueprint)
             {
                 var copy = Instantiate(obj);
-                if ((obj as EntityBlueprint).dialogue)
+                if (blueprint.dialogue)
                 {
-                    (copy as EntityBlueprint).dialogue = Instantiate((obj as EntityBlueprint).dialogue);
+                    blueprint.dialogue = Instantiate(blueprint.dialogue);
                 }
 
                 SpawnEntity(copy as EntityBlueprint, current.entities[i]);

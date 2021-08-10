@@ -252,7 +252,7 @@ public abstract class Ability : MonoBehaviour
     public virtual void Activate()
     {
         // If (NPC or (Player and not interacting)) and enough energy
-        if (State == AbilityState.Ready && (!(Core as PlayerCore) || !(Core as PlayerCore).GetIsInteracting()) && Core.GetHealth()[2] >= energyCost)
+        if (State == AbilityState.Ready && !(Core is PlayerCore player && player.GetIsInteracting()) && Core.GetHealth()[2] >= energyCost)
         {
             Core.MakeBusy(); // make core busy
             Core.TakeEnergy(energyCost); // remove the energy

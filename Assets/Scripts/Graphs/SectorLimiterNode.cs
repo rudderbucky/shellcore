@@ -92,9 +92,8 @@ namespace NodeEditorFramework.Standard
                         TaskManager.Instance.StopAllCoroutines();
                     }
 
-                    if (current is ConditionGroupNode)
+                    if (current is ConditionGroupNode cgn)
                     {
-                        var cgn = current as ConditionGroupNode;
                         cgn.DeInit();
                     }
 

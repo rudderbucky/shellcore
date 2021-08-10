@@ -148,9 +148,9 @@ public class BattleZoneManager : MonoBehaviour
                 }
 
                 var carrier = SectorManager.instance.carriers[target.faction];
-                if (target as ShellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead())
+                if (target is ShellCore shellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead())
                 {
-                    (target as ShellCore).SetCarrier(SectorManager.instance.carriers[target.faction]);
+                    shellCore.SetCarrier(SectorManager.instance.carriers[target.faction]);
                 }
             }
 

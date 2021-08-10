@@ -47,8 +47,7 @@ namespace NodeEditorFramework.Standard
             // Pop the pending text
             if (outputUp.connected())
             {
-                var taskNode = (outputUp.connection(0).body as StartTaskNode);
-                if (taskNode && !string.IsNullOrEmpty(taskNode.entityIDforConfirmedResponse))
+                if (outputUp.connection(0).body is StartTaskNode taskNode && !string.IsNullOrEmpty(taskNode.entityIDforConfirmedResponse))
                 {
                     TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse].Pop();
                 }
@@ -57,8 +56,7 @@ namespace NodeEditorFramework.Standard
             SectorManager.instance.player.alerter.showMessage("TASK FAILED", "clip_fail");
             if (outputUp.connected())
             {
-                var taskNode = (outputUp.connection(0).body as StartTaskNode);
-                if (taskNode)
+                if (outputUp.connection(0).body is StartTaskNode taskNode)
                 {
                     taskNode.forceTask = false; // you shouldn't force tasks you can fail
                     string taskID = taskNode.taskID;

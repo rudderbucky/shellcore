@@ -70,9 +70,9 @@ namespace NodeEditorFramework.Standard
         {
             if (IDIn.connected())
             {
-                if (IDIn.connection(0).body is SpawnEntityNode)
+                if (IDIn.connection(0).body is SpawnEntityNode node)
                 {
-                    string ID = (IDIn.connection(0).body as SpawnEntityNode).entityID;
+                    string ID = node.entityID;
                 }
             }
 

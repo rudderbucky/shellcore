@@ -387,15 +387,10 @@ public class WCGeneratorHandler : MonoBehaviour
                                 var canvas = XMLImport.Import(dialogueDataPath) as DialogueCanvas;
                                 foreach (var node in canvas.nodes)
                                 {
-                                    if (node is EndDialogue)
+                                    if (node is EndDialogue endDialogue && endDialogue.openTrader)
                                     {
-                                        var endDialogue = node as EndDialogue;
-                                        if (endDialogue.openTrader)
-                                        {
-                                            ShipBuilder.TraderInventory traderInventory =
-                                                JsonUtility.FromJson<ShipBuilder.TraderInventory>(endDialogue.traderJSON);
-                                            AttemptAddPartArray(traderInventory.parts, container.sectorName);
-                                        }
+                                        ShipBuilder.TraderInventory traderInventory = JsonUtility.FromJson<ShipBuilder.TraderInventory>(endDialogue.traderJSON);
+                                        AttemptAddPartArray(traderInventory.parts, container.sectorName);
                                     }
                                 }
                             }
@@ -444,29 +439,24 @@ public class WCGeneratorHandler : MonoBehaviour
                     string missionName = null;
                     foreach (var node in canvas.nodes)
                     {
-                        if (node is StartMissionNode)
+                        if (node is StartMissionNode startMission)
                         {
-                            var startMission = node as StartMissionNode;
                             missionName = startMission.missionName;
                         }
                     }
 
                     foreach (var node in canvas.nodes)
                     {
-                        if (node is StartTaskNode)
+                        if (node is StartTaskNode startTask && startTask.partReward)
                         {
-                            var startTask = node as StartTaskNode;
-                            if (startTask.partReward)
-                            {
-                                EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
-                                part.partID = startTask.partID;
-                                part.abilityID = startTask.partAbilityID;
-                                part.tier = startTask.partTier;
-                                part.secondaryData = startTask.partSecondaryData;
-                                part = PartIndexScript.CullToPartIndexValues(part);
+                            EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
+                            part.partID = startTask.partID;
+                            part.abilityID = startTask.partAbilityID;
+                            part.tier = startTask.partTier;
+                            part.secondaryData = startTask.partSecondaryData;
+                            part = PartIndexScript.CullToPartIndexValues(part);
 
-                                AddPart(part, missionName);
-                            }
+                            AddPart(part, missionName);
                         }
                     }
                 }
