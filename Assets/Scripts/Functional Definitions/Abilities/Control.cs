@@ -54,7 +54,7 @@ public class Control : PassiveAbility
 
     void Enhance(Entity entity)
     {
-        if (!(entity is Turret) && entity.faction == Core.faction && entity != Core && !boosted.Contains(entity))
+        if (entity.faction == Core.faction && entity != Core && !boosted.Contains(entity))
         {
             entity.ControlStacks += abilityTier;
             boosted.Add(entity);
