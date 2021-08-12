@@ -49,9 +49,9 @@ public class ProximityInteractScript : MonoBehaviour
                 }
             }
 
-            if (closest as IVendor != null)
+            if (closest is IVendor vendor)
             {
-                var blueprint = (closest as IVendor).GetVendingBlueprint();
+                var blueprint = vendor.GetVendingBlueprint();
                 var range = blueprint.range;
 
                 if (!player.GetIsDead() && (closest.GetTransform().position - player.transform.position).sqrMagnitude <= range)
@@ -62,7 +62,7 @@ public class ProximityInteractScript : MonoBehaviour
                         {
                             if (Input.GetKeyDown((1 + i).ToString()))
                             {
-                                vendorUI.SetVendor(closest as IVendor, player);
+                                vendorUI.SetVendor(vendor, player);
                                 vendorUI.onButtonPressed(i);
                             }
                         }

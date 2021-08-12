@@ -529,9 +529,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         entityName = blueprint.entityName;
         name = blueprint.entityName;
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
-        weight = this as Drone ? 25 : coreWeight;
 
-        var isLightDrone = this as Drone && (this as Drone).type == DroneType.Light; // used for light drone weight reduction
+        var drone = this as Drone;
+        weight = drone ? 25 : coreWeight;
+
+        var isLightDrone = drone && drone.type == DroneType.Light; // used for light drone weight reduction
 
         int sortingOrder = 1;
         //For shellcores, create the tractor beam
@@ -624,7 +626,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
 
             // Drone shell and core health penalty
-            if (this as Drone)
+            if (drone)
             {
                 maxHealth[0] /= 2;
                 maxHealth[1] /= 4;
@@ -659,9 +661,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         // unique abilities for mini and worker drones here
-        if (this as Drone)
+        if (drone)
         {
-            Drone drone = this as Drone;
             switch (drone.type)
             {
                 case DroneType.Mini:
@@ -744,8 +745,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         AudioManager.PlayClipByID("clip_explosion1", transform.position);
 
         // Roll on each part
-        if (!FactionManager.IsAllied(0, faction) && !(this as PlayerCore) && this as ShellCore &&
-            (this as ShellCore).GetCarrier() == null)
+        if (!FactionManager.IsAllied(0, faction) && !(this as PlayerCore) && this is ShellCore shellCore &&
+            shellCore.GetCarrier() == null)
         {
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
@@ -772,15 +773,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
 
-        if (lastDamagedBy as PlayerCore)
+        if (lastDamagedBy is PlayerCore player)
         {
-            (lastDamagedBy as PlayerCore).AddCredits(Random.Range(1, 5));
+            player.AddCredits(Random.Range(1, 5));
 
             if (this as ShellCore && !FactionManager.IsAllied(0, faction))
             {
                 foreach (var part in blueprint.parts)
                 {
-                    (lastDamagedBy as PlayerCore).cursave.partsSeen.Add(PartIndexScript.CullToPartIndexValues(part));
+                    player.cursave.partsSeen.Add(PartIndexScript.CullToPartIndexValues(part));
                 }
             }
         }
@@ -868,9 +869,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         foreach (var ability in abilities)
         {
-            if (ability as PassiveAbility)
+            if (ability is PassiveAbility passive)
             {
-                (ability as PassiveAbility).Activate();
+                passive.Activate();
             }
         }
     }
@@ -926,18 +927,18 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             deathTimer += Time.deltaTime; // add time since last frame
             if (deathTimer >= 0.5F)
             {
-                if (this as PlayerCore && (deathTimer > 2))
+                if (this is PlayerCore player && (deathTimer > 2))
                 {
-                    ((PlayerCore)this).alerter.showMessage($"Respawning in {(5 - (int)deathTimer)} second"
-                                                           + ((5 - deathTimer) > 1 ? "s." : "."));
+                    player.alerter.showMessage($"Respawning in {(5 - (int)deathTimer)} second"
+                                               + ((5 - deathTimer) > 1 ? "s." : "."));
                 }
             }
 
             if (deathTimer >= 5F)
             {
-                if (this as PlayerCore)
+                if (this is PlayerCore player)
                 {
-                    ((PlayerCore)this).alerter.showMessage("");
+                    player.alerter.showMessage("");
                 }
 
                 PostDeath();
@@ -1011,9 +1012,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         entityBody.mass -= part.partMass;
         weight -= part.partMass * weightMultiplier;
-        if (this as Craft)
+        if (this is Craft craft)
         {
-            (this as Craft).CalculatePhysicsConstants();
+            craft.CalculatePhysicsConstants();
         }
 
         Domino(part);
@@ -1113,7 +1114,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         // counter drone fighting another drone, multiply damage accordingly
-        if (this as Drone && lastDamagedBy as Drone && (lastDamagedBy as Drone).type == DroneType.Counter)
+        if (this as Drone && lastDamagedBy is Drone drone && drone.type == DroneType.Counter)
         {
             amount *= 1.75F;
         }

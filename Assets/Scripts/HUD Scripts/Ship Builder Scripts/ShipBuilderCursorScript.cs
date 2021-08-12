@@ -131,7 +131,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     void PlaceCurrentPart()
     {
         currentPart.SetMaskable(true);
-        var editorMode = (builder as ShipBuilder) != null && !(builder as ShipBuilder).Equals(null) && (builder as ShipBuilder).editorMode;
+        var editorMode = builder is ShipBuilder shipBuilder && shipBuilder.editorMode;
         var dispatch = false;
         ShipBuilder.TransferMode mode = ShipBuilder.TransferMode.Return;
         if (cursorMode != BuilderMode.Workshop)
@@ -252,9 +252,9 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             }
         }
 
-        if (builder as ShipBuilder)
+        if (builder is ShipBuilder shipBuilder)
         {
-            return (builder as ShipBuilder).RequestInventoryMouseOverInfo();
+            return shipBuilder.RequestInventoryMouseOverInfo();
         }
 
         return null;

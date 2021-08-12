@@ -247,14 +247,14 @@ namespace NodeEditorFramework.Standard
                 {
                     for (int i = 0; i < AIData.entities.Count; i++)
                     {
-                        if (AIData.entities[i].ID == followerID && AIData.entities[i] is AirCraft)
+                        if (AIData.entities[i].ID == followerID && AIData.entities[i] is AirCraft airCraft)
                         {
-                            (AIData.entities[i] as AirCraft).GetAI().follow(target.transform);
+                            airCraft.GetAI().follow(target.transform);
 
 
                             if (disallowAggression)
                             {
-                                (AIData.entities[i] as AirCraft).GetAI().aggression = AirCraftAI.AIAggression.KeepMoving;
+                                airCraft.GetAI().aggression = AirCraftAI.AIAggression.KeepMoving;
                             }
                         }
                     }
@@ -268,9 +268,9 @@ namespace NodeEditorFramework.Standard
             {
                 for (int i = 0; i < AIData.entities.Count; i++)
                 {
-                    if (AIData.entities[i].ID == followerID && AIData.entities[i] is AirCraft)
+                    if (AIData.entities[i].ID == followerID && AIData.entities[i] is AirCraft airCraft)
                     {
-                        (AIData.entities[i] as AirCraft).GetAI().follow(null);
+                        airCraft.GetAI().follow(null);
                     }
                 }
             }

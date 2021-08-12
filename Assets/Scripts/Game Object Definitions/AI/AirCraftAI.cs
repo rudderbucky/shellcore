@@ -70,9 +70,9 @@ public class AirCraftAI : MonoBehaviour
                 module = new BattleAI();
                 break;
             case AIMode.Inactive:
-                if (module is TractorAI)
+                if (module is TractorAI tractorAI)
                 {
-                    (module as TractorAI).StopFollowing();
+                    tractorAI.StopFollowing();
                     movement.StopMoving();
                 }
 
@@ -96,7 +96,7 @@ public class AirCraftAI : MonoBehaviour
 
     public void follow(Transform t = null)
     {
-        if (craft is Drone && (craft as Drone).type == DroneType.Worker)
+        if (craft is Drone drone && drone.type == DroneType.Worker)
         {
             (module as TractorAI).Follow(t);
         }
@@ -110,9 +110,8 @@ public class AirCraftAI : MonoBehaviour
 
     public void ChatOrderStateChange(BattleAI.BattleState state)
     {
-        if (module is BattleAI)
+        if (module is BattleAI mod)
         {
-            var mod = module as BattleAI;
             mod.OrderModeChange(state);
         }
     }
@@ -120,9 +119,9 @@ public class AirCraftAI : MonoBehaviour
     // used for party HUD visual
     public string GetPartyBattleStateString()
     {
-        if (module is BattleAI)
+        if (module is BattleAI battleAI)
         {
-            switch ((module as BattleAI).GetState())
+            switch (battleAI.GetState())
             {
                 case BattleAI.BattleState.Attack:
                     return "ATTACKING";
@@ -149,7 +148,7 @@ public class AirCraftAI : MonoBehaviour
 
     public void moveToPosition(Vector2 pos)
     {
-        if (craft is Drone && (craft as Drone).type == DroneType.Worker && module != null)
+        if (craft is Drone drone && drone.type == DroneType.Worker && module != null)
         {
             (module as TractorAI).GoTo(pos);
         }
@@ -312,9 +311,9 @@ public class AirCraftAI : MonoBehaviour
                                 aggroTarget = null;
                             }
 
-                            if (module is FollowAI && (module as FollowAI).followTarget)
+                            if (module is FollowAI followAI && followAI.followTarget)
                             {
-                                if (((module as FollowAI).followTarget.position - craft.transform.position).sqrMagnitude > 150f)
+                                if ((followAI.followTarget.position - craft.transform.position).sqrMagnitude > 150f)
                                 {
                                     aggroTarget = null;
                                 }

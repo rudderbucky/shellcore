@@ -163,22 +163,22 @@ namespace NodeEditorFramework.Standard
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
+                if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft airCraft)
                 {
-                    if (AIData.entities[i] is PlayerCore)
+                    if (AIData.entities[i] is PlayerCore player)
                     {
-                        AIData.entities[i].StartCoroutine(pathPlayer(AIData.entities[i] as PlayerCore));
+                        AIData.entities[i].StartCoroutine(pathPlayer(player));
                     }
                     else
                     {
                         AIData.entities[i].isPathing = false; // override any previous paths given to it immediately
                         if (!asynchronous)
                         {
-                            (AIData.entities[i] as AirCraft).GetAI().setPath(path, continueTraversing);
+                            airCraft.GetAI().setPath(path, continueTraversing);
                         }
                         else
                         {
-                            (AIData.entities[i] as AirCraft).GetAI().setPath(path);
+                            airCraft.GetAI().setPath(path);
                         }
 
                         if (useCustomMass)
@@ -186,7 +186,7 @@ namespace NodeEditorFramework.Standard
                             AIData.entities[i].weight = mass;
                         }
 
-                        (AIData.entities[i] as AirCraft).rotateWhileMoving = !doNotRotate;
+                        airCraft.rotateWhileMoving = !doNotRotate;
                     }
                 }
             }

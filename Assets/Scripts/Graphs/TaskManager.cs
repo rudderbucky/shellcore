@@ -296,7 +296,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
                 if (mission.status != Mission.MissionStatus.Complete && mission.tasks.Count > 0)
                 {
                     var task = mission.tasks[mission.tasks.Count - 1];
-                    StartTaskNode start = traverser.nodeCanvas.nodes.Find((node) => { return node is StartTaskNode && (node as StartTaskNode).taskID == task.taskID; }) as StartTaskNode;
+                    StartTaskNode start = traverser.nodeCanvas.nodes.Find((node) => { return node is StartTaskNode stn && stn.taskID == task.taskID; }) as StartTaskNode;
                     if (start != null)
                     {
                         traverser.ActivateTask(start.taskID);
