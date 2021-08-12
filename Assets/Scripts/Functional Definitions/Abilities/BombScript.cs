@@ -21,12 +21,6 @@ public class BombScript : MonoBehaviour
     void Start()
     {
         timeInstantiated = Time.time;
-        if (!GetComponent<Collider2D>()) // no collider? no problem
-        {
-            var collider = gameObject.AddComponent<CircleCollider2D>(); // add collider component
-            collider.radius = explosionRadius;
-            collider.isTrigger = true; // set trigger
-        }
 
         GetComponent<SpriteRenderer>().color = bombColor;
         ParticleSystem.MainModule mainModule = GetComponentInChildren<ParticleSystem>().main;
@@ -94,46 +88,41 @@ public class BombScript : MonoBehaviour
 
     bool fired = false;
 
-    void OnTriggerEnter2D(Collider2D collision)
+    private void Update()
     {
-        if (Time.time < timeInstantiated + fuseTime || fired)
-        {
-            return;
-        }
-
-        var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
-        var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
-        if (craft != null && !craft.GetIsDead()) // check if the component was obtained
-        {
-            if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && (!owner || (craft.GetTransform() != owner.transform)))
+        if (Time.time > timeInstantiated + fuseTime && !fired)
+            foreach (var ent in AIData.entities)
             {
-                var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
-                // if the shell is low, damage the part
-
-                ShellPart part = collision.transform.GetComponent<ShellPart>();
-                if (part)
+                var craft = ent.GetComponent<Entity>(); // check if it has a craft component
+                if (craft != null && !craft.GetIsDead()) // check if the component was obtained
                 {
-                    part.TakeDamage(residue); // damage the part
-                }
-
-                if (!fired)
-                {
-                    AudioManager.PlayClipByID("clip_bombexplosion", transform.position);
-                    GameObject tmp = Instantiate(explosionCirclePrefab); // instantiate circle explosion
-                    tmp.SetActive(true);
-                    tmp.transform.position = transform.position;
-                    tmp.GetComponent<DrawCircleScript>().Initialize();
-                    for (int i = 0; i < 15; i++)
+                    if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && (!owner || (craft.GetTransform() != owner.transform)))
                     {
-                        Instantiate(hitPrefab, transform.position + new Vector3(Random.Range(-explosionRadius, explosionRadius),
-                            Random.Range(-explosionRadius, explosionRadius)), Quaternion.identity).transform.localScale *= 2;
+                        var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
+                                                                               // if the shell is low, damage the part
+
+                        ShellPart part = craft.transform.GetComponent<ShellPart>();
+                        if (part)
+                        {
+                            part.TakeDamage(residue); // damage the part
+                        }
+
+                        AudioManager.PlayClipByID("clip_bombexplosion", transform.position);
+                        GameObject tmp = Instantiate(explosionCirclePrefab, transform); // instantiate circle explosion
+                        tmp.SetActive(true);
+                        tmp.transform.position = transform.position;
+                        tmp.GetComponent<DrawCircleScript>().Initialize();
+                        for (int i = 0; i < 15; i++)
+                        {
+                            Instantiate(hitPrefab, transform.position + new Vector3(Random.Range(-explosionRadius, explosionRadius),
+                                Random.Range(-explosionRadius, explosionRadius)), Quaternion.identity).transform.localScale *= 2;
+                        }
+
+                        fired = true;
+
+                        Destroy(gameObject); // bullet has collided with a target, delete immediately
                     }
                 }
-
-                fired = true;
-
-                Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
-        }
     }
 }
