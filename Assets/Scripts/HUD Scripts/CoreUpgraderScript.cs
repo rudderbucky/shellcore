@@ -9,12 +9,12 @@ public class CoreUpgraderScript : GUIWindowScripts
 
     public static int[] maxAbilityCap
     {
-        get { return new int[] {15, 8, 15, 15}; }
+        get { return new int[] { 15, 8, 15, 15 }; }
     }
 
     public static int[] minAbilityCap
     {
-        get { return new int[] {6, 3, 6, 6}; }
+        get { return new int[] { 6, 3, 6, 6 }; }
     }
 
     public GameObject optionPrefab;
@@ -133,7 +133,7 @@ public class CoreUpgraderScript : GUIWindowScripts
 
     public static int GetUpgradeCostCredits(int type)
     {
-        return 1000 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type]));
+        return 0;//1000 * Mathf.RoundToInt(Mathf.Pow(2, instance.player.abilityCaps[type] - minAbilityCap[type]));
     }
 
     public static int GetShards()
@@ -146,13 +146,13 @@ public class CoreUpgraderScript : GUIWindowScripts
         switch (coreName)
         {
             case "core1_shell":
-                return new string[] {"core2_shell"};
+                return new string[] { "core2_shell" };
             case "core2_shell":
-                return new string[] {"core3skills_shell", "core3weapons_shell"};
+                return new string[] { "core3skills_shell", "core3weapons_shell" };
             case "core3skills_shell":
-                return new string[] {"core4commando_shell", "core4elite_shell"};
+                return new string[] { "core4commando_shell", "core4elite_shell" };
             case "core3weapons_shell":
-                return new string[] {"core4captain_shell", "core4admiral_shell"};
+                return new string[] { "core4captain_shell", "core4admiral_shell" };
             default:
                 return null;
         }
@@ -231,19 +231,19 @@ public class CoreUpgraderScript : GUIWindowScripts
         switch (coreName)
         {
             case "core3skills_shell":
-                return new int[] {3, 0, 0, 0};
+                return new int[] { 3, 0, 0, 0 };
             case "core3weapons_shell":
-                return new int[] {0, 0, 3, 0};
+                return new int[] { 0, 0, 3, 0 };
             case "core4commando_shell":
-                return new int[] {3, 2, 0, 0};
+                return new int[] { 3, 2, 0, 0 };
             case "core4elite_shell":
-                return new int[] {3, 0, 0, 3};
+                return new int[] { 3, 0, 0, 3 };
             case "core4captain_shell":
-                return new int[] {0, 2, 3, 0};
+                return new int[] { 0, 2, 3, 0 };
             case "core4admiral_shell":
-                return new int[] {0, 0, 3, 3};
+                return new int[] { 0, 0, 3, 3 };
             default:
-                return new int[] {0, 0, 0, 0};
+                return new int[] { 0, 0, 0, 0 };
         }
     }
 
@@ -252,23 +252,23 @@ public class CoreUpgraderScript : GUIWindowScripts
         switch (coreName)
         {
             case "core2_shell":
-                return new float[] {90, 0, 45};
+                return new float[] { 90, 0, 45 };
             case "core3skills_shell":
             case "core3weapons_shell":
-                return new float[] {120, 0, 60};
+                return new float[] { 120, 0, 60 };
             case "core4commando_shell":
             case "core4elite_shell":
             case "core4captain_shell":
             case "core4admiral_shell":
-                return new float[] {150, 0, 75};
+                return new float[] { 150, 0, 75 };
             default:
-                return new float[] {60, 0, 30};
+                return new float[] { 60, 0, 30 };
         }
     }
 
     public static float[] defaultHealths
     {
-        get { return new float[] {1000, 250, 500}; }
+        get { return new float[] { 1000, 250, 500 }; }
     }
 
     public static float[] GetNextRegens(string coreName)
@@ -276,14 +276,14 @@ public class CoreUpgraderScript : GUIWindowScripts
         switch (coreName)
         {
             case "core1_shell":
-                return new float[] {90, 0, 90};
+                return new float[] { 90, 0, 90 };
             case "core2_shell":
-                return new float[] {120, 0, 120};
+                return new float[] { 120, 0, 120 };
             case "core3skills_shell":
             case "core3weapons_shell":
-                return new float[] {150, 0, 150};
+                return new float[] { 150, 0, 150 };
             default:
-                return new float[] {0, 0, 0};
+                return new float[] { 0, 0, 0 };
         }
     }
 
