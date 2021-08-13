@@ -239,8 +239,7 @@ namespace NodeEditorFramework.Standard
 
         private void RewardPlayer()
         {
-            var taskNode = (outputUp.connection(0).body as StartTaskNode);
-            if (taskNode)
+            if (outputUp.connection(0).body is StartTaskNode taskNode)
             {
                 string taskID = taskNode.taskID;
                 TaskManager.Instance.endTask(taskID);
@@ -269,8 +268,7 @@ namespace NodeEditorFramework.Standard
             // Pop the pending text
             if (outputUp.connected())
             {
-                var taskNode = (outputUp.connection(0).body as StartTaskNode);
-                if (taskNode && taskNode.entityIDforConfirmedResponse != null && taskNode.entityIDforConfirmedResponse != "")
+                if (outputUp.connection(0).body is StartTaskNode taskNode && !string.IsNullOrEmpty(taskNode.entityIDforConfirmedResponse))
                 {
                     if (TaskManager.interactionOverrides.ContainsKey(taskNode.entityIDforConfirmedResponse))
                     {

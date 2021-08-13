@@ -176,14 +176,17 @@ namespace NodeEditorFramework.Standard
             {
                 for (int i = 0; i < AIData.entities.Count; i++)
                 {
-                    if (AIData.entities[i].ID == entityID && AIData.entities[i] is AirCraft)
+                    if (AIData.entities[i] is AirCraft airCraft)
                     {
-                        entity = AIData.entities[i] as AirCraft;
-                    }
+                        if (AIData.entities[i].ID == entityID)
+                        {
+                            entity = airCraft;
+                        }
 
-                    if (AIData.entities[i].ID == targetEntityID && AIData.entities[i] is AirCraft)
-                    {
-                        target = AIData.entities[i];
+                        if (AIData.entities[i].ID == targetEntityID)
+                        {
+                            target = AIData.entities[i];
+                        }
                     }
                 }
             }

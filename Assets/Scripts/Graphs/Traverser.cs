@@ -91,8 +91,7 @@ public class Traverser : NodeCanvasTraversal
 
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
-            var node = nodeCanvas.nodes[i];
-            if (node is CheckpointNode && (node as CheckpointNode).checkpointName == CPName)
+            if (nodeCanvas.nodes[i] is CheckpointNode node && node.checkpointName == CPName)
             {
                 currentNode = node;
                 return true;
@@ -117,23 +116,23 @@ public class Traverser : NodeCanvasTraversal
 
     protected void SetDialogueState(Node node, NodeEditorGUI.NodeEditorState state)
     {
-        if (node is StartDialogueNode)
+        if (node is StartDialogueNode start)
         {
-            (node as StartDialogueNode).state = state;
+            start.state = state;
         }
 
-        if (node is DialogueNode)
+        if (node is DialogueNode dialogue)
         {
-            (node as DialogueNode).state = state;
+            dialogue.state = state;
         }
 
-        if (node is EndDialogue)
+        if (node is EndDialogue end)
         {
-            (node as EndDialogue).state = state;
+            end.state = state;
         }
-        if (node is ClearDialogueNode)
+        if (node is ClearDialogueNode clear)
         {
-            (node as ClearDialogueNode).state = state;
+            clear.state = state;
         }
     }
 }

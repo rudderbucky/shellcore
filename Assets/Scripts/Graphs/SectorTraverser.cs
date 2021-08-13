@@ -74,9 +74,8 @@ public class SectorTraverser : Traverser
                 TaskManager.Instance.StopAllCoroutines();
             }
 
-            if (currentNode is ConditionGroupNode)
+            if (currentNode is ConditionGroupNode cgn)
             {
-                var cgn = currentNode as ConditionGroupNode;
                 cgn.DeInit();
             }
         }

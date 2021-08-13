@@ -96,9 +96,13 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             description += $"\nRange: {ability.GetRange()}";
         }
 
-        if ((ability as WeaponAbility)?.GetBonusDamageType() != null)
+        if (ability is WeaponAbility weaponAbility)
         {
-            description += $"\nDeals bonus damage to: {(ability as WeaponAbility).GetBonusDamageType()}";
+            var bonusDamageType = weaponAbility.GetBonusDamageType();
+            if (bonusDamageType != null)
+            {
+                description += $"\nDeals bonus damage to: {bonusDamageType}";
+            }
         }
 
         description += $"\n{AbilityUtilities.GetDescription(ability)}";

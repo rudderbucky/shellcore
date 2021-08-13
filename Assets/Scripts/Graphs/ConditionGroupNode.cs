@@ -63,13 +63,10 @@ namespace NodeEditorFramework.Standard
                     var connections = groups[i].input.connections;
                     for (int j = 0; j < connections.Count; j++)
                     {
-                        if (!(connections[j].body is ICondition))
+                        if (connections[j].body is ICondition condition)
                         {
-                            continue;
+                            condition.Init(0);
                         }
-
-                        ICondition condition = connections[j].body as ICondition;
-                        condition.Init(0);
                     }
                 }
             }
@@ -88,16 +85,13 @@ namespace NodeEditorFramework.Standard
                     int conditionCount = 0;
                     for (int j = 0; j < groups[i].input.connections.Count; j++)
                     {
-                        if (!(groups[i].input.connections[j].body is ICondition))
+                        if (groups[i].input.connections[j].body is ICondition condition)
                         {
-                            continue;
-                        }
-
-                        ICondition condition = groups[i].input.connections[j].body as ICondition;
-                        conditionCount++;
-                        if (condition.State == ConditionState.Completed)
-                        {
-                            completed++;
+                            conditionCount++;
+                            if (condition.State == ConditionState.Completed)
+                            {
+                                completed++;
+                            }
                         }
                     }
 
@@ -126,13 +120,10 @@ namespace NodeEditorFramework.Standard
             {
                 for (int j = 0; j < groups[i].input.connections.Count; j++)
                 {
-                    if (!(groups[i].input.connection(j).body is ICondition))
+                    if (groups[i].input.connection(j).body is ICondition node)
                     {
-                        continue;
+                        node.DeInit();
                     }
-
-                    ICondition node = groups[i].input.connection(j).body as ICondition;
-                    node.DeInit();
                 }
             }
         }

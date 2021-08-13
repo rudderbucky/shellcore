@@ -97,7 +97,7 @@ public class SpawnDrone : ActiveAbility
             stats.droneSpawns++;
         }
 
-        if (craft as ICarrier != null)
+        if (craft is ICarrier)
         {
             drone.getAI().setMode(AirCraftAI.AIMode.Path);
         }
@@ -125,9 +125,9 @@ public class SpawnDrone : ActiveAbility
             //Core.TakeEnergy(-energyCost); i'm not sure what this line of code does, but it seemed to make drones take energy from the user's max energy instead of their current energy
             base.Activate();
         }
-        else if (craft as PlayerCore && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
+        else if (craft is PlayerCore player && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
         {
-            (craft as PlayerCore).alerter.showMessage("Unit limit reached!", "clip_alert");
+            player.alerter.showMessage("Unit limit reached!", "clip_alert");
         }
     }
 }

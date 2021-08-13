@@ -232,8 +232,7 @@ public class Tank : GroundCraft, IOwnable
             for (int i = 0; i < AIData.entities.Count; i++)
             {
                 Entity e = AIData.entities[i];
-                Tank t = e as Tank;
-                if (t != null && e != this && e.GetInstanceID() > GetInstanceID() && !t.IsInRange && t.HasPath)
+                if (e is Tank t && e != this && e.GetInstanceID() > GetInstanceID() && !t.IsInRange && t.HasPath)
                 {
                     float d = (e.transform.position - (transform.position)).sqrMagnitude;
                     if (d < minDistance)

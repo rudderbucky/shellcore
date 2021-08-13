@@ -44,8 +44,8 @@ public class Flag : MonoBehaviour, IInteractable
             {
                 foreach (var ent in AIData.entities)
                 {
-                    if (!(PartyManager.instance && PartyManager.instance.partyMembers != null && ent is ShellCore &&
-                            PartyManager.instance.partyMembers.Contains(ent as ShellCore)))
+                    if (!(PartyManager.instance && PartyManager.instance.partyMembers != null && ent is ShellCore shellCore &&
+                            PartyManager.instance.partyMembers.Contains(shellCore)))
                         foreach (var data in SectorManager.instance.characters)
                         {
                             if (data.ID == ent.ID)

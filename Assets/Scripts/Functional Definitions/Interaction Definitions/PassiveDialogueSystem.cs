@@ -114,9 +114,9 @@ public class PassiveDialogueSystem : MonoBehaviour
                 {
                     var instance = Instantiate(passiveDialogueInstancePrefab, passiveDialogueContents);
                     var name = speaker.name;
-                    if (speaker as PlayerCore)
+                    if (speaker is PlayerCore player)
                     {
-                        name = (speaker as PlayerCore).cursave.name;
+                        name = player.cursave.name;
                     }
 
                     instance.transform.Find("Name").GetComponent<Text>().text = name;

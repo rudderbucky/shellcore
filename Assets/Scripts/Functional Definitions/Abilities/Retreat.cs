@@ -21,8 +21,7 @@ public class Retreat : Ability
     {
         if (Core is Craft)
         {
-            if ((Core as ShellCore
-                 && (Core as ShellCore).GetCarrier() == null) && (!(Core as PlayerCore) || (Core as PlayerCore).havenSpawnPoint == Vector2.zero))
+            if ((Core is ShellCore shellCore && shellCore.GetCarrier() == null) && !(Core is PlayerCore player && player.havenSpawnPoint == Vector2.zero))
             {
                 return;
             }
@@ -33,9 +32,9 @@ public class Retreat : Ability
             List<Retreat> oldRetreats = new List<Retreat>();
             foreach (Ability ability in Core.GetAbilities())
             {
-                if (ability as Retreat)
+                if (ability is Retreat retreat)
                 {
-                    oldRetreats.Add(ability as Retreat);
+                    oldRetreats.Add(retreat);
                 }
             }
 

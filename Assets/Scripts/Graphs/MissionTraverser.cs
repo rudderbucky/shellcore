@@ -35,27 +35,23 @@ public class MissionTraverser : Traverser
             {
                 foreach (var node in nodeCanvas.nodes)
                 {
-                    if (node is StartTaskNode)
+                    if (node is StartTaskNode startTask && startTask.partReward)
                     {
-                        var startTask = node as StartTaskNode;
-                        if (startTask.partReward)
+                        EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
+                        part.partID = startTask.partID;
+                        part.abilityID = startTask.partAbilityID;
+                        part.tier = startTask.partTier;
+                        part.secondaryData = startTask.partSecondaryData;
+                        part = PartIndexScript.CullToPartIndexValues(part);
+
+                        if (!PlayerCore.Instance.cursave.partsObtained.Contains(part))
                         {
-                            EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
-                            part.partID = startTask.partID;
-                            part.abilityID = startTask.partAbilityID;
-                            part.tier = startTask.partTier;
-                            part.secondaryData = startTask.partSecondaryData;
-                            part = PartIndexScript.CullToPartIndexValues(part);
+                            PlayerCore.Instance.cursave.partsObtained.Add(part);
+                        }
 
-                            if (!PlayerCore.Instance.cursave.partsObtained.Contains(part))
-                            {
-                                PlayerCore.Instance.cursave.partsObtained.Add(part);
-                            }
-
-                            if (!PlayerCore.Instance.cursave.partsSeen.Contains(part))
-                            {
-                                PlayerCore.Instance.cursave.partsSeen.Add(part);
-                            }
+                        if (!PlayerCore.Instance.cursave.partsSeen.Contains(part))
+                        {
+                            PlayerCore.Instance.cursave.partsSeen.Add(part);
                         }
                     }
                 }
@@ -104,10 +100,9 @@ public class MissionTraverser : Traverser
 
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
-            var node = nodeCanvas.nodes[i];
-            if (node is StartTaskNode && (node as StartTaskNode).taskName == CPName)
+            if (nodeCanvas.nodes[i] is StartTaskNode node && node.taskName == CPName)
             {
-                (node as StartTaskNode).forceTask = true;
+                node.forceTask = true;
                 currentNode = node;
                 return true;
             }
@@ -126,8 +121,7 @@ public class MissionTraverser : Traverser
     {
         for (int i = 0; i < nodeCanvas.nodes.Count; i++)
         {
-            var node = nodeCanvas.nodes[i] as StartTaskNode;
-            if (node && node.taskID == ID)
+            if (nodeCanvas.nodes[i] is StartTaskNode node && node.taskID == ID)
             {
                 node.StartTask();
             }

@@ -14,10 +14,10 @@ public class Speed : PassiveAbility
 
     public override void Deactivate()
     {
-        if (Core as Craft)
+        if (Core is Craft craft)
         {
-            (Core as Craft).speed -= boost * abilityTier;
-            (Core as Craft).CalculatePhysicsConstants();
+            craft.speed -= boost * abilityTier;
+            craft.CalculatePhysicsConstants();
         }
 
         base.Deactivate();
@@ -25,10 +25,10 @@ public class Speed : PassiveAbility
 
     protected override void Execute()
     {
-        if (Core as Craft)
+        if (Core is Craft craft)
         {
-            (Core as Craft).speed += boost * abilityTier;
-            (Core as Craft).CalculatePhysicsConstants();
+            craft.speed += boost * abilityTier;
+            craft.CalculatePhysicsConstants();
         }
         else if (Core)
         {

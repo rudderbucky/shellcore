@@ -340,9 +340,9 @@ public class ShellPart : MonoBehaviour
                 }
                 else
                 {
-                    if (craft as PlayerCore && name != "Shell Sprite")
+                    if (craft is PlayerCore player && name != "Shell Sprite")
                     {
-                        (craft as PlayerCore).partsToDestroy.Add(this);
+                        player.partsToDestroy.Add(this);
                     }
 
                     spriteRenderer.enabled = false; // disable sprite renderer

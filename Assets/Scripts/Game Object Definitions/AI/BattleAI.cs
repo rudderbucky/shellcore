@@ -92,9 +92,9 @@ public class BattleAI : AIModule
             }
         }
 
-        if (craft is ShellCore)
+        if (craft is ShellCore shellCore)
         {
-            shellcore = craft as ShellCore;
+            shellcore = shellCore;
         }
         else
         {
@@ -103,8 +103,7 @@ public class BattleAI : AIModule
 
         foreach (IOwnable ownable in shellcore.GetUnitsCommanding())
         {
-            var turret = ownable as Turret;
-            if (turret && turret.entityName == "Harvester Turret")
+            if (ownable is Turret turret && turret.entityName == "Harvester Turret")
             {
                 foreach (var rock in AIData.energyRocks)
                 {

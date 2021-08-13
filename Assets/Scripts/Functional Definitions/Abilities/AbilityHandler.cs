@@ -73,36 +73,39 @@ public class AbilityHandler : MonoBehaviour
         visibleAbilities.Clear();
         foreach (Ability ab in abilities)
         {
-            switch (currentVisibles)
+            if (ab)
             {
-                case AbilityTypes.Skills:
-                    if (ab as Ability && !(ab as SpawnDrone) && !(ab as WeaponAbility) && !(ab as PassiveAbility))
-                    {
-                        visibleAbilities.Add(ab);
-                    }
+                switch (currentVisibles)
+                {
+                    case AbilityTypes.Skills:
+                        if (!(ab as SpawnDrone) && !(ab as WeaponAbility) && !(ab as PassiveAbility))
+                        {
+                            visibleAbilities.Add(ab);
+                        }
 
-                    break;
-                case AbilityTypes.Passive:
-                    if (ab as PassiveAbility)
-                    {
-                        visibleAbilities.Add(ab);
-                    }
+                        break;
+                    case AbilityTypes.Passive:
+                        if (ab as PassiveAbility)
+                        {
+                            visibleAbilities.Add(ab);
+                        }
 
-                    break;
-                case AbilityTypes.Spawns:
-                    if (ab as SpawnDrone)
-                    {
-                        visibleAbilities.Add(ab);
-                    }
+                        break;
+                    case AbilityTypes.Spawns:
+                        if (ab as SpawnDrone)
+                        {
+                            visibleAbilities.Add(ab);
+                        }
 
-                    break;
-                case AbilityTypes.Weapons:
-                    if (ab as WeaponAbility)
-                    {
-                        visibleAbilities.Add(ab);
-                    }
+                        break;
+                    case AbilityTypes.Weapons:
+                        if (ab as WeaponAbility)
+                        {
+                            visibleAbilities.Add(ab);
+                        }
 
-                    break;
+                        break;
+                }
             }
         }
 
