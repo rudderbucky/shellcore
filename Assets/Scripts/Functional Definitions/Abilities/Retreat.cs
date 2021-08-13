@@ -21,7 +21,7 @@ public class Retreat : Ability
     {
         if (Core is Craft)
         {
-            if ((Core is ShellCore shellCore && shellCore.GetCarrier() == null) && !(Core is PlayerCore player && player.havenSpawnPoint == Vector2.zero))
+            if ((Core is ShellCore shellCore && shellCore.GetCarrier() == null) && !(Core is PlayerCore player && player.havenSpawnPoint != Vector2.zero))
             {
                 return;
             }
