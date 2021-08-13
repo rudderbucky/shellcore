@@ -223,7 +223,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
     public void onButtonPressed(int index)
     {
-        if (player.GetPower() >= blueprint.items[index].cost && player.faction == vendor.GetFaction()
+        if (player.GetPower() >= blueprint.items[index].cost && FactionManager.IsAllied(player.faction, vendor.GetFaction())
                                                              && player.unitsCommanding.Count < player.GetTotalCommandLimit())
         {
             BuyItem(player, index, vendor);
