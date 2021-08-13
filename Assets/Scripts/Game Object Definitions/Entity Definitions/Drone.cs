@@ -24,24 +24,25 @@ public class Drone : AirCraft, IOwnable
         this.owner = owner;
         ai.owner = owner;
         owner.GetUnitsCommanding().Add(this);
-        if (owner as AirCarrier || owner as GroundCarrier)
+        if (owner is AirCarrier || owner is GroundCarrier || owner is AirWeaponStation || owner is GroundWeaponStation)
         {
             // GET THE DRONES TO MOVE
             ai.setMode(AirCraftAI.AIMode.Path);
             var path = ScriptableObject.CreateInstance<Path>();
             path.waypoints = new List<Path.Node>();
             var vec = Vector2.zero;
-            if (owner as AirCarrier)
+            if ((owner is AirCarrier || owner is AirWeaponStation) && SectorManager.instance?.current?.type == Sector.SectorType.BattleZone)
             {
                 foreach (var ent in BattleZoneManager.getTargets())
                 {
-                    if (ent && ent is ICarrier && !FactionManager.IsAllied(ent.faction, owner.GetFaction()) && ent.transform)
+                    if (ent && !FactionManager.IsAllied(ent.faction, owner.GetFaction()) && ent.transform)
                     {
                         vec = ent.transform.position;
                     }
                 }
             }
-            // otherwise this is a ground carrier, drones are defensive for them so set a path to the drone position currently
+            // drones are defensive for all carriers outside battlezones, or ground carriers anywhere,
+            // so set a path to the drone position currently
             else
             {
                 var angle = Random.Range(0F, 360);
@@ -64,6 +65,7 @@ public class Drone : AirCraft, IOwnable
             }
             else
             {
+
                 NodeEditorFramework.Standard.PathData data = new NodeEditorFramework.Standard.PathData();
                 data.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
                 // TODO: LOL THESE TWO ARE DIFFERENT, unify them

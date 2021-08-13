@@ -97,7 +97,7 @@ public class SpawnDrone : ActiveAbility
             stats.droneSpawns++;
         }
 
-        if (craft is ICarrier)
+        if (craft is ICarrier || craft is AirWeaponStation || craft is GroundWeaponStation)
         {
             drone.getAI().setMode(AirCraftAI.AIMode.Path);
         }

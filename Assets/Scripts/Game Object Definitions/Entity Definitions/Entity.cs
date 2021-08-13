@@ -1330,8 +1330,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     // Used by "dumb" stations, that just use their abilities whenever possible
     protected void TickAbilitiesAsStation()
     {
-        var enemyTargetFound = false;
-        if (BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
+        var enemyTargetFound = SectorManager.instance?.current?.type != Sector.SectorType.BattleZone;
+        if (!enemyTargetFound && BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
         {
             foreach (var target in BattleZoneManager.getTargets())
             {
