@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="-795.2,-77.2" zoom="1.2" />
+		<EditorState selected="" pan="-774.6,6.200008" zoom="1" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Enter Sector" ID="-2136573952" type="LoadSectorNode" pos="-70,-20">
-			<Port ID="518059392" name="output" dynamic="False" />
+		<Node name="Enter Sector" ID="-1745371648" type="LoadSectorNode" pos="-50,-50">
+			<Port ID="624715264" name="output" dynamic="False" />
 			<Variable name="sectorName" refID="1176414164" />
 		</Node>
-		<Node name="AI Follow" ID="-2114692352" type="AIFollowNode" pos="120,-50">
-			<Port ID="786384640" name="output" dynamic="False" />
-			<Port ID="1823824768" name="input" dynamic="False" />
+		<Node name="AI Follow" ID="-732631680" type="AIFollowNode" pos="150,-50">
+			<Port ID="-703138432" name="output" dynamic="False" />
+			<Port ID="988953856" name="input" dynamic="False" />
 			<Variable name="followerID" refID="-1174902301" />
 			<Variable name="targetID" refID="1875821083" />
 			<boolean name="useFollowerInput">false</boolean>
@@ -19,9 +19,72 @@
 			<boolean name="stopFollowing">false</boolean>
 			<boolean name="disallowAggression">false</boolean>
 		</Node>
+		<Node name="Test Variable" ID="1636777216" type="TestVariableNode" pos="350,-50">
+			<Port ID="-1185167616" name="inputLeft" dynamic="False" />
+			<Port ID="1927152768" name="outputTrue" dynamic="False" />
+			<Port ID="1781945984" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-1222592864" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Start Dialogue" ID="876887552" type="StartDialogueNode" pos="600,-50">
+			<Port ID="-133411712" name="input" dynamic="False" />
+			<Port ID="904028416" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1174902301" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1751647744" type="DialogueNode" pos="800,-50">
+			<Port ID="1687246464" name="input" dynamic="False" />
+			<Port ID="-1570280704" name="cancel" dynamic="False" />
+			<Port ID="1832453248" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">177</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1442103572" />
+			<Variable name="answers" refID="-686253952" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-583309824" type="EndDialogue" pos="1050,-50">
+			<Port ID="-1309381760" name="input" dynamic="False" />
+			<Port ID="371995264" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="518059392" port2ID="1823824768" />
+		<Connection port1ID="624715264" port2ID="988953856" />
+		<Connection port1ID="-703138432" port2ID="-1185167616" />
+		<Connection port1ID="1927152768" port2ID="-133411712" />
+		<Connection port1ID="-133411712" port2ID="-1570280704" />
+		<Connection port1ID="-133411712" port2ID="371995264" />
+		<Connection port1ID="904028416" port2ID="1687246464" />
+		<Connection port1ID="1832453248" port2ID="-1309381760" />
 	</Connections>
 	<Objects>
 		<Object refID="1176414164" type="System.String">
@@ -32,6 +95,17 @@
 		</Object>
 		<Object refID="1875821083" type="System.String">
 			<string>player</string>
+		</Object>
+		<Object refID="-1222592864" type="System.String">
+			<string>InfectedTruceVar</string>
+		</Object>
+		<Object refID="-1442103572" type="System.String">
+			<string>You should probably talk to our leader instead of going somewhere else. Otherwise things will get... Weird.</string>
+		</Object>
+		<Object refID="-686253952" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Okay.</string>
+			</ArrayOfString>
 		</Object>
 	</Objects>
 </NodeCanvas>

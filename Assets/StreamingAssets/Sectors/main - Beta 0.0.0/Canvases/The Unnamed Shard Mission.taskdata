@@ -1,63 +1,107 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.QuestCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="-1619,473" zoom="1" />
+		<EditorState selected="" pan="-4424.199,563.6007" zoom="1.4" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Start Dialogue" ID="1308653568" type="StartDialogueNode" pos="-506,-159">
-			<Port ID="1422419456" name="input" dynamic="False" />
-			<Port ID="-1835107712" name="output" dynamic="False" />
-			<boolean name="SpeakToEntity">true</boolean>
-			<Variable name="EntityID" refID="-1937639764" />
-			<boolean name="forceStart">false</boolean>
-			<boolean name="allowAfterSpeaking">false</boolean>
-			<NodeEditorState name="state">Mission</NodeEditorState>
-		</Node>
-		<Node name="Dialogue Condition Check" ID="984769664" type="DialogueConditionCheckNode" pos="16,-148">
-			<Port ID="-797667584" name="input" dynamic="False" />
-			<Port ID="239772544" name="outputPass" dynamic="False" />
-			<Port ID="1277212672" name="outputFail" dynamic="False" />
+		<Node name="Dialogue Condition Check" ID="1050461952" type="DialogueConditionCheckNode" pos="-100,-300">
+			<Port ID="1359426304" name="input" dynamic="False" />
+			<Port ID="-97602944" name="outputPass" dynamic="False" />
+			<Port ID="939837184" name="outputFail" dynamic="False" />
 			<Variable name="checkpointName" refID="371857150" />
 			<Variable name="variableName" refID="783077131" />
 			<int name="variableType">5</int>
 			<int name="comparisonMode">2</int>
 			<int name="value">0</int>
 		</Node>
-		<Node name="End Dialogue" ID="-988395776" type="EndDialogue" pos="130,172">
-			<Port ID="-1980314496" name="input" dynamic="False" />
-			<boolean name="jumpToStart">true</boolean>
-			<boolean name="openBuilder">false</boolean>
-			<boolean name="openTrader">false</boolean>
-			<NodeEditorState name="state">Mission</NodeEditorState>
-		</Node>
-		<Node name="Start Mission" ID="651854336" type="StartMissionNode" pos="-853,-276">
-			<Port ID="-942874368" name="outputRight" dynamic="False" />
-			<Variable name="missionName" refID="-869566287" />
-			<Variable name="rank" refID="372029408" />
-			<Variable name="entryPoint" refID="783077131" />
-			<Variable name="prerequisites" refID="473886336" />
-			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
-				<r>1</r>
-				<g>1</g>
-				<b>1</b>
-				<a>1</a>
-			</Color>
-			<boolean name="overrideCheckpoint">false</boolean>
-			<int name="episode">2</int>
-		</Node>
-		<Node name="Dialogue" ID="1330651520" type="DialogueNode" pos="-269,-194">
-			<Port ID="94565760" name="input" dynamic="False" />
-			<Port ID="1132005888" name="cancel" dynamic="False" />
-			<Port ID="530186112" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="383403776" type="DialogueNode" pos="150,-250">
+			<Port ID="1686863744" name="input" dynamic="False" />
+			<Port ID="-1570663424" name="cancel" dynamic="False" />
+			<Port ID="-1051812224" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
 				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">189</float>
+				<float name="sidePosition">218</float>
 				<float name="sideOffset">0</float>
 			</Port>
-			<Port ID="1567626240" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1326241702" />
+			<Variable name="answers" refID="1567663744" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1062200960" type="DialogueNode" pos="400,-300">
+			<Port ID="213803264" name="input" dynamic="False" />
+			<Port ID="1251243392" name="cancel" dynamic="False" />
+			<Port ID="-14372096" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">205</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-30844535" />
+			<Variable name="answers" refID="-690912000" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1740998144" type="DialogueNode" pos="-350,-300">
+			<Port ID="-1259257216" name="input" dynamic="False" />
+			<Port ID="-221817088" name="cancel" dynamic="False" />
+			<Port ID="1023068032" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">164</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="2060508160" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">219</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1841583603" />
+			<Variable name="answers" refID="668437248" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1875171968" type="DialogueNode" pos="650,-300">
+			<Port ID="-636074240" name="input" dynamic="False" />
+			<Port ID="401365888" name="cancel" dynamic="False" />
+			<Port ID="-159578880" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
@@ -65,146 +109,1245 @@
 				<float name="sidePosition">244</float>
 				<float name="sideOffset">0</float>
 			</Port>
+			<boolean name="useEntityColor">true</boolean>
 			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
 				<r>0</r>
 				<g>1</g>
 				<b>0</b>
 				<a>1</a>
 			</Color>
-			<Variable name="text" refID="-1147257566" />
-			<Variable name="answers" refID="1541067136" />
+			<Variable name="text" refID="1317138921" />
+			<Variable name="answers" refID="-1590138496" />
 			<boolean name="customDialogueSpeed">false</boolean>
 			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="Dialogue" ID="-1606721408" type="DialogueNode" pos="420,-540">
-			<Port ID="-50641024" name="input" dynamic="False" />
-			<Port ID="986799104" name="cancel" dynamic="False" />
-			<Port ID="-652460800" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">Dialogue</string>
-				<Direction name="direction">Out</Direction>
-				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
-				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">228</float>
-				<float name="sideOffset">0</float>
-			</Port>
-			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
-				<r>0</r>
-				<g>1</g>
-				<b>0</b>
-				<a>1</a>
-			</Color>
-			<Variable name="text" refID="-963599557" />
-			<Variable name="answers" refID="-77200128" />
-			<boolean name="customDialogueSpeed">false</boolean>
-			<double name="speed">0</double>
-			<NodeEditorState name="state">Mission</NodeEditorState>
-		</Node>
-		<Node name="Dialogue" ID="-927924224" type="DialogueNode" pos="339,-179">
-			<Port ID="2024239232" name="input" dynamic="False" />
-			<Port ID="-1233287936" name="cancel" dynamic="False" />
-			<Port ID="384979328" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">Dialogue</string>
-				<Direction name="direction">Out</Direction>
-				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
-				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">241</float>
-				<float name="sideOffset">0</float>
-			</Port>
-			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
-				<r>0</r>
-				<g>1</g>
-				<b>0</b>
-				<a>1</a>
-			</Color>
-			<Variable name="text" refID="-1239567872" />
-			<Variable name="answers" refID="-1760147456" />
-			<boolean name="customDialogueSpeed">false</boolean>
-			<double name="speed">0</double>
-			<NodeEditorState name="state">Mission</NodeEditorState>
-		</Node>
-		<Node name="Dialogue" ID="2009448704" type="DialogueNode" pos="730,-480">
-			<Port ID="-2125521280" name="input" dynamic="False" />
-			<Port ID="-1088081152" name="cancel" dynamic="False" />
-			<Port ID="-1689900928" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">Dialogue</string>
-				<Direction name="direction">Out</Direction>
-				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
-				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">228</float>
-				<float name="sideOffset">0</float>
-			</Port>
-			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
-				<r>0</r>
-				<g>1</g>
-				<b>0</b>
-				<a>1</a>
-			</Color>
-			<Variable name="text" refID="-1731108092" />
-			<Variable name="answers" refID="-717508608" />
-			<boolean name="customDialogueSpeed">false</boolean>
-			<double name="speed">0</double>
-			<NodeEditorState name="state">Mission</NodeEditorState>
-		</Node>
-		<Node name="Sector Limiter" ID="1086484480" type="SectorLimiterNode" pos="1402,-522">
-			<Port ID="-93048192" name="input" dynamic="False" />
-			<Port ID="944391936" name="output" dynamic="False" />
-			<Variable name="sectorName" refID="-1649571838" />
-			<boolean name="freeSector">false</boolean>
-		</Node>
-		<Node name="Start Task" ID="278893568" type="StartTaskNode" pos="1040,-590">
-			<Port ID="-195847808" name="inputLeft" dynamic="False" />
-			<Port ID="841592320" name="outputAccept" dynamic="False" />
-			<Port ID="1879032448" name="outputDecline" dynamic="False" />
-			<Port ID="-1378494720" name="inputUp" dynamic="False" />
-			<Variable name="dialogueText" refID="1209868068" />
+		<Node name="Start Task" ID="623382016" type="StartTaskNode" pos="1150,-300">
+			<Port ID="1438806016" name="inputLeft" dynamic="False" />
+			<Port ID="-1818721152" name="outputAccept" dynamic="False" />
+			<Port ID="-781281024" name="outputDecline" dynamic="False" />
+			<Port ID="256159104" name="inputUp" dynamic="False" />
+			<Variable name="dialogueText" refID="-99427660" />
 			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="dialogueColor">
 				<r>0</r>
 				<g>1</g>
 				<b>0</b>
 				<a>1</a>
 			</Color>
-			<Variable name="objectiveList" refID="371857150" />
+			<Variable name="objectiveList" refID="-1454345330" />
 			<int name="creditReward">350</int>
 			<boolean name="partReward">true</boolean>
-			<Variable name="partID" refID="-421877040" />
+			<Variable name="entityIDforConfirmedResponse" refID="-1937639764" />
+			<Variable name="partID" refID="-825161567" />
 			<int name="partAbilityID">10</int>
 			<int name="partTier">0</int>
 			<Variable name="partSecondaryData" refID="-1470398569" />
 			<int name="reputationReward">0</int>
-			<Variable name="taskName" refID="1445712812" />
-			<Variable name="acceptResponse" refID="-130707492" />
-			<Variable name="declineResponse" refID="1880822206" />
-			<Variable name="taskConfirmedDialogue" refID="1630073263" />
+			<int name="shardReward">0</int>
+			<Variable name="taskName" refID="1747458708" />
+			<Variable name="acceptResponse" refID="616417902" />
+			<Variable name="declineResponse" refID="-920439952" />
+			<Variable name="taskConfirmedDialogue" refID="512999889" />
+			<boolean name="useEntityColor">true</boolean>
 			<boolean name="forceTask">false</boolean>
 		</Node>
-		<Node name="Use Part" ID="300204544" type="PartCondition" pos="1630,-375">
-			<Port ID="1981832064" name="output" dynamic="False" />
-			<ConditionState name="state">Uninitialized</ConditionState>
-			<int name="abilityID">0</int>
+		<Node name="Dialogue Condition Check" ID="1729259136" type="DialogueConditionCheckNode" pos="1870,-300">
+			<Port ID="1293599232" name="input" dynamic="False" />
+			<Port ID="-926487808" name="outputPass" dynamic="False" />
+			<Port ID="110952320" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="371857150" />
+			<Variable name="variableName" refID="371857150" />
+			<int name="variableType">6</int>
+			<int name="comparisonMode">1</int>
+			<int name="value">0</int>
+		</Node>
+		<Node name="End Dialogue" ID="1577489408" type="EndDialogue" pos="2370,-90">
+			<Port ID="1148392448" name="input" dynamic="False" />
+			<Port ID="877861248" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1915301376" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1342225792" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-304785664" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="732654464" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1770094592" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1601626496" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1196374784" type="DialogueNode" pos="2250,-1200">
+			<Port ID="-2109134720" name="input" dynamic="False" />
+			<Port ID="-1071694592" name="cancel" dynamic="False" />
+			<Port ID="258875008" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">244</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1502255934" />
+			<Variable name="answers" refID="1086561536" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-517577600" type="DialogueNode" pos="2500,-1200">
+			<Port ID="-34254464" name="input" dynamic="False" />
+			<Port ID="1003185664" name="cancel" dynamic="False" />
+			<Port ID="-2106418816" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">218</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1521011613" />
+			<Variable name="answers" refID="330786944" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="161219584" type="DialogueNode" pos="2370,20">
+			<Port ID="-1216901376" name="input" dynamic="False" />
+			<Port ID="-179461248" name="cancel" dynamic="False" />
+			<Port ID="-1068978688" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">218</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="2116162014" />
+			<Variable name="answers" refID="1733876352" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="128650880" type="StartDialogueNode" pos="1670,-310">
+			<Port ID="857978880" name="input" dynamic="False" />
+			<Port ID="1895419008" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1937639764" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue Condition Check" ID="-1886910976" type="DialogueConditionCheckNode" pos="900,-300">
+			<Port ID="-1362108160" name="input" dynamic="False" />
+			<Port ID="-324668032" name="outputPass" dynamic="False" />
+			<Port ID="712772096" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="371857150" />
+			<Variable name="variableName" refID="371857150" />
+			<int name="variableType">6</int>
+			<int name="comparisonMode">1</int>
+			<int name="value">0</int>
+		</Node>
+		<Node name="Dialogue" ID="840016768" type="DialogueNode" pos="900,-890">
+			<Port ID="-1507314944" name="input" dynamic="False" />
+			<Port ID="-469874816" name="cancel" dynamic="False" />
+			<Port ID="-31538560" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">205</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1866503202" />
+			<Variable name="answers" refID="1361247104" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1518813952" type="DialogueNode" pos="900,-1170">
+			<Port ID="567565312" name="input" dynamic="False" />
+			<Port ID="1605005440" name="cancel" dynamic="False" />
+			<Port ID="1005901568" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">192</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="750672388" />
+			<Variable name="answers" refID="-297250560" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1418558976" type="DialogueNode" pos="1150,-1420">
+			<Port ID="-1652521728" name="input" dynamic="False" />
+			<Port ID="-615081600" name="cancel" dynamic="False" />
+			<Port ID="2043341696" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">166</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1854779743" />
+			<Variable name="answers" refID="1865110016" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-739761792" type="DialogueNode" pos="1150,-1170">
+			<Port ID="422358528" name="input" dynamic="False" />
+			<Port ID="-1797728512" name="cancel" dynamic="False" />
+			<Port ID="-1214185472" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">192</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1511545728" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">249</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="361432822" />
+			<Variable name="answers" refID="-286747648" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-60964608" type="DialogueNode" pos="1400,-1420">
+			<Port ID="-760288384" name="input" dynamic="False" />
+			<Port ID="277151744" name="cancel" dynamic="False" />
+			<Port ID="-708541312" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">166</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="158431328" />
+			<Variable name="answers" refID="1856361984" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="617832576" type="DialogueNode" pos="1650,-1420">
+			<Port ID="-2128792960" name="input" dynamic="False" />
+			<Port ID="-1091352832" name="cancel" dynamic="False" />
+			<Port ID="1366338944" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">192</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1912698460" />
+			<Variable name="answers" refID="-402213760" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-642597632" type="EndDialogue" pos="1400,-1010">
+			<Port ID="-53912704" name="input" dynamic="False" />
+			<Port ID="-853748096" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1221132160" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-998954880" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="2113365504" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-106721536" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1968158720" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-564186368" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue Condition Check" ID="-1208113792" type="DialogueConditionCheckNode" pos="2120,-440">
+			<Port ID="838320640" name="input" dynamic="False" />
+			<Port ID="1875760768" name="outputPass" dynamic="False" />
+			<Port ID="-1381766400" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="371857150" />
+			<Variable name="variableName" refID="371857150" />
+			<int name="variableType">6</int>
+			<int name="comparisonMode">1</int>
+			<int name="value">1</int>
+		</Node>
+		<Node name="End Dialogue" ID="-787804416" type="EndDialogue" pos="1150,-420">
+			<Port ID="-1760965504" name="input" dynamic="False" />
+			<Port ID="1635550336" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1621976832" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-584536704" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="452903424" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1490343552" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1767183616" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="473253760" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue Condition Check" ID="-529316608" type="DialogueConditionCheckNode" pos="650,-510">
+			<Port ID="-723525376" name="input" dynamic="False" />
+			<Port ID="2098381440" name="outputPass" dynamic="False" />
+			<Port ID="-1159145728" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="371857150" />
+			<Variable name="variableName" refID="371857150" />
+			<int name="variableType">6</int>
+			<int name="comparisonMode">1</int>
+			<int name="value">1</int>
+		</Node>
+		<Node name="Dialogue" ID="-1039079808" type="DialogueNode" pos="900,-600">
+			<Port ID="521583872" name="input" dynamic="False" />
+			<Port ID="1559024000" name="cancel" dynamic="False" />
+			<Port ID="-1912390400" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">218</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="562870096" />
+			<Variable name="answers" refID="1406794880" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue Condition Check" ID="149480576" type="DialogueConditionCheckNode" pos="650,-910">
+			<Port ID="85963520" name="input" dynamic="False" />
+			<Port ID="1123403648" name="outputPass" dynamic="False" />
+			<Port ID="1870430208" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="371857150" />
+			<Variable name="variableName" refID="371857150" />
+			<int name="variableType">6</int>
+			<int name="comparisonMode">1</int>
+			<int name="value">149</int>
+		</Node>
+		<Node name="Dialogue" ID="-360282624" type="DialogueNode" pos="2120,-230">
+			<Port ID="2103554688" name="input" dynamic="False" />
+			<Port ID="-1444386048" name="cancel" dynamic="False" />
+			<Port ID="-874950272" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">192</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1193226880" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">249</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1661982644" />
+			<Variable name="answers" refID="-424908544" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Sector Limiter" ID="1287075840" type="SectorLimiterNode" pos="1410,-300">
+			<Port ID="-406945920" name="input" dynamic="False" />
+			<Port ID="-987773056" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1649571838" />
+			<boolean name="freeSector">false</boolean>
+		</Node>
+		<Node name="End Dialogue" ID="-353517056" type="EndDialogue" pos="3830,-210">
+			<Port ID="307054336" name="input" dynamic="False" />
+			<Port ID="-2064300288" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="757606528" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1655900672" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="318514560" type="DialogueNode" pos="3580,-330">
+			<Port ID="1344494464" name="input" dynamic="False" />
+			<Port ID="-1913032704" name="cancel" dynamic="False" />
+			<Port ID="1795046656" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">153</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1919827864" />
+			<Variable name="answers" refID="-1180683136" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue Condition Check" ID="828277760" type="DialogueConditionCheckNode" pos="2370,-590">
+			<Port ID="161847552" name="input" dynamic="False" />
+			<Port ID="1199287680" name="outputPass" dynamic="False" />
+			<Port ID="-2058239488" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="371857150" />
+			<Variable name="variableName" refID="371857150" />
+			<int name="variableType">6</int>
+			<int name="comparisonMode">1</int>
+			<int name="value">19</int>
+		</Node>
+		<Node name="Dialogue Condition Check" ID="1507074944" type="DialogueConditionCheckNode" pos="650,-710">
+			<Port ID="-1020799360" name="input" dynamic="False" />
+			<Port ID="16640768" name="outputPass" dynamic="False" />
+			<Port ID="1054080896" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="371857150" />
+			<Variable name="variableName" refID="371857150" />
+			<int name="variableType">6</int>
+			<int name="comparisonMode">1</int>
+			<int name="value">19</int>
+		</Node>
+		<Node name="Dialogue" ID="997311744" type="DialogueNode" pos="1150,-720">
+			<Port ID="2091521024" name="input" dynamic="False" />
+			<Port ID="-1166006144" name="cancel" dynamic="False" />
+			<Port ID="321986176" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">218</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="250004774" />
+			<Variable name="answers" refID="855708416" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="-947277952" type="StartDialogueNode" pos="-550,-300">
+			<Port ID="-1311212928" name="input" dynamic="False" />
+			<Port ID="-273772800" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1937639764" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Finish Mission" ID="392357504" type="FinishMissionNode" pos="4080,-330">
+			<Port ID="763667328" name="inputLeft" dynamic="False" />
+			<Variable name="jingleID" refID="-1795356127" />
+		</Node>
+		<Node name="End Dialogue" ID="1721363200" type="EndDialogue" pos="150,50">
+			<Port ID="1801107456" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Finish Task" ID="1296629760" type="FinishTaskNode" pos="3120,-330">
+			<Port ID="2020967552" name="inputLeft" dynamic="False" />
+			<Port ID="706403200" name="outputRight" dynamic="False" />
+			<Port ID="-199119488" name="outputUp" dynamic="False" />
+			<Port ID="-251928320" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">247</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="rewardGiverID" refID="-1937639764" />
+			<Variable name="rewardText" refID="-1689421979" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="answers" refID="1116341760" />
+			<boolean name="useEntityColor">true</boolean>
+		</Node>
+		<Node name="Start Dialogue" ID="1738170112" type="StartDialogueNode" pos="3380,-330">
+			<Port ID="49667072" name="input" dynamic="False" />
+			<Port ID="-730385792" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1937639764" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="1432282624" type="EndDialogue" pos="2870,-330">
+			<Port ID="-626691968" name="input" dynamic="False" />
+			<Port ID="-1579782016" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="495098240" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1780757120" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1476770048" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-439329920" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="618460544" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1254456832" type="DialogueNode" pos="2620,-310">
+			<Port ID="-344326272" name="input" dynamic="False" />
+			<Port ID="693113856" name="cancel" dynamic="False" />
+			<Port ID="1822951936" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">231</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="707635631" />
+			<Variable name="answers" refID="360567168" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1717876992" type="DialogueNode" pos="2870,-640">
+			<Port ID="1448188288" name="input" dynamic="False" />
+			<Port ID="-771898752" name="cancel" dynamic="False" />
+			<Port ID="598110208" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">231</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-544564170" />
+			<Variable name="answers" refID="351819136" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-575659648" type="DialogueNode" pos="2620,-620">
+			<Port ID="-1228511744" name="input" dynamic="False" />
+			<Port ID="1593395072" name="cancel" dynamic="False" />
+			<Port ID="-397135104" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">231</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1348610037" />
+			<Variable name="answers" refID="-1791290496" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Checkpoint" ID="-1362368512" type="CheckpointNode" pos="2870,-210">
+			<Port ID="1510693888" name="input" dynamic="False" />
+			<Port ID="-1746833280" name="output" dynamic="False" />
+			<Variable name="checkpointName" refID="1408052709" />
+		</Node>
+		<Node name="Add Reward" ID="793061376" type="AddRewardNode" pos="1400,-770">
+			<Port ID="-1325345152" name="inputLeft" dynamic="False" />
+			<Port ID="-287905024" name="outputRight" dynamic="False" />
+			<RewardWrapper xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="wrapper">
+				<creditReward>500</creditReward>
+				<reputationReward>0</reputationReward>
+				<shardReward>0</shardReward>
+				<partReward>true</partReward>
+				<partID>SmallCenter9</partID>
+				<partAbilityID>10</partAbilityID>
+				<partSecondaryData>worker_drone</partSecondaryData>
+				<partTier>0</partTier>
+			</RewardWrapper>
+			<boolean name="showPopup">true</boolean>
+		</Node>
+		<Node name="Add Reward" ID="-69431296" type="AddRewardNode" pos="1650,-1010">
+			<Port ID="-128566016" name="inputLeft" dynamic="False" />
+			<Port ID="908874112" name="outputRight" dynamic="False" />
+			<RewardWrapper xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="wrapper">
+				<creditReward>3000</creditReward>
+				<reputationReward>0</reputationReward>
+				<shardReward>0</shardReward>
+				<partReward>true</partReward>
+				<partID>SmallCenter1</partID>
+				<partAbilityID>19</partAbilityID>
+				<partTier>2</partTier>
+			</RewardWrapper>
+			<boolean name="showPopup">true</boolean>
+		</Node>
+		<Node name="Checkpoint" ID="1177872768" type="CheckpointNode" pos="3346,-453.6">
+			<Port ID="328046976" name="input" dynamic="False" />
+			<Port ID="-1892040064" name="output" dynamic="False" />
+			<Variable name="checkpointName" refID="-1320830646" />
+		</Node>
+		<Node name="Start Mission" ID="1674188800" type="StartMissionNode" pos="-860,-300">
+			<Port ID="983527424" name="outputRight" dynamic="False" />
+			<Variable name="missionName" refID="-869566287" />
+			<Variable name="rank" refID="372029408" />
+			<Variable name="entryPoint" refID="-593746681" />
+			<Variable name="prerequisites" refID="-1157988352" />
+			<Variable name="prerequisitesUnsatisifedText" refID="1502598604" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<boolean name="overrideCheckpoint">false</boolean>
+			<int name="episode">2</int>
+		</Node>
+		<Node name="Popup dialogue" ID="1576156416" type="PopupNode" pos="1184.8,-1881">
+			<Port ID="-380871808" name="output" dynamic="False" />
+			<Port ID="1694008448" name="input" dynamic="False" />
+			<Variable name="text" refID="1174264434" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Popup dialogue" ID="-643930624" type="PopupNode" pos="1382,-1749.4">
+			<Port ID="-1368477056" name="output" dynamic="False" />
+			<Port ID="-331036928" name="input" dynamic="False" />
+			<Variable name="text" refID="499875174" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Popup dialogue" ID="-498723840" type="PopupNode" pos="2370,-1410">
+			<Port ID="-1456419712" name="output" dynamic="False" />
+			<Port ID="-418979584" name="input" dynamic="False" />
+			<Variable name="text" refID="-1932178119" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
 		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="1422419456" port2ID="-942874368" />
-		<Connection port1ID="-1835107712" port2ID="94565760" />
-		<Connection port1ID="-797667584" port2ID="530186112" />
-		<Connection port1ID="239772544" port2ID="-50641024" />
-		<Connection port1ID="1277212672" port2ID="2024239232" />
-		<Connection port1ID="-1980314496" port2ID="1567626240" />
-		<Connection port1ID="-1980314496" port2ID="384979328" />
-		<Connection port1ID="-652460800" port2ID="-2125521280" />
-		<Connection port1ID="-1689900928" port2ID="-195847808" />
-		<Connection port1ID="-93048192" port2ID="841592320" />
+		<Connection port1ID="-97602944" port2ID="213803264" />
+		<Connection port1ID="939837184" port2ID="1686863744" />
+		<Connection port1ID="-1051812224" port2ID="1801107456" />
+		<Connection port1ID="213803264" port2ID="1023068032" />
+		<Connection port1ID="-14372096" port2ID="-636074240" />
+		<Connection port1ID="-1259257216" port2ID="-273772800" />
+		<Connection port1ID="2060508160" port2ID="1801107456" />
+		<Connection port1ID="-159578880" port2ID="-1362108160" />
+		<Connection port1ID="1438806016" port2ID="712772096" />
+		<Connection port1ID="-1818721152" port2ID="-406945920" />
+		<Connection port1ID="256159104" port2ID="-199119488" />
+		<Connection port1ID="1293599232" port2ID="1895419008" />
+		<Connection port1ID="-926487808" port2ID="838320640" />
+		<Connection port1ID="110952320" port2ID="2103554688" />
+		<Connection port1ID="1148392448" port2ID="-874950272" />
+		<Connection port1ID="1148392448" port2ID="-1068978688" />
+		<Connection port1ID="877861248" port2ID="857978880" />
+		<Connection port1ID="258875008" port2ID="-34254464" />
+		<Connection port1ID="-1216901376" port2ID="1193226880" />
+		<Connection port1ID="-179461248" port2ID="857978880" />
+		<Connection port1ID="857978880" port2ID="-987773056" />
+		<Connection port1ID="857978880" port2ID="-1444386048" />
+		<Connection port1ID="857978880" port2ID="693113856" />
+		<Connection port1ID="857978880" port2ID="-771898752" />
+		<Connection port1ID="857978880" port2ID="1593395072" />
+		<Connection port1ID="-324668032" port2ID="-723525376" />
+		<Connection port1ID="-1507314944" port2ID="1870430208" />
+		<Connection port1ID="-31538560" port2ID="-1760965504" />
+		<Connection port1ID="567565312" port2ID="1123403648" />
+		<Connection port1ID="1005901568" port2ID="422358528" />
+		<Connection port1ID="-1652521728" port2ID="1511545728" />
+		<Connection port1ID="2043341696" port2ID="-760288384" />
+		<Connection port1ID="-1214185472" port2ID="-53912704" />
+		<Connection port1ID="-708541312" port2ID="-2128792960" />
+		<Connection port1ID="1366338944" port2ID="-53912704" />
+		<Connection port1ID="-853748096" port2ID="-128566016" />
+		<Connection port1ID="1875760768" port2ID="161847552" />
+		<Connection port1ID="-1381766400" port2ID="-344326272" />
+		<Connection port1ID="-1760965504" port2ID="-1912390400" />
+		<Connection port1ID="-1760965504" port2ID="321986176" />
+		<Connection port1ID="1635550336" port2ID="-1325345152" />
+		<Connection port1ID="2098381440" port2ID="-1020799360" />
+		<Connection port1ID="-1159145728" port2ID="521583872" />
+		<Connection port1ID="85963520" port2ID="16640768" />
+		<Connection port1ID="307054336" port2ID="1795046656" />
+		<Connection port1ID="-2064300288" port2ID="49667072" />
+		<Connection port1ID="1344494464" port2ID="-730385792" />
+		<Connection port1ID="-1913032704" port2ID="49667072" />
+		<Connection port1ID="1199287680" port2ID="1448188288" />
+		<Connection port1ID="-2058239488" port2ID="-1228511744" />
+		<Connection port1ID="1054080896" port2ID="2091521024" />
+		<Connection port1ID="-1311212928" port2ID="983527424" />
+		<Connection port1ID="2020967552" port2ID="-1746833280" />
+		<Connection port1ID="-251928320" port2ID="49667072" />
+		<Connection port1ID="49667072" port2ID="-1892040064" />
+		<Connection port1ID="-626691968" port2ID="1822951936" />
+		<Connection port1ID="-626691968" port2ID="-397135104" />
+		<Connection port1ID="-626691968" port2ID="598110208" />
+		<Connection port1ID="-1579782016" port2ID="1510693888" />
+		<Connection port1ID="-287905024" port2ID="328046976" />
+		<Connection port1ID="908874112" port2ID="328046976" />
 	</Connections>
 	<Objects>
-		<Object refID="-1937639764" type="System.String">
-			<string>mining-depot-mc</string>
-		</Object>
 		<Object refID="371857150" type="System.String">
 			<string />
 		</Object>
 		<Object refID="783077131" type="System.String">
 			<string>The Capitol's Reckoning</string>
+		</Object>
+		<Object refID="-1326241702" type="System.String">
+			<string>Ahh, you want to go on to become a certified shard collector I see. Hmm. You gotta little unfinished bussiness there. Tell you what, you complete your unfinished busniess, and then we can begin your tutorial. Deal?</string>
+		</Object>
+		<Object refID="1567663744" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Alright...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-30844535" type="System.String">
+			<string>Ahh, you want to go on to become a certified shard collector I see. Well alrighty then. I need to give you some explaination first about the process before we begin.</string>
+		</Object>
+		<Object refID="-690912000" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Okay.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1841583603" type="System.String">
+			<string>Hmmm, now what do we have here? Wha'cha want me to do with ya?</string>
+		</Object>
+		<Object refID="668437248" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I would like to learn shard mining.</string>
+				<string>Actually, nevermind.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1317138921" type="System.String">
+			<string>Y'see, there are these shard rocks scattered throughout the world. They come in a variety of different colors, which determines their value. Breaking these rocks gives you shards, which can be used for upgrading your core to support more parts.</string>
+		</Object>
+		<Object refID="-1590138496" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I see.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-99427660" type="System.String">
+			<string>What you are gonna want to do is go to the sector direct south of here and break one of those shards. That'll deposit them into your inventory automatically. You gots to select the shard in order for those weapons of yours to shoot the shard.</string>
+		</Object>
+		<Object refID="-1454345330" type="System.String">
+			<string>Destroy a shard rock in the Capitol Mining Sector.</string>
+		</Object>
+		<Object refID="-1937639764" type="System.String">
+			<string>mining-depot-mc</string>
+		</Object>
+		<Object refID="-825161567" type="System.String">
+			<string>SmallCenter9</string>
+		</Object>
+		<Object refID="-1470398569" type="System.String">
+			<string>worker_drone</string>
+		</Object>
+		<Object refID="1747458708" type="System.String">
+			<string>First of Many</string>
+		</Object>
+		<Object refID="616417902" type="System.String">
+			<string>Sounds easy. I'll do it.</string>
+		</Object>
+		<Object refID="-920439952" type="System.String">
+			<string>I need time to prepare.</string>
+		</Object>
+		<Object refID="512999889" type="System.String">
+			<string>Head down to the Capitol Mining Sector and destroy a shard rock.</string>
+		</Object>
+		<Object refID="1502255934" type="System.String">
+			<string>Aye, but things have gotten worse lately, y'know? The red tide has grown strong, rushing in and sweeping over us. At least they seem to be leaving our shards alone, though judging by the fact they are patroling that sector they know very well how valuable they are.</string>
+		</Object>
+		<Object refID="1086561536" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Is there any way I can help?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1521011613" type="System.String">
+			<string>I'd have you drive them out of the sector, but I know they would merely be replaced in but a few moments. Every time we have cleared the infected from that sector, they have returned in force.</string>
+		</Object>
+		<Object refID="330786944" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Then what do I do?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="2116162014" type="System.String">
+			<string>What? No, just shoot the shard and let your weapons destroy it! That's all you need to do. Think of it this way, where do all of those power orbs you collect during BattleZones go? Exactly. Now get a move on!</string>
+		</Object>
+		<Object refID="1733876352" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Okay.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1866503202" type="System.String">
+			<string>You went ahead and got a bunch of them shards without me even tellin ya where and what to do, eh? I don't even need to give you this tutorial then. Here, take your reward.</string>
+		</Object>
+		<Object refID="1361247104" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Wait, really? Nice.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="750672388" type="System.String">
+			<string>You think this is a joke? You think this is funny, huh? You think you can just waltz in here, with THAT many shards, and think I wouldn't notice?</string>
+		</Object>
+		<Object refID="-297250560" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Uhhh...</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1854779743" type="System.String">
+			<string>No, I'm not Southern Command. Nor do I intend on telling you who I am.</string>
+		</Object>
+		<Object refID="1865110016" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>What? Why not?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="361432822" type="System.String">
+			<string>Howsabout this. I'm going to give you somethin REAL nice, just cause you impressed me. Just don't tell Southern Command, alright?</string>
+		</Object>
+		<Object refID="-286747648" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Okay.</string>
+				<string>Wait a minute, you aren't Southern Command?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="158431328" type="System.String">
+			<string>Because I feel like it. Just like you felt destroying those shards.</string>
+		</Object>
+		<Object refID="1856361984" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Okay fine, fine.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1912698460" type="System.String">
+			<string>Now take this fancy part and get on with your life. You are clearly meant for greater things if you've already collected that many shards.</string>
+		</Object>
+		<Object refID="-402213760" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>If you say so.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="562870096" type="System.String">
+			<string>Now, you probably think yourself clever, eh? Thinkin I wouldn't notice you already gots a shard on ya. I quite like those that take initiative, so imma skip the task and go straight to the reward.</string>
+		</Object>
+		<Object refID="1406794880" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Wait, really? Nice.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1661982644" type="System.String">
+			<string>Ye gots to go get yourself a shard! Just select the shard, and let your weapons do the rest. That's all that is needed.</string>
+		</Object>
+		<Object refID="-424908544" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Okay.</string>
+				<string>Aren't worker drones needed to haul the shards?</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1649571838" type="System.String">
+			<string>Capitol Mining Sector</string>
+		</Object>
+		<Object refID="-1919827864" type="System.String">
+			<string>Haha, I'm not done yet.</string>
+		</Object>
+		<Object refID="-1180683136" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Of course not.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="250004774" type="System.String">
+			<string>Now, you probably think yourself clever, eh? Thinkin I wouldn't notice you already gots some shards on ya. I quite like those that take initiative, so imma skip the task and go straight to the reward.</string>
+		</Object>
+		<Object refID="855708416" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Wait, really? Nice.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-1795356127" type="System.String">
+			<string>clip_victory</string>
+		</Object>
+		<Object refID="-1689421979" type="System.String">
+			<string>Alright, here is your reward. Now talk to me again when you are ready for yer next task.</string>
+		</Object>
+		<Object refID="1116341760" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Okay.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="707635631" type="System.String">
+			<string>Good work gettin that shard. Those shards are scattered all throughout the world, but for some odd reason, that sector there to the south seems to have a renewable supply. I suspect that may be why our Capitol is where it is.</string>
+		</Object>
+		<Object refID="360567168" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Huh. Makes sense.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-544564170" type="System.String">
+			<string>Well, looky here. We have a bit of an overachiever. Went ahead and got a bunch of them there shards, did ya? Good, good. The more shards you get, the stronger you can make yourself. I don't think I need to explain why that is a good thing.</string>
+		</Object>
+		<Object refID="351819136" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Yeah.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1348610037" type="System.String">
+			<string>Good work gettin them shards. Those shards are scattered all throughout the world, but for some odd reason, that sector there to the south seems to have a renewable supply. I suspect that may be why our Capitol is where it is.</string>
+		</Object>
+		<Object refID="-1791290496" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Huh. Makes sense.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1408052709" type="System.String">
+			<string>shards_shotA</string>
+		</Object>
+		<Object refID="-1320830646" type="System.String">
+			<string>shards_shotB</string>
 		</Object>
 		<Object refID="-869566287" type="System.String">
 			<string>The Unnamed Shard Mission</string>
@@ -212,65 +1355,35 @@
 		<Object refID="372029408" type="System.String">
 			<string>B</string>
 		</Object>
-		<Object refID="473886336" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="-593746681" type="System.String">
+			<string>Talk to the Mission Control beneath the Capitol in the 'Capitol Mining Depot' sector.</string>
+		</Object>
+		<Object refID="-1157988352" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
 		</Object>
-		<Object refID="-1147257566" type="System.String">
-			<string>Hmmm, now what do we have here? Wha'cha want me to do you ya?</string>
+		<Object refID="1502598604" type="System.String">
+			<string>how</string>
 		</Object>
-		<Object refID="1541067136" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
-			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-				<string>I would like to learn shard mining.</string>
-				<string>Actually, nevermind.</string>
-			</ArrayOfString>
+		<Object refID="1174264434" type="System.String">
+			<string>"I just kept adding parts to my shell, until I suddeny felt as if I had become... a monster. My shell felt like this alien thing that isn't a part of me anymore. I just didn't feel like myself anymore."
+
+"So you removed your entire shell?"
+"Whatever."
+
+-Unused dialogue from Ep2 source code.</string>
 		</Object>
-		<Object refID="-963599557" type="System.String">
-			<string>Ahh, you want to go on to become a certified shard grinder I see. Well alrighty then. I need to give you some explaination first about the process before we begin.</string>
+		<Object refID="499875174" type="System.String">
+			<string>"Yeah... I felt like that was the only way to breathe freely again. Sounds crazy, doesn't it?"
+
+"You should get at least some basic protection."
+"You sure got some issues."
+
+-Also unused dialogue from Ep2 source code.</string>
 		</Object>
-		<Object refID="-77200128" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
-			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-				<string>Okay.</string>
-			</ArrayOfString>
-		</Object>
-		<Object refID="-1239567872" type="System.String">
-			<string>Ahh, you want to go on to become a certified shard grinder I see. Hmm. You gotta little unfinished bussiness there. Tell you what, you complete your unfinished busniess, and then we can begin your grinding tutorial. Deal?</string>
-		</Object>
-		<Object refID="-1760147456" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
-			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-				<string>Alright...</string>
-			</ArrayOfString>
-		</Object>
-		<Object refID="-1731108092" type="System.String">
-			<string>There's a sector below this one, we call it the Capitol Mining Sector, that has blue rocks in them. When those rocks burst open, shards come flying out of them.</string>
-		</Object>
-		<Object refID="-717508608" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
-			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-				<string>I see.</string>
-			</ArrayOfString>
-		</Object>
-		<Object refID="-1649571838" type="System.String">
-			<string>Capitol Mining Sector</string>
-		</Object>
-		<Object refID="1209868068" type="System.String">
-			<string>What you'll need to do is to attack one of rocks until it bursts open and deposit the shard in the yard. Here's what we'll do. Head down to the Capitol Mining Sector, and bring one of the shards to the yard. Once you do that, I'll give you a part that'll be useful for the task after.</string>
-		</Object>
-		<Object refID="-421877040" type="System.String">
-			<string>SmallCenter4</string>
-		</Object>
-		<Object refID="-1470398569" type="System.String">
-			<string>worker_drone</string>
-		</Object>
-		<Object refID="1445712812" type="System.String">
-			<string>gather-shard</string>
-		</Object>
-		<Object refID="-130707492" type="System.String">
-			<string>I'll do it</string>
-		</Object>
-		<Object refID="1880822206" type="System.String">
-			<string>I need time to prepare</string>
-		</Object>
-		<Object refID="1630073263" type="System.String">
-			<string>Head down to the Capitol Mining Sector, attack one of the blue rocks until it bursts open and deposit the shard it drops to the yard.</string>
+		<Object refID="-1932178119" type="System.String">
+			<string>Unused dialogue I wrote. Could use it later. Pay no mind.
+
+-Teo</string>
 		</Object>
 	</Objects>
 </NodeCanvas>

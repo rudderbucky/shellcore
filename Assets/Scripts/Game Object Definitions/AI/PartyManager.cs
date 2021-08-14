@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Linq;
 
 public class PartyManager : MonoBehaviour
 {
@@ -189,27 +190,31 @@ public class PartyManager : MonoBehaviour
         if (!PartyLocked)
         {
             var member = partyMembers.Find(c => c.ID == charID);
-            if (member && member.GetAI() != null)
-            {
-                member.GetAI().follow(null);
-            }
-
-            partyMembers.Remove(member);
-            partyResponses.Remove(charID);
-
-            if (partyIndicators.ContainsKey(member))
-            {
-                Destroy(partyIndicators[member]);
-                partyIndicators.Remove(member);
-            }
-            // sukratHealth.SetActive(false);
+            UnassignBackend(charID, member);
         }
         else
         {
             PlayerCore.Instance.alerter.showMessage("Cannot modify party currently!", "clip_alert");
         }
-
         UpdatePortraits();
+    }
+
+
+    public void UnassignBackend(string charID, ShellCore member)
+    {
+        if (member && member.GetAI() != null)
+        {
+            member.GetAI().follow(null);
+        }
+
+        partyMembers.Remove(member);
+        if (charID != null) partyResponses.Remove(charID);
+
+        if (partyIndicators.ContainsKey(member))
+        {
+            Destroy(partyIndicators[member]);
+            partyIndicators.Remove(member);
+        }
     }
 
     public GameObject partyIndicatorPrefab;
@@ -293,6 +298,11 @@ public class PartyManager : MonoBehaviour
     void Update()
     {
         blocker.SetActive(false);
+        var deadMembers = partyMembers.FindAll(sc => !sc);
+        foreach (var member in deadMembers)
+        {
+            UnassignBackend(null, member);
+        }
 
         // distance maximum for party members - teleport them close to the player
         if (SectorManager.instance?.current?.type != Sector.SectorType.BattleZone && !DialogueSystem.isInCutscene)

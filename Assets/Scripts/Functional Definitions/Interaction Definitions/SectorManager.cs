@@ -745,13 +745,11 @@ public class SectorManager : MonoBehaviour
                     {
                         ok = false;
                     }
-
-                    if (blueprint.dialogue.traderInventory == null)
+                    else if (blueprint.dialogue.traderInventory == null)
                     {
                         ok = false;
                     }
-
-                    if (string.IsNullOrEmpty(data.blueprintJSON))
+                    else if (string.IsNullOrEmpty(data.blueprintJSON))
                     {
                         ok = false;
                     }
@@ -768,12 +766,13 @@ public class SectorManager : MonoBehaviour
                     }
                     else
                     {
+                        blueprint.dialogue = ScriptableObject.CreateInstance<Dialogue>();
                         blueprint.dialogue.traderInventory = new List<EntityBlueprint.PartInfo>();
                     }
                 }
                 catch (System.Exception e)
                 {
-                    Debug.LogWarning(e);
+                    Debug.LogWarning(e + " " + data.ID);
                     blueprint.dialogue.traderInventory = new List<EntityBlueprint.PartInfo>();
                 }
 

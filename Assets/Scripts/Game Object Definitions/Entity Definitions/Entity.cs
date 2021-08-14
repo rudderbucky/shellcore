@@ -538,7 +538,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         int sortingOrder = 1;
         //For shellcores, create the tractor beam
         // Create shell parts
-        if (blueprint != null)
+        if (blueprint != null && blueprint.parts != null)
         {
             for (int i = 0; i < blueprint.parts.Count; i++)
             {
