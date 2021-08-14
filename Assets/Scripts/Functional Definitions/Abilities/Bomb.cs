@@ -70,6 +70,7 @@ public class Bomb : WeaponAbility
         script.SetDamage(GetDamage());
         script.SetCategory(category);
         script.SetTerrain(terrain);
+        script.range = range;
         script.bombColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         script.faction = Core.faction;
 

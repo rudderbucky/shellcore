@@ -16,6 +16,7 @@ public class BombScript : MonoBehaviour
     private GameObject explosionCirclePrefab;
     private float timeInstantiated;
     private float fuseTime = 3F;
+    public float range;
 
     // Use this for initialization
     void Start()
@@ -96,7 +97,10 @@ public class BombScript : MonoBehaviour
                 var craft = ent.GetComponent<Entity>(); // check if it has a craft component
                 if (craft != null && !craft.GetIsDead()) // check if the component was obtained
                 {
-                    if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && (!owner || (craft.GetTransform() != owner.transform)))
+                    if (!FactionManager.IsAllied(faction, craft.GetFaction())
+                        && Vector2.SqrMagnitude(craft.transform.position - transform.position) <= range
+                            && CheckCategoryCompatibility(craft)
+                                && (!owner || (craft.GetTransform() != owner.transform)))
                     {
                         var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
                                                                                // if the shell is low, damage the part
@@ -107,16 +111,20 @@ public class BombScript : MonoBehaviour
                             part.TakeDamage(residue); // damage the part
                         }
 
-                        AudioManager.PlayClipByID("clip_bombexplosion", transform.position);
-                        GameObject tmp = Instantiate(explosionCirclePrefab, transform); // instantiate circle explosion
-                        tmp.SetActive(true);
-                        tmp.transform.position = transform.position;
-                        tmp.GetComponent<DrawCircleScript>().Initialize();
-                        for (int i = 0; i < 15; i++)
+                        if (!fired)
                         {
-                            Instantiate(hitPrefab, transform.position + new Vector3(Random.Range(-explosionRadius, explosionRadius),
-                                Random.Range(-explosionRadius, explosionRadius)), Quaternion.identity).transform.localScale *= 2;
+                            AudioManager.PlayClipByID("clip_bombexplosion", transform.position);
+                            GameObject tmp = Instantiate(explosionCirclePrefab, transform); // instantiate circle explosion
+                            tmp.SetActive(true);
+                            tmp.transform.position = transform.position;
+                            tmp.GetComponent<DrawCircleScript>().Initialize();
+                            for (int i = 0; i < 15; i++)
+                            {
+                                Instantiate(hitPrefab, transform.position + new Vector3(Random.Range(-explosionRadius, explosionRadius),
+                                    Random.Range(-explosionRadius, explosionRadius)), Quaternion.identity).transform.localScale *= 2;
+                            }
                         }
+
 
                         fired = true;
 
