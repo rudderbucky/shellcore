@@ -142,6 +142,12 @@ public class BattleZoneManager : MonoBehaviour
     {
         if (playing && enabled)
         {
+            if (!opposingFactionAdded)
+            {
+                playing = false;
+                return;
+            }
+
             foreach (var target in targets)
             {
                 if (!SectorManager.instance.carriers.ContainsKey(target.faction))
@@ -229,8 +235,7 @@ public class BattleZoneManager : MonoBehaviour
         {
             if (!opposingFactionAdded && targets.Exists(e => !FactionManager.IsAllied(e.GetFaction(), target.GetFaction())))
                 opposingFactionAdded = true;
-            if (opposingFactionAdded)
-                playing = true;
+            playing = true;
         }
 
         if (!targets.Contains(target))
