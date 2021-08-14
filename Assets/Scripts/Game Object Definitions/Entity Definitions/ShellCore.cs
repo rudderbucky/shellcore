@@ -153,11 +153,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         base.Awake(); // base awake
     }
 
-    protected override void Update()
-    {
-        base.Update(); // base update
-    }
-
     public void SetTractorTarget(Draggable newTarget)
     {
         tractor.SetTractorTarget(newTarget);

@@ -97,12 +97,6 @@ public class CoreUpgraderScript : GUIWindowScripts
         CUAbilityCapDisplay.Initialize(player.abilityCaps, currentID);
     }
 
-    /// prevent dragging the window if the mouse is on the grid
-    public override void OnPointerDown(PointerEventData eventData)
-    {
-        base.OnPointerDown(eventData);
-    }
-
     public static void IncrementAbilityCap(int type)
     {
         instance.incrementAbilityCap(type);
