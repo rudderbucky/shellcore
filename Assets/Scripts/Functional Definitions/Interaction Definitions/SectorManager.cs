@@ -930,6 +930,7 @@ public class SectorManager : MonoBehaviour
 
                     foreach (var partyMember in PartyManager.instance.partyMembers)
                     {
+                        if (!partyMember || partyMember.GetIsDead()) continue;
                         partyMember.GetAI().setMode(AirCraftAI.AIMode.Battle);
                         battleZone.AddTarget(partyMember);
                         if (carriers.ContainsKey(partyMember.faction))

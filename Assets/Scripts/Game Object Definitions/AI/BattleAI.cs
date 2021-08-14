@@ -58,7 +58,7 @@ public class BattleAI : AIModule
     public void OrderModeChange(BattleState state)
     {
         this.state = state;
-        nextStateCheckTime = 15;
+        nextStateCheckTime = Time.time + 15;
 
         // TODO: prioritize damaged carriers over other carriers
         if (state == BattleState.Defend && carriers.Count > 0)
