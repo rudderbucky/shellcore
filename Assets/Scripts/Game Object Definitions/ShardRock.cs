@@ -23,8 +23,8 @@ public interface IDamageable : ITargetable
 
 public class ShardRock : MonoBehaviour, IDamageable
 {
-    float[] currentHealths = new float[] {500, 0, 0};
-    float[] maxHealths = new float[] {500, 500, 0};
+    float[] currentHealths = new float[] { 500, 0, 0 };
+    float[] maxHealths = new float[] { 500, 500, 0 };
     public bool dead = false;
     private GameObject explosionCirclePrefab;
     public Sprite[] shardSprites;
@@ -171,7 +171,7 @@ public class ShardRock : MonoBehaviour, IDamageable
 
         if (LocationBasedShard && PlayerCore.Instance)
         {
-            var tiers = new int[] {1, 5, 20};
+            var tiers = new int[] { 1, 5, 20 };
             PlayerCore.Instance.shards += tiers[tier];
             ShardCountScript.DisplayCount(PlayerCore.Instance.shards);
         }
