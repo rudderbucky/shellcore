@@ -79,7 +79,7 @@ public class TargetManager : MonoBehaviour
                     continue;
                 }
 
-                if ((positions[i] - positions[j]).sqrMagnitude < 200 && !FactionManager.IsAllied(factions[i], factions[j]))
+                if ((positions[i] - positions[j]).sqrMagnitude < 900 && !FactionManager.IsAllied(factions[i], factions[j]))
                 {
                     colliderNear = true;
                     break;
