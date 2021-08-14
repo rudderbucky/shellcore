@@ -1078,10 +1078,10 @@ public class SectorManager : MonoBehaviour
             }
             else if (obj is EntityBlueprint blueprint)
             {
-                var copy = Instantiate(obj);
+                var copy = Instantiate(blueprint);
                 if (blueprint.dialogue)
                 {
-                    blueprint.dialogue = Instantiate(blueprint.dialogue);
+                    copy.dialogue = Instantiate(blueprint.dialogue);
                 }
 
                 SpawnEntity(copy as EntityBlueprint, current.entities[i]);
