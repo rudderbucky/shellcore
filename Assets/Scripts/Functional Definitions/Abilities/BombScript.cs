@@ -105,11 +105,7 @@ public class BombScript : MonoBehaviour
                         var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
                                                                                // if the shell is low, damage the part
 
-                        ShellPart part = craft.transform.GetComponentInChildren<ShellPart>();
-                        if (part)
-                        {
-                            part.TakeDamage(residue); // damage the part
-                        }
+                        craft.TakeCoreDamage(residue);
 
                         if (!fired)
                         {
