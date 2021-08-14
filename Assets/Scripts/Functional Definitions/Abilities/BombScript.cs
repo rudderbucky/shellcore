@@ -98,14 +98,14 @@ public class BombScript : MonoBehaviour
                 if (craft != null && !craft.GetIsDead()) // check if the component was obtained
                 {
                     if (!FactionManager.IsAllied(faction, craft.GetFaction())
-                        && Vector2.SqrMagnitude(craft.transform.position - transform.position) <= range
+                        && Vector2.SqrMagnitude(craft.transform.position - transform.position) <= range * range
                             && CheckCategoryCompatibility(craft)
                                 && (!owner || (craft.GetTransform() != owner.transform)))
                     {
                         var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
                                                                                // if the shell is low, damage the part
 
-                        ShellPart part = craft.transform.GetComponent<ShellPart>();
+                        ShellPart part = craft.transform.GetComponentInChildren<ShellPart>();
                         if (part)
                         {
                             part.TakeDamage(residue); // damage the part
