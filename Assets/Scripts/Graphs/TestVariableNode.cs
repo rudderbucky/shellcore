@@ -23,7 +23,7 @@ namespace NodeEditorFramework.Standard
 
         public override string Title
         {
-            get { return "Test Variable"; }
+            get { return "Test Variable (DEPRECATED)"; }
         }
 
         public override Vector2 DefaultSize
@@ -52,6 +52,10 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
+            GUILayout.Label("This node is deprecated. Use 'Flow/Condition Check Node' instead");
+
+            GUILayout.Space(20);
+
             GUILayout.BeginHorizontal();
             inputLeft.DisplayLayout();
             GUILayout.BeginVertical();

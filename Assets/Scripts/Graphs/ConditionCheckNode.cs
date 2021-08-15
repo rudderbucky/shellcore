@@ -1,20 +1,20 @@
 ﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
 
-// TODO: Remove this node, add dialogue mode to GeneralConditionCheckNode instead
+// TODO: Add dialogue mode to this node, remove Dialogue condition node
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Dialogue/Condition Check Node")]
-    public class DialogueConditionCheckNode : Node
+    [Node(false, "Flow/Condition Check Node", typeof(QuestCanvas), typeof(SectorCanvas))]
+    public class ConditionCheckNode : Node
     {
         public override string GetName
         {
-            get { return "DialogueConditionCheckNode"; }
+            get { return "GeneralConditionCheckNode"; }
         }
 
         public override string Title
         {
-            get { return "Dialogue Condition Check"; }
+            get { return "Condition Check"; }
         }
 
         public override Vector2 MinSize
@@ -32,16 +32,14 @@ namespace NodeEditorFramework.Standard
             get { return true; }
         }
 
-        [ConnectionKnob("Input", Direction.In, "Dialogue", NodeSide.Left)]
+        [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
 
-        [ConnectionKnob("Pass", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right, 20)]
+        [ConnectionKnob("Pass", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20)]
         public ConnectionKnob outputPass;
 
-        [ConnectionKnob("Fail", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right, 60)]
+        [ConnectionKnob("Fail", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 60)]
         public ConnectionKnob outputFail;
-
-        public string checkpointName = ""; // preserved for backwards compatibility
 
         public string variableName = "";
         public int variableType = 0;
@@ -100,7 +98,6 @@ namespace NodeEditorFramework.Standard
 
                 typePopup.Show(GUIScaleUtility.GUIToScreenSpace(GUILayoutUtility.GetLastRect().max));
             }
-            //variableType = GUILayout.SelectionGrid(variableType, variableTypes, 1, GUILayout.Width(128f));
 
             if (variableType <= 1 || variableType == 5)
             {
@@ -117,17 +114,6 @@ namespace NodeEditorFramework.Standard
                 GUILayout.EndHorizontal();
             }
 
-
-            if (variableName.Equals(checkpointName, System.StringComparison.CurrentCulture))
-            {
-                checkpointName = "";
-            }
-
-            if (checkpointName != "")
-            {
-                GUILayout.Label($"<color=red>Deprecated data detected! Checkpoint name = '{checkpointName}'</color>\n");
-            }
-
             if (variableType > 0)
             {
                 if (variableType != 5)
@@ -137,7 +123,6 @@ namespace NodeEditorFramework.Standard
                 }
 
                 GUILayout.Label("Comparison mode:");
-                //comparisonMode = GUILayout.SelectionGrid(comparisonMode, comparisonModes, 1, GUILayout.Width(128f));
                 string[] comparisonTexts = variableType == 5 ? missionStatus : comparisonModes;
 
                 if (GUILayout.Button(comparisonTexts[comparisonMode]))
@@ -170,19 +155,7 @@ namespace NodeEditorFramework.Standard
         {
             if (variableType == 0)
             {
-                if (variableName == "" && checkpointName != "")
-                {
-                    variableName = checkpointName;
-                }
-
-                if (TaskManager.TraversersContainCheckpoint(checkpointName))
-                {
-                    return 0;
-                }
-                else
-                {
-                    return 1;
-                }
+                return TaskManager.TraversersContainCheckpoint(variableName) ? 0 : 1;
             }
             else if (variableType == 5)
             {
@@ -238,7 +211,7 @@ namespace NodeEditorFramework.Standard
                         break;
                     case 5:
                         return PlayerCore.Instance.cursave.missions.Exists(m => m.name == variableName) &&
-                               PlayerCore.Instance.cursave.missions.Find(m => m.name == variableName).status == Mission.MissionStatus.Complete
+                               PlayerCore.Instance.cursave.missions.Find(m => m.name == variableName).status == (Mission.MissionStatus)comparisonMode
                             ? 0
                             : 1;
                     case 6:
