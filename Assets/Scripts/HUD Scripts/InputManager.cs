@@ -163,7 +163,7 @@ public class InputManager : MonoBehaviour
 
                     if (inputToChange.Value >= KeyName.Ability0 && inputToChange.Value <= KeyName.Ability9)
                     {
-                        AbilityHandler.instance.ReorientAbilityBoxes();
+                        if (AbilityHandler.instance) AbilityHandler.instance.ReorientAbilityBoxes();
                     }
 
                     Debug.Log($"Set binding for {inputToChange.Value} to {(KeyCode)key}");
