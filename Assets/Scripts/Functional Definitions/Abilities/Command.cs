@@ -22,11 +22,6 @@ public class Command : PassiveAbility
         base.Deactivate();
     }
 
-    public override void SetDestroyed(bool input)
-    {
-        base.SetDestroyed(input);
-    }
-
     protected override void Execute()
     {
         if (Core is IOwner owner)

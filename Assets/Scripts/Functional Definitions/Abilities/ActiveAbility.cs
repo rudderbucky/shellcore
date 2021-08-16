@@ -51,18 +51,4 @@ public abstract class ActiveAbility : Ability
     override public void Deactivate()
     {
     }
-
-    override protected void Execute()
-    {
-        base.Execute();
-    }
-
-    /// <summary>
-    /// Override on tick that accounts for actives for players
-    /// </summary>
-    /// <param name="key">Associated string on the button to push to activate</param>
-    public override void Tick()
-    {
-        base.Tick();
-    }
 }
