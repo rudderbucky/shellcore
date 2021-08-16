@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="428,-192" zoom="0.8" />
+		<EditorState selected="" pan="-572,257.75" zoom="0.6" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Dialogue" ID="-352073984" type="DialogueNode" pos="-153,-21">
-			<Port ID="1961968128" name="input" dynamic="False" />
-			<Port ID="-1295559040" name="cancel" dynamic="False" />
-			<Port ID="2107174912" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="-1479120" type="DialogueNode" pos="-153,-21">
+			<Port ID="-1479122" name="input" dynamic="False" />
+			<Port ID="-1479124" name="cancel" dynamic="False" />
+			<Port ID="-1479112" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
 				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">234</float>
+				<float name="sidePosition">237</float>
 				<float name="sideOffset">0</float>
 			</Port>
-			<Port ID="-1150352256" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+			<Port ID="-1479114" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
 				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">289</float>
+				<float name="sidePosition">293</float>
 				<float name="sideOffset">0</float>
 			</Port>
 			<boolean name="useEntityColor">false</boolean>
@@ -32,54 +32,55 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="-917797965" />
-			<Variable name="answers" refID="754294272" />
+			<Variable name="answers" refID="1047488768" />
 			<boolean name="customDialogueSpeed">false</boolean>
 			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="End Dialogue" ID="-482392320" type="EndDialogue" pos="144,266">
-			<Port ID="-258118912" name="input" dynamic="False" />
+		<Node name="End Dialogue" ID="-1479126" type="EndDialogue" pos="144,266">
+			<Port ID="-1479128" name="input" dynamic="False" />
 			<boolean name="jumpToStart">true</boolean>
 			<boolean name="openBuilder">false</boolean>
 			<boolean name="openTrader">false</boolean>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="End Dialogue" ID="1592487936" type="EndDialogue" pos="410,-310">
-			<Port ID="779321216" name="input" dynamic="False" />
+		<Node name="End Dialogue" ID="-1479130" type="EndDialogue" pos="410,-310">
+			<Port ID="-1479132" name="input" dynamic="False" />
 			<boolean name="jumpToStart">true</boolean>
 			<boolean name="openBuilder">false</boolean>
 			<boolean name="openTrader">true</boolean>
 			<Variable name="traderJSON" refID="619289348" />
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="Dialogue Condition Check" ID="1065934976" type="DialogueConditionCheckNode" pos="-532.8,260.8">
-			<Port ID="32294656" name="input" dynamic="False" />
-			<Port ID="1069734784" name="outputPass" dynamic="False" />
-			<Port ID="-112912128" name="outputFail" dynamic="False" />
+		<Node name="Dialogue Condition Check" ID="-1479134" type="DialogueConditionCheckNode" pos="-532.8,260.8">
+			<Port ID="-1479136" name="input" dynamic="False" />
+			<Port ID="-1479138" name="outputPass" dynamic="False" />
+			<Port ID="-1479140" name="outputFail" dynamic="False" />
 			<Variable name="checkpointName" refID="371857150" />
 			<Variable name="variableName" refID="1843630155" />
 			<int name="variableType">1</int>
 			<int name="comparisonMode">0</int>
 			<int name="value">1</int>
 		</Node>
-		<Node name="Start Dialogue" ID="43055104" type="StartDialogueNode" pos="-808.2,268.6">
-			<Port ID="1671554560" name="input" dynamic="False" />
-			<Port ID="924528000" name="output" dynamic="False" />
+		<Node name="Start Dialogue" ID="-1479142" type="StartDialogueNode" pos="-808.2,268.6">
+			<Port ID="-1479164" name="input" dynamic="False" />
+			<Port ID="-1479146" name="output" dynamic="False" />
 			<boolean name="SpeakToEntity">true</boolean>
 			<Variable name="EntityID" refID="-732727968" />
 			<boolean name="forceStart">false</boolean>
 			<boolean name="allowAfterSpeaking">false</boolean>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="Dialogue" ID="326723200" type="DialogueNode" pos="-170,410">
-			<Port ID="1816761344" name="input" dynamic="False" />
-			<Port ID="-1440765824" name="cancel" dynamic="False" />
-			<Port ID="-403325696" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+		<Node name="Dialogue" ID="-1479148" type="DialogueNode" pos="-170,410">
+			<Port ID="-1479150" name="input" dynamic="False" />
+			<Port ID="-1479152" name="cancel" dynamic="False" />
+			<Port ID="-1479116" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
 				<string name="styleID">Dialogue</string>
 				<Direction name="direction">Out</Direction>
 				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
 				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">229</float>
+				<float name="sidePosition">231</float>
 				<float name="sideOffset">0</float>
 			</Port>
 			<boolean name="useEntityColor">true</boolean>
@@ -90,13 +91,14 @@
 				<a>1</a>
 			</Color>
 			<Variable name="text" refID="-1664814463" />
-			<Variable name="answers" refID="363545472" />
+			<Variable name="answers" refID="-1802403840" />
 			<boolean name="customDialogueSpeed">false</boolean>
 			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
 			<NodeEditorState name="state">Mission</NodeEditorState>
 		</Node>
-		<Node name="End Dialogue" ID="-627599104" type="EndDialogue" pos="142.4,646.4">
-			<Port ID="634114432" name="input" dynamic="False" />
+		<Node name="End Dialogue" ID="-1479154" type="EndDialogue" pos="142.4,646.4">
+			<Port ID="-1479156" name="input" dynamic="False" />
 			<boolean name="jumpToStart">true</boolean>
 			<boolean name="openBuilder">false</boolean>
 			<boolean name="openTrader">false</boolean>
@@ -104,18 +106,18 @@
 		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="1961968128" port2ID="1069734784" />
-		<Connection port1ID="2107174912" port2ID="779321216" />
-		<Connection port1ID="-1150352256" port2ID="-258118912" />
-		<Connection port1ID="32294656" port2ID="924528000" />
-		<Connection port1ID="-112912128" port2ID="1816761344" />
-		<Connection port1ID="-403325696" port2ID="634114432" />
+		<Connection port1ID="-1479122" port2ID="-1479138" />
+		<Connection port1ID="-1479112" port2ID="-1479132" />
+		<Connection port1ID="-1479114" port2ID="-1479128" />
+		<Connection port1ID="-1479136" port2ID="-1479146" />
+		<Connection port1ID="-1479140" port2ID="-1479150" />
+		<Connection port1ID="-1479116" port2ID="-1479156" />
 	</Connections>
 	<Objects>
 		<Object refID="-917797965" type="System.String">
 			<string>Greetings! We might not have a lot of parts here, but the parts we do have should help you out with dealing with the nearby sectors.</string>
 		</Object>
-		<Object refID="754294272" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="1047488768" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>I would like to exchange parts.</string>
 				<string>On second though, no thanks.</string>
@@ -138,7 +140,7 @@
 
 If you like, head to the Capitol Advanced Trade Sector and see what the delay is. Maybe you can help expedite things.</string>
 		</Object>
-		<Object refID="363545472" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="-1802403840" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<string>Will do, cheers.</string>
 			</ArrayOfString>

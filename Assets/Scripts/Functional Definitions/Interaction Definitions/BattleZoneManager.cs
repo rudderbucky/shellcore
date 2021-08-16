@@ -6,6 +6,7 @@ public class BattleZoneManager : MonoBehaviour
     static List<Entity> targets;
     public string sectorName;
     public bool playing;
+    public bool opposingFactionAdded = false;
 
     float startTime = 0f;
     public int CreditsCollected = 0;
@@ -31,6 +32,7 @@ public class BattleZoneManager : MonoBehaviour
 
     void OnEnable()
     {
+        opposingFactionAdded = false;
         targets = new List<Entity>();
         Entity.OnEntityDeath += OnEntityDeath;
         ShellCore.OnPowerCollected += OnPowerCollected;
@@ -140,6 +142,12 @@ public class BattleZoneManager : MonoBehaviour
     {
         if (playing && enabled)
         {
+            if (!opposingFactionAdded)
+            {
+                playing = false;
+                return;
+            }
+
             foreach (var target in targets)
             {
                 if (!SectorManager.instance.carriers.ContainsKey(target.faction))
@@ -180,7 +188,7 @@ public class BattleZoneManager : MonoBehaviour
                 }
             }
 
-            if (livingFactions.Count < 2 || allAllied)
+            if ((livingFactions.Count < 2 || allAllied))
             {
                 foreach (Entity playerEntity in targets)
                 {
@@ -225,6 +233,8 @@ public class BattleZoneManager : MonoBehaviour
 
         if (target)
         {
+            if (!opposingFactionAdded && targets.Exists(e => !FactionManager.IsAllied(e.GetFaction(), target.GetFaction())))
+                opposingFactionAdded = true;
             playing = true;
         }
 

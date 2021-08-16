@@ -69,7 +69,7 @@ public class DevConsoleScript : MonoBehaviour
         {
             var important = "<color=red>I</color><color=orange>M</color><color=yellow>P</color><color=lime>O</color><color=violet>R</color><color=cyan>T</color><color=grey>A</color><color=white>N</color><color=red>T</color>: ";
             text += $"\n {important}In addition to screenshotting this error, please save a copy of Player.log and send it to rudderbucky/the ShellCore Command Discord at your earliest convenience."
-                    + "\nThe file can be found at %APPDATA%/../LocalLow/rudderbucky_Ormanus/Shellcore Command/Player.log";
+                    + "\nThe file can be found at %APPDATA%/../LocalLow/rudderbucky_Ormanus/Shellcore Command/Player.log (Press F3 to close the console)";
         }
 
         var enqueued = false;

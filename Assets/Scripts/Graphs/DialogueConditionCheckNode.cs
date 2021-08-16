@@ -1,6 +1,7 @@
 ﻿using NodeEditorFramework.Utilities;
 using UnityEngine;
 
+// TODO: Remove this node, add dialogue mode to GeneralConditionCheckNode instead
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Dialogue/Condition Check Node")]

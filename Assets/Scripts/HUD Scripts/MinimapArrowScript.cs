@@ -173,7 +173,7 @@ public class MinimapArrowScript : MonoBehaviour
 
     public void AddCoreArrow(ShellCore core)
     {
-        if (coreArrows.ContainsKey(core))
+        if (coreArrows.ContainsKey(core) || !core)
         {
             return;
         }
