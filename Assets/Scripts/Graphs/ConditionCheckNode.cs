@@ -71,7 +71,8 @@ namespace NodeEditorFramework.Standard
             "Parts Seen",
             "Parts Obtained",
             "Mission Status",
-            "Shards"
+            "Shards",
+            "Credits"
         };
 
         public override void NodeGUI()
@@ -216,6 +217,9 @@ namespace NodeEditorFramework.Standard
                             : 1;
                     case 6:
                         variableToCompare = PlayerCore.Instance.shards;
+                        break;
+                    case 7:
+                        variableToCompare = PlayerCore.Instance.GetCredits();
                         break;
                 }
 
