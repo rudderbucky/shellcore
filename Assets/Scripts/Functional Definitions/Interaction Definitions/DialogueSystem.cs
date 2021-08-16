@@ -854,6 +854,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public void FadeBarIn()
     {
         currentState = DialogueState.In;
+        StopCoroutine("BarFadeOut");
         StartCoroutine("BarFadeIn");
     }
 
@@ -876,7 +877,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             blackBarBottom.anchoredPosition = new Vector2(0, count);
             yield return new WaitForSeconds(0.0025F);
         }
-
+        hudGroup.alpha = 0F;
         if (currentState == DialogueState.In)
         {
             currentState = DialogueState.Idle;
@@ -911,7 +912,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             blackBarBottom.anchoredPosition = new Vector2(0, count);
             yield return new WaitForSeconds(0.0025F);
         }
-
+        hudGroup.alpha = 1F;
         if (currentState == DialogueState.Out)
         {
             currentState = DialogueState.Idle;
@@ -923,6 +924,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         if (!isInCutscene)
         {
             currentState = DialogueState.Out;
+            StopCoroutine("BarFadeIn");
             StartCoroutine("BarFadeOut");
         }
     }

@@ -28,8 +28,8 @@ public class IonLineController : MonoBehaviour
         Gradient gradient = new Gradient();
         gradient.mode = GradientMode.Fixed;
         gradient.SetKeys(
-            new GradientColorKey[] {new GradientColorKey(col, 0), new GradientColorKey(col, 1)},
-            new GradientAlphaKey[] {new GradientAlphaKey(0.5F, 0), new GradientAlphaKey(1F, 0.1F), new GradientAlphaKey(1, 1)}
+            new GradientColorKey[] { new GradientColorKey(col, 0), new GradientColorKey(col, 1) },
+            new GradientAlphaKey[] { new GradientAlphaKey(0.5F, 0), new GradientAlphaKey(1F, 0.1F), new GradientAlphaKey(1, 1) }
         );
         line.colorGradient = gradient;
     }
@@ -152,7 +152,7 @@ public class IonLineController : MonoBehaviour
             line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * range);
             ThickenLine(0.005F);
 
-            var damage = damageC * Time.deltaTime;
+            var dps = damage * Time.deltaTime;
             var raycastHits = Physics2D.RaycastAll(transform.position, GetVectorByBearing(originalBearing), range);
             for (int i = 0; i < raycastHits.Length; i++)
             {
@@ -167,7 +167,7 @@ public class IonLineController : MonoBehaviour
 
                     var part = hitTransform.GetComponentInChildren<ShellPart>();
 
-                    var residue = damageable.TakeShellDamage(damage, 0, GetComponentInParent<Entity>());
+                    var residue = damageable.TakeShellDamage(dps, 0, GetComponentInParent<Entity>());
 
                     // deal instant damage
 
