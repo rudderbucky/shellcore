@@ -8,9 +8,4 @@ public class GroundConstruct : Construct
         Terrain = TerrainType.Ground;
         base.Start();
     }
-
-    protected override void Update()
-    {
-        base.Update();
-    }
 }
