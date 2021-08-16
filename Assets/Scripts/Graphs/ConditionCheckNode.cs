@@ -1,4 +1,5 @@
-﻿using NodeEditorFramework.Utilities;
+﻿using System;
+using NodeEditorFramework.Utilities;
 using UnityEngine;
 
 // TODO: Add dialogue mode to this node, remove Dialogue condition node
@@ -7,6 +8,32 @@ namespace NodeEditorFramework.Standard
     [Node(false, "Flow/Condition Check Node", typeof(QuestCanvas), typeof(SectorCanvas))]
     public class ConditionCheckNode : Node
     {
+        public enum ComparisonMode
+        {
+            EqualTo,
+            GreaterThan,
+            LesserThan
+        }
+
+        public enum MissionStatus
+        {
+            Inactive,
+            Ongoing,
+            Complete
+        }
+
+        public enum VariableType
+        {
+            Checkpoint,
+            TaskVariable,
+            Reputation,
+            PartsSeen,
+            PartsObtained,
+            MissionStatus,
+            Shards,
+            Credits
+        }
+
         public override string GetName
         {
             get { return "GeneralConditionCheckNode"; }
@@ -42,38 +69,18 @@ namespace NodeEditorFramework.Standard
         public ConnectionKnob outputFail;
 
         public string variableName = "";
-        public int variableType = 0;
+        public VariableType variableType = VariableType.Checkpoint;
         public int comparisonMode = 0;
         public int value = 0;
 
         PopupMenu typePopup = null;
         PopupMenu comparisonPopup = null;
 
-        readonly string[] comparisonModes = new string[]
-        {
-            "EqualTo",
-            "GreaterThan",
-            "LesserThan"
-        };
+        private static readonly string[] comparisonModes = Enum.GetNames(typeof(ComparisonMode));
 
-        readonly string[] missionStatus = new string[]
-        {
-            "Inactive",
-            "Ongoing",
-            "Complete"
-        };
+        static readonly string[] missionStatus = Enum.GetNames(typeof(MissionStatus));
 
-        readonly string[] variableTypes = new string[]
-        {
-            "Checkpoint",
-            "Task Variable",
-            "Reputation",
-            "Parts Seen",
-            "Parts Obtained",
-            "Mission Status",
-            "Shards",
-            "Credits"
-        };
+        static readonly string[] variableTypes = Enum.GetNames(typeof(VariableType));
 
         public override void NodeGUI()
         {
@@ -88,7 +95,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
 
             GUILayout.Label("Variable type:");
-            if (GUILayout.Button(variableTypes[variableType]))
+            if (GUILayout.Button(variableType.ToString()))
             {
                 typePopup = new PopupMenu();
                 typePopup.SetupGUI();
@@ -100,16 +107,9 @@ namespace NodeEditorFramework.Standard
                 typePopup.Show(GUIScaleUtility.GUIToScreenSpace(GUILayoutUtility.GetLastRect().max));
             }
 
-            if (variableType <= 1 || variableType == 5)
+            if (variableType == VariableType.Checkpoint || variableType == VariableType.TaskVariable || variableType == VariableType.MissionStatus)
             {
-                GUILayout.Label("Variable Name:");
-                GUILayout.BeginHorizontal();
-                variableName = GUILayout.TextArea(variableName);
-                GUILayout.EndHorizontal();
-            }
-            else if (variableType == 5)
-            {
-                GUILayout.Label("Mission Name:");
+                GUILayout.Label($"{(variableType == VariableType.MissionStatus ? "Mission" : "Variable")} Name:");
                 GUILayout.BeginHorizontal();
                 variableName = GUILayout.TextArea(variableName);
                 GUILayout.EndHorizontal();
@@ -117,14 +117,14 @@ namespace NodeEditorFramework.Standard
 
             if (variableType > 0)
             {
-                if (variableType != 5)
+                if (variableType != VariableType.MissionStatus)
                 {
                     GUILayout.Label("Value:");
                     value = RTEditorGUI.IntField(value);
                 }
 
                 GUILayout.Label("Comparison mode:");
-                string[] comparisonTexts = variableType == 5 ? missionStatus : comparisonModes;
+                string[] comparisonTexts = variableType == VariableType.MissionStatus ? missionStatus : comparisonModes;
 
                 if (GUILayout.Button(comparisonTexts[comparisonMode]))
                 {
@@ -142,34 +142,33 @@ namespace NodeEditorFramework.Standard
 
         void SelectType(object data)
         {
-            int index = (int)data;
-            variableType = index;
+            
+            variableType = (VariableType)data;
         }
 
         void SelectMode(object data)
         {
-            int index = (int)data;
-            comparisonMode = index;
+            comparisonMode = (int)data;
         }
 
         public override int Traverse()
         {
-            if (variableType == 0)
+            if (variableType == VariableType.Checkpoint)
             {
                 return TaskManager.TraversersContainCheckpoint(variableName) ? 0 : 1;
             }
-            else if (variableType == 5)
+            else if (variableType == VariableType.MissionStatus)
             {
-                for (int i = 0; i < PlayerCore.Instance.cursave.missions.Count; i++)
+                foreach (var mission in PlayerCore.Instance.cursave.missions)
                 {
-                    if (PlayerCore.Instance.cursave.missions[i].name == variableName)
+                    if (mission.name == variableName)
                     {
-                        var status = PlayerCore.Instance.cursave.missions[i].status;
-                        switch (comparisonMode)
+                        var status = mission.status;
+                        switch ((MissionStatus)comparisonMode)
                         {
-                            case 0: return (status == Mission.MissionStatus.Inactive) ? 0 : 1;
-                            case 1: return (status == Mission.MissionStatus.Ongoing) ? 0 : 1;
-                            case 2: return (status == Mission.MissionStatus.Complete) ? 0 : 1;
+                            case MissionStatus.Inactive: return (status == Mission.MissionStatus.Inactive) ? 0 : 1;
+                            case MissionStatus.Ongoing: return (status == Mission.MissionStatus.Ongoing) ? 0 : 1;
+                            case MissionStatus.Complete: return (status == Mission.MissionStatus.Complete) ? 0 : 1;
                             default:
                                 return 0;
                         }
@@ -183,7 +182,7 @@ namespace NodeEditorFramework.Standard
                 int variableToCompare = 0;
                 switch (variableType)
                 {
-                    case 1:
+                    case VariableType.TaskVariable:
                         if (TaskManager.Instance.taskVariables.ContainsKey(variableName))
                         {
                             variableToCompare = TaskManager.Instance.taskVariables[variableName];
@@ -195,13 +194,13 @@ namespace NodeEditorFramework.Standard
                         }
 
                         break;
-                    case 2:
+                    case VariableType.Reputation:
                         variableToCompare = PlayerCore.Instance.reputation;
                         break;
-                    case 3:
+                    case VariableType.PartsSeen:
                         variableToCompare = PartIndexScript.GetNumberOfPartsSeen();
                         break;
-                    case 4:
+                    case VariableType.PartsObtained:
                         variableToCompare = PartIndexScript.GetNumberOfPartsObtained();
 #if UNITY_EDITOR
                         if (Input.GetKey(KeyCode.J))
@@ -210,24 +209,24 @@ namespace NodeEditorFramework.Standard
                         }
 #endif
                         break;
-                    case 5:
+                    case VariableType.MissionStatus:
                         return PlayerCore.Instance.cursave.missions.Exists(m => m.name == variableName) &&
                                PlayerCore.Instance.cursave.missions.Find(m => m.name == variableName).status == (Mission.MissionStatus)comparisonMode
                             ? 0
                             : 1;
-                    case 6:
+                    case VariableType.Shards:
                         variableToCompare = PlayerCore.Instance.shards;
                         break;
-                    case 7:
+                    case VariableType.Credits:
                         variableToCompare = PlayerCore.Instance.GetCredits();
                         break;
                 }
 
-                switch (comparisonMode)
+                switch ((ComparisonMode)comparisonMode)
                 {
-                    case 0: return (variableToCompare == value) ? 0 : 1;
-                    case 1: return (variableToCompare > value) ? 0 : 1;
-                    case 2: return (variableToCompare < value) ? 0 : 1;
+                    case ComparisonMode.EqualTo: return (variableToCompare == value) ? 0 : 1;
+                    case ComparisonMode.GreaterThan: return (variableToCompare > value) ? 0 : 1;
+                    case ComparisonMode.LesserThan: return (variableToCompare < value) ? 0 : 1;
                     default:
                         return 0;
                 }
