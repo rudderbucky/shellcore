@@ -83,6 +83,11 @@ namespace NodeEditorFramework.Standard
             }
         }
 
+        public override void OnCreate()
+        {
+            InitConnectionKnobs();
+        }
+
         public override void NodeGUI()
         {
             if (input == null)

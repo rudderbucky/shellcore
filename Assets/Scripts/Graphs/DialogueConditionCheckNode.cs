@@ -24,12 +24,17 @@ namespace NodeEditorFramework.Standard
 
         public override void InitConnectionKnobs()
         {
-            if (input == null)
+            if (connectionPorts.Count == 0)
             {
                 input = CreateConnectionKnob(inputStyle);
                 outputPass = CreateConnectionKnob(outputPassStyle);
                 outputFail = CreateConnectionKnob(outputFailStyle);
             }
+        }
+
+        public override void OnCreate()
+        {
+            InitConnectionKnobs();
         }
 
         public override void NodeGUI()

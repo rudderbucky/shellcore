@@ -179,7 +179,6 @@ public class GroundPlatform
         {
             pointer += 1;
             version = getNext(data);
-            Debug.Log("Version number: " + version);
         }
 
         ushort tileCount = getNext(data);
