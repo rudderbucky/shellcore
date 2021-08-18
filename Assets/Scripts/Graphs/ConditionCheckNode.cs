@@ -102,15 +102,8 @@ namespace NodeEditorFramework.Standard
                 InitConnectionKnobs();
             }
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Pass: ");
-            outputPass.DrawKnob();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Fail: ");
-            outputFail.DrawKnob();
-            GUILayout.EndHorizontal();
+            outputPass.DisplayLayout();
+            outputFail.DisplayLayout();
 
             GUILayout.Label("Variable type:");
             if (GUILayout.Button(variableType.ToString()))
