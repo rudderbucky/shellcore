@@ -25,6 +25,17 @@ namespace NodeEditorFramework
 				List<ConnectionPortDeclaration> declarations = new List<ConnectionPortDeclaration> ();
 				// Get all declared port fields
 				FieldInfo[] declaredPorts = ReflectionUtility.getFieldsOfType (nodeType, typeof(ConnectionPort));
+
+                if (nodeType.Name == "DialogueConditionCheckNode")
+                {
+                    string s = "";
+                    for (int i = 0; i < declaredPorts.Length; i++)
+                    {
+                        s += "(" + declaredPorts[i].Name + ", " + declaredPorts[i].ToString() + ") ";
+                    }
+                    Debug.Log(s);
+                }
+
 				foreach (FieldInfo portField in declaredPorts)
 				{ // Get info about that port declaration using the attribute
 					object[] declAttrs = portField.GetCustomAttributes (typeof(ConnectionPortAttribute), true);
@@ -96,10 +107,16 @@ namespace NodeEditorFramework
 					ConnectionPortDeclaration portDecl = portDecls[i];
 					yield return portDecl;
 					ConnectionPort port = (ConnectionPort)portDecl.portField.GetValue (node);
-					if (port != null)
-						declaredConnectionPorts.Add(port);
+                    if (port != null)
+                        declaredConnectionPorts.Add(port);
+                    else
+                        Debug.Log($"Node {node.name} has a null port: {portDecl.portInfo.Name}");
 				}
 			}
+            else
+            {
+                Debug.Log("No declaration found.");
+            }
 			if (triggerUpdate)
 			{ // Update lists as values might have changes when calling this function
 				node.staticConnectionPorts = declaredConnectionPorts;

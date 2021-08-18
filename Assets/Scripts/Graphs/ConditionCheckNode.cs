@@ -2,7 +2,6 @@
 using NodeEditorFramework.Utilities;
 using UnityEngine;
 
-// TODO: Add dialogue mode to this node, remove Dialogue condition node
 namespace NodeEditorFramework.Standard
 {
     [Node(false, "Flow/Condition Check Node", typeof(QuestCanvas), typeof(SectorCanvas))]
@@ -58,32 +57,51 @@ namespace NodeEditorFramework.Standard
         {
             get { return true; }
         }
-
-        [ConnectionKnob("Input", Direction.In, "TaskFlow", NodeSide.Left)]
+        
         public ConnectionKnob input;
-
-        [ConnectionKnob("Pass", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20)]
         public ConnectionKnob outputPass;
-
-        [ConnectionKnob("Fail", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 60)]
         public ConnectionKnob outputFail;
+
+        ConnectionKnobAttribute inputStyle = new ConnectionKnobAttribute("Input", Direction.In, "TaskFlow", NodeSide.Left);
+        ConnectionKnobAttribute outputPassStyle = new ConnectionKnobAttribute("Pass", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 20);
+        ConnectionKnobAttribute outputFailStyle = new ConnectionKnobAttribute("Fail", Direction.Out, "TaskFlow", ConnectionCount.Single, NodeSide.Right, 60);
 
         public string variableName = "";
         public VariableType variableType = VariableType.Checkpoint;
         public int comparisonMode = 0;
         public int value = 0;
 
-        PopupMenu typePopup = null;
-        PopupMenu comparisonPopup = null;
+        protected PopupMenu typePopup = null;
+        protected PopupMenu comparisonPopup = null;
 
-        private static readonly string[] comparisonModes = Enum.GetNames(typeof(ComparisonMode));
+        static readonly string[] comparisonModes = Enum.GetNames(typeof(ComparisonMode));
 
         static readonly string[] missionStatus = Enum.GetNames(typeof(MissionStatus));
 
         static readonly string[] variableTypes = Enum.GetNames(typeof(VariableType));
 
+        public virtual void InitConnectionKnobs()
+        {
+            if (input == null)
+            {
+                input = CreateConnectionKnob(inputStyle);
+                outputPass = CreateConnectionKnob(outputPassStyle);
+                outputFail = CreateConnectionKnob(outputFailStyle);
+            }
+        }
+
+        public override void OnCreate()
+        {
+            InitConnectionKnobs();
+        }
+
         public override void NodeGUI()
         {
+            if (input == null)
+            {
+                InitConnectionKnobs();
+            }
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Pass: ");
             outputPass.DrawKnob();

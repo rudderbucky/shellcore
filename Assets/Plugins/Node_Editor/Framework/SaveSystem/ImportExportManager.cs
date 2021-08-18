@@ -214,14 +214,16 @@ namespace NodeEditorFramework.IO
 				{ // Find stored ports for each node port declaration
 					PortData portData = nodeData.connectionPorts.Find((PortData data) => data.name == portDecl.portField.Name);
 					if (portData != null) // Stored port has been found, record
+                    {
 						portData.port = (ConnectionPort)portDecl.portField.GetValue(node);
-				}
+                    }
+                }
 
 				foreach (PortData portData in nodeData.connectionPorts.Where(port => port.dynamic))
 				{ // Find stored dynamic connection ports
 					if (portData.port != null) // Stored port has been recreated
 					{
-						portData.port.body = node;
+                        portData.port.body = node;
 						node.dynamicConnectionPorts.Add(portData.port);
 					}
 				}
@@ -233,15 +235,39 @@ namespace NodeEditorFramework.IO
 						field.SetValue(node, varData.refObject != null ? varData.refObject.data : varData.value);
 				}
 
-                node.OnCreate();
-			}
+				node.OnCreate();
 
-			foreach (ConnectionData conData in canvasData.connections)
+                foreach (PortData portData in nodeData.connectionPorts)
+                {
+                    if (portData.port == null)
+                    {
+                        Debug.Log($"Trying to fix a port '{portData.name}' in {node.name}...");
+                        var f = node.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        for (int i = 0; i < f.Length; i++)
+                        {
+                            if (portData.name == f[i].Name)
+                            {
+                                portData.port = f[i].GetValue(node) as ConnectionPort;
+                                if (portData.port != null)
+                                    Debug.Log("Success!");
+                                else
+                                    Debug.Log("Failed!");
+
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            foreach (ConnectionData conData in canvasData.connections)
 			{ // Restore all connections
 				if (conData.port1.port == null || conData.port2.port == null)
 				{ // Not all ports where saved in canvasData
-					Debug.Log("Incomplete connection " + conData.port1.name + " and " + conData.port2.name + "!");
-					continue;
+					Debug.LogWarning($"Incomplete connection between { conData.port1.name } and { conData.port2.name } in {canvasData.name}!");
+                    Debug.LogWarning($"IDs: {conData.port1.portID} -> {conData.port2.portID} Nodes: {conData.port1.body.name}, {conData.port2.body.name}");
+                    continue;
 				}
 				conData.port1.port.TryApplyConnection(conData.port2.port, true);
 			}
