@@ -311,6 +311,22 @@ public class DevConsoleScript : MonoBehaviour
             {
                 NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(SectorManager.instance.current.sectorName);
             }
+            else if (command.Equals("No limits", StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (PlayerCore.Instance?.cursave != null)
+                {
+                    PlayerCore.Instance.cursave.abilityCaps = new int[] { 99999, 99999, 99999, 99999 };
+                    textBox.text += "\n<color=lime>Ouch, now I have a headache.</color>";
+                }
+            }
+            else if (command.Equals("I am an uncivilized barbarian", StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (PlayerCore.Instance)
+                {
+                    PlayerCore.Instance.SetWeaponGCD(0);
+                    textBox.text += "\n<color=lime>Heathen.</color>";
+                }
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {

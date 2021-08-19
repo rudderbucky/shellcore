@@ -246,6 +246,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public bool isPathing = false;
     public static readonly float DefaultPartRate = 0.1f;
     public static float partDropRate = DefaultPartRate;
+    public void SetWeaponGCD(float gcd)
+    {
+        weaponGCD = gcd;
+    }
 
     // Code run on reticle double-click/proximity hotkey press
     public void Interact()
