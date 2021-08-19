@@ -1177,7 +1177,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         base.Update();
         if (!editorMode)
         {
-            if ((player.transform.position - yardPosition).sqrMagnitude > 200)
+            if ((player.transform.position - yardPosition).sqrMagnitude > 200 || player.GetIsDead())
             {
                 CloseUI(false);
             }
