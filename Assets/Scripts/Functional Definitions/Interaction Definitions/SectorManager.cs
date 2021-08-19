@@ -979,7 +979,7 @@ public class SectorManager : MonoBehaviour
             case Sector.SectorType.SiegeZone:
                 siegeZone.enabled = true;
                 siegeZone.sectorName = current.sectorName;
-                foreach (var wave in JsonUtility.FromJson<WaveSet>(File.ReadAllText(resourcePath + "\\Waves\\" + current.waveSetPath + ".json")).waves)
+                foreach (var wave in JsonUtility.FromJson<WaveSet>(File.ReadAllText(System.IO.Path.Combine(resourcePath, "Waves", current.waveSetPath + ".json"))).waves)
                 {
                     siegeZone.waves.Enqueue(wave);
                 }

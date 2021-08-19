@@ -1073,14 +1073,14 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 #if UNITY_EDITOR
     public void SavePrintWithPrompt()
     {
-        var path = UnityEditor.EditorUtility.SaveFilePanel("Save Blueprint", Application.streamingAssetsPath + "\\Entities",
+        var path = UnityEditor.EditorUtility.SaveFilePanel("Save Blueprint", System.IO.Path.Combine(Application.streamingAssetsPath, "Entities"),
             "DefaultPrint", "json");
         SaveBlueprint(null, path, GetCurrentJSON());
     }
 
     public void LoadPrintWithPrompt()
     {
-        var path = UnityEditor.EditorUtility.OpenFilePanel("Load Blueprint", Application.streamingAssetsPath + "\\Entities", "json");
+        var path = UnityEditor.EditorUtility.OpenFilePanel("Load Blueprint", System.IO.Path.Combine(Application.streamingAssetsPath, "Entities"), "json");
         LoadBlueprint(System.IO.File.ReadAllText(path));
     }
 

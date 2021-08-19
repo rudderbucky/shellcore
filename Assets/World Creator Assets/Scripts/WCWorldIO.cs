@@ -163,14 +163,15 @@ public class WCWorldIO : MonoBehaviour
             System.IO.Directory.Delete(FactionPlaceholder);
         }
 
-        if (System.IO.Directory.Exists(Application.streamingAssetsPath + "\\ResourcePlaceholder"))
+        var ResourcePlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "ResourcePlaceholder");
+        if (System.IO.Directory.Exists(ResourcePlaceholder))
         {
-            foreach (var file in System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\ResourcePlaceholder"))
+            foreach (var file in System.IO.Directory.GetFiles(ResourcePlaceholder))
             {
                 System.IO.File.Delete(file);
             }
 
-            System.IO.Directory.Delete(Application.streamingAssetsPath + "\\ResourcePlaceholder");
+            System.IO.Directory.Delete(ResourcePlaceholder);
         }
 
         if (System.IO.File.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "ResourceDataPlaceholder.txt")))
