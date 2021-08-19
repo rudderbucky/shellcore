@@ -17,7 +17,7 @@ public class Torpedo : Bullet
         damage = torpedoDamage;
         terrain = Entity.TerrainType.Ground;
         category = Entity.EntityCategory.All;
-        bonusDamageType = typeof(GroundConstruct);
+        bonusDamageType = null;
     }
 
     protected override void Start()

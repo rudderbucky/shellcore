@@ -101,7 +101,7 @@ public abstract class WeaponAbility : ActiveAbility
         }
     }
 
-    List<AbilityID> damageUnaffectedByTier = new List<AbilityID> { AbilityID.MainBullet, AbilityID.Bomb };
+    List<AbilityID> damageUnaffectedByTier = new List<AbilityID> { AbilityID.MainBullet };
 
     protected override void Start()
     {

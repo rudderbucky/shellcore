@@ -15,7 +15,7 @@ public class Laser : Bullet
         ID = AbilityID.Laser;
         cooldownDuration = 0.2F;
         energyCost = 5;
-        damage = 75;
+        damage = laserDamage;
         prefabScale = Vector2.one;
         terrain = Entity.TerrainType.All;
         category = Entity.EntityCategory.Unit;
@@ -27,5 +27,6 @@ public class Laser : Bullet
     protected override void Start()
     {
         bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
+        base.Start();
     }
 }
