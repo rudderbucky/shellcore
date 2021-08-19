@@ -28,7 +28,7 @@ namespace NodeEditorFramework.Standard
 
         public override Vector2 DefaultSize
         {
-            get { return new Vector2(200, 256); }
+            get { return new Vector2(200, 300); }
         }
 
         public override bool AllowRecursion
