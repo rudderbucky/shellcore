@@ -95,6 +95,7 @@ public class TaskDisplayScript : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 mission.status = Mission.MissionStatus.Complete;
+                mission.checkpoint = $"{mission.name}_complete";
                 if (NodeEditorFramework.Standard.MissionCondition.OnMissionStatusChange != null)
                 {
                     NodeEditorFramework.Standard.MissionCondition.OnMissionStatusChange.Invoke(mission);

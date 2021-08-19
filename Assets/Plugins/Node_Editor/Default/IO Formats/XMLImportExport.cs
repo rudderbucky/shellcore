@@ -264,7 +264,9 @@ namespace NodeEditorFramework.IO
 					int port2ID = GetIntegerAttribute(xmlConnection, "port2ID");
 					PortData port1, port2;
 					if (ports.TryGetValue(port1ID, out port1) && ports.TryGetValue(port2ID, out port2))
+                    {
 						canvasData.RecordConnection(port1, port2);
+                    }
 				}
 
 				// GROUPS
