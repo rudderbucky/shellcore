@@ -34,7 +34,8 @@ public class SaveMenuHandler : GUIWindowScripts
         "Alpha 4.1.0",
         "Alpha 4.1.1",
         "Alpha 4.2.0",
-        "Alpha 4.3.0"
+        "Alpha 4.3.0",
+        "Beta 0.0.0"
     };
 
     public Sprite[] episodeSprites;
@@ -249,20 +250,21 @@ public class SaveMenuHandler : GUIWindowScripts
 
     public void PromptMigrate(int index)
     {
+        indexToMigrate = index;
         switch (saves[index].version)
         {
             case "Alpha 2.1.0":
-                indexToMigrate = index;
                 migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will reset your task progress, reputation and place you in the "
                                                                                                  + "Spawning Grounds. Backup first! (Below save icon delete button)";
-                migratePrompt.ToggleActive();
+                break;
+            case "Beta 0.0.0":
+                migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will change some data related to Truthful Revelation. Backup first! (Below save icon delete button)";
                 break;
             default:
-                indexToMigrate = index;
                 migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will simply add Sukrat to your party list. Regardless, backup first! (Below save icon delete button)";
-                migratePrompt.ToggleActive();
                 break;
         }
+        migratePrompt.ToggleActive();
     }
 
     public void Migrate()
@@ -270,6 +272,12 @@ public class SaveMenuHandler : GUIWindowScripts
         var save = saves[indexToMigrate];
         switch (save.version)
         {
+            case "Beta 0.0.0":
+                var mission = save.missions.Find(m => m.name == "Truthful Revelation?");
+                if (mission != null) mission.name = "Truthful Revelation";
+                File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
+                SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+                break;
             case "Alpha 4.0.0":
             case "Alpha 4.1.0":
             case "Alpha 4.1.1":
