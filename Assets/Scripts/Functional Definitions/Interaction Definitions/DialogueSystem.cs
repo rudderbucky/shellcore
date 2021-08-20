@@ -97,8 +97,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
+    private static Dictionary<string, string> offloadingDialogues = new Dictionary<string, string>();
+
     public static void InitCanvases()
     {
+        offloadingDialogues = new Dictionary<string, string>();
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
         traversers = new List<DialogueTraverser>();
         NodeCanvasManager.FetchCanvasTypes();
@@ -115,16 +118,39 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         for (int i = 0; i < dialogueCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, dialogueCanvasPaths[i]);
-            //Debug.Log("Dialogue Canvas path [" + i + "] = " + finalPath);
-            var canvas = XMLImport.Import(finalPath) as DialogueCanvas;
-            //Debug.Log(canvas);
-            if (canvas != null)
-            {
-                traversers.Add(new DialogueTraverser(canvas));
-            }
+            var entityID = $"{System.IO.Path.GetFileNameWithoutExtension(finalPath)}";
+            offloadingDialogues.Add(entityID, finalPath);
         }
 
+        if (Entity.OnEntitySpawn != null)
+            Entity.OnEntitySpawn += startDialogueGraph;
+        else
+            Entity.OnEntitySpawn = startDialogueGraph;
         initialized = true;
+    }
+
+    private static void startDialogueGraph(Entity entity)
+    {
+        var id = entity.ID;
+        if (id == null || !offloadingDialogues.ContainsKey(id)) return;
+
+        Debug.LogFormat("Found: {0}", id);
+        var path = offloadingDialogues[id];
+        offloadingDialogues.Remove(id);
+        var XMLImport = new XMLImportExport();
+        var canvas = XMLImport.Import(path) as DialogueCanvas;
+        if (canvas != null)
+        {
+            var traverser = new DialogueTraverser(canvas);
+            traversers.Add(traverser);
+            if (traverser != null)
+            {
+                var start = traverser.findRoot();
+                canvas.entityID = start.EntityID;
+                traverser.StartQuest();
+            }
+        }
+        else Debug.LogWarning("null canvas path");
     }
 
     public static bool GetInitialized()
@@ -148,7 +174,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void Update()
     {
-        if (window && speakerPos != null && player && (player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 && !isInCutscene)
+        if (window && speakerPos != null && player &&
+            ((player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 || player.GetIsDead()) && !isInCutscene)
         {
             endDialogue();
         }

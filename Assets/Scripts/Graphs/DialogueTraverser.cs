@@ -41,4 +41,9 @@ public class DialogueTraverser : Traverser
             currentNode = currentNode.outputKnobs[outputIndex].connections[0].body;
         }
     }
+
+    public new StartDialogueNode findRoot()
+    {
+        return base.findRoot() as StartDialogueNode; // root node of a QuestCanvas must be a StartMissionNode
+    }
 }

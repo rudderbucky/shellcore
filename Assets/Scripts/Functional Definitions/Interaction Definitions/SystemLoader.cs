@@ -76,7 +76,7 @@ public class SystemLoader : MonoBehaviour
 
         if (DialogueSystem.Instance && DialogueSystem.GetInitialized())
         {
-            DialogueSystem.StartQuests();
+            //DialogueSystem.StartQuests();
         }
     }
 }

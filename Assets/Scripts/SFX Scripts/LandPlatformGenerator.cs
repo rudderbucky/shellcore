@@ -52,7 +52,7 @@ public class LandPlatformGenerator : MonoBehaviour
     private Queue<Entity> searchQueue = new Queue<Entity>();
     private short[,] directionMap;
     private Vector2 center;
-    
+
     // private Dictionary<GameObject, int> areaIDByTile; // TODO: Add platIDByTile
 
     public static bool IsOnGround(Vector3 position)
@@ -182,7 +182,6 @@ public class LandPlatformGenerator : MonoBehaviour
                 }
                 str += '\n';
             }
-            Debug.Log(str);
         }
     }
 
@@ -197,7 +196,7 @@ public class LandPlatformGenerator : MonoBehaviour
             {
                 // Is this algorithm optimal?
                 if (ent && !ent.GetIsDead())
-                groundPlatforms[i].GetClosestTile(ent); 
+                    groundPlatforms[i].GetClosestTile(ent);
             }
         }
     }
@@ -546,7 +545,7 @@ public class LandPlatformGenerator : MonoBehaviour
         {
             return new Vector2[] { TileToWorldPos(startTilePos) };
         }
-        
+
         // Initialize node lists
         // TODO: Queue instead of List?
         List<Node> openList = new List<Node>
@@ -597,7 +596,7 @@ public class LandPlatformGenerator : MonoBehaviour
                     if ((current.directions == 3 ||
                         current.directions == 6 ||
                         current.directions == 9 ||
-                        current.directions == 12) && 
+                        current.directions == 12) &&
                         path.Count > 1)
                     {
                         Vector2 last = (TileToWorldPos(current.pos));
@@ -618,7 +617,7 @@ public class LandPlatformGenerator : MonoBehaviour
                     }
 
 
-                    List<Vector2> smooth = new List<Vector2>{ path[0] };
+                    List<Vector2> smooth = new List<Vector2> { path[0] };
 
                     // Path smoothing
                     if (path.Count > 2)

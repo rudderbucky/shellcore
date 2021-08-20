@@ -7,9 +7,15 @@ public class SaveHandler : MonoBehaviour
     public PlayerCore player;
     public TaskManager taskManager;
     PlayerSave save;
+    public static SaveHandler instance;
 
+    public PlayerSave GetSave()
+    {
+        return save;
+    }
     public void Initialize()
     {
+        instance = this;
         string currentPath;
         var CurrentSavePath = System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath");
         if (!File.Exists(CurrentSavePath))
@@ -50,8 +56,11 @@ public class SaveHandler : MonoBehaviour
                 }
 
             SectorManager.instance.LoadSectorFile(save.resourcePath);
+            save.missions.RemoveAll(m => !taskManager.questCanvasPaths.Exists(p =>
+                System.IO.Path.GetFileNameWithoutExtension(p) == m.name));
             taskManager.Initialize(true); // Re-init
             DialogueSystem.InitCanvases();
+
 
             player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             player.blueprint.name = "Player Save Blueprint";
@@ -91,7 +100,7 @@ public class SaveHandler : MonoBehaviour
             Debug.LogError("There was not a save or test save that was ready on load.");
             save = new PlayerSave();
             save.presetBlueprints = new string[5];
-            save.currentHealths = new float[] {1000, 250, 500};
+            save.currentHealths = new float[] { 1000, 250, 500 };
             save.partInventory = new List<EntityBlueprint.PartInfo>();
 
             player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
