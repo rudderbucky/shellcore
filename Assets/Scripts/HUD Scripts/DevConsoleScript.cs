@@ -315,7 +315,7 @@ public class DevConsoleScript : MonoBehaviour
             {
                 if (PlayerCore.Instance?.cursave != null)
                 {
-                    PlayerCore.Instance.cursave.abilityCaps = new int[] { 99999, 99999, 99999, 99999 };
+                    PlayerCore.Instance.cursave.abilityCaps = PlayerCore.Instance.abilityCaps = new int[] { 99999, 99999, 99999, 99999 };
                     textBox.text += "\n<color=lime>Ouch, now I have a headache.</color>";
                 }
             }

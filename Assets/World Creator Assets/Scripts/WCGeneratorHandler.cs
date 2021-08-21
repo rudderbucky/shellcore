@@ -426,39 +426,63 @@ public class WCGeneratorHandler : MonoBehaviour
             System.IO.Directory.CreateDirectory(canvasPlaceholderPath);
         }
 
+        // create world data
+        WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
+        wdata.sectorMappings = new List<WorldData.OffloadMappings>();
+        wdata.dialogueMappings = new List<WorldData.OffloadMappings>();
         // Add reward parts from tasks.
         if (System.IO.Directory.Exists(canvasPlaceholderPath))
         {
             foreach (var canvasPath in System.IO.Directory.GetFiles(canvasPlaceholderPath))
             {
-                if (System.IO.Path.GetExtension(canvasPath) == ".taskdata")
+                var pathWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(canvasPath);
+                var XMLImport = new XMLImportExport();
+                switch (System.IO.Path.GetExtension(canvasPath))
                 {
-                    var XMLImport = new XMLImportExport();
-                    var canvas = XMLImport.Import(canvasPath) as QuestCanvas;
+                    case ".taskdata":
+                        var questCanvas = XMLImport.Import(canvasPath) as QuestCanvas;
 
-                    string missionName = null;
-                    foreach (var node in canvas.nodes)
-                    {
-                        if (node is StartMissionNode startMission)
+                        string missionName = null;
+                        foreach (var node in questCanvas.nodes)
                         {
-                            missionName = startMission.missionName;
+                            if (node is StartMissionNode startMission)
+                            {
+                                missionName = startMission.missionName;
+                            }
                         }
-                    }
 
-                    foreach (var node in canvas.nodes)
-                    {
-                        if (node is StartTaskNode startTask && startTask.partReward)
+                        foreach (var node in questCanvas.nodes)
                         {
-                            EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
-                            part.partID = startTask.partID;
-                            part.abilityID = startTask.partAbilityID;
-                            part.tier = startTask.partTier;
-                            part.secondaryData = startTask.partSecondaryData;
-                            part = PartIndexScript.CullToPartIndexValues(part);
+                            if (node is StartTaskNode startTask && startTask.partReward)
+                            {
+                                EntityBlueprint.PartInfo part = new EntityBlueprint.PartInfo();
+                                part.partID = startTask.partID;
+                                part.abilityID = startTask.partAbilityID;
+                                part.tier = startTask.partTier;
+                                part.secondaryData = startTask.partSecondaryData;
+                                part = PartIndexScript.CullToPartIndexValues(part);
 
-                            AddPart(part, missionName);
+                                AddPart(part, missionName);
+                            }
                         }
-                    }
+                        if (missionName != null)
+                            File.Move(canvasPath, System.IO.Path.Combine(System.IO.Path.GetDirectoryName(canvasPath), missionName + ".taskdata"));
+                        break;
+                    case ".sectordata":
+                        var sectorCanvas = XMLImport.Import(canvasPath) as SectorCanvas;
+                        var sectorName = new SectorTraverser(sectorCanvas).findRoot().sectorName;
+                        wdata.sectorMappings.Add(new WorldData.OffloadMappings(sectorName, pathWithoutExtension));
+                        //var newPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(canvasPath), sectorName + ".sectordata");
+                        //if (!File.Exists(newPath))
+                        //    File.Move(canvasPath, newPath);
+                        break;
+                    case ".dialoguedata":
+                        var dialogueCanvas = XMLImport.Import(canvasPath) as DialogueCanvas;
+                        var entityID = new DialogueTraverser(dialogueCanvas).findRoot().EntityID;
+                        wdata.dialogueMappings.Add(new WorldData.OffloadMappings(entityID, pathWithoutExtension));
+
+                        //File.Move(canvasPath, System.IO.Path.Combine(System.IO.Path.GetDirectoryName(canvasPath), entityID + ".dialoguedata"));
+                        break;
                 }
             }
         }
@@ -587,8 +611,6 @@ public class WCGeneratorHandler : MonoBehaviour
             }
         }
 
-        // create world data
-        WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         wdata.initialSpawn = cursor.spawnPoint.position;
         wdata.defaultCharacters = cursor.characters.ToArray();
         wdata.defaultBlueprintJSON = blueprintField.text;

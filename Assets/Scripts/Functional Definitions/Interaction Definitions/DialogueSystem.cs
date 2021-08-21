@@ -97,11 +97,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
-    private static Dictionary<string, string> offloadingDialogues = new Dictionary<string, string>();
+    public static Dictionary<string, string> offloadingDialogues = new Dictionary<string, string>();
 
     public static void InitCanvases()
     {
-        offloadingDialogues = new Dictionary<string, string>();
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
         traversers = new List<DialogueTraverser>();
         NodeCanvasManager.FetchCanvasTypes();
@@ -115,13 +114,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         var XMLImport = new XMLImportExport();
 
-        for (int i = 0; i < dialogueCanvasPaths.Count; i++)
-        {
-            string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, dialogueCanvasPaths[i]);
-            var entityID = $"{System.IO.Path.GetFileNameWithoutExtension(finalPath)}";
-            offloadingDialogues.Add(entityID, finalPath);
-        }
-
         if (Entity.OnEntitySpawn != null)
             Entity.OnEntitySpawn += startDialogueGraph;
         else
@@ -134,7 +126,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         var id = entity.ID;
         if (id == null || !offloadingDialogues.ContainsKey(id)) return;
 
-        Debug.LogFormat("Found: {0}", id);
         var path = offloadingDialogues[id];
         offloadingDialogues.Remove(id);
         var XMLImport = new XMLImportExport();

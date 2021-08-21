@@ -390,6 +390,17 @@ public class SectorManager : MonoBehaviour
                         }
 
                         PartIndexScript.index = wdata.partIndexDataArray;
+                        taskManager.offloadingSectors = new Dictionary<string, List<string>>();
+                        DialogueSystem.offloadingDialogues = new Dictionary<string, string>();
+                        wdata.sectorMappings.ForEach(om =>
+                        {
+                            if (!taskManager.offloadingSectors.ContainsKey(om.key))
+                            {
+                                taskManager.offloadingSectors.Add(om.key, new List<string>() { System.IO.Path.Combine(path, "Canvases", om.path + ".sectordata") });
+                            }
+                            else taskManager.offloadingSectors[om.key].Add(System.IO.Path.Combine(path, "Canvases", om.path + ".sectordata"));
+                        });
+                        wdata.dialogueMappings.ForEach(om => DialogueSystem.offloadingDialogues.Add(om.key, System.IO.Path.Combine(path, "Canvases", om.path + ".dialoguedata")));
                         continue;
                     }
 

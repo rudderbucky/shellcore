@@ -55,7 +55,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     public static string speakerID = null;
     public static List<string> speakerIDList = new List<string>();
     public Dictionary<string, string> offloadingMissions = new Dictionary<string, string>();
-    public Dictionary<string, string> offloadingSectors = new Dictionary<string, string>();
+    public Dictionary<string, List<string>> offloadingSectors = new Dictionary<string, List<string>>();
 
     public static Entity GetSpeaker()
     {
@@ -269,12 +269,6 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
                     traversers.Add(new MissionTraverser(canvas));
                 }
             }
-            else if (finalPath.Contains(".sectordata"))
-            {
-                var sectorName = $"{System.IO.Path.GetFileNameWithoutExtension(finalPath)}";
-                offloadingSectors.Add(sectorName, finalPath);
-                continue;
-            }
         }
 
         // reset all static condition variables
@@ -323,20 +317,22 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     public void startSectorGraph(string sectorName)
     {
         if (!offloadingSectors.ContainsKey(sectorName)) return;
-
-        var path = offloadingSectors[sectorName];
+        var pathList = offloadingSectors[sectorName];
         offloadingSectors.Remove(sectorName);
         var XMLImport = new XMLImportExport();
-        var canvas = XMLImport.Import(path) as SectorCanvas;
-        if (canvas != null)
+        foreach (var path in pathList)
         {
-            var traverser = new SectorTraverser(canvas);
-            sectorTraversers.Add(traverser);
-            if (traverser != null)
+            var canvas = XMLImport.Import(path) as SectorCanvas;
+            if (canvas != null)
             {
-                var start = traverser.findRoot();
-                traverser.startNode = (LoadSectorNode)start;
-                traverser.StartQuest();
+                var traverser = new SectorTraverser(canvas);
+                sectorTraversers.Add(traverser);
+                if (traverser != null)
+                {
+                    var start = traverser.findRoot();
+                    traverser.startNode = (LoadSectorNode)start;
+                    traverser.StartQuest();
+                }
             }
         }
     }
