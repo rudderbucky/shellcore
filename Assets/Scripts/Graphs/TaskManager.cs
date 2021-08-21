@@ -277,7 +277,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         UsePartCondition.OnPlayerReconstruct = new UnityEvent();
         WinBattleCondition.OnBattleWin = null;
         WinBattleCondition.OnBattleLose = null;
-        SectorManager.OnSectorLoad += startSectorGraph;
+        SectorManager.SectorGraphLoad += startSectorGraph;
 
         initialized = true;
     }

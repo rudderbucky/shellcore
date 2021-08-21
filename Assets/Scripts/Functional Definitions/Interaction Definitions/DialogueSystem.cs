@@ -95,6 +95,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         {
             traversers.Clear();
         }
+
+        if (offloadingDialogues != null)
+        {
+            offloadingDialogues.Clear();
+        }
     }
 
     public static Dictionary<string, string> offloadingDialogues = new Dictionary<string, string>();
@@ -124,7 +129,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private static void startDialogueGraph(Entity entity)
     {
         var id = entity.ID;
-        if (id == null || !offloadingDialogues.ContainsKey(id)) return;
+        if (id == null || offloadingDialogues == null || !offloadingDialogues.ContainsKey(id)) return;
 
         var path = offloadingDialogues[id];
         offloadingDialogues.Remove(id);
