@@ -26,7 +26,7 @@ public class Laser : Bullet
 
     protected override void Start()
     {
-        bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
         base.Start();
+        bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
     }
 }

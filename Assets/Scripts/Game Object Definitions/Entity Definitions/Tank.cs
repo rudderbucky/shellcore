@@ -118,10 +118,10 @@ public class Tank : GroundCraft, IOwnable
 
         for (int i = 0; i < targets.Count; i++)
         {
-            if (!targets[i] || 
-                targets[i].IsInvisible || 
-                targets[i] == this || 
-                FactionManager.IsAllied(faction, targets[i].faction) || 
+            if (!targets[i] ||
+                targets[i].IsInvisible ||
+                targets[i] == this ||
+                FactionManager.IsAllied(faction, targets[i].faction) ||
                 !Weapon.CheckCategoryCompatibility(targets[i]))
             {
                 targets.RemoveAt(i);
@@ -164,10 +164,6 @@ public class Tank : GroundCraft, IOwnable
                     index = path.Length - 1;
                 }
             }
-        }
-        else
-        {
-            Debug.Log("No valid targets.");
         }
     }
 

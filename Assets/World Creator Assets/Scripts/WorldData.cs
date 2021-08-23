@@ -20,6 +20,18 @@ public class WorldData : ScriptableObject
     }
 
     [System.Serializable]
+    public class OffloadMappings
+    {
+        public string key;
+        public string path;
+        public OffloadMappings(string key, string path)
+        {
+            this.key = key;
+            this.path = path;
+        }
+    }
+
+    [System.Serializable]
     public class PartyData
     {
         public string attackDialogue;
@@ -47,4 +59,6 @@ public class WorldData : ScriptableObject
     public string author;
     public string description;
     public PartIndexData[] partIndexDataArray;
+    public List<OffloadMappings> dialogueMappings;
+    public List<OffloadMappings> sectorMappings;
 }

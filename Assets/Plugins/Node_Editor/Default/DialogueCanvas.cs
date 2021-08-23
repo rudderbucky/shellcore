@@ -7,11 +7,11 @@ namespace NodeEditorFramework.Standard
     public class DialogueCanvas : NodeCanvas
     {
         public override string canvasName { get { return "Dialogue Canvas"; } }
-        public string missionName;
+        public string entityID;
 
         protected override void OnCreate()
         {
-            
+
         }
 
         public void OnEnable()

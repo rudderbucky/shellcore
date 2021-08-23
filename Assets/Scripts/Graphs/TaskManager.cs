@@ -54,6 +54,8 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     // Move to Dialogue System?
     public static string speakerID = null;
     public static List<string> speakerIDList = new List<string>();
+    public Dictionary<string, string> offloadingMissions = new Dictionary<string, string>();
+    public Dictionary<string, List<string>> offloadingSectors = new Dictionary<string, List<string>>();
 
     public static Entity GetSpeaker()
     {
@@ -184,6 +186,11 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     {
         if (incrementMode)
         {
+            if (!taskVariables.ContainsKey(name))
+            {
+                Debug.LogFormat("Tried to read unknown task variable '{0}'", name);
+                taskVariables[name] = 0;
+            }
             taskVariables[name] += value;
         }
         else
@@ -199,13 +206,13 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
     public int GetTaskVariable(string name)
     {
-        if (taskVariables.ContainsKey(name))
+        if (!taskVariables.ContainsKey(name))
         {
-            return taskVariables[name];
+            Debug.LogFormat("Tried to read unknown task variable '{0}'", name);
+            taskVariables[name] = 0;
         }
 
-        Debug.LogWarningFormat("Tried to read unknown task variable '{0}'", name);
-        return 0;
+        return taskVariables[name];
     }
 
     void initCanvases(bool forceReInit)
@@ -235,20 +242,31 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
             if (finalPath.Contains(".taskdata"))
             {
+
+                if (SaveHandler.instance?.GetSave()?.missions != null)
+                {
+                    var missionName = $"{System.IO.Path.GetFileNameWithoutExtension(finalPath)}";
+                    var mission = SaveHandler.instance.GetSave().missions.Find(m => m.name == missionName);
+                    if (mission != null)
+                    {
+                        if (mission.status == Mission.MissionStatus.Complete)
+                            continue;
+                        if (mission.prerequisites != null && SaveHandler.instance.GetSave().missions.Exists(m =>
+                            mission.prerequisites.Contains(m.name)
+                                && m.status != Mission.MissionStatus.Complete))
+                        {
+                            offloadingMissions.Add(missionName, finalPath);
+                            continue;
+                        }
+                    }
+
+                }
+
                 var canvas = XMLImport.Import(finalPath) as QuestCanvas;
 
                 if (canvas != null)
                 {
                     traversers.Add(new MissionTraverser(canvas));
-                }
-            }
-            else if (finalPath.Contains(".sectordata"))
-            {
-                var canvas = XMLImport.Import(finalPath) as SectorCanvas;
-
-                if (canvas != null)
-                {
-                    sectorTraversers.Add(new SectorTraverser(canvas));
                 }
             }
         }
@@ -259,8 +277,64 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         UsePartCondition.OnPlayerReconstruct = new UnityEvent();
         WinBattleCondition.OnBattleWin = null;
         WinBattleCondition.OnBattleLose = null;
+        SectorManager.SectorGraphLoad += startSectorGraph;
 
         initialized = true;
+    }
+
+    public void startNewQuest(string missionName)
+    {
+        if (!offloadingMissions.ContainsKey(missionName)) return;
+        var mission = SaveHandler.instance.GetSave().missions.Find(m => m.name == missionName);
+        if (mission.prerequisites != null && SaveHandler.instance.GetSave().missions.Exists(m =>
+            mission.prerequisites.Contains(m.name)
+                && m.status != Mission.MissionStatus.Complete))
+            return;
+
+        var path = offloadingMissions[missionName];
+        offloadingMissions.Remove(missionName);
+        var XMLImport = new XMLImportExport();
+        var canvas = XMLImport.Import(path) as QuestCanvas;
+
+        if (canvas != null)
+        {
+            var traverser = new MissionTraverser(canvas);
+            if (traverser != null)
+            {
+                traversers.Add(traverser);
+                var start = traverser.findRoot();
+                if (start != null)
+                {
+                    start.TryAddMission();
+                }
+
+                traverser.StartQuest();
+            }
+        }
+
+    }
+
+    public void startSectorGraph(string sectorName)
+    {
+        if (!offloadingSectors.ContainsKey(sectorName)) return;
+        var pathList = offloadingSectors[sectorName];
+        offloadingSectors.Remove(sectorName);
+        var XMLImport = new XMLImportExport();
+        foreach (var path in pathList)
+        {
+            var canvas = XMLImport.Import(path) as SectorCanvas;
+            if (canvas != null)
+            {
+                var traverser = new SectorTraverser(canvas);
+                sectorTraversers.Add(traverser);
+                if (traverser != null)
+                {
+                    var start = traverser.findRoot();
+                    traverser.startNode = (LoadSectorNode)start;
+                    traverser.StartQuest();
+                }
+            }
+        }
     }
 
     // Traverse quest graph
@@ -312,9 +386,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
         for (int i = 0; i < sectorTraversers.Count; i++)
         {
-            var start = sectorTraversers[i].findRoot();
-            sectorTraversers[i].startNode = (LoadSectorNode)start;
-            sectorTraversers[i].StartQuest();
+
         }
     }
 

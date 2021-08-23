@@ -51,6 +51,11 @@ public class SectorTraverser : Traverser
         }
     }
 
+    public new LoadSectorNode findRoot()
+    {
+        return base.findRoot() as LoadSectorNode; // root node of a SectorCanvas must be a EnterSectorNode
+    }
+
     public override void StartQuest()
     {
         SectorManager.SectorGraphLoad += LoadSector;

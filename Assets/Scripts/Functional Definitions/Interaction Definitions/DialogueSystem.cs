@@ -95,7 +95,14 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         {
             traversers.Clear();
         }
+
+        if (offloadingDialogues != null)
+        {
+            offloadingDialogues.Clear();
+        }
     }
+
+    public static Dictionary<string, string> offloadingDialogues = new Dictionary<string, string>();
 
     public static void InitCanvases()
     {
@@ -112,19 +119,34 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         var XMLImport = new XMLImportExport();
 
-        for (int i = 0; i < dialogueCanvasPaths.Count; i++)
+        if (Entity.OnEntitySpawn != null)
+            Entity.OnEntitySpawn += startDialogueGraph;
+        else
+            Entity.OnEntitySpawn = startDialogueGraph;
+        initialized = true;
+    }
+
+    private static void startDialogueGraph(Entity entity)
+    {
+        var id = entity.ID;
+        if (id == null || offloadingDialogues == null || !offloadingDialogues.ContainsKey(id)) return;
+
+        var path = offloadingDialogues[id];
+        offloadingDialogues.Remove(id);
+        var XMLImport = new XMLImportExport();
+        var canvas = XMLImport.Import(path) as DialogueCanvas;
+        if (canvas != null)
         {
-            string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, dialogueCanvasPaths[i]);
-            //Debug.Log("Dialogue Canvas path [" + i + "] = " + finalPath);
-            var canvas = XMLImport.Import(finalPath) as DialogueCanvas;
-            //Debug.Log(canvas);
-            if (canvas != null)
+            var traverser = new DialogueTraverser(canvas);
+            traversers.Add(traverser);
+            if (traverser != null)
             {
-                traversers.Add(new DialogueTraverser(canvas));
+                var start = traverser.findRoot();
+                canvas.entityID = start.EntityID;
+                traverser.StartQuest();
             }
         }
-
-        initialized = true;
+        else Debug.LogWarning("null canvas path");
     }
 
     public static bool GetInitialized()
@@ -148,7 +170,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void Update()
     {
-        if (window && speakerPos != null && player && (player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 && !isInCutscene)
+        if (window && speakerPos != null && player &&
+            ((player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 || player.GetIsDead()) && !isInCutscene)
         {
             endDialogue();
         }
