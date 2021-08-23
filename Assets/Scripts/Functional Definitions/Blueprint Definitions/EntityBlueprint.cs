@@ -20,6 +20,12 @@ public class EntityBlueprint : ScriptableObject
         public string secondaryData;
         public string partID; //Part blueprint ID
         public bool shiny;
+        public bool Equals(PartInfo other)
+        {
+            return this.location == other.location && this.rotation == other.rotation && this.mirrored == other.mirrored &&
+                this.abilityID == other.abilityID && this.tier == other.tier && this.secondaryData == other.secondaryData && this.partID
+                    == other.partID && this.shiny == other.shiny;
+        }
     }
 
     public string entityName = "Unnamed";

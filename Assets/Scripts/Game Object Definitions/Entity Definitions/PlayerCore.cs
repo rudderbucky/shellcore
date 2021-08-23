@@ -226,7 +226,8 @@ public class PlayerCore : ShellCore
     {
         foreach (var part in partsToDestroy)
         {
-            Destroy(part.gameObject);
+            if (part && part.gameObject)
+                Destroy(part.gameObject);
         }
 
         partsToDestroy.Clear();

@@ -37,6 +37,8 @@ public class Yard : AirConstruct, IShipBuilder
         base.Start();
     }
 
+    public static readonly int YardProximitySquared = 75;
+
     protected override void Update()
     {
         if (!isDead)
@@ -52,14 +54,23 @@ public class Yard : AirConstruct, IShipBuilder
 
         if (FactionManager.IsAllied(faction, 0))
         {
-            if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= 75)
+            if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= YardProximitySquared)
             {
                 var player = PlayerCore.Instance;
-                if (player.GetTractorTarget() && (player.GetTractorTarget().GetComponent<ShellPart>()
-                                                  || player.GetTractorTarget().GetComponent<Shard>()) && !tractor.GetTractorTarget())
+                if (player)
                 {
-                    tractor.SetTractorTarget(player.GetTractorTarget());
-                    player.SetTractorTarget(null);
+                    if (!player.HasRepaired)
+                    {
+                        player.repairFinalized = false;
+                        StartCoroutine(player.StartYardRepair());
+                    }
+                    player.HasRepaired = true;
+                    if (player.GetTractorTarget() && (player.GetTractorTarget().GetComponent<ShellPart>()
+                                                 || player.GetTractorTarget().GetComponent<Shard>()) && !tractor.GetTractorTarget())
+                    {
+                        tractor.SetTractorTarget(player.GetTractorTarget());
+                        player.SetTractorTarget(null);
+                    }
                 }
             }
 

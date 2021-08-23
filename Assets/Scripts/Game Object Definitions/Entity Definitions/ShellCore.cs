@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -17,6 +18,69 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
     private TractorBeam tractor;
+    private bool hasRepaired;
+    public bool HasRepaired
+    {
+        get { return hasRepaired; }
+        set { hasRepaired = value; }
+    }
+
+    private List<EntityBlueprint.PartInfo> partsToRepairAdd = new List<EntityBlueprint.PartInfo>();
+
+    public IEnumerator StartYardRepair()
+    {
+        foreach (var part in parts)
+        {
+            if (part.name != "Shell Sprite")
+            {
+                part.Detach();
+                part.GetComponentInChildren<Ability>()?.SetDestroyed(true);
+                Destroy(part.gameObject, 3);
+            }
+        }
+        parts.RemoveAll(p => p.name != "Shell Sprite");
+        ResetWeight();
+        ResetHealths();
+        blueprint.parts.ForEach(p => partsToRepairAdd.Add(p));
+        foreach (var part in blueprint.parts)
+        {
+            partsToRepairAdd.Remove(part);
+            if (!parts.Exists(p => p.info.Equals(part)))
+            {
+                SetUpPart(part);
+                if (HUDScript.instance && HUDScript.instance.abilityHandler)
+                {
+                    HUDScript.instance.abilityHandler.Deinitialize();
+                    HUDScript.instance.abilityHandler.Initialize(PlayerCore.Instance);
+                }
+                yield return new WaitForSeconds(1f / blueprint.parts.Count);
+            }
+        }
+        FinalizeRepair();
+    }
+
+    public bool repairFinalized = false;
+    private void FinalizeRepair()
+    {
+        if (repairFinalized) return;
+        repairFinalized = true;
+        foreach (var part in partsToRepairAdd)
+        {
+            if (!parts.Exists(p => p.info.Equals(part)))
+            {
+                SetUpPart(part).GetComponent<PassiveAbility>()?.Activate();
+            }
+        }
+        if (HUDScript.instance && HUDScript.instance.abilityHandler)
+        {
+            HUDScript.instance.abilityHandler.Deinitialize();
+            HUDScript.instance.abilityHandler.Initialize(PlayerCore.Instance);
+        }
+        partsToRepairAdd.Clear();
+        maxHealth.CopyTo(baseMaxHealth, 0);
+        maxHealth.CopyTo(currentHealth, 0);
+        ActivatePassives();
+    }
 
     public int GetTotalCommandLimit()
     {
@@ -104,6 +168,33 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        bool nearAlliedYard = false;
+        foreach (Entity ent in AIData.entities)
+        {
+            var yard = ent as Yard;
+            if (!yard) continue;
+            if (!FactionManager.IsAllied(yard.faction, faction))
+            {
+                continue;
+            }
+            if ((yard.transform.position - transform.position).sqrMagnitude > Yard.YardProximitySquared) continue;
+            nearAlliedYard = true;
+            break;
+        }
+        if (!nearAlliedYard)
+        {
+            if (HasRepaired)
+            {
+                StopCoroutine(StartYardRepair());
+                FinalizeRepair();
+            }
+            HasRepaired = false;
         }
     }
 

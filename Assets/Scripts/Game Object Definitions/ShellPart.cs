@@ -171,6 +171,7 @@ public class ShellPart : MonoBehaviour
             shooter.GetComponent<SpriteRenderer>().sortingLayerName = "Air Entities";
         }
 
+        GetComponentInChildren<Ability>()?.SetDestroyed(true);
         GetComponent<Collider2D>().enabled = true;
 
         // when a part detaches it should always be completely visible

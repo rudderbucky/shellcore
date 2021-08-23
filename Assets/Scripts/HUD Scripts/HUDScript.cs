@@ -6,6 +6,8 @@
 public class HUDScript : MonoBehaviour
 {
     private bool initialized;
+    public static HUDScript instance;
+    public AbilityHandler abilityHandler;
 
     private void InitializeConstantHUD(PlayerCore player)
     {
@@ -31,7 +33,8 @@ public class HUDScript : MonoBehaviour
         }
 
         GetComponentInChildren<HealthBarScript>().Initialize(player);
-        GetComponentInChildren<AbilityHandler>().Initialize(player);
+        abilityHandler = GetComponentInChildren<AbilityHandler>();
+        if (abilityHandler) abilityHandler.Initialize(player);
         if (!initialized)
         {
             InitializeConstantHUD(player);
@@ -39,7 +42,7 @@ public class HUDScript : MonoBehaviour
 
         Camera.main.GetComponent<CameraScript>().Focus(player.transform.position);
         initialized = true;
-        // GetComponentInChildren<FadeUIScript>().Initialize(player); temporarily removed due to implementation difficulties
+        instance = this;
     }
 
     /// <summary>

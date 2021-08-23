@@ -63,7 +63,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected bool initialized; // is the entity safe to call update() on?
     public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
     public string ID; // used in tasks
-    private float[] baseMaxHealth = new float[3];
+    protected float[] baseMaxHealth = new float[3];
     private int controlStacks;
 
     public int ControlStacks
@@ -212,6 +212,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     public static readonly float weightMultiplier = 25;
     public static readonly float coreWeight = 40;
+    private int sortingOrder;
 
     // terrain type of entity
     // binary flag
@@ -331,7 +332,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             PolygonCollider2D collider = childObject.AddComponent<PolygonCollider2D>(); // add collider
             collider.isTrigger = true; // do not allow "actual" collisions
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>(); // add renderer
-            renderer.sortingOrder = 100; // hardcoded max shell sprite value TODO: change this to being dynamic with the other parts
             if (blueprint)
             {
                 // check if it contains a blueprint (it should)
@@ -478,8 +478,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         DestroyOldParts();
 
         parts.Clear();
-        blueprint.shellHealth.CopyTo(maxHealth, 0);
-        blueprint.baseRegen.CopyTo(regenRate, 0);
 
         if (blueprint)
         {
@@ -536,109 +534,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         GetComponent<Rigidbody2D>().mass = 1; // reset mass
 
         var drone = this as Drone;
-        weight = drone ? 25 : coreWeight;
+        ResetWeight();
 
-        var isLightDrone = drone && drone.type == DroneType.Light; // used for light drone weight reduction
-
-        int sortingOrder = 1;
+        sortingOrder = 1;
         //For shellcores, create the tractor beam
         // Create shell parts
-        if (blueprint != null && blueprint.parts != null)
-        {
-            for (int i = 0; i < blueprint.parts.Count; i++)
-            {
-                EntityBlueprint.PartInfo part = blueprint.parts[i];
-                PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(part.partID);
-
-                GameObject partObject = ShellPart.BuildPart(partBlueprint);
-                ShellPart shellPart = partObject.GetComponent<ShellPart>();
-                shellPart.info = part;
-                partObject.transform.SetParent(transform, false);
-                partObject.transform.SetAsFirstSibling();
-
-                //Add an ability to the part:
-
-                WeaponAbility ab = AbilityUtilities.AddAbilityToGameObjectByID(partObject, part.abilityID, part.secondaryData, part.tier) as WeaponAbility;
-                if (ab)
-                {
-                    // add weapon diversity
-                    ab.type = DroneUtilities.GetDiversityTypeByEntity(this);
-                }
-
-                partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
-                partObject.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
-                SpriteRenderer sr = partObject.GetComponent<SpriteRenderer>();
-                // sr.flipX = part.mirrored; this doesn't work, it does not flip the collider hitbox
-                var tmp = partObject.transform.localScale;
-                tmp.x = part.mirrored ? -1 : 1;
-                partObject.transform.localScale = tmp;
-                sr.sortingOrder = ++sortingOrder;
-                //entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
-                var partWeight = isLightDrone ? partBlueprint.mass * 0.6F * weightMultiplier : partBlueprint.mass * weightMultiplier;
-                weight += partWeight;
-                maxHealth[0] += partBlueprint.health / 2;
-                maxHealth[1] += partBlueprint.health / 4;
-
-                string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
-                // Add shooter
-                if (shooterID != null)
-                {
-                    var shooter = new GameObject("Shooter");
-                    shooter.transform.SetParent(partObject.transform);
-                    shooter.transform.localPosition = Vector3.zero;
-                    shooter.transform.localRotation = Quaternion.identity;
-                    var shooterSprite = shooter.AddComponent<SpriteRenderer>();
-                    shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-                    // if(blueprint.parts.Count < 2) shooterSprite.sortingOrder = 500; TODO: Figure out what these lines do
-                    // shooterSprite.sortingOrder = sr.sortingOrder + 1;
-                    shooterSprite.sortingOrder = 500;
-                    shellPart.shooter = shooter;
-                    if (AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons)
-                    {
-                        shellPart.weapon = true;
-                    }
-                }
-
-                var weaponAbility = partObject.GetComponent<WeaponAbility>();
-                if (weaponAbility)
-                {
-                    // if the terrain and category wasn't preset set to the enitity's properties
-
-                    if (weaponAbility.terrain == TerrainType.Unset)
-                    {
-                        weaponAbility.terrain = Terrain;
-                    }
-
-                    if (weaponAbility.category == EntityCategory.Unset)
-                    {
-                        weaponAbility.category = category;
-                    }
-                }
-
-
-                parts.Add(partObject.GetComponent<ShellPart>());
-                if (partObject.GetComponent<Ability>())
-                {
-                    abilities.Insert(0, partObject.GetComponent<Ability>());
-                }
-
-                // Disable collider if no sprite
-                if (!(partObject.GetComponent<SpriteRenderer>() && partObject.GetComponent<SpriteRenderer>().sprite)
-                    && partObject.GetComponent<Collider2D>() && !partObject.GetComponent<Harvester>())
-                {
-                    partObject.GetComponent<Collider2D>().enabled = false;
-                }
-            }
-
-            // Drone shell and core health penalty
-            if (drone)
-            {
-                maxHealth[0] /= 2;
-                maxHealth[1] /= 4;
-            }
-
-            maxHealth.CopyTo(baseMaxHealth, 0);
-        }
+        SetUpParts(blueprint);
 
         var shellRenderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
         if (shellRenderer)
@@ -714,6 +615,133 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    protected void ResetWeight()
+    {
+        var drone = this as Drone;
+        weight = drone ? 25 : coreWeight;
+    }
+
+    protected void SetUpParts(EntityBlueprint blueprint)
+    {
+        if (blueprint != null && blueprint.parts != null)
+        {
+            ResetHealths();
+            for (int i = 0; i < blueprint.parts.Count; i++)
+            {
+                SetUpPart(blueprint.parts[i]);
+            }
+
+            var drone = this as Drone;
+            // Drone shell and core health penalty
+            if (drone)
+            {
+                maxHealth[0] /= 2;
+                maxHealth[1] /= 4;
+            }
+
+            maxHealth.CopyTo(baseMaxHealth, 0);
+        }
+    }
+
+    protected void ResetHealths()
+    {
+        blueprint.shellHealth.CopyTo(maxHealth, 0);
+        blueprint.baseRegen.CopyTo(regenRate, 0);
+    }
+
+    protected ShellPart SetUpPart(EntityBlueprint.PartInfo part)
+    {
+        var drone = this as Drone;
+        var isLightDrone = drone && drone.type == DroneType.Light; // used for light drone weight reduction
+        PartBlueprint partBlueprint = ResourceManager.GetAsset<PartBlueprint>(part.partID);
+
+        GameObject partObject = ShellPart.BuildPart(partBlueprint);
+        ShellPart shellPart = partObject.GetComponent<ShellPart>();
+        shellPart.info = part;
+        partObject.transform.SetParent(transform, false);
+        partObject.transform.SetAsFirstSibling();
+
+        //Add an ability to the part:
+
+        WeaponAbility ab = AbilityUtilities.AddAbilityToGameObjectByID(partObject, part.abilityID, part.secondaryData, part.tier) as WeaponAbility;
+        if (ab)
+        {
+            // add weapon diversity
+            ab.type = DroneUtilities.GetDiversityTypeByEntity(this);
+        }
+
+        partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
+        partObject.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
+        SpriteRenderer sr = partObject.GetComponent<SpriteRenderer>();
+        // sr.flipX = part.mirrored; this doesn't work, it does not flip the collider hitbox
+        var tmp = partObject.transform.localScale;
+        tmp.x = part.mirrored ? -1 : 1;
+        partObject.transform.localScale = tmp;
+        sr.sortingOrder = ++sortingOrder;
+        //entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
+        var partWeight = isLightDrone ? partBlueprint.mass * 0.6F * weightMultiplier : partBlueprint.mass * weightMultiplier;
+        weight += partWeight;
+        maxHealth[0] += partBlueprint.health / 2;
+        maxHealth[1] += partBlueprint.health / 4;
+
+        string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
+        // Add shooter
+        if (shooterID != null)
+        {
+            var shooter = new GameObject("Shooter");
+            shooter.transform.SetParent(partObject.transform);
+            shooter.transform.localPosition = Vector3.zero;
+            shooter.transform.localRotation = Quaternion.identity;
+            var shooterSprite = shooter.AddComponent<SpriteRenderer>();
+            shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
+            // if(blueprint.parts.Count < 2) shooterSprite.sortingOrder = 500; TODO: Figure out what these lines do
+            // shooterSprite.sortingOrder = sr.sortingOrder + 1;
+            shooterSprite.sortingOrder = 500;
+            shellPart.shooter = shooter;
+            if (AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons)
+            {
+                shellPart.weapon = true;
+            }
+        }
+
+        var weaponAbility = partObject.GetComponent<WeaponAbility>();
+        if (weaponAbility)
+        {
+            // if the terrain and category wasn't preset set to the enitity's properties
+
+            if (weaponAbility.terrain == TerrainType.Unset)
+            {
+                weaponAbility.terrain = Terrain;
+            }
+
+            if (weaponAbility.category == EntityCategory.Unset)
+            {
+                weaponAbility.category = category;
+            }
+        }
+
+        var shellRenderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
+        if (shellRenderer)
+            shellRenderer.sortingOrder = ++sortingOrder;
+
+        var coreRenderer = GetComponent<SpriteRenderer>();
+        if (coreRenderer) coreRenderer.sortingOrder = ++sortingOrder;
+
+        parts.Add(partObject.GetComponent<ShellPart>());
+        if (partObject.GetComponent<Ability>())
+        {
+            abilities.Insert(0, partObject.GetComponent<Ability>());
+        }
+
+        // Disable collider if no sprite
+        if (!(partObject.GetComponent<SpriteRenderer>() && partObject.GetComponent<SpriteRenderer>().sprite)
+            && partObject.GetComponent<Collider2D>() && !partObject.GetComponent<Harvester>())
+        {
+            partObject.GetComponent<Collider2D>().enabled = false;
+        }
+
+        return partObject.GetComponent<ShellPart>();
+    }
     public bool GetIsDead()
     {
         return isDead; // is dead
@@ -771,10 +799,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
         }
 
-        for (int i = 0; i < parts.Count; i++)
-        {
-            parts[i].Detach();
-        }
+        DetachAllParts();
 
         var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
 
@@ -802,6 +827,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         GameObject deathExplosion = Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
+    }
+
+    protected void DetachAllParts()
+    {
+        for (int i = 0; i < parts.Count; i++)
+        {
+            parts[i].Detach();
+        }
     }
 
     protected virtual void PostDeath()
@@ -870,7 +903,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         initialized = true;
     }
 
-    private void ActivatePassives()
+    protected void ActivatePassives()
     {
         foreach (var ability in abilities)
         {

@@ -12,7 +12,7 @@
 
     public override void Activate()
     {
-        if (State != AbilityState.Active)
+        if (State != AbilityState.Active && State != AbilityState.Destroyed)
         {
             State = AbilityState.Active;
             Execute();
