@@ -59,15 +59,13 @@ namespace NodeEditorFramework.Standard
                         PartyManager.instance.Unassign(entityID);
                     }
                 }
-                else
-                {
-                    if (PlayerCore.Instance.cursave.disabledPartyIDs.Contains(entityID))
-                    {
-                        PlayerCore.Instance.cursave.disabledPartyIDs.Remove(entityID);
-                        PartyManager.instance.UpdatePortraits();
-                    }
-                }
+                
             }
+            else if (PlayerCore.Instance.cursave.disabledPartyIDs.Contains(entityID) && PlayerCore.Instance && PlayerCore.Instance.cursave != null)
+                {
+                    PlayerCore.Instance.cursave.disabledPartyIDs.Remove(entityID);
+                    PartyManager.instance.UpdatePortraits();
+                } 
             return 0;
         }
     }
