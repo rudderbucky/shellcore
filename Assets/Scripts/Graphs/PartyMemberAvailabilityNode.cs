@@ -46,28 +46,26 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            if (disableMember && PlayerCore.Instance && PlayerCore.Instance.cursave != null)
+            if (!PlayerCore.Instance || PlayerCore.Instance.cursave == null || PlayerCore.Instance.cursave.disabledPartyIDs == null)
+                return 0;
+
+            if (disableMember)
             {
-                if (disableMember)
+                if (!PlayerCore.Instance.cursave.disabledPartyIDs.Contains(entityID))
                 {
-                    if (!PlayerCore.Instance.cursave.disabledPartyIDs.Contains(entityID))
-                    {
-                        PlayerCore.Instance.cursave.disabledPartyIDs.Add(entityID);
-                    }
-                    if (PartyManager.instance && PartyManager.instance.partyMembers.Exists(x => x.ID == entityID))
-                    {
-                        PartyManager.instance.Unassign(entityID);
-                    }
+                    PlayerCore.Instance.cursave.disabledPartyIDs.Add(entityID);
                 }
-                else
+                if (PartyManager.instance && PartyManager.instance.partyMembers.Exists(x => x.ID == entityID))
                 {
-                    if (PlayerCore.Instance.cursave.disabledPartyIDs.Contains(entityID))
-                    {
-                        PlayerCore.Instance.cursave.disabledPartyIDs.Remove(entityID);
-                        PartyManager.instance.UpdatePortraits();
-                    }
+                    PartyManager.instance.Unassign(entityID);
                 }
             }
+            else if (PlayerCore.Instance.cursave.disabledPartyIDs.Contains(entityID))
+            {
+                PlayerCore.Instance.cursave.disabledPartyIDs.Remove(entityID);
+                PartyManager.instance.UpdatePortraits();
+            }
+
             return 0;
         }
     }
