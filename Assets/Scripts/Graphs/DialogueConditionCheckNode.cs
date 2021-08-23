@@ -21,6 +21,7 @@ namespace NodeEditorFramework.Standard
         ConnectionKnobAttribute outputFailStyle = new ConnectionKnobAttribute("Fail", Direction.Out, "Dialogue", ConnectionCount.Single, NodeSide.Right, 60);
 
         public string checkpointName = ""; // preserved for backwards compatibility
+        public int variableType = 0;
 
         public override void InitConnectionKnobs()
         {
@@ -35,6 +36,7 @@ namespace NodeEditorFramework.Standard
         public override void OnCreate()
         {
             InitConnectionKnobs();
+            base.variableType = (VariableType)variableType;
         }
 
         public override void NodeGUI()
@@ -50,12 +52,13 @@ namespace NodeEditorFramework.Standard
             }
 
             base.NodeGUI();
+            variableType = (int)base.variableType;
         }
 
         public override int Traverse()
         {
             // Backward compatibility
-            if (variableType == 0)
+            if (base.variableType == VariableType.Checkpoint)
             {
                 if (variableName == "" && checkpointName != "")
                 {
