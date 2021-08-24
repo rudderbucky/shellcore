@@ -9,10 +9,14 @@ public enum DroneType
     Gun,
     Counter,
     Torpedo,
-    Heavy
+    Heavy,
+    BulletMini,
+    Combat,
+    Laser,
+    Bomber
 }
 
-[CreateAssetMenu(fileName = "DroneSpawnAbility", menuName = "ShellCore/Drone Spawn Data", order = 8)]
+[CreateAssetMenu(fileName = "DroneSpawnAbility", menuName = "ShellCore/Drone Spawn Data", order = 12)]
 public class DroneSpawnData : ScriptableObject
 {
     public string drone;
