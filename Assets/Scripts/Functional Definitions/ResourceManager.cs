@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Experimental.Rendering;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -167,8 +168,8 @@ public class ResourceManager : MonoBehaviour
             //load sprites
             for (int i = 0; i < sprites.Count; i++)
             {
-                Texture2D texture = new Texture2D(2, 2);
-                texture.wrapMode = TextureWrapMode.Mirror;
+                Texture2D texture = new Texture2D(2, 2, DefaultFormat.HDR, TextureCreationFlags.None);
+                texture.wrapMode = TextureWrapMode.Clamp;
                 texture.LoadImage(File.ReadAllBytes(sprites[i].Item2));
                 texture.filterMode = FilterMode.Trilinear;
                 resources[sprites[i].Item1] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));

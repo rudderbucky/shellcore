@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="1225.25,284.25" zoom="1.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="993184896" type="StartDialogueNode" pos="-1450.4,-327.2">
+			<Port ID="1457643776" name="input" dynamic="False" />
+			<Port ID="-2090296960" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="2092452081" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="1391072256" type="EndDialogue" pos="-665.6,-224.8">
+			<Port ID="1567049472" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1512742272" type="DialogueNode" pos="-1137.6,-342.8">
+			<Port ID="-1052856832" name="input" dynamic="False" />
+			<Port ID="-15416704" name="cancel" dynamic="False" />
+			<Port ID="-762443264" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">190</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1787428634" />
+			<Variable name="answers" refID="1608309504" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-2090296960" port2ID="-1052856832" />
+		<Connection port1ID="1567049472" port2ID="-762443264" />
+	</Connections>
+	<Objects>
+		<Object refID="2092452081" type="System.String">
+			<string>capitol-northern-heavy-scouter</string>
+		</Object>
+		<Object refID="-1787428634" type="System.String">
+			<string>How could anyone make it to Haven 3 in less than a minute? This guy is clearly delusional. Do whatever you want, but I'm staying right where I am!</string>
+		</Object>
+		<Object refID="1608309504" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Yay, the name drop! I've been waiting for the name drop.</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

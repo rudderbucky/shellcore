@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-331.4,-85.8" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Conditions" ID="1585538560" type="ConditionGroupNode" pos="222,135">
+			<Port ID="29023104" name="input" dynamic="False" />
+			<Port ID="-269948032" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="767492096" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Test Variable" ID="-634548480" type="TestVariableNode" pos="-60,-13">
+			<Port ID="1066463232" name="inputLeft" dynamic="False" />
+			<Port ID="2103903360" name="outputTrue" dynamic="False" />
+			<Port ID="-1153623808" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-797989472" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Time Trigger" ID="1636919296" type="TimeTrigger" pos="144,285">
+			<Port ID="-116183680" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">200</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Enter Sector" ID="-1144855552" type="LoadSectorNode" pos="-250,-80">
+			<Port ID="921256448" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-613582424" />
+		</Node>
+		<Node name="Start Dialogue" ID="-695727488" type="StartDialogueNode" pos="220,-90">
+			<Port ID="1958696576" name="input" dynamic="False" />
+			<Port ID="-1298830592" name="output" dynamic="False" />
+			<Port ID="-2045857152" name="ContinueAsync" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1008417024" name="ContinueAsync" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="425824048" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">true</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Skirmish Menu" ID="-717983232" type="SkirmishMenuNode" pos="550,-80">
+			<Port ID="-261390464" name="input" dynamic="False" />
+			<Variable name="skirmishOptions" refID="-649771008" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="29023104" port2ID="-2045857152" />
+		<Connection port1ID="-269948032" port2ID="-116183680" />
+		<Connection port1ID="767492096" port2ID="1958696576" />
+		<Connection port1ID="1066463232" port2ID="921256448" />
+		<Connection port1ID="2103903360" port2ID="1958696576" />
+		<Connection port1ID="-1298830592" port2ID="-261390464" />
+	</Connections>
+	<Objects>
+		<Object refID="-797989472" type="System.String">
+			<string>EP2Finish</string>
+		</Object>
+		<Object refID="-613582424" type="System.String">
+			<string>BattleZone Delta</string>
+		</Object>
+		<Object refID="425824048" type="System.String">
+			<string>deltacarrier</string>
+		</Object>
+		<Object refID="-649771008" type="System.Collections.Generic.List`1[[SkirmishOption, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]">
+			<ArrayOfSkirmishOption xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<SkirmishOption>
+					<creditLimit>30000</creditLimit>
+					<mapDescription>Delta deldelta deltadelel delta delta, deltadel deldeldelta delta. Delta delta!</mapDescription>
+					<entityID>deltareduxcarrier</entityID>
+					<sectorName>BattleZone Delta Redux</sectorName>
+				</SkirmishOption>
+			</ArrayOfSkirmishOption>
+		</Object>
+	</Objects>
+</NodeCanvas>

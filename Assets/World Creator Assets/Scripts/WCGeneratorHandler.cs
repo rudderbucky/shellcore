@@ -466,7 +466,9 @@ public class WCGeneratorHandler : MonoBehaviour
                             }
                         }
                         if (missionName != null)
+                        {
                             File.Move(canvasPath, System.IO.Path.Combine(System.IO.Path.GetDirectoryName(canvasPath), missionName + ".taskdata"));
+                        }
                         break;
                     case ".sectordata":
                         var sectorCanvas = XMLImport.Import(canvasPath) as SectorCanvas;

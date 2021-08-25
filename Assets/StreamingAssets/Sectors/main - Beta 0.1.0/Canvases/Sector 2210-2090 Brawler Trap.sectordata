@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-53.8,69.39999" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="AI Follow" ID="668617856" type="AIFollowNode" pos="20,-160">
+			<Port ID="1580510720" name="output" dynamic="False" />
+			<Port ID="-1677016448" name="input" dynamic="False" />
+			<Variable name="followerID" refID="9132476" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="AI Follow" ID="-2016830208" type="AIFollowNode" pos="220,-160">
+			<Port ID="-639576320" name="output" dynamic="False" />
+			<Port ID="397863808" name="input" dynamic="False" />
+			<Variable name="followerID" refID="412417003" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="Conditions" ID="-884521216" type="ConditionGroupNode" pos="-180,-160">
+			<Port ID="1435303936" name="input" dynamic="False" />
+			<Port ID="-494369536" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="543070592" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Enter Sector" ID="-1937713664" type="LoadSectorNode" pos="-380,-160">
+			<Port ID="30459648" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1464241637" />
+		</Node>
+		<Node name="Check Entity Existence" ID="1190359040" type="CheckEntityCondition" pos="-380,-90">
+			<Port ID="-1006980480" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<Variable name="entityID" refID="-703266908" />
+			<boolean name="rangeCheck">true</boolean>
+			<int name="distanceFromPlayer">15</int>
+			<boolean name="lessThan">true</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1580510720" port2ID="397863808" />
+		<Connection port1ID="-1677016448" port2ID="543070592" />
+		<Connection port1ID="1435303936" port2ID="30459648" />
+		<Connection port1ID="-494369536" port2ID="-1006980480" />
+	</Connections>
+	<Objects>
+		<Object refID="9132476" type="System.String">
+			<string>BrawlerAmbush1</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+		<Object refID="412417003" type="System.String">
+			<string>BrawlerAmbush2</string>
+		</Object>
+		<Object refID="-1464241637" type="System.String">
+			<string>Sector 2210-2090</string>
+		</Object>
+		<Object refID="-703266908" type="System.String">
+			<string>BrawlerTrapFlag</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
