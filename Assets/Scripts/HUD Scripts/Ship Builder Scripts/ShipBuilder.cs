@@ -1209,26 +1209,21 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             cores.Add("semicore_shell");
             cores.Add("groundcarriershell");
             cores.Add("drone_shell");
-            cores.Add("combatdrone_shell");
 
             editorCoreTier++;
             editorCoreTier %= cores.Count;
             shell.sprite = ResourceManager.GetAsset<Sprite>(cores[editorCoreTier]);
-            if (editorCoreTier == cores.Count - 4)
+            if (editorCoreTier == cores.Count - 3)
             {
                 core.sprite = ResourceManager.GetAsset<Sprite>("semicore_light");
             }
-            else if (editorCoreTier == cores.Count - 3)
+            else if (editorCoreTier == cores.Count - 2)
             {
                 core.sprite = ResourceManager.GetAsset<Sprite>("groundcarriercore");
             }
-            else if (editorCoreTier == cores.Count - 2)
-            {
-                core.sprite = ResourceManager.GetAsset<Sprite>("drone_light");
-            }
             else if (editorCoreTier == cores.Count - 1)
             {
-                core.sprite = ResourceManager.GetAsset<Sprite>("combatdrone_core");
+                core.sprite = ResourceManager.GetAsset<Sprite>("drone_light");
             }
             else
             {
@@ -1315,7 +1310,6 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         cores.Add("semicore_shell");
         cores.Add("groundcarriershell");
         cores.Add("drone_shell");
-        cores.Add("combatdrone_shell");
         return cores;
     }
 
@@ -1328,21 +1322,17 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     private string GetEditorCoreString()
     {
         var cores = GetEditorCoreList();
-        if (editorCoreTier == cores.Count - 4)
+        if (editorCoreTier == cores.Count - 3)
         {
             return "semicore_light";
         }
-        else if (editorCoreTier == cores.Count - 3)
+        else if (editorCoreTier == cores.Count - 2)
         {
             return "groundcarriercore";
         }
-        else if (editorCoreTier == cores.Count - 2)
-        {
-            return "drone_light";
-        }
         else if (editorCoreTier == cores.Count - 1)
         {
-            return "combatdrone_core";
+            return "drone_light";
         }
         else
         {
