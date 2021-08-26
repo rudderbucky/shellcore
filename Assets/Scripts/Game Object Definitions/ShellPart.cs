@@ -33,6 +33,11 @@ public class ShellPart : MonoBehaviour
 
     public bool weapon = false;
 
+    public bool IsDamaged()
+    {
+        return currentHealth < partHealth;
+    }
+
     public bool GetDetached()
     {
         return hasDetached;

@@ -27,6 +27,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     private List<EntityBlueprint.PartInfo> partsToRepairAdd = new List<EntityBlueprint.PartInfo>();
 
+    public bool IsFullyRepaired()
+    {
+        return !blueprint.parts.Exists(p => !parts.Exists(part => part.info.Equals(p))) && !parts.Exists(p => p.IsDamaged());
+    }
+
     public IEnumerator StartYardRepair()
     {
         foreach (var part in parts)
