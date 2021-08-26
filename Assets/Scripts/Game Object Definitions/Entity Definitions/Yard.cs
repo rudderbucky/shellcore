@@ -61,8 +61,11 @@ public class Yard : AirConstruct, IShipBuilder
                 {
                     if (!player.HasRepaired)
                     {
-                        player.repairFinalized = false;
-                        StartCoroutine(player.StartYardRepair());
+                        if (!player.IsFullyRepaired())
+                        {
+                            player.repairFinalized = false;
+                            StartCoroutine(player.StartYardRepair());
+                        }
                     }
                     player.HasRepaired = true;
                     if (player.GetTractorTarget() && (player.GetTractorTarget().GetComponent<ShellPart>()
