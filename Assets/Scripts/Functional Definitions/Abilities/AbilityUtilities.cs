@@ -245,6 +245,10 @@ public static class AbilityUtilities
                 {
                     return "beamgroundshooter_sprite";
                 }
+                else if (data == "beam_station_shooter")
+                {
+                    return "beam_station_shooter";
+                }
                 else
                 {
                     return "beamshooter_sprite";
