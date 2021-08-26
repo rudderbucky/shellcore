@@ -168,7 +168,7 @@ public class ResourceManager : MonoBehaviour
             //load sprites
             for (int i = 0; i < sprites.Count; i++)
             {
-                Texture2D texture = new Texture2D(2, 2, DefaultFormat.HDR, TextureCreationFlags.None);
+                Texture2D texture = new Texture2D(2, 2, DefaultFormat.HDR, TextureCreationFlags.MipChain);
                 texture.wrapMode = TextureWrapMode.Clamp;
                 texture.LoadImage(File.ReadAllBytes(sprites[i].Item2));
                 texture.filterMode = FilterMode.Trilinear;
