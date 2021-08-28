@@ -220,8 +220,9 @@ public static class DroneUtilities
             case DroneType.Counter:
             case DroneType.Gun:
                 return 15;
-            case DroneType.Torpedo:
             case DroneType.Laser:
+                return 18;
+            case DroneType.Torpedo:
                 return 20;
             case DroneType.Heavy:
             case DroneType.Combat:
