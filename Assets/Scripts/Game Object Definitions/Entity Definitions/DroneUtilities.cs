@@ -145,7 +145,7 @@ public static class DroneUtilities
             case DroneType.BulletMini:
                 return "FREE BULLET.\n";
             case DroneType.Combat:
-                return "REGENERATES 30 SHELL PER SECOND.\n";
+                return "REGENERATES 35 SHELL PER SECOND.\n";
             case DroneType.Bomber:
                 return "REGENERATES 45 ENERGY PER SECOND.\n";
             default:
@@ -193,10 +193,10 @@ public static class DroneUtilities
             case DroneType.Counter:
             case DroneType.Gun:
                 return 150;
+            case DroneType.Laser:
+                return 175;
             case DroneType.Torpedo:
                 return 200;
-            case DroneType.Laser:
-                return 300;
             case DroneType.Heavy:
             case DroneType.Combat:
                 return 400;
@@ -221,10 +221,10 @@ public static class DroneUtilities
             case DroneType.Gun:
                 return 15;
             case DroneType.Torpedo:
+            case DroneType.Laser:
                 return 20;
             case DroneType.Heavy:
             case DroneType.Combat:
-            case DroneType.Laser:
                 return 30;
             case DroneType.Bomber:
                 return 55;
@@ -249,8 +249,9 @@ public static class DroneUtilities
             case DroneType.Torpedo:
             case DroneType.Laser:
                 return 5;
-            case DroneType.Heavy:
             case DroneType.Combat:
+                return 7;
+            case DroneType.Heavy:
                 return 8;
             case DroneType.Bomber:
                 return 10;
