@@ -146,6 +146,8 @@ public static class DroneUtilities
                 return "FREE BULLET.\n";
             case DroneType.Combat:
                 return "REGENERATES 35 SHELL PER SECOND.\n";
+            case DroneType.Laser:
+                return "15% COOLDOWN TIMES.\n";
             case DroneType.Bomber:
                 return "REGENERATES 45 ENERGY PER SECOND.\n";
             default:
@@ -319,7 +321,7 @@ public static class DroneUtilities
             case DroneType.Combat:
                 return "Spawns a Combat Drone, they have faster shell regeneration.";
             case DroneType.Laser:
-                return "Spawns a Laser Drone, has no special attributes.";
+                return "Spawns a Laser Drone, has a slightly faster cooldown.";
             case DroneType.Bomber:
                 return "Spawns a Bomber Drone, very expensive but they have faster energy regeneration.";
             default:
