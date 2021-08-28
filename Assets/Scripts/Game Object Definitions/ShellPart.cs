@@ -206,6 +206,26 @@ public class ShellPart : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    public void EditorPlayerPartCheck()
+    {
+        if (craft is PlayerCore player)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
+                RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
+                foreach (var hit in hits)
+                {
+                    Debug.Log(hit);
+                    if (hit.transform == transform)
+                    {
+                        var pos = CameraScript.instance.GetWorldPositionOfMouse();
+                    }
+                }
+            }
+        }
+    }
+
     public void Start()
     {
         // initialize instance fields
@@ -285,6 +305,7 @@ public class ShellPart : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        EditorPlayerPartCheck();
         if (spriteRenderer)
         {
             if (shaderMaterials == null)

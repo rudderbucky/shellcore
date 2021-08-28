@@ -29,7 +29,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public bool IsFullyRepaired()
     {
-        return !blueprint.parts.Exists(p => !parts.Exists(part => part.info.Equals(p))) && !parts.Exists(p => p.IsDamaged());
+        var damagedPart = parts.Find(p => p.IsDamaged() && p.name != "Shell Sprite");
+        return !blueprint.parts.Exists(p => !parts.Exists(part => part.info.Equals(p))) && !damagedPart;
     }
 
     public IEnumerator StartYardRepair()
