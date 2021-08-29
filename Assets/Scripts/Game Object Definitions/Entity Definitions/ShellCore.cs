@@ -69,7 +69,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         if (!GetIsDead()) FinalizeRepair();
     }
 
-    public bool repairFinalized = false;
+    public bool repairFinalized = true;
     private void FinalizeRepair()
     {
         if (repairFinalized) return;

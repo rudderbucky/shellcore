@@ -52,28 +52,31 @@ public class Yard : AirConstruct, IShipBuilder
         base.Update();
         TargetManager.Enqueue(targeter);
 
-        if (FactionManager.IsAllied(faction, 0))
+        if (PlayerCore.Instance && FactionManager.IsAllied(faction, PlayerCore.Instance.faction))
         {
             if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= YardProximitySquared)
             {
                 var player = PlayerCore.Instance;
-                if (player)
+
+                if (!player.HasRepaired)
                 {
-                    if (!player.HasRepaired)
+                    if (!player.IsFullyRepaired() && !player.GetIsDead())
                     {
-                        if (!player.IsFullyRepaired() && !player.GetIsDead())
-                        {
-                            player.repairFinalized = false;
-                            StartCoroutine(player.StartYardRepair());
-                        }
+                        player.repairFinalized = false;
+                        StartCoroutine(player.StartYardRepair());
                     }
-                    player.HasRepaired = true;
-                    if (player.GetTractorTarget() && (player.GetTractorTarget().GetComponent<ShellPart>()
-                                                 || player.GetTractorTarget().GetComponent<Shard>()) && !tractor.GetTractorTarget())
-                    {
-                        tractor.SetTractorTarget(player.GetTractorTarget());
-                        player.SetTractorTarget(null);
-                    }
+                }
+                else if (player.repairFinalized)
+                {
+                    player.HealToMax();
+                }
+
+                player.HasRepaired = true;
+                if (player.GetTractorTarget() && (player.GetTractorTarget().GetComponent<ShellPart>()
+                                             || player.GetTractorTarget().GetComponent<Shard>()) && !tractor.GetTractorTarget())
+                {
+                    tractor.SetTractorTarget(player.GetTractorTarget());
+                    player.SetTractorTarget(null);
                 }
             }
 
