@@ -66,6 +66,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected float[] baseMaxHealth = new float[3];
     private int controlStacks;
 
+    public void HealToMax()
+    {
+        CurrentHealth = GetMaxHealth().Clone() as float[];
+    }
+
     public int ControlStacks
     {
         get { return controlStacks; }
