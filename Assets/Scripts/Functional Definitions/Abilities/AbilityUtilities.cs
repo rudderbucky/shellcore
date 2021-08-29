@@ -362,6 +362,12 @@ public static class AbilityUtilities
                 return "Energy";
             case 13:
                 return "Speed";
+            case 14:
+                return "Siege Bullet";
+            case 15:
+                return "Speeder Bullet";
+            case 16:
+                return "Harvester";
             case 17:
                 return "Shell Regen";
             case 18:
