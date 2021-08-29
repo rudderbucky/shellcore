@@ -50,6 +50,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         blueprint.parts.ForEach(p => partsToRepairAdd.Add(p));
         foreach (var part in blueprint.parts)
         {
+            if (GetIsDead())
+            {
+                break;
+            }
             partsToRepairAdd.Remove(part);
             if (!parts.Exists(p => p.info.Equals(part)))
             {
@@ -62,7 +66,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 yield return new WaitForSeconds(1f / blueprint.parts.Count);
             }
         }
-        FinalizeRepair();
+        if (!GetIsDead()) FinalizeRepair();
     }
 
     public bool repairFinalized = false;
@@ -74,7 +78,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         {
             if (!parts.Exists(p => p.info.Equals(part)))
             {
-                SetUpPart(part).GetComponent<PassiveAbility>()?.Activate();
+                SetUpPart(part);
             }
         }
         if (HUDScript.instance && HUDScript.instance.abilityHandler)
@@ -130,6 +134,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     protected override void OnDeath()
     {
         tractor.SetTractorTarget(null);
+        StopCoroutine(StartYardRepair());
         base.OnDeath();
     }
 

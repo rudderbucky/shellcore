@@ -1,4 +1,6 @@
-﻿public class ShellMax : PassiveAbility
+﻿using UnityEngine;
+
+public class ShellMax : PassiveAbility
 {
     public int index;
     public static readonly int[] maxes = new int[3] { 1000, 400, 400 };
@@ -24,7 +26,6 @@
         var stacks = Core.PassiveMaxStacks;
         stacks[index] -= abilityTier;
         Core.PassiveMaxStacks = stacks;
-
         base.Deactivate();
     }
 
