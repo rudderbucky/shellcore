@@ -1,0 +1,32 @@
+﻿using UnityEngine;
+
+public class Laser : Bullet
+{
+    public static readonly int laserDamage = 75;
+    public static readonly float laserPierceFactor = 0.25F;
+
+    protected override void Awake()
+    {
+        base.Awake(); // base awake
+        // hardcoded values here
+        bulletSpeed = 100;
+        survivalTime = 0.1F;
+        range = bulletSpeed * survivalTime;
+        ID = AbilityID.Laser;
+        cooldownDuration = 0.2F;
+        energyCost = 5;
+        damage = laserDamage;
+        prefabScale = Vector2.one;
+        terrain = Entity.TerrainType.All;
+        category = Entity.EntityCategory.Unit;
+        pierceFactor = laserPierceFactor;
+        bulletSound = "clip_laser";
+        bonusDamageType = null;
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        bulletPrefab = ResourceManager.GetAsset<GameObject>("laser_prefab");
+    }
+}

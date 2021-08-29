@@ -1,0 +1,55 @@
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+
+
+public class PartPropertyButtonScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+{
+    public ShipBuilderCursorScript cursor;
+
+    public enum ButtonType
+    {
+        Flip,
+        Rotate
+    }
+
+    public ButtonType type;
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if ((int)type == 0)
+        {
+            cursor.FlipLastPart();
+        }
+
+        if ((int)type == 1)
+        {
+            cursor.rotateMode = true;
+        }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if ((int)type == 1)
+        {
+            cursor.rotateMode = false;
+        }
+    }
+
+    void Update()
+    {
+        if (cursor.GetLastInfo() != null)
+        {
+            GetComponent<Image>().enabled = true;
+            var tmp = ((EntityBlueprint.PartInfo)cursor.GetLastInfo()).location * 100;
+            tmp.x += ((int)type == 1 ? 25 : -25);
+            tmp.y += 100;
+            ((RectTransform)transform).anchoredPosition = tmp;
+        }
+        else
+        {
+            GetComponent<Image>().enabled = false;
+        }
+    }
+}

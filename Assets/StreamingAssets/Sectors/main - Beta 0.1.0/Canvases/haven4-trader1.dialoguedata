@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-136.6,-175.25" zoom="1.4" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="End Dialogue" ID="2036643840" type="EndDialogue" pos="144,266">
+			<Port ID="142106880" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-183443200" type="EndDialogue" pos="410,-310">
+			<Port ID="-3099904" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">true</boolean>
+			<Variable name="traderJSON" refID="619289348" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue Condition Check" ID="143081728" type="DialogueConditionCheckNode" pos="-532.8,260.8">
+			<Port ID="-572804480" name="input" dynamic="False" />
+			<Port ID="464635648" name="outputPass" dynamic="False" />
+			<Port ID="1502075776" name="outputFail" dynamic="False" />
+			<Variable name="checkpointName" refID="371857150" />
+			<Variable name="variableName" refID="1843630155" />
+			<int name="variableType">1</int>
+			<int name="comparisonMode">0</int>
+			<int name="value">1</int>
+		</Node>
+		<Node name="Start Dialogue" ID="254406016" type="StartDialogueNode" pos="-808.2,268.6">
+			<Port ID="-1134259200" name="input" dynamic="False" />
+			<Port ID="-718011264" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-732727968" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1166809984" type="DialogueNode" pos="-170,410">
+			<Port ID="319428864" name="input" dynamic="False" />
+			<Port ID="1356868992" name="cancel" dynamic="False" />
+			<Port ID="-1642359808" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">231</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-1664814463" />
+			<Variable name="answers" refID="-1429640960" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="1891437056" type="EndDialogue" pos="142.4,646.4">
+			<Port ID="-1900658176" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1845607168" type="DialogueNode" pos="-153,-21">
+			<Port ID="432520448" name="input" dynamic="False" />
+			<Port ID="287313664" name="cancel" dynamic="False" />
+			<Port ID="-1497153024" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">237</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="577727232" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">293</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">false</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-917797965" />
+			<Variable name="answers" refID="-953790208" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="142106880" port2ID="577727232" />
+		<Connection port1ID="-3099904" port2ID="-1497153024" />
+		<Connection port1ID="-572804480" port2ID="-718011264" />
+		<Connection port1ID="464635648" port2ID="432520448" />
+		<Connection port1ID="1502075776" port2ID="319428864" />
+		<Connection port1ID="-1642359808" port2ID="-1900658176" />
+	</Connections>
+	<Objects>
+		<Object refID="619289348" type="System.String">
+			<string>{"parts":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"MediumExtra1"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":26,"tier":2,"secondaryData":"","partID":"MediumExtra1"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":12,"tier":2,"secondaryData":"","partID":"MediumWing2"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":25,"tier":2,"secondaryData":"","partID":"MediumWing2"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"MediumWing1"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":5,"tier":2,"secondaryData":"","partID":"MediumWing1"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":21,"tier":0,"secondaryData":"","partID":"SmallSide4"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"worker_drone","partID":"SmallSide4"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":24,"tier":0,"secondaryData":"","partID":"SmallCenter4"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":28,"tier":0,"secondaryData":"","partID":"SmallCenter6"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"counter_drone","partID":"MediumCenter4"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"torpedo_drone","partID":"MediumCenter6"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallSide1"},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":9,"tier":2,"secondaryData":"","partID":"SmallSide1"}]}</string>
+		</Object>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="1843630155" type="System.String">
+			<string>supplydemandfinish</string>
+		</Object>
+		<Object refID="-732727968" type="System.String">
+			<string>haven4-trader1</string>
+		</Object>
+		<Object refID="-1664814463" type="System.String">
+			<string>Unfortunately, I cannot offer you anything at this time. 
+
+If you like, head to the Capitol Advanced Trade Sector and see what the delay is. Maybe you can help expedite things.</string>
+		</Object>
+		<Object refID="-1429640960" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Will do, cheers.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="-917797965" type="System.String">
+			<string>Greetings! We might not have a lot of parts here, but the parts we do have should help you out with dealing with the nearby sectors.</string>
+		</Object>
+		<Object refID="-953790208" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I would like to exchange parts.</string>
+				<string>On second thought, no thanks.</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-207.6002,-191.7999" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Time Trigger" ID="459009920" type="TimeTrigger" pos="570,310">
+			<Port ID="-2011617152" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">5</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="-1936367360" type="ConditionGroupNode" pos="570,210">
+			<Port ID="-974177024" name="input" dynamic="False" />
+			<Port ID="498883456" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1536323584" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="-1295716096" type="WarpPlayerNode" pos="920,210">
+			<Port ID="63263104" name="output" dynamic="False" />
+			<Port ID="1100703232" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="329456663" />
+			<Variable name="entityID" refID="968496687" />
+		</Node>
+		<Node name="Time Trigger" ID="1244525184" type="TimeTrigger" pos="610,470">
+			<Port ID="2138143360" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">2</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="138512896" type="ConditionGroupNode" pos="-40,50">
+			<Port ID="-1119383808" name="input" dynamic="False" />
+			<Port ID="-1721203584" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-683763456" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="353676672" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1391116800" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Conditions" ID="-2081574144" type="ConditionGroupNode" pos="850,440">
+			<Port ID="-81943680" name="input" dynamic="False" />
+			<Port ID="-1866410368" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-828970240" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Destroy Entities" ID="371134080" type="DestroyEntities" pos="-270,320">
+			<Port ID="955496448" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="1875821083" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">0</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="Destroy Entities" ID="1980653312" type="DestroyEntities" pos="-270,130">
+			<Port ID="1992936576" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="-1792283139" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">1</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="AI Follow" ID="-704794752" type="AIFollowNode" pos="-250,-160">
+			<Port ID="-1264590592" name="output" dynamic="False" />
+			<Port ID="-227150464" name="input" dynamic="False" />
+			<Variable name="followerID" refID="-1792283139" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="Test Variable" ID="-6693888" type="TestVariableNode" pos="130,50">
+			<Port ID="810289664" name="inputLeft" dynamic="False" />
+			<Port ID="1847729792" name="outputTrue" dynamic="False" />
+			<Port ID="-1409797376" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-469567284" />
+			<int name="value">0</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Set Variable" ID="904724480" type="SetVariableNode" pos="570,50">
+			<Port ID="208469888" name="Input " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1245910016" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="-469567284" />
+			<int name="value">1</int>
+			<boolean name="incrementMode">false</boolean>
+		</Node>
+		<Node name="Add Reward" ID="-157378560" type="AddRewardNode" pos="340,310">
+			<Port ID="-372357248" name="inputLeft" dynamic="False" />
+			<Port ID="665082880" name="outputRight" dynamic="False" />
+			<RewardWrapper xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="wrapper">
+				<creditReward>750</creditReward>
+				<reputationReward>0</reputationReward>
+				<shardReward>0</shardReward>
+				<partReward>false</partReward>
+				<partID />
+				<partAbilityID>0</partAbilityID>
+				<partTier>0</partTier>
+			</RewardWrapper>
+			<boolean name="showPopup">false</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="-2127971840" type="LoadSectorNode" pos="-670,60">
+			<Port ID="1702523008" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1877532029" />
+		</Node>
+		<Node name="Spawn Entity" ID="1411925760" type="SpawnEntityNode" pos="-490,80">
+			<Port ID="1461354368" name="output" dynamic="False" />
+			<Port ID="-1796172800" name="IDOut" dynamic="False" />
+			<Port ID="-758732672" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="286561591" />
+			<Variable name="entityName" refID="318946047" />
+			<int name="faction">1</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="1550245739" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="-1792283139" />
+			<boolean name="forceCharacterTeleport">true</boolean>
+			<Variable name="additionalFlags" refID="-823221632" />
+			<Variable name="additionalCounts" refID="-1685714304" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-2011617152" port2ID="498883456" />
+		<Connection port1ID="-974177024" port2ID="1245910016" />
+		<Connection port1ID="-974177024" port2ID="-1409797376" />
+		<Connection port1ID="1536323584" port2ID="1100703232" />
+		<Connection port1ID="1100703232" port2ID="-828970240" />
+		<Connection port1ID="2138143360" port2ID="-1866410368" />
+		<Connection port1ID="-1119383808" port2ID="-1264590592" />
+		<Connection port1ID="-1721203584" port2ID="1992936576" />
+		<Connection port1ID="-683763456" port2ID="810289664" />
+		<Connection port1ID="353676672" port2ID="955496448" />
+		<Connection port1ID="1391116800" port2ID="-81943680" />
+		<Connection port1ID="-227150464" port2ID="1461354368" />
+		<Connection port1ID="1847729792" port2ID="-372357248" />
+		<Connection port1ID="208469888" port2ID="665082880" />
+		<Connection port1ID="1702523008" port2ID="-758732672" />
+	</Connections>
+	<Objects>
+		<Object refID="329456663" type="System.String">
+			<string>Capitol Challenge Sector</string>
+		</Object>
+		<Object refID="968496687" type="System.String">
+			<string>SkirmishGate</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+		<Object refID="-1792283139" type="System.String">
+			<string>TraitorEnemy</string>
+		</Object>
+		<Object refID="-469567284" type="System.String">
+			<string>TraitorComplete</string>
+		</Object>
+		<Object refID="1877532029" type="System.String">
+			<string>DuelZone Traitor</string>
+		</Object>
+		<Object refID="286561591" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core2_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":-0.5,"y":-0.512499988079071},"rotation":90.0,"mirrored":false,"abilityID":19,"tier":1,"secondaryData":"","partID":"SmallSide3","shiny":false},{"location":{"x":0.5,"y":-0.512499988079071},"rotation":-90.0,"mirrored":true,"abilityID":20,"tier":1,"secondaryData":"","partID":"SmallSide3","shiny":false},{"location":{"x":-0.949999988079071,"y":-0.5000000596046448},"rotation":-180.0,"mirrored":false,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallWing1","shiny":false},{"location":{"x":0.949999988079071,"y":-0.5000000596046448},"rotation":180.0,"mirrored":true,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallWing1","shiny":false},{"location":{"x":-0.3000069856643677,"y":0.5},"rotation":0.0,"mirrored":true,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallWing1","shiny":false},{"location":{"x":0.3000069856643677,"y":0.5},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallWing1","shiny":false},{"location":{"x":9.822845186135965e-7,"y":-0.4999999701976776},"rotation":-90.0,"mirrored":false,"abilityID":12,"tier":1,"secondaryData":"","partID":"SmallSide1","shiny":false},{"location":{"x":-0.30000102519989016,"y":-1.2000000476837159},"rotation":0.0,"mirrored":true,"abilityID":2,"tier":1,"secondaryData":"","partID":"SmallWing1","shiny":false},{"location":{"x":0.30000102519989016,"y":-1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":1,"secondaryData":"","partID":"SmallWing1","shiny":false},{"location":{"x":0.00001181602510769153,"y":-0.800000011920929},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallCenter5","shiny":false},{"location":{"x":-1.0,"y":-1.0},"rotation":0.0,"mirrored":true,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false},{"location":{"x":1.0,"y":-1.0},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false},{"location":{"x":0.000004425048700795742,"y":-1.600000023841858},"rotation":0.0,"mirrored":false,"abilityID":12,"tier":1,"secondaryData":"","partID":"SmallCenter3","shiny":false},{"location":{"x":-0.5999925136566162,"y":-1.100000023841858},"rotation":0.0,"mirrored":true,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false},{"location":{"x":0.5999934673309326,"y":-1.100000023841858},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallSide4","shiny":false},{"location":{"x":0.6999896168708801,"y":-0.800000011920929},"rotation":-180.0,"mirrored":false,"abilityID":5,"tier":1,"secondaryData":"","partID":"SmallWing2","shiny":false},{"location":{"x":-0.6999816298484802,"y":-0.800000011920929},"rotation":-180.0,"mirrored":true,"abilityID":5,"tier":1,"secondaryData":"","partID":"SmallWing2","shiny":false},{"location":{"x":0.6000016331672669,"y":0.30000001192092898},"rotation":0.0,"mirrored":true,"abilityID":5,"tier":1,"secondaryData":"","partID":"SmallWing2","shiny":false},{"location":{"x":-0.6000006198883057,"y":0.30000001192092898},"rotation":0.0,"mirrored":false,"abilityID":5,"tier":1,"secondaryData":"","partID":"SmallWing2","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="318946047" type="System.String">
+			<string>Richard</string>
+		</Object>
+		<Object refID="1550245739" type="System.String">
+			<string>TraitorFlag</string>
+		</Object>
+		<Object refID="-823221632" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1685714304" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+	</Objects>
+</NodeCanvas>

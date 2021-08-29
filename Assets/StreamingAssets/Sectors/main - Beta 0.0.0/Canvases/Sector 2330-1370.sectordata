@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="89.20018,254.1999" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="AI Follow" ID="751955328" type="AIFollowNode" pos="-250,-250">
+			<Port ID="-1639910016" name="output" dynamic="False" />
+			<Port ID="-602469888" name="input" dynamic="False" />
+			<Variable name="followerID" refID="112176291" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">true</boolean>
+		</Node>
+		<Node name="AI Follow" ID="-323973504" type="AIFollowNode" pos="150,-250">
+			<Port ID="-1785116800" name="output" dynamic="False" />
+			<Port ID="-747676672" name="input" dynamic="False" />
+			<Variable name="followerID" refID="112176289" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">true</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="-225307648" type="LoadSectorNode" pos="-700,-350">
+			<Port ID="1633213312" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1946031700" />
+		</Node>
+		<Node name="AI Follow" ID="-1933492736" type="AIFollowNode" pos="-50,-250">
+			<Port ID="434970240" name="output" dynamic="False" />
+			<Port ID="1472410368" name="input" dynamic="False" />
+			<Variable name="followerID" refID="112176288" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">true</boolean>
+		</Node>
+		<Node name="Test Variable" ID="379128320" type="TestVariableNode" pos="-500,-350">
+			<Port ID="-1038090240" name="inputLeft" dynamic="False" />
+			<Port ID="-441666944" name="outputTrue" dynamic="False" />
+			<Port ID="595773184" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-1222592864" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1639910016" port2ID="1472410368" />
+		<Connection port1ID="-602469888" port2ID="595773184" />
+		<Connection port1ID="-747676672" port2ID="434970240" />
+		<Connection port1ID="1633213312" port2ID="-1038090240" />
+	</Connections>
+	<Objects>
+		<Object refID="112176291" type="System.String">
+			<string>Termie1</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+		<Object refID="112176289" type="System.String">
+			<string>Termie3</string>
+		</Object>
+		<Object refID="-1946031700" type="System.String">
+			<string>Sector 2330-1370</string>
+		</Object>
+		<Object refID="112176288" type="System.String">
+			<string>Termie2</string>
+		</Object>
+		<Object refID="-1222592864" type="System.String">
+			<string>InfectedTruceVar</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

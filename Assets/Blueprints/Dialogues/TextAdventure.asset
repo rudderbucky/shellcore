@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e45223a1bc4dc4ebf4efce52c6be31, type: 3}
+  m_Name: TextAdventure
+  m_EditorClassIdentifier: 
+  nodes:
+  - buttonText: Start again
+    text: Hey there! I'm not implemented yet, but let's play a game anyway.<br><br>You
+      wake up to the sound of a voice speaking in your head:<br>"Fear not, newborn,
+      for we have been<br>one in the beginning, and we will be<br>one in the end."<br>How
+      do you respond?
+    textColor: {r: 0, g: 0.40823412, b: 1, a: 1}
+    ID: 0
+    nextNodes: 0100000002000000
+    action: 0
+  - buttonText: Who are you?
+    text: The mysterious entity doesn't say anything.
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    ID: 1
+    nextNodes: 03000000
+    action: 0
+  - buttonText: What are you talking about?
+    text: The mysterious entity doesn't say anything.
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    ID: 2
+    nextNodes: 03000000
+    action: 0
+  - buttonText: Continue
+    text: You see that you have woken up in a strange world... <br>There are green
+      structures around you, <br>the same color as you are.         <br><br>A green
+      ship, similar to you, but bigger<br>pops into existence right in front of you.<br>Red
+      little things start appearing and shooting at both of you.<br>The bigger ship
+      and two flashing doughnuts quickly<br>destroy them.
+    textColor: {r: 0, g: 1, b: 0, a: 1}
+    ID: 3
+    nextNodes: 0400000005000000
+    action: 0
+  - buttonText: Talk to the other ship
+    text: Follow me! I'll get you to a safe sector!
+    textColor: {r: 0, g: 1, b: 0, a: 1}
+    ID: 4
+    nextNodes: 0600000007000000
+    action: 0
+  - buttonText: Grab a green doughnut and run
+    text: With the power of the green doughnut,<br>you destroy all the little red
+      things that cross your path.<br>You get to the safe sector and the bigger ship
+      <br>follows as fast as it can.
+    textColor: {r: 0.9622642, g: 0.59564406, b: 0, a: 1}
+    ID: 5
+    nextNodes: 08000000
+    action: 0
+  - buttonText: Follow the friendly ship
+    text: You both go to the north, the bigger ship<br>keeps destroying any approaching
+      threats.<br>You get safely to the safe sector.
+    textColor: {r: 0, g: 1, b: 0, a: 1}
+    ID: 6
+    nextNodes: 08000000
+    action: 0
+  - buttonText: You don't need safety, go to the opposite direction
+    text: After you cross the boundary to the other sector,<br>a huge red ship appears
+      and blasts you to bits.<br><br>Respawning in 3... 2... 1...
+    textColor: {r: 1, g: 0, b: 0, a: 1}
+    ID: 7
+    nextNodes: 00000000
+    action: 0
+  - buttonText: Continue
+    text: You have arrived to Haven 1. <br>The danger is over, for now,<br>but your
+      adventure is just about to begin...
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    ID: 8
+    nextNodes: 
+    action: 0
+  traderInventory: []
+  vendingBlueprint: {fileID: 0}
