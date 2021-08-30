@@ -547,7 +547,7 @@ public class SectorManager : MonoBehaviour
     }
 
     // does all the checking on whether the string is json or a filename
-    public EntityBlueprint TryGettingEntityBlueprint(string jsonOrName)
+    public static EntityBlueprint TryGettingEntityBlueprint(string jsonOrName)
     {
         var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 
@@ -559,7 +559,7 @@ public class SectorManager : MonoBehaviour
         catch
         {
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (System.IO.Path.Combine(resourcePath, "Entities", jsonOrName + ".json")), blueprint);
+                (System.IO.Path.Combine(instance.resourcePath, "Entities", jsonOrName + ".json")), blueprint);
         }
 
         return blueprint;
@@ -1439,7 +1439,7 @@ public class SectorManager : MonoBehaviour
     {
         if (entity.assetID == "shellcore_blueprint")
         {
-            EntityBlueprint blueprint = instance.TryGettingEntityBlueprint(entity.blueprintJSON);
+            EntityBlueprint blueprint = TryGettingEntityBlueprint(entity.blueprintJSON);
             return blueprint;
         }
         else
