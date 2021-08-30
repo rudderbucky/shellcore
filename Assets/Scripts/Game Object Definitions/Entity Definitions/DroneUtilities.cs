@@ -203,7 +203,7 @@ public static class DroneUtilities
             case DroneType.Combat:
                 return 400;
             case DroneType.Bomber:
-                return 1000;
+                return 675;
             default:
                 return 0;
         }
@@ -230,7 +230,7 @@ public static class DroneUtilities
             case DroneType.Combat:
                 return 30;
             case DroneType.Bomber:
-                return 55;
+                return 40;
             default:
                 return 0;
         }
@@ -257,7 +257,7 @@ public static class DroneUtilities
             case DroneType.Heavy:
                 return 8;
             case DroneType.Bomber:
-                return 10;
+                return 9;
             default:
                 return 0;
         }
@@ -321,9 +321,9 @@ public static class DroneUtilities
             case DroneType.Combat:
                 return "Spawns a Combat Drone, they have faster shell regeneration.";
             case DroneType.Laser:
-                return "Spawns a Laser Drone, has a slightly faster cooldown.";
+                return "Spawns a Laser Drone, their weappons cooldown is slightly faster.";
             case DroneType.Bomber:
-                return "Spawns a Bomber Drone, very expensive but they have faster energy regeneration.";
+                return "Spawns a Bomber Drone, very expensive but they have fast energy regeneration.";
             default:
                 return "Spawns a drone.";
         }
