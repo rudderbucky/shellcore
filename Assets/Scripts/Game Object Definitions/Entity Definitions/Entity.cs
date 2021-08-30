@@ -546,10 +546,28 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         // Create shell parts
         SetUpParts(blueprint);
 
+        // Drone shell and core health penalty
+        if (drone)
+        {
+            maxHealth[0] /= 2;
+            maxHealth[1] /= 4;
+        }
+
+        maxHealth.CopyTo(baseMaxHealth, 0);
+
         var shellRenderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
         if (shellRenderer)
             shellRenderer.sortingOrder = ++sortingOrder;
         coreRenderer.sortingOrder = ++sortingOrder;
+        // adjust all shooter sprites to be higher than the shell
+        parts.ForEach(p =>
+        {
+            var spriteRenderer = p?.transform.Find("Shooter")?.GetComponent<SpriteRenderer>();
+            if (spriteRenderer)
+            {
+                spriteRenderer.sortingOrder = shellRenderer.sortingOrder + 1;
+            }
+        });
 
         if (this as ShellCore)
         {
@@ -620,12 +638,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    // wrapper for weight; hard-sets weight to 25 for drones
     protected void ResetWeight()
     {
         var drone = this as Drone;
         weight = drone ? 25 : coreWeight;
     }
 
+    // Wrapper for assembling core
     protected void SetUpParts(EntityBlueprint blueprint)
     {
         if (blueprint != null && blueprint.parts != null)
@@ -635,16 +655,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 SetUpPart(blueprint.parts[i]);
             }
-
-            var drone = this as Drone;
-            // Drone shell and core health penalty
-            if (drone)
-            {
-                maxHealth[0] /= 2;
-                maxHealth[1] /= 4;
-            }
-
-            maxHealth.CopyTo(baseMaxHealth, 0);
         }
     }
 
@@ -678,12 +688,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
         partObject.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
         SpriteRenderer sr = partObject.GetComponent<SpriteRenderer>();
-        // sr.flipX = part.mirrored; this doesn't work, it does not flip the collider hitbox
         var tmp = partObject.transform.localScale;
         tmp.x = part.mirrored ? -1 : 1;
         partObject.transform.localScale = tmp;
         sr.sortingOrder = ++sortingOrder;
-        //entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
         var partWeight = isLightDrone ? partBlueprint.mass * 0.6F * weightMultiplier : partBlueprint.mass * weightMultiplier;
         weight += partWeight;
         maxHealth[0] += partBlueprint.health / 2;
@@ -699,7 +707,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             shooter.transform.localRotation = Quaternion.identity;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-            shooterSprite.sortingOrder = ++sortingOrder;
             shellPart.shooter = shooter;
             if (AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons)
             {
