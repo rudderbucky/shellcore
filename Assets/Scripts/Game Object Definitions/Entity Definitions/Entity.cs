@@ -584,7 +584,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     shooter.transform.localPosition = Vector3.zero;
                     var shooterSprite = shooter.AddComponent<SpriteRenderer>();
                     shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
-                    shooterSprite.sortingOrder = 500;
+                    shooterSprite.sortingOrder = ++sortingOrder;
                     shellObj.GetComponent<ShellPart>().shooter = shooter;
                     shellObj.GetComponent<ShellPart>().weapon = ab as WeaponAbility;
                     (ab as WeaponAbility).terrain = TerrainType.Air;
@@ -699,9 +699,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             shooter.transform.localRotation = Quaternion.identity;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-            // if(blueprint.parts.Count < 2) shooterSprite.sortingOrder = 500; TODO: Figure out what these lines do
-            // shooterSprite.sortingOrder = sr.sortingOrder + 1;
-            shooterSprite.sortingOrder = 500;
+            shooterSprite.sortingOrder = ++sortingOrder;
             shellPart.shooter = shooter;
             if (AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons)
             {
