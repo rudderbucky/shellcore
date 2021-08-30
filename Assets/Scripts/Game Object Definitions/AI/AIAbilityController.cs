@@ -184,6 +184,19 @@ public class AIAbilityController
                 }
             }
         }
+        if (craft.GetComponent<TractorBeam>() != null){
+            if ((craft.GetComponent<TractorBeam>().GetTractorTarget() == null || craft.GetComponent<TractorBeam>().GetTractorTarget().GetComponent<ShellPart>() != null)){
+                var yardwarps = GetAbilities(40); //  yard warp
+                foreach (var ability in yardwarps)
+                {
+                    ability.Activate();
+                    if (ability.GetActiveTimeRemaining() > 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     Ability[] GetAbilities(params int[] IDs)
