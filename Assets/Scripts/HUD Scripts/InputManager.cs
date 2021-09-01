@@ -184,16 +184,16 @@ public class InputManager : MonoBehaviour
 
     public static bool GetKey(KeyName key)
     {
-        return Input.GetKey(keys[key].overrideKey);
+        return keys.ContainsKey(key) ? Input.GetKey(keys[key].overrideKey) : false;
     }
 
     public static bool GetKeyDown(KeyName key)
     {
-        return Input.GetKeyDown(keys[key].overrideKey);
+        return keys.ContainsKey(key) ? Input.GetKeyDown(keys[key].overrideKey) : false;
     }
 
     public static bool GetKeyUp(KeyName key)
     {
-        return Input.GetKeyUp(keys[key].overrideKey);
+        return keys.ContainsKey(key) ? Input.GetKeyUp(keys[key].overrideKey) : false;
     }
 }
