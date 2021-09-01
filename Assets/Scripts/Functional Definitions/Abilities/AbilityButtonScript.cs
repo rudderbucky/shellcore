@@ -69,8 +69,17 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         // set up hotkey display
         if (hotkeyText != null)
         {
-            this.hotkeyText.transform.parent.gameObject.SetActive(true);
-            this.hotkeyText.text = GetPrettyStringFromKeycode(InputManager.keys[keycode].overrideKey);
+            if (InputManager.keys.ContainsKey(keycode))
+            {
+
+                this.hotkeyText.transform.parent.gameObject.SetActive(true);
+                this.hotkeyText.text = GetPrettyStringFromKeycode(InputManager.keys[keycode].overrideKey);
+            }
+            else
+            {
+
+                this.hotkeyText.transform.parent.gameObject.SetActive(false);
+            }
         }
         else
         {
