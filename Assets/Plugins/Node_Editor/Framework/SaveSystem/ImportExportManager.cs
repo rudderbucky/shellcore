@@ -241,7 +241,6 @@ namespace NodeEditorFramework.IO
                 {
                     if (portData.port == null)
                     {
-                        Debug.Log($"Trying to fix a port '{portData.name}' in {node.name}...");
                         var f = node.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                         for (int i = 0; i < f.Length; i++)
                         {

@@ -216,7 +216,6 @@ public class ShellPart : MonoBehaviour
                 RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
                 foreach (var hit in hits)
                 {
-                    Debug.Log(hit);
                     if (hit.transform == transform)
                     {
                         var pos = CameraScript.instance.GetWorldPositionOfMouse();

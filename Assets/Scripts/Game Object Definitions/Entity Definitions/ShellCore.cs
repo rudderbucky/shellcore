@@ -104,9 +104,13 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public ICarrier GetCarrier()
     {
-        if (carrier == null || carrier.Equals(null) || carrier.GetIsDead())
+        if ((carrier == null || carrier.Equals(null) || carrier.GetIsDead()) && SectorManager.instance.carriers.ContainsKey(faction))
         {
-            return null;
+            carrier = SectorManager.instance.carriers[faction];
+            if (carrier == null || carrier.Equals(null) || carrier.GetIsDead())
+            {
+                carrier = null;
+            }
         }
 
         return carrier;
