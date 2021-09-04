@@ -176,6 +176,12 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             endDialogue();
         }
 
+        // reset window position if dialogue is over
+        if (!window)
+        {
+            lastPosition = DialogueWindowPosition.None;
+        }
+
         // Add text
         if (textRenderer && characterCount < text.Length)
         {
@@ -541,56 +547,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         SetupRewards(background.gameObject, wrapper);
 
-        /*
-        background.transform.Find("Credit Reward Text").GetComponent<Text>().text =
-        "Credit reward: " + node.creditReward;
-
-        background.transform.Find("Reputation Reward Text").GetComponent<Text>().text =
-        "Reputation reward: " + node.reputationReward;
-        // Part reward
-        if(node.partReward)
-        {
-            // Part image:
-            PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(node.partID);
-            if(!blueprint)
-            {
-                Debug.LogWarning("Part reward of Start Task node not found!");
-            }
-            var partImage = background.transform.Find("Part").GetComponent<Image>();
-            partImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
-            partImage.rectTransform.sizeDelta = partImage.sprite.bounds.size * 45;
-            partImage.color = Color.green;
-
-            // Ability image:
-            if(node.partAbilityID > 0)
-            {
-                var backgroudBox = background.transform.Find("backgroundbox");
-                var abilityIcon = backgroudBox.Find("Ability").GetComponent<Image>();
-                var tierIcon = backgroudBox.Find("Tier").GetComponent<Image>();
-                var type = backgroudBox.Find("Type").GetComponent<Text>();
-                var abilityTooltip = backgroudBox.GetComponent<AbilityButtonScript>();
-
-                abilityIcon.sprite = AbilityUtilities.GetAbilityImageByID(node.partAbilityID, node.partSecondaryData);
-                if(node.partTier >= 1)
-                    tierIcon.sprite = ResourceManager.GetAsset<Sprite>("AbilityTier" + Mathf.Clamp(node.partTier, 1, 3));
-                else tierIcon.enabled = false;
-                type.text = AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null) + (node.partTier > 0 ? " " + node.partTier : "");
-                string description = "";
-                description += AbilityUtilities.GetAbilityNameByID(node.partAbilityID, null) + (node.partTier > 0 ? " " + node.partTier : "") + "\n";
-                description += AbilityUtilities.GetDescriptionByID(node.partAbilityID, node.partTier, null);
-                abilityTooltip.abilityInfo = description;
-            }
-            else
-            {
-                background.transform.Find("backgroundbox").gameObject.SetActive(false);
-            }
-        }
-        else
-        {
-            background.transform.Find("Part").GetComponent<Image>().enabled = false;
-            background.transform.Find("backgroundbox").gameObject.SetActive(false);
-        }*/
-
         string[] answers =
         {
             node.declineResponse,
@@ -841,6 +797,15 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private DialogueState currentState = DialogueState.Idle;
 
+    private enum DialogueWindowPosition
+    {
+        Down,
+        Up,
+        None
+    }
+
+    private DialogueWindowPosition lastPosition = DialogueWindowPosition.None;
+
     private void DialogueViewTransitionIn(Entity speaker = null)
     {
         currentState = DialogueState.In;
@@ -855,18 +820,36 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             default:
                 if (speaker && player)
                 {
-                    if (player.transform.position.y <= speaker.transform.position.y)
+                    if (lastPosition == DialogueWindowPosition.None)
                     {
-                        windowRect.anchorMin = new Vector2(0, 0);
-                        windowRect.anchorMax = new Vector2(1, 0);
-                        windowRect.anchoredPosition = new Vector2(0, 200);
+                        if (player.transform.position.y <= speaker.transform.position.y)
+                        {
+                            windowRect.anchorMin = new Vector2(0, 0);
+                            windowRect.anchorMax = new Vector2(1, 0);
+                            windowRect.anchoredPosition = new Vector2(0, 200);
+                            lastPosition = DialogueWindowPosition.Up;
+                        }
+                        else
+                        {
+                            windowRect.anchorMin = new Vector2(0, 1);
+                            windowRect.anchorMax = new Vector2(1, 1);
+                            windowRect.anchoredPosition = new Vector2(0, -200);
+                            lastPosition = DialogueWindowPosition.Down;
+                        }
                     }
-                    else
+                    else if (lastPosition == DialogueWindowPosition.Down)
                     {
                         windowRect.anchorMin = new Vector2(0, 1);
                         windowRect.anchorMax = new Vector2(1, 1);
                         windowRect.anchoredPosition = new Vector2(0, -200);
                     }
+                    else
+                    {
+                        windowRect.anchorMin = new Vector2(0, 0);
+                        windowRect.anchorMax = new Vector2(1, 0);
+                        windowRect.anchoredPosition = new Vector2(0, 200);
+                    }
+
                 }
 
                 FadeBarIn();
