@@ -101,12 +101,12 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
                     var onAxis = false;
                     if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
                     {
-                        onAxis = rectTransform.anchoredPosition.y == 0;
+                        onAxis = Mathf.Abs(rectTransform.anchoredPosition.y) < ShipBuilderCursorScript.stepSize;
                     }
 
                     if (cursorScript.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
                     {
-                        onAxis = rectTransform.anchoredPosition.x == 0;
+                        onAxis = Mathf.Abs(rectTransform.anchoredPosition.x) < ShipBuilderCursorScript.stepSize;
                     }
 
                     if ((!symmetryPart || (symmetryPart.rectTransform.anchoredPosition - symVec).sqrMagnitude >
