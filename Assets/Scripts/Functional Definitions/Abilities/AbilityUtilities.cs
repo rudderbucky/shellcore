@@ -173,9 +173,9 @@ public static class AbilityUtilities
             case 14:
                 return $"Long range projectile that deals {1000 * tier} damage.";
             case 15:
-                return $"Projectile that deals {1000 * tier} damage.";
+                return $"Projectile that deals {100 * tier} damage.";
             case 16:
-                return "Why do you have this? This will not help you.";
+                return "Why are we here? Just to suffer?";
             case 17:
                 return $"Passively increases shell regen by {ShellRegen.regens[0] * tier} points.";
             case 18:
@@ -186,6 +186,10 @@ public static class AbilityUtilities
                 return $"Passively increases maximum energy by {ShellMax.maxes[2] * tier} points.";
             case 21:
                 return $"Passively increases the maximum allowed number of controlled units by {Command.commandUnitIncrease}.";
+            case 22:
+                return $"Commits heresy of the highest order to passively increase your core regen by {ShellRegen.regens[1] * tier} points.";
+            case 23:
+                return $"Passively increases your core by {ShellMax.maxes[1] * tier} points...wait a minute...";
             case 24:
                 return "Become invisible to enemies.";
             case 25:
@@ -217,6 +221,8 @@ public static class AbilityUtilities
                        + $"\nBeam costs {IonLineController.energyC * tier} energy per second.";
             case 38:
                 return $"Fires at most 5 projectiles at different targets that each deal {Flak.bulletDamage * tier} damage.";
+            case 39:
+                return $"Slow projectile that deals {Rocket.torpedoDamage * tier} damage to air stations.";
             case 40:
                 return "Instantly teleports your currently held part into your inventory, or tractors the nearest one if you aren't currently holding one.";
             default:
@@ -326,7 +332,7 @@ public static class AbilityUtilities
                 return "ionshooter_sprite";
                 }
             case 40:
-                return "ability_sprite_yard_warp";
+                return "ability_indicator_yard_warp";
             default:
                 return "ability_indicator";
         }
@@ -528,6 +534,16 @@ public static class AbilityUtilities
                 break;
             case 21:
                 ability = obj.AddComponent<Command>();
+                break;
+            case 22:
+                ability = obj.AddComponent<ShellRegen>();
+                (ability as ShellRegen).index = 1;
+                (ability as ShellRegen).Initialize();
+                break;
+            case 23:
+                ability = obj.AddComponent<ShellMax>();
+                (ability as ShellMax).index = 1;
+                (ability as ShellMax).Initialize();
                 break;
             case 24:
                 ability = obj.AddComponent<Stealth>();
