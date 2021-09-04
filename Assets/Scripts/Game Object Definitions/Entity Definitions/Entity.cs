@@ -707,6 +707,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             shooter.transform.localRotation = Quaternion.identity;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
+            shooterSprite.sortingOrder = ++sortingOrder;
             shellPart.shooter = shooter;
             if (AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons)
             {

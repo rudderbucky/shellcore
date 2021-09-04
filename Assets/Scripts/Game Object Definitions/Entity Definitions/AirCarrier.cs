@@ -66,6 +66,16 @@ public class AirCarrier : AirConstruct, ICarrier
             TickAbilitiesAsStation();
             base.Update();
             TargetManager.Enqueue(targeter);
+
+            if (!SectorManager.instance.carriers.ContainsKey(faction)
+                || (SectorManager.instance.carriers[faction] == null || SectorManager.instance.carriers[faction].Equals(null))
+                || SectorManager.instance.carriers[faction].GetIsDead())
+            {
+                if (!GetIsDead())
+                {
+                    SectorManager.instance.carriers[faction] = this;
+                }
+            }
         }
     }
 
