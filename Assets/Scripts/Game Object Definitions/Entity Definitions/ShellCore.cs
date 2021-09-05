@@ -188,6 +188,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     {
         if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore)
         {
+            HasRepaired = true;
             base.Respawn();
         }
         else

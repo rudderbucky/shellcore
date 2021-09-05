@@ -116,7 +116,7 @@ public abstract class Craft : Entity
             child.transform.rotation = Quaternion.identity;
             child.transform.localPosition = Vector3.zero;
             var tmp = child.gameObject.GetComponent<ShellPart>();
-            // will be changed to check for all parts instead of just shell part
+
             if (tmp)
             {
                 // if part exists
