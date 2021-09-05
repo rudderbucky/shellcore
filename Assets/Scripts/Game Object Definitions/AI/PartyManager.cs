@@ -368,7 +368,7 @@ public class PartyManager : MonoBehaviour
             {
                 float barWidth = 160;
                 kvp.Value.GetComponentsInChildren<Image>()[i + 1].GetComponent<RectTransform>().sizeDelta =
-                    new Vector2(barWidth * kvp.Key.CurrentHealth[i] / kvp.Key.GetMaxHealth()[i], 5);
+                    new Vector2(barWidth * kvp.Key.CurrentHealth[i] / Mathf.Max(kvp.Key.GetMaxHealth()[i], 1), 5);
             }
         }
     }
