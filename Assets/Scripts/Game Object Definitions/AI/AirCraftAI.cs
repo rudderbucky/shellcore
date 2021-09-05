@@ -364,7 +364,7 @@ public class AirCraftAI : MonoBehaviour
                         module.ActionTick();
                     }
 
-                    if (allowRetreat)
+                    if (allowRetreat && !(module is FollowAI))
                     {
                         // check if retreat necessary
                         if (craft.GetHealth()[0] < retreatTreshold * craft.GetMaxHealth()[0])
