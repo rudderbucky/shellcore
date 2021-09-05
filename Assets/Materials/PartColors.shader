@@ -83,7 +83,8 @@ Shader "Sprites/PartColors"
 				fixed4 c = SampleSpriteTexture (IN.texcoord);
 				c.a *= IN.color.a;
 				c.rgb *= c.a;
-				if (c.r > 0.125 && c.g > 0.125 && c.b > 0.125)
+				fixed thresh = 0.125 * c.a;
+				if (c.r > thresh && c.g > thresh && c.b > thresh)
 				{
 					c *= IN.color;
 				}
