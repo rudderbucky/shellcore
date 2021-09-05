@@ -73,7 +73,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     }
 
     public bool repairFinalized = true;
-    private void FinalizeRepair()
+    protected virtual void FinalizeRepair()
     {
         if (repairFinalized) return;
         repairFinalized = true;
