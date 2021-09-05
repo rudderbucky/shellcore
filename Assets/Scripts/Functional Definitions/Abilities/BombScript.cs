@@ -12,7 +12,7 @@ public class BombScript : MonoBehaviour
     public int faction; // faction of projectile
     public GameObject missPrefab;
     public GameObject hitPrefab;
-    public readonly float explosionRadius = 10f;
+    public readonly float explosionRadius = 5f;
     private GameObject explosionCirclePrefab;
     private float timeInstantiated;
     private float fuseTime = 3F;
