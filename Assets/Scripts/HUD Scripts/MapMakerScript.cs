@@ -535,7 +535,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         }
 
 
-        if (SectorManager.testJsonPath != null || DevConsoleScript.godModeEnabled == true)
+        if (SectorManager.testJsonPath != null || DevConsoleScript.WarpingEnabled)
         {
             foreach (var sect in sectorImages)
             {
