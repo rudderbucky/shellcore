@@ -104,6 +104,7 @@ public class ItemHandler : MonoBehaviour
         item.isTarget = toCopy.isTarget;
         item.type = toCopy.type;
         item.faction = toCopy.faction;
+        item.rotation = toCopy.rotation;
         item.shellcoreJSON = toCopy.shellcoreJSON;
         item.placeablesIndex = toCopy.placeablesIndex;
         item.pos = toCopy.pos;
@@ -154,7 +155,7 @@ public class ItemHandlerEditor : Editor
         EditorGUILayout.PropertyField(pack, new GUIContent("Item Pack: "));
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
-        mode = GUILayout.Toolbar(mode, new string[] {"Add Mode", "View Mode"});
+        mode = GUILayout.Toolbar(mode, new string[] { "Add Mode", "View Mode" });
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
