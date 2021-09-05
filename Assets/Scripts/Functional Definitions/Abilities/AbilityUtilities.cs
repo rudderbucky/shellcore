@@ -178,6 +178,10 @@ public static class AbilityUtilities
                 return $"Passively increases maximum energy by {ShellMax.maxes[2] * tier} points.";
             case 21:
                 return $"Passively increases the maximum allowed number of controlled units by {Command.commandUnitIncrease}.";
+            case 22:
+                return $"Passively increases core regen by {ShellRegen.regens[1] * tier} points.";
+            case 23:
+                return $"Passively increases maximum core by {ShellMax.maxes[1] * tier} points.";
             case 24:
                 return "Become invisible to enemies.";
             case 25:
@@ -358,6 +362,12 @@ public static class AbilityUtilities
                 return "Energy";
             case 13:
                 return "Speed";
+            case 14:
+                return "Siege Bullet";
+            case 15:
+                return "Speeder Bullet";
+            case 16:
+                return "Harvester";
             case 17:
                 return "Shell Regen";
             case 18:
@@ -508,6 +518,16 @@ public static class AbilityUtilities
                 break;
             case 21:
                 ability = obj.AddComponent<Command>();
+                break;
+            case 22:
+                ability = obj.AddComponent<ShellRegen>();
+                (ability as ShellRegen).index = 1;
+                (ability as ShellRegen).Initialize();
+                break;
+            case 23:
+                ability = obj.AddComponent<ShellMax>();
+                (ability as ShellMax).index = 1;
+                (ability as ShellMax).Initialize();
                 break;
             case 24:
                 ability = obj.AddComponent<Stealth>();
