@@ -58,6 +58,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner
             if (!parts.Exists(p => p.info.Equals(part)))
             {
                 SetUpPart(part);
+
+                UpdateShooterLayering();
+
                 if (HUDScript.instance && HUDScript.instance.abilityHandler)
                 {
                     HUDScript.instance.abilityHandler.Deinitialize();
@@ -81,6 +84,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 SetUpPart(part);
             }
         }
+        UpdateShooterLayering();
+
         if (HUDScript.instance && HUDScript.instance.abilityHandler)
         {
             HUDScript.instance.abilityHandler.Deinitialize();
@@ -104,6 +109,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public ICarrier GetCarrier()
     {
+        if (!SectorManager.instance || SectorManager.instance.current.type != Sector.SectorType.BattleZone)
+        {
+            return null;
+        }
+
         if ((carrier == null || carrier.Equals(null) || carrier.GetIsDead()) && SectorManager.instance.carriers.ContainsKey(faction))
         {
             carrier = SectorManager.instance.carriers[faction];

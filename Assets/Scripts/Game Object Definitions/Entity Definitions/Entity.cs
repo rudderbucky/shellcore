@@ -559,15 +559,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (shellRenderer)
             shellRenderer.sortingOrder = ++sortingOrder;
         coreRenderer.sortingOrder = ++sortingOrder;
-        // adjust all shooter sprites to be higher than the shell
-        parts.ForEach(p =>
-        {
-            var spriteRenderer = p?.transform.Find("Shooter")?.GetComponent<SpriteRenderer>();
-            if (spriteRenderer)
-            {
-                spriteRenderer.sortingOrder = shellRenderer.sortingOrder + 1;
-            }
-        });
+        UpdateShooterLayering();
 
         if (this as ShellCore)
         {
@@ -707,7 +699,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             shooter.transform.localRotation = Quaternion.identity;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-            shooterSprite.sortingOrder = ++sortingOrder;
             shellPart.shooter = shooter;
             if (AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons)
             {
@@ -753,6 +744,26 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         return partObject.GetComponent<ShellPart>();
     }
+
+
+    // adjust all shooter sprites to be higher than the shell
+    protected void UpdateShooterLayering()
+    {
+        // adjust all shooter sprites to be higher than the shell
+        var shellRenderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
+        if (shellRenderer)
+        {
+            parts.ForEach(p =>
+            {
+                var spriteRenderer = p?.transform.Find("Shooter")?.GetComponent<SpriteRenderer>();
+                if (spriteRenderer)
+                {
+                    spriteRenderer.sortingOrder = shellRenderer.sortingOrder + 1;
+                }
+            });
+        }
+    }
+
     public bool GetIsDead()
     {
         return isDead; // is dead
