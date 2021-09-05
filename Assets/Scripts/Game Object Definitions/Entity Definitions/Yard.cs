@@ -59,7 +59,7 @@ public class Yard : AirConstruct, IShipBuilder
                 var player = PlayerCore.Instance;
                 foreach (var partyMember in PartyManager.instance.partyMembers)
                 {
-                    if ((transform.position - partyMember.transform.position).sqrMagnitude > YardProximitySquared)
+                    if ((transform.position - partyMember.transform.position).sqrMagnitude > YardProximitySquared && !partyMember.HasRepaired && !partyMember.IsFullyRepaired())
                         partyMember.Warp(transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));
                 }
 

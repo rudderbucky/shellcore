@@ -61,7 +61,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
                 UpdateShooterLayering();
 
-                if (HUDScript.instance && HUDScript.instance.abilityHandler)
+                if (this as PlayerCore && HUDScript.instance && HUDScript.instance.abilityHandler)
                 {
                     HUDScript.instance.abilityHandler.Deinitialize();
                     HUDScript.instance.abilityHandler.Initialize(PlayerCore.Instance);
@@ -86,7 +86,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
         UpdateShooterLayering();
 
-        if (HUDScript.instance && HUDScript.instance.abilityHandler)
+        if (this as PlayerCore && HUDScript.instance && HUDScript.instance.abilityHandler)
         {
             HUDScript.instance.abilityHandler.Deinitialize();
             HUDScript.instance.abilityHandler.Initialize(PlayerCore.Instance);

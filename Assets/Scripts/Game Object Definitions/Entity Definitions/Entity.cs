@@ -160,7 +160,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         maxHealth[0] = (baseMaxHealth[0] + passiveMaxStacks[0] * ShellMax.maxes[0]) * (1 + controlStacks * Control.baseControlFractionBoost);
         maxHealth[1] = (baseMaxHealth[1] + passiveMaxStacks[1] * ShellMax.maxes[1]);
         maxHealth[2] = (baseMaxHealth[2] + passiveMaxStacks[2] * ShellMax.maxes[2]);
-        if (DevConsoleScript.godModeEnabled) maxHealth = new float[] { 99999, 99999, 99999 };
+        if (DevConsoleScript.godModeEnabled && this as PlayerCore) maxHealth = new float[] { 99999, 99999, 99999 };
 
         for (int i = 0; i < 3; i++)
         {
