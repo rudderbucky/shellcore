@@ -12,12 +12,10 @@ public class BombScript : MonoBehaviour
     public int faction; // faction of projectile
     public GameObject missPrefab;
     public GameObject hitPrefab;
-    public readonly float explosionRadius = 5f;
+    public readonly float explosionRadius = 10f;
     private GameObject explosionCirclePrefab;
     private float timeInstantiated;
     private float fuseTime = 3F;
-    public float range;
-
     // Use this for initialization
     void Start()
     {
@@ -98,7 +96,7 @@ public class BombScript : MonoBehaviour
                 if (craft != null && !craft.GetIsDead()) // check if the component was obtained
                 {
                     if (!FactionManager.IsAllied(faction, craft.GetFaction())
-                        && Vector2.SqrMagnitude(craft.transform.position - transform.position) <= range * range
+                        && Vector2.SqrMagnitude(craft.transform.position - transform.position) <= explosionRadius * explosionRadius
                             && CheckCategoryCompatibility(craft)
                                 && (!owner || (craft.GetTransform() != owner.transform)))
                     {
