@@ -32,7 +32,7 @@ public class Retreat : Ability
             List<Retreat> oldRetreats = new List<Retreat>();
             foreach (Ability ability in Core.GetAbilities())
             {
-                if (ability is Retreat retreat)
+                if (ability && !ability.IsDestroyed() && ability is Retreat retreat)
                 {
                     oldRetreats.Add(retreat);
                 }
@@ -43,9 +43,9 @@ public class Retreat : Ability
             List<Retreat> newRetreats = new List<Retreat>();
             foreach (Ability ability in Core.GetAbilities())
             {
-                if (ability as Retreat)
+                if (ability && !ability.IsDestroyed() && ability is Retreat retreat)
                 {
-                    newRetreats.Add(ability as Retreat);
+                    newRetreats.Add(retreat);
                 }
             }
 
