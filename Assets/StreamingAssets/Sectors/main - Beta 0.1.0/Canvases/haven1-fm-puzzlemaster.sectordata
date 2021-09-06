@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="286.3999,-149" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="840694784" type="LoadSectorNode" pos="-838,-207">
+			<Port ID="515656832" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-7346903" />
+		</Node>
+		<Node name="Delete Entity" ID="-2130908416" type="Delete" pos="-90,-60">
+			<Port ID="1553096960" name="output" dynamic="False" />
+			<Port ID="-1704430208" name="IDIn" dynamic="False" />
+			<Port ID="-666990080" name="input" dynamic="False" />
+			<Variable name="entityID" refID="879535701" />
+		</Node>
+		<Node name="Mission Condition" ID="-1161697664" type="MissionCondition" pos="-850,-120">
+			<Port ID="1241690752" name="output" dynamic="False" />
+			<Variable name="missionName" refID="-423624163" />
+			<int name="missionStatus">0</int>
+		</Node>
+		<Node name="Mission Condition" ID="-376182400" type="MissionCondition" pos="-850,130">
+			<Port ID="-1559223424" name="output" dynamic="False" />
+			<Variable name="missionName" refID="-423624163" />
+			<int name="missionStatus">1</int>
+		</Node>
+		<Node name="Mission Condition" ID="1378543616" type="MissionCondition" pos="-850,360">
+			<Port ID="1698303744" name="output" dynamic="False" />
+			<Variable name="missionName" refID="-423624163" />
+			<int name="missionStatus">2</int>
+		</Node>
+		<Node name="Conditions" ID="2047193856" type="ConditionGroupNode" pos="-392.8,-59.2">
+			<Port ID="-521783296" name="input" dynamic="False" />
+			<Port ID="-826249088" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="211191040" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1248631168" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-2008896000" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-971455872" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="65984256" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="515656832" port2ID="-521783296" />
+		<Connection port1ID="-666990080" port2ID="211191040" />
+		<Connection port1ID="-666990080" port2ID="65984256" />
+		<Connection port1ID="1241690752" port2ID="-826249088" />
+		<Connection port1ID="-1559223424" port2ID="1248631168" />
+		<Connection port1ID="1698303744" port2ID="-971455872" />
+	</Connections>
+	<Objects>
+		<Object refID="-7346903" type="System.String">
+			<string>Haven 1</string>
+		</Object>
+		<Object refID="879535701" type="System.String">
+			<string>puzzlemaster-mission</string>
+		</Object>
+		<Object refID="-423624163" type="System.String">
+			<string>Flight of the Minidrone</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-31.15,255.65" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Start Dialogue" ID="-721425024" type="StartDialogueNode" pos="-400,-400">
+			<Port ID="294269568" name="input" dynamic="False" />
+			<Port ID="810904448" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1087838331" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="3433600" type="DialogueNode" pos="-200,-400">
+			<Port ID="-633654656" name="input" dynamic="False" />
+			<Port ID="403785472" name="cancel" dynamic="False" />
+			<Port ID="63877888" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">177</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="956111232" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">232</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>0</r>
+				<g>1</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="701792604" />
+			<Variable name="answers" refID="925509120" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-12636672" type="EndDialogue" pos="-200,-50">
+			<Port ID="1993551360" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="2062243584" type="EndDialogue" pos="50,-400">
+			<Port ID="1150812032" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">true</boolean>
+			<Variable name="traderJSON" refID="1255745479" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="810904448" port2ID="-633654656" />
+		<Connection port1ID="63877888" port2ID="1150812032" />
+		<Connection port1ID="956111232" port2ID="1993551360" />
+	</Connections>
+	<Objects>
+		<Object refID="-1087838331" type="System.String">
+			<string>haven5-trader1</string>
+		</Object>
+		<Object refID="701792604" type="System.String">
+			<string>These parts I am selling are the best of the best, made for only the finest of commanders! Use them wisely.</string>
+		</Object>
+		<Object refID="925509120" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>I would like to buy some parts.</string>
+				<string>On second thought, no thanks.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="1255745479" type="System.String">
+			<string>{"parts":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":25,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":true,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigCenter2","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":true,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":true,"abilityID":33,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":5,"tier":3,"secondaryData":"","partID":"BigCenter1","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":true,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false}]}</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
