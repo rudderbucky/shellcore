@@ -46,7 +46,6 @@ public class SaveMenuHandler : GUIWindowScripts
         // check the 3 main folders are in the world
         bool foundEntities = false;
         bool foundCanvases = false;
-        bool foundWaves = false;
 
         foreach (var childDir in System.IO.Directory.GetDirectories(dir))
         {
@@ -59,14 +58,9 @@ public class SaveMenuHandler : GUIWindowScripts
             {
                 foundCanvases = true;
             }
-
-            if (childDir.Contains("Waves"))
-            {
-                foundWaves = true;
-            }
         }
 
-        return foundCanvases && foundEntities && foundWaves;
+        return foundCanvases && foundEntities;
     }
 
     void SetUpWorlds()
