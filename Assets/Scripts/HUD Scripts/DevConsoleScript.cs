@@ -110,7 +110,6 @@ public class DevConsoleScript : MonoBehaviour
                 var player = PlayerCore.Instance;
                 player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
                 player.SetRegens(new float[] { 99999, 99999, 99999 });
-                player.AddCredits(999999);
                 player.speed = 9999f;
                 player.CalculatePhysicsConstants();
                 player.DamageBoostStacks += 1000;
