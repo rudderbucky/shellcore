@@ -619,6 +619,7 @@ public class WorldCreatorCursor : MonoBehaviour
                             itemCopy.rotation = 1 - item.rotation;
                         }
                     }
+                    itemCopy.rotation %= 4;
                 }
 
                 itemCopy.obj.transform.rotation = Quaternion.identity;
