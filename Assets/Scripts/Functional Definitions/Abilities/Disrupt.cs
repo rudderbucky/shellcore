@@ -35,7 +35,7 @@ public class Disrupt : Ability
                 {
                     foreach (var ability in AIData.entities[i].GetAbilities())
                     {
-                        if (ability != null && ability.TimeUntilReady() > 0)
+                        if (ability != null)
                         {
                             ability.ResetCD();
                         }
