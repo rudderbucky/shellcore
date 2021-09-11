@@ -184,9 +184,18 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        if (PartyManager.instance.partyMembers.Contains(this))
+        {
+            PartyManager.instance.UnassignBackend(null, this);
+        }
+    }
+
     public override void Respawn()
     {
-        if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore)
+        if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
         {
             HasRepaired = true;
             base.Respawn();

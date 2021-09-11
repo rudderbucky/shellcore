@@ -298,6 +298,8 @@ public class PartyManager : MonoBehaviour
     void Update()
     {
         blocker.SetActive(false);
+        partyMembers.RemoveAll(sc => !sc);
+
         var deadMembers = partyMembers.FindAll(sc => !sc);
         foreach (var member in deadMembers)
         {
