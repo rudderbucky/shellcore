@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public interface IBuilderInterface
 {
     BuilderMode GetMode();
-    void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode);
+    void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode, bool updateChain = true);
     void UpdateChain();
     EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
     void SetSearcherString(string text);
@@ -264,7 +264,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     {
         while (parts.Count > 0)
         {
-            builder.DispatchPart(parts[0], ShipBuilder.TransferMode.Return);
+            builder.DispatchPart(parts[0], ShipBuilder.TransferMode.Return, false);
         }
 
         UpdateHandler();

@@ -93,8 +93,8 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
         cursorScript.gameObject.SetActive(false);
         cursorScript.SetBuilder(this);
 
-        contentsArray = new Transform[] {smallContents, mediumContents, largeContents};
-        contentTexts = new GameObject[] {smallText, mediumText, largeText};
+        contentsArray = new Transform[] { smallContents, mediumContents, largeContents };
+        contentTexts = new GameObject[] { smallText, mediumText, largeText };
         foreach (GameObject obj in contentTexts)
         {
             obj.SetActive(false);
@@ -213,7 +213,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
         return BuilderMode.Yard;
     }
 
-    public void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode)
+    public void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode, bool updateChain = true)
     {
         var culledInfo = ShipBuilder.CullSpatialValues(part.info);
         if (!builderPartDict.ContainsKey(culledInfo))
@@ -428,7 +428,7 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
     public void InitializeBuildPhase(EntityBlueprint blueprint, EntityBlueprint.PartInfo currentPart, DroneSpawnData data)
     {
         searcherString = "";
-        displayingTypes = new bool[] {true, false, true, true, true};
+        displayingTypes = new bool[] { true, false, true, true, true };
         this.currentData = data;
         this.currentPart = currentPart;
         selectionPhaseParent.SetActive(false);
@@ -436,8 +436,8 @@ public class DroneWorkshop : GUIWindowScripts, IBuilderInterface
         LoadBlueprint(blueprint, data);
 
         builderPartDict = new Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript>();
-        contentsArray = new Transform[] {smallBuilderContents, mediumBuilderContents, largeBuilderContents};
-        contentTexts = new GameObject[] {smallBuilderText, mediumBuilderText, largeBuilderText};
+        contentsArray = new Transform[] { smallBuilderContents, mediumBuilderContents, largeBuilderContents };
+        contentTexts = new GameObject[] { smallBuilderText, mediumBuilderText, largeBuilderText };
         foreach (GameObject obj in contentTexts)
         {
             obj.SetActive(false);
