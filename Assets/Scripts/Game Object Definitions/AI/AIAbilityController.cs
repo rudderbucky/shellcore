@@ -172,7 +172,19 @@ public class AIAbilityController
                 }
             }
         }
-
+        if (craft.GetComponent<TractorBeam>() != null){
+            if ((craft.GetComponent<TractorBeam>().GetTractorTarget() == null || craft.GetComponent<TractorBeam>().GetTractorTarget().GetComponent<ShellPart>() != null)){
+                var yoinkPart = GetAbilities(40); // steal the player's parts lmao
+                foreach (var ability in yoinkPart)
+                {
+                    ability.Activate();
+                    if (ability.GetActiveTimeRemaining() > 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
         if (craft is IOwner owner && target != null && target)
         {
             if (owner.GetUnitsCommanding().Count < owner.GetTotalCommandLimit())
@@ -183,7 +195,7 @@ public class AIAbilityController
                     droneSpawn.Activate();
                 }
             }
-        }
+        } 
     }
 
     Ability[] GetAbilities(params int[] IDs)
