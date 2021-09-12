@@ -111,7 +111,7 @@ public class Yard : AirConstruct, IShipBuilder
             {
                 if (tractor.GetTractorTarget().GetComponent<ShellPart>())
                 {
-                    TakePart(GetComponent<Entity>(),tractor);
+                    TakePart(GetComponent<Entity>(), tractor);
                 }
                 else if (tractor.GetTractorTarget().GetComponent<Shard>())
                 {
@@ -125,7 +125,9 @@ public class Yard : AirConstruct, IShipBuilder
             }
         }
     }
-    public static void TakePart(Entity entity, TractorBeam tractor){
+
+    public static void TakePart(Entity entity, TractorBeam tractor)
+    {
         PassiveDialogueSystem.Instance.PushPassiveDialogue(entity.ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
         var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
         var info = shellPart.info;

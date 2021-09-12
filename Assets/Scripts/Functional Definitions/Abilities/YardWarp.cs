@@ -28,17 +28,19 @@ public class YardWarp : Ability
         TractorBeam tractor = Core.GetComponent<TractorBeam>();
         if (tractor.GetTractorTarget() != null && tractor.GetTractorTarget().GetComponent<ShellPart>())
         {
-            if (FactionManager.IsAllied(Core.faction,PlayerCore.Instance.faction)){
-                Yard.TakePart(Core,tractor);
+            if (FactionManager.IsAllied(Core.faction, PlayerCore.Instance.faction))
+            {
+                Yard.TakePart(Core, tractor);
             }
-            else {
+            else
+            {
                 Core.TakeEnergy(-energyCost);
                 var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(Core.ID, "<color=red>Your part has been added to...SIKE! Mine now!</color>", 4);
                 Destroy(shellPart.gameObject);
             }
         }
-        else{
+        else
+        {
             Core.TakeEnergy(-energyCost);
             Draggable part = null;
             float dist = range * range; //Max distance of new tractor beam
