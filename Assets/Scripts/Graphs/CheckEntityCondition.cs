@@ -82,22 +82,6 @@ namespace NodeEditorFramework.Standard
             List<GameObject> possibleMatches = new List<GameObject>();
             AIData.entities.FindAll(ent => ent.ID == entityID && !ent.GetIsDead()).ForEach(x => possibleMatches.Add(x.gameObject));
             AIData.flags.FindAll(f => f.entityID == entityID).ForEach(f => possibleMatches.Add(f.gameObject));
-            foreach (var match in possibleMatches)
-            {
-                if (rangeCheck)
-                {
-                    var player = AIData.entities.Find(ent => ent.ID == "player");
-                    var diff = (player.transform.position - match.transform.position).sqrMagnitude - distanceFromPlayer * distanceFromPlayer;
-                    if ((lessThan && diff > 0) || (!lessThan && diff <= 0))
-                    {
-                        continue;
-                    }
-                }
-
-                State = ConditionState.Completed;
-                connectionKnobs[0].connection(0).body.Calculate();
-                return;
-            } // TODO: Implement failure when I understand how it works or when Ormanus adds failure if it isn't added
 
             entity = AIData.entities.Find(e => e.ID == entityID);
             Entity.OnEntitySpawn += GrabEntity;
