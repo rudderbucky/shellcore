@@ -56,6 +56,7 @@ public class EntityBlueprint : ScriptableObject
 
     public IntendedType intendedType;
     public List<PartInfo> parts;
+    [System.NonSerialized]
     public Dialogue dialogue;
 
     public static int GetPartValue(PartInfo info)
