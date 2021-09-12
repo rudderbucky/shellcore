@@ -590,9 +590,36 @@ public class WorldCreatorCursor : MonoBehaviour
 
                 var itemCopy = handler.CopyItem(item);
                 itemCopy.dimension = sector.dimension;
-                if (itemCopy.type == ItemType.Platform && !itemCopy.name.Contains("2"))
+                if (itemCopy.type == ItemType.Platform)
                 {
-                    itemCopy.rotation = 3 - item.rotation;
+                    if (itemCopy.name.Contains("2") || itemCopy.name.Contains("4"))
+                    {
+
+                    }
+                    else if (itemCopy.name.Contains("3") || itemCopy.name.Contains("1"))
+                    {
+                        if (xAxis)
+                        {
+                            itemCopy.rotation = 2 - item.rotation;
+                        }
+                        else
+                        {
+
+                            itemCopy.rotation = -item.rotation;
+                        }
+                    }
+                    else
+                    {
+                        if (xAxis)
+                        {
+                            itemCopy.rotation = 3 - item.rotation;
+                        }
+                        else
+                        {
+                            itemCopy.rotation = 1 - item.rotation;
+                        }
+                    }
+                    itemCopy.rotation %= 4;
                 }
 
                 itemCopy.obj.transform.rotation = Quaternion.identity;
@@ -990,6 +1017,7 @@ public class WorldCreatorCursor : MonoBehaviour
     void Rotate(Item item)
     {
         item.obj.transform.Rotate(0, 0, 90);
+        item.rotation += 1;
     }
 
     public Vector2 CalcPos(ItemType type)

@@ -57,6 +57,12 @@ public class Yard : AirConstruct, IShipBuilder
             if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= YardProximitySquared)
             {
                 var player = PlayerCore.Instance;
+                foreach (var partyMember in PartyManager.instance.partyMembers)
+                {
+                    if ((transform.position - partyMember.transform.position).sqrMagnitude > YardProximitySquared && !partyMember.HasRepaired && !partyMember.IsFullyRepaired())
+                        partyMember.Warp(transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));
+                }
+
 
                 if (!player.HasRepaired)
                 {
@@ -77,6 +83,27 @@ public class Yard : AirConstruct, IShipBuilder
                 {
                     tractor.SetTractorTarget(player.GetTractorTarget());
                     player.SetTractorTarget(null);
+                }
+            }
+
+            foreach (var partyMember in PartyManager.instance.partyMembers)
+            {
+                if (partyMember && partyMember.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
+                (transform.position - partyMember.transform.position).sqrMagnitude <= YardProximitySquared)
+                {
+                    if (!partyMember.HasRepaired)
+                    {
+                        if (!partyMember.IsFullyRepaired() && !partyMember.GetIsDead())
+                        {
+                            partyMember.repairFinalized = false;
+                            StartCoroutine(partyMember.StartYardRepair());
+                        }
+                    }
+                    else if (partyMember.repairFinalized)
+                    {
+                        partyMember.HealToMax();
+                    }
+                    partyMember.HasRepaired = true;
                 }
             }
 

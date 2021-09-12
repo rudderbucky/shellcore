@@ -210,7 +210,7 @@ public class PartyManager : MonoBehaviour
         partyMembers.Remove(member);
         if (charID != null) partyResponses.Remove(charID);
 
-        if (partyIndicators.ContainsKey(member))
+        if (member && partyIndicators.ContainsKey(member))
         {
             Destroy(partyIndicators[member]);
             partyIndicators.Remove(member);
@@ -298,6 +298,8 @@ public class PartyManager : MonoBehaviour
     void Update()
     {
         blocker.SetActive(false);
+        partyMembers.RemoveAll(sc => !sc);
+
         var deadMembers = partyMembers.FindAll(sc => !sc);
         foreach (var member in deadMembers)
         {
@@ -367,8 +369,11 @@ public class PartyManager : MonoBehaviour
             for (int i = 0; i < 3; i++)
             {
                 float barWidth = 160;
+                var factor = kvp.Key.CurrentHealth[i] / Mathf.Max(kvp.Key.GetMaxHealth()[i], 1);
+                factor = Mathf.Min(factor, 1);
+                factor = Mathf.Max(factor, 0);
                 kvp.Value.GetComponentsInChildren<Image>()[i + 1].GetComponent<RectTransform>().sizeDelta =
-                    new Vector2(barWidth * kvp.Key.CurrentHealth[i] / kvp.Key.GetMaxHealth()[i], 5);
+                    new Vector2(barWidth * factor, 5);
             }
         }
     }

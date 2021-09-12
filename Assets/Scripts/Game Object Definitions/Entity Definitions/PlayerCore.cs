@@ -57,6 +57,18 @@ public class PlayerCore : ShellCore
         this.credits = val;
     }
 
+    protected override void FinalizeRepair()
+    {
+        base.FinalizeRepair();
+        foreach (var part in partsToDestroy)
+        {
+            if (part && part.gameObject)
+                Destroy(part.gameObject);
+        }
+
+        partsToDestroy.Clear();
+    }
+
     public AbilityHandler GetAbilityHandler()
     {
         return GameObject.Find("AbilityUI").GetComponent<AbilityHandler>();

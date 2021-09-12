@@ -58,7 +58,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
             if (!parts.Exists(p => p.info.Equals(part)))
             {
                 SetUpPart(part);
-                if (HUDScript.instance && HUDScript.instance.abilityHandler)
+
+                UpdateShooterLayering();
+
+                if (this as PlayerCore && HUDScript.instance && HUDScript.instance.abilityHandler)
                 {
                     HUDScript.instance.abilityHandler.Deinitialize();
                     HUDScript.instance.abilityHandler.Initialize(PlayerCore.Instance);
@@ -70,7 +73,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     }
 
     public bool repairFinalized = true;
-    private void FinalizeRepair()
+    protected virtual void FinalizeRepair()
     {
         if (repairFinalized) return;
         repairFinalized = true;
@@ -81,7 +84,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 SetUpPart(part);
             }
         }
-        if (HUDScript.instance && HUDScript.instance.abilityHandler)
+        UpdateShooterLayering();
+
+        if (this as PlayerCore && HUDScript.instance && HUDScript.instance.abilityHandler)
         {
             HUDScript.instance.abilityHandler.Deinitialize();
             HUDScript.instance.abilityHandler.Initialize(PlayerCore.Instance);
@@ -104,9 +109,18 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public ICarrier GetCarrier()
     {
-        if (carrier == null || carrier.Equals(null) || carrier.GetIsDead())
+        if (!SectorManager.instance || SectorManager.instance.current.type != Sector.SectorType.BattleZone)
         {
             return null;
+        }
+
+        if ((carrier == null || carrier.Equals(null) || carrier.GetIsDead()) && SectorManager.instance.carriers.ContainsKey(faction))
+        {
+            carrier = SectorManager.instance.carriers[faction];
+            if (carrier == null || carrier.Equals(null) || carrier.GetIsDead())
+            {
+                carrier = null;
+            }
         }
 
         return carrier;
@@ -170,10 +184,20 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        if (PartyManager.instance.partyMembers.Contains(this))
+        {
+            PartyManager.instance.UnassignBackend(null, this);
+        }
+    }
+
     public override void Respawn()
     {
-        if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore)
+        if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
         {
+            HasRepaired = true;
             base.Respawn();
         }
         else

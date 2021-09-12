@@ -160,7 +160,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         maxHealth[0] = (baseMaxHealth[0] + passiveMaxStacks[0] * ShellMax.maxes[0]) * (1 + controlStacks * Control.baseControlFractionBoost);
         maxHealth[1] = (baseMaxHealth[1] + passiveMaxStacks[1] * ShellMax.maxes[1]);
         maxHealth[2] = (baseMaxHealth[2] + passiveMaxStacks[2] * ShellMax.maxes[2]);
-        if (DevConsoleScript.godModeEnabled) maxHealth = new float[] { 99999, 99999, 99999 };
+        if (DevConsoleScript.godModeEnabled && this as PlayerCore) maxHealth = new float[] { 99999, 99999, 99999 };
 
         for (int i = 0; i < 3; i++)
         {
@@ -546,10 +546,20 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         // Create shell parts
         SetUpParts(blueprint);
 
+        // Drone shell and core health penalty
+        if (drone)
+        {
+            maxHealth[0] /= 2;
+            maxHealth[1] /= 4;
+        }
+
+        maxHealth.CopyTo(baseMaxHealth, 0);
+
         var shellRenderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
         if (shellRenderer)
             shellRenderer.sortingOrder = ++sortingOrder;
         coreRenderer.sortingOrder = ++sortingOrder;
+        UpdateShooterLayering();
 
         if (this as ShellCore)
         {
@@ -584,7 +594,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     shooter.transform.localPosition = Vector3.zero;
                     var shooterSprite = shooter.AddComponent<SpriteRenderer>();
                     shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
-                    shooterSprite.sortingOrder = 500;
+                    shooterSprite.sortingOrder = ++sortingOrder;
                     shellObj.GetComponent<ShellPart>().shooter = shooter;
                     shellObj.GetComponent<ShellPart>().weapon = ab as WeaponAbility;
                     (ab as WeaponAbility).terrain = TerrainType.Air;
@@ -620,12 +630,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    // wrapper for weight; hard-sets weight to 25 for drones
     protected void ResetWeight()
     {
         var drone = this as Drone;
         weight = drone ? 25 : coreWeight;
     }
 
+    // Wrapper for assembling core
     protected void SetUpParts(EntityBlueprint blueprint)
     {
         if (blueprint != null && blueprint.parts != null)
@@ -635,16 +647,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 SetUpPart(blueprint.parts[i]);
             }
-
-            var drone = this as Drone;
-            // Drone shell and core health penalty
-            if (drone)
-            {
-                maxHealth[0] /= 2;
-                maxHealth[1] /= 4;
-            }
-
-            maxHealth.CopyTo(baseMaxHealth, 0);
         }
     }
 
@@ -678,12 +680,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
         partObject.transform.localPosition = new Vector3(part.location.x, part.location.y, 0);
         SpriteRenderer sr = partObject.GetComponent<SpriteRenderer>();
-        // sr.flipX = part.mirrored; this doesn't work, it does not flip the collider hitbox
         var tmp = partObject.transform.localScale;
         tmp.x = part.mirrored ? -1 : 1;
         partObject.transform.localScale = tmp;
         sr.sortingOrder = ++sortingOrder;
-        //entityBody.mass += (isLightDrone ? partBlueprint.mass * 0.6F : partBlueprint.mass);
         var partWeight = isLightDrone ? partBlueprint.mass * 0.6F * weightMultiplier : partBlueprint.mass * weightMultiplier;
         weight += partWeight;
         maxHealth[0] += partBlueprint.health / 2;
@@ -699,9 +699,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             shooter.transform.localRotation = Quaternion.identity;
             var shooterSprite = shooter.AddComponent<SpriteRenderer>();
             shooterSprite.sprite = ResourceManager.GetAsset<Sprite>(shooterID);
-            // if(blueprint.parts.Count < 2) shooterSprite.sortingOrder = 500; TODO: Figure out what these lines do
-            // shooterSprite.sortingOrder = sr.sortingOrder + 1;
-            shooterSprite.sortingOrder = 500;
             shellPart.shooter = shooter;
             if (AbilityUtilities.GetAbilityTypeByID(part.abilityID) == AbilityHandler.AbilityTypes.Weapons)
             {
@@ -747,6 +744,26 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         return partObject.GetComponent<ShellPart>();
     }
+
+
+    // adjust all shooter sprites to be higher than the shell
+    protected void UpdateShooterLayering()
+    {
+        // adjust all shooter sprites to be higher than the shell
+        var shellRenderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
+        if (shellRenderer)
+        {
+            parts.ForEach(p =>
+            {
+                var spriteRenderer = p?.transform.Find("Shooter")?.GetComponent<SpriteRenderer>();
+                if (spriteRenderer)
+                {
+                    spriteRenderer.sortingOrder = shellRenderer.sortingOrder + 1;
+                }
+            });
+        }
+    }
+
     public bool GetIsDead()
     {
         return isDead; // is dead

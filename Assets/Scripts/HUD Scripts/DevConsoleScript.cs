@@ -14,6 +14,12 @@ public class DevConsoleScript : MonoBehaviour
     public static bool componentEnabled = false;
     public static bool fullLog = false;
     public static bool godModeEnabled = false;
+    private static bool warpingEnabled = false;
+    public static bool WarpingEnabled
+    {
+        get { return godModeEnabled || warpingEnabled; }
+        set { warpingEnabled = value; }
+    }
     public bool updateLog = false;
 
     Queue<string> textToAdd = new Queue<string>();
@@ -235,6 +241,7 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.Equals("marco", StringComparison.CurrentCultureIgnoreCase))
             {
                 MapMakerScript.EnableMapCheat();
+                WarpingEnabled = true;
                 textBox.text += "\n<color=lime>Polo.</color>";
             }
             else if (command.Equals("caught em all", StringComparison.CurrentCultureIgnoreCase))

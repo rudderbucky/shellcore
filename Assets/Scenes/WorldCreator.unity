@@ -4476,7 +4476,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 10
   m_Viewport: {fileID: 667726898}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 1983832638}
@@ -8126,21 +8126,6 @@ MonoBehaviour:
       waypoints: []
     ID: 
     dimension: 0
-  - name: Heavy Drone
-    obj: {fileID: 5216379655522923214, guid: 620cc8688df8f56479312ba78768bef7, type: 3}
-    type: 0
-    assetID: heavy_drone_blueprint
-    shellcoreJSON: 
-    vendingID: 
-    isTarget: 0
-    faction: 0
-    placeablesIndex: 0
-    pos: {x: 0, y: 0, z: 0}
-    rotation: 0
-    patrolPath:
-      waypoints: []
-    ID: 
-    dimension: 0
   - name: Counter Drone
     obj: {fileID: 8795646220409631449, guid: ec80c28f657da0145b92bae3e69462e1, type: 3}
     type: 0
@@ -8157,7 +8142,7 @@ MonoBehaviour:
     ID: 
     dimension: 0
   - name: Torpedo Drone
-    obj: {fileID: 1593497488742772858, guid: 1d1224ae430754d468b6157bed808ef4, type: 3}
+    obj: {fileID: 1593497488742772858, guid: 029555405fdc3fd47b0ac35e7ca2a175, type: 3}
     type: 0
     assetID: torpedo_drone_blueprint
     shellcoreJSON: 
@@ -8171,10 +8156,25 @@ MonoBehaviour:
       waypoints: []
     ID: 
     dimension: 0
-  - name: Beam Tank
-    obj: {fileID: 120517494190869552, guid: 5326558739108e44c8fa7267713ed776, type: 3}
+  - name: Heavy Drone
+    obj: {fileID: 5216379655522923214, guid: 620cc8688df8f56479312ba78768bef7, type: 3}
     type: 0
-    assetID: beam_tank
+    assetID: heavy_drone_blueprint
+    shellcoreJSON: 
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+    patrolPath:
+      waypoints: []
+    ID: 
+    dimension: 0
+  - name: Speeder Tank
+    obj: {fileID: 394219880008110838, guid: 75f24abcc0db0464eac29de48bda0289, type: 3}
+    type: 0
+    assetID: speeder_tank
     shellcoreJSON: 
     vendingID: 
     isTarget: 0
@@ -8190,21 +8190,6 @@ MonoBehaviour:
     obj: {fileID: 7871589560987408770, guid: c6113a6acec609f4680d1f6ec0eb44a6, type: 3}
     type: 0
     assetID: bullet_tank
-    shellcoreJSON: 
-    vendingID: 
-    isTarget: 0
-    faction: 0
-    placeablesIndex: 0
-    pos: {x: 0, y: 0, z: 0}
-    rotation: 0
-    patrolPath:
-      waypoints: []
-    ID: 
-    dimension: 0
-  - name: Laser Tank
-    obj: {fileID: 107125746093505476, guid: 9cfa1d8b9449ae349a2099f224e63208, type: 3}
-    type: 0
-    assetID: laser_tank
     shellcoreJSON: 
     vendingID: 
     isTarget: 0
@@ -8246,10 +8231,10 @@ MonoBehaviour:
       waypoints: []
     ID: 
     dimension: 0
-  - name: Rocket Tank
-    obj: {fileID: 1888131655616636, guid: 2afeda657c9ee80459dd447b71e99e07, type: 3}
+  - name: Beam Tank
+    obj: {fileID: 120517494190869552, guid: 5326558739108e44c8fa7267713ed776, type: 3}
     type: 0
-    assetID: rocket_tank
+    assetID: beam_tank
     shellcoreJSON: 
     vendingID: 
     isTarget: 0
@@ -8261,10 +8246,25 @@ MonoBehaviour:
       waypoints: []
     ID: 
     dimension: 0
-  - name: Speeder Tank
-    obj: {fileID: 394219880008110838, guid: 75f24abcc0db0464eac29de48bda0289, type: 3}
+  - name: Laser Tank
+    obj: {fileID: 107125746093505476, guid: 9cfa1d8b9449ae349a2099f224e63208, type: 3}
     type: 0
-    assetID: speeder_tank
+    assetID: laser_tank
+    shellcoreJSON: 
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+    patrolPath:
+      waypoints: []
+    ID: 
+    dimension: 0
+  - name: Rocket Tank
+    obj: {fileID: 1888131655616636, guid: 2afeda657c9ee80459dd447b71e99e07, type: 3}
+    type: 0
+    assetID: rocket_tank
     shellcoreJSON: 
     vendingID: 
     isTarget: 0
@@ -8897,6 +8897,28 @@ MonoBehaviour:
     obj: {fileID: 11400000, guid: cd6a9127c75305447ab3f8517a2601d2, type: 2}
   - ID: air_weapon_station
     obj: {fileID: 11400000, guid: b58b72d927d0c1a4995b6d7239d6315d, type: 2}
+  - ID: semicore_light
+    obj: {fileID: 21300000, guid: cfc6e050ab7723c449dde3e6f3e618ad, type: 3}
+  - ID: semicore_shell
+    obj: {fileID: 21300000, guid: 10c73fd9de706f644b5700c04ec3e4b5, type: 3}
+  - ID: ion_station_shooter
+    obj: {fileID: 21300000, guid: 5ac19fe5b2ba7724dac8fb6b7fa5d487, type: 3}
+  - ID: ion_station_sprite
+    obj: {fileID: 21300000, guid: 46652171ce7b591438e941336814e8fd, type: 3}
+  - ID: defense_station_sprite
+    obj: {fileID: 21300000, guid: 6e31b5d190544cd4780abdfcdafa2d96, type: 3}
+  - ID: anti_air_station_sprite
+    obj: {fileID: 21300000, guid: 8c3d94cd3d268c945be89684d8251b11, type: 3}
+  - ID: heavy_air_station_sprite
+    obj: {fileID: 21300000, guid: 93e0f4546f8bc8948b92394655629dd8, type: 3}
+  - ID: ion_air_station_sprite
+    obj: {fileID: 21300000, guid: ebdfa798c1e47d84aaf1780401b87d39, type: 3}
+  - ID: beam_station_shooter
+    obj: {fileID: 21300000, guid: c6b2271502041fa47801adef6a95f273, type: 3}
+  - ID: AbilitySprite22
+    obj: {fileID: 21300000, guid: 0eb23c7e0fedb214881af6cccc483a1b, type: 3}
+  - ID: AbilitySprite23
+    obj: {fileID: 21300000, guid: 44b115c4640d1e240ad64d69f21bd780, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
@@ -17034,7 +17056,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 10
   m_Viewport: {fileID: 110230281}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 356951918}
@@ -22092,7 +22114,7 @@ MonoBehaviour:
   m_Elasticity: 1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 10
+  m_ScrollSensitivity: 30
   m_Viewport: {fileID: 502744998}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 306136613}

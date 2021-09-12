@@ -537,7 +537,6 @@ public class LandPlatformGenerator : MonoBehaviour
 
         if (endTiles.Count == 0)
         {
-            Debug.Log("No valid targets in range");
             return null;
         }
 
