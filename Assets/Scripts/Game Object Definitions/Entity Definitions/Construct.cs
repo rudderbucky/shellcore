@@ -4,4 +4,12 @@
 /// </summary>
 public class Construct : Entity
 {
+    protected override void Start()
+    {
+        base.Start();
+        if (entityBody)
+        {
+            entityBody.drag = 25f;
+        }
+    }
 }

@@ -188,6 +188,9 @@ namespace NodeEditorFramework.Standard
                             target = AIData.entities[i];
                         }
                     }
+                    else if (AIData.entities[i].ID == targetEntityID){
+                        target = AIData.entities[i];
+                    }
                 }
             }
 
