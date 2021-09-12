@@ -41,7 +41,8 @@ public enum AbilityID
     Bomb,
     Ion,
     Flak,
-    Rocket
+    Rocket,
+    YardWarp
 }
 
 public static class AbilityUtilities
@@ -113,6 +114,7 @@ public static class AbilityUtilities
             case 32:
             case 33:
             case 35:
+            case 40:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -168,6 +170,10 @@ public static class AbilityUtilities
                 return $"Instantly heal {HealthHeal.heals[2] * tier} energy.";
             case 13:
                 return $"+{Speed.boost * tier} speed.";
+            case 14:
+                return $"Long range projectile that deals {1000 * tier} damage.";
+            case 15:
+                return $"Projectile that deals {100 * tier} damage.";
             case 17:
                 return $"Passively increases shell regen by {ShellRegen.regens[0] * tier} points.";
             case 18:
@@ -213,6 +219,10 @@ public static class AbilityUtilities
                        + $"\nBeam costs {IonLineController.energyC * tier} energy per second.";
             case 38:
                 return $"Fires at most 5 projectiles at different targets that each deal {Flak.bulletDamage * tier} damage.";
+            case 39:
+                return $"Slow projectile that deals {Rocket.bulletDamage * tier} to air stations.";
+            case 40:
+                return "Warps your currently held part directly into your inventory.";
             default:
                 return "Description unset";
         }
@@ -319,6 +329,8 @@ public static class AbilityUtilities
                 {
                 return "ionshooter_sprite";
                 }
+            case 40:
+                return "ability_indicator_yardwarp";
             default:
                 return "ability_indicator";
         }
@@ -412,6 +424,8 @@ public static class AbilityUtilities
                 return "Ion";
             case 38:
                 return "Flak";
+            case 40:
+                return "Yard Warp";
             default:
                 return "Name unset";
         }
@@ -582,6 +596,9 @@ public static class AbilityUtilities
                 break;
             case 39:
                 ability = obj.AddComponent<Rocket>();
+                break;
+            case 40:
+                ability = obj.AddComponent<YardWarp>();
                 break;
         }
 
