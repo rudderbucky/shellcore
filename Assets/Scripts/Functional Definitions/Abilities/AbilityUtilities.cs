@@ -330,7 +330,7 @@ public static class AbilityUtilities
                 return "ionshooter_sprite";
                 }
             case 40:
-                return "ability_indicator_yardwarp";
+                return "ability_indicator_yard_warp";
             default:
                 return "ability_indicator";
         }
