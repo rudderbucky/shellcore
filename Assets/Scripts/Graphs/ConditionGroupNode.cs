@@ -43,6 +43,8 @@ namespace NodeEditorFramework.Standard
             get { return true; }
         }
 
+        private bool allConditionsPassed = false;
+
         public override int Traverse()
         {
             // Importing doesn't fill group data. Do it here for now. TODO: Fix
@@ -66,6 +68,10 @@ namespace NodeEditorFramework.Standard
                         if (connections[j].body is ICondition condition)
                         {
                             condition.Init(0);
+
+                            // CheckEntityCondition needs to check on init if an entity exists to prevent repeated update polling
+                            // so prevent continuous initialization of nodes if all conditions have passed
+                            if (allConditionsPassed) return -1;
                         }
                     }
                 }
@@ -98,6 +104,7 @@ namespace NodeEditorFramework.Standard
                     if (completed == conditionCount)
                     {
                         Debug.Log("All conditions passed!");
+                        allConditionsPassed = true;
                         // Tell all condition nodes to unsub
                         DeInit();
                         // Continue to next node
