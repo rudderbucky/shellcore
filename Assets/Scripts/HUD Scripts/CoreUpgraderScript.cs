@@ -297,8 +297,7 @@ public class CoreUpgraderScript : GUIWindowScripts
             "core4commando_shell",
             "core4elite_shell",
             "core4captain_shell",
-            "core4admiral_shell",
-            "semicore_shell"
+            "core4admiral_shell"
         };
     }
 }
