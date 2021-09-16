@@ -179,6 +179,7 @@ public class CoreUpgraderScript : GUIWindowScripts
         switch (coreName)
         {
             case "core1_shell":
+            case "semicore_shell":
                 return 0;
             case "core2_shell":
                 return 1;
@@ -215,6 +216,8 @@ public class CoreUpgraderScript : GUIWindowScripts
                 return "Size-XL Captain Core\nConstructing a spawning hex around\nyour core allows for an additional 2 spawns.";
             case "core4admiral_shell":
                 return "Size-XL Admiral Core\nAdding afterburners and structural padding\nto your core allows for an additional 3 passives.";
+            case "semicore_shell":
+                return "Size-XS Core\nEven if it is weak, this compact core can handle the smallest-size parts.";
             default:
                 return "No description.";
         }
@@ -255,6 +258,8 @@ public class CoreUpgraderScript : GUIWindowScripts
             case "core4captain_shell":
             case "core4admiral_shell":
                 return new float[] { 150, 0, 75 };
+            case "semicore_shell":
+                return new float[] { 25, 0, 50 };
             default:
                 return new float[] { 60, 0, 30 };
         }
@@ -292,7 +297,8 @@ public class CoreUpgraderScript : GUIWindowScripts
             "core4commando_shell",
             "core4elite_shell",
             "core4captain_shell",
-            "core4admiral_shell"
+            "core4admiral_shell",
+            "semicore_shell"
         };
     }
 }
