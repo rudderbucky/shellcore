@@ -259,7 +259,7 @@ public class CoreUpgraderScript : GUIWindowScripts
             case "core4admiral_shell":
                 return new float[] { 150, 0, 75 };
             case "semicore_shell":
-                return new float[] { 25, 0, 50 };
+                return new float[] { 20, 0, 50 };
             default:
                 return new float[] { 60, 0, 30 };
         }
