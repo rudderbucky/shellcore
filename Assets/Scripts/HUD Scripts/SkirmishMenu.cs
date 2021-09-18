@@ -9,6 +9,7 @@ public class SkirmishOption
     public string mapDescription;
     public string entityID;
     public string sectorName;
+    public bool clearParty;
 }
 
 // This class is used to control the window used to select and play Skirmish maps. Maps are defined by the class above
@@ -94,6 +95,8 @@ public class SkirmishMenu : GUIWindowScripts
             return;
         }
 
+        if (currentOption.clearParty)
+            PartyManager.instance.ClearParty();
         Flag.FindEntityAndWarpPlayer(currentOption.sectorName, currentOption.entityID);
         //Debug.LogError(PlayerCore.Instance.currentHealth[0]);
         CloseUI();
