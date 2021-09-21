@@ -49,7 +49,6 @@ public class Bullet : WeaponAbility
     /// <param name="targetPos">The position to fire the bullet to</param>
     protected virtual bool FireBullet(Vector3 targetPos)
     {
-        AudioManager.PlayClipByID(bulletSound, transform.position);
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
 
         // Calculate future target position
@@ -70,7 +69,7 @@ public class Bullet : WeaponAbility
         var t2 = (-b - Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a);
 
         float t = t1 < 0 ? (t2 < 0 ? 0 : t2) : (t2 < 0 ? t1 : Mathf.Min(t1, t2));
-        if (t <= 0)
+        if (t < 0)
         {
             return false;
         }
@@ -80,6 +79,7 @@ public class Bullet : WeaponAbility
         {
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
+        AudioManager.PlayClipByID(bulletSound, transform.position);
 
         var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
@@ -96,7 +96,10 @@ public class Bullet : WeaponAbility
         script.missParticles = true;
 
         // Add velocity to the bullet
-        bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity * t) * bulletSpeed;
+        if (t != 0)
+        {
+            bullet.GetComponent<Rigidbody2D>().velocity = Vector3.Normalize(relativeDistance + targetVelocity * t) * bulletSpeed;
+        }
 
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);

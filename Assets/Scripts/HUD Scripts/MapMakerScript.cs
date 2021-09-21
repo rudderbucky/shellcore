@@ -514,15 +514,28 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (arrows == null)
+        {
+            return;
+        }
+
         foreach (var objective in arrows.Keys)
         {
             var img = arrows[objective].GetComponent<Image>();
+            if (!img)
+            {
+                continue;
+            }
             var imgpos = img.rectTransform.position;
             var imgsizeDelta = img.rectTransform.sizeDelta;
             var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
             if (imgnewRect.Contains(Input.mousePosition))
             {
-                StatusMenu.instance.SwitchSections(1);
+                if (StatusMenu.instance)
+                {
+                    StatusMenu.instance.SwitchSections(1);
+                }
+
                 TaskDisplayScript.ShowMission(PlayerCore.Instance.cursave.missions.Find(m => m.name == objective.missionName));
                 return;
             }
@@ -539,6 +552,11 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         {
             foreach (var sect in sectorImages)
             {
+                if (!sect.Item1)
+                {
+                    continue;
+                }
+
                 var pos = sect.Item1.rectTransform.position;
                 var sizeDelta = sect.Item1.rectTransform.sizeDelta;
                 var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
