@@ -32,7 +32,6 @@ namespace NodeEditorFramework.Standard
         public bool freeSector;
 
         float height = 40f;
-        Dictionary<string, int> savedVariables;
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
         public ConnectionKnob input;
@@ -68,7 +67,6 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
-                savedVariables = new Dictionary<string, int>(TaskManager.Instance.taskVariables);
                 (Canvas.Traversal as MissionTraverser).traverserLimiterDelegate = SectorUpdate;
                 TryAddObjective();
                 SectorUpdate(SectorManager.instance.current.sectorName);
@@ -97,16 +95,11 @@ namespace NodeEditorFramework.Standard
                         cgn.DeInit();
                     }
 
-                    TaskManager.Instance.taskVariables = savedVariables;
                     TaskManager.Instance.setNode(this);
                 }
             }
         }
 
-        public Dictionary<string, int> GetVariables()
-        {
-            return savedVariables;
-        }
 
         void TryAddObjective()
         {
