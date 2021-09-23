@@ -551,6 +551,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             case "MediumSide2":
                 return PartSymmetry.MirrorXAxis;
             case "MediumExtra1":
+            case "MediumCenter4":
                 return PartSymmetry.MirrorYAxis;
             case "SmallSide2":
                 return PartSymmetry.MirrorBothAxes;
@@ -564,22 +565,24 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     private bool CheckOrientationCompatibility(EntityBlueprint.PartInfo part, EntityBlueprint.PartInfo symmetryPart)
     {
         var partID = part.partID;
+        part.rotation %= 360;
+        symmetryPart.rotation %= 360;
         switch (GetPartSymmetry(part.partID))
         {
             case PartSymmetry.MirrorYAxis:
             case PartSymmetry.MirrorBothAxes:
-                return part.rotation + symmetryPart.rotation == 0;
+                return (part.rotation + symmetryPart.rotation) % 360 == 0;
             case PartSymmetry.MirrorXAxis:
                 // There are cases where the parts are symmetrically aligned for both same-mirror and opposite-mirror pairs
                 var diff = Mathf.Abs(part.rotation + symmetryPart.rotation);
                 if (part.mirrored != symmetryPart.mirrored)
                 {
-                    return diff == 0;
+                    return diff % 360 == 0;
                 }
-                return diff == 180;
+                return diff % 360 == 180;
             case PartSymmetry.None:
             default:
-                return part.mirrored != symmetryPart.mirrored && (part.rotation + symmetryPart.rotation == 0);
+                return part.mirrored != symmetryPart.mirrored && ((part.rotation + symmetryPart.rotation) % 360 == 0);
         }
     }
 

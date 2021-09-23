@@ -392,11 +392,7 @@ public class SectorManager : MonoBehaviour
                         PartIndexScript.index = wdata.partIndexDataArray;
                         taskManager.offloadingSectors = new Dictionary<string, List<string>>();
                         DialogueSystem.offloadingDialogues = new Dictionary<string, string>();
-                        if (wdata.sectorMappings == null || wdata.sectorMappings.Count == 0 || wdata.dialogueMappings == null
-                            || wdata.dialogueMappings.Count == 0)
-                        {
-                            Debug.LogWarning("It's possible your canvases don't work because of optimizations. Rewrite your world to fix this.");
-                        }
+
                         wdata.sectorMappings.ForEach(om =>
                         {
                             if (!taskManager.offloadingSectors.ContainsKey(om.key))
