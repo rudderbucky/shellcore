@@ -138,8 +138,9 @@ public class SiegeZoneManager : MonoBehaviour
                     }
 
                     entitiesToRemove.Add(ent);
-                    if (!FactionManager.IsAllied(sectorEntity.faction,players[0].faction)){
-                    entitiesRemaining.Add(sectorEntity);
+                    if (!FactionManager.IsAllied(sectorEntity.faction, players[0].faction))
+                    {
+                        entitiesRemaining.Add(sectorEntity);
                     }
                 }
             }
@@ -167,7 +168,6 @@ public class SiegeZoneManager : MonoBehaviour
 
     public void AddTarget(Entity target)
     {
-        Debug.Log("target " + target.name);
         if (targets == null)
         {
             targets = new List<Entity>();
