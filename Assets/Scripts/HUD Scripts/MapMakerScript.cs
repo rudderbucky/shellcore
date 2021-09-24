@@ -85,6 +85,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             gridImg.rectTransform.anchoredPosition = Vector2.zero;
         }
 
+        mouseInBounds = false;
+        if (tooltipTransform)
+        {
+            Destroy(tooltipTransform.gameObject);
+        }
+
+
         gridImg.sprite = gridSprite;
         gridImg.type = Image.Type.Tiled;
         gridImg.color = new Color32(100, 100, 100, 255);
