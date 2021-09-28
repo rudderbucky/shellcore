@@ -44,6 +44,11 @@ namespace NodeEditorFramework.Standard
         }
 
         private bool allConditionsPassed = false;
+        private TriggerTraverser overrideTraverser;
+        public void SetTriggerTraverser(TriggerTraverser traverser)
+        {
+            this.overrideTraverser = traverser;
+        }
 
         public override int Traverse()
         {
@@ -109,9 +114,14 @@ namespace NodeEditorFramework.Standard
                         // Tell all condition nodes to unsub
                         DeInit();
                         // Continue to next node
-                        if (groups[i].output.connected())
+                        if (overrideTraverser == null && groups[i].output.connected())
                         {
                             TaskManager.Instance.setNode(groups[i].output);
+                        }
+                        else if (groups[i].output.connected())
+                        {
+                            overrideTraverser.SetNode(groups[i].output.connections[0].body);
+                            overrideTraverser = null;
                         }
 
                         return true;
