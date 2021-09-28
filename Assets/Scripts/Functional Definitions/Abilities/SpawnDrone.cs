@@ -122,7 +122,6 @@ public class SpawnDrone : ActiveAbility
     {
         if (craft != null && craft.GetUnitsCommanding().Count < craft.GetTotalCommandLimit())
         {
-            //Core.TakeEnergy(-energyCost); i'm not sure what this line of code does, but it seemed to make drones take energy from the user's max energy instead of their current energy
             base.Activate();
         }
         else if (craft is PlayerCore player && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
