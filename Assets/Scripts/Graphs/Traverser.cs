@@ -10,7 +10,7 @@ public class Traverser : NodeCanvasTraversal
     public Traverser(NodeCanvas canvas) : base(canvas)
     {
         nodeCanvas = canvas;
-        canvas.Traversal = this;
+        if (!(this is TriggerTraverser)) canvas.Traversal = this;
         foreach (Node node in canvas.nodes)
         {
             ConnectionPortManager.UpdateConnectionPorts(node);
