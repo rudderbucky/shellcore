@@ -226,19 +226,21 @@ public abstract class Ability : MonoBehaviour
 
         if (!isEnabled)
         {
+            charging = false;
             State = AbilityState.Disabled;
         }
         else if (Time.time >= startTime + cooldownDuration)
         {
+            charging = false;
             State = AbilityState.Ready;
         }
         else if (Time.time >= startTime + activeDuration)
         {
+            charging = false;
             State = AbilityState.Cooldown;
         }
-        else if (Time.time >= startTime + chargeDuration)
+        else if (Time.time >= startTime + chargeDuration && charging)
         {
-            charging = false;
             State = AbilityState.Active;
         }
         // this boolean is needed because it's not always the case that an ability with start time < time.time + chargeDuration is charging.
