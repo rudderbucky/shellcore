@@ -600,6 +600,20 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     (ab as WeaponAbility).terrain = TerrainType.Air;
                     abilities.Insert(0, ab);
                     break;
+                case DroneType.BulletMini:
+                    var shellObj2 = transform.Find("Shell Sprite").gameObject;
+                    Ability ab2 = AbilityUtilities.AddAbilityToGameObjectByID(shellObj2, 5, null, 1);
+                    var shooter2 = new GameObject("Shooter");
+                    shooter2.transform.SetParent(shellObj2.transform);
+                    shooter2.transform.localPosition = Vector3.zero;
+                    var shooterSprite2 = shooter2.AddComponent<SpriteRenderer>();
+                    shooterSprite2.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(5));
+                    shooterSprite2.sortingOrder = ++sortingOrder;
+                    shellObj2.GetComponent<ShellPart>().shooter = shooter2;
+                    shellObj2.GetComponent<ShellPart>().weapon = ab2 as WeaponAbility;
+                    (ab2 as WeaponAbility).terrain = TerrainType.Air;
+                    abilities.Insert(0, ab2);
+                    break;
                 default:
                     break;
             }

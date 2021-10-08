@@ -40,6 +40,10 @@ public static class DroneUtilities
                 data = ResourceManager.GetAsset<DroneSpawnData>("heavy_drone_spawn");
                 data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("heavy_drone_blueprint"));
                 break;
+            case DroneType.BulletMini:
+                data = ResourceManager.GetAsset<DroneSpawnData>("bullet_mini_drone_spawn");
+                data.drone = JsonUtility.ToJson(ResourceManager.GetAsset<EntityBlueprint>("bullet_mini_drone_blueprint"));
+                break;
             default:
                 return null;
         }
@@ -70,6 +74,8 @@ public static class DroneUtilities
                 return ResourceManager.GetAsset<Sprite>("torpedo_drone_ability");
             case DroneType.Heavy:
                 return ResourceManager.GetAsset<Sprite>("heavy_drone_ability");
+            case DroneType.BulletMini:
+                return ResourceManager.GetAsset<Sprite>("bullet_mini_drone_ability");
             default:
                 return null;
         }
@@ -118,6 +124,8 @@ public static class DroneUtilities
                 return "WEAPONS ATTACK ONLY GROUND ENTITIES.";
             case DroneType.Heavy:
                 return "REGENERATES 20 CORE PER SECOND.\n";
+            case DroneType.BulletMini:
+                return "FREE BULLET.\n";
             default:
                 return "";
         }
@@ -129,6 +137,7 @@ public static class DroneUtilities
         {
             case DroneType.Mini:
             case DroneType.Worker:
+            case DroneType.BulletMini:
                 return 2;
             case DroneType.Strike:
             case DroneType.Light:
@@ -150,6 +159,7 @@ public static class DroneUtilities
         {
             case DroneType.Mini:
             case DroneType.Worker:
+            case DroneType.BulletMini:
                 return 100;
             case DroneType.Strike:
             case DroneType.Light:
@@ -171,6 +181,7 @@ public static class DroneUtilities
         {
             case DroneType.Mini:
             case DroneType.Worker:
+            case DroneType.BulletMini:
                 return 10;
             case DroneType.Strike:
             case DroneType.Light:
@@ -192,6 +203,7 @@ public static class DroneUtilities
         {
             case DroneType.Mini:
             case DroneType.Worker:
+            case DroneType.BulletMini:
                 return 2;
             case DroneType.Strike:
             case DroneType.Light:
@@ -227,6 +239,8 @@ public static class DroneUtilities
                 return "Light Drone";
             case DroneType.Heavy:
                 return "Heavy Drone";
+            case DroneType.BulletMini:
+                return "Bullet Mini Drone";
             default:
                 return "Spawn Drone";
         }
@@ -252,6 +266,8 @@ public static class DroneUtilities
                 return "Spawns a Light Drone, they are lighter than usual.";
             case DroneType.Heavy:
                 return "Spawns a Heavy Drone, they regenerate their core.";
+            case DroneType.BulletMini:
+                return "Spawns a Mini Drone, which have free bullets.";
             default:
                 return "Spawns a drone.";
         }
@@ -277,6 +293,8 @@ public static class DroneUtilities
                 return ResourceManager.GetAsset<DroneSpawnData>("torpedo_drone_spawn");
             case "worker_drone":
                 return ResourceManager.GetAsset<DroneSpawnData>("worker_drone_spawn");
+            case "bullet_mini_drone":
+                return ResourceManager.GetAsset<DroneSpawnData>("bullet_mini_drone_spawn");
             default:
                 var spawnData = ScriptableObject.CreateInstance<DroneSpawnData>();
                 JsonUtility.FromJsonOverwrite(secondaryData, spawnData);

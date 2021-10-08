@@ -9,7 +9,8 @@ public enum DroneType
     Gun,
     Counter,
     Torpedo,
-    Heavy
+    Heavy,
+	BulletMini
 }
 
 [CreateAssetMenu(fileName = "DroneSpawnAbility", menuName = "ShellCore/Drone Spawn Data", order = 8)]
