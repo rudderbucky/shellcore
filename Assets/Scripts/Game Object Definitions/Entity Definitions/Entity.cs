@@ -601,18 +601,18 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     abilities.Insert(0, ab);
                     break;
                 case DroneType.BulletMini:
-                    var shellObj2 = transform.Find("Shell Sprite").gameObject;
-                    Ability ab2 = AbilityUtilities.AddAbilityToGameObjectByID(shellObj2, 5, null, 1);
-                    var shooter2 = new GameObject("Shooter");
-                    shooter2.transform.SetParent(shellObj2.transform);
-                    shooter2.transform.localPosition = Vector3.zero;
-                    var shooterSprite2 = shooter2.AddComponent<SpriteRenderer>();
-                    shooterSprite2.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(5));
-                    shooterSprite2.sortingOrder = ++sortingOrder;
-                    shellObj2.GetComponent<ShellPart>().shooter = shooter2;
-                    shellObj2.GetComponent<ShellPart>().weapon = ab2 as WeaponAbility;
-                    (ab2 as WeaponAbility).terrain = TerrainType.Air;
-                    abilities.Insert(0, ab2);
+                    var shellObjAlt = transform.Find("Shell Sprite").gameObject;
+                    Ability abAlt = AbilityUtilities.AddAbilityToGameObjectByID(shellObjAlt, 5, null, 1);
+                    var shooterAlt = new GameObject("Shooter");
+                    shooterAlt.transform.SetParent(shellObjAlt.transform);
+                    shooterAlt.transform.localPosition = Vector3.zero;
+                    var shooterSpriteAlt = shooterAlt.AddComponent<SpriteRenderer>();
+                    shooterSpriteAlt.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(5));
+                    shooterSpriteAlt.sortingOrder = ++sortingOrder;
+                    shellObjAlt.GetComponent<ShellPart>().shooter = shooterAlt;
+                    shellObjAlt.GetComponent<ShellPart>().weapon = abAlt as WeaponAbility;
+                    (abAlt as WeaponAbility).terrain = TerrainType.Air;
+                    abilities.Insert(0, abAlt);
                     break;
                 default:
                     break;
