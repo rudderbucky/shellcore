@@ -224,7 +224,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
         if (!nearAlliedYard)
         {
-            if (HasRepaired)
+            if (HasRepaired && !IsFullyRepaired())
             {
                 StopCoroutine(StartYardRepair());
                 FinalizeRepair();
