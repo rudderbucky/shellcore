@@ -174,19 +174,19 @@ namespace NodeEditorFramework.Standard
 
             if (!(target && entity)) // room for improvement but probably unecessary
             {
-                for (int i = 0; i < AIData.entities.Count; i++)
+                foreach (var ent in AIData.entities)
                 {
-                    if (AIData.entities[i] is AirCraft airCraft)
+                    if (ent is AirCraft airCraft)
                     {
-                        if (AIData.entities[i].ID == entityID)
+                        if (ent.ID == entityID)
                         {
                             entity = airCraft;
                         }
+                    }
 
-                        if (AIData.entities[i].ID == targetEntityID)
-                        {
-                            target = AIData.entities[i];
-                        }
+                    if (ent.ID == targetEntityID)
+                    {
+                        target = ent;
                     }
                 }
             }

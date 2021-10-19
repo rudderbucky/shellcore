@@ -111,20 +111,7 @@ public class Yard : AirConstruct, IShipBuilder
             {
                 if (tractor.GetTractorTarget().GetComponent<ShellPart>())
                 {
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
-                    var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
-                    var info = shellPart.info;
-                    info = ShipBuilder.CullSpatialValues(info);
-                    ShipBuilder.AddOriginToDictionary(shellPart);
-                    PlayerCore.Instance.cursave.partInventory.Add(info);
-                    PartIndexScript.AttemptAddToPartsObtained(info);
-                    PartIndexScript.AttemptAddToPartsSeen(info);
-                    if (NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect != null)
-                    {
-                        NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
-                    }
-
-                    Destroy(shellPart.gameObject);
+                    TakePart(GetComponent<Entity>(), tractor);
                 }
                 else if (tractor.GetTractorTarget().GetComponent<Shard>())
                 {
@@ -137,5 +124,22 @@ public class Yard : AirConstruct, IShipBuilder
                 }
             }
         }
+    }
+
+    public static void TakePart(Entity entity, TractorBeam tractor)
+    {
+        PassiveDialogueSystem.Instance.PushPassiveDialogue(entity.ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
+        var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
+        var info = shellPart.info;
+        info = ShipBuilder.CullSpatialValues(info);
+        ShipBuilder.AddOriginToDictionary(shellPart);
+        PlayerCore.Instance.cursave.partInventory.Add(info);
+        PartIndexScript.AttemptAddToPartsObtained(info);
+        PartIndexScript.AttemptAddToPartsSeen(info);
+        if (NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect != null)
+        {
+            NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
+        }
+        Destroy(shellPart.gameObject);
     }
 }

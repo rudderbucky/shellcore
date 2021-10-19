@@ -326,7 +326,7 @@ public class PartyManager : MonoBehaviour
         }
 
 
-        if (InputManager.GetKey(KeyName.CommandWheel) && partyMembers.Count > 0 && partyMembers.TrueForAll((member) => { return member; }))
+        if (InputManager.GetKey(KeyName.CommandWheel) && !DialogueSystem.isInCutscene && partyMembers.Count > 0 && partyMembers.TrueForAll((member) => { return member; }))
         {
             wheel.SetActive(true);
             arrow.rotation = Quaternion.Euler(0, 0, Mathf.Atan2((Input.mousePosition.y - Camera.main.pixelHeight / 2),

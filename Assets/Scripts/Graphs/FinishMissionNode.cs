@@ -62,8 +62,8 @@ namespace NodeEditorFramework.Standard
             }
 
             // try loading all missions for which this mission is a prerequisite
-            //PlayerCore.Instance.cursave.missions.FindAll(m => m.prerequisites != null && m.prerequisites.Contains(mission.name))
-            //    .ForEach(m => TaskManager.Instance.startNewQuest(m.name));
+            PlayerCore.Instance.cursave.missions.FindAll(m => m.prerequisites != null && m.prerequisites.Contains(mission.name))
+                .ForEach(m => TaskManager.Instance.startNewQuest(m.name));
 
             DialogueSystem.ShowMissionComplete(mission, rewardsText);
             AudioManager.OverrideMusicTemporarily(jingleID);

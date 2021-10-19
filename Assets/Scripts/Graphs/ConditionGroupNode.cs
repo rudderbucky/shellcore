@@ -43,9 +43,17 @@ namespace NodeEditorFramework.Standard
             get { return true; }
         }
 
+        private bool allConditionsPassed = false;
+        private TriggerTraverser overrideTraverser;
+        public void SetTriggerTraverser(TriggerTraverser traverser)
+        {
+            this.overrideTraverser = traverser;
+        }
+
         public override int Traverse()
         {
             // Importing doesn't fill group data. Do it here for now. TODO: Fix
+            allConditionsPassed = false;
             while (outputKnobs.Count > groupCount)
             {
                 groups.Add(new ConditionGroup
@@ -66,6 +74,10 @@ namespace NodeEditorFramework.Standard
                         if (connections[j].body is ICondition condition)
                         {
                             condition.Init(0);
+
+                            // CheckEntityCondition needs to check on init if an entity exists to prevent repeated update polling
+                            // so prevent continuous initialization of nodes if all conditions have passed
+                            if (allConditionsPassed) return -1;
                         }
                     }
                 }
@@ -98,12 +110,18 @@ namespace NodeEditorFramework.Standard
                     if (completed == conditionCount)
                     {
                         Debug.Log("All conditions passed!");
+                        allConditionsPassed = true;
                         // Tell all condition nodes to unsub
                         DeInit();
                         // Continue to next node
-                        if (groups[i].output.connected())
+                        if (overrideTraverser == null && groups[i].output.connected())
                         {
                             TaskManager.Instance.setNode(groups[i].output);
+                        }
+                        else if (groups[i].output.connected())
+                        {
+                            overrideTraverser.SetNode(groups[i].output.connections[0].body);
+                            overrideTraverser = null;
                         }
 
                         return true;

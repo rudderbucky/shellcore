@@ -383,11 +383,6 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         {
             traversers[i].StartQuest();
         }
-
-        for (int i = 0; i < sectorTraversers.Count; i++)
-        {
-
-        }
     }
 
     public void setNode(ConnectionPort connection)

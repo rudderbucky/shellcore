@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
 {
-    private float abortTimer = 4;
+    private float abortTimer = 6;
     private static float deadzoneDamageMult = 0.1f;
     private static float deadzoneDamageBase = 0.2f;
     private static float deadzoneDamage = deadzoneDamageBase;
@@ -153,6 +153,8 @@ public class SectorManager : MonoBehaviour
     private float dangerZoneTimer;
     public GameObject damagePrefab;
 
+    private Sector countdownSector;
+
     private void Update()
     {
         if (jsonMode)
@@ -170,21 +172,31 @@ public class SectorManager : MonoBehaviour
 
         var abortCheck = !playing || abortTimerFinished;
 
-        if (!jsonMode && player && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
+        var oldCountdownSector = countdownSector;
+        countdownSector = player ? sectors.Find(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension) : null;
+        var exitingZoneDuringCounter = abortTimer < 6 && countdownSector == null;
+
+        if (exitingZoneDuringCounter)
+        {
+            loadSector(oldCountdownSector);
+            abortTimer = 6;
+        }
+        else if (!jsonMode && player && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
         {
             AttemptSectorLoad();
             abortTimer = 6;
         }
         else
         {
-            var inSector = player && sectors.Exists(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension);
+
+            var inSector = player && countdownSector != null;
             if (!jsonMode && player && !player.GetIsDead() && inSector
                 && !inCurrentSector && (isBz || isSiege))
             {
                 abortTimer -= Time.deltaTime;
                 if (abortTimer <= 4)
                 {
-                    player.alerter.showMessage("ABORTING MISSION IN " + Mathf.Floor(abortTimer));
+                    player.alerter.showMessage("ABORTING IN " + Mathf.Floor(abortTimer));
                 }
             }
             else
@@ -244,7 +256,7 @@ public class SectorManager : MonoBehaviour
         }
     }
 
-    public void AttemptSectorLoad(Sector.SectorType? lastSectorType = null)
+    public void AttemptSectorLoad()
     {
         var inCurrentSector = player && current != null &&
                               (current.bounds.contains(player.GetSectorPosition())) && current.dimension == player.Dimension;
@@ -255,16 +267,7 @@ public class SectorManager : MonoBehaviour
             {
                 if (sectors[i].bounds.contains(player.GetSectorPosition()) && sectors[i].dimension == player.Dimension)
                 {
-                    Sector.SectorType? oldType = null;
-                    int oldDimension = 0;
-                    if (current != null)
-                    {
-                        oldType = current.type;
-                        oldDimension = current.dimension;
-                    }
-
-                    current = sectors[i];
-                    loadSector(oldType, oldDimension);
+                    loadSector(sectors[i]);
                     break;
                 }
             }
@@ -392,11 +395,7 @@ public class SectorManager : MonoBehaviour
                         PartIndexScript.index = wdata.partIndexDataArray;
                         taskManager.offloadingSectors = new Dictionary<string, List<string>>();
                         DialogueSystem.offloadingDialogues = new Dictionary<string, string>();
-                        if (wdata.sectorMappings == null || wdata.sectorMappings.Count == 0 || wdata.dialogueMappings == null
-                            || wdata.dialogueMappings.Count == 0)
-                        {
-                            Debug.LogWarning("It's possible your canvases don't work because of optimizations. Rewrite your world to fix this.");
-                        }
+
                         wdata.sectorMappings.ForEach(om =>
                         {
                             if (!taskManager.offloadingSectors.ContainsKey(om.key))
@@ -489,7 +488,7 @@ public class SectorManager : MonoBehaviour
                 jsonMode = false;
                 sectorLoaded = true;
                 player.SetIsInteracting(false);
-                loadSector();
+                loadSector(curSect);
                 return;
             }
             catch (System.Exception e)
@@ -501,7 +500,7 @@ public class SectorManager : MonoBehaviour
         Debug.LogError("Could not find valid sector in " + path);
         jsonMode = false;
         player.SetIsInteracting(false);
-        loadSector();
+        loadSector(current);
         sectorLoaded = true;
     }
 
@@ -518,7 +517,7 @@ public class SectorManager : MonoBehaviour
             // Look at how far we've come :)
             if (!jsonMode && current != null)
             {
-                loadSector();
+                loadSector(current);
                 sectorLoaded = true;
             }
             else
@@ -1014,7 +1013,7 @@ public class SectorManager : MonoBehaviour
 
     private float bgSpawnTimer = 0;
 
-    void loadSector(Sector.SectorType? lastSectorType = null, int lastDimension = 0)
+    void loadSector(Sector sector)
     {
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.LeftShift))
@@ -1034,8 +1033,18 @@ public class SectorManager : MonoBehaviour
         }
 #endif
 
+        Sector.SectorType? oldType = null;
+        int oldDimension = 0;
+        if (current != null)
+        {
+            oldType = current.type;
+            oldDimension = current.dimension;
+        }
+
+        current = sector;
+
         //unload previous sector
-        UnloadCurrentSector(lastSectorType, lastDimension);
+        UnloadCurrentSector(oldType, oldDimension);
 
         if (overrideProperties)
         {
@@ -1132,12 +1141,12 @@ public class SectorManager : MonoBehaviour
         background.setColor(overrideProperties.backgroundColor);
         //Camera.main.backgroundColor = current.backgroundColor / 2F;
         //sector borders
-        foreach (var sector in sectors)
+        foreach (var sectorBorder in sectors)
         {
-            if (minimapSectorBorders != null && minimapSectorBorders[sector])
+            if (minimapSectorBorders != null && minimapSectorBorders[sectorBorder])
             {
-                minimapSectorBorders[sector].enabled = minimapSectorBorders != null
-                                                       && minimapSectorBorders.ContainsKey(sector) && player.cursave.sectorsSeen.Contains(sector.sectorName);
+                minimapSectorBorders[sectorBorder].enabled = minimapSectorBorders != null
+                                                       && minimapSectorBorders.ContainsKey(sectorBorder) && player.cursave.sectorsSeen.Contains(sectorBorder.sectorName);
             }
         }
 

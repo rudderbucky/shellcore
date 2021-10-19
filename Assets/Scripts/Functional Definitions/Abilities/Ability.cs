@@ -35,6 +35,8 @@ public abstract class Ability : MonoBehaviour
     public AbilityState State = AbilityState.Ready;
 
     protected AbilityID ID; // Image ID, perhaps also ability ID if that were ever to be useful (it was)
+
+    private bool charging = false;
     protected float chargeDuration; // delay before activation
     protected float activeDuration; // active time ( + charge)
     protected float cooldownDuration; // cooldown of the ability (+ charge and active time)
@@ -192,7 +194,8 @@ public abstract class Ability : MonoBehaviour
 
     public void ResetCD()
     {
-        startTime = Time.time - activeDuration;
+        startTime = Time.time;
+        charging = false;
     }
 
     /// <summary>
@@ -223,23 +226,32 @@ public abstract class Ability : MonoBehaviour
 
         if (!isEnabled)
         {
+            charging = false;
             State = AbilityState.Disabled;
         }
         else if (Time.time >= startTime + cooldownDuration)
         {
+            charging = false;
             State = AbilityState.Ready;
         }
         else if (Time.time >= startTime + activeDuration)
         {
+            charging = false;
             State = AbilityState.Cooldown;
         }
-        else if (Time.time >= startTime + chargeDuration)
+        else if (Time.time >= startTime + chargeDuration && charging)
         {
             State = AbilityState.Active;
         }
-        else
+        // this boolean is needed because it's not always the case that an ability with start time < time.time + chargeDuration is charging.
+        // such a circumstance occurs when an ability is disrupted
+        else if (charging)
         {
             State = AbilityState.Charging;
+        }
+        else
+        {
+            State = AbilityState.Cooldown;
         }
 
         if (!Core || Core.GetIsDead())
@@ -257,6 +269,7 @@ public abstract class Ability : MonoBehaviour
             Core.MakeBusy(); // make core busy
             Core.TakeEnergy(energyCost); // remove the energy
             startTime = Time.time; // Set activation time
+            charging = true;
             UpdateState(); // Update state
             // If there's no charge time, execute immediately
             if (State == AbilityState.Active || State == AbilityState.Cooldown)
@@ -288,7 +301,7 @@ public abstract class Ability : MonoBehaviour
             Execute(); // execute the ability
         }
         // If the ability needs to cool down
-        else if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown)
+        else if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown && prevState != AbilityState.Ready)
         {
             Deactivate(); // deactivate the ability
         }

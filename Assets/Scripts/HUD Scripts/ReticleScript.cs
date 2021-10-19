@@ -76,14 +76,26 @@ public class ReticleScript : MonoBehaviour
          *         break;
          */
 
+        if (!Camera.main)
+        {
+            return false;
+        }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
         RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity, 513); // get an array of all hits
+        if (hits == null)
+        {
+            return false;
+        }
         bool droneInteraction = false;
 
         // This orders secondary target drones to move/follow accordingly.
+        if (targSys == null)
+        {
+            return false;
+        }
         foreach (var ent in targSys.GetSecondaryTargets())
         {
-            if (ent)
+            if (ent && ent.transform)
             {
                 droneInteraction = DroneCheck(ent.transform, hits) || droneInteraction;
             }
@@ -93,46 +105,28 @@ public class ReticleScript : MonoBehaviour
         var primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits);
         droneInteraction = droneInteraction || primaryDroneInteraction;
 
-        if (!primaryDroneInteraction && hits.Length != 0) // check if there are actually any hits
+        if (!primaryDroneInteraction && hits.Length > 0) // check if there are actually any hits
         {
-            Draggable draggableTarget = hits[0].transform.gameObject.GetComponent<Draggable>();
+            Draggable draggableTarget = hits[0].transform?.gameObject.GetComponent<Draggable>();
 
             if (draggableTarget && TractorBeam.InvertTractorCheck(craft, draggableTarget) && draggableTarget.transform != craft.transform)
             {
                 if (targSys.GetTarget() == draggableTarget.transform)
                 {
                     PlayerCore player = craft.GetComponent<PlayerCore>();
-                    player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
+                    if (player)
+                    {
+                        player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
+                    }
                 }
 
                 SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
-                /*
-                var ent = draggableTarget.GetComponent<Entity>();
-                if(Input.GetKey(KeyCode.LeftControl) && ent)
-                {
-                    if(!secondariesByObject.Contains((ent, draggableTarget.transform)))
-                    {
-                        AddSecondaryTarget(ent);
-                    }
-                    else
-                    {
-                        RemoveSecondaryTarget(ent);
-                    }
-                }
-                else
-                {
-                    SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
-                    if(!secondariesByObject.Contains((ent, draggableTarget.transform)))
-                    {
-                        RemoveSecondaryTarget(ent);
-                    }
-                }     
-                */
+
                 return droneInteraction; // Return so that the next check doesn't happen
             }
 
 
-            ITargetable curTarg = hits[0].transform.gameObject.GetComponent<ITargetable>();
+            ITargetable curTarg = hits[0].transform?.gameObject.GetComponent<ITargetable>();
             // grab the first one's craft component, others don't matter
             if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft)
             // if it is not null, dead or the player itself and is interactible
@@ -146,28 +140,13 @@ public class ReticleScript : MonoBehaviour
                 }
 
                 SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
-                /*
-                if(Input.GetKey(KeyCode.LeftControl))
-                {
-                    if(!secondariesByObject.Contains((curTarg as Entity, curTarg.GetTransform())))
-                    {
-                        AddSecondaryTarget(curTarg as Entity);
-                    }
-                    else
-                    {
-                        RemoveSecondaryTarget(curTarg as Entity);
-                    }
-                }
-                else
-                    SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
-                */
+
                 return droneInteraction; // Return so that the next check doesn't happen
             }
         }
 
         targSys.SetTarget(null); // Nothing valid found, set target to null
 
-        // quantityDisplay.UpdatePrimaryTargetInfo();
         return droneInteraction;
     }
 

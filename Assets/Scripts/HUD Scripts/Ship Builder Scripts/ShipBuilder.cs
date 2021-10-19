@@ -155,7 +155,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         Buy
     }
 
-    public void DispatchPart(ShipBuilderPart part, TransferMode transferMode)
+    public void DispatchPart(ShipBuilderPart part, TransferMode transferMode, bool updateChain = true)
     {
         var culledInfo = CullSpatialValues(part.info);
         Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> dict;
@@ -215,7 +215,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         cursorScript.buildValue -= EntityBlueprint.GetPartValue(part.info);
         cursorScript.parts.Remove(part);
         Destroy(part.gameObject);
-        UpdateChain();
+        if (updateChain) UpdateChain();
     }
 
     public static Bounds GetRect(RectTransform rectTransform)

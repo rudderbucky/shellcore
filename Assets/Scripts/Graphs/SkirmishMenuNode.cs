@@ -76,6 +76,9 @@ namespace NodeEditorFramework.Standard
                 GUILayout.BeginHorizontal();
                 skirmishOptions[i].creditLimit = Mathf.Max(0, Utilities.RTEditorGUI.IntField(skirmishOptions[i].creditLimit));
                 GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                skirmishOptions[i].clearParty = RTEditorGUI.Toggle(skirmishOptions[i].clearParty, "Clear party");
+                GUILayout.EndHorizontal();
             }
 
             GUILayout.BeginHorizontal();

@@ -187,7 +187,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        if (PartyManager.instance.partyMembers.Contains(this))
+        if (PartyManager.instance?.partyMembers?.Contains(this) == true)
         {
             PartyManager.instance.UnassignBackend(null, this);
         }
@@ -224,7 +224,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
         if (!nearAlliedYard)
         {
-            if (HasRepaired)
+            if (HasRepaired && !IsFullyRepaired())
             {
                 StopCoroutine(StartYardRepair());
                 FinalizeRepair();
