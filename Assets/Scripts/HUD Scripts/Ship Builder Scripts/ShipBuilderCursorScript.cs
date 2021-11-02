@@ -524,6 +524,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                 transform.position = Input.mousePosition;
                 if (!bound.Contains(vector))
                 {
+                    transform.position = origPos;
                     continue;
                 }
             }
