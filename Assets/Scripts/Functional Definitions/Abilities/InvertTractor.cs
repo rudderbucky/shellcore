@@ -2,6 +2,7 @@
 {
     public override void SetTier(int abilityTier)
     {
+        if (abilityTier < 1) abilityTier = 1;
         base.SetTier(abilityTier);
         activeDuration = 5 * abilityTier;
     }
