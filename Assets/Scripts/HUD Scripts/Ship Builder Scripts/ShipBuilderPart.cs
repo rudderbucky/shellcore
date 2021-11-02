@@ -110,7 +110,7 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
                     }
 
                     if ((!symmetryPart || (symmetryPart.rectTransform.anchoredPosition - symVec).sqrMagnitude >
-                        ShipBuilderCursorScript.stepSize * ShipBuilderCursorScript.stepSize) && !onAxis)
+                        ShipBuilderCursorScript.stepSize) && !onAxis)
                     {
                         image.color = FactionManager.GetFactionColor(1);
                     }

@@ -476,13 +476,13 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             lastPart = null;
 
             var vecPos = GetComponent<RectTransform>().anchoredPosition;
-            var part = FindPart(vecPos, null);
+            var part = FindPart(vecPos, null, true);
             // check for symmetry mode and grab parts accordingly
             if (part)
             {
                 if (symmetryMode != SymmetryMode.Off)
                 {
-                    var symmetryPart = FindPart(GetSymmetrizedVector(vecPos, symmetryMode), part);
+                    var symmetryPart = FindPart(GetSymmetrizedVector(part.rectTransform.anchoredPosition, symmetryMode), part);
                     if (symmetryPart == part)
                     {
                         symmetryPart = null;
@@ -510,15 +510,24 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     // Finds the part which contains the passed vector point
     // symmetry mode enables checks based on symmetryPart - same part ID, ability ID, different mirrored
-    public ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart)
+    public ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart, bool useBounds = false)
     {
         for (int i = parts.Count - 1; i >= 0; i--)
         {
-            Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);
-            bound.extents /= 1.5F;
             var origPos = transform.position;
-            transform.position = Input.mousePosition;
-            if (bound.Contains(vector) && (!symmetryPart || (parts[i].info.partID == symmetryPart.info.partID &&
+            if (!useBounds && !PositionsCloseEnough(parts[i].rectTransform.anchoredPosition, vector)) continue;
+            else if (useBounds)
+            {
+                Bounds bound = ShipBuilder.GetRect(parts[i].rectTransform);
+                bound.extents /= 1.5F;
+
+                transform.position = Input.mousePosition;
+                if (!bound.Contains(vector))
+                {
+                    continue;
+                }
+            }
+            if ((!symmetryPart || (parts[i].info.partID == symmetryPart.info.partID &&
                 (symmetryMode != SymmetryMode.X
                     || CheckOrientationCompatibility(parts[i].info, symmetryPart.info)))))
             {
@@ -530,6 +539,12 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         }
 
         return null;
+    }
+
+    // returns whether two positions are close enough ship builder-wise
+    public bool PositionsCloseEnough(Vector2 vec1, Vector2 vec2)
+    {
+        return (vec1 - vec2).sqrMagnitude <= ShipBuilderCursorScript.stepSize;
     }
 
     private enum PartSymmetry
