@@ -8,12 +8,5 @@ public class ParticleFlag : MonoBehaviour
         if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
         {
             GetComponent<SpriteRenderer>().enabled = false;
-            
-            //GetComponent<ParticleSystem>().enableEmission = true;
         }
-		else
-		{
-            //GetComponent<ParticleSystem>().enableEmission = false;
-		}
-    }
 }
