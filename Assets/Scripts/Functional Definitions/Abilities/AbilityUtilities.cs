@@ -42,7 +42,8 @@ public enum AbilityID
     Ion,
     Flak,
     Rocket,
-    YardWarp
+    YardWarp,
+    Unload
 }
 
 public static class AbilityUtilities
@@ -115,6 +116,7 @@ public static class AbilityUtilities
             case 33:
             case 35:
             case 40:
+            case 41:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -223,6 +225,8 @@ public static class AbilityUtilities
                 return $"Slow projectile that deals {Rocket.bulletDamage * tier} to air stations.";
             case 40:
                 return "Warps your currently held part directly into your inventory.";
+            case 41:
+                return $"Temporarily reduces Global Cooldown by {tier}/{tier + 1}.";
             default:
                 return "Description unset";
         }
@@ -426,6 +430,8 @@ public static class AbilityUtilities
                 return "Flak";
             case 40:
                 return "Yard Warp";
+            case 41:
+                return "Unload";
             default:
                 return "Name unset";
         }
@@ -599,6 +605,9 @@ public static class AbilityUtilities
                 break;
             case 40:
                 ability = obj.AddComponent<YardWarp>();
+                break;
+            case 41:
+                ability = obj.AddComponent<Unload>();
                 break;
         }
 
