@@ -226,7 +226,7 @@ public static class AbilityUtilities
             case 40:
                 return "Warps your currently held part directly into your inventory.";
             case 41:
-                return $"Temporarily reduces Global Cooldown by {tier}/{tier + 1}.";
+                return $"Temporarily reduces Global Cooldown by {Mathf.Min(tier, 1)}/{Mathf.Min(tier, 1) + 1}.";
             default:
                 return "Description unset";
         }

@@ -32,9 +32,9 @@ public class Unload : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        gcdTemp = Core.WeaponGCD * ((float)abilityTier / ((float)abilityTier + 1));
+        gcdTemp = Core.WeaponGCD * ((float)Mathf.Min(abilityTier, 1) / ((float)Mathf.Min(abilityTier, 1) + 1));
         Core.WeaponGCD = Core.WeaponGCD - gcdTemp;
-        AudioManager.PlayClipByID("clip_buff", transform.position);
+        AudioManager.PlayClipByID("clip_unload", transform.position);
         base.Execute();
     }
 }
