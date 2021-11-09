@@ -9,4 +9,5 @@ public class ParticleFlag : MonoBehaviour
         {
             GetComponent<SpriteRenderer>().enabled = false;
         }
+    }
 }
