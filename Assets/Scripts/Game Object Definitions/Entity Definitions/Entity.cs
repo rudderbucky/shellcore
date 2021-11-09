@@ -211,6 +211,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public string entityName;
 
     private float weaponGCD = 0.1F; // weapon global cooldown
+    public float WeaponGCD {
+        get { return weaponGCD; }
+        set { weaponGCD = value; }
+    }
     private float weaponGCDTimer;
 
     public float weight;
