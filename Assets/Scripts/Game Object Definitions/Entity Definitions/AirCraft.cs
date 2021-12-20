@@ -87,27 +87,25 @@ public abstract class AirCraft : Craft
         else if ((!draggable || !draggable.dragging) && entityBody.velocity.y == 0)
         {
             // idle oscillation time
+            if (!oscillating)
+            {
+                positionBeforeOscillation = entityBody.position.y;
+            }
             oscillating = true;
             OscillatorFunction();
-        }
-
-        if (entityBody.velocity.y != 0)
-        {
-            // store the last core position before oscillator is triggered
-            positionBeforeOscillation = entityBody.position.y;
         }
     }
 
     /// <summary>
-    /// Idle oscillation animation; smoother than the original ShellCore Command one!!!!
+    /// Idle oscillation animation
     /// </summary>
     private void OscillatorFunction()
     {
-        timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
         oscillatorVector = entityBody.position; // get the current aircraft position
         oscillatorVector.y = Mathf.Min(oscillatorVector.y - 0.005F * Mathf.Sin(timePassed + entityBody.position.x), positionBeforeOscillation); // cool math stuff
         oscillatorVector.y = Mathf.Max(oscillatorVector.y, positionBeforeOscillation - 1); // more cool math stuff
         entityBody.position = oscillatorVector; // set the aircraft position
+        timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)
     }
 
     public AirCraftAI GetAI()
