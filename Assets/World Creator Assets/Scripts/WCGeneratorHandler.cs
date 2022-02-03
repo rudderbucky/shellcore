@@ -1012,7 +1012,7 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
 
-        if (blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore && entity.faction == 1)
+        if (blueprint.intendedType == EntityBlueprint.IntendedType.ShellCore && entity.faction != 0)
         {
             if (blueprint.parts != null)
             {
