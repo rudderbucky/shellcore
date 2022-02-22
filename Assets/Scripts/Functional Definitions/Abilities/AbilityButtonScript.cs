@@ -167,6 +167,17 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
     private void Update()
     {
+
+        if (tooltip)
+        {
+            tooltip.transform.position = Input.mousePosition;
+        }
+
+        if (abilities.Count <= 0) 
+        {
+            return;
+        }
+
         if (dragging)
         {
             var xPos = Input.mousePosition.x;
@@ -180,10 +191,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                 (a.TimeUntilReady() == 0 || a.GetAbilityType() == AbilityHandler.AbilityTypes.Passive)).Count + "";
         }
 
-        if (tooltip)
-        {
-            tooltip.transform.position = Input.mousePosition;
-        }
 
         if (!entity || visualMode)
         {
@@ -412,7 +419,10 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     public void OnPointerUp(PointerEventData eventData)
     {
         dragging = false;
-        movingImage.enabled = false;
+        if (movingImage)
+        {
+            movingImage.enabled = false;
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)

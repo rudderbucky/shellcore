@@ -14,6 +14,7 @@ public class DevConsoleScript : MonoBehaviour
     public static bool componentEnabled = false;
     public static bool fullLog = false;
     public static bool godModeEnabled = false;
+    public static bool spectateEnabled = false;
     private static bool warpingEnabled = false;
     public static bool WarpingEnabled
     {
@@ -30,6 +31,7 @@ public class DevConsoleScript : MonoBehaviour
     {
         Application.logMessageReceived += HandleLog;
         godModeEnabled = false;
+        spectateEnabled = false;
         Instance = this;
         componentEnabled = false;
     }
@@ -202,6 +204,7 @@ public class DevConsoleScript : MonoBehaviour
                     renderers[i].color = new Color(1f, 1f, 1f, 0.1f);
                 }
 
+                spectateEnabled = true;
                 Collider2D[] colliders = player.GetComponentsInChildren<Collider2D>(true);
                 for (int i = 0; i < colliders.Length; i++)
                 {

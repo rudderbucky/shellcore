@@ -92,9 +92,16 @@ public class BombScript : MonoBehaviour
         if (Time.time > timeInstantiated + fuseTime && !fired)
             foreach (var ent in AIData.entities)
             {
+
                 var craft = ent.GetComponent<Entity>(); // check if it has a craft component
                 if (craft != null && !craft.GetIsDead()) // check if the component was obtained
                 {
+                    if (craft as PlayerCore && DevConsoleScript.spectateEnabled) 
+                    {
+                        continue;
+                    }
+
+
                     if (!FactionManager.IsAllied(faction, craft.GetFaction())
                         && Vector2.SqrMagnitude(craft.transform.position - transform.position) <= explosionRadius * explosionRadius
                             && CheckCategoryCompatibility(craft)
