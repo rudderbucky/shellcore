@@ -50,20 +50,10 @@ public class ItemPropertyDisplay : MonoBehaviour
             rectTransform = GetComponent<RectTransform>();
         }
 
-        factionDropdown.ClearOptions();
-        List<string> options = new List<string>();
         factionIDs = new List<int>();
-        for (int i = 0; i < FactionManager.FactionArrayLength; i++)
-        {
-            if (FactionManager.FactionExists(i))
-            {
-                string option = FactionManager.GetFactionName(i);
-                options.Add(option);
-                factionIDs.Add(i);
-            }
-        }
+        UpdateFactionIDList(factionIDs);
+        AddCustomFactionsToDropdown(factionDropdown);
 
-        factionDropdown.AddOptions(options);
         if (editingDefaults)
         {
             factionDropdown.value = PlayerPrefs.GetInt("WCItemPropertyDisplay_defaultFaction", 0);
@@ -73,6 +63,35 @@ public class ItemPropertyDisplay : MonoBehaviour
                 PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", 0);
             }
         }
+    }
+
+    public static void UpdateFactionIDList(List<int> factionIDs)
+    {
+        if (factionIDs == null) return;
+        for (int i = 0; i < FactionManager.FactionArrayLength; i++)
+        {
+            if (FactionManager.FactionExists(i))
+            {
+                factionIDs.Add(i);
+            }
+        }
+
+    }
+
+    public static void AddCustomFactionsToDropdown(Dropdown factionDropdown)
+    {
+        factionDropdown.ClearOptions();
+        List<string> options = new List<string>();
+        for (int i = 0; i < FactionManager.FactionArrayLength; i++)
+        {
+            if (FactionManager.FactionExists(i))
+            {
+                string option = FactionManager.GetFactionName(i);
+                options.Add(option);
+            }
+        }
+
+        factionDropdown.AddOptions(options);
     }
 
     void Update()
@@ -116,7 +135,11 @@ public class ItemPropertyDisplay : MonoBehaviour
             return;
         }
 
-        currentItem.faction = factionIDs[factionDropdown.value];
+        if (factionIDs != null)
+        {
+            currentItem.faction = factionIDs[factionDropdown.value];
+        }
+        
         Debug.Log("updated faction: " + currentItem.faction);
     }
 
