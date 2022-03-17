@@ -29,6 +29,7 @@ public class SectorPropertyDisplay : MonoBehaviour
     public GameObject parseBGSpawnsButton;
 
     public List<(InputField, Dropdown)> bgSpawnInputFields = new List<(InputField, Dropdown)>();
+    public List<int> factionIDs;
     public Transform bgSpawnScrollContents;
     public RectTransform mainContents;
     Vector2 mousePos;
@@ -330,6 +331,7 @@ public class SectorPropertyDisplay : MonoBehaviour
 
         var field = Instantiate(bgSpawnInputFieldPrefab, bgSpawnScrollContents).GetComponentInChildren<InputField>();
         var drop = field.transform.parent.GetComponentInChildren<Dropdown>();
+        ItemPropertyDisplay.AddCustomFactionsToDropdown(drop);
         bgSpawnInputFields.Add((field, drop));
         field.text = text;
         drop.value = faction;
@@ -384,7 +386,10 @@ public class SectorPropertyDisplay : MonoBehaviour
                     ent.name = item.obj.name;
                 }
 
-                ent.faction = field.Item2.value; // maybe change this later
+                if (factionIDs != null)
+                {
+                    ent.faction = factionIDs[field.Item2.value]; // maybe change this later
+                }
                 ent.assetID = item.assetID;
                 levelEntities.Add(ent);
             }
@@ -443,6 +448,8 @@ public class SectorPropertyDisplay : MonoBehaviour
             return;
         }
 
+        factionIDs = new List<int>();
+        ItemPropertyDisplay.UpdateFactionIDList(factionIDs);
         ClearBGSpawns();
         foreach (var bgSpawn in currentSector.backgroundSpawns)
         {
