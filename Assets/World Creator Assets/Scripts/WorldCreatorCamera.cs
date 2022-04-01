@@ -7,9 +7,13 @@ public class WorldCreatorCamera : MonoBehaviour
     public EventSystem system;
     public CanvasGroup group;
     public int sectorIndex = 0;
+    public static int minZ = -10;
+    public static int maxZ = -150;
+    public static WorldCreatorCamera instance;
 
     void FixedUpdate()
     {
+        instance = this;
         //group.interactable = (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0);
         if (!system.IsPointerOverGameObject())
         {
@@ -40,12 +44,12 @@ public class WorldCreatorCamera : MonoBehaviour
                 }
             }
 
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.z >= -150)
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") < 0 && transform.position.z >= maxZ)
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 5);
             }
 
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") > 0 && transform.position.z < -10)
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetAxis("Mouse ScrollWheel") > 0 && transform.position.z < minZ)
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 5);
             }
