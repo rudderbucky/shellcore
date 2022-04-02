@@ -74,6 +74,8 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         speakerID = null;
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
         initCanvases(forceReInit);
+
+        // When adding new conditions with delegates, you MUST clear them out here
         MissionCondition.OnMissionStatusChange = null;
         SetPartDropRateNode.del = null;
         VariableConditionNode.OnVariableUpdate = null;
@@ -81,6 +83,9 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         WinBattleCondition.OnBattleWin = null;
         WinSiegeCondition.OnSiegeWin = null;
         YardCollectCondition.OnYardCollect = null;
+        UpgradeCoreCondition.OnCoreUpgrade = null;
+        UsePartCondition.OnPlayerReconstruct = null;
+        TestCondition.TestTrigger = null;
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
     }
