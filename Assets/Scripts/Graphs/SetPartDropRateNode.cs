@@ -35,7 +35,7 @@ namespace NodeEditorFramework.Standard
         public float dropRate;
         public string sectorName;
         public bool restoreOld;
-        static SectorManager.SectorLoadDelegate del;
+        public static SectorManager.SectorLoadDelegate del;
 
         public override void NodeGUI()
         {

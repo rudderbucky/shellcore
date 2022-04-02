@@ -114,11 +114,6 @@ namespace NodeEditorFramework.Standard
                 if (!TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))
                 {
                     Debug.LogWarning($"{(Canvas as QuestCanvas).missionName} does not have objective locations");
-                    foreach (var name in TaskManager.objectiveLocations.Keys)
-                    {
-                        Debug.LogWarning(name);
-                    }
-                    Debug.LogWarning(TaskManager.objectiveLocations.Count);
                     return -1;
                 }
                 foreach (var objectiveLocation in TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName])

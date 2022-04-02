@@ -69,12 +69,18 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         {
             Destroy(gameObject);
         }
-
         Instance = this;
         objectiveLocations = new Dictionary<string, List<ObjectiveLocation>>();
         speakerID = null;
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
         initCanvases(forceReInit);
+        MissionCondition.OnMissionStatusChange = null;
+        SetPartDropRateNode.del = null;
+        VariableConditionNode.OnVariableUpdate = null;
+        WinBattleCondition.OnBattleLose = null;
+        WinBattleCondition.OnBattleWin = null;
+        WinSiegeCondition.OnSiegeWin = null;
+        YardCollectCondition.OnYardCollect = null;
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
     }
