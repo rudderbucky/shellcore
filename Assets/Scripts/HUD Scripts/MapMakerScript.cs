@@ -39,6 +39,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
         if (manager)
         {
+            Destroy();
             Draw(manager.sectors);
         }
     }
