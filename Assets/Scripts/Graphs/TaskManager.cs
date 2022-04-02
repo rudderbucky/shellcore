@@ -83,9 +83,9 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         WinBattleCondition.OnBattleWin = null;
         WinSiegeCondition.OnSiegeWin = null;
         YardCollectCondition.OnYardCollect = null;
-        UpgradeCoreCondition.OnCoreUpgrade = null;
-        UsePartCondition.OnPlayerReconstruct = null;
-        TestCondition.TestTrigger = null;
+        UpgradeCoreCondition.OnCoreUpgrade = new UnityEvent();
+        UsePartCondition.OnPlayerReconstruct = new UnityEvent();
+        TestCondition.TestTrigger = new UnityEvent();
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
     }
