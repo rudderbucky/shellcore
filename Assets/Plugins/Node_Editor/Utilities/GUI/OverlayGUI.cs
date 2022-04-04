@@ -271,7 +271,7 @@ namespace NodeEditorFramework.Utilities
 						groupToDraw = item;
 					}
 				}
-				else if (selected && (Event.current.type == EventType.MouseDown || (Event.current.button != 1 && Event.current.type == EventType.MouseUp)))
+				else if (selected && ((Event.current.type == EventType.MouseDown && Event.current.button != 1) || (Event.current.button != 1 && Event.current.type == EventType.MouseUp)))
 				{
 					item.Execute ();
 					close = true;

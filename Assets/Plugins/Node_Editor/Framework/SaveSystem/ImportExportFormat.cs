@@ -130,13 +130,17 @@ namespace NodeEditorFramework.IO
 				return false;
 			if (GUILayout.Button("Import"))
 			{
-				if (string.IsNullOrEmpty(fileSelection) || !File.Exists(RuntimeIOPath + "\\" + fileSelection))
+				if (string.IsNullOrEmpty(fileSelection) || !File.Exists(Path.Combine(RuntimeIOPath, fileSelection)))
 				{
-					Debug.Log(RuntimeIOPath + "\\" + fileSelection);
+					Debug.Log(Path.Combine(RuntimeIOPath, fileSelection));
 					return false;
 				}
 				fileSelection = Path.GetFileName(fileSelection);
-				locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection };
+				locationArgs = new object[] { Path.Combine(RuntimeIOPath, fileSelection) };
+
+					if (RuntimeIOPath == null || RuntimeIOPath == "")
+                    RuntimeIOPath = Path.Combine(Application.streamingAssetsPath + "CanvasPlaceholder");
+
 				return true;
 			}
 			GUILayout.EndHorizontal();
@@ -202,10 +206,10 @@ namespace NodeEditorFramework.IO
 				fileSelection = Path.GetFileNameWithoutExtension(fileSelection);
 
                 if (RuntimeIOPath == null || RuntimeIOPath == "")
-                    RuntimeIOPath = Application.streamingAssetsPath + "\\CanvasPlaceholder";
+                    RuntimeIOPath = Path.Combine(Application.streamingAssetsPath + "CanvasPlaceholder");
 
-                locationArgs = new object[] { RuntimeIOPath + "\\" + fileSelection + ext};
-                Debug.Log(RuntimeIOPath + "\\" + fileSelection + ext);
+                locationArgs = new object[] { Path.Combine(RuntimeIOPath, fileSelection + ext)};
+                Debug.Log(Path.Combine(RuntimeIOPath, fileSelection + ext));
 				return true;
 			}
 			GUILayout.EndHorizontal();
