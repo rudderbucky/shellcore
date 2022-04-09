@@ -304,6 +304,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         return img.sprite.bounds.size * 100;
     }
 
+    public static bool CheckPartIntersectsWithBound(ShipBuilderPart part1, ShipBuilderPart part2)
+    {
+        var pb1 = GetRect(part1.rectTransform);
+        var pb2 = GetRect(part2.rectTransform);
+        return (pb1.Intersects(pb2));
+    }
+
     public bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart)
     {
         // make sure calculations here are only with core1_shell
@@ -368,7 +375,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         {
             if (part.validPos)
             {
-                foreach (var part2 in cursorScript.parts)
+                foreach (var part2 in part.neighbors)
                 {
                     if (part != part2 && PartIsTooClose(part, part2))
                     {
@@ -380,7 +387,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             else
             {
                 bool stillTouching = false;
-                foreach (ShipBuilderPart part2 in cursorScript.parts)
+                foreach (ShipBuilderPart part2 in part.neighbors)
                 {
                     if (part2 != part && PartIsTooClose(part, part2))
                     {
@@ -808,6 +815,22 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
 
         cursorScript.gameObject.SetActive(true);
+        foreach (var part1 in cursorScript.parts)
+        {
+            part1.neighbors = new List<ShipBuilderPart>();
+            foreach (var part2 in cursorScript.parts)
+            {
+                if (part1 == part2)
+                {
+                    continue;
+                }
+                if (CheckPartIntersectsWithBound(part1, part2))
+                {
+                    part1.neighbors.Add(part2);
+                }
+            }
+        }
+
         cursorScript.UpdateHandler();
         UpdateChain();
     }

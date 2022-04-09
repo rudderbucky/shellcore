@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -16,6 +17,7 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
     public bool highlighted;
     public BuilderMode mode;
     private Vector3? lastValidPos = null;
+    public List<ShipBuilderPart> neighbors = new List<ShipBuilderPart>();
 
     public override void Initialize()
     {

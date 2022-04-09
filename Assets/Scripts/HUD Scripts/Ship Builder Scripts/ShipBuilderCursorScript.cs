@@ -464,6 +464,14 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                 if (currentPart)
                 {
                     currentPart.ReflectLocation();
+                    currentPart.neighbors.Clear();
+                    foreach (var part in parts)
+                    {
+                        if (ShipBuilder.CheckPartIntersectsWithBound(currentPart, part))
+                        {
+                            currentPart.neighbors.Add(part);
+                        }
+                    }
                 }
 
                 builder.UpdateChain();
