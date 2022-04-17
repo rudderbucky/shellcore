@@ -377,6 +377,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             {
                 foreach (var part2 in part.neighbors)
                 {
+                    if (!part2)
+                    {
+                        continue;
+                    }
                     if (part != part2 && PartIsTooClose(part, part2))
                     {
                         part.validPos = false;
@@ -389,6 +393,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 bool stillTouching = false;
                 foreach (ShipBuilderPart part2 in part.neighbors)
                 {
+                    if (!part2)
+                    {
+                        continue;
+                    }
+
                     if (part2 != part && PartIsTooClose(part, part2))
                     {
                         stillTouching = true;
