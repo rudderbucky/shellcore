@@ -36,14 +36,14 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
                 if (mode == BuilderMode.Yard && cursor.builder.GetMode() == BuilderMode.Trader)
                 {
                     cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Sell);
+                    return;
                 }
                 else if (mode == BuilderMode.Trader)
                 {
                     cursor.buildCost += EntityBlueprint.GetPartValue(builderPart.info);
                     cursor.builder.DispatchPart(builderPart, ShipBuilder.TransferMode.Buy);
+                    return;
                 }
-
-                return;
             }
 
             ShipBuilderPart symmetryPart = count > 0 && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
