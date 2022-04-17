@@ -474,6 +474,19 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                     }
                 }
 
+                if (symmetryCurrentPart)
+                {
+                    symmetryCurrentPart.ReflectLocation();
+                    symmetryCurrentPart.neighbors.Clear();
+                    foreach (var part in parts)
+                    {
+                        if (ShipBuilder.CheckPartIntersectsWithBound(symmetryCurrentPart, part))
+                        {
+                            symmetryCurrentPart.neighbors.Add(part);
+                        }
+                    }
+                }
+
                 builder.UpdateChain();
             }
         }
