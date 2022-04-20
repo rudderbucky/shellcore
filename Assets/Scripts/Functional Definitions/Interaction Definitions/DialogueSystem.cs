@@ -123,6 +123,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             Entity.OnEntitySpawn += startDialogueGraph;
         else
             Entity.OnEntitySpawn = startDialogueGraph;
+
+        OnDialogueCancel = null;
+        OnDialogueEnd = null;
+        StartDialogueNode.dialogueCanvasNode = null;
+        StartDialogueNode.missionCanvasNode = null;
         initialized = true;
     }
 

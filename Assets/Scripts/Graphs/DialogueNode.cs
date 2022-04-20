@@ -162,7 +162,6 @@ namespace NodeEditorFramework.Standard
                 var node = state != NodeEditorGUI.NodeEditorState.Dialogue
                     ? StartDialogueNode.missionCanvasNode
                     : StartDialogueNode.dialogueCanvasNode;
-                Debug.Log(node?.EntityID + " " + StartDialogueNode.missionCanvasNode?.EntityID);
                 if (node && !string.IsNullOrEmpty(node.EntityID))
                 {
                     handler.GetInteractionOverrides()[node.EntityID].Pop();
