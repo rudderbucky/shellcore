@@ -16,7 +16,7 @@ public class Missile : WeaponAbility
         range = 20;
         energyCost = 150;
         terrain = Entity.TerrainType.Air;
-        category = Entity.EntityCategory.All;
+        category = Entity.EntityCategory.Unit;
         bonusDamageType = typeof(ShellCore);
     }
 
