@@ -18,7 +18,7 @@ public class Laser : Bullet
         survivalTime = 0.1F;
         range = bulletSpeed * survivalTime;
         ID = AbilityID.Laser;
-        cooldownDuration = 10F;
+        cooldownDuration = 3F;
         energyCost = 50;
         damage = laserDamage;
         prefabScale = Vector2.one;
@@ -41,6 +41,15 @@ public class Laser : Bullet
         bulletsLeft = 5;
         this.targetPos = targetPos;
         return true;
+    }
+
+    public override void SetDestroyed(bool input)
+    {
+        if (input)
+        {
+            bulletsLeft = 0;
+        }
+        base.SetDestroyed(input);
     }
 
     protected void Update()
