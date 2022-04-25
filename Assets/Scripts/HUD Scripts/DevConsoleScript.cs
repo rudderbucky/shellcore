@@ -100,6 +100,19 @@ public class DevConsoleScript : MonoBehaviour
         Instance.textToAdd.Enqueue("\n <color=white>{logString}</color>");
     }
 
+    private void GodPowers()
+    {
+        var player = PlayerCore.Instance;
+        player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
+        player.SetRegens(new float[] { 99999, 99999, 99999 });
+        player.speed = 9999f;
+        player.CalculatePhysicsConstants();
+        player.DamageBoostStacks += 1000;
+        player.AddPower(10000);
+        godModeEnabled = true;
+        MapMakerScript.EnableMapCheat();
+    }
+
     public void EnterCommand(string command)
     {
         inputField.text = "";
@@ -107,18 +120,16 @@ public class DevConsoleScript : MonoBehaviour
 
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene")
         {
-            if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
+            if (command.Equals("poor", StringComparison.CurrentCultureIgnoreCase))
             {
+                GodPowers();
+                textBox.text += "\n<color=lime>Have you tried being born into wealth?</color>";
+            }
+            else if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
+            {
+                GodPowers();
                 var player = PlayerCore.Instance;
-                player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
-                player.SetRegens(new float[] { 99999, 99999, 99999 });
                 player.AddCredits(999999);
-                player.speed = 9999f;
-                player.CalculatePhysicsConstants();
-                player.DamageBoostStacks += 1000;
-                player.AddPower(10000);
-                godModeEnabled = true;
-                MapMakerScript.EnableMapCheat();
                 textBox.text += "\n<color=lime>I am noob.</color>";
             }
             else if (command.Equals("Immortality", StringComparison.CurrentCultureIgnoreCase))
