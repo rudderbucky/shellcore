@@ -428,6 +428,8 @@ public static class AbilityUtilities
                 return "Ion";
             case 38:
                 return "Flak";
+            case 39:
+                return "Rocket";
             case 40:
                 return "Yard Warp";
             case 41:

@@ -26,6 +26,7 @@ public class Disrupt : Ability
     /// </summary>
     protected override void Execute()
     {
+        AudioManager.PlayClipByID("clip_disrupt", transform.position);
         for (int i = 0; i < AIData.entities.Count; i++)
         {
             if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction) && !AIData.entities[i].IsInvisible)
