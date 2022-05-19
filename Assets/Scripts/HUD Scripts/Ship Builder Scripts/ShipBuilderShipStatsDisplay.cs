@@ -51,6 +51,12 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
                 case 20:
                     totalHealths[2] += ShellMax.maxes[2] * part.info.tier;
                     break;
+                case 22:
+                    totalRegens[1] += ShellRegen.regens[1] * part.info.tier;
+                    break;
+                case 23:
+                    totalHealths[1] += ShellMax.maxes[1] * part.info.tier;
+                    break;
             }
             PartBlueprint blueprint = ResourceManager.GetAsset<PartBlueprint>(part.info.partID);
             totalHealths[0] += blueprint.health / 2;
@@ -89,6 +95,6 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
             buildStat
         });
         display.text = displayText;
-        regenDisplay.text = $"REGEN: {totalRegens[0]}\n\nREGEN: {totalRegens[2]}";
+        regenDisplay.text = $"REGEN: {totalRegens[0]}\nREGEN: {totalRegens[1]}\nREGEN: {totalRegens[2]}";
     }
 }
