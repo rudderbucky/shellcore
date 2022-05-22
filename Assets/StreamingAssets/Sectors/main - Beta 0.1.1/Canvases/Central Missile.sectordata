@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="601.6,167.2" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="-1855552000" type="LoadSectorNode" pos="-1027,-312">
+			<Port ID="-1550876672" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-710631354" />
+		</Node>
+		<Node name="Mission Condition" ID="71955072" type="MissionCondition" pos="-1040,20">
+			<Port ID="250917504" name="output" dynamic="False" />
+			<Variable name="missionName" refID="-1456335162" />
+			<int name="missionStatus">1</int>
+		</Node>
+		<Node name="Mission Condition" ID="-1682770944" type="MissionCondition" pos="-1040,220">
+			<Port ID="1288357632" name="output" dynamic="False" />
+			<Variable name="missionName" refID="-1456335162" />
+			<int name="missionStatus">2</int>
+		</Node>
+		<Node name="Mission Condition" ID="857470336" type="MissionCondition" pos="-1040,-190">
+			<Port ID="-1969169536" name="output" dynamic="False" />
+			<Variable name="missionName" refID="-1456335162" />
+			<int name="missionStatus">0</int>
+		</Node>
+		<Node name="Delete Entity" ID="-897255680" type="Delete" pos="-140,-220">
+			<Port ID="-931729408" name="output" dynamic="False" />
+			<Port ID="105710720" name="IDIn" dynamic="False" />
+			<Port ID="1143150848" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-395787858" />
+		</Node>
+		<Node name="Conditions" ID="-1957522432" type="ConditionGroupNode" pos="-606,-215">
+			<Port ID="1599763840" name="input" dynamic="False" />
+			<Port ID="814417152" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1851857280" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1405669888" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-368229760" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="669210368" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1706650496" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Set Sector Type" ID="1642985600" type="SectorTypeNode" pos="-402.8,-466.8">
+			<Port ID="-1657763328" name="output" dynamic="False" />
+			<Port ID="-620323200" name="input" dynamic="False" />
+			<int name="sectorType">3</int>
+		</Node>
+		<Node name="Set Sector Color" ID="-111740416" type="SectorColorNode" pos="-157.2,-478.4">
+			<Port ID="417116928" name="output" dynamic="False" />
+			<Port ID="1454557056" name="input" dynamic="False" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>0.65</r>
+				<g>0</g>
+				<b>0</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Delete Faction Entities" ID="-1866466432" type="DeleteFactionEntities" pos="-154.7999,-354.7999">
+			<Port ID="-1802970112" name="output" dynamic="False" />
+			<Port ID="-765529984" name="input" dynamic="False" />
+			<int name="targetFaction">1</int>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1550876672" port2ID="1599763840" />
+		<Connection port1ID="250917504" port2ID="-1405669888" />
+		<Connection port1ID="1288357632" port2ID="669210368" />
+		<Connection port1ID="-1969169536" port2ID="814417152" />
+		<Connection port1ID="1143150848" port2ID="-368229760" />
+		<Connection port1ID="1851857280" port2ID="-620323200" />
+		<Connection port1ID="-1657763328" port2ID="1454557056" />
+		<Connection port1ID="417116928" port2ID="-765529984" />
+	</Connections>
+	<Objects>
+		<Object refID="-710631354" type="System.String">
+			<string>Sector 1040-1100</string>
+		</Object>
+		<Object refID="-1456335162" type="System.String">
+			<string>The Compass Theory</string>
+		</Object>
+		<Object refID="-395787858" type="System.String">
+			<string>fake_central_missile</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

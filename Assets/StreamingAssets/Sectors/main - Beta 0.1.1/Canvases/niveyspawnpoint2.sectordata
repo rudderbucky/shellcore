@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="378.4,-92.2" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Spawn Entity" ID="-1845762944" type="SpawnEntityNode" pos="-180,-190">
+			<Port ID="896953088" name="output" dynamic="False" />
+			<Port ID="606539520" name="IDOut" dynamic="False" />
+			<Port ID="-721314176" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="371857150" />
+			<Variable name="entityName" refID="-649856815" />
+			<int name="faction">0</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="1746070682" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="-649889615" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="578018176" />
+			<Variable name="additionalCounts" refID="1111608576" />
+		</Node>
+		<Node name="Enter Sector" ID="1351078400" type="LoadSectorNode" pos="-791.0001,-166.4">
+			<Port ID="1468425728" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1717993938" />
+		</Node>
+		<Node name="Conditions" ID="1462645504" type="ConditionGroupNode" pos="-483.2,-27.80001">
+			<Port ID="1353566080" name="input" dynamic="False" />
+			<Port ID="-1903961088" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-866520960" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="170919168" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1208359296" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1385495168" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1872032000" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Variable condition" ID="-757441536" type="VariableConditionNode" pos="-788.8001,-72.80001">
+			<Port ID="-2049167872" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="-1275627700" />
+			<int name="value">2</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Variable condition" ID="-45496576" type="VariableConditionNode" pos="-789.6,145.2">
+			<Port ID="-1743953664" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="-1275627700" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Variable condition" ID="2029383680" type="VariableConditionNode" pos="-789.2,355.6">
+			<Port ID="-531520640" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="-1275627700" />
+			<int name="value">0</int>
+			<int name="mode">0</int>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-721314176" port2ID="1208359296" />
+		<Connection port1ID="1468425728" port2ID="1353566080" />
+		<Connection port1ID="-1903961088" port2ID="-2049167872" />
+		<Connection port1ID="170919168" port2ID="-1743953664" />
+		<Connection port1ID="1385495168" port2ID="-531520640" />
+	</Connections>
+	<Objects>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="-649856815" type="System.String">
+			<string>Nivey</string>
+		</Object>
+		<Object refID="1746070682" type="System.String">
+			<string>flag_tct_end</string>
+		</Object>
+		<Object refID="-649889615" type="System.String">
+			<string>nivey</string>
+		</Object>
+		<Object refID="578018176" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="1111608576" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1717993938" type="System.String">
+			<string>Capitol Basic Trade Sector</string>
+		</Object>
+		<Object refID="-1275627700" type="System.String">
+			<string>NiveySpawn</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
