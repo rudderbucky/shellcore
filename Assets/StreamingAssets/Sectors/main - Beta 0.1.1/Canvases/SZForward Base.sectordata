@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="230.4,-121.2" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Time Trigger" ID="706868224" type="TimeTrigger" pos="570,310">
+			<Port ID="565278080" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">5</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="1445663744" type="ConditionGroupNode" pos="570,210">
+			<Port ID="1602718208" name="input" dynamic="False" />
+			<Port ID="-181748480" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="855691648" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Conditions" ID="-774423296" type="ConditionGroupNode" pos="-40,50">
+			<Port ID="-1654808960" name="input" dynamic="False" />
+			<Port ID="1893131776" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1364395392" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-326955264" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">116</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="710484864" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">116</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Win Siege Zone" ID="-1047857792" type="WinSiegeCondition" pos="-270,50">
+			<Port ID="420071296" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1221075247" />
+		</Node>
+		<Node name="Add Reward" ID="-1790158848" type="AddRewardNode" pos="347.2,-154.8">
+			<Port ID="1457511424" name="inputLeft" dynamic="False" />
+			<Port ID="-1800015744" name="outputRight" dynamic="False" />
+			<RewardWrapper xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="wrapper">
+				<creditReward>400</creditReward>
+				<reputationReward>0</reputationReward>
+				<shardReward>0</shardReward>
+				<partReward>false</partReward>
+				<partAbilityID>0</partAbilityID>
+				<partTier>0</partTier>
+			</RewardWrapper>
+			<boolean name="showPopup">false</boolean>
+		</Node>
+		<Node name="Test Variable" ID="1300456960" type="TestVariableNode" pos="130,50">
+			<Port ID="-762575616" name="inputLeft" dynamic="False" />
+			<Port ID="274864512" name="outputTrue" dynamic="False" />
+			<Port ID="1312304640" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-720419433" />
+			<int name="value">0</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Set Variable" ID="-1145324032" type="SetVariableNode" pos="570,50">
+			<Port ID="-1509602176" name="Input " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-472162048" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="-720419433" />
+			<int name="value">400</int>
+			<boolean name="incrementMode">false</boolean>
+		</Node>
+		<Node name="Warp Player" ID="1492383488" type="WarpPlayerNode" pos="790,210">
+			<Port ID="-1945222528" name="output" dynamic="False" />
+			<Port ID="-907782400" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="-7346901" />
+			<Variable name="entityID" refID="-1545724404" />
+		</Node>
+		<Node name="Destroy Entities" ID="464195200" type="DestroyEntities" pos="-278.6,193.2">
+			<Port ID="129657728" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">false</boolean>
+			<Variable name="targetID" refID="1875821083" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">0</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="Set Part Drop Rate" ID="-262342528" type="SetPartDropRate" pos="-469,137">
+			<Port ID="2038338560" name="output" dynamic="False" />
+			<Port ID="-1219188608" name="input" dynamic="False" />
+			<float name="dropRate">0</float>
+			<Variable name="sectorName" refID="-1221075247" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="-930543104" type="LoadSectorNode" pos="-470,50">
+			<Port ID="-617368832" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1221075247" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="565278080" port2ID="-181748480" />
+		<Connection port1ID="1602718208" port2ID="-472162048" />
+		<Connection port1ID="1602718208" port2ID="1312304640" />
+		<Connection port1ID="1602718208" port2ID="710484864" />
+		<Connection port1ID="855691648" port2ID="-907782400" />
+		<Connection port1ID="-1654808960" port2ID="2038338560" />
+		<Connection port1ID="1893131776" port2ID="420071296" />
+		<Connection port1ID="-1364395392" port2ID="-762575616" />
+		<Connection port1ID="-326955264" port2ID="129657728" />
+		<Connection port1ID="1457511424" port2ID="274864512" />
+		<Connection port1ID="-1800015744" port2ID="-1509602176" />
+		<Connection port1ID="-1219188608" port2ID="-617368832" />
+	</Connections>
+	<Objects>
+		<Object refID="-1221075247" type="System.String">
+			<string>SiegeZone Forward Base</string>
+		</Object>
+		<Object refID="-720419433" type="System.String">
+			<string>ForwardBaseComplete</string>
+		</Object>
+		<Object refID="-7346901" type="System.String">
+			<string>Haven 3</string>
+		</Object>
+		<Object refID="-1545724404" type="System.String">
+			<string>SkirmishGateH3</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
