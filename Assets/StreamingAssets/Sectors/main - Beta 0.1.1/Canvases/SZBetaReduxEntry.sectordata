@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-619,-242.0001" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Variable condition" ID="667697664" type="VariableConditionNode" pos="-460,150">
+			<Port ID="1834947584" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="-797989472" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Conditions" ID="-1552389376" type="ConditionGroupNode" pos="-134.6,66.00008">
+			<Port ID="-1422579584" name="input" dynamic="False" />
+			<Port ID="681751296" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="536544512" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Spawn Entity" ID="-1951882880" type="SpawnEntityNode" pos="-150,280">
+			<Port ID="-385139456" name="output" dynamic="False" />
+			<Port ID="652300672" name="IDOut" dynamic="False" />
+			<Port ID="1689740800" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="1261428235" />
+			<Variable name="entityName" refID="-274358786" />
+			<int name="faction">0</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="-1399020669" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="1520882700" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="-1111648000" />
+			<Variable name="additionalCounts" refID="-1632967424" />
+		</Node>
+		<Node name="Start Dialogue" ID="-1678358400" type="StartDialogueNode" pos="250,130">
+			<Port ID="-1567786368" name="input" dynamic="False" />
+			<Port ID="-530346240" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="1520882700" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Enter Sector" ID="-839178752" type="LoadSectorNode" pos="-390,-80">
+			<Port ID="507093888" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1743387025" />
+		</Node>
+		<Node name="Set Part Drop Rate" ID="-1627916160" type="SetPartDropRate" pos="-110,-130">
+			<Port ID="1544534016" name="output" dynamic="False" />
+			<Port ID="-1712993152" name="input" dynamic="False" />
+			<float name="dropRate">0.025</float>
+			<Variable name="sectorName" refID="1743387025" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+		<Node name="Skirmish Menu" ID="450186240" type="SkirmishMenuNode" pos="550,-80">
+			<Port ID="797507456" name="input" dynamic="False" />
+			<Variable name="skirmishOptions" refID="620277760" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1834947584" port2ID="681751296" />
+		<Connection port1ID="-1422579584" port2ID="1544534016" />
+		<Connection port1ID="536544512" port2ID="1689740800" />
+		<Connection port1ID="-385139456" port2ID="-1567786368" />
+		<Connection port1ID="-530346240" port2ID="797507456" />
+		<Connection port1ID="507093888" port2ID="-1712993152" />
+	</Connections>
+	<Objects>
+		<Object refID="-797989472" type="System.String">
+			<string>EP2Finish</string>
+		</Object>
+		<Object refID="1261428235" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core3skills_shell","shellHealth":[5000.0,1000.0,1000.0],"baseRegen":[120.0,0.0,500.0],"intendedType":8,"parts":[{"location":{"x":1.9000004529953004,"y":0.5000001788139343},"rotation":0.0,"mirrored":true,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":0.800000011920929,"y":0.30000007152557375},"rotation":0.0,"mirrored":true,"abilityID":0,"tier":0,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":-1.899999976158142,"y":0.5},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":-0.800000011920929,"y":0.30000007152557375},"rotation":0.0,"mirrored":false,"abilityID":0,"tier":0,"secondaryData":"","partID":"BigSide4","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="-274358786" type="System.String">
+			<string>Air Carrier</string>
+		</Object>
+		<Object refID="-1399020669" type="System.String">
+			<string>flag_betaplayerposition</string>
+		</Object>
+		<Object refID="1520882700" type="System.String">
+			<string>betacarrier</string>
+		</Object>
+		<Object refID="-1111648000" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1632967424" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="1743387025" type="System.String">
+			<string>SiegeZone Beta</string>
+		</Object>
+		<Object refID="620277760" type="System.Collections.Generic.List`1[[SkirmishOption, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]">
+			<ArrayOfSkirmishOption xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<SkirmishOption>
+					<creditLimit>60000</creditLimit>
+					<mapDescription>Destruction lies between the two, face the wrath for once was the past.</mapDescription>
+					<entityID>siegezone-beta-redux-carrier</entityID>
+					<sectorName>SiegeZone Beta Redux</sectorName>
+					<clearParty>false</clearParty>
+				</SkirmishOption>
+			</ArrayOfSkirmishOption>
+		</Object>
+	</Objects>
+</NodeCanvas>

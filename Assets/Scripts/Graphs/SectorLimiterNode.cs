@@ -103,6 +103,11 @@ namespace NodeEditorFramework.Standard
 
         void TryAddObjective()
         {
+            if (!TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))
+            {
+                Debug.LogError($"Task Manager does not contain an objective list for mission {(Canvas as QuestCanvas).missionName}");
+                return;
+            }
             var sect = SectorManager.GetSectorByName(sectorName);
             var bounds = sect.bounds;
             TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();

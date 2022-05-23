@@ -49,6 +49,7 @@ public class PlayerViewScript : MonoBehaviour
 
         paused = false;
         Time.timeScale = 1;
+        AudioListener.pause = false;
     }
 
     void Update()
@@ -76,6 +77,7 @@ public class PlayerViewScript : MonoBehaviour
                 if (escapeMenu && escapeMenu.activeSelf && !transform.Find("Settings").gameObject.activeSelf)
                 {
                     Time.timeScale = 1;
+                    AudioListener.pause = false;
                     escapeMenu.SetActive(false);
                     return;
                 }
@@ -107,10 +109,12 @@ public class PlayerViewScript : MonoBehaviour
                 if (escapeMenu.activeSelf)
                 {
                     Time.timeScale = 0;
+                    AudioListener.pause = true;
                 }
                 else
                 {
                     Time.timeScale = 1;
+                    AudioListener.pause = false;
                 }
             }
         }

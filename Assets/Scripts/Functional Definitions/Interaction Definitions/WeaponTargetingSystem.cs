@@ -51,7 +51,7 @@ public class WeaponTargetingSystem : ITargetingSystem
     // if it's dead, if it is weapon-compatible, if it is invisible
     bool IsValidTarget(Transform t)
     {
-        if (t == null || !t)
+        if (t == null || !t || !ability || !ability.Core)
         {
             return false;
         }

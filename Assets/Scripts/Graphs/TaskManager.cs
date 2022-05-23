@@ -67,13 +67,29 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            if (Instance.gameObject)
+            {
+                Destroy(Instance.gameObject);
+            }
+            Instance = null;
         }
-
         Instance = this;
         objectiveLocations = new Dictionary<string, List<ObjectiveLocation>>();
         speakerID = null;
+        speakerIDList = new List<string>();
         interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
+
+        // When adding new conditions with delegates, you MUST clear them out here
+        MissionCondition.OnMissionStatusChange = null;
+        SetPartDropRateNode.del = null;
+        VariableConditionNode.OnVariableUpdate = null;
+        WinBattleCondition.OnBattleLose = null;
+        WinBattleCondition.OnBattleWin = null;
+        WinSiegeCondition.OnSiegeWin = null;
+        YardCollectCondition.OnYardCollect = null;
+        UpgradeCoreCondition.OnCoreUpgrade = new UnityEvent();
+        UsePartCondition.OnPlayerReconstruct = new UnityEvent();
+        TestCondition.TestTrigger = new UnityEvent();
         initCanvases(forceReInit);
         questCanvasPaths = new List<string>();
         autoSaveEnabled = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";

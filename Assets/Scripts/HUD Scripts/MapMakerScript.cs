@@ -39,6 +39,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
         if (manager)
         {
+            Destroy();
             Draw(manager.sectors);
         }
     }
@@ -555,7 +556,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         }
 
 
-        if (SectorManager.testJsonPath != null || DevConsoleScript.WarpingEnabled)
+        if ((SectorManager.testJsonPath != null || DevConsoleScript.WarpingEnabled) && !DialogueSystem.isInCutscene && !DialogueSystem.Instance.IsWindowActive())
         {
             foreach (var sect in sectorImages)
             {

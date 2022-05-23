@@ -52,6 +52,10 @@ namespace NodeEditorFramework.Standard
                 return -1;
             }
 
+            if (!TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))
+            {
+                Debug.LogWarning($"Task Manager does not contain an objective list for mission {(Canvas as QuestCanvas).missionName}");
+            }
             // TODO: prevent using this node in DialogueCanvases
             var mission = PlayerCore.Instance.cursave.missions.Find(
                 (m) => m.name == (Canvas as QuestCanvas).missionName);

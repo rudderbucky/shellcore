@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-412.2,-126.6" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Skirmish Menu" ID="1370720768" type="SkirmishMenuNode" pos="550,-80">
+			<Port ID="442346880" name="input" dynamic="False" />
+			<Variable name="skirmishOptions" refID="-1621513472" />
+		</Node>
+		<Node name="Enter Sector" ID="-1634881536" type="LoadSectorNode" pos="-250,-80">
+			<Port ID="-2036710912" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="25557492" />
+		</Node>
+		<Node name="Variable condition" ID="134311936" type="VariableConditionNode" pos="-260,190">
+			<Port ID="-670473984" name="outputRight" dynamic="False" />
+			<Variable name="variableName" refID="-797989472" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Conditions" ID="-2085775104" type="ConditionGroupNode" pos="-37.40002,-29.39999">
+			<Port ID="-815680768" name="input" dynamic="False" />
+			<Port ID="1259199488" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1998327680" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Start Dialogue" ID="291618304" type="StartDialogueNode" pos="240,150">
+			<Port ID="-1707914112" name="input" dynamic="False" />
+			<Port ID="366966144" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="319727716" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="442346880" port2ID="366966144" />
+		<Connection port1ID="-2036710912" port2ID="-815680768" />
+		<Connection port1ID="-670473984" port2ID="1259199488" />
+		<Connection port1ID="-1998327680" port2ID="-1707914112" />
+	</Connections>
+	<Objects>
+		<Object refID="-1621513472" type="System.Collections.Generic.List`1[[SkirmishOption, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]">
+			<ArrayOfSkirmishOption xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<SkirmishOption>
+					<creditLimit>40000</creditLimit>
+					<mapDescription>Random enemies will spawn in as enemy commanders as you fight in this battlezone. Destroy the enemy carrier before you get overwhelmed. Good luck!</mapDescription>
+					<entityID>epislonreduxcarrier</entityID>
+					<sectorName>BattleZone Epsilon Redux</sectorName>
+					<clearParty>false</clearParty>
+				</SkirmishOption>
+			</ArrayOfSkirmishOption>
+		</Object>
+		<Object refID="25557492" type="System.String">
+			<string>BattleZone Epsilon</string>
+		</Object>
+		<Object refID="-797989472" type="System.String">
+			<string>EP2Finish</string>
+		</Object>
+		<Object refID="319727716" type="System.String">
+			<string>epsiloncarrier</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

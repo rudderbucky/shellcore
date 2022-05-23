@@ -111,6 +111,11 @@ namespace NodeEditorFramework.Standard
 
             if (handler as TaskManager)
             {
+                if (!TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))
+                {
+                    Debug.LogWarning($"{(Canvas as QuestCanvas).missionName} does not have objective locations");
+                    return -1;
+                }
                 foreach (var objectiveLocation in TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName])
                 {
                     if (objectiveLocation.followEntity &&
@@ -130,6 +135,11 @@ namespace NodeEditorFramework.Standard
             if (jumpToStart)
             {
                 handler.SetNode(node);
+                if (!handler.GetInteractionOverrides().ContainsKey(node.EntityID))
+                {
+                    Debug.LogWarning($"{node.EntityID} is not in the interaction dictionary despite dialogue being started on it.");
+                    return -1;
+                }
                 handler.GetInteractionOverrides()[node.EntityID].Pop();
                 if (handler is DialogueSystem || (!output || !output.connected()))
                 {
@@ -152,7 +162,12 @@ namespace NodeEditorFramework.Standard
             else
             {
                 if (node && !string.IsNullOrEmpty(node.EntityID))
-                {
+                {                
+                    if (!handler.GetInteractionOverrides().ContainsKey(node.EntityID))
+                    {
+                        Debug.LogWarning($"{node.EntityID} is not in the interaction dictionary despite dialogue being started on it.");
+                        return -1;
+                    }
                     handler.GetInteractionOverrides()[node.EntityID].Pop();
                     DialogueSystem.Instance.DialogueViewTransitionOut();
                     if (node == StartDialogueNode.missionCanvasNode)
