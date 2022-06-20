@@ -144,7 +144,8 @@ public class PlayerCore : ShellCore
         if (Input.GetMouseButton(1) && !(MouseMovementVisualScript.overMinimap && Input.GetMouseButton(0)))
         {
             minimapPoint = null;
-            var delta = CameraScript.instance.GetWorldPositionOfMouse() - transform.position;
+            // The angle from center of the screen to the mouse position on screen
+            var delta = Input.mousePosition - new Vector3(Screen.width, Screen.height, 0) * 0.5f;
             return delta.normalized;
         }
 
