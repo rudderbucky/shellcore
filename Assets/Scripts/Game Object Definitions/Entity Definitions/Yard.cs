@@ -38,6 +38,8 @@ public class Yard : AirConstruct, IShipBuilder
     }
 
     public static readonly int YardProximitySquared = 75;
+    private static float lastPartTakenTime = 0;
+    private static int partsTakenCombo = 0;
 
     protected override void Update()
     {
@@ -78,12 +80,6 @@ public class Yard : AirConstruct, IShipBuilder
                 }
 
                 player.HasRepaired = true;
-                if (player.GetTractorTarget() && (player.GetTractorTarget().GetComponent<ShellPart>()
-                                             || player.GetTractorTarget().GetComponent<Shard>()) && !tractor.GetTractorTarget())
-                {
-                    tractor.SetTractorTarget(player.GetTractorTarget());
-                    player.SetTractorTarget(null);
-                }
             }
 
             foreach (var partyMember in PartyManager.instance.partyMembers)
@@ -106,29 +102,38 @@ public class Yard : AirConstruct, IShipBuilder
                     partyMember.HasRepaired = true;
                 }
             }
+            
+            TryToTakeParts();
+        }
 
-            if (tractor.GetTractorTarget() && (transform.position - tractor.GetTractorTarget().transform.position).sqrMagnitude <= 10)
+        // Notify the player that the parts have been added
+        if (Yard.partsTakenCombo > 0 && Time.time - Yard.lastPartTakenTime > 1)
+        {
+            if (Yard.partsTakenCombo > 1)
             {
-                if (tractor.GetTractorTarget().GetComponent<ShellPart>())
-                {
-                    TakePart(GetComponent<Entity>(), tractor);
-                }
-                else if (tractor.GetTractorTarget().GetComponent<Shard>())
-                {
-                    PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your shard has been added into your stash.</color>", 4);
-                    var shard = tractor.GetTractorTarget().GetComponent<Shard>();
-                    var tiers = new int[] { 1, 5, 20 };
-                    PlayerCore.Instance.shards += tiers[shard.tier];
-                    ShardCountScript.DisplayCount(PlayerCore.Instance.shards);
-                    Destroy(shard.gameObject);
-                }
+                string message = string.Format("<color=lime>Your {0} parts have been added into your inventory.</color>", Yard.partsTakenCombo);
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(GetComponent<Entity>().ID, message, 4);
             }
+            else
+            {
+                PassiveDialogueSystem.Instance.PushPassiveDialogue(GetComponent<Entity>().ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
+            }
+            Yard.partsTakenCombo = 0;
         }
     }
 
     public static void TakePart(Entity entity, TractorBeam tractor)
     {
-        PassiveDialogueSystem.Instance.PushPassiveDialogue(entity.ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
+        if (entity as Yard)
+        {
+            // Waits to see if it will get more parts
+            Yard.lastPartTakenTime = Time.time;
+            Yard.partsTakenCombo++;
+        }
+        else
+        {
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(entity.ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
+        }
         var shellPart = tractor.GetTractorTarget().GetComponent<ShellPart>();
         var info = shellPart.info;
         info = ShipBuilder.CullSpatialValues(info);
@@ -141,5 +146,74 @@ public class Yard : AirConstruct, IShipBuilder
             NodeEditorFramework.Standard.YardCollectCondition.OnYardCollect.Invoke(info.partID, info.abilityID, shellPart.droppedSectorName);
         }
         Destroy(shellPart.gameObject);
+    }
+
+    private void TryToTakeParts()
+    {
+        var currentTarget = tractor.GetTractorTarget();
+
+        if (currentTarget)
+        {
+            if (currentTarget && (transform.position - currentTarget.transform.position).sqrMagnitude <= 10)
+            {
+                if (currentTarget.GetComponent<ShellPart>())
+                {
+                    TakePart(GetComponent<Entity>(), tractor);
+                }
+                else if (currentTarget.GetComponent<Shard>())
+                {
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your shard has been added into your stash.</color>", 4);
+                    var shard = currentTarget.GetComponent<Shard>();
+                    var tiers = new int[] { 1, 5, 20 };
+                    PlayerCore.Instance.shards += tiers[shard.tier];
+                    ShardCountScript.DisplayCount(PlayerCore.Instance.shards);
+                    Destroy(shard.gameObject);
+                }
+            }
+        }
+        else
+        {
+            var player = PlayerCore.Instance;
+
+            if ((transform.position - player.transform.position).sqrMagnitude < YardProximitySquared)
+            {
+                var playerTractor = player.GetComponentInChildren<TractorBeam>();
+
+                if (playerTractor)
+                {
+                    var target = playerTractor.GetTractorTarget();
+
+                    if (target && (target.GetComponent<ShellPart>() || target.GetComponent<Shard>()))
+                    {
+                        playerTractor.SetTractorTarget(null);
+                        tractor.SetTractorTarget(target);
+
+                        // Bad boy return here to prevent from looking into worker
+                        // drones if already got something from the player.
+                        return;
+                    }
+                }
+            }
+            
+            foreach (Entity entity in player.GetUnitsCommanding())
+            {
+                if ((transform.position - entity.transform.position).sqrMagnitude > YardProximitySquared)
+                    continue;
+                
+                var entityTractor = entity.GetComponentInChildren<TractorBeam>();
+
+                if (!entityTractor)
+                    continue;
+
+                var target = entityTractor.GetTractorTarget();
+
+                if (target && (target.GetComponent<ShellPart>() || target.GetComponent<Shard>()))
+                {
+                    entityTractor.SetTractorTarget(null);
+                    tractor.SetTractorTarget(target);
+                    break;
+                }
+            }
+        }
     }
 }
