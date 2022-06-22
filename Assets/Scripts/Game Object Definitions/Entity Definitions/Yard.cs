@@ -84,7 +84,7 @@ public class Yard : AirConstruct, IShipBuilder
 
             foreach (var partyMember in PartyManager.instance.partyMembers)
             {
-                if (partyMember && partyMember.GetAI().getMode() == AirCraftAI.AIMode.Follow &&
+                if (partyMember && ((partyMember.GetAI().getMode() == AirCraftAI.AIMode.Follow) || (partyMember.GetAI().getMode() != AirCraftAI.AIMode.Follow)) &&
                 (transform.position - partyMember.transform.position).sqrMagnitude <= YardProximitySquared)
                 {
                     if (!partyMember.HasRepaired)
