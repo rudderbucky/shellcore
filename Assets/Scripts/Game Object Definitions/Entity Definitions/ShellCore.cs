@@ -19,7 +19,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     private TractorBeam tractor;
     public bool isYardRepairing = false;
-
+    private float yardRepairDuration = 1f;
 
     private List<EntityBlueprint.PartInfo> partsToRepairAdd = new List<EntityBlueprint.PartInfo>();
 
@@ -58,7 +58,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                     HUDScript.instance.abilityHandler.Deinitialize();
                     HUDScript.instance.abilityHandler.Initialize(PlayerCore.Instance);
                 }
-                yield return new WaitForSeconds(1f / blueprint.parts.Count);
+                yield return new WaitForSeconds(yardRepairDuration / blueprint.parts.Count);
             }
         }
         if (!GetIsDead()) FinalizeRepair();
