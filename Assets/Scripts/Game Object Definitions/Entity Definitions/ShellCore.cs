@@ -18,23 +18,15 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
 
     private TractorBeam tractor;
-    private bool hasRepaired;
-    public bool HasRepaired
-    {
-        get { return hasRepaired; }
-        set { hasRepaired = value; }
-    }
+    public bool isYardRepairing = false;
+
 
     private List<EntityBlueprint.PartInfo> partsToRepairAdd = new List<EntityBlueprint.PartInfo>();
 
-    public bool IsFullyRepaired()
-    {
-        var damagedPart = parts.Find(p => p.IsDamaged() && p.name != "Shell Sprite");
-        return !blueprint.parts.Exists(p => !parts.Exists(part => part.info.Equals(p))) && !damagedPart;
-    }
 
     public IEnumerator StartYardRepair()
     {
+        isYardRepairing = true;
         foreach (var part in parts)
         {
             if (part.name != "Shell Sprite")
@@ -72,11 +64,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         if (!GetIsDead()) FinalizeRepair();
     }
 
-    public bool repairFinalized = true;
     protected virtual void FinalizeRepair()
     {
-        if (repairFinalized) return;
-        repairFinalized = true;
+        if (!isYardRepairing)
+            return;
         foreach (var part in partsToRepairAdd)
         {
             if (!parts.Exists(p => p.info.Equals(part)))
@@ -95,6 +86,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         maxHealth.CopyTo(baseMaxHealth, 0);
         maxHealth.CopyTo(currentHealth, 0);
         ActivatePassives();
+        HealToMax();
+        isYardRepairing = false;
     }
 
     public int GetTotalCommandLimit()
@@ -197,7 +190,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     {
         if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
         {
-            HasRepaired = true;
+            isYardRepairing = false;
             base.Respawn();
         }
         else
@@ -209,27 +202,33 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     protected override void Update()
     {
         base.Update();
-        bool nearAlliedYard = false;
-        foreach (Entity ent in AIData.entities)
+
+        // If got away from Yard while isYardRepairing, FinalizeRepair immediately.
+        if (isYardRepairing)
         {
-            var yard = ent as Yard;
-            if (!yard) continue;
-            if (!FactionManager.IsAllied(yard.faction, faction))
+            bool gotAwayFromYard = true;
+
+            foreach (Entity entity in AIData.entities)
             {
-                continue;
+                if (!(entity as Yard))
+                    continue;
+                
+                if (!FactionManager.IsAllied(entity.faction, faction))
+                    continue;
+                
+                if ((entity.transform.position - transform.position).sqrMagnitude > Yard.YardProximitySquared)
+                    continue;
+                
+                gotAwayFromYard = false;
+            
+                break;
             }
-            if ((yard.transform.position - transform.position).sqrMagnitude > Yard.YardProximitySquared) continue;
-            nearAlliedYard = true;
-            break;
-        }
-        if (!nearAlliedYard)
-        {
-            if (HasRepaired && !IsFullyRepaired())
+        
+            if (gotAwayFromYard)
             {
                 StopCoroutine(StartYardRepair());
                 FinalizeRepair();
             }
-            HasRepaired = false;
         }
     }
 
@@ -310,4 +309,44 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     {
         intrinsicCommandLimit = val;
     }
+
+    public bool HasShellOrCoreDamaged()
+    {
+        // If has damaged shell
+        if (GetHealth()[0] < GetMaxHealth()[0])
+            return true;
+
+        // if has damaged core
+        if (GetHealth()[1] < GetMaxHealth()[1])
+            return true;
+        
+        return false;
+    }
+
+    public bool HasPartsDamagedOrDestroyed()
+    {
+        // Cheks if has damaged parts
+        foreach (var part in parts)
+        {
+            // When an entity is re-building, its parts have 0 health. If a
+            // part reaches 0 health by taking damage it is instantly removed
+            // from entity's parts array, so it wouldn't show up in this loop.
+            // With this in mind, it seems to be safe to assume that if a part
+            // with 0 health appears in this loop it's because the entity is
+            // getting re-built, and therefore its parts don't count as damaged.
+            // TODO: A proper way to check this is still preferred.
+            if (part.GetHealth() == 0)
+                continue;
+            
+            if (part.name != "Shell Sprite" && part.IsDamaged())
+                return true;
+        }
+
+        // Check if has parts destroyed
+        if (blueprint.parts.Exists(p => !parts.Exists(part => part.info.Equals(p))))
+            return true;
+
+        return false;
+    }
+
 }

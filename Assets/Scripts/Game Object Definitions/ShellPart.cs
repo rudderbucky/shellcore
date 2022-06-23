@@ -48,6 +48,11 @@ public class ShellPart : MonoBehaviour
         return faction;
     }
 
+    public float GetHealth()
+    {
+        return currentHealth;
+    }
+
     public void SetCollectible(bool collectible)
     {
         this.collectible = collectible;
