@@ -326,21 +326,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public bool HasPartsDamagedOrDestroyed()
     {
         // Cheks if has damaged parts
-        foreach (var part in parts)
-        {
-            // When an entity is re-building, its parts have 0 health. If a
-            // part reaches 0 health by taking damage it is instantly removed
-            // from entity's parts array, so it wouldn't show up in this loop.
-            // With this in mind, it seems to be safe to assume that if a part
-            // with 0 health appears in this loop it's because the entity is
-            // getting re-built, and therefore its parts don't count as damaged.
-            // TODO: A proper way to check this is still preferred.
-            if (part.GetHealth() == 0)
-                continue;
-            
-            if (part.name != "Shell Sprite" && part.IsDamaged())
-                return true;
-        }
+        if (parts.Exists(p => p.name != "Shell Sprite" && p.IsDamaged()))
+            return true;
 
         // Check if has parts destroyed
         if (blueprint.parts.Exists(p => !parts.Exists(part => part.info.Equals(p))))

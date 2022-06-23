@@ -48,11 +48,6 @@ public class ShellPart : MonoBehaviour
         return faction;
     }
 
-    public float GetHealth()
-    {
-        return currentHealth;
-    }
-
     public void SetCollectible(bool collectible)
     {
         this.collectible = collectible;
@@ -126,6 +121,7 @@ public class ShellPart : MonoBehaviour
         var part = obj.GetComponent<ShellPart>();
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
+        part.currentHealth = blueprint.health;
         var collider = obj.GetComponent<PolygonCollider2D>();
         collider.isTrigger = true;
         part.detachible = blueprint.detachible;
@@ -236,7 +232,6 @@ public class ShellPart : MonoBehaviour
         hasDetached = false;
         spriteRenderer.enabled = true;
         Destroy(GetComponent<Rigidbody2D>()); // remove rigidbody
-        currentHealth = partHealth;
 
         // Drone part health penalty
         if (craft as Drone)
