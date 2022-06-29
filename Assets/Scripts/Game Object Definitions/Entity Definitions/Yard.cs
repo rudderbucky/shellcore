@@ -56,69 +56,23 @@ public class Yard : AirConstruct, IShipBuilder
 
         if (PlayerCore.Instance && FactionManager.IsAllied(faction, PlayerCore.Instance.faction))
         {
-            if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= YardProximitySquared)
+            RepairPlayerAndPartyMembers();
+            GrabCollectiblesFromAllies();
+
+            // Notify the player that their parts have been collected
+            if (Yard.partsTakenCombo > 0 && Time.time - Yard.lastPartTakenTime > 1)
             {
-                var player = PlayerCore.Instance;
-                foreach (var partyMember in PartyManager.instance.partyMembers)
+                if (Yard.partsTakenCombo > 1)
                 {
-                    if ((transform.position - partyMember.transform.position).sqrMagnitude > YardProximitySquared && !partyMember.HasRepaired && !partyMember.IsFullyRepaired())
-                        partyMember.Warp(transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));
+                    string message = string.Format("<color=lime>Your {0} parts have been added into your inventory.</color>", Yard.partsTakenCombo);
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue(GetComponent<Entity>().ID, message, 4);
                 }
-
-
-                if (!player.HasRepaired)
+                else
                 {
-                    if (!player.IsFullyRepaired() && !player.GetIsDead())
-                    {
-                        player.repairFinalized = false;
-                        StartCoroutine(player.StartYardRepair());
-                    }
+                    PassiveDialogueSystem.Instance.PushPassiveDialogue(GetComponent<Entity>().ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
                 }
-                else if (player.repairFinalized)
-                {
-                    player.HealToMax();
-                }
-
-                player.HasRepaired = true;
+                Yard.partsTakenCombo = 0;
             }
-
-            foreach (var partyMember in PartyManager.instance.partyMembers)
-            {
-                if (partyMember && ((partyMember.GetAI().getMode() == AirCraftAI.AIMode.Follow) || (partyMember.GetAI().getMode() != AirCraftAI.AIMode.Follow)) &&
-                (transform.position - partyMember.transform.position).sqrMagnitude <= YardProximitySquared)
-                {
-                    if (!partyMember.HasRepaired)
-                    {
-                        if (!partyMember.IsFullyRepaired() && !partyMember.GetIsDead())
-                        {
-                            partyMember.repairFinalized = false;
-                            StartCoroutine(partyMember.StartYardRepair());
-                        }
-                    }
-                    else if (partyMember.repairFinalized)
-                    {
-                        partyMember.HealToMax();
-                    }
-                    partyMember.HasRepaired = true;
-                }
-            }
-            
-            TryToTakeParts();
-        }
-
-        // Notify the player that the parts have been added
-        if (Yard.partsTakenCombo > 0 && Time.time - Yard.lastPartTakenTime > 1)
-        {
-            if (Yard.partsTakenCombo > 1)
-            {
-                string message = string.Format("<color=lime>Your {0} parts have been added into your inventory.</color>", Yard.partsTakenCombo);
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(GetComponent<Entity>().ID, message, 4);
-            }
-            else
-            {
-                PassiveDialogueSystem.Instance.PushPassiveDialogue(GetComponent<Entity>().ID, "<color=lime>Your part has been added into your inventory.</color>", 4);
-            }
-            Yard.partsTakenCombo = 0;
         }
     }
 
@@ -148,7 +102,7 @@ public class Yard : AirConstruct, IShipBuilder
         Destroy(shellPart.gameObject);
     }
 
-    private void TryToTakeParts()
+    private void GrabCollectiblesFromAllies()
     {
         var currentTarget = tractor.GetTractorTarget();
 
@@ -214,6 +168,59 @@ public class Yard : AirConstruct, IShipBuilder
                     break;
                 }
             }
+        }
+    }
+
+    private void RepairPlayerAndPartyMembers()
+    {
+        if ((transform.position - PlayerCore.Instance.transform.position).sqrMagnitude <= YardProximitySquared)
+        {
+            RepairShellCore(PlayerCore.Instance);
+
+            // Warp party members to Yard so they can be healed too.
+            // We heal them in a separate loop so they can also be healed
+            // even if the player isn't neaby the Yard.
+            foreach (var partyMember in PartyManager.instance.partyMembers)
+            {
+                if (!partyMember)
+                    continue;
+
+                // Only warp them if they're following the player?
+                // if (partyMember.GetAI().getMode() != AirCraftAI.AIMode.Follow)
+                //     continue;
+
+                if ((transform.position - partyMember.transform.position).sqrMagnitude <= YardProximitySquared)
+                    continue; // Already close enough
+                
+                if (partyMember.isYardRepairing || (!partyMember.HasPartsDamagedOrDestroyed() && !partyMember.HasShellOrCoreDamaged()))
+                    continue; // Already repaired or repairing
+                
+                partyMember.Warp(transform.position + new Vector3(Random.Range(-2, 2), Random.Range(-2, 2)));
+            }
+        }
+
+        foreach (var partyMember in PartyManager.instance.partyMembers)
+        {
+            if (!partyMember)
+                continue;
+            
+            if ((transform.position - partyMember.transform.position).sqrMagnitude <= YardProximitySquared)
+                RepairShellCore(partyMember);
+        }
+    }
+
+    private void RepairShellCore(ShellCore shellCore)
+    {
+        if (shellCore.isYardRepairing)
+            return;
+
+        if (shellCore.HasPartsDamagedOrDestroyed())
+        {
+            StartCoroutine(shellCore.StartYardRepair());
+        }
+        else if (shellCore.HasShellOrCoreDamaged())
+        {
+            shellCore.HealToMax();
         }
     }
 }
