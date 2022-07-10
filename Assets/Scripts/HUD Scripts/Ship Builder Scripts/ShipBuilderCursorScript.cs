@@ -49,7 +49,16 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     private float zoomMax = 2.5f;
     private float zoomMin = 0.5f;
     private float zoomStep = 0.1f;
-    private float zoom = 1.0f;
+    private float zoom;
+    private float Zoom
+    {
+        get { return zoom; }
+        set
+        {
+            zoom = value;
+            grid.localScale = new Vector3(1, 1, 0) * value;
+        }
+    }
 
     public void SetMode(BuilderMode mode)
     {
@@ -66,6 +75,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         compactMode = Screen.width == 1024;
         buildCost = 0;
         currentAbilities = new List<Ability>();
+        Zoom = 1.0f;
 
         grid.anchoredPosition = Vector2.zero;
         buildValue = 0;
@@ -452,8 +462,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             float oldZoom = this.zoom;
 
             // Apply zoom
-            this.zoom = Mathf.Clamp(this.zoom + Input.mouseScrollDelta.y * zoomStep, zoomMin, zoomMax);
-            gridTransform.localScale = new Vector3(1, 1, 0) * this.zoom;
+            Zoom = Mathf.Clamp(this.zoom + Input.mouseScrollDelta.y * zoomStep, zoomMin, zoomMax);
             
             // Move grid to keep mouse at the same position after zooming
             Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - gridTransform.position) / oldZoom;
