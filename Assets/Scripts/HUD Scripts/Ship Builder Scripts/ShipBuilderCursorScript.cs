@@ -650,7 +650,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     
         float oldZoom = Zoom;
         
-        Zoom = Mathf.Clamp(Zoom + Input.mouseScrollDelta.y * zoomStep, zoomMin, zoomMax);
+        Zoom = Mathf.Clamp(Zoom + Input.mouseScrollDelta.y * zoomStep * Zoom, zoomMin, zoomMax);
         
         // Move grid to keep mouse at the same position after zooming
         Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - grid.position) / oldZoom;
