@@ -46,6 +46,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     bool clickedOnce;
     float timer;
 
+    private float zoomMax = 2.5f;
+    private float zoomMin = 0.5f;
+    private float zoomStep = 0.1f;
+    private float zoom = 1.0f;
+
     public void SetMode(BuilderMode mode)
     {
         cursorMode = mode;
@@ -438,6 +443,22 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             grid.anchoredPosition = new Vector2(Mathf.Max(-bounds.x, Mathf.Min(bounds.x, grid.anchoredPosition.x)),
                 Mathf.Max(-bounds.y, Mathf.Min(bounds.y, grid.anchoredPosition.y))
             );
+        }
+
+        // Zooming
+        if (Input.mouseScrollDelta.y != 0)
+        {
+            Transform gridTransform = GameObject.Find("Container/BuildSection/GridMask/Image").transform;
+            float oldZoom = this.zoom;
+
+            // Apply zoom
+            this.zoom = Mathf.Clamp(this.zoom + Input.mouseScrollDelta.y * zoomStep, zoomMin, zoomMax);
+            gridTransform.localScale = new Vector3(1, 1, 0) * this.zoom;
+            
+            // Move grid to keep mouse at the same position after zooming
+            Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - gridTransform.position) / oldZoom;
+            float zoomChange = oldZoom - this.zoom;
+            gridTransform.position += mousePositionRelativeToGridCenter * zoomChange;
         }
     }
 
