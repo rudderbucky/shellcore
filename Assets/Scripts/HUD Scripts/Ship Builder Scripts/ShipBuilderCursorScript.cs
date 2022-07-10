@@ -455,7 +455,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             );
         }
 
-        // Zooming
         HandleZooming();
     }
 
