@@ -46,6 +46,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     bool clickedOnce;
     float timer;
 
+    public static bool isMouseOnGrid = false;
+
     private float zoomMax = 2.5f;
     private float zoomMin = 0.5f;
     private float zoomStep = 0.1f;
@@ -259,6 +261,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     public EntityBlueprint.PartInfo? GetPartCursorIsOn()
     {
+        if (!isMouseOnGrid)
+        {
+            return null;
+        }
+
         foreach (ShipBuilderPart part in parts)
         {
             if (RectTransformUtility.RectangleContainsScreenPoint(part.rectTransform, Input.mousePosition))
@@ -391,6 +398,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     void Update()
     {
         UpdateCompact();
+
+        isMouseOnGrid = RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition);
 
         if (clickedOnce)
         {
@@ -550,6 +559,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     // symmetry mode enables checks based on symmetryPart - same part ID, ability ID, different mirrored
     public ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart, bool useBounds = false)
     {
+        if (!isMouseOnGrid)
+        {
+            return null;
+        }
+
         for (int i = parts.Count - 1; i >= 0; i--)
         {
             var origPos = transform.position;
@@ -642,15 +656,15 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     private void HandleZooming()
     {
-        if (Input.mouseScrollDelta.y == 0)
+        if (Input.mouseScrollDelta.y == 0 || !isMouseOnGrid)
         {
             return;
         }
-    
+
         float oldZoom = Zoom;
-        
+
         Zoom = Mathf.Clamp(Zoom + Input.mouseScrollDelta.y * zoomStep * Zoom, zoomMin, zoomMax);
-        
+
         // Move grid to keep mouse at the same position after zooming
         Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - grid.position) / oldZoom;
         float zoomChange = oldZoom - Zoom;
