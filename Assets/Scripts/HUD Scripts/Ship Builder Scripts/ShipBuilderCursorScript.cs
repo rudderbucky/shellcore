@@ -456,19 +456,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         }
 
         // Zooming
-        if (Input.mouseScrollDelta.y != 0)
-        {
-            Transform gridTransform = GameObject.Find("Container/BuildSection/GridMask/Image").transform;
-            float oldZoom = this.zoom;
-
-            // Apply zoom
-            Zoom = Mathf.Clamp(this.zoom + Input.mouseScrollDelta.y * zoomStep, zoomMin, zoomMax);
-            
-            // Move grid to keep mouse at the same position after zooming
-            Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - gridTransform.position) / oldZoom;
-            float zoomChange = oldZoom - this.zoom;
-            gridTransform.position += mousePositionRelativeToGridCenter * zoomChange;
-        }
+        HandleZooming();
     }
 
     public void UpdateCurrentPart()
@@ -651,6 +639,23 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             default:
                 return part.mirrored != symmetryPart.mirrored && ((part.rotation + symmetryPart.rotation) % 360 == 0);
         }
+    }
+
+    private void HandleZooming()
+    {
+        if (Input.mouseScrollDelta.y == 0)
+        {
+            return;
+        }
+    
+        float oldZoom = Zoom;
+        
+        Zoom = Mathf.Clamp(Zoom + Input.mouseScrollDelta.y * zoomStep, zoomMin, zoomMax);
+        
+        // Move grid to keep mouse at the same position after zooming
+        Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - grid.position) / oldZoom;
+        float zoomChange = oldZoom - Zoom;
+        grid.position += mousePositionRelativeToGridCenter * zoomChange;
     }
 
     public void ToggleCompact()
