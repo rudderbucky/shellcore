@@ -261,11 +261,6 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     public EntityBlueprint.PartInfo? GetPartCursorIsOn()
     {
-        if (!isMouseOnGrid)
-        {
-            return null;
-        }
-
         foreach (ShipBuilderPart part in parts)
         {
             if (RectTransformUtility.RectangleContainsScreenPoint(part.rectTransform, Input.mousePosition))
