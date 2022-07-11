@@ -452,18 +452,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         }
 
         UpdateCurrentPart();
-
-        // drag grid
-        Vector2 bounds = grid.sizeDelta / 2 - grid2mask.sizeDelta / 2;
-        if (grid.GetComponent<DragDetector>().dragging
-            && Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
-        {
-            grid.anchoredPosition = grid2lastPos + ((Vector2)Input.mousePosition - grid2mousePos) * 2;
-            grid.anchoredPosition = new Vector2(Mathf.Max(-bounds.x, Mathf.Min(bounds.x, grid.anchoredPosition.x)),
-                Mathf.Max(-bounds.y, Mathf.Min(bounds.y, grid.anchoredPosition.y))
-            );
-        }
-
+        HandleDraggingGrid();
         HandleZooming();
     }
 
@@ -654,6 +643,15 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         }
     }
 
+    private void HandleDraggingGrid()
+    {
+        if (grid.GetComponent<DragDetector>().dragging && Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
+        {
+            grid.anchoredPosition = grid2lastPos + ((Vector2)Input.mousePosition - grid2mousePos) * 2;
+            ClampGridPosition();
+        }
+    }
+
     private void HandleZooming()
     {
         if (Input.mouseScrollDelta.y == 0 || !isMouseOnGrid)
@@ -669,6 +667,18 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - grid.position) / oldZoom;
         float zoomChange = oldZoom - Zoom;
         grid.position += mousePositionRelativeToGridCenter * zoomChange;
+
+        // Make sure the player won't view beyond the grid end when zooming out
+        ClampGridPosition();
+    }
+
+    private void ClampGridPosition()
+    {
+        Vector2 bounds = (grid.sizeDelta * Zoom - grid2mask.sizeDelta) * 0.5f;
+        grid.anchoredPosition = new Vector2(
+            Mathf.Clamp(grid.anchoredPosition.x, -bounds.x, bounds.x),
+            Mathf.Clamp(grid.anchoredPosition.y, -bounds.y, bounds.y)
+        );
     }
 
     public void ToggleCompact()
