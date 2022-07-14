@@ -46,6 +46,22 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     bool clickedOnce;
     float timer;
 
+    public static bool isMouseOnGrid = false;
+
+    private float zoomMax = 2.5f;
+    private float zoomMin = 0.5f;
+    private float zoomStep = 0.1f;
+    private float zoom;
+    private float Zoom
+    {
+        get { return zoom; }
+        set
+        {
+            zoom = value;
+            grid.localScale = new Vector3(1, 1, 0) * value;
+        }
+    }
+
     public void SetMode(BuilderMode mode)
     {
         cursorMode = mode;
@@ -61,6 +77,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         compactMode = Screen.width == 1024;
         buildCost = 0;
         currentAbilities = new List<Ability>();
+        Zoom = 1.0f;
 
         grid.anchoredPosition = Vector2.zero;
         buildValue = 0;
@@ -377,6 +394,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     {
         UpdateCompact();
 
+        isMouseOnGrid = RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition);
+
         if (clickedOnce)
         {
             if (timer > 0.2F)
@@ -428,17 +447,8 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         }
 
         UpdateCurrentPart();
-
-        // drag grid
-        Vector2 bounds = grid.sizeDelta / 2 - grid2mask.sizeDelta / 2;
-        if (grid.GetComponent<DragDetector>().dragging
-            && Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
-        {
-            grid.anchoredPosition = grid2lastPos + ((Vector2)Input.mousePosition - grid2mousePos) * 2;
-            grid.anchoredPosition = new Vector2(Mathf.Max(-bounds.x, Mathf.Min(bounds.x, grid.anchoredPosition.x)),
-                Mathf.Max(-bounds.y, Mathf.Min(bounds.y, grid.anchoredPosition.y))
-            );
-        }
+        HandleDraggingGrid();
+        HandleZooming();
     }
 
     public void UpdateCurrentPart()
@@ -533,6 +543,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     // symmetry mode enables checks based on symmetryPart - same part ID, ability ID, different mirrored
     public ShipBuilderPart FindPart(Vector2 vector, ShipBuilderPart symmetryPart, bool useBounds = false)
     {
+        if (!isMouseOnGrid)
+        {
+            return null;
+        }
+
         for (int i = parts.Count - 1; i >= 0; i--)
         {
             var origPos = transform.position;
@@ -621,6 +636,44 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             default:
                 return part.mirrored != symmetryPart.mirrored && ((part.rotation + symmetryPart.rotation) % 360 == 0);
         }
+    }
+
+    private void HandleDraggingGrid()
+    {
+        if (grid.GetComponent<DragDetector>().dragging && Input.GetMouseButton(0) && !rotateMode && !flipped && !currentPart)
+        {
+            grid.anchoredPosition = grid2lastPos + ((Vector2)Input.mousePosition - grid2mousePos) * 2;
+            ClampGridPosition();
+        }
+    }
+
+    private void HandleZooming()
+    {
+        if (Input.mouseScrollDelta.y == 0 || !isMouseOnGrid)
+        {
+            return;
+        }
+
+        float oldZoom = Zoom;
+
+        Zoom = Mathf.Clamp(Zoom + Input.mouseScrollDelta.y * zoomStep * Zoom, zoomMin, zoomMax);
+
+        // Move grid to keep mouse at the same position after zooming
+        Vector3 mousePositionRelativeToGridCenter = (Input.mousePosition - grid.position) / oldZoom;
+        float zoomChange = oldZoom - Zoom;
+        grid.position += mousePositionRelativeToGridCenter * zoomChange;
+
+        // Make sure the player won't view beyond the grid end when zooming out
+        ClampGridPosition();
+    }
+
+    private void ClampGridPosition()
+    {
+        Vector2 bounds = (grid.sizeDelta * Zoom - grid2mask.sizeDelta) * 0.5f;
+        grid.anchoredPosition = new Vector2(
+            Mathf.Clamp(grid.anchoredPosition.x, -bounds.x, bounds.x),
+            Mathf.Clamp(grid.anchoredPosition.y, -bounds.y, bounds.y)
+        );
     }
 
     public void ToggleCompact()
