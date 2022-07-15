@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -169,7 +169,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                     ? ShipBuilder.TransferMode.Return
                     : ShipBuilder.TransferMode.Buy);
             }
-            else if (!RectTransformUtility.RectangleContainsScreenPoint(grid, Input.mousePosition) && !editorMode)
+            else if (!isMouseOnGrid)
             {
                 dispatch = true;
                 mode = ShipBuilder.TransferMode.Return;
@@ -394,7 +394,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     {
         UpdateCompact();
 
-        isMouseOnGrid = grid.GetComponent<PointerOverDetector>().isPointerOver;
+        isMouseOnGrid = RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition);
 
         if (clickedOnce)
         {
