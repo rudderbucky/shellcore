@@ -394,7 +394,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     {
         UpdateCompact();
 
-        isMouseOnGrid = RectTransformUtility.RectangleContainsScreenPoint(grid2mask, Input.mousePosition);
+        isMouseOnGrid = grid.GetComponent<PointerOverDetector>().isPointerOver;
 
         if (clickedOnce)
         {
