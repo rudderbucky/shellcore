@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class PointerOverDetector : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public bool isPointerOver = false;
+    public static bool isPointerOver = false;
 
     public void OnPointerEnter(PointerEventData eventData)
     {

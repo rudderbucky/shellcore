@@ -649,7 +649,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
     private void HandleZooming()
     {
-        if (Input.mouseScrollDelta.y == 0 || !isMouseOnGrid)
+        if (Input.mouseScrollDelta.y == 0 || !isMouseOnGrid || !PointerOverDetector.isPointerOver)
         {
             return;
         }
