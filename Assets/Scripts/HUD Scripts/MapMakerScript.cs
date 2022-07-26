@@ -262,6 +262,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                             case "carrier_blueprint":
                             case "groundcarrier_blueprint":
                             case "missile_station":
+                            case "air_weapon_station":
                             case "energy_rock":
                                 markerResourceName = "minimap_sprite";
                                 break;
@@ -274,6 +275,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                             case "carrier_blueprint":
                             case "groundcarrier_blueprint":
                             case "missile_station":
+                            case "air_weapon_station":
                             case "energy_rock":
                                 var gObj = new GameObject();
                                 gObj.transform.SetParent(transform, false);
