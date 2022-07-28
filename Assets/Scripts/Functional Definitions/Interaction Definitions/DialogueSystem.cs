@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using NodeEditorFramework;
 using NodeEditorFramework.IO;
@@ -55,7 +55,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public bool IsWindowActive()
     {
-        return window;
+        return window && (!window.transform.parent || window.transform.parent.gameObject.activeSelf);
     }
 
     private void Awake()
