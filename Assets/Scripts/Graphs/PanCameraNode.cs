@@ -60,6 +60,11 @@ namespace NodeEditorFramework.Standard
                 }
 
                 velocityFactor = Utilities.RTEditorGUI.FloatField("Velocity Factor", velocityFactor);
+                if (velocityFactor < 0)
+                {
+                    velocityFactor = Utilities.RTEditorGUI.FloatField("Velocity Factor", 0);
+                    Debug.LogWarning("Can't register negative numbers!");
+                }
                 asynchronous = RTEditorGUI.Toggle(asynchronous, "Asynchronous Mode", GUILayout.MinWidth(400));
             }
         }

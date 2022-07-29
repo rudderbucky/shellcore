@@ -38,6 +38,11 @@ namespace NodeEditorFramework.Standard
 
             GUILayout.BeginHorizontal();
             targetFaction = RTEditorGUI.IntField("Target Faction", targetFaction);
+            if (targetFaction < 0)
+            {
+                targetFaction = RTEditorGUI.IntField("Target Faction", 1);
+                Debug.LogWarning("This identification does not exist!");
+            }
             GUILayout.EndHorizontal();
         }
 

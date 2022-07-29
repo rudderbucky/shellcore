@@ -47,7 +47,17 @@ namespace NodeEditorFramework.Standard
         {
             output.DisplayLayout();
             seconds = Utilities.RTEditorGUI.IntField("Time (seconds): ", seconds);
+            if (seconds < 0)
+            {
+                seconds = Utilities.RTEditorGUI.IntField("Time (seconds): ", 0);
+                Debug.LogWarning("Can't register negative numbers!");
+            }
             milliseconds = Utilities.RTEditorGUI.IntField("Additional Time (milliseconds): ", milliseconds, GUILayout.Width(300F));
+            if (milliseconds < 0)
+            {
+                milliseconds = Utilities.RTEditorGUI.IntField("Additional Time (milliseconds): ", 0, GUILayout.Width(300F));
+                Debug.LogWarning("Can't register negative numbers!");
+            }
         }
 
         public void Init(int index)
