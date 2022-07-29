@@ -2,7 +2,7 @@
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Cutscenes/FinishCutscene")]
+    [Node(false, "Cutscenes/Finish Cutscene")]
     public class FinishCutsceneNode : Node
     {
         //Node things

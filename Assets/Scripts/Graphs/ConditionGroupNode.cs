@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/ConditionGroup")]
+    [Node(false, "Flow/Condition Group")]
     public class ConditionGroupNode : Node
     {
         [System.Serializable]

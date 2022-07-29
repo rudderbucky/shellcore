@@ -5,7 +5,7 @@ namespace NodeEditorFramework.Standard
 {
     // Directly adds a part and credits/reputation/shards into the player's save. There is also an option to not notify the player.
 
-    [Node(false, "Tasks/AddReward")]
+    [Node(false, "Tasks/Add Reward")]
     public class AddRewardNode : Node
     {
         //Node things
@@ -92,13 +92,17 @@ namespace NodeEditorFramework.Standard
                 }
 
                 wrapper.partAbilityID = RTEditorGUI.IntField("Ability ID", wrapper.partAbilityID, GUILayout.Width(200f));
+                if (wrapper.partAbilityID < 0)
+                {
+                    wrapper.partAbilityID = RTEditorGUI.IntField("Ability ID", 0, GUILayout.Width(200f));
+                    Debug.LogWarning("This identification does not exist!");
+                }
                 string abilityName = AbilityUtilities.GetAbilityNameByID(wrapper.partAbilityID, null);
                 if (abilityName != "Name unset")
                 {
                     GUILayout.Label("Ability: " + abilityName);
                     height += 24f;
                 }
-
                 wrapper.partTier = RTEditorGUI.IntField("Part tier", wrapper.partTier, GUILayout.Width(200f));
                 GUILayout.Label("Part Secondary Data:");
                 wrapper.partSecondaryData = GUILayout.TextField(wrapper.partSecondaryData, GUILayout.Width(200f));

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Conditions/DestroyEntities")]
+    [Node(false, "Conditions/Destroy Entities")]
     public class DestroyEntityCondition : Node, ICondition
     {
         public const string ID = "DestroyEntities";

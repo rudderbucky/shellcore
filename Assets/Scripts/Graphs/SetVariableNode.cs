@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Actions/SetVariable")]
+    [Node(false, "Actions/Set Variable")]
     public class SetVariableNode : Node
     {
         //Node things

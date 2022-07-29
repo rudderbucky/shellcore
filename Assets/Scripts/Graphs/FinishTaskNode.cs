@@ -17,7 +17,7 @@ public struct RewardWrapper
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Tasks/FinishTaskNode")]
+    [Node(false, "Tasks/Finish Task Node")]
     public class FinishTaskNode : Node
     {
         //Node things
@@ -112,7 +112,7 @@ namespace NodeEditorFramework.Standard
                 if (answers == null)
                 {
                     answers = new List<string>();
-                    answers.Add("Ok");
+                    answers.Add("Ok.");
                     if (outputKnobs.Count == 2 && outputRight != null)
                         CreateConnectionKnob(outputAttribute);
                     if (outputRight && outputRight.connected())

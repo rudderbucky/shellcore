@@ -2,7 +2,7 @@
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Cutscenes/StartCutscene")]
+    [Node(false, "Cutscenes/Start Cutscene")]
     public class StartCutsceneNode : Node
     {
         //Node things

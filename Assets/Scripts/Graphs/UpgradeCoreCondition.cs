@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Conditions/CoreUpgrade")]
+    [Node(false, "Conditions/Core Upgrade")]
     public class UpgradeCoreCondition : Node, ICondition
     {
         public static UnityEvent OnCoreUpgrade = new UnityEvent();

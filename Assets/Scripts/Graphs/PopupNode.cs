@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Dialogue/PopupNode")]
+    [Node(false, "Dialogue/Popup Node")]
     public class PopupNode : Node
     {
         public override string GetName
