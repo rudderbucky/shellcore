@@ -76,7 +76,7 @@ namespace NodeEditorFramework.Standard
 
         public override Color Color
         {
-            get { return Color.blue; }
+            get { return Color.magenta; }
         }
     }
 
