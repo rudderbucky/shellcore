@@ -683,6 +683,7 @@ public class SectorManager : MonoBehaviour
                 }
             case EntityBlueprint.IntendedType.Tower:
                 {
+                    gObj.AddComponent<Tower>();
                     break;
                 }
             case EntityBlueprint.IntendedType.Drone:
