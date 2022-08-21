@@ -51,7 +51,7 @@ namespace NodeEditorFramework.Standard
                 DeleteConnectionPort(outputKnobs[0]);
                 output = null;
             }
-            else if ((NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue) && (output == null))
+            else if ((NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue) && (output == null) && !jumpToStart)
             {
                 if (outputKnobs.Count > 0) 
 		{
@@ -65,23 +65,10 @@ namespace NodeEditorFramework.Standard
 
             GUILayout.BeginHorizontal();
             input.DisplayLayout();
-            if (!jumpToStart && (NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue))
-            {
-                if (output == null)
-                {
-                    if (outputKnobs.Count == 0)
-                    {
-                        output = CreateConnectionKnob(OutStyle);
-                    }
-                    else
-                    {
-                        output = outputKnobs[0];
-                    }
-                }
-
-                output.DisplayLayout();
-            }
-
+	    if (output)
+	    {
+		output.DisplayLayout();
+	    }
             GUILayout.EndHorizontal();
             jumpToStart = RTEditorGUI.Toggle(jumpToStart, "Jump to start");
             if (jumpToStart && outputKnobs.Count > 0)
