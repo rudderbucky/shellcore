@@ -2,7 +2,7 @@
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/FinishMission")]
+    [Node(false, "Flow/Finish Mission")]
     public class FinishMissionNode : Node
     {
         //Node things

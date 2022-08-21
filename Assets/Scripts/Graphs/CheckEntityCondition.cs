@@ -52,6 +52,11 @@ namespace NodeEditorFramework.Standard
             {
                 distanceFromPlayer = RTEditorGUI.IntField("Distance: ", distanceFromPlayer);
                 lessThan = GUILayout.SelectionGrid(lessThan ? 0 : 1, new string[] { "Less", "Greater" }, 1) == 0;
+                if (distanceFromPlayer < 0)
+                {
+                    distanceFromPlayer = RTEditorGUI.IntField("Distance: ", 0);
+                    Debug.LogWarning("Can't register negative numbers!");
+                }
             }
 
         }

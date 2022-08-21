@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/PartyManagement")]
+    [Node(false, "Flow/Party Management")]
     public class PartyManagementNode : Node
     {
         public static string LimitedSector;

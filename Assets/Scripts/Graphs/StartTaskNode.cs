@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Tasks/StartTask", typeof(QuestCanvas))]
+    [Node(false, "Tasks/Start Task", typeof(QuestCanvas))]
     public class StartTaskNode : Node
     {
         //Node things
@@ -162,13 +162,17 @@ namespace NodeEditorFramework.Standard
                 }
 
                 partAbilityID = RTEditorGUI.IntField("Ability ID", partAbilityID, GUILayout.Width(200f));
+                if (partAbilityID < 0)
+                {
+                    partAbilityID = RTEditorGUI.IntField("Ability ID", 0, GUILayout.Width(200f));
+                    Debug.LogWarning("This identification does not exist!");
+                }
                 string abilityName = AbilityUtilities.GetAbilityNameByID(partAbilityID, null);
                 if (abilityName != "Name unset")
                 {
                     GUILayout.Label("Ability: " + abilityName);
                     height += 24f;
                 }
-
                 partTier = RTEditorGUI.IntField("Part tier", partTier, GUILayout.Width(200f));
                 GUILayout.Label("Part Secondary Data:");
                 partSecondaryData = GUILayout.TextField(partSecondaryData, GUILayout.Width(200f));

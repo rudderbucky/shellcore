@@ -2,7 +2,7 @@
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Tasks/FailTaskNode")]
+    [Node(false, "Tasks/Fail Task Node")]
     public class FailTaskNode : Node
     {
         //Node things

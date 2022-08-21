@@ -42,6 +42,15 @@ public class ShardRock : MonoBehaviour, IDamageable
     public void Start()
     {
         BuildRock();
+        if (!transform.Find("Minimap Image")) //This was copied from the energy rock script, haven't figured a different method to show it on the minimap. And I don't know how long this will last. -FoeFear
+        {
+            GameObject childObject = new GameObject("Minimap Image");
+            childObject.transform.SetParent(transform, false);
+            SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
+            renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
+            renderer.transform.localScale = new Vector3(0.475F, 0.475F);
+            childObject.AddComponent<MinimapLockRotationScript>().Initialize();
+        }
     }
 
     private Color[] rockColors = new Color[]

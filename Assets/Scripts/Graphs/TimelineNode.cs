@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/TimelineNode")]
+    [Node(false, "Flow/Timeline Node")]
     public class TimelineNode : Node
     {
         public const string ID = "TimelineNode";

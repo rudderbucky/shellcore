@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/TestVariable", typeof(QuestCanvas), typeof(SectorCanvas))]
+    [Node(false, "Flow/Test Variable", typeof(QuestCanvas), typeof(SectorCanvas))]
     public class TestVariableNode : Node
     {
         readonly string[] modes = new string[]

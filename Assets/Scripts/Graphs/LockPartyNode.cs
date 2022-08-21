@@ -2,7 +2,7 @@ using NodeEditorFramework.Utilities;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/LockPartyNode")]
+    [Node(false, "Flow/Lock Party Node")]
     public class LockPartyNode : Node
     {
         public const string ID = "LockParty";

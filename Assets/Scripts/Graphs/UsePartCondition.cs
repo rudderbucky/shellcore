@@ -46,6 +46,11 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Part ID:");
             partID = GUILayout.TextField(partID);
             abilityID = Utilities.RTEditorGUI.IntField("Ability ID: ", abilityID);
+            if (abilityID < 0)
+            {
+                abilityID = Utilities.RTEditorGUI.IntField("Ability ID: ", 0);
+                Debug.LogWarning("This identification does not exist!");
+            }
             GUILayout.Label("Sector name for part to come from:");
             sectorName = GUILayout.TextField(sectorName);
         }

@@ -86,6 +86,11 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             episode = RTEditorGUI.IntField("Episode:", episode);
+            if (episode < 0)
+            {
+                episode = RTEditorGUI.IntField("Episode:", 0);
+                Debug.LogWarning("Can't register negative numbers!");
+            }
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Label("Dialogue to show if prerequisites unsatisfied:");

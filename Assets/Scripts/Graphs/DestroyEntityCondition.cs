@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Conditions/DestroyEntities")]
+    [Node(false, "Conditions/Destroy Entities")]
     public class DestroyEntityCondition : Node, ICondition
     {
         public const string ID = "DestroyEntities";
@@ -114,7 +114,17 @@ namespace NodeEditorFramework.Standard
             }
 
             targetCount = RTEditorGUI.IntField("Count: ", targetCount);
+            if (targetCount < 0)
+            {
+                targetCount = RTEditorGUI.IntField("Count: ", 1);
+                Debug.LogWarning("Can't register this numbers!");
+            }
             targetFaction = RTEditorGUI.IntField("Faction: ", targetFaction);
+            if (targetFaction < 0)
+            {
+                targetFaction = RTEditorGUI.IntField("Faction: ", 1);
+                Debug.LogWarning("This identification does not exist!");
+            }
             progressionFeedback = RTEditorGUI.Toggle(progressionFeedback, "Progression Feedback");
         }
 

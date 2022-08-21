@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Actions/MapMarker")]
+    [Node(false, "Actions/Map Marker")]
     public class MapMarkerNode : Node
     {
         public const string ID = "MapMarker";

@@ -102,6 +102,11 @@ namespace NodeEditorFramework.Standard
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 chances[i] = RTEditorGUI.FloatField(chances[i]);
+                if (chances[i] < 0)
+                {
+                    chances[i] = RTEditorGUI.FloatField(0);
+                    Debug.LogWarning("Can't register negative numbers!");
+                }
                 outputKnobs[i].DisplayLayout();
                 GUILayout.EndHorizontal();
             }
