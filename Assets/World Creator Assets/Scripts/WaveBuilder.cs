@@ -12,6 +12,11 @@ public class WaveBuilder : GUIWindowScripts
         ClearWaves();
     }
 
+    void OnDisable()
+    {
+        ClearWaves();
+    }
+
     void ClearWaves()
     {
         for (int i = 0; i < contents.childCount; i++)
