@@ -53,7 +53,14 @@ namespace NodeEditorFramework.Standard
             }
             else if ((NodeEditorGUI.state != NodeEditorGUI.NodeEditorState.Dialogue) && (output == null))
             {
-                output = CreateConnectionKnob(OutStyle);
+                if (outputKnobs.Count > 0) 
+		{
+		    output = outputKnobs[0];
+		}
+		else
+	    	{
+		    output = CreateConnectionKnob(OutStyle);
+		}
             }
 
             GUILayout.BeginHorizontal();
