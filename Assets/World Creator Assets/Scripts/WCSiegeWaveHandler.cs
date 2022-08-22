@@ -15,6 +15,11 @@ public class WCSiegeWaveHandler : MonoBehaviour
         AddEntity("", 0, "", 1);
     }
 
+    void OnDisable()
+    {
+        //Debug.LogWarning("Closes Wave Builder."); //
+    }
+
     public void Initialize(List<SiegeEntity> entities)
     {
         foreach (var ent in entities)
@@ -50,6 +55,9 @@ public class WCSiegeWaveHandler : MonoBehaviour
             {
                 waveEntities.Remove((inField1, inField2, inField3, dropdown));
                 Destroy(inField1.transform.parent.gameObject);
+                Destroy(inField2.transform.parent.gameObject);
+                Destroy(inField3.transform.parent.gameObject);
+                Destroy(dropdown.transform.parent.gameObject);
             }
         ));
 
