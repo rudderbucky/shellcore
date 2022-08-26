@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/SectorLimiter")]
+    [Node(false, "Flow/Sector Limiter")]
     public class SectorLimiterNode : Node
     {
         public static string LimitedSector;

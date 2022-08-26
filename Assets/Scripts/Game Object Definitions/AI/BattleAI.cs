@@ -789,7 +789,7 @@ public class BattleAI : AIModule
                 var t = AITargets[i];
                 if (t.entity == null || t.entity.GetIsDead())
                 {
-                    Debug.LogWarning("AI Warning: AI target null or dead!");
+                    Debug.Log("AI Warning: AI target null or dead!"); //Better set this issue aside for later, uncertain how this will be fixed
                     continue;
                 }
 

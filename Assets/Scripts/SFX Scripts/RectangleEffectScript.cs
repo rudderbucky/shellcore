@@ -4,7 +4,8 @@ using UnityEngine;
 public enum RectangleEffectSkin
 {
     Squares,
-    Crosses
+    Crosses,
+    Triangles
 }
 
 /// <summary>
