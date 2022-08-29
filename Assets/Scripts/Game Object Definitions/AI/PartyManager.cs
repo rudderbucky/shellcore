@@ -269,6 +269,9 @@ public class PartyManager : MonoBehaviour
                 if (ch.ID == id)
                 {
                     name.text = ch.name.ToUpper();
+                    EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+                    JsonUtility.FromJsonOverwrite(ch.blueprintJSON, blueprint);
+                    inst.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(blueprint, null);
                 }
             }
 
