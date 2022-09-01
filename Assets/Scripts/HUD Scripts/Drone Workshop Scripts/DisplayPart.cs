@@ -3,7 +3,8 @@ using UnityEngine.UI;
 
 public class DisplayPart : MonoBehaviour
 {
-    protected Image image;
+    [HideInInspector]
+    public Image image;
     protected Image shooter;
     public EntityBlueprint.PartInfo info;
     private bool initialized = false;

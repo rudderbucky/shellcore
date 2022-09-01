@@ -23,38 +23,40 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     public Transform traderSmallContents;
     public Transform traderMediumContents;
     public Transform traderLargeContents;
-    protected Transform[] contentsArray; // holds scroll view sub-sections by part size
-    private Transform[] traderContentsArray;
     public GameObject smallText;
     public GameObject mediumText;
     public GameObject largeText;
     public GameObject traderSmallText;
     public GameObject traderMediumText;
     public GameObject traderLargeText;
-    protected GameObject[] contentTexts;
-    private GameObject[] traderContentTexts;
-    private PresetButton[] presetButtons;
-    protected string searcherString;
-    private bool[] displayingTypes;
     public Image reconstructImage;
     public Text reconstructText;
-    protected bool initialized;
     public TipsFromTheYard tips;
     public GameObject traderScrollView;
-    protected Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
-    private Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
     public BuilderMode mode;
-    private int[] abilityLimits;
     public SelectionDisplayHandler displayHandler;
     public GameObject currentPartHandler;
     public bool editorMode;
     public Text titleText;
     public GameObject editorModeButtons;
-    public static WorldData.CharacterData currentCharacter;
     public GameObject editorModeAddPartSection;
+
+    public static WorldData.CharacterData currentCharacter;
     public static ShipBuilder instance;
     public static bool heavyCheat = false;
+
+    protected bool initialized;
+    private int[] abilityLimits;
+    private Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> traderPartDict;
+    protected Dictionary<EntityBlueprint.PartInfo, ShipBuilderInventoryScript> partDict;
     private int editorCoreTier = 0;
+    protected Transform[] contentsArray; // holds scroll view sub-sections by part size
+    private Transform[] traderContentsArray;
+    protected GameObject[] contentTexts;
+    private GameObject[] traderContentTexts;
+    private PresetButton[] presetButtons;
+    protected string searcherString;
+    private bool[] displayingTypes;
 
     public BuilderMode GetMode()
     {
@@ -288,9 +290,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         {
             if (!shipPart.isInChain)
             {
-                var y = GetRect(shipPart.rectTransform);
-                y.Expand(0.001F);
-                if (x.Intersects(y))
+                //var y = GetRect(shipPart.rectTransform);
+                //y.Expand(0.001F);
+                //if (x.Intersects(y))
+
+                if (SATCollision.PartCollision(part, shipPart))
                 {
                     shipPart.isInChain = true;
                     UpdateChainHelper(shipPart);
@@ -311,6 +315,12 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         return (pb1.Intersects(pb2));
     }
 
+    /// <summary>
+    /// Check if the part is close enough and not too close to the shell and change isInChain accordinly. 
+    /// Return true if too close to the shell.
+    /// </summary>
+    /// <param name="shipPart"></param>
+    /// <returns>is the part too close</returns>
     public bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart)
     {
         // make sure calculations here are only with core1_shell
@@ -321,23 +331,45 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
         var shellRect = GetRect(shell.rectTransform);
 
-        var partBounds = GetRect(shipPart.rectTransform);
-        if (partBounds.Intersects(shellRect))
-        {
-            bool z = Mathf.Abs(shipPart.rectTransform.anchoredPosition.x - shell.rectTransform.anchoredPosition.x) <=
-                     0.18F * (shipPart.rectTransform.sizeDelta.x + shell.rectTransform.sizeDelta.x) &&
-                     Mathf.Abs(shipPart.rectTransform.anchoredPosition.y - shell.rectTransform.anchoredPosition.y) <=
-                     0.18F * (shipPart.rectTransform.sizeDelta.y + shell.rectTransform.sizeDelta.y);
-            shipPart.isInChain = !z;
-
-            // reset sprite
-            shell.sprite = oldSprite;
-            shell.rectTransform.sizeDelta = GetImageBoundsBySprite(shell);
-            return z;
-        }
-
+        // reset sprite
         shell.sprite = oldSprite;
         shell.rectTransform.sizeDelta = GetImageBoundsBySprite(shell);
+
+        Vector2[] partPoints = SATCollision.GetPartVertices(shipPart);
+
+        Vector2 center = shellRect.center;
+        Vector2 up = new Vector2(0f, shellRect.extents.y);
+        Vector2 right = new Vector2(shellRect.extents.x, 0f);
+        Vector2[] shellPoints = new Vector2[]
+        {
+            -right - up + center,
+             right - up + center,
+             right + up + center,
+            -right + up + center,
+        };
+
+        // Check if too close
+        if (SATCollision.RectangleCollision(partPoints, shellPoints))
+        {
+            partPoints = SATCollision.GetPartVertices(shipPart, -1.389f);
+
+            up *= 0.36f;
+            right *= 0.36f;
+            shellPoints = new Vector2[]
+            {
+                -right - up + center,
+                 right - up + center,
+                 right + up + center,
+                -right + up + center,
+            };
+
+            // Too close -> not in chain
+            shipPart.isInChain = !SATCollision.RectangleCollision(partPoints, shellPoints);
+
+            // Return true = too close
+            return !shipPart.isInChain;
+        }
+        // No collision
         return false;
     }
 
@@ -352,6 +384,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             SetReconstructButton(ReconstructButtonStatus.Valid);
         }
 
+        // Clear previous chain status & connect the parts intersecting the shell
         foreach (ShipBuilderPart shipPart in cursorScript.parts)
         {
             shipPart.isInChain = false;
@@ -428,12 +461,15 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     bool PartIsTooClose(ShipBuilderPart part, ShipBuilderPart otherPart)
     {
         var closeConstant = mode == BuilderMode.Workshop ? -1.2F : -1F;
-        var rect1 = ShipBuilder.GetRect(part.rectTransform);
-        var rect2 = ShipBuilder.GetRect(otherPart.rectTransform);
         // add small number (0.005) to deal with floating point issues
-        rect1.Expand((closeConstant - 0.005F) * rect1.extents);
-        rect2.Expand((closeConstant - 0.005F) * rect2.extents);
-        return rect1.Intersects(rect2);
+        closeConstant -= 0.005f;
+        //var rect1 = ShipBuilder.GetRect(part.rectTransform);
+        //var rect2 = ShipBuilder.GetRect(otherPart.rectTransform);
+        //rect1.Expand(closeConstant * rect1.extents);
+        //rect2.Expand(closeConstant * rect2.extents);
+        //return rect1.Intersects(rect2);
+
+        return SATCollision.TooCloseCollision(part, otherPart, closeConstant);
     }
 
     private bool CheckPartSizes()
