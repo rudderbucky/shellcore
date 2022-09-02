@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-// TODO: THIS CLASS HAS BEEN AWARDED THE "WORST CODE IN THIS PROJECT EVER" AWARD! It probably should be completely rewritten.
 public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Image sectorPrefab;
@@ -229,7 +228,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                         if (vertices.Count > 0)
                         {
                             var obj = new GameObject("LandPlatformMesh");
-                            obj.transform.SetParent(transform);
+                            obj.transform.SetParent(transform, false);
                             var rt = obj.AddComponent<RectTransform>();
                             rt.pivot = new Vector2(0f, 1f);
                             rt.anchoredPosition = sect.rectTransform.anchoredPosition;
