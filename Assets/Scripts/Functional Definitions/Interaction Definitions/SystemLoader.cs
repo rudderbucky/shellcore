@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-
 public class SystemLoader : MonoBehaviour
 {
     public ResourceManager resourceManager;
