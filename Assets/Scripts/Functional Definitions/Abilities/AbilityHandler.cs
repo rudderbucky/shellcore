@@ -31,7 +31,7 @@ public class AbilityHandler : MonoBehaviour
     Ability[] displayAbs;
     public static string[] keybindList; // list of keys for ability binds
     public static AbilityHandler instance;
-    public static float tileSpacing;
+    public static float tileSpacing = 60;
 
     [SerializeField]
     private CircleGraphic rangeCircle;
@@ -117,7 +117,7 @@ public class AbilityHandler : MonoBehaviour
 
         betterBGboxArray = new Dictionary<string, AbilityButtonScript>();
 
-        tileSpacing = betterBGbox.GetComponent<Image>().sprite.bounds.size.x * 30; // Used to space out the abilities on the GUI
+        //tileSpacing = betterBGbox.GetComponent<Image>().sprite.bounds.size.x * 30; // Used to space out the abilities on the GUI
 
         for (int i = 0; i < visibleAbilities.Count; i++)
         {
@@ -132,9 +132,11 @@ public class AbilityHandler : MonoBehaviour
             var key = id != AbilityID.SpawnDrone ? ((int)id).ToString() : GetAHSpawnData((visibleAbilities[i] as SpawnDrone).spawnData.drone);
             if (!betterBGboxArray.ContainsKey(key))
             {
-                Vector3 pos = new Vector3(GetAbilityPos(betterBGboxArray.Count), tileSpacing * 0.8F, this.transform.position.z); // find where to position the images
+                //Vector3 pos = new Vector3(GetAbilityPos(betterBGboxArray.Count), tileSpacing * 0.8F, this.transform.position.z); // find where to position the images
+                var obj = Instantiate(betterBGbox, Vector3.zero, Quaternion.identity).GetComponent<AbilityButtonScript>();
                 betterBGboxArray.Add(key,
-                    Instantiate(betterBGbox, pos, Quaternion.identity).GetComponent<AbilityButtonScript>());
+                    obj);
+                obj.GetComponentInChildren<RectTransform>().anchoredPosition = new Vector2(GetAbilityPos(betterBGboxArray.Count-1), 64);
                 betterBGboxArray[key].transform.SetParent(transform, false); // set parent (do not keep world position)
                 betterBGboxArray[key].Init(visibleAbilities[i], i < 9 && currentVisibles != AbilityTypes.Passive ? keybindList[betterBGboxArray.Count - 1] : null, core,
                     KeyName.Ability0 + (betterBGboxArray.Count - 1), displayAbilities != null);
@@ -148,13 +150,14 @@ public class AbilityHandler : MonoBehaviour
         var HUDbgrectTransform = HUDbg.GetComponent<RectTransform>();
         if (visibleAbilities.Count > 0)
         {
-            var y = HUDbgrectTransform.anchoredPosition;
-            y.x = 0.5f * tileSpacing - 1F * tileSpacing;
-            HUDbgrectTransform.anchoredPosition = y;
+            HUDbgrectTransform.sizeDelta = new Vector2(GetAbilityPos(betterBGboxArray.Count) - 25, HUDbgrectTransform.sizeDelta.y);
+            //var y = HUDbgrectTransform.anchoredPosition;
+            //y.x = 0.5f * tileSpacing - 1F * tileSpacing;
+            //HUDbgrectTransform.anchoredPosition = y;
 
-            var x = HUDbgrectTransform.sizeDelta;
-            x.x = GetAbilityPos(betterBGboxArray.Count - 1) + GetAbilityPos(0) - y.x;
-            HUDbgrectTransform.sizeDelta = x;
+            //var x = HUDbgrectTransform.sizeDelta;
+            //x.x = GetAbilityPos(betterBGboxArray.Count - 1) + GetAbilityPos(0) - y.x;
+            //HUDbgrectTransform.sizeDelta = x;
         }
         else
         {
@@ -221,7 +224,7 @@ public class AbilityHandler : MonoBehaviour
 
     public static float GetAbilityPos(int index)
     {
-        return tileSpacing * (0.8F * index + 0.5F);
+        return (index) * tileSpacing + 35;
     }
 
     public static void RearrangeID(float xPos, AbilityID id, string droneData)
@@ -246,7 +249,8 @@ public class AbilityHandler : MonoBehaviour
 
     private static int GetAbilityPosInverse(float xPos)
     {
-        return Mathf.Min(Mathf.Max(0, Mathf.RoundToInt(((xPos / tileSpacing) - 0.5F) / 0.8F)), instance.betterBGboxArray.Count - 1);
+        xPos *= (float)1920 / Screen.width;
+        return (int)Mathf.Max(0, (int)xPos / tileSpacing);
     }
 
     // adjusts the FRONT END ARRANGEMENT based on the SAVE DATA of abilities
@@ -301,8 +305,9 @@ public class AbilityHandler : MonoBehaviour
         var list = visibleAbilityOrder.GetList((int)currentVisibles);
         for (int i = 0; i < list.Count; i++)
         {
-            betterBGboxArray[ConvertObjectToString(list, i)].transform.position = new Vector3(GetAbilityPos(i),
-                tileSpacing * 0.8F, transform.position.z);
+            betterBGboxArray[ConvertObjectToString(list, i)].GetComponentInChildren<RectTransform>().anchoredPosition = new Vector2(GetAbilityPos(i), 64);
+            //betterBGboxArray[ConvertObjectToString(list, i)].transform.position = new Vector3(GetAbilityPos(i),
+            //    tileSpacing * 0.8F, transform.position.z);
             betterBGboxArray[ConvertObjectToString(list, i)].ReflectHotkey(KeyName.Ability0 + i);
         }
     }

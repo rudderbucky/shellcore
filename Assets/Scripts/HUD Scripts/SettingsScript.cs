@@ -133,7 +133,8 @@ public class SettingsScript : MonoBehaviour
     {
 #if UNITY_EDITOR
 #else
-		Screen.fullScreenMode = val ? FullScreenMode.Windowed : FullScreenMode.FullScreenWindow;
+
+		//Screen.fullScreenMode = val ? FullScreenMode.Windowed : FullScreenMode.FullScreenWindow;
 #endif
     }
 
@@ -142,7 +143,8 @@ public class SettingsScript : MonoBehaviour
         PlayerPrefs.SetInt("Screen_defaultResolution", index);
 #if UNITY_EDITOR
 #else
-		Screen.SetResolution(resolutions[index].Item1, resolutions[index].Item2, Screen.fullScreenMode, 0);
+        Screen.SetResolution(Screen.width, Screen.height, Screen.fullScreenMode, 0);
+		//Screen.SetResolution(resolutions[index].Item1, resolutions[index].Item2, Screen.fullScreenMode, 0);
 #endif
     }
 
