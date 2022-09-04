@@ -51,10 +51,10 @@ public class SelectionBoxScript : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            var hitTransforn = hit.transform;
-            var ent = hitTransforn.GetComponent<Entity>();
-            if ((hitTransforn.GetComponent<ITargetable>() != null && hitTransforn != PlayerCore.Instance.transform)
-                || (hitTransforn.GetComponent<Draggable>() && (!ent || ent.faction == PlayerCore.Instance.faction)))
+            var hitTransform = hit.transform;
+            var ent = hitTransform.GetComponent<Entity>();
+            if ((hitTransform.GetComponent<ITargetable>() != null && hitTransform != PlayerCore.Instance.transform)
+                || (hitTransform.GetComponent<Draggable>() && (!ent || ent.faction == PlayerCore.Instance.faction)))
             {
                 return true;
             }
@@ -73,6 +73,7 @@ public class SelectionBoxScript : MonoBehaviour
 
             // Get reference point of selection box for drawing
             startPoint = Input.mousePosition;
+            startPoint *= (float)1920 / Screen.width;
             image.rectTransform.anchoredPosition = startPoint;
             DrawBoxAndPivot();
         }
@@ -96,28 +97,31 @@ public class SelectionBoxScript : MonoBehaviour
     private void DrawBoxAndPivot()
     {
         // Draw box
+        var d = (float)1920 / Screen.width;
         image.enabled = true;
-        sizeVec = (Vector2)Input.mousePosition - startPoint;
+        sizeVec = (Vector2)Input.mousePosition * d - startPoint;
         sizeVec.x = Mathf.Abs(sizeVec.x);
         sizeVec.y = Mathf.Abs(sizeVec.y);
         image.rectTransform.sizeDelta = sizeVec;
 
         // Change the pivot of the size delta when the mouse goes under/before the start point
         pivotVec = new Vector2();
-        pivotVec.x = Input.mousePosition.x < startPoint.x ? 1 : 0;
-        pivotVec.y = Input.mousePosition.y < startPoint.y ? 1 : 0;
+        pivotVec.x = Input.mousePosition.x * d < startPoint.x ? 1 : 0;
+        pivotVec.y = Input.mousePosition.y * d < startPoint.y ? 1 : 0;
         image.rectTransform.pivot = pivotVec;
     }
 
     private void GrabSelectionAndScanForEntities()
     {
+        var d = (float)1920 / Screen.width;
         Vector2 boxStart =
-                               Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, CameraScript.zLevel));
+            Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, CameraScript.zLevel * d) / d);
+        
         Vector2 boxExtents =
             Camera.main.ScreenToWorldPoint(
                 new Vector3((1 - 2 * pivotVec.x) * sizeVec.x + startPoint.x,
                     (1 - 2 * pivotVec.y) * sizeVec.y + startPoint.y,
-                    CameraScript.zLevel));
+                    CameraScript.zLevel * d) / d);
         Rect finalBox = Rect.MinMaxRect(
             Mathf.Min(boxStart.x, boxExtents.x),
             Mathf.Min(boxStart.y, boxExtents.y),
