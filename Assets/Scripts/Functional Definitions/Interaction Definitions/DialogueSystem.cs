@@ -313,7 +313,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
 
         buttons = new GameObject[1];
-        buttons[0] = CreateButton("Ok", () => { endDialogue(); }, 24);
+        buttons[0] = CreateButton("Ok.", () => { endDialogue(); }, 24);
     }
 
     public static void ShowBattleResults(bool victory)

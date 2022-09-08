@@ -21,7 +21,7 @@ public class TaskDisplayScript : MonoBehaviour
         ["B"] = Color.yellow,
         ["A"] = Color.red + Color.green / 2,
         ["S"] = Color.magenta,
-        ["X"] = Color.green
+        ["X"] = Color.red
     };
 
     public GameObject missionButtonPrefab;

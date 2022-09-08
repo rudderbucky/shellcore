@@ -115,6 +115,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         rectTransform.gameObject.SetActive(true);
         mousePos = WorldCreatorCursor.GetMousePos();
         var pos = Camera.main.WorldToScreenPoint(mousePos);
+        pos *= (float)1920 / Screen.width;
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
 
@@ -168,6 +169,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         if (!editingDefaults)
         {
             var pos = Camera.main.WorldToScreenPoint(mousePos);
+            pos *= (float)1920 / Screen.width;
             pos += new Vector3(300, 0);
             rectTransform.anchoredPosition = pos;
 
