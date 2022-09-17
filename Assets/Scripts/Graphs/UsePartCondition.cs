@@ -85,7 +85,7 @@ namespace NodeEditorFramework.Standard
                 {
                     if (parts[i].partID == partID && parts[i].abilityID == abilityID)
                     {
-                        if (sectorName != "")
+                        if (!string.IsNullOrEmpty(sectorName))
                         {
                             ShipBuilder.RemoveOrigin(sectorName, (partID, abilityID));
                         }
