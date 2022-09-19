@@ -17,7 +17,7 @@ public struct RewardWrapper
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Tasks/Finish Task Node")]
+    [Node(false, "Tasks/Finish Task Node", typeof(QuestCanvas))]
     public class FinishTaskNode : Node
     {
         //Node things

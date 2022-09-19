@@ -2,7 +2,7 @@
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Tasks/Fail Task Node")]
+    [Node(false, "Tasks/Fail Task Node", typeof(QuestCanvas))]
     public class FailTaskNode : Node
     {
         //Node things

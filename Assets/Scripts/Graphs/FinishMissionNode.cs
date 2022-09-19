@@ -2,7 +2,7 @@
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Finish Mission")]
+    [Node(false, "Flow/Finish Mission", typeof(QuestCanvas))]
     public class FinishMissionNode : Node
     {
         //Node things
