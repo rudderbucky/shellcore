@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Set Part Drop Rate")]
+    [Node(false, "Actions/Set Part Drop Rate")]
     public class SetPartDropRateNode : Node
     {
         public override string GetName

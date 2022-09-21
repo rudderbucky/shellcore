@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Clear Dialogue")]
+    [Node(false, "AI/Clear Dialogue")]
     public class ClearDialogueNode : Node
     {
         public override string GetName
