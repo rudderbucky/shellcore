@@ -34,6 +34,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             shell.type = Image.Type.Sliced;
             shell.rectTransform.pivot = new Vector2(shell.sprite.pivot.x
                                                     / (shell.sprite.bounds.size.x * 100), shell.sprite.pivot.y / (shell.sprite.bounds.size.y * 100));
+            shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
         }
         else
         {
@@ -45,6 +46,7 @@ public class SelectionDisplayHandler : MonoBehaviour
         {
             core.enabled = true;
             core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
+            core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
             core.type = Image.Type.Sliced;
             core.material = ResourceManager.GetAsset<Material>("material_color_swap");
             core.color = FactionManager.GetFactionColor(faction);
