@@ -32,8 +32,6 @@ public class SelectionDisplayHandler : MonoBehaviour
             shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
             shell.color = FactionManager.GetFactionColor(faction);
             shell.type = Image.Type.Sliced;
-            shell.rectTransform.pivot = new Vector2(shell.sprite.pivot.x
-                                                    / (shell.sprite.bounds.size.x * 100), shell.sprite.pivot.y / (shell.sprite.bounds.size.y * 100));
             shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
         }
         else
