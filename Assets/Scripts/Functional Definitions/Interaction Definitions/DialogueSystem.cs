@@ -763,6 +763,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
+        if (window)
+        {
+            window.playSoundOnClose = soundOnClose;
+            Destroy(window.transform.root.gameObject);
+            window.CloseUI();
+        }
+
         // strange behavior here when tasks are checkpointed, look into this when bugs arise
         if (answer == 0)
         {
@@ -772,13 +779,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             }
 
             DialogueViewTransitionOut();
-        }
-
-        if (window)
-        {
-            window.playSoundOnClose = soundOnClose;
-            window.CloseUI();
-            Destroy(window.transform.root.gameObject);
         }
 
         if (OnDialogueEnd != null)
