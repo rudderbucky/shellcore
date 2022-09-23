@@ -55,7 +55,7 @@ public class Laser : Bullet
     protected void Update()
     {
         var target = targetingSystem.GetTarget();
-        if (bulletsLeft > 0 && (Time.time - time > bulletFrequency) && target)
+        if (bulletsLeft > 0 && (Time.time - time > bulletFrequency) && target && !Core.IsInvisible && !Core.isAbsorbing)
         {
             time = Time.time;
             bulletsLeft -= 1;
