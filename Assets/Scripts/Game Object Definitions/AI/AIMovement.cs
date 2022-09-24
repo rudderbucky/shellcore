@@ -20,7 +20,7 @@ public class AIMovement
         moveTarget = null;
     }
 
-    public void SetMoveTarget(Vector2 target, float minDistance = 64f)
+    public void SetMoveTarget(Vector2? target, float minDistance = 64f)
     {
         if (moveTarget != target || minDistance != minDist)
         {

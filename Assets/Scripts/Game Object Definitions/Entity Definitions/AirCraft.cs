@@ -126,6 +126,10 @@ public abstract class AirCraft : Craft
         oscillatorVector = point;
         storedPos = point;
         positionBeforeOscillation = point.y;
+        if (ai && ai.movement != null)
+        {
+            ai.movement.SetMoveTarget(null);
+        }
     }
 
     protected override void CraftMover(Vector2 directionVector)
