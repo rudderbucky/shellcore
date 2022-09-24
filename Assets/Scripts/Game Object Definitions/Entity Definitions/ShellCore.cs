@@ -138,6 +138,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
     }
 
+    public void KillShellCore() 
+    {
+        OnDeath();
+    }
+    
     protected override void OnDeath()
     {
         tractor.SetTractorTarget(null);
@@ -167,7 +172,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     private void InitAI()
     {
         ai = GetAI();
-        if (!ai) { return; }
+        if (!ai || ai.getMode() != AirCraftAI.AIMode.Inactive) { return; }
         if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             ai.setMode(AirCraftAI.AIMode.Battle);
@@ -191,8 +196,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public override void Respawn()
     {
-        InitAI();
-
         if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
         {
             isYardRepairing = false;

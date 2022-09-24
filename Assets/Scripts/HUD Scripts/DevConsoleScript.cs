@@ -273,6 +273,14 @@ public class DevConsoleScript : MonoBehaviour
                 updateLog = true;
                 textBox.text += "\n<color=lime>You're probably not gonna be able to see this.</color>";
             }
+            else if (command.Equals("killp", StringComparison.CurrentCultureIgnoreCase))
+            {
+                foreach (ShellCore partyMember in PartyManager.instance.partyMembers)
+                {
+                    partyMember.KillShellCore();
+                }
+                textBox.text += "\n<color=lime>Killing all party members...</color>";
+            }
             else if (command.Equals("Damacy", StringComparison.CurrentCultureIgnoreCase))
             {
                 /* Adds all part/ability/tier/drone permutations to the player's inventory.*/
