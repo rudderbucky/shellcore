@@ -233,15 +233,21 @@ public class AbilityHandler : MonoBehaviour
         {
             var list = (instance.visibleAbilityOrder.GetList((int)instance.currentVisibles) as List<AbilityID>);
             int index = GetAbilityPosInverse(xPos);
-            list.Remove(id);
-            list.Insert(index, id);
+            if (index < list.Count) 
+            {
+                list.Remove(id);
+                list.Insert(index, id);
+            }
         }
         else
         {
             var list = (instance.visibleAbilityOrder.GetList((int)instance.currentVisibles) as List<string>);
             int index = GetAbilityPosInverse(xPos);
-            list.Remove(droneData);
-            list.Insert(index, droneData);
+            if (index < list.Count) 
+            {
+                list.Remove(droneData);
+                list.Insert(index, droneData);
+            }
         }
 
         instance.Rearrange();
