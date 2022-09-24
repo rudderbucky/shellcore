@@ -182,7 +182,7 @@ public class Yard : AirConstruct, IShipBuilder
             // even if the player isn't neaby the Yard.
             foreach (var partyMember in PartyManager.instance.partyMembers)
             {
-                if (!partyMember)
+                if (!partyMember || partyMember.GetIsDead())
                     continue;
 
                 // Only warp them if they're following the player?
@@ -201,7 +201,7 @@ public class Yard : AirConstruct, IShipBuilder
 
         foreach (var partyMember in PartyManager.instance.partyMembers)
         {
-            if (!partyMember)
+            if (!partyMember || partyMember.GetIsDead())
                 continue;
             
             if ((transform.position - partyMember.transform.position).sqrMagnitude <= YardProximitySquared)
