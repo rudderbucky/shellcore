@@ -142,7 +142,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     {
         OnDeath();
     }
-    
+
     protected override void OnDeath()
     {
         tractor.SetTractorTarget(null);
@@ -334,11 +334,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public bool HasPartsDamagedOrDestroyed()
     {
         // Cheks if has damaged parts
-        if (parts.Exists(p => p.name != "Shell Sprite" && p.IsDamaged()))
+        if (parts.Exists(p => p && p.name != "Shell Sprite" && p.IsDamaged()))
             return true;
 
         // Check if has parts destroyed
-        if (blueprint.parts.Exists(p => !parts.Exists(part => part.info.Equals(p))))
+        if (blueprint.parts.Exists(p => !parts.Exists(part => part && part.info.Equals(p))))
             return true;
 
         return false;
