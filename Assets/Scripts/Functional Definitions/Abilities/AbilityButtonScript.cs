@@ -173,6 +173,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             tooltip.transform.position = Input.mousePosition;
         }
 
+
         if (abilities.Count <= 0) 
         {
             return;
@@ -359,10 +360,21 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
     public void OnPointerEnter(PointerEventData eventData)
     {
         //create tooltip
-        tooltip = Instantiate(tooltipPrefab, transform.parent);
-        RectTransform rect = tooltip.GetComponent<RectTransform>();
-        rect.position = Input.mousePosition;
-        rect.SetAsLastSibling();
+        if (!dragging) 
+        {
+            if (tooltip) 
+            {
+                Destroy(tooltip);
+            }
+            tooltip = Instantiate(tooltipPrefab, transform.parent);
+            RectTransform rect = tooltip.GetComponent<RectTransform>();
+            rect.position = Input.mousePosition;
+            rect.SetAsLastSibling();
+            Text text = tooltip.transform.Find("Text").GetComponent<Text>();
+            text.text = abilityInfo;
+            rect.sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
+        }
+
         ClearCircles();
         if (abilities.Count > 0 && abilities[0].GetRange() > 0)
         {
@@ -378,10 +390,6 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         //rangeCircle.enabled = true;
         PollRangeCircle();
-        Text text = tooltip.transform.Find("Text").GetComponent<Text>();
-        text.text = abilityInfo;
-
-        rect.sizeDelta = new Vector2(text.preferredWidth + 16f, text.preferredHeight + 16);
     }
 
     private void ClearCircles()
