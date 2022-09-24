@@ -161,20 +161,23 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         // initialize instance fields
         base.Start(); // base start
 
-        ai = GetAI();
-        if (ai && ai.getMode() == AirCraftAI.AIMode.Inactive)
-        {
-            if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
-            {
-                ai.setMode(AirCraftAI.AIMode.Battle);
-            }
-            else
-            {
-                ai.setMode(AirCraftAI.AIMode.Inactive);
-            }
+        InitAI();
+    }
 
-            ai.allowRetreat = true;
+    private void InitAI()
+    {
+        ai = GetAI();
+        if (!ai) { return; }
+        if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
+        {
+            ai.setMode(AirCraftAI.AIMode.Battle);
         }
+        else
+        {
+            ai.setMode(AirCraftAI.AIMode.Inactive);
+        }
+
+        ai.allowRetreat = true;
     }
 
     protected override void OnDestroy()
@@ -188,6 +191,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public override void Respawn()
     {
+        InitAI();
+
         if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
         {
             isYardRepairing = false;
