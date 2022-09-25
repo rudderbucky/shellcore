@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-//Temporary main menu, will be redesigned later
 
 public class MainMenu : MonoBehaviour
 {
