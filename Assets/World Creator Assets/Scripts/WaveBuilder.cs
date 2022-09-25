@@ -56,7 +56,6 @@ public class WaveBuilder : GUIWindowScripts
             set.waves[i] = waveHandlers[i].Parse();
         }
 
-        CopyToClipboard(JsonUtility.ToJson(set));
         System.IO.File.WriteAllText(path, JsonUtility.ToJson(set));
     }
 
