@@ -327,10 +327,10 @@ public class WCWorldIO : GUIWindowScripts
 
         readButton.gameObject.SetActive(mode == IOMode.Read || mode == IOMode.Write);
 
+        PlayerViewScript.SetCurrentWindow(this);
         switch (mode)
         {
             case IOMode.Read:
-                PlayerViewScript.SetCurrentWindow(this);
                 readButton.text = "Read world";
                 worldPathName.text = "If you select a world, its name will appear here.";
                 authors.text = "";
@@ -342,7 +342,6 @@ public class WCWorldIO : GUIWindowScripts
                 directories = Directory.GetDirectories(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors"));
                 break;
             case IOMode.Write:
-                PlayerViewScript.SetCurrentWindow(this);
                 readButton.text = "Write world";
                 worldPathName.text = "If you select a world, its name will appear here.";
                 authors.text = "";
