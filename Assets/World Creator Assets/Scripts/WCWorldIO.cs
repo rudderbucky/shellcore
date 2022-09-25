@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class WCWorldIO : MonoBehaviour
+public class WCWorldIO : GUIWindowScripts
 {
     public WCGeneratorHandler generatorHandler;
     public ShipBuilder builder;
@@ -330,6 +330,7 @@ public class WCWorldIO : MonoBehaviour
         switch (mode)
         {
             case IOMode.Read:
+                PlayerViewScript.SetCurrentWindow(this);
                 readButton.text = "Read world";
                 worldPathName.text = "If you select a world, its name will appear here.";
                 authors.text = "";
@@ -341,6 +342,7 @@ public class WCWorldIO : MonoBehaviour
                 directories = Directory.GetDirectories(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors"));
                 break;
             case IOMode.Write:
+                PlayerViewScript.SetCurrentWindow(this);
                 readButton.text = "Write world";
                 worldPathName.text = "If you select a world, its name will appear here.";
                 authors.text = "";
@@ -491,5 +493,14 @@ public class WCWorldIO : MonoBehaviour
         DestroyAllButtons();
         gameObject.SetActive(false);
         window.SetActive(false);
+    }
+
+    public override void CloseUI()
+    {
+        Hide();            
+        if (playSoundOnClose)
+        {
+            AudioManager.PlayClipByID("clip_back", true);
+        }
     }
 }
