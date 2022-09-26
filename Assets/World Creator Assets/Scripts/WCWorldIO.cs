@@ -118,6 +118,10 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
+    public override bool GetActive() {
+        return gameObject.activeSelf;
+    }
+
     public static void DeletePlaceholderDirectories()
     {
         var CanvasPlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
@@ -316,6 +320,11 @@ public class WCWorldIO : GUIWindowScripts
 
     void Show(IOMode mode)
     {
+        if ((mode != IOMode.Read && mode != IOMode.Write) && 
+            !Directory.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")))
+        {
+            return;
+        }
         buttons.Clear();
         active = true;
         gameObject.SetActive(true);
