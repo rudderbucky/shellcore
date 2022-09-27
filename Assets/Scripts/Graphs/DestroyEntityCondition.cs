@@ -80,6 +80,11 @@ namespace NodeEditorFramework.Standard
             {
                 GUILayout.Label("Target Name");
                 targetID = GUILayout.TextField(targetID);
+                if (GUI.changed && useIDInput && IDInput) 
+                {
+                    DeleteConnectionPort(IDInput);
+                }
+                useIDInput = false;
             }
             else
             {

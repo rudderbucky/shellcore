@@ -75,14 +75,16 @@ namespace NodeEditorFramework.Standard
 
                 forceStart = RTEditorGUI.Toggle(forceStart, "Force dialogue start");
                 allowAfterSpeaking = RTEditorGUI.Toggle(allowAfterSpeaking, "Allow passing async");
-
+                if (allowAfterSpeaking && outputKnobs.Count > 1) {
+                    flowOutput = outputKnobs[1];
+                }
                 if (GUI.changed)
                 {
-                    if (allowAfterSpeaking)
+                    if (allowAfterSpeaking && !flowOutput)
                     {
                         flowOutput = CreateConnectionKnob(flowInStyle);
                     }
-                    else
+                    else if (!allowAfterSpeaking)
                     {
                         DeleteConnectionPort(flowOutput);
                     }
