@@ -176,7 +176,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private void Update()
     {
         if (window && speakerPos != null && player &&
-            ((player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 || player.GetIsDead()) && !isInCutscene)
+            ((player.transform.position - ((Vector3)speakerPos)).sqrMagnitude > 100 || player.GetIsDead() 
+            || (speaker && speaker.GetIsDead())) && !isInCutscene)
         {
             endDialogue();
         }
@@ -199,6 +200,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
+    private Entity speaker;
     public static void StartDialogue(Dialogue dialogue, Entity speaker = null)
     {
         Instance.startDialogue(dialogue, speaker);
@@ -223,6 +225,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         {
             Destroy(window.transform.parent.gameObject);
         }
+
+        this.speaker = speaker;
 
         //create window
         speakerPos = null;
@@ -763,6 +767,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
+        speaker = null;
         if (window)
         {
             window.playSoundOnClose = soundOnClose;
@@ -777,7 +782,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             {
                 OnDialogueCancel.Invoke();
             }
-
             DialogueViewTransitionOut();
         }
 

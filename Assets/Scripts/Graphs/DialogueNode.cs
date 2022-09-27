@@ -175,8 +175,7 @@ namespace NodeEditorFramework.Standard
                         StartDialogueNode.dialogueCanvasNode = null;
                     }
                 }
-
-                TaskManager.Instance.setNode(cancel.connection(0));
+                TaskManager.Instance.setNode(cancel);
             }
         }
 

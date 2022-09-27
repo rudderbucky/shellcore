@@ -401,8 +401,11 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
-    public void setNode(ConnectionPort connection)
+    public void 
+    setNode(ConnectionPort connection)
     {
+
+        
         // Get canvas
         if (connection.connected())
         {
