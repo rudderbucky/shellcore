@@ -35,7 +35,8 @@ public class SaveMenuHandler : GUIWindowScripts
         "Alpha 4.1.1",
         "Alpha 4.2.0",
         "Alpha 4.3.0",
-        "Beta 0.0.0"
+        "Beta 0.0.0",
+        "Beta 0.1.1"
     };
 
     public Sprite[] episodeSprites;
@@ -247,6 +248,10 @@ public class SaveMenuHandler : GUIWindowScripts
         indexToMigrate = index;
         switch (saves[index].version)
         {
+            case "Beta 0.1.1":
+                migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will fix Trial by Combat's mission name. "
+                                                                                                 + "Backup first! (Below save icon delete button)";
+                break;
             case "Alpha 2.1.0":
                 migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will reset your task progress, reputation and place you in the "
                                                                                                  + "Spawning Grounds. Backup first! (Below save icon delete button)";
@@ -266,6 +271,12 @@ public class SaveMenuHandler : GUIWindowScripts
         var save = saves[indexToMigrate];
         switch (save.version)
         {
+            case "Beta 0.1.1":
+                var tbc = save.missions.Find(m => m.name == "Trial By Combat");
+                if (tbc != null) tbc.name = "Trial by Combat";
+                File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
+                SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+                break;
             case "Beta 0.0.0":
                 var mission = save.missions.Find(m => m.name == "Truthful Revelation?");
                 if (mission != null) mission.name = "Truthful Revelation";
