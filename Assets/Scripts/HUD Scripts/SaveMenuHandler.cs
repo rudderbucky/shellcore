@@ -249,7 +249,7 @@ public class SaveMenuHandler : GUIWindowScripts
         switch (saves[index].version)
         {
             case "Beta 0.1.1":
-                migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will fix Trial by Combat's mission name. "
+                migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will fix Trial by Combat's mission name and a couple of others as well. "
                                                                                                  + "Backup first! (Below save icon delete button)";
                 break;
             case "Alpha 2.1.0":
@@ -272,8 +272,12 @@ public class SaveMenuHandler : GUIWindowScripts
         switch (save.version)
         {
             case "Beta 0.1.1":
-                var tbc = save.missions.Find(m => m.name == "Trial By Combat");
-                if (tbc != null) tbc.name = "Trial by Combat";
+                var trialbycombatmission = save.missions.Find(m => m.name == "Trial By Combat");
+                if (trialbycombatmission != null) trialbycombatmission.name = "Trial by Combat";
+                var thecarrierconundrumquest = save.missions.Find(m => m.name == "The Carrier Conundrum");
+                if (thecarrierconundrumquest != null) thecarrierconundrumquest.name = "Carrier Conundrum";
+                var theturretturmoilquest = save.missions.Find(m => m.name == "The Turret Turmoil");
+                if (theturretturmoilquest != null) theturretturmoilquest.name = "Turret Turmoil";
                 File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
                 SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
                 break;
