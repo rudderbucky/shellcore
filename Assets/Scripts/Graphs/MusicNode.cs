@@ -17,7 +17,7 @@ namespace NodeEditorFramework.Standard
 
         public override Vector2 DefaultSize
         {
-            get { return new Vector2(200, 150); }
+            get { return new Vector2(200, height); }
         }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
@@ -31,8 +31,11 @@ namespace NodeEditorFramework.Standard
         public bool defaultMusic = false;
         //public bool action = false; //TODO: action input
 
+        float height = 80f;
+
         public override void NodeGUI()
         {
+            height = 80f;
             GUILayout.BeginHorizontal();
             input.DisplayLayout();
             output.DisplayLayout();
@@ -40,6 +43,7 @@ namespace NodeEditorFramework.Standard
             defaultMusic = GUILayout.Toggle(defaultMusic, "Default music");
             if (!defaultMusic)
             {
+                height = 150f;
                 GUILayout.Label("Music ID:");
                 musicID = GUILayout.TextArea(musicID);
             }

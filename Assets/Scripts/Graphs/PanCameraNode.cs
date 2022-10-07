@@ -18,7 +18,7 @@ namespace NodeEditorFramework.Standard
 
         public override Vector2 DefaultSize
         {
-            get { return new Vector2(200, 240); }
+            get { return new Vector2(200, height); }
         }
 
         [ConnectionKnob("Output", Direction.Out, "TaskFlow", NodeSide.Right)]
@@ -33,9 +33,11 @@ namespace NodeEditorFramework.Standard
         public bool endPanning;
         public bool asynchronous;
         public float velocityFactor;
+        public float height = 100;
 
         public override void NodeGUI()
         {
+            height = 100;
             GUILayout.BeginHorizontal();
             input.DisplayLayout();
             output.DisplayLayout();
@@ -43,6 +45,7 @@ namespace NodeEditorFramework.Standard
 
             if (!(endPanning = GUILayout.Toggle(endPanning, "End Panning")))
             {
+                height = 240;
                 if (useCoordinates = Utilities.RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
                 {
                     GUILayout.Label("Coordinates:");
