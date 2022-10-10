@@ -44,7 +44,7 @@ public class GroundPlatform
     public List<Tile> tiles;
 
     Tile?[] tileGrid;
-    Dictionary<Entity, Tile> closestTiles = new Dictionary<Entity, Tile>();
+    Dictionary<Entity, (float, Tile)> closestTiles = new Dictionary<Entity, (float, Tile)>();
 
     public Vector2Int offset { get; private set; }
     Vector2Int size;
@@ -82,7 +82,7 @@ public class GroundPlatform
 
     public void SetClosestTile(Entity ent, Tile t)
     {
-        closestTiles[ent] = t;
+        closestTiles[ent] = (Time.time, t);
     }
 
     public void RemoveClosestTile(Entity ent)
@@ -95,14 +95,18 @@ public class GroundPlatform
     {
         if (closestTiles.ContainsKey(ent))
         {
-            return closestTiles[ent];
+            if (Time.time - closestTiles[ent].Item1 > 3f)
+            {
+                RemoveClosestTile(ent);
+            }
+            else
+            {
+                return closestTiles[ent].Item2;
+            }
         }
-        else
-        {
-            Tile tile = LandPlatformGenerator.Instance.GetNearestTile(this, ent.transform.position).Value;
-            SetClosestTile(ent, tile);
-            return tile;
-        }
+        Tile tile = LandPlatformGenerator.Instance.GetNearestTile(this, ent.transform.position).Value;
+        SetClosestTile(ent, tile);
+        return tile;
     }
 
     public string Encode()
