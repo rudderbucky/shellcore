@@ -79,9 +79,14 @@ namespace NodeEditorFramework.Standard
 
             GUILayout.BeginHorizontal();
             openBuilder = RTEditorGUI.Toggle(openBuilder, "Open Yard");
+            if (openBuilder == true)
+            {
+                openTrader = false;
+            }
             GUILayout.EndHorizontal();
             if (openTrader = RTEditorGUI.Toggle(openTrader, "Open Trader"))
             {
+                openBuilder = false;
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Trader Inventory JSON");
                 traderJSON = GUILayout.TextArea(traderJSON);
