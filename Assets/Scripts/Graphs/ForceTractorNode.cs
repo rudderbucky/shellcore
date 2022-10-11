@@ -97,7 +97,8 @@ namespace NodeEditorFramework.Standard
                     }
                 }
             }
-
+            
+            RTEditorGUI.Seperator();
             GUILayout.BeginHorizontal();
             GUILayout.Label("Target for tractor");
             GUILayout.EndHorizontal();

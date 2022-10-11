@@ -63,7 +63,7 @@ namespace NodeEditorFramework.Standard
                 else if (!stopFollowing && useTargetInput && TargetInput == null)
                 {
                     TargetInput = CreateConnectionKnob(IDInStyle);
-                    TargetInput.name = "TargetInput";
+                    TargetInput.name = "Target Input";
                 }
             }
 
@@ -74,12 +74,12 @@ namespace NodeEditorFramework.Standard
             {
                 if (FollowerInput == null)
                 {
-                    ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "FollowerInput"; });
+                    ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Follower Input"; });
 
                     if (input == null)
                     {
                         FollowerInput = CreateConnectionKnob(IDInStyle);
-                        FollowerInput.name = "FollowerInput";
+                        FollowerInput.name = "Follower Input";
                     }
                     else
                     {
@@ -99,12 +99,12 @@ namespace NodeEditorFramework.Standard
                 {
                     if (TargetInput == null)
                     {
-                        ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "TargetInput"; });
+                        ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Target Input"; });
 
                         if (input == null)
                         {
                             TargetInput = CreateConnectionKnob(IDInStyle);
-                            TargetInput.name = "TargetInput";
+                            TargetInput.name = "Target Input";
                         }
                         else
                         {
@@ -125,7 +125,7 @@ namespace NodeEditorFramework.Standard
                 if (useFollowerInput && FollowerInput == null)
                 {
                     FollowerInput = CreateConnectionKnob(IDInStyle);
-                    FollowerInput.name = "FollowerInput";
+                    FollowerInput.name = "Follower Input";
                 }
                 else if (!useFollowerInput && FollowerInput != null)
                 {
@@ -158,7 +158,7 @@ namespace NodeEditorFramework.Standard
                     if (useTargetInput && TargetInput == null)
                     {
                         TargetInput = CreateConnectionKnob(IDInStyle);
-                        TargetInput.name = "TargetInput";
+                        TargetInput.name = "Target Input";
                     }
                     else if (!useTargetInput && TargetInput != null)
                     {
@@ -203,7 +203,7 @@ namespace NodeEditorFramework.Standard
         {
             if (useFollowerInput)
             {
-                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "FollowerInput"; });
+                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Follower Input"; });
 
                 if (useFollowerInput && FollowerInput == null)
                 {
@@ -222,7 +222,7 @@ namespace NodeEditorFramework.Standard
 
             if (useTargetInput && !stopFollowing)
             {
-                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "TargetInput"; });
+                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Target Input"; });
 
                 if (useTargetInput && TargetInput == null)
                 {
