@@ -63,23 +63,24 @@ namespace NodeEditorFramework.Standard
                 else if (!stopFollowing && useTargetInput && TargetInput == null)
                 {
                     TargetInput = CreateConnectionKnob(IDInStyle);
-                    TargetInput.name = "Target Input";
+                    TargetInput.name = "TargetInput";
                 }
             }
 
             RTEditorGUI.Seperator();
 
             GUILayout.BeginHorizontal();
+
             if (useFollowerInput)
             {
                 if (FollowerInput == null)
                 {
-                    ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Follower Input"; });
+                    ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "FollowerInput"; });
 
                     if (input == null)
                     {
                         FollowerInput = CreateConnectionKnob(IDInStyle);
-                        FollowerInput.name = "Follower Input";
+                        FollowerInput.name = "FollowerInput";
                     }
                     else
                     {
@@ -91,48 +92,6 @@ namespace NodeEditorFramework.Standard
             }
 
             GUILayout.EndHorizontal();
-
-            if (!stopFollowing)
-            {
-                GUILayout.BeginHorizontal();
-                if (useTargetInput)
-                {
-                    if (TargetInput == null)
-                    {
-                        ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Target Input"; });
-
-                        if (input == null)
-                        {
-                            TargetInput = CreateConnectionKnob(IDInStyle);
-                            TargetInput.name = "Target Input";
-                        }
-                        else
-                        {
-                            TargetInput = input;
-                        }
-                    }
-
-                    TargetInput.DisplayLayout();
-                }
-
-                GUILayout.EndHorizontal();
-            }
-
-
-            useFollowerInput = RTEditorGUI.Toggle(useFollowerInput, "Get follower ID from input", GUILayout.MinWidth(400));
-            if (GUI.changed)
-            {
-                if (useFollowerInput && FollowerInput == null)
-                {
-                    FollowerInput = CreateConnectionKnob(IDInStyle);
-                    FollowerInput.name = "Follower Input";
-                }
-                else if (!useFollowerInput && FollowerInput != null)
-                {
-                    DeleteConnectionPort(FollowerInput);
-                    FollowerInput = null;
-                }
-            }
 
             if (!useFollowerInput)
             {
@@ -148,6 +107,21 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
+            useFollowerInput = RTEditorGUI.Toggle(useFollowerInput, "Get follower ID from input", GUILayout.MinWidth(400));
+            if (GUI.changed)
+            {
+                if (useFollowerInput && FollowerInput == null)
+                {
+                    FollowerInput = CreateConnectionKnob(IDInStyle);
+                    FollowerInput.name = "FollowerInput";
+                }
+                else if (!useFollowerInput && FollowerInput != null)
+                {
+                    DeleteConnectionPort(FollowerInput);
+                    FollowerInput = null;
+                }
+            }
+
             if (!stopFollowing)
             {
                 RTEditorGUI.Seperator();
@@ -158,7 +132,7 @@ namespace NodeEditorFramework.Standard
                     if (useTargetInput && TargetInput == null)
                     {
                         TargetInput = CreateConnectionKnob(IDInStyle);
-                        TargetInput.name = "Target Input";
+                        TargetInput.name = "TargetInput";
                     }
                     else if (!useTargetInput && TargetInput != null)
                     {
@@ -179,6 +153,32 @@ namespace NodeEditorFramework.Standard
                             WorldCreatorCursor.instance.EntitySelection();
                         }
                     }
+                }
+
+                if (!stopFollowing)
+                {
+                    GUILayout.BeginHorizontal();
+                    if (useTargetInput)
+                    {
+                        if (TargetInput == null)
+                        {
+                            ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "TargetInput"; });
+
+                            if (input == null)
+                            {
+                                TargetInput = CreateConnectionKnob(IDInStyle);
+                                TargetInput.name = "TargetInput";
+                            }
+                            else
+                            {
+                                TargetInput = input;
+                            }
+                        }
+
+                        TargetInput.DisplayLayout();
+                    }
+
+                    GUILayout.EndHorizontal();
                 }
             }
 
@@ -203,7 +203,7 @@ namespace NodeEditorFramework.Standard
         {
             if (useFollowerInput)
             {
-                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Follower Input"; });
+                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "FollowerInput"; });
 
                 if (useFollowerInput && FollowerInput == null)
                 {
@@ -222,7 +222,7 @@ namespace NodeEditorFramework.Standard
 
             if (useTargetInput && !stopFollowing)
             {
-                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Target Input"; });
+                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "TargetInput"; });
 
                 if (useTargetInput && TargetInput == null)
                 {

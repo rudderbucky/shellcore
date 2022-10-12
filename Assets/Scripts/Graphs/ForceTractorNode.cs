@@ -35,10 +35,13 @@ namespace NodeEditorFramework.Standard
         //public bool action; //TODO: action input
         public bool useIDInput;
         public bool useIDInputTarget;
+        public bool stopForceTractor = false;
         public string entityID = "";
         public string targetEntityID = "";
 
-        public ConnectionKnob IDInput;
+        public ConnectionKnob TractorInput;
+        public ConnectionKnob TargetInput;
+        public bool disableTractor;
 
         ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("Name Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
 
@@ -48,45 +51,50 @@ namespace NodeEditorFramework.Standard
             input.DisplayLayout();
             output.DisplayLayout();
             GUILayout.EndHorizontal();
+
+            stopForceTractor = RTEditorGUI.Toggle(stopForceTractor, "Stop Force Tractor");
+            if (GUI.changed)
+            {
+                if (stopForceTractor && TargetInput != null)
+                {
+                    DeleteConnectionPort(TargetInput);
+                    TargetInput = null;
+                }
+                else if (!stopForceTractor && useIDInputTarget && TargetInput == null)
+                {
+                    TargetInput = CreateConnectionKnob(IDInStyle);
+                    TargetInput.name = "Target Input";
+                }
+            }
+
+            RTEditorGUI.Seperator();
+
             GUILayout.BeginHorizontal();
             if (useIDInput)
             {
-                if (IDInput == null)
+                if (TractorInput == null)
                 {
-                    if (inputKnobs.Count == 1)
+                    ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Name Input"; });
+
+                    if (input == null)
                     {
-                        IDInput = CreateConnectionKnob(IDInStyle);
+                        TractorInput = CreateConnectionKnob(IDInStyle);
+                        TractorInput.name = "Name Input";
                     }
                     else
                     {
-                        IDInput = inputKnobs[1];
+                        TractorInput = input;
                     }
                 }
 
-                IDInput.DisplayLayout();
+                TractorInput.DisplayLayout();
             }
 
             GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Subject to tractor");
-            GUILayout.EndHorizontal();
-            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use Name Input", GUILayout.MinWidth(400));
-            if (GUI.changed)
-            {
-                if (useIDInput)
-                {
-                    IDInput = CreateConnectionKnob(IDInStyle);
-                }
-                else
-                {
-                    DeleteConnectionPort(IDInput);
-                }
-            }
 
             if (!useIDInput)
             {
-                GUILayout.Label("Entity ID");
+                GUILayout.Label("Tractor ID");
                 entityID = GUILayout.TextField(entityID);
                 if (WorldCreatorCursor.instance != null)
                 {
@@ -97,39 +105,75 @@ namespace NodeEditorFramework.Standard
                     }
                 }
             }
-            
-            RTEditorGUI.Seperator();
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Target for tractor");
-            GUILayout.EndHorizontal();
-            useIDInputTarget = RTEditorGUI.Toggle(useIDInputTarget, "Use Name Input (Unfinished, don't use)", GUILayout.MinWidth(400));
+
+            useIDInput = RTEditorGUI.Toggle(useIDInput, "Get tractor ID from input", GUILayout.MinWidth(400));
             if (GUI.changed)
             {
-                if (useIDInputTarget)
+                if (useIDInput && TractorInput == null)
                 {
-                    IDInput = CreateConnectionKnob(IDInStyle);
+                    TractorInput = CreateConnectionKnob(IDInStyle);
+                    TractorInput.name = "Name Input";
                 }
-                else
+                else if (!useIDInput && TractorInput != null)
                 {
-                    DeleteConnectionPort(IDInput);
+                    DeleteConnectionPort(TractorInput);
+                    TractorInput = null;
                 }
             }
 
-            if (!useIDInputTarget)
+            if (!stopForceTractor)
             {
-                GUILayout.Label("Entity ID");
-                targetEntityID = GUILayout.TextField(targetEntityID);
-                if (WorldCreatorCursor.instance != null)
+                RTEditorGUI.Seperator();
+
+                useIDInputTarget = RTEditorGUI.Toggle(useIDInputTarget, "Get target ID from input", GUILayout.MinWidth(400));
+                if (GUI.changed)
                 {
-                    if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                    if (useIDInputTarget && TargetInput == null)
                     {
-                        WorldCreatorCursor.selectEntity += SetTargetID;
-                        WorldCreatorCursor.instance.EntitySelection();
+                        TargetInput = CreateConnectionKnob(IDInStyle);
+                        TargetInput.name = "Target Input";
+                    }
+                    else if (!useIDInputTarget && TargetInput != null)
+                    {
+                        DeleteConnectionPort(TargetInput);
+                        TargetInput = null;
                     }
                 }
-            }
 
-            RTEditorGUI.Seperator();
+                if (!useIDInputTarget)
+                {
+                    GUILayout.Label("Target ID");
+                    targetEntityID = GUILayout.TextField(targetEntityID);
+                    if (WorldCreatorCursor.instance != null)
+                    {
+                        if (GUILayout.Button("Select", GUILayout.ExpandWidth(false)))
+                        {
+                            WorldCreatorCursor.selectEntity += SetTargetID;
+                            WorldCreatorCursor.instance.EntitySelection();
+                        }
+                    }
+                }
+
+                if (useIDInputTarget)
+                {
+                    if (TargetInput == null)
+                    {
+                        ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Target Input"; });
+
+                        if (input == null)
+                        {
+                            TargetInput = CreateConnectionKnob(IDInStyle);
+                            TargetInput.name = "Target Input";
+                        }
+                        else
+                        {
+                            TargetInput = input;
+                        }
+                    }
+
+                    TargetInput.DisplayLayout();
+                }
+            }
         }
 
         void SetEntityID(string ID)
@@ -155,18 +199,39 @@ namespace NodeEditorFramework.Standard
         {
             if (useIDInput)
             {
-                if (useIDInput && IDInput == null)
+                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Name Input"; });
+
+                if (useIDInput && TractorInput == null)
                 {
-                    IDInput = inputKnobs[1];
+                    TractorInput = input;
                 }
 
-                if (IDInput.connected())
+                if (TractorInput.connected())
                 {
-                    entityID = (IDInput.connections[0].body as SpawnEntityNode).entityID;
+                    entityID = (TractorInput.connections[0].body as SpawnEntityNode).entityID;
                 }
                 else
                 {
-                    Debug.LogWarning("Name Input not connected!");
+                    Debug.LogWarning("Tractor name input not connected!");
+                }
+            }
+
+            if (useIDInputTarget && !stopForceTractor)
+            {
+                ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Target Input"; });
+
+                if (useIDInputTarget && TargetInput == null)
+                {
+                    TargetInput = input;
+                }
+
+                if (TargetInput.connected())
+                {
+                    targetEntityID = (TargetInput.connections[0].body as SpawnEntityNode).entityID;
+                }
+                else
+                {
+                    Debug.LogWarning("Target name input not connected!");
                 }
             }
 

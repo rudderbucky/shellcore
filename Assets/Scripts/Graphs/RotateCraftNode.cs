@@ -103,6 +103,7 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
+            RTEditorGUI.Seperator();
             if (!(useNumericalAngle = RTEditorGUI.Toggle(useNumericalAngle, "Use Numerical Angle", GUILayout.MinWidth(400))))
             {
                 GUILayout.BeginHorizontal();
