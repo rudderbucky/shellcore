@@ -51,7 +51,6 @@ namespace NodeEditorFramework.Standard
             input.DisplayLayout();
             output.DisplayLayout();
             GUILayout.EndHorizontal();
-
             stopForceTractor = RTEditorGUI.Toggle(stopForceTractor, "Stop Force Tractor");
             if (GUI.changed)
             {
@@ -68,7 +67,6 @@ namespace NodeEditorFramework.Standard
             }
 
             RTEditorGUI.Seperator();
-
             GUILayout.BeginHorizontal();
             if (useIDInput)
             {
@@ -91,7 +89,6 @@ namespace NodeEditorFramework.Standard
             }
 
             GUILayout.EndHorizontal();
-
             if (!useIDInput)
             {
                 GUILayout.Label("Tractor ID");
@@ -124,7 +121,6 @@ namespace NodeEditorFramework.Standard
             if (!stopForceTractor)
             {
                 RTEditorGUI.Seperator();
-
                 useIDInputTarget = RTEditorGUI.Toggle(useIDInputTarget, "Get target ID from input", GUILayout.MinWidth(400));
                 if (GUI.changed)
                 {

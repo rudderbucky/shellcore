@@ -40,10 +40,11 @@ namespace NodeEditorFramework.Standard
         public string entityID = "";
         public string targetEntityID = "";
 
-        public bool useNumericalAngle;
+        public bool useNumericalAngle = false;
         public string angle;
 
-        public ConnectionKnob IDInput;
+        public ConnectionKnob RotateInput;
+        public ConnectionKnob TargetInput;
 
         ConnectionKnobAttribute IDInStyle = new ConnectionKnobAttribute("Name Input", Direction.In, "EntityID", ConnectionCount.Single, NodeSide.Left);
 
@@ -54,44 +55,31 @@ namespace NodeEditorFramework.Standard
             output.DisplayLayout();
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
+
             if (useIDInput)
             {
-                if (IDInput == null)
+                if (RotateInput == null)
                 {
-                    if (inputKnobs.Count == 1)
+                    ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Name Input"; });
+
+                    if (input == null)
                     {
-                        IDInput = CreateConnectionKnob(IDInStyle);
+                        RotateInput = CreateConnectionKnob(IDInStyle);
+                        RotateInput.name = "Name Input";
                     }
                     else
                     {
-                        IDInput = inputKnobs[1];
+                        RotateInput = input;
                     }
                 }
 
-                IDInput.DisplayLayout();
+                RotateInput.DisplayLayout();
             }
 
             GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Subject to rotation");
-            GUILayout.EndHorizontal();
-            useIDInput = RTEditorGUI.Toggle(useIDInput, "Use Name Input", GUILayout.MinWidth(400));
-            if (GUI.changed)
-            {
-                if (useIDInput)
-                {
-                    IDInput = CreateConnectionKnob(IDInStyle);
-                }
-                else
-                {
-                    DeleteConnectionPort(IDInput);
-                }
-            }
-
             if (!useIDInput)
             {
-                GUILayout.Label("Entity ID");
+                GUILayout.Label("Subject to rotation");
                 entityID = GUILayout.TextField(entityID);
                 if (WorldCreatorCursor.instance != null)
                 {
@@ -103,28 +91,42 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
+            useIDInput = RTEditorGUI.Toggle(useIDInput, "Get rotator ID from input", GUILayout.MinWidth(400));
+            if (GUI.changed)
+            {
+                if (useIDInput && RotateInput == null)
+                {
+                    RotateInput = CreateConnectionKnob(IDInStyle);
+                    RotateInput.name = "Name Input";
+                }
+                else if (!useIDInput && RotateInput != null)
+                {
+                    DeleteConnectionPort(RotateInput);
+                    RotateInput = null;
+                }
+            }
             RTEditorGUI.Seperator();
+
             if (!(useNumericalAngle = RTEditorGUI.Toggle(useNumericalAngle, "Use Numerical Angle", GUILayout.MinWidth(400))))
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Target for rotation");
-                GUILayout.EndHorizontal();
-                useIDInputTarget = RTEditorGUI.Toggle(useIDInputTarget, "Use Name Input (Unfinished, don't use)", GUILayout.MinWidth(400));
+                useIDInputTarget = RTEditorGUI.Toggle(useIDInputTarget, "Get target ID from input", GUILayout.MinWidth(400));
                 if (GUI.changed)
                 {
-                    if (useIDInputTarget)
+                    if (useIDInputTarget && TargetInput == null)
                     {
-                        IDInput = CreateConnectionKnob(IDInStyle);
+                        TargetInput = CreateConnectionKnob(IDInStyle);
+                        TargetInput.name = "Target Input";
                     }
-                    else
+                    else if (!useIDInputTarget && TargetInput != null)
                     {
-                        DeleteConnectionPort(IDInput);
+                        DeleteConnectionPort(TargetInput);
+                        TargetInput = null;
                     }
                 }
 
                 if (!useIDInputTarget)
                 {
-                    GUILayout.Label("Entity ID");
+                    GUILayout.Label("Target ID");
                     targetEntityID = GUILayout.TextField(targetEntityID);
                     if (WorldCreatorCursor.instance != null)
                     {
@@ -135,18 +137,37 @@ namespace NodeEditorFramework.Standard
                         }
                     }
                 }
+
+                if (useIDInputTarget)
+                {
+                    if (TargetInput == null)
+                    {
+                        ConnectionKnob input = connectionKnobs.Find((x) => { return x.name == "Target Input"; });
+
+                        if (input == null)
+                        {
+                            TargetInput = CreateConnectionKnob(IDInStyle);
+                            TargetInput.name = "Target Input";
+                        }
+                        else
+                        {
+                            TargetInput = input;
+                        }
+                    }
+
+                    TargetInput.DisplayLayout();
+                }
             }
             else
             {
-                GUILayout.BeginHorizontal();
+                DeleteConnectionPort(TargetInput);
+                TargetInput = null;
                 GUILayout.Label("Angle (Enter number or bad)");
+                GUILayout.BeginHorizontal();
                 angle = GUILayout.TextField(angle, GUILayout.MinWidth(400));
                 GUILayout.EndHorizontal();
             }
-
             asynchronous = RTEditorGUI.Toggle(asynchronous, "Asynchronous Mode", GUILayout.MinWidth(400));
-
-            RTEditorGUI.Seperator();
         }
 
         void SetEntityID(string ID)
@@ -172,14 +193,14 @@ namespace NodeEditorFramework.Standard
         {
             if (useIDInput)
             {
-                if (useIDInput && IDInput == null)
+                if (useIDInput && RotateInput == null)
                 {
-                    IDInput = inputKnobs[1];
+                    RotateInput = inputKnobs[1];
                 }
 
-                if (IDInput.connected())
+                if (RotateInput.connected())
                 {
-                    entityID = (IDInput.connections[0].body as SpawnEntityNode).entityID;
+                    entityID = (RotateInput.connections[0].body as SpawnEntityNode).entityID;
                 }
                 else
                 {

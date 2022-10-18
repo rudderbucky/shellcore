@@ -68,9 +68,7 @@ namespace NodeEditorFramework.Standard
             }
 
             RTEditorGUI.Seperator();
-
             GUILayout.BeginHorizontal();
-
             if (useFollowerInput)
             {
                 if (FollowerInput == null)
@@ -180,11 +178,10 @@ namespace NodeEditorFramework.Standard
 
                     GUILayout.EndHorizontal();
                 }
+                GUILayout.BeginHorizontal();
+                disallowAggression = GUILayout.Toggle(disallowAggression, "Disallow Aggression", GUILayout.MinWidth(40));
+                GUILayout.EndHorizontal();
             }
-
-            GUILayout.BeginHorizontal();
-            disallowAggression = GUILayout.Toggle(disallowAggression, "Disallow Aggression", GUILayout.MinWidth(40));
-            GUILayout.EndHorizontal();
         }
 
         void SetFollowerID(string ID)
