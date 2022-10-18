@@ -50,10 +50,10 @@ namespace NodeEditorFramework.Standard
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Drop Rate");
                 dropRate = RTEditorGUI.FloatField(dropRate, GUILayout.MinWidth(400));
-                if (dropRate < 0)
+                if (dropRate < 0 || dropRate > 1)
                 {
                     dropRate = RTEditorGUI.FloatField(0, GUILayout.MinWidth(400));
-                    Debug.LogWarning("Can't register negative numbers!");
+                    Debug.LogWarning("Can't register this number!");
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
