@@ -62,7 +62,7 @@ namespace NodeEditorFramework.Standard
             SpeakToEntity = RTEditorGUI.Toggle(SpeakToEntity, "Speak to entity");
             if (SpeakToEntity)
             {
-                GUILayout.Label("Entity ID");
+                GUILayout.Label("Entity ID:");
                 EntityID = GUILayout.TextField(EntityID);
                 if (WorldCreatorCursor.instance != null)
                 {

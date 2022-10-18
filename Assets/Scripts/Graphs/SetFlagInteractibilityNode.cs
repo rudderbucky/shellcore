@@ -58,7 +58,7 @@ namespace NodeEditorFramework.Standard
             flagName = GUILayout.TextField(flagName);
 
 
-            GUILayout.Label("Interactibility type:");
+            GUILayout.Label("Interactibility Type:");
             if (GUILayout.Button(intStrings[(int)interactibility]))
             {
                 typePopup = new PopupMenu();
@@ -73,7 +73,7 @@ namespace NodeEditorFramework.Standard
 
             if (interactibility == FlagInteractibility.Warp)
             {
-                GUILayout.Label("Sector name: ");
+                GUILayout.Label("Sector Name:");
                 sectorName = GUILayout.TextField(sectorName);
                 GUILayout.Label("Entity ID: ");
                 entityID = GUILayout.TextField(entityID);

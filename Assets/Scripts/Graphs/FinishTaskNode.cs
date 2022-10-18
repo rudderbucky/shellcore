@@ -82,7 +82,7 @@ namespace NodeEditorFramework.Standard
             height = 180f;
             if ((speakToEntity = GUILayout.Toggle(speakToEntity, "Speak to entity")))
             {
-                GUILayout.Label("Reward giver ID:");
+                GUILayout.Label("Reward Giver ID:");
                 rewardGiverID = GUILayout.TextField(rewardGiverID, GUILayout.Width(200f));
                 if (WorldCreatorCursor.instance != null)
                 {
@@ -93,7 +93,7 @@ namespace NodeEditorFramework.Standard
                     }
                 }
 
-                GUILayout.Label("Reward text:");
+                GUILayout.Label("Reward Text:");
                 rewardText = GUILayout.TextArea(rewardText, GUILayout.ExpandHeight(false), GUILayout.Width(200f));
                 height += GUI.skin.textArea.CalcHeight(new GUIContent(rewardText), 200f);
                 if (!(useEntityColor = GUILayout.Toggle(useEntityColor, "Use entity color")))

@@ -51,7 +51,7 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             output.DisplayLayout();
-            GUILayout.Label("Mission name");
+            GUILayout.Label("Mission Name:");
             missionName = RTEditorGUI.TextField(missionName);
 
             missionStatus = GUILayout.SelectionGrid(missionStatus, missionStatusTexts, 1);

@@ -47,18 +47,18 @@ namespace NodeEditorFramework.Standard
             if (!(restoreOld = GUILayout.Toggle(restoreOld, "Restore old drop rate")))
             {
                 GUILayout.EndHorizontal();
+                GUILayout.Label("Drop Rate:");
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Drop Rate");
-                dropRate = RTEditorGUI.FloatField(dropRate, GUILayout.MinWidth(400));
+                dropRate = RTEditorGUI.FloatField(dropRate, GUILayout.MinWidth(50));
                 if (dropRate < 0 || dropRate > 1)
                 {
-                    dropRate = RTEditorGUI.FloatField(0, GUILayout.MinWidth(400));
+                    dropRate = RTEditorGUI.FloatField(0, GUILayout.MinWidth(50));
                     Debug.LogWarning("Can't register this number!");
                 }
                 GUILayout.EndHorizontal();
+                GUILayout.Label("Sector Name:");
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Sector Name");
-                sectorName = RTEditorGUI.TextField(sectorName, GUILayout.MinWidth(400));
+                sectorName = RTEditorGUI.TextField(sectorName, GUILayout.MinWidth(50));
             }
 
             GUILayout.EndHorizontal();

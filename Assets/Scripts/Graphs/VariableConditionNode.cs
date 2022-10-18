@@ -57,7 +57,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Value:");
             value = RTEditorGUI.IntField(value);
 
-            GUILayout.Label("Comparison mode:");
+            GUILayout.Label("Comparison Mode:");
             mode = GUILayout.SelectionGrid(mode, modes, 1, GUILayout.Width(128f));
         }
 

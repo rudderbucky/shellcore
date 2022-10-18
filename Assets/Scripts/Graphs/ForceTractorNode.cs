@@ -91,7 +91,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             if (!useIDInput)
             {
-                GUILayout.Label("Tractor ID");
+                GUILayout.Label("Tractor ID:");
                 entityID = GUILayout.TextField(entityID);
                 if (WorldCreatorCursor.instance != null)
                 {
@@ -138,7 +138,7 @@ namespace NodeEditorFramework.Standard
 
                 if (!useIDInputTarget)
                 {
-                    GUILayout.Label("Target ID");
+                    GUILayout.Label("Target ID:");
                     targetEntityID = GUILayout.TextField(targetEntityID);
                     if (WorldCreatorCursor.instance != null)
                     {

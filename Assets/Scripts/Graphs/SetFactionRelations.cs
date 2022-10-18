@@ -70,14 +70,14 @@ namespace NodeEditorFramework.Standard
                 GUILayout.EndHorizontal();
             }
 
-            GUILayout.Label("Faction Number");
+            GUILayout.Label("Faction Number:");
             factionID = RTEditorGUI.IntField(factionID);
             if (factionID < 0)
             {
                 factionID = RTEditorGUI.IntField(0);
                 Debug.LogWarning("This identification does not exist!");
             }
-            GUILayout.Label("Relations sum:");
+            GUILayout.Label("Relations Sum:");
             relationsSum = RTEditorGUI.IntField(relationsSum);
         }
 

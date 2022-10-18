@@ -37,7 +37,7 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
-            GUILayout.Label("Sector name: ");
+            GUILayout.Label("Sector Name: ");
             sectorName = GUILayout.TextField(sectorName);
             GUILayout.Label("Entity ID: ");
             entityID = GUILayout.TextField(entityID);

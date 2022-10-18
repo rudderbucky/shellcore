@@ -93,7 +93,7 @@ namespace NodeEditorFramework.Standard
 
             if (!useFollowerInput)
             {
-                GUILayout.Label("Follower ID");
+                GUILayout.Label("Follower ID:");
                 followerID = GUILayout.TextField(followerID);
                 if (WorldCreatorCursor.instance != null)
                 {
@@ -141,7 +141,7 @@ namespace NodeEditorFramework.Standard
 
                 if (!useTargetInput)
                 {
-                    GUILayout.Label("Target ID");
+                    GUILayout.Label("Target ID:");
                     targetID = GUILayout.TextField(targetID);
                     if (WorldCreatorCursor.instance != null)
                     {

@@ -105,7 +105,7 @@ namespace NodeEditorFramework.Standard
             outputFail.DrawKnob();
             GUILayout.EndHorizontal();
 
-            GUILayout.Label("Variable type:");
+            GUILayout.Label("Variable Type:");
             if (GUILayout.Button(variableTypes[variableType]))
             {
                 typePopup = new PopupMenu();
@@ -147,7 +147,7 @@ namespace NodeEditorFramework.Standard
                 }
                 else
                 {
-                    GUILayout.Label("Comparison mode:");
+                    GUILayout.Label("Comparison Mode:");
                 }
                 string[] comparisonTexts = variableType == 5 ? missionStatus : comparisonModes;
 

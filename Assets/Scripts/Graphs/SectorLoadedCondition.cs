@@ -34,7 +34,7 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             output.DisplayLayout();
-            GUILayout.Label("Sector name");
+            GUILayout.Label("Sector Name:");
             sectorName = RTEditorGUI.TextField(sectorName);
         }
 

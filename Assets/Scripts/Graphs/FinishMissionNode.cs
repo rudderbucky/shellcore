@@ -34,11 +34,11 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Sound Jingle ID");
+            GUILayout.Label("Sound Jingle ID:");
             jingleID = GUILayout.TextField(jingleID);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Rewards text field");
+            GUILayout.Label("Reward Text Field:");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             rewardsText = GUILayout.TextArea(rewardsText);

@@ -34,7 +34,7 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
-            GUILayout.Label("List of options:");
+            GUILayout.Label("List of Options:");
             for (int i = 0; i < skirmishOptions.Count; i++)
             {
                 RTEditorGUI.Seperator();
@@ -53,7 +53,7 @@ namespace NodeEditorFramework.Standard
 
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Sector name:");
+                GUILayout.Label("Sector Name:");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 skirmishOptions[i].sectorName = GUILayout.TextField(skirmishOptions[i].sectorName);

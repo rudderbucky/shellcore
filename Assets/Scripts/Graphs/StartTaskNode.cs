@@ -186,7 +186,7 @@ namespace NodeEditorFramework.Standard
             height += GUI.skin.textArea.CalcHeight(new GUIContent(dialogueText), 50f);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Entity ID for Confirmed Dialogue");
+            GUILayout.Label("Entity ID for Confirmed Dialogue:");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             entityIDforConfirmedResponse = GUILayout.TextField(entityIDforConfirmedResponse, GUILayout.Width(200f));

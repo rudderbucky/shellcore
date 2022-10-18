@@ -88,7 +88,7 @@ namespace NodeEditorFramework.Standard
 
             if (!useIDInput)
             {
-                GUILayout.Label("Entity ID");
+                GUILayout.Label("Entity ID:");
                 entityID = GUILayout.TextField(entityID);
                 if (WorldCreatorCursor.instance != null)
                 {
