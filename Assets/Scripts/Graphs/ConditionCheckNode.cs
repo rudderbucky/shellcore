@@ -118,7 +118,7 @@ namespace NodeEditorFramework.Standard
                 typePopup.Show(GUIScaleUtility.GUIToScreenSpace(GUILayoutUtility.GetLastRect().max));
             }
 
-            if (variableType <= 1 || variableType == 5)
+            if (variableType <= 1)
             {
                 GUILayout.Label("Variable Name:");
                 GUILayout.BeginHorizontal();
@@ -141,7 +141,14 @@ namespace NodeEditorFramework.Standard
                     value = RTEditorGUI.IntField(value);
                 }
 
-                GUILayout.Label("Comparison mode:");
+                if (variableType == 5)
+                {
+                    GUILayout.Label("Mission Status:");
+                }
+                else
+                {
+                    GUILayout.Label("Comparison mode:");
+                }
                 string[] comparisonTexts = variableType == 5 ? missionStatus : comparisonModes;
 
                 if (GUILayout.Button(comparisonTexts[comparisonMode]))
