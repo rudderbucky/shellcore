@@ -69,6 +69,15 @@ namespace NodeEditorFramework.Standard
                 textColor = new Color(r, g, b);
             }
 
+            if (customDialogueSpeed = GUILayout.Toggle(customDialogueSpeed, "Use custom typing speed", GUILayout.MinWidth(40f)))
+            {
+                floatSpeed = RTEditorGUI.FloatField("Typing speed (seconds)", floatSpeed);
+                if (speed != -2)
+                {
+                    floatSpeed = (float)speed;
+                    speed = -2;
+                }
+            }
 
             GUILayout.Label("Answers:");
             for (int i = 0; i < answers.Count; i++)
@@ -103,17 +112,6 @@ namespace NodeEditorFramework.Standard
             }
 
             GUILayout.EndHorizontal();
-            if (customDialogueSpeed = GUILayout.Toggle(customDialogueSpeed, "Use custom typing speed", GUILayout.MinWidth(40f)))
-            {
-                GUILayout.Label("");
-                floatSpeed = RTEditorGUI.FloatField("Typing speed (seconds)", floatSpeed);
-                if (speed != -2)
-                {
-                    floatSpeed = (float)speed;
-                    speed = -2;
-                }
-            }
-
             cancel.DisplayLayout();
         }
 

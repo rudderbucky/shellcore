@@ -119,14 +119,14 @@ namespace NodeEditorFramework.Standard
             GUILayout.BeginHorizontal();
             declineResponse = GUILayout.TextArea(declineResponse, GUILayout.Width(200f));
             GUILayout.EndHorizontal();
-            GUILayout.Label("Objective list:");
+            GUILayout.Label("Objective List:");
             objectiveList = GUILayout.TextArea(objectiveList, GUILayout.Width(200f));
-            GUILayout.Label("Credit reward:");
+            GUILayout.Label("Credit Reward:");
             creditReward = RTEditorGUI.IntField(creditReward, GUILayout.Width(208f));
-            GUILayout.Label("Reputation reward:");
+            GUILayout.Label("Reputation Reward:");
 
             reputationReward = RTEditorGUI.IntField(reputationReward, GUILayout.Width(208f));
-            GUILayout.Label("Shard reward:");
+            GUILayout.Label("Shard Reward:");
             shardReward = RTEditorGUI.IntField(shardReward, GUILayout.Width(208f));
 
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));

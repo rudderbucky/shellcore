@@ -88,12 +88,12 @@ namespace NodeEditorFramework.Standard
                 entityID = GUILayout.TextField(entityID);
             }
 
-            GUILayout.Label("Spawn count:");
+            GUILayout.Label("Spawn Count:");
             count = Mathf.Max(1, Utilities.RTEditorGUI.IntField(count));
 
             forceCharacterTeleport = Utilities.RTEditorGUI.Toggle(forceCharacterTeleport, "Force Character Teleport");
 
-            GUILayout.Label("Additional spawn points:");
+            GUILayout.Label("Additional Spawn Points:");
             for (int i = 0; i < additionalFlags.Count; i++)
             {
                 RTEditorGUI.Seperator();
@@ -113,13 +113,13 @@ namespace NodeEditorFramework.Standard
 
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Flag name:");
+                GUILayout.Label("Flag Name:");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 additionalFlags[i] = GUILayout.TextField(additionalFlags[i]);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Spawn count:");
+                GUILayout.Label("Spawn Count:");
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 additionalCounts[i] = Mathf.Max(1, Utilities.RTEditorGUI.IntField(additionalCounts[i]));
