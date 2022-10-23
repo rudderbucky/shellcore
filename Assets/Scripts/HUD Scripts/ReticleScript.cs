@@ -203,10 +203,14 @@ public class ReticleScript : MonoBehaviour
         {
             var oldCount = secondariesByObject.Count;
             SetSecondaryReticleTransform(secondariesByObject[index].Item1, secondariesByObject[index].Item2, index + 1);
-            var x = secondariesByObject[index].Item2.localScale;
-            x.x = Mathf.Min(x.x + expandRate * Time.deltaTime, 1);
-            x.y = Mathf.Min(x.y + expandRate * Time.deltaTime, 1);
-            secondariesByObject[index].Item2.localScale = x;
+            if (index < secondariesByObject.Count)
+            {
+                var x = secondariesByObject[index].Item2.localScale;
+                x.x = Mathf.Min(x.x + expandRate * Time.deltaTime, 1);
+                x.y = Mathf.Min(x.y + expandRate * Time.deltaTime, 1);
+                secondariesByObject[index].Item2.localScale = x;
+            }
+
             if (oldCount == secondariesByObject.Count)
             {
                 index++;
