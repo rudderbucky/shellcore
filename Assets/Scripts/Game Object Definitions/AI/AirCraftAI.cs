@@ -367,7 +367,9 @@ public class AirCraftAI : MonoBehaviour
                     if (allowRetreat && !(module is FollowAI))
                     {
                         // check if retreat necessary
-                        if (craft.GetHealth()[0] < retreatTreshold * craft.GetMaxHealth()[0])
+                        if (craft.GetHealth()[0] < retreatTreshold * craft.GetMaxHealth()[0] 
+                            && SectorManager.instance.current.type != Sector.SectorType.BattleZone
+                            && SectorManager.instance.current.type != Sector.SectorType.SiegeZone)
                         {
                             state = AIState.Retreating;
                             //Debug.Log(craft.name + "[ " + craft.faction + " ] retreating!");

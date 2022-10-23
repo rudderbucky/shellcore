@@ -237,7 +237,10 @@ public class BattleAI : AIModule
                 }
 
                 if ((shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>() != null && !turretIsHarvester
-                                                          && shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f) || harvesterTurrets.Count >= Mathf.Min(1, AIData.energyRocks.Count))
+                                                          && ((SectorManager.instance.current.type == Sector.SectorType.BattleZone
+                                                                || SectorManager.instance.current.type == Sector.SectorType.SiegeZone) ||
+                                                            (shellcore.GetHealth()[0] > shellcore.GetMaxHealth()[0] * 0.1f))) 
+                                                            || harvesterTurrets.Count >= Mathf.Min(1, AIData.energyRocks.Count))
                 {
                     state = BattleState.Attack;
                 }
