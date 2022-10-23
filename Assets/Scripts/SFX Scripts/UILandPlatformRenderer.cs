@@ -15,6 +15,7 @@ public class UILandPlatformRenderer : MaskableGraphic
             return;
         }
 
+        raycastTarget = false;
         vh.Clear();
 
         UIVertex vert = UIVertex.simpleVert;

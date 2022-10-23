@@ -312,6 +312,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             textx.text = texty.text = (i * distancePerTextMarker).ToString();
             textx.fontSize = texty.fontSize = 12;
             textx.color = texty.color = gridImg.color + Color.gray;
+            textx.raycastTarget = texty.raycastTarget = false;
         }
 
         // draw objective locations
@@ -419,9 +420,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         foreach (var sect in sectorImages)
         {
             var pos = sect.Item1.rectTransform.position;
-            var sizeDelta = sect.Item1.rectTransform.sizeDelta;
+            var sizeDelta = sect.Item1.rectTransform.sizeDelta * (Screen.width / (float)1920);
             var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
-
             // Mouse over sector. Instantiate tooltip if necessary, move tooltip and set text up
 
             if (newRect.Contains(Input.mousePosition) && mouseInBounds)
@@ -536,7 +536,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 continue;
             }
             var imgpos = img.rectTransform.position;
-            var imgsizeDelta = img.rectTransform.sizeDelta;
+            var imgsizeDelta = img.rectTransform.sizeDelta * (Screen.width / (float)1920);
             var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
             if (imgnewRect.Contains(Input.mousePosition))
             {
@@ -567,7 +567,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 }
 
                 var pos = sect.Item1.rectTransform.position;
-                var sizeDelta = sect.Item1.rectTransform.sizeDelta;
+                var sizeDelta = sect.Item1.rectTransform.sizeDelta * (Screen.width / (float)1920);
                 var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
                 if (newRect.Contains(eventData.position) && player)
                 {
@@ -618,6 +618,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (GetComponent<RectTransform>().rect.Contains(mousePos)) return;
+        Debug.LogWarning("EXIT");
         mouseInBounds = false;
     }
 }
