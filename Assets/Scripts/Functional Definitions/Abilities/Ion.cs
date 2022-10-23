@@ -18,6 +18,11 @@ public class Ion : WeaponAbility
         base.Awake();
     }
 
+    public float GetBeamAngle() 
+    {
+        return lineController.GetBeamAngle();
+    }
+
     protected override void Start()
     {
         base.Start();

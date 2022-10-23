@@ -264,7 +264,16 @@ public class ShellPart : MonoBehaviour
     {
         if (shooter)
         {
-            var targ = GetComponent<WeaponAbility>().GetTarget();
+            var weapon = GetComponent<WeaponAbility>();
+            var targ = weapon.GetTarget();
+            if (weapon as Ion) 
+            {
+                float bearing = (weapon as Ion).GetBeamAngle();
+                shooter.transform.eulerAngles = new Vector3(0, 0, bearing - 90);
+                return;
+            }
+
+
             if (targ != null)
             {
                 var targEntity = targ.GetComponent<IDamageable>();

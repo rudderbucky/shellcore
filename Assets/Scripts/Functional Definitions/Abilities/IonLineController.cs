@@ -17,6 +17,17 @@ public class IonLineController : MonoBehaviour
     float startWidth = 0f;
     float poweredWidth = 0.3F;
 
+    float energyCost;
+    float damage;
+    public static float damageC = 1500;
+    public static float energyC = 150;
+
+    public float GetBeamAngle() 
+    {
+        return beamBearing;
+    }
+
+
     public void Awake()
     {
         line = gameObject.AddComponent<LineRenderer>();
@@ -82,11 +93,6 @@ public class IonLineController : MonoBehaviour
             line.positionCount = 0;
         }
     }
-
-    float energyCost;
-    float damage;
-    public static float damageC = 1500;
-    public static float energyC = 150;
 
     void Update()
     {
