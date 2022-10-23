@@ -51,6 +51,9 @@ public class BackgroundScript : MonoBehaviour
             {
                 TileWrapper(tile[i], 0); // update each tile for both dimensions
                 TileWrapper(tile[i], 1);
+                var x = tile[i].GetComponent<SpriteRenderer>().color;
+                x.a = Mathf.Sin(Time.time + (i % 2 == 0 ? Mathf.PI : 0)) / 2 + 0.5F;
+                tile[i].GetComponent<SpriteRenderer>().color = x;
             }
         }
     }
@@ -103,7 +106,7 @@ public class BackgroundScript : MonoBehaviour
             // grab camera dimensions
             gridWidth = 1 + (int)Mathf.Ceil((dimensions.x - mcamera.position.x) * 2 / tileSpacing.x); // calculate height and width using camera dimensions
             gridHeight = 1 + (int)Mathf.Ceil((dimensions.y - mcamera.position.y) * 2 / tileSpacing.y);
-            ingameTiles = new GameObject[gridWidth * gridHeight]; // create an array of tile references
+            ingameTiles = new GameObject[gridWidth * gridHeight * 2]; // create an array of tile references
             tileStartPos = new Vector2 // get the tile start position (this project needs the tiles to center at 0,0)
             {
                 x = mcamera.position.x - tileSpacing.x * (gridWidth - 1) / 2,
@@ -114,18 +117,21 @@ public class BackgroundScript : MonoBehaviour
             {
                 for (int j = 0; j < gridWidth; j++)
                 {
-                    int randomTile = Random.Range(4 * (int)currentSkin, 4 * (int)currentSkin + 4); // grabs a random tile from the array of sprites
-                    instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
-                    // the position of the tile
-                    GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity);
-                    go.transform.SetParent(parent.transform, true);
-                    go.transform.localScale = new Vector3(Random.Range(0, 1) > 0.5F ? 1 : -1, 1, 1);
-                    // create the tile, no rotation desired
+                    for (int k = 0; k < 2; k++) 
+                    {
+                        int randomTile = Random.Range(4 * (int)currentSkin, 4 * (int)currentSkin + 4); // grabs a random tile from the array of sprites
+                        instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
+                        // the position of the tile
+                        GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity);
+                        go.transform.SetParent(parent.transform, true);
+                        go.transform.localScale = new Vector3(Random.Range(0, 1) > 0.5F ? 1 : -1, 1, 1);
+                        // create the tile, no rotation desired
 
-                    ingameTiles[count] = go; // assign to array
-                    count++; // increment count
-                    // I don't want the tiles to be a child of the object using this script 
-                    // as I want the tiles to warp like the particles instead of constantly follow
+                        ingameTiles[count] = go; // assign to array
+                        count++; // increment count
+                        // I don't want the tiles to be a child of the object using this script 
+                        // as I want the tiles to warp like the particles instead of constantly follow
+                    }
                 }
             }
         }
