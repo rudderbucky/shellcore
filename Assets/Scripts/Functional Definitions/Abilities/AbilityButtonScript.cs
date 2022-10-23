@@ -267,7 +267,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         }
         else if (abilities[0].GetAbilityType() != AbilityHandler.AbilityTypes.Passive && (abilities[0].State == Ability.AbilityState.Active ||
                                                                                           abilities[0].State == Ability.AbilityState.Charging ||
-                                                                                          (abilities[0] is WeaponAbility && abilities[0].State == Ability.AbilityState.Ready)))
+                                                                                          (abilities[0] is WeaponAbility && abilities[0].isEnabled)))
         {
             image.color = PlayerCore.GetPlayerFactionColor();
         }
