@@ -52,7 +52,7 @@ public class BackgroundScript : MonoBehaviour
                 TileWrapper(tile[i], 0); // update each tile for both dimensions
                 TileWrapper(tile[i], 1);
                 var x = tile[i].GetComponent<SpriteRenderer>().color;
-                x.a = Mathf.Sin(Time.time + (i % 2 == 0 ? Mathf.PI : 0)) / 2 + 0.5F;
+                x.a = Mathf.Sin(Time.time / 2 + (i % 2 == 0 ? Mathf.PI : 0)) / 2 + 0.5F;
                 tile[i].GetComponent<SpriteRenderer>().color = x;
             }
         }

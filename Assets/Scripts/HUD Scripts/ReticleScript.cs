@@ -159,9 +159,11 @@ public class ReticleScript : MonoBehaviour
         }
     }
 
+    private float expandRate = 10F;
     /// <summary>
     /// Used to update the reticle representation
     /// </summary>
+    private Transform lastMainTarget;
     private void SetTransform()
     {
         if (targSys == null)
@@ -170,11 +172,18 @@ public class ReticleScript : MonoBehaviour
         }
 
         Transform target = targSys.GetTarget(); // get the target
+        if (target != lastMainTarget) {
+            reticleImage.transform.localScale = new Vector3(0, 0, 1);
+            lastMainTarget = target;
+        }
         if (target != null)
         {
             reticleImage.rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(target.position);
             reticleImage.rectTransform.anchoredPosition *= (float)1920 / Screen.width;
-            //transform.position = target.position; // update reticle position
+            var x = reticleImage.transform.localScale;
+            x.x = Mathf.Min(x.x + expandRate * Time.deltaTime, 1);
+            x.y = Mathf.Min(x.y + expandRate * Time.deltaTime, 1);
+            reticleImage.transform.localScale = x;
             reticleImage.enabled = true;
         }
         else
@@ -194,6 +203,10 @@ public class ReticleScript : MonoBehaviour
         {
             var oldCount = secondariesByObject.Count;
             SetSecondaryReticleTransform(secondariesByObject[index].Item1, secondariesByObject[index].Item2, index + 1);
+            var x = secondariesByObject[index].Item2.localScale;
+            x.x = Mathf.Min(x.x + expandRate * Time.deltaTime, 1);
+            x.y = Mathf.Min(x.y + expandRate * Time.deltaTime, 1);
+            secondariesByObject[index].Item2.localScale = x;
             if (oldCount == secondariesByObject.Count)
             {
                 index++;
@@ -386,6 +399,7 @@ public class ReticleScript : MonoBehaviour
         if (success)
         {
             var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
+            reticle.transform.localScale = new Vector3(0, 0, 1);
             AdjustReticleBounds(reticle.GetComponent<Image>(), ent.transform);
             secondariesByObject.Add((ent, reticle.transform));
             //SetSecondaryReticleTransform(ent, reticle.transform, secondariesByObject.Count);
