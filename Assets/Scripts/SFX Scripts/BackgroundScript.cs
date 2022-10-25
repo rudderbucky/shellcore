@@ -55,6 +55,13 @@ public class BackgroundScript : MonoBehaviour
                 var x = tile[i].GetComponent<SpriteRenderer>().color;
                 x.a = Mathf.Sin(Time.time / 2 + (i % 2 == 0 ? Mathf.PI : 0)) / 2 + 0.5F;
                 tile[i].GetComponent<SpriteRenderer>().color = x;
+                if (x.a < 0.05F && !refreshed[i]) {
+                    refreshed[i] = true;
+                    SetSprite(i);
+                }
+                if (x.a > 0.95F) {
+                    refreshed[i] = false;
+                }
             }
         }
     }
@@ -125,7 +132,8 @@ public class BackgroundScript : MonoBehaviour
                         // the position of the tile
                         GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity);
                         go.transform.SetParent(parent.transform, true);
-                        go.transform.localScale = new Vector3(Random.Range(0, 1) > 0.5F ? 1 : -1, 1, 1);
+                        
+                        
                         // create the tile, no rotation desired
 
                         ingameTiles[count] = go; // assign to array
@@ -135,6 +143,24 @@ public class BackgroundScript : MonoBehaviour
                     }
                 }
             }
+            refreshed = new bool[count];
+        }
+    }
+
+    private bool[] refreshed;
+
+    private void SetSprite(int count) {
+        int randomTile = Random.Range(4 * (int)currentSkin, 4 * (int)currentSkin + 4); // grabs a random tile from the array of sprites
+        ingameTiles[count].GetComponent<SpriteRenderer>().sprite = tile[randomTile].GetComponent<SpriteRenderer>().sprite;
+
+        GameObject go = ingameTiles[count];
+        if (currentSkin == BackgroundTileSkin.Rectangles) 
+        {
+            go.transform.localScale = new Vector3(Random.Range(0, 2) > 0.5F ? 1 : -1, Random.Range(0, 2) > 0.5F ? 1 : -1,1);
+        }
+        else if (currentSkin == BackgroundTileSkin.Squares)
+        {
+            go.transform.localScale = new Vector3(Random.Range(0, 2) > 0.5F ? 1 : -1, 1, 1);
         }
     }
 
