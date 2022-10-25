@@ -29,6 +29,13 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 
         if (count > 0)
         {
+            if (mode == BuilderMode.Workshop)
+            {
+                ShipBuilder.instance.OpenNameWindow(this);
+                return;
+            }
+
+
             var builderPart = InstantiatePart();
             DecrementCount();
             if (Input.GetKey(KeyCode.LeftShift))
@@ -96,9 +103,14 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
         count++;
     }
 
-    public void DecrementCount()
+    public void DecrementCount(bool destroyIfZero = false)
     {
         count--;
+        if (destroyIfZero)
+        {
+            ShipBuilder.instance.RemoveKeyFromPartDict(part);
+            Destroy(gameObject);
+        }
     }
 
     public int GetCount()

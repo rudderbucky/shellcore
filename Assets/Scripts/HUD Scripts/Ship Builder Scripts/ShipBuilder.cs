@@ -58,6 +58,14 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     protected string searcherString;
     private bool[] displayingTypes;
 
+    public void RemoveKeyFromPartDict(EntityBlueprint.PartInfo info)
+    {
+        if (partDict.ContainsKey(info))
+        {
+            partDict.Remove(info);
+        }
+    }
+
     public BuilderMode GetMode()
     {
         return mode;
@@ -302,6 +310,35 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             }
         }
     }
+
+    [SerializeField]
+    private InputField nameInputField;
+    [SerializeField]
+    private GameObject nameBox;
+    private ShipBuilderInventoryScript nameCandidate;
+
+    public void OpenNameWindow(ShipBuilderInventoryScript info) 
+    {
+        nameCandidate = info;
+        nameBox.SetActive(true);
+        nameInputField.text = "";
+    }
+
+    public void CloseNameWindow(bool confirm)
+    {
+        nameBox.SetActive(false);
+        if (!confirm)
+        {
+            return;
+        }
+
+        EntityBlueprint.PartInfo info = nameCandidate.part;
+        info.playerGivenName = nameInputField.text;
+        AddPart(info);
+        nameCandidate.DecrementCount(true);
+    }
+
+
 
     Vector2 GetImageBoundsBySprite(Image img)
     {
@@ -555,6 +592,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
     }
 
+    [SerializeField]
+    private GameObject droneWorkshopPhaseHider;
+
     public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null)
     {
         SetSelectPartActive(false);
@@ -639,7 +679,20 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         List<EntityBlueprint.PartInfo> parts = new List<EntityBlueprint.PartInfo>();
         if (!editorMode)
         {
-            parts = player.GetInventory();
+            if (mode != BuilderMode.Workshop) 
+            {
+                parts = player.GetInventory();
+            }
+            else
+            {
+                foreach (EntityBlueprint.PartInfo info in player.GetInventory()) 
+                {
+                    if (info.abilityID == 10)
+                    {
+                        parts.Add(info);
+                    }
+                }
+            }
             cursorScript.player = player;
             cursorScript.handler = player.GetAbilityHandler();
 
@@ -876,6 +929,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             }
         }
 
+        droneWorkshopPhaseHider.SetActive(mode == BuilderMode.Workshop);
         cursorScript.UpdateHandler();
         UpdateChain();
     }
@@ -909,7 +963,14 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             invButton.part = part;
             invButton.cursor = cursorScript;
             invButton.IncrementCount();
-            invButton.mode = BuilderMode.Yard;
+            if (mode != BuilderMode.Workshop)
+            {
+                invButton.mode = BuilderMode.Yard;
+            }
+            else
+            {
+                invButton.mode = BuilderMode.Workshop;
+            }
         }
         else
         {

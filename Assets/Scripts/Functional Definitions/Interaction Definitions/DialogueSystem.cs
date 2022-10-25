@@ -616,7 +616,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public void OpenBuilder(Vector3 speakerPos)
     {
         builder.yardPosition = speakerPos;
-        builder.Initialize(BuilderMode.Yard, null);
+        builder.Initialize(BuilderMode.Yard);
     }
 
     public void OpenTrader(Vector3 speakerPos, List<EntityBlueprint.PartInfo> traderInventory)
@@ -625,9 +625,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         builder.Initialize(BuilderMode.Trader, traderInventory);
     }
 
-    public void OpenWorkshop()
+    public void OpenWorkshop(Vector3 speakerPos)
     {
-        Debug.LogWarning("Nice try!");
+        builder.yardPosition = speakerPos;
+        builder.Initialize(BuilderMode.Workshop);
     }
 
     public void next(Dialogue dialogue, int ID, Entity speaker)

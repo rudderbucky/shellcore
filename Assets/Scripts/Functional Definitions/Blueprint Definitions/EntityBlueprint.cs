@@ -20,11 +20,13 @@ public class EntityBlueprint : ScriptableObject
         public string secondaryData;
         public string partID; //Part blueprint ID
         public bool shiny;
+        public string playerGivenName;
         public bool Equals(PartInfo other)
         {
             return this.location == other.location && this.rotation == other.rotation && this.mirrored == other.mirrored &&
                 this.abilityID == other.abilityID && this.tier == other.tier && this.secondaryData == other.secondaryData && this.partID
-                    == other.partID && this.shiny == other.shiny;
+                    == other.partID && this.shiny == other.shiny && ((string.IsNullOrEmpty(playerGivenName) && string.IsNullOrEmpty(other.playerGivenName))
+                        || playerGivenName == other.playerGivenName);
         }
     }
 

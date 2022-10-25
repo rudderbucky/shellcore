@@ -57,7 +57,14 @@ public class PartDisplayBase : MonoBehaviour
         partName.gameObject.SetActive(true);
         partStats.gameObject.SetActive(true);
         string partID = info.partID;
-        partName.text = partID;
+        if (info.playerGivenName == null || info.playerGivenName == "") 
+        {
+            partName.text = partID;
+        }
+        else
+        {
+            partName.text = info.playerGivenName + " (" + info.partID + ")";
+        }
         var blueprint = ResourceManager.GetAsset<PartBlueprint>(partID);
         float mass = blueprint.mass;
         float health = blueprint.health;
