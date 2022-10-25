@@ -4,7 +4,8 @@ using UnityEngine;
 public enum BackgroundTileSkin
 {
     Squares,
-    Clouds
+    Clouds,
+    Rectangles
 }
 
 public class BackgroundScript : MonoBehaviour
