@@ -5,6 +5,7 @@ public enum BackgroundTileSkin
 {
     Squares,
     Clouds,
+    Web,
     Rectangles
 }
 
@@ -52,7 +53,7 @@ public class BackgroundScript : MonoBehaviour
             {
                 TileWrapper(tile[i], 0); // update each tile for both dimensions
                 TileWrapper(tile[i], 1);
-                if (currentSkin != BackgroundTileSkin.Rectangles)
+                if (currentSkin != BackgroundTileSkin.Web)
                 {
                     var x = tile[i].GetComponent<SpriteRenderer>().color;
                     x.a = Mathf.Sin(Time.time / 2 + (i % 2 == 0 ? Mathf.PI : 0)) / 2 + 0.5F;
@@ -157,7 +158,7 @@ public class BackgroundScript : MonoBehaviour
         ingameTiles[count].GetComponent<SpriteRenderer>().sprite = tile[randomTile].GetComponent<SpriteRenderer>().sprite;
 
         GameObject go = ingameTiles[count];
-        if (currentSkin == BackgroundTileSkin.Rectangles) 
+        if (currentSkin == BackgroundTileSkin.Web || currentSkin == BackgroundTileSkin.Rectangles) 
         {
             go.transform.localScale = new Vector3(Random.Range(0, 2) > 0.5F ? 1 : -1, Random.Range(0, 2) > 0.5F ? 1 : -1,1);
         }
