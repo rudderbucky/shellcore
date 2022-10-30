@@ -52,15 +52,18 @@ public class BackgroundScript : MonoBehaviour
             {
                 TileWrapper(tile[i], 0); // update each tile for both dimensions
                 TileWrapper(tile[i], 1);
-                var x = tile[i].GetComponent<SpriteRenderer>().color;
-                x.a = Mathf.Sin(Time.time / 2 + (i % 2 == 0 ? Mathf.PI : 0)) / 2 + 0.5F;
-                tile[i].GetComponent<SpriteRenderer>().color = x;
-                if (x.a < 0.05F && !refreshed[i]) {
-                    refreshed[i] = true;
-                    SetSprite(i);
-                }
-                if (x.a > 0.95F) {
-                    refreshed[i] = false;
+                if (currentSkin != BackgroundTileSkin.Rectangles)
+                {
+                    var x = tile[i].GetComponent<SpriteRenderer>().color;
+                    x.a = Mathf.Sin(Time.time / 2 + (i % 2 == 0 ? Mathf.PI : 0)) / 2 + 0.5F;
+                    tile[i].GetComponent<SpriteRenderer>().color = x;
+                    if (x.a < 0.05F && !refreshed[i]) {
+                        refreshed[i] = true;
+                        SetSprite(i);
+                    }
+                    if (x.a > 0.95F) {
+                        refreshed[i] = false;
+                    }
                 }
             }
         }
@@ -127,16 +130,16 @@ public class BackgroundScript : MonoBehaviour
                 {
                     for (int k = 0; k < 2; k++) 
                     {
-                        int randomTile = Random.Range(4 * (int)currentSkin, 4 * (int)currentSkin + 4); // grabs a random tile from the array of sprites
                         instancedPos = new Vector3(tileStartPos.x + j * tileSpacing.x, tileStartPos.y + i * tileSpacing.y, gridDepth);
                         // the position of the tile
-                        GameObject go = Instantiate(tile[randomTile], instancedPos, Quaternion.identity);
+                        GameObject go = Instantiate(tile[0], instancedPos, Quaternion.identity);
                         go.transform.SetParent(parent.transform, true);
                         
                         
                         // create the tile, no rotation desired
 
                         ingameTiles[count] = go; // assign to array
+                        SetSprite(count);
                         count++; // increment count
                         // I don't want the tiles to be a child of the object using this script 
                         // as I want the tiles to warp like the particles instead of constantly follow

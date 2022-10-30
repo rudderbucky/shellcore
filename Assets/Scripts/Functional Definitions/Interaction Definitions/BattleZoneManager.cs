@@ -117,11 +117,11 @@ public class BattleZoneManager : MonoBehaviour
                 + statBlock.droneSpawns + "\n"
                 + statBlock.droneKills + "\n"
                 + statBlock.turretSpawns + "\n"
-                + statBlock.turretKills + "\n";
+                + statBlock.turretKills + "\n\n";
 
             if (index == 0)
             {
-                str += $"{Mathf.RoundToInt(Time.time - startTime)}s\n{CreditsCollected}\n";
+                str += $"{Mathf.RoundToInt(Time.time - startTime)}s\n\n{CreditsCollected}\n";
             }
 
             strings[index++] = str;

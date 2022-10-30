@@ -371,6 +371,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             rt.pivot = new Vector2(0f, 0.5f);
             rt.offsetMin = new Vector2(120f + 80f * i, 10f);
             rt.offsetMax = new Vector2(128f + 80f * (i + 1), -10f);
+            rt.localScale = Vector3.one;
 
             text.text = stats[i];
         }
