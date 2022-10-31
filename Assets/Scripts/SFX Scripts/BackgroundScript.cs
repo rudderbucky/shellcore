@@ -6,7 +6,7 @@ public enum BackgroundTileSkin
     Squares,
     Clouds,
     Web,
-    Rectangles
+    Tetrominoes
 }
 
 public class BackgroundScript : MonoBehaviour
@@ -158,7 +158,7 @@ public class BackgroundScript : MonoBehaviour
         ingameTiles[count].GetComponent<SpriteRenderer>().sprite = tile[randomTile].GetComponent<SpriteRenderer>().sprite;
 
         GameObject go = ingameTiles[count];
-        if (currentSkin == BackgroundTileSkin.Web || currentSkin == BackgroundTileSkin.Rectangles) 
+        if (currentSkin == BackgroundTileSkin.Web || currentSkin == BackgroundTileSkin.Tetrominoes) 
         {
             go.transform.localScale = new Vector3(Random.Range(0, 2) > 0.5F ? 1 : -1, Random.Range(0, 2) > 0.5F ? 1 : -1,1);
         }
