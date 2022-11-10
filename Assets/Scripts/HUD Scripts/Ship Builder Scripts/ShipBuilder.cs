@@ -141,6 +141,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
         part.tier = partToCull.tier;
         part.shiny = partToCull.shiny;
+        part.playerGivenName = partToCull.playerGivenName;
         return part;
     }
 
@@ -258,7 +259,18 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         {
             case ReconstructButtonStatus.Valid:
                 reconstructText.color = Color.green;
-                reconstructText.text = !editorMode ? "RECONSTRUCT" : "CONFIRM CHARACTER BLUEPRINT";
+                if (editorMode)
+                {
+                    reconstructText.text = "CONFIRM CHARACTER BLUEPRINT";
+                }
+                else if (mode == BuilderMode.Workshop)
+                {
+                    reconstructText.text = "SET PART DRONE";
+                }
+                else
+                {
+                    reconstructText.text = "RECONSTRUCT";
+                }
                 break;
             case ReconstructButtonStatus.PartInvalidPosition:
                 reconstructText.color = Color.red;
@@ -336,6 +348,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         info.playerGivenName = nameInputField.text;
         AddPart(info);
         nameCandidate.DecrementCount(true);
+        SavePartsToInventory();
     }
 
 
@@ -388,7 +401,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         // Check if too close
         if (SATCollision.RectangleCollision(partPoints, shellPoints))
         {
-            partPoints = SATCollision.GetPartVertices(shipPart, -1.389f);
+            if (mode == BuilderMode.Workshop)
+            {
+                shipPart.isInChain = true;
+                return true;
+            }
+            float shrinkFactor = -1.389f;
+            partPoints = SATCollision.GetPartVertices(shipPart, shrinkFactor);
 
             up *= 0.36f;
             right *= 0.36f;
@@ -497,6 +516,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     bool PartIsTooClose(ShipBuilderPart part, ShipBuilderPart otherPart)
     {
+        if (mode == BuilderMode.Workshop) 
+        {
+            return false;
+        }
         var closeConstant = mode == BuilderMode.Workshop ? -1.2F : -1F;
         // add small number (0.005) to deal with floating point issues
         closeConstant -= 0.005f;
@@ -595,6 +618,21 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     [SerializeField]
     private GameObject droneWorkshopPhaseHider;
 
+    private EntityBlueprint.PartInfo dronePart;
+    public void InitializeDronePart(EntityBlueprint.PartInfo info)
+    {
+        dronePart = info;
+        droneWorkshopPhaseHider.SetActive(false);
+        cursorScript.ClearAllParts();
+        var parts = new List<EntityBlueprint.PartInfo>();
+        SetUpInventory(parts);
+        foreach(var part in parts)
+        {
+            AddPart(part);
+        }
+        LoadBlueprint(DroneUtilities.GetDroneSpawnDataByShorthand(info.secondaryData).drone);
+    }
+
     public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null)
     {
         SetSelectPartActive(false);
@@ -677,22 +715,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         core.preserveAspect = true;
         core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
         List<EntityBlueprint.PartInfo> parts = new List<EntityBlueprint.PartInfo>();
+
+        droneWorkshopPhaseHider.SetActive(mode == BuilderMode.Workshop);
         if (!editorMode)
         {
-            if (mode != BuilderMode.Workshop) 
-            {
-                parts = player.GetInventory();
-            }
-            else
-            {
-                foreach (EntityBlueprint.PartInfo info in player.GetInventory()) 
-                {
-                    if (info.abilityID == 10)
-                    {
-                        parts.Add(info);
-                    }
-                }
-            }
+            SetUpInventory(parts);
             cursorScript.player = player;
             cursorScript.handler = player.GetAbilityHandler();
 
@@ -760,19 +787,6 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                     }
                 }
             }
-        }
-
-        if (parts != null)
-        {
-            for (int i = 0; i < parts.Count; i++)
-            {
-                parts[i] = CullSpatialValues(parts[i]);
-            }
-        }
-
-        foreach (EntityBlueprint.PartInfo part in parts)
-        {
-            AddPart(part);
         }
 
         var partsToAdd = new List<ShellPart>();
@@ -929,9 +943,43 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             }
         }
 
-        droneWorkshopPhaseHider.SetActive(mode == BuilderMode.Workshop);
         cursorScript.UpdateHandler();
         UpdateChain();
+    }
+
+    public bool GetDroneWorkshopSelectPhase()
+    {
+        return droneWorkshopPhaseHider.activeSelf;
+    }
+
+    private void SetUpInventory(List<EntityBlueprint.PartInfo> parts)
+    {
+        foreach (ShipBuilderInventoryScript button in partDict.Values)
+        {
+            Destroy(button.gameObject);
+        }
+
+        partDict.Clear();
+        foreach (ShipBuilderPart part in cursorScript.parts)
+        {
+            Destroy(part.gameObject);
+        }
+
+        cursorScript.parts.Clear();
+        parts = player.GetInventory();
+
+        if (parts != null)
+        {
+            for (int i = 0; i < parts.Count; i++)
+            {
+                parts[i] = CullSpatialValues(parts[i]);
+            }
+        }
+
+        foreach (EntityBlueprint.PartInfo part in parts)
+        {
+            AddPart(part);
+        }
     }
 
     private void OrientShellAndCore()
@@ -1048,19 +1096,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         gameObject.SetActive(false);
         if (!editorMode && validClose)
         {
-            // try adding parts in the player's inventory and on their ship into the part index obtained list.
-            player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
-            foreach (EntityBlueprint.PartInfo info in partDict.Keys)
-            {
-                if (partDict[info].GetCount() > 0)
-                {
-                    for (int i = 0; i < partDict[info].GetCount(); i++)
-                    {
-                        player.cursave.partInventory.Add(info);
-                        PartIndexScript.AttemptAddToPartsObtained(info);
-                    }
-                }
-            }
+            SavePartsToInventory();
 
             foreach (EntityBlueprint.PartInfo info2 in player.blueprint.parts)
             {
@@ -1073,14 +1109,14 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             Destroy(button.gameObject);
         }
 
-        foreach (ShipBuilderInventoryScript traderButton in traderPartDict.Values)
-        {
-            Destroy(traderButton.gameObject);
-        }
-
         foreach (ShipBuilderPart part in cursorScript.parts)
         {
             Destroy(part.gameObject);
+        }
+
+        foreach (ShipBuilderInventoryScript traderButton in traderPartDict.Values)
+        {
+            Destroy(traderButton.gameObject);
         }
 
         cursorScript.parts = new List<ShipBuilderPart>();
@@ -1090,6 +1126,42 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             handler.Deinitialize();
             handler.Initialize(player);
         }
+    }
+
+    private void SavePartsToInventory()
+    {
+        // try adding parts in the player's inventory and on their ship into the part index obtained list.
+        player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
+        if (mode == BuilderMode.Workshop && !GetDroneWorkshopSelectPhase())
+        {
+            var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+            blueprint.parts = new List<EntityBlueprint.PartInfo>();
+            blueprint.coreSpriteID = "drone_light";
+
+            foreach (ShipBuilderPart part in cursorScript.parts)
+            {
+                blueprint.parts.Add(part.info);
+            }
+            var button = partDict[dronePart];
+            var oldData = DroneUtilities.GetDroneSpawnDataByShorthand(button.part.secondaryData);
+            oldData.drone = JsonUtility.ToJson(blueprint);
+            button.part.secondaryData = JsonUtility.ToJson(oldData);
+            partDict.Remove(dronePart);
+            partDict.Add(button.part, button);
+        }
+
+
+        foreach (EntityBlueprint.PartInfo info in partDict.Keys)
+        {
+            if (partDict[info].GetCount() > 0)
+            {
+                for (int i = 0; i < partDict[info].GetCount(); i++)
+                {
+                    player.cursave.partInventory.Add(info);
+                    PartIndexScript.AttemptAddToPartsObtained(info);
+                }
+            }
+        }      
     }
 
     public void LoadBlueprint(EntityBlueprint blueprint)
@@ -1274,6 +1346,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     public void Export()
     {
+        if (mode == BuilderMode.Workshop) return;
+
         if (player)
         {
             player.AddCredits(-cursorScript.buildCost);

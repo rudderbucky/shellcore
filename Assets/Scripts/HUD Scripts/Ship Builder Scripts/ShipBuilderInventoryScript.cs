@@ -16,6 +16,13 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
         base.Start();
         val.text = count + "";
         val.enabled = (mode == BuilderMode.Yard || mode == BuilderMode.Workshop);
+        if (mode == BuilderMode.Workshop)
+        {
+            int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
+            var active = (ShipBuilder.instance.GetDroneWorkshopSelectPhase() && part.abilityID == 10) || 
+                (!ShipBuilder.instance.GetDroneWorkshopSelectPhase() && size == 0 && part.abilityID != 10);
+            gameObject.SetActive(active);
+        }
         // button border size is handled specifically by the grid layout components
     }
 
@@ -31,8 +38,18 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
         {
             if (mode == BuilderMode.Workshop)
             {
-                ShipBuilder.instance.OpenNameWindow(this);
-                return;
+                if (ShipBuilder.instance.GetDroneWorkshopSelectPhase())
+                {
+                    if (string.IsNullOrEmpty(part.playerGivenName))
+                    {
+                        ShipBuilder.instance.OpenNameWindow(this);
+                    }
+                    else
+                    {
+                        ShipBuilder.instance.InitializeDronePart(part);
+                    }
+                    return;
+                }
             }
 
 
