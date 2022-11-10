@@ -158,7 +158,7 @@ public class CoreUpgraderScript : GUIWindowScripts
         switch (coreName)
         {
             case "core1_shell":
-                return 100;
+                return 750;
             case "core2_shell":
                 return 3000;
             case "core3skills_shell":
