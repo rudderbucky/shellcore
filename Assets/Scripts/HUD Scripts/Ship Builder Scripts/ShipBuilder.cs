@@ -217,7 +217,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             }
 
             dict.Add(culledInfo, dictInvButton);
-            dictContentTexts[size].SetActive(true);
+            dictInvButton.gameObject.SetActive(displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(part.info.abilityID)]);
+            dictContentTexts[size].SetActive(dictInvButton.gameObject.activeSelf);
             dict[culledInfo].part = culledInfo;
             dict[culledInfo].cursor = cursorScript;
         }
@@ -1007,7 +1008,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             ShipBuilderInventoryScript invButton = Instantiate(buttonPrefab,
                 contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
             partDict.Add(part, invButton);
-            contentTexts[size].SetActive(true);
+            invButton.gameObject.SetActive(displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(part.abilityID)]);
+            if (invButton.gameObject.activeSelf) contentTexts[size].SetActive(true);
             invButton.part = part;
             invButton.cursor = cursorScript;
             invButton.IncrementCount();

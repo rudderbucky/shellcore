@@ -28,6 +28,10 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 
     public override void OnPointerDown(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left)
+        {
+            return;
+        }
         if (Input.GetKey(KeyCode.LeftShift))
         {
 #if UNITY_EDITOR
