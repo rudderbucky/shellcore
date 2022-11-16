@@ -20,7 +20,11 @@ public class VendorUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         handler.AssignDisplay(blueprint, null);
 
         // create tooltip
-        tooltip = Instantiate(tooltipPrefab);
+        if (tooltip)
+        {
+            Destroy(tooltip);
+        }
+        tooltip = Instantiate(tooltipPrefab, transform);
         RectTransform rect = tooltip.GetComponent<RectTransform>();
         rect.position = eventData.position;
         rect.SetParent(transform.parent, true);
