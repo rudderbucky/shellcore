@@ -293,27 +293,14 @@ namespace NodeEditorFramework.Standard
                 return 2;
             }
 
-            TaskManager.speakerIDList.Add(rewardGiverID);
-            if (TaskManager.interactionOverrides.ContainsKey(rewardGiverID))
+            InteractAction action = new InteractAction();
+            action.action = new UnityEngine.Events.UnityAction(() =>
             {
-                Debug.Log("Contains key");
-                TaskManager.interactionOverrides[rewardGiverID].Push(() =>
-                {
-                    TaskManager.interactionOverrides[rewardGiverID].Pop();
-                    OnDialogue();
-                });
-            }
-            else
-            {
-                var stack = new Stack<UnityEngine.Events.UnityAction>();
-                stack.Push(() =>
-                {
-                    TaskManager.interactionOverrides[rewardGiverID].Pop();
-                    OnDialogue();
-                });
-                TaskManager.interactionOverrides.Add(rewardGiverID, stack);
-                Debug.Log("ADDED " + rewardGiverID);
-            }
+                TaskManager.interactionOverrides[rewardGiverID].Pop();
+                OnDialogue();
+            });
+
+            TaskManager.Instance.PushInteractionOverrides(rewardGiverID, action, Canvas.Traversal as Traverser);
 
             TryAddObjective();
             return -1;

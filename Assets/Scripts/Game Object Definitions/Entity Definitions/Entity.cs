@@ -266,11 +266,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         if (TaskManager.interactionOverrides.ContainsKey(ID) && TaskManager.interactionOverrides[ID].Count > 0)
         {
-            TaskManager.interactionOverrides[ID].Peek().Invoke();
+            TaskManager.interactionOverrides[ID].Peek().action.Invoke();
         }
         else if (DialogueSystem.interactionOverrides.ContainsKey(ID) && DialogueSystem.interactionOverrides[ID].Count > 0)
         {
-            DialogueSystem.interactionOverrides[ID].Peek().Invoke();
+            DialogueSystem.interactionOverrides[ID].Peek().action.Invoke();
         }
         else
         {
@@ -287,7 +287,19 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (ID != null && TaskManager.interactionOverrides.ContainsKey(ID)
                        && TaskManager.interactionOverrides[ID].Count > 0)
         {
-            interactible = true;
+            while (TaskManager.interactionOverrides[ID].Count > 0)
+            {
+                InteractAction action = TaskManager.interactionOverrides[ID].Peek();
+                if ((action.traverser as MissionTraverser).taskHash == action.taskHash)
+                {
+                    interactible = true;
+                    break;
+                }
+                else
+                {
+                    TaskManager.interactionOverrides[ID].Pop();
+                }
+            }
         }
 
         if (ID != null && DialogueSystem.interactionOverrides.ContainsKey(ID)

@@ -67,11 +67,24 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     }
 
     public static List<string> dialogueCanvasPaths = new List<string>();
-    public static List<string> speakerIDList = new List<string>();
-    public static Dictionary<string, Stack<UnityAction>> interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
+    public static Dictionary<string, Stack<InteractAction>> interactionOverrides = new Dictionary<string, Stack<InteractAction>>();
     private static List<DialogueTraverser> traversers;
     public static string speakerID;
     private static bool initialized = false;
+
+    public void PushInteractionOverrides(string entityID, InteractAction action, Traverser traverser) 
+    {
+        if (GetInteractionOverrides().ContainsKey(entityID))
+        {
+            GetInteractionOverrides()[entityID].Push(action);
+        }
+        else
+        {
+            var stack = new Stack<InteractAction>();
+            stack.Push(action);
+            GetInteractionOverrides().Add(entityID, stack);
+        }
+    }
 
     // Bugfixes dialogue canvas paths persisting post world reload in the WC
     public static void ClearStatics()
@@ -79,11 +92,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         if (dialogueCanvasPaths != null)
         {
             dialogueCanvasPaths.Clear();
-        }
-
-        if (speakerIDList != null)
-        {
-            speakerIDList.Clear();
         }
 
         if (interactionOverrides != null)
@@ -106,7 +114,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public static void InitCanvases()
     {
-        interactionOverrides = new Dictionary<string, Stack<UnityAction>>();
+        interactionOverrides = new Dictionary<string, Stack<InteractAction>>();
         traversers = new List<DialogueTraverser>();
         NodeCanvasManager.FetchCanvasTypes();
         NodeTypes.FetchNodeTypes();
@@ -946,12 +954,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
-    public List<string> GetSpeakerIDList()
-    {
-        return speakerIDList;
-    }
-
-    public Dictionary<string, Stack<UnityAction>> GetInteractionOverrides()
+    public Dictionary<string, Stack<InteractAction>> GetInteractionOverrides()
     {
         return interactionOverrides;
     }

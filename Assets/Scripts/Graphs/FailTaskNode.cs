@@ -65,6 +65,7 @@ namespace NodeEditorFramework.Standard
                     taskNode.forceTask = false; // you shouldn't force tasks you can fail
                     string taskID = taskNode.taskID;
                     TaskManager.Instance.endTask(taskID);
+                    (Canvas.Traversal as MissionTraverser).taskHash++;
                 }
             }
 

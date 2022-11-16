@@ -107,15 +107,13 @@ namespace NodeEditorFramework.Standard
 
             if (SpeakToEntity)
             {
-                handler.GetSpeakerIDList().Add(EntityID);
                 if (handler as TaskManager)
                 {
                     TryAddObjective();
                 }
 
-                if (handler.GetInteractionOverrides().ContainsKey(EntityID))
-                {
-                    handler.GetInteractionOverrides()[EntityID].Push(() =>
+                InteractAction action = new InteractAction();
+                action.action = new UnityEngine.Events.UnityAction(() =>
                     {
                         if (handler as TaskManager)
                         {
@@ -129,26 +127,9 @@ namespace NodeEditorFramework.Standard
                         handler.SetSpeakerID(EntityID);
                         handler.SetNode(output);
                     });
-                }
-                else
-                {
-                    var stack = new Stack<UnityEngine.Events.UnityAction>();
-                    stack.Push(() =>
-                    {
-                        if (handler as TaskManager)
-                        {
-                            missionCanvasNode = this;
-                        }
-                        else
-                        {
-                            dialogueCanvasNode = this;
-                        }
 
-                        handler.SetSpeakerID(EntityID);
-                        handler.SetNode(output);
-                    });
-                    handler.GetInteractionOverrides().Add(EntityID, stack);
-                }
+                handler.PushInteractionOverrides(EntityID, action, Canvas.Traversal as Traverser);
+
 
                 if (!allowAfterSpeaking)
                 {

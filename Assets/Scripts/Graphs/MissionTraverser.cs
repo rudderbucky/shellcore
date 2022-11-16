@@ -9,6 +9,8 @@ public class MissionTraverser : Traverser
 
     public SectorManager.SectorLoadDelegate traverserLimiterDelegate;
 
+    public int taskHash;
+
     public MissionTraverser(QuestCanvas canvas) : base(canvas)
     {
         nodeCanvas = canvas;

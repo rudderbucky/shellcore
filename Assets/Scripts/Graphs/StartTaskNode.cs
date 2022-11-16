@@ -306,16 +306,9 @@ namespace NodeEditorFramework.Standard
 
             if (!string.IsNullOrEmpty(entityIDforConfirmedResponse))
             {
-                if (TaskManager.interactionOverrides.ContainsKey(entityIDforConfirmedResponse))
-                {
-                    TaskManager.interactionOverrides[entityIDforConfirmedResponse].Push(() => OnConfirmed());
-                }
-                else
-                {
-                    var stack = new Stack<UnityEngine.Events.UnityAction>();
-                    stack.Push(() => OnConfirmed());
-                    TaskManager.interactionOverrides.Add(entityIDforConfirmedResponse, stack);
-                }
+                InteractAction action = new InteractAction();
+                action.action = () => OnConfirmed();
+                TaskManager.Instance.PushInteractionOverrides(entityIDforConfirmedResponse, action, Canvas.Traversal as Traverser);
             }
         }
     }
