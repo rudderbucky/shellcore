@@ -218,7 +218,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
             dict.Add(culledInfo, dictInvButton);
             dictInvButton.gameObject.SetActive(displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(part.info.abilityID)]);
-            dictContentTexts[size].SetActive(dictInvButton.gameObject.activeSelf);
+            if (dictInvButton.gameObject.activeSelf) dictContentTexts[size].SetActive(dictInvButton.gameObject.activeSelf);
             dict[culledInfo].part = culledInfo;
             dict[culledInfo].cursor = cursorScript;
         }
