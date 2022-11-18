@@ -57,6 +57,11 @@ public class Laser : Bullet
         var target = targetingSystem.GetTarget();
         if (bulletsLeft > 0 && (Time.time - time > bulletFrequency) && target && !Core.IsInvisible && !Core.isAbsorbing)
         {
+            if (!isEnabled) 
+            {
+                bulletsLeft = 0;
+                return;
+            }
             time = Time.time;
             bulletsLeft -= 1;
             base.FireBullet(target.position);
