@@ -91,6 +91,7 @@ public class ShardRock : MonoBehaviour, IDamageable
 
     public float TakeShellDamage(float damage, float shellPiercingFactor, Entity lastDamagedBy)
     {
+        if (lastDamagedBy.GetFaction() != PlayerCore.Instance.GetFaction()) return 0;
         currentHealths[0] -= damage;
         currentHealths[0] = Mathf.Max(0, currentHealths[0]);
         return 0;
