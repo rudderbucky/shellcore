@@ -709,8 +709,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 endDialogue(0, true);
                 return;
             case Dialogue.DialogueAction.Workshop:
-                workshop.yardPosition = (Vector3)speakerPos;
-                workshop.InitializeSelectionPhase();
+                OpenWorkshop((Vector3)speakerPos);
                 endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Upgrader:
