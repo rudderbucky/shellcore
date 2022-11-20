@@ -142,6 +142,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         part.tier = partToCull.tier;
         part.shiny = partToCull.shiny;
         part.playerGivenName = partToCull.playerGivenName;
+        if (part.playerGivenName == null) part.playerGivenName = "";
         return part;
     }
 
