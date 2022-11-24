@@ -1003,6 +1003,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     private void AddPart(EntityBlueprint.PartInfo part)
     {
+        if (!part.Equals(CullSpatialValues(part)))
+        {
+            Debug.LogWarning("part was not passed as culled");
+            part = CullSpatialValues(part);
+        }
         if (!partDict.ContainsKey(part))
         {
             int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
@@ -1030,7 +1035,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
         if (editorMode)
         {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 99; i++)
             {
                 partDict[part].IncrementCount();
             }
@@ -1054,7 +1059,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         if (ResourceManager.allPartNames.Contains(x))
         {
             part.partID = editorModeAddPartSection.transform.Find("Part ID").GetComponent<InputField>().text;
-            AddPart(part);
+            AddPart(CullSpatialValues(part));
         }
     }
 
