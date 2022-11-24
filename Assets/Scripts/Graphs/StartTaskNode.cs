@@ -262,7 +262,20 @@ namespace NodeEditorFramework.Standard
             }
         }
 
-        public void StartTask()
+        private void SetTaskCheckpoint()
+        {
+            (Canvas.Traversal as Traverser).lastCheckpointName = taskName;
+            TaskManager.Instance.AttemptAutoSave();
+
+            if (!string.IsNullOrEmpty(entityIDforConfirmedResponse))
+            {
+                InteractAction action = new InteractAction();
+                action.action = () => OnConfirmed();
+                TaskManager.Instance.PushInteractionOverrides(entityIDforConfirmedResponse, action, Canvas.Traversal as Traverser);
+            }
+        }
+
+        public void RegisterTask()
         {
             Task task = new Task()
             {
@@ -299,17 +312,13 @@ namespace NodeEditorFramework.Standard
                     mission.tasks.Add(task);
                 }
             }
+        }
 
-            (Canvas.Traversal as Traverser).lastCheckpointName = taskName;
-            TaskManager.Instance.AttemptAutoSave();
+        public void StartTask()
+        {
+            RegisterTask();
 
-
-            if (!string.IsNullOrEmpty(entityIDforConfirmedResponse))
-            {
-                InteractAction action = new InteractAction();
-                action.action = () => OnConfirmed();
-                TaskManager.Instance.PushInteractionOverrides(entityIDforConfirmedResponse, action, Canvas.Traversal as Traverser);
-            }
+            SetTaskCheckpoint();
         }
     }
 }

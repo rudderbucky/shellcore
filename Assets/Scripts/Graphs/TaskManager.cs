@@ -396,14 +396,6 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
             if (traversers.Exists((t) => t.nodeCanvas.missionName == mission.name))
             {
                 var traverser = traversers.Find((t) => t.nodeCanvas.missionName == mission.name);
-                if (traverser.findRoot().overrideCheckpoint)
-                {
-                    traverser.activateCheckpoint(traverser.findRoot().overrideCheckpointName);
-                }
-                else
-                {
-                    traverser.activateCheckpoint(mission.checkpoint);
-                }
 
                 var tasks = mission.tasks.ToArray();
                 if (mission.status != Mission.MissionStatus.Complete && mission.tasks.Count > 0)
@@ -414,6 +406,15 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
                     {
                         traverser.ActivateTask(start.taskID);
                     }
+                }
+
+                if (traverser.findRoot().overrideCheckpoint)
+                {
+                    traverser.activateCheckpoint(traverser.findRoot().overrideCheckpointName);
+                }
+                else
+                {
+                    traverser.activateCheckpoint(mission.checkpoint);
                 }
             }
         }
