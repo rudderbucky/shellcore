@@ -5,12 +5,13 @@ using UnityEngine;
 public class VendingBlueprint : ScriptableObject
 {
     [System.Serializable]
-    public struct Item
+    public class Item
     {
         public EntityBlueprint entityBlueprint;
-        public Sprite icon;
+        public string icon;
         public string description;
         public int cost;
+        public string json;
     }
 
     public int range;

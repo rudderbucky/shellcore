@@ -27,7 +27,9 @@ public class WCWorldIO : GUIWindowScripts
         ReadShipJSON,
         WriteShipJSON,
         ReadWaveJSON,
-        WriteWaveJSON
+        WriteWaveJSON,
+        ReadVendingBlueprintJSON,
+        WriteVendingBlueprintJSON
     }
 
     IOMode mode = IOMode.Read;
@@ -289,7 +291,7 @@ public class WCWorldIO : GUIWindowScripts
     {
         loadingText.gameObject.SetActive(true);
         loadingText.text = GetLoadingString();
-        var skippedFiles = new List<string> { ".meta", ".worlddata", ".taskdata", ".dialoguedata", ".sectordata", "ResourceData.txt" };
+        var skippedFiles = new List<string> { ".meta", ".worlddata", ".taskdata", ".dialoguedata", ".sectordata", "ResourceData.txt" , ".DS_Store"};
         List<Sector> sectors = new List<Sector>();
         foreach (var str in System.IO.Directory.GetFiles(path))
         {
@@ -299,6 +301,7 @@ public class WCWorldIO : GUIWindowScripts
             }
 
             string sectorjson = System.IO.File.ReadAllText(str);
+            Debug.LogWarning(str + " " + sectorjson);
             SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
             // Debug.Log("Platform JSON: " + data.platformjson);
             // Debug.Log("Sector JSON: " + data.sectorjson);

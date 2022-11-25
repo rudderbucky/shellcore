@@ -88,7 +88,10 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             {
                 buttons[i].GetComponent<Image>().color = new Color(0, 0, 0.4F);
             }
-
+            if (blueprint.items[i].entityBlueprint == null)
+            {
+                blueprint.items[i].entityBlueprint = SectorManager.TryGettingEntityBlueprint(blueprint.items[i].json); 
+            }
             vendorUIButton.blueprint = blueprint.items[i].entityBlueprint;
             vendorUIButton.costText = $"POWER COST: <color=cyan>{blueprint.items[i].cost}</color>";
             vendorUIButton.descriptionText = blueprint.items[i].description;
@@ -98,7 +101,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             vendorUIButton.handler = UI.GetComponentInChildren<SelectionDisplayHandler>();
 
             Image sr = buttons[i].transform.Find("Icon").GetComponent<Image>();
-            sr.sprite = blueprint.items[i].icon;
+            sr.sprite = ResourceManager.GetAsset<Sprite>(blueprint.items[i].icon);
 
             Text[] texts = buttons[i].GetComponentsInChildren<Text>();
             texts[0].text = (i + 1).ToString();
@@ -208,6 +211,16 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 Tank tank = creation.AddComponent<Tank>();
                 tank.blueprint = blueprint.items[index].entityBlueprint;
                 tank.SetOwner(core);
+                break;
+            case EntityBlueprint.IntendedType.Drone:
+                Drone drone = creation.AddComponent<Drone>();
+                drone.blueprint = blueprint.items[index].entityBlueprint;
+                drone.SetOwner(core);
+                break;
+            case EntityBlueprint.IntendedType.ShellCore:
+                ShellCore shellCore = creation.AddComponent<ShellCore>();
+                shellCore.blueprint = blueprint.items[index].entityBlueprint;
+                shellCore.sectorMngr = SectorManager.instance;
                 break;
             default:
                 break;

@@ -667,9 +667,23 @@ public class SectorManager : MonoBehaviour
                     json = data.blueprintJSON;
                     if (!string.IsNullOrEmpty(json))
                     {
-                        var dialogueRef = blueprint.dialogue;
-                        blueprint = TryGettingEntityBlueprint(json);
-                        blueprint.dialogue = dialogueRef;
+                        try
+                        {
+                            VendorDefinition def = ScriptableObject.CreateInstance<VendorDefinition>();
+                            JsonUtility.FromJsonOverwrite(json, def);
+                            var dialogueRef = blueprint.dialogue;
+                            blueprint = TryGettingEntityBlueprint(def.entityBlueprint);
+                            blueprint.dialogue = dialogueRef;
+                            blueprint.dialogue.vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
+                            JsonUtility.FromJsonOverwrite(def.vendingBlueprint, blueprint.dialogue.vendingBlueprint);
+                        }
+                        catch(System.Exception e)
+                        {
+                            Debug.LogWarning(e);
+                            var dialogueRef = blueprint.dialogue;
+                            blueprint = TryGettingEntityBlueprint(json);
+                            blueprint.dialogue = dialogueRef;
+                        }
                     }
 
                     blueprint.entityName = data.name;

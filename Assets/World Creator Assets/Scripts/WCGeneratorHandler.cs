@@ -807,7 +807,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
                 foreach (string file in files)
                 {
-                    if (file.Contains(".meta"))
+                    if (file.Contains(".meta") || file.Contains(".DS_Store"))
                     {
                         continue;
                     }
