@@ -14,7 +14,7 @@ public class MissileAnimationScript : MonoBehaviour
     void Start()
     {
         // initialize instance fields
-        speed = Random.Range(12, 15);
+        speed = Random.Range(20, 25);
         startAngle = Random.Range(0, 2 * Mathf.PI);
         line = gameObject.GetComponent<LineRenderer>();
         line.startWidth = 0;

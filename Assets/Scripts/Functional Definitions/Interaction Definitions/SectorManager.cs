@@ -339,7 +339,7 @@ public class SectorManager : MonoBehaviour
                 minimapSectorBorders = new Dictionary<Sector, LineRenderer>();
                 foreach (string file in files)
                 {
-                    if (file.Contains(".meta") || file.Contains("ResourceData.txt"))
+                    if (file.Contains(".meta") || file.Contains("ResourceData.txt") || file.Contains(".DS_Store"))
                     {
                         continue;
                     }
