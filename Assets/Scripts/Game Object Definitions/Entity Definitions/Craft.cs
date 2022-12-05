@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// Every entity that can move is a craft. This includes drones and ShellCores.
@@ -185,26 +186,20 @@ public abstract class Craft : Entity
             return;
         }
 
-        //calculate difference of angles and compare them to find the correct turning direction
-        float targetAngle = Mathf.Atan2(directionVector.y, directionVector.x) * Mathf.Rad2Deg;
         float craftAngle = Mathf.Atan2(entityBody.transform.up.y, entityBody.transform.up.x) * Mathf.Rad2Deg;
+        float targetAngle = Mathf.Atan2(directionVector.y, directionVector.x) * Mathf.Rad2Deg;
 
-        float delta = Mathf.Abs(Mathf.DeltaAngle(targetAngle - craftAngle, 90));
-        bool direction = delta < 90;
-
-        //rotate with physics
+        float angleDistance = Mathf.Abs(Mathf.DeltaAngle(craftAngle, targetAngle));
         float rotationAmount = Mathf.Min(physicsAccel * Time.deltaTime * 2, 45f);
-        entityBody.transform.Rotate(0, 0, (direction ? 2 : -2) * rotationAmount);
 
-        //check if the angle has gone over the target
-        craftAngle = Mathf.Atan2(entityBody.transform.up.y, entityBody.transform.up.x) * Mathf.Rad2Deg;
-        delta = Mathf.Abs(Mathf.DeltaAngle(targetAngle - craftAngle, 90));
-
-        if (direction != (delta < 90))
+        if (rotationAmount > angleDistance)
         {
-            //if so, set the angle to be exactly the target
             entityBody.transform.eulerAngles = new Vector3(0, 0, targetAngle - 90);
+            return;
         }
+
+        float finalAngle = Mathf.LerpAngle(craftAngle, targetAngle, rotationAmount / angleDistance);
+        entityBody.transform.eulerAngles = new Vector3(0, 0, finalAngle - 90);
     }
 
     public bool rotateWhileMoving = true;
