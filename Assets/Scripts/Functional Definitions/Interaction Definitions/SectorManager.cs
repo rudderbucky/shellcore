@@ -591,7 +591,6 @@ public class SectorManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(json)) return false;
         VendorDefinition def = ScriptableObject.CreateInstance<VendorDefinition>();
-        
         // Try grabbing the vendor definition directly
         try
         {
@@ -603,26 +602,31 @@ public class SectorManager : MonoBehaviour
             JsonUtility.FromJsonOverwrite(def.vendingBlueprint, blueprint.dialogue.vendingBlueprint);
             return true;
         }
-        catch
+        catch (System.Exception)
         {
         }
+
 
         // Try grabbing the vendor definition from the Entities folder
         try
         {
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
                 (System.IO.Path.Combine(instance.resourcePath, "Entities", json + ".json")), def);
-            var dialogueRef = blueprint.dialogue;
-            blueprint = TryGettingEntityBlueprint(def.entityBlueprint);
-            blueprint.dialogue = dialogueRef;
-            blueprint.dialogue.vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
-            JsonUtility.FromJsonOverwrite(def.vendingBlueprint, blueprint.dialogue.vendingBlueprint);
-            return true;
+            if (!string.IsNullOrEmpty(def.vendingBlueprint)) 
+            {
+                var dialogueRef = blueprint.dialogue;
+                blueprint = TryGettingEntityBlueprint(def.entityBlueprint);
+                blueprint.dialogue = dialogueRef;
+                blueprint.dialogue.vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
+                JsonUtility.FromJsonOverwrite(def.vendingBlueprint, blueprint.dialogue.vendingBlueprint);
+                return true;
+            }
         }
-        catch
+        catch (System.Exception)
         {
         }
 
+        
         // Use json as an entity blueprint
         try
         {
@@ -631,7 +635,7 @@ public class SectorManager : MonoBehaviour
             blueprint.dialogue = dialogueRef;
             return true;
         }
-        catch
+        catch (System.Exception)
         {
 
         }
