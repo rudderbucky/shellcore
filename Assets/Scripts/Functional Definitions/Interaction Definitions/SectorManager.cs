@@ -590,23 +590,52 @@ public class SectorManager : MonoBehaviour
     public bool TryGettingVendorDefinition(ref EntityBlueprint blueprint, string json) 
     {
         if (string.IsNullOrEmpty(json)) return false;
+        VendorDefinition def = ScriptableObject.CreateInstance<VendorDefinition>();
+        
+        // Try grabbing the vendor definition directly
         try
         {
-            VendorDefinition def = ScriptableObject.CreateInstance<VendorDefinition>();
             JsonUtility.FromJsonOverwrite(json, def);
             var dialogueRef = blueprint.dialogue;
             blueprint = TryGettingEntityBlueprint(def.entityBlueprint);
             blueprint.dialogue = dialogueRef;
             blueprint.dialogue.vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
             JsonUtility.FromJsonOverwrite(def.vendingBlueprint, blueprint.dialogue.vendingBlueprint);
+            return true;
         }
-        catch(System.Exception e)
+        catch
         {
-            Debug.LogWarning(e);
+        }
+
+        // Try grabbing the vendor definition from the Entities folder
+        try
+        {
+            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                (System.IO.Path.Combine(instance.resourcePath, "Entities", json + ".json")), def);
+            var dialogueRef = blueprint.dialogue;
+            blueprint = TryGettingEntityBlueprint(def.entityBlueprint);
+            blueprint.dialogue = dialogueRef;
+            blueprint.dialogue.vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
+            JsonUtility.FromJsonOverwrite(def.vendingBlueprint, blueprint.dialogue.vendingBlueprint);
+            return true;
+        }
+        catch
+        {
+        }
+
+        // Use json as an entity blueprint
+        try
+        {
             var dialogueRef = blueprint.dialogue;
             blueprint = TryGettingEntityBlueprint(json);
             blueprint.dialogue = dialogueRef;
+            return true;
         }
+        catch
+        {
+
+        }
+
         return true;
     }
 
