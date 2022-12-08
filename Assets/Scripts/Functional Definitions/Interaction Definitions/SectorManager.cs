@@ -550,18 +550,64 @@ public class SectorManager : MonoBehaviour
     {
         var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 
-        // try parsing directly, if that fails try fetching the entity file
+        // try parsing directly
         try
         {
             JsonUtility.FromJsonOverwrite(jsonOrName, blueprint);
+            return blueprint;
         }
         catch
         {
-            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (System.IO.Path.Combine(instance.resourcePath, "Entities", jsonOrName + ".json")), blueprint);
+            
         }
 
-        return blueprint;
+        // if that fails try fetching the entity file
+        try
+        {
+            JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                (System.IO.Path.Combine(instance.resourcePath, "Entities", jsonOrName + ".json")), blueprint);
+            return blueprint;
+        }
+        catch
+        {
+
+        }
+
+        // if that fails try grabbing a drone
+        try
+        {
+            JsonUtility.FromJsonOverwrite(DroneUtilities.GetDroneSpawnDataByShorthand(jsonOrName).drone, blueprint);
+            return blueprint;
+        }
+        catch
+        {
+
+        }
+
+        throw new System.Exception("Blueprint not found.");
+    }
+
+    public bool TryGettingVendorDefinition(ref EntityBlueprint blueprint, string json) 
+    {
+        if (string.IsNullOrEmpty(json)) return false;
+        try
+        {
+            VendorDefinition def = ScriptableObject.CreateInstance<VendorDefinition>();
+            JsonUtility.FromJsonOverwrite(json, def);
+            var dialogueRef = blueprint.dialogue;
+            blueprint = TryGettingEntityBlueprint(def.entityBlueprint);
+            blueprint.dialogue = dialogueRef;
+            blueprint.dialogue.vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
+            JsonUtility.FromJsonOverwrite(def.vendingBlueprint, blueprint.dialogue.vendingBlueprint);
+        }
+        catch(System.Exception e)
+        {
+            Debug.LogWarning(e);
+            var dialogueRef = blueprint.dialogue;
+            blueprint = TryGettingEntityBlueprint(json);
+            blueprint.dialogue = dialogueRef;
+        }
+        return true;
     }
 
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
@@ -644,14 +690,7 @@ public class SectorManager : MonoBehaviour
                 }
             case EntityBlueprint.IntendedType.Bunker:
                 {
-                    json = data.blueprintJSON;
-                    if (!string.IsNullOrEmpty(json))
-                    {
-                        var dialogueRef = blueprint.dialogue;
-                        blueprint = TryGettingEntityBlueprint(json);
-
-                        blueprint.dialogue = dialogueRef;
-                    }
+                    TryGettingVendorDefinition(ref blueprint, data.blueprintJSON);
 
                     blueprint.entityName = data.name;
                     Bunker bunker = gObj.AddComponent<Bunker>();
@@ -664,27 +703,7 @@ public class SectorManager : MonoBehaviour
                 }
             case EntityBlueprint.IntendedType.Outpost:
                 {
-                    json = data.blueprintJSON;
-                    if (!string.IsNullOrEmpty(json))
-                    {
-                        try
-                        {
-                            VendorDefinition def = ScriptableObject.CreateInstance<VendorDefinition>();
-                            JsonUtility.FromJsonOverwrite(json, def);
-                            var dialogueRef = blueprint.dialogue;
-                            blueprint = TryGettingEntityBlueprint(def.entityBlueprint);
-                            blueprint.dialogue = dialogueRef;
-                            blueprint.dialogue.vendingBlueprint = ScriptableObject.CreateInstance<VendingBlueprint>();
-                            JsonUtility.FromJsonOverwrite(def.vendingBlueprint, blueprint.dialogue.vendingBlueprint);
-                        }
-                        catch(System.Exception e)
-                        {
-                            Debug.LogWarning(e);
-                            var dialogueRef = blueprint.dialogue;
-                            blueprint = TryGettingEntityBlueprint(json);
-                            blueprint.dialogue = dialogueRef;
-                        }
-                    }
+                    TryGettingVendorDefinition(ref blueprint, data.blueprintJSON);
 
                     blueprint.entityName = data.name;
                     Outpost outpost = gObj.AddComponent<Outpost>();
