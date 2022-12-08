@@ -298,7 +298,7 @@ public class AirCraftAI : MonoBehaviour
                             if (timer >= 0.3F)
                             {
                                 timer = 0;
-                                movement.SetMoveTarget(aggroPos + new Vector3(Random.Range(-1F, 1F), Random.Range(-1F, 1F)), 9);
+                                movement.SetMoveTarget(aggroPos + new Vector3(Random.Range(-4, 4), Random.Range(-4, 4)), 9);
                             }
                             else
                             {
