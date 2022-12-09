@@ -2,7 +2,7 @@
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Finish Mission", typeof(QuestCanvas))]
+    [Node(false, "Tasks/Finish Mission", typeof(QuestCanvas))]
     public class FinishMissionNode : Node
     {
         //Node things
@@ -35,6 +35,8 @@ namespace NodeEditorFramework.Standard
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Sound Jingle ID:");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
             jingleID = GUILayout.TextField(jingleID);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();

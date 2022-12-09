@@ -101,8 +101,23 @@ namespace NodeEditorFramework.Standard
                 float r, g, b;
                 GUILayout.BeginHorizontal();
                 r = RTEditorGUI.FloatField(dialogueColor.r);
+                if (dialogueColor.r < 0 || dialogueColor.r > 1)
+                {
+                    r = RTEditorGUI.FloatField(dialogueColor.r = 1);
+                    Debug.LogWarning("Can't register this numbers!");
+                }
                 g = RTEditorGUI.FloatField(dialogueColor.g);
+                if (dialogueColor.g < 0 || dialogueColor.g > 1)
+                {
+                    g = RTEditorGUI.FloatField(dialogueColor.g = 1);
+                    Debug.LogWarning("Can't register this numbers!");
+                }
                 b = RTEditorGUI.FloatField(dialogueColor.b);
+                if (dialogueColor.b < 0 || dialogueColor.b > 1)
+                {
+                    b = RTEditorGUI.FloatField(dialogueColor.b = 1);
+                    Debug.LogWarning("Can't register this numbers!");
+                }
                 GUILayout.EndHorizontal();
                 dialogueColor = new Color(r, g, b);
             }

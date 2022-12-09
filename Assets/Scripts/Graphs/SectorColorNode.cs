@@ -39,8 +39,23 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Color:");
             GUILayout.BeginHorizontal();
             var r = RTEditorGUI.FloatField(color.r);
+            if (color.r < 0 || color.r > 1)
+            {
+                r = RTEditorGUI.FloatField(color.r = 0);
+                Debug.LogWarning("Can't register this numbers!");
+            }
             var g = RTEditorGUI.FloatField(color.g);
+            if (color.g < 0 || color.g > 1)
+            {
+                g = RTEditorGUI.FloatField(color.g = 0);
+                Debug.LogWarning("Can't register this numbers!");
+            }
             var b = RTEditorGUI.FloatField(color.b);
+            if (color.b < 0 || color.b > 1)
+            {
+                b = RTEditorGUI.FloatField(color.b = 0);
+                Debug.LogWarning("Can't register this numbers!");
+            }
             color = new Color(r, g, b);
             GUILayout.EndHorizontal();
         }

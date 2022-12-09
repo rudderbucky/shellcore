@@ -47,8 +47,23 @@ namespace NodeEditorFramework.Standard
             float r, g, b;
             GUILayout.BeginHorizontal();
             r = RTEditorGUI.FloatField(color.r);
+            if (color.r < 0 || color.r > 1)
+            {
+                r = RTEditorGUI.FloatField(color.r = 1);
+                Debug.LogWarning("Can't register this numbers!");
+            }
             g = RTEditorGUI.FloatField(color.g);
+            if (color.g < 0 || color.g > 1)
+            {
+                g = RTEditorGUI.FloatField(color.g = 1);
+                Debug.LogWarning("Can't register this numbers!");
+            }
             b = RTEditorGUI.FloatField(color.b);
+            if (color.b < 0 || color.b > 1)
+            {
+                b = RTEditorGUI.FloatField(color.b = 1);
+                Debug.LogWarning("Can't register this numbers!");
+            }
             GUILayout.EndHorizontal();
             color = new Color(r, g, b);
         }
