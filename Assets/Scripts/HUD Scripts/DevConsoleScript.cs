@@ -304,11 +304,11 @@ public class DevConsoleScript : MonoBehaviour
                 info = new EntityBlueprint.PartInfo();
                 foreach (string name in ResourceManager.allPartNames)
                 {
-                    for (int i = 0; i < 38; i++)
+                    for (int i = 0; i < 42; i++)
                     {
                         info.partID = name;
                         info.abilityID = i;
-                        if ((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3)
+                        if ((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3 || info.abilityID == 39)
                         {
                             info.abilityID = 0;
                         }
@@ -319,7 +319,7 @@ public class DevConsoleScript : MonoBehaviour
                             info.secondaryData = JsonUtility.ToJson(data);
                         }
 
-                        if (info.abilityID == 0 || info.abilityID == 10 || info.abilityID == 21)
+                        if (info.abilityID == 0 || info.abilityID == 10 || info.abilityID == 21 || info.abilityID == 24 || info.abilityID == 27 || info.abilityID == 28 || info.abilityID == 29 || info.abilityID == 41)
                         {
                             info.tier = 0;
                         }
