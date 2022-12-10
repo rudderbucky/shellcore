@@ -36,7 +36,7 @@ public class BattleAI : AIModule
 
     float nextSearchTime; //timer to reduce the frequency of heavy search functions
     float nextStateCheckTime; //timer to reduce the frequency of heavy search functions
-    string mostNeeded = null;
+    VendingBlueprint.Item.AIEquivalent? mostNeeded;
 
     Entity primaryTarget;
     Entity fortificationTarget;
@@ -627,20 +627,20 @@ public class BattleAI : AIModule
                             {
                                 if (Random.Range(0, 2) == 0)
                                 {
-                                    mostNeeded = ("Beam Tank");
+                                    mostNeeded = VendingBlueprint.Item.AIEquivalent.BeamTank;
                                 }
                                 else
                                 {
-                                    mostNeeded = ("Laser Tank");
+                                    mostNeeded = VendingBlueprint.Item.AIEquivalent.LaserTank;
                                 }
                             }
                             else if (shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)
                             {
-                                mostNeeded = ("Bullet Tank");
+                                mostNeeded = VendingBlueprint.Item.AIEquivalent.BulletTank;
                             }
                             else
                             {
-                                mostNeeded = ("Speeder Tank");
+                                mostNeeded = VendingBlueprint.Item.AIEquivalent.SpeederTank;
                             }
                         }
                         else if (enemyGroundStation + enemyTank > ownTank)
@@ -649,31 +649,31 @@ public class BattleAI : AIModule
                             {
                                 if (Random.Range(0, 3) == 0)
                                 {
-                                    mostNeeded = ("Beam Tank");
+                                    mostNeeded = VendingBlueprint.Item.AIEquivalent.BeamTank;
                                 }
                                 else
                                 {
-                                    mostNeeded = ("Siege Tank");
+                                    mostNeeded = VendingBlueprint.Item.AIEquivalent.SiegeTank;
                                 }
                             }
                             else if (shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)
                             {
-                                mostNeeded = ("Bullet Tank");
+                                mostNeeded = VendingBlueprint.Item.AIEquivalent.BulletTank;
                             }
                             else
                             {
-                                mostNeeded = ("Speeder Tank");
+                                mostNeeded = VendingBlueprint.Item.AIEquivalent.SpeederTank;
                             }
                         }
                         else
                         {
                             if ((shellcore.GetPower() >= 200 && Random.Range(0, 4) < 3) || Random.Range(0, 2) == 1)
                             {
-                                mostNeeded = ("Missile Tank");
+                                mostNeeded = VendingBlueprint.Item.AIEquivalent.MissileTank;
                             }
                             else
                             {
-                                mostNeeded = ("Laser Tank");
+                                mostNeeded = VendingBlueprint.Item.AIEquivalent.LaserTank;
                             }
                         }
                     }
@@ -694,35 +694,35 @@ public class BattleAI : AIModule
                             if (!ownGroundExists && enemyGroundTargets(true) && shellcore.GetPower() >= 150)
                             {
                                 // Attack & enemy holds all ground
-                                itemIndex = vendor.GetVendingBlueprint().getItemIndex("Torpedo Turret");
+                                itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.TorpedoTurret);
                             }
                             else
                             {
                                 if (shellcore.GetPower() >= 200)
                                 {
-                                    itemIndex = vendor.GetVendingBlueprint().getItemIndex("Missile Turret");
+                                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.MissileTurret);
                                 }
                                 else if (shellcore.GetPower() >= 100)
                                 {
-                                    itemIndex = vendor.GetVendingBlueprint().getItemIndex("Defense Turret");
+                                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.DefenseTurret);
                                 }
                             }
                         }
                         else if (vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank)
                         {
-                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded);
+                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
                         }
                     }
                     if (state == BattleState.ReinforceGround)
                     {
-                        itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded);
+                        itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
                     }
                     if (itemIndex == -1)
                     {
                         if (harvesterTurrets.Count < Mathf.Min(5, AIData.energyRocks.Count)
                             && shellcore.GetPower() >= 100)
                         {
-                            itemIndex = vendor.GetVendingBlueprint().getItemIndex("Harvester Turret");
+                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.HarvesterTurret);
                             foreach (var turret in harvesterTurrets.Values)
                             {
                                 if (turret && Vector3.SqrMagnitude(turret.transform.position - shellcore.transform.position) <= 200)
@@ -742,7 +742,7 @@ public class BattleAI : AIModule
                                         continue;
                                     }
 
-                                    if (vendor.GetVendingBlueprint().items[j].entityBlueprint.name != mostNeeded && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank) //TODO: get turret / tank attack category from somewhere else
+                                    if (vendor.GetVendingBlueprint().items[j].equivalentTo != mostNeeded && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank) //TODO: get turret / tank attack category from somewhere else
                                         continue;
 
                                     itemIndex = j;
@@ -762,7 +762,7 @@ public class BattleAI : AIModule
                             break;
                         }
                         var ent = VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
-                        if (itemIndex == vendor.GetVendingBlueprint().getItemIndex("Harvester Turret"))
+                        if (itemIndex == vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.HarvesterTurret))
                         {
                             EnergyRock closestRock = null;
                             foreach (var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))
