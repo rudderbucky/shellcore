@@ -192,9 +192,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                     cursorScript.buildCost -= EntityBlueprint.GetPartValue(part.info);
                 }
 
-                dict = (part.mode == BuilderMode.Yard ? partDict : traderPartDict);
-                dictContentsArray = (part.mode == BuilderMode.Yard ? contentsArray : traderContentsArray);
-                dictContentTexts = (part.mode == BuilderMode.Yard ? contentTexts : traderContentTexts);
+                dict = (part.mode != BuilderMode.Trader ? partDict : traderPartDict);
+                dictContentsArray = (part.mode != BuilderMode.Trader ? contentsArray : traderContentsArray);
+                dictContentTexts = (part.mode != BuilderMode.Trader ? contentTexts : traderContentTexts);
                 break;
         }
 
@@ -628,6 +628,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     private GameObject sortingObject;
     public void InitializeDronePart(EntityBlueprint.PartInfo info)
     {
+        CloseNameWindow(false);
         dronePart = info;
         droneWorkshopPhaseHider.SetActive(false);
         cursorScript.ClearAllParts();
@@ -868,7 +869,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 Destroy(part.gameObject);
             }
 
-            LoadBlueprint(blueprint);
+            if (mode != BuilderMode.Workshop)
+                LoadBlueprint(blueprint);
         }
 
         // activate windows
@@ -1152,7 +1154,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
 
         cursorScript.parts = new List<ShipBuilderPart>();
-        if ((!editorMode || player) && !validClose)
+        if (((!editorMode || player) && !validClose) || mode == BuilderMode.Workshop)
         {
             AbilityHandler handler = player.GetAbilityHandler(); // reset handler to correct representation
             handler.Deinitialize();
