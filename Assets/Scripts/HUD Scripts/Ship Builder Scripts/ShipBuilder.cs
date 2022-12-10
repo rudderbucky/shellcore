@@ -351,6 +351,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         AddPart(info);
         nameCandidate.DecrementCount(true);
         SavePartsToInventory();
+        print( nameCandidate.GetCount());
     }
 
 
@@ -621,11 +622,23 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     private GameObject droneWorkshopPhaseHider;
 
     private EntityBlueprint.PartInfo dronePart;
+    [SerializeField]
+    private ShipBuilderSortingButton[] sortingButtons;
+    [SerializeField]
+    private GameObject sortingObject;
     public void InitializeDronePart(EntityBlueprint.PartInfo info)
     {
         dronePart = info;
         droneWorkshopPhaseHider.SetActive(false);
         cursorScript.ClearAllParts();
+        if (sortingObject)
+        {
+            sortingObject.SetActive(true);
+            foreach (var sortingButton in sortingButtons) 
+            {
+                sortingButton.DroneWorkshopModifications();
+            }
+        }
         var parts = new List<EntityBlueprint.PartInfo>();
         SetUpInventory(parts);
         foreach(var part in parts)
@@ -634,6 +647,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
         LoadBlueprint(DroneUtilities.GetDroneSpawnDataByShorthand(info.secondaryData).drone);
     }
+
+    private string blueprintCoreShellSpriteId;
 
     public void Initialize(BuilderMode mode, List<EntityBlueprint.PartInfo> traderInventory = null, EntityBlueprint blueprint = null)
     {
@@ -719,6 +734,10 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         List<EntityBlueprint.PartInfo> parts = new List<EntityBlueprint.PartInfo>();
 
         droneWorkshopPhaseHider.SetActive(mode == BuilderMode.Workshop);
+        if (mode == BuilderMode.Workshop)
+        {
+            sortingObject.SetActive(false);
+        }
         if (!editorMode)
         {
             SetUpInventory(parts);
@@ -1081,6 +1100,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     public void CloseUI(bool validClose)
     {
+        if (nameBox && nameBox.activeSelf)
+        {
+            CloseNameWindow(false);
+        }
+
         if (editorMode)
         {
             SetSelectPartActive(false);
@@ -1144,6 +1168,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         {
             var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
             blueprint.parts = new List<EntityBlueprint.PartInfo>();
+            blueprint.coreShellSpriteID = blueprintCoreShellSpriteId;
             blueprint.coreSpriteID = "drone_light";
 
             foreach (ShipBuilderPart part in cursorScript.parts)
@@ -1207,6 +1232,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
         core.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
         editorCoreTier = Mathf.Max(GetEditorCoreList().FindIndex(x => x == blueprint.coreShellSpriteID), 0);
+        if (mode == BuilderMode.Workshop)
+            blueprintCoreShellSpriteId = blueprint.coreShellSpriteID;
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         shell.color = FactionManager.GetFactionColor(0);
         shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
@@ -1491,13 +1518,27 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             obj.SetActive(false);
         }
 
+        if (mode == BuilderMode.Workshop)
+        {
+            if (GetDroneWorkshopSelectPhase())
+            {
+                displayingTypes[0] = displayingTypes[2] = displayingTypes[3] = displayingTypes[4] = false;
+                displayingTypes[1] = true;
+            }
+            else
+            {
+                displayingTypes[1] = false;
+            }
+        }
+
         foreach (ShipBuilderInventoryScript inv in partDict.Values)
         {
             string partName = inv.part.partID.ToLower();
             string abilityName = AbilityUtilities.GetAbilityNameByID(inv.part.abilityID, inv.part.secondaryData).ToLower();
             if (partName.Contains(searcherString) || abilityName.Contains(searcherString) || searcherString == "")
             {
-                if (displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(inv.part.abilityID)])
+                if (displayingTypes[(int)AbilityUtilities.GetAbilityTypeByID(inv.part.abilityID)] && 
+                    (mode != BuilderMode.Workshop || ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size == 0))
                 {
                     inv.gameObject.SetActive(true);
                     contentTexts[ResourceManager.GetAsset<PartBlueprint>(inv.part.partID).size].SetActive(true);

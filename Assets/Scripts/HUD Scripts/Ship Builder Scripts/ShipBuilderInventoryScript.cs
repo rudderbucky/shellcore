@@ -127,7 +127,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
     public void DecrementCount(bool destroyIfZero = false)
     {
         count--;
-        if (destroyIfZero)
+        if (destroyIfZero && count == 0)
         {
             ShipBuilder.instance.RemoveKeyFromPartDict(part);
             Destroy(gameObject);
