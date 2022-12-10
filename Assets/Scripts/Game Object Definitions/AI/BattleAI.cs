@@ -586,9 +586,13 @@ public class BattleAI : AIModule
         {
             for (int i = 0; i < AIData.vendors.Count; i++)
             {
-                if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude <= 100f && AIData.vendors[i].faction == craft.faction)
+                if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude <= 100f)
                 {
                     IVendor vendor = AIData.vendors[i] as IVendor;
+                    if (vendor.NeedsSameFaction() && vendor.GetFaction() != craft.faction)
+                    {
+                        continue;
+                    }
 
                     if (vendor.GetVendingBlueprint() == null)
                     {

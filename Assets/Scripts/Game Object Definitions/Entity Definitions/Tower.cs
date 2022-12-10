@@ -1,65 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower : GroundCraft, IOwnable
-{
-    public IOwner owner;
-    WeaponAbility weapon;
-
-    WeaponAbility Weapon
+public class Tower : GroundConstruct
+{   
+    protected override void Start()
     {
-        get
-        {
-            if (weapon == null)
-            {
-                weapon = GetComponentInChildren<WeaponAbility>();
-            }
-
-            return weapon;
-        }
-    }
-
-    public override bool isImmobile
-    {
-        get { return pins > 0 || forceImmobile || !isOnGround; }
-        set { forceImmobile = true; }
-    }
-
-    protected override void OnDeath()
-    {
-        if (owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
-        {
-            owner.GetUnitsCommanding().Remove(this);
-        }
-
-        base.OnDeath();
-    }
-
-    protected override void OnDestroy()
-    {
-        if (owner != null && !(owner.Equals(null)) && owner.GetUnitsCommanding().Contains(this))
-        {
-            owner.GetUnitsCommanding().Remove(this);
-        }
-
-        base.OnDestroy();
-    }
-
-    public void SetOwner(IOwner owner)
-    {
-        this.owner = owner;
-        owner.GetUnitsCommanding().Add(this);
+        category = EntityCategory.Station;
+        base.Start();
     }
 
     protected override void Update()
     {
-        if (!isDead && GetComponentInChildren<WeaponAbility>())
+        GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(faction);
+        GetComponent<SpriteRenderer>().material = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>().material;
+
+        float rate = 45 * Time.deltaTime;
+        transform.Rotate(new Vector3(0, 0, rate));
+        transform.Find("Shell Sprite").Rotate(new Vector3(0, 0, -rate));
+
+
+        if (!isDead && GetComponentInChildren<PassiveAbility>())
         {
-            GetComponentInChildren<WeaponAbility>().Tick();
-        }
-        else if (!isDead && GetComponentInChildren<ActiveAbility>())
-        {
-            GetComponentInChildren<ActiveAbility>().Activate();
+            GetComponentInChildren<PassiveAbility>().Tick();
         }
         base.Update();
     }

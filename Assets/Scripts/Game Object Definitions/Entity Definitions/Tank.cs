@@ -54,7 +54,6 @@ public class Tank : GroundCraft, IOwnable
 
     protected override void Start()
     {
-        isDraggable = true;
         if (!GetComponent<Draggable>())
         {
             draggable = gameObject.AddComponent<Draggable>();

@@ -5,6 +5,10 @@ public class Bunker : GroundConstruct, IVendor
     public VendingBlueprint vendingBlueprint;
     BattleZoneManager BZManager;
 
+    public bool NeedsSameFaction()
+    {
+        return true;
+    }
     protected override void Start()
     {
         category = EntityCategory.Station;

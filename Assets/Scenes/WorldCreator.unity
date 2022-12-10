@@ -8463,6 +8463,36 @@ MonoBehaviour:
       waypoints: []
     ID: 
     dimension: 0
+  - name: Tower Base
+    obj: {fileID: 5227766161376734598, guid: a2ffbfcd41eecf94bb2d32aad19571f9, type: 3}
+    type: 0
+    assetID: tower_base
+    shellcoreJSON: 
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+    patrolPath:
+      waypoints: []
+    ID: 
+    dimension: 0
+  - name: Healer Tower
+    obj: {fileID: 6539643722953039079, guid: f63a172420d941e4f8aa961165ee265f, type: 3}
+    type: 0
+    assetID: healer_tower
+    shellcoreJSON: 
+    vendingID: 
+    isTarget: 0
+    faction: 0
+    placeablesIndex: 0
+    pos: {x: 0, y: 0, z: 0}
+    rotation: 0
+    patrolPath:
+      waypoints: []
+    ID: 
+    dimension: 0
   itemPack: {fileID: 11400000, guid: eea7744c34a5c5546b27f67808b47887, type: 2}
   buttonPrefab: {fileID: 5672837142992497396, guid: c45a514f15c3d8f4784cad7f4649cf42,
     type: 3}
@@ -9091,6 +9121,42 @@ MonoBehaviour:
     obj: {fileID: 8300000, guid: 838ea367f3079427587278236425b765, type: 3}
   - ID: music_overworld_3
     obj: {fileID: 8300000, guid: 14d18922b8c694f918e9f3da4e2d9f97, type: 3}
+  - ID: music_fast_4
+    obj: {fileID: 8300000, guid: 681e00ca7d7c8324baf842fc3e3c787d, type: 3}
+  - ID: defenseturretoutpostsprite
+    obj: {fileID: 21300000, guid: f647c3a12c6e67c4b95d660e9688582b, type: 3}
+  - ID: harvesterturretoutpostsprite
+    obj: {fileID: 21300000, guid: f5f999a1d4a12354c89742a49a7336c0, type: 3}
+  - ID: missileturretoutpostsprite
+    obj: {fileID: 21300000, guid: c995218d9de72b743ada1d5c1e17b7dd, type: 3}
+  - ID: siegeturretoutpostsprite
+    obj: {fileID: 21300000, guid: 43133dde5e9c045478a106ea871c58ef, type: 3}
+  - ID: torpedoturretoutpostsprite
+    obj: {fileID: 21300000, guid: 25e1869af3690fe468205f453d91bd76, type: 3}
+  - ID: speedertankbunkersprite
+    obj: {fileID: 21300000, guid: 110b58176c2d3ca4ead190072bd501b1, type: 3}
+  - ID: siegetankbunkersprite
+    obj: {fileID: 21300000, guid: f2ed8d447a1c6db45a09cd6ca9c6b6d5, type: 3}
+  - ID: rockettankbunkersprite
+    obj: {fileID: 21300000, guid: 8bf5f2fb0a7e7344c83a480cce58ce61, type: 3}
+  - ID: missiletankbunkersprite
+    obj: {fileID: 21300000, guid: 14da22d1187194e4f892acae302dd565, type: 3}
+  - ID: lasertankbunkersprite
+    obj: {fileID: 21300000, guid: c9afda8b233e5d74fb825c7a4d8cdf58, type: 3}
+  - ID: bullettankbunkersprite
+    obj: {fileID: 21300000, guid: 3dc752a97917f8447afc309e43b42352, type: 3}
+  - ID: beamtankbunkersprite
+    obj: {fileID: 21300000, guid: 9418ff9599f08074d9a0fccec4459bed, type: 3}
+  - ID: healer_tower_shell_sprite
+    obj: {fileID: 21300000, guid: 9368f530742c04a4c8ad88d22550c14b, type: 3}
+  - ID: healer_tower_sprite
+    obj: {fileID: 21300000, guid: e81fd38757f9e0440b9b1a2c1747dde6, type: 3}
+  - ID: healer_tower
+    obj: {fileID: 11400000, guid: f67f5e22ddf9b3442a75afbacdfacc86, type: 2}
+  - ID: circle_holder
+    obj: {fileID: 0}
+  - ID: tower_base
+    obj: {fileID: 5227766161376734598, guid: a2ffbfcd41eecf94bb2d32aad19571f9, type: 3}
   fieldID: 
   newObject: {fileID: 0}
   resourcePack: {fileID: 11400000, guid: 2de67eb71a4cb87438b3393e036d1bb3, type: 2}
@@ -20156,6 +20222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -24091,7 +24158,7 @@ PrefabInstance:
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}

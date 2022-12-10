@@ -58,7 +58,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public EntityBlueprint blueprint; // blueprint of entity containing parts
     public Vector3 spawnPoint;
     public Dialogue dialogue; // dialogue of entity
-    protected bool isDraggable; // is the entity draggable?
     protected Draggable draggable; // associated draggable
     protected bool initialized; // is the entity safe to call update() on?
     public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files

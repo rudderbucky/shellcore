@@ -127,7 +127,6 @@ public class Drone : AirCraft, IOwnable
 
     public void Init()
     {
-        isDraggable = true;
         base.Start();
         ai = GetAI();
         ai.owner = owner;

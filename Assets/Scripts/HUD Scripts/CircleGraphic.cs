@@ -7,6 +7,9 @@ public class CircleGraphic : MaskableGraphic
     [SerializeField]
     private int vertices = 3;
 
+    public bool dotted = false;
+    public static GameObject holderObject;
+
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         Vector2 corner1 = Vector2.zero;
@@ -38,7 +41,7 @@ public class CircleGraphic : MaskableGraphic
             var x = xRadius * Mathf.Cos(degree * Mathf.Deg2Rad * i);
             var y = yRadius * Mathf.Sin(degree * Mathf.Deg2Rad * i);
             vert.position = new Vector2(x, y);
-            vert.color = color;
+            vert.color = !dotted || i % 5 == 0 ? color : Color.clear;
             vh.AddVert(vert);
         }
 

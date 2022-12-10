@@ -209,7 +209,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     }
 
     private Entity speaker;
-    public static void StartDialogue(Dialogue dialogue, Entity speaker = null)
+    public static void StartDialogue(Dialogue dialogue, IInteractable speaker = null)
     {
         Instance.startDialogue(dialogue, speaker);
     }
@@ -594,19 +594,20 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
-    private void startDialogue(Dialogue dialogue, Entity speaker)
+    private void startDialogue(Dialogue dialogue, IInteractable speaker)
     {
         if (window)
         {
             endDialogue();
         }
-
-        speakerPos = speaker.transform.position;
+        if (speaker != null)
+            speakerPos = speaker.GetTransform().position;
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
 
-        DialogueViewTransitionIn(speaker);
+        if (speaker as Entity)
+            DialogueViewTransitionIn(speaker as Entity);
 
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
@@ -617,7 +618,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         next(dialogue, 0, speaker);
     }
 
-    public static void Next(Dialogue dialogue, int ID, Entity speaker)
+    public static void Next(Dialogue dialogue, int ID, IInteractable speaker)
     {
         Instance.next(dialogue, ID, speaker);
     }
@@ -640,7 +641,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         builder.Initialize(BuilderMode.Workshop);
     }
 
-    public void next(Dialogue dialogue, int ID, Entity speaker)
+    public void next(Dialogue dialogue, int ID, IInteractable speaker)
     {
         if (dialogue.nodes.Count == 0)
         {
@@ -684,7 +685,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 break;
             case Dialogue.DialogueAction.Outpost:
                 endDialogue(0, false);
-                if (speaker.faction != player.faction)
+                if ((speaker as IVendor).NeedsSameFaction() && (speaker as IVendor).GetFaction() != player.faction)
                 {
                     return;
                 }
@@ -720,9 +721,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 break;
         }
 
-        // radio image 
-        window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
-        window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+        if (speaker as Entity)
+        {
+            var ent = speaker as Entity;
+            // radio image 
+            window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
+            window.transform.Find("Name").GetComponent<Text>().text = ent.blueprint.entityName;
+        }
 
         // change text
         text = current.text.Replace("<br>", "\n");

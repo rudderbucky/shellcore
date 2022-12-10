@@ -43,7 +43,8 @@ public enum AbilityID
     Flak,
     Rocket,
     YardWarp,
-    Unload
+    Unload,
+    TowerAura
 }
 
 public static class AbilityUtilities
@@ -127,6 +128,7 @@ public static class AbilityUtilities
             case 22:
             case 23:
             case 34:
+            case 42:
                 return AbilityHandler.AbilityTypes.Passive;
             case 0:
             default:
@@ -257,6 +259,7 @@ public static class AbilityUtilities
             case 22:
             case 23:
             case 34:
+            case 42:
                 return null;
             case 4:
                 if (data == "beamgroundshooter_sprite")
@@ -610,6 +613,9 @@ public static class AbilityUtilities
                 break;
             case 41:
                 ability = obj.AddComponent<Unload>();
+                break;
+            case 42:
+                ability = obj.AddComponent<TowerAura>();
                 break;
         }
 

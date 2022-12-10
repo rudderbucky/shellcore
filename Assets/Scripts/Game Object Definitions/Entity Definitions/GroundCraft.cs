@@ -4,8 +4,8 @@ public class GroundCraft : Craft
 {
     float time = 0f;
     protected bool isOnGround = false;
-    private float initialzangle;
 
+    private float initialzangle;
     protected override void Start()
     {
         Terrain = TerrainType.Ground;

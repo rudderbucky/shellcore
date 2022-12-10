@@ -6,6 +6,12 @@ public class Outpost : AirConstruct, IVendor
 
     BattleZoneManager BZManager;
 
+
+    public bool NeedsSameFaction()
+    {
+        return true;
+    }
+    
     public VendingBlueprint GetVendingBlueprint()
     {
         return vendingBlueprint;

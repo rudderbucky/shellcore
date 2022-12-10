@@ -7,6 +7,7 @@ public interface IVendor
     VendingBlueprint GetVendingBlueprint();
     int GetFaction();
     Vector3 GetPosition();
+    bool NeedsSameFaction();
 }
 
 public class VendorUI : MonoBehaviour, IDialogueable, IWindow
@@ -142,7 +143,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 player = PlayerCore.Instance;
             }
 
-            if (player && vendor.GetFaction() != player.faction)
+            if (player && vendor.NeedsSameFaction() && vendor.GetFaction() != player.faction)
             {
                 Debug.Log("Vendor faction changed");
                 CloseUI();
@@ -222,10 +223,17 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
                 shellCore.blueprint = blueprint.items[index].entityBlueprint;
                 shellCore.sectorMngr = SectorManager.instance;
                 break;
+            case EntityBlueprint.IntendedType.Tower:
+                Tower tower = creation.AddComponent<Tower>();
+                tower.blueprint = blueprint.items[index].entityBlueprint;
+                tower.sectorMngr = SectorManager.instance;
+                (vendor as TowerBase).SetCurrentTower(tower);
+                break;
             default:
                 break;
         }
 
+        print(creation.GetComponent<Entity>() + " " + vendor);
         creation.GetComponent<Entity>().spawnPoint = vendor.GetPosition();
         creation.GetComponent<Entity>().faction = core.faction;
         creation.name = blueprint.items[index].entityBlueprint.name;
@@ -236,7 +244,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
     public void onButtonPressed(int index)
     {
-        if (player.GetPower() >= blueprint.items[index].cost && FactionManager.IsAllied(player.faction, vendor.GetFaction())
+        if (player.GetPower() >= blueprint.items[index].cost && (!vendor.NeedsSameFaction() || FactionManager.IsAllied(player.faction, vendor.GetFaction()))
                                                              && player.unitsCommanding.Count < player.GetTotalCommandLimit())
         {
             BuyItem(player, index, vendor);
