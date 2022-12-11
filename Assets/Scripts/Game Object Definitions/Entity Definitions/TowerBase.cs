@@ -16,9 +16,27 @@ public class TowerBase : MonoBehaviour, IInteractable, IVendor
     {
         if (SceneManager.GetActiveScene().name == "SectorCreator" || SceneManager.GetActiveScene().name == "WorldCreator") return;
         BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
-        AIData.interactables.Add(this);
         GetComponent<SpriteRenderer>().color = SectorManager.instance.current.backgroundColor + Color.grey;
     }
+
+
+    private void OnEnable()
+    {
+        if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
+        {
+            AIData.interactables.Add(this);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
+        {
+            AIData.interactables.Remove(this);
+        }
+    }
+
+
 
 
     public VendingBlueprint GetVendingBlueprint()

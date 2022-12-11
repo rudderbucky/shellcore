@@ -50,6 +50,10 @@ public abstract class Craft : Entity
     public void CalculatePhysicsConstants()
     {
         physicsSpeed = GetPhysicsSpeed(speed, weight);
+        if (SpeedAuraStacks > 0)
+        {
+            physicsSpeed *= 1.5F;
+        }
         accel = 0.5F * speed;
         physicsAccel = accel * (0.5F * weightNumeratorConstant / weight) + 0.1f * accel;
         physicsAccel *= 5F;

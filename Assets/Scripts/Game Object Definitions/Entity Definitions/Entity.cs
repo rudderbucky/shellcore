@@ -152,6 +152,47 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    [SerializeField]
+    private int healAuraStacks;
+
+    public int HealAuraStacks
+    {
+        get { return healAuraStacks; }
+        set
+        {
+            healAuraStacks = value;
+        }
+    }
+
+    [SerializeField]
+    private int speedAuraStacks;
+
+    public int SpeedAuraStacks
+    {
+        get { return speedAuraStacks; }
+        set
+        {
+            speedAuraStacks = value;
+        }
+    }
+
+
+    [SerializeField]
+    private int damageResistanceAuraStacks;
+
+    public int DamageResistanceAuraStacks
+    {
+        get { return damageResistanceAuraStacks; }
+        set
+        {
+            damageResistanceAuraStacks = value;
+        }
+    }
+
+
+
+
+
     // Performs calculations based on current control and shell max stats to determine final health
     private void CalculateMaxHealth()
     {
@@ -989,6 +1030,46 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    protected void UpdateAuras()
+    {
+        bool speedAuraAtZero = SpeedAuraStacks == 0;
+        healAuraStacks = 0;
+        damageResistanceAuraStacks = 0;
+        SpeedAuraStacks = 0;
+
+        foreach (var tower in AIData.entities)
+        {
+            if (tower.faction != faction) continue;
+            var comps = tower.GetComponentsInChildren<TowerAura>();
+            foreach (var comp in comps)
+            {
+                if (Vector2.Distance(tower.transform.position, transform.position) > comp.GetRange()) continue;
+                switch (comp.type)
+                {
+                    case TowerAura.AuraType.Heal:
+                        healAuraStacks++;
+                        break;
+                    case TowerAura.AuraType.Speed:
+                        SpeedAuraStacks++;
+                        if (speedAuraAtZero && this as Craft)
+                        {
+                            (this as Craft).CalculatePhysicsConstants();
+                        }
+                        break;
+                    case TowerAura.AuraType.DamageResistance:
+                        damageResistanceAuraStacks++;
+                        break;
+                }
+            }
+        }
+
+        if (SpeedAuraStacks == 0 && !speedAuraAtZero && this as Craft)
+        {
+            (this as Craft).CalculatePhysicsConstants();
+        }
+    }
+
+
     /// <summary>
     /// Used to update the state of the craft- regeneration, timers, etc
     /// </summary>
@@ -996,6 +1077,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         DeathHandler();
         UpdateInteractible();
+        UpdateAuras();
         if (isDead) // if the craft is dead
         {
             GetComponent<SpriteRenderer>().enabled = false; // disable craft sprite
@@ -1023,8 +1105,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             // not dead, continue normal state changing
             // regenerate
-            RegenHealth(ref currentHealth[0], regenRate[0], maxHealth[0]);
-            RegenHealth(ref currentHealth[1], regenRate[1], maxHealth[1]);
+            RegenHealth(ref currentHealth[0], HealAuraStacks > 0 ? regenRate[0] * 1.5F : regenRate[0], maxHealth[0]);
+            RegenHealth(ref currentHealth[1], HealAuraStacks > 0 ? regenRate[1] * 1.5F : regenRate[1], maxHealth[1]);
             RegenHealth(ref currentHealth[2], regenRate[2], maxHealth[2]);
 
             if (weaponGCDTimer < weaponGCD)
@@ -1186,6 +1268,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             TakeEnergy(-amount);
             return 0f;
+        }
+
+        // tower resistance buff
+        if (DamageResistanceAuraStacks > 0)
+        {
+            amount /= 2F;
         }
 
         // counter drone fighting another drone, multiply damage accordingly

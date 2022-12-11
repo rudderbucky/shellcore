@@ -181,7 +181,8 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
     public static Entity BuyItem(ShellCore core, int index, IVendor vendor)
     {
-        if (core.unitsCommanding.Count >= core.GetTotalCommandLimit())
+        // TODO: these booleans can be used this way right now but a new IVendor state should be created for if commanding count is needed
+        if (vendor.NeedsSameFaction() && core.unitsCommanding.Count >= core.GetTotalCommandLimit())
         {
             return null;
         }
@@ -232,8 +233,6 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             default:
                 break;
         }
-
-        print(creation.GetComponent<Entity>() + " " + vendor);
         creation.GetComponent<Entity>().spawnPoint = vendor.GetPosition();
         creation.GetComponent<Entity>().faction = core.faction;
         creation.name = blueprint.items[index].entityBlueprint.name;
@@ -245,7 +244,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
     public void onButtonPressed(int index)
     {
         if (player.GetPower() >= blueprint.items[index].cost && (!vendor.NeedsSameFaction() || FactionManager.IsAllied(player.faction, vendor.GetFaction()))
-                                                             && player.unitsCommanding.Count < player.GetTotalCommandLimit())
+                                                             && (!vendor.NeedsSameFaction() || player.unitsCommanding.Count < player.GetTotalCommandLimit()))
         {
             BuyItem(player, index, vendor);
             if (GetActive())
@@ -255,7 +254,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
             ClearVendor();
         }
-        else if (player && player.GetUnitsCommanding().Count >= player.GetTotalCommandLimit())
+        else if (player && (vendor.NeedsSameFaction() && player.GetUnitsCommanding().Count >= player.GetTotalCommandLimit()))
         {
             player.alerter.showMessage("Unit limit reached!", "clip_alert");
         }

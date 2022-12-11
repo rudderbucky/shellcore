@@ -44,7 +44,9 @@ public enum AbilityID
     Rocket,
     YardWarp,
     Unload,
-    TowerAura
+    HealAura,
+    SpeedAura,
+    DamageResistanceAura
 }
 
 public static class AbilityUtilities
@@ -616,6 +618,15 @@ public static class AbilityUtilities
                 break;
             case 42:
                 ability = obj.AddComponent<TowerAura>();
+                (ability as TowerAura).type = TowerAura.AuraType.Heal;
+                break;
+            case 43:
+                ability = obj.AddComponent<TowerAura>();
+                (ability as TowerAura).type = TowerAura.AuraType.Speed;
+                break;
+            case 44:
+                ability = obj.AddComponent<TowerAura>();
+                (ability as TowerAura).type = TowerAura.AuraType.DamageResistance;
                 break;
         }
 
