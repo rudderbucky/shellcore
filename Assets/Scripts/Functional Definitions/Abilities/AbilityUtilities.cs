@@ -131,6 +131,8 @@ public static class AbilityUtilities
             case 23:
             case 34:
             case 42:
+            case 43:
+            case 44:
                 return AbilityHandler.AbilityTypes.Passive;
             case 0:
             default:
@@ -262,6 +264,8 @@ public static class AbilityUtilities
             case 23:
             case 34:
             case 42:
+            case 43:
+            case 44:
                 return null;
             case 4:
                 if (data == "beamgroundshooter_sprite")
