@@ -190,6 +190,10 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         GameObject creation = new GameObject();
         creation.transform.position = vendor.GetPosition();
         var blueprint = vendor.GetVendingBlueprint();
+        if (blueprint.items[index].entityBlueprint == null)
+        {
+            blueprint.items[index].entityBlueprint = SectorManager.TryGettingEntityBlueprint(blueprint.items[index].json); 
+        }
         switch (blueprint.items[index].entityBlueprint.intendedType)
         {
             case EntityBlueprint.IntendedType.Turret:

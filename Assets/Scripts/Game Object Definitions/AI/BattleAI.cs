@@ -684,7 +684,7 @@ public class BattleAI : AIModule
 
                     if (state == BattleState.Attack)
                     {
-                        if (vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Turret)
+                        if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo >= 6)
                         {
                             bool ownGroundExists = false;
                             for (int j = 0; j < AIData.entities.Count; j++)
@@ -712,7 +712,7 @@ public class BattleAI : AIModule
                                 }
                             }
                         }
-                        else if (vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank)
+                        else if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo < 6)
                         {
                             itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
                         }
