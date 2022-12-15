@@ -202,7 +202,7 @@ public abstract class Craft : Entity
             return;
         }
 
-        float finalAngle = Mathf.LerpAngle(craftAngle, targetAngle, rotationAmount / 45f);
+        float finalAngle = Mathf.LerpAngle(craftAngle, targetAngle, rotationAmount / angleDistance);
         entityBody.transform.eulerAngles = new Vector3(0, 0, finalAngle - 90);
     }
 
