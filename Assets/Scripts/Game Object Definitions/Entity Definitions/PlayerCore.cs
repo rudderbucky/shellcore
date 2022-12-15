@@ -315,7 +315,7 @@ public class PlayerCore : ShellCore
                 SectorManager.instance.characters = newChars.ToArray();
             }
 
-            transform.position = save.position;
+            transform.position = havenSpawnPoint = save.position;
         }
 
         name = entityName = "player";
