@@ -54,7 +54,7 @@ public class DisplayPart : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Invalid display part image: {info.partID}");
+            Debug.Log($"Invalid display part image: {info.partID}");
         }
     }
 

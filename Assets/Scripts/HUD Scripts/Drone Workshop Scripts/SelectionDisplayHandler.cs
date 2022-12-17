@@ -46,7 +46,8 @@ public class SelectionDisplayHandler : MonoBehaviour
             core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
             core.rectTransform.anchoredPosition = -shell.rectTransform.anchoredPosition;
             core.type = Image.Type.Sliced;
-            core.material = ResourceManager.GetAsset<Material>("material_color_swap");
+            if (blueprint.intendedType != EntityBlueprint.IntendedType.Tower)
+                core.material = ResourceManager.GetAsset<Material>("material_color_swap");
             core.color = FactionManager.GetFactionColor(faction);
             // orient core image so relative center stays the same regardless of shell tier
         }
