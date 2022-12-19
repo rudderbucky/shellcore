@@ -261,4 +261,31 @@ public abstract class WeaponAbility : ActiveAbility
         base.Execute();
         return true;
     }
+
+    protected virtual List<Transform> GetClosestTargets(int num, Vector3 pos)
+    {
+        List<Entity> potentialTargets = TargetManager.GetTargetList(targetingSystem, category);
+        List<Transform> targets = new List<Transform>();
+        // Just get the N closest entities, the complexity is just O(N) instead of sorting which would be O(NlogN)
+        for (int i = 0; i < num; i++)
+        {
+            var target = TargetManager.GetClosestFromList(potentialTargets, pos, targetingSystem, category);
+            if (target != null)
+            {
+                potentialTargets.Remove(target.GetComponentInChildren<Entity>());
+                targets.Add(target);
+            }
+            else
+            {
+                break;
+            }
+        }
+        return targets;
+    }
+
+    protected List<Transform> GetClosestTargets(int num)
+    {
+        return GetClosestTargets(num, targetingSystem.GetEntity().transform.position);
+    }
+
 }

@@ -143,6 +143,11 @@ public class TargetManager : MonoBehaviour
         return Instance.getTargetList(ts, ec);
     }
 
+    public static Transform GetClosestFromList(List<Entity> targets, Vector3 pos, ITargetingSystem ts, Entity.EntityCategory ec)
+    {
+        return Instance.getClosestFromList(targets, pos, ts.GetEntity(), ts.GetAbility(), ec);
+    }
+
     public static Transform GetClosestFromList(List<Entity> targets, ITargetingSystem ts, Entity.EntityCategory ec)
     {
         return Instance.getClosestFromList(targets, ts, ec);
@@ -191,9 +196,14 @@ public class TargetManager : MonoBehaviour
 
     private Transform getClosestFromList(List<Entity> targets, ITargetingSystem ts, Entity.EntityCategory ec)
     {
+        var pos = ts.GetAbility() ? ts.GetAbility().transform.position : ts.GetEntity().transform.position;
+        return getClosestFromList(targets, pos, ts.GetEntity(), ts.GetAbility(), ec);
+    }
+
+    private Transform getClosestFromList(List<Entity> targets, Vector3 pos, Entity tsEntity, Ability tsAbility, Entity.EntityCategory ec)
+    {
         Transform closest = null;
         float closestD = float.MaxValue;
-        var pos = ts.GetAbility() ? ts.GetAbility().transform.position : ts.GetEntity().transform.position;
 
         for (int i = 0; i < targets.Count; i++) // go through all entities and check them for several factors
         {
@@ -204,12 +214,12 @@ public class TargetManager : MonoBehaviour
                 float sqrD = Vector3.SqrMagnitude(pos - targets[i].transform.position);
                 if (closest == null || sqrD < closestD)
                 {
-                    if (targets[i] == ts.GetEntity())
+                    if (targets[i] == tsEntity)
                     {
                         continue;
                     }
 
-                    var ability = ts.GetAbility();
+                    var ability = tsAbility;
                     if (ability != null && sqrD >= ability.GetRange() * ability.GetRange())
                     {
                         continue;

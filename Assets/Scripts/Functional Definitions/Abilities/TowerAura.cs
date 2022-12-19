@@ -22,6 +22,12 @@ public class TowerAura : PassiveAbility
         range = 15;
     }
 
+    public override void Deactivate()
+    {
+        base.Deactivate();
+        Destroy(circle.gameObject);
+    }
+
     public enum AuraType
     {
         Heal,

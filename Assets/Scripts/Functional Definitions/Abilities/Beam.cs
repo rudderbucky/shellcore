@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Beam : WeaponAbility
 {
     public LineRenderer line; // line renderer of the beam
     private Material material; // material used by the line renderer
-    private bool firing; // check for line renderer drawing
-    private float timer; // float timer for line renderer drawing
+    protected bool firing; // check for line renderer drawing
+    protected float timer; // float timer for line renderer drawing
     public GameObject beamHitPrefab;
     public static readonly int beamDamage = 525;
+    protected List<Transform> targetArray;
+
 
     protected override void Awake()
     {
@@ -26,6 +29,8 @@ public class Beam : WeaponAbility
         category = Entity.EntityCategory.All;
         bonusDamageType = typeof(ShellCore);
         cooldownDuration = 3f;
+        targetArray = new List<Transform>();
+        line.positionCount = 0;
     }
 
     protected override void Start()
@@ -44,28 +49,29 @@ public class Beam : WeaponAbility
         line.material = material;
     }
 
-    void Update()
+    protected void RenderBeam(int currentVertex)
     {
-        if (firing && timer < 0.1F) // timer for drawing the beam, past the set timer float value and it stops being drawn
+        if (firing && timer < 0.1F*(currentVertex+1)) // timer for drawing the beam, past the set timer float value and it stops being drawn
         {
             line.startWidth = line.endWidth = 0.15F;
             line.SetPosition(0, transform.position); // draw and increment timer
             if (nextTargetPart)
             {
-                line.SetPosition(1, partPos);
+                line.SetPosition(currentVertex+1, partPos);
             }
-            else if (targetingSystem.GetTarget())
+            else if (targetArray[currentVertex])
             {
-                line.SetPosition(1, targetingSystem.GetTarget().position);
+                line.SetPosition(currentVertex+1, targetArray[currentVertex].position);
             }
             else
             {
-                line.SetPosition(1, line.transform.position); // TODO: Fix
+                line.SetPosition(currentVertex+1, line.transform.position); // TODO: Fix
             }
 
-            timer += Time.deltaTime;
+            if (currentVertex == line.positionCount - 2)
+                timer += Time.deltaTime;
         }
-        else if (firing && timer >= 0.1F)
+        else if (firing && timer >= 0.1F*(currentVertex+1) && currentVertex == line.positionCount - 2)
         {
             if (line.startWidth > 0)
             {
@@ -77,13 +83,19 @@ public class Beam : WeaponAbility
             {
                 line.startWidth = line.endWidth = 0;
                 firing = false;
+                line.positionCount = 0;
             }
         }
-        else
+        else if (currentVertex == line.positionCount - 2)
         {
             line.positionCount = 0;
             firing = false;
         }
+    }
+
+    protected virtual void Update()
+    {
+        RenderBeam(0);
     }
 
     protected override bool Execute(Vector3 victimPos)
@@ -93,8 +105,17 @@ public class Beam : WeaponAbility
             beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
         }
 
+        targetArray.Clear();
+        targetArray.Add(targetingSystem.GetTarget());
+        FireBeam(victimPos);
+        return true;
+    }
+
+    protected void FireBeam(Vector3 victimPos)
+    {
         AudioManager.PlayClipByID("clip_beam", transform.position);
-        var residue = targetingSystem.GetTarget().GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
+        Transform targetToAttack = targetArray[targetArray.Count - 1];
+        var residue = targetToAttack.GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
         // deal instant damage
 
         if (nextTargetPart)
@@ -103,26 +124,32 @@ public class Beam : WeaponAbility
             victimPos = partPos = nextTargetPart.transform.position;
         }
 
-        // if(targetingSystem.GetTarget().GetComponent<Entity>())
-        //   targetingSystem.GetTarget().GetComponent<Entity>().TakeCoreDamage(residue);
-        line.positionCount = 2; // render the beam line
-        timer = 0; // start the timer
+        if (line.positionCount == 0) 
+        {
+            timer = 0; // start the timer
+            line.positionCount = 2; // render the beam line
+        }
+        else 
+        {
+            line.positionCount++;
+        }
         firing = true;
 
         Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
-        InstantiateParticles(victimPos);
-        return true;
+        InstantiateParticles(line.positionCount > 2 ? line.GetPosition(line.positionCount - 2) : transform.position, victimPos);
+
     }
+
 
     public GameObject particlePrefab;
 
-    private void InstantiateParticles(Vector3 victimPos)
+    private void InstantiateParticles(Vector3 origPos, Vector3 victimPos)
     {
-        Vector3 distance = victimPos - transform.position;
+        Vector3 distance = victimPos - origPos;
         Vector3 distanceNormalized = distance.normalized;
-        Vector3 currentPos = transform.position;
+        Vector3 currentPos = origPos;
 
-        while ((currentPos - transform.position).sqrMagnitude < distance.sqrMagnitude)
+        while ((currentPos - origPos).sqrMagnitude < distance.sqrMagnitude)
         {
             Instantiate(particlePrefab, (Vector2)currentPos, Quaternion.identity);
             currentPos += distanceNormalized * 0.8F;
@@ -131,6 +158,26 @@ public class Beam : WeaponAbility
 
     ShellPart nextTargetPart;
     Vector2 partPos;
+
+    protected void GetClosestPart(ShellPart[] parts)
+    {
+        GetClosestPart(transform.position, parts);
+    }
+
+    protected void GetClosestPart(Vector3 pos, ShellPart[] parts)
+    {
+        float closestD = range;
+        nextTargetPart = null;
+        foreach (var part in parts)
+        {
+            var distance = Vector2.Distance(part.transform.position, pos);
+            if (distance < closestD)
+            {
+                closestD = distance;
+                nextTargetPart = part;
+            }
+        }
+    }
 
     protected override bool DistanceCheck(Transform targetEntity)
     {
@@ -141,18 +188,7 @@ public class Beam : WeaponAbility
         }
         else
         {
-            float closestD = range;
-            nextTargetPart = null;
-            foreach (var part in parts)
-            {
-                var distance = Vector2.Distance(part.transform.position, transform.position);
-                if (distance < closestD)
-                {
-                    closestD = distance;
-                    nextTargetPart = part;
-                }
-            }
-
+            GetClosestPart(parts);
             return nextTargetPart;
         }
     }

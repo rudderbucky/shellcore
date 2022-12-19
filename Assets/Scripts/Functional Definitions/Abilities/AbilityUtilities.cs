@@ -46,7 +46,8 @@ public enum AbilityID
     Unload,
     HealAura,
     SpeedAura,
-    DamageResistanceAura
+    DamageResistanceAura,
+    ChainBeam
 }
 
 public static class AbilityUtilities
@@ -268,6 +269,7 @@ public static class AbilityUtilities
             case 44:
                 return null;
             case 4:
+            case 45:
                 if (data == "beamgroundshooter_sprite")
                 {
                     return "beamgroundshooter_sprite";
@@ -631,6 +633,9 @@ public static class AbilityUtilities
             case 44:
                 ability = obj.AddComponent<TowerAura>();
                 (ability as TowerAura).type = TowerAura.AuraType.DamageResistance;
+                break;
+            case 45:
+                ability = obj.AddComponent<ChainBeam>();
                 break;
         }
 

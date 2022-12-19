@@ -10,6 +10,7 @@ public class Flak : WeaponAbility
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
     protected string bulletSound = "clip_flak";
     public static readonly int bulletDamage = 100;
+    private static readonly int BULLET_COUNT = 5;
 
     protected override void Awake()
     {
@@ -58,28 +59,11 @@ public class Flak : WeaponAbility
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
 
-        var bullets = 5;
-        // TODO: Highly suboptimal, this essentially makes the target check go twice
-        List<Entity> potentialTargets = TargetManager.GetTargetList(targetingSystem, category);
-        List<Transform> targets = new List<Transform>();
-        // Just get the 5 closest entities, the complexity is just O(N) instead of sorting which would be O(NlogN)
-        for (int i = 0; i < bullets; i++)
-        {
-            var target = TargetManager.GetClosestFromList(potentialTargets, targetingSystem, category);
-            if (target != null)
-            {
-                potentialTargets.Remove(target.GetComponentInChildren<Entity>());
-                targets.Add(target);
-            }
-            else
-            {
-                break;
-            }
-        }
+        List<Transform> targets = GetClosestTargets(BULLET_COUNT);
 
 
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
-        for (int i = 0; i < Mathf.Min(bullets, targets.Count); i++)
+        for (int i = 0; i < Mathf.Min(BULLET_COUNT, targets.Count); i++)
         {
             // Calculate future target position
             Vector2 targetVelocity = targets[i] ? targets[i].GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
@@ -105,7 +89,7 @@ public class Flak : WeaponAbility
             }
 
 
-            var totalSpreadInDegrees = bullets * 20;
+            var totalSpreadInDegrees = BULLET_COUNT * 20;
             var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
             bullet.transform.localScale = prefabScale;
 
