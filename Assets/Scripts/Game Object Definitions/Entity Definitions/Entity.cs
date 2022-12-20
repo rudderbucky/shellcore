@@ -31,9 +31,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected bool isInCombat; // whether the entity is in combat or not
     protected bool isBusy; // whether the entity is busy or not
     protected bool isDead; // whether the entity is currently dead or not
+    protected bool isWarpUninteractable; // whether the entity is uninteractable because it recently warped
     protected float busyTimer; // the time since the entity was last set to busy
     protected float combatTimer; // the time since the entity was last set into combat
     protected float deathTimer; // the time since the entity last died;
+    protected float warpUninteractableTimer; // the time since the entity last warped;
     protected GameObject explosionCirclePrefab; // prefabs for death explosion
     protected GameObject explosionLinePrefab;
     protected GameObject respawnImplosionPrefab;
@@ -349,6 +351,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         if (isPathing || DialogueSystem.isInCutscene)
+        {
+            interactible = false;
+        }
+
+        if (this.isWarpUninteractable)
         {
             interactible = false;
         }
@@ -1134,6 +1141,16 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 combatTimer += Time.deltaTime; // otherwise continue ticking timer
             }
 
+            // check if uninteractable state changing is due
+            if (warpUninteractableTimer > 3)
+            {
+                isWarpUninteractable = false; // change state if it is
+            }
+            else
+            {
+                warpUninteractableTimer += Time.deltaTime; // otherwise continue ticking timer
+            }
+
             if (RangeCheckDelegate != null && PlayerCore.Instance)
             {
                 RangeCheckDelegate.Invoke(Vector2.SqrMagnitude(PlayerCore.Instance.transform.position - transform.position));
@@ -1215,6 +1232,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public bool GetIsInCombat()
     {
         return isInCombat;
+    }
+
+    /// <summary>
+    /// Set the craft into uninteractable state because it warped
+    /// </summary>
+    public void SetWarpUninteractable() {
+        isWarpUninteractable = true;
+        warpUninteractableTimer = 0;// reset timer
     }
 
     /// <summary>
