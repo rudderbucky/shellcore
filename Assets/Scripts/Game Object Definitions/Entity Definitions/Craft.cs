@@ -194,7 +194,7 @@ public abstract class Craft : Entity
         float targetAngle = Mathf.Atan2(directionVector.y, directionVector.x) * Mathf.Rad2Deg;
 
         float angleDistance = Mathf.Abs(Mathf.DeltaAngle(craftAngle, targetAngle));
-        float rotationAmount = Mathf.Min(physicsAccel * Time.deltaTime * 2, 45f);
+        float rotationAmount = Mathf.Min(physicsAccel * Time.deltaTime * 4, 45f);
 
         if (rotationAmount > angleDistance)
         {
