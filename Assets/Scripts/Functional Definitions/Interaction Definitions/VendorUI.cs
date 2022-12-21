@@ -129,44 +129,49 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
     private void Update()
     {
-        if (opened)
+        if (!opened) return;
+        if (vendor == null || vendor.Equals(null))
         {
-            if (vendor == null)
-            {
-                Debug.LogWarning("No vendor!");
-                return;
-            }
+            Debug.Log("No vendor!");
+            return;
+        }
 
-            if (player == null)
-            {
-                Debug.Log("No player set! Using default player.");
-                player = PlayerCore.Instance;
-            }
+        if (player == null)
+        {
+            Debug.Log("No player set! Using default player.");
+            player = PlayerCore.Instance;
+        }
 
-            if (player && vendor.NeedsSameFaction() && vendor.GetFaction() != player.faction)
-            {
-                Debug.Log("Vendor faction changed");
-                CloseUI();
-                return;
-            }
+        if (player && vendor.NeedsSameFaction() && vendor.GetFaction() != player.faction)
+        {
+            Debug.Log("Vendor faction changed");
+            CloseUI();
+            return;
+        }
 
-            if ((vendor.GetPosition() - player.transform.position).sqrMagnitude > range)
-            {
-                Debug.Log("Player moved out of the vendor range");
-                CloseUI();
-                return;
-            }
+        if (player.GetIsDead())
+        {
+            Debug.Log("Player is dead!");
+            CloseUI();
+            return;
+        }
 
-            for (int i = 0; i < blueprint.items.Count; i++)
+        if ((vendor.GetPosition() - player.transform.position).sqrMagnitude > range)
+        {
+            Debug.Log("Player moved out of the vendor range");
+            CloseUI();
+            return;
+        }
+
+        for (int i = 0; i < blueprint.items.Count; i++)
+        {
+            if (player.GetPower() < blueprint.items[i].cost)
             {
-                if (player.GetPower() < blueprint.items[i].cost)
-                {
-                    buttons[i].GetComponent<Image>().color = new Color(0, 0, 0.4F);
-                }
-                else
-                {
-                    buttons[i].GetComponent<Image>().color = Color.white;
-                }
+                buttons[i].GetComponent<Image>().color = new Color(0, 0, 0.4F);
+            }
+            else
+            {
+                buttons[i].GetComponent<Image>().color = Color.white;
             }
         }
     }
