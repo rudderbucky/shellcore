@@ -5,6 +5,8 @@
 /// </summary>
 public abstract class ActiveAbility : Ability
 {
+    bool autoCast = true;
+
     /// <summary>
     /// Initialization of every active ability
     /// </summary>
@@ -36,6 +38,13 @@ public abstract class ActiveAbility : Ability
         //    Deactivate();
         base.SetDestroyed(input);
     }
+
+    public override void Tick()
+    {
+        if (Core as PlayerCore && ID == AbilityID.SpawnDrone && State == AbilityState.Ready) Activate();
+        base.Tick();
+    }
+
 
     private void OnDestroy()
     {
