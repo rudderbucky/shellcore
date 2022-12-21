@@ -8,6 +8,7 @@ public class Faction : ScriptableObject, IBaseProperty
     public Color shinyColor;
     public string colorName;
     public int relations = 1;
+    public bool growRandomParts;
 
     public string GetName()
     {

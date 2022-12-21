@@ -722,7 +722,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         while (true) 
         {
-            if (GetIsDead()) yield return null;
+            while (GetIsDead()) yield return null;
             AttachRandomPart();
             yield return new WaitForSeconds(2F);
         }
