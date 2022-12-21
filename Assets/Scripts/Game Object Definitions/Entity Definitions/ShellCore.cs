@@ -167,6 +167,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         base.Start(); // base start
 
         InitAI();
+
+        StartCoroutine(AddRandomParts());
     }
 
     private void InitAI()

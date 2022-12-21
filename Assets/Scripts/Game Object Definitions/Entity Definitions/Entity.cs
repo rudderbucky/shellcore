@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -703,6 +704,27 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 SetUpPart(blueprint.parts[i]);
             }
+        }
+    }
+
+    public void AttachRandomPart() 
+    {
+        EntityBlueprint.PartInfo info = ResourceManager.Instance.GetRandomPart();
+        ShellPart part = parts[Random.Range(0, parts.Count)];
+        info.location = part.info.location;
+        info.location += new Vector2(Random.Range(-0.1F, 0.1F), Random.Range(-0.1F, 0.1F));
+        SetUpPart(info);
+    }
+
+
+
+    protected IEnumerator AddRandomParts()
+    {
+        while (true) 
+        {
+            if (GetIsDead()) yield return null;
+            AttachRandomPart();
+            yield return new WaitForSeconds(2F);
         }
     }
 
