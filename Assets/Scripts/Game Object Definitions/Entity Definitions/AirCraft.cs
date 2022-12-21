@@ -130,6 +130,7 @@ public abstract class AirCraft : Craft
         {
             ai.movement.SetMoveTarget(null);
         }
+        SetWarpUninteractable();
     }
 
     protected override void CraftMover(Vector2 directionVector)
