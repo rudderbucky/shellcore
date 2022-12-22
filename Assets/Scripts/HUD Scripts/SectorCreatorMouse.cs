@@ -80,7 +80,6 @@ public class SectorCreatorMouse : MonoBehaviour
     int width;
     PlaceableObject cursor;
     Color currentColor = SectorColors.colors[0];
-    public SectorCreatorShellCoreEditor coreEditor;
     public Transform sectorCenter;
 
     void Start()
@@ -325,7 +324,7 @@ public class SectorCreatorMouse : MonoBehaviour
     {
         windowEnabled = mainMenu.transform.parent.gameObject.activeSelf || sectorProps.transform.parent.gameObject.activeSelf
                                                                         || hotkeyList.transform.parent.gameObject.activeSelf
-                                                                        || readFile.transform.parent.gameObject.activeSelf || coreEditor.gameObject.activeSelf
+                                                                        || readFile.transform.parent.gameObject.activeSelf
                                                                         || nodeEditor.transform.parent.gameObject.activeSelf;
     }
 
@@ -349,10 +348,6 @@ public class SectorCreatorMouse : MonoBehaviour
         if (Input.GetKeyDown("g") && !windowEnabled)
         {
             mainMenu.ToggleActive();
-            if (mainMenu.gameObject.activeSelf)
-            {
-                coreEditor.gameObject.SetActive(false);
-            }
         }
         else
         {
@@ -466,7 +461,6 @@ public class SectorCreatorMouse : MonoBehaviour
                             if (obj.type == ObjectTypes.Other)
                             {
                                 mainMenu.CloseUI();
-                                coreEditor.Initialize(newObj, this);
                             }
                             else
                             {
@@ -491,7 +485,6 @@ public class SectorCreatorMouse : MonoBehaviour
                         }
                         else if (obj.assetID == "flag")
                         {
-                            coreEditor.Initialize(obj, this);
                         }
                         else
                         {
