@@ -1044,29 +1044,25 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         damageResistanceAuraStacks = 0;
         SpeedAuraStacks = 0;
 
-        foreach (var tower in AIData.entities)
+        foreach (var aura in AIData.auras)
         {
-            if (tower.faction != faction) continue;
-            var comps = tower.GetComponentsInChildren<TowerAura>();
-            foreach (var comp in comps)
+            if (aura.Core.faction != faction) continue;
+            if (Vector2.Distance(aura.transform.position, transform.position) > aura.GetRange()) continue;
+            switch (aura.type)
             {
-                if (Vector2.Distance(tower.transform.position, transform.position) > comp.GetRange()) continue;
-                switch (comp.type)
-                {
-                    case TowerAura.AuraType.Heal:
-                        healAuraStacks++;
-                        break;
-                    case TowerAura.AuraType.Speed:
-                        SpeedAuraStacks++;
-                        if (speedAuraAtZero && this as Craft)
-                        {
-                            (this as Craft).CalculatePhysicsConstants();
-                        }
-                        break;
-                    case TowerAura.AuraType.DamageResistance:
-                        damageResistanceAuraStacks++;
-                        break;
-                }
+                case TowerAura.AuraType.Heal:
+                    healAuraStacks++;
+                    break;
+                case TowerAura.AuraType.Speed:
+                    SpeedAuraStacks++;
+                    if (speedAuraAtZero && this as Craft)
+                    {
+                        (this as Craft).CalculatePhysicsConstants();
+                    }
+                    break;
+                case TowerAura.AuraType.DamageResistance:
+                    damageResistanceAuraStacks++;
+                    break;
             }
         }
 

@@ -207,33 +207,24 @@ public abstract class WeaponAbility : ActiveAbility
 
     void Shoot()
     {
-        if (State == AbilityState.Ready && Core.GetHealth()[2] >= energyCost && !Core.GetIsDead()) // if energy is sufficient, core isn't dead and key is pressed
+        if (State != AbilityState.Ready || Core.GetHealth()[2] < energyCost || Core.GetIsDead()) return;
+        Transform target = targetingSystem.GetTarget();
+        if (target == null || !target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
         {
-            Transform target = targetingSystem.GetTarget();
-            if (target == null || !target || target.GetComponent<IDamageable>().GetIsDead() || !DistanceCheck(target))
-            {
-                TargetManager.Enqueue(targetingSystem, category);
-            }
-            else if (target && target.GetComponent<IDamageable>() != null)
-            {
-                // check if there is a target
-                Core.SetIntoCombat(); // now in combat
-                IDamageable tmp = target.GetComponent<IDamageable>();
+            TargetManager.Enqueue(targetingSystem, category);
+        }
+        else if (target && target.GetComponent<IDamageable>() != null)
+        {
+            // check if there is a target
+            Core.SetIntoCombat(); // now in combat
+            IDamageable tmp = target.GetComponent<IDamageable>();
 
-                // check if allied
-                if (!FactionManager.IsAllied(tmp.GetFaction(), Core.faction))
-                {
-                    if (targetingSystem.GetTarget() && Core.RequestGCD())
-                    {
-                        bool success = Execute(target.position); // execute ability using the position to fire
-                        if (success)
-                        {
-                            Core.TakeEnergy(energyCost); // take energy, if the ability was executed
-                            startTime = Time.time;
-                        }
-                    }
-                }
-            }
+            // check if allied
+            if (FactionManager.IsAllied(tmp.GetFaction(), Core.faction)) return;
+            if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
+            if (!Execute(target.position)) return;
+            Core.TakeEnergy(energyCost); // take energy, if the ability was executed
+            startTime = Time.time;
         }
     }
 

@@ -356,6 +356,14 @@ public class DevConsoleScript : MonoBehaviour
                     textBox.text += "\n<color=lime>Heathen.</color>";
                 }
             }
+            else if (command.Equals("Stuff is broken", StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (PlayerCore.Instance)
+                {
+                    TaskDisplayScript.EditMode = true;
+                    textBox.text += "\n<color=lime>Surely a really bad bug went off and you don't just want to skip content we worked so hard to make, right?</color>";
+                }
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {

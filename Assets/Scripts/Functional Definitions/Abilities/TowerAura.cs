@@ -20,11 +20,13 @@ public class TowerAura : PassiveAbility
         circle.raycastTarget = false;
         circle.color = FactionManager.GetFactionColor(Core.GetFaction());
         range = 15;
+        if (!AIData.auras.Contains(this)) AIData.auras.Add(this);
     }
 
     public override void Deactivate()
     {
         base.Deactivate();
+        if (AIData.auras.Contains(this)) AIData.auras.Remove(this);
         Destroy(circle.gameObject);
     }
 
@@ -50,6 +52,7 @@ public class TowerAura : PassiveAbility
         var x = Camera.main.WorldToScreenPoint(cameraPos + new Vector3(0, range)).y - Camera.main.WorldToScreenPoint(cameraPos).y;
         x *= (float)1920 / Screen.width * 2;
         float rate = 45 * Time.deltaTime;
+        if (!circle) return;
         circle.transform.Rotate(new Vector3(0, 0, rate));
         circle.rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(transform.position) * 1920 / Screen.width;
         circle.rectTransform.sizeDelta = new Vector2(x, x);

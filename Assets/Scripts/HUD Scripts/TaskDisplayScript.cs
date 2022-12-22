@@ -60,6 +60,7 @@ public class TaskDisplayScript : MonoBehaviour
         }
     }
 
+    public static bool EditMode;
     public static List<Mission> loadedMissions = new List<Mission>();
 
     public static void AddMission(Mission mission)
@@ -88,11 +89,14 @@ public class TaskDisplayScript : MonoBehaviour
                 button.GetComponentInChildren<Text>().color = Color.green;
                 break;
         }
-#if UNITY_EDITOR
         button.onClick.AddListener(new UnityEngine.Events.UnityAction(() =>
         {
             ShowMission(mission);
-            if (Input.GetKey(KeyCode.LeftShift))
+#if UNITY_EDITOR
+            EditMode = true;
+#else
+#endif
+            if (Input.GetKey(KeyCode.LeftShift) && EditMode)
             {
                 mission.status = Mission.MissionStatus.Complete;
                 mission.checkpoint = $"{mission.name}_complete";
@@ -102,9 +106,6 @@ public class TaskDisplayScript : MonoBehaviour
                 }
             }
         }));
-#else
-        button.onClick.AddListener(new UnityEngine.Events.UnityAction(() => {ShowMission(mission);}));
-#endif
     }
 
     public Text nameAndPrerequisitesHeader;
