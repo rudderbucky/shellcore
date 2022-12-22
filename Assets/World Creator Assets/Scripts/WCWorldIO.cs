@@ -301,7 +301,7 @@ public class WCWorldIO : GUIWindowScripts
             }
 
             string sectorjson = System.IO.File.ReadAllText(str);
-            SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+            Sector.SectorData data = JsonUtility.FromJson<Sector.SectorData>(sectorjson);
             // Debug.Log("Platform JSON: " + data.platformjson);
             // Debug.Log("Sector JSON: " + data.sectorjson);
             Sector curSect = ScriptableObject.CreateInstance<Sector>();

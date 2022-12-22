@@ -414,7 +414,7 @@ public class SectorManager : MonoBehaviour
                     }
 
                     string sectorjson = System.IO.File.ReadAllText(file);
-                    SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                    Sector.SectorData data = JsonUtility.FromJson<Sector.SectorData>(sectorjson);
                     // Debug.Log("Platform JSON: " + data.platformjson);
                     // Debug.Log("Sector JSON: " + data.sectorjson);
                     Sector curSect = ScriptableObject.CreateInstance<Sector>();
@@ -468,7 +468,7 @@ public class SectorManager : MonoBehaviour
             try
             {
                 string sectorjson = System.IO.File.ReadAllText(path);
-                SectorCreatorMouse.SectorData data = JsonUtility.FromJson<SectorCreatorMouse.SectorData>(sectorjson);
+                Sector.SectorData data = JsonUtility.FromJson<Sector.SectorData>(sectorjson);
                 Debug.Log("Platform JSON: " + data.platformjson);
                 Debug.Log("Sector JSON: " + data.sectorjson);
                 Sector curSect = ScriptableObject.CreateInstance<Sector>();
@@ -1085,7 +1085,7 @@ public class SectorManager : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
 
-            SectorCreatorMouse.SectorData data = new SectorCreatorMouse.SectorData();
+            Sector.SectorData data = new Sector.SectorData();
             data.platformjson = JsonUtility.ToJson(current.platforms);
             data.sectorjson = JsonUtility.ToJson(current);
             current.name = "SavedSector";

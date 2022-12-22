@@ -49,6 +49,12 @@ public class Sector : ScriptableObject
         SiegeZone
     }
 
+    public struct SectorData
+    {
+        public string sectorjson;
+        public string platformjson;
+    }
+
     public int dimension;
     public string sectorName;
     public IntRect bounds;
