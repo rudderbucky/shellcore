@@ -174,8 +174,7 @@ namespace NodeEditorFramework.Standard
                             }
                         }
 
-                        var characterBlueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                        JsonUtility.FromJsonOverwrite(data.blueprintJSON, characterBlueprint);
+                        var characterBlueprint = SectorManager.TryGettingEntityBlueprint(data.blueprintJSON);
                         Sector.LevelEntity entityData = new Sector.LevelEntity
                         {
                             faction = data.faction,

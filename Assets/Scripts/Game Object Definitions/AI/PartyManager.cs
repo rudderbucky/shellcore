@@ -154,8 +154,7 @@ public class PartyManager : MonoBehaviour
             {
                 if (!AIData.entities.Exists(x => x.ID == charID))
                 {
-                    var print = ScriptableObject.CreateInstance<EntityBlueprint>();
-                    JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
+                    var print = SectorManager.TryGettingEntityBlueprint(ch.blueprintJSON);
                     print.intendedType = EntityBlueprint.IntendedType.ShellCore;
                     var levelEnt = new Sector.LevelEntity();
                     levelEnt.ID = charID;
@@ -269,8 +268,7 @@ public class PartyManager : MonoBehaviour
                 if (ch.ID == id)
                 {
                     name.text = ch.name.ToUpper();
-                    EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                    JsonUtility.FromJsonOverwrite(ch.blueprintJSON, blueprint);
+                    EntityBlueprint blueprint = SectorManager.TryGettingEntityBlueprint(ch.blueprintJSON);
                     inst.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(blueprint, null);
                 }
             }

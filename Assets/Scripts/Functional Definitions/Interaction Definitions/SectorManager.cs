@@ -970,8 +970,7 @@ public class SectorManager : MonoBehaviour
                     continue;
                 }
 
-                var print = ScriptableObject.CreateInstance<EntityBlueprint>();
-                JsonUtility.FromJsonOverwrite(ch.blueprintJSON, print);
+                var print = TryGettingEntityBlueprint(ch.blueprintJSON);
                 print.intendedType = EntityBlueprint.IntendedType.ShellCore;
                 entity.name = ch.name;
                 entity.faction = ch.faction;
