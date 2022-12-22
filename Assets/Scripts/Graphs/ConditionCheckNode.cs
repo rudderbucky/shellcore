@@ -70,7 +70,8 @@ namespace NodeEditorFramework.Standard
             "Parts Obtained",
             "Mission Status",
             "Shards",
-            "Credits"
+            "Credits",
+            "Player's Build Value"
         };
 
         public virtual void InitConnectionKnobs()
@@ -245,6 +246,9 @@ namespace NodeEditorFramework.Standard
                         break;
                     case 7:
                         variableToCompare = PlayerCore.Instance.GetCredits();
+                        break;
+                    case 8:
+                        variableToCompare = PlayerCore.Instance.GetBuildValue();
                         break;
                 }
 

@@ -328,30 +328,28 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     // Draw arrows signifying objective locations. Do not constantly call this method.
     public static void DrawObjectiveLocations()
     {
-        if (instance)
+        if (!instance || !instance.player) return;
+        // clear the dictionary, then recreate the arrows
+        foreach (var rectTransform in instance.arrows.Values)
         {
-            // clear the dictionary, then recreate the arrows
-            foreach (var rectTransform in instance.arrows.Values)
+            if (rectTransform && rectTransform.gameObject)
             {
-                if (rectTransform && rectTransform.gameObject)
-                {
-                    Destroy(rectTransform.gameObject);
-                }
+                Destroy(rectTransform.gameObject);
             }
+        }
 
-            instance.arrows.Clear();
+        instance.arrows.Clear();
 
-            foreach (var ls in TaskManager.objectiveLocations.Values)
+        foreach (var ls in TaskManager.objectiveLocations.Values)
+        {
+            foreach (var loc in ls)
             {
-                foreach (var loc in ls)
-                {
-                    if (loc.dimension != PlayerCore.Instance.Dimension) return;
-                    var arrow = Instantiate(instance.mapArrowPrefab, instance.transform, false);
-                    arrow.GetComponent<Image>().color = Color.red + Color.green / 2;
-                    instance.arrows.Add(loc, arrow.GetComponent<RectTransform>());
-                    arrow.GetComponent<RectTransform>().anchoredPosition =
-                        new Vector2(loc.location.x - instance.minX, loc.location.y - instance.maxY) / instance.zoomoutFactor;
-                }
+                if (loc.dimension != PlayerCore.Instance.Dimension) return;
+                var arrow = Instantiate(instance.mapArrowPrefab, instance.transform, false);
+                arrow.GetComponent<Image>().color = Color.red + Color.green / 2;
+                instance.arrows.Add(loc, arrow.GetComponent<RectTransform>());
+                arrow.GetComponent<RectTransform>().anchoredPosition =
+                    new Vector2(loc.location.x - instance.minX, loc.location.y - instance.maxY) / instance.zoomoutFactor;
             }
         }
     }
@@ -415,6 +413,20 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             }
         }
 
+        
+        InstantiateTooltip();
+
+        // Blink markers.
+        bool markerActive = (Time.time % 2 > 1);
+        foreach (var marker in partOriginMarkerImages)
+        {
+            marker.enabled = markerActive;
+        }
+    }
+
+    private void InstantiateTooltip()
+    {
+
         // Instantiate tooltip. Destroy tooltip if mouse is not over a sector image.
         bool mouseOverSector = false;
         foreach (var sect in sectorImages)
@@ -454,6 +466,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             }
         }
 
+
         if (!mouseOverSector)
         {
             if (tooltipTransform)
@@ -461,14 +474,9 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 Destroy(tooltipTransform.gameObject);
             }
         }
-
-        // Blink markers.
-        bool markerActive = (Time.time % 2 > 1);
-        foreach (var marker in partOriginMarkerImages)
-        {
-            marker.enabled = markerActive;
-        }
     }
+
+
 
     void PollMouseFollow()
     {
