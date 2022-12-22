@@ -25,7 +25,7 @@ public class SpeederMissileScript : MissileScript
             forceConst = 160;
             if (target.GetComponent<Rigidbody2D>().velocity.magnitude > speedIncreaseThreshold)
             {
-                forceConst += target.GetComponent<Rigidbody2D>().velocity.magnitude * magnification
+                forceConst += target.GetComponent<Rigidbody2D>().velocity.magnitude * magnification;
                     GetComponent<Rigidbody2D>().AddForce(moveVector * forceConst);
             }
         }
