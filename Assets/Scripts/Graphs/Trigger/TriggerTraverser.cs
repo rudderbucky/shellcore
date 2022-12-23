@@ -46,6 +46,20 @@ public class TriggerTraverser : Traverser
                 return;
             }
 
+            if (currentNode is ReturnTriggerNode)
+            {
+                if (TriggerManager.instance.traversers.Contains(this))
+                {
+                    TriggerManager.instance.traversers.Remove(this);
+                }
+                if (nextNode != null)
+                {
+                    nextTraverser.SetNode(nextNode);
+                }
+
+                return;
+            }
+
             if (currentNode is ConditionGroupNode groupNode)
             {
                 groupNode.SetTriggerTraverser(this);
@@ -63,20 +77,6 @@ public class TriggerTraverser : Traverser
             }
 
             currentNode = currentNode.outputKnobs[outputIndex].connections[0].body;
-
-            if (currentNode is ReturnTriggerNode)
-            {
-                if (TriggerManager.instance.traversers.Contains(this))
-                {
-                    TriggerManager.instance.traversers.Remove(this);
-                }
-                if (nextNode != null)
-                {
-                    nextTraverser.SetNode(nextNode);
-                }
-
-                return;
-            }
         }
     }
 }

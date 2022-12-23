@@ -29,5 +29,13 @@ namespace NodeEditorFramework.Standard
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob input;
+
+    
+        public override int Traverse()
+        {
+            Debug.LogWarning("Return trigger traversal called. This is not supposed to happen.");
+            return -1;
+        }
+
     }
 }
