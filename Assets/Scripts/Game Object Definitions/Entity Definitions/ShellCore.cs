@@ -170,7 +170,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
         InitAI();
 
-        if (FactionManager.DoesFactionGrowRandomParts(faction) && addRandomPartsCoroutine == null) {
+        if (FactionManager.DoesFactionGrowRandomParts(faction) && addRandomPartsCoroutine == null)
+        {
             addRandomPartsCoroutine = StartCoroutine(AddRandomParts());
         }
     }
