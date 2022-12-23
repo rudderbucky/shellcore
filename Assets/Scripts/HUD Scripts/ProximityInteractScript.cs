@@ -30,24 +30,7 @@ public class ProximityInteractScript : MonoBehaviour
     {
         if (player != null)
         {
-            closest = null; // get the closest entity
-            foreach (IInteractable interactable in AIData.interactables)
-            {
-                if (interactable as PlayerCore || interactable == null || !interactable.GetInteractible())
-                {
-                    continue;
-                }
-
-                if (closest == null)
-                {
-                    closest = interactable;
-                }
-                else if ((interactable.GetTransform().position - player.transform.position).sqrMagnitude <=
-                         (closest.GetTransform().position - player.transform.position).sqrMagnitude)
-                {
-                    closest = interactable;
-                }
-            }
+            closest = ProximityManager.GetClosestInteractable(player);
 
             if (closest is IVendor vendor)
             {

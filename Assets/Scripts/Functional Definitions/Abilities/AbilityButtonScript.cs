@@ -115,6 +115,12 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         }
 
         description += $"\n{AbilityUtilities.GetDescription(ability)}";
+
+        if (ability is SpawnDrone)
+        {
+            description += $"\nHold {GetPrettyStringFromKeycode(InputManager.keys[KeyName.AutoCastBuyTurret].overrideKey)} to toggle auto cast";
+        }
+
         abilityInfo = description;
 
         if (tooltip)
@@ -279,42 +285,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         cooldown.fillAmount = abilities[0].TimeUntilReady() / abilities[0].GetCDDuration();
 
-        if (!entity.GetIsDead())
-        {
-            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !(VendorUI.instance && VendorUI.instance.IsOpen() && InputManager.GetKey(KeyName.AutoCastBuyTurret)))
-                                  && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
-            if (hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos))
-            {
-                if (InputManager.GetKey(KeyName.AutoCastBuyTurret))
-                {
-                    if (abilities[0] is ActiveAbility)
-                    {
-                        bool autoCast = !(abilities[0] as ActiveAbility).AutoCast;
-                        foreach (var ab in abilities)
-                        {
-                            if (ab is ActiveAbility activeAbility)
-                            {
-                                activeAbility.AutoCast = autoCast;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (abilities[0] is WeaponAbility)
-                    {
-                        foreach (var ab in abilities)
-                        {
-                            ab.Activate();
-                        }
-                    }
-                    else
-                    {
-                        abilities[0].Activate();
-                    }
-                } 
-            }
-        }
+        UpdateAbilityActivation();
 
         clicked = false;
 
@@ -333,6 +304,49 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
             gleamed = true;
             gleaming = true;
             gleam.color = Color.white;
+        }
+    }
+
+    private void UpdateAbilityActivation()
+    {
+        if (entity.GetIsDead()) return;
+
+        bool hotkeyBlockedByVendor = false;
+        if (InputManager.GetKey(KeyName.AutoCastBuyTurret))
+        {
+            IInteractable closest = ProximityManager.GetClosestInteractable(entity);
+            if (closest is IVendor vendor)
+            {
+                var range = vendor.GetVendingBlueprint().range;
+                if ((closest.GetTransform().position - entity.transform.position).sqrMagnitude <= range) {
+                    hotkeyBlockedByVendor = true;
+                }
+            }
+        }
+        
+        bool hotkeyAccepted = InputManager.GetKeyDown(keycode) && !hotkeyBlockedByVendor
+                            && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
+
+        if (!hotkeyAccepted && !(clicked && Input.mousePosition == oldInputMousePos)) return;
+        if (InputManager.GetKey(KeyName.AutoCastBuyTurret) && abilities[0] is ActiveAbility)
+        {
+            bool autoCast = !(abilities[0] as ActiveAbility).AutoCast;
+            foreach (var ab in abilities)
+            {
+                (ab as ActiveAbility).AutoCast = autoCast;
+            }
+            return;
+        }
+        if (abilities[0] is WeaponAbility)
+        {
+            foreach (var ab in abilities)
+            {
+                ab.Activate();
+            }
+        }
+        else
+        {
+            abilities[0].Activate();
         }
     }
 
