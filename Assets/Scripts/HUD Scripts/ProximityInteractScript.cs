@@ -58,7 +58,7 @@ public class ProximityInteractScript : MonoBehaviour
                 {
                     for (int i = 0; i < blueprint.items.Count; i++)
                     {
-                        if (InputManager.GetKey(KeyName.TurretQuickPurchase))
+                        if (InputManager.GetKey(KeyName.AutoCastBuyTurret))
                         {
                             if (Input.GetKeyDown((1 + i).ToString()))
                             {

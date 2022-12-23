@@ -265,9 +265,10 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         {
             image.color = new Color(0, 0, 0.3F); // make the background dark blue
         }
-        else if (abilities[0].GetAbilityType() != AbilityHandler.AbilityTypes.Passive && (abilities[0].State == Ability.AbilityState.Active ||
+        else if(abilities[0].GetAbilityType() != AbilityHandler.AbilityTypes.Passive && (abilities[0].State == Ability.AbilityState.Active ||
                                                                                           abilities[0].State == Ability.AbilityState.Charging ||
-                                                                                          (abilities[0] is WeaponAbility && abilities[0].isEnabled)))
+                                                                                          (abilities[0] is WeaponAbility && abilities[0].isEnabled) ||
+                                                                                          abilities[0] is ActiveAbility ab && ab.AutoCast))
         {
             image.color = PlayerCore.GetPlayerFactionColor();
         }
@@ -280,21 +281,38 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         if (!entity.GetIsDead())
         {
-            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !InputManager.GetKey(KeyName.TurretQuickPurchase))
+            bool hotkeyAccepted = (InputManager.GetKeyDown(keycode) && !(VendorUI.instance && VendorUI.instance.IsOpen() && InputManager.GetKey(KeyName.AutoCastBuyTurret)))
                                   && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
-            if (abilities[0] is WeaponAbility)
+            if (hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos))
             {
-                foreach (var ab in abilities)
+                if (InputManager.GetKey(KeyName.AutoCastBuyTurret))
                 {
-                    if (hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos))
+                    if (abilities[0] is ActiveAbility)
                     {
-                        ab.Activate();
+                        bool autoCast = !(abilities[0] as ActiveAbility).AutoCast;
+                        foreach (var ab in abilities)
+                        {
+                            if (ab is ActiveAbility activeAbility)
+                            {
+                                activeAbility.AutoCast = autoCast;
+                            }
+                        }
                     }
                 }
-            }
-            else if (hotkeyAccepted || (clicked && Input.mousePosition == oldInputMousePos))
-            {
-                abilities[0].Activate();
+                else
+                {
+                    if (abilities[0] is WeaponAbility)
+                    {
+                        foreach (var ab in abilities)
+                        {
+                            ab.Activate();
+                        }
+                    }
+                    else
+                    {
+                        abilities[0].Activate();
+                    }
+                } 
             }
         }
 
