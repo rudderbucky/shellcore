@@ -108,6 +108,11 @@ public class FactionManager : MonoBehaviour
         return instance.factions[faction].colorName;
     }
 
+    public static bool DoesFactionGrowRandomParts(int faction)
+    {
+        return instance.factions[faction].growRandomParts;
+    }
+
     public static bool IsAllied(int faction1, int faction2)
     {
         return ((instance.factions[faction1].relations >> faction2) & 1) > 0;
