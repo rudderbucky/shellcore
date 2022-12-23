@@ -43,6 +43,13 @@ public class ItemPropertyDisplay : MonoBehaviour
         }
     }
 
+    public void LoadFactions()
+    {
+        factionIDs = new List<int>();
+        UpdateFactionIDList(factionIDs);
+        AddCustomFactionsToDropdown(factionDropdown);
+    }
+
     void Awake()
     {
         if (!rectTransform)
@@ -50,9 +57,7 @@ public class ItemPropertyDisplay : MonoBehaviour
             rectTransform = GetComponent<RectTransform>();
         }
 
-        factionIDs = new List<int>();
-        UpdateFactionIDList(factionIDs);
-        AddCustomFactionsToDropdown(factionDropdown);
+        LoadFactions();
 
         if (editingDefaults)
         {

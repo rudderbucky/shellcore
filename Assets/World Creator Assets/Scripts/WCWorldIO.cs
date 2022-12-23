@@ -193,6 +193,7 @@ public class WCWorldIO : GUIWindowScripts
         {
             WorldCreatorCursor.instance.Clear();
             generatorHandler.ReadWorld(originalReadPath);
+            WorldCreatorCursor.instance.propertyDisplay.LoadFactions();
         }
         else if (mode == IOMode.Write)
         {
@@ -302,8 +303,6 @@ public class WCWorldIO : GUIWindowScripts
 
             string sectorjson = System.IO.File.ReadAllText(str);
             Sector.SectorData data = JsonUtility.FromJson<Sector.SectorData>(sectorjson);
-            // Debug.Log("Platform JSON: " + data.platformjson);
-            // Debug.Log("Sector JSON: " + data.sectorjson);
             Sector curSect = ScriptableObject.CreateInstance<Sector>();
             JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
             sectors.Add(curSect);
