@@ -23,6 +23,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     private List<EntityBlueprint.PartInfo> partsToRepairAdd = new List<EntityBlueprint.PartInfo>();
 
+    private Coroutine addRandomPartsCoroutine;
+
 
     public IEnumerator StartYardRepair()
     {
@@ -168,7 +170,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
         InitAI();
 
-        StartCoroutine(AddRandomParts());
+        if (FactionManager.DoesFactionGrowRandomParts(faction) && addRandomPartsCoroutine == null)
+        {
+            addRandomPartsCoroutine = StartCoroutine(AddRandomParts());
+        }
     }
 
     private void InitAI()
