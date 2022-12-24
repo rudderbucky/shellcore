@@ -638,6 +638,7 @@ public static class AbilityUtilities
                 break;
             case 45:
                 ability = obj.AddComponent<ChainBeam>();
+                break;
             case 46:
                 ability = obj.AddComponent<SpeederMissile>();
                 break;
