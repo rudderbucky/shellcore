@@ -280,7 +280,7 @@ public class SaveMenuHandler : GUIWindowScripts
 
         foreach (Mission prereqMission in save.missions)
         {
-            if (!prereqMission.prerequisites.Contains(oldName)) return;
+            if (!prereqMission.prerequisites.Contains(oldName)) continue;
             prereqMission.prerequisites.Remove(oldName);
             prereqMission.prerequisites.Add(newName);
         }
