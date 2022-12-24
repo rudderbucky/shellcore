@@ -235,8 +235,8 @@ public static class AbilityUtilities
                 return "Warps your currently held part directly into your inventory.";
             case 41:
                 return $"Temporarily reduces Global Cooldown by {Mathf.Min(tier, 1)}/{Mathf.Min(tier, 1) + 1}.";
-            case 46:
-                return $"Test Missile";
+            case 45:
+                return $"Speeder Missile";
             default:
                 return "Description unset";
         }
