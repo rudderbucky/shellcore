@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="345.8,176.8" zoom="0.8" />
+	</EditorStates>
+	<Groups>
+		<Group name="Old" rect="-625.4,284.4,400,193.6" color="0,0,1,1" />
+	</Groups>
+	<Nodes>
+		<Node name="Delete Entity" ID="-919597140" type="Delete" pos="200,-100">
+			<Port ID="1209694042" name="output" dynamic="False" />
+			<Port ID="-1592668244" name="IDIn" dynamic="False" />
+			<Port ID="-100063234" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-379448545" />
+		</Node>
+		<Node name="Test Variable" ID="-220981660" type="TestVariableNode" pos="-50,-100">
+			<Port ID="1392541776" name="inputLeft" dynamic="False" />
+			<Port ID="-1409820510" name="outputTrue" dynamic="False" />
+			<Port ID="82784500" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-622195009" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Set Variable" ID="132518310" type="SetVariableNode" pos="-300,0">
+			<Port ID="-1958363712" name="Input " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-465758702" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="-938178826" />
+			<int name="value">1</int>
+			<boolean name="incrementMode">false</boolean>
+		</Node>
+		<Node name="Change Character Blueprint" ID="-1215450190" type="ChangeCharacterBlueprint" pos="-570.8,306.4">
+			<Port ID="1575389510" name="output" dynamic="False" />
+			<Port ID="-1226972776" name="input" dynamic="False" />
+			<Variable name="charID" refID="-317302537" />
+			<Variable name="blueprintJSON" refID="-1193603583" />
+			<boolean name="forceReconstruct">true</boolean>
+		</Node>
+		<Node name="Change Character Blueprint" ID="-1511303240" type="ChangeCharacterBlueprint" pos="-560,40">
+			<Port ID="265632234" name="output" dynamic="False" />
+			<Port ID="1758237244" name="input" dynamic="False" />
+			<Variable name="charID" refID="-317302537" />
+			<Variable name="blueprintJSON" refID="286982216" />
+			<boolean name="forceReconstruct">false</boolean>
+		</Node>
+		<Node name="Test Variable" ID="-1530738936" type="TestVariableNode" pos="-807.2,-91.2">
+			<Port ID="-1044125042" name="inputLeft" dynamic="False" />
+			<Port ID="448479968" name="outputTrue" dynamic="False" />
+			<Port ID="1941084978" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-938178826" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Delete Entity" ID="-1807156290" type="Delete" pos="450,-100">
+			<Port ID="814175436" name="output" dynamic="False" />
+			<Port ID="-1988186850" name="IDIn" dynamic="False" />
+			<Port ID="-495581840" name="input" dynamic="False" />
+			<Variable name="entityID" refID="718526265" />
+		</Node>
+		<Node name="Delete Entity" ID="1896104906" type="Delete" pos="700,-100">
+			<Port ID="-312734106" name="output" dynamic="False" />
+			<Port ID="1179870904" name="IDIn" dynamic="False" />
+			<Port ID="-1622491382" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-1655684388" />
+		</Node>
+		<Node name="Enter Sector" ID="-1625635000" type="LoadSectorNode" pos="-1016.8,-34">
+			<Port ID="-861277308" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1749462965" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1209694042" port2ID="-495581840" />
+		<Connection port1ID="-100063234" port2ID="-1409820510" />
+		<Connection port1ID="1392541776" port2ID="448479968" />
+		<Connection port1ID="1392541776" port2ID="-465758702" />
+		<Connection port1ID="-1958363712" port2ID="265632234" />
+		<Connection port1ID="1758237244" port2ID="1941084978" />
+		<Connection port1ID="-1044125042" port2ID="-861277308" />
+		<Connection port1ID="814175436" port2ID="-1622491382" />
+	</Connections>
+	<Objects>
+		<Object refID="-379448545" type="System.String">
+			<string>uninfected-leader</string>
+		</Object>
+		<Object refID="-622195009" type="System.String">
+			<string>FI_CapitolAttack_IsHappening</string>
+		</Object>
+		<Object refID="-938178826" type="System.String">
+			<string>char_clearly-delusional_updatebpbeta</string>
+		</Object>
+		<Object refID="-317302537" type="System.String">
+			<string>clearly-delusional</string>
+		</Object>
+		<Object refID="-1193603583" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core2_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":0.0,"y":-0.699999988079071},"rotation":0.0,"mirrored":false,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter5","shiny":false},{"location":{"x":1.399999976158142,"y":-1.2999999523162842},"rotation":90.0,"mirrored":true,"abilityID":13,"tier":2,"secondaryData":"","partID":"MediumSide3","shiny":false},{"location":{"x":-1.399999976158142,"y":-1.2999999523162842},"rotation":-90.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"MediumSide3","shiny":false},{"location":{"x":0.0,"y":-1.2999999523162842},"rotation":0.0,"mirrored":false,"abilityID":12,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":1.7000000476837159,"y":1.2999999523162842},"rotation":0.0,"mirrored":true,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallWing3","shiny":false},{"location":{"x":0.800000011920929,"y":1.2000000476837159},"rotation":0.0,"mirrored":true,"abilityID":26,"tier":0,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":1.0,"y":-0.20000000298023225},"rotation":-90.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":-1.0,"y":-0.20000000298023225},"rotation":90.0,"mirrored":true,"abilityID":4,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":0.0,"y":2.0999999046325685},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"SmallCenter4","shiny":false},{"location":{"x":-1.7000000476837159,"y":1.2999999523162842},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallWing3","shiny":false},{"location":{"x":-0.800000011920929,"y":1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":7,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":4.863738922722405e-7,"y":1.399999976158142},"rotation":0.0,"mirrored":false,"abilityID":27,"tier":2,"secondaryData":"","partID":"MediumCenter4","shiny":false},{"location":{"x":4.863738922722405e-7,"y":0.5},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="286982216" type="System.String">
+			<string>{"entityName":"Clearly Delusional","coreSpriteID":"core1_light","coreShellSpriteID":"core2_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":0.0000014591216768167215,"y":-0.800000011920929},"rotation":0.0,"mirrored":false,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter5","shiny":false},{"location":{"x":-1.600000023841858,"y":1.225000023841858},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallWing3","shiny":false},{"location":{"x":1.600000023841858,"y":1.225000023841858},"rotation":0.0,"mirrored":true,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallWing3","shiny":false},{"location":{"x":4.577636616431846e-7,"y":1.9999998807907105},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"SmallCenter4","shiny":false},{"location":{"x":0.800000011920929,"y":1.100000023841858},"rotation":0.0,"mirrored":true,"abilityID":26,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":-0.800000011920929,"y":1.100000023841858},"rotation":0.0,"mirrored":false,"abilityID":7,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":0.0000018978118987433846,"y":1.2999999523162842},"rotation":0.0,"mirrored":false,"abilityID":27,"tier":0,"secondaryData":"","partID":"MediumCenter4","shiny":false},{"location":{"x":0.000004329681360104587,"y":0.699999988079071},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":1.100000023841858,"y":-0.20000000298023225},"rotation":-90.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":-1.100000023841858,"y":-0.20000000298023225},"rotation":90.0,"mirrored":true,"abilityID":4,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":-1.399999976158142,"y":-1.399999976158142},"rotation":-90.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"MediumSide3","shiny":false},{"location":{"x":1.399999976158142,"y":-1.399999976158142},"rotation":90.0,"mirrored":true,"abilityID":13,"tier":2,"secondaryData":"","partID":"MediumSide3","shiny":false},{"location":{"x":0.0000024318694613612026,"y":-1.399999976158142},"rotation":0.0,"mirrored":false,"abilityID":12,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="718526265" type="System.String">
+			<string>shoot-things</string>
+		</Object>
+		<Object refID="-1655684388" type="System.String">
+			<string>shoot-things-praise</string>
+		</Object>
+		<Object refID="-1749462965" type="System.String">
+			<string>Capitol Center</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

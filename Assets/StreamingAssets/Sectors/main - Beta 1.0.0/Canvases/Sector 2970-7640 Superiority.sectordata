@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-14.4,-50.4" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Condition Check" ID="1572762368" type="GeneralConditionCheckNode" pos="-121.8,-28.80001">
+			<Port ID="-55351808" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="2019528448" name="Pass" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1237998720" name="Fail" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="-1289476223" />
+			<int name="variableType">5</int>
+			<int name="comparisonMode">0</int>
+			<int name="value">0</int>
+		</Node>
+		<Node name="Set Part Drop Rate" ID="-3611392" type="SetPartDropRate" pos="-340,20">
+			<Port ID="-200558592" name="output" dynamic="False" />
+			<Port ID="836881536" name="input" dynamic="False" />
+			<float name="dropRate">0.2</float>
+			<Variable name="sectorName" refID="-1913553320" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="-112346624" type="LoadSectorNode" pos="-350,-60">
+			<Port ID="1979139840" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1913553320" />
+		</Node>
+		<Node name="Delete Entity" ID="-1925225216" type="Delete" pos="150,0">
+			<Port ID="-1278387328" name="output" dynamic="False" />
+			<Port ID="-240947200" name="IDIn" dynamic="False" />
+			<Port ID="796492928" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-1752584490" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-55351808" port2ID="-200558592" />
+		<Connection port1ID="2019528448" port2ID="796492928" />
+		<Connection port1ID="836881536" port2ID="1979139840" />
+	</Connections>
+	<Objects>
+		<Object refID="-1289476223" type="System.String">
+			<string>The Stronghold</string>
+		</Object>
+		<Object refID="-1913553320" type="System.String">
+			<string>Sector 2970-7640</string>
+		</Object>
+		<Object refID="-1752584490" type="System.String">
+			<string>2970-7640-superiority</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

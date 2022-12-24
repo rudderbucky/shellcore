@@ -1,0 +1,682 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-569.8002,-230.2003" zoom="1.6" />
+	</EditorStates>
+	<Groups>
+		<Group name="Group" rect="1884,192.0001,3002.4,237.6" color="0,0,1,1" />
+		<Group name="Group" rect="-210.5998,701.8001,2047,440.8" color="0,0,1,1" />
+		<Group name="Group" rect="1615,425.0001,3112,253" color="0,0,1,1" />
+		<Group name="Group" rect="-223.7999,175.8,2044,219" color="0,0,1,1" />
+		<Group name="Group" rect="-221,440.8,1472.2,224.4" color="0,0,1,1" />
+	</Groups>
+	<Nodes>
+		<Node name="Set Part Drop Rate" ID="-671684992" type="SetPartDropRate" pos="-606.8,-78.39999">
+			<Port ID="792998528" name="output" dynamic="False" />
+			<Port ID="1830438656" name="input" dynamic="False" />
+			<float name="dropRate">0.1</float>
+			<Variable name="sectorName" refID="-617051293" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="824457728" type="LoadSectorNode" pos="-610,-170">
+			<Port ID="-1723190528" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-617051293" />
+		</Node>
+		<Node name="Rotate Craft" ID="-1933064192" type="RotateCraftNode" pos="-190,-200">
+			<Port ID="1389129856" name="output" dynamic="False" />
+			<Port ID="-1868397312" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="-372639191" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="-788905984" type="RotateCraftNode" pos="10,-200">
+			<Port ID="-830957184" name="output" dynamic="False" />
+			<Port ID="206482944" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="-1179208245" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="355252224" type="RotateCraftNode" pos="210,-200">
+			<Port ID="-1427088512" name="output" dynamic="False" />
+			<Port ID="-389648384" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="1952959637" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="1499410432" type="RotateCraftNode" pos="400,-190">
+			<Port ID="647791744" name="output" dynamic="False" />
+			<Port ID="1685231872" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="433929863" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="-1651398656" type="RotateCraftNode" pos="600,-190">
+			<Port ID="-1572295296" name="output" dynamic="False" />
+			<Port ID="-534855168" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="889383150" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="1217744896" type="RotateCraftNode" pos="-390,-190">
+			<Port ID="-685750400" name="output" dynamic="False" />
+			<Port ID="351689728" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="790160223" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Delete Entity" ID="-855380480" type="Delete" pos="834.6,466.4">
+			<Port ID="1996638080" name="output" dynamic="False" />
+			<Port ID="-1260889088" name="IDIn" dynamic="False" />
+			<Port ID="-223448960" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-1179208245" />
+		</Node>
+		<Node name="Delete Entity" ID="899345536" type="Delete" pos="594.6001,466.4">
+			<Port ID="-1115682304" name="output" dynamic="False" />
+			<Port ID="-78242176" name="IDIn" dynamic="False" />
+			<Port ID="959197952" name="input" dynamic="False" />
+			<Variable name="entityID" refID="386875696" />
+		</Node>
+		<Node name="Delete Entity" ID="-1640895744" type="Delete" pos="344.6,466.4">
+			<Port ID="66964608" name="output" dynamic="False" />
+			<Port ID="1104404736" name="IDIn" dynamic="False" />
+			<Port ID="2141844864" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-372639191" />
+		</Node>
+		<Node name="Delete Entity" ID="113830272" type="Delete" pos="84.60004,466.4">
+			<Port ID="1249611520" name="output" dynamic="False" />
+			<Port ID="-2007915648" name="IDIn" dynamic="False" />
+			<Port ID="-970475520" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1193444750" />
+		</Node>
+		<Node name="Delete Entity" ID="-69865216" type="Delete" pos="90,208">
+			<Port ID="1168618112" name="output" dynamic="False" />
+			<Port ID="-2088909056" name="IDIn" dynamic="False" />
+			<Port ID="-1051468928" name="input" dynamic="False" />
+			<Variable name="entityID" refID="2000013804" />
+		</Node>
+		<Node name="Delete Entity" ID="715650048" type="Delete" pos="340,208">
+			<Port ID="-1196675712" name="output" dynamic="False" />
+			<Port ID="-159235584" name="IDIn" dynamic="False" />
+			<Port ID="878204544" name="input" dynamic="False" />
+			<Variable name="entityID" refID="433929863" />
+		</Node>
+		<Node name="Delete Entity" ID="-1039075968" type="Delete" pos="580,208">
+			<Port ID="1915644672" name="output" dynamic="False" />
+			<Port ID="-1341882496" name="IDIn" dynamic="False" />
+			<Port ID="-304442368" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383151" />
+		</Node>
+		<Node name="Delete Entity" ID="1501165312" type="Delete" pos="820,208">
+			<Port ID="732997760" name="output" dynamic="False" />
+			<Port ID="1770437888" name="IDIn" dynamic="False" />
+			<Port ID="-1487089280" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383150" />
+		</Node>
+		<Node name="Delete Entity" ID="-253560704" type="Delete" pos="1065.2,205.6">
+			<Port ID="-449649152" name="output" dynamic="False" />
+			<Port ID="587790976" name="IDIn" dynamic="False" />
+			<Port ID="1625231104" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383149" />
+		</Node>
+		<Node name="Delete Entity" ID="-1824591232" type="Delete" pos="-170,208">
+			<Port ID="-14028800" name="output" dynamic="False" />
+			<Port ID="1023411328" name="IDIn" dynamic="False" />
+			<Port ID="2060851456" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1952959637" />
+		</Node>
+		<Node name="Rotate Craft" ID="1781075968" type="RotateCraftNode" pos="1010,-200">
+			<Port ID="-1777502848" name="output" dynamic="False" />
+			<Port ID="-740062720" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="889383154" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="-507240448" type="RotateCraftNode" pos="810,-190">
+			<Port ID="502584960" name="output" dynamic="False" />
+			<Port ID="1540025088" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="889383148" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Delete Entity" ID="-2008286720" type="Delete" pos="1310,208">
+			<Port ID="-1632296064" name="output" dynamic="False" />
+			<Port ID="-594855936" name="IDIn" dynamic="False" />
+			<Port ID="442584192" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383148" />
+		</Node>
+		<Node name="Delete Entity" ID="531954560" type="Delete" pos="1929.2,213.8">
+			<Port ID="-1922709632" name="output" dynamic="False" />
+			<Port ID="-885269504" name="IDIn" dynamic="False" />
+			<Port ID="152170624" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383154" />
+		</Node>
+		<Node name="Delete Entity" ID="-1222771456" type="Delete" pos="2189.2,213.8">
+			<Port ID="1189610752" name="output" dynamic="False" />
+			<Port ID="-2067916416" name="IDIn" dynamic="False" />
+			<Port ID="-1030476288" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383153" />
+		</Node>
+		<Node name="Delete Entity" ID="652502656" type="Delete" pos="2429.2,213.8">
+			<Port ID="921923584" name="output" dynamic="False" />
+			<Port ID="1959363712" name="IDIn" dynamic="False" />
+			<Port ID="-1298163456" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383152" />
+		</Node>
+		<Node name="Delete Entity" ID="-1887738624" type="Delete" pos="1564.8,201.8">
+			<Port ID="2104570496" name="output" dynamic="False" />
+			<Port ID="-1152956672" name="IDIn" dynamic="False" />
+			<Port ID="-115516544" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383155" />
+		</Node>
+		<Node name="Delete Entity" ID="1438017920" type="Delete" pos="1682,480">
+			<Port ID="-1443370240" name="output" dynamic="False" />
+			<Port ID="-405930112" name="IDIn" dynamic="False" />
+			<Port ID="631510016" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383154" />
+		</Node>
+		<Node name="Delete Entity" ID="-316708096" type="Delete" pos="1962,480">
+			<Port ID="1668950144" name="output" dynamic="False" />
+			<Port ID="-1588577024" name="IDIn" dynamic="False" />
+			<Port ID="-551136896" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383153" />
+		</Node>
+		<Node name="Delete Entity" ID="-2071434112" type="Delete" pos="2232,480">
+			<Port ID="486303232" name="output" dynamic="False" />
+			<Port ID="1523743360" name="IDIn" dynamic="False" />
+			<Port ID="-1733783808" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383152" />
+		</Node>
+		<Node name="Delete Entity" ID="1684860800" type="Delete" pos="1077.6,464.4">
+			<Port ID="813991168" name="output" dynamic="False" />
+			<Port ID="1851431296" name="IDIn" dynamic="False" />
+			<Port ID="-1406095872" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-775923718" />
+		</Node>
+		<Node name="Delete Entity" ID="1868556288" type="Delete" pos="-170,470">
+			<Port ID="-1862708864" name="output" dynamic="False" />
+			<Port ID="-825268736" name="IDIn" dynamic="False" />
+			<Port ID="212171392" name="input" dynamic="False" />
+			<Variable name="entityID" refID="790160223" />
+		</Node>
+		<Node name="Delete Entity" ID="-1285918848" type="Delete" pos="-171.6,710.7999">
+			<Port ID="-1878990592" name="output" dynamic="False" />
+			<Port ID="-841550464" name="IDIn" dynamic="False" />
+			<Port ID="195889664" name="input" dynamic="False" />
+			<Variable name="entityID" refID="790160223" />
+		</Node>
+		<Node name="Delete Entity" ID="1254322432" type="Delete" pos="68.40001,710.7999">
+			<Port ID="1233329792" name="output" dynamic="False" />
+			<Port ID="-2024197376" name="IDIn" dynamic="False" />
+			<Port ID="-986757248" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1193444750" />
+		</Node>
+		<Node name="Delete Entity" ID="-500403584" type="Delete" pos="328.4001,710.7999">
+			<Port ID="50682880" name="output" dynamic="False" />
+			<Port ID="1088123008" name="IDIn" dynamic="False" />
+			<Port ID="2125563136" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-372639191" />
+		</Node>
+		<Node name="Delete Entity" ID="2039837696" type="Delete" pos="578.4001,710.7999">
+			<Port ID="-1131964032" name="output" dynamic="False" />
+			<Port ID="-94523904" name="IDIn" dynamic="False" />
+			<Port ID="942916224" name="input" dynamic="False" />
+			<Variable name="entityID" refID="386875696" />
+		</Node>
+		<Node name="Delete Entity" ID="285111680" type="Delete" pos="828.4001,710.7999">
+			<Port ID="-941608320" name="output" dynamic="False" />
+			<Port ID="95831808" name="IDIn" dynamic="False" />
+			<Port ID="1133271936" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-1179208245" />
+		</Node>
+		<Node name="Randomizer" ID="1305053824" type="DialogueRouletteNode" pos="-576.6,229.2">
+			<Port ID="-1717502080" name="Input " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-680061952" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">107</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="357378176" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">162</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1394818304" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">217</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="chances" refID="41920256" />
+			<boolean name="dialogue">false</boolean>
+		</Node>
+		<Node name="Delete Entity" ID="468807168" type="Delete" pos="2492,480">
+			<Port ID="-696343680" name="output" dynamic="False" />
+			<Port ID="341096448" name="IDIn" dynamic="False" />
+			<Port ID="1378536576" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383143" />
+		</Node>
+		<Node name="Delete Entity" ID="-1102223360" type="Delete" pos="2679.2,213.8">
+			<Port ID="-260723328" name="output" dynamic="False" />
+			<Port ID="776716800" name="IDIn" dynamic="False" />
+			<Port ID="1814156928" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383143" />
+		</Node>
+		<Node name="Delete Entity" ID="-684099072" type="Delete" pos="2954,215.6">
+			<Port ID="-194581760" name="output" dynamic="False" />
+			<Port ID="842858368" name="IDIn" dynamic="False" />
+			<Port ID="1880298496" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383142" />
+		</Node>
+		<Node name="Delete Entity" ID="1856142208" type="Delete" pos="3444.4,217.8">
+			<Port ID="-1377228672" name="output" dynamic="False" />
+			<Port ID="-339788544" name="IDIn" dynamic="False" />
+			<Port ID="697651584" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667677" />
+		</Node>
+		<Node name="Delete Entity" ID="101416192" type="Delete" pos="3688.6,215.6">
+			<Port ID="1735091712" name="output" dynamic="False" />
+			<Port ID="-1522435456" name="IDIn" dynamic="False" />
+			<Port ID="-484995328" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667676" />
+		</Node>
+		<Node name="Delete Entity" ID="3564800" type="Delete" pos="3933.2,216.5999">
+			<Port ID="552444800" name="output" dynamic="False" />
+			<Port ID="1589884928" name="IDIn" dynamic="False" />
+			<Port ID="-1667642240" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667675" />
+		</Node>
+		<Node name="Delete Entity" ID="-1751161216" type="Delete" pos="4166.199,218.8">
+			<Port ID="-630202112" name="output" dynamic="False" />
+			<Port ID="407238016" name="IDIn" dynamic="False" />
+			<Port ID="1444678144" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667682" />
+		</Node>
+		<Node name="Delete Entity" ID="789080064" type="Delete" pos="4404.399,221">
+			<Port ID="-1812849024" name="output" dynamic="False" />
+			<Port ID="-775408896" name="IDIn" dynamic="False" />
+			<Port ID="262031232" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667681" />
+		</Node>
+		<Node name="Delete Entity" ID="-965645952" type="Delete" pos="4646.999,222.5999">
+			<Port ID="1299471360" name="output" dynamic="False" />
+			<Port ID="-1958055808" name="IDIn" dynamic="False" />
+			<Port ID="-920615680" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667680" />
+		</Node>
+		<Node name="Rotate Craft" ID="476934144" type="RotateCraftNode" pos="1650,-200">
+			<Port ID="-1966329216" name="output" dynamic="False" />
+			<Port ID="-928889088" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="1292667677" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="1621092352" type="RotateCraftNode" pos="1850,-200">
+			<Port ID="108551040" name="output" dynamic="False" />
+			<Port ID="1145991168" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="1292667675" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="-1529716736" type="RotateCraftNode" pos="2050,-200">
+			<Port ID="-2111536000" name="output" dynamic="False" />
+			<Port ID="-1074095872" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="1292667681" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="-1369733120" type="RotateCraftNode" pos="1210,-200">
+			<Port ID="297377408" name="output" dynamic="False" />
+			<Port ID="1334817536" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="889383152" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Rotate Craft" ID="-667224064" type="RotateCraftNode" pos="1450,-200">
+			<Port ID="116824448" name="output" dynamic="False" />
+			<Port ID="1154264576" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<boolean name="asynchronous">true</boolean>
+			<Variable name="entityID" refID="889383142" />
+			<Variable name="targetEntityID" refID="371857150" />
+			<boolean name="useNumericalAngle">true</boolean>
+			<Variable name="angle" refID="-251703787" />
+		</Node>
+		<Node name="Delete Entity" ID="1070626944" type="Delete" pos="3194.4,220.2">
+			<Port ID="988065152" name="output" dynamic="False" />
+			<Port ID="2025505280" name="IDIn" dynamic="False" />
+			<Port ID="-1232021888" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667678" />
+		</Node>
+		<Node name="Delete Entity" ID="1574595328" type="Delete" pos="2733.6,477.6">
+			<Port ID="-36655744" name="output" dynamic="False" />
+			<Port ID="1000784384" name="IDIn" dynamic="False" />
+			<Port ID="2038224512" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383142" />
+		</Node>
+		<Node name="Delete Entity" ID="-180130688" type="Delete" pos="2972,480">
+			<Port ID="-1219302656" name="output" dynamic="False" />
+			<Port ID="-181862528" name="IDIn" dynamic="False" />
+			<Port ID="855577600" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667678" />
+		</Node>
+		<Node name="Delete Entity" ID="-1934856704" type="Delete" pos="3222,480">
+			<Port ID="1893017728" name="output" dynamic="False" />
+			<Port ID="-1364509440" name="IDIn" dynamic="False" />
+			<Port ID="-327069312" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667677" />
+		</Node>
+		<Node name="Delete Entity" ID="605384576" type="Delete" pos="3462,490">
+			<Port ID="710370816" name="output" dynamic="False" />
+			<Port ID="1747810944" name="IDIn" dynamic="False" />
+			<Port ID="-1509716224" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667676" />
+		</Node>
+		<Node name="Delete Entity" ID="-1149341440" type="Delete" pos="3712,490">
+			<Port ID="-472276096" name="output" dynamic="False" />
+			<Port ID="565164032" name="IDIn" dynamic="False" />
+			<Port ID="1602604160" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667675" />
+		</Node>
+		<Node name="Delete Entity" ID="-2118552192" type="Delete" pos="4432,500">
+			<Port ID="274750464" name="output" dynamic="False" />
+			<Port ID="1312190592" name="IDIn" dynamic="False" />
+			<Port ID="-1945336576" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667680" />
+		</Node>
+		<Node name="Delete Entity" ID="1390899840" type="Delete" pos="3952.4,494">
+			<Port ID="-1654923008" name="output" dynamic="False" />
+			<Port ID="-617482880" name="IDIn" dynamic="False" />
+			<Port ID="419957248" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667682" />
+		</Node>
+		<Node name="Delete Entity" ID="-363826176" type="Delete" pos="4185.6,493.2">
+			<Port ID="1457397376" name="output" dynamic="False" />
+			<Port ID="-1800129792" name="IDIn" dynamic="False" />
+			<Port ID="-762689664" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1292667681" />
+		</Node>
+		<Node name="Delete Entity" ID="-1469614336" type="Delete" pos="1068.4,710.7999">
+			<Port ID="-2124255232" name="output" dynamic="False" />
+			<Port ID="-1086815104" name="IDIn" dynamic="False" />
+			<Port ID="-49374976" name="input" dynamic="False" />
+			<Variable name="entityID" refID="-775923718" />
+		</Node>
+		<Node name="Delete Entity" ID="421689088" type="Delete" pos="-171.6,920.7999">
+			<Port ID="-907896448" name="output" dynamic="False" />
+			<Port ID="129543680" name="IDIn" dynamic="False" />
+			<Port ID="1166983808" name="input" dynamic="False" />
+			<Variable name="entityID" refID="1952959637" />
+		</Node>
+		<Node name="Delete Entity" ID="-1333036928" type="Delete" pos="78.40001,920.7999">
+			<Port ID="-1403800960" name="output" dynamic="False" />
+			<Port ID="-366360832" name="IDIn" dynamic="False" />
+			<Port ID="671079296" name="input" dynamic="False" />
+			<Variable name="entityID" refID="2000013804" />
+		</Node>
+		<Node name="Delete Entity" ID="1207204352" type="Delete" pos="338.4001,920.7999">
+			<Port ID="1708519424" name="output" dynamic="False" />
+			<Port ID="-1549007744" name="IDIn" dynamic="False" />
+			<Port ID="-511567616" name="input" dynamic="False" />
+			<Variable name="entityID" refID="433929863" />
+		</Node>
+		<Node name="Delete Entity" ID="-547521664" type="Delete" pos="588.4001,930.7999">
+			<Port ID="525872512" name="output" dynamic="False" />
+			<Port ID="1563312640" name="IDIn" dynamic="False" />
+			<Port ID="-1694214528" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383151" />
+		</Node>
+		<Node name="Delete Entity" ID="1992719616" type="Delete" pos="848.4001,940.7999">
+			<Port ID="-656774400" name="output" dynamic="False" />
+			<Port ID="380665728" name="IDIn" dynamic="False" />
+			<Port ID="1418105856" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383150" />
+		</Node>
+		<Node name="Delete Entity" ID="227304704" type="Delete" pos="1088.4,940.7999">
+			<Port ID="-1839421312" name="output" dynamic="False" />
+			<Port ID="-801981184" name="IDIn" dynamic="False" />
+			<Port ID="235458944" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383149" />
+		</Node>
+		<Node name="Delete Entity" ID="-1527421312" type="Delete" pos="1338.4,940.7999">
+			<Port ID="1272899072" name="output" dynamic="False" />
+			<Port ID="-1984628096" name="IDIn" dynamic="False" />
+			<Port ID="-947187968" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383148" />
+		</Node>
+		<Node name="Delete Entity" ID="1012819968" type="Delete" pos="1578.4,940.7999">
+			<Port ID="90252160" name="output" dynamic="False" />
+			<Port ID="1127692288" name="IDIn" dynamic="False" />
+			<Port ID="-2129834880" name="input" dynamic="False" />
+			<Variable name="entityID" refID="889383155" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="792998528" port2ID="351689728" />
+		<Connection port1ID="1830438656" port2ID="-1723190528" />
+		<Connection port1ID="1389129856" port2ID="206482944" />
+		<Connection port1ID="-1868397312" port2ID="-685750400" />
+		<Connection port1ID="-830957184" port2ID="-389648384" />
+		<Connection port1ID="-1427088512" port2ID="1685231872" />
+		<Connection port1ID="647791744" port2ID="-534855168" />
+		<Connection port1ID="-1572295296" port2ID="1540025088" />
+		<Connection port1ID="1996638080" port2ID="-1406095872" />
+		<Connection port1ID="-223448960" port2ID="-1115682304" />
+		<Connection port1ID="959197952" port2ID="66964608" />
+		<Connection port1ID="2141844864" port2ID="1249611520" />
+		<Connection port1ID="-970475520" port2ID="-1862708864" />
+		<Connection port1ID="1168618112" port2ID="878204544" />
+		<Connection port1ID="-1051468928" port2ID="-14028800" />
+		<Connection port1ID="-1196675712" port2ID="-304442368" />
+		<Connection port1ID="1915644672" port2ID="-1487089280" />
+		<Connection port1ID="732997760" port2ID="1625231104" />
+		<Connection port1ID="-449649152" port2ID="442584192" />
+		<Connection port1ID="2060851456" port2ID="-680061952" />
+		<Connection port1ID="-1777502848" port2ID="1334817536" />
+		<Connection port1ID="-740062720" port2ID="502584960" />
+		<Connection port1ID="-1632296064" port2ID="-115516544" />
+		<Connection port1ID="-1922709632" port2ID="-1030476288" />
+		<Connection port1ID="152170624" port2ID="2104570496" />
+		<Connection port1ID="1189610752" port2ID="-1298163456" />
+		<Connection port1ID="921923584" port2ID="1814156928" />
+		<Connection port1ID="-1443370240" port2ID="-551136896" />
+		<Connection port1ID="631510016" port2ID="813991168" />
+		<Connection port1ID="1668950144" port2ID="-1733783808" />
+		<Connection port1ID="486303232" port2ID="1378536576" />
+		<Connection port1ID="212171392" port2ID="357378176" />
+		<Connection port1ID="-1878990592" port2ID="-986757248" />
+		<Connection port1ID="195889664" port2ID="1394818304" />
+		<Connection port1ID="1233329792" port2ID="2125563136" />
+		<Connection port1ID="50682880" port2ID="942916224" />
+		<Connection port1ID="-1131964032" port2ID="1133271936" />
+		<Connection port1ID="-941608320" port2ID="-49374976" />
+		<Connection port1ID="-1717502080" port2ID="-2111536000" />
+		<Connection port1ID="-696343680" port2ID="2038224512" />
+		<Connection port1ID="-260723328" port2ID="1880298496" />
+		<Connection port1ID="-194581760" port2ID="-1232021888" />
+		<Connection port1ID="-1377228672" port2ID="-484995328" />
+		<Connection port1ID="697651584" port2ID="988065152" />
+		<Connection port1ID="1735091712" port2ID="-1667642240" />
+		<Connection port1ID="552444800" port2ID="1444678144" />
+		<Connection port1ID="-630202112" port2ID="262031232" />
+		<Connection port1ID="-1812849024" port2ID="-920615680" />
+		<Connection port1ID="-1966329216" port2ID="1145991168" />
+		<Connection port1ID="-928889088" port2ID="116824448" />
+		<Connection port1ID="108551040" port2ID="-1074095872" />
+		<Connection port1ID="297377408" port2ID="1154264576" />
+		<Connection port1ID="-36655744" port2ID="855577600" />
+		<Connection port1ID="-1219302656" port2ID="-327069312" />
+		<Connection port1ID="1893017728" port2ID="-1509716224" />
+		<Connection port1ID="710370816" port2ID="1602604160" />
+		<Connection port1ID="-472276096" port2ID="419957248" />
+		<Connection port1ID="-1945336576" port2ID="1457397376" />
+		<Connection port1ID="-1654923008" port2ID="-762689664" />
+		<Connection port1ID="-2124255232" port2ID="1166983808" />
+		<Connection port1ID="-907896448" port2ID="671079296" />
+		<Connection port1ID="-1403800960" port2ID="-511567616" />
+		<Connection port1ID="1708519424" port2ID="-1694214528" />
+		<Connection port1ID="525872512" port2ID="1418105856" />
+		<Connection port1ID="-656774400" port2ID="235458944" />
+		<Connection port1ID="-1839421312" port2ID="-947187968" />
+		<Connection port1ID="1272899072" port2ID="-2129834880" />
+	</Connections>
+	<Objects>
+		<Object refID="-617051293" type="System.String">
+			<string>Sector 2410-7640</string>
+		</Object>
+		<Object refID="-372639191" type="System.String">
+			<string>2410-7640-battlecore-3</string>
+		</Object>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="-251703787" type="System.String">
+			<string>180</string>
+		</Object>
+		<Object refID="-1179208245" type="System.String">
+			<string>2410-7640-battlecore-5</string>
+		</Object>
+		<Object refID="1952959637" type="System.String">
+			<string>2410-7640-battlecore-7</string>
+		</Object>
+		<Object refID="433929863" type="System.String">
+			<string>2410-7640-battlecore-9</string>
+		</Object>
+		<Object refID="889383150" type="System.String">
+			<string>2410-7640-battlecore-11</string>
+		</Object>
+		<Object refID="790160223" type="System.String">
+			<string>2410-7640-battlecore-1</string>
+		</Object>
+		<Object refID="386875696" type="System.String">
+			<string>2410-7640-battlecore-4</string>
+		</Object>
+		<Object refID="1193444750" type="System.String">
+			<string>2410-7640-battlecore-2</string>
+		</Object>
+		<Object refID="2000013804" type="System.String">
+			<string>2410-7640-battlecore-8</string>
+		</Object>
+		<Object refID="889383151" type="System.String">
+			<string>2410-7640-battlecore-10</string>
+		</Object>
+		<Object refID="889383149" type="System.String">
+			<string>2410-7640-battlecore-12</string>
+		</Object>
+		<Object refID="889383154" type="System.String">
+			<string>2410-7640-battlecore-15</string>
+		</Object>
+		<Object refID="889383148" type="System.String">
+			<string>2410-7640-battlecore-13</string>
+		</Object>
+		<Object refID="889383153" type="System.String">
+			<string>2410-7640-battlecore-16</string>
+		</Object>
+		<Object refID="889383152" type="System.String">
+			<string>2410-7640-battlecore-17</string>
+		</Object>
+		<Object refID="889383155" type="System.String">
+			<string>2410-7640-battlecore-14</string>
+		</Object>
+		<Object refID="-775923718" type="System.String">
+			<string>2410-7640-battlecore-6</string>
+		</Object>
+		<Object refID="41920256" type="System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfFloat xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<float>0.7</float>
+				<float>0.2</float>
+				<float>0.1</float>
+			</ArrayOfFloat>
+		</Object>
+		<Object refID="889383143" type="System.String">
+			<string>2410-7640-battlecore-18</string>
+		</Object>
+		<Object refID="889383142" type="System.String">
+			<string>2410-7640-battlecore-19</string>
+		</Object>
+		<Object refID="1292667677" type="System.String">
+			<string>2410-7640-battlecore-21</string>
+		</Object>
+		<Object refID="1292667676" type="System.String">
+			<string>2410-7640-battlecore-22</string>
+		</Object>
+		<Object refID="1292667675" type="System.String">
+			<string>2410-7640-battlecore-23</string>
+		</Object>
+		<Object refID="1292667682" type="System.String">
+			<string>2410-7640-battlecore-24</string>
+		</Object>
+		<Object refID="1292667681" type="System.String">
+			<string>2410-7640-battlecore-25</string>
+		</Object>
+		<Object refID="1292667680" type="System.String">
+			<string>2410-7640-battlecore-26</string>
+		</Object>
+		<Object refID="1292667678" type="System.String">
+			<string>2410-7640-battlecore-20</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

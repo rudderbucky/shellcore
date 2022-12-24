@@ -1,0 +1,610 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="917.2,1173.6" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Time Trigger" ID="987346908" type="TimeTrigger" pos="-344,-948">
+			<Port ID="1550014872" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">5</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="637864220" type="ConditionGroupNode" pos="-344,-1048">
+			<Port ID="705760458" name="input" dynamic="False" />
+			<Port ID="2128381212" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-673981074" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="691493858" type="TimeTrigger" pos="-304,-788">
+			<Port ID="-2096601828" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">2</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Lock Party" ID="776477016" type="LockParty" pos="227.8,-1088.6">
+			<Port ID="-603996818" name="output" dynamic="False" />
+			<Port ID="888608192" name="input" dynamic="False" />
+			<boolean name="unlockValue">true</boolean>
+		</Node>
+		<Node name="Warp Player" ID="395640808" type="WarpPlayerNode" pos="6,-1048">
+			<Port ID="-1913754094" name="output" dynamic="False" />
+			<Port ID="-421149084" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="1941118256" />
+			<Variable name="entityID" refID="825093993" />
+		</Node>
+		<Node name="Conditions" ID="-671893056" type="ConditionGroupNode" pos="-29.19995,-833">
+			<Port ID="-1730906360" name="input" dynamic="False" />
+			<Port ID="818623936" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1983738350" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Destroy Entities" ID="1894064608" type="DestroyEntities" pos="-242,890.4">
+			<Port ID="1254303660" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="1875821083" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">0</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="Destroy Entities" ID="2103591862" type="DestroyEntities" pos="-270,360">
+			<Port ID="-55453616" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="141126205" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">2</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="Destroy Entities" ID="-220069640" type="DestroyEntities" pos="-298,126.8">
+			<Port ID="-1365210892" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="-262158322" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">2</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="Destroy Entities" ID="-924781056" type="DestroyEntities" pos="-280,600">
+			<Port ID="127394118" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="-1424957736" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">2</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="AI Follow" ID="624480736" type="AIFollowNode" pos="-425.2,-338.4">
+			<Port ID="1619999128" name="output" dynamic="False" />
+			<Port ID="310241852" name="input" dynamic="False" />
+			<Variable name="followerID" refID="141126205" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="AI Follow" ID="-1699180766" type="AIFollowNode" pos="-620.4,-338.8">
+			<Port ID="1802846862" name="output" dynamic="False" />
+			<Port ID="-999515424" name="input" dynamic="False" />
+			<Variable name="followerID" refID="-262158322" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="Popup dialogue" ID="-1981650332" type="PopupNode" pos="-1103.4,989.4">
+			<Port ID="493089586" name="output" dynamic="False" />
+			<Port ID="1985694596" name="input" dynamic="False" />
+			<Variable name="text" refID="-747843663" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Popup dialogue" ID="1003559688" type="PopupNode" pos="-1358,1001">
+			<Port ID="-816667690" name="output" dynamic="False" />
+			<Port ID="675937320" name="input" dynamic="False" />
+			<Variable name="text" refID="-1228614157" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Popup dialogue" ID="-306197588" type="PopupNode" pos="-850,991">
+			<Port ID="-2126424966" name="output" dynamic="False" />
+			<Port ID="858785054" name="input" dynamic="False" />
+			<Variable name="text" refID="1571693263" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Popup dialogue" ID="-1615954864" type="PopupNode" pos="-586.9999,992.9999">
+			<Port ID="-1943577232" name="output" dynamic="False" />
+			<Port ID="-450972222" name="input" dynamic="False" />
+			<Variable name="text" refID="1830209689" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="AI Follow" ID="-2051536474" type="AIFollowNode" pos="-227.2,-336.4">
+			<Port ID="1041632788" name="output" dynamic="False" />
+			<Port ID="-1760729498" name="input" dynamic="False" />
+			<Variable name="followerID" refID="-1424957736" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="AI Follow" ID="-80230680" type="AIFollowNode" pos="-20,-350">
+			<Port ID="-268124488" name="output" dynamic="False" />
+			<Port ID="1224480522" name="input" dynamic="False" />
+			<Variable name="followerID" refID="-1021673209" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="Destroy Entities" ID="1186363698" type="DestroyEntities" pos="-49.2,596">
+			<Port ID="-1577881764" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="-1021673209" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">2</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="Spawn Entity" ID="-1616977266" type="SpawnEntityNode" pos="-1116,491">
+			<Port ID="-85276754" name="output" dynamic="False" />
+			<Port ID="1407328256" name="IDOut" dynamic="False" />
+			<Port ID="2002092234" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="1890772801" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">2</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="-882331627" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="141126205" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="-1418427900" />
+			<Variable name="additionalCounts" refID="465786810" />
+		</Node>
+		<Node name="Spawn Entity" ID="-1673479924" type="SpawnEntityNode" pos="-616.8,490.8">
+			<Port ID="-800270052" name="output" dynamic="False" />
+			<Port ID="692334958" name="IDOut" dynamic="False" />
+			<Port ID="-2110027328" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="1665388692" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">2</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="-882331625" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="-1021673209" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="-1817855412" />
+			<Variable name="additionalCounts" refID="272742934" />
+		</Node>
+		<Node name="Spawn Entity" ID="-1729982582" type="SpawnEntityNode" pos="-870,490">
+			<Port ID="-617422318" name="output" dynamic="False" />
+			<Port ID="875182692" name="IDOut" dynamic="False" />
+			<Port ID="-1927179594" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="1034750674" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">2</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="-882331628" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="-1424957736" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="-409197868" />
+			<Variable name="additionalCounts" refID="-1237110742" />
+		</Node>
+		<Node name="Spawn Entity" ID="174215444" type="SpawnEntityNode" pos="-1360,490">
+			<Port ID="-434574584" name="output" dynamic="False" />
+			<Port ID="1058030426" name="IDOut" dynamic="False" />
+			<Port ID="-1744331860" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="-1857658760" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">2</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="-882331630" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="-262158322" />
+			<boolean name="forceCharacterTeleport">true</boolean>
+			<Variable name="additionalFlags" refID="1584878540" />
+			<Variable name="additionalCounts" refID="1598218300" />
+		</Node>
+		<Node name="Destroy Entities" ID="-1137297804" type="DestroyEntities" pos="-1187.2,-691.0001">
+			<Port ID="-1561484126" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="1875821083" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">0</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="Conditions" ID="1369255156" type="ConditionGroupNode" pos="-40,50">
+			<Port ID="-68879116" name="input" dynamic="False" />
+			<Port ID="-491133340" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1001471670" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1800890616" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-308285606" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Conditions" ID="59497880" type="ConditionGroupNode" pos="-943.4,-1201.4">
+			<Port ID="1423725894" name="input" dynamic="False" />
+			<Port ID="1184319404" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1618042882" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-125437872" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1367167138" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Test Variable" ID="-1250259396" type="TestVariableNode" pos="-700,-1210">
+			<Port ID="113968618" name="inputLeft" dynamic="False" />
+			<Port ID="1606573628" name="outputTrue" dynamic="False" />
+			<Port ID="-1195788658" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="1868326969" />
+			<int name="value">0</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="AI Follow" ID="834007990" type="AIFollowNode" pos="-1180,-1240">
+			<Port ID="296816352" name="output" dynamic="False" />
+			<Port ID="1789421362" name="input" dynamic="False" />
+			<Variable name="followerID" refID="-1074358281" />
+			<Variable name="targetID" refID="1875821083" />
+			<boolean name="useFollowerInput">false</boolean>
+			<boolean name="useTargetInput">false</boolean>
+			<boolean name="stopFollowing">false</boolean>
+			<boolean name="disallowAggression">false</boolean>
+		</Node>
+		<Node name="Set Variable" ID="2100602368" type="SetVariableNode" pos="-340,-1210">
+			<Port ID="-1435195148" name="Input " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="57409862" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="1868326969" />
+			<int name="value">1</int>
+			<boolean name="incrementMode">false</boolean>
+		</Node>
+		<Node name="Destroy Entities" ID="-546274526" type="DestroyEntities" pos="-1183.6,-936.8">
+			<Port ID="-1012940924" name="output" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="progressionFeedback">true</boolean>
+			<Variable name="targetID" refID="-1074358281" />
+			<int name="targetCount">1</int>
+			<int name="targetFaction">1</int>
+			<boolean name="passIfEntityDoesNotExist">false</boolean>
+			<boolean name="nameMode">false</boolean>
+		</Node>
+		<Node name="Spawn Entity" ID="117712786" type="SpawnEntityNode" pos="-1420,-1240">
+			<Port ID="-281549988" name="output" dynamic="False" />
+			<Port ID="1211055022" name="IDOut" dynamic="False" />
+			<Port ID="-1591307264" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="-1755840441" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">1</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="564338677" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">true</boolean>
+			<Variable name="entityID" refID="-1074358281" />
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="2000024142" />
+			<Variable name="additionalCounts" refID="-1274002862" />
+		</Node>
+		<Node name="Add Reward" ID="1928607424" type="AddRewardNode" pos="-620.4,-856">
+			<Port ID="1302302410" name="inputLeft" dynamic="False" />
+			<Port ID="-7454866" name="outputRight" dynamic="False" />
+			<RewardWrapper xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="wrapper">
+				<creditReward>1000</creditReward>
+				<reputationReward>25</reputationReward>
+				<shardReward>5</shardReward>
+				<partReward>false</partReward>
+				<partID>MediumCenter2</partID>
+				<partAbilityID>30</partAbilityID>
+				<partTier>3</partTier>
+			</RewardWrapper>
+			<boolean name="showPopup">false</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="-2082387928" type="LoadSectorNode" pos="-1600,-1310">
+			<Port ID="-1378636392" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-371851624" />
+		</Node>
+		<Node name="Lock Party" ID="1494528192" type="LockParty" pos="-1369,-1306.2">
+			<Port ID="-251726850" name="output" dynamic="False" />
+			<Port ID="1240878160" name="input" dynamic="False" />
+			<boolean name="unlockValue">false</boolean>
+		</Node>
+		<Node name="Set Part Drop Rate" ID="99787758" type="SetPartDropRate" pos="-1160,-1470">
+			<Port ID="-1317212142" name="output" dynamic="False" />
+			<Port ID="1667997878" name="input" dynamic="False" />
+			<float name="dropRate">0</float>
+			<Variable name="sectorName" refID="-371851624" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1550014872" port2ID="2128381212" />
+		<Connection port1ID="705760458" port2ID="57409862" />
+		<Connection port1ID="705760458" port2ID="-1195788658" />
+		<Connection port1ID="-673981074" port2ID="-421149084" />
+		<Connection port1ID="-2096601828" port2ID="818623936" />
+		<Connection port1ID="888608192" port2ID="-1913754094" />
+		<Connection port1ID="-421149084" port2ID="-1983738350" />
+		<Connection port1ID="-1730906360" port2ID="1367167138" />
+		<Connection port1ID="1254303660" port2ID="-1800890616" />
+		<Connection port1ID="-55453616" port2ID="-491133340" />
+		<Connection port1ID="-1365210892" port2ID="-491133340" />
+		<Connection port1ID="127394118" port2ID="-491133340" />
+		<Connection port1ID="1619999128" port2ID="-1760729498" />
+		<Connection port1ID="310241852" port2ID="1802846862" />
+		<Connection port1ID="-999515424" port2ID="-800270052" />
+		<Connection port1ID="1041632788" port2ID="1224480522" />
+		<Connection port1ID="-268124488" port2ID="-68879116" />
+		<Connection port1ID="-1577881764" port2ID="-491133340" />
+		<Connection port1ID="-85276754" port2ID="-1927179594" />
+		<Connection port1ID="2002092234" port2ID="-434574584" />
+		<Connection port1ID="-2110027328" port2ID="-617422318" />
+		<Connection port1ID="-1561484126" port2ID="-125437872" />
+		<Connection port1ID="1423725894" port2ID="296816352" />
+		<Connection port1ID="1184319404" port2ID="-1012940924" />
+		<Connection port1ID="-1618042882" port2ID="113968618" />
+		<Connection port1ID="1606573628" port2ID="1302302410" />
+		<Connection port1ID="1789421362" port2ID="-281549988" />
+		<Connection port1ID="-1435195148" port2ID="-7454866" />
+		<Connection port1ID="-1591307264" port2ID="-1317212142" />
+		<Connection port1ID="-1378636392" port2ID="1240878160" />
+		<Connection port1ID="-251726850" port2ID="1667997878" />
+	</Connections>
+	<Objects>
+		<Object refID="1941118256" type="System.String">
+			<string>Ancient Ruins Central</string>
+		</Object>
+		<Object refID="825093993" type="System.String">
+			<string>SkirmishCitadelGate</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+		<Object refID="141126205" type="System.String">
+			<string>FirstEncounterEnemy2</string>
+		</Object>
+		<Object refID="-262158322" type="System.String">
+			<string>FirstEncounterEnemy1</string>
+		</Object>
+		<Object refID="-1424957736" type="System.String">
+			<string>FirstEncounterEnemy3</string>
+		</Object>
+		<Object refID="-747843663" type="System.String">
+			<string>Defected Large Patrol</string>
+		</Object>
+		<Object refID="-1228614157" type="System.String">
+			<string>Defected Lurker</string>
+		</Object>
+		<Object refID="1571693263" type="System.String">
+			<string>Defected Anti-Drone Crab</string>
+		</Object>
+		<Object refID="1830209689" type="System.String">
+			<string>Defected CarrierMediumMobile</string>
+		</Object>
+		<Object refID="-1021673209" type="System.String">
+			<string>FirstEncounterEnemy4</string>
+		</Object>
+		<Object refID="1890772801" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core3skills_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":-0.2999989986419678,"y":2.4000000953674318},"rotation":90.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":-0.6000000238418579,"y":2.4000000953674318},"rotation":90.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":-0.7000002861022949,"y":0.4000000059604645},"rotation":-90.0,"mirrored":false,"abilityID":18,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":-0.9999997019767761,"y":0.4000000059604645},"rotation":-90.0,"mirrored":false,"abilityID":18,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":1.5,"y":-0.10000000149011612},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":1.0,"y":-0.6000000238418579},"rotation":0.0,"mirrored":false,"abilityID":2,"tier":3,"secondaryData":"","partID":"BigWing3","shiny":false},{"location":{"x":-0.4000000059604645,"y":-0.4000000059604645},"rotation":90.0,"mirrored":false,"abilityID":12,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":0.0,"y":0.4999999701976776},"rotation":180.0,"mirrored":false,"abilityID":5,"tier":2,"secondaryData":"","partID":"MediumExtra1","shiny":false},{"location":{"x":0.0,"y":-1.5},"rotation":-90.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":-0.4000000059604645,"y":-1.5},"rotation":-90.0,"mirrored":false,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":-0.8999999761581421,"y":-0.4000000059604645},"rotation":90.0,"mirrored":false,"abilityID":13,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":1.5,"y":0.20000000298023225},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":1.5,"y":0.5},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":0.0,"y":1.0},"rotation":-180.0,"mirrored":false,"abilityID":18,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":0.800000011920929,"y":-1.7000000476837159},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":1,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":-0.8999999761581421,"y":0.4000000059604645},"rotation":0.0,"mirrored":false,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":0.30000001192092898,"y":1.7999999523162842},"rotation":90.0,"mirrored":true,"abilityID":2,"tier":3,"secondaryData":"","partID":"BigWing3","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="-1049629115" type="System.String">
+			<string>ShellCore</string>
+		</Object>
+		<Object refID="-882331627" type="System.String">
+			<string>DuelZoneFirstEncounterDefectedFlag2</string>
+		</Object>
+		<Object refID="-1418427900" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="465786810" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="1665388692" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core3skills_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":-0.699999988079071,"y":0.10000000149011612},"rotation":-105.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":-1.100000023841858,"y":-1.0},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-1.2999999523162842,"y":0.4000000059604645},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"mini_drone","partID":"SmallCenter1","shiny":false},{"location":{"x":-1.5,"y":0.4000000059604645},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"mini_drone","partID":"SmallCenter1","shiny":false},{"location":{"x":-1.7000000476837159,"y":0.4000000059604645},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"mini_drone","partID":"SmallCenter1","shiny":false},{"location":{"x":-1.7000000476837159,"y":0.699999988079071},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"mini_drone","partID":"SmallCenter1","shiny":false},{"location":{"x":-1.5,"y":0.699999988079071},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"mini_drone","partID":"SmallCenter1","shiny":false},{"location":{"x":-1.2999999523162842,"y":0.699999988079071},"rotation":0.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"mini_drone","partID":"SmallCenter1","shiny":false},{"location":{"x":1.7999999523162842,"y":0.5},"rotation":105.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":0.4000000059604645,"y":0.0},"rotation":30.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":0.800000011920929,"y":-1.2000000476837159},"rotation":-30.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"BigSide6","shiny":false},{"location":{"x":-0.30000004172325137,"y":-1.100000023841858},"rotation":-30.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-1.2999999523162842,"y":1.2999999523162842},"rotation":-90.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-0.10000000149011612,"y":1.2000000476837159},"rotation":-30.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"BigSide6","shiny":false},{"location":{"x":-1.6999998092651368,"y":-0.6000000238418579},"rotation":180.0,"mirrored":true,"abilityID":21,"tier":0,"secondaryData":"","partID":"SmallWing3","shiny":false},{"location":{"x":-1.7999999523162842,"y":-1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":5,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="-882331625" type="System.String">
+			<string>DuelZoneFirstEncounterDefectedFlag4</string>
+		</Object>
+		<Object refID="-1817855412" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="272742934" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="1034750674" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core3skills_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":-0.699999988079071,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":3,"secondaryData":"","partID":"BigWing3","shiny":false},{"location":{"x":-1.6999998092651368,"y":1.5},"rotation":180.0,"mirrored":true,"abilityID":18,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-3.0999999046325685,"y":0.8999999761581421},"rotation":-105.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-2.4000000953674318,"y":-0.6000000238418579},"rotation":-45.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-0.10000001639127732,"y":-1.2999999523162842},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":-1.0,"y":1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":-0.699999988079071,"y":-1.5},"rotation":90.0,"mirrored":false,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallCenter2","shiny":false},{"location":{"x":0.10000001639127732,"y":2.4000000953674318},"rotation":0.0,"mirrored":true,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumWing3","shiny":false},{"location":{"x":0.10000000149011612,"y":1.399999976158142},"rotation":-180.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":1.0,"y":1.399999976158142},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumWing3","shiny":false},{"location":{"x":0.800000011920929,"y":-0.10000000149011612},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="-882331628" type="System.String">
+			<string>DuelZoneFirstEncounterDefectedFlag3</string>
+		</Object>
+		<Object refID="-409197868" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1237110742" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1857658760" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core3skills_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":-0.5999985337257385,"y":0.0},"rotation":15.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"SmallCenter7","shiny":false},{"location":{"x":-0.4999975562095642,"y":0.5},"rotation":-30.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"SmallCenter7","shiny":false},{"location":{"x":0.30000045895576479,"y":-1.100000023841858},"rotation":-165.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigWing3","shiny":false},{"location":{"x":-0.09999950230121613,"y":1.7000000476837159},"rotation":-105.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigWing3","shiny":false},{"location":{"x":-1.7999999523162842,"y":2.700000047683716},"rotation":30.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":0.6000009775161743,"y":0.20000000298023225},"rotation":-105.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"SmallCenter7","shiny":false},{"location":{"x":-0.0999995768070221,"y":2.299999952316284},"rotation":-105.0,"mirrored":false,"abilityID":12,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":-0.8999990820884705,"y":-1.9000003337860108},"rotation":60.0,"mirrored":true,"abilityID":18,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":4.577636616431846e-7,"y":-2.9000000953674318},"rotation":15.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":1.4000004529953004,"y":3.4000000953674318},"rotation":150.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-1.7000000476837159,"y":-1.100000023841858},"rotation":-75.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":1.0,"y":-0.10000000149011612},"rotation":-45.0,"mirrored":true,"abilityID":2,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":-1.2999999523162842,"y":-0.09999996423721314},"rotation":45.0,"mirrored":false,"abilityID":18,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":0.0,"y":-0.5},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"SmallCenter5","shiny":false},{"location":{"x":1.5258788721439488e-7,"y":0.6000000238418579},"rotation":-180.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"SmallCenter5","shiny":false},{"location":{"x":1.5,"y":0.800000011920929},"rotation":30.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"SmallCenter7","shiny":false},{"location":{"x":1.8000010251998902,"y":0.5},"rotation":105.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"MediumExtra1","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="-882331630" type="System.String">
+			<string>DuelZoneFirstEncounterDefectedFlag1</string>
+		</Object>
+		<Object refID="1584878540" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="1598218300" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="1868326969" type="System.String">
+			<string>MasterComplete</string>
+		</Object>
+		<Object refID="-1074358281" type="System.String">
+			<string>MasterEnemy1</string>
+		</Object>
+		<Object refID="-1755840441" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core4commando_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":-2.5,"y":-2.25},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"BigWing2","shiny":false},{"location":{"x":-1.8999998569488526,"y":-5.400000095367432},"rotation":0.0,"mirrored":true,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter1","shiny":false},{"location":{"x":-3.5,"y":-5.400000095367432},"rotation":0.0,"mirrored":true,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter1","shiny":false},{"location":{"x":0.699999988079071,"y":3.0999999046325685},"rotation":0.0,"mirrored":true,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigSide6","shiny":false},{"location":{"x":-0.699999988079071,"y":3.0999999046325685},"rotation":0.0,"mirrored":false,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigSide6","shiny":false},{"location":{"x":-0.699999988079071,"y":-3.4000000953674318},"rotation":180.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":0.699999988079071,"y":-3.4000000953674318},"rotation":180.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":2.5,"y":-2.25},"rotation":0.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"BigWing2","shiny":false},{"location":{"x":-1.7999999523162842,"y":-2.4000000953674318},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":1.7999999523162842,"y":-2.4000000953674318},"rotation":0.0,"mirrored":true,"abilityID":18,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":1.100000023841858,"y":-1.7000000476837159},"rotation":0.0,"mirrored":true,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":4.099999904632568,"y":-2.6500000953674318},"rotation":0.0,"mirrored":false,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":-4.099999904632568,"y":-2.6500000953674318},"rotation":0.0,"mirrored":true,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":-1.100000023841858,"y":-1.7000000476837159},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-2.799999952316284,"y":-5.800000190734863},"rotation":180.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"counter_drone","partID":"MediumCenter3","shiny":false},{"location":{"x":-2.799999475479126,"y":-4.600000381469727},"rotation":0.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"counter_drone","partID":"MediumCenter3","shiny":false},{"location":{"x":1.8999998569488526,"y":-5.400000095367432},"rotation":0.0,"mirrored":false,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter1","shiny":false},{"location":{"x":3.5,"y":-5.400000095367432},"rotation":0.0,"mirrored":false,"abilityID":21,"tier":0,"secondaryData":"","partID":"MediumCenter1","shiny":false},{"location":{"x":2.799999952316284,"y":-5.800000190734863},"rotation":-180.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"counter_drone","partID":"MediumCenter3","shiny":false},{"location":{"x":2.799999475479126,"y":-4.600000381469727},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"counter_drone","partID":"MediumCenter3","shiny":false},{"location":{"x":1.1000005006790162,"y":-5.0},"rotation":0.0,"mirrored":true,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":3.5999999046325685,"y":-1.0},"rotation":180.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":-3.5999999046325685,"y":-1.0},"rotation":-180.0,"mirrored":true,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":-2.799999952316284,"y":-1.3125},"rotation":180.0,"mirrored":true,"abilityID":2,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":2.799999952316284,"y":-1.3125},"rotation":-180.0,"mirrored":false,"abilityID":2,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":5.599999904632568,"y":-0.4000000059604645},"rotation":-180.0,"mirrored":false,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-5.599999904632568,"y":-0.4000000059604645},"rotation":180.0,"mirrored":true,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-5.199999809265137,"y":-1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":5.199999809265137,"y":-1.2000000476837159},"rotation":0.0,"mirrored":true,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":4.499999523162842,"y":-1.2000000476837159},"rotation":0.0,"mirrored":true,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-4.499999523162842,"y":-1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-4.800000190734863,"y":3.200000047683716},"rotation":-180.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-4.400000095367432,"y":2.4000000953674318},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-3.700000047683716,"y":2.5},"rotation":-180.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":-4.700000762939453,"y":-5.000000476837158},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":4.700000762939453,"y":-5.000000476837158},"rotation":0.0,"mirrored":true,"abilityID":18,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":4.0,"y":-4.599999904632568},"rotation":0.0,"mirrored":true,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-4.0,"y":-4.599999904632568},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-1.1000005006790162,"y":-5.0},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":0.000001411438006471144,"y":-4.400000095367432},"rotation":0.0,"mirrored":true,"abilityID":34,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false},{"location":{"x":-7.8000006675720219,"y":-2.700000047683716},"rotation":-180.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":7.8000006675720219,"y":-2.700000047683716},"rotation":180.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":7.400000095367432,"y":-3.5},"rotation":0.0,"mirrored":true,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":-7.400000095367432,"y":-3.5},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":6.599999904632568,"y":-3.4000000953674318},"rotation":180.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"BigSide4","shiny":false},{"location":{"x":-6.599999904632568,"y":-3.4000000953674318},"rotation":-180.0,"mirrored":true,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"BigSide4","shiny":false},{"location":{"x":-5.800000190734863,"y":-3.9000000953674318},"rotation":-180.0,"mirrored":true,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":5.800000190734863,"y":-3.9000000953674318},"rotation":-180.0,"mirrored":false,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":-2.9000000953674318,"y":2.0999999046325685},"rotation":180.0,"mirrored":true,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false},{"location":{"x":-1.0,"y":0.5},"rotation":0.0,"mirrored":true,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":1.0,"y":0.5},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":1.7999999523162842,"y":1.0},"rotation":0.0,"mirrored":true,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":-1.7999999523162842,"y":1.0},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":-1.0,"y":1.7000000476837159},"rotation":0.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":1.0,"y":1.7000000476837159},"rotation":0.0,"mirrored":true,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":2.5,"y":5.699999809265137},"rotation":-180.0,"mirrored":false,"abilityID":25,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-2.5,"y":5.699999809265137},"rotation":180.0,"mirrored":true,"abilityID":25,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-2.1000006198883058,"y":4.900000095367432},"rotation":0.0,"mirrored":false,"abilityID":25,"tier":3,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":2.1000006198883058,"y":4.900000095367432},"rotation":0.0,"mirrored":true,"abilityID":25,"tier":3,"secondaryData":"","partID":"MediumSide1","shiny":false},{"location":{"x":0.9999995231628418,"y":4.300000190734863},"rotation":0.0,"mirrored":false,"abilityID":2,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":-0.9999995231628418,"y":4.300000190734863},"rotation":0.0,"mirrored":true,"abilityID":2,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false},{"location":{"x":-3.8999993801116945,"y":-3.799999952316284},"rotation":0.0,"mirrored":true,"abilityID":18,"tier":3,"secondaryData":"","partID":"MediumCenter7","shiny":false},{"location":{"x":-4.599999904632568,"y":-4.099999904632568},"rotation":0.0,"mirrored":false,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-1.899999976158142,"y":-3.799999952316284},"rotation":0.0,"mirrored":true,"abilityID":18,"tier":3,"secondaryData":"","partID":"MediumCenter7","shiny":false},{"location":{"x":-1.2000004053115845,"y":-3.999999761581421},"rotation":0.0,"mirrored":true,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":1.0,"y":-0.8999999761581421},"rotation":0.0,"mirrored":true,"abilityID":18,"tier":3,"secondaryData":"","partID":"MediumCenter7","shiny":false},{"location":{"x":-1.0,"y":-0.8999999761581421},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"MediumCenter7","shiny":false},{"location":{"x":-1.7000000476837159,"y":-1.2000000476837159},"rotation":0.0,"mirrored":false,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":1.7000000476837159,"y":-1.2000000476837159},"rotation":0.0,"mirrored":true,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":0.00000476837158203125,"y":-0.8999999761581421},"rotation":0.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":1.899999976158142,"y":-3.799999952316284},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"MediumCenter7","shiny":false},{"location":{"x":1.2000004053115845,"y":-3.999999761581421},"rotation":0.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":3.8999993801116945,"y":-3.799999952316284},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"MediumCenter7","shiny":false},{"location":{"x":4.599999904632568,"y":-4.099999904632568},"rotation":0.0,"mirrored":true,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-1.0,"y":2.5999999046325685},"rotation":0.0,"mirrored":true,"abilityID":18,"tier":3,"secondaryData":"","partID":"MediumCenter7","shiny":false},{"location":{"x":1.0,"y":2.5999999046325685},"rotation":0.0,"mirrored":false,"abilityID":18,"tier":3,"secondaryData":"","partID":"MediumCenter7","shiny":false},{"location":{"x":-1.7000000476837159,"y":2.200000047683716},"rotation":0.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":1.7000000476837159,"y":2.200000047683716},"rotation":0.0,"mirrored":true,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":4.800000190734863,"y":3.200000047683716},"rotation":180.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":4.400000095367432,"y":2.4000000953674318},"rotation":0.0,"mirrored":true,"abilityID":17,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false},{"location":{"x":3.700000047683716,"y":2.5},"rotation":180.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false},{"location":{"x":2.9000000953674318,"y":2.0999999046325685},"rotation":-180.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="564338677" type="System.String">
+			<string>MasterFlag1</string>
+		</Object>
+		<Object refID="2000024142" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1274002862" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-371851624" type="System.String">
+			<string>DuelZone Master</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

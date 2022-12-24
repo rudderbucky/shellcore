@@ -1,0 +1,651 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-340.9998,-218.8001" zoom="1.2" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="1205762048" type="LoadSectorNode" pos="-771.2,-103.2">
+			<Port ID="-397426048" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+		</Node>
+		<Node name="Battle Zone Condition" ID="-2107218688" type="WinBattleCondition" pos="-574,3">
+			<Port ID="1087892224" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<boolean name="loseMode">false</boolean>
+		</Node>
+		<Node name="Battle Zone Condition" ID="433022592" type="WinBattleCondition" pos="-575.2,122.6">
+			<Port ID="2125332352" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<boolean name="loseMode">true</boolean>
+		</Node>
+		<Node name="Conditions" ID="35090432" type="ConditionGroupNode" pos="-566.8,-101.2">
+			<Port ID="-1132194816" name="input" dynamic="False" />
+			<Port ID="310096640" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1347536768" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="-1321703424" type="TimeTrigger" pos="-459.2,741">
+			<Port ID="-94754688" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">5</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="2109970688" type="ConditionGroupNode" pos="-296.4,-38.99999">
+			<Port ID="942685440" name="input" dynamic="False" />
+			<Port ID="-1909990400" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-872550272" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="164889856" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1202329984" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-2055197184" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1017757056" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">169</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="1218537856" type="WarpPlayerNode" pos="220,150">
+			<Port ID="1980125568" name="output" dynamic="False" />
+			<Port ID="-1277401600" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945278" />
+		</Node>
+		<Node name="Warp Player" ID="-536188160" type="WarpPlayerNode" pos="220,350">
+			<Port ID="-239961472" name="output" dynamic="False" />
+			<Port ID="797478656" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945284" />
+		</Node>
+		<Node name="Conditions" ID="-110116352" type="ConditionGroupNode" pos="414,349.4">
+			<Port ID="1834918784" name="input" dynamic="False" />
+			<Port ID="19683072" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1057123200" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Conditions" ID="1964763904" type="ConditionGroupNode" pos="808.4,348.4">
+			<Port ID="-1422608384" name="input" dynamic="False" />
+			<Port ID="-663996416" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="373443712" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Time Trigger" ID="2004053120" type="TimeTrigger" pos="724.4,106.6">
+			<Port ID="-385168256" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">0</int>
+			<int name="milliseconds">1</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Warp Player" ID="249327104" type="WarpPlayerNode" pos="997.4,352.2">
+			<Port ID="652271872" name="output" dynamic="False" />
+			<Port ID="1689712000" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945280" />
+		</Node>
+		<Node name="Force Tractor" ID="-990156800" type="ForceTractorNode" pos="495.6,31.00001">
+			<Port ID="-1567815168" name="output" dynamic="False" />
+			<Port ID="-530375040" name="input" dynamic="False" />
+			<boolean name="useIDInput">false</boolean>
+			<boolean name="useIDInputTarget">false</boolean>
+			<Variable name="entityID" refID="1875821083" />
+			<Variable name="targetEntityID" refID="1414245136" />
+		</Node>
+		<Node name="Conditions" ID="-255323136" type="ConditionGroupNode" pos="893.6,-77">
+			<Port ID="507065088" name="input" dynamic="False" />
+			<Port ID="1410883840" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1846643328" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="-1505398912" type="WarpPlayerNode" pos="600,350">
+			<Port ID="1544505216" name="output" dynamic="False" />
+			<Port ID="-1713021952" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945277" />
+		</Node>
+		<Node name="Conditions" ID="1819557120" type="ConditionGroupNode" pos="458.5999,644.8">
+			<Port ID="-675581824" name="input" dynamic="False" />
+			<Port ID="-809203200" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="228236928" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="-719883648" type="WarpPlayerNode" pos="240,630">
+			<Port ID="361858304" name="output" dynamic="False" />
+			<Port ID="1399298432" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945279" />
+		</Node>
+		<Node name="Conditions" ID="-400529920" type="ConditionGroupNode" pos="-78.80002,713">
+			<Port ID="-1858228736" name="input" dynamic="False" />
+			<Port ID="1265677056" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1991850112" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Randomizer" ID="324790656" type="DialogueRouletteNode" pos="-130.2,220.2">
+			<Port ID="-954409984" name="Input " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="83030144" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">107</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1120470272" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">162</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-2137056896" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">217</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1099616768" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">272</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-62176640" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">327</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="975263488" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">382</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="chances" refID="-1094265472" />
+			<boolean name="dialogue">false</boolean>
+		</Node>
+		<Node name="Warp Player" ID="65631616" type="WarpPlayerNode" pos="1190,40">
+			<Port ID="1254091648" name="output" dynamic="False" />
+			<Port ID="-2003435520" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="371857150" />
+		</Node>
+		<Node name="Warp Player" ID="-1689094400" type="WarpPlayerNode" pos="240,900">
+			<Port ID="1036804352" name="output" dynamic="False" />
+			<Port ID="2074244480" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945281" />
+		</Node>
+		<Node name="Conditions" ID="1674350336" type="ConditionGroupNode" pos="427.1996,904.8">
+			<Port ID="-1183282688" name="input" dynamic="False" />
+			<Port ID="2012703616" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1244823552" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="851146880" type="WarpPlayerNode" pos="600,900">
+			<Port ID="-145842560" name="output" dynamic="False" />
+			<Port ID="891597568" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945284" />
+		</Node>
+		<Node name="Conditions" ID="-545736704" type="ConditionGroupNode" pos="784.7996,914.3999">
+			<Port ID="1929037696" name="input" dynamic="False" />
+			<Port ID="764228224" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-563625472" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="-903579136" type="WarpPlayerNode" pos="960.4,899.6">
+			<Port ID="-1328489472" name="output" dynamic="False" />
+			<Port ID="-291049344" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945283" />
+		</Node>
+		<Node name="Conditions" ID="1529143552" type="ConditionGroupNode" pos="1132,921.6">
+			<Port ID="746390784" name="input" dynamic="False" />
+			<Port ID="473814656" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-854039040" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="-187767552" type="WarpPlayerNode" pos="1312.4,897.2">
+			<Port ID="1783830912" name="output" dynamic="False" />
+			<Port ID="-1473696256" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945278" />
+		</Node>
+		<Node name="Conditions" ID="-690943488" type="ConditionGroupNode" pos="1488.8,922.4">
+			<Port ID="-436256128" name="input" dynamic="False" />
+			<Port ID="183401088" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1144452608" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="-555158528" type="WarpPlayerNode" pos="1668.4,896.4">
+			<Port ID="601184000" name="output" dynamic="False" />
+			<Port ID="1638624128" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945277" />
+		</Node>
+		<Node name="Conditions" ID="1383936768" type="ConditionGroupNode" pos="1868,914.3999">
+			<Port ID="-1618903040" name="input" dynamic="False" />
+			<Port ID="-107012480" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1434866176" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="-1524369280" type="WarpPlayerNode" pos="2070.4,899.2">
+			<Port ID="-269858944" name="output" dynamic="False" />
+			<Port ID="767581184" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945280" />
+		</Node>
+		<Node name="Time Trigger" ID="79521792" type="TimeTrigger" pos="244.9998,776">
+			<Port ID="-415065728" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="-1675204224" type="TimeTrigger" pos="245.5996,1039.6">
+			<Port ID="-344182144" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="865037056" type="TimeTrigger" pos="607.1996,1055.6">
+			<Port ID="693257984" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="1919974656" type="TimeTrigger" pos="955.1996,1047.6">
+			<Port ID="1730698112" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="165248640" type="TimeTrigger" pos="1315.2,1048.4">
+			<Port ID="-1526829056" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="-1589477376" type="TimeTrigger" pos="1675.2,1040.4">
+			<Port ID="-489388928" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="-1816137088" type="TimeTrigger" pos="593.4,498.4">
+			<Port ID="548051200" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">5</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="724104192" type="TimeTrigger" pos="224,491.4">
+			<Port ID="1585491328" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">5</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="-1030621824" type="TimeTrigger" pos="-919.6,-21.2">
+			<Port ID="-1672035840" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">7</int>
+			<int name="milliseconds">5</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Time Trigger" ID="1509619456" type="TimeTrigger" pos="-582.2,238.6">
+			<Port ID="-634595712" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">17</int>
+			<int name="milliseconds">5</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Warp Player" ID="1820357632" type="WarpPlayerNode" pos="670,630">
+			<Port ID="-820788608" name="output" dynamic="False" />
+			<Port ID="216651520" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945278" />
+		</Node>
+		<Node name="Time Trigger" ID="-245106560" type="TimeTrigger" pos="250.9998,1346.6">
+			<Port ID="257637632" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">1</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Warp Player" ID="1015872000" type="WarpPlayerNode" pos="250,1190">
+			<Port ID="1805021312" name="output" dynamic="False" />
+			<Port ID="-1452505856" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945290" />
+		</Node>
+		<Node name="Conditions" ID="-836150272" type="ConditionGroupNode" pos="500,1190">
+			<Port ID="402844416" name="input" dynamic="False" />
+			<Port ID="1440284544" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1817242624" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Warp Player" ID="-1999832576" type="WarpPlayerNode" pos="700.4,1188.8">
+			<Port ID="-1962449408" name="output" dynamic="False" />
+			<Port ID="112430848" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="124354609" />
+			<Variable name="entityID" refID="-1692945277" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-397426048" port2ID="-1132194816" />
+		<Connection port1ID="1087892224" port2ID="-1909990400" />
+		<Connection port1ID="2125332352" port2ID="164889856" />
+		<Connection port1ID="310096640" port2ID="-1672035840" />
+		<Connection port1ID="1347536768" port2ID="942685440" />
+		<Connection port1ID="-94754688" port2ID="1265677056" />
+		<Connection port1ID="942685440" port2ID="-1991850112" />
+		<Connection port1ID="942685440" port2ID="-1846643328" />
+		<Connection port1ID="-2055197184" port2ID="-634595712" />
+		<Connection port1ID="-1017757056" port2ID="-954409984" />
+		<Connection port1ID="1980125568" port2ID="-530375040" />
+		<Connection port1ID="-1277401600" port2ID="83030144" />
+		<Connection port1ID="-239961472" port2ID="1834918784" />
+		<Connection port1ID="797478656" port2ID="1120470272" />
+		<Connection port1ID="19683072" port2ID="1585491328" />
+		<Connection port1ID="1057123200" port2ID="-1713021952" />
+		<Connection port1ID="-1422608384" port2ID="1544505216" />
+		<Connection port1ID="-663996416" port2ID="548051200" />
+		<Connection port1ID="373443712" port2ID="1689712000" />
+		<Connection port1ID="-385168256" port2ID="1410883840" />
+		<Connection port1ID="652271872" port2ID="507065088" />
+		<Connection port1ID="-1567815168" port2ID="507065088" />
+		<Connection port1ID="507065088" port2ID="-820788608" />
+		<Connection port1ID="507065088" port2ID="-269858944" />
+		<Connection port1ID="507065088" port2ID="-1962449408" />
+		<Connection port1ID="-675581824" port2ID="361858304" />
+		<Connection port1ID="-809203200" port2ID="-415065728" />
+		<Connection port1ID="228236928" port2ID="216651520" />
+		<Connection port1ID="1399298432" port2ID="-2137056896" />
+		<Connection port1ID="-1858228736" port2ID="975263488" />
+		<Connection port1ID="-1099616768" port2ID="2074244480" />
+		<Connection port1ID="-62176640" port2ID="-1452505856" />
+		<Connection port1ID="1036804352" port2ID="-1183282688" />
+		<Connection port1ID="2012703616" port2ID="-344182144" />
+		<Connection port1ID="-1244823552" port2ID="891597568" />
+		<Connection port1ID="-145842560" port2ID="1929037696" />
+		<Connection port1ID="764228224" port2ID="693257984" />
+		<Connection port1ID="-563625472" port2ID="-291049344" />
+		<Connection port1ID="-1328489472" port2ID="746390784" />
+		<Connection port1ID="473814656" port2ID="1730698112" />
+		<Connection port1ID="-854039040" port2ID="-1473696256" />
+		<Connection port1ID="1783830912" port2ID="-436256128" />
+		<Connection port1ID="183401088" port2ID="-1526829056" />
+		<Connection port1ID="-1144452608" port2ID="1638624128" />
+		<Connection port1ID="601184000" port2ID="-1618903040" />
+		<Connection port1ID="-107012480" port2ID="-489388928" />
+		<Connection port1ID="-1434866176" port2ID="767581184" />
+		<Connection port1ID="257637632" port2ID="1440284544" />
+		<Connection port1ID="1805021312" port2ID="402844416" />
+		<Connection port1ID="-1817242624" port2ID="112430848" />
+	</Connections>
+	<Objects>
+		<Object refID="124354609" type="System.String">
+			<string>BattleZone Warp Disruption</string>
+		</Object>
+		<Object refID="-1692945278" type="System.String">
+			<string>WarpDisruptionPlayerFlag4</string>
+		</Object>
+		<Object refID="-1692945284" type="System.String">
+			<string>WarpDisruptionPlayerFlag2</string>
+		</Object>
+		<Object refID="-1692945280" type="System.String">
+			<string>WarpDisruptionPlayerFlag6</string>
+		</Object>
+		<Object refID="1875821083" type="System.String">
+			<string>player</string>
+		</Object>
+		<Object refID="1414245136" type="System.String">
+			<string>none</string>
+		</Object>
+		<Object refID="-1692945277" type="System.String">
+			<string>WarpDisruptionPlayerFlag5</string>
+		</Object>
+		<Object refID="-1692945279" type="System.String">
+			<string>WarpDisruptionPlayerFlag7</string>
+		</Object>
+		<Object refID="-1094265472" type="System.Collections.Generic.List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfFloat xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<float>0.125</float>
+				<float>0.25</float>
+				<float>0.25</float>
+				<float>0.25</float>
+				<float>0.1</float>
+				<float>0.025</float>
+			</ArrayOfFloat>
+		</Object>
+		<Object refID="371857150" type="System.String">
+			<string />
+		</Object>
+		<Object refID="-1692945281" type="System.String">
+			<string>WarpDisruptionPlayerFlag1</string>
+		</Object>
+		<Object refID="-1692945283" type="System.String">
+			<string>WarpDisruptionPlayerFlag3</string>
+		</Object>
+		<Object refID="-1692945290" type="System.String">
+			<string>WarpDisruptionPlayerFlag8</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

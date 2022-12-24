@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-101.4001,287.5999" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="End Dialogue" ID="1591067564" type="EndDialogue" pos="116.6001,117.2001">
+			<Port ID="755915672" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="-1794779780" type="StartDialogueNode" pos="-70,-220">
+			<Port ID="-949360210" name="input" dynamic="False" />
+			<Port ID="543244800" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="-1268450189" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Clear Pending Dialogue" ID="1295214514" type="ClearDialogue" pos="-109.2,-390">
+			<Port ID="2128264906" name="inputLeft" dynamic="False" />
+			<Port ID="-674097380" name="outputRight" dynamic="False" />
+			<Variable name="EntityID" refID="-1268450189" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Test Variable (DEPRECATED)" ID="168909412" type="TestVariableNode" pos="-359.2,-392">
+			<Port ID="818507630" name="inputLeft" dynamic="False" />
+			<Port ID="-1983854656" name="outputTrue" dynamic="False" />
+			<Port ID="-491249646" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-1704267910" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Enter Sector" ID="-1792213424" type="LoadSectorNode" pos="-534.8,-397.2">
+			<Port ID="1001355364" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-1527800501" />
+		</Node>
+		<Node name="Dialogue" ID="-512562240" type="DialogueNode" pos="120,-220">
+			<Port ID="-1680751146" name="input" dynamic="False" />
+			<Port ID="-188146136" name="cancel" dynamic="False" />
+			<Port ID="573067938" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">244</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="-565265160" />
+			<Variable name="answers" refID="-430877634" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="755915672" port2ID="573067938" />
+		<Connection port1ID="-949360210" port2ID="-1983854656" />
+		<Connection port1ID="543244800" port2ID="-1680751146" />
+		<Connection port1ID="2128264906" port2ID="-491249646" />
+		<Connection port1ID="818507630" port2ID="1001355364" />
+	</Connections>
+	<Objects>
+		<Object refID="-1268450189" type="System.String">
+			<string>CH1-the-central-core-explainer</string>
+		</Object>
+		<Object refID="-1704267910" type="System.String">
+			<string>UneasyAlliance</string>
+		</Object>
+		<Object refID="-1527800501" type="System.String">
+			<string>Hideout 1</string>
+		</Object>
+		<Object refID="-565265160" type="System.String">
+			<string>The Core Sectors were not what I anticipated them to be. I thought I would see those followers of that Voice but it's now overrun by the Defective. What's keeping them at bay is that armada. They were the ones who created those blockades ages ago. I wonder if they are still there.</string>
+		</Object>
+		<Object refID="-430877634" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>...</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

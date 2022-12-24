@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-353.4,-1.199986" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Test Variable" ID="888651036" type="TestVariableNode" pos="-150,-50">
+			<Port ID="1231718256" name="inputLeft" dynamic="False" />
+			<Port ID="-1570644030" name="outputTrue" dynamic="False" />
+			<Port ID="-78039020" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-1222592864" />
+			<int name="value">1</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="End Dialogue" ID="274399154" type="EndDialogue" pos="550,-150">
+			<Port ID="1414565990" name="input" dynamic="False" />
+			<Port ID="-1936339498" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-443734488" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1048870522" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1753491764" name="Output" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="jumpToStart">false</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Enter Sector" ID="-1229144192" type="LoadSectorNode" pos="-350,-50">
+			<Port ID="-1387796296" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="191894061" />
+		</Node>
+		<Node name="Start Dialogue" ID="328982000" type="StartDialogueNode" pos="100,-150">
+			<Port ID="-1204948562" name="input" dynamic="False" />
+			<Port ID="287656448" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="2112550617" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Clear Pending Dialogue" ID="-21453896" type="ClearDialogue" pos="100,150">
+			<Port ID="685411018" name="inputLeft" dynamic="False" />
+			<Port ID="-2116951268" name="outputRight" dynamic="False" />
+			<Variable name="EntityID" refID="2112550617" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="-1950586912" type="DialogueNode" pos="300,-150">
+			<Port ID="104808714" name="input" dynamic="False" />
+			<Port ID="1597413724" name="cancel" dynamic="False" />
+			<Port ID="-260886754" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">205</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1081665405" />
+			<Variable name="answers" refID="-1699328412" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1231718256" port2ID="-1387796296" />
+		<Connection port1ID="-1570644030" port2ID="-1204948562" />
+		<Connection port1ID="-78039020" port2ID="685411018" />
+		<Connection port1ID="1414565990" port2ID="-260886754" />
+		<Connection port1ID="-1936339498" port2ID="-1204948562" />
+		<Connection port1ID="-1204948562" port2ID="1597413724" />
+		<Connection port1ID="287656448" port2ID="104808714" />
+	</Connections>
+	<Objects>
+		<Object refID="-1222592864" type="System.String">
+			<string>InfectedTruceVar</string>
+		</Object>
+		<Object refID="191894061" type="System.String">
+			<string>Infected Capitol East</string>
+		</Object>
+		<Object refID="2112550617" type="System.String">
+			<string>inf-cap-eastSC1</string>
+		</Object>
+		<Object refID="1081665405" type="System.String">
+			<string>The fact that you Verdants are still alive is nothing short of a miracle. Every time we have gotten close to wiping you all out, we've fallen short. You guys really are something.</string>
+		</Object>
+		<Object refID="-1699328412" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Uhhh... Thanks?</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

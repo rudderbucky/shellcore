@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="207.4,83.2" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="1042133888" type="LoadSectorNode" pos="-700,-200">
+			<Port ID="-1034540976" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1796847686" />
+		</Node>
+		<Node name="Set Part Drop Rate" ID="598514158" type="SetPartDropRate" pos="-490,-210">
+			<Port ID="458064034" name="output" dynamic="False" />
+			<Port ID="1950669044" name="input" dynamic="False" />
+			<float name="dropRate">0.125</float>
+			<Variable name="sectorName" refID="1796847686" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1034540976" port2ID="1950669044" />
+	</Connections>
+	<Objects>
+		<Object refID="1796847686" type="System.String">
+			<string>Sector 2600-7150</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

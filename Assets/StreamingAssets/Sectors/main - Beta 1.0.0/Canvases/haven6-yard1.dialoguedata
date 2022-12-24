@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="818.4,89.59999" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="End Dialogue" ID="1278349252" type="EndDialogue" pos="-692.2,-199.4">
+			<Port ID="-256707032" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">true</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="1178152622" type="StartDialogueNode" pos="-1230,-200">
+			<Port ID="-1383616574" name="input" dynamic="False" />
+			<Port ID="-1566464308" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="1522357009" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1194226944" type="DialogueNode" pos="-1020,-210">
+			<Port ID="-73859298" name="input" dynamic="False" />
+			<Port ID="1418745712" name="cancel" dynamic="False" />
+			<Port ID="-1749312042" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">205</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1997112052" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">262</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="1672530186" />
+			<Variable name="answers" refID="877321882" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="982496202" type="EndDialogue" pos="-676.8,-30.79999">
+			<Port ID="1235897978" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-256707032" port2ID="-1749312042" />
+		<Connection port1ID="-1566464308" port2ID="-73859298" />
+		<Connection port1ID="1997112052" port2ID="1235897978" />
+	</Connections>
+	<Objects>
+		<Object refID="1522357009" type="System.String">
+			<string>verdanthideout-2-yard1</string>
+		</Object>
+		<Object refID="1672530186" type="System.String">
+			<string>It isn't easy to protect yourself from the Defected; there have been sightings of ShellCores that go beyond expectations. So always prepare for the worst.</string>
+		</Object>
+		<Object refID="877321882" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Can I reconfigure?</string>
+				<string>Nevermind.</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>

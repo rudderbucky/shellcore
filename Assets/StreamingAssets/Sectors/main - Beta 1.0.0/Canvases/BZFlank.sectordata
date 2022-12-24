@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="608.9999,-382.2" zoom="1" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Time Trigger" ID="1268506082" type="TimeTrigger" pos="570,310">
+			<Port ID="802838200" name="output" dynamic="False" />
+			<ConditionState name="state">Uninitialized</ConditionState>
+			<int name="seconds">5</int>
+			<int name="milliseconds">0</int>
+			<float name="totalTime">0</float>
+		</Node>
+		<Node name="Conditions" ID="1864510236" type="ConditionGroupNode" pos="570,210">
+			<Port ID="-1999524086" name="input" dynamic="False" />
+			<Port ID="1746900008" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1055462278" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Conditions" ID="554752960" type="ConditionGroupNode" pos="-40,50">
+			<Port ID="-506919076" name="input" dynamic="False" />
+			<Port ID="437142732" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1929747742" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">59</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-872614544" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Condition</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="619990466" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">114</float>
+				<float name="sideOffset">0</float>
+			</Port>
+		</Node>
+		<Node name="Battle Zone Condition" ID="-183377728" type="WinBattleCondition" pos="-260,160">
+			<Port ID="985685934" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1964906600" />
+			<boolean name="loseMode">true</boolean>
+		</Node>
+		<Node name="Win Battle Zone" ID="534673448" type="WinBattleCondition" pos="-260,50">
+			<Port ID="-1816676352" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1964906600" />
+			<boolean name="loseMode">false</boolean>
+		</Node>
+		<Node name="Test Variable" ID="-755004316" type="TestVariableNode" pos="130,50">
+			<Port ID="-61986614" name="inputLeft" dynamic="False" />
+			<Port ID="1430618396" name="outputTrue" dynamic="False" />
+			<Port ID="-1371743890" name="outputFalse" dynamic="False" />
+			<Variable name="variableName" refID="-298895925" />
+			<int name="value">0</int>
+			<int name="mode">0</int>
+		</Node>
+		<Node name="Set Variable" ID="2099077600" type="SetVariableNode" pos="570,50">
+			<Port ID="2112595476" name="Input " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-689766810" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">29</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="-298895925" />
+			<int name="value">1</int>
+			<boolean name="incrementMode">false</boolean>
+		</Node>
+		<Node name="Popup dialogue" ID="-2064761592" type="PopupNode" pos="-1117.6,622.2">
+			<Port ID="120861120" name="output" dynamic="False" />
+			<Port ID="1613466130" name="input" dynamic="False" />
+			<Variable name="text" refID="-987158241" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Warp Player" ID="972653032" type="WarpPlayerNode" pos="790,210">
+			<Port ID="-1188896156" name="output" dynamic="False" />
+			<Port ID="303708854" name="input" dynamic="False" />
+			<Variable name="sectorName" refID="1941118256" />
+			<Variable name="entityID" refID="825093993" />
+		</Node>
+		<Node name="Popup dialogue" ID="920448428" type="PopupNode" pos="-860,630">
+			<Port ID="1796313864" name="output" dynamic="False" />
+			<Port ID="-1006048422" name="input" dynamic="False" />
+			<Variable name="text" refID="-1317961950" />
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="color">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+		</Node>
+		<Node name="Spawn Entity" ID="1086868882" type="SpawnEntityNode" pos="-850,150">
+			<Port ID="486556588" name="output" dynamic="False" />
+			<Port ID="1979161598" name="IDOut" dynamic="False" />
+			<Port ID="-823200688" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="71048345" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">1</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="1908961180" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">false</boolean>
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="2004947176" />
+			<Variable name="additionalCounts" refID="2018286936" />
+		</Node>
+		<Node name="Add Reward" ID="1546566208" type="AddRewardNode" pos="347.2,-154.8">
+			<Port ID="852252056" name="inputLeft" dynamic="False" />
+			<Port ID="-1950110230" name="outputRight" dynamic="False" />
+			<RewardWrapper xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="wrapper">
+				<creditReward>1000</creditReward>
+				<reputationReward>25</reputationReward>
+				<shardReward>15</shardReward>
+				<partReward>false</partReward>
+				<partAbilityID>0</partAbilityID>
+				<partTier>0</partTier>
+			</RewardWrapper>
+			<boolean name="showPopup">false</boolean>
+		</Node>
+		<Node name="Enter Sector" ID="1252724624" type="LoadSectorNode" pos="-1330,40">
+			<Port ID="-457505220" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1964906600" />
+		</Node>
+		<Node name="Set Part Drop Rate" ID="676799982" type="SetPartDropRate" pos="-1097,10">
+			<Port ID="1035099790" name="output" dynamic="False" />
+			<Port ID="-1767262496" name="input" dynamic="False" />
+			<float name="dropRate">0</float>
+			<Variable name="sectorName" refID="1964906600" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+		<Node name="Spawn Entity" ID="973863566" type="SpawnEntityNode" pos="-1100,150">
+			<Port ID="-274657486" name="output" dynamic="False" />
+			<Port ID="1217947524" name="IDOut" dynamic="False" />
+			<Port ID="-1584414762" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="-509740575" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">2</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="342877239" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">false</boolean>
+			<boolean name="forceCharacterTeleport">true</boolean>
+			<Variable name="additionalFlags" refID="720127812" />
+			<Variable name="additionalCounts" refID="-1996673966" />
+		</Node>
+		<Node name="Spawn Entity" ID="1030366224" type="SpawnEntityNode" pos="-600,150">
+			<Port ID="669404322" name="output" dynamic="False" />
+			<Port ID="-2132957964" name="IDOut" dynamic="False" />
+			<Port ID="-640352954" name="input" dynamic="False" />
+			<boolean name="action">false</boolean>
+			<Variable name="blueprint" refID="-1048052881" />
+			<Variable name="entityName" refID="-1049629115" />
+			<int name="faction">1</int>
+			<int name="count">1</int>
+			<Variable name="flagName" refID="1908961180" />
+			<Vector2 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="coordinates">
+				<x>0</x>
+				<y>0</y>
+			</Vector2>
+			<boolean name="useCoordinates">false</boolean>
+			<boolean name="issueID">false</boolean>
+			<boolean name="forceCharacterTeleport">false</boolean>
+			<Variable name="additionalFlags" refID="426016370" />
+			<Variable name="additionalCounts" refID="-376958592" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="802838200" port2ID="1746900008" />
+		<Connection port1ID="-1999524086" port2ID="-689766810" />
+		<Connection port1ID="-1999524086" port2ID="-1371743890" />
+		<Connection port1ID="-1999524086" port2ID="619990466" />
+		<Connection port1ID="-1055462278" port2ID="303708854" />
+		<Connection port1ID="-506919076" port2ID="486556588" />
+		<Connection port1ID="437142732" port2ID="-1816676352" />
+		<Connection port1ID="1929747742" port2ID="-61986614" />
+		<Connection port1ID="-872614544" port2ID="985685934" />
+		<Connection port1ID="1430618396" port2ID="852252056" />
+		<Connection port1ID="2112595476" port2ID="-1950110230" />
+		<Connection port1ID="-823200688" port2ID="-274657486" />
+		<Connection port1ID="-457505220" port2ID="-1767262496" />
+		<Connection port1ID="1035099790" port2ID="-1584414762" />
+	</Connections>
+	<Objects>
+		<Object refID="1964906600" type="System.String">
+			<string>BattleZone Flank</string>
+		</Object>
+		<Object refID="-298895925" type="System.String">
+			<string>FlankComplete</string>
+		</Object>
+		<Object refID="-987158241" type="System.String">
+			<string>Defected Mu Core</string>
+		</Object>
+		<Object refID="1941118256" type="System.String">
+			<string>Ancient Ruins Central</string>
+		</Object>
+		<Object refID="825093993" type="System.String">
+			<string>SkirmishCitadelGate</string>
+		</Object>
+		<Object refID="-1317961950" type="System.String">
+			<string>Anachronist</string>
+		</Object>
+		<Object refID="71048345" type="System.String">
+			<string>{"entityName":"BattleCore","coreSpriteID":"core1_light","coreShellSpriteID":"core3skills_shell","shellHealth":[5000.0,1500.0,2000.0],"baseRegen":[225.0,25.0,200.0],"intendedType":0,"parts":[{"location":{"x":0.0,"y":-0.4000000059604645},"rotation":0.0,"mirrored":false,"abilityID":24,"tier":0,"secondaryData":"","partID":"SmallCenter4","shiny":false},{"location":{"x":0.0000014781951449549525,"y":0.6000000238418579},"rotation":0.0,"mirrored":false,"abilityID":9,"tier":3,"secondaryData":"","partID":"MediumCenter2","shiny":false},{"location":{"x":0.0,"y":-0.8999999761581421},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":1.1999989748001099,"y":-2.0},"rotation":0.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":-1.1999989748001099,"y":-2.0},"rotation":0.0,"mirrored":true,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumWing2","shiny":false},{"location":{"x":1.899999976158142,"y":0.800000011920929},"rotation":-45.0,"mirrored":true,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumWing3","shiny":false},{"location":{"x":-1.899999976158142,"y":0.800000011920929},"rotation":45.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumWing3","shiny":false},{"location":{"x":2.3000001907348635,"y":-1.2999999523162842},"rotation":-180.0,"mirrored":false,"abilityID":25,"tier":3,"secondaryData":"","partID":"BigWing4","shiny":false},{"location":{"x":-2.3000001907348635,"y":-1.2999999523162842},"rotation":180.0,"mirrored":true,"abilityID":25,"tier":3,"secondaryData":"","partID":"BigWing4","shiny":false},{"location":{"x":1.7999999523162842,"y":-2.4000003337860109},"rotation":-180.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":-1.7999999523162842,"y":-2.4000003337860109},"rotation":180.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":-1.2999999523162842,"y":-2.700000047683716},"rotation":90.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":1.2999999523162842,"y":-2.700000047683716},"rotation":-90.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":0.4999994933605194,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallCenter4","shiny":false},{"location":{"x":-0.4999994933605194,"y":0.0},"rotation":0.0,"mirrored":true,"abilityID":4,"tier":1,"secondaryData":"","partID":"SmallCenter4","shiny":false},{"location":{"x":1.0,"y":0.0},"rotation":-90.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumCenter6","shiny":false},{"location":{"x":-1.0,"y":0.0},"rotation":90.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"MediumCenter6","shiny":false},{"location":{"x":1.7000000476837159,"y":0.0},"rotation":-90.0,"mirrored":true,"abilityID":6,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":-1.7000000476837159,"y":0.0},"rotation":90.0,"mirrored":false,"abilityID":6,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":1.0,"y":2.700000047683716},"rotation":0.0,"mirrored":true,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-1.0,"y":2.700000047683716},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":0.8999999761581421,"y":1.7999999523162842},"rotation":90.0,"mirrored":false,"abilityID":6,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":-0.8999999761581421,"y":1.7999999523162842},"rotation":-90.0,"mirrored":true,"abilityID":6,"tier":3,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":1.399999976158142,"y":2.0},"rotation":-180.0,"mirrored":false,"abilityID":33,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false},{"location":{"x":-1.399999976158142,"y":2.0},"rotation":180.0,"mirrored":true,"abilityID":33,"tier":2,"secondaryData":"","partID":"MediumExtra2","shiny":false},{"location":{"x":0.000005865097136847908,"y":1.399999976158142},"rotation":180.0,"mirrored":false,"abilityID":27,"tier":0,"secondaryData":"","partID":"MediumCenter4","shiny":false},{"location":{"x":0.5999976396560669,"y":-3.700000047683716},"rotation":0.0,"mirrored":true,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallWing4","shiny":false},{"location":{"x":-0.5999976396560669,"y":-3.700000047683716},"rotation":0.0,"mirrored":false,"abilityID":6,"tier":2,"secondaryData":"","partID":"SmallWing4","shiny":false},{"location":{"x":0.7999995350837708,"y":-2.9000000953674318},"rotation":0.0,"mirrored":true,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-0.7999995350837708,"y":-2.9000000953674318},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":3.09999942779541,"y":-1.399999976158142},"rotation":-180.0,"mirrored":false,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":-3.09999942779541,"y":-1.399999976158142},"rotation":180.0,"mirrored":true,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false},{"location":{"x":2.700000047683716,"y":-2.700000047683716},"rotation":0.0,"mirrored":true,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":-2.700000047683716,"y":-2.700000047683716},"rotation":0.0,"mirrored":false,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false},{"location":{"x":1.0999995470046998,"y":-1.0},"rotation":0.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumSide4","shiny":false},{"location":{"x":-1.0999995470046998,"y":-1.0},"rotation":0.0,"mirrored":true,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumSide4","shiny":false},{"location":{"x":1.1000001430511475,"y":1.0},"rotation":-180.0,"mirrored":true,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide4","shiny":false},{"location":{"x":-1.1000001430511475,"y":1.0},"rotation":180.0,"mirrored":false,"abilityID":20,"tier":2,"secondaryData":"","partID":"MediumSide4","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="-1049629115" type="System.String">
+			<string>ShellCore</string>
+		</Object>
+		<Object refID="1908961180" type="System.String">
+			<string>FlankFlag2</string>
+		</Object>
+		<Object refID="2004947176" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="2018286936" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-509740575" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core3weapons_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":-2.4000000953674318,"y":0.0},"rotation":-180.0,"mirrored":false,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false,"playerGivenName":""},{"location":{"x":-1.7999999523162842,"y":1.5999996662139893},"rotation":30.0,"mirrored":true,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false,"playerGivenName":""},{"location":{"x":-1.7000000476837159,"y":0.30000004172325137},"rotation":15.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false,"playerGivenName":""},{"location":{"x":-4.0,"y":1.899999976158142},"rotation":-15.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"{\"drone\":\"{\\\"entityName\\\":\\\"Light Drone\\\",\\\"coreSpriteID\\\":\\\"drone_light\\\",\\\"coreShellSpriteID\\\":\\\"drone_shell\\\",\\\"shellHealth\\\":[1000.0,250.0,500.0],\\\"baseRegen\\\":[60.0,0.0,30.0],\\\"intendedType\\\":0,\\\"parts\\\":[{\\\"location\\\":{\\\"x\\\":-0.2485581338405609,\\\"y\\\":0.0},\\\"rotation\\\":-30.0,\\\"mirrored\\\":false,\\\"abilityID\\\":5,\\\"tier\\\":2,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.20000000298023225,\\\"y\\\":0.10000000149011612},\\\"rotation\\\":15.0,\\\"mirrored\\\":true,\\\"abilityID\\\":13,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.500000536441803,\\\"y\\\":-0.30000001192092898},\\\"rotation\\\":-15.0,\\\"mirrored\\\":false,\\\"abilityID\\\":2,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.300002783536911,\\\"y\\\":0.6000000238418579},\\\"rotation\\\":-150.0,\\\"mirrored\\\":true,\\\"abilityID\\\":5,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing1\\\",\\\"shiny\\\":false}],\\\"dialogue\\\":{\\\"m_FileID\\\":0,\\\"m_PathID\\\":0},\\\"useCustomDroneType\\\":false,\\\"customDroneType\\\":3}\",\"energyCost\":150.0,\"delay\":3.0,\"cooldown\":15.0,\"type\":3}","partID":"MediumSide2","shiny":false,"playerGivenName":""},{"location":{"x":-3.0999999046325685,"y":-1.399999976158142},"rotation":15.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false,"playerGivenName":""},{"location":{"x":-2.5000007152557375,"y":3.200000047683716},"rotation":150.0,"mirrored":false,"abilityID":33,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false,"playerGivenName":""},{"location":{"x":-2.9000000953674318,"y":1.4999998807907105},"rotation":165.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false,"playerGivenName":""},{"location":{"x":-3.4000003337860109,"y":3.0999999046325685},"rotation":150.0,"mirrored":false,"abilityID":6,"tier":3,"secondaryData":"","partID":"BigSide3","shiny":false,"playerGivenName":""},{"location":{"x":0.20000101625919343,"y":-0.700000524520874},"rotation":-165.0,"mirrored":false,"abilityID":24,"tier":0,"secondaryData":"","partID":"BigCenter3","shiny":false,"playerGivenName":""},{"location":{"x":-0.6999990940093994,"y":0.8999999761581421},"rotation":-165.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigCenter1","shiny":false,"playerGivenName":""},{"location":{"x":-0.7999982237815857,"y":2.1000006198883058},"rotation":15.0,"mirrored":false,"abilityID":33,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false,"playerGivenName":""},{"location":{"x":-1.3999977111816407,"y":-2.3999998569488527},"rotation":15.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"{\"drone\":\"{\\\"entityName\\\":\\\"Light Drone\\\",\\\"coreSpriteID\\\":\\\"drone_light\\\",\\\"coreShellSpriteID\\\":\\\"drone_shell\\\",\\\"shellHealth\\\":[1000.0,250.0,500.0],\\\"baseRegen\\\":[60.0,0.0,30.0],\\\"intendedType\\\":0,\\\"parts\\\":[{\\\"location\\\":{\\\"x\\\":-0.2485581338405609,\\\"y\\\":0.0},\\\"rotation\\\":-30.0,\\\"mirrored\\\":false,\\\"abilityID\\\":5,\\\"tier\\\":2,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.20000000298023225,\\\"y\\\":0.10000000149011612},\\\"rotation\\\":15.0,\\\"mirrored\\\":true,\\\"abilityID\\\":13,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.500000536441803,\\\"y\\\":-0.30000001192092898},\\\"rotation\\\":-15.0,\\\"mirrored\\\":false,\\\"abilityID\\\":2,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.300002783536911,\\\"y\\\":0.6000000238418579},\\\"rotation\\\":-150.0,\\\"mirrored\\\":true,\\\"abilityID\\\":5,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing1\\\",\\\"shiny\\\":false}],\\\"dialogue\\\":{\\\"m_FileID\\\":0,\\\"m_PathID\\\":0},\\\"useCustomDroneType\\\":false,\\\"customDroneType\\\":3}\",\"energyCost\":150.0,\"delay\":3.0,\"cooldown\":15.0,\"type\":3}","partID":"MediumSide2","shiny":false,"playerGivenName":""},{"location":{"x":-1.600000023841858,"y":-1.2999999523162842},"rotation":0.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"{\"drone\":\"{\\\"entityName\\\":\\\"Gun Drone\\\",\\\"coreSpriteID\\\":\\\"drone_light\\\",\\\"coreShellSpriteID\\\":\\\"drone_shell\\\",\\\"shellHealth\\\":[1000.0,250.0,500.0],\\\"baseRegen\\\":[60.0,0.0,30.0],\\\"intendedType\\\":0,\\\"parts\\\":[{\\\"location\\\":{\\\"x\\\":-0.19999846816062928,\\\"y\\\":0.30000001192092898},\\\"rotation\\\":-165.0,\\\"mirrored\\\":true,\\\"abilityID\\\":20,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":-0.29999756813049319,\\\"y\\\":-0.10000007599592209},\\\"rotation\\\":-30.0,\\\"mirrored\\\":false,\\\"abilityID\\\":6,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide4\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.20000137388706208,\\\"y\\\":0.4000000059604645},\\\"rotation\\\":165.0,\\\"mirrored\\\":false,\\\"abilityID\\\":19,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.29999956488609316,\\\"y\\\":-0.10000007599592209},\\\"rotation\\\":-105.0,\\\"mirrored\\\":true,\\\"abilityID\\\":6,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide4\\\",\\\"shiny\\\":false}],\\\"dialogue\\\":{\\\"instanceID\\\":0},\\\"useCustomDroneType\\\":true,\\\"customDroneType\\\":4}\",\"energyCost\":150.0,\"delay\":3.0,\"cooldown\":15.0,\"type\":4}","partID":"BigSide5","shiny":false,"playerGivenName":""},{"location":{"x":-0.8999999761581421,"y":-0.5},"rotation":15.0,"mirrored":false,"abilityID":20,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false,"playerGivenName":""},{"location":{"x":-4.199999809265137,"y":0.30000001192092898},"rotation":-30.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false,"playerGivenName":""},{"location":{"x":-2.400000810623169,"y":-2.9000000953674318},"rotation":165.0,"mirrored":false,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false,"playerGivenName":""},{"location":{"x":-0.4999997019767761,"y":-2.700000047683716},"rotation":-15.0,"mirrored":true,"abilityID":12,"tier":3,"secondaryData":"","partID":"BigSide1","shiny":false,"playerGivenName":""},{"location":{"x":0.999998927116394,"y":-0.49999985098838808},"rotation":30.0,"mirrored":true,"abilityID":1,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false,"playerGivenName":""},{"location":{"x":-3.200000047683716,"y":4.699999809265137},"rotation":150.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false,"playerGivenName":""},{"location":{"x":1.600000023841858,"y":2.400000810623169},"rotation":15.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"{\"drone\":\"{\\\"entityName\\\":\\\"Gun Drone\\\",\\\"coreSpriteID\\\":\\\"drone_light\\\",\\\"coreShellSpriteID\\\":\\\"drone_shell\\\",\\\"shellHealth\\\":[1000.0,250.0,500.0],\\\"baseRegen\\\":[60.0,0.0,30.0],\\\"intendedType\\\":0,\\\"parts\\\":[{\\\"location\\\":{\\\"x\\\":-0.19999846816062928,\\\"y\\\":0.30000001192092898},\\\"rotation\\\":-165.0,\\\"mirrored\\\":true,\\\"abilityID\\\":20,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":-0.29999756813049319,\\\"y\\\":-0.10000007599592209},\\\"rotation\\\":-30.0,\\\"mirrored\\\":false,\\\"abilityID\\\":6,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide4\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.20000137388706208,\\\"y\\\":0.4000000059604645},\\\"rotation\\\":165.0,\\\"mirrored\\\":false,\\\"abilityID\\\":19,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.29999956488609316,\\\"y\\\":-0.10000007599592209},\\\"rotation\\\":-105.0,\\\"mirrored\\\":true,\\\"abilityID\\\":6,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide4\\\",\\\"shiny\\\":false}],\\\"dialogue\\\":{\\\"instanceID\\\":0},\\\"useCustomDroneType\\\":true,\\\"customDroneType\\\":4}\",\"energyCost\":150.0,\"delay\":3.0,\"cooldown\":15.0,\"type\":4}","partID":"BigSide5","shiny":false,"playerGivenName":""},{"location":{"x":1.5000004768371583,"y":1.2000000476837159},"rotation":15.0,"mirrored":false,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigSide4","shiny":false,"playerGivenName":""},{"location":{"x":1.9999990463256837,"y":-3.0517577442878976e-7},"rotation":-150.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"{\"drone\":\"{\\\"entityName\\\":\\\"Heavy Drone\\\",\\\"coreSpriteID\\\":\\\"drone_light\\\",\\\"coreShellSpriteID\\\":\\\"drone_shell\\\",\\\"shellHealth\\\":[1000.0,250.0,500.0],\\\"baseRegen\\\":[60.0,0.0,30.0],\\\"intendedType\\\":0,\\\"parts\\\":[{\\\"location\\\":{\\\"x\\\":-0.2999977171421051,\\\"y\\\":-0.20000000298023225},\\\"rotation\\\":135.0,\\\"mirrored\\\":true,\\\"abilityID\\\":5,\\\"tier\\\":2,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing2\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.1000022441148758,\\\"y\\\":0.2485615611076355},\\\"rotation\\\":165.0,\\\"mirrored\\\":false,\\\"abilityID\\\":19,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallCenter2\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.20000095665454865,\\\"y\\\":-0.30000004172325137},\\\"rotation\\\":135.0,\\\"mirrored\\\":false,\\\"abilityID\\\":4,\\\"tier\\\":2,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing2\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.4971277117729187,\\\"y\\\":0.20000000298023225},\\\"rotation\\\":30.0,\\\"mirrored\\\":true,\\\"abilityID\\\":18,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide3\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":-0.3971204459667206,\\\"y\\\":0.4000000059604645},\\\"rotation\\\":15.0,\\\"mirrored\\\":false,\\\"abilityID\\\":13,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide3\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":0.6000015735626221,\\\"y\\\":-0.20000000298023225},\\\"rotation\\\":30.0,\\\"mirrored\\\":false,\\\"abilityID\\\":13,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallSide4\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":-0.2999986410140991,\\\"y\\\":0.699999988079071},\\\"rotation\\\":60.0,\\\"mirrored\\\":false,\\\"abilityID\\\":13,\\\"tier\\\":1,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallCenter1\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":-0.6514352560043335,\\\"y\\\":0.30000001192092898},\\\"rotation\\\":15.0,\\\"mirrored\\\":true,\\\"abilityID\\\":5,\\\"tier\\\":2,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing2\\\",\\\"shiny\\\":false},{\\\"location\\\":{\\\"x\\\":-0.6485579013824463,\\\"y\\\":0.800000011920929},\\\"rotation\\\":15.0,\\\"mirrored\\\":false,\\\"abilityID\\\":4,\\\"tier\\\":2,\\\"secondaryData\\\":\\\"\\\",\\\"partID\\\":\\\"SmallWing2\\\",\\\"shiny\\\":false}],\\\"dialogue\\\":{\\\"m_FileID\\\":0,\\\"m_PathID\\\":0},\\\"useCustomDroneType\\\":false,\\\"customDroneType\\\":7}\",\"energyCost\":400.0,\"delay\":6.0,\"cooldown\":30.0,\"type\":7}","partID":"MediumWing1","shiny":false,"playerGivenName":""},{"location":{"x":0.6000045537948608,"y":0.9000007510185242},"rotation":15.0,"mirrored":true,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigCenter3","shiny":false,"playerGivenName":""},{"location":{"x":3.8000006675720217,"y":0.20000015199184419},"rotation":-165.0,"mirrored":false,"abilityID":6,"tier":3,"secondaryData":"","partID":"BigSide3","shiny":false,"playerGivenName":""},{"location":{"x":3.6000003814697267,"y":2.200000047683716},"rotation":-165.0,"mirrored":false,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigSide5","shiny":false,"playerGivenName":""},{"location":{"x":2.5999999046325685,"y":1.2000004053115845},"rotation":15.0,"mirrored":true,"abilityID":19,"tier":3,"secondaryData":"","partID":"BigWing1","shiny":false,"playerGivenName":""},{"location":{"x":2.59999942779541,"y":-0.49999985098838808},"rotation":-15.0,"mirrored":false,"abilityID":7,"tier":3,"secondaryData":"","partID":"BigSide2","shiny":false,"playerGivenName":""},{"location":{"x":1.9000016450881959,"y":-2.299999952316284},"rotation":30.0,"mirrored":true,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false,"playerGivenName":""},{"location":{"x":2.5,"y":3.4000003337860109},"rotation":165.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"BigWing2","shiny":false,"playerGivenName":""}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="342877239" type="System.String">
+			<string>FlankFlag1</string>
+		</Object>
+		<Object refID="720127812" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1996673966" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-1048052881" type="System.String">
+			<string>{"entityName":"Unnamed","coreSpriteID":"core1_light","coreShellSpriteID":"core3skills_shell","shellHealth":[1000.0,250.0,500.0],"baseRegen":[60.0,0.0,30.0],"intendedType":0,"parts":[{"location":{"x":0.0,"y":0.30000001192092898},"rotation":0.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"SmallCenter1","shiny":false},{"location":{"x":0.000003967285010730848,"y":-0.5},"rotation":0.0,"mirrored":false,"abilityID":30,"tier":3,"secondaryData":"","partID":"BigCenter2","shiny":false},{"location":{"x":-1.7000000476837159,"y":0.8999999761581421},"rotation":-180.0,"mirrored":true,"abilityID":4,"tier":3,"secondaryData":"","partID":"BigWing3","shiny":false},{"location":{"x":1.7000000476837159,"y":0.8999999761581421},"rotation":-180.0,"mirrored":false,"abilityID":34,"tier":3,"secondaryData":"","partID":"BigWing3","shiny":false},{"location":{"x":-0.9000004529953003,"y":1.899999976158142},"rotation":-90.0,"mirrored":false,"abilityID":10,"tier":0,"secondaryData":"heavy_drone","partID":"MediumCenter4","shiny":false},{"location":{"x":0.9000004529953003,"y":1.899999976158142},"rotation":90.0,"mirrored":true,"abilityID":1,"tier":2,"secondaryData":"","partID":"MediumCenter4","shiny":false},{"location":{"x":0.000002441406195430318,"y":2.4000000953674318},"rotation":-180.0,"mirrored":false,"abilityID":28,"tier":0,"secondaryData":"","partID":"SmallCenter7","shiny":false},{"location":{"x":-0.40000495314598086,"y":0.10000001639127732},"rotation":90.0,"mirrored":false,"abilityID":13,"tier":3,"secondaryData":"","partID":"SmallCenter7","shiny":false},{"location":{"x":0.40000495314598086,"y":0.10000001639127732},"rotation":-90.0,"mirrored":true,"abilityID":17,"tier":2,"secondaryData":"","partID":"SmallCenter7","shiny":false}],"dialogue":{"m_FileID":0,"m_PathID":0},"useCustomDroneType":false,"customDroneType":0}</string>
+		</Object>
+		<Object refID="426016370" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+		<Object refID="-376958592" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+		</Object>
+	</Objects>
+</NodeCanvas>
