@@ -49,6 +49,11 @@ public class MainMenu : MonoBehaviour
         Application.OpenURL("https://discord.gg/TXaenta");
     }
 
+    public void OpenTwitter()
+    {
+        Application.OpenURL("https://twitter.com/rudderbucky");
+    }
+
     public void StartWorldCreator()
     {
         WCGeneratorHandler.DeleteTestWorld();
