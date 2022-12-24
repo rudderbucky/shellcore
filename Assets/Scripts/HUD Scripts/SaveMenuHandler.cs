@@ -266,18 +266,35 @@ public class SaveMenuHandler : GUIWindowScripts
         migratePrompt.ToggleActive();
     }
 
+    private void ChangeMissionName(PlayerSave save, string oldName, string newName)
+    {
+        var mission = save.missions.Find(m => m.name == oldName);
+        if (mission == null) return;
+        mission.name = newName;
+        if (mission.checkpoint != null && mission.checkpoint.Contains(oldName))
+        {
+            int oldIndex = mission.checkpoint.IndexOf(oldName);
+            mission.checkpoint.Remove(oldIndex, oldName.Length);
+            mission.checkpoint.Insert(oldIndex, newName);
+        }
+
+        foreach (Mission prereqMission in save.missions)
+        {
+            if (!prereqMission.prerequisites.Contains(oldName)) return;
+            prereqMission.prerequisites.Remove(oldName);
+            prereqMission.prerequisites.Add(newName);
+        }
+    }
+
     public void Migrate()
     {
         var save = saves[indexToMigrate];
         switch (save.version)
         {
             case "Beta 0.1.1":
-                var trialbycombatmission = save.missions.Find(m => m.name == "Trial By Combat");
-                if (trialbycombatmission != null) trialbycombatmission.name = "Trial by Combat";
-                var thecarrierconundrumquest = save.missions.Find(m => m.name == "The Carrier Conundrum");
-                if (thecarrierconundrumquest != null) thecarrierconundrumquest.name = "Carrier Conundrum";
-                var theturretturmoilquest = save.missions.Find(m => m.name == "The Turret Turmoil");
-                if (theturretturmoilquest != null) theturretturmoilquest.name = "Turret Turmoil";
+                ChangeMissionName(save, "The Carrier Conundrum", "Carrier Conundrum");
+                ChangeMissionName(save, "The Turret Turmoil", "Turret Turmoil");
+                ChangeMissionName(save, "Trial By Combat", "Trial by Combat");
                 File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
                 SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
                 break;

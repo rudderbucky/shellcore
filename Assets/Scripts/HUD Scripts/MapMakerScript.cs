@@ -651,6 +651,9 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             if (!followPlayerMode)
             {
                 canvas.anchoredPosition = anchor;
+                mousePos = Input.mousePosition;
+                updatePos = true;
+                PollMouseFollow();
             }
         }
         else
