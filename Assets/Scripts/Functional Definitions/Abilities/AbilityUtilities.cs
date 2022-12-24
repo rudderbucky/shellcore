@@ -103,6 +103,7 @@ public static class AbilityUtilities
             case 37:
             case 38:
             case 39:
+            case 45:
                 return AbilityHandler.AbilityTypes.Weapons;
             case 1:
             case 2:
@@ -445,6 +446,14 @@ public static class AbilityUtilities
                 return "Yard Warp";
             case 41:
                 return "Unload";
+            case 42:
+                return "Heal Aura";
+            case 43:
+                return "Speed Aura";
+            case 44:
+                return "Damage Resistance Aura";
+            case 45:
+                return "Chain Beam";
             default:
                 return "Name unset";
         }
