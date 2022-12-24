@@ -47,7 +47,7 @@ public enum AbilityID
     HealAura,
     SpeedAura,
     DamageResistanceAura,
-    ChainBeam
+    SpeederMissile
 }
 
 public static class AbilityUtilities
@@ -121,6 +121,7 @@ public static class AbilityUtilities
             case 35:
             case 40:
             case 41:
+            case 46:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -234,6 +235,8 @@ public static class AbilityUtilities
                 return "Warps your currently held part directly into your inventory.";
             case 41:
                 return $"Temporarily reduces Global Cooldown by {Mathf.Min(tier, 1)}/{Mathf.Min(tier, 1) + 1}.";
+            case 46:
+                return $"Test Missile";
             default:
                 return "Description unset";
         }
@@ -269,7 +272,6 @@ public static class AbilityUtilities
             case 44:
                 return null;
             case 4:
-            case 45:
                 if (data == "beamgroundshooter_sprite")
                 {
                     return "beamgroundshooter_sprite";
@@ -346,6 +348,8 @@ public static class AbilityUtilities
                 }
             case 40:
                 return "ability_indicator_yard_warp";
+            case 45:
+                return "missileshooter_sprite";
             default:
                 return "ability_indicator";
         }
@@ -445,6 +449,8 @@ public static class AbilityUtilities
                 return "Yard Warp";
             case 41:
                 return "Unload";
+            case 45:
+                return "Speeder Missile";
             default:
                 return "Name unset";
         }
@@ -635,7 +641,7 @@ public static class AbilityUtilities
                 (ability as TowerAura).type = TowerAura.AuraType.DamageResistance;
                 break;
             case 45:
-                ability = obj.AddComponent<ChainBeam>();
+                ability = obj.AddComponent<SpeederMissile>();
                 break;
         }
 
