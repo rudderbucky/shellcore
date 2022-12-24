@@ -535,13 +535,14 @@ public class SectorManager : MonoBehaviour
     {
         if (!sectorLoaded)
         {
+            episode = Mathf.Max(0, episode-1);
             if (episode >= sectors.Count)
             {
                 episode = sectors.Count - 1;
             }
-
             current = sectors[episode];
             VersionNumberScript.SetEpisodeName(episode);
+            Camera.main.transform.position = new Vector3(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2, -10);
         }
     }
 
