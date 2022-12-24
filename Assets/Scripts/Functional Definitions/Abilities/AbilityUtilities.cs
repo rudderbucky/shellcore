@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public enum AbilityID
 {
@@ -47,7 +47,8 @@ public enum AbilityID
     HealAura,
     SpeedAura,
     DamageResistanceAura,
-    ChainBeam
+    ChainBeam,
+    SpeederMissile
 }
 
 public static class AbilityUtilities
@@ -121,6 +122,7 @@ public static class AbilityUtilities
             case 35:
             case 40:
             case 41:
+            case 46:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -636,6 +638,9 @@ public static class AbilityUtilities
                 break;
             case 45:
                 ability = obj.AddComponent<ChainBeam>();
+                break;
+            case 46:
+                ability = obj.AddComponent<SpeederMissile>();
                 break;
         }
 
