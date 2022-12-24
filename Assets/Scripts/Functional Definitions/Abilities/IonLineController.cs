@@ -49,6 +49,11 @@ public class IonLineController : MonoBehaviour
     {
         this.duration = duration;
         line.startWidth = line.endWidth = startWidth;
+
+        var pos = targetingSystem.GetTarget().position;
+        var vec = (pos - line.gameObject.transform.position).normalized;
+        var targetBearing = GetBearingFromVector(vec);
+        beamBearing = targetBearing;
     }
 
     public void Init(WeaponTargetingSystem targetingSystem, Entity core, float range, ShellPart part, int tier)
