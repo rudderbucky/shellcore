@@ -32,6 +32,11 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         return UI && UI.activeSelf;
     }
 
+    public bool IsOpen()
+    {
+        return opened;
+    }
+
     public void openUI()
     {
         if (opened)

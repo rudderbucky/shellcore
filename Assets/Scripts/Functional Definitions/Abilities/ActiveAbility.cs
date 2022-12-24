@@ -5,6 +5,17 @@
 /// </summary>
 public abstract class ActiveAbility : Ability
 {
+    bool autoCast = false;
+    public bool AutoCast {
+        get { return autoCast; }
+        set {
+            if (ID == AbilityID.SpawnDrone)
+            {
+                autoCast = value;
+            }
+        }
+    }
+
     /// <summary>
     /// Initialization of every active ability
     /// </summary>
@@ -35,6 +46,20 @@ public abstract class ActiveAbility : Ability
         //if (input && State == AbilityState.Active)
         //    Deactivate();
         base.SetDestroyed(input);
+    }
+
+    public override void Tick()
+    {
+        if (autoCast &&
+            (Core is PlayerCore playerCore) &&
+            State == AbilityState.Ready &&
+            ID == AbilityID.SpawnDrone &&
+            playerCore.GetUnitsCommanding().Count < playerCore.GetTotalCommandLimit() &&
+            playerCore.GetHealth()[2] >= energyCost)
+        {
+            Activate();
+        }
+        base.Tick();
     }
 
     private void OnDestroy()

@@ -17,7 +17,7 @@ public enum KeyName
     CommandWheel,
     HideHUD,
     ShowChatHistory,
-    TurretQuickPurchase,
+    AutoCastBuyTurret,
 
     ShowSkills,
     ShowSpawns,
@@ -70,7 +70,7 @@ public class InputManager : MonoBehaviour
         {KeyName.CommandWheel, new Key(KeyCode.LeftControl, "Party command wheel")},
         {KeyName.HideHUD, new Key(KeyCode.F1, "Hide HUD")},
         {KeyName.ShowChatHistory, new Key(KeyCode.Return, "Show chat history")},
-        {KeyName.TurretQuickPurchase, new Key(KeyCode.LeftShift, "Turret quick purchase (+ number)")},
+        {KeyName.AutoCastBuyTurret, new Key(KeyCode.LeftShift, "Turret quick purchase (+ number) and Auto cast")},
 
         {KeyName.ShowSkills, new Key(KeyCode.Z, "Switch to skill hotbar")},
         {KeyName.ShowSpawns, new Key(KeyCode.X, "Switch to spawn hotbar")},
