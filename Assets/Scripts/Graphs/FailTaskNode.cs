@@ -49,10 +49,13 @@ namespace NodeEditorFramework.Standard
             {
                 if (outputUp.connection(0).body is StartTaskNode taskNode && !string.IsNullOrEmpty(taskNode.entityIDforConfirmedResponse))
                 {
-                    var stack = TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse];
-                    if(stack.Count > 0)
+                    if (TaskManager.interactionOverrides.ContainsKey(taskNode.entityIDforConfirmedResponse))
                     {
-                        TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse].Pop();
+                        var stack = TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse];
+                        if(stack.Count > 0)
+                        {
+                            TaskManager.interactionOverrides[taskNode.entityIDforConfirmedResponse].Pop();
+                        }
                     }
                 }
             }

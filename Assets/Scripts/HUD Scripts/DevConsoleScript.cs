@@ -281,6 +281,17 @@ public class DevConsoleScript : MonoBehaviour
                 }
                 textBox.text += "\n<color=lime>Killing all party members...</color>";
             }
+            else if (command.StartsWith("addp ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                string entityID = command.Substring(5).Trim();
+                if (!PlayerCore.Instance.cursave.unlockedPartyIDs.Contains(entityID))
+                {
+                    PlayerCore.Instance.cursave.unlockedPartyIDs.Add(entityID);
+                }
+
+                PartyManager.instance.AssignBackend(entityID);
+                textBox.text += $"\n<color=lime>{entityID}</color>";
+            }
             else if (command.Equals("Damacy", StringComparison.CurrentCultureIgnoreCase))
             {
                 /* Adds all part/ability/tier/drone permutations to the player's inventory.*/
@@ -339,6 +350,10 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.Equals("Win siege", StringComparison.CurrentCultureIgnoreCase))
             {
                 NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(SectorManager.instance.current.sectorName);
+            }
+            else if (command.Equals("Win bz", StringComparison.CurrentCultureIgnoreCase))
+            {
+                NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(SectorManager.instance.current.sectorName);
             }
             else if (command.Equals("No limits", StringComparison.CurrentCultureIgnoreCase))
             {

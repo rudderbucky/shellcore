@@ -43,10 +43,13 @@ public class ResourceManager : MonoBehaviour
     {
         EntityBlueprint.PartInfo info = new EntityBlueprint.PartInfo();
         info.partID = allPartNames[Random.Range(0, allPartNames.Count)];
-        info.abilityID = Random.Range(1, 37);
+        info.abilityID = Random.Range(1, 33);
         if (info.abilityID >= 3) info.abilityID++;
         if (info.abilityID >= 10) info.abilityID++;
+        if (info.abilityID >= 14) info.abilityID++;
+        if (info.abilityID >= 15) info.abilityID++;
         if (info.abilityID >= 16) info.abilityID++;
+        if (info.abilityID >= 28) info.abilityID++;
 
         info.rotation = Random.Range(0, 360);
         info.tier = 3;

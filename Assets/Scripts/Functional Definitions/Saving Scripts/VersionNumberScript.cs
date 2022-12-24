@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class VersionNumberScript : MonoBehaviour
 {
     public static string version = "Beta 1.0.0";
-    public static string mapVersion = "Beta 0.1.1";
+    public static string mapVersion = "Beta 1.0.0";
     static VersionNumberScript instance;
     public Text episodeText;
 
@@ -36,6 +36,9 @@ public class VersionNumberScript : MonoBehaviour
             string trc = "TACTICAL RETRO COMBAT.\n";
             switch (episode)
             {
+                case 2:
+                    instance.episodeText.text = $"{trc}<color=#daa620>EPISODE 3: ABANDONED</color>";
+                    break;
                 case 1:
                     instance.episodeText.text = $"{trc}<color=red>EPISODE 2: INFECTION</color>";
                     break;
