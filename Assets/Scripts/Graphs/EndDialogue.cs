@@ -106,8 +106,6 @@ namespace NodeEditorFramework.Standard
                 handler = DialogueSystem.Instance;
             }
 
-            // Debug.Log(handler as DialogueSystem + "sdjhgndfgikuhtdukhntdouhntdh " + StartDialogueNode.dialogueStartNode.EntityID);
-
             if (handler as TaskManager)
             {
                 if (!TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))

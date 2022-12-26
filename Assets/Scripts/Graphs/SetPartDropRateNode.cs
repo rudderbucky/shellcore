@@ -92,7 +92,7 @@ namespace NodeEditorFramework.Standard
         {
             if (sectorName != this.sectorName)
             {
-                Debug.Log("Left part drop rate sector");
+                if (Entity.partDropRate != Entity.DefaultPartRate) Debug.Log("Left part drop rate sector");
                 Entity.partDropRate = Entity.DefaultPartRate;
             }
             else

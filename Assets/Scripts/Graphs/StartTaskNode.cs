@@ -215,6 +215,7 @@ namespace NodeEditorFramework.Standard
         public void OnClick(int index)
         {
             DialogueSystem.OnDialogueEnd -= OnClick;
+            Debug.LogWarning(StartDialogueNode.missionCanvasNode.EntityID);
             TaskManager.interactionOverrides[StartDialogueNode.missionCanvasNode.EntityID].Pop();
             if (index != 0)
             {

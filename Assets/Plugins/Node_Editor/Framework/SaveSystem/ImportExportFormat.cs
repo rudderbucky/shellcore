@@ -144,7 +144,7 @@ namespace NodeEditorFramework.IO
 				locationArgs = new object[] { Path.Combine(RuntimeIOPath, fileSelection) };
 
 					if (RuntimeIOPath == null || RuntimeIOPath == "")
-                    RuntimeIOPath = Path.Combine(Application.streamingAssetsPath + "CanvasPlaceholder");
+                    RuntimeIOPath = Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
 				GUILayout.EndHorizontal();
 				return true;
 			}
@@ -218,7 +218,7 @@ namespace NodeEditorFramework.IO
 				fileSelection = Path.GetFileNameWithoutExtension(fileSelection);
 
                 if (RuntimeIOPath == null || RuntimeIOPath == "")
-                    RuntimeIOPath = Path.Combine(Application.streamingAssetsPath + "CanvasPlaceholder");
+                    RuntimeIOPath = Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
 
                 locationArgs = new object[] { Path.Combine(RuntimeIOPath, fileSelection + ext)};
                 Debug.Log(Path.Combine(RuntimeIOPath, fileSelection + ext));

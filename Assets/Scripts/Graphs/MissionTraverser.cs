@@ -132,6 +132,7 @@ public class MissionTraverser : Traverser
 
     public override void SetNode(Node node)
     {
+        Debug.Log($"Mission Canvas {nodeCanvas} now setting node: {node}");
         SetDialogueState(node, NodeEditorGUI.NodeEditorState.Mission);
         base.SetNode(node);
     }

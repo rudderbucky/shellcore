@@ -105,67 +105,55 @@ namespace NodeEditorFramework.Standard
             }
 
 
-            if (SpeakToEntity)
+            if (!SpeakToEntity) return 0;
+            if (handler as TaskManager)
             {
-                if (handler as TaskManager)
+                TryAddObjective();
+            }
+
+            InteractAction action = new InteractAction();
+            action.action = new UnityEngine.Events.UnityAction(() =>
                 {
-                    TryAddObjective();
-                }
-
-                InteractAction action = new InteractAction();
-                action.action = new UnityEngine.Events.UnityAction(() =>
+                    if (handler as TaskManager)
                     {
-                        if (handler as TaskManager)
-                        {
-                            missionCanvasNode = this;
-                        }
-                        else
-                        {
-                            dialogueCanvasNode = this;
-                        }
-
-                        handler.SetSpeakerID(EntityID);
-                        handler.SetNode(output);
-                    });
-
-                handler.PushInteractionOverrides(EntityID, action, Canvas.Traversal as Traverser);
-
-
-                if (!allowAfterSpeaking)
-                {
-                    if (forceStart)
-                    {
-                        if (handler as TaskManager)
-                        {
-                            missionCanvasNode = this;
-                        }
-                        else
-                        {
-                            dialogueCanvasNode = this;
-                        }
-
-                        handler.SetSpeakerID(EntityID);
-                        return 0;
+                        missionCanvasNode = this;
                     }
                     else
                     {
-                        return -1;
+                        dialogueCanvasNode = this;
                     }
+
+                    handler.SetSpeakerID(EntityID);
+                    handler.SetNode(output);
+                });
+
+            handler.PushInteractionOverrides(EntityID, action, Canvas.Traversal as Traverser);
+
+
+            if (!allowAfterSpeaking)
+            {
+                if (!forceStart) return -1;
+                if (handler as TaskManager)
+                {
+                    missionCanvasNode = this;
                 }
                 else
                 {
-                    if (flowOutput == null)
-                    {
-                        flowOutput = outputKnobs[1];
-                    }
-
-                    handler.SetNode(flowOutput);
-                    return -1;
+                    dialogueCanvasNode = this;
                 }
+
+                handler.SetSpeakerID(EntityID);
+                return 0;
             }
             else
             {
-                return 0;
+                if (flowOutput == null)
+                {
+                    flowOutput = outputKnobs[1];
+                }
+
+                handler.SetNode(flowOutput);
+                return -1;
             }
         }
 
