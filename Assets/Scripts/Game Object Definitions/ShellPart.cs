@@ -161,7 +161,8 @@ public class ShellPart : MonoBehaviour
         detachedTime = Time.time; // update detached time
         hasDetached = true; // has detached now
         gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
-        gameObject.AddComponent<UnityEngine.Rendering.SortingGroup>();
+        if (name != "Shell Sprite")
+            gameObject.AddComponent<UnityEngine.Rendering.SortingGroup>();
         rigid = GetComponent<Rigidbody2D>();
         rigid.gravityScale = 0; // adjust the rigid body
         rigid.angularDrag = 0;
