@@ -971,9 +971,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             AIData.interactables.Add(this);
         }
 
-        if (this is IVendor)
+        if (this is IVendor vendor)
         {
-            AIData.vendors.Add(this);
+            AIData.vendors.Add(vendor);
         }
     }
 
@@ -989,9 +989,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             AIData.interactables.Remove(this);
         }
 
-        if (this is IVendor)
+        if (this is IVendor vendor)
         {
-            AIData.vendors.Remove(this);
+            AIData.vendors.Remove(vendor);
         }
 
         SectorManager.instance.RemoveObject(ID, gameObject);

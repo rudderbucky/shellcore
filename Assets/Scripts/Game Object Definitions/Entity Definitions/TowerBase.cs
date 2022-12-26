@@ -25,6 +25,7 @@ public class TowerBase : MonoBehaviour, IInteractable, IVendor
         if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
         {
             AIData.interactables.Add(this);
+            AIData.vendors.Add(this);
         }
     }
 
@@ -33,11 +34,15 @@ public class TowerBase : MonoBehaviour, IInteractable, IVendor
         if (SceneManager.GetActiveScene().name != "SectorCreator" && SceneManager.GetActiveScene().name != "WorldCreator")
         {
             AIData.interactables.Remove(this);
+            AIData.vendors.Remove(this);
         }
     }
 
 
-
+    public bool TowerActive()
+    {
+        return currentTower && !currentTower.GetIsDead();
+    }
 
     public VendingBlueprint GetVendingBlueprint()
     {
@@ -88,7 +93,7 @@ public class TowerBase : MonoBehaviour, IInteractable, IVendor
         return !currentTower || currentTower.GetIsDead();
     }
 
-    Transform IInteractable.GetTransform()
+    public Transform GetTransform()
     {
         return transform;
     }
@@ -101,5 +106,22 @@ public class TowerBase : MonoBehaviour, IInteractable, IVendor
     public bool NeedsSameFaction()
     {
         return false;
+    }
+
+    void Update()
+    {
+        if (!SectorManager.instance)
+        {
+            return;
+        }
+
+        if (SectorManager.instance.overrideProperties != null)
+        {
+            GetComponent<SpriteRenderer>().color = SectorManager.instance.overrideProperties.backgroundColor + Color.grey;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().color = SectorManager.instance.current.backgroundColor + Color.grey;
+        }
     }
 }

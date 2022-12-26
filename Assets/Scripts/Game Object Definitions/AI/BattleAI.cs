@@ -15,13 +15,13 @@ public class BattleAI : AIModule
 
     class AITarget
     {
-        public AITarget(Entity entity, float significance)
+        public AITarget(Transform transform, float significance)
         {
-            this.entity = entity;
+            this.transform = transform;
             this.significance = significance;
         }
 
-        public Entity entity;
+        public Transform transform;
         public float significance; // 1 for outpost, 2 for outpost with rock, 3 for base
 
         public float influence; // based on the amount and types of turrets around
@@ -122,22 +122,29 @@ public class BattleAI : AIModule
 
         for (int i = 0; i < AIData.vendors.Count; i++)
         {
+            if (AIData.vendors[i] as TowerBase)
+            {
+                AITargets.Add(new AITarget(AIData.vendors[i].GetTransform(), 50f));
+                continue;
+            }
+
             int rockCount = 0;
             for (int j = 0; j < AIData.energyRocks.Count; j++)
             {
-                if ((AIData.energyRocks[j].transform.position - AIData.vendors[i].transform.position).sqrMagnitude < 100)
+                if ((AIData.energyRocks[j].transform.position - AIData.vendors[i].GetPosition()).sqrMagnitude < 100)
                 {
                     rockCount++;
                 }
             }
 
-            AITargets.Add(new AITarget(AIData.vendors[i], rockCount + 1f));
+            AITargets.Add(new AITarget(AIData.vendors[i].GetTransform(), rockCount + 1f));
         }
 
         for (int i = 0; i < carriers.Count; i++)
         {
-            AITargets.Add(new AITarget(carriers[i], 100f));
+            AITargets.Add(new AITarget(carriers[i].GetTransform(), 100f));
         }
+        AITargets.Sort((t1, t2) => (int)(t1.significance - t2.significance));
     }
 
     //TEMP:
@@ -204,6 +211,10 @@ public class BattleAI : AIModule
             else if (turretIsHarvester)
             {
                 state = BattleState.Collect;
+            }
+            else if (AIData.vendors.Exists(v => v is TowerBase tbase && !tbase.TowerActive()))
+            {
+                state = BattleState.ReinforceGround;
             }
             else if (shellcore.GetPower() >= 300)
             {
@@ -403,10 +414,13 @@ public class BattleAI : AIModule
 
     void UpdateTargetInfluences()
     {
-        for (int i = 0; i < AITargets.Count; i++)
+        // this code doesn't do anything so I'm commenting it out for now
+        /*
+                for (int i = 0; i < AITargets.Count; i++)
         {
             var t = AITargets[i];
-            if (t.entity == null || t.entity.GetIsDead())
+            var ent = t.transform.GetComponent<Entity>();
+            if (t.transform == null || t.transform.GetIsDead())
             {
                 Debug.Log("AI Warning: AI target null or dead!"); //Better set this issue aside for later, uncertain how this will be fixed
                 continue;
@@ -415,15 +429,16 @@ public class BattleAI : AIModule
             t.influence = 0f;
             for (int j = 0; j < AIData.entities.Count; j++)
             {
-                if (AIData.entities[j] is Turret)
+                if (AIData.entities[j] is Turret turret)
                 {
-                    if ((AIData.entities[j].transform.position - t.entity.transform.position).sqrMagnitude < 150f)
+                    if ((turret.transform.position - t.transform.transform.position).sqrMagnitude < 150f)
                     {
-                        t.influence += FactionManager.IsAllied(AIData.entities[j].faction, t.entity.faction) ? 1f : -1f;
+                        t.influence += FactionManager.IsAllied(turret.faction, t.transform.faction) ? 1f : -1f;
                     }
                 }
             }
         }
+        */
     }
 
     private void FortifyBattleState()
@@ -434,13 +449,16 @@ public class BattleAI : AIModule
         {
             UpdateTargetInfluences();
 
-            float closestToZero = float.MaxValue;
+            // float closestToZero = float.MaxValue;
 
             for (int i = 0; i < AITargets.Count; i++)
             {
-                if (Mathf.Abs(AITargets[i].influence) < closestToZero && AITargets[i].entity.faction == shellcore.faction)
+                var ent = AITargets[i].transform.GetComponent<Entity>();
+                if (!ent) continue;
+                if (/*Mathf.Abs(AITargets[i].influence) < closestToZero &&*/ ent.faction == shellcore.faction)
                 {
-                    fortificationTarget = AITargets[i].entity;
+                    fortificationTarget = ent;
+                    break;
                 }
             }
         }
@@ -502,21 +520,34 @@ public class BattleAI : AIModule
 
     private void ReinforceGroundBattleState()
     {
-        //head to nearest bunker to produce tanks
+        // The AI should be greedy with buying towers since they're free
+        // Otherwise head to nearest bunker to produce tanks
         float dist = float.MaxValue;
         int index = -1;
+        bool foundTowerBase = false;
         for (int i = 0; i < AITargets.Count; i++)
         {
-            if (AITargets[i].entity.Terrain == Entity.TerrainType.Ground && AITargets[i].entity && AITargets[i].entity.faction == shellcore.faction && Vector2.SqrMagnitude(craft.transform.position - AITargets[i].entity.transform.position) < dist)
+            if (!AITargets[i].transform) continue;
+            var towerBase = AITargets[i].transform.GetComponent<TowerBase>();
+            if (towerBase && !towerBase.TowerActive() && !foundTowerBase)
             {
-                dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[i].entity.transform.position);
+                foundTowerBase = true;
+                dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[i].transform.position);
+                index = i;
+                continue;
+            }
+            var ent = AITargets[i].transform.GetComponent<Entity>();
+            if (((towerBase && !towerBase.TowerActive()) || 
+                (!foundTowerBase && ent && ent.Terrain == Entity.TerrainType.Ground && ent.faction == shellcore.faction)) && 
+                Vector2.SqrMagnitude(craft.transform.position - AITargets[i].transform.transform.position) < dist)
+            {
+                dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[i].transform.position);
                 index = i;
             }
         }
         if (index != -1 && dist >= 100f)
         {
-            ai.movement.SetMoveTarget(AITargets[index].entity.transform.position);
-            dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[index].entity.transform.position);
+            ai.movement.SetMoveTarget(AITargets[index].transform.position);
         }
     }
 
@@ -674,8 +705,25 @@ public class BattleAI : AIModule
         if ((energyCount > 0 && state != BattleState.ReinforceGround) || shellcore.unitsCommanding.Count >= shellcore.GetTotalCommandLimit()) return;
         for (int i = 0; i < AIData.vendors.Count; i++)
         {
-            if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude > 100f) continue;
+            if ((AIData.vendors[i].GetPosition() - craft.transform.position).sqrMagnitude > 100f) continue;
             IVendor vendor = AIData.vendors[i] as IVendor;
+
+            int itemIndex = -1;
+            if (vendor is TowerBase towerBase && !towerBase.TowerActive())
+            {
+                if (shellcore.GetRegens()[0] < shellcore.GetMaxHealth()[0] / 5 && shellcore.HealAuraStacks < 1)
+                {
+                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.HealerTower);
+                }
+                else if (shellcore.GetRegens()[2] < shellcore.GetMaxHealth()[2] / 5 && shellcore.EnergyAuraStacks < 1)
+                {
+                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.EnergyTower);
+                }
+                else itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.SpeedTower);
+                BuyFromVendor(itemIndex, vendor);
+                break;
+            }
+
             if (vendor.NeedsSameFaction() && vendor.GetFaction() != craft.faction)
             {
                 continue;
@@ -686,7 +734,6 @@ public class BattleAI : AIModule
                 continue;
             }
 
-            int itemIndex = -1;
             int ownGroundStation = 0;
             int ownTank = 0;
             int enemyTank = 0;
@@ -745,7 +792,7 @@ public class BattleAI : AIModule
                         }
                     }
                 }
-                else if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo < 6)
+                else
                 {
                     itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
                 }

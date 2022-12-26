@@ -7,6 +7,7 @@ public interface IVendor
     VendingBlueprint GetVendingBlueprint();
     int GetFaction();
     Vector3 GetPosition();
+    Transform GetTransform();
     bool NeedsSameFaction();
 }
 
