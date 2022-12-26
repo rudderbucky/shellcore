@@ -28,11 +28,9 @@ public class Stealth : ActiveAbility
     public override void Deactivate()
     {
         base.Deactivate();
-
-        craft.StealthStacks--;
-        if (craft.StealthStacks < 0)
+        if (craft.StealthStacks > 0)
         {
-            Debug.LogError($"Stealth is bugged, complain to Ormanus [entity name: {craft.name}, faction: {craft.faction}, count: {craft.StealthStacks}");
+            craft.StealthStacks--;
         }
     }
 
