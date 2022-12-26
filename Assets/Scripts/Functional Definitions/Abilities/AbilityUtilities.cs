@@ -149,7 +149,7 @@ public static class AbilityUtilities
             case 0:
                 return "Does nothing.";
             case 1:
-                return $"+{SpeedThrust.boost * tier} speed for 10 seconds.";
+                return $"+{SpeedThrust.boost * tier} speed for {SpeedThrust.duration} seconds.";
             case 2:
                 return $"Instantly heal {HealthHeal.heals[0] * tier} shell.";
             case 3:

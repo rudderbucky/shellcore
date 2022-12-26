@@ -7,6 +7,7 @@ public class SpeedThrust : ActiveAbility
 {
     Craft craft;
     public static readonly float boost = 20;
+    public static readonly float duration = 5;
 
     protected override void Awake()
     {
@@ -16,7 +17,7 @@ public class SpeedThrust : ActiveAbility
         description = "Temporarily increases speed.";
         ID = AbilityID.SpeedThrust;
         cooldownDuration = 10;
-        activeDuration = 5;
+        activeDuration = duration;
         energyCost = 50;
         if (Core && !(Core as Craft))
         {
