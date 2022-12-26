@@ -165,7 +165,9 @@ public class ShellPart : MonoBehaviour
         rigid.gravityScale = 0; // adjust the rigid body
         rigid.angularDrag = 0;
         float randomDir = Random.Range(0f, 360f);
-        rigid.AddForce(new Vector2(Mathf.Cos(randomDir), Mathf.Sin(randomDir)) * 200f);
+        var vec = (new Vector2(Mathf.Cos(randomDir), Mathf.Sin(randomDir))) + craft.GetComponent<Rigidbody2D>().velocity * 2F;
+        vec = vec.normalized;
+        rigid.AddForce(vec * 200f);
         //rigid.AddTorque(150f * ((Random.Range(0, 2) == 0) ? 1 : -1));
         rotationDirection = (Random.Range(0, 2) == 0);
         gameObject.layer = 9;
