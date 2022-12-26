@@ -259,7 +259,268 @@ public class BattleAI : AIModule
         }
     }
 
-    public override void ActionTick()
+    private void AttackBattleState()
+    {
+        if (shellcore.GetTractorTarget() == null)
+        {
+            if (attackTurret == null)
+            {
+                Turret t = null;
+                float minDistance = float.MaxValue;
+                for (int i = 0; i < AIData.entities.Count; i++)
+                {
+                    if (AIData.entities[i] != null && AIData.entities[i] &&
+                        AIData.entities[i] is Turret &&
+                        AIData.entities[i].faction == craft.faction &&
+                        AIData.entities[i].GetComponentInChildren<WeaponAbility>() != null &&
+                        AIData.entities[i].GetComponentInChildren<WeaponAbility>().GetID() != 16)
+                    {
+                        float d = (AIData.entities[i].transform.position - craft.transform.position).sqrMagnitude;
+                        if (d < minDistance)
+                        {
+                            t = AIData.entities[i] as Turret;
+                            minDistance = d;
+                        }
+                    }
+                }
+
+                attackTurret = t;
+            }
+            else
+            {
+                float d = (attackTurret.transform.position - shellcore.transform.position).sqrMagnitude;
+                if (d < 150)
+                {
+                    shellcore.SetTractorTarget(attackTurret.GetComponent<Draggable>());
+                }
+            }
+        }
+
+        // go to nearest enemy construct, attack units / turrets if in visual range
+        if ((primaryTarget == null && nextSearchTime < Time.time) || nextSearchTime < Time.time - 3f)
+        {
+            // get nearest construct
+            primaryTarget = AirCraftAI.getNearestEntity<AirConstruct>(craft, true); //TODO: Exclude turrets?
+            nextSearchTime = Time.time + 1f;
+
+            //if(primaryTarget)
+            //    Debug.Log("AggroTarget: " + primaryTarget.name + " Factions: " + primaryTarget.faction + " - " + craft.faction);
+        }
+
+        if (primaryTarget != null)
+        {
+            ai.movement.SetMoveTarget(primaryTarget.transform.position);
+            //craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
+        }
+
+        //TODO: AI Attack:
+        // action sequences
+        // Use existing turrets:
+        // -Drag torpedo turrets to enemy bunkers
+        // -Drag siege turrets to outposts
+        // ground attack location = own bunker location
+        // drag tanks from one platform to another "LandPlatformGenerator.getEnemiesOnPlatform(Vector2 platformLocation, int faction)"?
+        // how to react to different pressures on land and air?
+    }
+
+    private void CollectBattleState(bool turretIsHarvester)
+    {
+        // go from outpost to outpost, (also less fortified enemy outposts [count enemy units nearby {TODO}]) and collect energy
+        if (findNewTarget || collectTarget == null)
+        {
+            // Find new target
+            float minD = float.MaxValue;
+            EnergyRock targetRock = null;
+            int maxEnergy = -1;
+
+            for (int i = 0; i < AIData.energyRocks.Count; i++)
+            {
+                if (AirCraftAI.getEnemyCountInRange(AIData.energyRocks[i].transform.position, 10f, craft.faction) > 2)
+                {
+                    continue;
+                }
+
+                int energy = 0;
+                for (int j = 0; j < AIData.energySpheres.Count; j++)
+                {
+                    if ((AIData.energySpheres[j].transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude < 16)
+                    {
+                        energy++;
+                    }
+                }
+
+                float d = (craft.transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude;
+                if ((maxEnergy < energy || d * 1.5f < minD || (maxEnergy == energy && d < minD)) && AIData.energyRocks[i] != collectTarget)
+                {
+                    minD = d;
+                    maxEnergy = energy;
+                    targetRock = AIData.energyRocks[i];
+                }
+            }
+
+            collectTarget = targetRock;
+
+            if (collectTarget != null)
+            {
+                findNewTarget = false;
+            }
+
+            //Debug.LogFormat("Faction {0} collect target: {1}", craft.faction, collectTarget);
+        }
+
+        if (collectTarget != null)
+        {
+            ai.movement.SetMoveTarget(collectTarget.transform.position);
+            if (ai.movement.targetIsInRange())
+            {
+                if (harvesterTurrets.ContainsKey(collectTarget) &&
+                    (!harvesterTurrets[collectTarget] || harvesterTurrets[collectTarget].GetIsDead()))
+                {
+                    harvesterTurrets.Remove(collectTarget);
+                }
+
+                if (turretIsHarvester && !harvesterTurrets.ContainsKey(collectTarget))
+                {
+                    harvesterTurrets.Add(collectTarget, shellcore.GetTractorTarget().GetComponent<Turret>());
+                    shellcore.SetTractorTarget(null);
+                    state = BattleState.Attack;
+                }
+
+                findNewTarget = true;
+            }
+        }
+
+    }
+
+    private void DefendBattleState()
+    {
+        // destroy enemy units around base, ignore everything outside siege range
+        if (primaryTarget && !primaryTarget.GetIsDead())
+        {
+            ai.movement.SetMoveTarget(primaryTarget.transform.position);
+        }
+    }
+
+    void UpdateTargetInfluences()
+    {
+        for (int i = 0; i < AITargets.Count; i++)
+        {
+            var t = AITargets[i];
+            if (t.entity == null || t.entity.GetIsDead())
+            {
+                Debug.Log("AI Warning: AI target null or dead!"); //Better set this issue aside for later, uncertain how this will be fixed
+                continue;
+            }
+
+            t.influence = 0f;
+            for (int j = 0; j < AIData.entities.Count; j++)
+            {
+                if (AIData.entities[j] is Turret)
+                {
+                    if ((AIData.entities[j].transform.position - t.entity.transform.position).sqrMagnitude < 150f)
+                    {
+                        t.influence += FactionManager.IsAllied(AIData.entities[j].faction, t.entity.faction) ? 1f : -1f;
+                    }
+                }
+            }
+        }
+    }
+
+    private void FortifyBattleState()
+    {
+        // TODO: place turrets
+        // set primary target to an outpost with least defending turrets
+        if (fortificationTarget == null || !fortificationTarget)
+        {
+            UpdateTargetInfluences();
+
+            float closestToZero = float.MaxValue;
+
+            for (int i = 0; i < AITargets.Count; i++)
+            {
+                if (Mathf.Abs(AITargets[i].influence) < closestToZero && AITargets[i].entity.faction == shellcore.faction)
+                {
+                    fortificationTarget = AITargets[i].entity;
+                }
+            }
+        }
+        else if (attackTurret == null || !attackTurret)
+        {
+            UpdateTargetInfluences();
+
+            float minDistance = float.MaxValue;
+
+            for (int i = 0; i < AIData.entities.Count; i++)
+            {
+                if (AIData.entities[i] is Turret)
+                {
+                    float d = (craft.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
+                    float d2 = (fortificationTarget.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
+                    if (d < minDistance && d2 > 150f)
+                    {
+                        minDistance = d;
+                        attackTurret = AIData.entities[i] as Turret;
+                    }
+                }
+            }
+
+            if (attackTurret == null)
+            {
+                state = BattleState.Attack;
+                ActionTick();
+                nextStateCheckTime += 1f;
+                return;
+            }
+        }
+        else if (shellcore.GetTractorTarget() != attackTurret)
+        {
+            ai.movement.SetMoveTarget(attackTurret.transform.position, 100f);
+            if (ai.movement.targetIsInRange())
+            {
+                var target = shellcore.GetTractorTarget();
+                if (target != null && target)
+                {
+                    if (target.gameObject.GetComponent<EnergySphereScript>() == null)
+                    {
+                        shellcore.SetTractorTarget(attackTurret.GetComponent<Draggable>());
+                    }
+                }
+            }
+        }
+        else
+        {
+            Vector2 turretDelta = fortificationTarget.transform.position - attackTurret.transform.position;
+            Vector2 targetPosition = (Vector2)fortificationTarget.transform.position + turretDelta.normalized * 16f;
+            Vector2 delta = targetPosition - (Vector2)craft.transform.position;
+            if (turretDelta.sqrMagnitude < 16f)
+            {
+                shellcore.SetTractorTarget(null);
+            }
+        }
+
+    }
+
+    private void ReinforceGroundBattleState()
+    {
+        //head to nearest bunker to produce tanks
+        float dist = float.MaxValue;
+        int index = -1;
+        for (int i = 0; i < AITargets.Count; i++)
+        {
+            if (AITargets[i].entity.Terrain == Entity.TerrainType.Ground && AITargets[i].entity && AITargets[i].entity.faction == shellcore.faction && Vector2.SqrMagnitude(craft.transform.position - AITargets[i].entity.transform.position) < dist)
+            {
+                dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[i].entity.transform.position);
+                index = i;
+            }
+        }
+        if (index != -1 && dist >= 100f)
+        {
+            ai.movement.SetMoveTarget(AITargets[index].entity.transform.position);
+            dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[index].entity.transform.position);
+        }
+    }
+
+    private void UpdateWaitingDraggable()
     {
         if (waitingDraggable != null && waitingDraggable)
         {
@@ -271,247 +532,11 @@ public class BattleAI : AIModule
                 shellcore.SetTractorTarget(waitingDraggable);
             }
         }
+    }
 
-        var turretIsHarvester = shellcore.GetTractorTarget() &&
-                                shellcore.GetTractorTarget().GetComponent<Turret>()
-                                && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
-
-        switch (state)
-        {
-            case BattleState.Attack:
-                if (shellcore.GetTractorTarget() == null)
-                {
-                    if (attackTurret == null)
-                    {
-                        Turret t = null;
-                        float minDistance = float.MaxValue;
-                        for (int i = 0; i < AIData.entities.Count; i++)
-                        {
-                            if (AIData.entities[i] != null && AIData.entities[i] &&
-                                AIData.entities[i] is Turret &&
-                                AIData.entities[i].faction == craft.faction &&
-                                AIData.entities[i].GetComponentInChildren<WeaponAbility>() != null &&
-                                AIData.entities[i].GetComponentInChildren<WeaponAbility>().GetID() != 16)
-                            {
-                                float d = (AIData.entities[i].transform.position - craft.transform.position).sqrMagnitude;
-                                if (d < minDistance)
-                                {
-                                    t = AIData.entities[i] as Turret;
-                                    minDistance = d;
-                                }
-                            }
-                        }
-
-                        attackTurret = t;
-                    }
-                    else
-                    {
-                        float d = (attackTurret.transform.position - shellcore.transform.position).sqrMagnitude;
-                        if (d < 150)
-                        {
-                            shellcore.SetTractorTarget(attackTurret.GetComponent<Draggable>());
-                        }
-                    }
-                }
-
-                // go to nearest enemy construct, attack units / turrets if in visual range
-                if ((primaryTarget == null && nextSearchTime < Time.time) || nextSearchTime < Time.time - 3f)
-                {
-                    // get nearest construct
-                    primaryTarget = AirCraftAI.getNearestEntity<AirConstruct>(craft, true); //TODO: Exclude turrets?
-                    nextSearchTime = Time.time + 1f;
-
-                    //if(primaryTarget)
-                    //    Debug.Log("AggroTarget: " + primaryTarget.name + " Factions: " + primaryTarget.faction + " - " + craft.faction);
-                }
-
-                if (primaryTarget != null)
-                {
-                    ai.movement.SetMoveTarget(primaryTarget.transform.position);
-                    //craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
-                }
-
-                //TODO: AI Attack:
-                // action sequences
-                // Use existing turrets:
-                // -Drag torpedo turrets to enemy bunkers
-                // -Drag siege turrets to outposts
-                // ground attack location = own bunker location
-                // drag tanks from one platform to another "LandPlatformGenerator.getEnemiesOnPlatform(Vector2 platformLocation, int faction)"?
-                // how to react to different pressures on land and air?
-                break;
-            case BattleState.Defend:
-                // destroy enemy units around base, ignore everything outside siege range
-                if (primaryTarget && !primaryTarget.GetIsDead())
-                {
-                    ai.movement.SetMoveTarget(primaryTarget.transform.position);
-                }
-
-                // buy a turret matching the biggest threat's element, if possible
-                break;
-            case BattleState.Collect:
-                // go from outpost to outpost, (also less fortified enemy outposts [count enemy units nearby {TODO}]) and collect energy
-                if (findNewTarget || collectTarget == null)
-                {
-                    // Find new target
-                    float minD = float.MaxValue;
-                    EnergyRock targetRock = null;
-                    int maxEnergy = -1;
-
-                    for (int i = 0; i < AIData.energyRocks.Count; i++)
-                    {
-                        if (AirCraftAI.getEnemyCountInRange(AIData.energyRocks[i].transform.position, 10f, craft.faction) > 2)
-                        {
-                            continue;
-                        }
-
-                        int energy = 0;
-                        for (int j = 0; j < AIData.energySpheres.Count; j++)
-                        {
-                            if ((AIData.energySpheres[j].transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude < 16)
-                            {
-                                energy++;
-                            }
-                        }
-
-                        float d = (craft.transform.position - AIData.energyRocks[i].transform.position).sqrMagnitude;
-                        if ((maxEnergy < energy || d * 1.5f < minD || (maxEnergy == energy && d < minD)) && AIData.energyRocks[i] != collectTarget)
-                        {
-                            minD = d;
-                            maxEnergy = energy;
-                            targetRock = AIData.energyRocks[i];
-                        }
-                    }
-
-                    collectTarget = targetRock;
-
-                    if (collectTarget != null)
-                    {
-                        findNewTarget = false;
-                    }
-
-                    //Debug.LogFormat("Faction {0} collect target: {1}", craft.faction, collectTarget);
-                }
-
-                if (collectTarget != null)
-                {
-                    ai.movement.SetMoveTarget(collectTarget.transform.position);
-                    if (ai.movement.targetIsInRange())
-                    {
-                        if (harvesterTurrets.ContainsKey(collectTarget) &&
-                            (!harvesterTurrets[collectTarget] || harvesterTurrets[collectTarget].GetIsDead()))
-                        {
-                            harvesterTurrets.Remove(collectTarget);
-                        }
-
-                        if (turretIsHarvester && !harvesterTurrets.ContainsKey(collectTarget))
-                        {
-                            harvesterTurrets.Add(collectTarget, shellcore.GetTractorTarget().GetComponent<Turret>());
-                            shellcore.SetTractorTarget(null);
-                            state = BattleState.Attack;
-                        }
-
-                        findNewTarget = true;
-                    }
-                }
-
-                break;
-            case BattleState.Fortify:
-                // TODO: place turrets
-                // set primary target to an outpost with least defending turrets
-                if (fortificationTarget == null || !fortificationTarget)
-                {
-                    UpdateTargetInfluences();
-
-                    float closestToZero = float.MaxValue;
-
-                    for (int i = 0; i < AITargets.Count; i++)
-                    {
-                        if (Mathf.Abs(AITargets[i].influence) < closestToZero && AITargets[i].entity.faction == shellcore.faction)
-                        {
-                            fortificationTarget = AITargets[i].entity;
-                        }
-                    }
-                }
-                else if (attackTurret == null || !attackTurret)
-                {
-                    UpdateTargetInfluences();
-
-                    float minDistance = float.MaxValue;
-
-                    for (int i = 0; i < AIData.entities.Count; i++)
-                    {
-                        if (AIData.entities[i] is Turret)
-                        {
-                            float d = (craft.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
-                            float d2 = (fortificationTarget.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
-                            if (d < minDistance && d2 > 150f)
-                            {
-                                minDistance = d;
-                                attackTurret = AIData.entities[i] as Turret;
-                            }
-                        }
-                    }
-
-                    if (attackTurret == null)
-                    {
-                        state = BattleState.Attack;
-                        ActionTick();
-                        nextStateCheckTime += 1f;
-                        return;
-                    }
-                }
-                else if (shellcore.GetTractorTarget() != attackTurret)
-                {
-                    ai.movement.SetMoveTarget(attackTurret.transform.position, 100f);
-                    if (ai.movement.targetIsInRange())
-                    {
-                        var target = shellcore.GetTractorTarget();
-                        if (target != null && target)
-                        {
-                            if (target.gameObject.GetComponent<EnergySphereScript>() == null)
-                            {
-                                shellcore.SetTractorTarget(attackTurret.GetComponent<Draggable>());
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Vector2 turretDelta = fortificationTarget.transform.position - attackTurret.transform.position;
-                    Vector2 targetPosition = (Vector2)fortificationTarget.transform.position + turretDelta.normalized * 16f;
-                    Vector2 delta = targetPosition - (Vector2)craft.transform.position;
-                    if (turretDelta.sqrMagnitude < 16f)
-                    {
-                        shellcore.SetTractorTarget(null);
-                    }
-                }
-
-                break;
-            case BattleState.ReinforceGround:
-                //head to nearest bunker to produce tanks
-                float dist = float.MaxValue;
-                int index = -1;
-                for (int i = 0; i < AITargets.Count; i++)
-                {
-                    if (AITargets[i].entity.Terrain == Entity.TerrainType.Ground && AITargets[i].entity && AITargets[i].entity.faction == shellcore.faction && Vector2.SqrMagnitude(craft.transform.position - AITargets[i].entity.transform.position) < dist)
-                    {
-                        dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[i].entity.transform.position);
-                        index = i;
-                    }
-                }
-                if (index != -1 && dist >= 100f)
-                {
-                    ai.movement.SetMoveTarget(AITargets[index].entity.transform.position);
-                    dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[index].entity.transform.position);
-                }
-                break;
-            default:
-                break;
-        }
-
-        // always drop harvester turrets on close energy rocks
-        turretIsHarvester = shellcore.GetTractorTarget() &&
+    private void AttemptDropHarvesterTurret()
+    {
+        bool turretIsHarvester = shellcore.GetTractorTarget() &&
                             shellcore.GetTractorTarget().GetComponent<Turret>()
                             && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
         if (turretIsHarvester)
@@ -543,9 +568,11 @@ public class BattleAI : AIModule
                 }
             }
         }
+    }
 
+    private int AttemptCollectEnergy()
+    {
         int energyCount = 0;
-        // always collect energy
         if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
         {
             for (int i = 0; i < AIData.energySpheres.Count; i++)
@@ -580,252 +607,282 @@ public class BattleAI : AIModule
                 }
             }
         }
+        return energyCount;
+    }
 
-        // always buy more turrets/tanks
-        if (shellcore.unitsCommanding.Count < shellcore.GetTotalCommandLimit() && energyCount == 0 || state == BattleState.ReinforceGround)
+    private void EvaluateMostNeededUnit(int numEnemyTanks, int numOwnTanks, int numEnemyGroundStations)
+    {
+        if (numEnemyTanks > numOwnTanks)
         {
-            for (int i = 0; i < AIData.vendors.Count; i++)
+            if ((shellcore.GetPower() >= 150 && Random.Range(0, 5) < 4) || Random.Range(0, 3) == 1)
             {
-                if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude <= 100f)
+                if (Random.Range(0, 2) == 0)
                 {
-                    IVendor vendor = AIData.vendors[i] as IVendor;
-                    if (vendor.NeedsSameFaction() && vendor.GetFaction() != craft.faction)
-                    {
-                        continue;
-                    }
+                    mostNeeded = VendingBlueprint.Item.AIEquivalent.BeamTank;
+                }
+                else
+                {
+                    mostNeeded = VendingBlueprint.Item.AIEquivalent.LaserTank;
+                }
+            }
+            else if (shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)
+            {
+                mostNeeded = VendingBlueprint.Item.AIEquivalent.BulletTank;
+            }
+            else
+            {
+                mostNeeded = VendingBlueprint.Item.AIEquivalent.SpeederTank;
+            }
+        }
+        else if (numEnemyGroundStations + numEnemyTanks > numOwnTanks)
+        {
+            if (shellcore.GetPower() >= 150 || Random.Range(0, 3) == 1)
+            {
+                if (Random.Range(0, 3) == 0)
+                {
+                    mostNeeded = VendingBlueprint.Item.AIEquivalent.BeamTank;
+                }
+                else
+                {
+                    mostNeeded = VendingBlueprint.Item.AIEquivalent.SiegeTank;
+                }
+            }
+            else if (shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)
+            {
+                mostNeeded = VendingBlueprint.Item.AIEquivalent.BulletTank;
+            }
+            else
+            {
+                mostNeeded = VendingBlueprint.Item.AIEquivalent.SpeederTank;
+            }
+        }
+        else
+        {
+            if ((shellcore.GetPower() >= 200 && Random.Range(0, 4) < 3) || Random.Range(0, 2) == 1)
+            {
+                mostNeeded = VendingBlueprint.Item.AIEquivalent.MissileTank;
+            }
+            else
+            {
+                mostNeeded = VendingBlueprint.Item.AIEquivalent.LaserTank;
+            }
+        }
+    }
 
-                    if (vendor.GetVendingBlueprint() == null)
-                    {
-                        continue;
-                    }
+    private void AttemptBuyUnits(int energyCount)
+    {
+        if ((energyCount > 0 && state != BattleState.ReinforceGround) || shellcore.unitsCommanding.Count >= shellcore.GetTotalCommandLimit()) return;
+        for (int i = 0; i < AIData.vendors.Count; i++)
+        {
+            if ((AIData.vendors[i].transform.position - craft.transform.position).sqrMagnitude > 100f) continue;
+            IVendor vendor = AIData.vendors[i] as IVendor;
+            if (vendor.NeedsSameFaction() && vendor.GetFaction() != craft.faction)
+            {
+                continue;
+            }
 
-                    int itemIndex = -1;
-                    int ownGroundStation = 0;
-                    int ownTank = 0;
-                    int enemyTank = 0;
-                    int enemyGroundStation = 0;
+            if (vendor.GetVendingBlueprint() == null)
+            {
+                continue;
+            }
+
+            int itemIndex = -1;
+            int ownGroundStation = 0;
+            int ownTank = 0;
+            int enemyTank = 0;
+            int enemyGroundStation = 0;
+            for (int j = 0; j < AIData.entities.Count; j++)
+            {
+                if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Station)
+                {
+                    ownGroundStation += 1;
+                }
+                if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Station)
+                {
+                    enemyGroundStation += 1;
+                }
+                if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Unit)
+                {
+                    ownTank += 1;
+                }
+                if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Unit)
+                {
+                    enemyTank += 1;
+                }
+            }
+            if (mostNeeded == null)
+            {
+                EvaluateMostNeededUnit(enemyTank, ownTank, enemyGroundStation);
+            }
+
+            if (state == BattleState.Attack)
+            {
+                if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo >= 6)
+                {
+                    bool ownGroundExists = false;
                     for (int j = 0; j < AIData.entities.Count; j++)
                     {
-                        if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Station)
+                        if (AIData.entities[j].faction == craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
                         {
-                            ownGroundStation += 1;
-                        }
-                        if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Station)
-                        {
-                            enemyGroundStation += 1;
-                        }
-                        if (FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Unit)
-                        {
-                            ownTank += 1;
-                        }
-                        if (!FactionManager.IsAllied(AIData.entities[j].faction, craft.faction) && AIData.entities[j].Terrain == Entity.TerrainType.Ground && AIData.entities[j].category == Entity.EntityCategory.Unit)
-                        {
-                            enemyTank += 1;
-                        }
-                    }
-                    if (mostNeeded == null)
-                    {
-                        if (enemyTank > ownTank)
-                        {
-                            if ((shellcore.GetPower() >= 150 && Random.Range(0, 5) < 4) || Random.Range(0, 3) == 1)
-                            {
-                                if (Random.Range(0, 2) == 0)
-                                {
-                                    mostNeeded = VendingBlueprint.Item.AIEquivalent.BeamTank;
-                                }
-                                else
-                                {
-                                    mostNeeded = VendingBlueprint.Item.AIEquivalent.LaserTank;
-                                }
-                            }
-                            else if (shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)
-                            {
-                                mostNeeded = VendingBlueprint.Item.AIEquivalent.BulletTank;
-                            }
-                            else
-                            {
-                                mostNeeded = VendingBlueprint.Item.AIEquivalent.SpeederTank;
-                            }
-                        }
-                        else if (enemyGroundStation + enemyTank > ownTank)
-                        {
-                            if (shellcore.GetPower() >= 150 || Random.Range(0, 3) == 1)
-                            {
-                                if (Random.Range(0, 3) == 0)
-                                {
-                                    mostNeeded = VendingBlueprint.Item.AIEquivalent.BeamTank;
-                                }
-                                else
-                                {
-                                    mostNeeded = VendingBlueprint.Item.AIEquivalent.SiegeTank;
-                                }
-                            }
-                            else if (shellcore.GetPower() >= 100 || Random.Range(0, 2) == 1)
-                            {
-                                mostNeeded = VendingBlueprint.Item.AIEquivalent.BulletTank;
-                            }
-                            else
-                            {
-                                mostNeeded = VendingBlueprint.Item.AIEquivalent.SpeederTank;
-                            }
-                        }
-                        else
-                        {
-                            if ((shellcore.GetPower() >= 200 && Random.Range(0, 4) < 3) || Random.Range(0, 2) == 1)
-                            {
-                                mostNeeded = VendingBlueprint.Item.AIEquivalent.MissileTank;
-                            }
-                            else
-                            {
-                                mostNeeded = VendingBlueprint.Item.AIEquivalent.LaserTank;
-                            }
-                        }
-                    }
-
-                    if (state == BattleState.Attack)
-                    {
-                        if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo >= 6)
-                        {
-                            bool ownGroundExists = false;
-                            for (int j = 0; j < AIData.entities.Count; j++)
-                            {
-                                if (AIData.entities[j].faction == craft.faction && AIData.entities[j].Terrain == Entity.TerrainType.Ground)
-                                {
-                                    ownGroundExists = true;
-                                    break;
-                                }
-                            }
-                            if (!ownGroundExists && enemyGroundTargets(true) && shellcore.GetPower() >= 150)
-                            {
-                                // Attack & enemy holds all ground
-                                itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.TorpedoTurret);
-                            }
-                            else
-                            {
-                                if (shellcore.GetPower() >= 200)
-                                {
-                                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.MissileTurret);
-                                }
-                                else if (shellcore.GetPower() >= 100)
-                                {
-                                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.DefenseTurret);
-                                }
-                            }
-                        }
-                        else if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo < 6)
-                        {
-                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
-                        }
-                    }
-                    if (state == BattleState.ReinforceGround)
-                    {
-                        itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
-                    }
-                    if (itemIndex == -1)
-                    {
-                        if (harvesterTurrets.Count < Mathf.Min(5, AIData.energyRocks.Count)
-                            && shellcore.GetPower() >= 100)
-                        {
-                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.HarvesterTurret);
-                            foreach (var turret in harvesterTurrets.Values)
-                            {
-                                if (turret && Vector3.SqrMagnitude(turret.transform.position - shellcore.transform.position) <= 200)
-                                {
-                                    itemIndex = -1;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
-                            {
-                                if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType != EntityBlueprint.IntendedType.Tank) // more expensive => better (TODO: choose based on the situation)
-                                {
-                                    if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
-                                    {
-                                        continue;
-                                    }
-
-                                    if (vendor.GetVendingBlueprint().items[j].equivalentTo != mostNeeded && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank) //TODO: get turret / tank attack category from somewhere else
-                                        continue;
-
-                                    itemIndex = j;
-                                }
-                            }
-                        }
-                    }
-
-                    if (itemIndex != -1)
-                    {
-                        if (vendor.GetVendingBlueprint().items[itemIndex].cost <= shellcore.GetPower())
-                        {
-                            mostNeeded = null;
-                        }
-                        else
-                        {
+                            ownGroundExists = true;
                             break;
                         }
-                        var ent = VendorUI.BuyItem(shellcore, itemIndex, (AIData.vendors[i] as IVendor));
-                        if (itemIndex == vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.HarvesterTurret))
-                        {
-                            EnergyRock closestRock = null;
-                            foreach (var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))
-                            {
-                                if (closestRock == null || Vector2.SqrMagnitude(rock.transform.position - shellcore.transform.position)
-                                    < Vector2.SqrMagnitude(closestRock.transform.position - shellcore.transform.position))
-                                {
-                                    closestRock = rock;
-                                }
-                            }
-
-                            harvesterTurrets.Add(closestRock, ent as Turret);
-                            shellcore.SetTractorTarget(ent.GetComponent<Draggable>());
-                        }
-
-                        break;
                     }
-
-                }
-            }
-        }
-
-        void UpdateTargetInfluences()
-        {
-            for (int i = 0; i < AITargets.Count; i++)
-            {
-                var t = AITargets[i];
-                if (t.entity == null || t.entity.GetIsDead())
-                {
-                    Debug.Log("AI Warning: AI target null or dead!"); //Better set this issue aside for later, uncertain how this will be fixed
-                    continue;
-                }
-
-                t.influence = 0f;
-                for (int j = 0; j < AIData.entities.Count; j++)
-                {
-                    if (AIData.entities[j] is Turret)
+                    if (!ownGroundExists && IsEnemyGroundTargetPresent(true) && shellcore.GetPower() >= 150)
                     {
-                        if ((AIData.entities[j].transform.position - t.entity.transform.position).sqrMagnitude < 150f)
+                        // Attack & enemy holds all ground
+                        itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.TorpedoTurret);
+                    }
+                    else
+                    {
+                        if (shellcore.GetPower() >= 200)
                         {
-                            t.influence += FactionManager.IsAllied(AIData.entities[j].faction, t.entity.faction) ? 1f : -1f;
+                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.MissileTurret);
+                        }
+                        else if (shellcore.GetPower() >= 100)
+                        {
+                            itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.DefenseTurret);
                         }
                     }
                 }
+                else if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo < 6)
+                {
+                    itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
+                }
+            }
+            if (state == BattleState.ReinforceGround)
+            {
+                itemIndex = vendor.GetVendingBlueprint().getItemIndex(mostNeeded.Value);
+            }
+            if (itemIndex == -1)
+            {
+                itemIndex = EvaluateItemIndexIfNoPriority(vendor);
+            }
+
+
+            if (itemIndex != -1)
+            {
+                BuyFromVendor(itemIndex, vendor);
+                break;
             }
         }
+    }
 
-        bool enemyGroundTargets(bool allEntities)
+    private int EvaluateItemIndexIfNoPriority(IVendor vendor)
+    {
+        int itemIndex = -1;
+        if (harvesterTurrets.Count < Mathf.Min(5, AIData.energyRocks.Count)
+                    && shellcore.GetPower() >= 100)
         {
-            Entity[] targets = allEntities ? AIData.entities.ToArray() : BattleZoneManager.getTargets();
-            for (int i = 0; i < targets.Length; i++)
+            itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.HarvesterTurret);
+            foreach (var turret in harvesterTurrets.Values)
             {
-                if (!FactionManager.IsAllied(targets[i].faction, craft.faction) && targets[i].Terrain == Entity.TerrainType.Ground)
+                if (turret && Vector3.SqrMagnitude(turret.transform.position - shellcore.transform.position) <= 200)
                 {
-                    return true;
+                    itemIndex = -1;
+                }
+            }
+        }
+        else
+        {
+            for (int j = 0; j < vendor.GetVendingBlueprint().items.Count; j++)
+            {
+                if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType != EntityBlueprint.IntendedType.Tank) // more expensive => better (TODO: choose based on the situation)
+                {
+                    if (itemIndex != -1 && vendor.GetVendingBlueprint().items[j].cost <= vendor.GetVendingBlueprint().items[itemIndex].cost) // more expensive => better (TODO: choose based on the situation)
+                    {
+                        continue;
+                    }
+
+                    if (vendor.GetVendingBlueprint().items[j].equivalentTo != mostNeeded && vendor.GetVendingBlueprint().items[0].entityBlueprint.intendedType == EntityBlueprint.IntendedType.Tank) //TODO: get turret / tank attack category from somewhere else
+                        continue;
+
+                    itemIndex = j;
+                }
+            }
+        }
+        return itemIndex;
+    }
+
+    private void BuyFromVendor(int itemIndex, IVendor vendor)
+    {
+        if (vendor.GetVendingBlueprint().items[itemIndex].cost <= shellcore.GetPower())
+        {
+            mostNeeded = null;
+        }
+        else
+        {
+            return;
+        }
+        var ent = VendorUI.BuyItem(shellcore, itemIndex, vendor);
+        if (itemIndex == vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.HarvesterTurret))
+        {
+            EnergyRock closestRock = null;
+            foreach (var rock in AIData.energyRocks.FindAll(e => !harvesterTurrets.ContainsKey(e)))
+            {
+                if (closestRock == null || Vector2.SqrMagnitude(rock.transform.position - shellcore.transform.position)
+                    < Vector2.SqrMagnitude(closestRock.transform.position - shellcore.transform.position))
+                {
+                    closestRock = rock;
                 }
             }
 
-            return false;
+            harvesterTurrets.Add(closestRock, ent as Turret);
+            shellcore.SetTractorTarget(ent.GetComponent<Draggable>());
         }
+    }
+
+    public override void ActionTick()
+    {
+        UpdateWaitingDraggable();
+
+        var turretIsHarvester = shellcore.GetTractorTarget() &&
+                                shellcore.GetTractorTarget().GetComponent<Turret>()
+                                && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
+
+        switch (state)
+        {
+            case BattleState.Attack:
+                AttackBattleState();
+                break;
+            case BattleState.Defend:
+                DefendBattleState();
+                // buy a turret matching the biggest threat's element, if possible
+                break;
+            case BattleState.Collect:
+                CollectBattleState(turretIsHarvester);
+                break;
+            case BattleState.Fortify:
+                FortifyBattleState();
+                break;
+            case BattleState.ReinforceGround:
+                ReinforceGroundBattleState();
+                break;
+            default:
+                break;
+        }
+
+        // always drop harvester turrets on close energy rocks
+        AttemptDropHarvesterTurret();
+
+        // always collect energy
+        int energyCount = AttemptCollectEnergy();
+
+        // always buy more turrets/tanks
+        AttemptBuyUnits(energyCount);
+    }
+
+    private bool IsEnemyGroundTargetPresent(bool allEntities)
+    {
+        Entity[] targets = allEntities ? AIData.entities.ToArray() : BattleZoneManager.getTargets();
+        for (int i = 0; i < targets.Length; i++)
+        {
+            if (!FactionManager.IsAllied(targets[i].faction, craft.faction) && targets[i].Terrain == Entity.TerrainType.Ground)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
