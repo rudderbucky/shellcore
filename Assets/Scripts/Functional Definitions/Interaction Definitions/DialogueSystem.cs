@@ -33,7 +33,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     Text textRenderer;
     GameObject[] buttons;
     public ShipBuilder builder;
-    public DroneWorkshop workshop;
     public VendorUI vendorUI;
     int characterCount = 0;
     float nextCharacterTime;
