@@ -274,8 +274,8 @@ public class SaveMenuHandler : GUIWindowScripts
         if (mission.checkpoint != null && mission.checkpoint.Contains(oldName))
         {
             int oldIndex = mission.checkpoint.IndexOf(oldName);
-            mission.checkpoint.Remove(oldIndex, oldName.Length);
-            mission.checkpoint.Insert(oldIndex, newName);
+            mission.checkpoint = mission.checkpoint.Remove(oldIndex, oldName.Length);
+            mission.checkpoint = mission.checkpoint.Insert(oldIndex, newName);
         }
 
         foreach (Mission prereqMission in save.missions)
