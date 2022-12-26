@@ -37,7 +37,7 @@ public class Laser : Bullet
 
     protected override bool FireBullet(Vector3 targetPos)
     {
-        time = Time.time;
+        time = bulletFrequency;
         bulletsLeft = 5;
         this.targetPos = targetPos;
         return true;
@@ -54,15 +54,16 @@ public class Laser : Bullet
 
     protected void Update()
     {
+        time -= Time.deltaTime;
         var target = targetingSystem.GetTarget();
-        if (bulletsLeft > 0 && (Time.time - time > bulletFrequency) && target && !Core.IsInvisible && !Core.isAbsorbing)
+        if (bulletsLeft > 0 && (time < 0) && target && !Core.IsInvisible && !Core.isAbsorbing)
         {
             if (!isEnabled) 
             {
                 bulletsLeft = 0;
                 return;
             }
-            time = Time.time;
+            time = bulletFrequency;
             bulletsLeft -= 1;
             base.FireBullet(target.position);
         }

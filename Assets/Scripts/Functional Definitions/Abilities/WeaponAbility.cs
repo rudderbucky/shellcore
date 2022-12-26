@@ -179,7 +179,8 @@ public abstract class WeaponAbility : ActiveAbility
 
     public override void Activate()
     {
-        isEnabled = !isEnabled;
+        if (Core as PlayerCore)
+            isEnabled = !isEnabled;
         UpdateState();
         Core.MakeBusy(); // make core busy
     }
