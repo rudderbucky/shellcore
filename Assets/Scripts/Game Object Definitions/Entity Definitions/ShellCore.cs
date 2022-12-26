@@ -23,10 +23,20 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     private List<EntityBlueprint.PartInfo> partsToRepairAdd = new List<EntityBlueprint.PartInfo>();
 
+    private Coroutine yardRepairCoroutine;
     private Coroutine addRandomPartsCoroutine;
 
+    public void StartYardRepairCoroutine()
+    {
+        yardRepairCoroutine = StartCoroutine(StartYardRepair());
+    }
 
-    public IEnumerator StartYardRepair()
+    public void StopYardRepairCoroutine()
+    {
+        StopCoroutine(yardRepairCoroutine);
+    }
+
+    private IEnumerator StartYardRepair()
     {
         isYardRepairing = true;
         foreach (var part in parts)
@@ -148,7 +158,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     protected override void OnDeath()
     {
         tractor.SetTractorTarget(null);
-        StopCoroutine(StartYardRepair());
+        StopYardRepairCoroutine();
         base.OnDeath();
     }
 
@@ -241,7 +251,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         
             if (gotAwayFromYard)
             {
-                StopCoroutine(StartYardRepair());
+                StopYardRepairCoroutine();
                 FinalizeRepair();
             }
         }
