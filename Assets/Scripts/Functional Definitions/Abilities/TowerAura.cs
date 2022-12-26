@@ -7,10 +7,9 @@ public class TowerAura : PassiveAbility
     CircleGraphic circle;
     protected override void Awake()
     {
-        ID = AbilityID.Speed;
         base.Awake();
-        abilityName = "Speed";
-        description = "Passively increases speed.";
+        abilityName = "Tower Aura";
+        description = "Creates various passive effect auras.";
 
         rangeCirclePrefab = Instantiate(ResourceManager.GetAsset<GameObject>("range_circle_prefab"));
         rangeCirclePrefab.transform.SetParent(AbilityHandler.instance.transform.parent.Find("Circle Holder").transform, false);
@@ -19,8 +18,26 @@ public class TowerAura : PassiveAbility
         circle.dotted = true;
         circle.raycastTarget = false;
         circle.color = FactionManager.GetFactionColor(Core.GetFaction());
-        range = 45;
+        range = 30;
         if (!AIData.auras.Contains(this)) AIData.auras.Add(this);
+    }
+
+
+    public void Initialize()
+    {
+        switch (type)
+        {
+            case AuraType.Heal:
+                ID = AbilityID.HealAura;
+                break;
+            case AuraType.Speed:
+                ID = AbilityID.SpeedAura;
+                range = 450;
+                break;
+            case AuraType.Energy:
+                ID = AbilityID.EnergyAura;
+                break;
+        }
     }
 
     public override void Deactivate()
@@ -34,7 +51,7 @@ public class TowerAura : PassiveAbility
     {
         Heal,
         Speed,
-        DamageResistance
+        Energy
     }
 
     public AuraType type;

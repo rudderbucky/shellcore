@@ -181,14 +181,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
 
     [SerializeField]
-    private int damageResistanceAuraStacks;
+    private int energyAuraStacks;
 
-    public int DamageResistanceAuraStacks
+    public int EnergyAuraStacks
     {
-        get { return damageResistanceAuraStacks; }
+        get { return energyAuraStacks; }
         set
         {
-            damageResistanceAuraStacks = value;
+            energyAuraStacks = value;
         }
     }
 
@@ -859,7 +859,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     protected virtual void OnDeath()
     {
-        entityBody.velocity = Vector2.zero;
         // set death, interactibility and immobility
         IsInvisible = false;
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
@@ -907,6 +906,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         DetachAllParts();
+        entityBody.velocity = Vector2.zero;
 
         var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
 
@@ -1063,7 +1063,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         bool speedAuraAtZero = SpeedAuraStacks == 0;
         healAuraStacks = 0;
-        damageResistanceAuraStacks = 0;
+        energyAuraStacks = 0;
         SpeedAuraStacks = 0;
 
         foreach (var aura in AIData.auras)
@@ -1082,8 +1082,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                         (this as Craft).CalculatePhysicsConstants();
                     }
                     break;
-                case TowerAura.AuraType.DamageResistance:
-                    damageResistanceAuraStacks++;
+                case TowerAura.AuraType.Energy:
+                    energyAuraStacks++;
                     break;
             }
         }
@@ -1130,9 +1130,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             // not dead, continue normal state changing
             // regenerate
-            RegenHealth(ref currentHealth[0], HealAuraStacks > 0 ? regenRate[0] * 1.5F : regenRate[0], maxHealth[0]);
-            RegenHealth(ref currentHealth[1], HealAuraStacks > 0 ? regenRate[1] * 1.5F : regenRate[1], maxHealth[1]);
-            RegenHealth(ref currentHealth[2], regenRate[2], maxHealth[2]);
+            RegenHealth(ref currentHealth[0], HealAuraStacks > 0 ? regenRate[0] * 20F : regenRate[0], maxHealth[0]);
+            RegenHealth(ref currentHealth[1], HealAuraStacks > 0 ? regenRate[1] * 20F : regenRate[1], maxHealth[1]);
+            RegenHealth(ref currentHealth[2], EnergyAuraStacks > 0 ? regenRate[2] * 50F : regenRate[2], maxHealth[2]);
 
             if (weaponGCDTimer < weaponGCD)
             {
@@ -1311,12 +1311,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             TakeEnergy(-amount);
             return 0f;
-        }
-
-        // tower resistance buff
-        if (DamageResistanceAuraStacks > 0)
-        {
-            amount /= 2F;
         }
 
         // counter drone fighting another drone, multiply damage accordingly
