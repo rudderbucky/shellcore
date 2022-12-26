@@ -116,9 +116,11 @@ public class SaveHandler : MonoBehaviour
         }
     }
 
+    private float timeSinceLastSave;
     public void Save()
     {
-        save.timePlayed += Time.timeSinceLevelLoad / 60;
+        save.timePlayed += (Time.timeSinceLevelLoad - timeSinceLastSave) / 60;
+        timeSinceLastSave = Time.timeSinceLevelLoad;
         if (SaveMenuHandler.migratedTimePlayed != null)
         {
             save.timePlayed += (int)SaveMenuHandler.migratedTimePlayed;
