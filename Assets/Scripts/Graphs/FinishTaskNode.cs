@@ -305,6 +305,7 @@ namespace NodeEditorFramework.Standard
             if (!speakToEntity)
             {
                 RewardPlayer();
+                (Canvas.Traversal as MissionTraverser).taskHash++;
                 return 2;
             }
 
@@ -313,6 +314,7 @@ namespace NodeEditorFramework.Standard
             {
                 TaskManager.interactionOverrides[rewardGiverID].Pop();
                 OnDialogue();
+                (Canvas.Traversal as MissionTraverser).taskHash++;
             });
 
             TaskManager.Instance.PushInteractionOverrides(rewardGiverID, action, Canvas.Traversal as Traverser);
