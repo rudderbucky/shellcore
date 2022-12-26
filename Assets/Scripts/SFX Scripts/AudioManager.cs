@@ -69,11 +69,11 @@ public class AudioManager : MonoBehaviour
     }
 
     // sourcePoint = where the sound is played (moves along with object)
-    public static void PlayClipByID(string ID, Vector3 pos, GameObject sourcePoint = null)
+    public static GameObject PlayClipByID(string ID, Vector3 pos, GameObject sourcePoint = null)
     {
         if (instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
         {
-            return;
+            return null;
         }
 
         var source = (sourcePoint ? sourcePoint : new GameObject()).AddComponent<AudioSource>();
@@ -88,7 +88,6 @@ public class AudioManager : MonoBehaviour
         source.rolloffMode = AudioRolloffMode.Linear;
         source.spatialBlend = 0.5F;
         source.dopplerLevel = 0;
-        //source.maxDistance = ;
         source.Play();
         if (!instance.timePlayed.ContainsKey(ID))
         {
@@ -100,39 +99,35 @@ public class AudioManager : MonoBehaviour
         }
 
         Destroy(source.gameObject, source.clip.length);
+        return source.gameObject;
     }
 
     // Plays the clip directly on the player
     public static void PlayClipByID(string ID, bool clear = false, float volume = 1F)
     {
-        if (instance.playerSource != null)
+        if (instance.playerSource == null) return;
+        if (clear)
         {
-            if (clear)
-            {
-                instance.playerSource.Stop();
-            }
-
-            if (ID != null)
-            {
-                if (instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
-                {
-                    return;
-                }
-
-                var clip = ResourceManager.GetAsset<AudioClip>(ID);
-                instance.playerSource.PlayOneShot(clip, volume);
-                if (!instance.timePlayed.ContainsKey(ID))
-                {
-                    instance.timePlayed.Add(ID, Time.time);
-                }
-                else
-                {
-                    instance.timePlayed[ID] = Time.time;
-                }
-            }
-            // can pass null just to clear the sound buffer
+            instance.playerSource.Stop();
         }
-        // TODO: Add audio sources to places that need it
+
+        if (ID == null) return;
+        if (instance.timePlayed.ContainsKey(ID) && instance.timePlayed[ID] == Time.time)
+        {
+            return;
+        }
+
+        var clip = ResourceManager.GetAsset<AudioClip>(ID);
+        instance.playerSource.PlayOneShot(clip, volume);
+        if (!instance.timePlayed.ContainsKey(ID))
+        {
+            instance.timePlayed.Add(ID, Time.time);
+        }
+        else
+        {
+            instance.timePlayed[ID] = Time.time;
+        }
+        // can pass null just to clear the sound buffer
     }
 
     // Use for Soundtrack

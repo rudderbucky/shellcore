@@ -228,6 +228,11 @@ public class IonLineController : MonoBehaviour
         }
     }
 
+    public float GetDuration()
+    {
+        return duration;
+    }
+
     float GetBearingFromVector(Vector2 vec)
     {
         var angle = Mathf.Atan(vec.y / vec.x) * Mathf.Rad2Deg;
