@@ -33,7 +33,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public void StopYardRepairCoroutine()
     {
-        StopCoroutine(yardRepairCoroutine);
+        if (yardRepairCoroutine != null)
+        {
+            StopCoroutine(yardRepairCoroutine);
+        }
     }
 
     private IEnumerator StartYardRepair()
