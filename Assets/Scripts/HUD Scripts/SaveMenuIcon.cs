@@ -18,6 +18,8 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public Image coreImage;
 
     float origPos;
+    Coroutine moveInCoroutine;
+    Coroutine moveOutCoroutine;
 
     void Start()
     {
@@ -94,8 +96,11 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        StopCoroutine(MoveOut());
-        StartCoroutine(MoveIn());
+        if (moveOutCoroutine != null)
+        {
+            StopCoroutine(moveOutCoroutine);
+        }
+        moveInCoroutine = StartCoroutine(MoveIn());
     }
 
     IEnumerator MoveOut()
@@ -129,7 +134,10 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        StopCoroutine(MoveIn());
-        StartCoroutine(MoveOut());
+        if (moveInCoroutine != null)
+        {
+            StopCoroutine(moveInCoroutine);
+        }
+        moveOutCoroutine = StartCoroutine(MoveOut());
     }
 }

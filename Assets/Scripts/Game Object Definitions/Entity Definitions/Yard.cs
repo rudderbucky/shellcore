@@ -216,7 +216,7 @@ public class Yard : AirConstruct, IShipBuilder
 
         if (shellCore.HasPartsDamagedOrDestroyed())
         {
-            StartCoroutine(shellCore.StartYardRepair());
+            shellCore.StartYardRepairCoroutine();
         }
         else if (shellCore.HasShellOrCoreDamaged())
         {
