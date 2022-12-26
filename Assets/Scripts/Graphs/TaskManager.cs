@@ -272,9 +272,6 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
             Instance.ClearCanvases(true);
         }
 
-
-        var XMLImport = new XMLImportExport();
-
         for (int i = 0; i < questCanvasPaths.Count; i++)
         {
             string finalPath = System.IO.Path.Combine(Application.streamingAssetsPath, questCanvasPaths[i]);
@@ -301,7 +298,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
                 }
 
-                var canvas = XMLImport.Import(finalPath) as QuestCanvas;
+                var canvas = GetCanvas(finalPath) as QuestCanvas;
 
                 if (canvas != null)
                 {
@@ -321,6 +318,17 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         initialized = true;
     }
 
+    public static NodeCanvas GetCanvas(string path)
+    {
+        var XMLImport = new XMLImportExport();
+        // Windows sucks man. But this should hopefully allow longer paths to work
+        if (Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+            path = System.IO.Path.Join("\\\\?\\", path);
+        }
+        return XMLImport.Import(path);
+    }
+
     public void startNewQuest(string missionName)
     {
         if (!offloadingMissions.ContainsKey(missionName)) return;
@@ -332,8 +340,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
 
         var path = offloadingMissions[missionName];
         offloadingMissions.Remove(missionName);
-        var XMLImport = new XMLImportExport();
-        var canvas = XMLImport.Import(path) as QuestCanvas;
+        var canvas = GetCanvas(path) as QuestCanvas;
 
         if (canvas != null)
         {
@@ -358,10 +365,9 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         if (!offloadingSectors.ContainsKey(sectorName)) return;
         var pathList = offloadingSectors[sectorName];
         offloadingSectors.Remove(sectorName);
-        var XMLImport = new XMLImportExport();
         foreach (var path in pathList)
         {
-            var canvas = XMLImport.Import(path) as SectorCanvas;
+            var canvas = GetCanvas(path) as SectorCanvas;
             if (canvas != null)
             {
                 var traverser = new SectorTraverser(canvas);

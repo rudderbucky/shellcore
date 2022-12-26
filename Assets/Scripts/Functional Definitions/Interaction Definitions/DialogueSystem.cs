@@ -146,8 +146,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         var path = offloadingDialogues[id];
         offloadingDialogues.Remove(id);
-        var XMLImport = new XMLImportExport();
-        var canvas = XMLImport.Import(path) as DialogueCanvas;
+        var canvas = TaskManager.GetCanvas(path) as DialogueCanvas;
         if (canvas != null)
         {
             var traverser = new DialogueTraverser(canvas);
