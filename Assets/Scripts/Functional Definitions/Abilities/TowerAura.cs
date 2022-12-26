@@ -12,7 +12,8 @@ public class TowerAura : PassiveAbility
         description = "Creates various passive effect auras.";
 
         rangeCirclePrefab = Instantiate(ResourceManager.GetAsset<GameObject>("range_circle_prefab"));
-        rangeCirclePrefab.transform.SetParent(AbilityHandler.instance.transform.parent.Find("Circle Holder").transform, false);
+        if(AbilityHandler.instance && AbilityHandler.instance.transform.parent.Find("Circle Holder"))
+            rangeCirclePrefab.transform.SetParent(AbilityHandler.instance.transform.parent.Find("Circle Holder").transform, false);
         circle = rangeCirclePrefab.GetComponent<CircleGraphic>();
         circle.enabled = false;
         circle.dotted = true;
@@ -44,7 +45,7 @@ public class TowerAura : PassiveAbility
     {
         base.Deactivate();
         if (AIData.auras.Contains(this)) AIData.auras.Remove(this);
-        Destroy(circle.gameObject);
+        if (circle.gameObject) Destroy(circle.gameObject);
     }
 
     public enum AuraType
@@ -64,7 +65,7 @@ public class TowerAura : PassiveAbility
 
     private void LateUpdate()
     {        
-        var cameraPos = CameraScript.instance.transform.position;
+        var cameraPos = CameraScript.instance ? CameraScript.instance.transform.position : Vector3.zero;
         cameraPos.z = 0;
         var x = Camera.main.WorldToScreenPoint(cameraPos + new Vector3(0, range)).y - Camera.main.WorldToScreenPoint(cameraPos).y;
         x *= (float)1920 / Screen.width * 2;

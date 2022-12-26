@@ -23,7 +23,10 @@ public class VendingBlueprint : ScriptableObject
             TorpedoTurret,
             MissileTurret,
             DefenseTurret,
-            HarvesterTurret
+            HarvesterTurret,
+            HealerTower,
+            SpeedTower,
+            EnergyTower
         }
         public AIEquivalent equivalentTo;
     }
