@@ -1178,7 +1178,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 blueprint.parts.Add(part.info);
             }
             var button = partDict[dronePart];
-            var oldData = DroneUtilities.GetDroneSpawnDataByShorthand(button.part.secondaryData);
+            var oldData = Instantiate(DroneUtilities.GetDroneSpawnDataByShorthand(button.part.secondaryData));
             oldData.drone = JsonUtility.ToJson(blueprint);
             button.part.secondaryData = JsonUtility.ToJson(oldData);
             partDict.Remove(dronePart);
