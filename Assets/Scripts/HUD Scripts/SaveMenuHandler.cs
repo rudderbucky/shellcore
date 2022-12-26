@@ -204,12 +204,14 @@ public class SaveMenuHandler : GUIWindowScripts
     {
         base.Activate();
         Initialize();
+        GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
     public void Activate(string resourcePath = "")
     {
         base.Activate();
         Initialize(resourcePath);
+        GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
     public override void CloseUI()

@@ -27,21 +27,13 @@ public class MainMenu : MonoBehaviour
     {
         if (settings)
         {
-            settings.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
+            settings.GetComponentInChildren<GUIWindowScripts>().ToggleActive(true);
         }
     }
 
     public void Quit()
     {
         Application.Quit();
-    }
-
-    public void OpenCommunityPopup()
-    {
-        if (discordPopup)
-        {
-            discordPopup.GetComponentInChildren<GUIWindowScripts>().ToggleActive();
-        }
     }
 
     public void OpenDiscord()

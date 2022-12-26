@@ -61,6 +61,11 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
     public virtual void ToggleActive()
     {
+        ToggleActive(false);
+    }
+
+    public virtual void ToggleActive(bool resetPos)
+    {
         bool active = transform.parent.gameObject.activeSelf;
         if (active)
         {
@@ -72,6 +77,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
             GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
             PlayerViewScript.SetCurrentWindow(this);
         }
+        if (resetPos) GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
     public virtual bool GetActive()
@@ -81,7 +87,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        mousePos = (Vector2)Input.mousePosition - GetComponent<RectTransform>().anchoredPosition;
+        mousePos = (Vector2)Input.mousePosition * (float)1920 / Screen.width - GetComponent<RectTransform>().anchoredPosition;
         selected = true;
     }
 
@@ -103,7 +109,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
         if (selected)
         {
-            GetComponent<RectTransform>().anchoredPosition = (Vector2)Input.mousePosition - mousePos;
+            GetComponent<RectTransform>().anchoredPosition = (Vector2)Input.mousePosition * (float)1920 / Screen.width - mousePos;
         }
     }
 }
