@@ -10,10 +10,10 @@ public class ChainBeam : Beam
     {
         base.Awake();
         ID = AbilityID.ChainBeam;
-        range = 15;
         abilityName = "Chain";
         description = $"Instant attack that deals {damage} damage to multiple targets.";
-        energyCost = 225;
+        range = 15;
+        energyCost = 100;
     }
     protected override void Start()
     {
