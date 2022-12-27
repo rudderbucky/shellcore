@@ -1164,8 +1164,6 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     private void SavePartsToInventory()
     {
-        // try adding parts in the player's inventory and on their ship into the part index obtained list.
-        player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
         if (mode == BuilderMode.Workshop && !GetDroneWorkshopSelectPhase())
         {
             var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -1185,7 +1183,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             partDict.Add(button.part, button);
         }
 
-
+        // try adding parts in the player's inventory and on their ship into the part index obtained list.
+        player.cursave.partInventory = new List<EntityBlueprint.PartInfo>();
         foreach (EntityBlueprint.PartInfo info in partDict.Keys)
         {
             if (partDict[info].GetCount() > 0)

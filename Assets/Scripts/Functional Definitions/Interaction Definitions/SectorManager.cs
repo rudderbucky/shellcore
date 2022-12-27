@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -545,6 +546,7 @@ public class SectorManager : MonoBehaviour
             Camera.main.transform.position = new Vector3(current.bounds.x + current.bounds.w / 2, current.bounds.y - current.bounds.h / 2, -10);
         }
     }
+
 
     // does all the checking on whether the string is json or a filename
     public static EntityBlueprint TryGettingEntityBlueprint(string jsonOrName)

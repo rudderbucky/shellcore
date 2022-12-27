@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -139,12 +140,25 @@ public class DevConsoleScript : MonoBehaviour
                 player.SetRegens(new float[] { 99999, 99999, 99999 });
                 textBox.text += "\n<color=lime>Immortality is an illusion, enjoy it while it lasts.</color>";
             }
-            else if (command.Equals("Skynet will rise", StringComparison.CurrentCultureIgnoreCase))
+            else if (command.StartsWith("network ", StringComparison.CurrentCultureIgnoreCase))
             {
-                SectorManager.instance.Clear();
-                SectorManager.instance.LoadSectorFile(System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors/AI-Test"));
+                switch(command.Substring(8).Trim())
+                {
+                    case "host":    
+                        NetworkManager.Singleton.StartHost();
+                        textBox.text += "\n<color=lime>Running as host</color>";
+                        break;
+                    case "client":
+                        NetworkManager.Singleton.StartClient();
+                        NetworkAdaptor.instance.CreateNetworkObjectServerRpc();
+                        textBox.text += "\n<color=lime>Running as client</color>";
+                        break;
+                    case "server":
+                        NetworkManager.Singleton.StartServer();
+                        textBox.text += "\n<color=lime>Running as server</color>";
+                        break;
+                }
                 PlayerCore.Instance.Warp(Vector3.zero);
-                textBox.text += "\n<color=lime>I, for one, welcome our new robotic overlords.</color>";
             }
             else if (command.StartsWith("Add power ", StringComparison.CurrentCultureIgnoreCase))
             {
