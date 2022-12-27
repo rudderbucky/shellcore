@@ -235,6 +235,8 @@ public static class AbilityUtilities
                 return "Warps your currently held part directly into your inventory.";
             case 41:
                 return $"Temporarily reduces Global Cooldown by {Mathf.Min(tier, 1)}/{Mathf.Min(tier, 1) + 1}.";
+            case 45:
+                return $"Instant attack that deals {Beam.beamDamage * tier} damage to multiple targets.";
             default:
                 return "Description unset";
         }
@@ -451,9 +453,9 @@ public static class AbilityUtilities
             case 43:
                 return "Speed Aura";
             case 44:
-                return "Damage Resistance Aura";
+                return "Energy Aura";
             case 45:
-                return "Chain Beam";
+                return "Chain";
             default:
                 return "Name unset";
         }
