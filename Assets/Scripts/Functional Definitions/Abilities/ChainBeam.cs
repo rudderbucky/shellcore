@@ -12,7 +12,7 @@ public class ChainBeam : Beam
         ID = AbilityID.ChainBeam;
         range = 15;
         abilityName = "Chain";
-        description = $"Instant attack that deals {damage} damage to multiple targets."
+        description = $"Instant attack that deals {damage} damage to multiple targets.";
         energyCost = 225;
     }
     protected override void Start()
