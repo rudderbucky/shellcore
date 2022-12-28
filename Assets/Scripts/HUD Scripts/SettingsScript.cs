@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class SettingsScript : MonoBehaviour
 {
+    public Dropdown uiScaleSlider;
+    public float[] uiScales = new float[] { 0.25f, 0.5f, 1f, 1.5f, 2f, 4f };
     public Slider masterSoundSlider;
     public Slider musicSlider;
     public Slider soundSlider;
@@ -30,6 +32,7 @@ public class SettingsScript : MonoBehaviour
     void Start()
     {
         // get playerpref values and configure toggles and sliders based on them
+        uiScaleSlider.value = findClosestScaleIndex(PlayerPrefs.GetFloat("UIScale", 1f));
         HUDArrowScriptToggle.isOn = PlayerPrefs.GetString("HUDArrowScript_active", "False") == "True";
         BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
         RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";
@@ -74,6 +77,22 @@ public class SettingsScript : MonoBehaviour
         initialized = true;
     }
 
+    int findClosestScaleIndex(float scale)
+    {
+        int bestIndex = 0;
+        float distance = float.MaxValue;
+        for (int i = 0; i < uiScales.Length; i++)
+        {
+            float newDistance = Mathf.Abs(scale - uiScales[i]);
+            if (newDistance < distance)
+            {
+                distance = newDistance;
+                bestIndex = i;
+            }
+        }
+        return bestIndex;
+    }
+
     int FindResolution()
     {
         for (int i = 0; i < resolutions.Length; i++)
@@ -90,6 +109,7 @@ public class SettingsScript : MonoBehaviour
     public void SaveSettings()
     {
         UpdateVolumes();
+        ChangeUIScale(uiScaleSlider.value);
         ChangeHUDArrowScriptActive(HUDArrowScriptToggle.isOn);
         ChangeBackgroundScriptActive(BackgroundScriptToggle.isOn);
         ChangeRectangleEffectScriptActive(RectangleEffectScriptToggle.isOn);
@@ -155,6 +175,14 @@ public class SettingsScript : MonoBehaviour
             //
         }
 #endif
+    }
+
+    public void ChangeUIScale(int index)
+    {
+        float scale = uiScales[index];
+
+        PlayerPrefs.SetFloat("UIScale", scale);
+        UIScalerScript.SetScale(scale);
     }
 
     public void ChangeHUDArrowScriptActive(bool val)

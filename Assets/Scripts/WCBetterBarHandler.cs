@@ -229,7 +229,7 @@ public class WCBetterBarHandler : MonoBehaviour
             }
 
             pos = optionButton.imgRef.rectTransform.position;
-            sizeDelta = optionButton.imgRef.rectTransform.sizeDelta;
+            sizeDelta = optionButton.imgRef.rectTransform.sizeDelta / UIScalerScript.GetScale();
             newRect = new Rect(pos.x - sizeDelta.x / 2, pos.y - sizeDelta.y / 2, sizeDelta.x, sizeDelta.y);
             // Mouse over sector. Instantiate tooltip if necessary, move tooltip and set text up
             if (newRect.Contains(Input.mousePosition))
@@ -240,7 +240,7 @@ public class WCBetterBarHandler : MonoBehaviour
         }
 
         pos = modeGobj.rectTransform.position;
-        sizeDelta = modeGobj.rectTransform.sizeDelta;
+        sizeDelta = modeGobj.rectTransform.sizeDelta / UIScalerScript.GetScale();
         newRect = new Rect(pos.x - sizeDelta.x, pos.y, sizeDelta.x, sizeDelta.y);
         if (newRect.Contains(Input.mousePosition))
         {

@@ -68,11 +68,11 @@ public class TowerAura : PassiveAbility
         var cameraPos = CameraScript.instance ? CameraScript.instance.transform.position : Vector3.zero;
         cameraPos.z = 0;
         var x = Camera.main.WorldToScreenPoint(cameraPos + new Vector3(0, range)).y - Camera.main.WorldToScreenPoint(cameraPos).y;
-        x *= (float)1920 / Screen.width * 2;
+        x *= UIScalerScript.GetScale() * 2;
         float rate = 45 * Time.deltaTime;
         if (!circle) return;
         circle.transform.Rotate(new Vector3(0, 0, rate));
-        circle.rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(transform.position) * 1920 / Screen.width;
+        circle.rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(transform.position) * UIScalerScript.GetScale();
         circle.rectTransform.sizeDelta = new Vector2(x, x);
         circle.enabled = Core as Tower;
     }

@@ -179,7 +179,7 @@ public class ReticleScript : MonoBehaviour
         if (target != null)
         {
             reticleImage.rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(target.position);
-            reticleImage.rectTransform.anchoredPosition *= (float)1920 / Screen.width;
+            reticleImage.rectTransform.anchoredPosition *= UIScalerScript.GetScale();
             var x = reticleImage.transform.localScale;
             x.x = Mathf.Min(x.x + expandRate * Time.deltaTime, 1);
             x.y = Mathf.Min(x.y + expandRate * Time.deltaTime, 1);
@@ -285,7 +285,7 @@ public class ReticleScript : MonoBehaviour
         if (ent != null && !ent.GetIsDead() && !ent.GetInvisible())
         {
             reticle.GetComponent<RectTransform>().anchoredPosition = Camera.main.WorldToScreenPoint(ent.transform.position); // update reticle position
-            reticle.GetComponent<RectTransform>().anchoredPosition *= (float)1920 / Screen.width;
+            reticle.GetComponent<RectTransform>().anchoredPosition *= UIScalerScript.GetScale();
             reticle.Find("Number Marker").GetComponent<Text>().enabled = true;
             reticle.Find("Number Marker").GetComponent<Text>().text = count + "";
             reticle.Find("Number Marker").GetComponent<Text>().color = new Color32(0, 150, 250, 255);

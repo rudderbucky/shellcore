@@ -255,7 +255,7 @@ public class AbilityHandler : MonoBehaviour
 
     private static int GetAbilityPosInverse(float xPos)
     {
-        xPos *= (float)1920 / Screen.width;
+        xPos *= UIScalerScript.GetScale();
         return (int)Mathf.Max(0, (int)xPos / tileSpacing);
     }
 

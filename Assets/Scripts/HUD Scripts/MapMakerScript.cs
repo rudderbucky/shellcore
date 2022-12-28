@@ -475,7 +475,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         foreach (var sect in sectorImages)
         {
             var pos = sect.Item1.rectTransform.position;
-            var sizeDelta = sect.Item1.rectTransform.sizeDelta * (Screen.width / (float)1920);
+            var sizeDelta = sect.Item1.rectTransform.sizeDelta / UIScalerScript.GetScale();
             var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
             // Mouse over sector. Instantiate tooltip if necessary, move tooltip and set text up
 
@@ -589,7 +589,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 continue;
             }
             var imgpos = img.rectTransform.position;
-            var imgsizeDelta = img.rectTransform.sizeDelta * (Screen.width / (float)1920);
+            var imgsizeDelta = img.rectTransform.sizeDelta / UIScalerScript.GetScale();
             var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
             if (imgnewRect.Contains(Input.mousePosition))
             {
@@ -620,7 +620,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 }
 
                 var pos = sect.Item1.rectTransform.position;
-                var sizeDelta = sect.Item1.rectTransform.sizeDelta * (Screen.width / (float)1920);
+                var sizeDelta = sect.Item1.rectTransform.sizeDelta / UIScalerScript.GetScale();
                 var newRect = new Rect(pos.x, pos.y - sizeDelta.y, sizeDelta.x, sizeDelta.y);
                 if (newRect.Contains(eventData.position) && player)
                 {

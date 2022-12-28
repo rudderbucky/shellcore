@@ -73,7 +73,7 @@ public class SelectionBoxScript : MonoBehaviour
 
             // Get reference point of selection box for drawing
             startPoint = Input.mousePosition;
-            startPoint *= (float)1920 / Screen.width;
+            startPoint *= UIScalerScript.GetScale();
             image.rectTransform.anchoredPosition = startPoint;
             DrawBoxAndPivot();
         }
@@ -97,7 +97,7 @@ public class SelectionBoxScript : MonoBehaviour
     private void DrawBoxAndPivot()
     {
         // Draw box
-        var d = (float)1920 / Screen.width;
+        var d = UIScalerScript.GetScale();
         image.enabled = true;
         sizeVec = (Vector2)Input.mousePosition * d - startPoint;
         sizeVec.x = Mathf.Abs(sizeVec.x);
@@ -113,7 +113,7 @@ public class SelectionBoxScript : MonoBehaviour
 
     private void GrabSelectionAndScanForEntities()
     {
-        var d = (float)1920 / Screen.width;
+        var d = UIScalerScript.GetScale();
         Vector2 boxStart =
             Camera.main.ScreenToWorldPoint(new Vector3(startPoint.x, startPoint.y, CameraScript.zLevel * d) / d);
         

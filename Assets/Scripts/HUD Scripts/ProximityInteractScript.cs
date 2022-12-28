@@ -92,8 +92,8 @@ public class ProximityInteractScript : MonoBehaviour
                 }
 
                 var worldToScreenPoint = Camera.main.WorldToScreenPoint(closest.GetTransform().position);
-                worldToScreenPoint.x *= (float)1920 / Screen.width;
-                worldToScreenPoint.y *= (float)1920 / Screen.width;
+                worldToScreenPoint.x *= UIScalerScript.GetScale();
+                worldToScreenPoint.y *= UIScalerScript.GetScale();
                 interactIndicator.anchoredPosition = 
                     worldToScreenPoint + new Vector3(0, 50);
                 if (InputManager.GetKeyUp(KeyName.Interact) && !PlayerViewScript.GetIsWindowActive())

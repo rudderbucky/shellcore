@@ -379,9 +379,9 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                 var cameraPos = CameraScript.instance.transform.position;
                 cameraPos.z = 0;
                 range = Camera.main.WorldToScreenPoint(cameraPos + new Vector3(0, range)).y - Camera.main.WorldToScreenPoint(cameraPos).y;
-                range *= (float)1920 / Screen.width * 2;
+                range *= UIScalerScript.GetScale() * 2;
 
-                circles[ability].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(ability.transform.position) * 1920 / Screen.width;
+                circles[ability].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(ability.transform.position) * UIScalerScript.GetScale();
                 circles[ability].rectTransform.sizeDelta = new Vector2(range, range);
                 //Debug.Log(Camera.main.ScreenToWorldPoint((Vector3)rangeCircle.rectTransform.anchoredPosition +
                 //    new Vector3(0,range / 2,CameraScript.zLevel) ) - abilities[0].transform.position);
