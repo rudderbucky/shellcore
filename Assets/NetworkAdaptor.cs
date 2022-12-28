@@ -11,9 +11,9 @@ public class NetworkAdaptor : NetworkBehaviour
     {
         instance = this;
 #if UNITY_EDITOR
-    StartClient();
+    StartServer();
 #else
-    //StartServer();
+    StartClient();
 #endif
     }
 
@@ -40,7 +40,7 @@ public class NetworkAdaptor : NetworkBehaviour
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
         var obj = Instantiate(networkObj).GetComponent<NetworkObject>();
-        obj.Spawn();
+        obj.SpawnWithOwnership(clientId);
         NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>
         {
             if (u == clientId) obj.Despawn();

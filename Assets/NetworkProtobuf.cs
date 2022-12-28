@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -5,21 +6,27 @@ using UnityEngine;
 
 public class NetworkProtobuf : NetworkBehaviour
 {
-    public struct ServerResponse : INetworkSerializable
+    public struct ServerResponse : INetworkSerializable, IEquatable<ServerResponse>
     {
         public Vector3 position;
         public Vector3 velocity;
         public Quaternion rotation;
         public float time;
-        public string entityID;
+        public ulong clientID;
 
-        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, string entityID)
+        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID)
         {
             this.position = position;
             this.velocity = velocity;
-            this.entityID = entityID;
+            this.clientID = clientID;
             this.time = Time.time;
             this.rotation = rotation;
+        }
+
+        public bool Equals(ServerResponse other)
+        {
+            Debug.LogWarning(clientID == other.clientID && this.time == other.time);
+            return clientID == other.clientID && this.time == other.time;
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -28,6 +35,7 @@ public class NetworkProtobuf : NetworkBehaviour
             serializer.SerializeValue(ref velocity);
             serializer.SerializeValue(ref time);
             serializer.SerializeValue(ref rotation);
+            serializer.SerializeValue(ref clientID);
         }
 
         /*
@@ -51,71 +59,99 @@ public class NetworkProtobuf : NetworkBehaviour
     {
         public Vector3 position;
         public Vector3 directionalVector;
-        public string entityID;
+        public ulong clientID;
 
         public ServerResponse CreateResponse(NetworkProtobuf buf)
         {
-            var body = buf.huskCore.GetComponent<Rigidbody2D>();
-            return new ServerResponse(buf.huskCore.transform.position, body.velocity, buf.huskCore.transform.rotation, entityID);
+            var body = buf.huskCores[clientID].GetComponent<Rigidbody2D>();
+            return new ServerResponse(buf.huskCores[clientID].transform.position, body.velocity, buf.huskCores[clientID].transform.rotation, clientID);
         }
     }
 
     public TemporaryStateWrapper wrapper;
 
-    public NetworkVariable<ServerResponse> state;
-    public static NetworkProtobuf instance;
+    public NetworkList<ServerResponse> states;
 
     public EntityBlueprint coreBlueprint;
-    private ShellCore huskCore;
+    private Dictionary<ulong, ShellCore> huskCores;
 
-    public override void OnNetworkSpawn()
+    void Awake()
     {
-        instance = this;
-        wrapper = new TemporaryStateWrapper();
-        if (NetworkManager.Singleton.IsClient)
+        if (states == null)
         {
-            state.OnValueChanged += (x, y) => 
-            {
-                UpdatePlayerState();
-            };
+            states = new NetworkList<ServerResponse>();
+        }
+    }
+    void Start()
+    {
+
+        if (!NetworkManager.Singleton.IsClient)
+        {
+            states.Add(new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId));
         }
         else
         {
+            states.OnListChanged += (ce) =>
+            {
+                if (ce.Value.clientID == NetworkManager.Singleton.LocalClientId)
+                {
+                    UpdatePlayerState(ce.Value);
+                }
+            };
+        }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!NetworkManager.Singleton.IsClient)
+        {        
+            if (huskCores == null)
+            {
+                huskCores = new Dictionary<ulong, ShellCore>();
+            }
+            wrapper = new TemporaryStateWrapper();
             Sector.LevelEntity entity = new Sector.LevelEntity();
             entity.ID = OwnerClientId.ToString();
             var ent = SectorManager.instance.SpawnEntity(Instantiate(coreBlueprint), entity);
             (ent as ShellCore).husk = true;
-            huskCore = (ent as ShellCore);
+            huskCores.Add(OwnerClientId, ent as ShellCore);
+            wrapper.clientID = OwnerClientId;
+        }
+        else
+        {
+            PlayerCore.Instance.protobuf = this;
         }
     }
 
     public override void OnNetworkDespawn()
     {
-        Destroy(huskCore.gameObject);
+        if (huskCores == null) return;
+        if (huskCores.ContainsKey(OwnerClientId))
+        {
+            Destroy(huskCores[OwnerClientId].gameObject);
+            huskCores.Remove(OwnerClientId);
+        }
     }
 
-    public void UpdatePlayerState()
+    public void UpdatePlayerState(ServerResponse response)
     {
-        PlayerCore.Instance.transform.position = state.Value.position;
-        PlayerCore.Instance.GetComponent<Rigidbody2D>().velocity = state.Value.velocity;
-        PlayerCore.Instance.transform.rotation = state.Value.rotation;
+        PlayerCore.Instance.transform.position = response.position;
+        PlayerCore.Instance.GetComponent<Rigidbody2D>().velocity = response.velocity;
+        PlayerCore.Instance.transform.rotation = response.rotation;
         PlayerCore.Instance.dirty = false;
     }
 
     
     [ServerRpc(RequireOwnership = false)]
-    public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
+    public void ChangePositionServerRpc(ulong id, Vector3 newPos, ServerRpcParams serverRpcParams = default)
     {
         wrapper.position = newPos;
-        state.Value = wrapper.CreateResponse(this);
-        //NetworkProtobuf.instance.state.Value.velocity = newPos;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void ChangeDirectionServerRpc(Vector3 directionalVector, ServerRpcParams serverRpcParams = default)
+    [ServerRpc(RequireOwnership = true)]
+    public void ChangeDirectionServerRpc(ulong id, Vector3 directionalVector, ServerRpcParams serverRpcParams = default)
     {
         wrapper.directionalVector = directionalVector;
-        //NetworkProtobuf.instance.state.Value.velocity = newPos;
     }
 
     private static float POLL_RATE = 0.05F;
@@ -123,13 +159,21 @@ public class NetworkProtobuf : NetworkBehaviour
 
     void Update()
     {
-        if (NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer && huskCores != null )
         {
-            huskCore.MoveCraft(wrapper.directionalVector);
+            foreach (var key in huskCores.Keys)
+            {
+                huskCores[key].MoveCraft(wrapper.directionalVector);
+            }
+
             if (Time.time - lastPollTime > POLL_RATE)
             {
                 lastPollTime = Time.time;
-                state.Value = wrapper.CreateResponse(this);
+                for (int i = 0; i < states.Count; i++)
+                {
+                    if (wrapper.clientID != states[i].clientID) continue;
+                    states[i] = wrapper.CreateResponse(this);
+                }
             }
         }
     }

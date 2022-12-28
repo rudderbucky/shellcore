@@ -1099,13 +1099,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     }
 
     public bool dirty;
+    public NetworkProtobuf protobuf;
 
     /// <summary>
     /// Used to update the state of the craft- regeneration, timers, etc
     /// </summary>
     protected void TickState()
     {
-        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && NetworkProtobuf.instance != null && NetworkProtobuf.instance.state != null)
+        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && protobuf != null)
         {
             return;
         }
