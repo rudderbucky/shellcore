@@ -68,7 +68,7 @@ public class NetworkProtobuf : NetworkBehaviour
         }
     }
 
-    public TemporaryStateWrapper wrapper;
+    public Dictionary<ulong, TemporaryStateWrapper> wrappers;
 
     public NetworkList<ServerResponse> states;
 
@@ -97,6 +97,13 @@ public class NetworkProtobuf : NetworkBehaviour
                 {
                     UpdatePlayerState(ce.Value);
                 }
+                else
+                {
+                    if (huskCores.ContainsKey(ce.Value.clientID))
+                    {
+                        UpdateCoreState(huskCores[ce.Value.clientID], ce.Value);
+                    }
+                }
             };
         }
     }
@@ -108,18 +115,25 @@ public class NetworkProtobuf : NetworkBehaviour
             huskCores = new Dictionary<ulong, ShellCore>();
         }
 
-        if (!NetworkManager.Singleton.IsClient)
-        {        
-            wrapper = new TemporaryStateWrapper();
+        if (wrappers == null)
+        {
+            wrappers = new Dictionary<ulong, TemporaryStateWrapper>();
+        }
+
+        if (!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId)
+        {
             Sector.LevelEntity entity = new Sector.LevelEntity();
             entity.ID = OwnerClientId.ToString();
             var ent = SectorManager.instance.SpawnEntity(Instantiate(coreBlueprint), entity);
             (ent as ShellCore).husk = true;
             huskCores.Add(OwnerClientId, ent as ShellCore);
+            var wrapper = new TemporaryStateWrapper();
             wrapper.clientID = OwnerClientId;
+            wrappers.Add(wrapper.clientID, wrapper);
         }
-        else
-        {
+
+        if (NetworkManager.Singleton.IsClient)
+        {        
             if (NetworkManager.Singleton.LocalClientId == OwnerClientId)
                 PlayerCore.Instance.protobuf = this;
         }
@@ -135,26 +149,32 @@ public class NetworkProtobuf : NetworkBehaviour
         }
     }
 
-    public void UpdatePlayerState(ServerResponse response)
+    private void UpdatePlayerState(ServerResponse response)
     {
-        PlayerCore.Instance.transform.position = response.position;
-        PlayerCore.Instance.GetComponent<Rigidbody2D>().velocity = response.velocity;
-        PlayerCore.Instance.transform.rotation = response.rotation;
-        PlayerCore.Instance.dirty = false;
+        UpdateCoreState(PlayerCore.Instance, response);
+    }
+
+    private void UpdateCoreState(ShellCore core, ServerResponse response)
+    {
+        core.transform.position = response.position;
+        core.GetComponent<Rigidbody2D>().velocity = response.velocity;
+        core.transform.rotation = response.rotation;
+        core.dirty = false;
     }
 
     
     [ServerRpc(RequireOwnership = false)]
     public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
     {
-        wrapper.position = newPos;
+        if (wrappers.ContainsKey(serverRpcParams.Receive.SenderClientId))
+            wrappers[serverRpcParams.Receive.SenderClientId].position = newPos;
     }
 
-    [ServerRpc(RequireOwnership = true)]
+    [ServerRpc(RequireOwnership = false)]
     public void ChangeDirectionServerRpc(Vector3 directionalVector, ServerRpcParams serverRpcParams = default)
     {
-        if (OwnerClientId == serverRpcParams.Receive.SenderClientId)
-            wrapper.directionalVector = directionalVector;
+        if (wrappers.ContainsKey(serverRpcParams.Receive.SenderClientId))
+            wrappers[serverRpcParams.Receive.SenderClientId].directionalVector = directionalVector;
     }
 
     private static float POLL_RATE = 0.05F;
@@ -162,20 +182,24 @@ public class NetworkProtobuf : NetworkBehaviour
 
     void Update()
     {
-        if (NetworkManager.Singleton.IsServer && huskCores != null )
+        if (huskCores != null)
         {
             foreach (var key in huskCores.Keys)
             {
-                huskCores[key].MoveCraft(wrapper.directionalVector);
+                if (!wrappers.ContainsKey(key)) continue;
+                huskCores[key].MoveCraft(wrappers[key].directionalVector);
             }
+        }
 
+        if (NetworkManager.Singleton.IsServer)
+        {
             if (Time.time - lastPollTime > POLL_RATE)
             {
                 lastPollTime = Time.time;
                 for (int i = 0; i < states.Count; i++)
                 {
-                    if (wrapper.clientID != states[i].clientID) continue;
-                    states[i] = wrapper.CreateResponse(this);
+                    if (!wrappers.ContainsKey(states[i].clientID)) continue;
+                    states[i] = wrappers[states[i].clientID].CreateResponse(this);
                 }
             }
         }
