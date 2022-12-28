@@ -155,15 +155,22 @@ public class SectorManager : MonoBehaviour
     public GameObject damagePrefab;
 
     private Sector countdownSector;
+    private bool loadedDuelSector;
 
     private void Update()
     {
-        if (jsonMode)
+        if (jsonMode && player)
         {
             player.SetIsInteracting(true);
         }
-        var inBoundsOscillating = player && current.bounds.contains(player.GetSectorPosition());
-        var inCurrentSector = player && current != null &&
+        var playerActive = player && player.gameObject.activeSelf;
+        if (!playerActive && DevConsoleScript.networkEnabled && !loadedDuelSector)
+        {
+            loadedDuelSector = true;
+            AttemptSectorLoad();
+        }
+        var inBoundsOscillating = playerActive && current.bounds.contains(player.GetSectorPosition());
+        var inCurrentSector = playerActive && current != null &&
             (inBoundsOscillating) && current.dimension == player.Dimension;
 
         var isBz = GetCurrentType() == Sector.SectorType.BattleZone;
@@ -174,7 +181,7 @@ public class SectorManager : MonoBehaviour
         var abortCheck = !playing || abortTimerFinished;
 
         var oldCountdownSector = countdownSector;
-        countdownSector = player ? sectors.Find(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension) : null;
+        countdownSector = playerActive ? sectors.Find(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension) : null;
         var exitingZoneDuringCounter = abortTimer < 6 && countdownSector == null;
 
         if (exitingZoneDuringCounter)
@@ -182,7 +189,7 @@ public class SectorManager : MonoBehaviour
             loadSector(oldCountdownSector);
             abortTimer = 6;
         }
-        else if (!jsonMode && player && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
+        else if (!jsonMode && playerActive && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
         {
             AttemptSectorLoad();
             abortTimer = 6;
@@ -190,8 +197,8 @@ public class SectorManager : MonoBehaviour
         else
         {
 
-            var inSector = player && countdownSector != null;
-            if (!jsonMode && player && !player.GetIsDead() && inSector
+            var inSector = playerActive && countdownSector != null;
+            if (!jsonMode && playerActive && !player.GetIsDead() && inSector
                 && !inCurrentSector && (isBz || isSiege))
             {
                 abortTimer -= Time.deltaTime;
@@ -216,7 +223,7 @@ public class SectorManager : MonoBehaviour
         }
 
         // deadzone damage
-        if (current && GetCurrentType() == Sector.SectorType.DangerZone)
+        if (playerActive && current && GetCurrentType() == Sector.SectorType.DangerZone)
         {
             if (dangerZoneTimer >= 5 && !player.GetIsDead())
             {
@@ -240,7 +247,7 @@ public class SectorManager : MonoBehaviour
             dangerZoneTimer = 0;
         }
 
-        if (!DialogueSystem.isInCutscene)
+        if (playerActive && !DialogueSystem.isInCutscene)
         {
             bgSpawnTimer += Time.deltaTime;
 
@@ -259,6 +266,12 @@ public class SectorManager : MonoBehaviour
 
     public void AttemptSectorLoad()
     {
+        if (DevConsoleScript.networkEnabled)
+        {
+            loadSector(sectors[0]);
+            return;
+        }
+
         var inCurrentSector = player && current != null &&
                               (current.bounds.contains(player.GetSectorPosition())) && current.dimension == player.Dimension;
         if (player && (current == null || !inCurrentSector))

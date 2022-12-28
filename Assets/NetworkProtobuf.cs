@@ -53,10 +53,10 @@ public class NetworkProtobuf : NetworkBehaviour
         public Vector3 directionalVector;
         public string entityID;
 
-        public ServerResponse CreateResponse()
+        public ServerResponse CreateResponse(NetworkProtobuf buf)
         {
-            var body = PlayerCore.Instance.GetComponent<Rigidbody2D>();
-            return new ServerResponse(PlayerCore.Instance.transform.position, body.velocity, PlayerCore.Instance.transform.rotation, entityID);
+            var body = buf.huskCore.GetComponent<Rigidbody2D>();
+            return new ServerResponse(buf.huskCore.transform.position, body.velocity, buf.huskCore.transform.rotation, entityID);
         }
     }
 
@@ -65,16 +65,28 @@ public class NetworkProtobuf : NetworkBehaviour
     public NetworkVariable<ServerResponse> state;
     public static NetworkProtobuf instance;
 
+    public EntityBlueprint coreBlueprint;
+    private ShellCore huskCore;
+
     public override void OnNetworkSpawn()
     {
         instance = this;
         wrapper = new TemporaryStateWrapper();
-        state.OnValueChanged += (x, y) => {
-            if (NetworkManager.Singleton.IsClient)
+        if (NetworkManager.Singleton.IsClient)
+        {
+            state.OnValueChanged += (x, y) => 
             {
                 UpdatePlayerState();
-            }
-        };
+            };
+        }
+        else
+        {
+            Sector.LevelEntity entity = new Sector.LevelEntity();
+            entity.ID = OwnerClientId.ToString();
+            var ent = SectorManager.instance.SpawnEntity(Instantiate(coreBlueprint), entity);
+            (ent as ShellCore).husk = true;
+            huskCore = (ent as ShellCore);
+        }
     }
 
     public void UpdatePlayerState()
@@ -90,7 +102,7 @@ public class NetworkProtobuf : NetworkBehaviour
     public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
     {
         wrapper.position = newPos;
-        state.Value = wrapper.CreateResponse();
+        state.Value = wrapper.CreateResponse(this);
         //NetworkProtobuf.instance.state.Value.velocity = newPos;
     }
 
@@ -108,11 +120,11 @@ public class NetworkProtobuf : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            PlayerCore.Instance.MoveCraft(wrapper.directionalVector);
+            huskCore.MoveCraft(wrapper.directionalVector);
             if (Time.time - lastPollTime > POLL_RATE)
             {
                 lastPollTime = Time.time;
-                state.Value = wrapper.CreateResponse();
+                state.Value = wrapper.CreateResponse(this);
             }
         }
     }

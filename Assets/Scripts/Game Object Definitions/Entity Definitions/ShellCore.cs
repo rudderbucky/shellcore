@@ -25,6 +25,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     private Coroutine yardRepairCoroutine;
     private Coroutine addRandomPartsCoroutine;
+    public bool husk;
 
     public void StartYardRepairCoroutine()
     {
@@ -181,7 +182,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         // initialize instance fields
         base.Start(); // base start
 
-        InitAI();
+        if (!husk)
+            InitAI();
 
         if (FactionManager.DoesFactionGrowRandomParts(faction) && addRandomPartsCoroutine == null)
         {
