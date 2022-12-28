@@ -68,7 +68,7 @@ public class NetworkProtobuf : NetworkBehaviour
         }
     }
 
-    public Dictionary<ulong, TemporaryStateWrapper> wrappers;
+    public TemporaryStateWrapper wrapper;
 
     public NetworkList<ServerResponse> states;
 
@@ -115,9 +115,10 @@ public class NetworkProtobuf : NetworkBehaviour
             huskCores = new Dictionary<ulong, ShellCore>();
         }
 
-        if (wrappers == null)
+        if (wrapper == null)
         {
-            wrappers = new Dictionary<ulong, TemporaryStateWrapper>();
+            wrapper = new TemporaryStateWrapper();
+            wrapper.clientID = OwnerClientId;
         }
 
         if (!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId)
@@ -127,9 +128,6 @@ public class NetworkProtobuf : NetworkBehaviour
             var ent = SectorManager.instance.SpawnEntity(Instantiate(coreBlueprint), entity);
             (ent as ShellCore).husk = true;
             huskCores.Add(OwnerClientId, ent as ShellCore);
-            var wrapper = new TemporaryStateWrapper();
-            wrapper.clientID = OwnerClientId;
-            wrappers.Add(wrapper.clientID, wrapper);
         }
 
         if (NetworkManager.Singleton.IsClient)
@@ -163,18 +161,18 @@ public class NetworkProtobuf : NetworkBehaviour
     }
 
     
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = true)]
     public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
     {
-        if (wrappers.ContainsKey(serverRpcParams.Receive.SenderClientId))
-            wrappers[serverRpcParams.Receive.SenderClientId].position = newPos;
+        if (OwnerClientId == serverRpcParams.Receive.SenderClientId)
+            wrapper.position = newPos;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = true)]
     public void ChangeDirectionServerRpc(Vector3 directionalVector, ServerRpcParams serverRpcParams = default)
-    {
-        if (wrappers.ContainsKey(serverRpcParams.Receive.SenderClientId))
-            wrappers[serverRpcParams.Receive.SenderClientId].directionalVector = directionalVector;
+    {   
+        if (OwnerClientId == serverRpcParams.Receive.SenderClientId)
+            wrapper.directionalVector = directionalVector;
     }
 
     private static float POLL_RATE = 0.05F;
@@ -182,24 +180,21 @@ public class NetworkProtobuf : NetworkBehaviour
 
     void Update()
     {
-        if (huskCores != null)
-        {
-            foreach (var key in huskCores.Keys)
-            {
-                if (!wrappers.ContainsKey(key)) continue;
-                huskCores[key].MoveCraft(wrappers[key].directionalVector);
-            }
-        }
 
         if (NetworkManager.Singleton.IsServer)
         {
+            if (huskCores != null && huskCores.ContainsKey(wrapper.clientID))
+            {
+                huskCores[wrapper.clientID].MoveCraft(wrapper.directionalVector);
+            }
+
             if (Time.time - lastPollTime > POLL_RATE)
             {
                 lastPollTime = Time.time;
                 for (int i = 0; i < states.Count; i++)
                 {
-                    if (!wrappers.ContainsKey(states[i].clientID)) continue;
-                    states[i] = wrappers[states[i].clientID].CreateResponse(this);
+                    if (states[i].clientID != wrapper.clientID) continue;
+                    states[i] = wrapper.CreateResponse(this);
                 }
             }
         }
