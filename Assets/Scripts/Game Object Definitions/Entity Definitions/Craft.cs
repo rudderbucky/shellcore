@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
@@ -158,6 +159,8 @@ public abstract class Craft : Entity
 
     protected override void FixedUpdate()
     {
+        var lettingServerDecide = this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && NetworkProtobuf.instance != null && NetworkProtobuf.instance.state != null;
+
         entityBody.drag = draggable.dragging ? 25F : 0;
         if (draggable.dragging)
         {
@@ -225,18 +228,25 @@ public abstract class Craft : Entity
             RotateCraft(directionVector / weight);
         }
 
-        entityBody.velocity += directionVector * physicsAccel * Time.fixedDeltaTime;
-        var sqr = entityBody.velocity.sqrMagnitude;
-        if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)
-        {
-            entityBody.velocity = entityBody.velocity.normalized * Mathf.Min(physicsSpeed, maxVelocity);
-        }
+        entityBody.velocity = CalculateNewVelocity(directionVector);
 
         if (((Vector2)transform.position - oldPosition).sqrMagnitude > 2f)
         {
             oldPosition = transform.position;
             LandPlatformGenerator.EnqueueEntity(this);
         }
+    }
+
+    protected Vector2 CalculateNewVelocity(Vector2 directionVector)
+    {
+        var vec = entityBody.velocity;
+        vec += directionVector * physicsAccel * Time.fixedDeltaTime;
+        var sqr = vec.sqrMagnitude;
+        if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)
+        {
+            vec = vec.normalized * Mathf.Min(physicsSpeed, maxVelocity);
+        }
+        return vec;
     }
 
     /// <summary>

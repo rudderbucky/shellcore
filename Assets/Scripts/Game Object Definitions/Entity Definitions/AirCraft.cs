@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 /// <summary>
 /// Crafts that are air-borne are known as Aircrafts. These crafts bob up and down in the air when they are not moving, and can't normally attack
@@ -60,7 +61,7 @@ public abstract class AirCraft : Craft
     /// </summary>
     protected void Oscillator()
     {
-        if (DevConsoleScript.networkEnabled)
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient)
         {
             oscillating = false;
             return;
