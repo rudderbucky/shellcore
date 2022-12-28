@@ -216,6 +216,7 @@ public abstract class WeaponAbility : ActiveAbility
         }
         else if (target && target.GetComponent<IDamageable>() != null)
         {
+            Debug.LogWarning("shooting " + target);
             // check if there is a target
             Core.SetIntoCombat(); // now in combat
             IDamageable tmp = target.GetComponent<IDamageable>();

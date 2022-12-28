@@ -230,6 +230,11 @@ public class ShellPart : MonoBehaviour
         }
     }
 
+    public void SetFaction(int faction)
+    {
+        this.faction = faction;
+    }
+
     public void Start()
     {
         // initialize instance fields

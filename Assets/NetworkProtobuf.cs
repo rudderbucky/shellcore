@@ -12,15 +12,19 @@ public class NetworkProtobuf : NetworkBehaviour
         public Vector3 velocity;
         public Quaternion rotation;
         public float time;
-        public ulong clientID;
+        public int faction;
+        public float weaponGCDTimer;
 
-        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID)
+        public ulong clientID;
+        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer)
         {
             this.position = position;
             this.velocity = velocity;
             this.clientID = clientID;
             this.time = Time.time;
             this.rotation = rotation;
+            this.faction = faction;
+            this.weaponGCDTimer = weaponGCDTimer;
         }
 
         public bool Equals(ServerResponse other)
@@ -36,6 +40,7 @@ public class NetworkProtobuf : NetworkBehaviour
             serializer.SerializeValue(ref time);
             serializer.SerializeValue(ref rotation);
             serializer.SerializeValue(ref clientID);
+            serializer.SerializeValue(ref faction);
         }
 
         /*
@@ -64,7 +69,8 @@ public class NetworkProtobuf : NetworkBehaviour
         public ServerResponse CreateResponse(NetworkProtobuf buf)
         {
             var body = buf.huskCores[clientID].GetComponent<Rigidbody2D>();
-            return new ServerResponse(buf.huskCores[clientID].transform.position, body.velocity, buf.huskCores[clientID].transform.rotation, clientID);
+            var core = buf.huskCores[clientID];
+            return new ServerResponse(core.transform.position, body.velocity, core.transform.rotation, clientID, core.faction, core.GetWeaponGCDTimer());
         }
     }
 
@@ -83,11 +89,10 @@ public class NetworkProtobuf : NetworkBehaviour
         }
     }
     void Start()
-    {
-
+    {        
         if (!NetworkManager.Singleton.IsClient)
         {
-            states.Add(new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId));
+            states.Add(new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, NetworkManager.Singleton.ConnectedClients.Count - 1, 0));
         }
         else
         {
@@ -121,15 +126,6 @@ public class NetworkProtobuf : NetworkBehaviour
             wrapper.clientID = OwnerClientId;
         }
 
-        if (!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId)
-        {
-            Sector.LevelEntity entity = new Sector.LevelEntity();
-            entity.ID = OwnerClientId.ToString();
-            var ent = SectorManager.instance.SpawnEntity(Instantiate(coreBlueprint), entity);
-            (ent as ShellCore).husk = true;
-            huskCores.Add(OwnerClientId, ent as ShellCore);
-        }
-
         if (NetworkManager.Singleton.IsClient)
         {        
             if (NetworkManager.Singleton.LocalClientId == OwnerClientId)
@@ -158,6 +154,7 @@ public class NetworkProtobuf : NetworkBehaviour
         core.GetComponent<Rigidbody2D>().velocity = response.velocity;
         core.transform.rotation = response.rotation;
         core.dirty = false;
+        core.SetWeaponGCDTimer(response.weaponGCDTimer);
     }
 
     
@@ -175,15 +172,57 @@ public class NetworkProtobuf : NetworkBehaviour
             wrapper.directionalVector = directionalVector;
     }
 
+
+    [ServerRpc(RequireOwnership = true)]
+    public void ExecuteWeaponServerRpc(int abilityID, Vector3 victimPos, ServerRpcParams serverRpcParams = default)
+    {   
+        if (OwnerClientId == serverRpcParams.Receive.SenderClientId && huskCores.ContainsKey(OwnerClientId))
+            (huskCores[OwnerClientId].GetAbilities()[0] as Bullet).BulletTest(victimPos);
+    }
+
     private static float POLL_RATE = 0.05F;
     private float lastPollTime;
+    private bool playerReady;
 
     void Update()
     {
 
+        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId) && !huskCores.ContainsKey(OwnerClientId))
+        {
+            Sector.LevelEntity entity = new Sector.LevelEntity();
+            entity.ID = OwnerClientId.ToString();
+            var response = GetServerResponse(OwnerClientId);
+            if (!response.HasValue) return;
+            if (NetworkManager.IsServer)
+                entity.faction = response.Value.faction;
+            else if (NetworkManager.IsClient)
+            {
+                entity.faction = response.Value.faction;
+            }
+
+            var print = Instantiate(coreBlueprint);
+            
+
+            var ent = SectorManager.instance.SpawnEntity(print, entity);
+            (ent as ShellCore).husk = true;
+            huskCores.Add(OwnerClientId, ent as ShellCore);
+        }
+        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
+        {
+            var response = GetServerResponse(OwnerClientId);
+            if (response.HasValue) 
+            {
+                PlayerCore.Instance.faction = response.Value.faction;
+                PlayerCore.Instance.Rebuild();
+                playerReady = true;
+            }
+        }
+
+
         if (NetworkManager.Singleton.IsServer)
         {
-            if (huskCores != null && huskCores.ContainsKey(wrapper.clientID))
+            if (!huskCores.ContainsKey(wrapper.clientID)) return;
+            if (huskCores != null)
             {
                 huskCores[wrapper.clientID].MoveCraft(wrapper.directionalVector);
             }
@@ -198,6 +237,15 @@ public class NetworkProtobuf : NetworkBehaviour
                 }
             }
         }
+    }
+
+    private ServerResponse? GetServerResponse(ulong clientID)
+    {
+        for (int i = 0; i < states.Count; i++)
+        {
+            if (states[i].clientID == wrapper.clientID) return states[i];
+        }
+        return null;
     }
 
 }

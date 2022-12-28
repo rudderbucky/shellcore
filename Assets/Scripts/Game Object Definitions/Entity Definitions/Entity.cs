@@ -262,6 +262,16 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     }
     private float weaponGCDTimer;
 
+    public float GetWeaponGCDTimer()
+    {
+        return weaponGCDTimer;
+    }
+
+    public void SetWeaponGCDTimer(float timer)
+    {
+        weaponGCDTimer = timer;
+    }
+
     public float weight;
 
     public static readonly float weightMultiplier = 25;
@@ -417,12 +427,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             part.detachible = false;
             shell = part;
             renderer.sortingLayerName = "Default";
+            renderer.color = FactionManager.GetFactionColor(faction); // needed to reset outpost colors
         }
         else
         {
             var renderer = transform.Find("Shell Sprite").GetComponent<SpriteRenderer>();
-            renderer.color = FactionManager.GetFactionColor(faction); // needed to reset outpost colors
+            transform.Find("Shell Sprite").GetComponent<ShellPart>().SetFaction(faction);
             renderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
+            renderer.color = FactionManager.GetFactionColor(faction); // needed to reset outpost colors
             renderer.sortingLayerName = "Default";
         }
 

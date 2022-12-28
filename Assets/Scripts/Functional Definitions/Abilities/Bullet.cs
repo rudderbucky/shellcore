@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 public class Bullet : WeaponAbility
 {
@@ -34,13 +35,28 @@ public class Bullet : WeaponAbility
         base.Start();
     }
 
+    public void BulletTest(Vector3 victimPos)
+    {
+        if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsServer)
+            FireBullet(victimPos); // fire if there is       
+    }
+
     /// <summary>
     /// Fires the bullet using the helper method
     /// </summary>
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        return FireBullet(victimPos); // fire if there is
+        if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsServer)
+        {
+            return FireBullet(victimPos); // fire if there is
+        }
+        else 
+        {
+            Debug.LogWarning("FIRING");
+            Core.protobuf.ExecuteWeaponServerRpc(0, victimPos);
+            return false;
+        }
     }
 
     /// <summary>
@@ -83,6 +99,11 @@ public class Bullet : WeaponAbility
 
         var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
+
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer)
+        {
+            bullet.GetComponent<NetworkObject>().Spawn();
+        }
 
         // Update its damage to match main bullet
         var script = bullet.GetComponent<BulletScript>();
