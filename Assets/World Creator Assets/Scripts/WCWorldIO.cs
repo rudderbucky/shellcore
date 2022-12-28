@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 public class WCWorldIO : GUIWindowScripts
 {
@@ -94,9 +95,9 @@ public class WCWorldIO : GUIWindowScripts
         Hide();
     }
 
-#if UNITY_EDITOR
-    private bool instantTest = false;
-#endif
+//#if UNITY_EDITOR
+    private bool instantTest = true;
+//#endif
 
     [SerializeField]
     private Text loadingText;
@@ -105,17 +106,17 @@ public class WCWorldIO : GUIWindowScripts
     {
         if (SceneManager.GetActiveScene().name == "WorldCreator")
         {
-            var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
+            var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "test");
             DeletePlaceholderDirectories();
             if (Directory.Exists(path))
             {
                 generatorHandler.ReadWorld(path);
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
                 if (instantTest)
                 {
                     TestWorld();
                 }
-#endif
+//#endif
             }
         }
     }
@@ -213,7 +214,7 @@ public class WCWorldIO : GUIWindowScripts
     public void TestWorld()
     {
         // TODO: copy custom resources
-        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "test");
         if (generatorHandler.WriteWorld(path))
         {
             generatorHandler.OnSectorSaved.AddListener(OnWorldSaved);
@@ -234,7 +235,7 @@ public class WCWorldIO : GUIWindowScripts
 
     void LoadTestSave()
     {
-        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "test");
         var savePath = System.IO.Path.Combine(Application.persistentDataPath, "Saves", "TestSave");
         if (File.Exists(savePath))
         {

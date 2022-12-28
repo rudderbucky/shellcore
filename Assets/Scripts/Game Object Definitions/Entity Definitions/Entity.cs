@@ -1097,13 +1097,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
-
-    protected void ReadFromProtoBuf()
-    {
-        transform.position = NetworkProtobuf.instance.states.Value;
-        //CameraScript.instance.Focus(transform.position);
-    }
-
     public bool dirty;
 
     /// <summary>
@@ -1111,9 +1104,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     protected void TickState()
     {
-        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && NetworkProtobuf.instance != null && NetworkProtobuf.instance.states != null && NetworkProtobuf.instance.states.Value != null)
+        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && NetworkProtobuf.instance != null && NetworkProtobuf.instance.state != null)
         {
-            //ReadFromProtoBuf();
             return;
         }
 

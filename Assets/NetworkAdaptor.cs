@@ -10,6 +10,15 @@ public class NetworkAdaptor : NetworkBehaviour
     void Start()
     {
         instance = this;
+#if UNITY_EDITOR
+        DevConsoleScript.networkEnabled = true;
+        NetworkManager.Singleton.StartClient();
+        NetworkManager.Singleton.OnClientConnectedCallback += (u) => {
+        NetworkAdaptor.instance.CreateNetworkObjectServerRpc();};
+#else
+        DevConsoleScript.networkEnabled = true;
+        NetworkManager.Singleton.StartServer();
+#endif
     }
 
     public GameObject networkObj;

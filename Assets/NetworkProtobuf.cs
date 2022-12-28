@@ -5,15 +5,23 @@ using UnityEngine;
 
 public class NetworkProtobuf : NetworkBehaviour
 {
-    public class ObjectProtocolBuffer : INetworkSerializable
+    public struct ServerResponse : INetworkSerializable
     {
         public Vector3 position;
         public Vector3 velocity;
         public string entityID;
 
+        public ServerResponse(Vector3 position, Vector3 velocity, string entityID)
+        {
+            this.position = position;
+            this.velocity = velocity;
+            this.entityID = entityID;
+        }
+
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref position);
+            serializer.SerializeValue(ref velocity);
         }
 
         /*
@@ -24,26 +32,63 @@ public class NetworkProtobuf : NetworkBehaviour
         */
     }
 
-    public NetworkVariable<Vector3> states;
-    public static NetworkProtobuf instance;
+    public struct ClientMessage : INetworkSerializable
+    {
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 
+
+    public class TemporaryStateWrapper
+    {
+        public Vector3 position;
+        public Vector3 velocity;
+        public string entityID;
+
+        public ServerResponse CreateResponse()
+        {
+            return new ServerResponse(position, velocity, entityID);
+        }
+    }
+
+    public TemporaryStateWrapper wrapper;
+
+    public NetworkVariable<ServerResponse> state;
+    public static NetworkProtobuf instance;
 
     public override void OnNetworkSpawn()
     {
         instance = this;
-        states.OnValueChanged += (x, y) => 
-        {
-            if (!NetworkManager.Singleton.IsClient) return;
-            PlayerCore.Instance.transform.position = y;
-            CameraScript.instance.Focus(y);
-            PlayerCore.Instance.dirty = false;
+        wrapper = new TemporaryStateWrapper();
+        state.OnValueChanged += (x, y) => {
+            if (NetworkManager.Singleton.IsClient)
+            {
+                UpdatePlayerState();
+            }
         };
+    }
+
+    public void UpdatePlayerState()
+    {
+        PlayerCore.Instance.transform.position = NetworkProtobuf.instance.state.Value.velocity;
+        CameraScript.instance.Focus(NetworkProtobuf.instance.state.Value.velocity);
+        PlayerCore.Instance.dirty = false;
+        UnsetDirtyServerRpc();
     }
 
     
     [ServerRpc(RequireOwnership = false)]
     public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
     {
-        NetworkProtobuf.instance.states.Value = newPos;
+        wrapper.velocity = newPos;
+        state.Value = wrapper.CreateResponse();
+        //NetworkProtobuf.instance.state.Value.velocity = newPos;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UnsetDirtyServerRpc(ServerRpcParams serverRpcParams = default)
+    {
     }
 }
