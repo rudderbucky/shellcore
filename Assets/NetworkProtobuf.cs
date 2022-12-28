@@ -103,12 +103,13 @@ public class NetworkProtobuf : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if (huskCores == null)
+        {
+            huskCores = new Dictionary<ulong, ShellCore>();
+        }
+
         if (!NetworkManager.Singleton.IsClient)
         {        
-            if (huskCores == null)
-            {
-                huskCores = new Dictionary<ulong, ShellCore>();
-            }
             wrapper = new TemporaryStateWrapper();
             Sector.LevelEntity entity = new Sector.LevelEntity();
             entity.ID = OwnerClientId.ToString();
@@ -119,7 +120,8 @@ public class NetworkProtobuf : NetworkBehaviour
         }
         else
         {
-            PlayerCore.Instance.protobuf = this;
+            if (NetworkManager.Singleton.LocalClientId == OwnerClientId)
+                PlayerCore.Instance.protobuf = this;
         }
     }
 
@@ -143,15 +145,16 @@ public class NetworkProtobuf : NetworkBehaviour
 
     
     [ServerRpc(RequireOwnership = false)]
-    public void ChangePositionServerRpc(ulong id, Vector3 newPos, ServerRpcParams serverRpcParams = default)
+    public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
     {
         wrapper.position = newPos;
     }
 
     [ServerRpc(RequireOwnership = true)]
-    public void ChangeDirectionServerRpc(ulong id, Vector3 directionalVector, ServerRpcParams serverRpcParams = default)
+    public void ChangeDirectionServerRpc(Vector3 directionalVector, ServerRpcParams serverRpcParams = default)
     {
-        wrapper.directionalVector = directionalVector;
+        if (OwnerClientId == serverRpcParams.Receive.SenderClientId)
+            wrapper.directionalVector = directionalVector;
     }
 
     private static float POLL_RATE = 0.05F;

@@ -360,8 +360,7 @@ public class PlayerCore : ShellCore
                 MoveCraft(getDirectionalInput()); // move the craft based on the directional input
             else if (NetworkManager.Singleton.IsClient && protobuf != null && !dirty)
             {
-                var id = NetworkManager.Singleton.LocalClientId;
-                protobuf.ChangeDirectionServerRpc(id, getDirectionalInput());
+                protobuf.ChangeDirectionServerRpc( getDirectionalInput());
                 dirty = true;
             }
         
