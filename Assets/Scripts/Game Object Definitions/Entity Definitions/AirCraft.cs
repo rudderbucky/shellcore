@@ -60,6 +60,11 @@ public abstract class AirCraft : Craft
     /// </summary>
     protected void Oscillator()
     {
+        if (DevConsoleScript.networkEnabled)
+        {
+            oscillating = false;
+            return;
+        }
         if (isDead)
         {
             // if aircraft is dead

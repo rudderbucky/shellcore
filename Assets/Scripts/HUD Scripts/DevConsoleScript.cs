@@ -17,6 +17,7 @@ public class DevConsoleScript : MonoBehaviour
     public static bool godModeEnabled = false;
     public static bool spectateEnabled = false;
     private static bool warpingEnabled = false;
+    public static bool networkEnabled = false;
     public static bool WarpingEnabled
     {
         get { return godModeEnabled || warpingEnabled; }
@@ -144,16 +145,15 @@ public class DevConsoleScript : MonoBehaviour
             {
                 switch(command.Substring(8).Trim())
                 {
-                    case "host":    
-                        NetworkManager.Singleton.StartHost();
-                        textBox.text += "\n<color=lime>Running as host</color>";
-                        break;
                     case "client":
+                        networkEnabled = true;
                         NetworkManager.Singleton.StartClient();
-                        NetworkAdaptor.instance.CreateNetworkObjectServerRpc();
+                        NetworkManager.Singleton.OnClientConnectedCallback += (u) => {
+                        NetworkAdaptor.instance.CreateNetworkObjectServerRpc();};
                         textBox.text += "\n<color=lime>Running as client</color>";
                         break;
                     case "server":
+                        networkEnabled = true;
                         NetworkManager.Singleton.StartServer();
                         textBox.text += "\n<color=lime>Running as server</color>";
                         break;

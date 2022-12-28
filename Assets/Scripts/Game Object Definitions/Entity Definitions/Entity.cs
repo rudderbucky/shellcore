@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Unity.Netcode;
+using static NetworkAdaptor;
 
 /// <summary>
 /// The base class of every "being" in the game.
@@ -997,6 +999,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         SectorManager.instance.RemoveObject(ID, gameObject);
     }
 
+
     virtual protected void Start()
     {
         BuildEntity(); // Generate shell parts around the entity
@@ -1095,11 +1098,25 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     }
 
 
+    protected void ReadFromProtoBuf()
+    {
+        transform.position = NetworkProtobuf.instance.states.Value;
+        //CameraScript.instance.Focus(transform.position);
+    }
+
+    public bool dirty;
+
     /// <summary>
     /// Used to update the state of the craft- regeneration, timers, etc
     /// </summary>
     protected void TickState()
     {
+        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && NetworkProtobuf.instance != null && NetworkProtobuf.instance.states != null && NetworkProtobuf.instance.states.Value != null)
+        {
+            //ReadFromProtoBuf();
+            return;
+        }
+
         DeathHandler();
         UpdateInteractible();
         UpdateAuras();
