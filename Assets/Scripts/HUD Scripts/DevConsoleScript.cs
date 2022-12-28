@@ -146,15 +146,11 @@ public class DevConsoleScript : MonoBehaviour
                 switch(command.Substring(8).Trim())
                 {
                     case "client":
-                        networkEnabled = true;
-                        NetworkManager.Singleton.StartClient();
-                        NetworkManager.Singleton.OnClientConnectedCallback += (u) => {
-                        NetworkAdaptor.instance.CreateNetworkObjectServerRpc();};
+                        NetworkAdaptor.StartClient();
                         textBox.text += "\n<color=lime>Running as client</color>";
                         break;
                     case "server":
-                        networkEnabled = true;
-                        NetworkManager.Singleton.StartServer();
+                        NetworkAdaptor.StartServer();
                         textBox.text += "\n<color=lime>Running as server</color>";
                         break;
                 }

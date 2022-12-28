@@ -89,6 +89,11 @@ public class NetworkProtobuf : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkDespawn()
+    {
+        Destroy(huskCore.gameObject);
+    }
+
     public void UpdatePlayerState()
     {
         PlayerCore.Instance.transform.position = state.Value.position;
@@ -113,7 +118,7 @@ public class NetworkProtobuf : NetworkBehaviour
         //NetworkProtobuf.instance.state.Value.velocity = newPos;
     }
 
-    private static float POLL_RATE = 0.1F;
+    private static float POLL_RATE = 0.05F;
     private float lastPollTime;
 
     void Update()

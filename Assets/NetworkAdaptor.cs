@@ -13,11 +13,11 @@ public class NetworkAdaptor : NetworkBehaviour
 #if UNITY_EDITOR
     StartClient();
 #else
-    StartServer();
+    //StartServer();
 #endif
     }
 
-    private void StartClient()
+    public static void StartClient()
     {
         DevConsoleScript.networkEnabled = true;
         NetworkManager.Singleton.StartClient();
@@ -25,7 +25,7 @@ public class NetworkAdaptor : NetworkBehaviour
         NetworkAdaptor.instance.CreateNetworkObjectServerRpc();};
     }
 
-    private void StartServer()
+    public static void StartServer()
     {
         PlayerCore.Instance.gameObject.SetActive(false);
         DevConsoleScript.networkEnabled = true;
@@ -39,7 +39,12 @@ public class NetworkAdaptor : NetworkBehaviour
     public void CreateNetworkObjectServerRpc(ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
-        Instantiate(networkObj).GetComponent<NetworkObject>().Spawn();
+        var obj = Instantiate(networkObj).GetComponent<NetworkObject>();
+        obj.Spawn();
+        NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>
+        {
+            if (u == clientId) obj.Despawn();
+        };
         if (NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
         {
             var client = NetworkManager.Singleton.ConnectedClients[clientId];

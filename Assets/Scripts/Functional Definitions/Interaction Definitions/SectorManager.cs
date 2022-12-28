@@ -191,8 +191,11 @@ public class SectorManager : MonoBehaviour
         }
         else if (!jsonMode && playerActive && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
         {
-            AttemptSectorLoad();
-            abortTimer = 6;
+            if (!DevConsoleScript.networkEnabled && !NetworkManager.Singleton.IsClient)
+            {
+                AttemptSectorLoad();
+                abortTimer = 6;
+            }
         }
         else
         {
@@ -266,7 +269,7 @@ public class SectorManager : MonoBehaviour
 
     public void AttemptSectorLoad()
     {
-        if (DevConsoleScript.networkEnabled)
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer)
         {
             loadSector(sectors[0]);
             return;
