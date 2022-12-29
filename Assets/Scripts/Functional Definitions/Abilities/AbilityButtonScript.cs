@@ -116,7 +116,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         description += $"\n{AbilityUtilities.GetDescription(ability)}";
 
-        if (ability is SpawnDrone)
+        if (ability is SpawnDrone || (ability.GetAbilityType() == AbilityHandler.AbilityTypes.Skills && PlayerPrefs.GetString("AllowAutocastSkills", "False") == "True"))
         {
             description += $"\nHold {GetPrettyStringFromKeycode(InputManager.keys[KeyName.AutoCastBuyTurret].overrideKey)} to toggle auto cast";
         }
