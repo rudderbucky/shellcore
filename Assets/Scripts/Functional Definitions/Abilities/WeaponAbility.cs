@@ -216,7 +216,6 @@ public abstract class WeaponAbility : ActiveAbility
         }
         else if (target && target.GetComponent<IDamageable>() != null)
         {
-            Debug.LogWarning("shooting " + target);
             // check if there is a target
             Core.SetIntoCombat(); // now in combat
             IDamageable tmp = target.GetComponent<IDamageable>();
@@ -224,6 +223,7 @@ public abstract class WeaponAbility : ActiveAbility
             // check if allied
             if (FactionManager.IsAllied(tmp.GetFaction(), Core.faction)) return;
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
+            Debug.LogWarning("shooting " + target);
             if (!Execute(target.position)) return;
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;

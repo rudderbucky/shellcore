@@ -356,12 +356,15 @@ public class PlayerCore : ShellCore
         base.Update(); // base update
         if (!GetIsInteracting() && !DialogueSystem.isInCutscene)
         {
-            if (!DevConsoleScript.networkEnabled)
-                MoveCraft(getDirectionalInput()); // move the craft based on the directional input
-            else if (NetworkManager.Singleton.IsClient && protobuf != null && !dirty)
+            if (DevConsoleScript.networkEnabled && !NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsHost && protobuf != null && !dirty)
             {
                 protobuf.ChangeDirectionServerRpc( getDirectionalInput());
                 dirty = true;
+            }
+            else if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsHost)
+            {
+                MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+                protobuf.wrapper.directionalVector = getDirectionalInput();
             }
         
         }

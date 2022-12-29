@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
@@ -54,6 +55,8 @@ public class BulletScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient) return;
+
         //TODO: Make this collision avoid hitting the core collider which may mess up the part damage calculation a bit  (for missiles as well)
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
@@ -61,16 +64,20 @@ public class BulletScript : MonoBehaviour
         {
             if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && craft.GetTransform() != owner.GetTransform())
             {
-                var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration  
-
-                // if the shell is low, damage the part
-                ShellPart part = collision.transform.GetComponent<ShellPart>();
-                if (part)
+                if (!DevConsoleScript.networkEnabled || !NetworkManager.Singleton.IsClient)
                 {
-                    part.TakeDamage(residue); // damage the part
-                }
+                    var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration  
 
-                damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
+                    // if the shell is low, damage the part
+                    ShellPart part = collision.transform.GetComponent<ShellPart>();
+                    if (part)
+                    {
+                        part.TakeDamage(residue); // damage the part
+                    }
+
+                    damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
+                }
+                
                 Instantiate(hitPrefab, transform.position, Quaternion.identity);
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }

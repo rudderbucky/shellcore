@@ -11,7 +11,7 @@ public class NetworkAdaptor : NetworkBehaviour
     {
         instance = this;
 #if UNITY_EDITOR
-    StartServer();
+    StartHost();
 #else
     StartClient();
 #endif
@@ -32,6 +32,13 @@ public class NetworkAdaptor : NetworkBehaviour
         NetworkManager.Singleton.StartServer();
     }
 
+    public static void StartHost()
+    {
+        DevConsoleScript.networkEnabled = true;
+        NetworkManager.Singleton.StartHost();
+        NetworkAdaptor.instance.CreateNetworkObjectServerRpc();
+    }
+
 
     public GameObject networkObj;
 
@@ -45,10 +52,5 @@ public class NetworkAdaptor : NetworkBehaviour
         {
             if (u == clientId) obj.Despawn();
         };
-        if (NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
-        {
-            var client = NetworkManager.Singleton.ConnectedClients[clientId];
-            // Do things for this client
-        }
     }
 }

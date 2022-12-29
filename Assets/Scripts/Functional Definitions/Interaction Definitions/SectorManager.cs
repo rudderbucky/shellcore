@@ -269,7 +269,7 @@ public class SectorManager : MonoBehaviour
 
     public void AttemptSectorLoad()
     {
-        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer)
+        if (DevConsoleScript.networkEnabled && !NetworkManager.Singleton.IsClient)
         {
             loadSector(sectors[0]);
             return;

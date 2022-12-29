@@ -14,9 +14,12 @@ public class NetworkProtobuf : NetworkBehaviour
         public float time;
         public int faction;
         public float weaponGCDTimer;
+        public float shell;
+        public float core;
+        public float energy;
 
         public ulong clientID;
-        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer)
+        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer, float shell, float core, float energy)
         {
             this.position = position;
             this.velocity = velocity;
@@ -25,6 +28,9 @@ public class NetworkProtobuf : NetworkBehaviour
             this.rotation = rotation;
             this.faction = faction;
             this.weaponGCDTimer = weaponGCDTimer;
+            this.shell = shell;
+            this.core = core;
+            this.energy = energy;
         }
 
         public bool Equals(ServerResponse other)
@@ -41,6 +47,10 @@ public class NetworkProtobuf : NetworkBehaviour
             serializer.SerializeValue(ref rotation);
             serializer.SerializeValue(ref clientID);
             serializer.SerializeValue(ref faction);
+            serializer.SerializeValue(ref weaponGCDTimer);
+            serializer.SerializeValue(ref shell);
+            serializer.SerializeValue(ref core);
+            serializer.SerializeValue(ref energy);
         }
 
         /*
@@ -68,9 +78,19 @@ public class NetworkProtobuf : NetworkBehaviour
 
         public ServerResponse CreateResponse(NetworkProtobuf buf)
         {
-            var body = buf.huskCores[clientID].GetComponent<Rigidbody2D>();
-            var core = buf.huskCores[clientID];
-            return new ServerResponse(core.transform.position, body.velocity, core.transform.rotation, clientID, core.faction, core.GetWeaponGCDTimer());
+            Rigidbody2D body = null;
+            ShellCore core = null;
+            if (NetworkManager.Singleton.IsHost && !buf.huskCores.ContainsKey(clientID))
+            {
+                body = PlayerCore.Instance.GetComponent<Rigidbody2D>();
+                core = PlayerCore.Instance;
+            }
+            else
+            {
+                body = buf.huskCores[clientID].GetComponent<Rigidbody2D>();
+                core = buf.huskCores[clientID];
+            }
+            return new ServerResponse(core.transform.position, body.velocity, core.transform.rotation, clientID, core.faction, core.GetWeaponGCDTimer(), core.CurrentHealth[0], core.CurrentHealth[1], core.CurrentHealth[2]);
         }
     }
 
@@ -90,11 +110,11 @@ public class NetworkProtobuf : NetworkBehaviour
     }
     void Start()
     {        
-        if (!NetworkManager.Singleton.IsClient)
+        if (NetworkManager.Singleton.IsServer)
         {
-            states.Add(new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, NetworkManager.Singleton.ConnectedClients.Count - 1, 0));
+            states.Add(new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, NetworkManager.Singleton.ConnectedClients.Count - 1, 0, 1000, 250, 500));
         }
-        else
+        if (NetworkManager.Singleton.IsClient)
         {
             states.OnListChanged += (ce) =>
             {
@@ -155,6 +175,7 @@ public class NetworkProtobuf : NetworkBehaviour
         core.transform.rotation = response.rotation;
         core.dirty = false;
         core.SetWeaponGCDTimer(response.weaponGCDTimer);
+        core.SyncHealth(response.shell, response.core, response.energy);
     }
 
     
@@ -193,21 +214,13 @@ public class NetworkProtobuf : NetworkBehaviour
             entity.ID = OwnerClientId.ToString();
             var response = GetServerResponse(OwnerClientId);
             if (!response.HasValue) return;
-            if (NetworkManager.IsServer)
-                entity.faction = response.Value.faction;
-            else if (NetworkManager.IsClient)
-            {
-                entity.faction = response.Value.faction;
-            }
-
+            entity.faction = response.Value.faction;
             var print = Instantiate(coreBlueprint);
-            
-
             var ent = SectorManager.instance.SpawnEntity(print, entity);
             (ent as ShellCore).husk = true;
             huskCores.Add(OwnerClientId, ent as ShellCore);
         }
-        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
+        else if (!NetworkManager.IsServer && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
         {
             var response = GetServerResponse(OwnerClientId);
             if (response.HasValue) 
@@ -218,23 +231,18 @@ public class NetworkProtobuf : NetworkBehaviour
             }
         }
 
-
-        if (NetworkManager.Singleton.IsServer)
+        if (huskCores.ContainsKey(wrapper.clientID) && huskCores != null)
         {
-            if (!huskCores.ContainsKey(wrapper.clientID)) return;
-            if (huskCores != null)
-            {
-                huskCores[wrapper.clientID].MoveCraft(wrapper.directionalVector);
-            }
+            huskCores[wrapper.clientID].MoveCraft(wrapper.directionalVector);
+        }
 
-            if (Time.time - lastPollTime > POLL_RATE)
+        if (NetworkManager.Singleton.IsServer && Time.time - lastPollTime > POLL_RATE)
+        {
+            lastPollTime = Time.time;
+            for (int i = 0; i < states.Count; i++)
             {
-                lastPollTime = Time.time;
-                for (int i = 0; i < states.Count; i++)
-                {
-                    if (states[i].clientID != wrapper.clientID) continue;
-                    states[i] = wrapper.CreateResponse(this);
-                }
+                if (states[i].clientID != wrapper.clientID) continue;
+                states[i] = wrapper.CreateResponse(this);
             }
         }
     }

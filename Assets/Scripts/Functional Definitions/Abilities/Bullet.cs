@@ -37,7 +37,7 @@ public class Bullet : WeaponAbility
 
     public void BulletTest(Vector3 victimPos)
     {
-        if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsServer)
+        if (!DevConsoleScript.networkEnabled || !NetworkManager.Singleton.IsClient)
             FireBullet(victimPos); // fire if there is       
     }
 
@@ -47,15 +47,14 @@ public class Bullet : WeaponAbility
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsServer)
+        if (!DevConsoleScript.networkEnabled || !NetworkManager.Singleton.IsClient)
         {
             return FireBullet(victimPos); // fire if there is
         }
         else 
         {
-            Debug.LogWarning("FIRING");
             Core.protobuf.ExecuteWeaponServerRpc(0, victimPos);
-            return false;
+            return true;
         }
     }
 
@@ -100,11 +99,6 @@ public class Bullet : WeaponAbility
         var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
 
-        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer)
-        {
-            bullet.GetComponent<NetworkObject>().Spawn();
-        }
-
         // Update its damage to match main bullet
         var script = bullet.GetComponent<BulletScript>();
         script.owner = GetComponentInParent<Entity>();
@@ -124,6 +118,11 @@ public class Bullet : WeaponAbility
 
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);
+        
+        if (DevConsoleScript.networkEnabled && !NetworkManager.Singleton.IsClient)
+        {
+            bullet.GetComponent<NetworkObject>().Spawn();
+        }
         return true;
     }
 }

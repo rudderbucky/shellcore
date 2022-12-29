@@ -1118,7 +1118,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     protected void TickState()
     {
-        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && protobuf != null)
+        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient)
         {
             return;
         }
@@ -1309,6 +1309,13 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public float[] GetHealth()
     {
         return currentHealth;
+    }
+
+    public void SyncHealth(float shell, float core, float energy)
+    {
+        currentHealth[0] = shell;
+        currentHealth[1] = core;
+        currentHealth[2] = energy;
     }
 
     /// <summary>

@@ -159,7 +159,7 @@ public abstract class Craft : Entity
 
     protected override void FixedUpdate()
     {
-        var lettingServerDecide = this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && protobuf != null;
+        var lettingServerDecide = this as PlayerCore && DevConsoleScript.networkEnabled && !NetworkManager.Singleton.IsServer && protobuf != null;
 
         entityBody.drag = draggable.dragging ? 25F : 0;
         if (draggable.dragging)
