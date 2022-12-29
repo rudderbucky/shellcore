@@ -80,15 +80,15 @@ public class NetworkProtobuf : NetworkBehaviour
         {
             Rigidbody2D body = null;
             ShellCore core = null;
-            if (NetworkManager.Singleton.IsHost && !buf.huskCores.ContainsKey(clientID))
+            if (NetworkManager.Singleton.IsHost && !buf.huskCore)
             {
                 body = PlayerCore.Instance.GetComponent<Rigidbody2D>();
                 core = PlayerCore.Instance;
             }
             else
             {
-                body = buf.huskCores[clientID].GetComponent<Rigidbody2D>();
-                core = buf.huskCores[clientID];
+                body = buf.huskCore.GetComponent<Rigidbody2D>();
+                core = buf.huskCore;
             }
             return new ServerResponse(core.transform.position, body.velocity, core.transform.rotation, clientID, core.faction, core.GetWeaponGCDTimer(), core.CurrentHealth[0], core.CurrentHealth[1], core.CurrentHealth[2]);
         }
@@ -99,7 +99,7 @@ public class NetworkProtobuf : NetworkBehaviour
     public NetworkList<ServerResponse> states;
 
     public EntityBlueprint coreBlueprint;
-    private Dictionary<ulong, ShellCore> huskCores;
+    private ShellCore huskCore;
 
     void Awake()
     {
@@ -124,9 +124,9 @@ public class NetworkProtobuf : NetworkBehaviour
                 }
                 else
                 {
-                    if (huskCores.ContainsKey(ce.Value.clientID))
+                    if (huskCore)
                     {
-                        UpdateCoreState(huskCores[ce.Value.clientID], ce.Value);
+                        UpdateCoreState(huskCore, ce.Value);
                     }
                 }
             };
@@ -135,10 +135,6 @@ public class NetworkProtobuf : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (huskCores == null)
-        {
-            huskCores = new Dictionary<ulong, ShellCore>();
-        }
 
         if (wrapper == null)
         {
@@ -155,11 +151,9 @@ public class NetworkProtobuf : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if (huskCores == null) return;
-        if (huskCores.ContainsKey(OwnerClientId))
+        if (huskCore)
         {
-            Destroy(huskCores[OwnerClientId].gameObject);
-            huskCores.Remove(OwnerClientId);
+            Destroy(huskCore.gameObject);
         }
     }
 
@@ -197,8 +191,8 @@ public class NetworkProtobuf : NetworkBehaviour
     [ServerRpc(RequireOwnership = true)]
     public void ExecuteWeaponServerRpc(int abilityID, Vector3 victimPos, ServerRpcParams serverRpcParams = default)
     {   
-        if (OwnerClientId == serverRpcParams.Receive.SenderClientId && huskCores.ContainsKey(OwnerClientId))
-            (huskCores[OwnerClientId].GetAbilities()[0] as Bullet).BulletTest(victimPos);
+        if (OwnerClientId == serverRpcParams.Receive.SenderClientId && huskCore)
+            (huskCore.GetAbilities()[0] as Bullet).BulletTest(victimPos);
     }
 
     private static float POLL_RATE = 0.05F;
@@ -208,7 +202,7 @@ public class NetworkProtobuf : NetworkBehaviour
     void Update()
     {
 
-        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId) && !huskCores.ContainsKey(OwnerClientId))
+        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId) && !huskCore)
         {
             Sector.LevelEntity entity = new Sector.LevelEntity();
             entity.ID = OwnerClientId.ToString();
@@ -218,7 +212,7 @@ public class NetworkProtobuf : NetworkBehaviour
             var print = Instantiate(coreBlueprint);
             var ent = SectorManager.instance.SpawnEntity(print, entity);
             (ent as ShellCore).husk = true;
-            huskCores.Add(OwnerClientId, ent as ShellCore);
+            huskCore = ent as ShellCore;
         }
         else if (!NetworkManager.IsServer && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
         {
@@ -231,9 +225,9 @@ public class NetworkProtobuf : NetworkBehaviour
             }
         }
 
-        if (huskCores.ContainsKey(wrapper.clientID) && huskCores != null)
+        if (huskCore)
         {
-            huskCores[wrapper.clientID].MoveCraft(wrapper.directionalVector);
+            huskCore.MoveCraft(wrapper.directionalVector);
         }
 
         if (NetworkManager.Singleton.IsServer && Time.time - lastPollTime > POLL_RATE)
