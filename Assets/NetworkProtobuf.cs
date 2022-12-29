@@ -52,13 +52,6 @@ public class NetworkProtobuf : NetworkBehaviour
             serializer.SerializeValue(ref core);
             serializer.SerializeValue(ref energy);
         }
-
-        /*
-        public override string ToString()
-        {
-            return $"{position[0]},{position[1]},{position[2]}";
-        }
-        */
     }
 
     public struct ClientMessage : INetworkSerializable
@@ -122,12 +115,9 @@ public class NetworkProtobuf : NetworkBehaviour
                 {
                     UpdatePlayerState(ce.Value);
                 }
-                else
+                else if (huskCore)
                 {
-                    if (huskCore)
-                    {
-                        UpdateCoreState(huskCore, ce.Value);
-                    }
+                    UpdateCoreState(huskCore, ce.Value);
                 }
             };
         }
@@ -142,10 +132,9 @@ public class NetworkProtobuf : NetworkBehaviour
             wrapper.clientID = OwnerClientId;
         }
 
-        if (NetworkManager.Singleton.IsClient)
+        if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId)
         {        
-            if (NetworkManager.Singleton.LocalClientId == OwnerClientId)
-                PlayerCore.Instance.protobuf = this;
+            PlayerCore.Instance.protobuf = this;
         }
     }
 
