@@ -223,7 +223,6 @@ public abstract class WeaponAbility : ActiveAbility
             // check if allied
             if (FactionManager.IsAllied(tmp.GetFaction(), Core.faction)) return;
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
-            Debug.LogWarning("shooting " + target);
             if (!Execute(target.position)) return;
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;

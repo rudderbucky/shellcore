@@ -1118,7 +1118,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     protected void TickState()
     {
-        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient)
+        if (this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
         {
             return;
         }

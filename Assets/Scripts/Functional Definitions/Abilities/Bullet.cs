@@ -47,15 +47,16 @@ public class Bullet : WeaponAbility
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if (!DevConsoleScript.networkEnabled || !NetworkManager.Singleton.IsClient)
+        if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsHost)
         {
             return FireBullet(victimPos); // fire if there is
         }
-        else 
+        else if(NetworkManager.Singleton.IsClient)
         {
             Core.protobuf.ExecuteWeaponServerRpc(0, victimPos);
             return true;
         }
+        return false;
     }
 
     /// <summary>
@@ -119,9 +120,9 @@ public class Bullet : WeaponAbility
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);
         
-        if (DevConsoleScript.networkEnabled && !NetworkManager.Singleton.IsClient)
+        if (DevConsoleScript.networkEnabled && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
         {
-            bullet.GetComponent<NetworkObject>().Spawn();
+            bullet.GetComponent<NetworkObject>().SpawnWithOwnership(1);
         }
         return true;
     }
