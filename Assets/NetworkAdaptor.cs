@@ -5,16 +5,29 @@ using UnityEngine;
 
 public class NetworkAdaptor : NetworkBehaviour
 {
+    public enum NetworkMode
+    {
+        Off,
+        Client,
+        Host
+    }
 
+    public static NetworkMode mode = NetworkMode.Off;
     public static NetworkAdaptor instance;
+    public static string address;
+    public static string port;
     void Start()
     {
         instance = this;
-#if UNITY_EDITOR
-    StartHost();
-#else
-    StartClient();
-#endif
+        switch (mode)
+        {
+            case NetworkMode.Client:
+                StartClient();
+                break;
+            case NetworkMode.Host:
+                StartHost();
+                break;
+        }
     }
 
     public static void StartClient()

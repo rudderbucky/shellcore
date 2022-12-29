@@ -55,7 +55,8 @@ public class SaveHandler : MonoBehaviour
                     FactionManager.SetFactionRelations(save.factions[i], save.relations[i]);
                 }
 
-            SectorManager.instance.LoadSectorFile(save.resourcePath);
+            if (!DevConsoleScript.networkEnabled)
+                SectorManager.instance.LoadSectorFile(save.resourcePath);
             save.missions.RemoveAll(m => !taskManager.questCanvasPaths.Exists(p =>
                 System.IO.Path.GetFileNameWithoutExtension(p) == m.name));
             taskManager.Initialize(true); // Re-init

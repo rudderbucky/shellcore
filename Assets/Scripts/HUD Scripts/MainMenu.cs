@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
     public GameObject settings;
-    public GameObject discordPopup;
 
     public void StartSectorCreator()
     {
@@ -20,6 +19,21 @@ public class MainMenu : MonoBehaviour
             SectorManager.testResourcePath = null;
         }
 
+        SceneManager.LoadScene("SampleScene");
+    }
+
+    [SerializeField]
+    private InputField addressField;
+    
+    [SerializeField]
+    private InputField portField;
+
+    public void NetworkDuel(bool hostMode)
+    {
+        NetworkAdaptor.mode = hostMode ? NetworkAdaptor.NetworkMode.Host : NetworkAdaptor.NetworkMode.Client;
+        DevConsoleScript.networkEnabled = true;
+        NetworkAdaptor.address = addressField.text;
+        NetworkAdaptor.port = portField.text;
         SceneManager.LoadScene("SampleScene");
     }
 

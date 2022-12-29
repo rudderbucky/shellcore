@@ -225,7 +225,7 @@ public class WCWorldIO : GUIWindowScripts
     {
         if (generatorHandler.saveState == 2)
         {
-            LoadTestSave();
+            LoadTestSave(originalReadPath);
         }
         else
         {
@@ -233,7 +233,7 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
-    void LoadTestSave()
+    public static void LoadTestSave(string originalReadPath)
     {
         var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "test");
         var savePath = System.IO.Path.Combine(Application.persistentDataPath, "Saves", "TestSave");

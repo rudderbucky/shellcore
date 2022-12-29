@@ -88,6 +88,9 @@ public class SectorManager : MonoBehaviour
     public static string testResourcePath = null;
     public static string jsonPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "main - " + VersionNumberScript.mapVersion);
 
+    [SerializeField]
+    private Sector networkTestSector;
+
     public void Initialize()
     {
         if (instance != null)
@@ -120,6 +123,11 @@ public class SectorManager : MonoBehaviour
         {
             // jsonPath = customPath;
             jsonMode = true;
+        }
+
+        if (DevConsoleScript.networkEnabled)
+        {
+            current = networkTestSector;
         }
 
         if (SceneManager.GetActiveScene().name == "MainMenu")
