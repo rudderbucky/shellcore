@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,11 +17,26 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
         {
             if (SectorManager.testJsonPath == null)
             {
+                if (DevConsoleScript.networkEnabled)
+                {
+                    DevConsoleScript.networkEnabled = false;
+                    NetworkManager.Singleton.Shutdown();
+                    Destroy(NetworkManager.Singleton.gameObject);
+                }
+
                 SceneManager.LoadScene("MainMenu");
             }
             else
             {
+                if (DevConsoleScript.networkEnabled)
+                {
+                    DevConsoleScript.networkEnabled = false;
+                    NetworkManager.Singleton.Shutdown();
+                    Destroy(NetworkManager.Singleton.gameObject);
+                }
+
                 SceneManager.LoadScene("WorldCreator");
+                WCWorldIO.instantTest = false;
                 SectorManager.testJsonPath = null;
             }
         }

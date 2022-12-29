@@ -181,7 +181,7 @@ public class NetworkProtobuf : NetworkBehaviour
     [ServerRpc(RequireOwnership = true)]
     public void ExecuteWeaponServerRpc(int abilityID, Vector3 victimPos, ServerRpcParams serverRpcParams = default)
     {   
-        if (OwnerClientId == serverRpcParams.Receive.SenderClientId && huskCore)
+        if (huskCore)
             (huskCore.GetAbilities()[0] as Bullet).BulletTest(victimPos);
     }
 

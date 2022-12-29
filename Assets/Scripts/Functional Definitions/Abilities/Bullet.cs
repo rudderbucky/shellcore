@@ -37,7 +37,7 @@ public class Bullet : WeaponAbility
 
     public void BulletTest(Vector3 victimPos)
     {
-        if (!DevConsoleScript.networkEnabled || !NetworkManager.Singleton.IsClient)
+        if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
             FireBullet(victimPos); // fire if there is       
     }
 

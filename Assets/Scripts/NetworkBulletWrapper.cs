@@ -7,9 +7,18 @@ public class NetworkBulletWrapper : NetworkBehaviour
 {
     public override void OnNetworkSpawn()
     {
-        GetComponent<BulletScript>().enabled = false;
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
+        {
+            GetComponent<BulletScript>().enabled = false;
+        }
         base.OnNetworkSpawn();
     }
+
+    public override void OnNetworkDespawn()
+    {
+
+    }
+
     
     [ClientRpc]
     private void SetPositionClientRpc(Vector3 position)
