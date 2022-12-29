@@ -274,7 +274,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         else if(abilities[0].GetAbilityType() != AbilityHandler.AbilityTypes.Passive && (abilities[0].State == Ability.AbilityState.Active ||
                                                                                           abilities[0].State == Ability.AbilityState.Charging ||
                                                                                           (abilities[0] is WeaponAbility && abilities[0].isEnabled) ||
-                                                                                          abilities[0] is ActiveAbility ab && ab.AutoCast))
+                                                                                          abilities[0].AutoCast))
         {
             image.color = PlayerCore.GetPlayerFactionColor();
         }
@@ -328,12 +328,12 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                             && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
 
         if (!hotkeyAccepted && !(clicked && Input.mousePosition == oldInputMousePos)) return;
-        if (InputManager.GetKey(KeyName.AutoCastBuyTurret) && abilities[0] is ActiveAbility)
+        if (InputManager.GetKey(KeyName.AutoCastBuyTurret))
         {
-            bool autoCast = !(abilities[0] as ActiveAbility).AutoCast;
+            bool autoCast = !abilities[0].AutoCast;
             foreach (var ab in abilities)
             {
-                (ab as ActiveAbility).AutoCast = autoCast;
+                ab.AutoCast = autoCast;
             }
             return;
         }

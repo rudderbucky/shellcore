@@ -20,6 +20,7 @@ public class SettingsScript : MonoBehaviour
     public Dropdown partShader;
     public Toggle taskManagerAutoSaveEnabled;
     public Toggle simpleMouseMovementToggle;
+    public Toggle allowAutocastSkillsToggle;
 
     public Transform controlsSection;
     //public InputField[] abilityKeybindFields;
@@ -44,6 +45,7 @@ public class SettingsScript : MonoBehaviour
         partShader.value = PlayerPrefs.GetInt("ShellPart_partShader", 0);
         taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
         simpleMouseMovementToggle.isOn = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
+        allowAutocastSkillsToggle.isOn = PlayerPrefs.GetString("AllowAutocastSkills", "False") == "True";
         SaveSettings();
 
         //for(int i = 0; i < 9; i++)
@@ -118,6 +120,7 @@ public class SettingsScript : MonoBehaviour
         ChangeSimpleMouseMovementEnabled(simpleMouseMovementToggle.isOn);
         ChangeShellPartPartShader(partShader.value);
         ChangeHudDamageIndicator(hudDamageIndicatorSlider.value);
+        ChangeAllowAutocastSkillsEnabled(allowAutocastSkillsToggle.isOn);
 
         //for(int i = 0; i < 9; i++)
         //{
@@ -249,6 +252,12 @@ public class SettingsScript : MonoBehaviour
     {
         PlayerPrefs.SetString("SelectionBoxScript_simpleMouseMovement", val.ToString());
         SelectionBoxScript.simpleMouseMovement = val;
+    }
+
+    public void ChangeAllowAutocastSkillsEnabled(bool val)
+    {
+        PlayerPrefs.SetString("AllowAutocastSkills", val.ToString());
+        //SelectionBoxScript.simpleMouseMovement = val;//TODO
     }
 
     // Volume slider updates without having to save
