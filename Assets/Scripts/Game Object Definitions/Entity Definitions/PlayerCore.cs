@@ -361,10 +361,10 @@ public class PlayerCore : ShellCore
                 protobuf.ChangeDirectionServerRpc( getDirectionalInput());
                 dirty = true;
             }
-            else if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsHost)
+            else if ((!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsHost))
             {
                 MoveCraft(getDirectionalInput()); // move the craft based on the directional input
-                protobuf.wrapper.directionalVector = getDirectionalInput();
+                if (protobuf) protobuf.wrapper.directionalVector = getDirectionalInput();
             }
         
         }

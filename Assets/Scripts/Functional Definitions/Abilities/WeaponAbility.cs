@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public enum WeaponDiversityType
@@ -183,12 +184,12 @@ public abstract class WeaponAbility : ActiveAbility
             isEnabled = !isEnabled;
         UpdateState();
         Core.MakeBusy(); // make core busy
+        if (DevConsoleScript.networkEnabled && !(Core is PlayerCore) && NetworkManager.Singleton && NetworkManager.Singleton.IsServer)
+        {
+            Shoot();
+        }
     }
 
-    /// <summary>
-    /// Override for tick that integrates the targeting system of the core for players
-    /// and adjusted for the new isActive behaviour
-    /// </summary>
     public override void Tick()
     {
         if (State == AbilityState.Destroyed)
@@ -223,11 +224,25 @@ public abstract class WeaponAbility : ActiveAbility
             // check if allied
             if (FactionManager.IsAllied(tmp.GetFaction(), Core.faction)) return;
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
-            if (!Execute(target.position)) return;
+            if (!DevConsoleScript.networkEnabled || (NetworkManager.Singleton.IsServer))
+            {
+                if (!Execute(target.position)) return;
+            }
+            else if (Core.protobuf)
+            {
+                Core.protobuf.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, target.position);
+            }
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;
         }
     }
+
+    // What immediately happens when a weapon is fired
+    public virtual void ActivationCosmetic(Vector3 targetPos)
+    {
+
+    }
+
 
     protected virtual bool DistanceCheck(Transform targetEntity)
     {

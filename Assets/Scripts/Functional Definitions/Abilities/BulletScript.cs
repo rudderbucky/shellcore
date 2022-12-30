@@ -81,7 +81,6 @@ public class BulletScript : MonoBehaviour
                 InstantiateHitPrefab();
                 if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer)
                 {
-                    GetComponent<NetworkBulletWrapper>().hit.Value = true;
                     if (GetComponent<NetworkObject>().IsSpawned)
                         GetComponent<NetworkObject>().Despawn();
                 }

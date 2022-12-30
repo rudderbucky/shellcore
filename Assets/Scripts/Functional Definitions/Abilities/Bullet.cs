@@ -35,29 +35,18 @@ public class Bullet : WeaponAbility
         base.Start();
     }
 
-    public void BulletTest(Vector3 victimPos)
-    {
-        if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
-            FireBullet(victimPos); // fire if there is       
-    }
-
     /// <summary>
     /// Fires the bullet using the helper method
     /// </summary>
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        if (!DevConsoleScript.networkEnabled || NetworkManager.Singleton.IsHost)
-        {
-            return FireBullet(victimPos); // fire if there is
-        }
-        else if(NetworkManager.Singleton.IsClient)
-        {
-            Core.protobuf.ExecuteWeaponServerRpc(0, victimPos);
-            AudioManager.PlayClipByID(bulletSound, transform.position);
-            return true;
-        }
-        return false;
+        return FireBullet(victimPos); // fire if there is
+    }
+
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        AudioManager.PlayClipByID(bulletSound, transform.position);
     }
 
     /// <summary>
@@ -96,7 +85,7 @@ public class Bullet : WeaponAbility
         {
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
-        AudioManager.PlayClipByID(bulletSound, transform.position);
+        ActivationCosmetic(targetPos);
 
         var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
@@ -123,7 +112,8 @@ public class Bullet : WeaponAbility
         
         if (DevConsoleScript.networkEnabled && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
         {
-            bullet.GetComponent<NetworkObject>().SpawnWithOwnership(1);
+            bullet.GetComponent<NetworkBulletWrapper>().partLocation = new NetworkVariable<Vector2>(part ? part.info.location : Vector2.zero);
+            bullet.GetComponent<NetworkObject>().Spawn();
         }
         return true;
     }

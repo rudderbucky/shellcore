@@ -200,12 +200,29 @@ public class NetworkProtobuf : NetworkBehaviour
             wrapper.directionalVector = directionalVector;
     }
 
+    public static WeaponAbility GetWeaponFromLocation(Vector2 location, ShellCore core)
+    {
+        if (location == Vector2.zero)
+        {
+            return core.GetComponent<MainBullet>();
+        }
+
+        foreach (var part in core.NetworkGetParts())
+        {            
+            if (part.info.location != location || !part.weapon) continue;
+            return part.GetComponent<WeaponAbility>();
+        }
+        return null;
+    }
+
 
     [ServerRpc(RequireOwnership = true)]
-    public void ExecuteWeaponServerRpc(int abilityID, Vector3 victimPos, ServerRpcParams serverRpcParams = default)
+    public void ExecuteAbilityServerRpc(Vector2 location, Vector3 victimPos, ServerRpcParams serverRpcParams = default)
     {   
-        if (huskCore)
-            (huskCore.GetAbilities()[0] as Bullet).BulletTest(victimPos);
+        if (!huskCore) return;
+        var weapon = GetWeaponFromLocation(location, huskCore);
+        if (weapon) weapon.Activate();
+
     }
 
     private static float POLL_RATE = 0.00F;
@@ -276,7 +293,6 @@ public class NetworkProtobuf : NetworkBehaviour
             {
                 if (!part.detached) continue;
                 var foundPart = core.NetworkGetParts().Find(p => p.info.location == part.location);
-                Debug.LogWarning(foundPart);
                 if (!foundPart) continue;
                 core.RemovePart(foundPart);
                 break;

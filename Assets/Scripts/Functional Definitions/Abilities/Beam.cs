@@ -111,19 +111,10 @@ public class Beam : WeaponAbility
         return true;
     }
 
-    protected void FireBeam(Vector3 victimPos)
+    public override void ActivationCosmetic(Vector3 targetPos)
     {
         AudioManager.PlayClipByID("clip_beam", transform.position);
-        Transform targetToAttack = targetArray[targetArray.Count - 1];
-        var residue = targetToAttack.GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
-        // deal instant damage
-
-        if (nextTargetPart)
-        {
-            nextTargetPart.TakeDamage(residue);
-            victimPos = partPos = nextTargetPart.transform.position;
-        }
-
+        
         if (line.positionCount == 0) 
         {
             timer = 0; // start the timer
@@ -135,9 +126,24 @@ public class Beam : WeaponAbility
         }
         firing = true;
 
-        Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
-        InstantiateParticles(line.positionCount > 2 ? line.GetPosition(line.positionCount - 2) : transform.position, victimPos);
+        Instantiate(beamHitPrefab, targetPos, Quaternion.identity); // instantiate hit effect
+        InstantiateParticles(line.positionCount > 2 ? line.GetPosition(line.positionCount - 2) : transform.position, targetPos);
+    }
 
+
+    protected void FireBeam(Vector3 victimPos)
+    {
+        Transform targetToAttack = targetArray[targetArray.Count - 1];
+        var residue = targetToAttack.GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
+        // deal instant damage
+
+        if (nextTargetPart)
+        {
+            nextTargetPart.TakeDamage(residue);
+            victimPos = partPos = nextTargetPart.transform.position;
+        }
+
+        ActivationCosmetic(victimPos);
     }
 
 
