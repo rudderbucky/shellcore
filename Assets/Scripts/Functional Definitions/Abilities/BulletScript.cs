@@ -78,10 +78,28 @@ public class BulletScript : MonoBehaviour
                     damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
                 }
                 
-                Instantiate(hitPrefab, transform.position, Quaternion.identity);
+                InstantiateHitPrefab();
+                if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer)
+                {
+                    GetComponent<NetworkBulletWrapper>().hit.Value = true;
+                    GetComponent<NetworkObject>().Despawn();
+                }
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
         }
+    }
+
+    public void InstantiateHitPrefab()
+    {
+        Instantiate(hitPrefab, transform.position, Quaternion.identity);
+    }
+
+    public void InstantiateMissPrefab()
+    {
+        if (missParticles)
+        {
+            Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg));
+        }  
     }
 
     public void OnDestroy()
@@ -107,10 +125,7 @@ public class BulletScript : MonoBehaviour
     IEnumerator DestroyTimer(float time)
     {
         yield return new WaitForSeconds(time);
-        if (missParticles)
-        {
-            Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg));
-        }
+        InstantiateMissPrefab();
 
         Destroy(gameObject);
     }

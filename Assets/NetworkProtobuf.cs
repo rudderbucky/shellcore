@@ -17,7 +17,6 @@ public class NetworkProtobuf : NetworkBehaviour
         public float shell;
         public float core;
         public float energy;
-
         public ulong clientID;
         public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer, float shell, float core, float energy)
         {
@@ -35,7 +34,6 @@ public class NetworkProtobuf : NetworkBehaviour
 
         public bool Equals(ServerResponse other)
         {
-            Debug.LogWarning(clientID == other.clientID && this.time == other.time);
             return clientID == other.clientID && this.time == other.time;
         }
 
@@ -52,6 +50,24 @@ public class NetworkProtobuf : NetworkBehaviour
             serializer.SerializeValue(ref core);
             serializer.SerializeValue(ref energy);
         }
+    }
+
+    public struct PartStatusResponse : INetworkSerializable, IEquatable<PartStatusResponse>
+    {
+        public Vector2 location;
+        public bool detached;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref location);
+            serializer.SerializeValue(ref detached);
+        }
+
+        public bool Equals(PartStatusResponse other)
+        {
+            return location == other.location;
+        }
+
     }
 
     public struct ClientMessage : INetworkSerializable
@@ -89,40 +105,38 @@ public class NetworkProtobuf : NetworkBehaviour
 
     public TemporaryStateWrapper wrapper;
 
-    public NetworkList<ServerResponse> states;
+    public NetworkVariable<ServerResponse> state = new NetworkVariable<ServerResponse>();
 
     public EntityBlueprint coreBlueprint;
     private ShellCore huskCore;
 
     void Awake()
     {
-        if (states == null)
-        {
-            states = new NetworkList<ServerResponse>();
-        }
+        
     }
     void Start()
     {        
         if (NetworkManager.Singleton.IsServer)
         {
             int fac = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
-            states.Add(new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, fac, 0, 1000, 250, 500));
+            state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, fac, 0, 1000, 250, 500);
         }
         if (NetworkManager.Singleton.IsClient)
         {
-            states.OnListChanged += (ce) =>
+            state.OnValueChanged += (x, y) =>
             {
-                if (ce.Value.clientID == NetworkManager.Singleton.LocalClientId)
+                if (y.clientID == NetworkManager.Singleton.LocalClientId)
                 {
-                    UpdatePlayerState(ce.Value);
+                    UpdatePlayerState(y);
                 }
                 else if (huskCore)
                 {
-                    UpdateCoreState(huskCore, ce.Value);
+                    UpdateCoreState(huskCore, y);
                 }
             };
         }
     }
+
 
     public override void OnNetworkSpawn()
     {
@@ -185,6 +199,19 @@ public class NetworkProtobuf : NetworkBehaviour
             (huskCore.GetAbilities()[0] as Bullet).BulletTest(victimPos);
     }
 
+    [ServerRpc(RequireOwnership = true)]
+    public void DetachPartServerRpc(Vector2 position, ServerRpcParams serverRpcParams = default)
+    {   
+        if (huskCore)
+            foreach (var part in huskCore.NetworkGetParts())
+            {
+                if (part.info.location != position) continue;
+                huskCore.RemovePart(part);
+                break;
+            }
+    }
+
+
     private static float POLL_RATE = 0.05F;
     private float lastPollTime;
     private bool playerReady;
@@ -196,8 +223,7 @@ public class NetworkProtobuf : NetworkBehaviour
         {
             Sector.LevelEntity entity = new Sector.LevelEntity();
             entity.ID = OwnerClientId.ToString();
-            var response = GetServerResponse(OwnerClientId);
-            if (!response.HasValue) return;
+            var response = state;
             entity.faction = response.Value.faction;
             var print = Instantiate(coreBlueprint);
             var ent = SectorManager.instance.SpawnEntity(print, entity);
@@ -206,8 +232,8 @@ public class NetworkProtobuf : NetworkBehaviour
         }
         else if (!NetworkManager.IsServer && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
         {
-            var response = GetServerResponse(OwnerClientId);
-            if (response.HasValue) 
+            var response = state;
+            if (state.Value.time > 0)
             {
                 PlayerCore.Instance.faction = response.Value.faction;
                 PlayerCore.Instance.Rebuild();
@@ -223,21 +249,7 @@ public class NetworkProtobuf : NetworkBehaviour
         if (NetworkManager.Singleton.IsServer && Time.time - lastPollTime > POLL_RATE)
         {
             lastPollTime = Time.time;
-            for (int i = 0; i < states.Count; i++)
-            {
-                if (states[i].clientID != wrapper.clientID) continue;
-                states[i] = wrapper.CreateResponse(this);
-            }
+            state.Value = wrapper.CreateResponse(this);
         }
     }
-
-    private ServerResponse? GetServerResponse(ulong clientID)
-    {
-        for (int i = 0; i < states.Count; i++)
-        {
-            if (states[i].clientID == wrapper.clientID) return states[i];
-        }
-        return null;
-    }
-
 }

@@ -1113,12 +1113,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public bool dirty;
     public NetworkProtobuf protobuf;
 
+    public List<ShellPart> NetworkGetParts()
+    {
+        return parts;
+    }
+
     /// <summary>
     /// Used to update the state of the craft- regeneration, timers, etc
     /// </summary>
     protected void TickState()
     {
-        var lettingServerDecide = this as PlayerCore && DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost;
+        var lettingServerDecide = this as PlayerCore && NetworkAdaptor.lettingServerDecide;
         DeathHandler();
         UpdateInteractible();
         UpdateAuras();
@@ -1220,19 +1225,26 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     public virtual void RemovePart(ShellPart part)
     {
+        var lettingServerDecide = NetworkAdaptor.lettingServerDecide;
         if (part.GetComponent<Ability>())
         {
             part.GetComponent<Ability>().SetDestroyed(true);
         }
 
-        entityBody.mass -= part.partMass;
-        weight -= part.partMass * weightMultiplier;
-        if (this is Craft craft)
+        if (!lettingServerDecide)
         {
-            craft.CalculatePhysicsConstants();
-        }
+            entityBody.mass -= part.partMass;
+            weight -= part.partMass * weightMultiplier;
+            if (this is Craft craft)
+            {
+                craft.CalculatePhysicsConstants();
+            }
 
-        Domino(part);
+            Domino(part);
+        }
+        
+
+
         part.Detach();
         parts.Remove(part);
     }

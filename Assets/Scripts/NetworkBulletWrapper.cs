@@ -9,17 +9,21 @@ public class NetworkBulletWrapper : NetworkBehaviour
     {
         if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
         {
-            GetComponent<BulletScript>().enabled = false;
+
         }
         base.OnNetworkSpawn();
     }
 
     public override void OnNetworkDespawn()
     {
-
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
+        {
+            GetComponent<BulletScript>().InstantiateHitPrefab();
+        }
     }
-
     
+    public NetworkVariable<bool> hit;
+
     [ClientRpc]
     private void SetPositionClientRpc(Vector3 position)
     {

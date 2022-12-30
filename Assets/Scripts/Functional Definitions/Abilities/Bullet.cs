@@ -54,6 +54,7 @@ public class Bullet : WeaponAbility
         else if(NetworkManager.Singleton.IsClient)
         {
             Core.protobuf.ExecuteWeaponServerRpc(0, victimPos);
+            AudioManager.PlayClipByID(bulletSound, transform.position);
             return true;
         }
         return false;

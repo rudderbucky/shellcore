@@ -172,7 +172,7 @@ public class SectorManager : MonoBehaviour
             player.SetIsInteracting(true);
         }
         var playerActive = player && player.gameObject.activeSelf;
-        if (!playerActive && DevConsoleScript.networkEnabled && !loadedDuelSector)
+        if (!playerActive && DevConsoleScript.networkEnabled && NetworkManager.Singleton && !loadedDuelSector)
         {
             loadedDuelSector = true;
             AttemptSectorLoad();

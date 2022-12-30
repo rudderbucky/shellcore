@@ -16,6 +16,8 @@ public class NetworkAdaptor : NetworkBehaviour
     public static NetworkAdaptor instance;
     public static string address;
     public static string port;
+
+    public static bool lettingServerDecide;
     void Start()
     {
         instance = this;
@@ -23,6 +25,7 @@ public class NetworkAdaptor : NetworkBehaviour
         {
             case NetworkMode.Client:
                 StartClient();
+                lettingServerDecide = true;
                 break;
             case NetworkMode.Host:
                 StartHost();
