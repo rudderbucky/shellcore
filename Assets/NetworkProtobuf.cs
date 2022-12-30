@@ -52,10 +52,18 @@ public class NetworkProtobuf : NetworkBehaviour
         }
     }
 
+    public EntityBlueprint demoBlueprint;
+
     public struct PartStatusResponse : INetworkSerializable, IEquatable<PartStatusResponse>
     {
         public Vector2 location;
         public bool detached;
+
+        public PartStatusResponse(Vector2 location, bool val)
+        {
+            this.location = location;
+            detached = val;
+        }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
@@ -67,8 +75,9 @@ public class NetworkProtobuf : NetworkBehaviour
         {
             return location == other.location;
         }
-
     }
+
+    public NetworkList<PartStatusResponse> partStatuses;
 
     public struct ClientMessage : INetworkSerializable
     {
@@ -112,7 +121,7 @@ public class NetworkProtobuf : NetworkBehaviour
 
     void Awake()
     {
-        
+        if (partStatuses == null) partStatuses = new NetworkList<PartStatusResponse>();
     }
     void Start()
     {        
@@ -199,26 +208,27 @@ public class NetworkProtobuf : NetworkBehaviour
             (huskCore.GetAbilities()[0] as Bullet).BulletTest(victimPos);
     }
 
-    [ServerRpc(RequireOwnership = true)]
-    public void DetachPartServerRpc(Vector2 position, ServerRpcParams serverRpcParams = default)
-    {   
-        if (huskCore)
-            foreach (var part in huskCore.NetworkGetParts())
-            {
-                if (part.info.location != position) continue;
-                huskCore.RemovePart(part);
-                break;
-            }
-    }
-
-
-    private static float POLL_RATE = 0.05F;
+    private static float POLL_RATE = 0.00F;
     private float lastPollTime;
     private bool playerReady;
 
+    public void ServerDetachPart(ShellPart part)
+    {
+        for (int i = 0; i < partStatuses.Count; i++)
+        {
+            if (partStatuses[i].location != part.info.location) continue;
+            partStatuses[i] = new PartStatusResponse(part.info.location, true);
+            break;
+        }
+    }
+
+    public void ServerResetParts()
+    {
+        partStatuses.Clear();
+    }
+
     void Update()
     {
-
         if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId) && !huskCore)
         {
             Sector.LevelEntity entity = new Sector.LevelEntity();
@@ -229,13 +239,16 @@ public class NetworkProtobuf : NetworkBehaviour
             var ent = SectorManager.instance.SpawnEntity(print, entity);
             (ent as ShellCore).husk = true;
             huskCore = ent as ShellCore;
+            huskCore.blueprint = demoBlueprint;
+            huskCore.protobuf = this;
         }
-        else if (!NetworkManager.IsServer && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
+        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
         {
             var response = state;
             if (state.Value.time > 0)
             {
                 PlayerCore.Instance.faction = response.Value.faction;
+                PlayerCore.Instance.blueprint = demoBlueprint;
                 PlayerCore.Instance.Rebuild();
                 playerReady = true;
             }
@@ -250,6 +263,24 @@ public class NetworkProtobuf : NetworkBehaviour
         {
             lastPollTime = Time.time;
             state.Value = wrapper.CreateResponse(this);
+        }
+
+
+
+
+        if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
+        {
+            var core = huskCore ? huskCore : PlayerCore.Instance;
+
+            foreach (var part in partStatuses)
+            {
+                if (!part.detached) continue;
+                var foundPart = core.NetworkGetParts().Find(p => p.info.location == part.location);
+                Debug.LogWarning(foundPart);
+                if (!foundPart) continue;
+                core.RemovePart(foundPart);
+                break;
+            }
         }
     }
 }

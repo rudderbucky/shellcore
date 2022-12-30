@@ -828,7 +828,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         var coreRenderer = GetComponent<SpriteRenderer>();
         if (coreRenderer) coreRenderer.sortingOrder = ++sortingOrder;
 
-        parts.Add(partObject.GetComponent<ShellPart>());
+        parts.Add(shellPart);
         if (partObject.GetComponent<Ability>())
         {
             abilities.Insert(0, partObject.GetComponent<Ability>());
@@ -841,7 +841,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             partObject.GetComponent<Collider2D>().enabled = false;
         }
 
-        return partObject.GetComponent<ShellPart>();
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer && protobuf)
+        {
+            protobuf.partStatuses.Add(new NetworkProtobuf.PartStatusResponse(shellPart.info.location, false));
+        }
+
+        return shellPart;
     }
 
 
@@ -887,6 +892,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 ability.SetDestroyed(true);
             }
+        }
+
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer && protobuf)
+        {
+            protobuf.ServerResetParts();
         }
 
         interactible = false;
@@ -1242,10 +1252,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
             Domino(part);
         }
-        
-
 
         part.Detach();
+        if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer && protobuf)
+        {
+            protobuf.ServerDetachPart(part);
+        }
         parts.Remove(part);
     }
 

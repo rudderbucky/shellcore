@@ -82,7 +82,8 @@ public class BulletScript : MonoBehaviour
                 if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer)
                 {
                     GetComponent<NetworkBulletWrapper>().hit.Value = true;
-                    GetComponent<NetworkObject>().Despawn();
+                    if (GetComponent<NetworkObject>().IsSpawned)
+                        GetComponent<NetworkObject>().Despawn();
                 }
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
