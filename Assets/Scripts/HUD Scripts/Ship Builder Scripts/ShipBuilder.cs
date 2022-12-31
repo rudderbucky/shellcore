@@ -1180,7 +1180,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             oldData.drone = JsonUtility.ToJson(blueprint);
             button.part.secondaryData = JsonUtility.ToJson(oldData);
             partDict.Remove(dronePart);
-            partDict.Add(button.part, button);
+            if (partDict.ContainsKey(button.part)) partDict[button.part].IncrementCount();
+            else partDict.Add(button.part, button);
         }
 
         // try adding parts in the player's inventory and on their ship into the part index obtained list.

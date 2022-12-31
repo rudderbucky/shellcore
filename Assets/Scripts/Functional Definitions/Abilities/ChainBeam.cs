@@ -6,13 +6,14 @@ public class ChainBeam : Beam
     int numShots = 0;
     private static readonly int MAX_BOUNCES = 3;
 
-
-
     protected override void Awake()
     {
         base.Awake();
         ID = AbilityID.ChainBeam;
-        range = 25;
+        abilityName = "Chain";
+        description = $"Instant attack that deals {damage} damage to multiple targets.";
+        range = 15;
+        energyCost = 100;
     }
     protected override void Start()
     {
