@@ -263,20 +263,30 @@ public abstract class Ability : MonoBehaviour
 
     public virtual void Activate()
     {
+        var lettingServerDecide = NetworkAdaptor.lettingServerDecide;
         // If (NPC or (Player and not interacting)) and enough energy
-        if (State == AbilityState.Ready && !(Core is PlayerCore player && player.GetIsInteracting()) && Core.GetHealth()[2] >= energyCost)
+        if (State != AbilityState.Ready || (Core is PlayerCore player && player.GetIsInteracting()) || Core.GetHealth()[2] < energyCost) return;
+        Core.MakeBusy(); // make core busy
+        Core.TakeEnergy(energyCost); // remove the energy
+        startTime = Time.time; // Set activation time
+        charging = true;
+        UpdateState(); // Update state
+        // If there's no charge time, execute immediately
+        if (State == AbilityState.Active || State == AbilityState.Cooldown)
         {
-            Core.MakeBusy(); // make core busy
-            Core.TakeEnergy(energyCost); // remove the energy
-            startTime = Time.time; // Set activation time
-            charging = true;
-            UpdateState(); // Update state
-            // If there's no charge time, execute immediately
-            if (State == AbilityState.Active || State == AbilityState.Cooldown)
+            if (!lettingServerDecide) Execute();
+            else if (Core && Core.protobuf) 
             {
-                Execute();
+                Debug.LogWarning("TEST");
+                Core.protobuf.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
             }
         }
+    }
+
+    // What immediately happens when a weapon is fired
+    public virtual void ActivationCosmetic(Vector3 targetPos)
+    {
+
     }
 
     /// <summary>

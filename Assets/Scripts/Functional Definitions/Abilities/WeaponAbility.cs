@@ -241,13 +241,6 @@ public abstract class WeaponAbility : ActiveAbility
         }
     }
 
-    // What immediately happens when a weapon is fired
-    public virtual void ActivationCosmetic(Vector3 targetPos)
-    {
-
-    }
-
-
     protected virtual bool DistanceCheck(Transform targetEntity)
     {
         return Vector2.SqrMagnitude(transform.position - targetEntity.position) <= GetRange() * GetRange();

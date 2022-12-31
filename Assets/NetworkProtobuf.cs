@@ -201,7 +201,7 @@ public class NetworkProtobuf : NetworkBehaviour
             wrapper.directionalVector = directionalVector;
     }
 
-    public static WeaponAbility GetWeaponFromLocation(Vector2 location, ShellCore core)
+    public static Ability GetAbilityFromLocation(Vector2 location, ShellCore core)
     {
         if (location == Vector2.zero)
         {
@@ -210,8 +210,8 @@ public class NetworkProtobuf : NetworkBehaviour
 
         foreach (var part in core.NetworkGetParts())
         {            
-            if (part.info.location != location || !part.weapon) continue;
-            return part.GetComponent<WeaponAbility>();
+            if (part.info.location != location) continue;
+            return part.GetComponent<Ability>();
         }
         return null;
     }
@@ -221,7 +221,7 @@ public class NetworkProtobuf : NetworkBehaviour
     public void ExecuteAbilityServerRpc(Vector2 location, Vector3 victimPos, ServerRpcParams serverRpcParams = default)
     {   
         if (!huskCore) return;
-        var weapon = GetWeaponFromLocation(location, huskCore);
+        var weapon = GetAbilityFromLocation(location, huskCore);
         if (!weapon) return;
         weapon.Activate();
     }
@@ -231,7 +231,8 @@ public class NetworkProtobuf : NetworkBehaviour
     {
         if (NetworkManager.Singleton.IsServer) return;
         var core = huskCore ? huskCore : PlayerCore.Instance;
-        var weapon = GetWeaponFromLocation(location, core);
+        if (!core) return;
+        var weapon = GetAbilityFromLocation(location, core);
         if (weapon) weapon.ActivationCosmetic(victimPos);
     }
 
@@ -278,6 +279,7 @@ public class NetworkProtobuf : NetworkBehaviour
             huskCore = ent as ShellCore;
             huskCore.blueprint = demoBlueprint;
             huskCore.protobuf = this;
+            clientSideSynced = false;
             clientReady = true;
         }
         else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && serverReady.Value)

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
 public class NetworkAdaptor : NetworkBehaviour
@@ -36,6 +37,17 @@ public class NetworkAdaptor : NetworkBehaviour
     public static void StartClient()
     {
         DevConsoleScript.networkEnabled = true;
+        ushort portVal = 0;
+        if (!string.IsNullOrEmpty(port) && ushort.TryParse(port, out portVal))
+        {
+            NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Port = portVal;
+        }
+        if (!string.IsNullOrEmpty(address))
+        {
+            NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = address;
+        }
+
+
         NetworkManager.Singleton.StartClient();
         NetworkManager.Singleton.OnClientConnectedCallback += (u) => {
         NetworkAdaptor.instance.CreateNetworkObjectServerRpc();};
