@@ -131,6 +131,12 @@ public abstract class Craft : Entity
         }
 
         Start(); // once everything else is done initialize the craft again
+
+        if (DevConsoleScript.networkEnabled && NetworkAdaptor.lettingServerDecide && protobuf)
+        {
+            protobuf.clientReady = false;
+        }
+
         AudioManager.PlayClipByID("clip_respawn", transform.position);
     }
 

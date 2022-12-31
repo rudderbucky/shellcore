@@ -122,6 +122,7 @@ public class NetworkProtobuf : NetworkBehaviour
     void Awake()
     {
         if (partStatuses == null) partStatuses = new NetworkList<PartStatusResponse>();
+        serverReady = new NetworkVariable<bool>(false);
     }
     void Start()
     {        
@@ -238,7 +239,7 @@ public class NetworkProtobuf : NetworkBehaviour
 
     private static float POLL_RATE = 0.00F;
     private float lastPollTime;
-    public bool playerReady;
+    public bool clientReady;
 
     public void ServerDetachPart(ShellPart part)
     {
@@ -249,6 +250,11 @@ public class NetworkProtobuf : NetworkBehaviour
             break;
         }
     }
+
+    private bool clientSideSynced;
+
+    public NetworkVariable<bool> serverReady;
+
 
     public void ServerResetParts()
     {
@@ -272,9 +278,9 @@ public class NetworkProtobuf : NetworkBehaviour
             huskCore = ent as ShellCore;
             huskCore.blueprint = demoBlueprint;
             huskCore.protobuf = this;
-            playerReady = true;
+            clientReady = true;
         }
-        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
+        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && serverReady.Value)
         {
             var response = state;
             if (state.Value.time > 0)
@@ -282,10 +288,14 @@ public class NetworkProtobuf : NetworkBehaviour
                 PlayerCore.Instance.faction = response.Value.faction;
                 PlayerCore.Instance.blueprint = demoBlueprint;
                 PlayerCore.Instance.Rebuild();
-                playerReady = true;
+                clientSideSynced = false;
+                clientReady = true;
             }
         }
-        else if (NetworkManager.IsHost) playerReady = true;
+        else if (NetworkManager.IsHost)
+        {
+            clientReady = true;
+        }
 
         if (huskCore)
         {
@@ -301,7 +311,7 @@ public class NetworkProtobuf : NetworkBehaviour
 
 
 
-        if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
+        if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost && !clientSideSynced)
         {
             var core = huskCore ? huskCore : PlayerCore.Instance;
 
@@ -313,6 +323,8 @@ public class NetworkProtobuf : NetworkBehaviour
                 core.RemovePart(foundPart);
                 break;
             }
+
+            if (!serverReady.Value) clientSideSynced = true;
         }
     }
 }

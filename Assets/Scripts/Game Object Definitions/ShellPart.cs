@@ -119,6 +119,7 @@ public class ShellPart : MonoBehaviour
         spriteRenderer.material = shaderMaterials[partShader];
         spriteRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
         var part = obj.GetComponent<ShellPart>();
+        part.craft = part.transform.root.GetComponent<Entity>();
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
         part.currentHealth = blueprint.health;
@@ -145,6 +146,7 @@ public class ShellPart : MonoBehaviour
     /// </summary>
     public void Detach(bool drop = false)
     {
+        if (hasDetached) return;
         if (name != "Shell Sprite")
         {
             transform.SetParent(null, true);
@@ -248,8 +250,10 @@ public class ShellPart : MonoBehaviour
             currentHealth /= 4;
         }
 
-        craft = transform.root.GetComponent<Entity>();
-        faction = craft.faction;
+        if (!craft)
+            craft = transform.root.GetComponent<Entity>();
+        if (craft)
+            faction = craft.faction;
         gameObject.layer = 0;
 
         if (GetComponent<Ability>())

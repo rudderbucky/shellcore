@@ -31,6 +31,7 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
                 if (DevConsoleScript.networkEnabled)
                 {
                     DevConsoleScript.networkEnabled = false;
+                    NetworkAdaptor.lettingServerDecide = false;
                     NetworkManager.Singleton.Shutdown();
                     Destroy(NetworkManager.Singleton.gameObject);
                 }

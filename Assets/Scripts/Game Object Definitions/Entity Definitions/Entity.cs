@@ -901,7 +901,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer && protobuf)
         {
             protobuf.ServerResetParts();
-            //protobuf.playerReady = false;
+            protobuf.serverReady.Value = false;
+        }
+        if (DevConsoleScript.networkEnabled && NetworkAdaptor.lettingServerDecide && protobuf)
+        {
+            protobuf.clientReady = false;
         }
 
         interactible = false;
@@ -1039,6 +1043,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
         initialized = true;
+        if (DevConsoleScript.networkEnabled && !NetworkAdaptor.lettingServerDecide && protobuf) protobuf.serverReady.Value = true;
     }
 
     protected void ActivatePassives()
@@ -1138,7 +1143,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     protected void TickState()
     {
-        if (!NetworkAdaptor.lettingServerDecide || (!protobuf || protobuf.playerReady))
+        if (!NetworkAdaptor.lettingServerDecide || (!protobuf || protobuf.clientReady))
             DeathHandler();
         UpdateInteractible();
         UpdateAuras();
@@ -1162,7 +1167,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     player.alerter.showMessage("");
                 }
 
-                PostDeath();
+                if ((!DevConsoleScript.networkEnabled || !NetworkAdaptor.lettingServerDecide || (!protobuf || protobuf.serverReady.Value)))
+                    PostDeath();
             }
         }
         else
