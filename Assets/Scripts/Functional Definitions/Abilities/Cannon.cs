@@ -21,19 +21,23 @@ public class Cannon : WeaponAbility
         bonusDamageType = typeof(Drone);
     }
 
+    protected override void Start()
+    {
+        if (!effectPrefab)
+        {
+            effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+        }
+        base.Start();
+    }
+
+
     /// <summary>
     /// Fires the cannon using the helper method
     /// </summary>
     /// <param name="victimPos">The position to fire the bullet to</param>
     protected override bool Execute(Vector3 victimPos)
     {
-        // TODO: There was a check if the target was an entity. Is that necessary?
-        if (!effectPrefab)
-        {
-            effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
-        }
 
-        AudioManager.PlayClipByID("clip_cannon", transform.position);
         FireCannon(targetingSystem.GetTarget().GetComponent<IDamageable>()); // fire if there is
         return true;
     }
@@ -59,17 +63,23 @@ public class Cannon : WeaponAbility
         }
     }
 
-    private void FireCannon(IDamageable target)
+    public override void ActivationCosmetic(Vector3 targetPos)
     {
-        this.target = target;
-        var shooter = transform.Find("Shooter");
+        AudioManager.PlayClipByID("clip_cannon", transform.position);
         if (effect)
         {
             Destroy(effect);
         }
-
+        var shooter = transform.Find("Shooter");
+        
         effect = Instantiate(effectPrefab, shooter, false);
         Destroy(effect, 0.2F);
+    }
+
+    private void FireCannon(IDamageable target)
+    {
+        ActivationCosmetic(Vector3.zero);
+        this.target = target;
         GetDamage();
         var residue = target.TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
         if (target is Entity entity)

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 public class Missile : WeaponAbility
 {
@@ -44,6 +45,10 @@ public class Missile : WeaponAbility
         script.SetDamage(GetDamage());
         script.StartSurvivalTimer(3);
         script.missileColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
+        if (DevConsoleScript.networkEnabled && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
+        {
+            missile.GetComponent<NetworkObject>().Spawn();
+        }
         base.Execute(victimPos);
         return true;
     }
