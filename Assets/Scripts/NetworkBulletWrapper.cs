@@ -6,17 +6,21 @@ using UnityEngine;
 public class NetworkBulletWrapper : NetworkBehaviour
 {
 
+    void FindAndActivateWeaponCosmetic(ulong clientID, Vector2 location)
+    {
+            var ent = AIData.entities.Find(e => e.ID == clientID.ToString());
+            if (!(ent is ShellCore)) return;
+            var ab = NetworkProtobuf.GetWeaponFromLocation(location, ent as ShellCore);
+            if (ab is Bullet bullet) bullet.ActivationCosmetic(transform.position);
+    }
+
 
     public override void OnNetworkSpawn()
     {
         if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
         {
-            var ent = AIData.entities.Find(e => e.ID == clientID.Value.ToString());
-            if (!(ent is ShellCore)) return;
-            var ab = NetworkProtobuf.GetWeaponFromLocation(partLocation.Value, ent as ShellCore);
-            if (ab is Bullet bullet) bullet.ActivationCosmetic(transform.position);
+            FindAndActivateWeaponCosmetic(clientID.Value, partLocation.Value);
         }
-
         base.OnNetworkSpawn();
     }
 
@@ -38,7 +42,7 @@ public class NetworkBulletWrapper : NetworkBehaviour
     
     void Update()
     {
-        if (DevConsoleScript.networkEnabled && NetworkManager.IsServer)
+        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton && NetworkManager.IsServer)
         {
             SetPositionClientRpc(transform.position);
         }

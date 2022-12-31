@@ -116,6 +116,7 @@ public class PlayerCore : ShellCore
             dimension = lastDimension;
         }
 
+
         transform.position = spawnPoint; // reset position to spawn point
         base.Respawn(); // this will reinitialize the HUD
         spawnPoint = havenSpawnPoint; // reset spawn point
@@ -316,7 +317,8 @@ public class PlayerCore : ShellCore
                 SectorManager.instance.characters = newChars.ToArray();
             }
 
-            transform.position = havenSpawnPoint = save.position;
+            if (!DevConsoleScript.networkEnabled)
+                transform.position = havenSpawnPoint = save.position;
         }
 
         name = entityName = "player";

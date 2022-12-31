@@ -32,8 +32,9 @@ public class SaveHandler : MonoBehaviour
             // Load
             string json = File.ReadAllText(currentPath);
             save = JsonUtility.FromJson<PlayerSave>(json);
-            if (save.timePlayed != 0)
+            if (save.timePlayed != 0 && !DevConsoleScript.networkEnabled)
             {
+                Debug.LogWarning("test");
                 player.spawnPoint = save.position;
                 player.Dimension = save.lastDimension;
             }

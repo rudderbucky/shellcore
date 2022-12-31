@@ -40,6 +40,10 @@ public class Beam : WeaponAbility
         particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
         line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         line.startColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
+        if (!beamHitPrefab)
+        {
+            beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+        }
         base.Start();
     }
 
@@ -63,7 +67,7 @@ public class Beam : WeaponAbility
             {
                 line.SetPosition(currentVertex+1, targetArray[currentVertex].position);
             }
-            else
+            else if (!NetworkAdaptor.lettingServerDecide)
             {
                 line.SetPosition(currentVertex+1, line.transform.position); // TODO: Fix
             }
@@ -100,11 +104,6 @@ public class Beam : WeaponAbility
 
     protected override bool Execute(Vector3 victimPos)
     {
-        if (!beamHitPrefab)
-        {
-            beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
-        }
-
         targetArray.Clear();
         targetArray.Add(targetingSystem.GetTarget());
         FireBeam(victimPos);
@@ -119,6 +118,10 @@ public class Beam : WeaponAbility
         {
             timer = 0; // start the timer
             line.positionCount = 2; // render the beam line
+            if (NetworkAdaptor.lettingServerDecide)
+            {
+                line.SetPosition(1, targetPos);
+            }
         }
         else 
         {

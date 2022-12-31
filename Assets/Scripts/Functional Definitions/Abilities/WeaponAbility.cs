@@ -180,11 +180,13 @@ public abstract class WeaponAbility : ActiveAbility
 
     public override void Activate()
     {
+        var lettingServerDecide = NetworkAdaptor.lettingServerDecide;
         if (Core as PlayerCore)
             isEnabled = !isEnabled;
-        UpdateState();
+        if (lettingServerDecide)
+            UpdateState();
         Core.MakeBusy(); // make core busy
-        if (DevConsoleScript.networkEnabled && !(Core is PlayerCore) && NetworkManager.Singleton && NetworkManager.Singleton.IsServer)
+        if (!lettingServerDecide)
         {
             Shoot();
         }
@@ -224,13 +226,14 @@ public abstract class WeaponAbility : ActiveAbility
             // check if allied
             if (FactionManager.IsAllied(tmp.GetFaction(), Core.faction)) return;
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
-            if (!DevConsoleScript.networkEnabled || (NetworkManager.Singleton.IsServer))
+            if (!DevConsoleScript.networkEnabled || (!NetworkAdaptor.lettingServerDecide))
             {
                 if (!Execute(target.position)) return;
             }
             else if (Core.protobuf)
             {
                 Core.protobuf.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, target.position);
+                ActivationCosmetic(target.position);
             }
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;
