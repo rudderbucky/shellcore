@@ -221,9 +221,20 @@ public class NetworkProtobuf : NetworkBehaviour
     {   
         if (!huskCore) return;
         var weapon = GetWeaponFromLocation(location, huskCore);
-        if (weapon) weapon.Activate();
-
+        if (!weapon) return;
+        weapon.Activate();
     }
+
+    [ClientRpc]
+    public void ExecuteAbilityCosmeticClientRpc(Vector2 location, Vector3 victimPos)
+    {
+        if (NetworkManager.Singleton.IsServer) return;
+        var core = huskCore ? huskCore : PlayerCore.Instance;
+        var weapon = GetWeaponFromLocation(location, core);
+        if (weapon) weapon.ActivationCosmetic(victimPos);
+    }
+
+
 
     private static float POLL_RATE = 0.00F;
     private float lastPollTime;

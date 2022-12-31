@@ -229,11 +229,12 @@ public abstract class WeaponAbility : ActiveAbility
             if (!DevConsoleScript.networkEnabled || (!NetworkAdaptor.lettingServerDecide))
             {
                 if (!Execute(target.position)) return;
+                if (DevConsoleScript.networkEnabled && !NetworkAdaptor.lettingServerDecide && Core.protobuf) 
+                    Core.protobuf.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
             }
             else if (Core.protobuf)
             {
                 Core.protobuf.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, target.position);
-                ActivationCosmetic(target.position);
             }
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;
