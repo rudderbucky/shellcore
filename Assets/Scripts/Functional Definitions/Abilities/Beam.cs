@@ -59,11 +59,11 @@ public class Beam : WeaponAbility
         {
             line.startWidth = line.endWidth = 0.15F;
             line.SetPosition(0, transform.position); // draw and increment timer
-            if (nextTargetPart)
+            if (nextTargetPart && !NetworkAdaptor.lettingServerDecide)
             {
                 line.SetPosition(currentVertex+1, partPos);
             }
-            else if (targetArray[currentVertex])
+            else if (targetArray.Count > currentVertex && targetArray[currentVertex])
             {
                 line.SetPosition(currentVertex+1, targetArray[currentVertex].position);
             }
@@ -113,7 +113,13 @@ public class Beam : WeaponAbility
     public override void ActivationCosmetic(Vector3 targetPos)
     {
         AudioManager.PlayClipByID("clip_beam", transform.position);
-        
+        if (NetworkAdaptor.lettingServerDecide && targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponentInParent<Entity>())
+        {
+            GetClosestPart(targetingSystem.GetTarget().GetComponentInParent<Entity>().NetworkGetParts().ToArray());
+            targetPos = nextTargetPart.transform.position;
+        }
+
+
         if (line.positionCount == 0) 
         {
             timer = 0; // start the timer

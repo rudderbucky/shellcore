@@ -718,6 +718,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     // Wrapper for assembling core
     protected void SetUpParts(EntityBlueprint blueprint)
     {
+        if (DevConsoleScript.networkEnabled && !NetworkAdaptor.lettingServerDecide && protobuf)
+        {
+            protobuf.partStatuses.Clear();
+        }
         if (blueprint != null && blueprint.parts != null)
         {
             ResetHealths();
@@ -841,7 +845,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             partObject.GetComponent<Collider2D>().enabled = false;
         }
 
-        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer && protobuf)
+        if (DevConsoleScript.networkEnabled && !NetworkAdaptor.lettingServerDecide && protobuf)
         {
             protobuf.partStatuses.Add(new NetworkProtobuf.PartStatusResponse(shellPart.info.location, false));
         }
@@ -897,6 +901,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer && protobuf)
         {
             protobuf.ServerResetParts();
+            //protobuf.playerReady = false;
         }
 
         interactible = false;
@@ -913,7 +918,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
-            if (selectedParts.Count > 0)
+            if (selectedParts.Count > 0  && !DevConsoleScript.networkEnabled)
             {
                 foreach (var part in selectedParts)
                 {
@@ -1133,8 +1138,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     protected void TickState()
     {
-        var lettingServerDecide = this as PlayerCore && NetworkAdaptor.lettingServerDecide;
-        DeathHandler();
+        if (!NetworkAdaptor.lettingServerDecide || (!protobuf || protobuf.playerReady))
+            DeathHandler();
         UpdateInteractible();
         UpdateAuras();
         if (isDead) // if the craft is dead

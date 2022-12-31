@@ -227,7 +227,7 @@ public class NetworkProtobuf : NetworkBehaviour
 
     private static float POLL_RATE = 0.00F;
     private float lastPollTime;
-    private bool playerReady;
+    public bool playerReady;
 
     public void ServerDetachPart(ShellPart part)
     {
@@ -241,7 +241,10 @@ public class NetworkProtobuf : NetworkBehaviour
 
     public void ServerResetParts()
     {
-        partStatuses.Clear();
+        for (int i = 0; i < partStatuses.Count; i++)
+        {
+            partStatuses[i] = new PartStatusResponse(partStatuses[i].location, true);
+        }
     }
 
     void Update()
@@ -258,6 +261,7 @@ public class NetworkProtobuf : NetworkBehaviour
             huskCore = ent as ShellCore;
             huskCore.blueprint = demoBlueprint;
             huskCore.protobuf = this;
+            playerReady = true;
         }
         else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !playerReady)
         {
@@ -270,6 +274,7 @@ public class NetworkProtobuf : NetworkBehaviour
                 playerReady = true;
             }
         }
+        else if (NetworkManager.IsHost) playerReady = true;
 
         if (huskCore)
         {
@@ -292,7 +297,7 @@ public class NetworkProtobuf : NetworkBehaviour
             foreach (var part in partStatuses)
             {
                 if (!part.detached) continue;
-                var foundPart = core.NetworkGetParts().Find(p => p.info.location == part.location);
+                var foundPart = core.NetworkGetParts().Find(p => p && p.info.location == part.location);
                 if (!foundPart) continue;
                 core.RemovePart(foundPart);
                 break;
