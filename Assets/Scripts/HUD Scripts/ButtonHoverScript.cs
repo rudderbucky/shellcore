@@ -15,27 +15,20 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
     {
         if (name == "MainMenuButton")
         {
+            if (DevConsoleScript.networkEnabled)
+            {
+                DevConsoleScript.networkEnabled = false;
+                NetworkAdaptor.lettingServerDecide = false;
+                NetworkManager.Singleton.Shutdown();
+                Destroy(NetworkManager.Singleton.gameObject);
+            }
+
             if (SectorManager.testJsonPath == null)
             {
-                if (DevConsoleScript.networkEnabled)
-                {
-                    DevConsoleScript.networkEnabled = false;
-                    NetworkManager.Singleton.Shutdown();
-                    Destroy(NetworkManager.Singleton.gameObject);
-                }
-
                 SceneManager.LoadScene("MainMenu");
             }
             else
             {
-                if (DevConsoleScript.networkEnabled)
-                {
-                    DevConsoleScript.networkEnabled = false;
-                    NetworkAdaptor.lettingServerDecide = false;
-                    NetworkManager.Singleton.Shutdown();
-                    Destroy(NetworkManager.Singleton.gameObject);
-                }
-
                 SceneManager.LoadScene("WorldCreator");
                 WCWorldIO.instantTest = false;
                 SectorManager.testJsonPath = null;
