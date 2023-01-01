@@ -8,6 +8,7 @@ public class SaveHandler : MonoBehaviour
     public TaskManager taskManager;
     PlayerSave save;
     public static SaveHandler instance;
+    bool initialized = false;
 
     public PlayerSave GetSave()
     {
@@ -16,6 +17,7 @@ public class SaveHandler : MonoBehaviour
     public void Initialize()
     {
         instance = this;
+        initialized = true;
         string currentPath;
         var CurrentSavePath = System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath");
         if (!File.Exists(CurrentSavePath))
@@ -105,22 +107,29 @@ public class SaveHandler : MonoBehaviour
             save.presetBlueprints = new string[5];
             save.currentHealths = new float[] { 1000, 250, 500 };
             save.partInventory = new List<EntityBlueprint.PartInfo>();
-
-            player.blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-            player.blueprint.name = "Player Save Blueprint";
-            player.blueprint.coreSpriteID = "core1_light";
-            player.blueprint.coreShellSpriteID = "core1_shell";
-            player.blueprint.baseRegen = CoreUpgraderScript.GetRegens(player.blueprint.coreShellSpriteID);
-            player.blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
-            player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
-            player.cursave = save;
+            player.blueprint = GetDefaultBlueprint();
             player.abilityCaps = CoreUpgraderScript.minAbilityCap;
+            player.cursave = save;
         }
     }
+
+    public static EntityBlueprint GetDefaultBlueprint()
+    {
+        var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
+        blueprint.name = "Player Save Blueprint";
+        blueprint.coreSpriteID = "core1_light";
+        blueprint.coreShellSpriteID = "core1_shell";
+        blueprint.baseRegen = CoreUpgraderScript.GetRegens(blueprint.coreShellSpriteID);
+        blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
+        blueprint.parts = new List<EntityBlueprint.PartInfo>();
+        return blueprint;
+    }
+
 
     private float timeSinceLastSave;
     public void Save()
     {
+        if (!initialized) return;
         save.timePlayed += (Time.timeSinceLevelLoad - timeSinceLastSave) / 60;
         timeSinceLastSave = Time.timeSinceLevelLoad;
         if (SaveMenuHandler.migratedTimePlayed != null)

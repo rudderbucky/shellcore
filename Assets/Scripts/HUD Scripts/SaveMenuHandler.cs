@@ -427,15 +427,7 @@ public class SaveMenuHandler : GUIWindowScripts
         save.sectorsSeen = new List<string>();
         save.missions = new List<Mission>();
 
-        // this section contains default information for a new save. Edit this to change how the default save
-        // is created.
-        EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-        blueprint.name = "Player Save Blueprint";
-        blueprint.parts = new List<EntityBlueprint.PartInfo>();
-        blueprint.coreSpriteID = "core1_light";
-        blueprint.coreShellSpriteID = "core1_shell";
-        blueprint.baseRegen = CoreUpgraderScript.GetRegens(blueprint.coreShellSpriteID);
-        blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
+        EntityBlueprint blueprint = SaveHandler.GetDefaultBlueprint();
         save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
         save.abilityCaps = CoreUpgraderScript.minAbilityCap;
         save.shards = 0;

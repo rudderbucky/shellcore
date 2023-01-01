@@ -46,9 +46,13 @@ public class SystemLoader : MonoBehaviour
             DialogueSystem.InitCanvases();
         }
 
-        if (saveHandler)
+        if (saveHandler && !DevConsoleScript.networkEnabled)
         {
             saveHandler.Initialize();
+        }
+        else if (saveHandler && DevConsoleScript.networkEnabled)
+        {
+            saveHandler.player.blueprint = SaveHandler.GetDefaultBlueprint();
         }
 
         // Save Handler will initialize mission canvases after sector loading if present.
