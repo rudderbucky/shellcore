@@ -101,10 +101,7 @@ public class PlayerCore : ShellCore
         List<bool> autoCastActivationStates = new List<bool>();
         for (int i = 0; i < abilities.Count; i++)
         {
-            if (abilities[i] is ActiveAbility activeAbility)
-            {
-                autoCastActivationStates.Add(activeAbility.AutoCast);
-            }
+            autoCastActivationStates.Add(abilities[i].AutoCast);
         }
 
         if (hud)
@@ -137,10 +134,7 @@ public class PlayerCore : ShellCore
         int activeAbilityIndex = 0;
         for (int i = 0; i < abilities.Count; i++)
         {
-            if (abilities[i] is ActiveAbility activeAbility)
-            {
-                activeAbility.AutoCast = autoCastActivationStates[activeAbilityIndex++];
-            }
+            abilities[i].AutoCast = autoCastActivationStates[activeAbilityIndex++];
         }
     }
 

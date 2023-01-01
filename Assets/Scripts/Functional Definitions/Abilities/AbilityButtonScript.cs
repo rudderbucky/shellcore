@@ -116,7 +116,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
         description += $"\n{AbilityUtilities.GetDescription(ability)}";
 
-        if (ability is SpawnDrone)
+        if (ability is SpawnDrone || (ability.GetAbilityType() == AbilityHandler.AbilityTypes.Skills && PlayerPrefs.GetString("AllowAutocastSkills", "False") == "True"))
         {
             description += $"\nHold {GetPrettyStringFromKeycode(InputManager.keys[KeyName.AutoCastBuyTurret].overrideKey)} to toggle auto cast";
         }
@@ -274,7 +274,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
         else if(abilities[0].GetAbilityType() != AbilityHandler.AbilityTypes.Passive && (abilities[0].State == Ability.AbilityState.Active ||
                                                                                           abilities[0].State == Ability.AbilityState.Charging ||
                                                                                           (abilities[0] is WeaponAbility && abilities[0].isEnabled) ||
-                                                                                          abilities[0] is ActiveAbility ab && ab.AutoCast))
+                                                                                          abilities[0].AutoCast))
         {
             image.color = PlayerCore.GetPlayerFactionColor();
         }
@@ -328,12 +328,12 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                             && !PlayerViewScript.paused && !DialogueSystem.isInCutscene;
 
         if (!hotkeyAccepted && !(clicked && Input.mousePosition == oldInputMousePos)) return;
-        if (InputManager.GetKey(KeyName.AutoCastBuyTurret) && abilities[0] is ActiveAbility)
+        if (InputManager.GetKey(KeyName.AutoCastBuyTurret))
         {
-            bool autoCast = !(abilities[0] as ActiveAbility).AutoCast;
+            bool autoCast = !abilities[0].AutoCast;
             foreach (var ab in abilities)
             {
-                (ab as ActiveAbility).AutoCast = autoCast;
+                ab.AutoCast = autoCast;
             }
             return;
         }
@@ -379,9 +379,9 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
                 var cameraPos = CameraScript.instance.transform.position;
                 cameraPos.z = 0;
                 range = Camera.main.WorldToScreenPoint(cameraPos + new Vector3(0, range)).y - Camera.main.WorldToScreenPoint(cameraPos).y;
-                range *= (float)1920 / Screen.width * 2;
+                range *= UIScalerScript.GetScale() * 2;
 
-                circles[ability].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(ability.transform.position) * 1920 / Screen.width;
+                circles[ability].rectTransform.anchoredPosition = Camera.main.WorldToScreenPoint(ability.transform.position) * UIScalerScript.GetScale();
                 circles[ability].rectTransform.sizeDelta = new Vector2(range, range);
                 //Debug.Log(Camera.main.ScreenToWorldPoint((Vector3)rangeCircle.rectTransform.anchoredPosition +
                 //    new Vector3(0,range / 2,CameraScript.zLevel) ) - abilities[0].transform.position);

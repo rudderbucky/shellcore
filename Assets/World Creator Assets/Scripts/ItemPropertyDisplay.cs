@@ -107,7 +107,7 @@ public class ItemPropertyDisplay : MonoBehaviour
         }
 
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);
-        pos *= (float)1920 / Screen.width;
+        pos *= UIScalerScript.GetScale();
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
     }
@@ -122,7 +122,7 @@ public class ItemPropertyDisplay : MonoBehaviour
         }
 
         var pos = Camera.main.WorldToScreenPoint(currentItem.pos);
-        pos *= (float)1920 / Screen.width;
+        pos *= UIScalerScript.GetScale();
         pos += new Vector3(300, 0);
         rectTransform.anchoredPosition = pos;
         factionDropdown.value = item.faction;
