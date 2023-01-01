@@ -210,7 +210,7 @@ public class NetworkProtobuf : NetworkBehaviour
 
         foreach (var part in core.NetworkGetParts())
         {            
-            if (part.info.location != location) continue;
+            if (!part || part.info.location != location) continue;
             return part.GetComponent<Ability>();
         }
         return null;
