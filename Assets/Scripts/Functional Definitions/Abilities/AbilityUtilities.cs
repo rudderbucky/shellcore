@@ -46,7 +46,7 @@ public enum AbilityID
     Unload,
     HealAura,
     SpeedAura,
-    DamageResistanceAura,
+    EnergyAura,
     ChainBeam,
     SpeederMissile
 }
@@ -636,7 +636,7 @@ public static class AbilityUtilities
                 break;
             case 44:
                 ability = obj.AddComponent<TowerAura>();
-                (ability as TowerAura).type = TowerAura.AuraType.DamageResistance;
+                (ability as TowerAura).type = TowerAura.AuraType.Energy;
                 break;
             case 45:
                 ability = obj.AddComponent<ChainBeam>();
