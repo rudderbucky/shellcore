@@ -162,7 +162,10 @@ public class ShellPart : MonoBehaviour
         hasDetached = true; // has detached now
         gameObject.AddComponent<Rigidbody2D>(); // add a rigidbody (this might become permanent)
         if (name != "Shell Sprite")
-            gameObject.AddComponent<UnityEngine.Rendering.SortingGroup>();
+        {
+            var group = gameObject.AddComponent<UnityEngine.Rendering.SortingGroup>();
+            if (group) group.sortingLayerName = "Air Entities";
+        }
         rigid = GetComponent<Rigidbody2D>();
         rigid.gravityScale = 0; // adjust the rigid body
         rigid.angularDrag = 0;

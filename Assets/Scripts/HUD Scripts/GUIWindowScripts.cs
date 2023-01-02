@@ -87,7 +87,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        mousePos = (Vector2)Input.mousePosition * (float)1920 / Screen.width - GetComponent<RectTransform>().anchoredPosition;
+        mousePos = (Vector2)Input.mousePosition * UIScalerScript.GetScale() - GetComponent<RectTransform>().anchoredPosition;
         selected = true;
     }
 
@@ -109,7 +109,7 @@ public class GUIWindowScripts : MonoBehaviour, IWindow, IPointerDownHandler, IPo
 
         if (selected)
         {
-            GetComponent<RectTransform>().anchoredPosition = (Vector2)Input.mousePosition * (float)1920 / Screen.width - mousePos;
+            GetComponent<RectTransform>().anchoredPosition = (Vector2)Input.mousePosition * UIScalerScript.GetScale() - mousePos;
         }
     }
 }

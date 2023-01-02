@@ -10,7 +10,6 @@ public class CameraScript : MonoBehaviour
     public static UnityEngine.Events.UnityAction callback;
     private PlayerCore core; // the target for the camera to follow
     private bool initialized;
-    public SFXHandler sFXHandler;
 
     public static bool panning;
     public static Vector3 target;
@@ -28,10 +27,6 @@ public class CameraScript : MonoBehaviour
         }
 
         core = player;
-        if (!initialized)
-        {
-            sFXHandler.Initialize();
-        }
 
         initialized = true;
         Start();

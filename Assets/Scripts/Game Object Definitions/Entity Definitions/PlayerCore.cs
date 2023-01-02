@@ -98,6 +98,11 @@ public class PlayerCore : ShellCore
                 weaponActivationStates.Add(weapon.GetActiveTimeRemaining() == -1);
             }
         }
+        List<bool> autoCastActivationStates = new List<bool>();
+        for (int i = 0; i < abilities.Count; i++)
+        {
+            autoCastActivationStates.Add(abilities[i].AutoCast);
+        }
 
         if (hud)
         {
@@ -125,6 +130,11 @@ public class PlayerCore : ShellCore
             {
                 weapon.SetActive(weaponActivationStates[weaponIndex++]);
             }
+        }
+        int activeAbilityIndex = 0;
+        for (int i = 0; i < abilities.Count; i++)
+        {
+            abilities[i].AutoCast = autoCastActivationStates[activeAbilityIndex++];
         }
     }
 
