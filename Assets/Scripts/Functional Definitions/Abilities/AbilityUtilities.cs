@@ -104,6 +104,8 @@ public static class AbilityUtilities
             case 37:
             case 38:
             case 39:
+            case 45:
+            case 46:
                 return AbilityHandler.AbilityTypes.Weapons;
             case 1:
             case 2:
@@ -122,7 +124,6 @@ public static class AbilityUtilities
             case 35:
             case 40:
             case 41:
-            case 46:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -290,6 +291,7 @@ public static class AbilityUtilities
             case 6:
                 return "cannonshooter_sprite";
             case 7:
+            case 46:
                 if (data == "missile_station_shooter")
                 {
                     return "missile_station_shooter";
@@ -348,8 +350,6 @@ public static class AbilityUtilities
                 }
             case 40:
                 return "ability_indicator_yard_warp";
-            case 46:
-                return "missileshooter_sprite";
             default:
                 return "ability_indicator";
         }
