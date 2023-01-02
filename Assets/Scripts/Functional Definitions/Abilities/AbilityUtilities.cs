@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public enum AbilityID
 {
@@ -46,8 +46,9 @@ public enum AbilityID
     Unload,
     HealAura,
     SpeedAura,
-    EnergyAura,
-    ChainBeam
+    DamageResistanceAura,
+    ChainBeam,
+    SpeederMissile
 }
 
 public static class AbilityUtilities
@@ -103,7 +104,6 @@ public static class AbilityUtilities
             case 37:
             case 38:
             case 39:
-            case 45:
                 return AbilityHandler.AbilityTypes.Weapons;
             case 1:
             case 2:
@@ -122,6 +122,7 @@ public static class AbilityUtilities
             case 35:
             case 40:
             case 41:
+            case 46:
                 return AbilityHandler.AbilityTypes.Skills;
             case 13:
             case 17:
@@ -149,7 +150,7 @@ public static class AbilityUtilities
             case 0:
                 return "Does nothing.";
             case 1:
-                return $"+{SpeedThrust.boost * tier} speed for {SpeedThrust.duration} seconds.";
+                return $"+{SpeedThrust.boost * tier} speed for 10 seconds.";
             case 2:
                 return $"Instantly heal {HealthHeal.heals[0] * tier} shell.";
             case 3:
@@ -235,8 +236,6 @@ public static class AbilityUtilities
                 return "Warps your currently held part directly into your inventory.";
             case 41:
                 return $"Temporarily reduces Global Cooldown by {Mathf.Min(tier, 1)}/{Mathf.Min(tier, 1) + 1}.";
-            case 45:
-                return $"Instant attack that deals {Beam.beamDamage * tier} damage to multiple targets.";
             default:
                 return "Description unset";
         }
@@ -349,6 +348,8 @@ public static class AbilityUtilities
                 }
             case 40:
                 return "ability_indicator_yard_warp";
+            case 46:
+                return "missileshooter_sprite";
             default:
                 return "ability_indicator";
         }
@@ -448,14 +449,6 @@ public static class AbilityUtilities
                 return "Yard Warp";
             case 41:
                 return "Unload";
-            case 42:
-                return "Heal Aura";
-            case 43:
-                return "Speed Aura";
-            case 44:
-                return "Energy Aura";
-            case 45:
-                return "Chain";
             default:
                 return "Name unset";
         }
@@ -636,20 +629,20 @@ public static class AbilityUtilities
             case 42:
                 ability = obj.AddComponent<TowerAura>();
                 (ability as TowerAura).type = TowerAura.AuraType.Heal;
-                (ability as TowerAura).Initialize();
                 break;
             case 43:
                 ability = obj.AddComponent<TowerAura>();
                 (ability as TowerAura).type = TowerAura.AuraType.Speed;
-                (ability as TowerAura).Initialize();
                 break;
             case 44:
                 ability = obj.AddComponent<TowerAura>();
-                (ability as TowerAura).type = TowerAura.AuraType.Energy;
-                (ability as TowerAura).Initialize();
+                (ability as TowerAura).type = TowerAura.AuraType.DamageResistance;
                 break;
             case 45:
                 ability = obj.AddComponent<ChainBeam>();
+                break;
+            case 46:
+                ability = obj.AddComponent<SpeederMissile>();
                 break;
         }
 
