@@ -718,7 +718,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     // Wrapper for assembling core
     protected void SetUpParts(EntityBlueprint blueprint)
     {
-        if (DevConsoleScript.networkEnabled && !NetworkAdaptor.lettingServerDecide && protobuf)
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkAdaptor.lettingServerDecide && protobuf)
         {
             protobuf.partStatuses.Clear();
         }
@@ -845,7 +845,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             partObject.GetComponent<Collider2D>().enabled = false;
         }
 
-        if (DevConsoleScript.networkEnabled && !NetworkAdaptor.lettingServerDecide && protobuf)
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkAdaptor.lettingServerDecide && protobuf)
         {
             protobuf.partStatuses.Add(new NetworkProtobuf.PartStatusResponse(shellPart.info.location, false));
         }
@@ -898,12 +898,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
         }
 
-        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer && protobuf)
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkManager.Singleton.IsServer && protobuf)
         {
             protobuf.ServerResetParts();
             protobuf.serverReady.Value = false;
         }
-        if (DevConsoleScript.networkEnabled && NetworkAdaptor.lettingServerDecide && protobuf)
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkAdaptor.lettingServerDecide && protobuf)
         {
             protobuf.clientReady = false;
         }
@@ -922,7 +922,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             // extract non-shell parts
             var selectedParts = parts.FindAll(p => p != shell);
-            if (selectedParts.Count > 0  && !DevConsoleScript.networkEnabled)
+            if (selectedParts.Count > 0  && NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off)
             {
                 foreach (var part in selectedParts)
                 {
@@ -1043,7 +1043,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
         initialized = true;
-        if (DevConsoleScript.networkEnabled && !NetworkAdaptor.lettingServerDecide && protobuf) protobuf.serverReady.Value = true;
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkAdaptor.lettingServerDecide && protobuf) protobuf.serverReady.Value = true;
     }
 
     protected void ActivatePassives()
@@ -1167,7 +1167,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     player.alerter.showMessage("");
                 }
 
-                if ((!DevConsoleScript.networkEnabled || !NetworkAdaptor.lettingServerDecide || (!protobuf || protobuf.serverReady.Value)))
+                if ((NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off || !NetworkAdaptor.lettingServerDecide || (!protobuf || protobuf.serverReady.Value)))
                     PostDeath();
             }
         }

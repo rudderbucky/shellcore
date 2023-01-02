@@ -46,11 +46,11 @@ public class SystemLoader : MonoBehaviour
             DialogueSystem.InitCanvases();
         }
 
-        if (saveHandler && !DevConsoleScript.networkEnabled)
+        if (saveHandler && NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off)
         {
             saveHandler.Initialize();
         }
-        else if (saveHandler && DevConsoleScript.networkEnabled)
+        else if (saveHandler && NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off)
         {
             saveHandler.player.blueprint = SaveHandler.GetDefaultBlueprint();
         }

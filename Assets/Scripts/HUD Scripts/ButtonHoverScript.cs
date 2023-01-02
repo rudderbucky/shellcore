@@ -15,9 +15,8 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
     {
         if (name == "MainMenuButton")
         {
-            if (DevConsoleScript.networkEnabled)
+            if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off)
             {
-                DevConsoleScript.networkEnabled = false;
                 NetworkAdaptor.lettingServerDecide = false;
                 NetworkManager.Singleton.Shutdown();
                 NetworkAdaptor.mode = NetworkAdaptor.NetworkMode.Off;

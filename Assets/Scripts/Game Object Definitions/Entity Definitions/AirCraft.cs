@@ -45,7 +45,7 @@ public abstract class AirCraft : Craft
 
     protected override void OnDeath()
     {
-        var lettingServerDecide = DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost;
+        var lettingServerDecide = NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost;
         if (!FactionManager.IsAllied(0, faction) && Random.Range(0, 1F) <= 0.2F && !lettingServerDecide)
         {
             var x = Instantiate(energySpherePrefab, transform.position, Quaternion.identity);
@@ -62,7 +62,7 @@ public abstract class AirCraft : Craft
     /// </summary>
     protected void Oscillator()
     {
-        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient)
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkManager.Singleton.IsClient)
         {
             oscillating = false;
             return;

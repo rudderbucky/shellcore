@@ -55,7 +55,7 @@ public class BulletScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost) return;
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost) return;
 
         //TODO: Make this collision avoid hitting the core collider which may mess up the part damage calculation a bit  (for missiles as well)
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
@@ -64,7 +64,7 @@ public class BulletScript : MonoBehaviour
         {
             if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && craft.GetTransform() != owner.GetTransform())
             {
-                if (!DevConsoleScript.networkEnabled || !NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
+                if (NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off || !NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
                 {
                     var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration  
 
@@ -79,7 +79,7 @@ public class BulletScript : MonoBehaviour
                 }
                 
                 InstantiateHitPrefab();
-                if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsServer)
+                if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkManager.Singleton.IsServer)
                 {
                     if (GetComponent<NetworkObject>().IsSpawned)
                         GetComponent<NetworkObject>().Despawn();

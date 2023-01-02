@@ -132,7 +132,7 @@ public abstract class Craft : Entity
 
         Start(); // once everything else is done initialize the craft again
 
-        if (DevConsoleScript.networkEnabled && NetworkAdaptor.lettingServerDecide && protobuf)
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkAdaptor.lettingServerDecide && protobuf)
         {
             protobuf.clientReady = false;
         }
@@ -165,7 +165,7 @@ public abstract class Craft : Entity
 
     protected override void FixedUpdate()
     {
-        var lettingServerDecide = this as PlayerCore && DevConsoleScript.networkEnabled && !NetworkManager.Singleton.IsServer && protobuf != null;
+        var lettingServerDecide = this as PlayerCore && NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkManager.Singleton.IsServer && protobuf != null;
 
         entityBody.drag = draggable.dragging ? 25F : 0;
         if (draggable.dragging)

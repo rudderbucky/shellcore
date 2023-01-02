@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -53,6 +54,7 @@ public class NetworkProtobuf : NetworkBehaviour
     }
 
     public EntityBlueprint demoBlueprint;
+    public NetworkVariable<FixedString64Bytes> playerName;
 
     public struct PartStatusResponse : INetworkSerializable, IEquatable<PartStatusResponse>
     {
@@ -185,7 +187,6 @@ public class NetworkProtobuf : NetworkBehaviour
         core.SetWeaponGCDTimer(response.weaponGCDTimer);
         core.SyncHealth(response.shell, response.core, response.energy);
     }
-
     
     [ServerRpc(RequireOwnership = true)]
     public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
@@ -281,6 +282,7 @@ public class NetworkProtobuf : NetworkBehaviour
             huskCore.protobuf = this;
             clientSideSynced = false;
             clientReady = true;
+            ProximityInteractScript.instance.AddPlayerName(huskCore, playerName.Value.ToString());
         }
         else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && serverReady.Value)
         {

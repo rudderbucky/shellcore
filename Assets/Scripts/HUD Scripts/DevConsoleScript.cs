@@ -17,7 +17,6 @@ public class DevConsoleScript : MonoBehaviour
     public static bool godModeEnabled = false;
     public static bool spectateEnabled = false;
     private static bool warpingEnabled = false;
-    public static bool networkEnabled = false;
     public static bool WarpingEnabled
     {
         get { return godModeEnabled || warpingEnabled; }

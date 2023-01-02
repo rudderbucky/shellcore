@@ -31,7 +31,6 @@ public class MainMenu : MonoBehaviour
     public void NetworkDuel(bool hostMode)
     {
         NetworkAdaptor.mode = hostMode ? NetworkAdaptor.NetworkMode.Host : NetworkAdaptor.NetworkMode.Client;
-        DevConsoleScript.networkEnabled = true;
         NetworkAdaptor.address = addressField.text;
         NetworkAdaptor.port = portField.text;
         SceneManager.LoadScene("SampleScene");

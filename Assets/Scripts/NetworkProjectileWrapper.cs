@@ -7,7 +7,7 @@ public class NetworkProjectileWrapper : NetworkBehaviour
 {
     public override void OnNetworkDespawn()
     {
-        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost && GetComponent<BulletScript>())
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost && GetComponent<BulletScript>())
         {
             GetComponent<BulletScript>().InstantiateHitPrefab();
         }
@@ -21,7 +21,7 @@ public class NetworkProjectileWrapper : NetworkBehaviour
     
     void Update()
     {
-        if (DevConsoleScript.networkEnabled && NetworkManager.Singleton && NetworkManager.IsServer)
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkManager.Singleton && NetworkManager.IsServer)
         {
             SetPositionClientRpc(transform.position);
         }

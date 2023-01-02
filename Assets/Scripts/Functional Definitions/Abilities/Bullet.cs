@@ -110,7 +110,7 @@ public class Bullet : WeaponAbility
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);
         
-        if (DevConsoleScript.networkEnabled && (!NetworkAdaptor.lettingServerDecide))
+        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && (!NetworkAdaptor.lettingServerDecide))
         {
             bullet.GetComponent<NetworkObject>().Spawn();
         }

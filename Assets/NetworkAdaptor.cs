@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -17,6 +18,7 @@ public class NetworkAdaptor : NetworkBehaviour
     public static NetworkAdaptor instance;
     public static string address;
     public static string port;
+    public static string testName = "Test";
 
     public static bool lettingServerDecide;
     void Start()
@@ -36,7 +38,6 @@ public class NetworkAdaptor : NetworkBehaviour
 
     public static void StartClient()
     {
-        DevConsoleScript.networkEnabled = true;
         ushort portVal = 0;
         if (!string.IsNullOrEmpty(port) && ushort.TryParse(port, out portVal))
         {
@@ -50,32 +51,32 @@ public class NetworkAdaptor : NetworkBehaviour
 
         NetworkManager.Singleton.StartClient();
         NetworkManager.Singleton.OnClientConnectedCallback += (u) => {
-        NetworkAdaptor.instance.CreateNetworkObjectServerRpc();};
+        NetworkAdaptor.instance.CreateNetworkObjectServerRpc(testName);};
     }
 
     public static void StartServer()
     {
         PlayerCore.Instance.gameObject.SetActive(false);
-        DevConsoleScript.networkEnabled = true;
         NetworkManager.Singleton.StartServer();
     }
 
     public static void StartHost()
     {
-        DevConsoleScript.networkEnabled = true;
         NetworkManager.Singleton.StartHost();
-        NetworkAdaptor.instance.CreateNetworkObjectServerRpc();
+        NetworkAdaptor.instance.CreateNetworkObjectServerRpc(testName);
     }
 
 
     public GameObject networkObj;
 
     [ServerRpc(RequireOwnership = false)]
-    public void CreateNetworkObjectServerRpc(ServerRpcParams serverRpcParams = default)
+    public void CreateNetworkObjectServerRpc(string name, ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
         var obj = Instantiate(networkObj).GetComponent<NetworkObject>();
+        obj.GetComponent<NetworkProtobuf>().playerName = new NetworkVariable<FixedString64Bytes>(name);
         obj.SpawnWithOwnership(clientId);
+
         NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>
         {
             if (u == clientId) obj.Despawn();

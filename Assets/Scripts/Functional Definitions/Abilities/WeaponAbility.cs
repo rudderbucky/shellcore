@@ -226,10 +226,10 @@ public abstract class WeaponAbility : ActiveAbility
             // check if allied
             if (FactionManager.IsAllied(tmp.GetFaction(), Core.faction)) return;
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
-            if (!DevConsoleScript.networkEnabled || (!NetworkAdaptor.lettingServerDecide))
+            if (NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off || (!NetworkAdaptor.lettingServerDecide))
             {
                 if (!Execute(target.position)) return;
-                if (DevConsoleScript.networkEnabled && !NetworkAdaptor.lettingServerDecide && Core.protobuf) 
+                if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkAdaptor.lettingServerDecide && Core.protobuf) 
                     Core.protobuf.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
             }
             else if (Core.protobuf)
