@@ -9,12 +9,12 @@ public class SpeederMissile : WeaponAbility
     {
         base.Awake();
         damage = missileDamage;
-        description = $"Homing projectile that deals {damage} damage.";
+        description = $"Homing projectile that deals {damage} damage plus more if the target was moving.";
         abilityName = "Speeder Missile";
         ID = AbilityID.SpeederMissile;
-        cooldownDuration = 5F;
+        cooldownDuration = 6F;
         range = 20;
-        energyCost = 150;
+        energyCost = 250;
         terrain = Entity.TerrainType.Air;
         category = Entity.EntityCategory.Unit;
         bonusDamageType = typeof(ShellCore);
