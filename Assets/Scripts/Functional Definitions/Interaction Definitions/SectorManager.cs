@@ -239,7 +239,7 @@ public class SectorManager : MonoBehaviour
             dangerZoneTimer = 0;
         }
 
-        if (!DialogueSystem.isInCutscene && TaskManager.GetSpeaker() == null)
+        if (!DialogueSystem.isInCutscene)
         {
             bgSpawnTimer += Time.deltaTime;
 
