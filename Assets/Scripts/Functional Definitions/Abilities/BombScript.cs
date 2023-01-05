@@ -37,6 +37,8 @@ public class BombScript : MonoBehaviour
             script.SetStartColor(bombColor);
             script.color = bombColor;
         }
+
+        SectorManager.OnSectorLoad += SectorLoaded;
     }
 
     /// <summary>
@@ -134,4 +136,15 @@ public class BombScript : MonoBehaviour
                 }
             }
     }
+
+    void SectorLoaded(string sector)
+    {
+        Destroy(gameObject);
+    }
+
+    void OnDestroy()
+    {
+        SectorManager.OnSectorLoad -= SectorLoaded;
+    }
+
 }
