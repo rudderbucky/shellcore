@@ -33,10 +33,11 @@ public class TowerAura : PassiveAbility
                 break;
             case AuraType.Speed:
                 ID = AbilityID.SpeedAura;
-                range = 450;
+                range = 50;
                 break;
             case AuraType.Energy:
                 ID = AbilityID.EnergyAura;
+                range = 25;
                 break;
         }
     }
