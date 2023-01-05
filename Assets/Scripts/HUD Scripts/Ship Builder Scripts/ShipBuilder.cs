@@ -1239,7 +1239,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         shell.color = FactionManager.GetFactionColor(0);
         shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
-        core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
+        core.enabled = core.sprite;
+        if (core && core.sprite) core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
+
         OrientShellAndCore();
     }
 

@@ -32,7 +32,9 @@ public class ShipBuilderInventoryBase : MonoBehaviour, IPointerDownHandler
             image.color = activeColor;
         }
 
-        image.GetComponent<RectTransform>().sizeDelta = image.sprite.bounds.size * 100;
+        image.enabled = image.sprite;
+        if (image.sprite)
+            image.GetComponent<RectTransform>().sizeDelta = image.sprite.bounds.size * 100;
         // button border size is handled specifically by the grid layout components
 
         string shooterID = AbilityUtilities.GetShooterByID(part.abilityID);
