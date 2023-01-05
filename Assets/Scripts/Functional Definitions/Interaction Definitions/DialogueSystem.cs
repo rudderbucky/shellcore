@@ -780,8 +780,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private void endDialogue(int answer = 0, bool soundOnClose = true)
     {
         speaker = null;
-        TaskManager.Instance?.SetSpeakerID(null);
-        SetSpeakerID(null);
         if (window)
         {
             window.playSoundOnClose = soundOnClose;
