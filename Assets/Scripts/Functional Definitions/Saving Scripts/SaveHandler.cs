@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -95,6 +96,7 @@ public class SaveHandler : MonoBehaviour
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
+            StartCoroutine(Autosave());
         }
         else
         {
@@ -113,6 +115,15 @@ public class SaveHandler : MonoBehaviour
             player.blueprint.parts = new List<EntityBlueprint.PartInfo>();
             player.cursave = save;
             player.abilityCaps = CoreUpgraderScript.minAbilityCap;
+        }
+    }
+
+    IEnumerator Autosave()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(20 * 60);//20 minutes
+            Save();
         }
     }
 
