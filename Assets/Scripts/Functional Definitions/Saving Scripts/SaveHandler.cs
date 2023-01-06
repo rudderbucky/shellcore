@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -95,6 +96,7 @@ public class SaveHandler : MonoBehaviour
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
+            StartCoroutine(Autobackup());
         }
         else
         {
@@ -116,37 +118,33 @@ public class SaveHandler : MonoBehaviour
         }
     }
 
-    private float timeSinceLastSave;
-    public void Save()
+    private void UpdateSaveData(PlayerSave playerSave)
     {
-        save.timePlayed += (Time.timeSinceLevelLoad - timeSinceLastSave) / 60;
-        timeSinceLastSave = Time.timeSinceLevelLoad;
+        playerSave.timePlayed += (Time.timeSinceLevelLoad - timeSinceLastSave) / 60;
         if (SaveMenuHandler.migratedTimePlayed != null)
         {
-            save.timePlayed += (int)SaveMenuHandler.migratedTimePlayed;
-            SaveMenuHandler.migratedTimePlayed = null;
+            playerSave.timePlayed += (int)SaveMenuHandler.migratedTimePlayed;
         }
 
-        string currentPath = File.ReadAllLines(System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath"))[0];
-        save.position = player.spawnPoint;
-        save.lastDimension = player.LastDimension;
-        save.currentHealths = player.CurrentHealth;
+        playerSave.position = player.spawnPoint;
+        playerSave.lastDimension = player.LastDimension;
+        playerSave.currentHealths = player.CurrentHealth;
         if (player.CurrentHealth[1] <= 0)
         {
-            save.currentHealths = player.GetMaxHealth();
+            playerSave.currentHealths = player.GetMaxHealth();
         }
 
-        save.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
-        save.credits = player.GetCredits();
-        save.abilityCaps = player.abilityCaps;
-        save.shards = player.shards;
-        if (save.resourcePath == "" || save.resourcePath.Contains("main"))
+        playerSave.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
+        playerSave.credits = player.GetCredits();
+        playerSave.abilityCaps = player.abilityCaps;
+        playerSave.shards = player.shards;
+        if (playerSave.resourcePath == "" || playerSave.resourcePath.Contains("main"))
         {
-            save.resourcePath = SectorManager.instance.resourcePath;
+            playerSave.resourcePath = SectorManager.instance.resourcePath;
         }
 
-        save.characters = SectorManager.instance.characters;
-        save.version = VersionNumberScript.version;
+        playerSave.characters = SectorManager.instance.characters;
+        playerSave.version = VersionNumberScript.version;
 
         List<int> factions = new List<int>();
         List<int> relations = new List<int>();
@@ -158,8 +156,8 @@ public class SaveHandler : MonoBehaviour
                 relations.Add(FactionManager.GetFactionRelations(i));
             }
         }
-        save.factions = factions.ToArray();
-        save.relations = relations.ToArray();
+        playerSave.factions = factions.ToArray();
+        playerSave.relations = relations.ToArray();
 
 
         for (int i = 0; i < taskManager.traversers.Count; i++)
@@ -167,18 +165,18 @@ public class SaveHandler : MonoBehaviour
             var traverser = taskManager.traversers[i];
             var missionName = traverser.nodeCanvas.missionName;
             var lastCheckpoint = traverser.lastCheckpointName;
-            save.missions.Find((m) => m.name == traverser.nodeCanvas.missionName).checkpoint = lastCheckpoint;
+            playerSave.missions.Find((m) => m.name == traverser.nodeCanvas.missionName).checkpoint = lastCheckpoint;
         }
 
         // Calculate the save episode by finding the maximal active mission's epsiode.
-        save.episode = 0;
-        foreach (var mission in save.missions)
+        playerSave.episode = 0;
+        foreach (var mission in playerSave.missions)
         {
             if (mission.status != Mission.MissionStatus.Inactive)
             {
-                if (save.episode < mission.episode)
+                if (playerSave.episode < mission.episode)
                 {
-                    save.episode = mission.episode;
+                    playerSave.episode = mission.episode;
                 }
             }
         }
@@ -194,11 +192,44 @@ public class SaveHandler : MonoBehaviour
             index++;
         }
 
-        save.taskVariableNames = keys;
-        save.taskVariableValues = values;
-        save.reputation = player.reputation;
+        playerSave.taskVariableNames = keys;
+        playerSave.taskVariableValues = values;
+        playerSave.reputation = player.reputation;
+    }
 
+    private float timeSinceLastSave;
+
+    public void Save()
+    {
+        UpdateSaveData(save);
+        timeSinceLastSave = Time.timeSinceLevelLoad;
+        SaveMenuHandler.migratedTimePlayed = null;
+
+        string currentPath = File.ReadAllLines(System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath"))[0];
         string saveJson = JsonUtility.ToJson(save);
         File.WriteAllText(currentPath, saveJson);
+    }
+
+    public void BackupSave()
+    {
+        string currentPath = File.ReadAllLines(System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath"))[0];
+        string backupPath = currentPath + " - Backup";
+
+        PlayerSave saveCopy = JsonUtility.FromJson<PlayerSave>(JsonUtility.ToJson(save));
+        UpdateSaveData(saveCopy);
+
+        saveCopy.name += " - Backup";
+
+        string saveJson = JsonUtility.ToJson(saveCopy);
+        File.WriteAllText(backupPath, saveJson);
+    }
+
+    IEnumerator Autobackup()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(20 * 60);
+            BackupSave();
+        }
     }
 }
