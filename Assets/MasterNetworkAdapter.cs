@@ -5,7 +5,7 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
-public class NetworkAdaptor : NetworkBehaviour
+public class MasterNetworkAdapter : NetworkBehaviour
 {
     public enum NetworkMode
     {
@@ -15,7 +15,7 @@ public class NetworkAdaptor : NetworkBehaviour
     }
 
     public static NetworkMode mode = NetworkMode.Off;
-    public static NetworkAdaptor instance;
+    public static MasterNetworkAdapter instance;
     public static string address;
     public static string port;
     public static string testName = "Test";
@@ -51,7 +51,7 @@ public class NetworkAdaptor : NetworkBehaviour
 
         NetworkManager.Singleton.StartClient();
         NetworkManager.Singleton.OnClientConnectedCallback += (u) => {
-        NetworkAdaptor.instance.CreateNetworkObjectServerRpc(testName);};
+        MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(testName);};
     }
 
     public static void StartServer()
@@ -63,7 +63,7 @@ public class NetworkAdaptor : NetworkBehaviour
     public static void StartHost()
     {
         NetworkManager.Singleton.StartHost();
-        NetworkAdaptor.instance.CreateNetworkObjectServerRpc(testName);
+        MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(testName);
     }
 
 
@@ -74,7 +74,7 @@ public class NetworkAdaptor : NetworkBehaviour
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
         var obj = Instantiate(networkObj).GetComponent<NetworkObject>();
-        obj.GetComponent<NetworkProtobuf>().playerName = new NetworkVariable<FixedString64Bytes>(name);
+        obj.GetComponent<EntityNetworkAdapter>().playerName = new NetworkVariable<FixedString64Bytes>(name);
         obj.SpawnWithOwnership(clientId);
 
         NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>

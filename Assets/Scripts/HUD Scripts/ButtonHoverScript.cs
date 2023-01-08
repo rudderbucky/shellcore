@@ -15,11 +15,11 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
     {
         if (name == "MainMenuButton")
         {
-            if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off)
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
             {
-                NetworkAdaptor.lettingServerDecide = false;
+                MasterNetworkAdapter.lettingServerDecide = false;
                 NetworkManager.Singleton.Shutdown();
-                NetworkAdaptor.mode = NetworkAdaptor.NetworkMode.Off;
+                MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Off;
                 Destroy(NetworkManager.Singleton.gameObject);
             }
 

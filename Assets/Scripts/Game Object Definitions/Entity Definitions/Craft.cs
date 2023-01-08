@@ -132,9 +132,9 @@ public abstract class Craft : Entity
 
         Start(); // once everything else is done initialize the craft again
 
-        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkAdaptor.lettingServerDecide && protobuf)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && MasterNetworkAdapter.lettingServerDecide && networkAdapter)
         {
-            protobuf.clientReady = false;
+            networkAdapter.clientReady = false;
         }
 
         AudioManager.PlayClipByID("clip_respawn", transform.position);
@@ -165,7 +165,7 @@ public abstract class Craft : Entity
 
     protected override void FixedUpdate()
     {
-        var lettingServerDecide = this as PlayerCore && NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkManager.Singleton.IsServer && protobuf != null;
+        var lettingServerDecide = this as PlayerCore && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && networkAdapter != null;
 
         entityBody.drag = draggable.dragging ? 25F : 0;
         if (draggable.dragging)

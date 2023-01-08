@@ -145,11 +145,11 @@ public class DevConsoleScript : MonoBehaviour
                 switch(command.Substring(8).Trim())
                 {
                     case "client":
-                        NetworkAdaptor.StartClient();
+                        MasterNetworkAdapter.StartClient();
                         textBox.text += "\n<color=lime>Running as client</color>";
                         break;
                     case "server":
-                        NetworkAdaptor.StartServer();
+                        MasterNetworkAdapter.StartServer();
                         textBox.text += "\n<color=lime>Running as server</color>";
                         break;
                 }

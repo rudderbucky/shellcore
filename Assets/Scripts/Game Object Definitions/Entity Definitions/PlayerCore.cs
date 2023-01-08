@@ -333,7 +333,7 @@ public class PlayerCore : ShellCore
                 SectorManager.instance.characters = newChars.ToArray();
             }
 
-            if (NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off)
+            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
                 transform.position = havenSpawnPoint = save.position;
         }
 
@@ -374,15 +374,15 @@ public class PlayerCore : ShellCore
         base.Update(); // base update
         if (!GetIsInteracting() && !DialogueSystem.isInCutscene)
         {
-            if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsHost && protobuf != null && !dirty)
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsHost && networkAdapter != null && !dirty)
             {
-                protobuf.ChangeDirectionServerRpc( getDirectionalInput());
+                networkAdapter.ChangeDirectionServerRpc( getDirectionalInput());
                 dirty = true;
             }
-            else if ((NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off || NetworkManager.Singleton.IsHost))
+            else if ((MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || NetworkManager.Singleton.IsHost))
             {
                 MoveCraft(getDirectionalInput()); // move the craft based on the directional input
-                if (protobuf) protobuf.wrapper.directionalVector = getDirectionalInput();
+                if (networkAdapter) networkAdapter.wrapper.directionalVector = getDirectionalInput();
             }
         
         }

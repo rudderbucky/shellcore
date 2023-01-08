@@ -180,7 +180,7 @@ public abstract class WeaponAbility : ActiveAbility
 
     public override void Activate()
     {
-        var lettingServerDecide = NetworkAdaptor.lettingServerDecide;
+        var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
         if (Core as PlayerCore)
             isEnabled = !isEnabled;
         if (lettingServerDecide)
@@ -226,15 +226,15 @@ public abstract class WeaponAbility : ActiveAbility
             // check if allied
             if (FactionManager.IsAllied(tmp.GetFaction(), Core.faction)) return;
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
-            if (NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off || (!NetworkAdaptor.lettingServerDecide))
+            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || (!MasterNetworkAdapter.lettingServerDecide))
             {
                 if (!Execute(target.position)) return;
-                if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkAdaptor.lettingServerDecide && Core.protobuf) 
-                    Core.protobuf.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
+                if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && Core.networkAdapter) 
+                    Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
             }
-            else if (Core.protobuf)
+            else if (Core.networkAdapter)
             {
-                Core.protobuf.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, target.position);
+                Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, target.position);
             }
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;

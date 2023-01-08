@@ -45,7 +45,7 @@ public class Missile : WeaponAbility
         script.SetDamage(GetDamage());
         script.StartSurvivalTimer(3);
         script.missileColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
-        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
         {
             missile.GetComponent<NetworkObject>().Spawn();
         }

@@ -263,7 +263,7 @@ public abstract class Ability : MonoBehaviour
 
     public virtual void Activate()
     {
-        var lettingServerDecide = NetworkAdaptor.lettingServerDecide;
+        var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
         // If (NPC or (Player and not interacting)) and enough energy
         if (State != AbilityState.Ready || (Core is PlayerCore player && player.GetIsInteracting()) || Core.GetHealth()[2] < energyCost) return;
         Core.MakeBusy(); // make core busy
@@ -275,10 +275,10 @@ public abstract class Ability : MonoBehaviour
         if (State == AbilityState.Active || State == AbilityState.Cooldown)
         {
             if (!lettingServerDecide) Execute();
-            else if (Core && Core.protobuf) 
+            else if (Core && Core.networkAdapter) 
             {
                 Debug.LogWarning("TEST");
-                Core.protobuf.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
+                Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
             }
         }
     }

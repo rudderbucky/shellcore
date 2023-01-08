@@ -59,7 +59,7 @@ public class Beam : WeaponAbility
         {
             line.startWidth = line.endWidth = 0.15F;
             line.SetPosition(0, transform.position); // draw and increment timer
-            if (nextTargetPart && !NetworkAdaptor.lettingServerDecide)
+            if (nextTargetPart && !MasterNetworkAdapter.lettingServerDecide)
             {
                 line.SetPosition(currentVertex+1, partPos);
             }
@@ -67,7 +67,7 @@ public class Beam : WeaponAbility
             {
                 line.SetPosition(currentVertex+1, targetArray[currentVertex].position);
             }
-            else if (!NetworkAdaptor.lettingServerDecide)
+            else if (!MasterNetworkAdapter.lettingServerDecide)
             {
                 line.SetPosition(currentVertex+1, line.transform.position); // TODO: Fix
             }
@@ -113,7 +113,7 @@ public class Beam : WeaponAbility
     public override void ActivationCosmetic(Vector3 targetPos)
     {
         AudioManager.PlayClipByID("clip_beam", transform.position);
-        if (NetworkAdaptor.lettingServerDecide && targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponentInParent<Entity>())
+        if (MasterNetworkAdapter.lettingServerDecide && targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponentInParent<Entity>())
         {
             GetClosestPart(targetingSystem.GetTarget().GetComponentInParent<Entity>().NetworkGetParts().ToArray());
             targetPos = nextTargetPart.transform.position;
@@ -124,7 +124,7 @@ public class Beam : WeaponAbility
         {
             timer = 0; // start the timer
             line.positionCount = 2; // render the beam line
-            if (NetworkAdaptor.lettingServerDecide)
+            if (MasterNetworkAdapter.lettingServerDecide)
             {
                 line.SetPosition(1, targetPos);
             }

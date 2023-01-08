@@ -125,7 +125,7 @@ public class SectorManager : MonoBehaviour
             jsonMode = true;
         }
 
-        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
         {
             current = networkTestSector;
         }
@@ -172,7 +172,7 @@ public class SectorManager : MonoBehaviour
             player.SetIsInteracting(true);
         }
         var playerActive = player && player.gameObject.activeSelf;
-        if (!playerActive && NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && NetworkManager.Singleton && !loadedDuelSector)
+        if (!playerActive && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton && !loadedDuelSector)
         {
             loadedDuelSector = true;
             AttemptSectorLoad();
@@ -199,7 +199,7 @@ public class SectorManager : MonoBehaviour
         }
         else if (!jsonMode && playerActive && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
         {
-            if (NetworkAdaptor.mode == NetworkAdaptor.NetworkMode.Off)
+            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
             {
                 AttemptSectorLoad();
                 abortTimer = 6;
@@ -277,7 +277,7 @@ public class SectorManager : MonoBehaviour
 
     public void AttemptSectorLoad()
     {
-        if (NetworkAdaptor.mode != NetworkAdaptor.NetworkMode.Off && !NetworkManager.Singleton.IsClient)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsClient)
         {
             loadSector(sectors[0]);
             return;

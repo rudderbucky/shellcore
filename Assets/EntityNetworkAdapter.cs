@@ -5,7 +5,7 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class NetworkProtobuf : NetworkBehaviour
+public class EntityNetworkAdapter : NetworkBehaviour
 {
     public struct ServerResponse : INetworkSerializable, IEquatable<ServerResponse>
     {
@@ -96,7 +96,7 @@ public class NetworkProtobuf : NetworkBehaviour
         public Vector3 directionalVector;
         public ulong clientID;
 
-        public ServerResponse CreateResponse(NetworkProtobuf buf)
+        public ServerResponse CreateResponse(EntityNetworkAdapter buf)
         {
             Rigidbody2D body = null;
             ShellCore core = null;
@@ -161,7 +161,7 @@ public class NetworkProtobuf : NetworkBehaviour
 
         if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId)
         {        
-            PlayerCore.Instance.protobuf = this;
+            PlayerCore.Instance.networkAdapter = this;
         }
     }
 
@@ -279,7 +279,7 @@ public class NetworkProtobuf : NetworkBehaviour
             (ent as ShellCore).husk = true;
             huskCore = ent as ShellCore;
             huskCore.blueprint = demoBlueprint;
-            huskCore.protobuf = this;
+            huskCore.networkAdapter = this;
             clientSideSynced = false;
             clientReady = true;
             ProximityInteractScript.instance.AddPlayerName(huskCore, playerName.Value.ToString());
