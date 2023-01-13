@@ -1,5 +1,6 @@
 ﻿using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Bullet : WeaponAbility
 {
@@ -110,6 +111,12 @@ public class Bullet : WeaponAbility
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);
         
+        if (SceneManager.GetActiveScene().name != "SampleScene")
+        {
+            bullet.GetComponent<NetworkProjectileWrapper>().enabled = false;
+            bullet.GetComponent<NetworkObject>().enabled = false;
+        }
+
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && (!MasterNetworkAdapter.lettingServerDecide))
         {
             bullet.GetComponent<NetworkObject>().Spawn();

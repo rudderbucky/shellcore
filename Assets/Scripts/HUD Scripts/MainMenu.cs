@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -30,10 +31,24 @@ public class MainMenu : MonoBehaviour
 
     public void NetworkDuel(bool hostMode)
     {
-        MasterNetworkAdapter.mode = hostMode ? MasterNetworkAdapter.NetworkMode.Host : MasterNetworkAdapter.NetworkMode.Client;
-        MasterNetworkAdapter.address = addressField.text;
-        MasterNetworkAdapter.port = portField.text;
-        SceneManager.LoadScene("SampleScene");
+        if (hostMode)
+        {
+            var world = "test";
+            var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", world);
+            if (!System.IO.Directory.Exists(path)) return;
+            MasterNetworkAdapter.StartHost();
+            NetworkManager.Singleton.OnClientConnectedCallback += (u) => 
+            { 
+                MasterNetworkAdapter.instance.GetWorldNameClientRpc(world);
+                WCWorldIO.LoadTestSave(path, true);
+                NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+                MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc("Test Name");
+            };
+        }
+        else
+        {
+            MasterNetworkAdapter.StartClient();
+        }
     }
 
     public void OpenSettings()

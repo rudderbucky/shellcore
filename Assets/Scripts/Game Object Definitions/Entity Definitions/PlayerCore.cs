@@ -255,6 +255,8 @@ public class PlayerCore : ShellCore
     // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
     protected override void Start()
     {
+        if (!networkAdapter)
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc("Test name");
         foreach (var part in partsToDestroy)
         {
             if (part && part.gameObject)

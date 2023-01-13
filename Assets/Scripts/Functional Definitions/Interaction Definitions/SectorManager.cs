@@ -84,7 +84,7 @@ public class SectorManager : MonoBehaviour
         return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0;
     }
 
-    public static string testJsonPath = null;
+    public static string testJsonPath;
     public static string testResourcePath = null;
     public static string jsonPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "main - " + VersionNumberScript.mapVersion);
 
@@ -172,7 +172,7 @@ public class SectorManager : MonoBehaviour
             player.SetIsInteracting(true);
         }
         var playerActive = player && player.gameObject.activeSelf;
-        if (!playerActive && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton && !loadedDuelSector)
+        if (!playerActive && SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton && !loadedDuelSector)
         {
             loadedDuelSector = true;
             AttemptSectorLoad();

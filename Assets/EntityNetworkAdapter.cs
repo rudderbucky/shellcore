@@ -131,6 +131,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (NetworkManager.Singleton.IsServer)
         {
             int fac = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
+            if (IsOwner) fac = 0;
             state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, fac, 0, 1000, 250, 500);
         }
         if (NetworkManager.Singleton.IsClient)

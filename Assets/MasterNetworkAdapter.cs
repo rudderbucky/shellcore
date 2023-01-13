@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MasterNetworkAdapter : NetworkBehaviour
 {
@@ -13,31 +14,22 @@ public class MasterNetworkAdapter : NetworkBehaviour
         Client,
         Host
     }
-
     public static NetworkMode mode = NetworkMode.Off;
     public static MasterNetworkAdapter instance;
     public static string address;
     public static string port;
-    public static string testName = "Test";
+    public static string testName = "Test Name";
 
     public static bool lettingServerDecide;
     void Start()
     {
         instance = this;
-        switch (mode)
-        {
-            case NetworkMode.Client:
-                StartClient();
-                lettingServerDecide = true;
-                break;
-            case NetworkMode.Host:
-                StartHost();
-                break;
-        }
     }
 
     public static void StartClient()
     {
+        NetworkManager.Singleton.StartClient();
+        MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Client;
         ushort portVal = 0;
         if (!string.IsNullOrEmpty(port) && ushort.TryParse(port, out portVal))
         {
@@ -48,22 +40,26 @@ public class MasterNetworkAdapter : NetworkBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = address;
         }
 
-
-        NetworkManager.Singleton.StartClient();
-        NetworkManager.Singleton.OnClientConnectedCallback += (u) => {
-        MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(testName);};
+        MasterNetworkAdapter.lettingServerDecide = true;
     }
 
     public static void StartServer()
     {
         PlayerCore.Instance.gameObject.SetActive(false);
-        NetworkManager.Singleton.StartServer();
     }
 
     public static void StartHost()
     {
+        MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Host;
         NetworkManager.Singleton.StartHost();
-        MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(testName);
+    }
+
+    [ClientRpc]
+    public void GetWorldNameClientRpc(string worldName)
+    {
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", worldName);
+        if (!System.IO.Directory.Exists(path)) return;
+        WCWorldIO.LoadTestSave(path, true);
     }
 
 

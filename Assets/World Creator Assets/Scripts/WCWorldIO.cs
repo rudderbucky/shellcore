@@ -106,7 +106,7 @@ public class WCWorldIO : GUIWindowScripts
     {
         if (SceneManager.GetActiveScene().name == "WorldCreator")
         {
-            var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "test");
+            var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
             DeletePlaceholderDirectories();
             if (Directory.Exists(path))
             {
@@ -214,7 +214,7 @@ public class WCWorldIO : GUIWindowScripts
     public void TestWorld()
     {
         // TODO: copy custom resources
-        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "test");
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
         if (generatorHandler.WriteWorld(path))
         {
             generatorHandler.OnSectorSaved.AddListener(OnWorldSaved);
@@ -233,9 +233,10 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
-    public static void LoadTestSave(string originalReadPath)
+    public static void LoadTestSave(string originalReadPath, bool usePassedPathForWorld = false)
     {
-        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "test");
+        var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
+        if (usePassedPathForWorld) path = originalReadPath;
         var savePath = System.IO.Path.Combine(Application.persistentDataPath, "Saves", "TestSave");
         if (File.Exists(savePath))
         {

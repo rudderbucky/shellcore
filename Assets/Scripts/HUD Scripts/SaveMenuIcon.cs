@@ -91,7 +91,7 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             File.WriteAllText(current, path);
         }
 
-        MainMenu.StartGame(nullifyTestJsonPath);
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off) MainMenu.StartGame(nullifyTestJsonPath);
     }
 
     public void OnPointerExit(PointerEventData eventData)

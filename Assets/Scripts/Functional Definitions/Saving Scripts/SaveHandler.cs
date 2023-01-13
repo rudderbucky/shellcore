@@ -36,7 +36,6 @@ public class SaveHandler : MonoBehaviour
             save = JsonUtility.FromJson<PlayerSave>(json);
             if (save.timePlayed != 0 && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
             {
-                Debug.LogWarning("test");
                 player.spawnPoint = save.position;
                 player.Dimension = save.lastDimension;
             }
@@ -58,8 +57,7 @@ public class SaveHandler : MonoBehaviour
                     FactionManager.SetFactionRelations(save.factions[i], save.relations[i]);
                 }
 
-            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
-                SectorManager.instance.LoadSectorFile(save.resourcePath);
+            SectorManager.instance.LoadSectorFile(save.resourcePath);
             save.missions.RemoveAll(m => !taskManager.questCanvasPaths.Exists(p =>
                 System.IO.Path.GetFileNameWithoutExtension(p) == m.name));
             taskManager.Initialize(true); // Re-init
