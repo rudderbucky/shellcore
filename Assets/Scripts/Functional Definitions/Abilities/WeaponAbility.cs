@@ -182,7 +182,6 @@ public abstract class WeaponAbility : ActiveAbility
         if (Core as PlayerCore)
             isEnabled = !isEnabled;
         UpdateState();
-        Core.MakeBusy(); // make core busy
     }
 
     /// <summary>

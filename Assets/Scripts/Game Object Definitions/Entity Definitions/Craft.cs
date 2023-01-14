@@ -101,9 +101,8 @@ public abstract class Craft : Entity
     /// </summary>
     public virtual void Respawn()
     {
-        // no longer dead, busy or immobile
+        // no longer dead or immobile
         isDead = false;
-        isBusy = false;
 
         // Deactivate abilities
         foreach (var ability in abilities)

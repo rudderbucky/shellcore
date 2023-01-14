@@ -30,7 +30,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected Collider2D hitbox; // the hitbox of the entity (excluding extra parts)
     protected TargetingSystem targeter; // the TargetingSystem of the entity
     protected bool isInCombat; // whether the entity is in combat or not
-    protected bool isBusy; // whether the entity is busy or not
     protected bool isDead; // whether the entity is currently dead or not
     protected bool isWarpUninteractable; // whether the entity is uninteractable because it recently warped
     protected float busyTimer; // the time since the entity was last set to busy
@@ -956,7 +955,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         maxHealth = new float[3];
         regenRate = new float[3];
         parts = new List<ShellPart>();
-        isBusy = false;
         isInCombat = false;
 
         AttemptAddComponents();
@@ -1139,16 +1137,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 weaponGCDTimer += Time.deltaTime; // tick GCD timer
             }
 
-            // check if busy state changing is due
-            if (busyTimer > 5)
-            {
-                isBusy = false; // change state if it is
-            }
-            else
-            {
-                busyTimer += Time.deltaTime; // otherwise continue ticking timer
-            }
-
             // check if combat state changing is due
             if (combatTimer > 5)
             {
@@ -1214,23 +1202,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         parts.Remove(part);
     }
 
-    /// <summary>
-    /// Make the craft busy
-    /// </summary>
-    public void MakeBusy()
-    {
-        isBusy = true;
-        busyTimer = 0;
-    }
-
-    /// <summary>
-    /// Get whether the craft is busy or not
-    /// </summary>
-    /// <returns>true if the craft is busy, false otherwise</returns>
-    public bool GetIsBusy()
-    {
-        return isBusy;
-    }
 
     /// <summary>
     /// Set the craft into combat
@@ -1238,8 +1209,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public void SetIntoCombat()
     {
         isInCombat = true;
-        isBusy = true;
-        busyTimer = 0; // reset timers
         combatTimer = 0;
     }
 
