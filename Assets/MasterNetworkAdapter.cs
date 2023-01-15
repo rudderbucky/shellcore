@@ -24,12 +24,19 @@ public class MasterNetworkAdapter : NetworkBehaviour
     void Start()
     {
         instance = this;
+        if (NetworkManager.Singleton.IsClient)
+        {
+            MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Client;
+        }
+        if (NetworkManager.Singleton.IsServer)
+        {
+            MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Host;
+        }
     }
 
     public static void StartClient()
     {
         NetworkManager.Singleton.StartClient();
-        MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Client;
         ushort portVal = 0;
         if (!string.IsNullOrEmpty(port) && ushort.TryParse(port, out portVal))
         {
@@ -50,7 +57,6 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     public static void StartHost()
     {
-        MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Host;
         NetworkManager.Singleton.StartHost();
     }
 
@@ -66,16 +72,29 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public GameObject networkObj;
 
     [ServerRpc(RequireOwnership = false)]
-    public void CreateNetworkObjectServerRpc(string name, ServerRpcParams serverRpcParams = default)
+    public void CreateNetworkObjectServerRpc(string name, string blueprint, ServerRpcParams serverRpcParams = default)
+    {
+        var obj = InternalEntitySpawnWrapper(blueprint, serverRpcParams);
+        obj.GetComponent<EntityNetworkAdapter>().playerName = name;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnEntityServerRpc(string blueprint, ServerRpcParams serverRpcParams = default)
+    {
+        InternalEntitySpawnWrapper(blueprint, serverRpcParams);
+    }
+
+    private NetworkObject InternalEntitySpawnWrapper(string blueprint, ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
         var obj = Instantiate(networkObj).GetComponent<NetworkObject>();
-        obj.GetComponent<EntityNetworkAdapter>().playerName = new NetworkVariable<FixedString64Bytes>(name);
         obj.SpawnWithOwnership(clientId);
 
         NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>
         {
             if (u == clientId) obj.Despawn();
         };
+        
+        return obj;
     }
 }

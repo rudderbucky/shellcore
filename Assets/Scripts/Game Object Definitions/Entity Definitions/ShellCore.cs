@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MasterNetworkAdapter;
 
 /// <summary>
 /// All "human-like" craft are considered ShellCores. These crafts are intelligent and all air-borne. This includes player ShellCores.
@@ -218,7 +219,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public override void Respawn()
     {
-        if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off || 
+            (carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
         {
             isYardRepairing = false;
             base.Respawn();
@@ -229,6 +231,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
     }
 
+    private string networkPlayerName = "Test name";
+    private bool rpcCalled = false;
     protected override void Update()
     {
         base.Update();
@@ -260,6 +264,19 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 FinalizeRepair();
             }
         }
+
+        if (MasterNetworkAdapter.mode == NetworkMode.Off) return;
+        if (!networkAdapter && !rpcCalled)
+        {
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(networkPlayerName, "");
+            rpcCalled = true;
+        }
+        else if (networkAdapter && string.IsNullOrEmpty(networkAdapter.playerName))
+        {
+            networkAdapter.playerName = networkPlayerName;
+        }
+
+
     }
 
     protected override void BuildEntity()

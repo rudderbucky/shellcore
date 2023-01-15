@@ -252,11 +252,9 @@ public class PlayerCore : ShellCore
         ID = "player";
     }
 
-    // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
+
     protected override void Start()
     {
-        if (!networkAdapter)
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc("Test name");
         foreach (var part in partsToDestroy)
         {
             if (part && part.gameObject)
@@ -275,7 +273,7 @@ public class PlayerCore : ShellCore
         {
             Camera.main.GetComponent<CameraScript>().Initialize(this);
             GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(this);
-        } // initialize the HUD
+        }
 
         if (!loaded)
         {

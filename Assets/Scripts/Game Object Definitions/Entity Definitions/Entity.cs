@@ -1059,10 +1059,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     protected virtual void Update()
     {
-        if (initialized)
-        {
-            TickState(); // tick state
-        }
+        if (!initialized) return;
+        TickState();
     }
 
     /// <summary>

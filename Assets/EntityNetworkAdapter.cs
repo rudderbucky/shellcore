@@ -54,7 +54,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     public EntityBlueprint demoBlueprint;
-    public NetworkVariable<FixedString64Bytes> playerName;
 
     public struct PartStatusResponse : INetworkSerializable, IEquatable<PartStatusResponse>
     {
@@ -118,7 +117,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public NetworkVariable<ServerResponse> state = new NetworkVariable<ServerResponse>();
 
-    public EntityBlueprint coreBlueprint;
     private ShellCore huskCore;
 
     void Awake()
@@ -254,7 +252,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    private bool clientSideSynced;
 
     public NetworkVariable<bool> serverReady;
 
@@ -267,6 +264,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    public string playerName;
+    public bool playerNameAdded;
     void Update()
     {
         if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId) && !huskCore)
@@ -275,36 +274,28 @@ public class EntityNetworkAdapter : NetworkBehaviour
             entity.ID = OwnerClientId.ToString();
             var response = state;
             entity.faction = response.Value.faction;
-            var print = Instantiate(coreBlueprint);
+            var print = Instantiate(demoBlueprint);
             var ent = SectorManager.instance.SpawnEntity(print, entity);
             (ent as ShellCore).husk = true;
             huskCore = ent as ShellCore;
             huskCore.blueprint = demoBlueprint;
             huskCore.networkAdapter = this;
-            clientSideSynced = false;
             clientReady = true;
-            ProximityInteractScript.instance.AddPlayerName(huskCore, playerName.Value.ToString());
         }
-        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && serverReady.Value)
+        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsServer))
         {
             var response = state;
             if (state.Value.time > 0)
             {
                 PlayerCore.Instance.faction = response.Value.faction;
-                PlayerCore.Instance.blueprint = demoBlueprint;
+                PlayerCore.Instance.blueprint = Instantiate(demoBlueprint);
                 PlayerCore.Instance.Rebuild();
-                clientSideSynced = false;
                 clientReady = true;
             }
         }
-        else if (NetworkManager.IsHost)
+        else if (NetworkManager.IsHost || (huskCore && !huskCore.GetIsDead()))
         {
             clientReady = true;
-        }
-
-        if (huskCore)
-        {
-            huskCore.MoveCraft(wrapper.directionalVector);
         }
 
         if (NetworkManager.Singleton.IsServer && Time.time - lastPollTime > POLL_RATE)
@@ -313,13 +304,20 @@ public class EntityNetworkAdapter : NetworkBehaviour
             state.Value = wrapper.CreateResponse(this);
         }
 
+        if (!playerNameAdded && !string.IsNullOrEmpty(playerName) && huskCore && ProximityInteractScript.instance)
+        {
+            playerNameAdded = true;
+            ProximityInteractScript.instance.AddPlayerName(huskCore, playerName);
+        }
+        if (huskCore)
+        {
+            huskCore.MoveCraft(wrapper.directionalVector);
+        }
 
-
-
-        if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost && !clientSideSynced)
+        if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
         {
             var core = huskCore ? huskCore : PlayerCore.Instance;
-
+            if (!core || core.GetIsDead()) return;
             foreach (var part in partStatuses)
             {
                 if (!part.detached) continue;
@@ -328,8 +326,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 core.RemovePart(foundPart);
                 break;
             }
-
-            if (!serverReady.Value) clientSideSynced = true;
         }
     }
 }

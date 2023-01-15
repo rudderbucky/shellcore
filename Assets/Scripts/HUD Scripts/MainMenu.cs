@@ -42,7 +42,6 @@ public class MainMenu : MonoBehaviour
                 MasterNetworkAdapter.instance.GetWorldNameClientRpc(world);
                 WCWorldIO.LoadTestSave(path, true);
                 NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
-                MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc("Test Name");
             };
         }
         else
