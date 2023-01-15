@@ -324,8 +324,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
         for (int i = 0; i < Mathf.Max(gridSizeX, gridSizeY) * zoomoutFactor / distancePerTextMarker + 1; i++)
         {
-            Text textx = new GameObject().AddComponent<Text>();
-            Text texty = new GameObject().AddComponent<Text>();
             AddMapDistanceMarker(new Vector2(i * distancePerTextMarker + const4 * zoomoutFactor, const1 * zoomoutFactor) / zoomoutFactor, i, TextAnchor.LowerLeft);
             if (i != 0)
                 AddMapDistanceMarker(new Vector2(const2 * zoomoutFactor, -i * distancePerTextMarker - const4 * zoomoutFactor) / zoomoutFactor, i, TextAnchor.UpperLeft);
