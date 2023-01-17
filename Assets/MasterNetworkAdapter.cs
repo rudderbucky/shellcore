@@ -65,7 +65,6 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public void GetWorldNameClientRpc(string worldName)
     {
         if (NetworkManager.Singleton.IsHost) return;
-        Debug.LogWarning("loading world");
         var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", worldName);
         if (!System.IO.Directory.Exists(path)) return;
         WCWorldIO.LoadTestSave(path, true);
@@ -78,7 +77,6 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public void CreateNetworkObjectServerRpc(string name, string blueprint, ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
-        Debug.LogWarning(name);
         var obj = InternalEntitySpawnWrapper(blueprint, serverRpcParams);
         obj.GetComponent<EntityNetworkAdapter>().playerName = name;
     }
