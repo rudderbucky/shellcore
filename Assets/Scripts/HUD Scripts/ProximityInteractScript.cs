@@ -23,7 +23,8 @@ public class ProximityInteractScript : MonoBehaviour
     void Awake()
     {
         instance = this;
-        playerNames = new Dictionary<ShellCore, RectTransform>();
+        if (playerNames == null)
+            playerNames = new Dictionary<ShellCore, RectTransform>();
     }
 
     public static void ActivateInteraction(IInteractable interactable)

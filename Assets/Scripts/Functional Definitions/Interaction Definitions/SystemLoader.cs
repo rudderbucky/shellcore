@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 public class SystemLoader : MonoBehaviour
 {
     public ResourceManager resourceManager;
@@ -11,28 +12,17 @@ public class SystemLoader : MonoBehaviour
     public AudioManager audioManager;
 
     public static bool AllLoaded;
+    public static bool InitializeCalled;
 
-    private void Awake()
+    public void Initialize()
     {
         /*
         * Save Handler loads sectors now
         */
         AllLoaded = false;
-        Application.targetFrameRate = 60;
-
-        if (resourceManager)
-        {
-            resourceManager.Initialize();
-        }
-
         if (factionManager)
         {
             factionManager.Initialize();
-        }
-
-        if (audioManager)
-        {
-            audioManager.Initialize();
         }
 
         if (sectorManager)
@@ -58,7 +48,35 @@ public class SystemLoader : MonoBehaviour
             taskManager.Initialize();
         }
 
-        AllLoaded = true;
+        if (!NetworkManager.Singleton || !NetworkManager.Singleton.IsListening || NetworkManager.Singleton.IsServer)
+            AllLoaded = true;
+        else 
+        {
+            InitializeCalled = true;
+            PlayerCore.Instance.AttemptCreateNetworkObject();
+        }
+    }
+
+    public static SystemLoader instance;
+    private void Awake()
+    {
+        instance = this;
+        Application.targetFrameRate = 60;
+
+        if (resourceManager)
+        {
+            resourceManager.Initialize();
+        }
+
+        if (audioManager)
+        {
+            audioManager.Initialize();
+        }
+
+        if (!NetworkManager.Singleton || !NetworkManager.Singleton.IsListening || NetworkManager.Singleton.IsServer) 
+        {
+            Initialize();
+        }
     }
 
     private void Start()

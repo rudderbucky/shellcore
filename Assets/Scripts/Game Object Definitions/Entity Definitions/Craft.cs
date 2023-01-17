@@ -165,6 +165,7 @@ public abstract class Craft : Entity
 
     protected override void FixedUpdate()
     {
+        if (!SystemLoader.AllLoaded) return;
         var lettingServerDecide = this as PlayerCore && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && networkAdapter != null;
 
         entityBody.drag = draggable.dragging ? 25F : 0;

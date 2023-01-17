@@ -28,9 +28,17 @@ public class MainMenu : MonoBehaviour
     
     [SerializeField]
     private InputField portField;
+    [SerializeField]
+    private InputField nameField;
+    [SerializeField]
+    private InputField blueprintField;
 
     public void NetworkDuel(bool hostMode)
     {
+        MasterNetworkAdapter.port = portField.text;
+        MasterNetworkAdapter.address = addressField.text;
+        MasterNetworkAdapter.blueprint = blueprintField.text;
+        MasterNetworkAdapter.playerName = nameField.text;
         if (hostMode)
         {
             var world = "test";
@@ -40,13 +48,13 @@ public class MainMenu : MonoBehaviour
             NetworkManager.Singleton.OnClientConnectedCallback += (u) => 
             { 
                 MasterNetworkAdapter.instance.GetWorldNameClientRpc(world);
-                WCWorldIO.LoadTestSave(path, true);
-                NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
             };
+            WCWorldIO.LoadTestSave(path, true);
         }
         else
         {
             MasterNetworkAdapter.StartClient();
+            SystemLoader.AllLoaded = false;
         }
     }
 

@@ -252,9 +252,14 @@ public class PlayerCore : ShellCore
         ID = "player";
     }
 
-
+    public void StartWrapper()
+    {
+        Start();
+    }
     protected override void Start()
     {
+        if (!SystemLoader.AllLoaded) return;
+
         foreach (var part in partsToDestroy)
         {
             if (part && part.gameObject)
@@ -268,11 +273,6 @@ public class PlayerCore : ShellCore
         if (hud)
         {
             hud.InitializeHUD(this);
-        }
-        else
-        {
-            Camera.main.GetComponent<CameraScript>().Initialize(this);
-            GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(this);
         }
 
         if (!loaded)
@@ -356,6 +356,7 @@ public class PlayerCore : ShellCore
     // Update is called once per frame
     protected override void Update()
     {
+        if (!SystemLoader.AllLoaded || (NetworkManager.Singleton && NetworkManager.Singleton.IsListening && !blueprint)) return;
         // call methods
         if (group.sortingOrder < maxAirLayer) // player must always be above other entities
         {

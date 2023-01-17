@@ -116,6 +116,11 @@ public class SectorManager : MonoBehaviour
         sectorBorders.startWidth = 0.15f;
         sectorBorders.endWidth = 0.15f;
         sectorBorders.loop = true;
+        if (ResourceManager.Instance)
+        {
+            sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
+        }
+
         OnSectorLoad = null;
         SectorGraphLoad = null;
 
@@ -167,16 +172,18 @@ public class SectorManager : MonoBehaviour
 
     private void Update()
     {
+        if (!SystemLoader.AllLoaded) return;
         if (jsonMode && player)
         {
             player.SetIsInteracting(true);
         }
-        var playerActive = player && player.gameObject.activeSelf;
+        var playerActive = player && player.gameObject.activeSelf && player.blueprint;
         if (!playerActive && SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton && !loadedDuelSector)
         {
             loadedDuelSector = true;
             AttemptSectorLoad();
         }
+        if (!current) return;
         var inBoundsOscillating = playerActive && current.bounds.contains(player.GetSectorPosition());
         var inCurrentSector = playerActive && current != null &&
             (inBoundsOscillating) && current.dimension == player.Dimension;
@@ -531,11 +538,6 @@ public class SectorManager : MonoBehaviour
 
     private void Start()
     {
-        if (ResourceManager.Instance)
-        {
-            sectorBorders.material = ResourceManager.GetAsset<Material>("white_material");
-        }
-
         if (!sectorLoaded)
         {
             // Main menu loader; only the main menu is not loaded by JSON anymore.

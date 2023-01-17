@@ -53,7 +53,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    public EntityBlueprint demoBlueprint;
+    public string blueprintString;
+    private EntityBlueprint demoBlueprint;
 
     public struct PartStatusResponse : INetworkSerializable, IEquatable<PartStatusResponse>
     {
@@ -131,6 +132,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             int fac = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
             if (IsOwner) fac = 0;
             state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, fac, 0, 1000, 250, 500);
+            demoBlueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
         }
         if (NetworkManager.Singleton.IsClient)
         {
@@ -148,10 +150,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-
     public override void OnNetworkSpawn()
     {
-
         if (wrapper == null)
         {
             wrapper = new TemporaryStateWrapper();
@@ -159,9 +159,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
 
         if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId)
-        {        
+        {
             PlayerCore.Instance.networkAdapter = this;
         }
+
     }
 
     public override void OnNetworkDespawn()
@@ -187,6 +188,20 @@ public class EntityNetworkAdapter : NetworkBehaviour
         core.SyncHealth(response.shell, response.core, response.energy);
     }
     
+    [ClientRpc]
+    public void GetDataStringsClientRpc(string name, string blueprint, ClientRpcParams clientRpcParams = default)
+    {
+        playerName = name;
+        blueprintString = blueprint;
+        demoBlueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestDataStringsServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        GetDataStringsClientRpc(playerName, blueprintString);
+    }
+
     [ServerRpc(RequireOwnership = true)]
     public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
     {
@@ -236,8 +251,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (weapon) weapon.ActivationCosmetic(victimPos);
     }
 
-
-
     private static float POLL_RATE = 0.00F;
     private float lastPollTime;
     public bool clientReady;
@@ -266,9 +279,20 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public string playerName;
     public bool playerNameAdded;
+    private bool stringsRequested;
     void Update()
     {
-        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId) && !huskCore)
+
+        if (!demoBlueprint)
+        {
+            if (!stringsRequested)
+            {
+                RequestDataStringsServerRpc();
+                stringsRequested = true;
+            }
+            return;
+        }
+        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId) && !huskCore && SystemLoader.AllLoaded)
         {
             Sector.LevelEntity entity = new Sector.LevelEntity();
             entity.ID = OwnerClientId.ToString();
@@ -289,7 +313,15 @@ public class EntityNetworkAdapter : NetworkBehaviour
             {
                 PlayerCore.Instance.faction = response.Value.faction;
                 PlayerCore.Instance.blueprint = Instantiate(demoBlueprint);
-                PlayerCore.Instance.Rebuild();
+                if (!SystemLoader.AllLoaded && SystemLoader.InitializeCalled)
+                {
+                    SystemLoader.AllLoaded = true;
+                    PlayerCore.Instance.StartWrapper();
+                }
+                else
+                {    
+                    PlayerCore.Instance.Rebuild();
+                }
                 clientReady = true;
             }
         }

@@ -18,7 +18,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public static MasterNetworkAdapter instance;
     public static string address;
     public static string port;
-    public static string testName = "Test Name";
+    public static string playerName = "Test Name";
+    public static string blueprint;
 
     public static bool lettingServerDecide;
     void Start()
@@ -63,6 +64,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
     [ClientRpc]
     public void GetWorldNameClientRpc(string worldName)
     {
+        if (NetworkManager.Singleton.IsHost) return;
+        Debug.LogWarning("loading world");
         var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", worldName);
         if (!System.IO.Directory.Exists(path)) return;
         WCWorldIO.LoadTestSave(path, true);
@@ -74,6 +77,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void CreateNetworkObjectServerRpc(string name, string blueprint, ServerRpcParams serverRpcParams = default)
     {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        Debug.LogWarning(name);
         var obj = InternalEntitySpawnWrapper(blueprint, serverRpcParams);
         obj.GetComponent<EntityNetworkAdapter>().playerName = name;
     }
@@ -89,6 +94,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         var clientId = serverRpcParams.Receive.SenderClientId;
         var obj = Instantiate(networkObj).GetComponent<NetworkObject>();
         obj.SpawnWithOwnership(clientId);
+        obj.GetComponent<EntityNetworkAdapter>().blueprintString = blueprint;
 
         NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>
         {

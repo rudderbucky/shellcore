@@ -29,6 +29,7 @@ public abstract class AirCraft : Craft
 
     protected override void FixedUpdate()
     {
+        if (!SystemLoader.AllLoaded) return;
         base.FixedUpdate();
         Oscillator();
     }

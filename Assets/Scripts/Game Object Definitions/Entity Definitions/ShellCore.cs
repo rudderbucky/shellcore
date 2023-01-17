@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using static MasterNetworkAdapter;
 
@@ -231,10 +232,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
     }
 
-    private string networkPlayerName = "Test name";
     private bool rpcCalled = false;
     protected override void Update()
     {
+        if (!SystemLoader.AllLoaded) return;
         base.Update();
 
         // If got away from Yard while isYardRepairing, FinalizeRepair immediately.
@@ -266,18 +267,22 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
 
         if (MasterNetworkAdapter.mode == NetworkMode.Off) return;
-        if (!networkAdapter && !rpcCalled)
+        AttemptCreateNetworkObject();
+    }
+
+    public void AttemptCreateNetworkObject()
+    {
+        if (!networkAdapter && !rpcCalled) // should only happen to players
         {
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(networkPlayerName, "");
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, MasterNetworkAdapter.blueprint);
             rpcCalled = true;
         }
         else if (networkAdapter && string.IsNullOrEmpty(networkAdapter.playerName))
         {
-            networkAdapter.playerName = networkPlayerName;
+            networkAdapter.playerName = MasterNetworkAdapter.playerName;
         }
-
-
     }
+
 
     protected override void BuildEntity()
     {
