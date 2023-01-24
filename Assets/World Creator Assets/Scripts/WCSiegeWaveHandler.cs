@@ -17,7 +17,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
 
     void OnDisable()
     {
-        //Debug.LogWarning("Closes Wave Builder."); //
+        //Debug.LogWarning("Closes Wave Builder."); //Fix?
     }
 
     public void Initialize(List<SiegeEntity> entities)
@@ -61,6 +61,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
             }
         ));
 
+        //ItemPropertyDisplay.AddCustomFactionsToDropdown(dropdown); //Causes factions to reset back to 0
         waveEntities.Add((inField1, inField2, inField3, dropdown));
         Canvas.ForceUpdateCanvases();
         content.GetComponent<RectTransform>().sizeDelta = new Vector2(100, content.GetComponent<VerticalLayoutGroup>().minHeight);
