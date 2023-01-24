@@ -212,15 +212,15 @@ public static class AbilityUtilities
             case 29:
                 return "Absorb damage and turn it into energy.";
             case 30:
-                return $"Temporarily increase shell regen by { ActiveRegen.healAmounts[0] * tier } per second.";
+                return $"Temporarily increase shell regen by {ActiveRegen.healAmounts[0] * tier} per second.";
             case 31:
-                return $"Temporarily increase core regen by { ActiveRegen.healAmounts[1] * tier } per second.";
+                return $"Temporarily increase core regen by {ActiveRegen.healAmounts[1] * tier} per second.";
             case 32:
-                return $"Temporarily increase energy regen by { ActiveRegen.healAmounts[2] * tier } per second.";
+                return $"Temporarily increase energy regen by {ActiveRegen.healAmounts[2] * tier} per second.";
             case 33:
                 return "Disrupt enemy ability cooldowns.";
             case 34:
-                return $"Gives allies additional {Control.baseControlFractionBoost * 100}% shell and {Control.damageAddition} weapon damage.";
+                return $"Gives allies additional {Control.baseControlFractionBoost * 100 * tier}% shell and {Control.damageAddition * tier} weapon damage.";
             case 35:
                 return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
             case 36:
