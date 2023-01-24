@@ -151,7 +151,7 @@ public static class AbilityUtilities
             case 0:
                 return "Does nothing.";
             case 1:
-                return $"+{SpeedThrust.boost * tier} speed for 10 seconds.";
+                return $"+{SpeedThrust.boost * tier} speed for {SpeedThrust.duration} seconds.";
             case 2:
                 return $"Instantly heal {HealthHeal.heals[0] * tier} shell.";
             case 3:
@@ -194,7 +194,7 @@ public static class AbilityUtilities
             case 20:
                 return $"Passively increases maximum energy by {ShellMax.maxes[2] * tier} points.";
             case 21:
-                return $"Passively increases the maximum allowed number of controlled units by {Command.commandUnitIncrease}.";
+                return $"Passively increases the maximum allowed number of controlled units by {Command.commandUnitIncrease * Mathf.Max(1, tier)}.";
             case 22:
                 return $"Passively increases core regen by {ShellRegen.regens[1] * tier} points.";
             case 23:
@@ -212,11 +212,11 @@ public static class AbilityUtilities
             case 29:
                 return "Absorb damage and turn it into energy.";
             case 30:
-                return $"Temporarily increase shell regen by { ActiveRegen.healAmounts[0] } per second.";
+                return $"Temporarily increase shell regen by { ActiveRegen.healAmounts[0] * tier } per second.";
             case 31:
-                return "Temporarily increase core... wait, this isn't supposed to exist!";
+                return $"Temporarily increase core regen by { ActiveRegen.healAmounts[1] * tier } per second.";
             case 32:
-                return $"Temporarily increase energy regen by { ActiveRegen.healAmounts[2] } per second.";
+                return $"Temporarily increase energy regen by { ActiveRegen.healAmounts[2] * tier } per second.";
             case 33:
                 return "Disrupt enemy ability cooldowns.";
             case 34:
