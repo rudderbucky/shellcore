@@ -224,7 +224,7 @@ public static class AbilityUtilities
             case 35:
                 return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
             case 36:
-                return $"Stationary projectile that deals {Bomb.bombDamage} damage. \nProjectile lasts {45F * tier} seconds.";
+                return $"Stationary projectile that deals {Bomb.bombDamage * tier} damage. \nProjectile lasts {45F * tier} seconds.";
             case 37:
                 return $"Slow moving beam that deals {IonLineController.damageC * tier} damage per second for 5 seconds. "
                        + $"\nBeam costs {IonLineController.energyC * tier} energy per second.";
