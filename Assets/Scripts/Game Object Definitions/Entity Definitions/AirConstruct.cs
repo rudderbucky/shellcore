@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 /// <summary>
 /// Constructs in the air
@@ -22,6 +23,10 @@ public class AirConstruct : Construct
     /// </summary>
     private void Oscillator()
     {
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsClient)
+        {
+            return;
+        }
         if ((!draggable || !draggable.dragging) && entityBody.velocity == Vector2.zero)
         {
             timePassed = timePassed + Time.deltaTime; // add to time so sin oscillates (this will start at zero the moment this loop begins)

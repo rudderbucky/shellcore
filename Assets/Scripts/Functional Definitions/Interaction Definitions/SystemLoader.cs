@@ -53,7 +53,7 @@ public class SystemLoader : MonoBehaviour
         else 
         {
             InitializeCalled = true;
-            PlayerCore.Instance.AttemptCreateNetworkObject();
+            PlayerCore.Instance.AttemptCreateNetworkObject(true);
         }
     }
 

@@ -375,9 +375,9 @@ public class PlayerCore : ShellCore
         base.Update(); // base update
         if (!GetIsInteracting() && !DialogueSystem.isInCutscene)
         {
-            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsHost && networkAdapter != null && !dirty)
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && networkAdapter != null && !dirty)
             {
-                networkAdapter.ChangeDirectionServerRpc( getDirectionalInput());
+                networkAdapter.ChangeDirectionServerRpc(getDirectionalInput());
                 dirty = true;
             }
             else if ((MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || NetworkManager.Singleton.IsHost))

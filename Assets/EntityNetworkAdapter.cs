@@ -54,7 +54,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     public string blueprintString;
-    private EntityBlueprint demoBlueprint;
+    private EntityBlueprint blueprint;
 
     public struct PartStatusResponse : INetworkSerializable, IEquatable<PartStatusResponse>
     {
@@ -99,17 +99,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public ServerResponse CreateResponse(EntityNetworkAdapter buf)
         {
             Rigidbody2D body = null;
-            ShellCore core = null;
-            if (NetworkManager.Singleton.IsHost && !buf.huskCore)
-            {
-                body = PlayerCore.Instance.GetComponent<Rigidbody2D>();
-                core = PlayerCore.Instance;
-            }
-            else
-            {
-                body = buf.huskCore.GetComponent<Rigidbody2D>();
-                core = buf.huskCore;
-            }
+            Entity core = null;
+            body = buf.huskEntity.GetComponent<Rigidbody2D>();
+            core = buf.huskEntity;
             return new ServerResponse(core.transform.position, body.velocity, core.transform.rotation, clientID, core.faction, core.GetWeaponGCDTimer(), core.CurrentHealth[0], core.CurrentHealth[1], core.CurrentHealth[2]);
         }
     }
@@ -117,8 +109,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public TemporaryStateWrapper wrapper;
 
     public NetworkVariable<ServerResponse> state = new NetworkVariable<ServerResponse>();
+    public NetworkVariable<bool> isPlayer = new NetworkVariable<bool>(false);
 
-    private ShellCore huskCore;
+    private Entity huskEntity;
 
     void Awake()
     {
@@ -132,19 +125,19 @@ public class EntityNetworkAdapter : NetworkBehaviour
             int fac = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
             if (IsOwner) fac = 0;
             state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, fac, 0, 1000, 250, 500);
-            demoBlueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
+            blueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
         }
         if (NetworkManager.Singleton.IsClient)
         {
             state.OnValueChanged += (x, y) =>
             {
-                if (y.clientID == NetworkManager.Singleton.LocalClientId)
+                if (y.clientID == NetworkManager.Singleton.LocalClientId && isPlayer.Value)
                 {
                     UpdatePlayerState(y);
                 }
-                else if (huskCore)
+                else if (huskEntity)
                 {
-                    UpdateCoreState(huskCore, y);
+                    UpdateCoreState(huskEntity, y);
                 }
             };
         }
@@ -158,7 +151,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             wrapper.clientID = OwnerClientId;
         }
 
-        if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId)
+        if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && isPlayer.Value)
         {
             PlayerCore.Instance.networkAdapter = this;
         }
@@ -167,9 +160,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if (huskCore)
+        if (huskEntity)
         {
-            Destroy(huskCore.gameObject);
+            Destroy(huskEntity.gameObject);
         }
     }
 
@@ -178,7 +171,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         UpdateCoreState(PlayerCore.Instance, response);
     }
 
-    private void UpdateCoreState(ShellCore core, ServerResponse response)
+    private void UpdateCoreState(Entity core, ServerResponse response)
     {
         core.transform.position = response.position;
         core.GetComponent<Rigidbody2D>().velocity = response.velocity;
@@ -193,7 +186,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         playerName = name;
         blueprintString = blueprint;
-        demoBlueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
+        this.blueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -205,6 +198,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     [ServerRpc(RequireOwnership = true)]
     public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
     {
+        if (wrapper == null) wrapper = new TemporaryStateWrapper();
         if (OwnerClientId == serverRpcParams.Receive.SenderClientId)
             wrapper.position = newPos;
     }
@@ -213,10 +207,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public void ChangeDirectionServerRpc(Vector3 directionalVector, ServerRpcParams serverRpcParams = default)
     {   
         if (OwnerClientId == serverRpcParams.Receive.SenderClientId)
+        {
             wrapper.directionalVector = directionalVector;
+        }
     }
 
-    public static Ability GetAbilityFromLocation(Vector2 location, ShellCore core)
+    public static Ability GetAbilityFromLocation(Vector2 location, Entity core)
     {
         if (location == Vector2.zero)
         {
@@ -235,8 +231,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
     [ServerRpc(RequireOwnership = true)]
     public void ExecuteAbilityServerRpc(Vector2 location, Vector3 victimPos, ServerRpcParams serverRpcParams = default)
     {   
-        if (!huskCore) return;
-        var weapon = GetAbilityFromLocation(location, huskCore);
+        if (!huskEntity) return;
+        var weapon = GetAbilityFromLocation(location, huskEntity);
         if (!weapon) return;
         weapon.Activate();
     }
@@ -245,7 +241,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public void ExecuteAbilityCosmeticClientRpc(Vector2 location, Vector3 victimPos)
     {
         if (NetworkManager.Singleton.IsServer) return;
-        var core = huskCore ? huskCore : PlayerCore.Instance;
+        var core = huskEntity ? huskEntity : PlayerCore.Instance;
         if (!core) return;
         var weapon = GetAbilityFromLocation(location, core);
         if (weapon) weapon.ActivationCosmetic(victimPos);
@@ -277,13 +273,18 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    public void SetHusk(Entity husk)
+    {
+        huskEntity = husk;
+    }
+
     public string playerName;
     public bool playerNameAdded;
     private bool stringsRequested;
     void Update()
     {
 
-        if (!demoBlueprint)
+        if (!blueprint)
         {
             if (!stringsRequested)
             {
@@ -292,27 +293,31 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
             return;
         }
-        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId) && !huskCore && SystemLoader.AllLoaded)
+        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId || !isPlayer.Value) && !huskEntity && SystemLoader.AllLoaded)
         {
             Sector.LevelEntity entity = new Sector.LevelEntity();
             entity.ID = OwnerClientId.ToString();
             var response = state;
             entity.faction = response.Value.faction;
-            var print = Instantiate(demoBlueprint);
+            var print = Instantiate(blueprint);
             var ent = SectorManager.instance.SpawnEntity(print, entity);
-            (ent as ShellCore).husk = true;
-            huskCore = ent as ShellCore;
-            huskCore.blueprint = demoBlueprint;
-            huskCore.networkAdapter = this;
+            ent.husk = true;
+            huskEntity = ent;
+            huskEntity.blueprint = print;
+            huskEntity.networkAdapter = this;
+            if (wrapper != null)
+            {
+                huskEntity.spawnPoint = huskEntity.transform.position = wrapper.position;
+            }
             clientReady = true;
         }
-        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsServer))
+        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsServer) && (isPlayer.Value && !huskEntity))
         {
             var response = state;
             if (state.Value.time > 0)
             {
                 PlayerCore.Instance.faction = response.Value.faction;
-                PlayerCore.Instance.blueprint = Instantiate(demoBlueprint);
+                PlayerCore.Instance.blueprint = Instantiate(blueprint);
                 if (!SystemLoader.AllLoaded && SystemLoader.InitializeCalled)
                 {
                     SystemLoader.AllLoaded = true;
@@ -322,10 +327,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 {    
                     PlayerCore.Instance.Rebuild();
                 }
+                PlayerCore.Instance.networkAdapter = this;
+                huskEntity = PlayerCore.Instance;
                 clientReady = true;
             }
         }
-        else if (NetworkManager.IsHost || (huskCore && !huskCore.GetIsDead()))
+        else if (NetworkManager.IsHost || (huskEntity && !huskEntity.GetIsDead()))
         {
             clientReady = true;
         }
@@ -333,22 +340,23 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (NetworkManager.Singleton.IsServer && Time.time - lastPollTime > POLL_RATE)
         {
             lastPollTime = Time.time;
-            state.Value = wrapper.CreateResponse(this);
+            if (huskEntity)
+                state.Value = wrapper.CreateResponse(this);
         }
 
-        if (!playerNameAdded && !string.IsNullOrEmpty(playerName) && huskCore && ProximityInteractScript.instance)
+        if (!playerNameAdded && !string.IsNullOrEmpty(playerName) && huskEntity && ProximityInteractScript.instance && isPlayer.Value)
         {
             playerNameAdded = true;
-            ProximityInteractScript.instance.AddPlayerName(huskCore, playerName);
+            ProximityInteractScript.instance.AddPlayerName(huskEntity as ShellCore, playerName);
         }
-        if (huskCore)
+        if (huskEntity && huskEntity is Craft craft)
         {
-            huskCore.MoveCraft(wrapper.directionalVector);
+            craft.MoveCraft(wrapper.directionalVector);
         }
 
         if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
         {
-            var core = huskCore ? huskCore : PlayerCore.Instance;
+            var core = huskEntity ? huskEntity : isPlayer.Value ? PlayerCore.Instance : null;
             if (!core || core.GetIsDead()) return;
             foreach (var part in partStatuses)
             {

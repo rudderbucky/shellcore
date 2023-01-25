@@ -89,7 +89,7 @@ public abstract class Craft : Entity
 
     protected override void Update()
     {
-        if (instantiatedRespawnPrefab) // graphics code, should update position in Update instead of FixedUpdate
+        if (SystemLoader.AllLoaded && instantiatedRespawnPrefab) // graphics code, should update position in Update instead of FixedUpdate
         {
             instantiatedRespawnPrefab.position = transform.position;
         }

@@ -25,6 +25,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     void Start()
     {
         instance = this;
+        if (!NetworkManager.Singleton) return;
         if (NetworkManager.Singleton.IsClient)
         {
             MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Client;
@@ -74,26 +75,22 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public GameObject networkObj;
 
     [ServerRpc(RequireOwnership = false)]
-    public void CreateNetworkObjectServerRpc(string name, string blueprint, ServerRpcParams serverRpcParams = default)
+    public void CreateNetworkObjectServerRpc(string name, string blueprint, bool isPlayer, Vector3 pos, ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
-        var obj = InternalEntitySpawnWrapper(blueprint, serverRpcParams);
-        obj.GetComponent<EntityNetworkAdapter>().playerName = name;
+        var obj = InternalEntitySpawnWrapper(blueprint, isPlayer, pos, serverRpcParams);
+        if (isPlayer) obj.GetComponent<EntityNetworkAdapter>().playerName = name;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void SpawnEntityServerRpc(string blueprint, ServerRpcParams serverRpcParams = default)
-    {
-        InternalEntitySpawnWrapper(blueprint, serverRpcParams);
-    }
-
-    private NetworkObject InternalEntitySpawnWrapper(string blueprint, ServerRpcParams serverRpcParams = default)
+    private NetworkObject InternalEntitySpawnWrapper(string blueprint, bool isPlayer, Vector3 pos, ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
         var obj = Instantiate(networkObj).GetComponent<NetworkObject>();
         obj.SpawnWithOwnership(clientId);
         obj.GetComponent<EntityNetworkAdapter>().blueprintString = blueprint;
-
+        obj.GetComponent<EntityNetworkAdapter>().isPlayer.Value = isPlayer;
+        if (pos != Vector3.zero)
+            obj.GetComponent<EntityNetworkAdapter>().ChangePositionServerRpc(pos);
         NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>
         {
             if (u == clientId) obj.Despawn();

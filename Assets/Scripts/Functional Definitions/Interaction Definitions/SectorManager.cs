@@ -337,31 +337,32 @@ public class SectorManager : MonoBehaviour
                 // Clear DialogueSystem statics to prevent canvas reference persistence bugs
                 DialogueSystem.ClearStatics();
 
-                foreach (var canvas in Directory.GetFiles(System.IO.Path.Combine(path, "Canvases")))
-                {
-                    if (canvas.Contains(".meta"))
+                if (Directory.Exists(System.IO.Path.Combine(path, "Canvases")))
+                    foreach (var canvas in Directory.GetFiles(System.IO.Path.Combine(path, "Canvases")))
                     {
-                        continue;
-                    }
+                        if (canvas.Contains(".meta"))
+                        {
+                            continue;
+                        }
 
-                    if (canvas.Contains(".taskdata"))
-                    {
-                        taskManager.AddCanvasPath(canvas);
-                        continue;
-                    }
+                        if (canvas.Contains(".taskdata"))
+                        {
+                            taskManager.AddCanvasPath(canvas);
+                            continue;
+                        }
 
-                    if (canvas.Contains(".sectordata"))
-                    {
-                        taskManager.AddCanvasPath(canvas);
-                        continue;
-                    }
+                        if (canvas.Contains(".sectordata"))
+                        {
+                            taskManager.AddCanvasPath(canvas);
+                            continue;
+                        }
 
-                    if (canvas.Contains(".dialoguedata"))
-                    {
-                        dialogueSystem.AddCanvasPath(canvas);
-                        continue;
+                        if (canvas.Contains(".dialoguedata"))
+                        {
+                            dialogueSystem.AddCanvasPath(canvas);
+                            continue;
+                        }
                     }
-                }
 
 
                 // sector and world handling
@@ -613,7 +614,18 @@ public class SectorManager : MonoBehaviour
 
         }
 
-        throw new System.Exception("Blueprint not found.");
+        // if that fails try grabbing from the resource manager
+        try
+        {
+            blueprint = Instantiate(ResourceManager.GetAsset<EntityBlueprint>(jsonOrName));
+            return blueprint;
+        }
+        catch
+        {
+
+        }
+
+        throw new System.Exception("Blueprint not found: " + jsonOrName);
     }
 
     public bool TryGettingVendorDefinition(ref EntityBlueprint blueprint, string json) 
@@ -671,6 +683,29 @@ public class SectorManager : MonoBehaviour
 
         return true;
     }
+
+    public Entity SpawnEntity(string blueprint, Sector.LevelEntity data)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+        {
+            EntityBlueprint obj = ResourceManager.GetAsset<EntityBlueprint>(blueprint);
+            var copy = Instantiate(obj);
+            if (obj.dialogue)
+            {
+                copy.dialogue = Instantiate(obj.dialogue);
+            }
+
+            var ent = SpawnEntity(copy as EntityBlueprint, data);
+            ent.blueprintString = blueprint;
+            return ent;
+        }
+        else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
+        {
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, blueprint, false, data.position);
+        }
+        return null;
+    }
+
 
     public Entity SpawnEntity(EntityBlueprint blueprint, Sector.LevelEntity data)
     {
@@ -1106,6 +1141,57 @@ public class SectorManager : MonoBehaviour
         }
     }
 
+    private void LoadLevelEntities()
+    {
+        for (int i = 0; i < current.entities.Length; i++)
+        {
+            bool spawnedChar = SectorLoadEntityCharacterHandler(current.entities[i]);
+
+            if (spawnedChar)
+            {
+                continue;
+            }
+
+            // if it's an already collected shard do not spawn again
+            if (PlayerCore.Instance && PlayerCore.Instance.cursave.locationBasedShardsFound.Contains(current.entities[i].ID))
+            {
+                continue;
+            }
+
+            Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
+
+            if (obj is GameObject go)
+            {
+                GameObject gObj = Instantiate(go);
+
+                // TODO: Make some property for level entities that dictates whether they change on faction or not
+                if (!gObj.GetComponent<EnergyRock>() && !gObj.GetComponent<Flag>())
+                {
+                    gObj.GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(current.entities[i].faction);
+                }
+
+                gObj.transform.position = current.entities[i].position;
+                gObj.name = current.entities[i].name;
+                if (gObj.GetComponent<ShardRock>())
+                {
+                    if (!string.IsNullOrEmpty(current.entities[i].blueprintJSON))
+                    {
+                        gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].blueprintJSON);
+                    }
+
+                    gObj.GetComponent<ShardRock>().ID = current.entities[i].ID;
+                }
+
+                objects.Add(current.entities[i].ID, gObj);
+            }
+            else if (obj is EntityBlueprint blueprint && (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client))
+            {
+                SpawnEntity(current.entities[i].assetID, current.entities[i]);
+            }
+        }
+
+    }
+
     private float bgSpawnTimer = 0;
 
     void loadSector(Sector sector)
@@ -1155,58 +1241,7 @@ public class SectorManager : MonoBehaviour
         }
 
         // Load entities
-        for (int i = 0; i < current.entities.Length; i++)
-        {
-            bool spawnedChar = SectorLoadEntityCharacterHandler(current.entities[i]);
-
-            if (spawnedChar)
-            {
-                continue;
-            }
-
-            // if it's an already collected shard do not spawn again
-            if (PlayerCore.Instance && PlayerCore.Instance.cursave.locationBasedShardsFound.Contains(current.entities[i].ID))
-            {
-                continue;
-            }
-
-            Object obj = ResourceManager.GetAsset<Object>(current.entities[i].assetID);
-
-            if (obj is GameObject go)
-            {
-                GameObject gObj = Instantiate(go);
-
-                // TODO: Make some property for level entities that dictates whether they change on faction or not
-                if (!gObj.GetComponent<EnergyRock>() && !gObj.GetComponent<Flag>())
-                {
-                    gObj.GetComponent<SpriteRenderer>().color = FactionManager.GetFactionColor(current.entities[i].faction);
-                }
-
-                gObj.transform.position = current.entities[i].position;
-                gObj.name = current.entities[i].name;
-                if (gObj.GetComponent<ShardRock>())
-                {
-                    if (!string.IsNullOrEmpty(current.entities[i].blueprintJSON))
-                    {
-                        gObj.GetComponent<ShardRock>().tier = int.Parse(current.entities[i].blueprintJSON);
-                    }
-
-                    gObj.GetComponent<ShardRock>().ID = current.entities[i].ID;
-                }
-
-                objects.Add(current.entities[i].ID, gObj);
-            }
-            else if (obj is EntityBlueprint blueprint)
-            {
-                var copy = Instantiate(blueprint);
-                if (blueprint.dialogue)
-                {
-                    copy.dialogue = Instantiate(blueprint.dialogue);
-                }
-
-                SpawnEntity(copy as EntityBlueprint, current.entities[i]);
-            }
-        }
+        LoadLevelEntities();
 
         //Load land platforms
         LoadSectorLandPlatforms();

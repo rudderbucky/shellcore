@@ -232,7 +232,7 @@ public abstract class WeaponAbility : ActiveAbility
                 if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && Core.networkAdapter) 
                     Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
             }
-            else if (Core.networkAdapter)
+            else if (Core.networkAdapter && Core.networkAdapter.isPlayer.Value)
             {
                 Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, target.position);
             }

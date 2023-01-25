@@ -27,7 +27,6 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     private Coroutine yardRepairCoroutine;
     private Coroutine addRandomPartsCoroutine;
-    public bool husk;
 
     public void StartYardRepairCoroutine()
     {
@@ -221,7 +220,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public override void Respawn()
     {
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off || 
-            (carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
+            (carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || (PartyManager.instance && PartyManager.instance.partyMembers.Contains(this)))
         {
             isYardRepairing = false;
             base.Respawn();
@@ -232,12 +231,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
     }
 
-    private bool rpcCalled = false;
     protected override void Update()
     {
-        if (!SystemLoader.AllLoaded) return;
         base.Update();
 
+        if (!SystemLoader.AllLoaded) return;
         // If got away from Yard while isYardRepairing, FinalizeRepair immediately.
         if (isYardRepairing)
         {
@@ -265,23 +263,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 FinalizeRepair();
             }
         }
-
-        if (MasterNetworkAdapter.mode == NetworkMode.Off) return;
-        AttemptCreateNetworkObject();
     }
 
-    public void AttemptCreateNetworkObject()
-    {
-        if (!networkAdapter && !rpcCalled) // should only happen to players
-        {
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, MasterNetworkAdapter.blueprint);
-            rpcCalled = true;
-        }
-        else if (networkAdapter && string.IsNullOrEmpty(networkAdapter.playerName))
-        {
-            networkAdapter.playerName = MasterNetworkAdapter.playerName;
-        }
-    }
+
 
 
     protected override void BuildEntity()

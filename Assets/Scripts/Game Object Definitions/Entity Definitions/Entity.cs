@@ -46,6 +46,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected List<ShellPart> parts; // List containing all parts of the entity
     protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
 
+    public bool husk;
     public float[] CurrentHealth
     {
         get { return (float[])currentHealth.Clone(); }
@@ -107,9 +108,23 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    public string blueprintString  {set; private get;}
 
     public delegate void EntityRangeCheckDelegate(float range);
     public EntityRangeCheckDelegate RangeCheckDelegate;
+    private bool rpcCalled = false;
+    public void AttemptCreateNetworkObject(bool isPlayer)
+    {
+        if (!networkAdapter && !rpcCalled) // should only happen to players
+        {
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, isPlayer ? MasterNetworkAdapter.blueprint : blueprintString, isPlayer, Vector3.zero);
+            rpcCalled = true;
+        }
+        else if (networkAdapter && string.IsNullOrEmpty(networkAdapter.playerName))
+        {
+            networkAdapter.playerName = MasterNetworkAdapter.playerName;
+        }
+    }
 
     private void UpdateInvisibleGraphics()
     {
@@ -1059,6 +1074,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     protected virtual void Update()
     {
+        if (MasterNetworkAdapter.mode != NetworkMode.Off && this as PlayerCore)
+            AttemptCreateNetworkObject(this as PlayerCore);
         if (!initialized) return;
         TickState();
     }
