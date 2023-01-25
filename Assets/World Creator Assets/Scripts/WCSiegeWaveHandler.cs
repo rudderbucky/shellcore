@@ -42,6 +42,7 @@ public class WCSiegeWaveHandler : MonoBehaviour
         var inField2 = gObj.GetComponentsInChildren<InputField>()[1];
         var inField3 = gObj.GetComponentsInChildren<InputField>()[2];
         var dropdown = gObj.GetComponentInChildren<Dropdown>();
+        ItemPropertyDisplay.AddCustomFactionsToDropdown(dropdown);
 
         inField1.text = name;
         inField2.text = time + "";
@@ -61,7 +62,6 @@ public class WCSiegeWaveHandler : MonoBehaviour
             }
         ));
 
-        //ItemPropertyDisplay.AddCustomFactionsToDropdown(dropdown); //Causes factions to reset back to 0
         waveEntities.Add((inField1, inField2, inField3, dropdown));
         Canvas.ForceUpdateCanvases();
         content.GetComponent<RectTransform>().sizeDelta = new Vector2(100, content.GetComponent<VerticalLayoutGroup>().minHeight);
