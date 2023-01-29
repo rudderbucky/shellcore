@@ -117,7 +117,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         if (!networkAdapter && !rpcCalled) // should only happen to players
         {
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, isPlayer ? MasterNetworkAdapter.blueprint : blueprintString, isPlayer, Vector3.zero);
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, isPlayer ? MasterNetworkAdapter.blueprint : blueprintString, isPlayer, faction, Vector3.zero);
             rpcCalled = true;
         }
         else if (networkAdapter && string.IsNullOrEmpty(networkAdapter.playerName))
@@ -735,6 +735,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && networkAdapter)
         {
+            if (this as Outpost) Debug.LogError(faction);
             networkAdapter.partStatuses.Clear();
         }
         if (blueprint != null && blueprint.parts != null)
@@ -1044,6 +1045,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         if (SectorManager.instance)
             SectorManager.instance.RemoveObject(ID, gameObject);
+
+        if (networkAdapter && MasterNetworkAdapter.mode != NetworkMode.Client)
+        {
+            networkAdapter.GetComponent<NetworkObject>().Despawn();
+            Destroy(networkAdapter.gameObject);
+        }
     }
 
 

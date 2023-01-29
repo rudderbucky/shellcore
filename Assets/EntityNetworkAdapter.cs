@@ -112,6 +112,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public NetworkVariable<bool> isPlayer = new NetworkVariable<bool>(false);
 
     private Entity huskEntity;
+    public int passedFaction = 0;
 
     void Awake()
     {
@@ -122,9 +123,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {        
         if (NetworkManager.Singleton.IsServer)
         {
-            int fac = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
-            if (IsOwner) fac = 0;
-            state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, fac, 0, 1000, 250, 500);
+            if (passedFaction == 0) passedFaction = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
+            if (IsOwner && isPlayer.Value) passedFaction = 0;
+            state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 1000, 250, 500);
             blueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
         }
         if (NetworkManager.Singleton.IsClient)
@@ -335,6 +336,15 @@ public class EntityNetworkAdapter : NetworkBehaviour
         else if (NetworkManager.IsHost || (huskEntity && !huskEntity.GetIsDead()))
         {
             clientReady = true;
+            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
+            {
+                var response = state;
+                if (response.Value.faction != huskEntity.faction)
+                {
+                    huskEntity.faction = response.Value.faction;
+                    huskEntity.Rebuild();
+                }
+            }
         }
 
         if (NetworkManager.Singleton.IsServer && Time.time - lastPollTime > POLL_RATE)
