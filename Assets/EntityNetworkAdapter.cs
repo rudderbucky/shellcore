@@ -282,6 +282,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public string playerName;
     public bool playerNameAdded;
     private bool stringsRequested;
+    public string idToGrab;
     void Update()
     {
 
@@ -296,20 +297,27 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
         if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId || !isPlayer.Value) && !huskEntity && SystemLoader.AllLoaded)
         {
-            Sector.LevelEntity entity = new Sector.LevelEntity();
-            entity.ID = OwnerClientId.ToString();
-            var response = state;
-            entity.faction = response.Value.faction;
-            var print = Instantiate(blueprint);
-            var ent = SectorManager.instance.SpawnEntity(print, entity);
-            ent.husk = true;
-            huskEntity = ent;
-            huskEntity.blueprint = print;
-            huskEntity.networkAdapter = this;
-            if (wrapper != null)
+            if (string.IsNullOrEmpty(idToGrab))
             {
-                huskEntity.spawnPoint = huskEntity.transform.position = wrapper.position;
+                Sector.LevelEntity entity = new Sector.LevelEntity();
+                entity.ID = OwnerClientId.ToString();
+                var response = state;
+                entity.faction = response.Value.faction;
+                var print = Instantiate(blueprint);
+                var ent = SectorManager.instance.SpawnEntity(print, entity);
+                ent.husk = true;
+                huskEntity = ent;
+                huskEntity.blueprint = print;
+                if (wrapper != null)
+                {
+                    huskEntity.spawnPoint = huskEntity.transform.position = wrapper.position;
+                }
             }
+            else
+            {
+                huskEntity = AIData.entities.Find(e => e.ID == idToGrab);
+            }
+            huskEntity.networkAdapter = this;
             clientReady = true;
         }
         else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsServer) && (isPlayer.Value && !huskEntity))
@@ -359,7 +367,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             playerNameAdded = true;
             ProximityInteractScript.instance.AddPlayerName(huskEntity as ShellCore, playerName);
         }
-        if (huskEntity && huskEntity is Craft craft)
+        if (huskEntity && huskEntity is Craft craft && craft.husk)
         {
             craft.MoveCraft(wrapper.directionalVector);
         }

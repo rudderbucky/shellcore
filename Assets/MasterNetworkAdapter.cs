@@ -75,14 +75,14 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public GameObject networkObj;
 
     [ServerRpc(RequireOwnership = false)]
-    public void CreateNetworkObjectServerRpc(string name, string blueprint, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)
+    public void CreateNetworkObjectServerRpc(string name, string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
-        var obj = InternalEntitySpawnWrapper(blueprint, isPlayer, faction, pos, serverRpcParams);
+        var obj = InternalEntitySpawnWrapper(blueprint, idToGrab, isPlayer, faction, pos, serverRpcParams);
         if (isPlayer) obj.GetComponent<EntityNetworkAdapter>().playerName = name;
     }
 
-    private NetworkObject InternalEntitySpawnWrapper(string blueprint, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)
+    private NetworkObject InternalEntitySpawnWrapper(string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
         var obj = Instantiate(networkObj).GetComponent<NetworkObject>();
@@ -90,6 +90,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         obj.GetComponent<EntityNetworkAdapter>().blueprintString = blueprint;
         obj.GetComponent<EntityNetworkAdapter>().passedFaction = faction;
         obj.GetComponent<EntityNetworkAdapter>().isPlayer.Value = isPlayer;
+        obj.GetComponent<EntityNetworkAdapter>().idToGrab = idToGrab;
         if (pos != Vector3.zero)
             obj.GetComponent<EntityNetworkAdapter>().ChangePositionServerRpc(pos);
         NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>

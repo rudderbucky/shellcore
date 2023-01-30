@@ -117,7 +117,14 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         if (!networkAdapter && !rpcCalled) // should only happen to players
         {
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, isPlayer ? MasterNetworkAdapter.blueprint : blueprintString, isPlayer, faction, Vector3.zero);
+            string idToGrab = null;
+            if (this as Drone)
+            {
+                if (string.IsNullOrEmpty(ID)) ID = SectorManager.instance.GetFreeEntityID();
+                idToGrab = ID;
+                blueprintString = DroneUtilities.GetDefaultData((this as Drone).type).drone;
+            }
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, isPlayer ? MasterNetworkAdapter.blueprint : blueprintString, idToGrab, isPlayer, faction, Vector3.zero);
             rpcCalled = true;
         }
         else if (networkAdapter && string.IsNullOrEmpty(networkAdapter.playerName))
@@ -350,7 +357,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     public void UpdateInteractible()
     {
-        interactible = GetDialogue() && FactionManager.IsAllied(0, faction);
+        interactible = GetDialogue() && PlayerCore.Instance && FactionManager.IsAllied(PlayerCore.Instance.faction, faction);
 
         // These are implications, not a biconditional; interactibility is not necessarily true/false if there are no
         // task overrides or pathing set up. Hence the if statements are needed here
@@ -735,7 +742,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && networkAdapter)
         {
-            if (this as Outpost) Debug.LogError(faction);
             networkAdapter.partStatuses.Clear();
         }
         if (blueprint != null && blueprint.parts != null)
@@ -1046,9 +1052,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (SectorManager.instance)
             SectorManager.instance.RemoveObject(ID, gameObject);
 
-        if (networkAdapter && MasterNetworkAdapter.mode != NetworkMode.Client)
+        if (MasterNetworkAdapter.mode != NetworkMode.Client && networkAdapter)
         {
-            networkAdapter.GetComponent<NetworkObject>().Despawn();
+            if(networkAdapter.GetComponent<NetworkObject>().IsSpawned)
+                networkAdapter.GetComponent<NetworkObject>().Despawn();
             Destroy(networkAdapter.gameObject);
         }
     }
@@ -1064,6 +1071,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         //transform.rotation = Quaternion.identity; // reset rotation
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
+        if (SectorManager.instance && SectorManager.instance.current &&
+        SectorManager.instance.current.type == Sector.SectorType.BattleZone && (new List<string>(SectorManager.instance.current.targets)).Contains(ID))
+        {
+            SectorManager.instance.AddTarget(this);
+        }
         initialized = true;
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && networkAdapter) networkAdapter.serverReady.Value = true;
     }
@@ -1081,7 +1093,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     protected virtual void Update()
     {
-        if (MasterNetworkAdapter.mode != NetworkMode.Off && this as PlayerCore)
+        if (MasterNetworkAdapter.mode == NetworkMode.Host)
             AttemptCreateNetworkObject(this as PlayerCore);
         if (!initialized) return;
         TickState();
@@ -1617,6 +1629,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     // Used by "dumb" stations, that just use their abilities whenever possible
     protected void TickAbilitiesAsStation()
     {
+        if (MasterNetworkAdapter.mode == NetworkMode.Client) return;
+
         var enemyTargetFound = SectorManager.instance?.current?.type != Sector.SectorType.BattleZone;
         if (!enemyTargetFound && BattleZoneManager.getTargets() != null && BattleZoneManager.getTargets().Length > 0)
         {

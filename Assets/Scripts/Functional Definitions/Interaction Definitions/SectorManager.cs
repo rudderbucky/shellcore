@@ -52,6 +52,13 @@ public class SectorManager : MonoBehaviour
     public Sector overrideProperties = null;
     public SkirmishMenu skirmishMenu;
     int maxID = 0;
+    public string GetFreeEntityID()
+    {
+        var x = maxID;
+        maxID++;
+        return maxID.ToString();
+    }
+
 
     public static Sector GetSectorByName(string sectorName)
     {
@@ -701,7 +708,7 @@ public class SectorManager : MonoBehaviour
         }
         else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
         {
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, blueprint, false, data.faction, data.position);
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, blueprint, null, false, data.faction, data.position);
         }
         return null;
     }
@@ -1053,6 +1060,45 @@ public class SectorManager : MonoBehaviour
         lpg.LoadSector(current);
     }
 
+    public void AddTarget(Entity target)
+    {
+        if (target is ShellCore shellcore)
+        {
+            // set the carrier of the shellcore to the associated faction's carrier
+            if (carriers.ContainsKey(shellcore.faction))
+            {
+                shellcore.SetCarrier(carriers[shellcore.faction]);
+            }
+
+            // add minimap arrow
+            if (MinimapArrowScript.instance && !(shellcore is PlayerCore))
+            {
+                MinimapArrowScript.instance.AddCoreArrow(shellcore);
+            }
+        }
+        battleZone.AddTarget(target);
+    }
+
+    public void UpdateTargets()
+    {
+        // add party member minimap arrows
+        if (MinimapArrowScript.instance)
+        {
+            foreach (var partyMember in PartyManager.instance.partyMembers)
+            {
+                MinimapArrowScript.instance.AddCoreArrow(partyMember);
+            }
+        }
+
+        for (int i = 0; i < current.targets.Length; i++)
+        {
+            if (!objects.ContainsKey(current.targets[i])) return;
+            AddTarget(objects[current.targets[i]].GetComponent<Entity>());
+        }
+
+        battleZone.UpdateCounters();
+    }
+
     public void SetSectorTypeBehavior()
     {
         siegeZone.enabled = false;
@@ -1063,6 +1109,7 @@ public class SectorManager : MonoBehaviour
                 //battle zone things
                 battleZone.enabled = true;
                 battleZone.sectorName = current.sectorName;
+
                 if (player)
                 {
                     var playerComp = player.GetComponent<PlayerCore>();
@@ -1084,37 +1131,7 @@ public class SectorManager : MonoBehaviour
                     }
                 }
 
-                // add party member minimap arrows
-                if (MinimapArrowScript.instance)
-                {
-                    foreach (var partyMember in PartyManager.instance.partyMembers)
-                    {
-                        MinimapArrowScript.instance.AddCoreArrow(partyMember);
-                    }
-                }
-
-                for (int i = 0; i < current.targets.Length; i++)
-                {
-                    if (objects[current.targets[i]].GetComponent<ShellCore>())
-                    {
-                        // set the carrier of the shellcore to the associated faction's carrier
-                        ShellCore shellcore = objects[current.targets[i]].GetComponent<ShellCore>();
-                        if (carriers.ContainsKey(shellcore.faction))
-                        {
-                            shellcore.SetCarrier(carriers[shellcore.faction]);
-                        }
-
-                        // add minimap arrow
-                        if (MinimapArrowScript.instance && !(shellcore is PlayerCore))
-                        {
-                            MinimapArrowScript.instance.AddCoreArrow(shellcore);
-                        }
-                    }
-
-                    battleZone.AddTarget(objects[current.targets[i]].GetComponent<Entity>());
-                }
-
-                battleZone.UpdateCounters();
+                UpdateTargets();
                 break;
             case Sector.SectorType.Haven:
             case Sector.SectorType.Capitol:
