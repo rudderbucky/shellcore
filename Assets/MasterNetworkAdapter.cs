@@ -90,7 +90,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         obj.GetComponent<EntityNetworkAdapter>().blueprintString = blueprint;
         obj.GetComponent<EntityNetworkAdapter>().passedFaction = faction;
         obj.GetComponent<EntityNetworkAdapter>().isPlayer.Value = isPlayer;
-        obj.GetComponent<EntityNetworkAdapter>().idToGrab = idToGrab;
+        obj.GetComponent<EntityNetworkAdapter>().idToUse = idToGrab;
         if (pos != Vector3.zero)
             obj.GetComponent<EntityNetworkAdapter>().ChangePositionServerRpc(pos);
         NetworkManager.Singleton.OnClientDisconnectCallback += (u) =>

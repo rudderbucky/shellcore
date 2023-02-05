@@ -111,6 +111,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public NetworkVariable<ServerResponse> state = new NetworkVariable<ServerResponse>();
     public NetworkVariable<bool> isPlayer = new NetworkVariable<bool>(false);
 
+    [SerializeField]
     private Entity huskEntity;
     public int passedFaction = 0;
 
@@ -157,6 +158,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
             PlayerCore.Instance.networkAdapter = this;
         }
 
+        
+
     }
 
     public override void OnNetworkDespawn()
@@ -182,6 +185,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
         core.SyncHealth(response.shell, response.core, response.energy);
     }
     
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestDataStringsServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        GetDataStringsClientRpc(playerName, blueprintString);
+    }
+
     [ClientRpc]
     public void GetDataStringsClientRpc(string name, string blueprint, ClientRpcParams clientRpcParams = default)
     {
@@ -190,10 +199,39 @@ public class EntityNetworkAdapter : NetworkBehaviour
         this.blueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
     }
 
+
     [ServerRpc(RequireOwnership = false)]
-    public void RequestDataStringsServerRpc(ServerRpcParams serverRpcParams = default)
+    public void RequestIDServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        GetDataStringsClientRpc(playerName, blueprintString);
+        GetIDClientRpc(idToUse);
+    }
+
+
+    [ClientRpc]
+    public void GetIDClientRpc(string ID, ClientRpcParams clientRpcParams = default)
+    {
+        this.idToUse = ID;
+        if (this.idToUse == "player") 
+        {
+            this.idToUse = "player-"+OwnerClientId;
+            Debug.LogWarning(idToUse);
+        }
+    }
+
+    private string tractorID;
+    private bool queuedTractor = false;
+
+    public void SetTractorID(string ID)
+    {
+        this.tractorID = ID;
+        UpdateTractorClientRpc(ID);
+    }
+
+    [ClientRpc]
+    public void UpdateTractorClientRpc(string ID, ClientRpcParams clientRpcParams = default)
+    {
+        queuedTractor = true;
+        tractorID = ID;
     }
 
     [ServerRpc(RequireOwnership = true)]
@@ -203,6 +241,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (OwnerClientId == serverRpcParams.Receive.SenderClientId)
             wrapper.position = newPos;
     }
+
+
 
     [ServerRpc(RequireOwnership = true)]
     public void ChangeDirectionServerRpc(Vector3 directionalVector, ServerRpcParams serverRpcParams = default)
@@ -282,7 +322,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public string playerName;
     public bool playerNameAdded;
     private bool stringsRequested;
-    public string idToGrab;
+    public string idToUse;
     void Update()
     {
 
@@ -291,20 +331,39 @@ public class EntityNetworkAdapter : NetworkBehaviour
             if (!stringsRequested)
             {
                 RequestDataStringsServerRpc();
+                RequestIDServerRpc();
                 stringsRequested = true;
             }
             return;
         }
-        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId || !isPlayer.Value) && !huskEntity && SystemLoader.AllLoaded)
+        
+        if (queuedTractor && (tractorID == null || AIData.entities.Find(e => e.ID == tractorID)) && huskEntity is ShellCore && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
         {
-            if (string.IsNullOrEmpty(idToGrab))
+            queuedTractor = false;
+            var core = huskEntity as ShellCore;
+            if (tractorID == null)
+            {
+                core.SetTractorTarget(null);
+            }
+            else core.SetTractorTarget(AIData.entities.Find(e => e.ID == tractorID).GetComponentInChildren<Draggable>());
+        }
+
+        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
+            && !huskEntity && SystemLoader.AllLoaded)
+        {
+            huskEntity = AIData.entities.Find(e => e.ID == idToUse);
+            if (!huskEntity)
             {
                 Sector.LevelEntity entity = new Sector.LevelEntity();
-                entity.ID = OwnerClientId.ToString();
                 var response = state;
                 entity.faction = response.Value.faction;
                 var print = Instantiate(blueprint);
+                entity.ID = idToUse;
                 var ent = SectorManager.instance.SpawnEntity(print, entity);
+                if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
+                { 
+                    GetIDClientRpc(entity.ID);
+                }
                 ent.husk = true;
                 huskEntity = ent;
                 huskEntity.blueprint = print;
@@ -312,10 +371,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 {
                     huskEntity.spawnPoint = huskEntity.transform.position = wrapper.position;
                 }
-            }
-            else
-            {
-                huskEntity = AIData.entities.Find(e => e.ID == idToGrab);
             }
             huskEntity.networkAdapter = this;
             clientReady = true;
@@ -337,6 +392,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                     PlayerCore.Instance.Rebuild();
                 }
                 PlayerCore.Instance.networkAdapter = this;
+                idToUse = "player";
                 huskEntity = PlayerCore.Instance;
                 clientReady = true;
             }

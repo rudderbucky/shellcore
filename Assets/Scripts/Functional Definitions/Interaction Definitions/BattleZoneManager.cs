@@ -132,7 +132,7 @@ public class BattleZoneManager : MonoBehaviour
 
     public void AlertPlayers(int faction, string message)
     {
-        if (faction == 0 && PlayerCore.Instance)
+        if (PlayerCore.Instance && faction == PlayerCore.Instance.faction)
         {
             PlayerCore.Instance.alerter.showMessage(message, "clip_stationlost");
         }

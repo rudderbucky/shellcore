@@ -81,6 +81,7 @@ public class TractorBeam : MonoBehaviour
 
     protected void FixedUpdate()
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
         if (!IsValidDraggableTarget(target))
         {
             SetTractorTarget(null); // Make sure that you are still allowed to tractor the target
@@ -193,10 +194,6 @@ public class TractorBeam : MonoBehaviour
 
     public void SetTractorTarget(Draggable newTarget)
     {
-        //if (target != null && newTarget == null && owner.faction != 0)
-        //{
-        //    Debug.Log("AI Dropped something!");
-        //}
         var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
         if (!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp))
         {
@@ -215,7 +212,17 @@ public class TractorBeam : MonoBehaviour
                 target.dragging = false;
             }
 
+            var oldTarget = target;
             target = newTarget;
+            if (owner && owner.networkAdapter )
+            {
+                if (target && target.GetComponent<Entity>()) 
+                    owner.networkAdapter.SetTractorID((target.GetComponent<Entity>()).ID);
+                else if (oldTarget)
+                {
+                    owner.networkAdapter.SetTractorID(null);
+                }
+            }
             if (target)
             {
                 target.dragging = true;

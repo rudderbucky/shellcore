@@ -708,7 +708,7 @@ public class SectorManager : MonoBehaviour
         }
         else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
         {
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, blueprint, null, false, data.faction, data.position);
+            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, blueprint, data.ID, false, data.faction, data.position);
         }
         return null;
     }

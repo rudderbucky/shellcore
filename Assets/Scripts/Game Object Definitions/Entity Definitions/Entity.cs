@@ -118,11 +118,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (!networkAdapter && !rpcCalled) // should only happen to players
         {
             string idToGrab = null;
-            if (this as Drone)
+            if (this as Drone || this as Tower || this as Tank || this as Turret)
             {
                 if (string.IsNullOrEmpty(ID)) ID = SectorManager.instance.GetFreeEntityID();
                 idToGrab = ID;
-                blueprintString = DroneUtilities.GetDefaultData((this as Drone).type).drone;
             }
             MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, isPlayer ? MasterNetworkAdapter.blueprint : blueprintString, idToGrab, isPlayer, faction, Vector3.zero);
             rpcCalled = true;

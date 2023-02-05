@@ -153,7 +153,7 @@ public class QuantityDisplayScript : MonoBehaviour
         {
             targetInfo.SetActive(true);
             description = entity.Terrain + " " + entity.category;
-            targetName.text = entity.entityName;
+            targetName.text = entity.entityName + (ReticleScript.instance.DebugMode ? $" ({entity.ID})" : "");
             targetDesc.text = description;
             targetName.color = targetDesc.color = FactionManager.GetFactionColor(entity.faction);
             if (targetNumber)

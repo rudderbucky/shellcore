@@ -83,6 +83,8 @@ public class SpawnDrone : ActiveAbility
         drone.transform.position = part.transform.position;
         drone.spawnPoint = part.transform.position;
         drone.type = spawnData.type;
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+            drone.blueprintString = JsonUtility.ToJson(blueprint);
         drone.Init();
         drone.SetOwner(craft);
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);

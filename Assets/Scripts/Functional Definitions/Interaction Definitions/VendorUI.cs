@@ -205,12 +205,13 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         {
             blueprint.items[index].entityBlueprint = SectorManager.TryGettingEntityBlueprint(blueprint.items[index].json); 
         }
+        bool tractor = false;
         switch (blueprint.items[index].entityBlueprint.intendedType)
         {
             case EntityBlueprint.IntendedType.Turret:
                 Turret tur = creation.AddComponent<Turret>();
                 tur.blueprint = blueprint.items[index].entityBlueprint;
-                core.SetTractorTarget(creation.GetComponent<Draggable>());
+                tractor = true;
                 tur.SetOwner(core);
 
                 if (SectorManager.instance && SectorManager.instance.GetComponentInChildren<BattleZoneManager>())
@@ -248,12 +249,16 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             default:
                 break;
         }
-        creation.GetComponent<Entity>().spawnPoint = vendor.GetPosition();
-        creation.GetComponent<Entity>().faction = core.faction;
+        var ent = creation.GetComponent<Entity>();
+        ent.spawnPoint = vendor.GetPosition();
+        ent.faction = core.faction;
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off) ent.ID = SectorManager.instance.GetFreeEntityID();
+        if (tractor) core.SetTractorTarget(creation.GetComponent<Draggable>());
         creation.name = blueprint.items[index].entityBlueprint.name;
+        ent.blueprintString = JsonUtility.ToJson(blueprint.items[index].entityBlueprint);
         core.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
         core.AddPower(-blueprint.items[index].cost);
-        return creation.GetComponent<Entity>();
+        return ent;
     }
 
     public void onButtonPressed(int index)
