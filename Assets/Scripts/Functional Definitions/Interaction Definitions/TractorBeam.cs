@@ -12,6 +12,7 @@ public class TractorBeam : MonoBehaviour
     Transform coreGlow;
     Transform targetGlow;
     public Entity owner;
+    [SerializeField]
     Draggable target;
     private float energyPickupTimer = 10.0f; // Energy pickup timer
     protected float energyPickupSpeed = 61.0f;
@@ -166,7 +167,7 @@ public class TractorBeam : MonoBehaviour
 
         if ((target && !owner.GetIsDead() && (!target.GetComponent<Entity>() || !target.GetComponent<Entity>().GetIsDead()))) // Update tractor beam graphics
         {
-            if (!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > maxBreakRangeSquared && !(owner as Yard))
+            if (!forcedTarget && (target.transform.position - transform.position).sqrMagnitude > maxBreakRangeSquared && !(owner as Yard) && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
             {
                 SetTractorTarget(null); // break tractor if too far away
             }
@@ -214,7 +215,7 @@ public class TractorBeam : MonoBehaviour
 
             var oldTarget = target;
             target = newTarget;
-            if (owner && owner.networkAdapter )
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && owner && owner.networkAdapter)
             {
                 if (target && target.GetComponent<Entity>()) 
                     owner.networkAdapter.SetTractorID((target.GetComponent<Entity>()).ID);
@@ -232,7 +233,7 @@ public class TractorBeam : MonoBehaviour
 
     private bool IsValidDraggableTarget(Draggable newTarget)
     {
-        if (forcedTarget || !newTarget)
+        if (forcedTarget || !newTarget || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
         {
             return true;
         }

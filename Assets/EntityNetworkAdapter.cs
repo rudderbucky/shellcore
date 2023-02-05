@@ -214,7 +214,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (this.idToUse == "player") 
         {
             this.idToUse = "player-"+OwnerClientId;
-            Debug.LogWarning(idToUse);
         }
     }
 
@@ -345,7 +344,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
             {
                 core.SetTractorTarget(null);
             }
-            else core.SetTractorTarget(AIData.entities.Find(e => e.ID == tractorID).GetComponentInChildren<Draggable>());
+            else
+            {
+                core.SetTractorTarget(AIData.entities.Find(e => e.ID == tractorID).GetComponentInChildren<Draggable>());
+            } 
         }
 
         if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
