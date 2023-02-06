@@ -263,6 +263,18 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 FinalizeRepair();
             }
         }
+
+        // tick all abilities if a server husk
+        if (husk && MasterNetworkAdapter.mode != NetworkMode.Client && MasterNetworkAdapter.mode != NetworkMode.Server)
+        {
+            foreach (Ability a in GetAbilities())
+            {
+                if (a)
+                {
+                    a.Tick();
+                }
+            }
+        }
     }
 
 

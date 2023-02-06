@@ -97,7 +97,6 @@ public class SectorManager : MonoBehaviour
 
     [SerializeField]
     private Sector networkTestSector;
-
     public void Initialize()
     {
         if (instance != null)
@@ -708,7 +707,7 @@ public class SectorManager : MonoBehaviour
         }
         else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
         {
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, blueprint, data.ID, false, data.faction, data.position);
+            MasterNetworkAdapter.instance.CreateNetworkObjectWrapper(MasterNetworkAdapter.playerName, blueprint, data.ID, false, data.faction, data.position);
         }
         return null;
     }

@@ -277,7 +277,6 @@ public abstract class Ability : MonoBehaviour
             if (!lettingServerDecide) Execute();
             else if (Core && Core.networkAdapter) 
             {
-                Debug.LogWarning("TEST");
                 Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
             }
         }

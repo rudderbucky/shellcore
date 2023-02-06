@@ -115,7 +115,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     private bool rpcCalled = false;
     public void AttemptCreateNetworkObject(bool isPlayer)
     {
-        if (!networkAdapter && !rpcCalled) // should only happen to players
+        if (!networkAdapter && !rpcCalled) // should only happen to players, drones, towers, tanks, or turrets
         {
             string idToGrab = null;
             if (this as Drone || this as Tower || this as Tank || this as Turret)
@@ -123,7 +123,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 if (string.IsNullOrEmpty(ID)) ID = SectorManager.instance.GetFreeEntityID();
                 idToGrab = ID;
             }
-            MasterNetworkAdapter.instance.CreateNetworkObjectServerRpc(MasterNetworkAdapter.playerName, isPlayer ? MasterNetworkAdapter.blueprint : blueprintString, idToGrab, isPlayer, faction, Vector3.zero);
+
+            if (MasterNetworkAdapter.mode != NetworkMode.Server && this as PlayerCore)
+            {
+                MasterNetworkAdapter.instance.CreatePlayerServerRpc(MasterNetworkAdapter.playerName, MasterNetworkAdapter.blueprint, faction);
+            }
+            else if (MasterNetworkAdapter.mode != NetworkMode.Client)
+            {
+                MasterNetworkAdapter.instance.CreateNetworkObjectWrapper(MasterNetworkAdapter.playerName, blueprintString, idToGrab, false, faction, Vector3.zero);
+            }
             rpcCalled = true;
         }
         else if (networkAdapter && string.IsNullOrEmpty(networkAdapter.playerName))
@@ -1092,7 +1100,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     protected virtual void Update()
     {
-        if (MasterNetworkAdapter.mode == NetworkMode.Host)
+        if (MasterNetworkAdapter.mode != NetworkMode.Off && MasterNetworkAdapter.mode != NetworkMode.Client)
             AttemptCreateNetworkObject(this as PlayerCore);
         if (!initialized) return;
         TickState();

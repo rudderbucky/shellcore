@@ -124,7 +124,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {        
         if (NetworkManager.Singleton.IsServer)
         {
-            if (passedFaction == 0) passedFaction = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
+            if (passedFaction == 0 && isPlayer.Value) passedFaction = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
             if (IsOwner && isPlayer.Value) passedFaction = 0;
             state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 1000, 250, 500);
             blueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
@@ -164,6 +164,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Server || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host && isPlayer.Value)
+        {
+            MasterNetworkAdapter.instance.playerSpawned[OwnerClientId] = false;
+        }
         if (huskEntity)
         {
             Destroy(huskEntity.gameObject);
@@ -211,12 +215,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public void GetIDClientRpc(string ID, ClientRpcParams clientRpcParams = default)
     {
         this.idToUse = ID;
-        if (this.idToUse == "player") 
+        if (this.idToUse == "player" || isPlayer.Value) 
         {
             this.idToUse = "player-"+OwnerClientId;
         }
     }
 
+    // TODO: use network object ID instead of entity ID
     private string tractorID;
     private bool queuedTractor = false;
 
@@ -233,12 +238,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
         tractorID = ID;
     }
 
-    [ServerRpc(RequireOwnership = true)]
-    public void ChangePositionServerRpc(Vector3 newPos, ServerRpcParams serverRpcParams = default)
+    public void ChangePositionWrapper(Vector3 newPos)
     {
         if (wrapper == null) wrapper = new TemporaryStateWrapper();
-        if (OwnerClientId == serverRpcParams.Receive.SenderClientId)
-            wrapper.position = newPos;
+        wrapper.position = newPos;
     }
 
 
@@ -366,6 +369,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 { 
                     GetIDClientRpc(entity.ID);
                 }
+                if (isPlayer.Value) 
+                {
+                    entity.ID = "player-"+OwnerClientId;
+                }
                 ent.husk = true;
                 huskEntity = ent;
                 huskEntity.blueprint = print;
@@ -377,7 +384,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             huskEntity.networkAdapter = this;
             clientReady = true;
         }
-        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsServer) && (isPlayer.Value && !huskEntity))
+        else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsHost) && (isPlayer.Value && !huskEntity))
         {
             var response = state;
             if (state.Value.time > 0)
@@ -420,7 +427,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 state.Value = wrapper.CreateResponse(this);
         }
 
-        if (!playerNameAdded && !string.IsNullOrEmpty(playerName) && huskEntity && ProximityInteractScript.instance && isPlayer.Value)
+        if (!playerNameAdded && !string.IsNullOrEmpty(playerName) && huskEntity as ShellCore && ProximityInteractScript.instance && isPlayer.Value)
         {
             playerNameAdded = true;
             ProximityInteractScript.instance.AddPlayerName(huskEntity as ShellCore, playerName);
