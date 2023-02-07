@@ -33,6 +33,7 @@ namespace NodeEditorFramework.Standard
 
         public RewardWrapper wrapper;
         public bool showPopup = true;
+        public bool partShinyBool = false;
 
         bool init = false;
         Texture2D partTexture;
@@ -106,6 +107,7 @@ namespace NodeEditorFramework.Standard
                 wrapper.partTier = RTEditorGUI.IntField("Part tier", wrapper.partTier, GUILayout.Width(200f));
                 GUILayout.Label("Part Secondary Data:");
                 wrapper.partSecondaryData = GUILayout.TextField(wrapper.partSecondaryData, GUILayout.Width(200f));
+                partShinyBool = RTEditorGUI.Toggle(partShinyBool, "Is shiny: ");
             }
             else
             {
@@ -132,7 +134,8 @@ namespace NodeEditorFramework.Standard
                         partID = wrapper.partID,
                         abilityID = wrapper.partAbilityID,
                         tier = wrapper.partTier,
-                        secondaryData = wrapper.partSecondaryData
+                        secondaryData = wrapper.partSecondaryData,
+                        shiny = partShinyBool
                     });
             }
 
