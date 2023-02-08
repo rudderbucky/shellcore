@@ -193,8 +193,8 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 ints.Add(character.faction);
                 strings.Add(character.partyData.attackDialogue);
                 strings.Add(character.partyData.defendDialogue);
-                strings.Add(character.partyData.buildDialogue);
                 strings.Add(character.partyData.collectDialogue);
+                strings.Add(character.partyData.buildDialogue);
                 strings.Add(character.partyData.followDialogue);
                 SetupAdditionFields();
                 break;
