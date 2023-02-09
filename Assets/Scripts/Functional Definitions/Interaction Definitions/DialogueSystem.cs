@@ -633,6 +633,12 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         builder.Initialize(BuilderMode.Trader, traderInventory);
     }
 
+    public void OpenUpgrader(Vector3 speakerPos)
+    {
+        builder.yardPosition = speakerPos;
+        upgraderScript.initialize();
+    }
+
     public void OpenWorkshop(Vector3 speakerPos)
     {
         builder.yardPosition = speakerPos;
@@ -712,6 +718,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 endDialogue(0, false);
                 return;
             case Dialogue.DialogueAction.Upgrader:
+                OpenUpgrader((Vector3)speakerPos);
                 upgraderScript.initialize();
                 endDialogue(0, false);
                 return;

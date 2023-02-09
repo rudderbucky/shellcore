@@ -41,6 +41,8 @@ namespace NodeEditorFramework.Standard
         public bool jumpToStart = false; // This is now necessary :)
         public bool openBuilder = false;
         public bool openTrader = false;
+        public bool openUpgrader = false;
+        public bool openWorkshop = false;
         public string traderJSON = null;
         public NodeEditorGUI.NodeEditorState state;
 
@@ -82,15 +84,33 @@ namespace NodeEditorFramework.Standard
             if (openBuilder == true)
             {
                 openTrader = false;
+                openUpgrader = false;
+                openWorkshop = false;
             }
             GUILayout.EndHorizontal();
             if (openTrader = RTEditorGUI.Toggle(openTrader, "Open Trader"))
             {
                 openBuilder = false;
+                openUpgrader = false;
+                openWorkshop = false;
                 GUILayout.Label("Trader Inventory JSON");
                 GUILayout.BeginHorizontal();
                 traderJSON = GUILayout.TextArea(traderJSON);
                 GUILayout.EndHorizontal();
+            }
+            openUpgrader = RTEditorGUI.Toggle(openUpgrader, "Open Upgrader");
+            if (openUpgrader == true)
+            {
+                openBuilder = false;
+                openTrader = false;
+                openWorkshop = false;
+            }
+            openWorkshop = RTEditorGUI.Toggle(openWorkshop, "Open Workshop");
+            if (openWorkshop == true)
+            {
+                openBuilder = false;
+                openTrader = false;
+                openUpgrader = false;
             }
         }
 
@@ -153,6 +173,14 @@ namespace NodeEditorFramework.Standard
                     DialogueSystem.Instance.OpenTrader(SectorManager.instance.GetEntity(node.EntityID).transform.position,
                         JsonUtility.FromJson<ShipBuilder.TraderInventory>(traderJSON).parts);
                 }
+                if (openUpgrader)
+                {
+                    DialogueSystem.Instance.OpenUpgrader(SectorManager.instance.GetEntity(node.EntityID).transform.position);
+                }
+                if (openWorkshop)
+                {
+                    DialogueSystem.Instance.OpenWorkshop(SectorManager.instance.GetEntity(node.EntityID).transform.position);
+                }
 
                 return -1;
             }
@@ -186,6 +214,14 @@ namespace NodeEditorFramework.Standard
                 {
                     DialogueSystem.Instance.OpenTrader(SectorManager.instance.GetEntity(node.EntityID).transform.position,
                         JsonUtility.FromJson<ShipBuilder.TraderInventory>(traderJSON).parts);
+                }
+                if (openUpgrader)
+                {
+                    DialogueSystem.Instance.OpenUpgrader(SectorManager.instance.GetEntity(node.EntityID).transform.position);
+                }
+                if (openWorkshop)
+                {
+                    DialogueSystem.Instance.OpenWorkshop(SectorManager.instance.GetEntity(node.EntityID).transform.position);
                 }
 
                 return outputKnobs.Count > 0 ? 0 : -1;
