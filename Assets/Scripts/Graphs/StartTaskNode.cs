@@ -258,14 +258,7 @@ namespace NodeEditorFramework.Standard
             var node1 = new Dialogue.Node();
             node1.ID = 1;
             node1.action = Dialogue.DialogueAction.Exit;
-            if (useCustomActionResponse == true)
-            {
-                node1.buttonText = actionResponse;
-            }
-            else
-            {
-                node1.buttonText = "Alright."; // Players can only make one response, I haven't figured a way to make more without breaking it. -FoeFear
-            }
+            node1.buttonText = actionResponse != null ? actionResponse : "Alright."; // Players can only make one response, I haven't figured a way to make more without breaking it. -FoeFear
             dialogue.nodes.Add(node);
             dialogue.nodes.Add(node1);
             TaskManager.speakerID = entityIDforConfirmedResponse;
