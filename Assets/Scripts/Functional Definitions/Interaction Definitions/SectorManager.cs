@@ -288,6 +288,11 @@ public class SectorManager : MonoBehaviour
         }
     }
 
+    public void ReloadSector()
+    {
+        loadSector(current);
+    }
+
     public void AttemptSectorLoad()
     {
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsClient)
@@ -840,6 +845,11 @@ public class SectorManager : MonoBehaviour
                 if (!carriers.ContainsKey(data.faction))
                 {
                     carriers.Add(data.faction, carrier);
+                    if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host 
+                        && PlayerCore.Instance && data.faction == PlayerCore.Instance.faction)
+                    {
+                        PlayerCore.Instance.Warp(data.position);
+                    }
                 }
 
                 carrier.sectorMngr = this;
@@ -856,6 +866,11 @@ public class SectorManager : MonoBehaviour
                 if (!carriers.ContainsKey(data.faction))
                 {
                     carriers.Add(data.faction, gcarrier);
+                    if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host 
+                        && PlayerCore.Instance && data.faction == PlayerCore.Instance.faction)
+                    {
+                        PlayerCore.Instance.Warp(data.position);
+                    }
                 }
 
                 gcarrier.sectorMngr = this;
@@ -1421,6 +1436,13 @@ public class SectorManager : MonoBehaviour
                             skipTag = true;
                             break;
                         }
+                    }
+
+                    if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off 
+                        && obj.Value.GetComponentInChildren<Entity>().networkAdapter 
+                        && obj.Value.GetComponentInChildren<Entity>().networkAdapter.isPlayer.Value)
+                    {
+                        skipTag = true;
                     }
 
                     if (!skipTag && AIData.entities.Contains(obj.Value.GetComponentInChildren<Entity>()))

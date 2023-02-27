@@ -216,6 +216,10 @@ public class BattleZoneManager : MonoBehaviour
                 }
 
                 DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
+                if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+                {
+                    SectorManager.instance.ReloadSector();
+                }
             }
         }
     }

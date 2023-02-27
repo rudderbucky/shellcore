@@ -33,6 +33,8 @@ public class MainMenu : MonoBehaviour
     private InputField nameField;
     [SerializeField]
     private InputField blueprintField;
+    [SerializeField]
+    private InputField worldField;
 
     public void Start()
     {
@@ -92,7 +94,12 @@ public class MainMenu : MonoBehaviour
         MasterNetworkAdapter.playerName = nameField.text;
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
-            var world = "test";
+            var world = worldField.text;
+            if (string.IsNullOrEmpty(world))
+            {
+                Debug.LogError("Invalid world name.");
+                return;
+            }
             var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", world);
             if (!System.IO.Directory.Exists(path)) return;
             if (mode == MasterNetworkAdapter.NetworkMode.Host)

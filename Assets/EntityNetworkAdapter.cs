@@ -177,6 +177,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     private void UpdatePlayerState(ServerResponse response)
     {
         UpdateCoreState(PlayerCore.Instance, response);
+        CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
     }
 
     private void UpdateCoreState(Entity core, ServerResponse response)
@@ -364,6 +365,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 entity.faction = response.Value.faction;
                 var print = Instantiate(blueprint);
                 entity.ID = idToUse;
+                entity.position = wrapper.position;
                 var ent = SectorManager.instance.SpawnEntity(print, entity);
                 if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
                 { 

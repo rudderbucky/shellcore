@@ -265,6 +265,6 @@ public abstract class Craft : Entity
     /// <returns></returns>
     public virtual bool IsMoving()
     {
-        return (entityBody.velocity != Vector2.zero); // if there is any velocity the craft is moving
+        return (entityBody && entityBody.velocity != Vector2.zero); // if there is any velocity the craft is moving
     }
 }
