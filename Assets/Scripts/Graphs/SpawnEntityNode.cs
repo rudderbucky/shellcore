@@ -63,9 +63,12 @@ namespace NodeEditorFramework.Standard
             blueprint = GUILayout.TextField(blueprint);
             GUILayout.Label("Entity Name:");
             entityName = GUILayout.TextField(entityName);
-            GUILayout.Label("Faction number:");
-            faction = Utilities.RTEditorGUI.IntField(faction);
-
+            faction = Utilities.RTEditorGUI.IntField("Faction Number: ", faction);
+            if (faction < 0)
+            {
+                faction = Utilities.RTEditorGUI.IntField("Faction Number: ", 0);
+                Debug.LogWarning("This identification does not exist!");
+            }
             if (useCoordinates = Utilities.RTEditorGUI.Toggle(useCoordinates, "Use coordinates"))
             {
                 GUILayout.Label("Coordinates:");
@@ -88,8 +91,7 @@ namespace NodeEditorFramework.Standard
                 entityID = GUILayout.TextField(entityID);
             }
 
-            GUILayout.Label("Spawn Count:");
-            count = Mathf.Max(1, Utilities.RTEditorGUI.IntField(count));
+            count = Utilities.RTEditorGUI.IntField("Spawn Count: ", Mathf.Max(1, count));
 
             forceCharacterTeleport = Utilities.RTEditorGUI.Toggle(forceCharacterTeleport, "Force Character Teleport");
 
@@ -119,10 +121,7 @@ namespace NodeEditorFramework.Standard
                 additionalFlags[i] = GUILayout.TextField(additionalFlags[i]);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Spawn Count:");
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                additionalCounts[i] = Mathf.Max(1, Utilities.RTEditorGUI.IntField(additionalCounts[i]));
+                additionalCounts[i] = Utilities.RTEditorGUI.IntField("Spawn Count: ", Mathf.Max(1, additionalCounts[i]));
                 GUILayout.EndHorizontal();
             }
 

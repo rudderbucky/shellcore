@@ -52,13 +52,10 @@ namespace NodeEditorFramework.Standard
             outputRight.DisplayLayout();
             GUILayout.EndHorizontal();
 
-            showPopup = RTEditorGUI.Toggle(showPopup, "Show popup:");
-            GUILayout.Label("Credit reward:");
-            wrapper.creditReward = RTEditorGUI.IntField(wrapper.creditReward, GUILayout.Width(208f));
-            GUILayout.Label("Reputation reward:");
-            wrapper.reputationReward = RTEditorGUI.IntField(wrapper.reputationReward, GUILayout.Width(208f));
-            GUILayout.Label("Shard reward:");
-            wrapper.shardReward = RTEditorGUI.IntField(wrapper.shardReward, GUILayout.Width(208f));
+            showPopup = RTEditorGUI.Toggle(showPopup, "Show Popup:");
+            wrapper.creditReward = RTEditorGUI.IntField("Credit Reward: ", wrapper.creditReward);
+            wrapper.reputationReward = RTEditorGUI.IntField("Reputation Reward: ", wrapper.reputationReward);
+            wrapper.shardReward = RTEditorGUI.IntField("Shard Reward: ", wrapper.shardReward);
 
             wrapper.partReward = RTEditorGUI.Toggle(wrapper.partReward, "Part reward", GUILayout.Width(200f));
             if (wrapper.partReward)
@@ -106,7 +103,7 @@ namespace NodeEditorFramework.Standard
                 }
                 wrapper.partTier = RTEditorGUI.IntField("Part tier", wrapper.partTier, GUILayout.Width(200f));
                 GUILayout.Label("Part Secondary Data:");
-                wrapper.partSecondaryData = GUILayout.TextField(wrapper.partSecondaryData, GUILayout.Width(200f));
+                wrapper.partSecondaryData = GUILayout.TextArea(wrapper.partSecondaryData, GUILayout.Width(200f));
                 partShinyBool = RTEditorGUI.Toggle(partShinyBool, "Is shiny");
             }
             else

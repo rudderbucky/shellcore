@@ -125,26 +125,25 @@ namespace NodeEditorFramework.Standard
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Accept Player Response:");
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            acceptResponse = GUILayout.TextArea(acceptResponse, GUILayout.Width(200f));
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Decline Player Response:");
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            declineResponse = GUILayout.TextArea(declineResponse, GUILayout.Width(200f));
+            if (forceTask == false)
+            {
+                GUILayout.Label("Accept Player Response:");
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                acceptResponse = GUILayout.TextArea(acceptResponse, GUILayout.Width(200f));
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Decline Player Response:");
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                declineResponse = GUILayout.TextArea(declineResponse, GUILayout.Width(200f));
+            }
             GUILayout.EndHorizontal();
             GUILayout.Label("Objective List:");
             objectiveList = GUILayout.TextArea(objectiveList, GUILayout.Width(200f));
-            GUILayout.Label("Credit Reward:");
-            creditReward = RTEditorGUI.IntField(creditReward, GUILayout.Width(208f));
-            GUILayout.Label("Reputation Reward:");
-
-            reputationReward = RTEditorGUI.IntField(reputationReward, GUILayout.Width(208f));
-            GUILayout.Label("Shard Reward:");
-            shardReward = RTEditorGUI.IntField(shardReward, GUILayout.Width(208f));
+            creditReward = RTEditorGUI.IntField("Credit Reward: ", creditReward);
+            reputationReward = RTEditorGUI.IntField("Reputation Reward: ", reputationReward);
+            shardReward = RTEditorGUI.IntField("Shard Reward: ", shardReward);
 
             partReward = RTEditorGUI.Toggle(partReward, "Part reward", GUILayout.Width(200f));
             if (partReward)
@@ -192,7 +191,7 @@ namespace NodeEditorFramework.Standard
                 }
                 partTier = RTEditorGUI.IntField("Part tier", partTier, GUILayout.Width(200f));
                 GUILayout.Label("Part Secondary Data:");
-                partSecondaryData = GUILayout.TextField(partSecondaryData, GUILayout.Width(200f));
+                partSecondaryData = GUILayout.TextArea(partSecondaryData, GUILayout.Width(200f));
             }
             else
             {
