@@ -46,7 +46,6 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     public static void StartClient()
     {
-        NetworkManager.Singleton.StartClient();
         ushort portVal = 0;
         if (!string.IsNullOrEmpty(port) && ushort.TryParse(port, out portVal))
         {
@@ -57,6 +56,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address = address;
         }
 
+        NetworkManager.Singleton.StartClient();
         MasterNetworkAdapter.lettingServerDecide = true;
     }
 
