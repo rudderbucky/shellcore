@@ -14,7 +14,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public static PowerCollectDelegate OnPowerCollected;
 
     protected ICarrier carrier;
-    protected float totalPower;
+    protected int totalPower;
     protected GameObject bulletPrefab; // prefab for main bullet
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
@@ -141,12 +141,12 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         totalPower = 0;
     }
 
-    public float GetPower()
+    public int GetPower()
     {
         return totalPower;
     }
 
-    public void AddPower(float power)
+    public void AddPower(int power)
     {
         totalPower = Mathf.Min(5000, totalPower + power);
         if (power > 0 && OnPowerCollected != null)
@@ -229,6 +229,11 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SyncPower(int power)
+    {
+        this.totalPower = power;
     }
 
     protected override void Update()

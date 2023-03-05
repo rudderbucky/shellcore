@@ -2,7 +2,7 @@
 
 public interface IHarvester
 {
-    void AddPower(float power);
+    void AddPower(int power);
     void PowerHeal();
 }
 
@@ -38,7 +38,7 @@ public class Harvester : WeaponAbility, IHarvester
         tractor.SetTractorTarget(newTarget);
     }
 
-    public void AddPower(float power)
+    public void AddPower(int power)
     {
         if (owner && (owner.GetPower() + power) <= 5000)
         {

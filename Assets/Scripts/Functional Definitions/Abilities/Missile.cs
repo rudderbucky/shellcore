@@ -47,7 +47,7 @@ public class Missile : WeaponAbility
         script.StartSurvivalTimer(3);
         script.missileColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
 
-        if (SceneManager.GetActiveScene().name != "SampleScene")
+        if (SceneManager.GetActiveScene().name != "SampleScene" || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
             missile.GetComponent<NetworkProjectileWrapper>().enabled = false;
             missile.GetComponent<NetworkObject>().enabled = false;

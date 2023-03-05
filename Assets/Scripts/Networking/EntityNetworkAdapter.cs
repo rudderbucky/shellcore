@@ -18,8 +18,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public float shell;
         public float core;
         public float energy;
+        public int power;
         public ulong clientID;
-        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer, float shell, float core, float energy)
+        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
         {
             this.position = position;
             this.velocity = velocity;
@@ -28,6 +29,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             this.rotation = rotation;
             this.faction = faction;
             this.weaponGCDTimer = weaponGCDTimer;
+            this.power = power;
             this.shell = shell;
             this.core = core;
             this.energy = energy;
@@ -47,6 +49,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             serializer.SerializeValue(ref clientID);
             serializer.SerializeValue(ref faction);
             serializer.SerializeValue(ref weaponGCDTimer);
+            serializer.SerializeValue(ref power);
             serializer.SerializeValue(ref shell);
             serializer.SerializeValue(ref core);
             serializer.SerializeValue(ref energy);
@@ -102,7 +105,16 @@ public class EntityNetworkAdapter : NetworkBehaviour
             Entity core = null;
             body = buf.huskEntity.GetComponent<Rigidbody2D>();
             core = buf.huskEntity;
-            return new ServerResponse(core.transform.position, body.velocity, core.transform.rotation, clientID, core.faction, core.GetWeaponGCDTimer(), core.CurrentHealth[0], core.CurrentHealth[1], core.CurrentHealth[2]);
+            return new ServerResponse(core.transform.position, 
+            body.velocity, 
+            core.transform.rotation, 
+            clientID, 
+            core.faction, 
+            core.GetWeaponGCDTimer(),
+            core as ShellCore ? (core as ShellCore).GetPower() : 0,
+            core.CurrentHealth[0], 
+            core.CurrentHealth[1], 
+            core.CurrentHealth[2]);
         }
     }
 
@@ -126,7 +138,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             if (passedFaction == 0 && isPlayer.Value) passedFaction = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
             if (IsOwner && isPlayer.Value) passedFaction = 0;
-            state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 1000, 250, 500);
+            state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 0, 1000, 250, 500);
             blueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
         }
         if (NetworkManager.Singleton.IsClient)
@@ -188,6 +200,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         core.dirty = false;
         core.SetWeaponGCDTimer(response.weaponGCDTimer);
         core.SyncHealth(response.shell, response.core, response.energy);
+        if (core as ShellCore) (core as ShellCore).SyncPower(response.power);
     }
     
     [ServerRpc(RequireOwnership = false)]

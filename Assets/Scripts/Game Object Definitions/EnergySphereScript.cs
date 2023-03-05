@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnergySphereScript : MonoBehaviour
 {
@@ -8,6 +10,16 @@ public class EnergySphereScript : MonoBehaviour
     private void OnEnable()
     {
         AIData.energySpheres.Add(this);
+        if (SceneManager.GetActiveScene().name != "SampleScene" || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+        {
+            GetComponent<NetworkPowerOrbWrapper>().enabled = false;
+            GetComponent<NetworkObject>().enabled = false;
+        }
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
+        {
+            GetComponent<NetworkObject>().Spawn();
+        }
     }
 
     private void OnDestroy()
@@ -20,7 +32,7 @@ public class EnergySphereScript : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
-        if (timer > 20)
+        if (timer > 20 && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
         {
             Destroy(gameObject);
         }
@@ -40,6 +52,7 @@ public class EnergySphereScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
         if (((collision.gameObject.name == "Shell Sprite" && collision.GetComponentInParent<IHarvester>() != null)
              || collision.transform.root.GetComponentInChildren<Harvester>() != null) && !collected)
         {
