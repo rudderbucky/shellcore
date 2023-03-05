@@ -222,21 +222,22 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    // TODO: use network object ID instead of entity ID
-    private string tractorID;
+    private ulong? tractorID;
     private bool queuedTractor = false;
 
-    public void SetTractorID(string ID)
+    public void SetTractorID(ulong? ID)
     {
         this.tractorID = ID;
-        UpdateTractorClientRpc(ID);
+        UpdateTractorClientRpc(ID.HasValue ? ID.Value : 0, !ID.HasValue);
     }
 
     [ClientRpc]
-    public void UpdateTractorClientRpc(string ID, ClientRpcParams clientRpcParams = default)
+    public void UpdateTractorClientRpc(ulong ID, bool setNull, ClientRpcParams clientRpcParams = default)
     {
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client) return;
         queuedTractor = true;
         tractorID = ID;
+        if (setNull) tractorID = null;
     }
 
     public void ChangePositionWrapper(Vector3 newPos)
@@ -326,9 +327,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public bool playerNameAdded;
     private bool stringsRequested;
     public string idToUse;
-    void Update()
-    {
 
+
+    private bool PreliminaryStatusCheck()
+    {
         if (!blueprint)
         {
             if (!stringsRequested)
@@ -337,11 +339,18 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 RequestIDServerRpc();
                 stringsRequested = true;
             }
-            return;
+            return false;
         }
-        
-        if (queuedTractor && (tractorID == null || AIData.entities.Find(e => e.ID == tractorID)) && huskEntity is ShellCore && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
+        return true;
+    }
+
+    private void HandleQueuedTractor()
+    {
+        if (queuedTractor && huskEntity is ShellCore && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
         {
+            NetworkObject nObj = null;
+            if (tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
+            if (tractorID.HasValue && (!nObj || !nObj.GetComponent<EntityNetworkAdapter>() || !nObj.GetComponent<EntityNetworkAdapter>().huskEntity)) return;
             queuedTractor = false;
             var core = huskEntity as ShellCore;
             if (tractorID == null)
@@ -350,10 +359,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
             else
             {
-                core.SetTractorTarget(AIData.entities.Find(e => e.ID == tractorID).GetComponentInChildren<Draggable>());
+                core.SetTractorTarget(NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value].GetComponent<EntityNetworkAdapter>().huskEntity.GetComponentInChildren<Draggable>());
             } 
         }
+    }
 
+    private void SetUpHuskEntity()
+    {
         if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
             && !huskEntity && SystemLoader.AllLoaded)
         {
@@ -421,24 +433,20 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 }
             }
         }
+    }
 
+    private void AttemptCreateServerResponse()
+    {
         if (NetworkManager.Singleton.IsServer && Time.time - lastPollTime > POLL_RATE)
         {
             lastPollTime = Time.time;
             if (huskEntity)
                 state.Value = wrapper.CreateResponse(this);
         }
+    }
 
-        if (!playerNameAdded && !string.IsNullOrEmpty(playerName) && huskEntity as ShellCore && ProximityInteractScript.instance && isPlayer.Value)
-        {
-            playerNameAdded = true;
-            ProximityInteractScript.instance.AddPlayerName(huskEntity as ShellCore, playerName);
-        }
-        if (huskEntity && huskEntity is Craft craft && craft.husk)
-        {
-            craft.MoveCraft(wrapper.directionalVector);
-        }
-
+    private void SyncUpParts()
+    {
         if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
         {
             var core = huskEntity ? huskEntity : isPlayer.Value ? PlayerCore.Instance : null;
@@ -452,5 +460,25 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 break;
             }
         }
+    }
+
+    void Update()
+    {   
+        if (!PreliminaryStatusCheck()) return;
+        HandleQueuedTractor();
+        SetUpHuskEntity();
+        AttemptCreateServerResponse();
+        
+        if (!playerNameAdded && !string.IsNullOrEmpty(playerName) && huskEntity as ShellCore && ProximityInteractScript.instance && isPlayer.Value)
+        {
+            playerNameAdded = true;
+            ProximityInteractScript.instance.AddPlayerName(huskEntity as ShellCore, playerName);
+        }
+        if (huskEntity && huskEntity is Craft craft && craft.husk)
+        {
+            craft.MoveCraft(wrapper.directionalVector);
+        }
+
+        SyncUpParts();
     }
 }

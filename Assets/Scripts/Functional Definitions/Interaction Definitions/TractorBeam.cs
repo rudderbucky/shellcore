@@ -77,6 +77,21 @@ public class TractorBeam : MonoBehaviour
         if (initialized)
         {
             TractorBeamUpdate();
+            if (!queueServerCall || 
+                (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)) return;
+            if (target && target.GetComponent<Entity>())
+            {
+                if ((target.GetComponent<Entity>()).networkAdapter)
+                {
+                    owner.networkAdapter.SetTractorID((target.GetComponent<Entity>()).networkAdapter.NetworkObjectId);
+                    queueServerCall = false;
+                }
+            }
+            else
+            {
+                owner.networkAdapter.SetTractorID(null);
+                queueServerCall = false;
+            }
         }
     }
 
@@ -193,6 +208,7 @@ public class TractorBeam : MonoBehaviour
         }
     }
 
+    private bool queueServerCall = false;
     public void SetTractorTarget(Draggable newTarget)
     {
         var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
@@ -217,12 +233,8 @@ public class TractorBeam : MonoBehaviour
             target = newTarget;
             if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && owner && owner.networkAdapter)
             {
-                if (target && target.GetComponent<Entity>()) 
-                    owner.networkAdapter.SetTractorID((target.GetComponent<Entity>()).ID);
-                else if (oldTarget)
-                {
-                    owner.networkAdapter.SetTractorID(null);
-                }
+                if (target || oldTarget)
+                    queueServerCall = true;
             }
             if (target)
             {
