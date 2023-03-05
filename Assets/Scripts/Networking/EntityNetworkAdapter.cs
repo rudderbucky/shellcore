@@ -295,6 +295,17 @@ public class EntityNetworkAdapter : NetworkBehaviour
         weapon.Activate();
     }
 
+    [ServerRpc(RequireOwnership = true)]
+    public void ExecuteVendorPurchaseServerRpc(int index, ulong vendorID, ServerRpcParams serverRpcParams = default)
+    {   
+        if (!isPlayer.Value) return;
+        if (!NetworkManager.SpawnManager.SpawnedObjects.ContainsKey(vendorID) ||
+            !NetworkManager.SpawnManager.SpawnedObjects[vendorID].GetComponent<EntityNetworkAdapter>().huskEntity) return;
+        var vendor = NetworkManager.SpawnManager.SpawnedObjects[vendorID].GetComponent<EntityNetworkAdapter>().huskEntity;
+        if (!(vendor is IVendor)) return;
+        VendorUI.BuyItem(huskEntity as ShellCore, index, vendor as IVendor);
+    }
+
     [ClientRpc]
     public void ExecuteAbilityCosmeticClientRpc(Vector2 location, Vector3 victimPos)
     {

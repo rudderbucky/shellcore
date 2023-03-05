@@ -6,6 +6,10 @@ public class Outpost : AirConstruct, IVendor
 
     BattleZoneManager BZManager;
 
+    public EntityNetworkAdapter GetAdapter()
+    {
+        return networkAdapter;
+    }
 
     public bool NeedsSameFaction()
     {

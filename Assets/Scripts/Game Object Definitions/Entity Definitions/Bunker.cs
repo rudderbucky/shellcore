@@ -69,6 +69,10 @@ public class Bunker : GroundConstruct, IVendor
         }
     }
 
+    public EntityNetworkAdapter GetAdapter()
+    {
+        return networkAdapter;
+    }
     public VendingBlueprint GetVendingBlueprint()
     {
         return vendingBlueprint;

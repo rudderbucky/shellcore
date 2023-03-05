@@ -9,6 +9,7 @@ public interface IVendor
     Vector3 GetPosition();
     Transform GetTransform();
     bool NeedsSameFaction();
+    EntityNetworkAdapter GetAdapter();
 }
 
 public class VendorUI : MonoBehaviour, IDialogueable, IWindow
@@ -192,6 +193,12 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
     public static Entity BuyItem(ShellCore core, int index, IVendor vendor)
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
+        {
+            if (!core.networkAdapter) return null;
+            core.networkAdapter.ExecuteVendorPurchaseServerRpc(index, vendor.GetAdapter().NetworkObjectId);
+            return null;
+        }
         // TODO: these booleans can be used this way right now but a new IVendor state should be created for if commanding count is needed
         if (vendor.NeedsSameFaction() && core.unitsCommanding.Count >= core.GetTotalCommandLimit())
         {
