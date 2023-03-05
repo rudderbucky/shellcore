@@ -244,6 +244,46 @@ public class EntityNetworkAdapter : NetworkBehaviour
         UpdateTractorClientRpc(ID.HasValue ? ID.Value : 0, !ID.HasValue);
     }
 
+    [ServerRpc(RequireOwnership = true)]
+    public void RequestTractorUpdateServerRpc(ulong id, bool setNull, ServerRpcParams serverRpcParams = default)
+    {
+        if (!isPlayer.Value || !huskEntity) return;
+        if (setNull) 
+        {
+            (huskEntity as ShellCore).SetTractorTarget(null, true);
+            SetTractorID(null);
+        }
+        else 
+        {
+            (huskEntity as ShellCore).SetTractorTarget(GetDraggableFromNetworkId(id), true);
+            SetTractorID(id);
+        }
+    }
+
+    public static Draggable GetDraggableFromNetworkId(ulong networkId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(networkId)) return null;
+        var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkId];
+        if (obj.GetComponent<Draggable>()) return obj.GetComponent<Draggable>();
+        if (obj.GetComponent<EntityNetworkAdapter>() && obj.GetComponent<EntityNetworkAdapter>().huskEntity) 
+            return obj.GetComponent<EntityNetworkAdapter>().huskEntity.GetComponent<Draggable>();
+        return null;
+    }
+
+    public static bool TransformIsNetworked(Transform transform)
+    {
+        return transform && (transform.GetComponent<NetworkObject>() || transform.GetComponent<Entity>().networkAdapter);
+    }
+
+    public static ulong GetNetworkId(Transform transform)
+    {
+        if (!transform) return 0;
+        var entity = transform.GetComponent<Entity>();
+        ulong networkId = entity && entity.networkAdapter ? entity.networkAdapter.NetworkObjectId : 0;
+        if (networkId == 0) networkId = transform.GetComponent<NetworkObject>() ? transform.GetComponent<NetworkObject>().NetworkObjectId : 0;
+        return networkId;
+    }
+
     [ClientRpc]
     public void UpdateTractorClientRpc(ulong ID, bool setNull, ClientRpcParams clientRpcParams = default)
     {
@@ -373,17 +413,23 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (queuedTractor && huskEntity is ShellCore && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
         {
             NetworkObject nObj = null;
+            if (tractorID.HasValue && !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(tractorID.Value))
+            {
+                queuedTractor = false;
+                tractorID = null;
+                return;
+            }
             if (tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
             if (tractorID.HasValue && (!nObj || !nObj.GetComponent<EntityNetworkAdapter>() || !nObj.GetComponent<EntityNetworkAdapter>().huskEntity)) return;
             queuedTractor = false;
             var core = huskEntity as ShellCore;
             if (tractorID == null)
             {
-                core.SetTractorTarget(null);
+                core.SetTractorTarget(null, false, true);
             }
             else
             {
-                core.SetTractorTarget(NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value].GetComponent<EntityNetworkAdapter>().huskEntity.GetComponentInChildren<Draggable>());
+                core.SetTractorTarget(NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value].GetComponent<EntityNetworkAdapter>().huskEntity.GetComponentInChildren<Draggable>(), false, true);
             } 
         }
     }

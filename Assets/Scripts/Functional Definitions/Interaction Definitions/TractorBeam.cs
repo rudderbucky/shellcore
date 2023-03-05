@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 // Tractor beam wrapper class.
 public class TractorBeam : MonoBehaviour
@@ -209,7 +210,7 @@ public class TractorBeam : MonoBehaviour
     }
 
     private bool queueServerCall = false;
-    public void SetTractorTarget(Draggable newTarget)
+    public void SetTractorTarget(Draggable newTarget, bool fromClient = false, bool fromServer = false)
     {
         var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
         if (!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp))
@@ -231,11 +232,18 @@ public class TractorBeam : MonoBehaviour
 
             var oldTarget = target;
             target = newTarget;
-            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && owner && owner.networkAdapter)
+            if (owner && owner.networkAdapter && (target || (!target && oldTarget)))
             {
-                if (target || oldTarget)
+                if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && !fromClient)
+                {
                     queueServerCall = true;
+                }
+                else if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client && owner as PlayerCore && !fromServer)
+                {
+                    owner.networkAdapter.RequestTractorUpdateServerRpc(EntityNetworkAdapter.GetNetworkId(target ? target.transform : null), !EntityNetworkAdapter.TransformIsNetworked(target ? target.transform : null));
+                }
             }
+
             if (target)
             {
                 target.dragging = true;

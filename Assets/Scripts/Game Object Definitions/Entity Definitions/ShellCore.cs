@@ -331,9 +331,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         base.Awake(); // base awake
     }
 
-    public void SetTractorTarget(Draggable newTarget)
+    public void SetTractorTarget(Draggable newTarget, bool fromClient = false, bool fromServer = false)
     {
-        tractor.SetTractorTarget(newTarget);
+        tractor.SetTractorTarget(newTarget, fromClient, fromServer);
     }
 
     public Draggable GetTractorTarget()
