@@ -26,7 +26,7 @@ public class DevConsoleScript : MonoBehaviour
 
     Queue<string> textToAdd = new Queue<string>();
 
-    static DevConsoleScript Instance;
+    public static DevConsoleScript Instance;
 
     void OnEnable()
     {
@@ -410,7 +410,7 @@ public class DevConsoleScript : MonoBehaviour
         }
     }
 
-    void ToggleActive()
+    public void ToggleActive()
     {
         textBox.enabled = image.enabled = !image.enabled;
         componentEnabled = image.enabled;

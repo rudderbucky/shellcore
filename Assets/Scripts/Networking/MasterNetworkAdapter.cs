@@ -44,6 +44,26 @@ public class MasterNetworkAdapter : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkDespawn()
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
+        {
+            MasterNetworkAdapter.mode = NetworkMode.Off;
+            MasterNetworkAdapter.lettingServerDecide = false;
+            NetworkManager.Singleton.Shutdown();
+            SceneManager.LoadScene("MainMenu");
+            SceneManager.sceneLoaded += UnloadMessage;
+        }
+    }
+
+    private void UnloadMessage(Scene s1, LoadSceneMode s2)
+    {
+        Debug.LogWarning("Server disconnected.");
+        DevConsoleScript.Instance.ToggleActive();
+        SceneManager.sceneLoaded -= UnloadMessage;
+        return;
+    }
+
     public static void StartClient()
     {
         ushort portVal = 0;
