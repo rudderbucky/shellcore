@@ -169,9 +169,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             PlayerCore.Instance.networkAdapter = this;
         }
-
-        
-
     }
 
     public override void OnNetworkDespawn()
@@ -180,6 +177,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             MasterNetworkAdapter.instance.playerSpawned[OwnerClientId] = false;
         }
+        ProximityInteractScript.instance.RemovePlayerName(huskEntity);
         if (huskEntity)
         {
             Destroy(huskEntity.gameObject);

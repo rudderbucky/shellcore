@@ -40,6 +40,15 @@ public class ProximityInteractScript : MonoBehaviour
         playerNames.Add(core, transform);
     }
 
+    public void RemovePlayerName(Entity ent)
+    {
+        if (ent is ShellCore core && playerNames.ContainsKey(core)) 
+        {
+            Destroy(playerNames[core].gameObject);
+            playerNames.Remove(core);
+        }
+    }
+
 
     void Update()
     {
