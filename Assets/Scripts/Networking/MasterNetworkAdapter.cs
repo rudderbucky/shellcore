@@ -25,6 +25,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public static bool lettingServerDecide;
     void Start()
     {
+        Debug.Log("MNA starting...");
         instance = this;
         if (!NetworkManager.Singleton) return;
         
@@ -82,6 +83,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     public static void StartServer()
     {
+        Debug.Log("Starting server...");
         NetworkManager.Singleton.StartServer();
     }
 

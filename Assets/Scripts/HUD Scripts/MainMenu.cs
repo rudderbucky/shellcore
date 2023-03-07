@@ -92,6 +92,7 @@ public class MainMenu : MonoBehaviour
         MasterNetworkAdapter.address = addressField.text;
         MasterNetworkAdapter.blueprint = blueprintField.text;
         MasterNetworkAdapter.playerName = nameField.text;
+        Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
             var world = worldField.text;
@@ -101,7 +102,11 @@ public class MainMenu : MonoBehaviour
                 return;
             }
             var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", world);
-            if (!System.IO.Directory.Exists(path)) return;
+            if (!System.IO.Directory.Exists(path)) 
+            {
+                Debug.LogError("World " + world + " does not exist.");
+                return;
+            }
             if (mode == MasterNetworkAdapter.NetworkMode.Host)
                 MasterNetworkAdapter.StartHost();
             else MasterNetworkAdapter.StartServer();

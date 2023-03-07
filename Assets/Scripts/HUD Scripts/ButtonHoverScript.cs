@@ -21,6 +21,7 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
                 NetworkManager.Singleton.Shutdown();
                 MasterNetworkAdapter.mode = MasterNetworkAdapter.NetworkMode.Off;
                 Destroy(NetworkManager.Singleton.gameObject);
+                SectorManager.testJsonPath = null;
             }
 
             if (SectorManager.testJsonPath == null)

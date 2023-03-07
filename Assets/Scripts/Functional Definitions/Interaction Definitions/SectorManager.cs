@@ -1411,10 +1411,11 @@ public class SectorManager : MonoBehaviour
             MinimapArrowScript.instance.ClearCoreArrows();
         }
 
-        foreach (var orb in AIData.energySpheres)
-        {
-            Destroy(orb.gameObject);
-        }
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
+            foreach (var orb in AIData.energySpheres)
+            {
+                Destroy(orb.gameObject);
+            }
         AIData.energySpheres.Clear();
 
         var remainingObjects = new Dictionary<string, GameObject>();
