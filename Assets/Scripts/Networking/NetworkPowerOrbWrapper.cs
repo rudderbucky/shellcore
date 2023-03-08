@@ -2,12 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class NetworkPowerOrbWrapper : NetworkBehaviour
 {
     
+    void Awake()
+    {
+
+    }
+
     [ClientRpc]
-    private void SetPositionClientRpc(Vector3 position)
+    public void SetPositionClientRpc(Vector3 position)
     {
         transform.position = position; 
     }
