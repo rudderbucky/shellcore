@@ -191,11 +191,10 @@ public class BattleZoneManager : MonoBehaviour
             if (livingFactions.Count < 2 || allAllied)
             {
                 playing = false;
-                if (!PlayerCore.Instance) return;
-                foreach (Entity playerEntity in targets)
-                {
-                    if (playerEntity as PlayerCore)
+                if (PlayerCore.Instance)
+                    foreach (Entity playerEntity in targets)
                     {
+                        if (!(playerEntity as PlayerCore)) continue;
                         if (livingFactions.Contains(playerEntity.faction))
                         {
                             AudioManager.PlayClipByID("clip_victory");
@@ -213,10 +212,12 @@ public class BattleZoneManager : MonoBehaviour
                             }
                         }
                     }
-                }
 
-                DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
-                if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+                if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+                {
+                    DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
+                }
+                else
                 {
                     SectorManager.instance.ReloadSector();
                 }
