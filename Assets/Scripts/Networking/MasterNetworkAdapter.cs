@@ -103,6 +103,13 @@ public class MasterNetworkAdapter : NetworkBehaviour
     }
 
 
+    [ClientRpc]
+    public void ReloadSectorClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        SectorManager.instance.ReloadSector();
+    }
+
+
     public GameObject networkObj;
 
     public void CreateNetworkObjectWrapper(string name, string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)
