@@ -12,7 +12,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public Vector3 position;
         public Vector3 velocity;
         public Quaternion rotation;
-        public float time;
         public int faction;
         public float weaponGCDTimer;
         public float shell;
@@ -25,7 +24,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             this.position = position;
             this.velocity = velocity;
             this.clientID = clientID;
-            this.time = Time.time;
             this.rotation = rotation;
             this.faction = faction;
             this.weaponGCDTimer = weaponGCDTimer;
@@ -37,14 +35,22 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
         public bool Equals(ServerResponse other)
         {
-            return clientID == other.clientID && this.time == other.time;
+            return (clientID == other.clientID &&
+                (this.position - other.position).sqrMagnitude > 1 &&
+                (this.velocity - other.velocity).sqrMagnitude > 1 &&
+                (this.rotation.eulerAngles - other.rotation.eulerAngles).sqrMagnitude > 1 &&
+                this.faction == other.faction &&
+                Mathf.Abs(this.weaponGCDTimer - other.weaponGCDTimer) > 0.1F &&
+                this.power == other.power &&
+                Mathf.Abs(this.shell - other.shell) > 0.5F &&
+                Mathf.Abs(this.core - other.core) > 0.5F &&
+                Mathf.Abs(this.energy - other.energy) > 0.5F);
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref position);
             serializer.SerializeValue(ref velocity);
-            serializer.SerializeValue(ref time);
             serializer.SerializeValue(ref rotation);
             serializer.SerializeValue(ref clientID);
             serializer.SerializeValue(ref faction);
@@ -122,6 +128,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public NetworkVariable<ServerResponse> state = new NetworkVariable<ServerResponse>();
     public NetworkVariable<bool> isPlayer = new NetworkVariable<bool>(false);
+    public Vector3 pos;
 
     [SerializeField]
     private Entity huskEntity;
@@ -235,7 +242,14 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private ulong? tractorID;
     private bool queuedTractor = false;
+    private bool dirty;
 
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ForceNetworkVarUpdateServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        dirty = true;
+    }
     public void SetTractorID(ulong? ID)
     {
         this.tractorID = ID;
@@ -353,9 +367,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         var weapon = GetAbilityFromLocation(location, core);
         if (weapon) weapon.ActivationCosmetic(victimPos);
     }
-
-    private static float POLL_RATE = 0.00F;
-    private float lastPollTime;
     public bool clientReady;
 
     public void ServerDetachPart(ShellPart part)
@@ -386,7 +397,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     public string playerName;
-    public bool playerNameAdded;
+    private bool playerNameAdded;
     private bool stringsRequested;
     public string idToUse;
 
@@ -465,11 +476,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
             huskEntity.networkAdapter = this;
             clientReady = true;
+            ForceNetworkVarUpdateServerRpc();
         }
         else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsHost) && (isPlayer.Value && !huskEntity))
         {
             var response = state;
-            if (state.Value.time > 0)
+            if (OwnerClientId == response.Value.clientID)
             {
                 PlayerCore.Instance.faction = response.Value.faction;
                 PlayerCore.Instance.blueprint = Instantiate(blueprint);
@@ -486,6 +498,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 idToUse = "player";
                 huskEntity = PlayerCore.Instance;
                 clientReady = true;
+                ForceNetworkVarUpdateServerRpc();
             }
         }
         else if (NetworkManager.IsHost || (huskEntity && !huskEntity.GetIsDead()))
@@ -505,11 +518,25 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private void AttemptCreateServerResponse()
     {
-        if (NetworkManager.Singleton.IsServer && Time.time - lastPollTime > POLL_RATE)
+        if (NetworkManager.Singleton.IsServer)
         {
-            lastPollTime = Time.time;
-            if (huskEntity)
+            var closeToPlayer = isPlayer.Value || !serverReady.Value;
+            if (!closeToPlayer && huskEntity)
+            {
+                foreach(var ent in AIData.shellCores)
+                {
+                    if (ent && (ent.transform.position - huskEntity.transform.position).sqrMagnitude < MasterNetworkAdapter.POP_IN_DISTANCE)
+                    {
+                        closeToPlayer = true;
+                        break;
+                    }
+                }
+            }
+            if ((huskEntity && closeToPlayer) || !serverReady.Value || dirty)
+            {
+                dirty = false;
                 state.Value = wrapper.CreateResponse(this);
+            };
         }
     }
 
@@ -542,7 +569,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             playerNameAdded = true;
             ProximityInteractScript.instance.AddPlayerName(huskEntity as ShellCore, playerName);
         }
-        if (huskEntity && huskEntity is Craft craft && craft.husk)
+        if (huskEntity && huskEntity is Craft craft && craft.husk && isPlayer.Value)
         {
             craft.MoveCraft(wrapper.directionalVector);
         }

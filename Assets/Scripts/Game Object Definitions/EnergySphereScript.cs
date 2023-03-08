@@ -31,6 +31,10 @@ public class EnergySphereScript : MonoBehaviour
 
     private void Update()
     {
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
+            GetComponent<NetworkPowerOrbWrapper>().enabled = GetComponent<NetworkObject>().enabled = AIData.shellCores.Exists(s => (s.transform.position - transform.position).sqrMagnitude < MasterNetworkAdapter.POP_IN_DISTANCE);
+
+
         timer += Time.deltaTime;
         if (timer > 20 && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
         {

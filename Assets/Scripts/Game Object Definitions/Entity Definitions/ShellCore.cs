@@ -211,6 +211,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     protected override void OnDestroy()
     {
         base.OnDestroy();
+        if (AIData.shellCores.Contains(this))
+        {
+            AIData.shellCores.Remove(this);
+        }
         if (PartyManager.instance?.partyMembers?.Contains(this) == true)
         {
             PartyManager.instance.UnassignBackend(null, this);
@@ -328,6 +332,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
             tractor.owner = this;
         }
 
+        if (!AIData.shellCores.Contains(this))
+        {
+            AIData.shellCores.Add(this);
+        }
         base.Awake(); // base awake
     }
 
