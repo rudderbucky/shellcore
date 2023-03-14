@@ -100,6 +100,7 @@ public class SpawnDrone : ActiveAbility
         if (craft is ICarrier || craft is AirWeaponStation || craft is GroundWeaponStation)
         {
             drone.getAI().setMode(AirCraftAI.AIMode.Path);
+            drone.GeneratePath();
         }
         else
         {
