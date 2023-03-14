@@ -33,13 +33,15 @@ public class Drone : AirCraft, IOwnable
             var vec = Vector2.zero;
             if ((owner is AirCarrier || owner is AirWeaponStation) && SectorManager.instance?.current?.type == Sector.SectorType.BattleZone)
             {
+                List<Vector2> validTargets = new List<Vector2>();
                 foreach (var ent in BattleZoneManager.getTargets())
                 {
                     if (ent && !FactionManager.IsAllied(ent.faction, owner.GetFaction()) && ent.transform)
                     {
-                        vec = ent.transform.position;
+                        validTargets.Add(ent.transform.position);
                     }
                 }
+                vec = validTargets[Random.Range(0, validTargets.Count)];
             }
             // drones are defensive for all carriers outside battlezones, or ground carriers anywhere,
             // so set a path to the drone position currently
