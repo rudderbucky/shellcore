@@ -28,7 +28,6 @@ public class Drone : AirCraft, IOwnable
 
     public void GeneratePath()
     {
-        Debug.Log("Generating path...");
         var path = ScriptableObject.CreateInstance<Path>();
         path.waypoints = new List<Path.Node>();
 
