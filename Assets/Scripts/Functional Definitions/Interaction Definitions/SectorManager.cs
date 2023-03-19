@@ -59,6 +59,11 @@ public class SectorManager : MonoBehaviour
         return maxID.ToString();
     }
 
+    public int GetFactionCount()
+    {
+        if (!battleZone) return 0;
+        return carriers.Count;
+    }
 
     public static Sector GetSectorByName(string sectorName)
     {

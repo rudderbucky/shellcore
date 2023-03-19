@@ -143,7 +143,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {        
         if (NetworkManager.Singleton.IsServer)
         {
-            if (passedFaction == 0 && isPlayer.Value) passedFaction = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
+            if (passedFaction == 0 && isPlayer.Value) passedFaction = (NetworkManager.ConnectedClients.Count+1) % SectorManager.instance.GetFactionCount();
             if (IsOwner && isPlayer.Value) passedFaction = 0;
             state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 0, 1000, 250, 500);
             blueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
