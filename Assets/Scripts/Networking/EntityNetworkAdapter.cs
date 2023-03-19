@@ -133,6 +133,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     [SerializeField]
     private Entity huskEntity;
     public int passedFaction = 0;
+    public int players = 0;
 
     void Awake()
     {
@@ -143,7 +144,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {        
         if (NetworkManager.Singleton.IsServer)
         {
-            if (passedFaction == 0 && isPlayer.Value) passedFaction = NetworkManager.Singleton.ConnectedClients == null ? 0 : NetworkManager.Singleton.ConnectedClients.Count - 1;
+            if (isPlayer.Value)
+            {
+                Debug.LogWarning("TEST");
+                players++;
+            }
+            if (passedFaction == 0 && isPlayer.Value) passedFaction = (players) % SectorManager.instance.GetFactionCount();
             if (IsOwner && isPlayer.Value) passedFaction = 0;
             state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 0, 1000, 250, 500);
             blueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
@@ -188,6 +194,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (huskEntity)
         {
             Destroy(huskEntity.gameObject);
+        }
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && isPlayer.Value)
+        {
+            players--;
         }
     }
 
