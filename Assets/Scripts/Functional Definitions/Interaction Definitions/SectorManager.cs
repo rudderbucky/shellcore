@@ -1444,9 +1444,10 @@ public class SectorManager : MonoBehaviour
                         }
                     }
 
-                    if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off 
-                        && obj.Value.GetComponentInChildren<Entity>().networkAdapter 
-                        && obj.Value.GetComponentInChildren<Entity>().networkAdapter.isPlayer.Value)
+                    if ((MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client 
+                        && obj.Value.GetComponentInChildren<Entity>().networkAdapter)
+                        || (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off 
+                        && obj.Value.GetComponentInChildren<Entity>().networkAdapter.isPlayer.Value)) 
                     {
                         skipTag = true;
                     }

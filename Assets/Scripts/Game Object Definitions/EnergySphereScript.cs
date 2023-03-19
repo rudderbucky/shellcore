@@ -6,6 +6,7 @@ public class EnergySphereScript : MonoBehaviour
 {
     // TODO: make undraggable if already being dragged
     private bool collected = false;
+    public static bool dirty = false;
 
     private void OnEnable()
     {
@@ -19,8 +20,21 @@ public class EnergySphereScript : MonoBehaviour
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
         {
             GetComponent<NetworkObject>().Spawn();
+            GetComponent<NetworkPowerOrbWrapper>().SetPositionClientRpc(transform.position);
+            if (!callbackAdded)
+            {
+                callbackAdded = true;
+                NetworkManager.Singleton.OnClientConnectedCallback += callback;
+            }
         }
     }
+    private static System.Action<ulong> callback = (u) =>
+    {
+        dirty = true;
+        dirtyTimer = Time.time + 1;
+    };    
+
+    private static bool callbackAdded;
 
     private void OnDestroy()
     {
@@ -28,11 +42,17 @@ public class EnergySphereScript : MonoBehaviour
     }
 
     float timer;
+    static float dirtyTimer = 0;
 
     private void Update()
     {
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
-            GetComponent<NetworkPowerOrbWrapper>().enabled = GetComponent<NetworkObject>().enabled = AIData.shellCores.Exists(s => (s.transform.position - transform.position).sqrMagnitude < MasterNetworkAdapter.POP_IN_DISTANCE);
+        if (dirtyTimer - Time.time < 0)
+        {
+            dirty = false;
+        }
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+            GetComponent<NetworkPowerOrbWrapper>().enabled = GetComponent<NetworkObject>().enabled = timer < 0.1F || dirty || AIData.shellCores.Exists(s => (s.transform.position - transform.position).sqrMagnitude < MasterNetworkAdapter.POP_IN_DISTANCE);
 
 
         timer += Time.deltaTime;
