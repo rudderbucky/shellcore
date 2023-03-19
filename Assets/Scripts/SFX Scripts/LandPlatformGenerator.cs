@@ -183,6 +183,7 @@ public class LandPlatformGenerator : MonoBehaviour
                 str += '\n';
             }
         }
+        if (directionMap != null) Debug.Log("Direction map: " + directionMap.Length);
     }
 
     private void Update()

@@ -48,19 +48,23 @@ public class Bunker : GroundConstruct, IVendor
 
     protected override void OnDeath()
     {
-        int otherFaction = faction;
-        faction = lastDamagedBy.faction;
-        for (int i = 0; i < parts.Count; i++)
-        {
-            RemovePart(parts[i]);
-        }
-
         targeter.SetTarget(null);
+        int otherFaction = faction;
         if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
         {
             BZManager.UpdateCounters();
             BZManager.AlertPlayers(otherFaction, "WARNING: Bunker lost!");
         }
+
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
+        
+        faction = lastDamagedBy.faction;
+        
+        for (int i = 0; i < parts.Count; i++)
+        {
+            RemovePart(parts[i]);
+        }
+
 
         Start();
         foreach (var part in parts)
