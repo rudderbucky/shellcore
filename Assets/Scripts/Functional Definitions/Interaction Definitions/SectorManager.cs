@@ -592,7 +592,7 @@ public class SectorManager : MonoBehaviour
 
 
     // does all the checking on whether the string is json or a filename
-    public static EntityBlueprint TryGettingEntityBlueprint(string jsonOrName)
+    public static EntityBlueprint TryGettingEntityBlueprint(string jsonOrName, bool canUseSkirmishBlueprints = false)
     {
         var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
 
@@ -605,6 +605,21 @@ public class SectorManager : MonoBehaviour
         catch
         {
             
+        }
+
+        // if that fails and we can use skirmish blueprints, try fetching from there
+        if (canUseSkirmishBlueprints)
+        {
+            try
+            {
+                JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                    (System.IO.Path.Combine(Application.persistentDataPath, "SkirmishBlueprints", jsonOrName + ".json")), blueprint);
+                return blueprint;
+            }
+            catch
+            {
+
+            }
         }
 
         // if that fails try fetching the entity file

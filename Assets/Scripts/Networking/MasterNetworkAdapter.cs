@@ -61,7 +61,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     private void UnloadMessage(Scene s1, LoadSceneMode s2)
     {
         Debug.LogWarning("Server disconnected.");
-        DevConsoleScript.Instance.ToggleActive();
+        DevConsoleScript.Instance.SetActive();
         SceneManager.sceneLoaded -= UnloadMessage;
         return;
     }
@@ -109,6 +109,18 @@ public class MasterNetworkAdapter : NetworkBehaviour
         SectorManager.instance.ReloadSector();
     }
 
+    [ClientRpc]
+    public void NotifyInvalidBlueprintClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (clientRpcParams.Send.TargetClientIds != null &&
+            !System.Linq.Enumerable.Contains<ulong>(clientRpcParams.Send.TargetClientIds, NetworkManager.Singleton.LocalClientId))
+        {
+            return;
+        }
+        Debug.LogWarning("Your passed blueprint is invalid. Use command loadbp <blueprint JSON> to pass another one and join the game.");
+        DevConsoleScript.Instance.SetActive();
+    }
+
 
     public GameObject networkObj;
 
@@ -126,8 +138,38 @@ public class MasterNetworkAdapter : NetworkBehaviour
         if (!playerSpawned.ContainsKey(serverRpcParams.Receive.SenderClientId))
             playerSpawned.Add(serverRpcParams.Receive.SenderClientId, false);
         if (playerSpawned[serverRpcParams.Receive.SenderClientId]) return;
+        if (!ValidatePlayerBlueprint(blueprint))
+        {
+            NotifyInvalidBlueprintClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] {serverRpcParams.Receive.SenderClientId}
+                }
+            });
+            return;
+        }
         CreateNetworkObjectWrapper(name, blueprint, "player-"+serverRpcParams.Receive.SenderClientId, true, faction, Vector3.zero, serverRpcParams);
         playerSpawned[serverRpcParams.Receive.SenderClientId] = true;
+    }
+
+    private bool ValidatePlayerBlueprint(string blueprint)
+    {
+        if (blueprint.Length > 2500) // Blueprint too large. We can't have the server do too much work here or else it will chug everyone.
+        {
+            return false;
+        }
+        var print = ScriptableObject.CreateInstance<EntityBlueprint>();
+        try
+        {
+            print = SectorManager.TryGettingEntityBlueprint(blueprint);
+        }
+        catch // invalid blueprint
+        {
+            return false;
+        }
+        if (print.intendedType != EntityBlueprint.IntendedType.ShellCore) return false; // print is of incorrect type
+        return true;
     }
 
     private NetworkObject InternalEntitySpawnWrapper(string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)

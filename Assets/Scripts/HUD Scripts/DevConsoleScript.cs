@@ -388,6 +388,11 @@ public class DevConsoleScript : MonoBehaviour
                     textBox.text += "\n<color=lime>Surely a really bad bug went off and you don't just want to skip content we worked so hard to make, right?</color>";
                 }
             }
+            else if (command.StartsWith("loadbp ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                string blueprint = command.Substring(7).Trim();
+                MasterNetworkAdapter.instance.CreatePlayerServerRpc(MasterNetworkAdapter.playerName, blueprint, 0);
+            }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
         {
@@ -408,6 +413,11 @@ public class DevConsoleScript : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void SetActive()
+    {
+        if (!textBox.enabled) ToggleActive();
     }
 
     public void ToggleActive()
