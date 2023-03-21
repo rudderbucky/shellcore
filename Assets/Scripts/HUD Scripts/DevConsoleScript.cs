@@ -391,6 +391,7 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.StartsWith("loadbp ", StringComparison.CurrentCultureIgnoreCase))
             {
                 string blueprint = command.Substring(7).Trim();
+                ToggleActive();
                 MasterNetworkAdapter.instance.CreatePlayerServerRpc(MasterNetworkAdapter.playerName, blueprint, 0);
             }
         }
