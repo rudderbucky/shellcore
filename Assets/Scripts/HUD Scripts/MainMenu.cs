@@ -48,6 +48,8 @@ public class MainMenu : MonoBehaviour
                     break;
             }
         }
+
+        blueprintField.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer");
     }
 
     private Dictionary<string, string> GetCommandlineArgs()
@@ -92,6 +94,8 @@ public class MainMenu : MonoBehaviour
         MasterNetworkAdapter.address = addressField.text;
         MasterNetworkAdapter.blueprint = blueprintField.text;
         MasterNetworkAdapter.playerName = nameField.text;
+        
+        PlayerPrefs.SetString("Network_blueprintName", blueprintField.text);
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
