@@ -128,10 +128,10 @@ public class MasterNetworkAdapter : NetworkBehaviour
     {
         var obj = InternalEntitySpawnWrapper(blueprint, idToGrab, isPlayer, faction, pos, serverRpcParams);
         var networkAdapter = obj.GetComponent<EntityNetworkAdapter>();
+        networkAdapter.blueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
         if (isPlayer) networkAdapter.playerName = name;
         else
         {
-            networkAdapter.blueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
             networkAdapter.passedFaction = faction;
             networkAdapter.GenerateState();
             networkAdapter.SetUpHuskEntity();
