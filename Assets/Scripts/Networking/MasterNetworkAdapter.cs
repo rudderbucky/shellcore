@@ -127,7 +127,15 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public void CreateNetworkObjectWrapper(string name, string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)
     {
         var obj = InternalEntitySpawnWrapper(blueprint, idToGrab, isPlayer, faction, pos, serverRpcParams);
-        if (isPlayer) obj.GetComponent<EntityNetworkAdapter>().playerName = name;
+        var networkAdapter = obj.GetComponent<EntityNetworkAdapter>();
+        if (isPlayer) networkAdapter.playerName = name;
+        else
+        {
+            networkAdapter.blueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
+            networkAdapter.passedFaction = faction;
+            networkAdapter.GenerateState();
+            networkAdapter.SetUpHuskEntity();
+        }
     }
 
     public Dictionary<ulong, bool> playerSpawned = new Dictionary<ulong, bool>();
@@ -155,7 +163,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     private bool ValidatePlayerBlueprint(string blueprint)
     {
-        if (blueprint.Length > 2500) // Blueprint too large. We can't have the server do too much work here or else it will chug everyone.
+        if (blueprint.Length > 25000) // Blueprint too large. We can't have the server do too much work here or else it will chug everyone.
         {
             return false;
         }
