@@ -49,7 +49,13 @@ public class MainMenu : MonoBehaviour
             }
         }
 
+       if (args.TryGetValue("-world", out string world))
+        {
+            PlayerPrefs.SetString("Network_worldName", world);
+        }
+
         blueprintField.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer");
+        worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
     }
 
     private Dictionary<string, string> GetCommandlineArgs()
