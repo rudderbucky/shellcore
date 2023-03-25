@@ -192,6 +192,7 @@ public class BattleZoneManager : MonoBehaviour
             {
                 playing = false;
                 if (PlayerCore.Instance)
+                {
                     foreach (Entity playerEntity in targets)
                     {
                         if (!(playerEntity as PlayerCore)) continue;
@@ -212,6 +213,8 @@ public class BattleZoneManager : MonoBehaviour
                             }
                         }
                     }
+                }
+                    
 
                 if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
                 {

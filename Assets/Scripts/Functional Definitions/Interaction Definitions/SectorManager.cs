@@ -1149,7 +1149,7 @@ public class SectorManager : MonoBehaviour
                 battleZone.enabled = true;
                 battleZone.sectorName = current.sectorName;
 
-                if (player)
+                if (player && player.gameObject.activeSelf)
                 {
                     var playerComp = player.GetComponent<PlayerCore>();
                     battleZone.AddTarget(playerComp);

@@ -54,6 +54,7 @@ public class MainMenu : MonoBehaviour
         blueprintField.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer");
         worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
         addressField.text = PlayerPrefs.GetString("Network_address", "");
+        nameField.text = PlayerPrefs.GetString("Network_name", "test_name");
 
        if (args.TryGetValue("-mode", out string mode))
         {
@@ -97,7 +98,10 @@ public class MainMenu : MonoBehaviour
                 NetworkDuel(MasterNetworkAdapter.NetworkMode.Client);
                 break;
             case "host":
-                NetworkDuel(MasterNetworkAdapter.NetworkMode.Host);
+                if (Input.GetKey(KeyCode.LeftShift))
+                    NetworkDuel(MasterNetworkAdapter.NetworkMode.Server);
+                else
+                    NetworkDuel(MasterNetworkAdapter.NetworkMode.Host);
                 break;
         }
     }
@@ -110,6 +114,9 @@ public class MainMenu : MonoBehaviour
         MasterNetworkAdapter.playerName = nameField.text;
         
         PlayerPrefs.SetString("Network_blueprintName", blueprintField.text);
+        PlayerPrefs.SetString("Network_worldName", worldField.text);
+        PlayerPrefs.SetString("Network_address", addressField.text);
+        PlayerPrefs.SetString("Network_name", nameField.text);
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
