@@ -39,6 +39,22 @@ public class MainMenu : MonoBehaviour
     public void Start()
     {
        var args = GetCommandlineArgs();
+        if (args.TryGetValue("-world", out string world))
+        {
+            PlayerPrefs.SetString("Network_worldName", world);
+
+        }
+
+        if (args.TryGetValue("-address", out string address))
+        {
+            PlayerPrefs.SetString("Network_address", address);
+
+        }
+
+        blueprintField.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer");
+        worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
+        addressField.text = PlayerPrefs.GetString("Network_address", "");
+
        if (args.TryGetValue("-mode", out string mode))
         {
             switch (mode)
@@ -48,14 +64,6 @@ public class MainMenu : MonoBehaviour
                     break;
             }
         }
-
-       if (args.TryGetValue("-world", out string world))
-        {
-            PlayerPrefs.SetString("Network_worldName", world);
-        }
-
-        blueprintField.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer");
-        worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
     }
 
     private Dictionary<string, string> GetCommandlineArgs()
@@ -69,7 +77,7 @@ public class MainMenu : MonoBehaviour
             var arg = args[i].ToLower();
             if (arg.StartsWith("-"))
             {
-                var value = i < args.Length - 1 ? args[i + 1].ToLower() : null;
+                var value = i < args.Length - 1 ? args[i + 1] : null;
                 value = (value?.StartsWith("-") ?? false) ? null : value;
 
                 argDictionary.Add(arg, value);
