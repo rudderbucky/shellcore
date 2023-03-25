@@ -33,6 +33,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected TargetingSystem targeter; // the TargetingSystem of the entity
     protected bool isInCombat; // whether the entity is in combat or not
     protected bool isBusy; // whether the entity is busy or not
+    [SerializeField]
     protected bool isDead; // whether the entity is currently dead or not
     protected bool isWarpUninteractable; // whether the entity is uninteractable because it recently warped
     protected float busyTimer; // the time since the entity was last set to busy
@@ -47,6 +48,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
 
     public bool husk;
+    [SerializeField]
     public float[] CurrentHealth
     {
         get { return (float[])currentHealth.Clone(); }
@@ -71,6 +73,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected float[] baseMaxHealth = new float[3];
     private int controlStacks;
 
+    public void CancelDeath()
+    {
+        deathTimer = 5;
+        isDead = false;
+    }
     public void HealToMax()
     {
         CurrentHealth = GetMaxHealth().Clone() as float[];
@@ -751,6 +758,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             networkAdapter.partStatuses.Clear();
         }
+        
         if (blueprint != null && blueprint.parts != null)
         {
             ResetHealths();
@@ -929,7 +937,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer && networkAdapter)
         {
-            networkAdapter.ServerResetParts();
+            networkAdapter.ServerResetParts(true);
             networkAdapter.serverReady.Value = false;
         }
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && MasterNetworkAdapter.lettingServerDecide && networkAdapter)
@@ -1059,12 +1067,19 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (SectorManager.instance)
             SectorManager.instance.RemoveObject(ID, gameObject);
 
-        if (MasterNetworkAdapter.mode != NetworkMode.Client && networkAdapter)
+        if (MasterNetworkAdapter.mode != NetworkMode.Client && networkAdapter && !networkAdapter.isPlayer.Value)
         {
             if(networkAdapter.GetComponent<NetworkObject>().IsSpawned)
                 networkAdapter.GetComponent<NetworkObject>().Despawn();
             Destroy(networkAdapter.gameObject);
         }
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+        {
+            if (networkAdapter) networkAdapter.playerNameAdded = false;
+            ProximityInteractScript.instance.RemovePlayerName(this);
+        }
+        
     }
 
 
@@ -1079,7 +1094,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
         if (SectorManager.instance && SectorManager.instance.current &&
-        SectorManager.instance.current.type == Sector.SectorType.BattleZone && (new List<string>(SectorManager.instance.current.targets)).Contains(ID))
+        SectorManager.instance.current.type == Sector.SectorType.BattleZone && ((new List<string>(SectorManager.instance.current.targets)).Contains(ID) || (networkAdapter != null && networkAdapter.isPlayer.Value)) )
         {
             SectorManager.instance.AddTarget(this);
         }

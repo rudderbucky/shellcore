@@ -296,6 +296,11 @@ public class SectorManager : MonoBehaviour
     public void ReloadSector()
     {
         loadSector(current);
+        if (PlayerCore.Instance && PlayerCore.Instance.GetIsDead())
+        {
+            PlayerCore.Instance.CancelDeath();
+            PlayerCore.Instance.Respawn();
+        }
     }
 
     public void AttemptSectorLoad()
@@ -1457,14 +1462,6 @@ public class SectorManager : MonoBehaviour
                             skipTag = true;
                             break;
                         }
-                    }
-
-                    if ((MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client 
-                        && obj.Value.GetComponentInChildren<Entity>().networkAdapter)
-                        || (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off 
-                        && obj.Value.GetComponentInChildren<Entity>().networkAdapter.isPlayer.Value)) 
-                    {
-                        skipTag = true;
                     }
 
                     if (!skipTag && AIData.entities.Contains(obj.Value.GetComponentInChildren<Entity>()))

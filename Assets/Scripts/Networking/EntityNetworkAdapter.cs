@@ -63,7 +63,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     public string blueprintString;
-    private EntityBlueprint blueprint;
+    public EntityBlueprint blueprint;
 
     public struct PartStatusResponse : INetworkSerializable, IEquatable<PartStatusResponse>
     {
@@ -125,7 +125,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     public TemporaryStateWrapper wrapper;
-
     public NetworkVariable<ServerResponse> state = new NetworkVariable<ServerResponse>();
     public NetworkVariable<bool> isPlayer = new NetworkVariable<bool>(false);
     public Vector3 pos;
@@ -139,14 +138,19 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (partStatuses == null) partStatuses = new NetworkList<PartStatusResponse>();
         serverReady = new NetworkVariable<bool>(false);
     }
+
+    public void GenerateState()
+    {
+        state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 0, 1000, 250, 500);
+    }
+
     void Start()
     {        
         if (NetworkManager.Singleton.IsServer)
         {
             if (passedFaction == 0 && isPlayer.Value) passedFaction = (NetworkManager.ConnectedClients.Count+1) % SectorManager.instance.GetFactionCount();
             if (IsOwner && isPlayer.Value) passedFaction = 0;
-            state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 0, 1000, 250, 500);
-            blueprint = SectorManager.TryGettingEntityBlueprint(blueprintString);
+            GenerateState();
         }
         if (NetworkManager.Singleton.IsClient)
         {
@@ -185,7 +189,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
             MasterNetworkAdapter.instance.playerSpawned[OwnerClientId] = false;
         }
         ProximityInteractScript.instance.RemovePlayerName(huskEntity);
-        if (huskEntity)
+
+        if (huskEntity && !(huskEntity as PlayerCore))
         {
             Destroy(huskEntity.gameObject);
         }
@@ -199,6 +204,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private void UpdateCoreState(Entity core, ServerResponse response)
     {
+        if (isPlayer.Value && response.core > 0 && huskEntity && huskEntity.GetIsDead())
+        {
+            huskEntity.CancelDeath();
+            (huskEntity as ShellCore).Respawn();
+        }
+
         core.transform.position = response.position;
         core.GetComponent<Rigidbody2D>().velocity = response.velocity;
         core.transform.rotation = response.rotation;
@@ -383,11 +394,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public NetworkVariable<bool> serverReady;
 
 
-    public void ServerResetParts()
+    public void ServerResetParts(bool destroyed)
     {
         for (int i = 0; i < partStatuses.Count; i++)
         {
-            partStatuses[i] = new PartStatusResponse(partStatuses[i].location, true);
+            partStatuses[i] = new PartStatusResponse(partStatuses[i].location, destroyed);
         }
     }
 
@@ -397,7 +408,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     public string playerName;
-    private bool playerNameAdded;
+    public bool playerNameAdded;
     private bool stringsRequested;
     public string idToUse;
 
@@ -443,7 +454,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    private void SetUpHuskEntity()
+    public void SetUpHuskEntity()
     {
         if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
             && !huskEntity && SystemLoader.AllLoaded)

@@ -217,7 +217,7 @@ public class BattleZoneManager : MonoBehaviour
                 {
                     DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
                 }
-                else if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Server)
+                else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
                 {
                     SectorManager.instance.ReloadSector();
                     MasterNetworkAdapter.instance.ReloadSectorClientRpc();

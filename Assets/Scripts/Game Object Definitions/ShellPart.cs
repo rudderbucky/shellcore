@@ -11,6 +11,7 @@ public class ShellPart : MonoBehaviour
     float detachedTime; // time since detachment
     public ShellPart parent = null;
     public List<ShellPart> children = new List<ShellPart>();
+    [SerializeField]
     private bool hasDetached; // is the part detached
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigid;
@@ -174,7 +175,10 @@ public class ShellPart : MonoBehaviour
         float randomDir = Random.Range(0f, 360f);
         var vec = (new Vector2(Mathf.Cos(randomDir), Mathf.Sin(randomDir))) + craft.GetComponent<Rigidbody2D>().velocity * 2F;
         vec = vec.normalized;
-        rigid.AddForce(vec * 200f);
+        if (name != "Shell Sprite")
+        {
+            rigid.AddForce(vec * 200f);
+        }
         //rigid.AddTorque(150f * ((Random.Range(0, 2) == 0) ? 1 : -1));
         rotationDirection = (Random.Range(0, 2) == 0);
         gameObject.layer = 9;
