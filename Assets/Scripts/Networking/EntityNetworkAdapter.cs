@@ -348,6 +348,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
         return null;
     }
 
+    [ClientRpc]
+    public void SetWeaponIsEnabledClientRpc(Vector2 location, bool val, ClientRpcParams clientRpcParams = default)
+    {
+        if (!huskEntity) return;
+        var weapon = GetAbilityFromLocation(location, huskEntity);
+        weapon.isEnabled = val;
+    }
 
     [ServerRpc(RequireOwnership = true)]
     public void ExecuteAbilityServerRpc(Vector2 location, Vector3 victimPos, ServerRpcParams serverRpcParams = default)

@@ -271,14 +271,14 @@ public abstract class Ability : MonoBehaviour
         startTime = Time.time; // Set activation time
         charging = true;
         UpdateState(); // Update state
-        // If there's no charge time, execute immediately
-        if (State == AbilityState.Active || State == AbilityState.Cooldown)
+        if (lettingServerDecide && Core && Core.networkAdapter) 
         {
-            if (!lettingServerDecide) Execute();
-            else if (Core && Core.networkAdapter) 
-            {
-                Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
-            }
+            Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
+        }
+        // If there's no charge time, execute immediately
+        if (!lettingServerDecide && (State == AbilityState.Active || State == AbilityState.Cooldown))
+        {
+            Execute();
         }
     }
 
@@ -305,7 +305,7 @@ public abstract class Ability : MonoBehaviour
         UpdateBlinker();
 
         // If ability activated
-        if (State == AbilityState.Active && prevState == AbilityState.Charging)
+        if (State == AbilityState.Active && prevState == AbilityState.Charging && !MasterNetworkAdapter.lettingServerDecide)
         {
             Execute(); // execute the ability
         }

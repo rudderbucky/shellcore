@@ -181,10 +181,17 @@ public abstract class WeaponAbility : ActiveAbility
     public override void Activate()
     {
         var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
-        if (Core as PlayerCore)
+        if (lettingServerDecide && Core && Core.networkAdapter) 
+        {
+            Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
+            return; 
+        }
+        if (Core as PlayerCore || (Core.networkAdapter && Core.networkAdapter.isPlayer.Value))
+        {
             isEnabled = !isEnabled;
-        if (lettingServerDecide)
-            UpdateState();
+            Core.networkAdapter.SetWeaponIsEnabledClientRpc(part ? part.info.location : Vector2.zero, isEnabled);
+        }
+        UpdateState();
         Core.MakeBusy(); // make core busy
         if (!lettingServerDecide)
         {
@@ -231,10 +238,6 @@ public abstract class WeaponAbility : ActiveAbility
                 if (!Execute(target.position)) return;
                 if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && Core.networkAdapter) 
                     Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
-            }
-            else if (Core.networkAdapter && Core.networkAdapter.isPlayer.Value)
-            {
-                Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, target.position);
             }
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;
