@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -107,18 +108,13 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    public void NetworkDuel(MasterNetworkAdapter.NetworkMode mode)
+    public IEnumerator StartSkirmishHelper(MasterNetworkAdapter.NetworkMode mode)
     {
-        MasterNetworkAdapter.port = portField.text;
-        MasterNetworkAdapter.address = addressField.text;
-        MasterNetworkAdapter.blueprint = blueprintField.text;
-        MasterNetworkAdapter.playerName = nameField.text;
-        
-        PlayerPrefs.SetString("Network_blueprintName", blueprintField.text);
-        PlayerPrefs.SetString("Network_worldName", worldField.text);
-        PlayerPrefs.SetString("Network_address", addressField.text);
-        PlayerPrefs.SetString("Network_name", nameField.text);
-        PlayerPrefs.SetString("Network_port", portField.text);
+        while (NetworkManager.Singleton.IsClient)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
@@ -126,13 +122,13 @@ public class MainMenu : MonoBehaviour
             if (string.IsNullOrEmpty(world))
             {
                 Debug.LogError("Invalid world name.");
-                return;
+                yield return null;
             }
             var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", world);
             if (!System.IO.Directory.Exists(path)) 
             {
                 Debug.LogError("World " + world + " does not exist.");
-                return;
+                yield return null;
             }
             if (mode == MasterNetworkAdapter.NetworkMode.Host)
                 MasterNetworkAdapter.StartHost();
@@ -148,6 +144,31 @@ public class MainMenu : MonoBehaviour
             MasterNetworkAdapter.StartClient();
             SystemLoader.AllLoaded = false;
         }
+    }
+
+    private IEnumerator coroutine;
+
+    public void NetworkDuel(MasterNetworkAdapter.NetworkMode mode)
+    {
+        if (coroutine != null)
+        {
+            StopCoroutine(coroutine);
+            coroutine = null;
+        }
+        MasterNetworkAdapter.port = portField.text;
+        MasterNetworkAdapter.address = addressField.text;
+        MasterNetworkAdapter.blueprint = blueprintField.text;
+        MasterNetworkAdapter.playerName = nameField.text;
+        
+        PlayerPrefs.SetString("Network_blueprintName", blueprintField.text);
+        PlayerPrefs.SetString("Network_worldName", worldField.text);
+        PlayerPrefs.SetString("Network_address", addressField.text);
+        PlayerPrefs.SetString("Network_name", nameField.text);
+        PlayerPrefs.SetString("Network_port", portField.text);
+        if (NetworkManager.Singleton.IsClient)
+            NetworkManager.Singleton.Shutdown();
+        coroutine = StartSkirmishHelper(mode);
+        StartCoroutine(coroutine);
     }
 
     public void OpenSettings()

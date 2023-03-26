@@ -85,11 +85,14 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public static void StartServer()
     {
         Debug.Log("Starting server...");
+        MasterNetworkAdapter.lettingServerDecide = false;
         NetworkManager.Singleton.StartServer();
     }
 
     public static void StartHost()
     {
+
+        MasterNetworkAdapter.lettingServerDecide = false;
         NetworkManager.Singleton.StartHost();
     }
 
