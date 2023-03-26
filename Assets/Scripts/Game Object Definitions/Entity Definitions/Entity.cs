@@ -592,6 +592,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         absorptions = 0;
 
         BuildEntity();
+        GetComponentInChildren<MinimapLockRotationScript>().Initialize(); // initialize the minimap dot
     }
 
     // guarantees abilities deactivate on stack frame
