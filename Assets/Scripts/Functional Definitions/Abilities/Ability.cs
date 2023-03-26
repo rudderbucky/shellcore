@@ -279,6 +279,10 @@ public abstract class Ability : MonoBehaviour
         if (!lettingServerDecide && (State == AbilityState.Active || State == AbilityState.Cooldown))
         {
             Execute();
+            if (Core && Core.networkAdapter)
+            {
+                Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
+            }
         }
     }
 
