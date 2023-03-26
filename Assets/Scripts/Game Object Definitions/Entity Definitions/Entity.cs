@@ -425,6 +425,31 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         return interactible;
     }
 
+    Dictionary<int, bool> weaponActivationStates = new Dictionary<int, bool>();
+
+    protected void RememberWeaponActivationStates()
+    {
+        RememberWeaponActivationStates(weaponActivationStates);
+        if (networkAdapter)
+        {
+            RememberWeaponActivationStates(networkAdapter.weaponActivationStates);
+        }
+    }
+
+    protected void RememberWeaponActivationStates(Dictionary<int, bool> weaponActivationStates)
+    {
+        weaponActivationStates.Clear();
+        foreach (var ability in abilities)
+        {
+            if (!(ability is WeaponAbility weapon)) continue;
+            if (weaponActivationStates.ContainsKey(weapon.GetID()))
+            {
+                continue;
+            }
+            weaponActivationStates.Add(weapon.GetID(), weapon.isEnabled);
+        }
+    }
+
     protected void AttemptAddComponents()
     {
         if (!GetComponent<SortingGroup>())
@@ -659,7 +684,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         //For shellcores, create the tractor beam
         // Create shell parts
         SetUpParts(blueprint);
-
+        
         // Drone shell and core health penalty
         if (drone)
         {
@@ -815,6 +840,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             // add weapon diversity
             ab.type = DroneUtilities.GetDiversityTypeByEntity(this);
+            if (weaponActivationStates.ContainsKey(ab.GetID()))
+            {
+                ab.isEnabled = weaponActivationStates[ab.GetID()];
+            }
+
+            if (networkAdapter && networkAdapter.weaponActivationStates.ContainsKey(ab.GetID()))
+            {
+                ab.isEnabled = networkAdapter.weaponActivationStates[ab.GetID()];
+            }
         }
 
         partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
@@ -1067,6 +1101,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (SectorManager.instance)
             SectorManager.instance.RemoveObject(ID, gameObject);
 
+        RememberWeaponActivationStates();
         if (MasterNetworkAdapter.mode != NetworkMode.Client && networkAdapter && !networkAdapter.isPlayer.Value)
         {
             if(networkAdapter.GetComponent<NetworkObject>().IsSpawned)

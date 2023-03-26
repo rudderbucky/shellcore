@@ -254,7 +254,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     private ulong? tractorID;
     private bool queuedTractor = false;
     private bool dirty;
-
+    public Dictionary<int, bool> weaponActivationStates = new Dictionary<int, bool>();
 
     [ServerRpc(RequireOwnership = false)]
     public void ForceNetworkVarUpdateServerRpc(ServerRpcParams serverRpcParams = default)
