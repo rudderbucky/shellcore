@@ -118,7 +118,7 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetString("Network_worldName", worldField.text);
         PlayerPrefs.SetString("Network_address", addressField.text);
         PlayerPrefs.SetString("Network_name", nameField.text);
-        PlayerPrefs.SetString("Network_port", nameField.text);
+        PlayerPrefs.SetString("Network_port", portField.text);
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
