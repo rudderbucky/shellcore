@@ -48,7 +48,7 @@ public class AIMovement
     public void Update()
     {
         requireRangeUpdate = true;
-        if (!targetIsInRange() && moveTarget != null)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && !targetIsInRange() && moveTarget != null)
         {
             craft.MoveCraft(((Vector2)moveTarget - (Vector2)craft.transform.position).normalized);
         }
