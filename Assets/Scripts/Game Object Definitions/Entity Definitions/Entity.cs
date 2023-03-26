@@ -427,7 +427,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     Dictionary<int, bool> weaponActivationStates = new Dictionary<int, bool>();
 
-    protected void RememberWeaponActivationStates()
+    public void RememberWeaponActivationStates()
     {
         RememberWeaponActivationStates(weaponActivationStates);
         if (networkAdapter && networkAdapter.weaponActivationStates != null)
@@ -439,6 +439,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected void RememberWeaponActivationStates(Dictionary<int, bool> weaponActivationStates)
     {
         weaponActivationStates.Clear();
+        if (abilities == null) return;
         foreach (var ability in abilities)
         {
             if (!ability) continue;
@@ -720,6 +721,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 mainBullet.SetDestroyed(false);
                 abilities.Insert(0, mainBullet);
             }
+
+            ReflectAbilityActivation(gameObject.GetComponentInChildren<MainBullet>());
         }
 
         // unique abilities for mini and worker drones here
@@ -823,6 +826,19 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         blueprint.baseRegen.CopyTo(regenRate, 0);
     }
 
+    private void ReflectAbilityActivation (WeaponAbility ab)
+    {
+        if (weaponActivationStates.ContainsKey(ab.GetID()))
+        {
+            ab.isEnabled = weaponActivationStates[ab.GetID()];
+        }
+
+        if (networkAdapter && networkAdapter.weaponActivationStates.ContainsKey(ab.GetID()))
+        {
+            ab.isEnabled = networkAdapter.weaponActivationStates[ab.GetID()];
+        }
+    }
+
     protected ShellPart SetUpPart(EntityBlueprint.PartInfo part)
     {
         var drone = this as Drone;
@@ -842,15 +858,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             // add weapon diversity
             ab.type = DroneUtilities.GetDiversityTypeByEntity(this);
-            if (weaponActivationStates.ContainsKey(ab.GetID()))
-            {
-                ab.isEnabled = weaponActivationStates[ab.GetID()];
-            }
-
-            if (networkAdapter && networkAdapter.weaponActivationStates.ContainsKey(ab.GetID()))
-            {
-                ab.isEnabled = networkAdapter.weaponActivationStates[ab.GetID()];
-            }
+            ReflectAbilityActivation(ab);
         }
 
         partObject.transform.localEulerAngles = new Vector3(0, 0, part.rotation);
