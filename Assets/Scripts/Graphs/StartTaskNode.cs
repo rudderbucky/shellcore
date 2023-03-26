@@ -55,7 +55,6 @@ namespace NodeEditorFramework.Standard
         public string acceptResponse;
         public string declineResponse;
         public string taskConfirmedDialogue;
-        public bool useCustomActionResponse = false;
         public string actionResponse;
         public bool useEntityColor = true;
         bool init = false;
@@ -211,13 +210,8 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Task Confirmed Dialogue:");
             taskConfirmedDialogue = GUILayout.TextArea(taskConfirmedDialogue, GUILayout.Width(200f));
             height += GUI.skin.textArea.CalcHeight(new GUIContent(taskConfirmedDialogue), 200f);
-
-            useCustomActionResponse = Utilities.RTEditorGUI.Toggle(useCustomActionResponse, "Use custom response");
-            if (useCustomActionResponse == true)
-            {
-                GUILayout.Label("Player Confirmed Response:");
-                actionResponse = GUILayout.TextArea(actionResponse, GUILayout.Width(200f));
-            }
+            GUILayout.Label("Player Confirmed Response:");
+            actionResponse = GUILayout.TextArea(actionResponse, GUILayout.Width(200f));
         }
 
         public void OnClick(int index)
