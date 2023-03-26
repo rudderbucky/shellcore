@@ -145,6 +145,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 0, 1000, 250, 500);
     }
 
+
     void Start()
     {        
         if (NetworkManager.Singleton.IsServer)
@@ -249,16 +250,18 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
     
     [ServerRpc(RequireOwnership = false)]
-    public void RequestDataStringsServerRpc(ServerRpcParams serverRpcParams = default)
+    public void RequestDataServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        GetDataStringsClientRpc(playerName, blueprintString);
+        GetDataClientRpc(playerName, blueprintString, huskEntity is Drone drone ? (drone.GetOwner() as Entity).networkAdapter.NetworkObjectId : ulong.MaxValue);
     }
 
+    ulong ownerId = ulong.MaxValue;
     [ClientRpc]
-    public void GetDataStringsClientRpc(string name, string blueprint, ClientRpcParams clientRpcParams = default)
+    public void GetDataClientRpc(string name, string blueprint, ulong owner, ClientRpcParams clientRpcParams = default)
     {
         playerName = name;
         blueprintString = blueprint;
+        ownerId = owner;
         this.blueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
     }
 
@@ -267,6 +270,15 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public void RequestIDServerRpc(ServerRpcParams serverRpcParams = default)
     {
         GetIDClientRpc(idToUse);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void CommandMovementServerRpc(Vector3 pos, ServerRpcParams serverRpcParams = default)
+    {
+        if (huskEntity && huskEntity is Drone drone)
+        {
+            drone.CommandMovement(pos);
+        }
     }
 
 
@@ -455,7 +467,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             if (!stringsRequested)
             {
-                RequestDataStringsServerRpc();
+                RequestDataServerRpc();
                 RequestIDServerRpc();
                 stringsRequested = true;
             }
@@ -523,6 +535,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
             huskEntity.networkAdapter = this;
             clientReady = true;
+            if (huskEntity is Drone drone && ownerId != ulong.MaxValue)
+            {
+                var ownerAdapter = GetNetworkObject(ownerId)?.GetComponent<EntityNetworkAdapter>();
+                var ownerEntity = ownerAdapter?.huskEntity as IOwner;
+                if (ownerAdapter && ownerAdapter.isPlayer.Value && ownerEntity != null && !ownerEntity.Equals(null)) drone.SetOwner(ownerEntity);
+            }
             ForceNetworkVarUpdateServerRpc();
         }
         else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsHost) && (isPlayer.Value && !huskEntity))

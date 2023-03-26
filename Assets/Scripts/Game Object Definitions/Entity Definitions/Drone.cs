@@ -140,6 +140,11 @@ public class Drone : AirCraft, IOwnable
 
     public void CommandMovement(Vector3 pos)
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client && networkAdapter)
+        {
+            networkAdapter.CommandMovementServerRpc(pos);
+            return;
+        }
         ai.moveToPosition(pos);
     }
 
