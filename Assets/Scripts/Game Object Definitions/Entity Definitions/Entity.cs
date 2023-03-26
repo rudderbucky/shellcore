@@ -441,6 +441,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         weaponActivationStates.Clear();
         foreach (var ability in abilities)
         {
+            if (!ability) continue;
             if (!(ability is WeaponAbility weapon)) continue;
             if (weaponActivationStates.ContainsKey(weapon.GetID()))
             {
