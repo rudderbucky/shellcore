@@ -971,6 +971,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             colliders[i].enabled = true;
         }
 
+        RememberWeaponActivationStates();
         foreach (var ability in abilities)
         {
             if (ability)
