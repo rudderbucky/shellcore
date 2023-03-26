@@ -218,7 +218,7 @@ public class TractorBeam : MonoBehaviour
             AIData.strayParts.Add(targetComp);
         }
 
-        if (IsValidDraggableTarget(newTarget))
+        if (IsValidDraggableTarget(newTarget) || fromServer)
         {
             if (lineRenderer)
             {
@@ -253,7 +253,7 @@ public class TractorBeam : MonoBehaviour
 
     private bool IsValidDraggableTarget(Draggable newTarget)
     {
-        if (forcedTarget || !newTarget || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
+        if (forcedTarget || !newTarget)
         {
             return true;
         }
