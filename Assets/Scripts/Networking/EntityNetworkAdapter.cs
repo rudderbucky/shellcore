@@ -151,7 +151,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {    
             if (isPlayer.Value)
             {
-                if (playerFactions == null)
+                if (playerFactions == null || playerFactions.Count == 0)
                 {
                     playerFactions = new Dictionary<int, int>();
                     for (int i = 0; i < SectorManager.instance.GetFactionCount(); i++)
@@ -162,6 +162,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 int minFac = 0;
                 for (int i = 0; i < SectorManager.instance.GetFactionCount(); i++)
                 {
+                    if (!playerFactions.ContainsKey(i)) continue;
                     if (playerFactions[i] < playerFactions[minFac])
                     {
                         minFac = i;

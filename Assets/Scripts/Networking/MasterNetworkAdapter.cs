@@ -27,6 +27,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
     void Start()
     {
         Debug.Log("MNA starting...");
+        if (EntityNetworkAdapter.playerFactions != null)
+            EntityNetworkAdapter.playerFactions.Clear();
         instance = this;
         if (!NetworkManager.Singleton) return;
         
