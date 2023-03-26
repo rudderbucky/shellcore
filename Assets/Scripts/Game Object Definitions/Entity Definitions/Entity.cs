@@ -171,7 +171,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             for (int i = 0; i < renderers.Length; i++)
             {
                 var c = renderers[i].color;
-                c.a = FactionManager.IsAllied(0, faction) ? 0.2f : 0f;
+                c.a = FactionManager.IsAllied(PlayerCore.Instance ? PlayerCore.Instance.faction : 0, faction) ? 0.2f : 0f;
                 renderers[i].color = c;
             }
 
