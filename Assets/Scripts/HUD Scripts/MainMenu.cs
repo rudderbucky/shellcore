@@ -53,6 +53,7 @@ public class MainMenu : MonoBehaviour
 
         blueprintField.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer");
         worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
+        portField.text = PlayerPrefs.GetString("Network_port", "");
         addressField.text = PlayerPrefs.GetString("Network_address", "");
         nameField.text = PlayerPrefs.GetString("Network_name", "test_name");
 
@@ -117,6 +118,7 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetString("Network_worldName", worldField.text);
         PlayerPrefs.SetString("Network_address", addressField.text);
         PlayerPrefs.SetString("Network_name", nameField.text);
+        PlayerPrefs.SetString("Network_port", nameField.text);
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
