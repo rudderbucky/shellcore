@@ -37,6 +37,7 @@ public class Stealth : ActiveAbility
     // What immediately happens when a weapon is fired
     public override void ActivationCosmetic(Vector3 targetPos)
     {
+        SetActivationState();
         Execute();
     }
 

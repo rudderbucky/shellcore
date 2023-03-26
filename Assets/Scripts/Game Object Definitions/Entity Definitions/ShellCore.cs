@@ -274,7 +274,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
 
         // tick all abilities if a server husk
-        if (husk && MasterNetworkAdapter.mode != NetworkMode.Client)
+        if (husk || this as PlayerCore)
         {
             foreach (Ability a in GetAbilities())
             {

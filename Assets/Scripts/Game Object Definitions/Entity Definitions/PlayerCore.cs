@@ -363,15 +363,6 @@ public class PlayerCore : ShellCore
             group.sortingOrder = ++maxAirLayer;
         }
 
-        // update abilities
-        for (int i = 0; i < abilities.Count; i++)
-        {
-            if (abilities[i])
-            {
-                abilities[i].Tick();
-            }
-        }
-
         base.Update(); // base update
         if (!GetIsInteracting() && !DialogueSystem.isInCutscene)
         {

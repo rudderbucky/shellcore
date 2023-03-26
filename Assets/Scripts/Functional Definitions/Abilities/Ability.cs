@@ -261,16 +261,21 @@ public abstract class Ability : MonoBehaviour
         }
     }
 
+    protected void SetActivationState()
+    {
+        Core.MakeBusy(); // make core busy
+        startTime = Time.time; // Set activation time
+        charging = true;
+        UpdateState(); // Update state
+    }
+
     public virtual void Activate()
     {
         var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
         // If (NPC or (Player and not interacting)) and enough energy
         if (State != AbilityState.Ready || (Core is PlayerCore player && player.GetIsInteracting()) || Core.GetHealth()[2] < energyCost) return;
-        Core.MakeBusy(); // make core busy
         Core.TakeEnergy(energyCost); // remove the energy
-        startTime = Time.time; // Set activation time
-        charging = true;
-        UpdateState(); // Update state
+        SetActivationState();
         if (lettingServerDecide && Core && Core.networkAdapter) 
         {
             Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
@@ -330,7 +335,7 @@ public abstract class Ability : MonoBehaviour
         else if (State == AbilityState.Active)
         {
             // Do not reveal stealth enemies by blinking their parts
-            if (ID == AbilityID.Stealth && core.faction != 0)
+            if (ID == AbilityID.Stealth && (PlayerCore.Instance && PlayerCore.Instance.faction != core.faction))
             {
                 if (glow)
                 {

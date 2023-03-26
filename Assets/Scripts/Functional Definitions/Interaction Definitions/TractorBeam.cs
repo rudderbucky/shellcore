@@ -121,7 +121,7 @@ public class TractorBeam : MonoBehaviour
                     {
                         rigidbody.position = transform.position;
                         rigidbody.velocity = Vector2.zero;
-                        target = null;
+                        SetTractorTarget(null);
                     }
                     else
                     {
@@ -130,7 +130,7 @@ public class TractorBeam : MonoBehaviour
 
                     if (owner.IsInvisible)
                     {
-                        target = null;
+                        SetTractorTarget(null);
                     }
                 }
                 else if (dist > 2f)
@@ -173,7 +173,7 @@ public class TractorBeam : MonoBehaviour
                 }
             }
 
-            if (closest && closestD < energyPickupRangeSquared && target == null)
+            if (closest && closestD < energyPickupRangeSquared && target == null && !closest.gameObject.GetComponent<Draggable>().dragging && (!MasterNetworkAdapter.lettingServerDecide || owner as PlayerCore))
             {
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
             }

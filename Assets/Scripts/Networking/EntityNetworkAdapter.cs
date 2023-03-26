@@ -411,7 +411,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         var core = huskEntity ? huskEntity : PlayerCore.Instance;
         if (!core) return;
         var weapon = GetAbilityFromLocation(location, core);
-        if (weapon) weapon.ActivationCosmetic(victimPos);
+        if (weapon && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Host) weapon.ActivationCosmetic(victimPos);
     }
     public bool clientReady;
 
