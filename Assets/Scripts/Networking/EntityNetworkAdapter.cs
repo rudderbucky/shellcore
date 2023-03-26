@@ -132,6 +132,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     [SerializeField]
     private Entity huskEntity;
     public int passedFaction = 0;
+    public static Dictionary<int, int> playerFactions;
 
     void Awake()
     {
@@ -147,9 +148,31 @@ public class EntityNetworkAdapter : NetworkBehaviour
     void Start()
     {        
         if (NetworkManager.Singleton.IsServer)
-        {
-            if (passedFaction == 0 && isPlayer.Value) passedFaction = (NetworkManager.ConnectedClients.Count+1) % SectorManager.instance.GetFactionCount();
-            if (IsOwner && isPlayer.Value) passedFaction = 0;
+        {    
+            if (isPlayer.Value)
+            {
+                if (playerFactions == null)
+                {
+                    playerFactions = new Dictionary<int, int>();
+                    for (int i = 0; i < SectorManager.instance.GetFactionCount(); i++)
+                    {
+                        playerFactions.Add(i, 0);
+                    }
+                }
+                int minFac = 0;
+                for (int i = 0; i < SectorManager.instance.GetFactionCount(); i++)
+                {
+                    if (playerFactions[i] < playerFactions[minFac])
+                    {
+                        minFac = i;
+                    }
+                }
+
+                if (passedFaction == 0 || isPlayer.Value) passedFaction = minFac;
+                playerFactions[minFac]++;
+                if (IsOwner && isPlayer.Value) passedFaction = 0;
+            }        
+            
             GenerateState();
         }
         if (NetworkManager.Singleton.IsClient)
@@ -193,6 +216,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (huskEntity && !(huskEntity as PlayerCore))
         {
             Destroy(huskEntity.gameObject);
+        }
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && isPlayer.Value && playerFactions != null && playerFactions.ContainsKey(passedFaction))
+        {
+            playerFactions[passedFaction]--;
         }
     }
 
