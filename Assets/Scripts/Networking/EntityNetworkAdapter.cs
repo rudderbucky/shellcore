@@ -365,7 +365,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         if (location == Vector2.zero)
         {
-            return core.GetComponent<MainBullet>();
+            return core.GetComponent<MainBullet>() ? core.GetComponent<MainBullet>() : core.shell ? core.shell.GetComponent<Cannon>() : null;
         }
 
         foreach (var part in core.NetworkGetParts())

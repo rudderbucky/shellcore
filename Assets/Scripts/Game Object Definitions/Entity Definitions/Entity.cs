@@ -725,7 +725,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             ReflectAbilityActivation(gameObject.GetComponentInChildren<MainBullet>());
         }
 
-        // unique abilities for mini and worker drones here
+        // unique abilities for mini drones here
         if (drone)
         {
             switch (drone.type)
