@@ -430,7 +430,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected void RememberWeaponActivationStates()
     {
         RememberWeaponActivationStates(weaponActivationStates);
-        if (networkAdapter)
+        if (networkAdapter && networkAdapter.weaponActivationStates != null)
         {
             RememberWeaponActivationStates(networkAdapter.weaponActivationStates);
         }
