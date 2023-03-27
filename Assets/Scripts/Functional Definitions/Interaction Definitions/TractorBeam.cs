@@ -104,7 +104,7 @@ public class TractorBeam : MonoBehaviour
             SetTractorTarget(null); // Make sure that you are still allowed to tractor the target
         }
 
-        if (target && !owner.GetIsDead()) // Update tractor beam physics
+        if (target && !owner.GetIsDead() && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client) // Update tractor beam physics
         {
             Rigidbody2D rigidbody = target.GetComponent<Rigidbody2D>();
             if (rigidbody)
