@@ -26,6 +26,11 @@ public class Tank : GroundCraft, IOwnable
         }
     }
 
+    public IOwner GetOwner()
+    {
+        return owner;
+    }
+
     public override bool isImmobile
     {
         get { return pins > 0 || forceImmobile || !isOnGround; }

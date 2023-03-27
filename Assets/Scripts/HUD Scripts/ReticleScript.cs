@@ -332,7 +332,7 @@ public class ReticleScript : MonoBehaviour
             }
             else if (hits[0].transform == craft.transform) // Order a follow if this passes
             {
-                possibleDrone.GetComponent<AirCraftAI>().follow(craft.transform);
+                possibleDrone.GetComponent<Drone>().CommandFollowOwner();
                 targSys.SetTarget(null);
             }
         }

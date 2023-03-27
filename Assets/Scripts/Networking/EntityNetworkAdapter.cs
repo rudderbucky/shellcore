@@ -252,7 +252,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RequestDataServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        GetDataClientRpc(playerName, blueprintString, huskEntity is Drone drone ? (drone.GetOwner() as Entity).networkAdapter.NetworkObjectId : ulong.MaxValue);
+        GetDataClientRpc(playerName, blueprintString, huskEntity is IOwnable ownable ? (ownable.GetOwner() as Entity).networkAdapter.NetworkObjectId : ulong.MaxValue);
     }
 
     ulong ownerId = ulong.MaxValue;
@@ -278,6 +278,16 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (huskEntity && huskEntity is Drone drone)
         {
             drone.CommandMovement(pos);
+        }
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void CommandFollowOwnerServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        if (huskEntity && huskEntity is Drone drone)
+        {
+            drone.CommandFollowOwner();
         }
     }
 
@@ -535,11 +545,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
             huskEntity.networkAdapter = this;
             clientReady = true;
-            if (huskEntity is Drone drone && ownerId != ulong.MaxValue)
+            if (huskEntity is IOwnable ownable && ownerId != ulong.MaxValue)
             {
                 var ownerAdapter = GetNetworkObject(ownerId)?.GetComponent<EntityNetworkAdapter>();
                 var ownerEntity = ownerAdapter?.huskEntity as IOwner;
-                if (ownerAdapter && ownerAdapter.isPlayer.Value && ownerEntity != null && !ownerEntity.Equals(null)) drone.SetOwner(ownerEntity);
+                if (ownerAdapter && ownerAdapter.isPlayer.Value && ownerEntity != null && !ownerEntity.Equals(null)) ownable.SetOwner(ownerEntity);
             }
             ForceNetworkVarUpdateServerRpc();
         }

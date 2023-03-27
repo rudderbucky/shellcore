@@ -4,6 +4,7 @@ using UnityEngine;
 public interface IOwnable
 {
     void SetOwner(IOwner owner);
+    IOwner GetOwner();
 }
 
 public class Drone : AirCraft, IOwnable
@@ -146,6 +147,16 @@ public class Drone : AirCraft, IOwnable
             return;
         }
         ai.moveToPosition(pos);
+    }
+
+    public void CommandFollowOwner()
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client && networkAdapter)
+        {
+            networkAdapter.CommandFollowOwnerServerRpc();
+            return;
+        }
+        ai.follow(owner.GetTransform());
     }
 
     private AirCraftAI.AIMode lastMode;
