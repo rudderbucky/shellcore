@@ -50,7 +50,7 @@ public abstract class Craft : Entity
     public void CalculatePhysicsConstants()
     {
         physicsSpeed = GetPhysicsSpeed(speed, weight);
-        if (SpeedAuraStacks > 0)
+        if (SpeedAuraStacks > 0 && blueprint.intendedType != EntityBlueprint.IntendedType.Tank)
         {
             physicsSpeed *= 2.5F;
         }

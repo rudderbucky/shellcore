@@ -1128,9 +1128,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             // not dead, continue normal state changing
             // regenerate
-            RegenHealth(ref currentHealth[0], HealAuraStacks > 0 ? regenRate[0] * 20F : regenRate[0], maxHealth[0]);
-            RegenHealth(ref currentHealth[1], HealAuraStacks > 0 ? regenRate[1] * 20F : regenRate[1], maxHealth[1]);
-            RegenHealth(ref currentHealth[2], EnergyAuraStacks > 0 ? regenRate[2] * 50F : regenRate[2], maxHealth[2]);
+            if (blueprint.intendedType != EntityBlueprint.IntendedType.Tower)
+            {
+                RegenHealth(ref currentHealth[0], HealAuraStacks > 0 ? regenRate[0] * 20F : regenRate[0], maxHealth[0]);
+                RegenHealth(ref currentHealth[1], HealAuraStacks > 0 ? regenRate[1] * 20F : regenRate[1], maxHealth[1]);
+                RegenHealth(ref currentHealth[2], EnergyAuraStacks > 0 ? regenRate[2] * 50F : regenRate[2], maxHealth[2]);
+            }
 
             if (weaponGCDTimer < weaponGCD)
             {
