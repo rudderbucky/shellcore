@@ -106,6 +106,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         if (!System.IO.Directory.Exists(path)) return;
         SectorManager.currentSectorIndex = currentSector;
         WCWorldIO.LoadTestSave(path, true);
+        SectorManager.instance.ReloadSector(SectorManager.currentSectorIndex);
     }
 
 

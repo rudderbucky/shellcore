@@ -202,37 +202,42 @@ public class SectorManager : MonoBehaviour
         countdownSector = playerActive ? sectors.Find(s => s.bounds.contains(player.transform.position) && s.dimension == player.Dimension) : null;
         var exitingZoneDuringCounter = abortTimer < 6 && countdownSector == null;
 
-        if (exitingZoneDuringCounter)
+
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
-            loadSector(oldCountdownSector);
-            abortTimer = 6;
-        }
-        else if (!jsonMode && playerActive && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
-        {
-            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+            if (exitingZoneDuringCounter)
             {
-                AttemptSectorLoad();
+                loadSector(oldCountdownSector);
                 abortTimer = 6;
             }
-        }
-        else
-        {
-
-            var inSector = playerActive && countdownSector != null;
-            if (!jsonMode && playerActive && !player.GetIsDead() && inSector
-                && !inCurrentSector && (isBz || isSiege))
+            else if (!jsonMode && playerActive && (current == null || (!inCurrentSector && (!(isBz || isSiege) || abortCheck))))
             {
-                abortTimer -= Time.deltaTime;
-                if (abortTimer <= 4)
+                if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
                 {
-                    player.alerter.showMessage("ABORTING IN " + Mathf.Floor(abortTimer));
+                    AttemptSectorLoad();
+                    abortTimer = 6;
                 }
             }
             else
             {
-                abortTimer = 6;
+
+                var inSector = playerActive && countdownSector != null;
+                if (!jsonMode && playerActive && !player.GetIsDead() && inSector
+                    && !inCurrentSector && (isBz || isSiege))
+                {
+                    abortTimer -= Time.deltaTime;
+                    if (abortTimer <= 4)
+                    {
+                        player.alerter.showMessage("ABORTING IN " + Mathf.Floor(abortTimer));
+                    }
+                }
+                else
+                {
+                    abortTimer = 6;
+                }
             }
         }
+        
 
         // change minimap renderers to match current dimension.
         if (minimapSectorBorders != null)
@@ -290,6 +295,7 @@ public class SectorManager : MonoBehaviour
     {
         var sect = sectors[sectorToChange];
         currentSectorIndex = sectorToChange;
+        if (!current) current = sectors[0];
         var tmp = current.dimension;
         current.dimension = sect.dimension;
         sect.dimension = tmp;
@@ -305,7 +311,7 @@ public class SectorManager : MonoBehaviour
 
     public void AttemptSectorLoad()
     {
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !PlayerCore.Instance)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
         {
             loadSector(sectors[currentSectorIndex]);
             return;
@@ -1252,6 +1258,7 @@ public class SectorManager : MonoBehaviour
 
     void loadSector(Sector sector)
     {
+        Debug.LogWarning("load");
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.LeftShift))
         {

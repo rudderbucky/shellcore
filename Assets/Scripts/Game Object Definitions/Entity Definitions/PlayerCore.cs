@@ -282,7 +282,7 @@ public class PlayerCore : ShellCore
         }
 
         // force sectors to load once positioning has been determined
-        SectorManager.instance.AttemptSectorLoad();
+            SectorManager.instance.AttemptSectorLoad();
 
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";
