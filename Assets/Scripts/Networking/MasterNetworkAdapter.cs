@@ -99,19 +99,20 @@ public class MasterNetworkAdapter : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void GetWorldNameClientRpc(string worldName, ulong clientID)
+    public void GetWorldNameClientRpc(string worldName, int currentSector, ulong clientID)
     {
         if (NetworkManager.Singleton.IsHost || NetworkManager.LocalClientId != clientID) return;
         var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", worldName);
         if (!System.IO.Directory.Exists(path)) return;
+        SectorManager.currentSectorIndex = currentSector;
         WCWorldIO.LoadTestSave(path, true);
     }
 
 
     [ClientRpc]
-    public void ReloadSectorClientRpc(ClientRpcParams clientRpcParams = default)
+    public void ReloadSectorClientRpc(int sectorToChange, ClientRpcParams clientRpcParams = default)
     {
-        SectorManager.instance.ReloadSector();
+        SectorManager.instance.ReloadSector(sectorToChange);
     }
 
     [ClientRpc]
@@ -144,6 +145,41 @@ public class MasterNetworkAdapter : NetworkBehaviour
     }
 
     public Dictionary<ulong, bool> playerSpawned = new Dictionary<ulong, bool>();
+
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestVoteServerRpc(int i, ServerRpcParams serverRpcParams = default)
+    {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
+        int voteToAdd = -1;
+        int voteToSub = -1;
+        if (!DialogueSystem.Instance.votesById.ContainsKey(clientId))
+        {
+            DialogueSystem.Instance.votesById.Add(clientId, i);
+        }
+        else
+        {
+            voteToSub = DialogueSystem.Instance.votesById[clientId];
+            DialogueSystem.Instance.voteNumbers[voteToSub]--;
+            DialogueSystem.Instance.votesById[clientId] = i;
+        }
+        voteToAdd = i;
+        DialogueSystem.Instance.voteNumbers[i]++;
+        RequestRefreshVoteClientRpc(voteToAdd, voteToSub);
+    }
+
+    [ClientRpc]
+    public void RequestRefreshVoteClientRpc(int newVoteToAdd, int newVoteToSub, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
+        if (newVoteToAdd >= 0)
+            DialogueSystem.Instance.voteNumbers[newVoteToAdd]++;
+        if (newVoteToSub >= 0)
+            DialogueSystem.Instance.voteNumbers[newVoteToSub]--;
+        DialogueSystem.Instance.RefreshButtons();
+    }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void CreatePlayerServerRpc(string name, string blueprint, int faction, ServerRpcParams serverRpcParams = default)

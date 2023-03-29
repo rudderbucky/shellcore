@@ -216,18 +216,20 @@ public class BattleZoneManager : MonoBehaviour
                 }
                     
 
-                if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+                if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Server)
                 {
                     DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
                 }
-                else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
+                else
                 {
-                    SectorManager.instance.ReloadSector();
-                    MasterNetworkAdapter.instance.ReloadSectorClientRpc();
+                    DialogueSystem.Instance.StartSectorVote();
                 }
             }
         }
     }
+
+
+    
 
     public void AddTarget(Entity target)
     {

@@ -99,9 +99,6 @@ public class SectorManager : MonoBehaviour
     public static string testJsonPath;
     public static string testResourcePath = null;
     public static string jsonPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "main - " + VersionNumberScript.mapVersion);
-
-    [SerializeField]
-    private Sector networkTestSector;
     public void Initialize()
     {
         if (instance != null)
@@ -139,11 +136,6 @@ public class SectorManager : MonoBehaviour
         {
             // jsonPath = customPath;
             jsonMode = true;
-        }
-
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
-        {
-            current = networkTestSector;
         }
 
         if (SceneManager.GetActiveScene().name == "MainMenu")
@@ -293,8 +285,16 @@ public class SectorManager : MonoBehaviour
         }
     }
 
-    public void ReloadSector()
+    public static int currentSectorIndex = 0;
+    public void ReloadSector(int sectorToChange)
     {
+        var sect = sectors[sectorToChange];
+        currentSectorIndex = sectorToChange;
+        var tmp = current.dimension;
+        current.dimension = sect.dimension;
+        sect.dimension = tmp;
+        current = sect;
+
         loadSector(current);
         if (PlayerCore.Instance && PlayerCore.Instance.GetIsDead())
         {
@@ -305,9 +305,9 @@ public class SectorManager : MonoBehaviour
 
     public void AttemptSectorLoad()
     {
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsClient)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !PlayerCore.Instance)
         {
-            loadSector(sectors[0]);
+            loadSector(sectors[currentSectorIndex]);
             return;
         }
 
