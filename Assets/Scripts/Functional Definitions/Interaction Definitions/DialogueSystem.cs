@@ -349,7 +349,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private List<string> voteOptions = new List<string>();
     public Dictionary<ulong, int> votesById = new Dictionary<ulong, int>();
     private float voteTimeLeft = 0;
-    private static float VOTE_TIME = 3;
+    private static float VOTE_TIME = 10;
     private void FinishVote()
     {
         if (window)

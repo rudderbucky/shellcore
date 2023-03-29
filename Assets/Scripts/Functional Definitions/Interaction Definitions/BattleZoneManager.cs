@@ -220,7 +220,7 @@ public class BattleZoneManager : MonoBehaviour
                 {
                     DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
                 }
-                else
+                else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
                 {
                     DialogueSystem.Instance.StartSectorVote();
                 }
