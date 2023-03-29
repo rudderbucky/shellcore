@@ -44,8 +44,8 @@ public class TowerAura : PassiveAbility
     public override void Deactivate()
     {
         base.Deactivate();
-        if (AIData.auras.Contains(this)) AIData.auras.Remove(this);
-        if (circle.gameObject) Destroy(circle.gameObject);
+        if (AIData.auras != null && AIData.auras.Contains(this)) AIData.auras.Remove(this);
+        if (circle && circle.gameObject) Destroy(circle.gameObject);
     }
 
     public enum AuraType
