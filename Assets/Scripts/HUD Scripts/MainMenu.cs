@@ -135,7 +135,7 @@ public class MainMenu : MonoBehaviour
             else MasterNetworkAdapter.StartServer();
             NetworkManager.Singleton.OnClientConnectedCallback += (u) => 
             { 
-                MasterNetworkAdapter.instance.GetWorldNameClientRpc(world, u);
+                MasterNetworkAdapter.instance.GetWorldNameClientRpc(world, SectorManager.currentSectorIndex, u);
             };
             WCWorldIO.LoadTestSave(path, true);
         }
