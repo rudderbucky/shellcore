@@ -14,8 +14,8 @@ public class InvertTractor : ActiveAbility
         base.Awake(); // base awake
         // hardcoded values here
         ID = AbilityID.InvertTractor;
-        cooldownDuration = 20;
-        energyCost = 250;
+        cooldownDuration = 15;
+        energyCost = 50;
     }
 
     /// <summary>
