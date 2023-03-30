@@ -4704,7 +4704,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 354862415}
-  - component: {fileID: 354862416}
   m_Layer: 0
   m_Name: Container
   m_TagString: Untagged
@@ -4738,50 +4737,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &354862416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 354862414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a11ea7248cb75a0498a8cd34c35a1073, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playSoundOnClose: 1
-  OnCancelled:
-    m_PersistentCalls:
-      m_Calls: []
-  yardPosition: {x: 0, y: 0, z: 0}
-  cursorScript: {fileID: 1966502569}
-  smallContents: {fileID: 1480736924}
-  mediumContents: {fileID: 1045985734}
-  largeContents: {fileID: 1858722097}
-  smallText: {fileID: 1733731733}
-  mediumText: {fileID: 2056635424}
-  largeText: {fileID: 1634305745}
-  player: {fileID: 1878101311}
-  displayButtonPrefab: {fileID: 8239017819639472760, guid: d95ddd3913b81144fb05e8901efb14a1,
-    type: 3}
-  selectionDisplay: {fileID: 389884323}
-  selectionPhaseParent: {fileID: 390696152}
-  buildPhaseParent: {fileID: 686176280}
-  coreImage: {fileID: 609041463}
-  shellImage: {fileID: 1021920744}
-  partPrefab: {fileID: 1765373141249224, guid: c3771e617c197b641b00015bf838081d, type: 3}
-  smallBuilderContents: {fileID: 1480736924}
-  mediumBuilderContents: {fileID: 1045985734}
-  largeBuilderContents: {fileID: 1858722097}
-  smallBuilderText: {fileID: 1733731733}
-  mediumBuilderText: {fileID: 2056635424}
-  largeBuilderText: {fileID: 1634305745}
-  buttonPrefab: {fileID: 1886850028690094, guid: 28beeb98b359d7045b9f9cf38213e629,
-    type: 3}
-  miniDroneShooter: {fileID: 1139252432}
-  reconstructImage: {fileID: 483812081}
-  reconstructText: {fileID: 983430951}
 --- !u!1 &358494409
 GameObject:
   m_ObjectHideFlags: 0
@@ -6051,7 +6006,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 354862416}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DroneWorkshop, Assembly-CSharp
         m_MethodName: Deinitialize
         m_Mode: 1
@@ -7552,7 +7507,7 @@ PrefabInstance:
         type: 3}
       propertyPath: workshop
       value: 
-      objectReference: {fileID: 354862416}
+      objectReference: {fileID: 0}
     - target: {fileID: 114424659341706264, guid: ec3b4ef72d802d7448ea4d550f88fc47,
         type: 3}
       propertyPath: blackBarTop
@@ -11969,7 +11924,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   field: {fileID: 1440960479}
-  builder: {fileID: 354862416}
+  builder: {fileID: 0}
   window: {fileID: 1885682243}
 --- !u!114 &962062678
 MonoBehaviour:
@@ -20618,7 +20573,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 354862416}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DroneWorkshop, Assembly-CSharp
         m_MethodName: CloseUI
         m_Mode: 6
@@ -23693,7 +23648,7 @@ MonoBehaviour:
   ID: 
   healAuraStacks: 0
   speedAuraStacks: 0
-  damageResistanceAuraStacks: 0
+  energyAuraStacks: 0
   absorptions: 0
   tractorSwitched: 0
   sectorMngr: {fileID: 0}
@@ -26957,7 +26912,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acb92528dd90f7442b5313938e94aa4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sFXHandler: {fileID: 2143834394}
   eventSystem: {fileID: 1390349144}
   minimapCamera: {fileID: 49778933}
 --- !u!81 &2077949624
@@ -27712,18 +27666,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 644eced67c800ed42bf17624d2566ea8, type: 3}
---- !u!114 &2143834394 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2143834394, guid: 644eced67c800ed42bf17624d2566ea8,
-    type: 3}
-  m_PrefabInstance: {fileID: 2143834392}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa2b0d24774aae446b8829e63b5cef8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &224035880472802623 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8728867389089152546, guid: 1dd6c2ea206daae48b2691f5666a949e,
