@@ -150,7 +150,6 @@ public abstract class Craft : Entity
 
     /// <summary>
     /// The method that moves the craft based on the integer input it receives
-    /// Movement tries to emulate original Shellcore Command movement (specifically episode 1) but is not perfect
     /// </summary>
     /// <param name="direction">integer that specifies the direction of movement</param>
     public void MoveCraft(Vector2 direction)

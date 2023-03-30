@@ -1033,7 +1033,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             OnEntityDeath.Invoke(this, lastDamagedBy);
         }
 
-        if (BZM != null)
+        if (BZM != null && BZM.IsTarget(this))
         {
             BZM.UpdateCounters();
         }
@@ -1259,7 +1259,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     player.alerter.showMessage("");
                 }
 
-                if ((MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !MasterNetworkAdapter.lettingServerDecide || (!networkAdapter || networkAdapter.serverReady.Value)))
+                var BZM = SectorManager.instance?.GetComponent<BattleZoneManager>();
+                if ((MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || (!MasterNetworkAdapter.lettingServerDecide && (!BZM || BZM.playing)) || (!networkAdapter || networkAdapter.serverReady.Value)))
                     PostDeath();
             }
         }

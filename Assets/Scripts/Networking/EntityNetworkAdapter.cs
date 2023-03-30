@@ -584,6 +584,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    private static float UPDATE_RATE_FOR_PLAYERS = 0F; 
+    private static float UPDATE_RATE = 0.05F;
+    private float updateTimer = UPDATE_RATE;
     private void AttemptCreateServerResponse()
     {
         if (NetworkManager.Singleton.IsServer)
@@ -600,8 +603,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
                     }
                 }
             }
-            if ((huskEntity && closeToPlayer) || !serverReady.Value || dirty)
+            updateTimer -= Time.deltaTime;
+            if ((huskEntity && closeToPlayer && updateTimer <= 0) || !serverReady.Value || dirty)
             {
+                updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : UPDATE_RATE;
                 dirty = false;
                 state.Value = wrapper.CreateResponse(this);
             };

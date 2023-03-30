@@ -1259,7 +1259,6 @@ public class SectorManager : MonoBehaviour
 
     void loadSector(Sector sector)
     {
-        Debug.LogWarning("load");
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.LeftShift))
         {

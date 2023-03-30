@@ -138,6 +138,11 @@ public class BattleZoneManager : MonoBehaviour
         }
     }
 
+    public bool IsTarget(Entity ent)
+    {
+        return targets != null && targets.Contains(ent);
+    }
+
     public void UpdateCounters()
     {
         if (playing && enabled)

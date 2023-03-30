@@ -174,7 +174,11 @@ public class MasterNetworkAdapter : NetworkBehaviour
     [ClientRpc]
     public void RequestRefreshVoteClientRpc(int newVoteToAdd, int newVoteToSub, ClientRpcParams clientRpcParams = default)
     {
-        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
+        if (MasterNetworkAdapter.mode == NetworkMode.Host)
+        {
+            DialogueSystem.Instance.RefreshButtons();
+            return;
+        }
         if (newVoteToAdd >= 0)
             DialogueSystem.Instance.voteNumbers[newVoteToAdd]++;
         if (newVoteToSub >= 0)
