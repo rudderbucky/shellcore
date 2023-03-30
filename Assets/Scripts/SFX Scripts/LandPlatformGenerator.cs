@@ -656,8 +656,8 @@ public class LandPlatformGenerator : MonoBehaviour
                     short dirs = instance.GetDirections(nextPos);
                     if (dirs == -1)
                     {
-                        Debug.LogError("Invalid tile position reached during pathfinding.");
-                        return null;
+                        // Road ends!
+                        continue;
                     }
                     if (!closedList.Contains(nextPos))
                     {

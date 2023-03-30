@@ -45,6 +45,8 @@ public class GroundPlatform
 
     Tile?[] tileGrid;
     Dictionary<Entity, (float, Tile)> closestTiles = new Dictionary<Entity, (float, Tile)>();
+    int timeOffsetIndex = 0;
+    float[] randomTimeOffsets = new float[] { 0.1f, 0.11f, 0.12f, 0.13f, 0.14f, 0.16f, 0.19f, 0.21f, 0.27f};
 
     public Vector2Int offset { get; private set; }
     Vector2Int size;
@@ -82,7 +84,9 @@ public class GroundPlatform
 
     public void SetClosestTile(Entity ent, Tile t)
     {
-        closestTiles[ent] = (Time.time, t);
+        // Add a random-ish amount of time to spread out cache updates
+        closestTiles[ent] = (Time.time + randomTimeOffsets[timeOffsetIndex], t);
+        timeOffsetIndex = (timeOffsetIndex + 1) % randomTimeOffsets.Length;
     }
 
     public void RemoveClosestTile(Entity ent)
@@ -95,6 +99,7 @@ public class GroundPlatform
     {
         if (closestTiles.ContainsKey(ent))
         {
+            // If it's been a while since the tile was added to the cache, update it
             if (Time.time - closestTiles[ent].Item1 > 3f)
             {
                 RemoveClosestTile(ent);
