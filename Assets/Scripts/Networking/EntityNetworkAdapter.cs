@@ -88,8 +88,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    public NetworkList<PartStatusResponse> partStatuses;
-
     public struct ClientMessage : INetworkSerializable
     {
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -136,7 +134,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     void Awake()
     {
-        if (partStatuses == null) partStatuses = new NetworkList<PartStatusResponse>();
         serverReady = new NetworkVariable<bool>(false);
     }
 
@@ -438,27 +435,23 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
     public bool clientReady;
 
-    public void ServerDetachPart(ShellPart part)
+    [ClientRpc]
+    public void DetachPartClientRpc(Vector2 location, ClientRpcParams clientRpcParams = default)
     {
-        for (int i = 0; i < partStatuses.Count; i++)
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        for (int i = 0; i < huskEntity.NetworkGetParts().Count; i++)
         {
-            if (partStatuses[i].location != part.info.location) continue;
-            partStatuses[i] = new PartStatusResponse(part.info.location, true);
+            var part = huskEntity.NetworkGetParts()[i];
+            if (part.info.location != location) continue;
+            huskEntity.RemovePart(part);
             break;
         }
     }
 
 
+
+
     public NetworkVariable<bool> serverReady;
-
-
-    public void ServerResetParts(bool destroyed)
-    {
-        for (int i = 0; i < partStatuses.Count; i++)
-        {
-            partStatuses[i] = new PartStatusResponse(partStatuses[i].location, destroyed);
-        }
-    }
 
     public void SetHusk(Entity husk)
     {
@@ -615,23 +608,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    private void SyncUpParts()
-    {
-        if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
-        {
-            var core = huskEntity ? huskEntity : isPlayer.Value ? PlayerCore.Instance : null;
-            if (!core || core.GetIsDead()) return;
-            foreach (var part in partStatuses)
-            {
-                if (!part.detached) continue;
-                var foundPart = core.NetworkGetParts().Find(p => p && p.info.location == part.location);
-                if (!foundPart) continue;
-                core.RemovePart(foundPart);
-                break;
-            }
-        }
-    }
-
     void Update()
     {   
         if (!PreliminaryStatusCheck()) return;
@@ -648,7 +624,5 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             craft.MoveCraft(wrapper.directionalVector);
         }
-
-        SyncUpParts();
     }
 }

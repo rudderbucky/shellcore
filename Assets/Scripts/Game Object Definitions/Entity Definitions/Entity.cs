@@ -371,6 +371,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     public void UpdateInteractible()
     {
+        if (!SectorManager.instance.current) return;
         interactible = GetDialogue() && PlayerCore.Instance && FactionManager.IsAllied(PlayerCore.Instance.faction, faction);
 
         // These are implications, not a biconditional; interactibility is not necessarily true/false if there are no
@@ -783,12 +784,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     // Wrapper for assembling core
     protected void SetUpParts(EntityBlueprint blueprint)
-    {
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && networkAdapter)
-        {
-            networkAdapter.partStatuses.Clear();
-        }
-        
+    {   
         if (blueprint != null && blueprint.parts != null)
         {
             ResetHealths();
@@ -926,11 +922,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             partObject.GetComponent<Collider2D>().enabled = false;
         }
 
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && networkAdapter)
-        {
-            networkAdapter.partStatuses.Add(new EntityNetworkAdapter.PartStatusResponse(shellPart.info.location, false));
-        }
-
         return shellPart;
     }
 
@@ -982,7 +973,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer && networkAdapter)
         {
-            networkAdapter.ServerResetParts(true);
             networkAdapter.serverReady.Value = false;
         }
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && MasterNetworkAdapter.lettingServerDecide && networkAdapter)
@@ -1369,7 +1359,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         part.Detach();
         if (NetworkManager.Singleton && NetworkManager.Singleton.IsServer && networkAdapter)
         {
-            networkAdapter.ServerDetachPart(part);
+            networkAdapter.DetachPartClientRpc(part.info.location);
         }
         parts.Remove(part);
     }
