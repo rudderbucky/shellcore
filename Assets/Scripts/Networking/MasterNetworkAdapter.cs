@@ -113,6 +113,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     [ClientRpc]
     public void ReloadSectorClientRpc(int sectorToChange, ClientRpcParams clientRpcParams = default)
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
         SectorManager.instance.ReloadSector(sectorToChange);
     }
 

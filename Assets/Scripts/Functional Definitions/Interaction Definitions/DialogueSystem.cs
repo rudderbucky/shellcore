@@ -370,18 +370,17 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             }
         }
 
-        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Server)
-        {
-            SectorManager.instance.ReloadSector(maxIndex);
-        }
+        SectorManager.instance.ReloadSector(maxIndex);
         MasterNetworkAdapter.instance.ReloadSectorClientRpc(maxIndex);
     }
 
     public void RefreshButtons()
     {
+        if (voteButtons == null) return;
         for (int i = 0; i < voteButtons.Count; i++)
         {
             var box = voteButtons[i];
+            if (!box || !box.GetComponentInChildren<Text>()) continue;
             box.GetComponentInChildren<Text>().text = voteOptions[i] + " (" + voteNumbers[i] + ")";
         }
     }

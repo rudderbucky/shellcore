@@ -282,7 +282,8 @@ public class PlayerCore : ShellCore
         }
 
         // force sectors to load once positioning has been determined
-            SectorManager.instance.AttemptSectorLoad();
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+        SectorManager.instance.AttemptSectorLoad();
 
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";
@@ -392,7 +393,8 @@ public class PlayerCore : ShellCore
         instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
         instantiatedRespawnPrefab.position = transform.position;
         AudioManager.PlayClipByID("clip_respawn", transform.position);
-        SectorManager.instance.AttemptSectorLoad();
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+            SectorManager.instance.AttemptSectorLoad();
     }
 
     protected override void CraftMover(Vector2 directionVector)

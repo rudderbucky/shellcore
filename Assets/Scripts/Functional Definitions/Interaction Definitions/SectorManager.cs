@@ -181,7 +181,7 @@ public class SectorManager : MonoBehaviour
             player.SetIsInteracting(true);
         }
         var playerActive = player && player.gameObject.activeSelf && player.blueprint;
-        if (!playerActive && SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton && !loadedDuelSector)
+        if (!MasterNetworkAdapter.lettingServerDecide && SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton && !loadedDuelSector)
         {
             loadedDuelSector = true;
             AttemptSectorLoad();
@@ -308,6 +308,7 @@ public class SectorManager : MonoBehaviour
             PlayerCore.Instance.Respawn();
         }
     }
+
 
     public void AttemptSectorLoad()
     {
