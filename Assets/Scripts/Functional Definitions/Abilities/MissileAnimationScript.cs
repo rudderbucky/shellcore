@@ -22,6 +22,7 @@ public class MissileAnimationScript : MonoBehaviour
         line.useWorldSpace = false;
         line.startColor = lineColor;
         line.endColor = lineColor;
+        line.sortingLayerName = "Projectiles";
         iteration = 0;
         timer = 0;
         initialPos = Vector3.zero;
