@@ -538,6 +538,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 }
             }
             updateTimer = 0;
+            AttemptCreateServerResponse();
             UpdateCoreState(huskEntity, state.Value);
             huskEntity.networkAdapter = this;
             clientReady = true;

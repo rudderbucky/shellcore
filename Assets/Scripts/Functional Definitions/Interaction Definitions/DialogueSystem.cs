@@ -179,6 +179,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
+    public bool IsVoting()
+    {
+        return voteTimeLeft > 0;
+    }
+
     private void Update()
     {
         if (voteTimeLeft > 0)

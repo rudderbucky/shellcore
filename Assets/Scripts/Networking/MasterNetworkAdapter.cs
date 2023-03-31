@@ -153,6 +153,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RequestVoteServerRpc(int i, ServerRpcParams serverRpcParams = default)
     {
+        if (!DialogueSystem.Instance.IsVoting()) return;
         ulong clientId = serverRpcParams.Receive.SenderClientId;
         int voteToAdd = -1;
         int voteToSub = -1;
@@ -179,9 +180,9 @@ public class MasterNetworkAdapter : NetworkBehaviour
             DialogueSystem.Instance.RefreshButtons();
             return;
         }
-        if (newVoteToAdd >= 0)
+        if (newVoteToAdd >= 0 && DialogueSystem.Instance.voteNumbers.Count > newVoteToAdd)
             DialogueSystem.Instance.voteNumbers[newVoteToAdd]++;
-        if (newVoteToSub >= 0)
+        if (newVoteToSub >= 0 && DialogueSystem.Instance.voteNumbers.Count > newVoteToSub)
             DialogueSystem.Instance.voteNumbers[newVoteToSub]--;
         DialogueSystem.Instance.RefreshButtons();
     }

@@ -1339,6 +1339,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     public virtual void RemovePart(ShellPart part)
     {
+        if (!part) return;
         var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
         if (part.GetComponent<Ability>())
         {
