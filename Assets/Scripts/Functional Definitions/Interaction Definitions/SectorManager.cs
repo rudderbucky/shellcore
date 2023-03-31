@@ -302,11 +302,12 @@ public class SectorManager : MonoBehaviour
         current = sect;
 
         loadSector(current);
-        if (PlayerCore.Instance && PlayerCore.Instance.GetIsDead())
+        if (PlayerCore.Instance && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Server)
         {
-            PlayerCore.Instance.CancelDeath();
+            if (PlayerCore.Instance.GetIsDead())
+                PlayerCore.Instance.CancelDeath();
+            PlayerCore.Instance.Respawn();
         }
-        PlayerCore.Instance.Respawn();
     }
 
 

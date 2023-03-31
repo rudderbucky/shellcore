@@ -116,6 +116,7 @@ public class MainMenu : MonoBehaviour
         }
 
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
+        SectorManager.currentSectorIndex = 0;
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
             var world = worldField.text;
