@@ -107,13 +107,14 @@ public abstract class Craft : Entity
         isBusy = false;
 
         // Deactivate abilities
-        foreach (var ability in abilities)
-        {
-            if (ability is ActiveAbility || ability is PassiveAbility)
+        if (abilities != null)
+            foreach (var ability in abilities)
             {
-                ability.SetDestroyed(true);
+                if (ability is ActiveAbility || ability is PassiveAbility)
+                {
+                    ability.SetDestroyed(true);
+                }
             }
-        }
 
         transform.rotation = Quaternion.identity; // reset rotation so part rotation can be reset
         foreach (Transform child in transform)

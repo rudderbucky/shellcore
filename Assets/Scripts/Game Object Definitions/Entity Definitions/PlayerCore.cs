@@ -92,22 +92,24 @@ public class PlayerCore : ShellCore
     public override void Respawn()
     {
         List<bool> weaponActivationStates = new List<bool>();
-        for (int i = 0; i < abilities.Count; i++)
-        {
-            if (abilities[i] is WeaponAbility weapon)
-            {
-                weaponActivationStates.Add(weapon.GetActiveTimeRemaining() == -1);
-            }
-        }
         List<bool> autoCastActivationStates = new List<bool>();
-        for (int i = 0; i < abilities.Count; i++)
+        if (abilities != null)
         {
-            if (abilities[i] is ActiveAbility activeAbility)
+            for (int i = 0; i < abilities.Count; i++)
             {
-                autoCastActivationStates.Add(activeAbility.AutoCast);
+                if (abilities[i] is WeaponAbility weapon)
+                {
+                    weaponActivationStates.Add(weapon.GetActiveTimeRemaining() == -1);
+                }
+            }
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                if (abilities[i] is ActiveAbility activeAbility)
+                {
+                    autoCastActivationStates.Add(activeAbility.AutoCast);
+                }
             }
         }
-
         if (hud)
         {
             hud.DeinitializeHUD(); // deinitialize HUD
@@ -129,21 +131,25 @@ public class PlayerCore : ShellCore
         base.Respawn(); // this will reinitialize the HUD
         spawnPoint = havenSpawnPoint; // reset spawn point
         int weaponIndex = 0;
-        for (int i = 0; i < abilities.Count; i++)
+        if (abilities != null)
         {
-            if (abilities[i] is WeaponAbility weapon)
+            for (int i = 0; i < abilities.Count; i++)
             {
-                weapon.SetActive(weaponActivationStates[weaponIndex++]);
+                if (abilities[i] is WeaponAbility weapon)
+                {
+                    weapon.SetActive(weaponActivationStates[weaponIndex++]);
+                }
+            }
+            int activeAbilityIndex = 0;
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                if (abilities[i] is ActiveAbility activeAbility)
+                {
+                    activeAbility.AutoCast = autoCastActivationStates[activeAbilityIndex++];
+                }
             }
         }
-        int activeAbilityIndex = 0;
-        for (int i = 0; i < abilities.Count; i++)
-        {
-            if (abilities[i] is ActiveAbility activeAbility)
-            {
-                activeAbility.AutoCast = autoCastActivationStates[activeAbilityIndex++];
-            }
-        }
+        
     }
 
     private Vector3? minimapPoint = null;

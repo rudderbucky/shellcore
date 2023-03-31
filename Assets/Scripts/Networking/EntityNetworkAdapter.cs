@@ -439,6 +439,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public void DetachPartClientRpc(Vector2 location, ClientRpcParams clientRpcParams = default)
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        if (!huskEntity) return;
         for (int i = 0; i < huskEntity.NetworkGetParts().Count; i++)
         {
             var part = huskEntity.NetworkGetParts()[i];
@@ -536,6 +537,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
                     huskEntity.spawnPoint = huskEntity.transform.position = wrapper.position;
                 }
             }
+            updateTimer = 0;
+            UpdateCoreState(huskEntity, state.Value);
             huskEntity.networkAdapter = this;
             clientReady = true;
             if (huskEntity is IOwnable ownable && ownerId != ulong.MaxValue)
@@ -625,7 +628,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             playerNameAdded = true;
             ProximityInteractScript.instance.AddPlayerName(huskEntity as ShellCore, playerName);
         }
-        if (huskEntity && huskEntity is Craft craft && craft.husk && isPlayer.Value)
+        if (huskEntity && huskEntity is Craft craft && craft.husk && isPlayer.Value && !(MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host && huskEntity == PlayerCore.Instance))
         {
             craft.MoveCraft(wrapper.directionalVector);
         }

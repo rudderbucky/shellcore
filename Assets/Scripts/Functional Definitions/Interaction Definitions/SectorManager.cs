@@ -305,8 +305,8 @@ public class SectorManager : MonoBehaviour
         if (PlayerCore.Instance && PlayerCore.Instance.GetIsDead())
         {
             PlayerCore.Instance.CancelDeath();
-            PlayerCore.Instance.Respawn();
         }
+        PlayerCore.Instance.Respawn();
     }
 
 
@@ -1448,7 +1448,10 @@ public class SectorManager : MonoBehaviour
             {
                 Destroy(orb.gameObject);
             }
-        AIData.energySpheres.Clear();
+
+        
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
+            AIData.energySpheres.Clear();
 
         var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var obj in objects)
