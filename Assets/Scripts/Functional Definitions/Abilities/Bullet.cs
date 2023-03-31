@@ -109,7 +109,8 @@ public class Bullet : WeaponAbility
         }
 
         // Destroy the bullet after survival time
-        script.StartSurvivalTimer(survivalTime);
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !MasterNetworkAdapter.lettingServerDecide)
+            script.StartSurvivalTimer(survivalTime);
         
         if (SceneManager.GetActiveScene().name != "SampleScene")
         {

@@ -127,6 +127,7 @@ public class BulletScript : MonoBehaviour
         yield return new WaitForSeconds(time);
         InstantiateMissPrefab();
 
-        Destroy(gameObject);
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !MasterNetworkAdapter.lettingServerDecide)
+            Destroy(gameObject);
     }
 }
