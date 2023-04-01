@@ -104,6 +104,7 @@ public class BulletScript : MonoBehaviour
 
     public void OnDestroy()
     {
+        Debug.Log("BulletScript is being destroyed");
         if (transform.GetComponentInChildren<TrailRenderer>())
         {
             transform.GetComponentInChildren<TrailRenderer>().autodestruct = true;
