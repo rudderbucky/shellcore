@@ -209,16 +209,17 @@ public class EntityNetworkAdapter : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RequestDataServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        GetDataClientRpc(playerName, blueprintString, huskEntity is IOwnable ownable && (ownable.GetOwner() != null) ? (ownable.GetOwner() as Entity).networkAdapter.NetworkObjectId : ulong.MaxValue);
+        GetDataClientRpc(playerName, blueprintString, huskEntity is IOwnable ownable && (ownable.GetOwner() != null) ? (ownable.GetOwner() as Entity).networkAdapter.NetworkObjectId : ulong.MaxValue, passedFaction);
     }
 
     ulong ownerId = ulong.MaxValue;
     [ClientRpc]
-    public void GetDataClientRpc(string name, string blueprint, ulong owner, ClientRpcParams clientRpcParams = default)
+    public void GetDataClientRpc(string name, string blueprint, ulong owner, int faction, ClientRpcParams clientRpcParams = default)
     {
         playerName = name;
         blueprintString = blueprint;
         ownerId = owner;
+        this.passedFaction = faction;
         this.blueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
     }
 

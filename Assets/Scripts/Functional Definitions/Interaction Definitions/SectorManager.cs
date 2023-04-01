@@ -99,6 +99,7 @@ public class SectorManager : MonoBehaviour
     public static string testJsonPath;
     public static string testResourcePath = null;
     public static string jsonPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "main - " + VersionNumberScript.mapVersion);
+
     public void Initialize()
     {
         if (instance != null)
@@ -244,8 +245,12 @@ public class SectorManager : MonoBehaviour
         {
             foreach (var kvp in minimapSectorBorders)
             {
-                kvp.Value.gameObject.SetActive(kvp.Key.dimension == player.Dimension);
+                kvp.Value.gameObject.SetActive(kvp.Key.dimension == player.Dimension && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off);
             }
+        }
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && current)
+        {
+            minimapSectorBorders[current].gameObject.SetActive(true);
         }
 
         // deadzone damage
