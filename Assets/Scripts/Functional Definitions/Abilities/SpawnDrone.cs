@@ -119,7 +119,7 @@ public class SpawnDrone : ActiveAbility
 
     protected override bool ExtraCriteriaToActivate()
     {
-        return craft.GetUnitsCommanding().Count < craft.GetTotalCommandLimit();
+        return craft != null && !craft.Equals(null) && craft.GetUnitsCommanding().Count < craft.GetTotalCommandLimit();
     }
 
     protected override void ExtraCriteriaFailureEvent()
