@@ -224,6 +224,12 @@ public class MasterNetworkAdapter : NetworkBehaviour
             return false;
         }
         if (print.intendedType != EntityBlueprint.IntendedType.ShellCore) return false; // print is of incorrect type
+
+        var invalidAbilities = new List<AbilityID>() {AbilityID.MainBullet, AbilityID.Harvester, AbilityID.EnergyAura, AbilityID.SpeedAura, AbilityID.HealAura, AbilityID.Rocket, AbilityID.SpeederBullet, AbilityID.SiegeBullet};
+        foreach (var part in print.parts)
+        {
+            if (invalidAbilities.Contains((AbilityID)part.abilityID)) return false;
+        }
         return true;
     }
 
