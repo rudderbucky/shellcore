@@ -316,6 +316,7 @@ public class SectorManager : MonoBehaviour
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
         {
             loadSector(sectors[currentSectorIndex]);
+            if(MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Server) PlayerCore.Instance.SetPlayerSpawnPoint();
             return;
         }
 

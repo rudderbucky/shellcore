@@ -65,29 +65,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public string blueprintString;
     public EntityBlueprint blueprint;
 
-    public struct PartStatusResponse : INetworkSerializable, IEquatable<PartStatusResponse>
-    {
-        public Vector2 location;
-        public bool detached;
-
-        public PartStatusResponse(Vector2 location, bool val)
-        {
-            this.location = location;
-            detached = val;
-        }
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref location);
-            serializer.SerializeValue(ref detached);
-        }
-
-        public bool Equals(PartStatusResponse other)
-        {
-            return location == other.location;
-        }
-    }
-
     public struct ClientMessage : INetworkSerializable
     {
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -95,7 +72,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             throw new System.NotImplementedException();
         }
     }
-
 
     public class TemporaryStateWrapper
     {
@@ -107,23 +83,23 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             Rigidbody2D body = null;
             Entity core = null;
-            body = buf.huskEntity.GetComponent<Rigidbody2D>();
-            core = buf.huskEntity;
-            return new ServerResponse(core.transform.position, 
-            body.velocity, 
-            core.transform.rotation, 
+            body = buf?.huskEntity?.GetComponent<Rigidbody2D>();
+            core = buf?.huskEntity;
+            return new ServerResponse(
+            core ? core.transform.position : Vector3.zero, 
+            body ? body.velocity : Vector3.zero, 
+            core? core.transform.rotation : Quaternion.identity, 
             clientID, 
-            core.faction, 
-            core.GetWeaponGCDTimer(),
+            core ? core.faction : buf.passedFaction, 
+            core ? core.GetWeaponGCDTimer() : 0,
             core as ShellCore ? (core as ShellCore).GetPower() : 0,
-            core.CurrentHealth[0], 
-            core.CurrentHealth[1], 
-            core.CurrentHealth[2]);
+            core ? core.CurrentHealth[0] : 1, 
+            core ? core.CurrentHealth[1] : 1, 
+            core ? core.CurrentHealth[2] : 1);
         }
     }
 
     public TemporaryStateWrapper wrapper;
-    public NetworkVariable<ServerResponse> state = new NetworkVariable<ServerResponse>();
     public NetworkVariable<bool> isPlayer = new NetworkVariable<bool>(false);
     public Vector3 pos;
 
@@ -135,11 +111,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
     void Awake()
     {
         serverReady = new NetworkVariable<bool>(false);
-    }
-
-    public void GenerateState()
-    {
-        state.Value = new ServerResponse(Vector3.zero, Vector3.zero, Quaternion.identity, OwnerClientId, passedFaction, 0, 0, 1000, 250, 500);
     }
 
 
@@ -172,21 +143,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 if (IsOwner && isPlayer.Value) passedFaction = 0;
             }        
             
-            GenerateState();
+            UpdateStateClientRpc(wrapper.CreateResponse(this), passedFaction);
         }
         if (NetworkManager.Singleton.IsClient)
         {
-            state.OnValueChanged += (x, y) =>
-            {
-                if (y.clientID == NetworkManager.Singleton.LocalClientId && isPlayer.Value)
-                {
-                    UpdatePlayerState(y);
-                }
-                else if (huskEntity)
-                {
-                    UpdateCoreState(huskEntity, y);
-                }
-            };
         }
     }
 
@@ -249,7 +209,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RequestDataServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        GetDataClientRpc(playerName, blueprintString, huskEntity is IOwnable ownable ? (ownable.GetOwner() as Entity).networkAdapter.NetworkObjectId : ulong.MaxValue);
+        GetDataClientRpc(playerName, blueprintString, huskEntity is IOwnable ownable && (ownable.GetOwner() != null) ? (ownable.GetOwner() as Entity).networkAdapter.NetworkObjectId : ulong.MaxValue);
     }
 
     ulong ownerId = ulong.MaxValue;
@@ -449,7 +409,24 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void UpdateStateClientRpc(ServerResponse wrapper, int faction, ClientRpcParams clientRpcParams = default)
+    {
+        if (wrapper.clientID == NetworkManager.Singleton.LocalClientId && isPlayer.Value)
+        {
+            UpdatePlayerState(wrapper);
+        }
+        else if (huskEntity)
+        {
+            UpdateCoreState(huskEntity, wrapper);
+        }
 
+        if (huskEntity && faction != huskEntity.faction)
+        {
+            huskEntity.faction = faction;
+            huskEntity.Rebuild();
+        }
+    }
 
 
     public NetworkVariable<bool> serverReady;
@@ -515,8 +492,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             if (!huskEntity)
             {
                 Sector.LevelEntity entity = new Sector.LevelEntity();
-                var response = state;
-                entity.faction = response.Value.faction;
+                entity.faction = passedFaction;
                 var print = Instantiate(blueprint);
                 entity.ID = idToUse;
                 entity.position = wrapper.position;
@@ -539,7 +515,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
             updateTimer = 0;
             AttemptCreateServerResponse();
-            UpdateCoreState(huskEntity, state.Value);
             huskEntity.networkAdapter = this;
             clientReady = true;
             if (huskEntity is IOwnable ownable && ownerId != ulong.MaxValue)
@@ -552,11 +527,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
         else if (NetworkManager.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && !clientReady && (serverReady.Value || NetworkManager.Singleton.IsHost) && (isPlayer.Value && !huskEntity))
         {
-            var response = state;
-            if (OwnerClientId == response.Value.clientID)
+            var response = wrapper;
+            if (OwnerClientId == response.clientID)
             {
-                PlayerCore.Instance.faction = response.Value.faction;
+                PlayerCore.Instance.faction = passedFaction;
                 PlayerCore.Instance.blueprint = Instantiate(blueprint);
+                PlayerCore.Instance.SetPlayerSpawnPoint();
                 if (!SystemLoader.AllLoaded && SystemLoader.InitializeCalled)
                 {
                     SystemLoader.AllLoaded = true;
@@ -576,15 +552,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         else if (NetworkManager.IsHost || (huskEntity && !huskEntity.GetIsDead()))
         {
             clientReady = true;
-            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
-            {
-                var response = state;
-                if (response.Value.faction != huskEntity.faction)
-                {
-                    huskEntity.faction = response.Value.faction;
-                    huskEntity.Rebuild();
-                }
-            }
         }
     }
 
@@ -610,9 +577,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
             updateTimer -= Time.deltaTime;
             if ((huskEntity && closeToPlayer && updateTimer <= 0) || !serverReady.Value || dirty)
             {
-                updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : UPDATE_RATE;
+                updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : (UPDATE_RATE + (AIData.entities.Count > 50 ? 1 : 0));
                 dirty = false;
-                state.Value = wrapper.CreateResponse(this);
+                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
             };
         }
     }

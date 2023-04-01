@@ -115,6 +115,7 @@ public class MissileScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
         if (craft != null && !craft.GetIsDead()) // check if the component was obtained

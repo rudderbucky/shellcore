@@ -72,6 +72,11 @@ public class Cannon : WeaponAbility
         }
         var shooter = transform.Find("Shooter");
         
+        if (!effectPrefab)
+        {
+            effectPrefab = ResourceManager.GetAsset<GameObject>("cannonfire");
+        }
+
         effect = Instantiate(effectPrefab, shooter, false);
         Destroy(effect, 0.2F);
     }

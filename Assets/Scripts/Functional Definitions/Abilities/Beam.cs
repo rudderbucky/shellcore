@@ -33,9 +33,8 @@ public class Beam : WeaponAbility
         line.positionCount = 0;
     }
 
-    protected override void Start()
+    protected void SetUpCosmetics()
     {
-        if (Core as Tank) bonusDamageType = typeof(Tank);
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
         particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
         line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
@@ -44,6 +43,12 @@ public class Beam : WeaponAbility
         {
             beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
         }
+    }
+
+    protected override void Start()
+    {
+        if (Core as Tank) bonusDamageType = typeof(Tank);
+        
         base.Start();
     }
 
@@ -112,6 +117,10 @@ public class Beam : WeaponAbility
 
     public override void ActivationCosmetic(Vector3 targetPos)
     {
+        if (!particlePrefab)
+        {
+            SetUpCosmetics();
+        }
         AudioManager.PlayClipByID("clip_beam", transform.position);
         if (MasterNetworkAdapter.lettingServerDecide && targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponentInParent<Entity>())
         {

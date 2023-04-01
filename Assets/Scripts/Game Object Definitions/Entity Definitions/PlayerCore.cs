@@ -86,6 +86,21 @@ public class PlayerCore : ShellCore
         isInteracting = val;
     }
 
+    public void SetPlayerSpawnPoint()
+    {
+        carrier = FindCarrier();
+        if (carrier != null)
+        {
+            spawnPoint = carrier.GetSpawnPoint();
+        }
+        else
+        {
+            spawnPoint = havenSpawnPoint;
+            dimension = lastDimension;
+        }
+        transform.position = spawnPoint; // reset position to spawn point
+    }
+
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
     /// </summary>
@@ -115,19 +130,9 @@ public class PlayerCore : ShellCore
             hud.DeinitializeHUD(); // deinitialize HUD
         }
 
-        carrier = FindCarrier();
-        if (carrier != null)
-        {
-            spawnPoint = carrier.GetSpawnPoint();
-        }
-        else
-        {
-            spawnPoint = havenSpawnPoint;
-            dimension = lastDimension;
-        }
+        SetPlayerSpawnPoint();
 
 
-        transform.position = spawnPoint; // reset position to spawn point
         base.Respawn(); // this will reinitialize the HUD
         spawnPoint = havenSpawnPoint; // reset spawn point
         int weaponIndex = 0;

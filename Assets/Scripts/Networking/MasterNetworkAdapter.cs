@@ -141,7 +141,6 @@ public class MasterNetworkAdapter : NetworkBehaviour
         else
         {
             networkAdapter.passedFaction = faction;
-            networkAdapter.GenerateState();
             networkAdapter.SetUpHuskEntity();
         }
     }
