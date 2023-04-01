@@ -55,6 +55,7 @@ public class DevConsoleScript : MonoBehaviour
 
     void HandleLog(string logString, string stackTrace, LogType type)
     {
+        if (stackTrace.Contains("GetNetworkBehaviourAtOrderIndex")) return;
         string startingColor = "<color=white>";
         if ((type == LogType.Log || type == LogType.Assert) && !fullLog)
         {
