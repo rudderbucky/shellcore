@@ -21,6 +21,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public static string port;
     public static string playerName = "Test Name";
     public static string blueprint;
+    public static string world;
     public static int POP_IN_DISTANCE = 500;
 
     public static bool lettingServerDecide;

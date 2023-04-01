@@ -423,23 +423,26 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         window = Instantiate(battleResultsBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         voteBox = window.transform.Find("Background/Vote");
         voteBoxTitle = window.transform.Find("Background/Vote/Vote Title");
-        StartSectorVote();
-        for (int i = 0; i < SectorManager.instance.sectors.Count; i++)
-        {
-            int a = i;
-            var sect = SectorManager.instance.sectors[i];
-            var box = Instantiate(voteBoxPrefab, voteBox);
-            voteButtons.Add(box.GetComponentInChildren<Button>());
-            box.GetComponentInChildren<Button>().onClick.AddListener(() => {
-                voteButtons.ForEach(b => {b.GetComponentInChildren<Image>().color = Color.white;});
-                box.GetComponentInChildren<Image>().color = Color.green;
-                MasterNetworkAdapter.instance.RequestVoteServerRpc(a);
-                RefreshButtons();
-            });
-            
-        }
 
-        RefreshButtons();
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+        {
+            StartSectorVote();
+            for (int i = 0; i < SectorManager.instance.sectors.Count; i++)
+            {
+                int a = i;
+                var sect = SectorManager.instance.sectors[i];
+                var box = Instantiate(voteBoxPrefab, voteBox);
+                voteButtons.Add(box.GetComponentInChildren<Button>());
+                box.GetComponentInChildren<Button>().onClick.AddListener(() => {
+                    voteButtons.ForEach(b => {b.GetComponentInChildren<Image>().color = Color.white;});
+                    box.GetComponentInChildren<Image>().color = Color.green;
+                    MasterNetworkAdapter.instance.RequestVoteServerRpc(a);
+                    RefreshButtons();
+                });
+            }
+            RefreshButtons();
+        }
+        
         window.DestroyOnClose = true;
         window.Activate();
         window.transform.SetSiblingIndex(0);

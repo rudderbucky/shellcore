@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -31,11 +33,34 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private InputField portField;
     [SerializeField]
-    private InputField nameField;
+    private List<InputField> nameFields;
     [SerializeField]
-    private InputField blueprintField;
+    private List<InputField> blueprintFields;
     [SerializeField]
     private InputField worldField;
+
+    private static string GATEWAY_IP = "34.125.253.226:8000";
+    private bool queueNetworkRun = false;
+
+    public void RunClientFromGateway(Task<HttpResponseMessage> message)
+    {
+        message.Result.Content.ReadAsStringAsync().ContinueWith((s) => 
+        {
+            Debug.Log("Connecting to: " + s.Result);
+            var addressArray = s.Result.Split(":");
+            Debug.LogWarning(addressArray[0] + " " + addressArray[1]);
+            SetAddress(addressArray[0]);
+            SetPort(addressArray[1]);
+            queueNetworkRun = true;
+        });
+    }
+
+    public void QueryGateway()
+    {
+        var client = new System.Net.Http.HttpClient();
+        client.Timeout = new System.TimeSpan(0,0,5);
+        var retval = client.GetAsync($"http://{GATEWAY_IP}/api").ContinueWith((request) => RunClientFromGateway(request));
+    }
 
     public void Start()
     {
@@ -52,11 +77,15 @@ public class MainMenu : MonoBehaviour
 
         }
 
-        blueprintField.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer");
+        blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer"));
         worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
         portField.text = PlayerPrefs.GetString("Network_port", "");
         addressField.text = PlayerPrefs.GetString("Network_address", "");
-        nameField.text = PlayerPrefs.GetString("Network_name", "test_name");
+        nameFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_name", "test_name"));
+        MasterNetworkAdapter.address = addressField.text;
+        MasterNetworkAdapter.port = portField.text;
+        MasterNetworkAdapter.blueprint = blueprintFields[0].text;
+        MasterNetworkAdapter.playerName = nameFields[0].text;
 
        if (args.TryGetValue("-mode", out string mode))
         {
@@ -108,28 +137,33 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    public IEnumerator StartSkirmishHelper(MasterNetworkAdapter.NetworkMode mode)
+    private void Update()
     {
-        while (NetworkManager.Singleton.IsClient)
+        if (queueNetworkRun)
         {
-            yield return new WaitForEndOfFrame();
+            MasterNetworkAdapter.world = "rudderbucky server";
+            NetworkDuel("client");
+            queueNetworkRun = false;
         }
+    }
 
+    public void StartSkirmishHelper(MasterNetworkAdapter.NetworkMode mode)
+    {
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         SectorManager.currentSectorIndex = 0;
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
         {
-            var world = worldField.text;
+            var world = MasterNetworkAdapter.world;
             if (string.IsNullOrEmpty(world))
             {
                 Debug.LogError("Invalid world name.");
-                yield return null;
+                return;
             }
             var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", world);
             if (!System.IO.Directory.Exists(path)) 
             {
                 Debug.LogError("World " + world + " does not exist.");
-                yield return null;
+                return;
             }
             if (mode == MasterNetworkAdapter.NetworkMode.Host)
                 MasterNetworkAdapter.StartHost();
@@ -148,28 +182,61 @@ public class MainMenu : MonoBehaviour
     }
 
     private IEnumerator coroutine;
+    public void SetAddress(string address)
+    {
+        MasterNetworkAdapter.address = address;
+    }
+
+    public void SetPort(string port)
+    {
+        MasterNetworkAdapter.port = port;
+    }
+
+    public void SetBlueprint(string blueprint)
+    {
+        MasterNetworkAdapter.blueprint = blueprint;
+        if (!string.IsNullOrEmpty(blueprint))
+            PlayerPrefs.SetString("Network_blueprintName", blueprint);
+    }
+
+    public void SetName(string name)
+    {
+        MasterNetworkAdapter.playerName = name;
+        if (!string.IsNullOrEmpty(name))
+            PlayerPrefs.SetString("Network_name", name);
+    }
+
+    public void SetWorld(string world)
+    {
+        MasterNetworkAdapter.world = world;
+    }
 
     public void NetworkDuel(MasterNetworkAdapter.NetworkMode mode)
     {
+
         if (coroutine != null)
         {
             StopCoroutine(coroutine);
             coroutine = null;
         }
-        MasterNetworkAdapter.port = portField.text;
-        MasterNetworkAdapter.address = addressField.text;
-        MasterNetworkAdapter.blueprint = blueprintField.text;
-        MasterNetworkAdapter.playerName = nameField.text;
+
+        if (!string.IsNullOrEmpty(worldField.text))
+        {
+            PlayerPrefs.SetString("Network_worldName", worldField.text);
+        }
         
-        PlayerPrefs.SetString("Network_blueprintName", blueprintField.text);
-        PlayerPrefs.SetString("Network_worldName", worldField.text);
-        PlayerPrefs.SetString("Network_address", addressField.text);
-        PlayerPrefs.SetString("Network_name", nameField.text);
-        PlayerPrefs.SetString("Network_port", portField.text);
+        if (!string.IsNullOrEmpty(addressField.text))
+            PlayerPrefs.SetString("Network_address", addressField.text);
+
+        if (!string.IsNullOrEmpty(portField.text))
+            PlayerPrefs.SetString("Network_port", portField.text);
+
         if (NetworkManager.Singleton.IsClient)
+        {
             NetworkManager.Singleton.Shutdown();
-        coroutine = StartSkirmishHelper(mode);
-        StartCoroutine(coroutine);
+        }
+
+        StartSkirmishHelper(mode);
     }
 
     public void OpenSettings()
