@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -171,11 +172,20 @@ public class EntityNetworkAdapter : NetworkBehaviour
             MasterNetworkAdapter.instance.playerSpawned[OwnerClientId] = false;
         }
         ProximityInteractScript.instance.RemovePlayerName(huskEntity);
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && isPlayer.Value && huskEntity is IOwner owner)
+        {
+            foreach (var unit in owner.GetUnitsCommanding())
+            {
+                Destroy((unit as Entity).gameObject);
+            }
+        }
+
 
         if (huskEntity && !(huskEntity as PlayerCore))
         {
             Destroy(huskEntity.gameObject);
         }
+
 
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && isPlayer.Value && playerFactions != null && playerFactions.ContainsKey(passedFaction))
         {
