@@ -38,7 +38,6 @@ public class EnergySphereScript : MonoBehaviour
 
     private void OnDestroy()
     {
-        Debug.Log("Orb is being destroyed");
         AIData.energySpheres.Remove(this);
     }
 
