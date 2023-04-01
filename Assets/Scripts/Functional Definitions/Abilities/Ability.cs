@@ -269,14 +269,31 @@ public abstract class Ability : MonoBehaviour
         UpdateState(); // Update state
     }
 
+    protected virtual bool ExtraCriteriaToActivate()
+    {
+        return true;
+    }
+
+    protected virtual void ExtraCriteriaFailureEvent()
+    {
+    }
+
     public virtual void Activate()
     {
         var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
         // If (NPC or (Player and not interacting)) and enough energy
         if (State != AbilityState.Ready || (Core is PlayerCore player && player.GetIsInteracting()) || Core.GetHealth()[2] < energyCost) return;
-        Core.TakeEnergy(energyCost); // remove the energy
-        SetActivationState();
-        if (lettingServerDecide && Core && Core.networkAdapter) 
+        if (!lettingServerDecide || ExtraCriteriaToActivate()) 
+        {
+            Core.TakeEnergy(energyCost); // remove the energy
+            SetActivationState();
+        }
+        else
+        {
+            ExtraCriteriaFailureEvent();
+        }
+        
+        if (lettingServerDecide && Core && Core.networkAdapter && ExtraCriteriaToActivate()) 
         {
             Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
         }

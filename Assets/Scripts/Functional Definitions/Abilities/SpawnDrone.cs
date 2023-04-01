@@ -117,18 +117,29 @@ public class SpawnDrone : ActiveAbility
         }
     }
 
+    protected override bool ExtraCriteriaToActivate()
+    {
+        return craft.GetUnitsCommanding().Count < craft.GetTotalCommandLimit();
+    }
+
+    protected override void ExtraCriteriaFailureEvent()
+    {
+        if (craft is PlayerCore player)
+            player.alerter.showMessage("Unit limit reached!", "clip_alert");
+    }
+
     /// <summary>
     /// Starts the spawning countdown
     /// </summary>
     public override void Activate()
     {
-        if (craft != null && craft.GetUnitsCommanding().Count < craft.GetTotalCommandLimit())
+        if (craft != null && ExtraCriteriaToActivate())
         {
             base.Activate();
         }
-        else if (craft is PlayerCore player && craft.GetUnitsCommanding().Count >= craft.GetTotalCommandLimit())
+        else if (!ExtraCriteriaToActivate())
         {
-            player.alerter.showMessage("Unit limit reached!", "clip_alert");
+            ExtraCriteriaFailureEvent();
         }
     }
 }
