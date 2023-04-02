@@ -92,6 +92,10 @@ public class BulletScript : MonoBehaviour
     public void InstantiateHitPrefab()
     {
         Instantiate(hitPrefab, transform.position, Quaternion.identity);
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
+        {
+            MasterNetworkAdapter.instance.BulletHitClientRpc(transform.position);
+        }
     }
 
     public void InstantiateMissPrefab()
@@ -99,7 +103,11 @@ public class BulletScript : MonoBehaviour
         if (missParticles)
         {
             Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg));
-        }  
+        } 
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
+        {
+            MasterNetworkAdapter.instance.BulletMissClientRpc(transform.position, vector);
+        }
     }
 
     public void OnDestroy()

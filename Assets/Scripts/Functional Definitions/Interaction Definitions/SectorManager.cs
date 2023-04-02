@@ -626,13 +626,13 @@ public class SectorManager : MonoBehaviour
             
         }
 
-        // if that fails and we can use skirmish blueprints, try fetching from there
+        // if that fails and we can use preset blueprints, try fetching from there
         if (canUseSkirmishBlueprints)
         {
             try
             {
                 JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                    (System.IO.Path.Combine(Application.persistentDataPath, "SkirmishBlueprints", jsonOrName + ".json")), blueprint);
+                    (System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints", jsonOrName + ".json")), blueprint);
                 return blueprint;
             }
             catch

@@ -1,4 +1,5 @@
-﻿using Unity.Netcode;
+﻿using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -90,6 +91,14 @@ public class EnergySphereScript : MonoBehaviour
             collected = true;
             harvester.AddPower(20);
             harvester.PowerHeal();
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && harvester is ShellCore core)
+                MasterNetworkAdapter.instance.EnergySphereCollectClientRpc(new ClientRpcParams()
+                {
+                    Send = new ClientRpcSendParams()
+                    {
+                        TargetClientIds = new List<ulong>() {core.networkAdapter.OwnerClientId}
+                    }
+                });
             Destroy(gameObject);
         }
     }

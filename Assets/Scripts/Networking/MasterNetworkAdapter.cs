@@ -209,6 +209,26 @@ public class MasterNetworkAdapter : NetworkBehaviour
         playerSpawned[serverRpcParams.Receive.SenderClientId] = true;
     }
 
+    [ClientRpc]
+    public void EnergySphereCollectClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (PlayerCore.Instance) 
+            AudioManager.PlayClipByID("clip_powerup", PlayerCore.Instance.transform.position);
+    }
+
+
+    [ClientRpc]
+    public void BulletMissClientRpc(Vector2 position, Vector2 rotation, ClientRpcParams clientRpcParams = default)
+    {
+        Instantiate(ResourceManager.GetAsset<GameObject>("bullet_miss_prefab"), position, Quaternion.Euler(0, 0, Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg));
+    }
+
+    [ClientRpc]
+    public void BulletHitClientRpc(Vector2 position, ClientRpcParams clientRpcParams = default)
+    {
+        Instantiate(ResourceManager.GetAsset<GameObject>("bullet_hit_prefab"), position, Quaternion.identity);
+    }
+
     private bool ValidatePlayerBlueprint(string blueprint)
     {
         if (blueprint.Length > 25000) // Blueprint too large. We can't have the server do too much work here or else it will chug everyone.

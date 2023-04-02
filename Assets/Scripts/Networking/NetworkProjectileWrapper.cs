@@ -5,14 +5,6 @@ using UnityEngine;
 
 public class NetworkProjectileWrapper : NetworkBehaviour
 {
-    public override void OnNetworkDespawn()
-    {
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost && GetComponent<BulletScript>())
-        {
-            GetComponent<BulletScript>().InstantiateHitPrefab();
-        }
-    }
-    
     [ClientRpc]
     private void SetPositionClientRpc(Vector3 position)
     {
