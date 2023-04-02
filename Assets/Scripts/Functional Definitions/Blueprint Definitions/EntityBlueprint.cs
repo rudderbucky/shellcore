@@ -21,6 +21,11 @@ public class EntityBlueprint : ScriptableObject
         public string partID; //Part blueprint ID
         public bool shiny;
         public string playerGivenName;
+        [System.NonSerialized]
+        public bool isInChain;
+
+        [System.NonSerialized]
+        public bool validPos;
         public bool Equals(PartInfo other)
         {
             return this.location == other.location && this.rotation == other.rotation && this.mirrored == other.mirrored &&

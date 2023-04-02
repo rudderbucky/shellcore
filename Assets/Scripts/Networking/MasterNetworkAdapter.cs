@@ -225,13 +225,29 @@ public class MasterNetworkAdapter : NetworkBehaviour
             return false;
         }
         if (print.intendedType != EntityBlueprint.IntendedType.ShellCore) return false; // print is of incorrect type
-
         var invalidAbilities = new List<AbilityID>() {AbilityID.MainBullet, AbilityID.Harvester, AbilityID.EnergyAura, AbilityID.SpeedAura, AbilityID.HealAura, AbilityID.Rocket, AbilityID.SpeederBullet, AbilityID.SiegeBullet};
         foreach (var part in print.parts)
         {
             if (invalidAbilities.Contains((AbilityID)part.abilityID)) return false;
+            if (part.tier < 0 || part.tier > 3) return false;
         }
-        return true;
+
+        var outcome = true;
+        List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
+        
+        foreach (var part in print.parts)
+        {
+            ShipBuilder.LoadPart(part, null, false, parts);
+        }
+
+        ShipBuilder.ResetNeighbors(parts);
+        if (!ShipBuilder.ValidateParts(parts)) 
+        {
+            outcome = false;
+        }
+
+        parts.ForEach(p => Destroy(p.gameObject));
+        return outcome;
     }
 
     private NetworkObject InternalEntitySpawnWrapper(string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)

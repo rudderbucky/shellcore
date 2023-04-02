@@ -12,8 +12,6 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
     public RectTransform rectTransform;
     public ShipBuilderCursorScript cursorScript;
     public Image boundImage;
-    public bool isInChain;
-    public bool validPos;
     public bool highlighted;
     public BuilderMode mode;
     private Vector3? lastValidPos = null;
@@ -75,12 +73,13 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
 
     protected override void UpdateAppearance()
     {
+        if (!cursorScript) return;
         // set colors
         base.UpdateAppearance();
         var mainColor = info.shiny ? FactionManager.GetFactionShinyColor(0) : FactionManager.GetFactionColor(0);
         if (highlighted)
         {
-            if (isInChain && validPos)
+            if (info.isInChain && info.validPos)
             {
                 image.material = ResourceManager.GetAsset<Material>("material_outline");
                 image.color = mainColor;
@@ -93,7 +92,7 @@ public class ShipBuilderPart : DisplayPart, IPointerEnterHandler, IPointerExitHa
         }
         else
         {
-            image.color = (isInChain && validPos ? mainColor : mainColor - new Color(0, 0, 0, 0.5F));
+            image.color = (info.isInChain && info.validPos ? mainColor : mainColor - new Color(0, 0, 0, 0.5F));
 
             if (ShipBuilderCursorScript.isMouseOnGrid)
             {

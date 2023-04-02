@@ -55,7 +55,7 @@ public class PresetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
             blueprint.parts = new List<EntityBlueprint.PartInfo>();
             foreach (ShipBuilderPart part in cursorScript.parts)
             {
-                if (!part.isInChain || !part.validPos)
+                if (!part.info.isInChain || !part.info.validPos)
                 {
                     blueprint = null;
                     return;
