@@ -53,7 +53,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     private Transform[] traderContentsArray;
     protected GameObject[] contentTexts;
     private GameObject[] traderContentTexts;
-    private PresetButton[] presetButtons;
+    // private PresetButton[] presetButtons;
     protected string searcherString;
     private bool[] displayingTypes;
 
@@ -875,6 +875,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         // activate windows
         gameObject.SetActive(true);
 
+        /*
         if (SceneManager.GetActiveScene().name == "SampleScene" && (presetButtons == null || presetButtons.Length == 0))
         {
             presetButtons = GetComponentsInChildren<PresetButton>();
@@ -889,6 +890,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 button.Initialize();
             }
         }
+        */
 
         if (!editorMode)
         {
@@ -897,20 +899,23 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 editorModeButtons.SetActive(false);
             }
 
+            /*
             foreach (PresetButton button in presetButtons)
             {
                 button.gameObject.SetActive(mode == BuilderMode.Yard);
                 button.CheckValid();
             }
+            */
         }
         else
         {
+            /*
             presetButtons = GetComponentsInChildren<PresetButton>();
             foreach (PresetButton button in presetButtons)
             {
                 button.gameObject.SetActive(false);
             }
-
+            */
             editorModeButtons.SetActive(true);
         }
 
@@ -1162,6 +1167,14 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             AbilityHandler handler = player.GetAbilityHandler(); // reset handler to correct representation
             handler.Deinitialize();
             handler.Initialize(player);
+        }
+    }
+
+    public void TriggerReconstruct()
+    {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            
         }
     }
 

@@ -34,6 +34,7 @@ public class WCWorldIO : GUIWindowScripts
     }
 
     IOMode mode = IOMode.Read;
+    public static string PRESET_DIRECTORY = null;
 
     public void Quit()
     {
@@ -317,12 +318,13 @@ public class WCWorldIO : GUIWindowScripts
     }
 
     public GameObject window;
-    public GameObject newWorldStack;
+    public GameObject newWorldButton;
     public InputField field;
     public Text readButton;
 
     void Show(IOMode mode)
     {
+        PRESET_DIRECTORY = System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints");
         if ((mode != IOMode.Read && mode != IOMode.Write) && 
             !Directory.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")))
         {
@@ -332,7 +334,7 @@ public class WCWorldIO : GUIWindowScripts
         active = true;
         gameObject.SetActive(true);
         window.SetActive(true);
-        newWorldStack.SetActive(mode == IOMode.Write || mode == IOMode.WriteShipJSON || mode == IOMode.WriteWaveJSON);
+        bool writing = mode == IOMode.Write || mode == IOMode.WriteShipJSON || mode == IOMode.WriteWaveJSON;
         DestroyAllButtons();
         this.mode = mode;
         string[] directories = null;
@@ -340,6 +342,16 @@ public class WCWorldIO : GUIWindowScripts
         readButton.gameObject.SetActive(mode == IOMode.Read || mode == IOMode.Write);
 
         PlayerViewScript.SetCurrentWindow(this);
+        if (readingFromPresetBPs) SwitchBPDirectory();
+        switchBPDirectoryButton.gameObject.SetActive(false);
+        switchBPDirectoryButton.onClick.RemoveAllListeners();
+        fileNameInputField.gameObject.SetActive(writing);
+        newWorldButton.gameObject.SetActive(writing);
+        GetComponent<RectTransform>().anchoredPosition = GetComponentsInChildren<RectTransform>()[1].anchoredPosition = Vector2.zero;
+        if (!Directory.Exists(PRESET_DIRECTORY))
+        {
+            Directory.CreateDirectory(PRESET_DIRECTORY);
+        }
         switch (mode)
         {
             case IOMode.Read:
@@ -366,7 +378,11 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                directories = Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder"));
+                switchBPDirectoryButton.gameObject.SetActive(true);
+                List<string> files = new List<string>();
+                files.AddRange(Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")));
+                files.AddRange(Directory.GetFiles(PRESET_DIRECTORY));
+                directories = files.ToArray();
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
@@ -408,12 +424,33 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
+    [SerializeField]
+    private Button switchBPDirectoryButton;
+    private bool readingFromPresetBPs;
+    public void SwitchBPDirectory()
+    {
+        readingFromPresetBPs = !readingFromPresetBPs;
+        switchBPDirectoryButton.GetComponentInChildren<Text>().text = readingFromPresetBPs ? "Preset BPs" : "World BPs";
+        for (int i = 0; i < content.childCount; i++)
+        {
+            var child = content.GetChild(i);
+        }
+    }
+
     void AddButton(string name, UnityAction action)
     {
         var button = Instantiate(buttonPrefab, content).GetComponent<Button>();
         button.onClick.AddListener(action);
         button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name);
         buttons.Add(button);
+
+        if (mode == IOMode.ReadShipJSON || mode == IOMode.WriteShipJSON)
+        {
+            button.gameObject.SetActive(readingFromPresetBPs == name.Contains("PresetBlueprints"));
+            switchBPDirectoryButton.onClick.AddListener(() => {
+                button.gameObject.SetActive(readingFromPresetBPs == name.Contains("PresetBlueprints"));
+            });
+        }
     }
 
     private List<Button> buttons = new List<Button>();
@@ -423,6 +460,8 @@ public class WCWorldIO : GUIWindowScripts
     public InputField description;
     public InputField defaultBlueprint;
     public InputField newWorldInputField;
+    [SerializeField]
+    private InputField fileNameInputField;
 
     public void OpenNewWorldPrompt()
     {
@@ -449,7 +488,8 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                path = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", field.text + ".json");
+                path = readingFromPresetBPs ? System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints", field.text + ".json") :
+                    System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", field.text + ".json");
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:

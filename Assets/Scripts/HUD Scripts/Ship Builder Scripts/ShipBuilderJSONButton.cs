@@ -6,13 +6,13 @@ public class ShipBuilderJSONButton : MonoBehaviour, IPointerClickHandler
 {
     public InputField field;
     public GUIWindowScripts builder;
-    public GUIWindowScripts window;
+    public GameObject window;
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (window)
         {
-            window.ToggleActive();
+            window.SetActive(true);
             field.text = (builder as IBuilderInterface).GetCurrentJSON();
         }
     }

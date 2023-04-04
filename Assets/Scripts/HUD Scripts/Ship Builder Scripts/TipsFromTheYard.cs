@@ -22,7 +22,6 @@ public class TipsFromTheYard : MonoBehaviour
         tipsList.Add("Be glad you don't float in one place all day doing surgery on ShellCores!");
         tipsList.Add("Make sure your ship can supply the required energy to handle all your abilities!");
         tipsList.Add("Slow ships are boring! Try adding some speed or removing some parts if your ship is too slow!");
-        tipsList.Add("Shift-click a preset button to clear it!");
         tipsList.Add("The hitboxes of parts in the ship builder are pretty much just rectangles! Use this to create some cool designs!");
         tipsList.Add("If a part is not connected in a direct line of parts to the shell, it will detach, or 'domino'. Make sure your ship design prevents this from happening!");
         tipsList.Add("You can hit 'escape' to close this window too! That way you can cycle through my infinite wisdom faster!");
@@ -32,6 +31,12 @@ public class TipsFromTheYard : MonoBehaviour
         tipsList.Add("You can press tab to cycle through your selected targets!");
         tipsList.Add("When not receiving background dialogue you can press 'enter' to view all the background dialogue you received before!");
         tipsList.Add("Double-click the grid to reset the center to your core!");
+        tipsList.Add("You can zoom in and out in this Ship Builder by scrolling up/down!");
+        tipsList.Add("Some weapons do more damage to certain enemies! Read their tooltips to figure out which ones!");
+        tipsList.Add("Some parts have ability tiers greater than their part size!");
+        tipsList.Add("A multiplayer mode exists! Click the Skirmish button in the main menu!");
+        tipsList.Add("Concentrate and ask again!");
+        tipsList.Add("You might be able to find shard rocks while roaming around! Shards allow you to increase your ability limits!");
         colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
     }
 

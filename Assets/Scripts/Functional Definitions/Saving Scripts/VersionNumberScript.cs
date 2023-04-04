@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class VersionNumberScript : MonoBehaviour
 {
-    public static string version = "Beta 1.0.0";
+    public static string version = "Beta 2.0.0";
     public static string mapVersion = "Beta 1.0.0";
     static VersionNumberScript instance;
     public Text episodeText;

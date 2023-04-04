@@ -11,6 +11,14 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
     bool mouseTag; // used for animation
     RectTransform rect; // used for animation
 
+    public void OnEnable()
+    {
+        if (SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && GetComponentInChildren<Text>() && GetComponentInChildren<Text>().text.Contains("Save and quit"))
+        {
+            GetComponentInChildren<Text>().text = "Main menu";
+        }
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (name == "MainMenuButton")

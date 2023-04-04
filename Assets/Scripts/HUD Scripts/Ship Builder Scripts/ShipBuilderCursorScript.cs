@@ -26,7 +26,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     ShipBuilderPart lastPart;
     public IBuilderInterface builder;
     public InputField searchField;
-    public InputField jsonField;
+    public GameObject jsonField;
     bool flipped;
     public AbilityHandler handler;
     public PlayerCore player;
@@ -416,7 +416,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
         int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
 
-        if (Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active))
+        if (Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.activeSelf && !WCWorldIO.active))
         {
             if (builder as ShipBuilder == null || !(builder as ShipBuilder).Equals(null))
             {
