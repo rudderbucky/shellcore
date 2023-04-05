@@ -252,22 +252,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
             if (part.tier < 0 || part.tier > 3) return false;
         }
 
-        var outcome = true;
-        List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
-        
-        foreach (var part in print.parts)
-        {
-            ShipBuilder.LoadPart(part, null, false, parts);
-        }
-
-        ShipBuilder.ResetNeighbors(parts);
-        if (!ShipBuilder.ValidateParts(parts)) 
-        {
-            outcome = false;
-        }
-
-        parts.ForEach(p => Destroy(p.gameObject));
-        return outcome;
+        return ShipBuilder.ValidateBlueprint(print, false, print.coreShellSpriteID, false, CoreUpgraderScript.GetTotalAbilities(print.coreShellSpriteID));
     }
 
     private NetworkObject InternalEntitySpawnWrapper(string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)

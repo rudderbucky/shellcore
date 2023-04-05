@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -56,6 +57,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     // private PresetButton[] presetButtons;
     protected string searcherString;
     private bool[] displayingTypes;
+    [SerializeField]
+    private GameObject jsonButtonHolder;
 
     public void RemoveKeyFromPartDict(EntityBlueprint.PartInfo info)
     {
@@ -422,6 +425,32 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         return false;
     }
 
+    public static bool ValidateBlueprint(EntityBlueprint print, bool editorMode, string coreShellSpriteID, bool checkPartSizes = false, int[] abilityLimits = null)
+    {
+        var outcome = true;
+        if (!print) return false;
+        if (print.parts == null) return false;
+        if (print.coreSpriteID != "core1_light") return false;
+        if (!CoreUpgraderScript.GetCoreNames().ToList().Contains(coreShellSpriteID)) return false;
+        List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
+        
+        foreach (var part in print.parts)
+        {
+            ShipBuilder.LoadPart(part, null, false, parts);
+        }
+
+        ShipBuilder.ResetNeighbors(parts);
+        if (!ShipBuilder.ValidateParts(parts)) 
+        {
+            outcome = false;
+        }
+
+        outcome &= (!checkPartSizes || CheckPartSizes(parts, coreShellSpriteID, editorMode));
+        outcome &= (abilityLimits == null || CheckAbilityCaps(parts, abilityLimits, coreShellSpriteID, editorMode));
+        parts.ForEach(p => Destroy(p.gameObject));
+        return outcome;
+    }
+
     public static bool ValidateParts(List<ShipBuilderPart> parts, BuilderMode mode = BuilderMode.Yard)
     {
         // Clear previous chain status & connect the parts intersecting the shell
@@ -512,8 +541,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             return;
         }
 
-        CheckPartSizes();
-        CheckAbilityCaps();
+        var shell = PlayerCore.Instance ? PlayerCore.Instance.blueprint.coreShellSpriteID : "core1_shell";
+        CheckPartSizes(cursorScript.parts, shell, editorMode);
+        CheckAbilityCaps(cursorScript.parts, abilityLimits, shell, editorMode);
     }
 
     static bool PartIsTooClose(ShipBuilderPart part, ShipBuilderPart otherPart, BuilderMode mode)
@@ -534,14 +564,13 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         return SATCollision.TooCloseCollision(part, otherPart, closeConstant);
     }
 
-    private bool CheckPartSizes()
+    public static bool CheckPartSizes(List<ShipBuilderPart> parts, string coreShellSpriteID, bool editorMode)
     {
-        int maxTier = !editorMode && !heavyCheat ? CoreUpgraderScript.GetPartTierLimit(player.blueprint.coreShellSpriteID) : 3;
-        foreach (ShipBuilderPart shipPart in cursorScript.parts)
+        int maxTier = !editorMode && !heavyCheat ? CoreUpgraderScript.GetPartTierLimit(coreShellSpriteID) : 3;
+        foreach (ShipBuilderPart shipPart in parts)
         {
             if (ResourceManager.GetAsset<PartBlueprint>(shipPart.info.partID).size > maxTier)
             {
-                SetReconstructButton(ReconstructButtonStatus.PartTooHeavy);
                 return false;
             }
         }
@@ -549,7 +578,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         return true;
     }
 
-    private bool CheckAbilityCaps()
+    public static bool CheckAbilityCaps(List<ShipBuilderPart> parts, int[] abilityLimits, string coreShellSpriteID, bool editorMode)
     {
         if (editorMode)
         {
@@ -558,19 +587,18 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
         var currentAbilitynumbers = new int[] { 0, 0, 0, 0, 0 };
 
-        foreach (ShipBuilderPart shipBuilderPart in cursorScript.parts)
+        foreach (ShipBuilderPart shipBuilderPart in parts)
         {
             var type = (int)AbilityUtilities.GetAbilityTypeByID(shipBuilderPart.info.abilityID);
             currentAbilitynumbers[type]++;
         }
 
-        var extras = CoreUpgraderScript.GetExtraAbilities(player.blueprint.coreShellSpriteID);
+        var extras = CoreUpgraderScript.GetExtraAbilities(coreShellSpriteID);
 
         for (int i = 0; i < 4; i++)
         {
             if (currentAbilitynumbers[i] > abilityLimits[i] + extras[i])
             {
-                SetReconstructButton((ReconstructButtonStatus)(3 + i));
                 return false;
             }
         }
@@ -899,6 +927,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 editorModeButtons.SetActive(false);
             }
 
+            jsonButtonHolder.SetActive(mode == BuilderMode.Yard);
             /*
             foreach (PresetButton button in presetButtons)
             {
@@ -1383,12 +1412,12 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             return;
         }
 
-        if (!CheckAbilityCaps())
+        if (!CheckAbilityCaps(cursorScript.parts, abilityLimits, PlayerCore.Instance.blueprint.coreShellSpriteID, editorMode))
         {
             return;
         }
 
-        if (!CheckPartSizes())
+        if (!CheckPartSizes(cursorScript.parts, PlayerCore.Instance.blueprint.coreShellSpriteID, editorMode))
         {
             return;
         }

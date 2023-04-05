@@ -25,6 +25,11 @@ public class SelectionDisplayHandler : MonoBehaviour
     {
         this.faction = faction;
         ClearDisplay();
+        if (blueprint.parts == null) 
+        {
+            Debug.LogWarning("No parts passed for selection display handler.");
+            return;
+        }
         shell.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreShellSpriteID);
         if (shell.sprite)
         {

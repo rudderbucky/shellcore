@@ -32,12 +32,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1372598690}
-  m_Father: {fileID: 8776915231236068038}
-  m_RootOrder: 8
+  m_Father: {fileID: 9125286549383809694}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 471, y: 297.5}
+  m_AnchoredPosition: {x: -0.00012207031, y: -0.000061035156}
   m_SizeDelta: {x: 300, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &161501596
@@ -246,12 +246,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1680500926}
-  m_Father: {fileID: 8776915231236068038}
-  m_RootOrder: 9
+  m_Father: {fileID: 9125286549383809694}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 471, y: 257.5}
+  m_AnchoredPosition: {x: -0.00012207031, y: -40.00006}
   m_SizeDelta: {x: 300, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &612988700
@@ -1418,7 +1418,7 @@ RectTransform:
   m_Children:
   - {fileID: 1410628453}
   m_Father: {fileID: 8776915231236068038}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6542,7 +6542,7 @@ RectTransform:
   - {fileID: 7943546137182394936}
   - {fileID: 7943546137650323891}
   m_Father: {fileID: 8776915231236068038}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -13980,6 +13980,44 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &8620493361618288234
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9125286549383809694}
+  m_Layer: 0
+  m_Name: JSON Button Holder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &9125286549383809694
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8620493361618288234}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 161501593}
+  - {fileID: 612988697}
+  m_Father: {fileID: 8776915231236068038}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 471.00003, y: 297.50006}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8693580391145816120
 GameObject:
   m_ObjectHideFlags: 0
@@ -14335,8 +14373,7 @@ RectTransform:
   - {fileID: 7943546138928059976}
   - {fileID: 7943546137192582563}
   - {fileID: 7943546138351103967}
-  - {fileID: 161501593}
-  - {fileID: 612988697}
+  - {fileID: 9125286549383809694}
   - {fileID: 2039943649}
   - {fileID: 7943546137201516690}
   m_Father: {fileID: 8776915232209613946}
@@ -14683,6 +14720,7 @@ MonoBehaviour:
   titleText: {fileID: 7943546137473351393}
   editorModeButtons: {fileID: 2039943648}
   editorModeAddPartSection: {fileID: 1410628452}
+  jsonButtonHolder: {fileID: 8620493361618288234}
   partSelectContainer: {fileID: 8464175627931194394}
   partSelectTransforms:
   - {fileID: 4484554199426117513}

@@ -7,10 +7,13 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Unity.Netcode;
+using UnityEngine.EventSystems;
 
 public class WCWorldIO : GUIWindowScripts
 {
     public WCGeneratorHandler generatorHandler;
+    [SerializeField]
+    private SelectionDisplayHandler displayHandler;
     public ShipBuilder builder;
     public WaveBuilder waveBuilder;
     public GameObject buttonPrefab;
@@ -321,12 +324,21 @@ public class WCWorldIO : GUIWindowScripts
     public GameObject newWorldButton;
     public InputField field;
     public Text readButton;
+    private bool rwFromEntityPlaceholder;
 
     void Show(IOMode mode)
     {
+        clearAction = () => {
+            if (displayHandler && builder && builder.currentPartHandler)
+            {
+                displayHandler.ClearDisplay();
+                builder.currentPartHandler.SetActive(true);
+            }
+        };
+        rwFromEntityPlaceholder = SceneManager.GetActiveScene().name != "SampleScene";
         PRESET_DIRECTORY = System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints");
         if ((mode != IOMode.Read && mode != IOMode.Write) && 
-            !Directory.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")))
+            !Directory.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")) && rwFromEntityPlaceholder)
         {
             return;
         }
@@ -342,7 +354,6 @@ public class WCWorldIO : GUIWindowScripts
         readButton.gameObject.SetActive(mode == IOMode.Read || mode == IOMode.Write);
 
         PlayerViewScript.SetCurrentWindow(this);
-        if (readingFromPresetBPs) SwitchBPDirectory();
         switchBPDirectoryButton.gameObject.SetActive(false);
         switchBPDirectoryButton.onClick.RemoveAllListeners();
         fileNameInputField.gameObject.SetActive(writing);
@@ -352,6 +363,8 @@ public class WCWorldIO : GUIWindowScripts
         {
             Directory.CreateDirectory(PRESET_DIRECTORY);
         }
+        var wrongReadingFromBPS = readingFromPresetBPs == rwFromEntityPlaceholder;
+        if (wrongReadingFromBPS) SwitchBPDirectory();
         switch (mode)
         {
             case IOMode.Read:
@@ -378,9 +391,9 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                switchBPDirectoryButton.gameObject.SetActive(true);
+                switchBPDirectoryButton.gameObject.SetActive(rwFromEntityPlaceholder);
                 List<string> files = new List<string>();
-                files.AddRange(Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")));
+                if (rwFromEntityPlaceholder) files.AddRange(Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")));
                 files.AddRange(Directory.GetFiles(PRESET_DIRECTORY));
                 directories = files.ToArray();
                 break;
@@ -403,7 +416,7 @@ public class WCWorldIO : GUIWindowScripts
                             SetWorldIndicators(dir);
                             break;
                         case IOMode.ReadShipJSON:
-                            builder.LoadBlueprint(System.IO.File.ReadAllText(dir));
+                            ReadShipJSON(dir);
                             Hide();
                             break;
                         case IOMode.WriteShipJSON:
@@ -436,12 +449,68 @@ public class WCWorldIO : GUIWindowScripts
             var child = content.GetChild(i);
         }
     }
-
+    UnityAction clearAction;
     void AddButton(string name, UnityAction action)
     {
         var button = Instantiate(buttonPrefab, content).GetComponent<Button>();
-        button.onClick.AddListener(action);
+        button.onClick.AddListener(
+            () =>
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    File.Delete(name);
+                    Destroy(button.gameObject);
+                    return;
+                }
+                action.Invoke();
+            });
+        button.onClick.AddListener(clearAction);
+        if (name.Contains("PresetBlueprints"))
+        {
+            var assignTrigger = new EventTrigger.TriggerEvent();
+            var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name));
+            assignTrigger.AddListener((e) => {
+                
+                if (displayHandler && print)
+                {
+                    displayHandler.AssignDisplay(print, null);
+                    builder.currentPartHandler.SetActive(false);
+                }
+            });
+            var unassignTrigger = new EventTrigger.TriggerEvent();
+            unassignTrigger.AddListener((e) => {
+                clearAction.Invoke();
+            });
+
+            var eventTrigger = button.gameObject.AddComponent<EventTrigger>();
+            eventTrigger.triggers.Add(new EventTrigger.Entry()
+            {
+                eventID = EventTriggerType.PointerEnter,
+                callback = assignTrigger
+            });
+
+            eventTrigger.triggers.Add(new EventTrigger.Entry()
+            {
+                eventID = EventTriggerType.PointerExit,
+                callback = unassignTrigger
+            });
+        }
+        
         button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name);
+        if (PlayerCore.Instance)
+        {
+            var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name));
+            if (print && print.parts != null && !builder.ContainsParts(print.parts))
+            {
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (Inadequate parts)";
+                button.GetComponentInChildren<Text>().color = Color.red;
+            }
+            if (!ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, true, PlayerCore.Instance.abilityCaps))
+            {
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (Invalid)";
+                button.GetComponentInChildren<Text>().color = Color.red;
+            }
+        }
         buttons.Add(button);
 
         if (mode == IOMode.ReadShipJSON || mode == IOMode.WriteShipJSON)
@@ -509,7 +578,7 @@ public class WCWorldIO : GUIWindowScripts
                 WCReadCurrentPath();
                 break;
             case IOMode.ReadShipJSON:
-                builder.LoadBlueprint(System.IO.File.ReadAllText(path));
+                ReadShipJSON(path);
                 Hide();
                 break;
             case IOMode.WriteShipJSON:
@@ -529,6 +598,18 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
+    private void ReadShipJSON(string path)
+    {
+        rwFromEntityPlaceholder = SceneManager.GetActiveScene().name != "SampleScene";
+        if (rwFromEntityPlaceholder)
+            builder.LoadBlueprint(System.IO.File.ReadAllText(path));
+        else
+        {
+            var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(path));
+            if (print && ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, false, PlayerCore.Instance.abilityCaps) && builder.ContainsParts(print.parts))
+                LoadPreset(print);
+        }
+    }
     void DestroyAllButtons()
     {
         buttons.Clear();
@@ -538,12 +619,22 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
+    private void LoadPreset(EntityBlueprint blueprint)
+    {
+        var x = new EntityBlueprint.PartInfo[blueprint.parts.Count];
+        blueprint.parts.CopyTo(x);
+        PlayerCore.Instance.blueprint.parts = new List<EntityBlueprint.PartInfo>(x);
+        builder.CloseUI(true);
+        PlayerCore.Instance.Rebuild();
+    }
+
     public void Hide()
     {
         active = false;
         DestroyAllButtons();
         gameObject.SetActive(false);
         window.SetActive(false);
+        if (clearAction != null) clearAction.Invoke();
     }
 
     public override void CloseUI()

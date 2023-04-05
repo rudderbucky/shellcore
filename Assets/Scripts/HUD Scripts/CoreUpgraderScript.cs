@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CoreUpgraderScript : GUIWindowScripts
@@ -239,6 +238,18 @@ public class CoreUpgraderScript : GUIWindowScripts
             default:
                 return new int[] { 0, 0, 0, 0 };
         }
+    }
+
+    public static int[] GetTotalAbilities(string coreName)
+    {
+        var caps = new int[4];
+        minAbilityCap.CopyTo(caps,0);
+        var extras = GetExtraAbilities(coreName);
+        for (int i = 0; i < extras.Length; i++)
+        {
+            caps[i] += extras[i];
+        }
+        return caps;
     }
 
     public static float[] GetRegens(string coreName)
