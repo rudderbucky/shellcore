@@ -133,7 +133,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
             if (MasterNetworkAdapter.mode != NetworkMode.Server && this as PlayerCore)
             {
-                MasterNetworkAdapter.instance.CreatePlayerServerRpc(MasterNetworkAdapter.playerName, MasterNetworkAdapter.blueprint, faction);
+                MasterNetworkAdapter.instance.CreatePlayerServerRpc(MasterNetworkAdapter.playerName, SectorManager.GetNetworkSafeBlueprintString(MasterNetworkAdapter.blueprint), faction);
             }
             else if (MasterNetworkAdapter.mode != NetworkMode.Client)
             {

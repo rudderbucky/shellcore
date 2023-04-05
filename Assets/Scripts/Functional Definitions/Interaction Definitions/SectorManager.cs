@@ -590,6 +590,16 @@ public class SectorManager : MonoBehaviour
         }
     }
 
+    public static string GetNetworkSafeBlueprintString(string blueprint)
+    {
+        var preset = (System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints", blueprint + ".json"));
+        if (File.Exists(preset))
+        {
+            return System.IO.File.ReadAllText(preset);
+        }
+        return blueprint;
+    }
+
     ///
     /// Sets the main menu sector based on the passed episode int.
     /// Assumes you are in the main menu scene.
