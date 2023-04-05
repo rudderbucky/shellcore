@@ -252,7 +252,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
             if (part.tier < 0 || part.tier > 3) return false;
         }
 
-        return ShipBuilder.ValidateBlueprint(print, false, print.coreShellSpriteID, false, CoreUpgraderScript.GetTotalAbilities(print.coreShellSpriteID));
+        return ShipBuilder.ValidateBlueprint(print, false, print.coreShellSpriteID, true, CoreUpgraderScript.GetTotalAbilities(print.coreShellSpriteID));
     }
 
     private NetworkObject InternalEntitySpawnWrapper(string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)
