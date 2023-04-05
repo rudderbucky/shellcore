@@ -592,10 +592,17 @@ public class SectorManager : MonoBehaviour
 
     public static string GetNetworkSafeBlueprintString(string blueprint)
     {
-        var preset = (System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints", blueprint + ".json"));
-        if (File.Exists(preset))
+        try
         {
-            return System.IO.File.ReadAllText(preset);
+            var preset = (System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints", blueprint + ".json"));
+            if (File.Exists(preset))
+            {
+                return System.IO.File.ReadAllText(preset);
+            }
+        }
+        catch
+        {
+
         }
         return blueprint;
     }

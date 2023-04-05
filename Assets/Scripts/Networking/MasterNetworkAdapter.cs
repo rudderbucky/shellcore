@@ -194,7 +194,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         if (!playerSpawned.ContainsKey(serverRpcParams.Receive.SenderClientId))
             playerSpawned.Add(serverRpcParams.Receive.SenderClientId, false);
         if (playerSpawned[serverRpcParams.Receive.SenderClientId]) return;
-        if (!ValidatePlayerBlueprint(blueprint))
+        if (!ValidateBluperintOnServer(blueprint))
         {
             NotifyInvalidBlueprintClientRpc(new ClientRpcParams
             {
@@ -229,7 +229,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         Instantiate(ResourceManager.GetAsset<GameObject>("bullet_hit_prefab"), position, Quaternion.identity);
     }
 
-    private bool ValidatePlayerBlueprint(string blueprint)
+    private bool ValidateBluperintOnServer(string blueprint)
     {
         if (blueprint.Length > 25000) // Blueprint too large. We can't have the server do too much work here or else it will chug everyone.
         {
