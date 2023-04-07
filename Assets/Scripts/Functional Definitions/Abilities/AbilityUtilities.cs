@@ -165,7 +165,7 @@ public static class AbilityUtilities
             case 8:
                 return $"Slow projectile that deals {Torpedo.torpedoDamage * tier} damage to ground entities.";
             case 9:
-                return $"Rapidly fires 5 projectiles that deal {Laser.laserDamage * tier} damage. 25% pierces to core.";
+                return $"Rapidly fires 5 projectiles that deal {Laser.laserDamage * tier} damage.";
             case 10:
                 if (string.IsNullOrEmpty(secondaryData))
                 {
