@@ -119,14 +119,14 @@ public class MasterNetworkAdapter : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void NotifyInvalidBlueprintClientRpc(ClientRpcParams clientRpcParams = default)
+    public void NotifyInvalidBlueprintClientRpc(string reason, ClientRpcParams clientRpcParams = default)
     {
         if (clientRpcParams.Send.TargetClientIds != null &&
             !System.Linq.Enumerable.Contains<ulong>(clientRpcParams.Send.TargetClientIds, NetworkManager.Singleton.LocalClientId))
         {
             return;
         }
-        Debug.LogWarning("Your passed blueprint is invalid. Use command loadbp <blueprint JSON> to pass another one and join the game.");
+        Debug.LogWarning($"Your passed blueprint is invalid. Reason: {reason}\nUse command loadbp <blueprint JSON> to pass another one and join the game.");
         DevConsoleScript.Instance.SetActive();
     }
 
@@ -138,6 +138,11 @@ public class MasterNetworkAdapter : NetworkBehaviour
         var obj = InternalEntitySpawnWrapper(blueprint, idToGrab, isPlayer, faction, pos, serverRpcParams);
         var networkAdapter = obj.GetComponent<EntityNetworkAdapter>();
         networkAdapter.blueprint = SectorManager.TryGettingEntityBlueprint(blueprint);
+        if (isPlayer)
+        {
+            networkAdapter.blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
+            networkAdapter.blueprint.baseRegen = CoreUpgraderScript.GetRegens(networkAdapter.blueprint.coreShellSpriteID);
+        }
         if (isPlayer) networkAdapter.playerName = name;
         else
         {
@@ -194,9 +199,10 @@ public class MasterNetworkAdapter : NetworkBehaviour
         if (!playerSpawned.ContainsKey(serverRpcParams.Receive.SenderClientId))
             playerSpawned.Add(serverRpcParams.Receive.SenderClientId, false);
         if (playerSpawned[serverRpcParams.Receive.SenderClientId]) return;
-        if (!ValidateBluperintOnServer(blueprint))
+        string reason = "";
+        if (!ValidateBluperintOnServer(blueprint, out reason))
         {
-            NotifyInvalidBlueprintClientRpc(new ClientRpcParams
+            NotifyInvalidBlueprintClientRpc(reason, new ClientRpcParams
             {
                 Send = new ClientRpcSendParams
                 {
@@ -229,10 +235,11 @@ public class MasterNetworkAdapter : NetworkBehaviour
         Instantiate(ResourceManager.GetAsset<GameObject>("bullet_hit_prefab"), position, Quaternion.identity);
     }
 
-    private bool ValidateBluperintOnServer(string blueprint)
+    private bool ValidateBluperintOnServer(string blueprint, out string reason)
     {
         if (blueprint.Length > 25000) // Blueprint too large. We can't have the server do too much work here or else it will chug everyone.
         {
+            reason = "Too many characters in JSON.";
             return false;
         }
         var print = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -242,16 +249,60 @@ public class MasterNetworkAdapter : NetworkBehaviour
         }
         catch // invalid blueprint
         {
+            reason = "Blueprint did not parse.";
             return false;
         }
-        if (print.intendedType != EntityBlueprint.IntendedType.ShellCore) return false; // print is of incorrect type
-        var invalidAbilities = new List<AbilityID>() {AbilityID.MainBullet, AbilityID.Harvester, AbilityID.EnergyAura, AbilityID.SpeedAura, AbilityID.HealAura, AbilityID.Rocket, AbilityID.SpeederBullet, AbilityID.SiegeBullet};
+        if (print.intendedType != EntityBlueprint.IntendedType.ShellCore)
+        {
+            reason = "Blueprint not for ShellCores.";
+            return false; // print is of incorrect type
+        } 
+        var abilityDict = new Dictionary<AbilityID, int>() {
+            [AbilityID.MainBullet] = 0,
+            [AbilityID.Harvester] = 0,
+            [AbilityID.EnergyAura] = 0,
+            [AbilityID.SpeedAura] = 0,
+            [AbilityID.HealAura] = 0,
+            [AbilityID.Rocket] = 0,
+            [AbilityID.SpeederBullet] = 0,
+            [AbilityID.SiegeBullet] = 0,
+            [AbilityID.Stealth] = 1,
+            [AbilityID.PinDown] = 1,
+            [AbilityID.Disrupt] = 1,
+            [AbilityID.Retreat] = 1,
+            [AbilityID.Control] = 1,
+            [AbilityID.Command] = 1,
+        };
         foreach (var part in print.parts)
         {
-            if (invalidAbilities.Contains((AbilityID)part.abilityID)) return false;
-            if (part.tier < 0 || part.tier > 3) return false;
+            if (!ResourceManager.allPartNames.Contains(part.partID))
+            {
+                reason = $"Invalid part ID: {part.partID}";
+                return false;
+            }
+            if (abilityDict.ContainsKey((AbilityID)part.abilityID))
+            {
+                abilityDict[(AbilityID)part.abilityID]--;
+                if (abilityDict[(AbilityID)part.abilityID] < 0)
+                {
+                    reason = $"Too many of ability: {((AbilityID)part.abilityID).ToString()}";
+                    return false;
+                }
+            }
+            if (!DroneUtilities.DEFAULT_SECONDARY_DATA.Contains(part.secondaryData))
+            {
+                reason = "Part has invalid secondary data.";
+                return false;
+            }
+
+            if (part.tier < 0 || part.tier > 3)
+            {
+                reason = "A part has tier < 0 or > 3.";
+                return false;
+            } 
         }
 
+        reason = "Blueprint is not according to Ship Builder rules.";
         return ShipBuilder.ValidateBlueprint(print, false, print.coreShellSpriteID, true, CoreUpgraderScript.GetTotalAbilities(print.coreShellSpriteID));
     }
 
