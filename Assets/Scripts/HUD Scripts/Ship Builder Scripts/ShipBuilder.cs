@@ -446,7 +446,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
 
         outcome &= (!checkPartSizes || CheckPartSizes(parts, coreShellSpriteID, editorMode));
-        outcome &= (abilityLimits == null || CheckAbilityCaps(parts, abilityLimits, coreShellSpriteID, editorMode));
+        outcome &= (abilityLimits == null || CheckAbilityCaps(parts, abilityLimits, coreShellSpriteID, editorMode) == 0);
         parts.ForEach(p => Destroy(p.gameObject));
         return outcome;
     }
@@ -542,8 +542,16 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         }
 
         var shell = PlayerCore.Instance ? PlayerCore.Instance.blueprint.coreShellSpriteID : "core1_shell";
-        CheckPartSizes(cursorScript.parts, shell, editorMode);
-        CheckAbilityCaps(cursorScript.parts, abilityLimits, shell, editorMode);
+        if (!CheckPartSizes(cursorScript.parts, shell, editorMode))
+        {
+            SetReconstructButton(ReconstructButtonStatus.PartTooHeavy);
+            return;
+        }
+        var ability = CheckAbilityCaps(cursorScript.parts, abilityLimits, shell, editorMode);
+        if (ability != 0)
+        {
+            SetReconstructButton((ReconstructButtonStatus)((int)ReconstructButtonStatus.PastSkillsLimit+ability-1));
+        }
     }
 
     static bool PartIsTooClose(ShipBuilderPart part, ShipBuilderPart otherPart, BuilderMode mode)
@@ -578,11 +586,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         return true;
     }
 
-    public static bool CheckAbilityCaps(List<ShipBuilderPart> parts, int[] abilityLimits, string coreShellSpriteID, bool editorMode)
+    public static int CheckAbilityCaps(List<ShipBuilderPart> parts, int[] abilityLimits, string coreShellSpriteID, bool editorMode)
     {
         if (editorMode)
         {
-            return true;
+            return 0;
         }
 
         var currentAbilitynumbers = new int[] { 0, 0, 0, 0, 0 };
@@ -599,11 +607,11 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         {
             if (currentAbilitynumbers[i] > abilityLimits[i] + extras[i])
             {
-                return false;
+                return i+1;
             }
         }
 
-        return true;
+        return 0;
     }
 
     static Dictionary<string, List<(string, int)>> originsofParts = new Dictionary<string, List<(string, int)>>();
@@ -1412,7 +1420,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             return;
         }
 
-        if (!CheckAbilityCaps(cursorScript.parts, abilityLimits, PlayerCore.Instance.blueprint.coreShellSpriteID, editorMode))
+        if (CheckAbilityCaps(cursorScript.parts, abilityLimits, PlayerCore.Instance.blueprint.coreShellSpriteID, editorMode) != 0)
         {
             return;
         }
