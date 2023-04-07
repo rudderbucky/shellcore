@@ -598,12 +598,19 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
+    [SerializeField]
+    private InputField[] blueprintFields;
+
     private void ReadShipJSON(string path)
     {
         rwFromEntityPlaceholder = SceneManager.GetActiveScene().name != "SampleScene";
-        if (rwFromEntityPlaceholder)
+        foreach (var field in blueprintFields)
+        {
+            field.text = System.IO.Path.GetFileNameWithoutExtension(path);
+        }
+        if (rwFromEntityPlaceholder && builder)
             builder.LoadBlueprint(System.IO.File.ReadAllText(path));
-        else
+        else if (PlayerCore.Instance)
         {
             var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(path));
             if (print && ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, false, PlayerCore.Instance.abilityCaps) && builder.ContainsParts(print.parts))

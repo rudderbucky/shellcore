@@ -142,9 +142,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 if (passedFaction == 0 || isPlayer.Value) passedFaction = minFac;
                 playerFactions[minFac]++;
                 if (IsOwner && isPlayer.Value) passedFaction = 0;
+                MasterNetworkAdapter.instance.SetScoreClientRpc(playerName, HUDScript.scores.ContainsKey(playerName) ? HUDScript.scores[playerName] : 0);
             }        
             
             UpdateStateClientRpc(wrapper.CreateResponse(this), passedFaction);
+
+
         }
         if (NetworkManager.Singleton.IsClient)
         {
@@ -169,6 +172,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Server || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host && isPlayer.Value)
         {
+            HUDScript.RemoveScore(playerName);
             MasterNetworkAdapter.instance.playerSpawned[OwnerClientId] = false;
         }
         ProximityInteractScript.instance.RemovePlayerName(huskEntity);

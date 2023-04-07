@@ -50,11 +50,25 @@ public class Bunker : GroundConstruct, IVendor
     {
         targeter.SetTarget(null);
         int otherFaction = faction;
-        if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
+
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
-            BZManager.UpdateCounters();
-            BZManager.AlertPlayers(otherFaction, "WARNING: Bunker lost!");
+            if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
+            {
+                BZManager.UpdateCounters();
+                BZManager.AlertPlayers(otherFaction, "WARNING: Bunker lost!");
+            }
         }
+        else if (!MasterNetworkAdapter.lettingServerDecide)
+        {
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
+                && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)
+                {
+                    HUDScript.AddScore(core.networkAdapter.playerName, 1);
+                }
+        
+        }
+
 
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
         

@@ -198,6 +198,19 @@ public class BattleZoneManager : MonoBehaviour
     {
         if (livingFactions.Count >= 2 && !allAllied) return;
         playing = false;
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
+        {
+            foreach (Entity playerEntity in targets)
+            {
+                if (playerEntity && !playerEntity.GetIsDead() && livingFactions.Contains(playerEntity.faction) &&
+                     playerEntity.networkAdapter && playerEntity.networkAdapter.isPlayer.Value)
+                {
+                    HUDScript.AddScore(playerEntity.networkAdapter.playerName, 50);
+                }
+            }
+        }
+
         if (!PlayerCore.Instance) return;
         foreach (Entity playerEntity in targets)
         {

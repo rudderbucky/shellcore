@@ -59,6 +59,21 @@ public class AirCarrier : AirConstruct, ICarrier
         return sectorMngr;
     }
 
+
+    protected override void OnDeath()
+    {
+        if (!MasterNetworkAdapter.lettingServerDecide)
+        {
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
+                && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)
+                {
+                    HUDScript.AddScore(core.networkAdapter.playerName, 10);
+                }
+        
+        }
+        base.OnDeath();
+    }
+
     protected override void Update()
     {
         if (initialized)

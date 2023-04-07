@@ -37,6 +37,7 @@ public class ProximityInteractScript : MonoBehaviour
         if (playerNames.ContainsKey(core)) return;
         var transform = Instantiate(playerNamePrefab, interactIndicator.parent).GetComponent<RectTransform>();
         transform.GetComponentInChildren<Text>().text = playerName;
+        HUDScript.AddScore(playerName, 0);
         playerNames.Add(core, transform);
     }
 

@@ -28,6 +28,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
     void Start()
     {
         Debug.Log("MNA starting...");
+
+        HUDScript.ClearScore();
         if (EntityNetworkAdapter.playerFactions != null)
             EntityNetworkAdapter.playerFactions.Clear();
         instance = this;
@@ -153,7 +155,26 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     public Dictionary<ulong, bool> playerSpawned = new Dictionary<ulong, bool>();
 
+    [ClientRpc]
+    public void SetScoreClientRpc(string player, int val, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
+        HUDScript.SetScore(player, val);
+    }
 
+    [ClientRpc]
+    public void AddScoreClientRpc(string player, int val, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
+        HUDScript.AddScore(player, val);
+    }
+
+    [ClientRpc]
+    public void RemoveScoreClientRpc(string player, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
+        HUDScript.RemoveScore(player);
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void RequestVoteServerRpc(int i, ServerRpcParams serverRpcParams = default)
@@ -266,6 +287,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
             [AbilityID.Rocket] = 0,
             [AbilityID.SpeederBullet] = 0,
             [AbilityID.SiegeBullet] = 0,
+            [AbilityID.DamageBoost] = 1,
             [AbilityID.Stealth] = 1,
             [AbilityID.PinDown] = 1,
             [AbilityID.Disrupt] = 1,
@@ -289,7 +311,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
                     return false;
                 }
             }
-            if (!DroneUtilities.DEFAULT_SECONDARY_DATA.Contains(part.secondaryData))
+            if ((part.abilityID != 10 && !string.IsNullOrEmpty(part.secondaryData)) || (part.abilityID == 10 && !DroneUtilities.DEFAULT_SECONDARY_DATA.Contains(part.secondaryData)))
             {
                 reason = "Part has invalid secondary data.";
                 return false;

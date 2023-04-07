@@ -2143,13 +2143,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Rules:
 
-    25000 JSON character limit (includes preset builds)
-
-    Ship
-    Builder part placement/size validity
-
-    No Main Bullets, Harvesters, Tower
-    Auras, Rockets, Speeder Bullets or Siege Bullets on parts
+    Ship Builder part placement/size validity
 
     Max 1 Stealth,
     Damage Boost, Pin Down, Disrupt, Retreat, Control, Command
@@ -2157,9 +2151,16 @@ MonoBehaviour:
     Ability type
     limits: 6/3/6/6 (+ core extras)
 
-    No abilities with tier < 0 or > 3
+    Drones must use default secondary data (e.g.
+    "counter_drone")
 
-'
+    25000 JSON character limit (includes preset builds)
+
+    No
+    Main Bullets, Harvesters, Tower Auras, Rockets, Speeder Bullets or Siege Bullets
+    on parts
+
+    No abilities with tier < 0 or > 3'
 --- !u!1 &8875218511483626994
 GameObject:
   m_ObjectHideFlags: 0
@@ -3382,10 +3383,25 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 217.54056
       objectReference: {fileID: 0}
+    - target: {fileID: 5371171104921256483, guid: 2f887f1053a600e4585a512fd7e28d0e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 395.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5371171104921256483, guid: 2f887f1053a600e4585a512fd7e28d0e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5404246675345684986, guid: 2f887f1053a600e4585a512fd7e28d0e,
         type: 3}
       propertyPath: m_Name
       value: Blueprint
+      objectReference: {fileID: 0}
+    - target: {fileID: 5823817880335264505, guid: 2f887f1053a600e4585a512fd7e28d0e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8406229048691841291, guid: 2f887f1053a600e4585a512fd7e28d0e,
         type: 3}
@@ -3817,10 +3833,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5371171104921256483, guid: 2f887f1053a600e4585a512fd7e28d0e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 393.2
+      objectReference: {fileID: 0}
     - target: {fileID: 5404246675345684986, guid: 2f887f1053a600e4585a512fd7e28d0e,
         type: 3}
       propertyPath: m_Name
       value: Blueprint
+      objectReference: {fileID: 0}
+    - target: {fileID: 5823817880335264505, guid: 2f887f1053a600e4585a512fd7e28d0e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8406229048691841291, guid: 2f887f1053a600e4585a512fd7e28d0e,
         type: 3}
