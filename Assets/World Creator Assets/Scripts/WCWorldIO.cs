@@ -326,6 +326,8 @@ public class WCWorldIO : GUIWindowScripts
     public Text readButton;
     private bool rwFromEntityPlaceholder;
 
+    string placeholderPath;
+
     void Show(IOMode mode)
     {
         clearAction = () => {
@@ -336,11 +338,20 @@ public class WCWorldIO : GUIWindowScripts
             }
         };
         rwFromEntityPlaceholder = SceneManager.GetActiveScene().name != "SampleScene";
+        placeholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            var serverPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "rudderbucky server", "Entities");
+            if (Directory.Exists(serverPath))
+            {
+                placeholderPath = serverPath;
+            }
+        }
         PRESET_DIRECTORY = System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints");
         if ((mode != IOMode.Read && mode != IOMode.Write) && 
-            !Directory.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")) && rwFromEntityPlaceholder)
+            !Directory.Exists(placeholderPath) && rwFromEntityPlaceholder)
         {
-            return;
+            rwFromEntityPlaceholder = false;
         }
         buttons.Clear();
         active = true;
@@ -393,7 +404,7 @@ public class WCWorldIO : GUIWindowScripts
             case IOMode.WriteShipJSON:
                 switchBPDirectoryButton.gameObject.SetActive(rwFromEntityPlaceholder);
                 List<string> files = new List<string>();
-                if (rwFromEntityPlaceholder) files.AddRange(Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")));
+                if (rwFromEntityPlaceholder) files.AddRange(Directory.GetFiles(placeholderPath));
                 files.AddRange(Directory.GetFiles(PRESET_DIRECTORY));
                 directories = files.ToArray();
                 break;
