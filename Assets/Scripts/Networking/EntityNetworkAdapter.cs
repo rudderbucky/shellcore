@@ -142,7 +142,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 if (passedFaction == 0 || isPlayer.Value) passedFaction = minFac;
                 playerFactions[minFac]++;
                 if (IsOwner && isPlayer.Value) passedFaction = 0;
-                MasterNetworkAdapter.instance.SetScoreClientRpc(playerName, HUDScript.scores.ContainsKey(playerName) ? HUDScript.scores[playerName] : 0);
+
+                foreach(var kvp in HUDScript.scores)
+                {
+                    MasterNetworkAdapter.instance.SetScoreClientRpc(kvp.Key, kvp.Value);
+                }
+
             }        
             
             UpdateStateClientRpc(wrapper.CreateResponse(this), passedFaction);
