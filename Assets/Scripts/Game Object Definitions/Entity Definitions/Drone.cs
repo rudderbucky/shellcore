@@ -29,6 +29,7 @@ public class Drone : AirCraft, IOwnable
 
     public void GeneratePath()
     {
+        Debug.Log("Generating path...");
         var path = ScriptableObject.CreateInstance<Path>();
         path.waypoints = new List<Path.Node>();
 
@@ -95,26 +96,7 @@ public class Drone : AirCraft, IOwnable
                 data.waypoints.Add(node2);
             }
 
-            if (owner as AirCarrier)
-            {
-                ai.setPath(path);
-            }
-            else
-            {
-
-                NodeEditorFramework.Standard.PathData data = new NodeEditorFramework.Standard.PathData();
-                data.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
-                foreach (var point in path.waypoints)
-                {
-                    var node2 = new NodeEditorFramework.Standard.PathData.Node();
-                    node2.ID = point.ID;
-                    node2.children = point.children;
-                    node2.position = point.position;
-                    data.waypoints.Add(node2);
-                }
-
-                ai.setPath(data, null, true);
-            }
+            ai.setPath(data, null, true);
         }
     }
 

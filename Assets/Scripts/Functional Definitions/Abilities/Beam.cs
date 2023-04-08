@@ -42,6 +42,10 @@ public class Beam : WeaponAbility
         {
             beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
         }
+        if (!particlePrefab)
+        {
+            particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
+        }
     }
 
     protected override void Start()
@@ -110,13 +114,8 @@ public class Beam : WeaponAbility
     {
         if (!beamHitPrefab)
         {
-            beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+            SetUpCosmetics();
         }
-        if (!particlePrefab)
-        {
-            particlePrefab = ResourceManager.GetAsset<GameObject>("beamParticle_prefab");
-        }
-
         targetArray.Clear();
         targetArray.Add(targetingSystem.GetTarget());
         FireBeam(victimPos);
@@ -125,7 +124,7 @@ public class Beam : WeaponAbility
 
     public override void ActivationCosmetic(Vector3 targetPos)
     {
-        if (!particlePrefab)
+        if (!beamHitPrefab)
         {
             SetUpCosmetics();
         }

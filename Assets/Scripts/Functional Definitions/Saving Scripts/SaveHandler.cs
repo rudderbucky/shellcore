@@ -98,7 +98,8 @@ public class SaveHandler : MonoBehaviour
             {
                 taskManager.taskVariables.Add(save.taskVariableNames[i], save.taskVariableValues[i]);
             }
-            StartCoroutine(Autobackup());
+            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+                StartCoroutine(Autobackup());
         }
         else
         {
@@ -113,10 +114,6 @@ public class SaveHandler : MonoBehaviour
         }
     }
 
-    private void UpdateSaveData(PlayerSave playerSave)
-    {
-        playerSave.timePlayed += (Time.timeSinceLevelLoad - timeSinceLastSave) / 60;
-    }
     public static EntityBlueprint GetDefaultBlueprint()
     {
         var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
@@ -131,9 +128,8 @@ public class SaveHandler : MonoBehaviour
 
 
     private float timeSinceLastSave;
-    public void Save()
+    public void UpdateSaveData(PlayerSave playerSave)
     {
-        if (!initialized) return;
         save.timePlayed += (Time.timeSinceLevelLoad - timeSinceLastSave) / 60;
         timeSinceLastSave = Time.timeSinceLevelLoad;
         if (SaveMenuHandler.migratedTimePlayed != null)
@@ -212,10 +208,9 @@ public class SaveHandler : MonoBehaviour
         playerSave.reputation = player.reputation;
     }
 
-    private float timeSinceLastSave;
-
     public void Save()
     {
+        if (!initialized) return;
         UpdateSaveData(save);
         timeSinceLastSave = Time.timeSinceLevelLoad;
         SaveMenuHandler.migratedTimePlayed = null;

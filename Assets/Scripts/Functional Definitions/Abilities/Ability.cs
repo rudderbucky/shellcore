@@ -276,7 +276,6 @@ public abstract class Ability : MonoBehaviour
 
     protected void SetActivationState()
     {
-        Core.MakeBusy(); // make core busy
         startTime = Time.time; // Set activation time
         charging = true;
         UpdateState(); // Update state

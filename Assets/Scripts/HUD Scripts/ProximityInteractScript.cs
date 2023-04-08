@@ -117,20 +117,19 @@ public class ProximityInteractScript : MonoBehaviour
                 interactIndicator.localScale = new Vector3(1, Mathf.Min(1, y + 0.1F), 1);
             }
 
-                if (y < 1)
-                {
-                    interactIndicator.localScale = new Vector3(1, Mathf.Min(1, y + 0.1F), 1);
-                }
+            if (y < 1)
+            {
+                interactIndicator.localScale = new Vector3(1, Mathf.Min(1, y + 0.1F), 1);
+            }
 
-                var worldToScreenPoint = Camera.main.WorldToScreenPoint(closest.GetTransform().position);
-                worldToScreenPoint.x *= UIScalerScript.GetScale();
-                worldToScreenPoint.y *= UIScalerScript.GetScale();
-                interactIndicator.anchoredPosition = 
-                    worldToScreenPoint + new Vector3(0, 50);
-                if (InputManager.GetKeyUp(KeyName.Interact) && !PlayerViewScript.GetIsWindowActive())
-                {
-                    ActivateInteraction(closest); // key received; activate interaction
-                }
+            var worldToScreenPoint = Camera.main.WorldToScreenPoint(closest.GetTransform().position);
+            worldToScreenPoint.x *= UIScalerScript.GetScale();
+            worldToScreenPoint.y *= UIScalerScript.GetScale();
+            interactIndicator.anchoredPosition = 
+                worldToScreenPoint + new Vector3(0, 50);
+            if (InputManager.GetKeyUp(KeyName.Interact) && !PlayerViewScript.GetIsWindowActive())
+            {
+                ActivateInteraction(closest); // key received; activate interaction
             }
         }
     }

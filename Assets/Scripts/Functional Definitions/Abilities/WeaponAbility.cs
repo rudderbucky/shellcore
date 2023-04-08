@@ -192,7 +192,6 @@ public abstract class WeaponAbility : ActiveAbility
             Core.networkAdapter.SetWeaponIsEnabledClientRpc(part ? part.info.location : Vector2.zero, isEnabled);
         }
         UpdateState();
-        Core.MakeBusy(); // make core busy
         if (!lettingServerDecide)
         {
             Shoot();

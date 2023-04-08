@@ -88,25 +88,6 @@ public class PlayerCore : ShellCore
 
     public void SetPlayerSpawnPoint()
     {
-        List<bool> weaponActivationStates = new List<bool>();
-        for (int i = 0; i < abilities.Count; i++)
-        {
-            if (abilities[i] is WeaponAbility weapon)
-            {
-                weaponActivationStates.Add(weapon.GetActiveTimeRemaining() == -1);
-            }
-        }
-        List<bool> autoCastActivationStates = new List<bool>();
-        for (int i = 0; i < abilities.Count; i++)
-        {
-            autoCastActivationStates.Add(abilities[i].AutoCast);
-        }
-
-        if (hud)
-        {
-            hud.DeinitializeHUD(); // deinitialize HUD
-        }
-
         carrier = FindCarrier();
         if (carrier != null)
         {
