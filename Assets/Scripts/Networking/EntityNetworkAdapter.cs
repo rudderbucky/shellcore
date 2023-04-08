@@ -607,6 +607,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    static float TIME_TO_OOB_DEATH = 3;
+    float killTimer = TIME_TO_OOB_DEATH;
+
     void Update()
     {   
         if (!PreliminaryStatusCheck()) return;
@@ -619,9 +622,20 @@ public class EntityNetworkAdapter : NetworkBehaviour
             playerNameAdded = true;
             ProximityInteractScript.instance.AddPlayerName(huskEntity as ShellCore, playerName);
         }
+
         if (huskEntity && huskEntity is Craft craft && craft.husk && isPlayer.Value && !(MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host && huskEntity == PlayerCore.Instance))
         {
             craft.MoveCraft(wrapper.directionalVector);
         }
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && isPlayer.Value && huskEntity is ShellCore airCraft && !airCraft.GetIsDead() && !SectorManager.instance.CurrentContainsPosition(airCraft.GetSectorPosition()))
+        {
+            killTimer -= Time.deltaTime;
+            if (killTimer < 0)
+            {
+                airCraft.TakeCoreDamage(float.MaxValue);
+            }
+        }
+        else killTimer = TIME_TO_OOB_DEATH;
     }
 }

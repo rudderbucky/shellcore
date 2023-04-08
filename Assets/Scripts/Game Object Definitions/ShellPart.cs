@@ -173,7 +173,7 @@ public class ShellPart : MonoBehaviour
         rigid.gravityScale = 0; // adjust the rigid body
         rigid.angularDrag = 0;
         float randomDir = Random.Range(0f, 360f);
-        var vec = (new Vector2(Mathf.Cos(randomDir), Mathf.Sin(randomDir))) + craft.GetComponent<Rigidbody2D>().velocity * 2F;
+        var vec = (new Vector2(Mathf.Cos(randomDir), Mathf.Sin(randomDir))) + (craft && craft.GetComponent<Rigidbody2D>() ? craft.GetComponent<Rigidbody2D>().velocity * 2F : Vector2.zero);
         vec = vec.normalized;
         if (name != "Shell Sprite")
         {
@@ -483,7 +483,7 @@ public class ShellPart : MonoBehaviour
     // ignores parameter alpha, since stealthing changes it
     public void SetPartColor(Color color)
     {
-        color.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : color.a);
+        color.a = (craft && craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : color.a);
         spriteRenderer.color = color;
         if (shooter)
         {

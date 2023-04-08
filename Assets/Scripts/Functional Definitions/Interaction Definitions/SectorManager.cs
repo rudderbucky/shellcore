@@ -174,6 +174,12 @@ public class SectorManager : MonoBehaviour
     private Sector countdownSector;
     private bool loadedDuelSector;
 
+
+    public bool CurrentContainsPosition(Vector3 position)
+    {
+        return current.bounds.contains(position);
+    }    
+
     private void Update()
     {
         if (!SystemLoader.AllLoaded) return;
@@ -188,7 +194,7 @@ public class SectorManager : MonoBehaviour
             AttemptSectorLoad();
         }
         if (!current) return;
-        var inBoundsOscillating = playerActive && current.bounds.contains(player.GetSectorPosition());
+        var inBoundsOscillating = playerActive && CurrentContainsPosition(player.GetSectorPosition());
         var inCurrentSector = playerActive && current != null &&
             (inBoundsOscillating) && current.dimension == player.Dimension;
 
