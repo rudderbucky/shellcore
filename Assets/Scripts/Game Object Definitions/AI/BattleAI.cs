@@ -711,17 +711,21 @@ public class BattleAI : AIModule
             int itemIndex = -1;
             if (vendor is TowerBase towerBase && !towerBase.TowerActive())
             {
-                if (shellcore.GetRegens()[0] < shellcore.GetMaxHealth()[0] / 5 && shellcore.HealAuraStacks < 1)
+                if (shellcore.GetRegens()[0] < shellcore.GetMaxHealth()[0] / 5 && shellcore.HealAuraStacks < 1 && shellcore.GetPower() >= 250)
                 {
                     itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.HealerTower);
                 }
-                else if (shellcore.GetRegens()[2] < shellcore.GetMaxHealth()[2] / 5 && shellcore.EnergyAuraStacks < 1)
+                else if (shellcore.GetRegens()[2] < shellcore.GetMaxHealth()[2] / 5 && shellcore.EnergyAuraStacks < 1 && shellcore.GetPower() >= 150)
                 {
                     itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.EnergyTower);
                 }
-                else itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.SpeedTower);
-                BuyFromVendor(itemIndex, vendor);
-                break;
+                else if (shellcore.GetPower() >= 200) itemIndex = vendor.GetVendingBlueprint().getItemIndex(VendingBlueprint.Item.AIEquivalent.SpeedTower);
+                
+                if (itemIndex != -1)
+                {
+                    BuyFromVendor(itemIndex, vendor);
+                    break;
+                }
             }
 
             if (vendor.NeedsSameFaction() && vendor.GetFaction() != craft.faction)
