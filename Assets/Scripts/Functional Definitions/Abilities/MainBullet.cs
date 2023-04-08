@@ -36,7 +36,7 @@ public class MainBullet : Bullet
 
     private GameObject muzzle;
 
-    protected override bool FireBullet(Vector3 targetPos)
+    public override void ActivationCosmetic(Vector3 targetPos)
     {
         muzzle = Instantiate(muzzleFlash, transform.position, Quaternion.identity);
 
@@ -47,6 +47,11 @@ public class MainBullet : Bullet
         // float delta = Mathf.Abs(Mathf.DeltaAngle(targetAngle - craftAngle, 90));
 
         muzzle.transform.eulerAngles = new Vector3(0, 0, targetAngle);
+        base.ActivationCosmetic(targetPos);
+    }
+
+    protected override bool FireBullet(Vector3 targetPos)
+    {
         return base.FireBullet(targetPos);
     }
 

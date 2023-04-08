@@ -48,19 +48,37 @@ public class Bunker : GroundConstruct, IVendor
 
     protected override void OnDeath()
     {
+        targeter.SetTarget(null);
         int otherFaction = faction;
+
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+        {
+            if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
+            {
+                BZManager.UpdateCounters();
+                BZManager.AlertPlayers(otherFaction, "WARNING: Bunker lost!");
+            }
+        }
+        else if (!MasterNetworkAdapter.lettingServerDecide)
+        {
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
+                && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)
+                {
+                    HUDScript.AddScore(core.networkAdapter.playerName, 1);
+                }
+        
+        }
+
+
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
+        
         faction = lastDamagedBy.faction;
+        
         for (int i = 0; i < parts.Count; i++)
         {
             RemovePart(parts[i]);
         }
 
-        targeter.SetTarget(null);
-        if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
-        {
-            BZManager.UpdateCounters();
-            BZManager.AlertPlayers(otherFaction, "WARNING: Bunker lost!");
-        }
 
         Start();
         foreach (var part in parts)
@@ -69,6 +87,10 @@ public class Bunker : GroundConstruct, IVendor
         }
     }
 
+    public EntityNetworkAdapter GetAdapter()
+    {
+        return networkAdapter;
+    }
     public VendingBlueprint GetVendingBlueprint()
     {
         return vendingBlueprint;

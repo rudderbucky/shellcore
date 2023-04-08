@@ -20,12 +20,20 @@ public static class SATCollision
         {
             return new Vector2[0];
         }
+        return GetPartVertices(part.info, part.image.sprite, shrinkFactor);
+    }
 
-        var rect = part.image.sprite.bounds;
+    public static Vector2[] GetPartVertices(EntityBlueprint.PartInfo info, Sprite partSprite = null, float shrinkFactor = 0f)
+    {
+        if (partSprite == null && ResourceManager.Instance.resourceExists(info.partID + "_sprite"))
+        {
+            partSprite = ResourceManager.GetAsset<Sprite>(info.partID + "_sprite");
+        }
+        var rect = partSprite.bounds;
         rect.size *= 100;
         rect.Expand(0.001f);
 
-        float rot = part.info.rotation * Mathf.Deg2Rad;
+        float rot = info.rotation * Mathf.Deg2Rad;
 
         Matrix4x4 matrix = new Matrix4x4()
         {
@@ -38,7 +46,7 @@ public static class SATCollision
         if (!shrinkFactor.Equals(0f))
             rect.Expand(shrinkFactor * rect.extents);
 
-        Vector2 center = part.info.location * 100f;
+        Vector2 center = info.location * 100f;
         Vector2 right = new Vector2(rect.extents.x, 0f);
         Vector2 up = new Vector2(0f, rect.extents.y);
 

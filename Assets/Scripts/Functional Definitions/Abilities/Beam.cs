@@ -33,12 +33,21 @@ public class Beam : WeaponAbility
         line.positionCount = 0;
     }
 
-    protected override void Start()
+    protected void SetUpCosmetics()
     {
-        if (Core as Tank) bonusDamageType = typeof(Tank);
         SetMaterial(ResourceManager.GetAsset<Material>("white_material"));
         line.endColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         line.startColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
+        if (!beamHitPrefab)
+        {
+            beamHitPrefab = ResourceManager.GetAsset<GameObject>("weapon_hit_particle");
+        }
+    }
+
+    protected override void Start()
+    {
+        if (Core as Tank) bonusDamageType = typeof(Tank);
+        
         base.Start();
     }
 
@@ -54,15 +63,15 @@ public class Beam : WeaponAbility
         {
             line.startWidth = line.endWidth = 0.15F;
             line.SetPosition(0, transform.position); // draw and increment timer
-            if (nextTargetPart)
+            if (nextTargetPart && !MasterNetworkAdapter.lettingServerDecide)
             {
                 line.SetPosition(currentVertex+1, partPos);
             }
-            else if (targetArray[currentVertex])
+            else if (targetArray.Count > currentVertex && targetArray[currentVertex])
             {
                 line.SetPosition(currentVertex+1, targetArray[currentVertex].position);
             }
-            else
+            else if (!MasterNetworkAdapter.lettingServerDecide)
             {
                 line.SetPosition(currentVertex+1, line.transform.position); // TODO: Fix
             }
@@ -114,9 +123,42 @@ public class Beam : WeaponAbility
         return true;
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        if (!particlePrefab)
+        {
+            SetUpCosmetics();
+        }
+        AudioManager.PlayClipByID("clip_beam", transform.position);
+        if (MasterNetworkAdapter.lettingServerDecide && targetingSystem.GetTarget() && targetingSystem.GetTarget().GetComponentInParent<Entity>())
+        {
+            GetClosestPart(targetingSystem.GetTarget().GetComponentInParent<Entity>().NetworkGetParts().ToArray());
+            targetPos = nextTargetPart.transform.position;
+        }
+
+
+        if (line.positionCount == 0) 
+        {
+            timer = 0; // start the timer
+            line.positionCount = 2; // render the beam line
+            if (MasterNetworkAdapter.lettingServerDecide)
+            {
+                line.SetPosition(1, targetPos);
+            }
+        }
+        else 
+        {
+            line.positionCount++;
+        }
+        firing = true;
+
+        Instantiate(beamHitPrefab, targetPos, Quaternion.identity); // instantiate hit effect
+        InstantiateParticles(line.positionCount > 2 ? line.GetPosition(line.positionCount - 2) : transform.position, targetPos);
+    }
+
+
     protected void FireBeam(Vector3 victimPos)
     {
-        AudioManager.PlayClipByID("clip_beam", transform.position);
         Transform targetToAttack = targetArray[targetArray.Count - 1];
         var residue = targetToAttack.GetComponent<IDamageable>().TakeShellDamage(GetDamage(), 0, GetComponentInParent<Entity>());
         // deal instant damage
@@ -127,20 +169,7 @@ public class Beam : WeaponAbility
             victimPos = partPos = nextTargetPart.transform.position;
         }
 
-        if (line.positionCount == 0) 
-        {
-            timer = 0; // start the timer
-            line.positionCount = 2; // render the beam line
-        }
-        else 
-        {
-            line.positionCount++;
-        }
-        firing = true;
-
-        Instantiate(beamHitPrefab, victimPos, Quaternion.identity); // instantiate hit effect
-        InstantiateParticles(line.positionCount > 2 ? line.GetPosition(line.positionCount - 2) : transform.position, victimPos);
-
+        ActivationCosmetic(victimPos);
     }
 
 

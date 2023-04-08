@@ -2,6 +2,11 @@
 {
     public IOwner owner;
 
+    public IOwner GetOwner()
+    {
+        return owner;
+    }
+
     protected override void Awake()
     {
         category = EntityCategory.Station;

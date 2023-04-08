@@ -11,6 +11,7 @@ public class ShellPart : MonoBehaviour
     float detachedTime; // time since detachment
     public ShellPart parent = null;
     public List<ShellPart> children = new List<ShellPart>();
+    [SerializeField]
     private bool hasDetached; // is the part detached
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigid;
@@ -119,6 +120,7 @@ public class ShellPart : MonoBehaviour
         spriteRenderer.material = shaderMaterials[partShader];
         spriteRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
         var part = obj.GetComponent<ShellPart>();
+        part.craft = part.transform.root.GetComponent<Entity>();
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
         part.currentHealth = blueprint.health;
@@ -145,6 +147,7 @@ public class ShellPart : MonoBehaviour
     /// </summary>
     public void Detach(bool drop = false)
     {
+        if (hasDetached) return;
         if (name != "Shell Sprite")
         {
             transform.SetParent(null, true);
@@ -170,9 +173,12 @@ public class ShellPart : MonoBehaviour
         rigid.gravityScale = 0; // adjust the rigid body
         rigid.angularDrag = 0;
         float randomDir = Random.Range(0f, 360f);
-        var vec = (new Vector2(Mathf.Cos(randomDir), Mathf.Sin(randomDir))) + craft.GetComponent<Rigidbody2D>().velocity * 2F;
+        var vec = (new Vector2(Mathf.Cos(randomDir), Mathf.Sin(randomDir))) + (craft && craft.GetComponent<Rigidbody2D>() ? craft.GetComponent<Rigidbody2D>().velocity * 2F : Vector2.zero);
         vec = vec.normalized;
-        rigid.AddForce(vec * 200f);
+        if (name != "Shell Sprite")
+        {
+            rigid.AddForce(vec * 200f);
+        }
         //rigid.AddTorque(150f * ((Random.Range(0, 2) == 0) ? 1 : -1));
         rotationDirection = (Random.Range(0, 2) == 0);
         gameObject.layer = 9;
@@ -233,6 +239,11 @@ public class ShellPart : MonoBehaviour
         }
     }
 
+    public void SetFaction(int faction)
+    {
+        this.faction = faction;
+    }
+
     public void Start()
     {
         // initialize instance fields
@@ -246,8 +257,10 @@ public class ShellPart : MonoBehaviour
             currentHealth /= 4;
         }
 
-        craft = transform.root.GetComponent<Entity>();
-        faction = craft.faction;
+        if (!craft)
+            craft = transform.root.GetComponent<Entity>();
+        if (craft)
+            faction = craft.faction;
         gameObject.layer = 0;
 
         if (GetComponent<Ability>())
@@ -470,7 +483,7 @@ public class ShellPart : MonoBehaviour
     // ignores parameter alpha, since stealthing changes it
     public void SetPartColor(Color color)
     {
-        color.a = (craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : color.a);
+        color.a = (craft && craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : color.a);
         spriteRenderer.color = color;
         if (shooter)
         {

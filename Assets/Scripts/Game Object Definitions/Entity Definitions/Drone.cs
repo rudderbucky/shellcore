@@ -4,6 +4,7 @@ using UnityEngine;
 public interface IOwnable
 {
     void SetOwner(IOwner owner);
+    IOwner GetOwner();
 }
 
 public class Drone : AirCraft, IOwnable
@@ -94,7 +95,26 @@ public class Drone : AirCraft, IOwnable
                 data.waypoints.Add(node2);
             }
 
-            ai.setPath(data, null, true);
+            if (owner as AirCarrier)
+            {
+                ai.setPath(path);
+            }
+            else
+            {
+
+                NodeEditorFramework.Standard.PathData data = new NodeEditorFramework.Standard.PathData();
+                data.waypoints = new List<NodeEditorFramework.Standard.PathData.Node>();
+                foreach (var point in path.waypoints)
+                {
+                    var node2 = new NodeEditorFramework.Standard.PathData.Node();
+                    node2.ID = point.ID;
+                    node2.children = point.children;
+                    node2.position = point.position;
+                    data.waypoints.Add(node2);
+                }
+
+                ai.setPath(data, null, true);
+            }
         }
     }
 
@@ -156,7 +176,22 @@ public class Drone : AirCraft, IOwnable
 
     public void CommandMovement(Vector3 pos)
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client && networkAdapter)
+        {
+            networkAdapter.CommandMovementServerRpc(pos);
+            return;
+        }
         ai.moveToPosition(pos);
+    }
+
+    public void CommandFollowOwner()
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client && networkAdapter)
+        {
+            networkAdapter.CommandFollowOwnerServerRpc();
+            return;
+        }
+        ai.follow(owner.GetTransform());
     }
 
     private AirCraftAI.AIMode lastMode;

@@ -117,6 +117,7 @@ public class RectangleEffectScript : MonoBehaviour
 
     public void Start()
     {
+        if (!SystemLoader.AllLoaded) return;
         partSys.Clear();
         if (active)
         {
@@ -127,6 +128,7 @@ public class RectangleEffectScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!SystemLoader.AllLoaded) return;
         if (active)
         {
             if (!built || Camera.main.pixelRect != pixelRect)

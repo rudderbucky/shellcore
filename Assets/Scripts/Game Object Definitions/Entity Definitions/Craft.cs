@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
@@ -88,7 +89,7 @@ public abstract class Craft : Entity
 
     protected override void Update()
     {
-        if (instantiatedRespawnPrefab) // graphics code, should update position in Update instead of FixedUpdate
+        if (SystemLoader.AllLoaded && instantiatedRespawnPrefab) // graphics code, should update position in Update instead of FixedUpdate
         {
             instantiatedRespawnPrefab.position = transform.position;
         }
@@ -105,13 +106,14 @@ public abstract class Craft : Entity
         isDead = false;
 
         // Deactivate abilities
-        foreach (var ability in abilities)
-        {
-            if (ability is ActiveAbility || ability is PassiveAbility)
+        if (abilities != null)
+            foreach (var ability in abilities)
             {
-                ability.SetDestroyed(true);
+                if (ability is ActiveAbility || ability is PassiveAbility)
+                {
+                    ability.SetDestroyed(true);
+                }
             }
-        }
 
         transform.rotation = Quaternion.identity; // reset rotation so part rotation can be reset
         foreach (Transform child in transform)
@@ -129,6 +131,12 @@ public abstract class Craft : Entity
         }
 
         Start(); // once everything else is done initialize the craft again
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && MasterNetworkAdapter.lettingServerDecide && networkAdapter)
+        {
+            networkAdapter.clientReady = false;
+        }
+
         AudioManager.PlayClipByID("clip_respawn", transform.position);
     }
 
@@ -142,7 +150,6 @@ public abstract class Craft : Entity
 
     /// <summary>
     /// The method that moves the craft based on the integer input it receives
-    /// Movement tries to emulate original Shellcore Command movement (specifically episode 1) but is not perfect
     /// </summary>
     /// <param name="direction">integer that specifies the direction of movement</param>
     public void MoveCraft(Vector2 direction)
@@ -157,6 +164,9 @@ public abstract class Craft : Entity
 
     protected override void FixedUpdate()
     {
+        if (!SystemLoader.AllLoaded) return;
+        var lettingServerDecide = this as PlayerCore && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && networkAdapter != null;
+
         entityBody.drag = draggable.dragging ? 25F : 0;
         if (draggable.dragging)
         {
@@ -173,7 +183,10 @@ public abstract class Craft : Entity
             }
         }
 
-        CraftMover(physicsDirection); // move craft
+        if (!lettingServerDecide)
+        {
+            CraftMover(physicsDirection); // move craft
+        }
         physicsDirection = Vector2.zero;
     }
 
@@ -224,12 +237,7 @@ public abstract class Craft : Entity
             RotateCraft(directionVector / weight);
         }
 
-        entityBody.velocity += directionVector * physicsAccel * Time.fixedDeltaTime;
-        var sqr = entityBody.velocity.sqrMagnitude;
-        if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)
-        {
-            entityBody.velocity = entityBody.velocity.normalized * Mathf.Min(physicsSpeed, maxVelocity);
-        }
+        entityBody.velocity = CalculateNewVelocity(directionVector);
 
         if (((Vector2)transform.position - oldPosition).sqrMagnitude > 2f)
         {
@@ -238,12 +246,24 @@ public abstract class Craft : Entity
         }
     }
 
+    protected Vector2 CalculateNewVelocity(Vector2 directionVector)
+    {
+        var vec = entityBody.velocity;
+        vec += directionVector * physicsAccel * Time.fixedDeltaTime;
+        var sqr = vec.sqrMagnitude;
+        if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)
+        {
+            vec = vec.normalized * Mathf.Min(physicsSpeed, maxVelocity);
+        }
+        return vec;
+    }
+
     /// <summary>
     /// Check if craft is moving
     /// </summary>
     /// <returns></returns>
     public virtual bool IsMoving()
     {
-        return (entityBody.velocity != Vector2.zero); // if there is any velocity the craft is moving
+        return (entityBody && entityBody.velocity != Vector2.zero); // if there is any velocity the craft is moving
     }
 }

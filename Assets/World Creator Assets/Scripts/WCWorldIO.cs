@@ -6,10 +6,14 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Unity.Netcode;
+using UnityEngine.EventSystems;
 
 public class WCWorldIO : GUIWindowScripts
 {
     public WCGeneratorHandler generatorHandler;
+    [SerializeField]
+    private SelectionDisplayHandler displayHandler;
     public ShipBuilder builder;
     public WaveBuilder waveBuilder;
     public GameObject buttonPrefab;
@@ -33,6 +37,7 @@ public class WCWorldIO : GUIWindowScripts
     }
 
     IOMode mode = IOMode.Read;
+    public static string PRESET_DIRECTORY = null;
 
     public void Quit()
     {
@@ -94,9 +99,9 @@ public class WCWorldIO : GUIWindowScripts
         Hide();
     }
 
-#if UNITY_EDITOR
-    private bool instantTest = false;
-#endif
+//#if UNITY_EDITOR
+    public static bool instantTest = false;
+//#endif
 
     [SerializeField]
     private Text loadingText;
@@ -110,12 +115,12 @@ public class WCWorldIO : GUIWindowScripts
             if (Directory.Exists(path))
             {
                 generatorHandler.ReadWorld(path);
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
                 if (instantTest)
                 {
                     TestWorld();
                 }
-#endif
+//#endif
             }
         }
     }
@@ -224,7 +229,7 @@ public class WCWorldIO : GUIWindowScripts
     {
         if (generatorHandler.saveState == 2)
         {
-            LoadTestSave();
+            LoadTestSave(originalReadPath);
         }
         else
         {
@@ -232,9 +237,10 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
-    void LoadTestSave()
+    public static void LoadTestSave(string originalReadPath, bool usePassedPathForWorld = false)
     {
         var path = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "TestWorld");
+        if (usePassedPathForWorld) path = originalReadPath;
         var savePath = System.IO.Path.Combine(Application.persistentDataPath, "Saves", "TestSave");
         if (File.Exists(savePath))
         {
@@ -315,22 +321,43 @@ public class WCWorldIO : GUIWindowScripts
     }
 
     public GameObject window;
-    public GameObject newWorldStack;
+    public GameObject newWorldButton;
     public InputField field;
     public Text readButton;
+    private bool rwFromEntityPlaceholder;
+
+    string placeholderPath;
 
     void Show(IOMode mode)
     {
-        if ((mode != IOMode.Read && mode != IOMode.Write) && 
-            !Directory.Exists(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder")))
+        clearAction = () => {
+            if (displayHandler && builder && builder.currentPartHandler)
+            {
+                displayHandler.ClearDisplay();
+                builder.currentPartHandler.SetActive(true);
+            }
+        };
+        rwFromEntityPlaceholder = SceneManager.GetActiveScene().name != "SampleScene";
+        placeholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
+        if (SceneManager.GetActiveScene().name == "MainMenu")
         {
-            return;
+            var serverPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "rudderbucky server", "Entities");
+            if (Directory.Exists(serverPath))
+            {
+                placeholderPath = serverPath;
+            }
+        }
+        PRESET_DIRECTORY = System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints");
+        if ((mode != IOMode.Read && mode != IOMode.Write) && 
+            !Directory.Exists(placeholderPath) && rwFromEntityPlaceholder)
+        {
+            rwFromEntityPlaceholder = false;
         }
         buttons.Clear();
         active = true;
         gameObject.SetActive(true);
         window.SetActive(true);
-        newWorldStack.SetActive(mode == IOMode.Write || mode == IOMode.WriteShipJSON || mode == IOMode.WriteWaveJSON);
+        bool writing = mode == IOMode.Write || mode == IOMode.WriteShipJSON || mode == IOMode.WriteWaveJSON;
         DestroyAllButtons();
         this.mode = mode;
         string[] directories = null;
@@ -338,6 +365,17 @@ public class WCWorldIO : GUIWindowScripts
         readButton.gameObject.SetActive(mode == IOMode.Read || mode == IOMode.Write);
 
         PlayerViewScript.SetCurrentWindow(this);
+        switchBPDirectoryButton.gameObject.SetActive(false);
+        switchBPDirectoryButton.onClick.RemoveAllListeners();
+        fileNameInputField.gameObject.SetActive(writing);
+        newWorldButton.gameObject.SetActive(writing);
+        GetComponent<RectTransform>().anchoredPosition = GetComponentsInChildren<RectTransform>()[1].anchoredPosition = Vector2.zero;
+        if (!Directory.Exists(PRESET_DIRECTORY))
+        {
+            Directory.CreateDirectory(PRESET_DIRECTORY);
+        }
+        var wrongReadingFromBPS = readingFromPresetBPs == rwFromEntityPlaceholder;
+        if (wrongReadingFromBPS) SwitchBPDirectory();
         switch (mode)
         {
             case IOMode.Read:
@@ -364,7 +402,11 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                directories = Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder"));
+                switchBPDirectoryButton.gameObject.SetActive(rwFromEntityPlaceholder);
+                List<string> files = new List<string>();
+                if (rwFromEntityPlaceholder) files.AddRange(Directory.GetFiles(placeholderPath));
+                files.AddRange(Directory.GetFiles(PRESET_DIRECTORY));
+                directories = files.ToArray();
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
@@ -385,7 +427,7 @@ public class WCWorldIO : GUIWindowScripts
                             SetWorldIndicators(dir);
                             break;
                         case IOMode.ReadShipJSON:
-                            builder.LoadBlueprint(System.IO.File.ReadAllText(dir));
+                            ReadShipJSON(dir);
                             Hide();
                             break;
                         case IOMode.WriteShipJSON:
@@ -406,12 +448,89 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
+    [SerializeField]
+    private Button switchBPDirectoryButton;
+    private bool readingFromPresetBPs;
+    public void SwitchBPDirectory()
+    {
+        readingFromPresetBPs = !readingFromPresetBPs;
+        switchBPDirectoryButton.GetComponentInChildren<Text>().text = readingFromPresetBPs ? "Preset BPs" : "World BPs";
+        for (int i = 0; i < content.childCount; i++)
+        {
+            var child = content.GetChild(i);
+        }
+    }
+    UnityAction clearAction;
     void AddButton(string name, UnityAction action)
     {
         var button = Instantiate(buttonPrefab, content).GetComponent<Button>();
-        button.onClick.AddListener(action);
+        button.onClick.AddListener(
+            () =>
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    File.Delete(name);
+                    Destroy(button.gameObject);
+                    return;
+                }
+                action.Invoke();
+            });
+        button.onClick.AddListener(clearAction);
+        if (name.Contains("PresetBlueprints"))
+        {
+            var assignTrigger = new EventTrigger.TriggerEvent();
+            var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name));
+            assignTrigger.AddListener((e) => {
+                
+                if (displayHandler && print)
+                {
+                    displayHandler.AssignDisplay(print, null);
+                    builder.currentPartHandler.SetActive(false);
+                }
+            });
+            var unassignTrigger = new EventTrigger.TriggerEvent();
+            unassignTrigger.AddListener((e) => {
+                clearAction.Invoke();
+            });
+
+            var eventTrigger = button.gameObject.AddComponent<EventTrigger>();
+            eventTrigger.triggers.Add(new EventTrigger.Entry()
+            {
+                eventID = EventTriggerType.PointerEnter,
+                callback = assignTrigger
+            });
+
+            eventTrigger.triggers.Add(new EventTrigger.Entry()
+            {
+                eventID = EventTriggerType.PointerExit,
+                callback = unassignTrigger
+            });
+        }
+        
         button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name);
+        if (PlayerCore.Instance)
+        {
+            var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name));
+            if (print && print.parts != null && !builder.ContainsParts(print.parts))
+            {
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (Inadequate parts)";
+                button.GetComponentInChildren<Text>().color = Color.red;
+            }
+            if (!ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, true, PlayerCore.Instance.abilityCaps))
+            {
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (Invalid)";
+                button.GetComponentInChildren<Text>().color = Color.red;
+            }
+        }
         buttons.Add(button);
+
+        if (mode == IOMode.ReadShipJSON || mode == IOMode.WriteShipJSON)
+        {
+            button.gameObject.SetActive(readingFromPresetBPs == name.Contains("PresetBlueprints"));
+            switchBPDirectoryButton.onClick.AddListener(() => {
+                button.gameObject.SetActive(readingFromPresetBPs == name.Contains("PresetBlueprints"));
+            });
+        }
     }
 
     private List<Button> buttons = new List<Button>();
@@ -421,6 +540,8 @@ public class WCWorldIO : GUIWindowScripts
     public InputField description;
     public InputField defaultBlueprint;
     public InputField newWorldInputField;
+    [SerializeField]
+    private InputField fileNameInputField;
 
     public void OpenNewWorldPrompt()
     {
@@ -447,7 +568,8 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadShipJSON:
             case IOMode.WriteShipJSON:
-                path = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", field.text + ".json");
+                path = readingFromPresetBPs ? System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints", field.text + ".json") :
+                    System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", field.text + ".json");
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
@@ -467,7 +589,7 @@ public class WCWorldIO : GUIWindowScripts
                 WCReadCurrentPath();
                 break;
             case IOMode.ReadShipJSON:
-                builder.LoadBlueprint(System.IO.File.ReadAllText(path));
+                ReadShipJSON(path);
                 Hide();
                 break;
             case IOMode.WriteShipJSON:
@@ -487,6 +609,25 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
+    [SerializeField]
+    private InputField[] blueprintFields;
+
+    private void ReadShipJSON(string path)
+    {
+        rwFromEntityPlaceholder = SceneManager.GetActiveScene().name != "SampleScene";
+        foreach (var field in blueprintFields)
+        {
+            field.text = System.IO.Path.GetFileNameWithoutExtension(path);
+        }
+        if (rwFromEntityPlaceholder && builder)
+            builder.LoadBlueprint(System.IO.File.ReadAllText(path));
+        else if (PlayerCore.Instance)
+        {
+            var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(path));
+            if (print && ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, false, PlayerCore.Instance.abilityCaps) && builder.ContainsParts(print.parts))
+                LoadPreset(print);
+        }
+    }
     void DestroyAllButtons()
     {
         buttons.Clear();
@@ -496,12 +637,22 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
+    private void LoadPreset(EntityBlueprint blueprint)
+    {
+        var x = new EntityBlueprint.PartInfo[blueprint.parts.Count];
+        blueprint.parts.CopyTo(x);
+        PlayerCore.Instance.blueprint.parts = new List<EntityBlueprint.PartInfo>(x);
+        builder.CloseUI(true);
+        PlayerCore.Instance.Rebuild();
+    }
+
     public void Hide()
     {
         active = false;
         DestroyAllButtons();
         gameObject.SetActive(false);
         window.SetActive(false);
+        if (clearAction != null) clearAction.Invoke();
     }
 
     public override void CloseUI()

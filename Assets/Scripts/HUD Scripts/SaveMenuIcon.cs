@@ -3,6 +3,8 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -91,7 +93,16 @@ public class SaveMenuIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             File.WriteAllText(current, path);
         }
 
-        MainMenu.StartGame(nullifyTestJsonPath);
+        if (!NetworkManager.Singleton || !NetworkManager.Singleton.IsListening) MainMenu.StartGame(nullifyTestJsonPath);
+        else 
+        {
+            if (NetworkManager.Singleton.IsServer || SceneManager.GetActiveScene().name != "SampleScene")
+                NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            else
+            {
+                SystemLoader.instance.Initialize();
+            }
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)

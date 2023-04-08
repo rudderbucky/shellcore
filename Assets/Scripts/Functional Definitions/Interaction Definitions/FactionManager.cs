@@ -95,6 +95,7 @@ public class FactionManager : MonoBehaviour
 
     public static Color GetFactionColor(int faction)
     {
+        if (faction < 0) Debug.LogError("Uninitialized faction!");
         return instance.factions[faction].color;
     }
 

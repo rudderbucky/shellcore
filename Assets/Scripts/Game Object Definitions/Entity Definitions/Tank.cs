@@ -26,6 +26,11 @@ public class Tank : GroundCraft, IOwnable
         }
     }
 
+    public IOwner GetOwner()
+    {
+        return owner;
+    }
+
     public override bool isImmobile
     {
         get { return pins > 0 || forceImmobile || !isOnGround; }
@@ -112,6 +117,7 @@ public class Tank : GroundCraft, IOwnable
             return;
         }
 
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
         // Find valid ground targets
         List<Entity> targets = new List<Entity>(AIData.entities);
 
@@ -129,11 +135,21 @@ public class Tank : GroundCraft, IOwnable
         }
 
         // Find a path to the closest one
-        if (targets.Count > 0)
-        {
-            Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), weapon.GetRange());
+        if (targets.Count == 0) return;
+        Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), weapon.GetRange());
 
-            if (!HasPath)
+        if (!HasPath)
+        {
+            path = newPath;
+            HasPath = (path != null && path.Length > 0);
+            if (HasPath)
+            {
+                index = path.Length - 1;
+            }
+        }
+        else if (newPath != null && path != null && newPath.Length > 0 && path.Length > 0)
+        {
+            if (newPath[0] != path[0])
             {
                 path = newPath;
                 HasPath = (path != null && path.Length > 0);
@@ -142,26 +158,14 @@ public class Tank : GroundCraft, IOwnable
                     index = path.Length - 1;
                 }
             }
-            else if (newPath != null && path != null && newPath.Length > 0 && path.Length > 0)
+        }
+        else
+        {
+            path = newPath;
+            HasPath = (path != null && path.Length > 0);
+            if (HasPath)
             {
-                if (newPath[0] != path[0])
-                {
-                    path = newPath;
-                    HasPath = (path != null && path.Length > 0);
-                    if (HasPath)
-                    {
-                        index = path.Length - 1;
-                    }
-                }
-            }
-            else
-            {
-                path = newPath;
-                HasPath = (path != null && path.Length > 0);
-                if (HasPath)
-                {
-                    index = path.Length - 1;
-                }
+                index = path.Length - 1;
             }
         }
     }

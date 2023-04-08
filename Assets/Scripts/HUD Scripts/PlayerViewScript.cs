@@ -106,7 +106,7 @@ public class PlayerViewScript : MonoBehaviour
                 escapeMenu.SetActive(!escapeMenu.activeSelf); // toggle
                 paused = escapeMenu.activeSelf;
                 escapeCanvas.sortingOrder = ++currentLayer;
-                if (escapeMenu.activeSelf)
+                if (escapeMenu.activeSelf && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
                 {
                     Time.timeScale = 0;
                     AudioListener.pause = true;

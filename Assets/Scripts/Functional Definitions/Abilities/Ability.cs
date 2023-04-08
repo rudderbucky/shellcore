@@ -274,21 +274,57 @@ public abstract class Ability : MonoBehaviour
         }
     }
 
+    protected void SetActivationState()
+    {
+        Core.MakeBusy(); // make core busy
+        startTime = Time.time; // Set activation time
+        charging = true;
+        UpdateState(); // Update state
+    }
+
+    protected virtual bool ExtraCriteriaToActivate()
+    {
+        return true;
+    }
+
+    protected virtual void ExtraCriteriaFailureEvent()
+    {
+    }
+
     public virtual void Activate()
     {
+        var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
         // If (NPC or (Player and not interacting)) and enough energy
-        if (State == AbilityState.Ready && !(Core is PlayerCore player && player.GetIsInteracting()) && Core.GetHealth()[2] >= energyCost)
+        if (State != AbilityState.Ready || (Core is PlayerCore player && player.GetIsInteracting()) || Core.GetHealth()[2] < energyCost) return;
+        if (!lettingServerDecide || ExtraCriteriaToActivate()) 
         {
             Core.TakeEnergy(energyCost); // remove the energy
-            startTime = Time.time; // Set activation time
-            charging = true;
-            UpdateState(); // Update state
-            // If there's no charge time, execute immediately
-            if (State == AbilityState.Active || State == AbilityState.Cooldown)
+            SetActivationState();
+        }
+        else
+        {
+            ExtraCriteriaFailureEvent();
+        }
+        
+        if (lettingServerDecide && Core && Core.networkAdapter && ExtraCriteriaToActivate()) 
+        {
+            Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
+        }
+        // If there's no charge time, execute immediately
+        if (!lettingServerDecide && (State == AbilityState.Active || State == AbilityState.Cooldown))
+        {
+            Execute();
+            if (Core && Core.networkAdapter)
             {
-                Execute();
+                Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
             }
         }
+    }
+
+    // What immediately happens when a weapon is fired
+    public virtual void ActivationCosmetic(Vector3 targetPos)
+    {
+
     }
 
     /// <summary>
@@ -313,7 +349,7 @@ public abstract class Ability : MonoBehaviour
         UpdateBlinker();
 
         // If ability activated
-        if (State == AbilityState.Active && prevState == AbilityState.Charging)
+        if (State == AbilityState.Active && prevState == AbilityState.Charging && !MasterNetworkAdapter.lettingServerDecide)
         {
             Execute(); // execute the ability
         }
@@ -350,7 +386,7 @@ public abstract class Ability : MonoBehaviour
         else if (State == AbilityState.Active)
         {
             // Do not reveal stealth enemies by blinking their parts
-            if (ID == AbilityID.Stealth && core.faction != 0)
+            if (ID == AbilityID.Stealth && (PlayerCore.Instance && PlayerCore.Instance.faction != core.faction))
             {
                 if (glow)
                 {

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using static MasterNetworkAdapter;
 
 /// <summary>
 /// All "human-like" craft are considered ShellCores. These crafts are intelligent and all air-borne. This includes player ShellCores.
@@ -12,7 +14,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public static PowerCollectDelegate OnPowerCollected;
 
     protected ICarrier carrier;
-    protected float totalPower;
+    protected int totalPower;
     protected GameObject bulletPrefab; // prefab for main bullet
     public int intrinsicCommandLimit;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
@@ -139,12 +141,12 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         totalPower = 0;
     }
 
-    public float GetPower()
+    public int GetPower()
     {
         return totalPower;
     }
 
-    public void AddPower(float power)
+    public void AddPower(int power)
     {
         totalPower = Mathf.Min(5000, totalPower + power);
         if (power > 0 && OnPowerCollected != null)
@@ -162,6 +164,12 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     {
         tractor.SetTractorTarget(null);
         StopYardRepairCoroutine();
+        if (MasterNetworkAdapter.mode != NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
+            && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)
+        {
+            HUDScript.AddScore(core.networkAdapter.playerName, 5);
+        }
+        
         base.OnDeath();
     }
 
@@ -181,7 +189,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         // initialize instance fields
         base.Start(); // base start
 
-        InitAI();
+        if (!husk)
+            InitAI();
 
         if (FactionManager.DoesFactionGrowRandomParts(faction) && addRandomPartsCoroutine == null)
         {
@@ -208,6 +217,10 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     protected override void OnDestroy()
     {
         base.OnDestroy();
+        if (AIData.shellCores.Contains(this))
+        {
+            AIData.shellCores.Remove(this);
+        }
         if (PartyManager.instance?.partyMembers?.Contains(this) == true)
         {
             PartyManager.instance.UnassignBackend(null, this);
@@ -216,7 +229,8 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public override void Respawn()
     {
-        if ((carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || PartyManager.instance.partyMembers.Contains(this))
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off || 
+            (carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || (PartyManager.instance && PartyManager.instance.partyMembers.Contains(this)))
         {
             isYardRepairing = false;
             base.Respawn();
@@ -227,10 +241,16 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
     }
 
+    public void SyncPower(int power)
+    {
+        this.totalPower = power;
+    }
+
     protected override void Update()
     {
         base.Update();
 
+        if (!SystemLoader.AllLoaded) return;
         // If got away from Yard while isYardRepairing, FinalizeRepair immediately.
         if (isYardRepairing)
         {
@@ -258,7 +278,22 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 FinalizeRepair();
             }
         }
+
+        // tick all abilities if a server husk
+        if (husk || this as PlayerCore)
+        {
+            foreach (Ability a in GetAbilities())
+            {
+                if (a)
+                {
+                    a.Tick();
+                }
+            }
+        }
     }
+
+
+
 
     protected override void BuildEntity()
     {
@@ -303,12 +338,16 @@ public class ShellCore : AirCraft, IHarvester, IOwner
             tractor.owner = this;
         }
 
+        if (!AIData.shellCores.Contains(this))
+        {
+            AIData.shellCores.Add(this);
+        }
         base.Awake(); // base awake
     }
 
-    public void SetTractorTarget(Draggable newTarget)
+    public void SetTractorTarget(Draggable newTarget, bool fromClient = false, bool fromServer = false)
     {
-        tractor.SetTractorTarget(newTarget);
+        tractor.SetTractorTarget(newTarget, fromClient, fromServer);
     }
 
     public Draggable GetTractorTarget()

@@ -1,4 +1,6 @@
-﻿public class InvertTractor : ActiveAbility
+﻿using UnityEngine;
+
+public class InvertTractor : ActiveAbility
 {
     public override void SetTier(int abilityTier)
     {
@@ -12,8 +14,8 @@
         base.Awake(); // base awake
         // hardcoded values here
         ID = AbilityID.InvertTractor;
-        cooldownDuration = 20;
-        energyCost = 250;
+        cooldownDuration = 15;
+        energyCost = 50;
     }
 
     /// <summary>
@@ -24,6 +26,14 @@
         Core.tractorSwitched = false;
         base.Deactivate();
     }
+
+    // What immediately happens when a weapon is fired
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        SetActivationState();
+        Execute();
+    }
+
 
     /// <summary>
     /// Increases core engine power to speed up the core

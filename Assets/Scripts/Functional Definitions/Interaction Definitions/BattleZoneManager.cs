@@ -132,9 +132,115 @@ public class BattleZoneManager : MonoBehaviour
 
     public void AlertPlayers(int faction, string message)
     {
-        if (faction == 0 && PlayerCore.Instance)
+        if (PlayerCore.Instance && faction == PlayerCore.Instance.faction && PlayerCore.Instance.alerter)
         {
             PlayerCore.Instance.alerter.showMessage(message, "clip_stationlost");
+        }
+    }
+
+    public bool IsTarget(Entity ent)
+    {
+        return targets != null && targets.Contains(ent);
+    }
+
+
+    public void ResetCarriers()
+    {
+        foreach (var target in targets)
+        {
+            if (!SectorManager.instance.carriers.ContainsKey(target.faction))
+            {
+                continue;
+            }
+
+            var carrier = SectorManager.instance.carriers[target.faction];
+            if (target is ShellCore shellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead())
+            {
+                shellCore.SetCarrier(SectorManager.instance.carriers[target.faction]);
+            }
+        }
+    }
+
+    private List<int> GetLivingFactions()
+    {
+        List<int> livingFactions = new List<int>();
+
+        // Create dictionary entries for counts of existing target entities of each faction
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (targets[i] && !targets[i].GetIsDead() && !livingFactions.Contains(targets[i].faction))
+            {
+                livingFactions.Add(targets[i].faction);
+            }
+        }
+        return livingFactions;
+    }
+
+    private bool GetAllFactionsAllied(List<int> livingFactions)
+    {
+        bool allAllied = true;
+        for (int i = 0; i < livingFactions.Count; i++)
+        {
+            for (int j = 0; j < livingFactions.Count; j++)
+            {
+                if (!FactionManager.IsAllied(livingFactions[i], livingFactions[j]) ||
+                    !FactionManager.IsAllied(livingFactions[j], livingFactions[i]))
+                {
+                    allAllied = false;
+                    break;
+                }
+            }
+        }
+        return allAllied;
+    }
+
+    private void BattleZoneEndCheck(List<int> livingFactions, bool allAllied)
+    {
+        if (livingFactions.Count >= 2 && !allAllied) return;
+        playing = false;
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
+        {
+            foreach (Entity playerEntity in targets)
+            {
+                if (playerEntity && !playerEntity.GetIsDead() && livingFactions.Contains(playerEntity.faction) &&
+                     playerEntity.networkAdapter && playerEntity.networkAdapter.isPlayer.Value)
+                {
+                    HUDScript.AddScore(playerEntity.networkAdapter.playerName, 50);
+                }
+            }
+        }
+
+        if (!PlayerCore.Instance) return;
+        foreach (Entity playerEntity in targets)
+        {
+            if (!(playerEntity as PlayerCore)) continue;
+            if (livingFactions.Contains(playerEntity.faction))
+            {
+                AudioManager.PlayClipByID("clip_victory");
+                if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin == null) continue;
+                NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
+            }
+            else
+            {
+                AudioManager.PlayClipByID("clip_fail");
+                if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose == null) continue;
+                NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose.Invoke(sectorName);
+            }
+        }
+
+        BattleZoneCreateResultsWindow(livingFactions);
+    }
+
+    private void BattleZoneCreateResultsWindow(List<int> livingFactions)
+    {
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Server && DialogueSystem.Instance)
+        {
+            DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
+        }
+        else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && DialogueSystem.Instance)
+        {
+            DialogueSystem.Instance.StartSectorVote();
         }
     }
 
@@ -148,77 +254,21 @@ public class BattleZoneManager : MonoBehaviour
                 return;
             }
 
-            foreach (var target in targets)
-            {
-                if (!SectorManager.instance.carriers.ContainsKey(target.faction))
-                {
-                    continue;
-                }
+            if (SectorManager.instance == null || SectorManager.instance.carriers == null) return;
+            if (targets == null) return;
 
-                var carrier = SectorManager.instance.carriers[target.faction];
-                if (target is ShellCore shellCore && carrier != null && !carrier.Equals(null) && !carrier.GetIsDead())
-                {
-                    shellCore.SetCarrier(SectorManager.instance.carriers[target.faction]);
-                }
-            }
+            ResetCarriers();
 
-            List<int> livingFactions = new List<int>();
+            var livingFactions = GetLivingFactions();
 
-            // Create dictionary entries for counts of existing target entities of each faction
-            for (int i = 0; i < targets.Count; i++)
-            {
-                if (targets[i] && !targets[i].GetIsDead() && !livingFactions.Contains(targets[i].faction))
-                {
-                    livingFactions.Add(targets[i].faction);
-                }
-            }
+            bool allAllied = GetAllFactionsAllied(livingFactions);
 
-            bool allAllied = true;
-
-            for (int i = 0; i < livingFactions.Count; i++)
-            {
-                for (int j = 0; j < livingFactions.Count; j++)
-                {
-                    if (!FactionManager.IsAllied(livingFactions[i], livingFactions[j]) ||
-                        !FactionManager.IsAllied(livingFactions[j], livingFactions[i]))
-                    {
-                        allAllied = false;
-                        break;
-                    }
-                }
-            }
-
-            if (livingFactions.Count < 2 || allAllied)
-            {
-                playing = false;
-                if (!PlayerCore.Instance) return;
-                foreach (Entity playerEntity in targets)
-                {
-                    if (playerEntity as PlayerCore)
-                    {
-                        if (livingFactions.Contains(playerEntity.faction))
-                        {
-                            AudioManager.PlayClipByID("clip_victory");
-                            if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin != null)
-                            {
-                                NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(sectorName);
-                            }
-                        }
-                        else
-                        {
-                            AudioManager.PlayClipByID("clip_fail");
-                            if (NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose != null)
-                            {
-                                NodeEditorFramework.Standard.WinBattleCondition.OnBattleLose.Invoke(sectorName);
-                            }
-                        }
-                    }
-                }
-
-                DialogueSystem.ShowBattleResults(livingFactions.Contains(PlayerCore.Instance.faction));
-            }
+            BattleZoneEndCheck(livingFactions, allAllied);
         }
     }
+
+
+    
 
     public void AddTarget(Entity target)
     {

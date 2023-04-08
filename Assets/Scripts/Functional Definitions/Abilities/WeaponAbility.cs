@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public enum WeaponDiversityType
@@ -179,15 +180,25 @@ public abstract class WeaponAbility : ActiveAbility
 
     public override void Activate()
     {
-        if (Core as PlayerCore)
+        var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
+        if (lettingServerDecide && Core && Core.networkAdapter) 
+        {
+            Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
+            return; 
+        }
+        if (Core as PlayerCore || (Core.networkAdapter && Core.networkAdapter.isPlayer.Value))
+        {
             isEnabled = !isEnabled;
+            Core.networkAdapter.SetWeaponIsEnabledClientRpc(part ? part.info.location : Vector2.zero, isEnabled);
+        }
         UpdateState();
+        Core.MakeBusy(); // make core busy
+        if (!lettingServerDecide)
+        {
+            Shoot();
+        }
     }
 
-    /// <summary>
-    /// Override for tick that integrates the targeting system of the core for players
-    /// and adjusted for the new isActive behaviour
-    /// </summary>
     public override void Tick()
     {
         if (State == AbilityState.Destroyed)
@@ -222,7 +233,12 @@ public abstract class WeaponAbility : ActiveAbility
             // check if allied
             if (FactionManager.IsAllied(tmp.GetFaction(), Core.faction)) return;
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
-            if (!Execute(target.position)) return;
+            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || (!MasterNetworkAdapter.lettingServerDecide))
+            {
+                if (!Execute(target.position)) return;
+                if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && Core.networkAdapter) 
+                    Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
+            }
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 /// <summary>
 /// A player ShellCore.
@@ -85,10 +86,7 @@ public class PlayerCore : ShellCore
         isInteracting = val;
     }
 
-    /// <summary>
-    /// Respawns the player core, deinitializes the HUD
-    /// </summary>
-    public override void Respawn()
+    public void SetPlayerSpawnPoint()
     {
         List<bool> weaponActivationStates = new List<bool>();
         for (int i = 0; i < abilities.Count; i++)
@@ -119,23 +117,63 @@ public class PlayerCore : ShellCore
             spawnPoint = havenSpawnPoint;
             dimension = lastDimension;
         }
-
         transform.position = spawnPoint; // reset position to spawn point
+    }
+
+    /// <summary>
+    /// Respawns the player core, deinitializes the HUD
+    /// </summary>
+    public override void Respawn()
+    {
+        List<bool> weaponActivationStates = new List<bool>();
+        List<bool> autoCastActivationStates = new List<bool>();
+        if (abilities != null)
+        {
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                if (abilities[i] is WeaponAbility weapon)
+                {
+                    weaponActivationStates.Add(weapon.GetActiveTimeRemaining() == -1);
+                }
+            }
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                if (abilities[i] is ActiveAbility activeAbility)
+                {
+                    autoCastActivationStates.Add(activeAbility.AutoCast);
+                }
+            }
+        }
+        if (hud)
+        {
+            hud.DeinitializeHUD(); // deinitialize HUD
+        }
+
+        SetPlayerSpawnPoint();
+
+
         base.Respawn(); // this will reinitialize the HUD
         spawnPoint = havenSpawnPoint; // reset spawn point
         int weaponIndex = 0;
-        for (int i = 0; i < abilities.Count; i++)
+        if (abilities != null)
         {
-            if (abilities[i] is WeaponAbility weapon)
+            for (int i = 0; i < abilities.Count; i++)
             {
-                weapon.SetActive(weaponActivationStates[weaponIndex++]);
+                if (abilities[i] is WeaponAbility weapon)
+                {
+                    weapon.SetActive(weaponActivationStates[weaponIndex++]);
+                }
+            }
+            int activeAbilityIndex = 0;
+            for (int i = 0; i < abilities.Count; i++)
+            {
+                if (abilities[i] is ActiveAbility activeAbility)
+                {
+                    activeAbility.AutoCast = autoCastActivationStates[activeAbilityIndex++];
+                }
             }
         }
-        int activeAbilityIndex = 0;
-        for (int i = 0; i < abilities.Count; i++)
-        {
-            abilities[i].AutoCast = autoCastActivationStates[activeAbilityIndex++];
-        }
+        
     }
 
     private Vector3? minimapPoint = null;
@@ -244,9 +282,14 @@ public class PlayerCore : ShellCore
         ID = "player";
     }
 
-    // Use this for initialization (overrides the other start methods so is always called even by parent method calls)
+    public void StartWrapper()
+    {
+        Start();
+    }
     protected override void Start()
     {
+        if (!SystemLoader.AllLoaded) return;
+
         foreach (var part in partsToDestroy)
         {
             if (part && part.gameObject)
@@ -261,11 +304,6 @@ public class PlayerCore : ShellCore
         {
             hud.InitializeHUD(this);
         }
-        else
-        {
-            Camera.main.GetComponent<CameraScript>().Initialize(this);
-            GameObject.Find("AbilityUI").GetComponent<AbilityHandler>().Initialize(this);
-        } // initialize the HUD
 
         if (!loaded)
         {
@@ -274,6 +312,7 @@ public class PlayerCore : ShellCore
         }
 
         // force sectors to load once positioning has been determined
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         SectorManager.instance.AttemptSectorLoad();
 
         // the player needs a predictable name for task interactions, so its object will always be called this
@@ -325,7 +364,8 @@ public class PlayerCore : ShellCore
                 SectorManager.instance.characters = newChars.ToArray();
             }
 
-            transform.position = havenSpawnPoint = save.position;
+            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+                transform.position = havenSpawnPoint = save.position;
         }
 
         name = entityName = "player";
@@ -347,25 +387,27 @@ public class PlayerCore : ShellCore
     // Update is called once per frame
     protected override void Update()
     {
+        if (!SystemLoader.AllLoaded || (NetworkManager.Singleton && NetworkManager.Singleton.IsListening && !blueprint)) return;
         // call methods
         if (group.sortingOrder < maxAirLayer) // player must always be above other entities
         {
             group.sortingOrder = ++maxAirLayer;
         }
 
-        // update abilities
-        for (int i = 0; i < abilities.Count; i++)
-        {
-            if (abilities[i])
-            {
-                abilities[i].Tick();
-            }
-        }
-
         base.Update(); // base update
         if (!GetIsInteracting() && !DialogueSystem.isInCutscene)
         {
-            MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && networkAdapter != null && !dirty)
+            {
+                networkAdapter.ChangeDirectionServerRpc(getDirectionalInput());
+                dirty = true;
+            }
+            else if ((MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || NetworkManager.Singleton.IsHost))
+            {
+                MoveCraft(getDirectionalInput()); // move the craft based on the directional input
+                if (networkAdapter) networkAdapter.wrapper.directionalVector = getDirectionalInput();
+            }
+        
         }
     }
 
@@ -381,7 +423,8 @@ public class PlayerCore : ShellCore
         instantiatedRespawnPrefab = Instantiate(respawnImplosionPrefab).transform;
         instantiatedRespawnPrefab.position = transform.position;
         AudioManager.PlayClipByID("clip_respawn", transform.position);
-        SectorManager.instance.AttemptSectorLoad();
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+            SectorManager.instance.AttemptSectorLoad();
     }
 
     protected override void CraftMover(Vector2 directionVector)

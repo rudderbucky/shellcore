@@ -60,6 +60,11 @@ public class AbilityHandler : MonoBehaviour
     {
         instance = this;
         core = player;
+        if (!core || !player.gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
         if (displayAbilities == null)
         {
             abilities = core.GetAbilities(); // Get the core's ability array

@@ -6,6 +6,10 @@ public class Outpost : AirConstruct, IVendor
 
     BattleZoneManager BZManager;
 
+    public EntityNetworkAdapter GetAdapter()
+    {
+        return networkAdapter;
+    }
 
     public bool NeedsSameFaction()
     {
@@ -53,19 +57,34 @@ public class Outpost : AirConstruct, IVendor
     {
         // this won't trigger PostDeath() since that only gets called if the timer ticks to a value
         // the timer doesn't tick unless isDead is set to true
+        targeter.SetTarget(null);
         int otherFaction = faction;
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+        {
+            if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
+            {
+                BZManager.UpdateCounters();
+                BZManager.AlertPlayers(otherFaction, "WARNING: Outpost lost!");
+            }
+        }
+        else if (!MasterNetworkAdapter.lettingServerDecide)
+        {
+            Debug.LogWarning(lastDamagedBy);
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
+                && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)
+                {
+                    HUDScript.AddScore(core.networkAdapter.playerName, 1);
+                }
+        
+        }
+
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
+
         faction = lastDamagedBy.faction;
 
         for (int i = 0; i < parts.Count; i++)
         {
             RemovePart(parts[i]);
-        }
-
-        targeter.SetTarget(null);
-        if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
-        {
-            BZManager.UpdateCounters();
-            BZManager.AlertPlayers(otherFaction, "WARNING: Outpost lost!");
         }
 
         Start();

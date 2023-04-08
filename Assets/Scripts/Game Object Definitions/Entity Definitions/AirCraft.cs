@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 /// <summary>
 /// Crafts that are air-borne are known as Aircrafts. These crafts bob up and down in the air when they are not moving, and can't normally attack
@@ -28,6 +29,7 @@ public abstract class AirCraft : Craft
 
     protected override void FixedUpdate()
     {
+        if (!SystemLoader.AllLoaded) return;
         base.FixedUpdate();
         Oscillator();
     }
@@ -44,7 +46,8 @@ public abstract class AirCraft : Craft
 
     protected override void OnDeath()
     {
-        if (!FactionManager.IsAllied(0, faction) && Random.Range(0, 1F) <= 0.2F)
+        var lettingServerDecide = MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost;
+        if (!FactionManager.IsAllied(0, faction) && Random.Range(0, 1F) <= 0.2F && !lettingServerDecide)
         {
             var x = Instantiate(energySpherePrefab, transform.position, Quaternion.identity);
 
@@ -60,6 +63,11 @@ public abstract class AirCraft : Craft
     /// </summary>
     protected void Oscillator()
     {
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsClient)
+        {
+            oscillating = false;
+            return;
+        }
         if (isDead)
         {
             // if aircraft is dead

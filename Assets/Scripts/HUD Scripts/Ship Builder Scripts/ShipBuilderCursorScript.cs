@@ -11,7 +11,6 @@ public interface IBuilderInterface
     void UpdateChain();
     EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
     void SetSearcherString(string text);
-    bool CheckPartIntersectsWithShell(ShipBuilderPart shipPart);
     string GetCurrentJSON();
 }
 
@@ -27,7 +26,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     ShipBuilderPart lastPart;
     public IBuilderInterface builder;
     public InputField searchField;
-    public InputField jsonField;
+    public GameObject jsonField;
     bool flipped;
     public AbilityHandler handler;
     public PlayerCore player;
@@ -174,7 +173,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                 dispatch = true;
                 mode = ShipBuilder.TransferMode.Return;
             }
-            else if (builder.CheckPartIntersectsWithShell(currentPart) && currentPart.GetLastValidPos() == null)
+            else if (ShipBuilder.CheckPartIntersectsWithShell(currentPart, builder.GetMode()) && currentPart.GetLastValidPos() == null)
             {
                 dispatch = true;
                 mode = ShipBuilder.TransferMode.Return;
@@ -218,11 +217,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         symmetryLastPart = symmetryCurrentPart;
         currentPart = null;
         symmetryCurrentPart = null;
-        if (lastPart.isInChain && lastPart.validPos)
+        if (lastPart.info.isInChain && lastPart.info.validPos)
         {
             lastPart.SetLastValidPos(lastPart.info.location);
         }
-        else if (Input.GetKey(KeyCode.LeftShift) || builder.CheckPartIntersectsWithShell(lastPart))
+        else if (Input.GetKey(KeyCode.LeftShift) || ShipBuilder.CheckPartIntersectsWithShell(lastPart, builder.GetMode()))
         {
             lastPart.Snapback();
         }
@@ -417,7 +416,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 
         int baseMoveSize = cursorMode == BuilderMode.Yard ? 4 : 5;
 
-        if (Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.isFocused && !WCWorldIO.active))
+        if (Input.GetKeyDown(KeyCode.C) && (!searchField.isFocused && !jsonField.activeSelf && !WCWorldIO.active))
         {
             if (builder as ShipBuilder == null || !(builder as ShipBuilder).Equals(null))
             {

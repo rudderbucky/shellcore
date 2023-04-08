@@ -33,6 +33,7 @@ public class EnergyRock : MonoBehaviour
 
     void Update()
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
         if (Time.fixedTime > targetTime)
         {
             targetTime = Time.fixedTime + maxTime;

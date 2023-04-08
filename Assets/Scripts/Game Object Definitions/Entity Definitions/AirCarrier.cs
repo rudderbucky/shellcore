@@ -59,6 +59,21 @@ public class AirCarrier : AirConstruct, ICarrier
         return sectorMngr;
     }
 
+
+    protected override void OnDeath()
+    {
+        if (!MasterNetworkAdapter.lettingServerDecide)
+        {
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
+                && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)
+                {
+                    HUDScript.AddScore(core.networkAdapter.playerName, 10);
+                }
+        
+        }
+        base.OnDeath();
+    }
+
     protected override void Update()
     {
         if (initialized)
@@ -97,11 +112,11 @@ public class AirCarrier : AirConstruct, ICarrier
     public override void TakeCoreDamage(float amount)
     {
         base.TakeCoreDamage(amount);
-        if (PlayerCore.Instance && currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction))
+        if (PlayerCore.Instance && PlayerCore.Instance.alerter && currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction))
         {
             int temp = (int)(Mathf.Floor((currentHealth[1] / maxHealth[1]) * 5) + 1) * 20;
             coreAlertThreshold -= (maxHealth[1] * 0.2f);
-            PlayerCore.Instance.alerter.showMessage($"Carrier is at {temp}% core", "clip_alert");
+            PlayerCore.Instance.alerter.showMessage($"Base is at {temp}% core", "clip_alert");
         }
     }
 
@@ -109,11 +124,11 @@ public class AirCarrier : AirConstruct, ICarrier
     {
         //this is bad code but idk how to do better
         float residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
-        if (PlayerCore.Instance && currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction))
+        if (PlayerCore.Instance && PlayerCore.Instance.alerter && currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction))
         {
             int temp = (int)(Mathf.Floor((currentHealth[0] / maxHealth[0]) * 5) + 1) * 20;
             shellAlertThreshold -= (maxHealth[0] * 0.2f);
-            PlayerCore.Instance.alerter.showMessage($"Carrier is at {temp}% shell", "clip_alert");
+            PlayerCore.Instance.alerter.showMessage($"Base is at {temp}% shell", "clip_alert");
         }
 
         return residue;

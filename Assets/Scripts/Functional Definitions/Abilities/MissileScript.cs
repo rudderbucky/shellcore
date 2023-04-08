@@ -115,6 +115,7 @@ public class MissileScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
         var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
         var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
         if (craft != null && !craft.GetIsDead()) // check if the component was obtained
@@ -131,7 +132,7 @@ public class MissileScript : MonoBehaviour
                 }
 
                 damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
-                Instantiate(hitPrefab, transform.position, Quaternion.identity);
+                InstantiateHitPrefab();
                 Destroy(gameObject); // bullet has collided with a target, delete immediately
             }
         }
@@ -155,8 +156,26 @@ public class MissileScript : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         vector = target && transform ? (target.position - transform.position) : Vector3.zero;
-        Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0,
-            Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg));
+        InstantiateMissPrefab();
         Destroy(gameObject);
+    }
+
+
+    public void InstantiateHitPrefab()
+    {
+        Instantiate(hitPrefab, transform.position, Quaternion.identity);
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
+        {
+            MasterNetworkAdapter.instance.BulletHitClientRpc(transform.position);
+        }
+    }
+
+    public void InstantiateMissPrefab()
+    {
+        Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0, Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg));
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
+        {
+            MasterNetworkAdapter.instance.BulletMissClientRpc(transform.position, vector);
+        }
     }
 }

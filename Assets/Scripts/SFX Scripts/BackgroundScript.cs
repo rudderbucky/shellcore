@@ -35,7 +35,7 @@ public class BackgroundScript : MonoBehaviour
     public static void SetActive(bool act)
     {
         active = act;
-        if (instance)
+        if (instance && SystemLoader.AllLoaded)
         {
             instance.Restart();
         }
@@ -171,6 +171,7 @@ public class BackgroundScript : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if (!SystemLoader.AllLoaded) return;
         if (active)
         {
             if (Camera.main.pixelRect != pixelRect)

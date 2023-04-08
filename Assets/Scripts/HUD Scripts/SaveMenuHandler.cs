@@ -36,7 +36,8 @@ public class SaveMenuHandler : GUIWindowScripts
         "Alpha 4.2.0",
         "Alpha 4.3.0",
         "Beta 0.0.0",
-        "Beta 0.1.1"
+        "Beta 0.1.1",
+        "Beta 1.0.0"
     };
 
     public Sprite[] episodeSprites;
@@ -250,6 +251,10 @@ public class SaveMenuHandler : GUIWindowScripts
         indexToMigrate = index;
         switch (saves[index].version)
         {
+            case "Beta 1.0.0":
+                migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will move your presets to the new dedicated folder the game uses. "
+                                                                                                 + "Backup first! (Below save icon delete button)";
+                break;
             case "Beta 0.1.1":
                 migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will fix Trial by Combat's mission name and a couple of others as well. "
                                                                                                  + "Backup first! (Below save icon delete button)";
@@ -293,6 +298,31 @@ public class SaveMenuHandler : GUIWindowScripts
         var save = saves[indexToMigrate];
         switch (save.version)
         {
+            case "Beta 1.0.0":
+                int presetNum = 0;
+                if (WCWorldIO.PRESET_DIRECTORY == null) WCWorldIO.PRESET_DIRECTORY = System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints");
+                if (!Directory.Exists(WCWorldIO.PRESET_DIRECTORY))
+                {
+                    Directory.CreateDirectory(WCWorldIO.PRESET_DIRECTORY);
+                }
+                foreach(var preset in save.presetBlueprints)
+                {
+                    presetNum++;
+                    var path = System.IO.Path.Combine(WCWorldIO.PRESET_DIRECTORY, $"{save.name} - Preset {presetNum}.json");
+                    int x = 1;
+                    if (File.Exists(path))
+                    {
+                        while (File.Exists(System.IO.Path.Combine(WCWorldIO.PRESET_DIRECTORY, $"{save.name} - Preset {presetNum} + ({x}).json")))
+                        {
+                            x++;
+                        }
+                        path = System.IO.Path.Combine(WCWorldIO.PRESET_DIRECTORY, $"{save.name} - Preset {presetNum} + ({x}).json");
+                    }
+                    if (!string.IsNullOrEmpty(preset))
+                    ShipBuilder.SaveBlueprint(null, path, preset);
+                }
+                SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+                break;
             case "Beta 0.1.1":
                 ChangeMissionName(save, "The Carrier Conundrum", "Carrier Conundrum");
                 ChangeMissionName(save, "The Turret Turmoil", "Turret Turmoil");
@@ -427,15 +457,7 @@ public class SaveMenuHandler : GUIWindowScripts
         save.sectorsSeen = new List<string>();
         save.missions = new List<Mission>();
 
-        // this section contains default information for a new save. Edit this to change how the default save
-        // is created.
-        EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-        blueprint.name = "Player Save Blueprint";
-        blueprint.parts = new List<EntityBlueprint.PartInfo>();
-        blueprint.coreSpriteID = "core1_light";
-        blueprint.coreShellSpriteID = "core1_shell";
-        blueprint.baseRegen = CoreUpgraderScript.GetRegens(blueprint.coreShellSpriteID);
-        blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
+        EntityBlueprint blueprint = SaveHandler.GetDefaultBlueprint();
         save.currentPlayerBlueprint = JsonUtility.ToJson(blueprint);
         save.abilityCaps = CoreUpgraderScript.minAbilityCap;
         save.shards = 0;

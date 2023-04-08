@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Bullet : WeaponAbility
 {
@@ -43,6 +45,11 @@ public class Bullet : WeaponAbility
         return FireBullet(victimPos); // fire if there is
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        AudioManager.PlayClipByID(bulletSound, transform.position);
+    }
+
     /// <summary>
     /// Helper method for Execute() that creates a bullet and modifies it to be shot
     /// </summary>
@@ -79,7 +86,7 @@ public class Bullet : WeaponAbility
         {
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
-        AudioManager.PlayClipByID(bulletSound, transform.position);
+        ActivationCosmetic(targetPos);
 
         var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
         bullet.transform.localScale = prefabScale;
@@ -102,7 +109,19 @@ public class Bullet : WeaponAbility
         }
 
         // Destroy the bullet after survival time
-        script.StartSurvivalTimer(survivalTime);
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !MasterNetworkAdapter.lettingServerDecide)
+            script.StartSurvivalTimer(survivalTime);
+        
+        if (SceneManager.GetActiveScene().name != "SampleScene")
+        {
+            bullet.GetComponent<NetworkProjectileWrapper>().enabled = false;
+            bullet.GetComponent<NetworkObject>().enabled = false;
+        }
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && (!MasterNetworkAdapter.lettingServerDecide))
+        {
+            bullet.GetComponent<NetworkObject>().Spawn();
+        }
         return true;
     }
 }

@@ -160,6 +160,7 @@ public class SelectionBoxScript : MonoBehaviour
 
     void Update()
     {
+        if (!PlayerCore.Instance || !PlayerCore.Instance.gameObject.activeSelf || !SystemLoader.AllLoaded) return;
         bool overTarget = GetMouseOverTarget();
 
         if (overTarget)
