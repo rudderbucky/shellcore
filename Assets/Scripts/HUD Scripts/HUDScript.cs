@@ -77,7 +77,6 @@ public class HUDScript : MonoBehaviour
 
     public static void SetScore(string player, int val)
     {
-        Debug.LogWarning(val);
         if (!scores.ContainsKey(player))
         {
             scores.Add(player, val);

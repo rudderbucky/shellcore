@@ -165,6 +165,7 @@ public class TractorBeam : MonoBehaviour
 
             for (int i = 0; i < energies.Length; i++)
             {
+                if (!energies[i]) continue;
                 float sqrD = Vector3.SqrMagnitude(transform.position - energies[i].transform.position);
                 if ((closest == null || sqrD < closestD) && !energies[i].GetComponent<Draggable>().dragging)
                 {

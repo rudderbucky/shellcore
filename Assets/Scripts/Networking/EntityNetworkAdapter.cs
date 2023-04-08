@@ -429,9 +429,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    private bool wrapperUpdated = false;
     [ClientRpc]
     public void UpdateStateClientRpc(ServerResponse wrapper, int faction, ClientRpcParams clientRpcParams = default)
     {
+        this.wrapper.position = wrapper.position;
+        wrapperUpdated = true;
         if (wrapper.clientID == NetworkManager.Singleton.LocalClientId && isPlayer.Value)
         {
             UpdatePlayerState(wrapper);
@@ -505,7 +508,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public void SetUpHuskEntity()
     {
-        if ((!NetworkManager.IsClient || NetworkManager.Singleton.LocalClientId != OwnerClientId || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
+        if ((!NetworkManager.IsClient || (NetworkManager.Singleton.LocalClientId != OwnerClientId && wrapperUpdated) || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
             && !huskEntity && SystemLoader.AllLoaded)
         {
             huskEntity = AIData.entities.Find(e => e.ID == idToUse);

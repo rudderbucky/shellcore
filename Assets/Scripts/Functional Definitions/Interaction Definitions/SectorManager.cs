@@ -1470,6 +1470,7 @@ public class SectorManager : MonoBehaviour
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
             foreach (var orb in AIData.energySpheres)
             {
+                if (!orb) continue;
                 Destroy(orb.gameObject);
             }
 

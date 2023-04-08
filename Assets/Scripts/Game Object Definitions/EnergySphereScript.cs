@@ -8,10 +8,10 @@ public class EnergySphereScript : MonoBehaviour
     // TODO: make undraggable if already being dragged
     private bool collected = false;
     public static bool dirty = false;
+    private bool initialized = false;
 
     private void OnEnable()
     {
-        AIData.energySpheres.Add(this);
         if (SceneManager.GetActiveScene().name != "SampleScene" || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
             GetComponent<NetworkPowerOrbWrapper>().enabled = false;
@@ -21,13 +21,30 @@ public class EnergySphereScript : MonoBehaviour
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
         {
             GetComponent<NetworkObject>().Spawn();
-            GetComponent<NetworkPowerOrbWrapper>().SetPositionClientRpc(transform.position);
             if (!callbackAdded)
             {
                 callbackAdded = true;
                 NetworkManager.Singleton.OnClientConnectedCallback += callback;
             }
         }
+
+        if (NetworkManager.Singleton.IsClient)
+        {
+            GetComponent<SpriteRenderer>().enabled = false;
+        }
+    }
+
+    public void Initialize()
+    {
+        if (initialized) return;
+        initialized = true;
+        AIData.energySpheres.Add(this);
+        GetComponent<SpriteRenderer>().enabled = true;
+    }
+
+    private void Awake()
+    {
+        if(MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client) Initialize();
     }
     private static System.Action<ulong> callback = (u) =>
     {
@@ -39,7 +56,7 @@ public class EnergySphereScript : MonoBehaviour
 
     private void OnDestroy()
     {
-        AIData.energySpheres.Remove(this);
+        if (initialized) AIData.energySpheres.Remove(this);
     }
 
     float timer;
@@ -47,6 +64,7 @@ public class EnergySphereScript : MonoBehaviour
 
     private void Update()
     {
+        if (!initialized) return;
         if (dirtyTimer - Time.time < 0)
         {
             dirty = false;
