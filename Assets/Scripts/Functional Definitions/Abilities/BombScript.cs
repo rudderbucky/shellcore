@@ -10,10 +10,10 @@ public class BombScript : MonoBehaviour
     private Entity.EntityCategory category;
     private Entity.TerrainType terrain;
     public int faction; // faction of projectile
-    public GameObject missPrefab;
-    public GameObject hitPrefab;
-    public readonly float explosionRadius = 10f;
-    private GameObject explosionCirclePrefab;
+    public static GameObject missPrefab;
+    public static GameObject hitPrefab;
+    public static readonly float explosionRadius = 10f;
+    private static GameObject explosionCirclePrefab;
     private float timeInstantiated;
     private float fuseTime = 3F;
     // Use this for initialization
@@ -113,28 +113,38 @@ public class BombScript : MonoBehaviour
                                                                                // if the shell is low, damage the part
 
                         craft.TakeCoreDamage(residue);
-
                         if (!fired)
                         {
-                            AudioManager.PlayClipByID("clip_bombexplosion", transform.position);
-                            GameObject tmp = Instantiate(explosionCirclePrefab, transform); // instantiate circle explosion
-                            tmp.SetActive(true);
-                            tmp.transform.position = transform.position;
-                            tmp.GetComponent<DrawCircleScript>().Initialize();
-                            for (int i = 0; i < 15; i++)
+
+                            fired = true;
+                            ActivationCosmetic(transform.position);
+                            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
                             {
-                                Instantiate(hitPrefab, transform.position + new Vector3(Random.Range(-explosionRadius, explosionRadius),
-                                    Random.Range(-explosionRadius, explosionRadius)), Quaternion.identity).transform.localScale *= 2;
+                                MasterNetworkAdapter.instance.BombExplosionClientRpc(transform.position);
                             }
+                            Destroy(gameObject); // bullet has collided with a target, delete immediately
                         }
-
-
-                        fired = true;
-
-                        Destroy(gameObject); // bullet has collided with a target, delete immediately
                     }
                 }
             }
+    }
+
+    public static void ActivationCosmetic(Vector3 position)
+    {
+        if (!hitPrefab)
+        {
+            hitPrefab = ResourceManager.GetAsset<GameObject>("bullet_hit_prefab");
+        }
+        AudioManager.PlayClipByID("clip_bombexplosion", position);
+        GameObject tmp = Instantiate(explosionCirclePrefab, position, Quaternion.identity); // instantiate circle explosion
+        tmp.SetActive(true);
+        tmp.transform.position = position;
+        tmp.GetComponent<DrawCircleScript>().Initialize();
+        for (int i = 0; i < 15; i++)
+        {
+            Instantiate(hitPrefab, position + new Vector3(Random.Range(-explosionRadius, explosionRadius),
+                Random.Range(-explosionRadius, explosionRadius)), Quaternion.identity).transform.localScale *= 2;
+        }
     }
 
     void SectorLoaded(string sector)

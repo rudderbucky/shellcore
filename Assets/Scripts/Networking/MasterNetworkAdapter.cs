@@ -132,6 +132,13 @@ public class MasterNetworkAdapter : NetworkBehaviour
         DevConsoleScript.Instance.SetActive();
     }
 
+    [ClientRpc]
+    public void BombExplosionClientRpc(Vector3 position)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        BombScript.ActivationCosmetic(position);
+    }
+
 
     public GameObject networkObj;
 

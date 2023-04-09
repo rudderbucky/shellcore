@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 public class Bomb : WeaponAbility
 {
@@ -72,6 +73,11 @@ public class Bomb : WeaponAbility
         script.SetTerrain(terrain);
         script.bombColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         script.faction = Core.faction;
+
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && (!NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost))
+        {
+            script.GetComponent<NetworkObject>().Spawn();
+        }
 
         // Destroy the bullet after survival time
         script.StartSurvivalTimer(survivalTime);
