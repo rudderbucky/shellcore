@@ -621,7 +621,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
             {
                 updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : (UPDATE_RATE + (AIData.entities.Count > 50 ? 1 : 0));
                 dirty = false;
-                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
+                if (isPlayer.Value || AIData.entities.Count < 100 || !(huskEntity is Craft craft) || craft.IsMoving() || craft.GetIsDead())
+                    UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
             };
         }
     }

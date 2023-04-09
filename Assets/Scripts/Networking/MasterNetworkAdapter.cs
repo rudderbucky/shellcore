@@ -294,7 +294,9 @@ public class MasterNetworkAdapter : NetworkBehaviour
             [AbilityID.Rocket] = 0,
             [AbilityID.SpeederBullet] = 0,
             [AbilityID.SiegeBullet] = 0,
-            [AbilityID.DamageBoost] = 1,
+            [AbilityID.ChainBeam] = 0,
+            [AbilityID.Ion] = 0,
+            [AbilityID.Flak] = 0,
             [AbilityID.Stealth] = 1,
             [AbilityID.PinDown] = 1,
             [AbilityID.Disrupt] = 1,
@@ -309,6 +311,12 @@ public class MasterNetworkAdapter : NetworkBehaviour
                 reason = $"Invalid part ID: {part.partID}";
                 return false;
             }
+            if (part.abilityID < 0 || part.abilityID >= 46)
+            {
+                reason = $"Invalid ability ID: {part.abilityID}";
+                return false;
+            }
+
             if (abilityDict.ContainsKey((AbilityID)part.abilityID))
             {
                 abilityDict[(AbilityID)part.abilityID]--;
