@@ -46,17 +46,14 @@ public class PinDown : ActiveAbility
     {
         if (!missileLinePrefab)
         {
-            var missileLinePrefab = new GameObject("Missile Line"); // create prefab and set to parent
+            missileLinePrefab = new GameObject("Missile Line"); // create prefab and set to parent
+            LineRenderer lineRenderer = missileLinePrefab.AddComponent<LineRenderer>(); // add line renderer
+            lineRenderer.material = ResourceManager.GetAsset<Material>("white_material"); // get material
+            MissileAnimationScript comp = missileLinePrefab.AddComponent<MissileAnimationScript>(); // add the animation script
         }
 
         var missileColor = new Color(0.8F, 1F, 1F, 0.9F);
 
-        // I use this prefab as one of the active lines on the missile 
-        // because what's the point in not doing it this way
-
-        LineRenderer lineRenderer = missileLinePrefab.AddComponent<LineRenderer>(); // add line renderer
-        lineRenderer.material = ResourceManager.GetAsset<Material>("white_material"); // get material
-        MissileAnimationScript comp = missileLinePrefab.AddComponent<MissileAnimationScript>(); // add the animation script
         foreach (var part in entity.GetComponentsInChildren<ShellPart>())
         {
             var x = Instantiate(missileLinePrefab, part.transform); // instantiate

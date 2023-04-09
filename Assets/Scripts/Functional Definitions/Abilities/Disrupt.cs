@@ -49,11 +49,6 @@ public class Disrupt : Ability
                 }
 
                 var missileColor = new Color(0.8F, 1F, 1F, 0.9F);
-
-                // I use this prefab as one of the active lines on the missile 
-                // because what's the point in not doing it this way
-
-
                 var x = Instantiate(missileLinePrefab, part.transform); // instantiate
                 x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
                 x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
