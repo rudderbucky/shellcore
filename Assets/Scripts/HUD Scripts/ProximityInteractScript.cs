@@ -83,8 +83,8 @@ public class ProximityInteractScript : MonoBehaviour
             playerNames[core].gameObject.SetActive(!core.GetIsDead() && (!PlayerCore.Instance || (core.StealthStacks == 0 || PlayerCore.Instance.faction == core.faction)));
             if (!playerNames[core].gameObject.activeSelf) continue;
             var worldToScreenPoint = Camera.main.WorldToScreenPoint(core.GetTransform().position);
-            worldToScreenPoint.x *= (float)1920 / Screen.width;
-            worldToScreenPoint.y *= (float)1920 / Screen.width;
+            worldToScreenPoint.x *= UIScalerScript.GetScale();
+            worldToScreenPoint.y *= UIScalerScript.GetScale();
             playerNames[core].anchoredPosition = 
                 worldToScreenPoint + new Vector3(0, 50);
         }
@@ -110,11 +110,6 @@ public class ProximityInteractScript : MonoBehaviour
             {
                 lastInteractable = closest;
                 interactIndicator.localScale = new Vector3(1, 0, 1);
-            }
-
-            if (y < 1)
-            {
-                interactIndicator.localScale = new Vector3(1, Mathf.Min(1, y + 0.1F), 1);
             }
 
             if (y < 1)
