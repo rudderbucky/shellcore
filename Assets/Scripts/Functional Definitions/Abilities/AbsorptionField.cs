@@ -33,6 +33,13 @@ public class AbsorptionField : ActiveAbility
         craft.absorptions--;
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        SetActivationState();
+        Execute();
+        base.ActivationCosmetic(targetPos);
+    }
+
     /// <summary>
     /// Creates the field sprite
     /// </summary>
