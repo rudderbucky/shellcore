@@ -451,6 +451,25 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+
+    public void InflictionCosmeticClientRpc(int abilityID, ClientRpcParams clientRpcParams = default)
+    {
+        if (!huskEntity || huskEntity.GetIsDead() || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        switch (abilityID)
+        {
+            case (int)AbilityID.Disrupt:
+                Disrupt.InflictionCosmetic(huskEntity);
+                break;            
+            case (int)AbilityID.PinDown:
+                PinDown.InflictionCosmetic(huskEntity);
+                break;
+            default:
+                return;
+        }
+    }
+
+
 
     public NetworkVariable<bool> serverReady;
 

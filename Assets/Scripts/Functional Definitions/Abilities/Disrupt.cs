@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 /// <summary>
 /// Resets active cooldowns of nearby enemies
@@ -21,12 +22,52 @@ public class Disrupt : Ability
         cooldownDuration = 30;
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        AudioManager.PlayClipByID("clip_disrupt", targetPos);
+        base.ActivationCosmetic(targetPos);
+    }
+
+    private static GameObject missileLinePrefab;
+
+    public static void InflictionCosmetic(Entity entity)
+    {
+        foreach (var part in entity.GetComponentsInChildren<ShellPart>())
+        {
+            if (!part) continue;
+            if (part.GetComponent<Ability>() && !(part.GetComponent<Ability>() as PassiveAbility))
+            {
+                //part.SetPartColor(Color.grey);
+                part.lerpColors();
+                if (!missileLinePrefab)
+                {
+
+                    missileLinePrefab = new GameObject("Missile Line"); // create prefab
+                    LineRenderer lineRenderer = missileLinePrefab.AddComponent<LineRenderer>(); // add line renderer
+                    lineRenderer.material = ResourceManager.GetAsset<Material>("white_material"); // get material
+                    MissileAnimationScript comp = missileLinePrefab.AddComponent<MissileAnimationScript>(); // add the animation script
+                }
+
+                var missileColor = new Color(0.8F, 1F, 1F, 0.9F);
+
+                // I use this prefab as one of the active lines on the missile 
+                // because what's the point in not doing it this way
+
+
+                var x = Instantiate(missileLinePrefab, part.transform); // instantiate
+                x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
+                x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
+                Destroy(x, 0.5f);
+            }
+        }
+    }
+
     /// <summary>
     /// Resets active cooldowns of nearby enemies
     /// </summary>
     protected override void Execute()
     {
-        AudioManager.PlayClipByID("clip_disrupt", transform.position);
+        ActivationCosmetic(transform.position);
         for (int i = 0; i < AIData.entities.Count; i++)
         {
             if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction) && !AIData.entities[i].IsInvisible)
@@ -42,30 +83,8 @@ public class Disrupt : Ability
                         }
                     }
 
-                    foreach (var part in AIData.entities[i].GetComponentsInChildren<ShellPart>())
-                    {
-                        if (part.GetComponent<Ability>() && !(part.GetComponent<Ability>() as PassiveAbility))
-                        {
-                            //part.SetPartColor(Color.grey);
-                            part.lerpColors();
-                            var missileLinePrefab = new GameObject("Missile Line"); // create prefab and set to parent
-                            missileLinePrefab.transform.SetParent(transform, false);
-
-                            var missileColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
-
-                            // I use this prefab as one of the active lines on the missile 
-                            // because what's the point in not doing it this way
-
-                            LineRenderer lineRenderer = missileLinePrefab.AddComponent<LineRenderer>(); // add line renderer
-                            lineRenderer.material = ResourceManager.GetAsset<Material>("white_material"); // get material
-                            MissileAnimationScript comp = missileLinePrefab.AddComponent<MissileAnimationScript>(); // add the animation script
-
-                            var x = Instantiate(missileLinePrefab, part.transform); // instantiate
-                            x.GetComponent<MissileAnimationScript>().Initialize(); // initialize
-                            x.GetComponent<MissileAnimationScript>().lineColor = missileColor;
-                            Destroy(x, 0.5f);
-                        }
-                    }
+                    InflictionCosmetic(AIData.entities[i]);
+                    if (AIData.entities[i].networkAdapter) AIData.entities[i].networkAdapter.InflictionCosmeticClientRpc((int)AbilityID.Disrupt);
                 }
             }
         }
