@@ -21,12 +21,18 @@ public class AreaRestore : Ability
         cooldownDuration = 10;
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        AudioManager.PlayClipByID("clip_healeffect", targetPos);
+        base.ActivationCosmetic(targetPos);
+    }
+
     /// <summary>
     /// Heals all nearby allies
     /// </summary>
     protected override void Execute()
     {
-        AudioManager.PlayClipByID("clip_healeffect", transform.position);
+        ActivationCosmetic(transform.position);
         for (int i = 0; i < AIData.entities.Count; i++)
         {
             if (AIData.entities[i].faction == Core.GetFaction())

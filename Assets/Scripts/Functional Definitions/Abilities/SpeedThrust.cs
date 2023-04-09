@@ -40,6 +40,12 @@ public class SpeedThrust : ActiveAbility
         }
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        AudioManager.PlayClipByID("clip_activateability", targetPos);
+        base.ActivationCosmetic(targetPos);
+    }
+
     /// <summary>
     /// Increases core engine power to speed up the core
     /// </summary>
@@ -49,7 +55,7 @@ public class SpeedThrust : ActiveAbility
         {
             craft.speed += boost * abilityTier;
             craft.CalculatePhysicsConstants();
-            AudioManager.PlayClipByID("clip_activateability", transform.position);
+            ActivationCosmetic(transform.position);
             base.Execute();
         }
     }

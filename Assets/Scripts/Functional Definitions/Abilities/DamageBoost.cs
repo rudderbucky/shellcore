@@ -27,6 +27,13 @@ public class DamageBoost : ActiveAbility
         }
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+
+        AudioManager.PlayClipByID("clip_buff", targetPos);
+        base.ActivationCosmetic(targetPos);
+    }
+
     /// <summary>
     /// Increases core engine power to speed up the core
     /// </summary>
@@ -35,7 +42,7 @@ public class DamageBoost : ActiveAbility
         if (Core)
         {
             Core.DamageBoostStacks += Mathf.Max(1, abilityTier);
-            AudioManager.PlayClipByID("clip_buff", transform.position);
+            ActivationCosmetic(transform.position);
             base.Execute();
         }
     }

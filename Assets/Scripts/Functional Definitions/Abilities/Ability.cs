@@ -315,7 +315,7 @@ public abstract class Ability : MonoBehaviour
             Execute();
             if (Core && Core.networkAdapter)
             {
-                Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
+                Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, part ? part.transform.position : Vector3.zero);
             }
         }
     }

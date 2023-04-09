@@ -56,6 +56,12 @@ public class HealthHeal : Ability
         return Core.GetHealth()[(int)type] < Core.GetMaxHealth()[(int)type];
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        AudioManager.PlayClipByID("clip_healeffect", targetPos);
+        base.ActivationCosmetic(targetPos);
+    }
+
     /// <summary>
     /// Heals the shell of the core (doesn't heal and refunds the energy used if it would overheal)
     /// </summary>
@@ -63,7 +69,7 @@ public class HealthHeal : Ability
     {
         if (ExtraCriteriaToActivate())
         {
-            AudioManager.PlayClipByID("clip_healeffect", transform.position);
+            ActivationCosmetic(transform.position);
             switch (type)
             {
                 case HealingType.core:

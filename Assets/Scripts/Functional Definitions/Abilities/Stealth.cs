@@ -50,7 +50,6 @@ public class Stealth : ActiveAbility
         {
             // change visibility
             craft.StealthStacks++;
-
             AudioManager.PlayClipByID("clip_activateability", transform.position);
             base.Execute();
         }
