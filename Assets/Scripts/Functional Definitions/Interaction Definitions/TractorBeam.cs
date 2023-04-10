@@ -222,11 +222,17 @@ public class TractorBeam : MonoBehaviour
 
         if (IsValidDraggableTarget(newTarget) || fromServer)
         {
+            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client && owner as PlayerCore && !fromServer)
+            {
+                owner.networkAdapter.RequestTractorUpdateServerRpc(EntityNetworkAdapter.GetNetworkId(newTarget ? newTarget.transform : null), !EntityNetworkAdapter.TransformIsNetworked(newTarget ? newTarget.transform : null));
+                return;
+            }
+
             if (lineRenderer)
             {
                 lineRenderer.enabled = (newTarget != null);
             }
-
+            
             if (target)
             {
                 target.dragging = false;
@@ -240,15 +246,16 @@ public class TractorBeam : MonoBehaviour
                 {
                     queueServerCall = true;
                 }
-                else if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client && owner as PlayerCore && !fromServer)
-                {
-                    owner.networkAdapter.RequestTractorUpdateServerRpc(EntityNetworkAdapter.GetNetworkId(target ? target.transform : null), !EntityNetworkAdapter.TransformIsNetworked(target ? target.transform : null));
-                }
             }
 
-            if (target)
+            if ((MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client || fromServer) && target)
             {
                 target.dragging = true;
+            }
+
+            if (target != oldTarget && owner.networkAdapter && EntityNetworkAdapter.TransformIsNetworked(newTarget ? newTarget.transform : null) && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
+            {
+                owner.networkAdapter.UpdateTractorClientRpc(EntityNetworkAdapter.GetNetworkId(newTarget ? newTarget.transform : null), newTarget == null);
             }
         }
     }

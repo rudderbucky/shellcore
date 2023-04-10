@@ -501,27 +501,40 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private void HandleQueuedTractor()
     {
-        if (queuedTractor && huskEntity is ShellCore && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client)
+        if (!queuedTractor || !(huskEntity is ShellCore) || MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client) return;
+        NetworkObject nObj = null;
+        if (tractorID.HasValue && !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(tractorID.Value))
         {
-            NetworkObject nObj = null;
-            if (tractorID.HasValue && !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(tractorID.Value))
-            {
-                queuedTractor = false;
-                tractorID = null;
-                return;
-            }
-            if (tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
-            if (tractorID.HasValue && (!nObj || !nObj.GetComponent<EntityNetworkAdapter>() || !nObj.GetComponent<EntityNetworkAdapter>().huskEntity)) return;
             queuedTractor = false;
-            var core = huskEntity as ShellCore;
-            if (tractorID == null)
+            tractorID = null;
+            return;
+        }
+        if (tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
+        if (tractorID.HasValue && (!TransformIsNetworked(nObj.transform)))
+        {
+            Debug.LogWarning("fail");
+            return;
+        }
+        var core = huskEntity as ShellCore;
+        if (tractorID == null)
+        {
+            queuedTractor = false;
+            core.SetTractorTarget(null, false, true);
+        }
+        else
+        {
+            var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
+            var ent = obj?.GetComponent<EntityNetworkAdapter>()?.huskEntity?.GetComponentInChildren<Draggable>();
+            if (ent)
             {
-                core.SetTractorTarget(null, false, true);
+                core.SetTractorTarget(ent, false, true);
+                queuedTractor = false;
             }
-            else
+            else if (obj.GetComponentInChildren<Draggable>())
             {
-                core.SetTractorTarget(NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value].GetComponent<EntityNetworkAdapter>().huskEntity.GetComponentInChildren<Draggable>(), false, true);
-            } 
+                core.SetTractorTarget(obj.GetComponentInChildren<Draggable>(), false, true);
+                queuedTractor = false;
+            }
         }
     }
 
@@ -534,6 +547,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
             if (!huskEntity)
             {
                 Sector.LevelEntity entity = new Sector.LevelEntity();
+                entity.name = blueprint.entityName;
+                if (isPlayer.Value) entity.name = playerName;
                 entity.faction = passedFaction;
                 var print = Instantiate(blueprint);
                 entity.ID = idToUse;
