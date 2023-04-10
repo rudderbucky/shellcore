@@ -332,11 +332,18 @@ public class MasterNetworkAdapter : NetworkBehaviour
                 return false;
             }
 
+
             if (part.tier < 0 || part.tier > 3)
             {
                 reason = "A part has tier < 0 or > 3.";
                 return false;
             } 
+
+            if (ResourceManager.GetAsset<PartBlueprint>(part.partID).size + 1 < part.tier)
+            {
+                reason = "A part is too small for its ability tier.";
+                return false;
+            }
         }
 
         reason = "Blueprint is not according to Ship Builder rules.";
