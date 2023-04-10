@@ -62,6 +62,9 @@ public class MainMenu : MonoBehaviour
         var retval = client.GetAsync($"http://{GATEWAY_IP}/api").ContinueWith((request) => RunClientFromGateway(request));
     }
 
+    private static string location;
+    private static string password;
+
     public void Start()
     {
        var args = GetCommandlineArgs();
@@ -74,7 +77,16 @@ public class MainMenu : MonoBehaviour
         if (args.TryGetValue("-address", out string address))
         {
             PlayerPrefs.SetString("Network_address", address);
+        }
 
+        if (args.TryGetValue("-location", out string loc))
+        {
+            location = loc;
+        }
+
+        if (args.TryGetValue("-password", out string pw))
+        {
+            password = pw;
         }
 
         blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer"));
