@@ -213,6 +213,7 @@ public class TractorBeam : MonoBehaviour
     private bool queueServerCall = false;
     public void SetTractorTarget(Draggable newTarget, bool fromClient = false, bool fromServer = false)
     {
+        if (target == newTarget) return;
         var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
         if (!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp))
         {
@@ -264,6 +265,11 @@ public class TractorBeam : MonoBehaviour
             return false;
         }
 
+        if ((newTarget.GetComponent<EnergySphereScript>() && newTarget.dragging) && !(target == newTarget))
+        {
+            return false;
+        }
+        
         return InvertTractorCheck(owner, newTarget);
     }
 
