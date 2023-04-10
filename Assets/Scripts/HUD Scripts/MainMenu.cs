@@ -237,8 +237,7 @@ public class MainMenu : MonoBehaviour
             PlayerPrefs.SetString("Network_worldName", worldField.text);
         }
         
-        if (!string.IsNullOrEmpty(addressField.text))
-            PlayerPrefs.SetString("Network_address", addressField.text);
+        PlayerPrefs.SetString("Network_address", addressField.text);
 
         if (!string.IsNullOrEmpty(portField.text))
             PlayerPrefs.SetString("Network_port", portField.text);
