@@ -357,6 +357,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     private static float VOTE_TIME = 10;
     private void FinishVote()
     {
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+            BattleZoneManager.END_CHECK_TIMER = Time.time + 1;
         if (window)
         {
             window.CloseUI();

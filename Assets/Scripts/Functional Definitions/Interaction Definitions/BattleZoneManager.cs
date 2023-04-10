@@ -194,9 +194,12 @@ public class BattleZoneManager : MonoBehaviour
         return allAllied;
     }
 
+    public static float END_CHECK_TIMER;
+
     private void BattleZoneEndCheck(List<int> livingFactions, bool allAllied)
     {
         if (livingFactions.Count >= 2 && !allAllied) return;
+        if (Time.time < END_CHECK_TIMER) return;
         playing = false;
 
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
