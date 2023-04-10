@@ -9,7 +9,7 @@ public class Bomb : WeaponAbility
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
     protected string bombSound = "clip_bomb";
-    public static readonly int bombDamage = 2000;
+    public static readonly int bombDamage = 1000;
 
     protected override void Awake()
     {
@@ -17,14 +17,14 @@ public class Bomb : WeaponAbility
         // hardcoded values here
         description = $"Projectile that deals {damage} damage.";
         abilityName = "Bomb";
-        bombSpeed = 2;
-        survivalTime = 45F;
-        range = 30F;
+        bombSpeed = 10;
+        survivalTime = 5F;
+        range = 10F;
         ID = AbilityID.Bomb;
-        cooldownDuration = 30F;
-        energyCost = 500;
+        cooldownDuration = 8F;
+        energyCost = 100;
         damage = bombDamage;
-        prefabScale = 1 * Vector3.one;
+        prefabScale = 0.5F * Vector3.one;
         category = Entity.EntityCategory.All;
         bonusDamageType = typeof(AirConstruct);
     }
@@ -32,7 +32,6 @@ public class Bomb : WeaponAbility
     protected override void Start()
     {
         bombPrefab = ResourceManager.GetAsset<GameObject>("bomb_prefab");
-        survivalTime = 45F * abilityTier;
         base.Start();
     }
 
@@ -66,7 +65,7 @@ public class Bomb : WeaponAbility
 
         // Update its damage to match main bullet
         var script = bullet.GetComponent<BombScript>();
-        bullet.GetComponent<Rigidbody2D>().velocity = (targetPos - originPos).normalized * 5 * abilityTier;
+        bullet.GetComponent<Rigidbody2D>().velocity = (targetPos - originPos).normalized * bombSpeed;
         script.owner = GetComponentInParent<Entity>();
         script.SetDamage(GetDamage());
         script.SetCategory(category);

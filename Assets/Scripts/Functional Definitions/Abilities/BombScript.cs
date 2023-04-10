@@ -12,7 +12,7 @@ public class BombScript : MonoBehaviour
     public int faction; // faction of projectile
     public static GameObject missPrefab;
     public static GameObject hitPrefab;
-    public static readonly float explosionRadius = 10f;
+    public static readonly float explosionRadius = 5f;
     private static GameObject explosionCirclePrefab;
     private float timeInstantiated;
     private float fuseTime = 3F;
@@ -77,8 +77,9 @@ public class BombScript : MonoBehaviour
     IEnumerator DestroyTimer(float time)
     {
         yield return new WaitForSeconds(time);
-        Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0,
-            0 * Mathf.Rad2Deg));
+        if (missPrefab)
+            Instantiate(missPrefab, transform.position, Quaternion.Euler(0, 0,
+                0 * Mathf.Rad2Deg));
         Destroy(gameObject);
     }
 
@@ -94,7 +95,6 @@ public class BombScript : MonoBehaviour
         if (Time.time > timeInstantiated + fuseTime && !fired)
             foreach (var ent in AIData.entities)
             {
-
                 var craft = ent.GetComponent<Entity>(); // check if it has a craft component
                 if (craft != null && !craft.GetIsDead()) // check if the component was obtained
                 {
