@@ -85,8 +85,8 @@ public class SpawnDrone : ActiveAbility
         drone.type = spawnData.type;
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
             drone.blueprintString = JsonUtility.ToJson(blueprint);
-        drone.Init();
         drone.SetOwner(craft);
+        drone.Init();
         craft.GetSectorManager().InsertPersistentObject(drone.blueprint.name, go);
         if (SectorManager.instance && SectorManager.instance.GetComponentInChildren<BattleZoneManager>())
         {
