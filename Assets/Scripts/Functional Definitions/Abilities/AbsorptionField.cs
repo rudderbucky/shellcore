@@ -30,7 +30,8 @@ public class AbsorptionField : ActiveAbility
     {
         base.Deactivate();
         Destroy(field);
-        craft.absorptions--;
+        if (craft)
+            craft.absorptions--;
     }
 
     public override void ActivationCosmetic(Vector3 targetPos)
