@@ -54,7 +54,12 @@ public class Control : PassiveAbility
 
     void Enhance(Entity entity)
     {
-        if (entity.faction == Core.faction && entity != Core && (Core is IOwner owner) && (entity is IOwnable ownable) && owner.GetUnitsCommanding() != null && owner.GetUnitsCommanding().Contains(ownable) && !boosted.Contains(entity))
+        if (entity.faction == Core.faction && entity != Core && (Core is IOwner owner) 
+        && (entity is IOwnable ownable) 
+        && ownable.GetOwner() != null 
+        && !ownable.GetOwner().Equals(null) 
+        && ownable.GetOwner().Equals(owner) 
+        && !boosted.Contains(entity))
         {
             entity.ControlStacks += abilityTier;
             boosted.Add(entity);
