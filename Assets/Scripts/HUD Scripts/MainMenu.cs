@@ -48,26 +48,57 @@ public class MainMenu : MonoBehaviour
         {
             Debug.Log("Connecting to: " + s.Result);
             var addressArray = s.Result.Split(":");
-            Debug.LogWarning(addressArray[0] + " " + addressArray[1]);
             SetAddress(addressArray[0]);
             SetPort(addressArray[1]);
             queueNetworkRun = true;
         });
     }
 
+    private static System.Net.Http.HttpClient client;
+
     public void QueryGateway()
     {
-        var client = new System.Net.Http.HttpClient();
-        client.Timeout = new System.TimeSpan(0,0,5);
-        var retval = client.GetAsync($"http://{GATEWAY_IP}/api").ContinueWith((request) => RunClientFromGateway(request));
+        var retval = client.GetAsync($"http://{GATEWAY_IP}/seekip/{location}").ContinueWith((request) => RunClientFromGateway(request));
     }
 
-    private static string location;
-    private static string password;
+    private static string location = "na";
+    public static string RDB_SERVER_PASSWORD = "test_password";
+    [SerializeField]
+    private Dropdown rdbServerLocation;
+    [SerializeField]
+    private Text playersConnectedText;
+    public void UpdatePlayersConnected(Task<HttpResponseMessage> message)
+    {
+        if (!playersConnectedText) return;
+        message.Result.Content.ReadAsStringAsync().ContinueWith((s) => 
+        {
+            playersConnectedText.text = $"There are {s.Result} players connected to this location.";
+        });
+    }
+
+    public void UpdateLocation(int loc)
+    {
+        switch(loc)
+        {
+            case 0:
+                location = "na";
+                break;
+            case 1:
+                location = "eu";
+                break;
+            case 2:
+                location = "apac";
+                break;
+            default:
+                break;
+        }
+        var retval = client.GetAsync($"http://{GATEWAY_IP}/playercount/{location}").ContinueWith((request) => UpdatePlayersConnected(request));
+    }
+
 
     public void Start()
     {
-       var args = GetCommandlineArgs();
+        var args = GetCommandlineArgs();
         if (args.TryGetValue("-world", out string world))
         {
             PlayerPrefs.SetString("Network_worldName", world);
@@ -86,11 +117,27 @@ public class MainMenu : MonoBehaviour
 
         if (args.TryGetValue("-password", out string pw))
         {
-            password = pw;
+            RDB_SERVER_PASSWORD = pw;
+        }
+
+        if (client == null)
+        {
+            client = new System.Net.Http.HttpClient();
+            client.Timeout = new System.TimeSpan(0,0,5);
         }
 
         blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer"));
         worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
+        if (rdbServerLocation)
+        {
+            try
+            {
+                rdbServerLocation.value = int.Parse(PlayerPrefs.GetString("Network_location", "0"));
+            }
+            catch {}
+            UpdateLocation(rdbServerLocation.value);
+        }
+
         portField.text = PlayerPrefs.GetString("Network_port", "");
         addressField.text = PlayerPrefs.GetString("Network_address", "");
         nameFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_name", "test_name"));
@@ -135,6 +182,10 @@ public class MainMenu : MonoBehaviour
         switch (mode)
         {
             case "server":
+                if (!string.IsNullOrEmpty(RDB_SERVER_PASSWORD))
+                {
+                    client.PostAsync($"http://{GATEWAY_IP}/introduce/{RDB_SERVER_PASSWORD}/{location}", null);
+                }
                 NetworkDuel(MasterNetworkAdapter.NetworkMode.Server);
                 break;
             case "client":
@@ -142,11 +193,21 @@ public class MainMenu : MonoBehaviour
                 break;
             case "host":
                 if (Input.GetKey(KeyCode.LeftShift))
-                    NetworkDuel(MasterNetworkAdapter.NetworkMode.Server);
+                    NetworkDuel("server");
                 else
                     NetworkDuel(MasterNetworkAdapter.NetworkMode.Host);
                 break;
         }
+    }
+
+    public static void AddPlayer(string username, string address)
+    {
+        var retval = client.PostAsync($"http://{GATEWAY_IP}/join/{RDB_SERVER_PASSWORD}/{username}/{address}", null);
+    }
+
+    public static void RemovePlayer()
+    {
+        var retval = client.PostAsync($"http://{GATEWAY_IP}/quit/{RDB_SERVER_PASSWORD}", null);
     }
 
     private void Update()
@@ -239,8 +300,9 @@ public class MainMenu : MonoBehaviour
         
         PlayerPrefs.SetString("Network_address", addressField.text);
 
-        if (!string.IsNullOrEmpty(portField.text))
-            PlayerPrefs.SetString("Network_port", portField.text);
+        PlayerPrefs.SetString("Network_port", portField.text);
+
+        PlayerPrefs.SetString("Network_location", rdbServerLocation.value.ToString());
 
         if (NetworkManager.Singleton.IsClient)
         {

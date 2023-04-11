@@ -346,6 +346,7 @@ public class WCWorldIO : GUIWindowScripts
             {
                 placeholderPath = serverPath;
             }
+            else placeholderPath = "";
         }
         PRESET_DIRECTORY = System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints");
         if ((mode != IOMode.Read && mode != IOMode.Write) && 
@@ -404,7 +405,7 @@ public class WCWorldIO : GUIWindowScripts
             case IOMode.WriteShipJSON:
                 switchBPDirectoryButton.gameObject.SetActive(rwFromEntityPlaceholder);
                 List<string> files = new List<string>();
-                if (rwFromEntityPlaceholder) files.AddRange(Directory.GetFiles(placeholderPath));
+                if (rwFromEntityPlaceholder && !String.IsNullOrEmpty(placeholderPath)) files.AddRange(Directory.GetFiles(placeholderPath));
                 files.AddRange(Directory.GetFiles(PRESET_DIRECTORY));
                 directories = files.ToArray();
                 break;
