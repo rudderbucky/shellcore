@@ -2554,6 +2554,9 @@ GameObject:
   - component: {fileID: 270017031}
   - component: {fileID: 270017030}
   - component: {fileID: 270017032}
+  - component: {fileID: 270017033}
+  - component: {fileID: 270017034}
+  - component: {fileID: 270017035}
   m_Layer: 0
   m_Name: Part Index
   m_TagString: Untagged
@@ -2639,12 +2642,14 @@ MonoBehaviour:
   - {fileID: 1740467551}
   - {fileID: 737479616}
   - {fileID: 1660829021}
+  viewPort: {fileID: 954692670}
   texts:
   - {fileID: 2101259525}
   - {fileID: 1256406329}
   - {fileID: 1871867465}
   infoBox: {fileID: 5254971}
   partDisplay: {fileID: 1957389345}
+  layoutGroups: []
   statsBar:
   - {fileID: 517865031}
   - {fileID: 1031010065}
@@ -2652,6 +2657,58 @@ MonoBehaviour:
   - {fileID: 1578235626}
   statsNumbers: 
   statsTotalTally: {fileID: 1296363339}
+  DEBUG_TEST_GROUP_DISABLING_ENABLED: 0
+--- !u!223 &270017033
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270017028}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 1
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &270017034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270017028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b9496c0d675f83409749ce05ed9b7f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 1
+--- !u!114 &270017035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270017028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &286298651
 GameObject:
   m_ObjectHideFlags: 0
@@ -17545,7 +17602,19 @@ MonoBehaviour:
   m_VerticalScrollbarSpacing: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 270017032}
+        m_TargetAssemblyTypeName: PartIndexScript, Assembly-CSharp
+        m_MethodName: OnScroll
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1846846170
 MonoBehaviour:
   m_ObjectHideFlags: 0
