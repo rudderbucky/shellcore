@@ -189,7 +189,8 @@ public abstract class WeaponAbility : ActiveAbility
         if (Core as PlayerCore || (Core.networkAdapter && Core.networkAdapter.isPlayer.Value))
         {
             isEnabled = !isEnabled;
-            Core.networkAdapter.SetWeaponIsEnabledClientRpc(part ? part.info.location : Vector2.zero, isEnabled);
+            if (Core.networkAdapter)
+                Core.networkAdapter.SetWeaponIsEnabledClientRpc(part ? part.info.location : Vector2.zero, isEnabled);
         }
         UpdateState();
         if (!lettingServerDecide)
