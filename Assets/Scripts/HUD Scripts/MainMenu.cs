@@ -39,7 +39,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private InputField worldField;
 
-    private static string GATEWAY_IP = "34.125.253.226:8000";
+    public static string GATEWAY_IP = "34.125.253.226:8000";
     private bool queueNetworkRun = false;
 
     public void RunClientFromGateway(Task<HttpResponseMessage> message)
@@ -54,14 +54,14 @@ public class MainMenu : MonoBehaviour
         });
     }
 
-    private static System.Net.Http.HttpClient client;
+    public static System.Net.Http.HttpClient client;
 
     public void QueryGateway()
     {
         var retval = client.GetAsync($"http://{GATEWAY_IP}/seekip/{location}").ContinueWith((request) => RunClientFromGateway(request));
     }
 
-    private static string location = "na";
+    public static string location = "na";
     public static string RDB_SERVER_PASSWORD = "test_password";
     [SerializeField]
     private Dropdown rdbServerLocation;
@@ -72,7 +72,7 @@ public class MainMenu : MonoBehaviour
         if (!playersConnectedText) return;
         message.Result.Content.ReadAsStringAsync().ContinueWith((s) => 
         {
-            playersConnectedText.text = $"There are {s.Result} players connected to this location.";
+            playersConnectedText.text = $"There {(s.Result == "1" ? "is" : "are")} {s.Result} player{(s.Result == "1" ? "" : "s")} connected to this location.";
         });
     }
 
@@ -119,6 +119,12 @@ public class MainMenu : MonoBehaviour
         {
             RDB_SERVER_PASSWORD = pw;
         }
+
+        if (args.TryGetValue("-port", out string pt))
+        {
+            PlayerPrefs.SetString("Network_port", pt);
+        }
+
 
         if (client == null)
         {
@@ -182,10 +188,6 @@ public class MainMenu : MonoBehaviour
         switch (mode)
         {
             case "server":
-                if (!string.IsNullOrEmpty(RDB_SERVER_PASSWORD))
-                {
-                    client.PostAsync($"http://{GATEWAY_IP}/introduce/{RDB_SERVER_PASSWORD}/{location}", null);
-                }
                 NetworkDuel(MasterNetworkAdapter.NetworkMode.Server);
                 break;
             case "client":
@@ -198,16 +200,6 @@ public class MainMenu : MonoBehaviour
                     NetworkDuel(MasterNetworkAdapter.NetworkMode.Host);
                 break;
         }
-    }
-
-    public static void AddPlayer(string username, string address)
-    {
-        var retval = client.PostAsync($"http://{GATEWAY_IP}/join/{RDB_SERVER_PASSWORD}/{username}/{address}", null);
-    }
-
-    public static void RemovePlayer()
-    {
-        var retval = client.PostAsync($"http://{GATEWAY_IP}/quit/{RDB_SERVER_PASSWORD}", null);
     }
 
     private void Update()
@@ -284,9 +276,11 @@ public class MainMenu : MonoBehaviour
         MasterNetworkAdapter.world = world;
     }
 
+
+
+
     public void NetworkDuel(MasterNetworkAdapter.NetworkMode mode)
     {
-
         if (coroutine != null)
         {
             StopCoroutine(coroutine);
@@ -310,6 +304,7 @@ public class MainMenu : MonoBehaviour
         }
 
         StartSkirmishHelper(mode);
+        
     }
 
     public void OpenSettings()

@@ -23,8 +23,27 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public static string blueprint;
     public static string world;
     public static int POP_IN_DISTANCE = 500;
-
+    public static float timeOnLastIntroduce = 0;
     public static bool lettingServerDecide;
+
+    private static float SECONDS_PER_INTRODUCE = 60;
+
+    public static void AttemptServerIntroduce()
+    {
+        if (mode != MasterNetworkAdapter.NetworkMode.Server || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
+        MasterNetworkAdapter.timeOnLastIntroduce = Time.time;
+        MainMenu.client.PostAsync($"http://{MainMenu.GATEWAY_IP}/introduce/{MainMenu.RDB_SERVER_PASSWORD}/{MainMenu.location}/{MasterNetworkAdapter.port}/{NetworkManager.Singleton.ConnectedClients.Count}", null);
+    }
+
+    void Update()
+    {
+        if (mode != MasterNetworkAdapter.NetworkMode.Server || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
+        if (Time.time - timeOnLastIntroduce > SECONDS_PER_INTRODUCE || timeOnLastIntroduce == 0)
+        {
+            AttemptServerIntroduce();
+        }
+    }
+
     void Start()
     {
         Debug.Log("MNA starting...");
@@ -241,6 +260,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         }
         CreateNetworkObjectWrapper(name, blueprint, "player-"+serverRpcParams.Receive.SenderClientId, true, faction, Vector3.zero, serverRpcParams);
         playerSpawned[serverRpcParams.Receive.SenderClientId] = true;
+        AttemptServerIntroduce();
     }
 
     [ClientRpc]

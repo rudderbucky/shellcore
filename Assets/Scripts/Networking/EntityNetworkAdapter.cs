@@ -200,6 +200,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             playerFactions[passedFaction]--;
         }
+
+        if (isPlayer.Value) MasterNetworkAdapter.AttemptServerIntroduce();
     }
 
     private void UpdatePlayerState(ServerResponse response)

@@ -214,6 +214,7 @@ public class TractorBeam : MonoBehaviour
     public void SetTractorTarget(Draggable newTarget, bool fromClient = false, bool fromServer = false)
     {
         if (target == newTarget) return;
+        if (newTarget && owner.GetIsDead()) return;
         var targetComp = target != null && target ? target?.GetComponent<ShellPart>() : null;
         if (!newTarget && target && targetComp && !AIData.strayParts.Contains(targetComp))
         {
