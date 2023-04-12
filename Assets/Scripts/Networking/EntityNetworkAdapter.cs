@@ -154,9 +154,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
 
         }
-        if (NetworkManager.Singleton.IsClient)
-        {
-        }
     }
 
     public override void OnNetworkSpawn()
@@ -202,6 +199,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
 
         if (isPlayer.Value) MasterNetworkAdapter.AttemptServerIntroduce();
+        if (isPlayer.Value) SectorManager.instance.UpdateCounters();
     }
 
     private void UpdatePlayerState(ServerResponse response)

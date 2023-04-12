@@ -65,6 +65,11 @@ public class SectorManager : MonoBehaviour
         return carriers.Count;
     }
 
+    public void UpdateCounters()
+    {
+        if (battleZone) battleZone.UpdateCounters();
+    }
+
     public static Sector GetSectorByName(string sectorName)
     {
         foreach (var sector in instance.sectors)
