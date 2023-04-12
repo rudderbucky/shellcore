@@ -22,7 +22,7 @@ public class Bomb : WeaponAbility
         range = 10F;
         ID = AbilityID.Bomb;
         cooldownDuration = 8F;
-        energyCost = 100;
+        energyCost = 200;
         damage = bombDamage;
         prefabScale = 0.5F * Vector3.one;
         category = Entity.EntityCategory.All;
