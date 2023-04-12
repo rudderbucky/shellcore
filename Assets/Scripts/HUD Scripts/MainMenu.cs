@@ -139,7 +139,7 @@ public class MainMenu : MonoBehaviour
 
         blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer"));
         worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
-        if (rdbServerLocation)
+        if (rdbServerLocation && string.IsNullOrEmpty(RDB_SERVER_PASSWORD))
         {
             try
             {

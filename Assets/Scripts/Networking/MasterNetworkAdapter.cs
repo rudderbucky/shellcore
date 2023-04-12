@@ -31,6 +31,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public static void AttemptServerIntroduce()
     {
         if (mode != MasterNetworkAdapter.NetworkMode.Server || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
+        if (string.IsNullOrEmpty(MainMenu.GATEWAY_IP) || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD) || string.IsNullOrEmpty(MainMenu.location) || string.IsNullOrEmpty(MasterNetworkAdapter.port)) return;
         MasterNetworkAdapter.timeOnLastIntroduce = Time.time;
         MainMenu.client.PostAsync($"http://{MainMenu.GATEWAY_IP}/introduce/{MainMenu.RDB_SERVER_PASSWORD}/{MainMenu.location}/{MasterNetworkAdapter.port}/{NetworkManager.Singleton.ConnectedClients.Count}", null);
     }
