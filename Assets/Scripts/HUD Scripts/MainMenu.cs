@@ -67,17 +67,22 @@ public class MainMenu : MonoBehaviour
     private Dropdown rdbServerLocation;
     [SerializeField]
     private Text playersConnectedText;
+    private string playersConnected = "";
     public void UpdatePlayersConnected(Task<HttpResponseMessage> message)
     {
         if (!playersConnectedText) return;
         message.Result.Content.ReadAsStringAsync().ContinueWith((s) => 
         {
-            playersConnectedText.text = $"There {(s.Result == "1" ? "is" : "are")} {s.Result} player{(s.Result == "1" ? "" : "s")} connected to this location.";
+            playersConnected = s.Result;
         });
     }
 
     public void UpdateLocation(int loc)
     {
+        if (playersConnectedText)
+        {
+            playersConnected = "";
+        }
         switch(loc)
         {
             case 0:
@@ -209,6 +214,14 @@ public class MainMenu : MonoBehaviour
             MasterNetworkAdapter.world = "rudderbucky server";
             NetworkDuel("client");
             queueNetworkRun = false;
+        }
+
+        if (playersConnectedText)
+        {
+            if (string.IsNullOrEmpty(playersConnected)) 
+                playersConnectedText.text = $"Checking how many players are online...";
+            else 
+                playersConnectedText.text = $"There {(playersConnected == "1" ? "is" : "are")} {playersConnected} player{(playersConnected == "1" ? "" : "s")} connected to this location.";
         }
     }
 

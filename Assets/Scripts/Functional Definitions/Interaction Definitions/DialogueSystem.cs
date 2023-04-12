@@ -394,7 +394,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void StartVote()
     {
-        Debug.LogWarning("test stack");
         voteNumbers.Clear();
         voteButtons.Clear();
         votesById.Clear();
