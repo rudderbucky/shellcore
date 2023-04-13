@@ -103,15 +103,14 @@ public class DevConsoleScript : MonoBehaviour
         Instance.textToAdd.Enqueue("\n <color=white>{logString}</color>");
     }
 
-    private void GodPowers()
+    public void GodPowers(ShellCore ent)
     {
-        var player = PlayerCore.Instance;
-        player.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
-        player.SetRegens(new float[] { 99999, 99999, 99999 });
-        player.speed = 9999f;
-        player.CalculatePhysicsConstants();
-        player.DamageBoostStacks += 1000;
-        player.AddPower(10000);
+        ent.SetMaxHealth(new float[] { 99999, 99999, 99999 }, true);
+        ent.SetRegens(new float[] { 99999, 99999, 99999 });
+        ent.speed = 9999f;
+        ent.CalculatePhysicsConstants();
+        ent.DamageBoostStacks += 1000;
+        ent.AddPower(10000);
         godModeEnabled = true;
         MapMakerScript.EnableMapCheat();
     }
@@ -125,12 +124,12 @@ public class DevConsoleScript : MonoBehaviour
         {
             if (command.Equals("poor", StringComparison.CurrentCultureIgnoreCase))
             {
-                GodPowers();
+                GodPowers(PlayerCore.Instance);
                 textBox.text += "\n<color=lime>Have you tried being born into wealth?</color>";
             }
             else if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
             {
-                GodPowers();
+                GodPowers(PlayerCore.Instance);
                 var player = PlayerCore.Instance;
                 player.AddCredits(999999);
                 textBox.text += "\n<color=lime>I am noob.</color>";
@@ -243,6 +242,10 @@ public class DevConsoleScript : MonoBehaviour
             {
                 textBox.enabled = image.enabled = !image.enabled;
                 inputField.gameObject.SetActive(image.enabled);
+            }
+            else if (command.Equals("clear", StringComparison.CurrentCultureIgnoreCase))
+            {
+                textBox.text = "";
             }
             else if (command.Equals("I am Ormanus", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -395,6 +398,19 @@ public class DevConsoleScript : MonoBehaviour
                 string blueprint = command.Substring(7).Trim();
                 ToggleActive();
                 MasterNetworkAdapter.instance.CreatePlayerServerRpc(MasterNetworkAdapter.playerName, blueprint, 0);
+            }
+            else if (command.StartsWith("test ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                string blueprint = command.Substring(5).Trim();
+                switch (blueprint)
+                {
+                    case "clientnuke":
+                        // MasterNetworkAdapter.instance.ClientNukeServerRpc();
+                        break;
+                    case "god":
+                        // PlayerCore.Instance.networkAdapter.GodModeServerRpc();
+                        break;
+                }
             }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
