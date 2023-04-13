@@ -316,13 +316,23 @@ public class SectorManager : MonoBehaviour
         current.dimension = sect.dimension;
         sect.dimension = tmp;
         current = sect;
-
+        if (battleZone) battleZone.ClearTargetsAndStats();
         loadSector(current);
-        if (PlayerCore.Instance && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Server)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Server)
         {
+            PlayerCore.Instance.enabled = true;
             if (PlayerCore.Instance.GetIsDead())
                 PlayerCore.Instance.CancelDeath();
-            PlayerCore.Instance.Respawn();
+            PlayerCore.Instance.Respawn(true);
+        }
+
+        if (!MasterNetworkAdapter.lettingServerDecide)
+        {
+            foreach (var obj in NetworkManager.Singleton.SpawnManager.SpawnedObjects)
+            {
+                if (obj.Value && obj.Value.GetComponent<EntityNetworkAdapter>())
+                    obj.Value.GetComponent<EntityNetworkAdapter>().safeToRespawn.Value = true;
+            }
         }
     }
 

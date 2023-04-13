@@ -84,8 +84,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             Rigidbody2D body = null;
             Entity core = null;
-            body = buf?.huskEntity?.GetComponent<Rigidbody2D>();
-            core = buf?.huskEntity;
+            if (buf && buf.huskEntity)
+            {
+                body = buf.huskEntity.GetComponent<Rigidbody2D>();
+                core = buf.huskEntity;
+            }
             return new ServerResponse(
             core ? core.transform.position : Vector3.zero, 
             body ? body.velocity : Vector3.zero, 
@@ -210,10 +213,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private void UpdateCoreState(Entity core, ServerResponse response)
     {
-        if (isPlayer.Value && response.core > 0 && huskEntity && huskEntity.GetIsDead())
+        if (isPlayer.Value && response.core > 0 && huskEntity && huskEntity.GetIsDead() && safeToRespawn.Value)
         {
             huskEntity.CancelDeath();
-            (huskEntity as ShellCore).Respawn();
+            (huskEntity as ShellCore).Respawn(true);
         }
 
         core.transform.position = response.position;
@@ -472,6 +475,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
 
     public NetworkVariable<bool> serverReady;
+    public NetworkVariable<bool> safeToRespawn = new NetworkVariable<bool>(true);
 
     public void SetHusk(Entity husk)
     {
@@ -538,8 +542,17 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    /*
+    [ServerRpc(RequireOwnership = false)]
+    public void GodModeServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        DevConsoleScript.Instance.GodPowers(huskEntity as ShellCore);
+    }
+    */
+    
     public void SetUpHuskEntity()
     {
+        if (!safeToRespawn.Value) return;
         if ((!NetworkManager.IsClient || (NetworkManager.Singleton.LocalClientId != OwnerClientId && wrapperUpdated) || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
             && !huskEntity && SystemLoader.AllLoaded)
         {
@@ -570,6 +583,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
                     huskEntity.spawnPoint = huskEntity.transform.position = wrapper.position;
                 }
             }
+            else if (!MasterNetworkAdapter.lettingServerDecide)
+            {
+                serverReady.Value = true;
+            }
             updateTimer = 0;
             AttemptCreateServerResponse();
             huskEntity.networkAdapter = this;
@@ -587,6 +604,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             var response = wrapper;
             if (OwnerClientId == response.clientID)
             {
+                PlayerCore.Instance.enabled = true;
                 PlayerCore.Instance.faction = passedFaction;
                 PlayerCore.Instance.blueprint = Instantiate(blueprint);
                 PlayerCore.Instance.SetPlayerSpawnPoint();

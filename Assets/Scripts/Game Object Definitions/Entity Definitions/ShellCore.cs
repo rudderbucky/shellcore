@@ -227,17 +227,22 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
     }
 
-    public override void Respawn()
+    public override void Respawn(bool force = false)
     {
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off || 
-            (carrier is Entity entity && !entity.GetIsDead()) || this as PlayerCore || (PartyManager.instance && PartyManager.instance.partyMembers.Contains(this)))
+        if (force || (GetCarrier() != null && !GetCarrier().Equals(null)) || (this as PlayerCore && MasterNetworkAdapter.mode == NetworkMode.Off) || (PartyManager.instance && PartyManager.instance.partyMembers.Contains(this)))
         {
+            if (this as PlayerCore) PlayerCore.Instance.enabled = true;
             isYardRepairing = false;
             base.Respawn();
         }
-        else
+        else if (!(this as PlayerCore))
         {
+            if (!MasterNetworkAdapter.lettingServerDecide && networkAdapter) networkAdapter.safeToRespawn.Value = false;
             Destroy(gameObject);
+        }
+        else if (MasterNetworkAdapter.mode != NetworkMode.Client)
+        {
+            PlayerCore.Instance.enabled = false;
         }
     }
 

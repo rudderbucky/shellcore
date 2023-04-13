@@ -132,6 +132,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
         SectorManager.instance.ReloadSector(SectorManager.currentSectorIndex);
     }
 
+    
+
 
     [ClientRpc]
     public void ReloadSectorClientRpc(int sectorToChange, ClientRpcParams clientRpcParams = default)
@@ -263,6 +265,17 @@ public class MasterNetworkAdapter : NetworkBehaviour
         playerSpawned[serverRpcParams.Receive.SenderClientId] = true;
         AttemptServerIntroduce();
     }
+
+    /*
+    [ServerRpc(RequireOwnership = false)]
+    public void ClientNukeServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        foreach (var entity in AIData.entities)
+        {
+            if (entity.faction == 0) entity.TakeCoreDamage(99999);
+        }
+    }
+    */
 
     [ClientRpc]
     public void EnergySphereCollectClientRpc(ClientRpcParams clientRpcParams = default)

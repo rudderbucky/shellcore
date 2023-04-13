@@ -104,8 +104,9 @@ public class PlayerCore : ShellCore
     /// <summary>
     /// Respawns the player core, deinitializes the HUD
     /// </summary>
-    public override void Respawn()
+    public override void Respawn(bool force = false)
     {
+
         List<bool> weaponActivationStates = new List<bool>();
         List<bool> autoCastActivationStates = new List<bool>();
         if (abilities != null)
@@ -133,7 +134,7 @@ public class PlayerCore : ShellCore
         SetPlayerSpawnPoint();
 
 
-        base.Respawn(); // this will reinitialize the HUD
+        base.Respawn(force); // this will reinitialize the HUD
         spawnPoint = havenSpawnPoint; // reset spawn point
         int weaponIndex = 0;
         if (abilities != null)

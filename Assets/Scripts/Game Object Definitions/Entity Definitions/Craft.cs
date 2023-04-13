@@ -100,7 +100,7 @@ public abstract class Craft : Entity
     /// <summary>
     /// Called to respawn this craft to its spawn point
     /// </summary>
-    public virtual void Respawn()
+    public virtual void Respawn(bool force = false)
     {
         // no longer dead or immobile
         isDead = false;
@@ -167,7 +167,7 @@ public abstract class Craft : Entity
         if (!SystemLoader.AllLoaded) return;
         var lettingServerDecide = this as PlayerCore && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && networkAdapter != null;
 
-        entityBody.drag = draggable.dragging ? 25F : 0;
+        entityBody.drag = draggable.dragging  ? 25F : 0;
         if (draggable.dragging)
         {
             return;
