@@ -175,21 +175,24 @@ public class DevConsoleScript : MonoBehaviour
             {
                 int number = int.Parse(command.Substring(8).Trim());
                 PlayerCore.Instance.reputation += number;
+                textBox.text += "\n<color=lime>Now you are worth more.</color>";
             }
             else if (command.StartsWith("Add shards ", StringComparison.CurrentCultureIgnoreCase))
             {
                 int number = int.Parse(command.Substring(11).Trim());
                 PlayerCore.Instance.shards += number;
+                textBox.text += "\n<color=lime>I forgot about the shards.</color>";
             }
             else if (command.StartsWith("Add money ", StringComparison.CurrentCultureIgnoreCase))
             {
                 int number = int.Parse(command.Substring(10).Trim());
                 PlayerCore.Instance.AddCredits(number);
+                textBox.text += "\n<color=lime>Money, Money, Money.</color>";
             }
             else if (command.Equals("Full log", StringComparison.CurrentCultureIgnoreCase))
             {
                 fullLog = true;
-                textBox.text += "\n<color=lime>I see all, I know all</color>";
+                textBox.text += "\n<color=lime>I see all, I know all.</color>";
             }
             else if (command.Equals("Commit sudoku", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -361,10 +364,12 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.Equals("Win siege", StringComparison.CurrentCultureIgnoreCase))
             {
                 NodeEditorFramework.Standard.WinSiegeCondition.OnSiegeWin.Invoke(SectorManager.instance.current.sectorName);
+                textBox.text += "\n<color=lime>Should have tested it...</color>";
             }
             else if (command.Equals("Win bz", StringComparison.CurrentCultureIgnoreCase))
             {
                 NodeEditorFramework.Standard.WinBattleCondition.OnBattleWin.Invoke(SectorManager.instance.current.sectorName);
+                textBox.text += "\n<color=lime>The war is over.</color>";
             }
             else if (command.Equals("No limits", StringComparison.CurrentCultureIgnoreCase))
             {
