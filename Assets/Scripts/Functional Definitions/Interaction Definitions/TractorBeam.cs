@@ -249,7 +249,7 @@ public class TractorBeam : MonoBehaviour
                 }
             }
 
-            if ((MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client || fromServer) && target)
+            if (target && ((MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client && (!owner.tractorSwitched || !target.GetComponent<Entity>())) || fromServer))
             {
                 target.dragging = true;
             }
