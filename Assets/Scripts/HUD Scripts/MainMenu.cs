@@ -61,7 +61,7 @@ public class MainMenu : MonoBehaviour
         var retval = client.GetAsync($"http://{GATEWAY_IP}/seekip/{location}").ContinueWith((request) => RunClientFromGateway(request));
     }
 
-    public static string location = "na";
+    public static string location = null;
     public static string RDB_SERVER_PASSWORD = "test_password";
     [SerializeField]
     private Dropdown rdbServerLocation;
@@ -130,12 +130,14 @@ public class MainMenu : MonoBehaviour
             PlayerPrefs.SetString("Network_port", pt);
         }
 
-
         if (client == null)
         {
             client = new System.Net.Http.HttpClient();
             client.Timeout = new System.TimeSpan(0,0,5);
         }
+
+        if (string.IsNullOrEmpty(location))
+            UpdateLocation(0);
 
         blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer"));
         worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
@@ -220,8 +222,13 @@ public class MainMenu : MonoBehaviour
         {
             if (string.IsNullOrEmpty(playersConnected)) 
                 playersConnectedText.text = $"Checking how many players are online...";
-            else 
-                playersConnectedText.text = $"There {(playersConnected == "1" ? "is" : "are")} {playersConnected} player{(playersConnected == "1" ? "" : "s")} connected to this location.";
+            else
+            {
+                var serverAndPlayerCounts = playersConnected.Split(":");
+                var sCount = $"There {(serverAndPlayerCounts[0] == "1" ? "is" : "are")} {serverAndPlayerCounts[0]} server{(serverAndPlayerCounts[0] == "1" ? "" : "s")} running in this location.";
+                var pCount = $"There {(serverAndPlayerCounts[1] == "1" ? "is" : "are")} {serverAndPlayerCounts[1]} player{(serverAndPlayerCounts[1] == "1" ? "" : "s")} connected to this location.";
+                playersConnectedText.text = $"{sCount}\n{pCount}";
+            }
         }
     }
 
