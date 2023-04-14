@@ -122,6 +122,7 @@ public class MainMenu : MonoBehaviour
 
     public void Start()
     {
+        location = "";
         var args = GetCommandlineArgs();
         if (args.TryGetValue("-world", out string world))
         {

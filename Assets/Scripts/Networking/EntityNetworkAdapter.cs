@@ -400,6 +400,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
         if (huskEntity && !(huskEntity as PlayerCore))
         {
+            huskEntity.TakeCoreDamage(999999);
+            if (huskEntity is ShellCore core) core.KillShellCore();
             Destroy(huskEntity.gameObject);
         }
 
@@ -673,6 +675,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (!NetworkManager.Singleton.IsServer) return;
         var closeToPlayer = isPlayer.Value || !serverReady.Value;
         var closePlayers = new List<ulong>();
+        if (isPlayer.Value) closePlayers.Add(OwnerClientId);
         if (!closeToPlayer && huskEntity)
         {
             foreach(var ent in AIData.shellCores)
@@ -680,16 +683,23 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 if (!ent || !ent.networkAdapter || !ent.networkAdapter.isPlayer.Value || (ent.transform.position - huskEntity.transform.position).sqrMagnitude > MasterNetworkAdapter.POP_IN_DISTANCE)
                     continue;
                 closeToPlayer = true;
-                closePlayers.Add(ent.networkAdapter.OwnerClientId);
+                if (NetworkManager.Singleton.ConnectedClients.ContainsKey(ent.networkAdapter.OwnerClientId))
+                    closePlayers.Add(ent.networkAdapter.OwnerClientId);
                 break;
             }
         }
         updateTimer -= Time.deltaTime;
-        if ((huskEntity && closeToPlayer && updateTimer <= 0) || !serverReady.Value || dirty)
+        var useCustomParams = !dirty && (serverReady.Value || !(huskEntity is Craft craft) || !craft.IsMoving() || !craft.GetIsDead());
+
+        if ((huskEntity && closeToPlayer && updateTimer <= 0) || !useCustomParams)
         {
             updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
             dirty = false;
-            if (isPlayer.Value || AIData.entities.Count < 100 || !(huskEntity is Craft craft) || craft.IsMoving() || craft.GetIsDead())
+            UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
+            if (isPlayer.Value || !useCustomParams)
+                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
+            else 
+            {
                 UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction, 
                 new ClientRpcParams() 
                 {
@@ -698,6 +708,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                         TargetClientIds = closePlayers
                     }
                 });
+            }
         };
     }
 
