@@ -422,7 +422,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         //create window
         window = Instantiate(battleResultsBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
-        voteBox = window.transform.Find("Background/Vote");
+        voteBox = window.transform.Find("Background/Vote/Scroll View/Viewport/Content");
         voteBoxTitle = window.transform.Find("Background/Vote/Vote Title");
 
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
@@ -442,6 +442,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 });
             }
             RefreshButtons();
+        }
+        else
+        {
+            window.transform.Find("Background/Vote").gameObject.SetActive(false);
         }
         
         window.DestroyOnClose = true;
