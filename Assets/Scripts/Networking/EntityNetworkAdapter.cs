@@ -71,7 +71,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    public class TemporaryStateWrapper
+    public class StateWrapper
     {
         public Vector3 position;
         public Vector3 directionalVector;
@@ -102,7 +102,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public string blueprintString;
     public EntityBlueprint blueprint;
-    public TemporaryStateWrapper wrapper;
+    public StateWrapper wrapper;
     public NetworkVariable<bool> isPlayer = new NetworkVariable<bool>(false);
     public Vector3 pos;
     [SerializeField]
@@ -159,6 +159,20 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public void ForceNetworkVarUpdateServerRpc(ServerRpcParams serverRpcParams = default)
     {
         dirty = true;
+    }
+    [ServerRpc(RequireOwnership = true)]
+    public void RequestTargetChangeServerRpc(ulong id, ServerRpcParams serverRpcParams = default)
+    {
+        if (!isPlayer.Value || !huskEntity) return;
+        if (id == ulong.MaxValue) 
+        {
+            huskEntity.GetTargetingSystem().SetTarget(null);
+            return;
+        }
+
+        var ent = GetEntityFromNetworkId(id);
+        if (!ent) return;
+        huskEntity.GetTargetingSystem().SetTarget(ent.transform);
     }
 
     [ServerRpc(RequireOwnership = true)]
@@ -358,7 +372,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         if (wrapper == null)
         {
-            wrapper = new TemporaryStateWrapper();
+            wrapper = new StateWrapper();
             wrapper.clientID = OwnerClientId;
         }
 
@@ -432,6 +446,15 @@ public class EntityNetworkAdapter : NetworkBehaviour
         UpdateTractorClientRpc(ID.HasValue ? ID.Value : 0, !ID.HasValue);
     }
 
+    private static Entity GetEntityFromNetworkId(ulong networkId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(networkId)) return null;
+        var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkId];
+        if (obj.GetComponent<EntityNetworkAdapter>() && obj.GetComponent<EntityNetworkAdapter>().huskEntity) 
+            return obj.GetComponent<EntityNetworkAdapter>().huskEntity;
+        return null;
+    }
+
     public static Draggable GetDraggableFromNetworkId(ulong networkId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(networkId)) return null;
@@ -458,7 +481,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public void ChangePositionWrapper(Vector3 newPos)
     {
-        if (wrapper == null) wrapper = new TemporaryStateWrapper();
+        if (wrapper == null) wrapper = new StateWrapper();
         wrapper.position = newPos;
     }
 

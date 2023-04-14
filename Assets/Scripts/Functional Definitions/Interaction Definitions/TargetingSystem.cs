@@ -43,6 +43,16 @@ public class TargetingSystem : ITargetingSystem
     public void SetTarget(Transform target)
     {
         this.target = target; // set target
+        if (!MasterNetworkAdapter.lettingServerDecide 
+        || !(GetEntity() as PlayerCore) || !GetEntity().networkAdapter) return;
+        if (target == null)
+        {
+            GetEntity().networkAdapter.RequestTargetChangeServerRpc(ulong.MaxValue);
+            return; 
+        }
+        var ent = target.GetComponent<Entity>();
+        if (!ent || !ent.networkAdapter) return;
+        GetEntity().networkAdapter.RequestTargetChangeServerRpc(ent.networkAdapter.NetworkObjectId); 
     }
 
     /// <summary>
