@@ -109,6 +109,11 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     public static void StartServer()
     {
+        ushort portVal = 0;
+        if (!string.IsNullOrEmpty(port) && ushort.TryParse(port, out portVal))
+        {
+            NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Port = portVal;
+        }
         Debug.Log("Starting server...");
         MasterNetworkAdapter.lettingServerDecide = false;
         NetworkManager.Singleton.StartServer();
