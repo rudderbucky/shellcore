@@ -672,13 +672,15 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         if (!NetworkManager.Singleton.IsServer) return;
         var closeToPlayer = isPlayer.Value || !serverReady.Value;
+        var closePlayers = new List<ulong>();
         if (!closeToPlayer && huskEntity)
         {
             foreach(var ent in AIData.shellCores)
             {
-                if (!ent || (ent.transform.position - huskEntity.transform.position).sqrMagnitude > MasterNetworkAdapter.POP_IN_DISTANCE)
+                if (!ent || !ent.networkAdapter || !ent.networkAdapter.isPlayer.Value || (ent.transform.position - huskEntity.transform.position).sqrMagnitude > MasterNetworkAdapter.POP_IN_DISTANCE)
                     continue;
                 closeToPlayer = true;
+                closePlayers.Add(ent.networkAdapter.OwnerClientId);
                 break;
             }
         }
@@ -688,7 +690,14 @@ public class EntityNetworkAdapter : NetworkBehaviour
             updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
             dirty = false;
             if (isPlayer.Value || AIData.entities.Count < 100 || !(huskEntity is Craft craft) || craft.IsMoving() || craft.GetIsDead())
-                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
+                UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction, 
+                new ClientRpcParams() 
+                {
+                    Send = new ClientRpcSendParams()
+                    {
+                        TargetClientIds = closePlayers
+                    }
+                });
         };
     }
 
