@@ -9,6 +9,7 @@ public interface IShipStatsDatabase
     BuilderMode GetMode();
     int GetBuildValue();
     int GetBuildCost();
+    EntityBlueprint GetBlueprint();
 }
 public class ShipBuilderShipStatsDisplay : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
     public IShipStatsDatabase statsDatabase;
     public Text display;
     public Text regenDisplay;
+    public Text rdbServerValidityDisplay;
 
     void Start()
     {
@@ -65,6 +67,11 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
             weight += blueprint.mass * Entity.weightMultiplier;
         }
 
+        string reason = "";
+        var val = MasterNetworkAdapter.ValidateBluperintOnServer(cursorScript.GetBlueprint(), out reason);
+        reason = reason.ToLower();
+        rdbServerValidityDisplay.text = $"{(val ? "<color=lime>" : "<color=red>")}rdb server validity: {(val ? "valid" : reason)}</color>";
+        
         string buildStat;
         if (statsDatabase.GetMode() == BuilderMode.Yard || statsDatabase.GetMode() == BuilderMode.Workshop)
         {
@@ -84,6 +91,9 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
 
             buildStat = $"TOTAL BUILD COST: \n{colorTag}{statsDatabase.GetBuildCost()} CREDITS</color>";
         }
+
+        
+
 
         string displayText = string.Join("\n", new string[]
         {

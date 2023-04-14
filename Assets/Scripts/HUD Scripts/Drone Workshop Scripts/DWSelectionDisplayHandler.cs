@@ -64,4 +64,9 @@ public class DWSelectionDisplayHandler : SelectionDisplayHandler, IShipStatsData
     {
         return 0;
     }
+
+    public EntityBlueprint GetBlueprint()
+    {
+        throw new System.NotImplementedException();
+    }
 }

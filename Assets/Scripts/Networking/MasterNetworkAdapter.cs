@@ -25,7 +25,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public static int POP_IN_DISTANCE = 20000;
     public static float timeOnLastIntroduce = 0;
     public static bool lettingServerDecide;
-
+    private static int SHIP_CREDIT_LIMIT = 18000;
     private static float SECONDS_PER_INTRODUCE = 60;
 
     public static void AttemptServerIntroduce()
@@ -261,6 +261,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
             });
             return;
         }
+
         CreateNetworkObjectWrapper(name, blueprint, "player-"+serverRpcParams.Receive.SenderClientId, true, faction, Vector3.zero, serverRpcParams);
         playerSpawned[serverRpcParams.Receive.SenderClientId] = true;
         AttemptServerIntroduce();
@@ -297,21 +298,11 @@ public class MasterNetworkAdapter : NetworkBehaviour
         Instantiate(ResourceManager.GetAsset<GameObject>("bullet_hit_prefab"), position, Quaternion.identity);
     }
 
-    private bool ValidateBluperintOnServer(string blueprint, out string reason)
+    public static bool ValidateBluperintOnServer(EntityBlueprint print, out string reason)
     {
-        if (blueprint.Length > 25000) // Blueprint too large. We can't have the server do too much work here or else it will chug everyone.
+        if (!print)
         {
-            reason = "Too many characters in JSON.";
-            return false;
-        }
-        var print = ScriptableObject.CreateInstance<EntityBlueprint>();
-        try
-        {
-            print = SectorManager.TryGettingEntityBlueprint(blueprint);
-        }
-        catch // invalid blueprint
-        {
-            reason = "Blueprint did not parse.";
+            reason = "No blueprint passed.";
             return false;
         }
         if (print.intendedType != EntityBlueprint.IntendedType.ShellCore)
@@ -339,6 +330,9 @@ public class MasterNetworkAdapter : NetworkBehaviour
             [AbilityID.Control] = 1,
             [AbilityID.Command] = 1,
         };
+
+
+        var partValue = 0;
         foreach (var part in print.parts)
         {
             if (!ResourceManager.allPartNames.Contains(part.partID))
@@ -379,10 +373,37 @@ public class MasterNetworkAdapter : NetworkBehaviour
                 reason = "A part is too small for its ability tier.";
                 return false;
             }
+
+            partValue += EntityBlueprint.GetPartValue(part);
+            if (partValue > SHIP_CREDIT_LIMIT)
+            {
+                reason = "Credit limit exceeded.";
+                return false;
+            }
         }
 
         reason = "Blueprint is not according to Ship Builder rules.";
         return ShipBuilder.ValidateBlueprint(print, false, print.coreShellSpriteID, true, CoreUpgraderScript.GetTotalAbilities(print.coreShellSpriteID));
+    }
+
+    public static bool ValidateBluperintOnServer(string blueprint, out string reason)
+    {
+        if (blueprint.Length > 25000) // Blueprint too large. We can't have the server do too much work here or else it will chug everyone.
+        {
+            reason = "Too many characters in JSON.";
+            return false;
+        }
+        var print = ScriptableObject.CreateInstance<EntityBlueprint>();
+        try
+        {
+            print = SectorManager.TryGettingEntityBlueprint(blueprint);
+            return ValidateBluperintOnServer(print, out reason);
+        }
+        catch // invalid blueprint
+        {
+            reason = "Blueprint did not parse.";
+            return false;
+        }
     }
 
     private NetworkObject InternalEntitySpawnWrapper(string blueprint, string idToGrab, bool isPlayer, int faction, Vector3 pos, ServerRpcParams serverRpcParams = default)

@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -233,6 +234,25 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         if (updateChain) UpdateChain();
     }
 
+    private EntityBlueprint cachedPrint;
+    private void CacheBlueprint()
+    {
+        try
+        {
+            cachedPrint = SectorManager.TryGettingEntityBlueprint(GetCurrentJSON());
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e);
+            cachedPrint = null;
+        }
+    }
+
+    public EntityBlueprint GetBlueprint()
+    {
+        return cachedPrint;
+    }
+
     public static Bounds GetRect(RectTransform rectTransform)
     {
         Bounds rect = RectTransformUtility.CalculateRelativeRectTransformBounds(rectTransform.parent, rectTransform);
@@ -427,6 +447,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     public static bool ValidateBlueprint(EntityBlueprint print, bool editorMode, string coreShellSpriteID, bool checkPartSizes = false, int[] abilityLimits = null)
     {
+        if (string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return true;
         var outcome = true;
         if (!print) return false;
         if (print.parts == null) return false;
@@ -526,6 +547,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     public void UpdateChain()
     {
+        CacheBlueprint();
         if (!editorMode)
         {
             SetReconstructButton(cursorScript.buildCost > player.GetCredits() ? ReconstructButtonStatus.NotEnoughCredits : ReconstructButtonStatus.Valid);
@@ -1309,6 +1331,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         if (core && core.sprite) core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
 
         OrientShellAndCore();
+        CacheBlueprint();
     }
 
     public static void SaveBlueprint(EntityBlueprint blueprint = null, string fileName = null, string json = null)

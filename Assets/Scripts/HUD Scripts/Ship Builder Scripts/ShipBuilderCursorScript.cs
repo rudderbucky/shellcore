@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -706,5 +707,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     public int GetBuildCost()
     {
         return buildCost;
+    }
+
+    public EntityBlueprint GetBlueprint()
+    {
+        if (builder is ShipBuilder sb) return sb.GetBlueprint();
+        return null;
     }
 }

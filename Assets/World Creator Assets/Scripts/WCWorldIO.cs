@@ -524,6 +524,18 @@ public class WCWorldIO : GUIWindowScripts
             }
         }
         buttons.Add(button);
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            var output = "";
+            var valid = MasterNetworkAdapter.ValidateBluperintOnServer(SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name)), out output);
+            if (!valid) 
+            {
+
+                button.GetComponentInChildren<Text>().color = Color.red;
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (rdb server invalid)";
+            }
+        }
+
 
         if (mode == IOMode.ReadShipJSON || mode == IOMode.WriteShipJSON)
         {
