@@ -233,7 +233,7 @@ public class MainMenu : MonoBehaviour
     {
         if (queueNetworkRun)
         {
-            MasterNetworkAdapter.world = "rudderbucky server";
+            MasterNetworkAdapter.world = $"rudderbucky server - {VersionNumberScript.rdbMapVersion}";
             NetworkDuel("client");
             queueNetworkRun = false;
         }

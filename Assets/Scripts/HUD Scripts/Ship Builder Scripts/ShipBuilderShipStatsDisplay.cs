@@ -70,7 +70,7 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
         string reason = "";
         var val = MasterNetworkAdapter.ValidateBluperintOnServer(cursorScript.GetBlueprint(), out reason);
         reason = reason.ToLower();
-        rdbServerValidityDisplay.text = $"{(val ? "<color=lime>" : "<color=red>")}rdb server validity: {(val ? "valid" : reason)}</color>";
+        rdbServerValidityDisplay.text = $"{(val ? "<color=lime>" : "<color=red>")}rudderbucky server validity: {(val ? "valid" : reason)}</color>";
         
         string buildStat;
         if (statsDatabase.GetMode() == BuilderMode.Yard || statsDatabase.GetMode() == BuilderMode.Workshop)
