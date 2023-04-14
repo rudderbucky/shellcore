@@ -16,6 +16,27 @@ public class BombScript : MonoBehaviour
     private static GameObject explosionCirclePrefab;
     private float timeInstantiated;
     private float fuseTime = 3F;
+
+    private static void GetPrefabs()
+    {
+        if (!hitPrefab)
+        {
+            hitPrefab = ResourceManager.GetAsset<GameObject>("bullet_hit_prefab");
+        }
+        if (!explosionCirclePrefab)
+        {
+            explosionCirclePrefab = new GameObject("Explosion Circle");
+            LineRenderer lineRenderer = explosionCirclePrefab.AddComponent<LineRenderer>();
+            lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
+            var script = explosionCirclePrefab.AddComponent<DrawCircleScript>();
+            script.timeMin = 0F;
+            explosionCirclePrefab.SetActive(false);
+            script.SetStartColor(new Color(0.8F, 1F, 1F, 0.9F));
+            script.color = new Color(0.8F, 1F, 1F, 0.9F);
+        }
+
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -25,18 +46,7 @@ public class BombScript : MonoBehaviour
         ParticleSystem.MainModule mainModule = GetComponentInChildren<ParticleSystem>().main;
         mainModule.startColor = bombColor;
 
-        if (!explosionCirclePrefab)
-        {
-            explosionCirclePrefab = new GameObject("Explosion Circle");
-            explosionCirclePrefab.transform.SetParent(transform, false);
-            LineRenderer lineRenderer = explosionCirclePrefab.AddComponent<LineRenderer>();
-            lineRenderer.material = ResourceManager.GetAsset<Material>("white_material");
-            var script = explosionCirclePrefab.AddComponent<DrawCircleScript>();
-            script.timeMin = 0F;
-            explosionCirclePrefab.SetActive(false);
-            script.SetStartColor(bombColor);
-            script.color = bombColor;
-        }
+        GetPrefabs();
 
         SectorManager.OnSectorLoad += SectorLoaded;
     }
@@ -131,10 +141,7 @@ public class BombScript : MonoBehaviour
 
     public static void ActivationCosmetic(Vector3 position)
     {
-        if (!hitPrefab)
-        {
-            hitPrefab = ResourceManager.GetAsset<GameObject>("bullet_hit_prefab");
-        }
+        GetPrefabs();
         AudioManager.PlayClipByID("clip_bombexplosion", position);
         GameObject tmp = Instantiate(explosionCirclePrefab, position, Quaternion.identity); // instantiate circle explosion
         tmp.SetActive(true);

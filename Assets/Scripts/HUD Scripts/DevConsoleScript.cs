@@ -57,6 +57,7 @@ public class DevConsoleScript : MonoBehaviour
     {
         if (stackTrace.Contains("GetNetworkBehaviourAtOrderIndex")) return;
         if (stackTrace.Contains("Unhandled RPC")) return;
+        if (stackTrace.Contains("SynchronizeNetworkBehaviours")) return;
         string startingColor = "<color=white>";
         if ((type == LogType.Log || type == LogType.Assert) && !fullLog)
         {

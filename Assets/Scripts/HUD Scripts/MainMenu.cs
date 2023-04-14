@@ -42,9 +42,9 @@ public class MainMenu : MonoBehaviour
     public static string GATEWAY_IP = "34.125.253.226:8000";
     private bool queueNetworkRun = false;
 
-    public void RunClientFromGateway(Task<HttpResponseMessage> message)
+    public void RunClientFromGateway(HttpResponseMessage message)
     {
-        message.Result.Content.ReadAsStringAsync().ContinueWith((s) => 
+        message.Content.ReadAsStringAsync().ContinueWith((s) => 
         {
             Debug.Log("Connecting to: " + s.Result);
             var addressArray = s.Result.Split(":");
@@ -58,7 +58,15 @@ public class MainMenu : MonoBehaviour
 
     public void QueryGateway()
     {
-        var retval = client.GetAsync($"http://{GATEWAY_IP}/seekip/{location}").ContinueWith((request) => RunClientFromGateway(request));
+        try
+        {
+            var retval = client.GetAsync($"http://{GATEWAY_IP}/seekip/{location}").Result;
+            RunClientFromGateway(retval);
+        }
+        catch
+        {
+            Debug.Log("Connection failure on gateway seek.");
+        }
     }
 
     public static string location = null;
@@ -68,10 +76,11 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private Text playersConnectedText;
     private string playersConnected = "";
-    public void UpdatePlayersConnected(Task<HttpResponseMessage> message)
+    public void UpdatePlayersConnected(HttpResponseMessage message)
     {
+        Debug.Log("Received message"  + Time.time  );
         if (!playersConnectedText) return;
-        message.Result.Content.ReadAsStringAsync().ContinueWith((s) => 
+        message.Content.ReadAsStringAsync().ContinueWith((s) => 
         {
             playersConnected = s.Result;
         });
@@ -97,7 +106,17 @@ public class MainMenu : MonoBehaviour
             default:
                 break;
         }
-        var retval = client.GetAsync($"http://{GATEWAY_IP}/playercount/{location}").ContinueWith((request) => UpdatePlayersConnected(request));
+
+        try
+        {
+            Debug.Log("Querying location status at time: "  + Time.time + $" in {location}"  );
+            var retval = client.GetAsync($"http://{GATEWAY_IP}/playercount/{location}").Result;
+            UpdatePlayersConnected(retval);
+        }
+        catch
+        {
+            Debug.Log("Connection failure."  );
+        }
     }
 
 
@@ -133,7 +152,7 @@ public class MainMenu : MonoBehaviour
         if (client == null)
         {
             client = new System.Net.Http.HttpClient();
-            client.Timeout = new System.TimeSpan(0,0,5);
+            client.Timeout = new System.TimeSpan(0,0,3);
         }
 
         if (string.IsNullOrEmpty(location))
