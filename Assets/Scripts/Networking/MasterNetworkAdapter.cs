@@ -96,6 +96,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         ushort portVal = 0;
         if (!string.IsNullOrEmpty(port) && ushort.TryParse(port, out portVal))
         {
+            Debug.LogWarning("Using port: " + portVal);
             NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Port = portVal;
         }
         if (!string.IsNullOrEmpty(address))
@@ -334,6 +335,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
             [AbilityID.Retreat] = 1,
             [AbilityID.Control] = 1,
             [AbilityID.Command] = 1,
+            [AbilityID.Absorb] = 1,
         };
 
 

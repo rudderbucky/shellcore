@@ -453,6 +453,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         if (print.parts == null) return false;
         if (print.coreSpriteID != "core1_light") return false;
         if (!CoreUpgraderScript.GetCoreNames().ToList().Contains(coreShellSpriteID)) return false;
+        if (coreShellSpriteID != "core1_shell" && coreShellSpriteID != "core2_shell") return false;
         List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
         
         foreach (var part in print.parts)
