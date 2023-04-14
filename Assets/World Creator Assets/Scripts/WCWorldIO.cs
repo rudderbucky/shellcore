@@ -58,11 +58,11 @@ public class WCWorldIO : GUIWindowScripts
         Show(IOMode.WriteWaveJSON);
     }
 
-    public void ShowShipReadMode()
+    public void ShowShipReadMode(bool rdbValidty = false)
     {
         IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
         worldContents.SetActive(false);
-        Show(IOMode.ReadShipJSON);
+        Show(IOMode.ReadShipJSON, rdbValidty);
     }
 
     public void ShowShipWriteMode()
@@ -330,6 +330,12 @@ public class WCWorldIO : GUIWindowScripts
 
     void Show(IOMode mode)
     {
+        Show(mode, false);
+    }
+
+
+    void Show(IOMode mode, bool rdbValidty = false)
+    {
         clearAction = () => {
             if (displayHandler && builder && builder.currentPartHandler)
             {
@@ -444,7 +450,7 @@ public class WCWorldIO : GUIWindowScripts
                             Hide();
                             break;
                     }
-                }));
+                }), rdbValidty);
             }
         }
     }
@@ -462,7 +468,7 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
     UnityAction clearAction;
-    void AddButton(string name, UnityAction action)
+    void AddButton(string name, UnityAction action, bool rdbValidty = false)
     {
         var button = Instantiate(buttonPrefab, content).GetComponent<Button>();
         button.onClick.AddListener(
@@ -524,7 +530,7 @@ public class WCWorldIO : GUIWindowScripts
             }
         }
         buttons.Add(button);
-        if (SceneManager.GetActiveScene().name == "MainMenu")
+        if (rdbValidty)
         {
             var output = "";
             var valid = MasterNetworkAdapter.ValidateBluperintOnServer(SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name)), out output);
