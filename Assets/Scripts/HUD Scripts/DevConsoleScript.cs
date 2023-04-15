@@ -121,7 +121,7 @@ public class DevConsoleScript : MonoBehaviour
         inputField.text = "";
         inputField.ActivateInputField();
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene")
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
             if (command.Equals("poor", StringComparison.CurrentCultureIgnoreCase))
             {

@@ -528,7 +528,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         if (!queuedTractor || !(huskEntity is ShellCore) || MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client) return;
         NetworkObject nObj = null;
-        if (tractorID.HasValue && !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(tractorID.Value))
+        if (tractorID != null && tractorID.HasValue && !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(tractorID.Value))
         {
             queuedTractor = false;
             tractorID = null;
