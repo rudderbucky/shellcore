@@ -199,6 +199,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             core.networkAdapter.ExecuteVendorPurchaseServerRpc(index, vendor.GetAdapter().NetworkObjectId);
             return null;
         }
+
         // TODO: these booleans can be used this way right now but a new IVendor state should be created for if commanding count is needed
         if (vendor.NeedsSameFaction() && core.unitsCommanding.Count >= core.GetTotalCommandLimit())
         {
@@ -208,6 +209,10 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         GameObject creation = new GameObject();
         creation.transform.position = vendor.GetPosition();
         var blueprint = vendor.GetVendingBlueprint();
+        
+        if (index < 0 || blueprint.items.Count <= index) return null;
+        if (core.GetPower() < blueprint.items[index].cost) return null;
+
         if (blueprint.items[index].entityBlueprint == null)
         {
             blueprint.items[index].entityBlueprint = SectorManager.TryGettingEntityBlueprint(blueprint.items[index].json); 
