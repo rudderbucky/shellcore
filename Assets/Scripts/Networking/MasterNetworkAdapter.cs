@@ -316,6 +316,12 @@ public class MasterNetworkAdapter : NetworkBehaviour
             reason = "Blueprint not for ShellCores.";
             return false; // print is of incorrect type
         } 
+
+        if (print.coreShellSpriteID != "core1_shell" && print.coreShellSpriteID != "core2_shell")
+        {
+            reason = "Core is not tier 1 or tier 2.";
+            return false;
+        } 
         var abilityDict = new Dictionary<AbilityID, int>() {
             [AbilityID.MainBullet] = 0,
             [AbilityID.Harvester] = 0,
@@ -387,6 +393,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
                 reason = "Credit limit exceeded.";
                 return false;
             }
+            
         }
 
         reason = "Blueprint is not according to Ship Builder rules.";
