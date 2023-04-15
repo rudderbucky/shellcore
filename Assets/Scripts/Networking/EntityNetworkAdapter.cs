@@ -673,30 +673,29 @@ public class EntityNetworkAdapter : NetworkBehaviour
     private void AttemptCreateServerResponse()
     {
         if (!NetworkManager.Singleton.IsServer) return;
-        var closeToPlayer = isPlayer.Value || !serverReady.Value;
+
+        // calculate players this entity is close to
+
+        if (!huskEntity) return;
         var closePlayers = new List<ulong>();
         if (isPlayer.Value) closePlayers.Add(OwnerClientId);
-        if (!closeToPlayer && huskEntity)
+        foreach(var ent in AIData.shellCores)
         {
-            foreach(var ent in AIData.shellCores)
-            {
-                if (!ent || !ent.networkAdapter || !ent.networkAdapter.isPlayer.Value || (ent.transform.position - huskEntity.transform.position).sqrMagnitude > MasterNetworkAdapter.POP_IN_DISTANCE)
-                    continue;
-                closeToPlayer = true;
-                if (NetworkManager.Singleton.ConnectedClients.ContainsKey(ent.networkAdapter.OwnerClientId))
-                    closePlayers.Add(ent.networkAdapter.OwnerClientId);
-                break;
-            }
+            if (!ent || !ent.networkAdapter || !ent.networkAdapter.isPlayer.Value || (ent.transform.position - huskEntity.transform.position).sqrMagnitude > MasterNetworkAdapter.POP_IN_DISTANCE)
+                continue;
+            if (NetworkManager.Singleton.ConnectedClients.ContainsKey(ent.networkAdapter.OwnerClientId))
+                closePlayers.Add(ent.networkAdapter.OwnerClientId);
+            break;
         }
         updateTimer -= Time.deltaTime;
-        var useCustomParams = !dirty && (serverReady.Value || !(huskEntity is Craft craft) || !craft.IsMoving() || !craft.GetIsDead());
+        var craftIsMovingOrDead =  !(huskEntity is Craft craft) || (craft.IsMoving() || craft.GetIsDead());
 
-        if ((huskEntity && closeToPlayer && updateTimer <= 0) || !useCustomParams)
+        if ((closePlayers.Count > 0 && updateTimer <= 0 && (isPlayer.Value || craftIsMovingOrDead)) || dirty)
         {
             updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
             dirty = false;
             UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
-            if (isPlayer.Value || !useCustomParams)
+            if (isPlayer.Value || dirty)
                 UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
             else 
             {

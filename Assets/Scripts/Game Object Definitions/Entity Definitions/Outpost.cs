@@ -69,7 +69,6 @@ public class Outpost : AirConstruct, IVendor
         }
         else if (!MasterNetworkAdapter.lettingServerDecide)
         {
-            Debug.LogWarning(lastDamagedBy);
             if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
                 && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)
                 {

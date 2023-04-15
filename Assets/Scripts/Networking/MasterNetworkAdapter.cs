@@ -22,7 +22,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
     public static string playerName = "Test Name";
     public static string blueprint;
     public static string world;
-    public static int POP_IN_DISTANCE = 20000;
+    public static int POP_IN_DISTANCE = 3000;
     public static float timeOnLastIntroduce = 0;
     public static bool lettingServerDecide;
     private static int SHIP_CREDIT_LIMIT = 18000;
