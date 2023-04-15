@@ -71,11 +71,13 @@ public class CameraScript : MonoBehaviour
                 if (Input.GetAxis("Mouse ScrollWheel") < 0f)
                 {
                     zLevel = Mathf.Min(GetMaxZoomLevel(), zLevel + 0.5F);
+                    if (target != null) target.z = -zLevel;
                     Focus(transform.position);
                 }
                 else if (Input.GetAxis("Mouse ScrollWheel") > 0f)
                 {
                     zLevel = Mathf.Max(5, zLevel - 0.5F);
+                    if (target != null) target.z = -zLevel;
                     Focus(transform.position);
                 }
             }
