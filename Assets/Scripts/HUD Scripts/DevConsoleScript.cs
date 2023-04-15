@@ -33,6 +33,7 @@ public class DevConsoleScript : MonoBehaviour
         Application.logMessageReceived += HandleLog;
         godModeEnabled = false;
         spectateEnabled = false;
+        partsObtainedCheat = false;
         Instance = this;
         componentEnabled = false;
     }
