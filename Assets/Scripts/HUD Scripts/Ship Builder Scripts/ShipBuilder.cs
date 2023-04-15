@@ -1445,15 +1445,19 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
             return;
         }
 
-        if (CheckAbilityCaps(cursorScript.parts, abilityLimits, PlayerCore.Instance.blueprint.coreShellSpriteID, editorMode) != 0)
+        if (PlayerCore.Instance)
         {
-            return;
-        }
+            if (CheckAbilityCaps(cursorScript.parts, abilityLimits, PlayerCore.Instance.blueprint.coreShellSpriteID, editorMode) != 0)
+            {
+                return;
+            }
 
-        if (!CheckPartSizes(cursorScript.parts, PlayerCore.Instance.blueprint.coreShellSpriteID, editorMode))
-        {
-            return;
+            if (!CheckPartSizes(cursorScript.parts, PlayerCore.Instance.blueprint.coreShellSpriteID, editorMode))
+            {
+                return;
+            }
         }
+        
 
         bool invalidState = false;
         foreach (ShipBuilderPart part in cursorScript.parts)
