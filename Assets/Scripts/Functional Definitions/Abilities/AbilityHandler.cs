@@ -38,6 +38,7 @@ public class AbilityHandler : MonoBehaviour
 
     public void SetCurrentVisible(AbilityTypes type)
     {
+        if (DevConsoleScript.spectateEnabled) return;
         if (currentVisibles != type)
         {
             currentVisibles = type;
