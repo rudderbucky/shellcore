@@ -48,7 +48,9 @@ public enum AbilityID
     SpeedAura,
     EnergyAura,
     ChainBeam,
-    SpeederMissile
+    SpeederMissile,
+    Slash,
+    Blink
 }
 
 public static class AbilityUtilities
@@ -240,6 +242,10 @@ public static class AbilityUtilities
                 return $"Instant attack that deals {Beam.beamDamage * tier} damage to multiple targets.";
             case 46:
                 return $"Slow homing projectile that deals {Missile.missileDamage * tier} damage plus more if the target was moving.";
+            case 47:
+                return $"Close range attack disjointed from ship center. Cannot use while invisible.";
+            case 48:
+                return $"Teleport to mouse location. Cannot use while invisible.";
             default:
                 return "Description unset";
         }
@@ -462,6 +468,10 @@ public static class AbilityUtilities
                 return "Chain Beam";
             case 46:
                 return "Speeder Missile";
+            case 47:
+                return "Slash";
+            case 48:
+                return "Blink";
             default:
                 return "Name unset";
         }
@@ -656,6 +666,12 @@ public static class AbilityUtilities
                 break;
             case 46:
                 ability = obj.AddComponent<SpeederMissile>();
+                break;
+            case 47:
+                ability = obj.AddComponent<Slash>();
+                break;
+            case 48:
+                ability = obj.AddComponent<Blink>();
                 break;
         }
 

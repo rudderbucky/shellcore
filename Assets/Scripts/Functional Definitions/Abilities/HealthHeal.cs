@@ -39,13 +39,10 @@ public class HealthHeal : Ability
 
     protected override void Awake()
     {
-        base.Awake(); // base awake
+        base.Awake();
         // hardcoded values here
 
         energyCost = 35;
-
-        // remember, the ID change works here 
-        // because awake only triggers AFTER the thread which instantiated the ability is completely executed
         cooldownDuration = 10;
     }
 
