@@ -136,6 +136,7 @@ public class AudioManager : MonoBehaviour
         var curClip = instance.playerMusicSource.clip;
         instance.playerMusicSource.Stop();
         var newClip = ResourceManager.GetAsset<AudioClip>(ID);
+        if (newClip == null) return;
         instance.playerMusicSource.PlayOneShot(newClip);
         // TODO: Maybe continue the main music instead of restarting it but mute it somehow?
         instance.playerMusicSource.PlayDelayed(newClip.length + 5F);
