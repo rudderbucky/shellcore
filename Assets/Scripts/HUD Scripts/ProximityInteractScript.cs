@@ -122,7 +122,7 @@ public class ProximityInteractScript : MonoBehaviour
             worldToScreenPoint.y *= UIScalerScript.GetScale();
             interactIndicator.anchoredPosition = 
                 worldToScreenPoint + new Vector3(0, 50);
-            if (InputManager.GetKeyUp(KeyName.Interact) && !PlayerViewScript.GetIsWindowActive() && !(PlayerCore.Instance || !PlayerCore.Instance.GetIsDead()))
+            if (InputManager.GetKeyUp(KeyName.Interact) && !PlayerViewScript.GetIsWindowActive() && (!PlayerCore.Instance || !PlayerCore.Instance.GetIsDead()))
             {
                 ActivateInteraction(closest); // key received; activate interaction
             }
