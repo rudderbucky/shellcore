@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -42,32 +44,16 @@ public class MainMenu : MonoBehaviour
     public static string GATEWAY_IP = "34.125.253.226:8000";
     private bool queueNetworkRun = false;
 
-    public void RunClientFromGateway(HttpResponseMessage message)
+    public void RunClientFromGateway(string result)
     {
-        message.Content.ReadAsStringAsync().ContinueWith((s) => 
-        {
-            Debug.Log("Connecting to: " + s.Result);
-            var addressArray = s.Result.Split(":");
-            SetAddress(addressArray[0]);
-            SetPort(addressArray[1]);
-            queueNetworkRun = true;
-        });
+        Debug.Log("Connecting to: " + result);
+        var addressArray = result.Split(":");
+        SetAddress(addressArray[0]);
+        SetPort(addressArray[1]);
+        queueNetworkRun = true;
     }
 
     public static System.Net.Http.HttpClient client;
-
-    public void QueryGateway()
-    {
-        try
-        {
-            var retval = client.GetAsync($"http://{GATEWAY_IP}/seekip/{location}").Result;
-            RunClientFromGateway(retval);
-        }
-        catch
-        {
-            Debug.Log("Connection failure on gateway seek.");
-        }
-    }
 
     public static string location = null;
     public static string RDB_SERVER_PASSWORD = "test_password";
@@ -76,15 +62,34 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private Text playersConnectedText;
     private string playersConnected = "";
-    public void UpdatePlayersConnected(HttpResponseMessage message)
+
+    public IEnumerator UpdatePlayersConnected()
     {
-        Debug.Log("Received message"  + Time.time  );
-        if (!playersConnectedText) return;
-        message.Content.ReadAsStringAsync().ContinueWith((s) => 
+        if (!playersConnectedText) yield return null;
+        UnityWebRequest www = UnityWebRequest.Get($"http://{GATEWAY_IP}/playercount/{location}");
+        www.timeout = 3;
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
         {
-            playersConnected = s.Result;
-        });
+            playersConnected = www.downloadHandler.text;
+        }
     }
+    public void QueryGateway()
+    {
+        StartCoroutine(QueryGatewayHelper());
+    }
+    public IEnumerator QueryGatewayHelper()
+    {
+        UnityWebRequest www = UnityWebRequest.Get($"http://{GATEWAY_IP}/seekip/{location}");
+        www.timeout = 3;
+        yield return www.SendWebRequest();
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            RunClientFromGateway(www.downloadHandler.text);
+        }
+    }
+
 
     public void UpdateLocation(int loc)
     {
@@ -109,9 +114,7 @@ public class MainMenu : MonoBehaviour
 
         try
         {
-            Debug.Log("Querying location status at time: "  + Time.time + $" in {location}"  );
-            var retval = client.GetAsync($"http://{GATEWAY_IP}/playercount/{location}").Result;
-            UpdatePlayersConnected(retval);
+            StartCoroutine(UpdatePlayersConnected());
         }
         catch
         {
