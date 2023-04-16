@@ -249,6 +249,15 @@ public abstract class Craft : Entity
     protected Vector2 CalculateNewVelocity(Vector2 directionVector)
     {
         var vec = entityBody.velocity;
+        /*
+        // enable dash dancing lol
+        if (directionVector.normalized == -vec.normalized && vec != Vector2.zero)
+        {
+            vec = -vec;
+            entityBody.transform.rotation *= Quaternion.Euler(0, 0, 180);
+        }
+        else 
+        */
         vec += directionVector * physicsAccel * Time.fixedDeltaTime;
         var sqr = vec.sqrMagnitude;
         if (sqr > physicsSpeed * physicsSpeed || sqr > maxVelocity * maxVelocity)

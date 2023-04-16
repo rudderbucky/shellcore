@@ -643,7 +643,9 @@ public class WCWorldIO : GUIWindowScripts
         else if (PlayerCore.Instance)
         {
             var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(path));
-            if (print && ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, false, PlayerCore.Instance.abilityCaps) && builder.ContainsParts(print.parts))
+            var validPreset = print && ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, false, PlayerCore.Instance.abilityCaps) && builder.ContainsParts(print.parts);
+
+            if (validPreset || DevConsoleScript.godModeEnabled)
                 LoadPreset(print);
         }
     }
