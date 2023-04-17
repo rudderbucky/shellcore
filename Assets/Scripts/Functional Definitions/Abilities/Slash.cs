@@ -34,7 +34,7 @@ public class Slash : Ability
     public override void ActivationCosmetic(Vector3 targetPos)
     {
         slashPrefab = ResourceManager.GetAsset<GameObject>("slash_prefab");
-        AudioManager.PlayClipByID("clip_healeffect", targetPos);
+        AudioManager.PlayClipByID("clip_slasheffect", targetPos);
         Instantiate(slashPrefab, Core.transform);
         base.ActivationCosmetic(targetPos);
     }

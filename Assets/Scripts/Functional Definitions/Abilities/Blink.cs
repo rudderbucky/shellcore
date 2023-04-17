@@ -33,8 +33,7 @@ public class Blink : Ability
     public override void ActivationCosmetic(Vector3 targetPos)
     {
         blinkPrefab = ResourceManager.GetAsset<GameObject>("respawn_implosion");
-        AudioManager.PlayClipByID("clip_healeffect", targetPos);
-        Instantiate(blinkPrefab, Core.transform);
+        Instantiate(blinkPrefab, Core.transform.position, Quaternion.identity);
         base.ActivationCosmetic(targetPos);
     }
 
