@@ -489,10 +489,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public static Ability GetAbilityFromLocation(Vector2 location, Entity core)
     {
+        Ability weapon = null;
         if (location == Vector2.zero)
         {
-            return core.GetComponent<MainBullet>() ? core.GetComponent<MainBullet>() : core.shell ? core.shell.GetComponent<Cannon>() : null;
+            weapon = core.GetComponent<MainBullet>() ? core.GetComponent<MainBullet>() : core.shell ? core.shell.GetComponent<WeaponAbility>() : null;
         }
+        if (weapon) return weapon;
+
 
         foreach (var part in core.NetworkGetParts())
         {            

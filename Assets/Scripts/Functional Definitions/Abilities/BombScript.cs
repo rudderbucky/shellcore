@@ -15,7 +15,7 @@ public class BombScript : MonoBehaviour
     public static readonly float explosionRadius = 5f;
     private static GameObject explosionCirclePrefab;
     private float timeInstantiated;
-    private float fuseTime = 3F;
+    private float fuseTime = 1.5F;
 
     private static void GetPrefabs()
     {

@@ -17,7 +17,7 @@ public class Bomb : WeaponAbility
         // hardcoded values here
         description = $"Projectile that deals {damage} damage.";
         abilityName = "Bomb";
-        bombSpeed = 10;
+        bombSpeed = 12.5F;
         survivalTime = 5F;
         range = 10F;
         ID = AbilityID.Bomb;
@@ -65,7 +65,7 @@ public class Bomb : WeaponAbility
 
         // Update its damage to match main bullet
         var script = bullet.GetComponent<BombScript>();
-        bullet.GetComponent<Rigidbody2D>().velocity = (targetPos - originPos).normalized * bombSpeed;
+        bullet.GetComponent<Rigidbody2D>().velocity = (targetPos - originPos).normalized * bombSpeed * Mathf.Sqrt(Mathf.Min(1, (targetPos - transform.position).sqrMagnitude / (range * range)));
         script.owner = GetComponentInParent<Entity>();
         script.SetDamage(GetDamage());
         script.SetCategory(category);
