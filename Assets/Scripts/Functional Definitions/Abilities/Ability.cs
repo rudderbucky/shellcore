@@ -217,7 +217,7 @@ public abstract class Ability : MonoBehaviour
     /// <returns>The cooldown duration remaining on the ability</returns>
     public float TimeUntilReady()
     {
-        if (State == AbilityState.Cooldown || State == AbilityState.Charging || State == AbilityState.Active) // active or on cooldown
+        if (State == AbilityState.Cooldown || State == AbilityState.Charging || State == AbilityState.Active || (this is WeaponAbility && State == AbilityState.Disabled)) // active or on cooldown
         {
             return Mathf.Max(cooldownDuration - (Time.time - startTime), 0); // return the cooldown remaining, calculated prior to this call via TickDown
         }
