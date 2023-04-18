@@ -167,6 +167,13 @@ public class MasterNetworkAdapter : NetworkBehaviour
         BombScript.ActivationCosmetic(position);
     }
 
+    [ClientRpc]
+    public void AlertPlayerClientRpc(int faction, string message, string sound)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        var BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
+        if (BZManager && PlayerCore.Instance && PlayerCore.Instance.faction == faction) BZManager.AlertPlayer(message, sound);
+    }
 
     public GameObject networkObj;
 

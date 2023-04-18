@@ -135,13 +135,25 @@ public class BattleZoneManager : MonoBehaviour
         return strings;
     }
 
-    public void AlertPlayers(int faction, string message)
+    public void AttemptAlertPlayers(int faction, string message, string sound)
     {
-        if (PlayerCore.Instance && faction == PlayerCore.Instance.faction && PlayerCore.Instance.alerter)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
         {
-            PlayerCore.Instance.alerter.showMessage(message, "clip_stationlost");
+            if (MasterNetworkAdapter.lettingServerDecide) return;
+            MasterNetworkAdapter.instance.AlertPlayerClientRpc(faction, message, sound);
+        }
+
+        if (PlayerCore.Instance && PlayerCore.Instance.faction == faction) AlertPlayer(message, sound);
+    }
+
+    public void AlertPlayer(string message, string sound)
+    {
+        if (PlayerCore.Instance && PlayerCore.Instance.alerter)
+        {
+            PlayerCore.Instance.alerter.showMessage(message, sound);
         }
     }
+
 
     public bool IsTarget(Entity ent)
     {
