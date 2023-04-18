@@ -114,10 +114,11 @@ public class AirCarrier : AirConstruct, ICarrier
     public override void TakeCoreDamage(float amount)
     {
         base.TakeCoreDamage(amount);
-        if (currentHealth[1] < coreAlertThreshold)
+        if (currentHealth[1] < coreAlertThreshold && currentHealth[1] > 0)
         {
             int temp = (int)(Mathf.Floor((currentHealth[1] / maxHealth[1]) * 5) + 1) * 20;
             coreAlertThreshold -= (maxHealth[1] * 0.2f);
+            Debug.Log("Calling RPC at: " + coreAlertThreshold + " core");
             if (BZManager) BZManager.AttemptAlertPlayers(faction, $"Carrier is at {temp}% core", "clip_alert");
         }
     }
@@ -125,10 +126,11 @@ public class AirCarrier : AirConstruct, ICarrier
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
         float residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
-        if (currentHealth[0] < shellAlertThreshold)
+        if (currentHealth[0] < shellAlertThreshold && currentHealth[0] > 0)
         {
             int temp = (int)(Mathf.Floor((currentHealth[0] / maxHealth[0]) * 5) + 1) * 20;
             shellAlertThreshold -= (maxHealth[0] * 0.2f);
+            Debug.Log("Calling RPC at: " + coreAlertThreshold + " shell");
             if (BZManager) BZManager.AttemptAlertPlayers(faction, $"Carrier is at {temp}% shell", "clip_alert");
         }
 

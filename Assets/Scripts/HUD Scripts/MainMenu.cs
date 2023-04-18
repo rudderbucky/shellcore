@@ -162,7 +162,7 @@ public class MainMenu : MonoBehaviour
         if (string.IsNullOrEmpty(location))
             UpdateLocation(0);
 
-        blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer"));
+        blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Advanced Scout"));
         worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
         if (rdbServerLocation && string.IsNullOrEmpty(RDB_SERVER_PASSWORD))
         {
