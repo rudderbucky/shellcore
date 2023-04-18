@@ -660,6 +660,20 @@ public class WCWorldIO : GUIWindowScripts
 
     private void LoadPreset(EntityBlueprint blueprint)
     {
+        if (builder) 
+        {
+            builder.cursorScript.ClearAllParts();
+            foreach (EntityBlueprint.PartInfo info in blueprint.parts)
+            {
+                if (!builder.DecrementPartButton(ShipBuilder.CullSpatialValues(info)))
+                {
+                    // cursorScript.ClearAllParts();
+                    builder.CloseUI(false);
+                    return;
+                }
+            }
+        }
+
         var x = new EntityBlueprint.PartInfo[blueprint.parts.Count];
         blueprint.parts.CopyTo(x);
         PlayerCore.Instance.blueprint.parts = new List<EntityBlueprint.PartInfo>(x);
