@@ -398,6 +398,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
         }
 
+        if (isPlayer.Value) 
+        {
+            MasterNetworkAdapter.AttemptServerIntroduce();
+        }
+
         if (huskEntity && !(huskEntity as PlayerCore))
         {
             huskEntity.TakeCoreDamage(999999);
@@ -412,7 +417,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
         if (isPlayer.Value) 
         {
-            MasterNetworkAdapter.AttemptServerIntroduce();
             SectorManager.instance.UpdateCounters();
         }
     }
