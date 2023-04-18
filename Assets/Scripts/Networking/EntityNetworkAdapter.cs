@@ -681,6 +681,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
         if (!huskEntity) return;
         var closePlayers = new List<ulong>();
+        var entityAlwaysUpdated = isPlayer.Value || (huskEntity is ICarrier || huskEntity is IVendor);
         if (isPlayer.Value) closePlayers.Add(OwnerClientId);
         foreach(var ent in AIData.shellCores)
         {
@@ -692,13 +693,15 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
         updateTimer -= Time.deltaTime;
         var craftIsMovingOrDead =  !(huskEntity is Craft craft) || (craft.IsMoving() || craft.GetIsDead());
+        var craftShouldBeUpdated = isPlayer.Value || craftIsMovingOrDead;
+        var update = dirty || (updateTimer <= 0 && (closePlayers.Count > 0 || entityAlwaysUpdated) && craftShouldBeUpdated);
 
-        if ((closePlayers.Count > 0 && updateTimer <= 0 && (isPlayer.Value || craftIsMovingOrDead)) || dirty)
+        if (update)
         {
             updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
             dirty = false;
             UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
-            if (isPlayer.Value || dirty)
+            if (entityAlwaysUpdated || dirty)
                 UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
             else 
             {
