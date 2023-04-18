@@ -5,10 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Canvas))]
 public class SubcanvasSortingOrder : MonoBehaviour
 {
-    public int offset = 1;
-
-    private void OnEnable()
+    public void Initialize()
     {
-        GetComponent<Canvas>().sortingOrder = PlayerViewScript.currentLayer + offset;
+        GetComponent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
     }
 }

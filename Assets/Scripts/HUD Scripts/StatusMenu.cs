@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class StatusMenu : GUIWindowScripts
 {
@@ -62,9 +63,9 @@ public class StatusMenu : GUIWindowScripts
         GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer;
         playerName.text = $"<color=yellow>{player.cursave.name}</color>";
         base.Activate();
+        GetComponentsInChildren<SubcanvasSortingOrder>(true).ToList().ForEach(x => x.Initialize());
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         if (InputManager.GetKeyDown(KeyName.StatusMenu) && !player.GetIsInteracting() && !DialogueSystem.isInCutscene)
