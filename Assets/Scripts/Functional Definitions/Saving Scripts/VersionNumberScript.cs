@@ -5,7 +5,7 @@ public class VersionNumberScript : MonoBehaviour
 {
     public static string version = "Beta 2.0.0";
     public static string mapVersion = "Beta 1.0.0";
-    public static string rdbMapVersion = "1";
+    public static string rdbMap = "rudderbucky server - 1";
     static VersionNumberScript instance;
     public Text episodeText;
 

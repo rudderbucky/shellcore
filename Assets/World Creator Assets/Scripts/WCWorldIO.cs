@@ -347,7 +347,7 @@ public class WCWorldIO : GUIWindowScripts
         placeholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
-            var serverPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "rudderbucky server", "Entities");
+            var serverPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", VersionNumberScript.rdbMap, "Entities");
             if (Directory.Exists(serverPath))
             {
                 placeholderPath = serverPath;
