@@ -688,7 +688,8 @@ public class LandPlatformGenerator : MonoBehaviour
             openList.RemoveAt(0);
         }
 
-        Debug.LogError($"No viable path found to any of the [{endTiles.Count}] destinations.");
+        // It's possible for there to be no path to any target, so it's okay to return nothing
+        Debug.Log($"No viable path found to any of the [{endTiles.Count}] destinations.");
         return null;
     }
 

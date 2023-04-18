@@ -8,6 +8,7 @@ public class GroundCarrier : GroundConstruct, ICarrier
 
     int intrinsicCommandLimit = 0;
     public List<IOwnable> unitsCommanding = new List<IOwnable>();
+    BattleZoneManager BZManager;
 
     public bool GetIsInitialized()
     {
@@ -28,6 +29,7 @@ public class GroundCarrier : GroundConstruct, ICarrier
         initialized = true;
         coreAlertThreshold = maxHealth[1] * 0.8f;
         shellAlertThreshold = maxHealth[0] * 0.8f;
+        BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
     }
 
     public List<IOwnable> GetUnitsCommanding()
@@ -104,23 +106,22 @@ public class GroundCarrier : GroundConstruct, ICarrier
     public override void TakeCoreDamage(float amount)
     {
         base.TakeCoreDamage(amount);
-        if (PlayerCore.Instance && PlayerCore.Instance.alerter && currentHealth[1] < coreAlertThreshold && FactionManager.IsAllied(0, faction))
+        if (currentHealth[1] < coreAlertThreshold)
         {
             int temp = (int)(Mathf.Floor((currentHealth[1] / maxHealth[1]) * 5) + 1) * 20;
             coreAlertThreshold -= (maxHealth[1] * 0.2f);
-            PlayerCore.Instance.alerter.showMessage($"Carrier is at {temp}% core", "clip_alert");
+            if (BZManager) BZManager.AttemptAlertPlayers(faction, $"Carrier is at {temp}% core", "clip_alert");
         }
     }
 
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
-        //this is bad code but idk how to do better
         float residue = base.TakeShellDamage(amount, shellPiercingFactor, lastDamagedBy);
-        if (PlayerCore.Instance && PlayerCore.Instance.alerter && currentHealth[0] < shellAlertThreshold && FactionManager.IsAllied(0, faction))
+        if (currentHealth[0] < shellAlertThreshold)
         {
             int temp = (int)(Mathf.Floor((currentHealth[0] / maxHealth[0]) * 5) + 1) * 20;
             shellAlertThreshold -= (maxHealth[0] * 0.2f);
-            PlayerCore.Instance.alerter.showMessage($"Carrier is at {temp}% shell", "clip_alert");
+            if (BZManager) BZManager.AttemptAlertPlayers(faction, $"Carrier is at {temp}% shell", "clip_alert");
         }
 
         return residue;

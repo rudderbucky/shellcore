@@ -347,7 +347,7 @@ public class WCWorldIO : GUIWindowScripts
         placeholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
-            var serverPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "rudderbucky server", "Entities");
+            var serverPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", VersionNumberScript.rdbMap, "Entities");
             if (Directory.Exists(serverPath))
             {
                 placeholderPath = serverPath;
@@ -660,6 +660,21 @@ public class WCWorldIO : GUIWindowScripts
 
     private void LoadPreset(EntityBlueprint blueprint)
     {
+        if (!blueprint) return;
+        if (blueprint.parts == null) return;
+        if (builder && builder.cursorScript) 
+        {
+            builder.cursorScript.ClearAllParts();
+            foreach (EntityBlueprint.PartInfo info in blueprint.parts)
+            {
+                if (!builder.DecrementPartButton(ShipBuilder.CullSpatialValues(info)))
+                {
+                    builder.CloseUI(false);
+                    return;
+                }
+            }
+        }
+
         var x = new EntityBlueprint.PartInfo[blueprint.parts.Count];
         blueprint.parts.CopyTo(x);
         PlayerCore.Instance.blueprint.parts = new List<EntityBlueprint.PartInfo>(x);
