@@ -204,7 +204,7 @@ public static class AbilityUtilities
             case 25:
                 return $"All weapon damage increased by {Mathf.Round(DamageBoost.damageFactor * Mathf.Max(1, tier) * 100)}%.";
             case 26:
-                return $"Instantly heals self and nearby allies by {AreaRestore.heal * Mathf.Max(1, tier)} shell";
+                return $"Instantly heals nearby allies by {AreaRestore.heal * Mathf.Max(1, tier)} shell.";
             case 27:
                 return "Immobilizes the target.";
             case 28:
