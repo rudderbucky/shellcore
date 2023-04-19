@@ -105,7 +105,7 @@ public class HUDScript : MonoBehaviour
         builder.Append("SCOREBOARD:\n");
         for(int i = 0; i < Mathf.Min(3, list.Count); i++)
         {
-            builder.Append($"{list[i].Key}: {list[i].Value}\n");
+            builder.Append($"{(list[i].Key.Length > 12 ? list[i].Key.Substring(0,9) + "..." : list[i].Key)}: {list[i].Value}\n");
         }
         if (list.Count > 3)
         {
