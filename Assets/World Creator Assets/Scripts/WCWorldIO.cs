@@ -514,18 +514,18 @@ public class WCWorldIO : GUIWindowScripts
             });
         }
         
-        button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name);
+        button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name);
         if (PlayerCore.Instance)
         {
             var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name));
             if (print && print.parts != null && !builder.ContainsParts(print.parts))
             {
-                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (Inadequate parts)";
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name) + " (Inadequate parts)";
                 button.GetComponentInChildren<Text>().color = Color.red;
             }
             if (!ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, true, PlayerCore.Instance.abilityCaps))
             {
-                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (Invalid)";
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name) + " (Invalid)";
                 button.GetComponentInChildren<Text>().color = Color.red;
             }
         }
@@ -538,7 +538,7 @@ public class WCWorldIO : GUIWindowScripts
             {
 
                 button.GetComponentInChildren<Text>().color = Color.red;
-                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (rdb server invalid)";
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name) + " (rdb server invalid)";
             }
         }
 
