@@ -253,7 +253,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     // Performs calculations based on current damage boost and control stats to determine final damage addition
     private void CalculateDamageBoost()
     {
-        damageAddition = controlStacks * Control.damageAddition + damageBoostStacks * DamageBoost.damageAddition;
+        damageFactor = controlStacks * Control.damageFactor + damageBoostStacks * DamageBoost.damageFactor;
     }
 
     private int stealths = 0;
@@ -269,10 +269,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
-    private float damageAddition = 0f;
-    public float GetDamageAddition()
+    private float damageFactor = 0f;
+    public float GetDamageFactor()
     {
-        return damageAddition;
+        return damageFactor;
     }
 
     [HideInInspector]

@@ -4,7 +4,7 @@ using UnityEngine;
 public class Control : PassiveAbility
 {
     const float healthAddition = 200;
-    public const float damageAddition = 50;
+    public const float damageFactor = 0.05F;
     public const float baseControlFractionBoost = 0.2F;
     List<Entity> boosted = new List<Entity>();
 

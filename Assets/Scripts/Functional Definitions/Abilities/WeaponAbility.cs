@@ -154,11 +154,11 @@ public abstract class WeaponAbility : ActiveAbility
         {
             if (bonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
             {
-                return (damage + Core.GetDamageAddition()) * bonusDamageMultiplier;
+                return (damage * (1+Core.GetDamageFactor())) * bonusDamageMultiplier;
             }
         }
 
-        return damage + Core.GetDamageAddition();
+        return damage * (1+Core.GetDamageFactor());
     }
 
     /// <summary>

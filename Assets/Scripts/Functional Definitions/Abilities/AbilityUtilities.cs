@@ -202,7 +202,7 @@ public static class AbilityUtilities
             case 24:
                 return "Become invisible to enemies.";
             case 25:
-                return $"All weapon damage increased by {DamageBoost.damageAddition * Mathf.Max(1, tier)}.";
+                return $"All weapon damage increased by {Mathf.Round(DamageBoost.damageFactor * Mathf.Max(1, tier) * 100)}%.";
             case 26:
                 return $"Instantly heals self and nearby allies by {AreaRestore.heal * Mathf.Max(1, tier)} shell";
             case 27:
@@ -220,7 +220,7 @@ public static class AbilityUtilities
             case 33:
                 return "Disrupt enemy ability cooldowns.";
             case 34:
-                return $"Gives allies additional {Control.baseControlFractionBoost * 100 * tier}% shell and {Control.damageAddition * tier} weapon damage.";
+                return $"Gives allies additional {Control.baseControlFractionBoost * 100 * tier}% shell and {Mathf.Round(Control.damageFactor * Mathf.Max(1, tier) * 100)} weapon damage.";
             case 35:
                 return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
             case 36:
