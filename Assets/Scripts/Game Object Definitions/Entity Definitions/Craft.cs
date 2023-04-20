@@ -232,7 +232,7 @@ public abstract class Craft : Entity
             return;
         }
 
-        if (rotateWhileMoving)
+        if (rotateWhileMoving && !MasterNetworkAdapter.lettingServerDecide)
         {
             RotateCraft(directionVector / weight);
         }
