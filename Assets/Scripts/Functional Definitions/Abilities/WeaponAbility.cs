@@ -150,15 +150,18 @@ public abstract class WeaponAbility : ActiveAbility
     /// <returns>damage</returns>
     protected float GetDamage()
     {
+
+        var final = damage * (1+Core.GetDamageFactor());
         if (GetTarget() != null && bonusDamageType != null && GetTarget().GetComponent<Entity>())
         {
             if (bonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
             {
-                return (damage * (1+Core.GetDamageFactor())) * bonusDamageMultiplier;
+                final = (damage * (1+Core.GetDamageFactor())) * bonusDamageMultiplier;
             }
         }
 
-        return damage * (1+Core.GetDamageFactor());
+        if (Core is ICarrier) final *= 2;
+        return final;
     }
 
     /// <summary>
