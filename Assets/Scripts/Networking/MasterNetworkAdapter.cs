@@ -37,12 +37,17 @@ public class MasterNetworkAdapter : NetworkBehaviour
     }
 
     void Update()
-    {
+    {        
+        if (!MasterNetworkAdapter.lettingServerDecide)
+        {
+            PingClientRpc();
+        }
         if (mode != MasterNetworkAdapter.NetworkMode.Server || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
         if (Time.time - timeOnLastIntroduce > SECONDS_PER_INTRODUCE || timeOnLastIntroduce == 0)
         {
             AttemptServerIntroduce();
         }
+
     }
 
     void Start()
@@ -290,6 +295,16 @@ public class MasterNetworkAdapter : NetworkBehaviour
         }
     }
     */
+
+
+    float lastPing = 0;
+    [ClientRpc]
+    private void PingClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        //Debug.Log(Time.time - lastPing);
+        lastPing = Time.time;
+    }
+
 
     [ClientRpc]
     public void EnergySphereCollectClientRpc(ClientRpcParams clientRpcParams = default)

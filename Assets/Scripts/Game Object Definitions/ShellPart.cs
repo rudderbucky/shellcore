@@ -123,7 +123,7 @@ public class ShellPart : MonoBehaviour
         part.craft = part.transform.root.GetComponent<Entity>();
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
-        part.currentHealth = blueprint.health;
+        part.currentHealth = part.partHealth;
         var collider = obj.GetComponent<PolygonCollider2D>();
         collider.isTrigger = true;
         part.detachible = blueprint.detachible;
@@ -255,6 +255,10 @@ public class ShellPart : MonoBehaviour
         if (craft as Drone)
         {
             currentHealth /= 4;
+        }
+        if (craft is ICarrier)
+        {
+            currentHealth = partHealth = partHealth * 2;
         }
 
         if (!craft)

@@ -1357,15 +1357,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             part.GetComponent<Ability>().SetDestroyed(true);
         }
 
+        entityBody.mass -= part.partMass;
+        weight -= part.partMass * weightMultiplier;
+        if (this is Craft craft)
+        {
+            craft.CalculatePhysicsConstants();
+        }
+
         if (!lettingServerDecide)
         {
-            entityBody.mass -= part.partMass;
-            weight -= part.partMass * weightMultiplier;
-            if (this is Craft craft)
-            {
-                craft.CalculatePhysicsConstants();
-            }
-
             Domino(part);
         }
 

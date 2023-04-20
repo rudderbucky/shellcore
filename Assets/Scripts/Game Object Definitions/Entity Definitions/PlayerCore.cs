@@ -384,11 +384,10 @@ public class PlayerCore : ShellCore
                 networkAdapter.ChangeDirectionServerRpc(getDirectionalInput());
                 dirty = true;
             }
-            else if ((MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || NetworkManager.Singleton.IsHost))
-            {
+
+            if (!MasterNetworkAdapter.lettingServerDecide)
                 MoveCraft(getDirectionalInput()); // move the craft based on the directional input
-                if (networkAdapter) networkAdapter.wrapper.directionalVector = getDirectionalInput();
-            }
+            if (networkAdapter) networkAdapter.wrapper.directionalVector = getDirectionalInput();
         
         }
     }
@@ -413,7 +412,7 @@ public class PlayerCore : ShellCore
     {
         base.CraftMover(directionVector);
 
-        if (directionVector != Vector2.zero)
+        if (directionVector != Vector2.zero && (!MasterNetworkAdapter.lettingServerDecide))
         {
             CameraScript.instance.Focus(transform.position);
         }
