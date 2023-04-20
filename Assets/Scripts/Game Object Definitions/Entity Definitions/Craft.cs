@@ -165,7 +165,7 @@ public abstract class Craft : Entity
     protected override void FixedUpdate()
     {
         if (!SystemLoader.AllLoaded) return;
-        var lettingServerDecide = this as PlayerCore && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && networkAdapter != null;
+        var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
 
         entityBody.drag = draggable.dragging  ? 25F : 0;
         if (draggable.dragging)
@@ -183,9 +183,9 @@ public abstract class Craft : Entity
             }
         }
 
+        CraftMover(physicsDirection); // move craft
         if (!lettingServerDecide)
         {
-            CraftMover(physicsDirection); // move craft
         }
         physicsDirection = Vector2.zero;
     }

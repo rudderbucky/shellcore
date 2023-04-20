@@ -427,6 +427,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
     }
 
+    float testTimer = 0;
+
     private void UpdateCoreState(Entity core, ServerResponse response)
     {
         if (isPlayer.Value && response.core > 0 && huskEntity && huskEntity.GetIsDead() && safeToRespawn.Value)
@@ -435,8 +437,16 @@ public class EntityNetworkAdapter : NetworkBehaviour
             (huskEntity as ShellCore).Respawn(true);
         }
 
-        core.transform.position = response.position;
-        core.GetComponent<Rigidbody2D>().velocity = response.velocity;
+        if (!(core is PlayerCore) || (response.position - core.transform.position).sqrMagnitude > 1F
+            || (wrapper.directionalVector.x != 0 && wrapper.directionalVector.y != 0) || testTimer > 0)
+        {
+            if (testTimer <= 0) testTimer = 3;
+            else testTimer -= Time.deltaTime;
+            core.transform.position = response.position;
+        }
+
+        if (!(core is PlayerCore) || testTimer > 0) 
+            core.GetComponent<Rigidbody2D>().velocity = response.velocity;
         core.transform.rotation = response.rotation;
         core.dirty = false;
         core.SetWeaponGCDTimer(response.weaponGCDTimer);
