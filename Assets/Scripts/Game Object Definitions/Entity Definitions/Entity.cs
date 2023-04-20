@@ -72,10 +72,22 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public string ID; // used in tasks
     protected float[] baseMaxHealth = new float[3];
     private int controlStacks;
+    private float TimeToDeath
+    {
+        get 
+        { 
+            var tier = 0;
+            if (blueprint && MasterNetworkAdapter.mode != NetworkMode.Off) 
+                tier = CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID);
+            return RESPAWN_TIMES[tier]; 
+        }
+    }
+
+    private static float[] RESPAWN_TIMES = new float[] {5, 7, 9, 11};
 
     public void CancelDeath()
     {
-        deathTimer = 5;
+        deathTimer = TimeToDeath;
         isDead = false;
     }
     public void HealToMax()
@@ -1251,7 +1263,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 }
             }
 
-            if (deathTimer >= 5F)
+            if (deathTimer >= TimeToDeath)
             {
                 if (this is PlayerCore player)
                 {
