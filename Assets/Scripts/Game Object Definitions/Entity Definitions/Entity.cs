@@ -1258,8 +1258,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 if (this is PlayerCore player && (deathTimer > 2))
                 {
-                    player.alerter.showMessage($"Respawning in {(5 - (int)deathTimer)} second"
-                                               + ((5 - deathTimer) > 1 ? "s." : "."));
+                    player.alerter.showMessage($"Respawning in {(TimeToDeath - (int)deathTimer)} second"
+                                               + ((TimeToDeath - deathTimer) > 1 ? "s." : "."));
                 }
             }
 
