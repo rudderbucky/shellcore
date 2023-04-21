@@ -488,7 +488,7 @@ public class WCWorldIO : GUIWindowScripts
         var isPreset = name.Contains("PresetBlueprints");
         var isInMainMenu = (SceneManager.GetActiveScene().name == "MainMenu");
 
-        if (!rdbValid && isInMainMenu && !isPreset) return;
+        if (!rdbValid && isInMainMenu && !isPreset && displayRdbValidity) return;
         if (rdbValid && isInMainMenu && isPreset && !readingFromPresetBPs) switchBPDirectoryButton.onClick.Invoke();
 
 
