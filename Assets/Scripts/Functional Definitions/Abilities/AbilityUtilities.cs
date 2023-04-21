@@ -220,7 +220,7 @@ public static class AbilityUtilities
             case 33:
                 return "Disrupt enemy ability cooldowns.";
             case 34:
-                return $"Gives allies additional {Control.baseControlFractionBoost * 100 * tier}% shell and {Mathf.Round(Control.damageFactor * Mathf.Max(1, tier) * 100)} weapon damage.";
+                return $"Gives allies additional {Control.baseControlFractionBoost * 100 * tier}% shell and {Mathf.Round(Control.damageFactor * Mathf.Max(1, tier) * 100)}% weapon damage.";
             case 35:
                 return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
             case 36:

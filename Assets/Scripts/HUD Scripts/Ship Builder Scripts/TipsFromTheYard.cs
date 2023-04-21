@@ -28,7 +28,7 @@ public class TipsFromTheYard : MonoBehaviour
         tipsList.Add("You can create custom ShellCores in the World Creator using the JSON you get from this ship builder! Share your JSON with friends!");
         tipsList.Add("If you double click the Status Menu map it switches from a draggable map to a minimap-style scroll (and vice versa)!");
         tipsList.Add("You can shift-click part buttons to instantly buy/sell them!");
-        tipsList.Add("You can press tab to cycle through your selected targets!");
+        tipsList.Add("You can press tab to cycle through your selected targets! Use this to move several turrets at once.");
         tipsList.Add("When not receiving background dialogue you can press 'enter' to view all the background dialogue you received before!");
         tipsList.Add("Double-click the grid to reset the center to your core!");
         tipsList.Add("You can zoom in and out in this Ship Builder by scrolling up/down!");
@@ -37,6 +37,7 @@ public class TipsFromTheYard : MonoBehaviour
         tipsList.Add("A multiplayer mode exists! Click the Skirmish button in the main menu!");
         tipsList.Add("Concentrate and ask again!");
         tipsList.Add("You might be able to find shard rocks while roaming around! Shards allow you to increase your ability limits!");
+        tipsList.Add("Saving power is important! You can buy several siege turrets in one go to devastate stations.");
         colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
     }
 
