@@ -267,6 +267,17 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (weapon && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Host) weapon.ActivationCosmetic(victimPos);
     }
 
+    [ClientRpc]
+    public void SetAbilityReadyClientRpc(Vector2 location, Vector3 victimPos)
+    {
+        if (NetworkManager.Singleton.IsServer) return;
+        var core = huskEntity ? huskEntity : PlayerCore.Instance;
+        if (!core) return;
+        var ability = GetAbilityFromLocation(location, core);
+        if (ability) ability.abilityIsReadyOnServer = true;
+    }
+
+
 
     [ClientRpc]
     public void DetachPartClientRpc(Vector2 location, ClientRpcParams clientRpcParams = default)

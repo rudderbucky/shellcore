@@ -43,6 +43,7 @@ public class MainMenu : MonoBehaviour
 
     public static string GATEWAY_IP = "34.125.253.226:8000";
     private bool queueNetworkRun = false;
+    public static bool TESTING = false;
 
     public void RunClientFromGateway(string result)
     {
@@ -158,7 +159,7 @@ public class MainMenu : MonoBehaviour
             client = new System.Net.Http.HttpClient();
             client.Timeout = new System.TimeSpan(0,0,3);
         }
-
+        if (TESTING) RDB_SERVER_PASSWORD = "127.0.0.1:8000";
         if (string.IsNullOrEmpty(location))
             UpdateLocation(0);
 
