@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 public class MasterNetworkAdapter : NetworkBehaviour
@@ -30,10 +31,24 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     public static void AttemptServerIntroduce()
     {
+        if (MainMenu.TESTING)
+        {
+            MainMenu.RDB_SERVER_PASSWORD = "test_password";
+            MainMenu.location = "na";
+            if (string.IsNullOrEmpty(MasterNetworkAdapter.port)) port = "7777";
+        }
         if (mode != MasterNetworkAdapter.NetworkMode.Server || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
         if (string.IsNullOrEmpty(MainMenu.GATEWAY_IP) || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD) || string.IsNullOrEmpty(MainMenu.location) || string.IsNullOrEmpty(MasterNetworkAdapter.port)) return;
         MasterNetworkAdapter.timeOnLastIntroduce = Time.time;
-        MainMenu.client.PostAsync($"http://{MainMenu.GATEWAY_IP}/introduce/{MainMenu.RDB_SERVER_PASSWORD}/{MainMenu.location}/{MasterNetworkAdapter.port}/{NetworkManager.Singleton.ConnectedClients.Count}", null);
+        instance.StartCoroutine(Introduce());
+    }
+
+
+    public static IEnumerator Introduce()
+    {
+        UnityWebRequest www = UnityWebRequest.Post($"http://{MainMenu.GATEWAY_IP}/introduce/{MainMenu.RDB_SERVER_PASSWORD}/{MainMenu.location}/{MasterNetworkAdapter.port}/{NetworkManager.Singleton.ConnectedClients.Count}", "");
+        www.timeout = 3;
+        yield return www.SendWebRequest();
     }
 
     void Update()
@@ -361,8 +376,6 @@ public class MasterNetworkAdapter : NetworkBehaviour
             [AbilityID.Stealth] = 1,
             [AbilityID.PinDown] = 1,
             [AbilityID.Retreat] = 1,
-            [AbilityID.Control] = 1,
-            [AbilityID.Command] = 1,
             [AbilityID.Absorb] = 1,
         };
 
@@ -430,6 +443,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
             return false;
         }
         var print = ScriptableObject.CreateInstance<EntityBlueprint>();
+        reason = "";
+        if (world != VersionNumberScript.rdbMap) return true;
         try
         {
             print = SectorManager.TryGettingEntityBlueprint(blueprint);
