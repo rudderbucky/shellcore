@@ -24,6 +24,7 @@ public class Laser : Bullet
         prefabScale = Vector2.one;
         terrain = Entity.TerrainType.All;
         category = Entity.EntityCategory.Unit;
+        bonusDamageType = typeof(Tank);
         pierceFactor = laserPierceFactor;
         bulletSound = "clip_laser";
         bonusDamageType = null;

@@ -49,6 +49,11 @@ public abstract class WeaponAbility : ActiveAbility
             return "Drones";
         }
 
+        if (bonusDamageType == typeof(Tank))
+        {
+            return "Tank";
+        }
+
         return bonusDamageType?.ToString();
     }
 
