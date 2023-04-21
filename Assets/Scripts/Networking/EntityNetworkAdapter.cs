@@ -411,6 +411,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
         }
 
+        if (isPlayer.Value && playerFactions != null && playerFactions.ContainsKey(passedFaction))
+        {
+            playerFactions[passedFaction]--;
+        }
+
         if (isPlayer.Value) 
         {
             MasterNetworkAdapter.AttemptServerIntroduce();
@@ -421,11 +426,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             huskEntity.TakeCoreDamage(999999);
             if (huskEntity is ShellCore core) core.KillShellCore();
             Destroy(huskEntity.gameObject);
-        }
-
-        if (isPlayer.Value && playerFactions != null && playerFactions.ContainsKey(passedFaction))
-        {
-            playerFactions[passedFaction]--;
         }
 
         if (isPlayer.Value) 

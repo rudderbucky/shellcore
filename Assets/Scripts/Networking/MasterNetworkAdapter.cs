@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -46,8 +47,9 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     public static IEnumerator Introduce()
     {
-        UnityWebRequest www = UnityWebRequest.Post($"http://{MainMenu.GATEWAY_IP}/introduce/{MainMenu.RDB_SERVER_PASSWORD}/{MainMenu.location}/{MasterNetworkAdapter.port}/{NetworkManager.Singleton.ConnectedClients.Count}", "");
-        www.timeout = 3;
+        var cnt = EntityNetworkAdapter.playerFactions != null ? EntityNetworkAdapter.playerFactions.Values.ToList().Sum() : 0;
+        UnityWebRequest www = UnityWebRequest.Post($"http://{MainMenu.GATEWAY_IP}/introduce/{MainMenu.RDB_SERVER_PASSWORD}/{MainMenu.location}/{MasterNetworkAdapter.port}/{cnt}", "");
+        www.timeout = 10;
         yield return www.SendWebRequest();
     }
 
