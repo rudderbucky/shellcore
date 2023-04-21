@@ -165,7 +165,6 @@ public abstract class WeaponAbility : ActiveAbility
             }
         }
 
-        if (Core is ICarrier) final *= 2;
         return final;
     }
 
