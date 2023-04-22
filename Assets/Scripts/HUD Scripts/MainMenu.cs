@@ -83,7 +83,7 @@ public class MainMenu : MonoBehaviour
     public IEnumerator QueryGatewayHelper()
     {
         UnityWebRequest www = UnityWebRequest.Get($"http://{GATEWAY_IP}/seekip/{location}/{nameFields[0].text}");
-        www.timeout = 3;
+        www.timeout = 10;
         yield return www.SendWebRequest();
         if (www.result == UnityWebRequest.Result.Success)
         {
