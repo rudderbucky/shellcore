@@ -13,8 +13,9 @@ public class Construct : Entity
             entityBody.drag = 25f;
         }
     }
-    const float MAX_DAMAGE_PER_SECOND = 200;
+    const float MAX_DAMAGE_PER_SECOND = 800;
     float damageLeft = MAX_DAMAGE_PER_SECOND;
+    float diminishingFactor = 0.5F;
 
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
@@ -23,8 +24,7 @@ public class Construct : Entity
         {
             var cappedAmount = Mathf.Min(damageLeft, amount);
             damageLeft = Mathf.Max(0, damageLeft - cappedAmount);
-            finalAmount = cappedAmount + (amount - cappedAmount) * 0.5F;
-            Debug.Log(finalAmount + " " + damageLeft);
+            finalAmount = cappedAmount + (amount - cappedAmount) * diminishingFactor;
         }
 
         var residue = base.TakeShellDamage(finalAmount, shellPiercingFactor, lastDamagedBy);
