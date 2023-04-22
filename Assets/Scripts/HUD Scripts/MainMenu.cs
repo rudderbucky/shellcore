@@ -49,6 +49,7 @@ public class MainMenu : MonoBehaviour
     {
         Debug.Log("Connecting to: " + result);
         var addressArray = result.Split(":");
+        if (addressArray.Length < 2) return;
         SetAddress(addressArray[0]);
         SetPort(addressArray[1]);
         queueNetworkRun = true;
@@ -258,6 +259,11 @@ public class MainMenu : MonoBehaviour
 
     public void StartSkirmishHelper(MasterNetworkAdapter.NetworkMode mode)
     {
+        if (NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+            return;
+        } 
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         SectorManager.currentSectorIndex = 0;
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
