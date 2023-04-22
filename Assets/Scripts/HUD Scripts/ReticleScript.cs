@@ -105,47 +105,53 @@ public class ReticleScript : MonoBehaviour
         var primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits);
         droneInteraction = droneInteraction || primaryDroneInteraction;
 
-        if (!primaryDroneInteraction && hits.Length > 0) // check if there are actually any hits
+        if (primaryDroneInteraction || hits.Length == 0) // check if there are actually any hits
         {
-            Draggable draggableTarget = hits[0].transform?.gameObject.GetComponent<Draggable>();
-
-            if (draggableTarget && TractorBeam.InvertTractorCheck(craft, draggableTarget) && draggableTarget.transform != craft.transform)
-            {
-                if (targSys.GetTarget() == draggableTarget.transform)
-                {
-                    PlayerCore player = craft.GetComponent<PlayerCore>();
-                    if (player)
-                    {
-                        player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
-                    }
-                }
-
-                SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
-
-                return droneInteraction; // Return so that the next check doesn't happen
-            }
-
-
-            ITargetable curTarg = hits[0].transform?.gameObject.GetComponent<ITargetable>();
-            // grab the first one's craft component, others don't matter
-            if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft)
-            // if it is not null, dead or the player itself and is interactible
-            {
-                // TODO: synchronize this with the proximity script
-                if (curTarg as Entity && !craft.GetIsInteracting() && targSys.GetTarget() == curTarg.GetTransform()
-                                              && (curTarg.GetTransform().position - craft.transform.position).sqrMagnitude < 100
-                                              && (curTarg as Entity).GetInteractible()) //Interact with entity
-                {
-                    ProximityInteractScript.ActivateInteraction(curTarg as Entity);
-                }
-
-                SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
-
-                return droneInteraction; // Return so that the next check doesn't happen
-            }
+            targSys.SetTarget(null); // Nothing valid found, set target to null
+            return droneInteraction;
         }
 
-        targSys.SetTarget(null); // Nothing valid found, set target to null
+        Draggable draggableTarget = null;
+        for (int i = 0; i < hits.Length; i++)
+        {
+            draggableTarget = hits[i].transform?.gameObject.GetComponent<Draggable>();
+            if (hits[i].transform?.gameObject.GetComponent<IVendor>() == null) break;
+        }
+
+        if (draggableTarget && TractorBeam.InvertTractorCheck(craft, draggableTarget) && draggableTarget.transform != craft.transform)
+        {
+            if (targSys.GetTarget() == draggableTarget.transform)
+            {
+                PlayerCore player = craft.GetComponent<PlayerCore>();
+                if (player)
+                {
+                    player.SetTractorTarget((player.GetTractorTarget() == draggableTarget) ? null : draggableTarget);
+                }
+            }
+
+            SetTarget(draggableTarget.transform); // set the target to the clicked craft's transform
+
+            return droneInteraction; // Return so that the next check doesn't happen
+        }
+
+
+        ITargetable curTarg = hits[0].transform?.gameObject.GetComponent<ITargetable>();
+        // grab the first one's craft component, others don't matter
+        if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft)
+        // if it is not null, dead or the player itself and is interactible
+        {
+            // TODO: synchronize this with the proximity script
+            if (curTarg as Entity && !craft.GetIsInteracting() && targSys.GetTarget() == curTarg.GetTransform()
+                                            && (curTarg.GetTransform().position - craft.transform.position).sqrMagnitude < 100
+                                            && (curTarg as Entity).GetInteractible()) //Interact with entity
+            {
+                ProximityInteractScript.ActivateInteraction(curTarg as Entity);
+            }
+
+            SetTarget(curTarg.GetTransform()); // set the target to the clicked craft's transform
+
+            return droneInteraction; // Return so that the next check doesn't happen
+        }
 
         return droneInteraction;
     }
