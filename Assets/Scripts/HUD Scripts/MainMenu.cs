@@ -68,7 +68,7 @@ public class MainMenu : MonoBehaviour
     {
         if (!playersConnectedText) yield return null;
         UnityWebRequest www = UnityWebRequest.Get($"http://{GATEWAY_IP}/playercount/{location}");
-        www.timeout = 3;
+        www.timeout = 10;
         yield return www.SendWebRequest();
 
         if (www.result == UnityWebRequest.Result.Success)
