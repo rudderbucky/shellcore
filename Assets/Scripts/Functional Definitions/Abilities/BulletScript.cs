@@ -94,7 +94,7 @@ public class BulletScript : MonoBehaviour
         Instantiate(hitPrefab, transform.position, Quaternion.identity);
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
         {
-            MasterNetworkAdapter.instance.BulletHitClientRpc(transform.position);
+            MasterNetworkAdapter.instance.BulletEffectClientRpc("bullet_hit_prefab", transform.position, Vector2.zero);
         }
     }
 
@@ -106,7 +106,7 @@ public class BulletScript : MonoBehaviour
         } 
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
         {
-            MasterNetworkAdapter.instance.BulletMissClientRpc(transform.position, vector);
+            MasterNetworkAdapter.instance.BulletEffectClientRpc("bullet_miss_prefab",transform.position, vector);
         }
     }
 

@@ -326,21 +326,16 @@ public class MasterNetworkAdapter : NetworkBehaviour
     [ClientRpc]
     public void EnergySphereCollectClientRpc(ClientRpcParams clientRpcParams = default)
     {
+        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
         if (PlayerCore.Instance) 
             AudioManager.PlayClipByID("clip_powerup", PlayerCore.Instance.transform.position);
     }
 
-
     [ClientRpc]
-    public void BulletMissClientRpc(Vector2 position, Vector2 rotation, ClientRpcParams clientRpcParams = default)
+    public void BulletEffectClientRpc(string obj, Vector2 position, Vector2 rotation, ClientRpcParams clientRpcParams = default)
     {
-        Instantiate(ResourceManager.GetAsset<GameObject>("bullet_miss_prefab"), position, Quaternion.Euler(0, 0, Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg));
-    }
-
-    [ClientRpc]
-    public void BulletHitClientRpc(Vector2 position, ClientRpcParams clientRpcParams = default)
-    {
-        Instantiate(ResourceManager.GetAsset<GameObject>("bullet_hit_prefab"), position, Quaternion.identity);
+        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
+        Instantiate(ResourceManager.GetAsset<GameObject>(obj), position, Quaternion.Euler(0, 0, Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg));
     }
 
     public static bool ValidateBluperintOnServer(EntityBlueprint print, out string reason)
