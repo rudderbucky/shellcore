@@ -554,13 +554,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
             tractorID = null;
             return;
         }
-        if (tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
-        if (tractorID.HasValue && (!TransformIsNetworked(nObj.transform)))
+        if (tractorID != null && tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
+        if (tractorID != null && tractorID.HasValue && nObj && (!TransformIsNetworked(nObj.transform)))
         {
             return;
         }
         var core = huskEntity as ShellCore;
-        if (tractorID == null)
+        if (tractorID == null && core)
         {
             queuedTractor = false;
             core.SetTractorTarget(null, false, true);
@@ -569,12 +569,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
             var ent = obj?.GetComponent<EntityNetworkAdapter>()?.huskEntity?.GetComponentInChildren<Draggable>();
-            if (ent)
+            if (ent && core)
             {
                 core.SetTractorTarget(ent, false, true);
                 queuedTractor = false;
             }
-            else if (obj.GetComponentInChildren<Draggable>())
+            else if (obj.GetComponentInChildren<Draggable>() && core)
             {
                 core.SetTractorTarget(obj.GetComponentInChildren<Draggable>(), false, true);
                 queuedTractor = false;
