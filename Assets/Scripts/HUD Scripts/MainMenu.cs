@@ -263,7 +263,13 @@ public class MainMenu : MonoBehaviour
         {
             NetworkManager.Singleton.Shutdown();
             return;
-        } 
+        }
+
+        foreach (var orb in AIData.energySpheres)
+        {
+            Destroy(orb.gameObject);
+        }
+
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         SectorManager.currentSectorIndex = 0;
         if (mode != MasterNetworkAdapter.NetworkMode.Client)
