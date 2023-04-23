@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Xml.Schema;
+using UnityEditorInternal;
+using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Immobilizes the nearest enemy
@@ -68,15 +71,23 @@ public class PinDown : ActiveAbility
     protected override void Execute()
     {
         ActivationCosmetic(transform.position);
-        var targeting = Core.GetTargetingSystem();
+        var targeting = Core.GetTargetingSystem().GetTarget();
+        var selection = (targeting.transform.position - Core.transform.position).sqrMagnitude;
         float minDist = rangeSquared;
         target = null;
+
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction))
+            if (targeting != null && selection < minDist && ValidityCheck(targeting.GetComponent<Entity>()))
+            {
+                target = targeting.GetComponent<Entity>() as Craft;
+                break;
+            }
+
+            if (ValidityCheck(AIData.entities[i]))
             {
                 float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
-                if (d < minDist && !AIData.entities[i].IsInvisible)
+                if (d < minDist)
                 {
                     minDist = d;
                     target = AIData.entities[i] as Craft;
@@ -92,5 +103,14 @@ public class PinDown : ActiveAbility
         }
 
         base.Execute();
+
     }
+
+
+
+    bool ValidityCheck(Entity ent)
+    {
+        return (ent is Craft && !ent.GetIsDead() && !FactionManager.IsAllied(ent.faction, Core.faction) && !ent.IsInvisible);
+    }
+
 }
