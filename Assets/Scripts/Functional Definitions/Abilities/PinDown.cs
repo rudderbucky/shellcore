@@ -71,29 +71,33 @@ public class PinDown : ActiveAbility
     protected override void Execute()
     {
         ActivationCosmetic(transform.position);
-        var targeting = Core.GetTargetingSystem().GetTarget();
-        var selection = (targeting.transform.position - Core.transform.position).sqrMagnitude;
-        float minDist = rangeSquared;
         target = null;
+        float minDist = rangeSquared;
+        var targetTransform = Core.GetTargetingSystem().GetTarget();
 
-        for (int i = 0; i < AIData.entities.Count; i++)
+        if (targetTransform)
         {
-            if (targeting != null && selection < minDist && ValidityCheck(targeting.GetComponent<Entity>()))
+            var targetTransformDist = (targetTransform.position - Core.transform.position).sqrMagnitude;
+            if (targetTransformDist < minDist && ValidityCheck(targetTransform.GetComponent<Entity>()))
             {
-                target = targeting.GetComponent<Entity>() as Craft;
-                break;
-            }
-
-            if (ValidityCheck(AIData.entities[i]))
-            {
-                float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
-                if (d < minDist)
-                {
-                    minDist = d;
-                    target = AIData.entities[i] as Craft;
-                }
+                target = targetTransform.GetComponent<Entity>() as Craft;
             }
         }
+
+
+        if (!target)
+            for (int i = 0; i < AIData.entities.Count; i++)
+            {
+                if (ValidityCheck(AIData.entities[i]))
+                {
+                    float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
+                    if (d < minDist)
+                    {
+                        minDist = d;
+                        target = AIData.entities[i] as Craft;
+                    }
+                }
+            }
 
         if (target != null)
         {
