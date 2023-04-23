@@ -159,39 +159,46 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
-    private void UpdateInvisibleGraphics()
-    {
-        if (!IsInvisible)
-        {
-            SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                var c = renderers[i].color;
-                c.a = FactionManager.GetFactionColor(faction).a;
-                renderers[i].color = c;
-            }
 
-            Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
-            for (int i = 0; i < colliders.Length; i++)
+    private void UpdateRenderer(Renderer renderer)
+    {
+        var finalAlpha = IsInvisible ? FactionManager.IsAllied(PlayerCore.Instance ? PlayerCore.Instance.faction : 0, faction) ? 0.2f : 0f : FactionManager.GetFactionColor(faction).a;
+        if (renderer is SpriteRenderer spriteRenderer)
+        {
+            var c = spriteRenderer.color;
+            c.a = finalAlpha;
+            spriteRenderer.color = c;
+        }
+        if (renderer is LineRenderer lineRenderer)
+        {
+            var sc = lineRenderer.startColor;
+            var ec = lineRenderer.endColor;
+            sc.a = finalAlpha;
+            ec.a = finalAlpha;
+            lineRenderer.startColor = sc;
+            lineRenderer.endColor = ec;
+            var anim = renderer.GetComponentInChildren<MissileAnimationScript>();
+            if (anim)
             {
-                colliders[i].enabled = true;
+                var ac = anim.lineColor;
+                ac.a = finalAlpha;
+                anim.lineColor = ac;
             }
         }
-        else
-        {
-            SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                var c = renderers[i].color;
-                c.a = FactionManager.IsAllied(PlayerCore.Instance ? PlayerCore.Instance.faction : 0, faction) ? 0.2f : 0f;
-                renderers[i].color = c;
-            }
+    }
 
-            Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                colliders[i].enabled = false;
-            }
+    private void UpdateInvisibleGraphics()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            UpdateRenderer(renderers[i]);
+        }
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = !IsInvisible;
         }
     }
 
