@@ -1,7 +1,4 @@
-﻿using System.Xml.Schema;
-using UnityEditorInternal;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 /// <summary>
 /// Immobilizes the nearest enemy
