@@ -13,17 +13,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public Vector2 position;
         public Vector2 velocity;
         public float rotation;
-        public float shell;
-        public float core;
-        public float energy;
-        public ServerResponse(Vector2 position, Vector2 velocity, float rotation, float shell, float core, float energy)
+        public ServerResponse(Vector2 position, Vector2 velocity, float rotation)
         {
             this.position = position;
             this.velocity = velocity;
             this.rotation = rotation;
-            this.shell = shell;
-            this.core = core;
-            this.energy = energy;
         }
 
         public bool Equals(ServerResponse other)
@@ -31,10 +25,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             return (
                 (this.position - other.position).sqrMagnitude > 1 &&
                 (this.velocity - other.velocity).sqrMagnitude > 1 &&
-                this.rotation.Equals(other.rotation) &&
-                Mathf.Abs(this.shell - other.shell) > 0.5F &&
-                Mathf.Abs(this.core - other.core) > 0.5F &&
-                Mathf.Abs(this.energy - other.energy) > 0.5F);
+                this.rotation.Equals(other.rotation));
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -42,9 +33,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             serializer.SerializeValue(ref position);
             serializer.SerializeValue(ref velocity);
             serializer.SerializeValue(ref rotation);
-            serializer.SerializeValue(ref shell);
-            serializer.SerializeValue(ref core);
-            serializer.SerializeValue(ref energy);
         }
     }
 
@@ -75,10 +63,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             return new ServerResponse(
             core ? core.transform.position : Vector3.zero, 
             body ? body.velocity : Vector3.zero, 
-            core? core.transform.rotation.eulerAngles.z : 0,
-            core ? core.CurrentHealth[0] : 1, 
-            core ? core.CurrentHealth[1] : 1, 
-            core ? core.CurrentHealth[2] : 1);
+            core? core.transform.rotation.eulerAngles.z : 0);
         }
     }
 
@@ -311,6 +296,20 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     [ClientRpc]
+    public void UpdateHealthClientRpc(float shell, float core, float energy, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        if (isPlayer.Value && core > 0 && huskEntity && huskEntity.GetIsDead() && safeToRespawn.Value)
+        {
+            huskEntity.CancelDeath();
+            (huskEntity as ShellCore).Respawn(true);
+        }
+
+        huskEntity.SyncHealth(shell, core, energy);
+    }
+
+
+    [ClientRpc]
 
     public void InflictionCosmeticClientRpc(int abilityID, ClientRpcParams clientRpcParams = default)
     {
@@ -432,19 +431,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private void UpdateCoreState(Entity core, ServerResponse response)
     {
-        if (isPlayer.Value && response.core > 0 && huskEntity && huskEntity.GetIsDead() && safeToRespawn.Value)
-        {
-            huskEntity.CancelDeath();
-            (huskEntity as ShellCore).Respawn(true);
-        }
-
+        
         core.transform.position = Vector3.Lerp(core.transform.position, response.position, 0.5F);
         core.GetComponent<Rigidbody2D>().velocity = Vector3.Lerp(core.GetComponent<Rigidbody2D>().velocity, response.velocity, 0.5F);
         var q = Quaternion.identity;
         q.eulerAngles = new Vector3(0, 0, response.rotation);
         core.transform.rotation = q;
         core.dirty = false;
-        core.SyncHealth(response.shell, response.core, response.energy);
         if (core is PlayerCore)
             CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
     }

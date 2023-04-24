@@ -367,6 +367,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public void PowerHeal()
     {
+        serverSyncHealthDirty = true;
         TakeShellDamage(-0.05F * GetMaxHealth()[0], 0, null);
         TakeCoreDamage(-0.05F * GetMaxHealth()[1]);
         TakeEnergy(-0.05F * GetMaxHealth()[2]);

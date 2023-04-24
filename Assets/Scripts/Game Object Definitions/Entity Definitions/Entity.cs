@@ -46,6 +46,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected GameObject deathExplosionPrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
     protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    public bool serverSyncHealthDirty = true;
 
     public bool husk;
     [SerializeField]
@@ -975,6 +976,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         // set death, interactibility and immobility
         IsInvisible = false;
+        serverSyncHealthDirty = true;
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -1183,6 +1185,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// <param name="maxHealth">the maximum value this health can have</param>
     protected void RegenHealth(ref float currentHealth, float regenRate, float maxHealth)
     {
+        var oldCurrentHealth = currentHealth;
         if (currentHealth + (regenRate * Time.deltaTime) > maxHealth) // if it would overheal
         {
             currentHealth = maxHealth; // set current health to max health
@@ -1191,6 +1194,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             currentHealth += regenRate * Time.deltaTime; // add regenerated health
         }
+
+        if (oldCurrentHealth != currentHealth) serverSyncHealthDirty = true;
     }
 
     /// <summary>
@@ -1298,7 +1303,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 }
             }
 
-
             // check if busy state changing is due
             if (busyTimer > 5)
             {
@@ -1333,6 +1337,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 RangeCheckDelegate.Invoke(Vector2.SqrMagnitude(PlayerCore.Instance.transform.position - transform.position));
             }
+        }
+
+        if (serverSyncHealthDirty && !MasterNetworkAdapter.lettingServerDecide && networkAdapter)
+        {
+            if (!GetIsDead()) serverSyncHealthDirty = false;
+            networkAdapter.UpdateHealthClientRpc(currentHealth[0], currentHealth[1], currentHealth[2]);
         }
     }
 
@@ -1460,6 +1470,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     public virtual float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
+        serverSyncHealthDirty = true;
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
         {
             Debug.Log($"Damage: {amount} (f {lastDamagedBy?.faction} -> {faction})");
