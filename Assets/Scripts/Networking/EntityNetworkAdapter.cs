@@ -18,15 +18,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public float shell;
         public float core;
         public float energy;
-        public int power;
-        public ServerResponse(Vector2 position, Vector2 velocity, float rotation, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
+        public ServerResponse(Vector2 position, Vector2 velocity, float rotation, int faction, float weaponGCDTimer, float shell, float core, float energy)
         {
             this.position = position;
             this.velocity = velocity;
             this.rotation = rotation;
             this.faction = faction;
             this.weaponGCDTimer = weaponGCDTimer;
-            this.power = power;
             this.shell = shell;
             this.core = core;
             this.energy = energy;
@@ -40,7 +38,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 this.rotation.Equals(other.rotation) &&
                 this.faction == other.faction &&
                 Mathf.Abs(this.weaponGCDTimer - other.weaponGCDTimer) > 0.1F &&
-                this.power == other.power &&
                 Mathf.Abs(this.shell - other.shell) > 0.5F &&
                 Mathf.Abs(this.core - other.core) > 0.5F &&
                 Mathf.Abs(this.energy - other.energy) > 0.5F);
@@ -53,7 +50,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             serializer.SerializeValue(ref rotation);
             serializer.SerializeValue(ref faction);
             serializer.SerializeValue(ref weaponGCDTimer);
-            serializer.SerializeValue(ref power);
             serializer.SerializeValue(ref shell);
             serializer.SerializeValue(ref core);
             serializer.SerializeValue(ref energy);
@@ -90,7 +86,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             core? core.transform.rotation.eulerAngles.z : 0, 
             core ? core.faction : buf.passedFaction, 
             core ? core.GetWeaponGCDTimer() : 0,
-            core as ShellCore ? (core as ShellCore).GetPower() : 0,
             core ? core.CurrentHealth[0] : 1, 
             core ? core.CurrentHealth[1] : 1, 
             core ? core.CurrentHealth[2] : 1);
@@ -309,6 +304,16 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     [ClientRpc]
+    public void UpdatePowerClientRpc(int power, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        if (!(huskEntity is ShellCore core)) return;
+        core.SyncPower(power);
+    }
+
+
+
+    [ClientRpc]
 
     public void InflictionCosmeticClientRpc(int abilityID, ClientRpcParams clientRpcParams = default)
     {
@@ -444,8 +449,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         core.dirty = false;
         core.SetWeaponGCDTimer(response.weaponGCDTimer);
         core.SyncHealth(response.shell, response.core, response.energy);
-        if (core is ShellCore shellcore) 
-            shellcore.SyncPower(response.power);
         if (core is PlayerCore)
             CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
     }
@@ -722,6 +725,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
                     }
                 });
             }
+
+            if (huskEntity is ShellCore core) UpdatePowerClientRpc(core.GetPower());
         };
     }
 
