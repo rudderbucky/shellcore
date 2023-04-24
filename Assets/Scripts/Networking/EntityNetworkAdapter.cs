@@ -19,12 +19,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public float core;
         public float energy;
         public int power;
-        public ulong clientID;
         public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
         {
             this.position = position;
             this.velocity = velocity;
-            this.clientID = clientID;
             this.rotation = rotation;
             this.faction = faction;
             this.weaponGCDTimer = weaponGCDTimer;
@@ -36,7 +34,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
         public bool Equals(ServerResponse other)
         {
-            return (clientID == other.clientID &&
+            return (
                 (this.position - other.position).sqrMagnitude > 1 &&
                 (this.velocity - other.velocity).sqrMagnitude > 1 &&
                 (this.rotation.eulerAngles - other.rotation.eulerAngles).sqrMagnitude > 1 &&
@@ -53,7 +51,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             serializer.SerializeValue(ref position);
             serializer.SerializeValue(ref velocity);
             serializer.SerializeValue(ref rotation);
-            serializer.SerializeValue(ref clientID);
             serializer.SerializeValue(ref faction);
             serializer.SerializeValue(ref weaponGCDTimer);
             serializer.SerializeValue(ref power);
@@ -293,18 +290,14 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    
+
 
     [ClientRpc]
     public void UpdateStateClientRpc(ServerResponse wrapper, int faction, ClientRpcParams clientRpcParams = default)
     {
         this.wrapper.position = wrapper.position;
         wrapperUpdated = true;
-        if (wrapper.clientID == NetworkManager.Singleton.LocalClientId && isPlayer.Value)
-        {
-            UpdatePlayerState(wrapper);
-        }
-        else if (huskEntity)
+        if (huskEntity)
         {
             UpdateCoreState(huskEntity, wrapper);
         }
@@ -387,6 +380,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             wrapper = new StateWrapper();
             wrapper.clientID = OwnerClientId;
+            if (isPlayer.Value)
+                Debug.LogWarning(wrapper.clientID);
         }
 
         if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && isPlayer.Value)
@@ -434,12 +429,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    private void UpdatePlayerState(ServerResponse response)
-    {
-        UpdateCoreState(PlayerCore.Instance, response);
-        CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
-    }
-
     private void UpdateCoreState(Entity core, ServerResponse response)
     {
         if (isPlayer.Value && response.core > 0 && huskEntity && huskEntity.GetIsDead() && safeToRespawn.Value)
@@ -456,6 +445,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         core.SyncHealth(response.shell, response.core, response.energy);
         if (core is ShellCore shellcore) 
             shellcore.SyncPower(response.power);
+        if (core is PlayerCore)
+            CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
     }
     
 
@@ -678,8 +669,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
         else if (ShouldReusePlayerCore())
         {
-            var response = wrapper;
-            if (OwnerClientId == response.clientID)
+            if (OwnerClientId == wrapper.clientID)
             {
                 SetUpPlayerCore();
             }
