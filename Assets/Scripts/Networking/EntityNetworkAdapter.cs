@@ -59,7 +59,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 body = buf.huskEntity.GetComponent<Rigidbody2D>();
                 core = buf.huskEntity;
             }
-            if (core is PlayerCore) Debug.LogWarning(core.transform.rotation.eulerAngles);
             return new ServerResponse(
             core ? core.transform.position : Vector3.zero, 
             body ? body.velocity : Vector3.zero, 
@@ -299,13 +298,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public void UpdateHealthClientRpc(float shell, float core, float energy, ClientRpcParams clientRpcParams = default)
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
-        if (isPlayer.Value && core > 0 && huskEntity && huskEntity.GetIsDead() && safeToRespawn.Value)
+        if (isPlayer.Value && core > 0 && huskEntity is ShellCore shellCore && huskEntity.GetIsDead() && safeToRespawn.Value)
         {
-            huskEntity.CancelDeath();
-            (huskEntity as ShellCore).Respawn(true);
+            shellCore.CancelDeath();
+            shellCore.Respawn(true);
         }
 
-        huskEntity.SyncHealth(shell, core, energy);
+        if (huskEntity) huskEntity.SyncHealth(shell, core, energy);
     }
 
 
@@ -446,7 +445,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public void SetTractorID(ulong? ID)
     {
         this.tractorID = ID;
-        UpdateTractorClientRpc(ID.HasValue ? ID.Value : 0, !ID.HasValue);
+        if (huskEntity && huskEntity is ShellCore core && core.GetComponentInChildren<TractorBeam>())
+        {
+            var beam = core.GetComponentInChildren<TractorBeam>();
+            beam.SetIdToTractor(ID.HasValue ? ID.Value : ulong.MaxValue);
+        }
     }
 
     private static Entity GetEntityFromNetworkId(ulong networkId)
@@ -475,10 +478,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public static ulong GetNetworkId(Transform transform)
     {
-        if (!transform) return 0;
+        if (!transform) return ulong.MaxValue;
         var entity = transform.GetComponent<Entity>();
-        ulong networkId = entity && entity.networkAdapter ? entity.networkAdapter.NetworkObjectId : 0;
-        if (networkId == 0) networkId = transform.GetComponent<NetworkObject>() ? transform.GetComponent<NetworkObject>().NetworkObjectId : 0;
+        ulong networkId = entity && entity.networkAdapter ? entity.networkAdapter.NetworkObjectId : ulong.MaxValue;;
+        if (networkId == ulong.MaxValue) networkId = transform.GetComponent<NetworkObject>() ? transform.GetComponent<NetworkObject>().NetworkObjectId : ulong.MaxValue;
         return networkId;
     }
 

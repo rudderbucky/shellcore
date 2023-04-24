@@ -20,6 +20,8 @@ public class TractorBeam : MonoBehaviour
     public bool initialized;
     private bool energyEnabled = true;
     private GameObject tractorBeamPrefab;
+    private ulong finalTractorForFrame;
+    private bool serverTractorDirty = true;
 
     public void SetEnergyEnabled(bool val)
     {
@@ -80,15 +82,12 @@ public class TractorBeam : MonoBehaviour
             TractorBeamUpdate();
             if (!queueServerCall || 
                 (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client || MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)) return;
-            if (target && target.GetComponent<Entity>())
+            if (target && EntityNetworkAdapter.GetNetworkId(target.transform) != ulong.MaxValue)
             {
-                if ((target.GetComponent<Entity>()).networkAdapter)
-                {
-                    owner.networkAdapter.SetTractorID((target.GetComponent<Entity>()).networkAdapter.NetworkObjectId);
-                    queueServerCall = false;
-                }
+                owner.networkAdapter.SetTractorID(EntityNetworkAdapter.GetNetworkId(target.transform));
+                queueServerCall = false;
             }
-            else
+            else 
             {
                 owner.networkAdapter.SetTractorID(null);
                 queueServerCall = false;
@@ -174,7 +173,7 @@ public class TractorBeam : MonoBehaviour
                 }
             }
 
-            if (closest && closestD < energyPickupRangeSquared && target == null && !closest.gameObject.GetComponent<Draggable>().dragging && (!MasterNetworkAdapter.lettingServerDecide || owner as PlayerCore))
+            if (closest && closestD < energyPickupRangeSquared && target == null && !closest.gameObject.GetComponent<Draggable>().dragging && !MasterNetworkAdapter.lettingServerDecide)
             {
                 SetTractorTarget(closest.gameObject.GetComponent<Draggable>());
             }
@@ -208,6 +207,18 @@ public class TractorBeam : MonoBehaviour
             coreGlow.gameObject.SetActive(false);
             targetGlow.gameObject.SetActive(false);
         }
+
+        if (serverTractorDirty && owner.networkAdapter)
+        {
+            serverTractorDirty = false;
+            owner.networkAdapter.UpdateTractorClientRpc(finalTractorForFrame, finalTractorForFrame == ulong.MaxValue);
+        }
+    }
+
+    public void SetIdToTractor(ulong id)
+    {
+        finalTractorForFrame = id;
+        serverTractorDirty = true;
     }
 
     private bool queueServerCall = false;
@@ -254,9 +265,11 @@ public class TractorBeam : MonoBehaviour
                 target.dragging = true;
             }
 
-            if (target != oldTarget && owner.networkAdapter && EntityNetworkAdapter.TransformIsNetworked(newTarget ? newTarget.transform : null) && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && 
+                target != oldTarget && owner.networkAdapter && EntityNetworkAdapter.TransformIsNetworked(newTarget ? newTarget.transform : null))
             {
-                owner.networkAdapter.UpdateTractorClientRpc(EntityNetworkAdapter.GetNetworkId(newTarget ? newTarget.transform : null), newTarget == null);
+                finalTractorForFrame = EntityNetworkAdapter.GetNetworkId(newTarget ? newTarget.transform : null);
+                serverTractorDirty = true;
             }
         }
     }
