@@ -12,14 +12,14 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         public Vector3 position;
         public Vector3 velocity;
-        public Quaternion rotation;
+        public float rotation;
         public int faction;
         public float weaponGCDTimer;
         public float shell;
         public float core;
         public float energy;
         public int power;
-        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
+        public ServerResponse(Vector3 position, Vector3 velocity, float rotation, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
         {
             this.position = position;
             this.velocity = velocity;
@@ -37,7 +37,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             return (
                 (this.position - other.position).sqrMagnitude > 1 &&
                 (this.velocity - other.velocity).sqrMagnitude > 1 &&
-                (this.rotation.eulerAngles - other.rotation.eulerAngles).sqrMagnitude > 1 &&
+                this.rotation.Equals(other.rotation) &&
                 this.faction == other.faction &&
                 Mathf.Abs(this.weaponGCDTimer - other.weaponGCDTimer) > 0.1F &&
                 this.power == other.power &&
@@ -83,10 +83,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 body = buf.huskEntity.GetComponent<Rigidbody2D>();
                 core = buf.huskEntity;
             }
+            if (core is PlayerCore) Debug.LogWarning(core.transform.rotation.eulerAngles);
             return new ServerResponse(
             core ? core.transform.position : Vector3.zero, 
             body ? body.velocity : Vector3.zero, 
-            core? core.transform.rotation : Quaternion.identity, 
+            core? core.transform.rotation.eulerAngles.z : 0, 
             core ? core.faction : buf.passedFaction, 
             core ? core.GetWeaponGCDTimer() : 0,
             core as ShellCore ? (core as ShellCore).GetPower() : 0,
@@ -290,7 +291,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
 
-
     [ClientRpc]
     public void UpdateStateClientRpc(ServerResponse wrapper, int faction, ClientRpcParams clientRpcParams = default)
     {
@@ -438,7 +438,9 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
         core.transform.position = Vector3.Lerp(core.transform.position, response.position, 0.5F);
         core.GetComponent<Rigidbody2D>().velocity = Vector3.Lerp(core.GetComponent<Rigidbody2D>().velocity, response.velocity, 0.5F);
-        core.transform.rotation = response.rotation;
+        var q = Quaternion.identity;
+        q.eulerAngles = new Vector3(0, 0, response.rotation);
+        core.transform.rotation = q;
         core.dirty = false;
         core.SetWeaponGCDTimer(response.weaponGCDTimer);
         core.SyncHealth(response.shell, response.core, response.energy);
