@@ -277,30 +277,33 @@ public abstract class WeaponAbility : ActiveAbility
         return true;
     }
 
-    protected virtual List<Transform> GetClosestTargets(int num, Vector3 pos)
+    protected virtual List<Transform> GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
     {
         List<Entity> potentialTargets = TargetManager.GetTargetList(targetingSystem, category);
         List<Transform> targets = new List<Transform>();
         // Just get the N closest entities, the complexity is just O(N) instead of sorting which would be O(NlogN)
-        for (int i = 0; i < num; i++)
+        int i = 0;
+        while (i < num)
         {
             var target = TargetManager.GetClosestFromList(potentialTargets, pos, targetingSystem, category);
             if (target != null)
             {
                 potentialTargets.Remove(target.GetComponentInChildren<Entity>());
                 targets.Add(target);
+                if (!dronesAreFree || !target.GetComponentInChildren<Drone>()) i++;
             }
             else
             {
                 break;
             }
         }
+
         return targets;
     }
 
-    protected List<Transform> GetClosestTargets(int num)
+    protected List<Transform> GetClosestTargets(int num, bool dronesAreFree = false)
     {
-        return GetClosestTargets(num, targetingSystem.GetEntity().transform.position);
+        return GetClosestTargets(num, targetingSystem.GetEntity().transform.position, dronesAreFree);
     }
 
 }

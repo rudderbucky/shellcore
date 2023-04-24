@@ -18,6 +18,7 @@ public class BulletScript : MonoBehaviour
     private float pierceFactor = 0;
     public Color particleColor;
     Vector2 vector;
+    public bool disableDrones;
 
     /// <summary>
     /// Sets the damage value of the spawned buller
@@ -78,6 +79,11 @@ public class BulletScript : MonoBehaviour
                     damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
                 }
                 
+                if (craft is Drone drone && disableDrones)
+                {
+                    drone.DisableAITemporarily(Time.time + 3);
+                }
+
                 InstantiateHitPrefab();
                 if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer)
                 {
