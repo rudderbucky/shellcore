@@ -10,8 +10,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
 {
     public struct ServerResponse : INetworkSerializable, IEquatable<ServerResponse>
     {
-        public Vector3 position;
-        public Vector3 velocity;
+        public Vector2 position;
+        public Vector2 velocity;
         public float rotation;
         public int faction;
         public float weaponGCDTimer;
@@ -19,7 +19,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public float core;
         public float energy;
         public int power;
-        public ServerResponse(Vector3 position, Vector3 velocity, float rotation, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
+        public ServerResponse(Vector2 position, Vector2 velocity, float rotation, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
         {
             this.position = position;
             this.velocity = velocity;
