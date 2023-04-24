@@ -13,16 +13,14 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public Vector2 position;
         public Vector2 velocity;
         public float rotation;
-        public float weaponGCDTimer;
         public float shell;
         public float core;
         public float energy;
-        public ServerResponse(Vector2 position, Vector2 velocity, float rotation, float weaponGCDTimer, float shell, float core, float energy)
+        public ServerResponse(Vector2 position, Vector2 velocity, float rotation, float shell, float core, float energy)
         {
             this.position = position;
             this.velocity = velocity;
             this.rotation = rotation;
-            this.weaponGCDTimer = weaponGCDTimer;
             this.shell = shell;
             this.core = core;
             this.energy = energy;
@@ -34,7 +32,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 (this.position - other.position).sqrMagnitude > 1 &&
                 (this.velocity - other.velocity).sqrMagnitude > 1 &&
                 this.rotation.Equals(other.rotation) &&
-                Mathf.Abs(this.weaponGCDTimer - other.weaponGCDTimer) > 0.1F &&
                 Mathf.Abs(this.shell - other.shell) > 0.5F &&
                 Mathf.Abs(this.core - other.core) > 0.5F &&
                 Mathf.Abs(this.energy - other.energy) > 0.5F);
@@ -45,7 +42,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             serializer.SerializeValue(ref position);
             serializer.SerializeValue(ref velocity);
             serializer.SerializeValue(ref rotation);
-            serializer.SerializeValue(ref weaponGCDTimer);
             serializer.SerializeValue(ref shell);
             serializer.SerializeValue(ref core);
             serializer.SerializeValue(ref energy);
@@ -80,7 +76,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             core ? core.transform.position : Vector3.zero, 
             body ? body.velocity : Vector3.zero, 
             core? core.transform.rotation.eulerAngles.z : 0,
-            core ? core.GetWeaponGCDTimer() : 0,
             core ? core.CurrentHealth[0] : 1, 
             core ? core.CurrentHealth[1] : 1, 
             core ? core.CurrentHealth[2] : 1);
@@ -307,6 +302,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
 
+    [ClientRpc]
+    public void UpdateWeaponGCDClientRpc(float gcd, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        if (!(huskEntity is ShellCore core)) return;
+        core.SetWeaponGCDTimer(gcd);
+    }
 
     [ClientRpc]
 
@@ -442,7 +444,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         q.eulerAngles = new Vector3(0, 0, response.rotation);
         core.transform.rotation = q;
         core.dirty = false;
-        core.SetWeaponGCDTimer(response.weaponGCDTimer);
         core.SyncHealth(response.shell, response.core, response.energy);
         if (core is PlayerCore)
             CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
@@ -721,7 +722,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 });
             }
 
-            if (huskEntity is ShellCore core) UpdatePowerClientRpc(core.GetPower());
+            if (huskEntity is ShellCore core) 
+            {
+                UpdateWeaponGCDClientRpc(huskEntity.GetWeaponGCDTimer());
+                UpdatePowerClientRpc(core.GetPower());
+            }
         };
     }
 
