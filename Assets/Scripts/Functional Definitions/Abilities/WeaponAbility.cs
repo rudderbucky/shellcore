@@ -242,9 +242,10 @@ public abstract class WeaponAbility : ActiveAbility
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
             if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || (!MasterNetworkAdapter.lettingServerDecide))
             {
+                var vec = part ? part.info.location : Vector2.zero;
                 if (!Execute(target.position)) return;
                 if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && Core.networkAdapter) 
-                    Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
+                    Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(vec, target.position);
             }
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;

@@ -17,6 +17,12 @@ public class Retreat : Ability
         cooldownDuration = 30;
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        base.ActivationCosmetic(targetPos);
+        Execute();
+    }
+
     protected override void Execute()
     {
         if (Core is Craft)
@@ -25,6 +31,11 @@ public class Retreat : Ability
             {
                 return;
             }
+            if (Core && Core.networkAdapter && !MasterNetworkAdapter.lettingServerDecide)
+            {
+                Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, part ? part.transform.position : Vector3.zero);
+            }
+
 
             AudioManager.PlayClipByID("clip_activateability", transform.position);
             // get all current retreats, set the new retreat's start times to the old retreat start times, find one that is off CD
@@ -46,6 +57,7 @@ public class Retreat : Ability
                 if (ability && !ability.IsDestroyed() && ability is Retreat retreat)
                 {
                     newRetreats.Add(retreat);
+                    retreat.abilityIsReadyOnServer = false;
                 }
             }
 
