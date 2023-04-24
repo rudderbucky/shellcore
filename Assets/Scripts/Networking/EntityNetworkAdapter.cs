@@ -19,7 +19,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         public float core;
         public float energy;
         public int power;
-        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
+        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
         {
             this.position = position;
             this.velocity = velocity;
@@ -87,7 +87,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             core ? core.transform.position : Vector3.zero, 
             body ? body.velocity : Vector3.zero, 
             core? core.transform.rotation : Quaternion.identity, 
-            clientID, 
             core ? core.faction : buf.passedFaction, 
             core ? core.GetWeaponGCDTimer() : 0,
             core as ShellCore ? (core as ShellCore).GetPower() : 0,
