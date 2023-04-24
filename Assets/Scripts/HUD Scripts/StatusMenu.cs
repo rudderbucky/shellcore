@@ -68,7 +68,7 @@ public class StatusMenu : GUIWindowScripts
 
     protected override void Update()
     {
-        if (InputManager.GetKeyDown(KeyName.StatusMenu) && !player.GetIsInteracting() && !DialogueSystem.isInCutscene)
+        if (InputManager.GetKeyDown(KeyName.StatusMenu) && !player.GetIsInteracting() && !DialogueSystem.isInCutscene && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
             toggle = !toggle;
             if (toggle)
