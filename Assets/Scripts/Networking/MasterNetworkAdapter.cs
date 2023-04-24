@@ -368,7 +368,6 @@ public class MasterNetworkAdapter : NetworkBehaviour
             [AbilityID.ChainBeam] = 0,
             [AbilityID.SpeederMissile] = 0,
             [AbilityID.Ion] = 0,
-            [AbilityID.Flak] = 0,
             [AbilityID.Disrupt] = 0,
             [AbilityID.Stealth] = 1,
             [AbilityID.PinDown] = 1,
