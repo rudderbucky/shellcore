@@ -566,13 +566,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    /*
     [ServerRpc(RequireOwnership = false)]
     public void GodModeServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        if (!String.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
         DevConsoleScript.Instance.GodPowers(huskEntity as ShellCore);
     }
-    */
 
     private bool ShouldSpawnHuskEntity()
     {
