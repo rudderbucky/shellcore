@@ -12,7 +12,7 @@ public class Flak : WeaponAbility
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
     protected string bulletSound = "clip_flak";
     public static readonly int bulletDamage = 100;
-    private static readonly int BULLET_COUNT = 5;
+    private static readonly int BULLET_COUNT = 1;
 
     protected override void Awake()
     {
@@ -61,7 +61,7 @@ public class Flak : WeaponAbility
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
 
-        List<Transform> targets = GetClosestTargets(1, true);
+        List<Transform> targets = GetClosestTargets(BULLET_COUNT, true);
 
 
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
