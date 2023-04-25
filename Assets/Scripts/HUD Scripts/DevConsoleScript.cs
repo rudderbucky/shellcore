@@ -417,6 +417,10 @@ public class DevConsoleScript : MonoBehaviour
                     case "god":
                         PlayerCore.Instance.networkAdapter.GodModeServerRpc();
                         break;
+
+                    case "power":
+                        PlayerCore.Instance.networkAdapter.AddPowerServerRpc();
+                        break;
                 }
             }
         }

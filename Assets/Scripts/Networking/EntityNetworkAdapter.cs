@@ -89,7 +89,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public string idToUse;
     static float TIME_TO_OOB_DEATH = 3;
     float oobKillTimer = TIME_TO_OOB_DEATH;
-    private static float UPDATE_RATE_FOR_PLAYERS = 0F; 
+    private static float PRIORITY_UPDATE_RATE = 0F; 
     private static float UPDATE_RATE = 0.05F;
     private float updateTimer = UPDATE_RATE;
     ulong ownerId = ulong.MaxValue;
@@ -538,7 +538,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (tractorID != null && tractorID.HasValue && !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(tractorID.Value))
         {
             queuedTractor = false;
-            tractorID = null;
             return;
         }
         if (tractorID != null && tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
@@ -575,6 +574,15 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (!String.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
         DevConsoleScript.Instance.GodPowers(huskEntity as ShellCore);
     }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AddPowerServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        if (!String.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
+        (huskEntity as ShellCore).AddPower(5000);
+    }
+
 
     private bool ShouldSpawnHuskEntity()
     {
@@ -675,6 +683,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    private bool IsPriorityForUpdates()
+    {
+        return isPlayer.Value || (huskEntity && huskEntity.GetComponent<Draggable>() && huskEntity.GetComponent<Draggable>().dragging);
+    }
+
     private void AttemptCreateServerResponse()
     {
         if (!NetworkManager.Singleton.IsServer) return;
@@ -700,7 +713,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
         if (update)
         {
-            updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
+            updateTimer = IsPriorityForUpdates() ? PRIORITY_UPDATE_RATE : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
             dirty = false;
             UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
             if (entityAlwaysUpdated || dirty)
