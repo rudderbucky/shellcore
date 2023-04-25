@@ -58,7 +58,7 @@ public class MainMenu : MonoBehaviour
     public static System.Net.Http.HttpClient client;
 
     public static string location = null;
-    public static string RDB_SERVER_PASSWORD = "test_password";
+    public static string RDB_SERVER_PASSWORD = "";
     [SerializeField]
     private Dropdown rdbServerLocation;
     [SerializeField]
