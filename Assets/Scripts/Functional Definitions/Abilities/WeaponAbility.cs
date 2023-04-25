@@ -157,9 +157,13 @@ public abstract class WeaponAbility : ActiveAbility
     {
 
         var final = damage * (1+Core.GetDamageFactor());
-        if (GetTarget() != null && bonusDamageType != null && GetTarget().GetComponent<Entity>())
+        var finalBonusDamageType = bonusDamageType;
+
+        // counter drones deal double damage vs drones at all times
+        if (Core is Drone drone && drone.type == DroneType.Counter) finalBonusDamageType = typeof(Drone);
+        if (GetTarget() != null && finalBonusDamageType != null && GetTarget().GetComponent<Entity>())
         {
-            if (bonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
+            if (finalBonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
             {
                 final = (damage * (1+Core.GetDamageFactor())) * bonusDamageMultiplier;
             }

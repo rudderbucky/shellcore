@@ -1482,12 +1482,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             return 0f;
         }
 
-        // counter drone fighting another drone, multiply damage accordingly
         if (this as Drone && lastDamagedBy is Drone drone && drone.type == DroneType.Counter)
         {
             amount *= 5F;
+            shellPiercingFactor = 1;
         }
-
         // if being attacked by another drone as a counter drone, drop damage accordingly
         if (this as Drone && lastDamagedBy is Drone && (this as Drone).type == DroneType.Counter)
         {
