@@ -183,18 +183,26 @@ public class MasterNetworkAdapter : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void BombExplosionClientRpc(Vector3 position)
+    public void BombExplosionClientRpc(Vector3 position, ClientRpcParams clientRpcParams = default)
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
         BombScript.ActivationCosmetic(position);
     }
 
     [ClientRpc]
-    public void AlertPlayerClientRpc(int faction, string message, string sound)
+    public void AlertPlayerClientRpc(int faction, string message, string sound, ClientRpcParams clientRpcParams = default)
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
         var BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
         if (BZManager && PlayerCore.Instance && PlayerCore.Instance.faction == faction) BZManager.AlertPlayer(message, sound);
+    }
+
+    [ClientRpc]
+    public void DisplayVoteClientRpc(int factionThatWon, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        var BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
+        if (BZManager) BZManager.BattleZoneEndCheck(new List<int>() {factionThatWon}, false);
     }
 
     public GameObject networkObj;

@@ -213,10 +213,12 @@ public class BattleZoneManager : MonoBehaviour
 
     public static float END_CHECK_TIMER;
 
-    private void BattleZoneEndCheck(List<int> livingFactions, bool allAllied)
+    public void BattleZoneEndCheck(List<int> livingFactions, bool allAllied)
     {
         if (livingFactions.Count >= 2 && !allAllied) return;
         if (Time.time < END_CHECK_TIMER) return;
+        if (!MasterNetworkAdapter.lettingServerDecide && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+            MasterNetworkAdapter.instance.DisplayVoteClientRpc(livingFactions[0]);
         playing = false;
 
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
@@ -283,6 +285,7 @@ public class BattleZoneManager : MonoBehaviour
 
             bool allAllied = GetAllFactionsAllied(livingFactions);
 
+            if (MasterNetworkAdapter.lettingServerDecide) return;
             BattleZoneEndCheck(livingFactions, allAllied);
         }
     }
