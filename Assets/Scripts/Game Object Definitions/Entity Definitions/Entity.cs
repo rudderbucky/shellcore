@@ -31,7 +31,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public Rigidbody2D entityBody; // entity to modify with this script
     protected Collider2D hitbox; // the hitbox of the entity (excluding extra parts)
     protected TargetingSystem targeter; // the TargetingSystem of the entity
-    protected ExtendedTargetingSystem extendedTargeter;
     protected bool isInCombat; // whether the entity is in combat or not
     protected bool isBusy; // whether the entity is busy or not
     [SerializeField]
@@ -48,7 +47,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected List<ShellPart> parts; // List containing all parts of the entity
     protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public bool serverSyncHealthDirty = true;
-
+    protected ExtendedTargetingSystem extendedTargeter;
     public bool husk;
     [SerializeField]
     public float[] CurrentHealth
@@ -1488,10 +1487,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             return 0f;
         }
 
-        // counter drone fighting another drone, multiply damage accordingly
         if (this as Drone && lastDamagedBy is Drone drone && drone.type == DroneType.Counter)
         {
-            amount *= 1.75F;
+            amount *= 5F;
+            shellPiercingFactor = 1;
+        }
+        // if being attacked by another drone as a counter drone, drop damage accordingly
+        if (this as Drone && lastDamagedBy is Drone && (this as Drone).type == DroneType.Counter)
+        {
+            amount /= 5F;
         }
 
         if (lastDamagedBy != this && amount > 0)
