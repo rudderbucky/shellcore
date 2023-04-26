@@ -170,7 +170,7 @@ public class ExtendedTargetingSystem
         return target;
     }
 
-    public Transform Farthest(float range)
+    public Transform ReturnFarthest(float range)
     {
         for (int i = 0; AIData.entities.Count > i; i++)
         {
