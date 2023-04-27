@@ -360,7 +360,7 @@ public abstract class Ability : MonoBehaviour
             Execute(); // execute the ability
         }
         // If the ability needs to cool down
-        else if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown && prevState != AbilityState.Ready)
+        else if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown && prevState != AbilityState.Ready && prevState != AbilityState.Charging)
         {
             Deactivate(); // deactivate the ability
         }
