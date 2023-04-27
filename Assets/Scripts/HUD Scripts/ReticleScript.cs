@@ -93,16 +93,19 @@ public class ReticleScript : MonoBehaviour
         {
             return false;
         }
+        var mousePos = Input.mousePosition;
+        mousePos.z = CameraScript.zLevel;
+        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
         foreach (var ent in targSys.GetSecondaryTargets())
         {
             if (ent && ent.transform)
             {
-                droneInteraction = DroneCheck(ent.transform, hits) || droneInteraction;
+                droneInteraction = DroneCheck(ent.transform, hits, mousePos) || droneInteraction;
             }
         }
 
         // This orders primary target drones to move/follow accordingly.
-        var primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits);
+        var primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits, mousePos);
         droneInteraction = droneInteraction || primaryDroneInteraction;
 
         if (primaryDroneInteraction || hits.Length == 0) // check if there are actually any hits
@@ -319,21 +322,19 @@ public class ReticleScript : MonoBehaviour
     ///
     /// Checks if the passed Transform is a Drone that the player owns. If so, orders it to move/follow accordingly.
     ///
-    private bool DroneCheck(Transform possibleDrone, RaycastHit2D[] hits)
+    public bool DroneCheck(Transform possibleDrone, RaycastHit2D[] hits, Vector3 worldMovementVector)
     {
         var check = possibleDrone && possibleDrone.GetComponent<Drone>() &&
                     possibleDrone.GetComponent<Drone>().GetOwner() != null
                     && possibleDrone.GetComponent<Drone>().GetOwner().Equals(craft)
-                    && (hits.Length == 0 || hits[0].transform != possibleDrone);
+                    && (hits == null || hits.Length == 0 || hits[0].transform != possibleDrone);
         if (check)
         {
             // Move the drone if the hit array is empty. Otherwise, if the hit array's first element is the player,
             // order a follow.
-            if (hits.Length == 0 || hits[0].transform != craft.transform)
+            if (hits == null || hits.Length == 0 || hits[0].transform != craft.transform)
             {
-                var pos = Input.mousePosition;
-                pos.z = CameraScript.zLevel;
-                possibleDrone.GetComponent<Drone>().CommandMovement(Camera.main.ScreenToWorldPoint(pos));
+                possibleDrone.GetComponent<Drone>().CommandMovement(worldMovementVector);
                 targSys.SetTarget(null);
             }
             else if (hits[0].transform == craft.transform) // Order a follow if this passes

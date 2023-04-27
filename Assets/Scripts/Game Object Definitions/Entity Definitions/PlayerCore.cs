@@ -181,10 +181,28 @@ public class PlayerCore : ShellCore
 
         if (Input.GetMouseButton(0) && MouseMovementVisualScript.overMinimap && !SelectionBoxScript.GetClicking())
         {
-            minimapPoint = CameraScript.instance.minimapCamera.ScreenToWorldPoint(MouseMovementVisualScript.GetMousePosOnMinimap());
+            bool droneInteraction = false;
+            var mousePosOnMinimap = MouseMovementVisualScript.GetMousePosOnMinimap();
+            minimapPoint = CameraScript.instance.minimapCamera.ScreenToWorldPoint(mousePosOnMinimap);
+            foreach (var ent in targeter.GetSecondaryTargets())
+            {
+                if (ent && ent.transform)
+                {
+                    droneInteraction = ReticleScript.instance.DroneCheck(ent.transform, null, minimapPoint.Value) || droneInteraction;
+                }
+            }
+
+            // This orders primary target drones to move/follow accordingly.
+            droneInteraction |= ReticleScript.instance.DroneCheck(targeter.GetTarget(), null, minimapPoint.Value);
+            if (droneInteraction)
+            {
+                minimapPoint = null;
+                return Vector2.zero;
+            }
+
+
             minimapPoint = new Vector3(minimapPoint.Value.x, minimapPoint.Value.y, 0);
             var delta = minimapPoint.Value - transform.position;
-
             return delta.normalized;
         }
 
