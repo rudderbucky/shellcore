@@ -19,7 +19,7 @@ public class PartyManager : MonoBehaviour
 
     public bool PartyLocked
     {
-        get { return SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone || overrideLock; }
+        get { return SectorManager.instance.GetCurrentType() == Sector.SectorType.BattleZone || SectorManager.instance.GetCurrentType() == Sector.SectorType.SiegeZone || overrideLock; }
     }
 
     public void SetOverrideLock(bool val)
