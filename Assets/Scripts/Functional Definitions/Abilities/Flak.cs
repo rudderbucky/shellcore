@@ -47,13 +47,19 @@ public class Flak : WeaponAbility
         return FireBullet(victimPos); // fire if there is
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        AudioManager.PlayClipByID(bulletSound, transform.position);
+        base.ActivationCosmetic(targetPos);
+    }
+
     /// <summary>
     /// Helper method for Execute() that creates a bullet and modifies it to be shot
     /// </summary>
     /// <param name="targetPos">The position to fire the bullet to</param>
     protected virtual bool FireBullet(Vector3 targetPos)
     {
-        AudioManager.PlayClipByID(bulletSound, transform.position);
+        ActivationCosmetic(targetPos);
 
         // Create the Bullet from the Bullet Prefab
         if (bulletPrefab == null)
