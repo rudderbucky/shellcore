@@ -15,7 +15,7 @@ public class Construct : Entity
     }
     const float MAX_DAMAGE_PER_SECOND = 800;
     float damageLeft = MAX_DAMAGE_PER_SECOND;
-    float diminishingFactor = 0.5F;
+    float diminishingFactor = 0.25F;
 
     public override float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
