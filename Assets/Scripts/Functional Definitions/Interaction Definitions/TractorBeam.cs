@@ -150,6 +150,14 @@ public class TractorBeam : MonoBehaviour
 
     private static float tractorStrength = 1.5F;
 
+    protected void LateUpdate()
+    {
+        if (coreGlow)
+            coreGlow.transform.position = transform.position;
+        if (targetGlow && target)
+            targetGlow.transform.position = target.transform.position;
+    }
+
     protected void TractorBeamUpdate()
     {
         lineRenderer.material.color = owner.tractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128);
@@ -195,9 +203,6 @@ public class TractorBeam : MonoBehaviour
 
                 coreGlow.gameObject.SetActive(true);
                 targetGlow.gameObject.SetActive(true);
-
-                coreGlow.transform.position = transform.position;
-                targetGlow.transform.position = target.transform.position;
             }
         }
         else
