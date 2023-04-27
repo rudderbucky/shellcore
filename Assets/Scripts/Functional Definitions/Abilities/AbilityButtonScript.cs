@@ -391,6 +391,13 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (abilities[0])
+        {
+            ReflectName(abilities[0]);
+            ReflectDescription(abilities[0]);
+            ReflectTier(abilities[0]);
+            ReflectHotkey(keycode);
+        }
         //create tooltip
         if (!dragging) 
         {
