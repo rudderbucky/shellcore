@@ -65,9 +65,9 @@ public class TargetingSystem : ITargetingSystem
         return target; // get target
     }
 
-    private List<Entity> secondaryTargets = new List<Entity>();
+    private List<Transform> secondaryTargets = new List<Transform>();
 
-    public bool AddSecondaryTarget(Entity ent)
+    public bool AddSecondaryTarget(Transform ent)
     {
         if (!secondaryTargets.Contains(ent))
         {
@@ -79,7 +79,7 @@ public class TargetingSystem : ITargetingSystem
         return false;
     }
 
-    public void RemoveSecondaryTarget(Entity ent)
+    public void RemoveSecondaryTarget(Transform ent)
     {
         if (secondaryTargets.Contains(ent))
         {
@@ -87,7 +87,7 @@ public class TargetingSystem : ITargetingSystem
         }
     }
 
-    public List<Entity> GetSecondaryTargets()
+    public List<Transform> GetSecondaryTargets()
     {
         return secondaryTargets;
     }

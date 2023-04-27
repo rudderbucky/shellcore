@@ -49,15 +49,15 @@ public class QuantityDisplayScript : MonoBehaviour
 
             foreach (var infos in secondaryInfosByEntity)
             {
-                UpdateInfo(infos.Key ? infos.Key.gameObject : null, infos.Value);
+                UpdateInfo(infos.Key != null && !infos.Key.Equals(null) ? infos.Key.gameObject : null, infos.Value);
             }
         }
     }
 
-    private Dictionary<Entity, GameObject> secondaryInfosByEntity = new Dictionary<Entity, GameObject>();
+    private Dictionary<Transform, GameObject> secondaryInfosByEntity = new Dictionary<Transform, GameObject>();
     public Transform content;
 
-    public void AddEntityInfo(Entity entity, ReticleScript reticle)
+    public void AddSecondaryInfo(Transform target, ReticleScript reticle)
     {
         var secondary = Instantiate(secondaryTargetInfoPrefab, content);
         secondary.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction
@@ -65,33 +65,33 @@ public class QuantityDisplayScript : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                reticle.RemoveSecondaryTarget(entity);
+                reticle.RemoveSecondaryTarget(target);
             }
             else
             {
                 var targSys = PlayerCore.Instance.GetTargetingSystem();
                 if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
                 {
-                    reticle.AddSecondaryTarget(targSys.GetTarget().GetComponent<Entity>());
+                    reticle.AddSecondaryTarget(targSys.GetTarget());
                 }
 
-                reticle.SetTarget(entity.transform);
-                reticle.RemoveSecondaryTarget(entity);
+                reticle.SetTarget(target);
+                reticle.RemoveSecondaryTarget(target);
             }
         }));
 
-        if (!secondaryInfosByEntity.ContainsKey(entity))
+        if (!secondaryInfosByEntity.ContainsKey(target))
         {
-            secondaryInfosByEntity.Add(entity, secondary);
+            secondaryInfosByEntity.Add(target, secondary);
         }
         else
         {
-            if (secondaryInfosByEntity[entity])
+            if (secondaryInfosByEntity[target])
             {
-                Destroy(secondaryInfosByEntity[entity].gameObject);
+                Destroy(secondaryInfosByEntity[target].gameObject);
             }
 
-            secondaryInfosByEntity[entity] = secondary;
+            secondaryInfosByEntity[target] = secondary;
         }
     }
 
@@ -115,7 +115,7 @@ public class QuantityDisplayScript : MonoBehaviour
         }
     }
 
-    public void RemoveEntityInfo(Entity entity)
+    public void RemoveEntityInfo(Transform entity)
     {
         if (secondaryInfosByEntity.ContainsKey(entity))
         {
@@ -156,12 +156,6 @@ public class QuantityDisplayScript : MonoBehaviour
             targetName.text = entity.entityName + (ReticleScript.instance.DebugMode ? $" ({entity.ID})" : "");
             targetDesc.text = description;
             targetName.color = targetDesc.color = FactionManager.GetFactionColor(entity.faction);
-            if (targetNumber)
-            {
-                targetNumber.color = targetName.color;
-                targetNumber.text = (ReticleScript.instance.GetTargetIndex(entity) + 1).ToString();
-                // targetShape.rectTransform.sizeDelta = targetShape.rectTransform.sizeDelta / 1.25F;
-            }
         }
         else if (obj.GetComponent<ShellPart>())
         {
@@ -184,6 +178,13 @@ public class QuantityDisplayScript : MonoBehaviour
         {
             targetName.text = targetDesc.text = "";
             targetInfo.SetActive(false);
+        }
+
+
+        if (targetNumber)
+        {
+            targetNumber.color = targetName.color;
+            targetNumber.text = (ReticleScript.instance.GetTargetIndex(obj.transform) + 1).ToString();
         }
     }
 }

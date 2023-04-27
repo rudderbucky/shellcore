@@ -22,7 +22,7 @@ public class ReticleScript : MonoBehaviour
 
     public QuantityDisplayScript quantityDisplay;
     public GameObject secondaryReticlePrefab;
-    public List<(Entity, Transform)> secondariesByObject;
+    public List<(Transform, Transform)> secondariesByObject;
 
     public bool DebugMode = false;
 
@@ -34,7 +34,7 @@ public class ReticleScript : MonoBehaviour
 
     void Start()
     {
-        secondariesByObject = new List<(Entity, Transform)>();
+        secondariesByObject = new List<(Transform, Transform)>();
     }
 
     /// <summary>
@@ -98,9 +98,9 @@ public class ReticleScript : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
         foreach (var ent in targSys.GetSecondaryTargets())
         {
-            if (ent && ent.transform)
+            if (ent != null && !ent.Equals(null) && ent)
             {
-                droneInteraction = DroneCheck(ent.transform, hits, mousePos) || droneInteraction;
+                droneInteraction = DroneCheck(ent, hits, mousePos) || droneInteraction;
             }
         }
 
@@ -200,8 +200,7 @@ public class ReticleScript : MonoBehaviour
             reticleImage.enabled = false;
         }
 
-        ITargetable targetCraft = target ? target.GetComponent<ITargetable>() : null; // if target is an entity
-        UpdateReticleHealths(shellImage, coreImage, targetCraft);
+        UpdateReticleHealths(shellImage, coreImage, target);
     }
 
     public void Focus()
@@ -236,7 +235,8 @@ public class ReticleScript : MonoBehaviour
             {
                 for (int i = 0; i < AIData.entities.Count; i++)
                 {
-                    AddSecondaryTarget(AIData.entities[i]);
+                    if (!AIData.entities[i]) continue;
+                    AddSecondaryTarget(AIData.entities[i].transform);
                 }
             }
 
@@ -289,11 +289,11 @@ public class ReticleScript : MonoBehaviour
         }
     }
 
-    private void SetSecondaryReticleTransform(Entity ent, Transform reticle, int count)
+    private void SetSecondaryReticleTransform(Transform target, Transform reticle, int count)
     {
-        if (ent != null && !ent.GetIsDead() && !ent.GetInvisible())
+        if (target != null && (!(target.GetComponent<Entity>()) || (!target.GetComponent<Entity>().GetIsDead() && !target.GetComponent<Entity>().GetInvisible())))
         {
-            reticle.GetComponent<RectTransform>().anchoredPosition = Camera.main.WorldToScreenPoint(ent.transform.position); // update reticle position
+            reticle.GetComponent<RectTransform>().anchoredPosition = Camera.main.WorldToScreenPoint(target.position); // update reticle position
             reticle.GetComponent<RectTransform>().anchoredPosition *= UIScalerScript.GetScale();
             reticle.Find("Number Marker").GetComponent<Text>().enabled = true;
             reticle.Find("Number Marker").GetComponent<Text>().text = count + "";
@@ -301,7 +301,7 @@ public class ReticleScript : MonoBehaviour
         }
         else
         {
-            RemoveSecondaryTarget((ent, reticle));
+            RemoveSecondaryTarget((target, reticle));
         }
 
         // TIL slashes allow Find searches to work like directories
@@ -311,11 +311,11 @@ public class ReticleScript : MonoBehaviour
         if (DebugMode)
         {
             var energyimage = reticle.Find("Container/EnergyImage").GetComponent<Image>();
-            UpdateReticleHealths(shellImage, coreImage, ent, energyimage);
+            UpdateReticleHealths(shellImage, coreImage, target, energyimage);
         }
         else
         {
-            UpdateReticleHealths(shellImage, coreImage, ent);
+            UpdateReticleHealths(shellImage, coreImage, target);
         }
     }
 
@@ -358,18 +358,20 @@ public class ReticleScript : MonoBehaviour
         }
     }
 
-    private void UpdateReticleHealths(Image shellImage, Image coreImage, ITargetable targetCraft, Image energyImage = null)
+    private void UpdateReticleHealths(Image shellImage, Image coreImage, Transform targetCraft, Image energyImage = null)
     {
-        if (targetCraft != null)
+        if (targetCraft != null && targetCraft.GetComponent<Entity>())
         {
+            var ent = targetCraft.GetComponent<Entity>();
+
             // show craft related information
             shellImage.enabled = coreImage.enabled = true;
-            shellImage.color = FactionManager.GetFactionColor(targetCraft.GetFaction());
+            shellImage.color = FactionManager.GetFactionColor(ent.GetFaction());
             coreImage.color = new Color(0.8F, 0.8F, 0.8F);
 
 
-            float[] targHealth = targetCraft.GetHealth(); // get the target current health
-            float[] targMax = targetCraft.GetMaxHealth(); // get the target max health
+            float[] targHealth = ent.GetHealth(); // get the target current health
+            float[] targMax = ent.GetMaxHealth(); // get the target max health
 
             shellImage.rectTransform.localScale = new Vector3(targHealth[0] / targMax[0], 1, 1);
             coreImage.rectTransform.localScale = new Vector3(targHealth[1] / targMax[1], 1, 1);
@@ -404,29 +406,29 @@ public class ReticleScript : MonoBehaviour
         }
     }
 
-    public void AddSecondaryTarget(Entity ent)
+    public void AddSecondaryTarget(Transform ent)
     {
         var success = targSys.AddSecondaryTarget(ent);
         if (success)
         {
-            var reticle = Instantiate(secondaryReticlePrefab, ent.transform.position, Quaternion.identity, transform.parent);
+            var reticle = Instantiate(secondaryReticlePrefab, ent.position, Quaternion.identity, transform.parent);
             reticle.transform.localScale = new Vector3(0, 0, 1);
-            AdjustReticleBounds(reticle.GetComponent<Image>(), ent.transform);
+            AdjustReticleBounds(reticle.GetComponent<Image>(), ent);
             secondariesByObject.Add((ent, reticle.transform));
             //SetSecondaryReticleTransform(ent, reticle.transform, secondariesByObject.Count);
             if (!DebugMode)
             {
-                quantityDisplay.AddEntityInfo(ent, this);
+                quantityDisplay.AddSecondaryInfo(ent, this);
             }
         }
     }
 
-    public int GetTargetIndex(Entity target)
+    public int GetTargetIndex(Transform target)
     {
         var x = 0;
         foreach (var tuple in secondariesByObject)
         {
-            if (tuple.Item1 == target)
+            if (tuple.Item1 && tuple.Item1 == target)
             {
                 return x;
             }
@@ -437,7 +439,7 @@ public class ReticleScript : MonoBehaviour
         return -1;
     }
 
-    public void RemoveSecondaryTarget(Entity entity)
+    public void RemoveSecondaryTarget(Transform entity)
     {
         foreach (var secondary in secondariesByObject)
         {
@@ -449,7 +451,7 @@ public class ReticleScript : MonoBehaviour
         }
     }
 
-    public void RemoveSecondaryTarget((Entity, Transform) tuple)
+    public void RemoveSecondaryTarget((Transform, Transform) tuple)
     {
         if (secondariesByObject.Contains(tuple))
         {

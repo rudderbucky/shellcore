@@ -134,7 +134,16 @@ public class SelectionBoxScript : MonoBehaviour
             if (ent != PlayerCore.Instance && ent.transform != PlayerCore.Instance.GetTargetingSystem().GetTarget()
                                            && finalBox.Contains(ent.transform.position))
             {
-                reticleScript.AddSecondaryTarget(ent);
+                reticleScript.AddSecondaryTarget(ent.transform);
+            }
+        }
+
+        foreach (var part in AIData.strayParts)
+        {
+            if (part.transform != PlayerCore.Instance.GetTargetingSystem().GetTarget()
+                                           && finalBox.Contains(part.transform.position))
+            {
+                reticleScript.AddSecondaryTarget(part.transform);
             }
         }
     }
@@ -146,13 +155,13 @@ public class SelectionBoxScript : MonoBehaviour
         // Tab cycles primary target
         if (Input.GetKeyDown(KeyCode.Tab) && targSys.GetSecondaryTargets().Count > 0)
         {
-            if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
+            if (targSys.GetTarget())
             {
-                reticleScript.AddSecondaryTarget(targSys.GetTarget().GetComponent<Entity>());
+                reticleScript.AddSecondaryTarget(targSys.GetTarget());
             }
 
             var newTarget = targSys.GetSecondaryTargets()[0];
-            reticleScript.SetTarget(newTarget.transform);
+            reticleScript.SetTarget(newTarget);
             reticleScript.RemoveSecondaryTarget(newTarget);
         }
     }
