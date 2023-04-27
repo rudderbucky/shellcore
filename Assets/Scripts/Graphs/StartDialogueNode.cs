@@ -105,7 +105,11 @@ namespace NodeEditorFramework.Standard
             }
 
 
-            if (!SpeakToEntity) return 0;
+            if (!SpeakToEntity)
+            {
+                handler.SetSpeakerID(null);
+                return 0;
+            }
             if (handler as TaskManager)
             {
                 TryAddObjective();

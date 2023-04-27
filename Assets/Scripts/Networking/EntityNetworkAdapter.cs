@@ -10,42 +10,22 @@ public class EntityNetworkAdapter : NetworkBehaviour
 {
     public struct ServerResponse : INetworkSerializable, IEquatable<ServerResponse>
     {
-        public Vector3 position;
-        public Vector3 velocity;
-        public Quaternion rotation;
-        public int faction;
-        public float weaponGCDTimer;
-        public float shell;
-        public float core;
-        public float energy;
-        public int power;
-        public ulong clientID;
-        public ServerResponse(Vector3 position, Vector3 velocity, Quaternion rotation, ulong clientID, int faction, float weaponGCDTimer, int power, float shell, float core, float energy)
+        public Vector2 position;
+        public Vector2 velocity;
+        public float rotation;
+        public ServerResponse(Vector2 position, Vector2 velocity, float rotation)
         {
             this.position = position;
             this.velocity = velocity;
-            this.clientID = clientID;
             this.rotation = rotation;
-            this.faction = faction;
-            this.weaponGCDTimer = weaponGCDTimer;
-            this.power = power;
-            this.shell = shell;
-            this.core = core;
-            this.energy = energy;
         }
 
         public bool Equals(ServerResponse other)
         {
-            return (clientID == other.clientID &&
+            return (
                 (this.position - other.position).sqrMagnitude > 1 &&
                 (this.velocity - other.velocity).sqrMagnitude > 1 &&
-                (this.rotation.eulerAngles - other.rotation.eulerAngles).sqrMagnitude > 1 &&
-                this.faction == other.faction &&
-                Mathf.Abs(this.weaponGCDTimer - other.weaponGCDTimer) > 0.1F &&
-                this.power == other.power &&
-                Mathf.Abs(this.shell - other.shell) > 0.5F &&
-                Mathf.Abs(this.core - other.core) > 0.5F &&
-                Mathf.Abs(this.energy - other.energy) > 0.5F);
+                this.rotation.Equals(other.rotation));
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -53,13 +33,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             serializer.SerializeValue(ref position);
             serializer.SerializeValue(ref velocity);
             serializer.SerializeValue(ref rotation);
-            serializer.SerializeValue(ref clientID);
-            serializer.SerializeValue(ref faction);
-            serializer.SerializeValue(ref weaponGCDTimer);
-            serializer.SerializeValue(ref power);
-            serializer.SerializeValue(ref shell);
-            serializer.SerializeValue(ref core);
-            serializer.SerializeValue(ref energy);
         }
     }
 
@@ -89,14 +62,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             return new ServerResponse(
             core ? core.transform.position : Vector3.zero, 
             body ? body.velocity : Vector3.zero, 
-            core? core.transform.rotation : Quaternion.identity, 
-            clientID, 
-            core ? core.faction : buf.passedFaction, 
-            core ? core.GetWeaponGCDTimer() : 0,
-            core as ShellCore ? (core as ShellCore).GetPower() : 0,
-            core ? core.CurrentHealth[0] : 1, 
-            core ? core.CurrentHealth[1] : 1, 
-            core ? core.CurrentHealth[2] : 1);
+            core? core.transform.rotation.eulerAngles.z : 0);
         }
     }
 
@@ -123,10 +89,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
     public string idToUse;
     static float TIME_TO_OOB_DEATH = 3;
     float oobKillTimer = TIME_TO_OOB_DEATH;
-    private static float UPDATE_RATE_FOR_PLAYERS = 0F; 
+    private static float PRIORITY_UPDATE_RATE = 0F; 
     private static float UPDATE_RATE = 0.05F;
     private float updateTimer = UPDATE_RATE;
     ulong ownerId = ulong.MaxValue;
+    private Vector3 lastDirectionalVector;
 
     [ServerRpc(RequireOwnership = false)]
     public void RequestDataServerRpc(ServerRpcParams serverRpcParams = default)
@@ -266,6 +233,17 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (weapon && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Host) weapon.ActivationCosmetic(victimPos);
     }
 
+    [ClientRpc]
+    public void SetAbilityReadyClientRpc(Vector2 location, Vector3 victimPos)
+    {
+        if (NetworkManager.Singleton.IsServer) return;
+        var core = huskEntity ? huskEntity : PlayerCore.Instance;
+        if (!core) return;
+        var ability = GetAbilityFromLocation(location, core);
+        if (ability) ability.abilityIsReadyOnServer = true;
+    }
+
+
 
     [ClientRpc]
     public void DetachPartClientRpc(Vector2 location, ClientRpcParams clientRpcParams = default)
@@ -287,11 +265,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         this.wrapper.position = wrapper.position;
         wrapperUpdated = true;
-        if (wrapper.clientID == NetworkManager.Singleton.LocalClientId && isPlayer.Value)
-        {
-            UpdatePlayerState(wrapper);
-        }
-        else if (huskEntity)
+        if (huskEntity)
         {
             UpdateCoreState(huskEntity, wrapper);
         }
@@ -302,6 +276,37 @@ public class EntityNetworkAdapter : NetworkBehaviour
             huskEntity.Rebuild();
         }
     }
+
+    [ClientRpc]
+    public void UpdatePowerClientRpc(int power, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        if (!(huskEntity is ShellCore core)) return;
+        core.SyncPower(power);
+    }
+
+
+    [ClientRpc]
+    public void UpdateWeaponGCDClientRpc(float gcd, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        if (!(huskEntity is ShellCore core)) return;
+        core.SetWeaponGCDTimer(gcd);
+    }
+
+    [ClientRpc]
+    public void UpdateHealthClientRpc(float shell, float core, float energy, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        if (isPlayer.Value && core > 0 && huskEntity is ShellCore shellCore && huskEntity.GetIsDead() && safeToRespawn.Value)
+        {
+            shellCore.CancelDeath();
+            shellCore.Respawn(true);
+        }
+
+        if (huskEntity) huskEntity.SyncHealth(shell, core, energy);
+    }
+
 
     [ClientRpc]
 
@@ -374,6 +379,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             wrapper = new StateWrapper();
             wrapper.clientID = OwnerClientId;
+            if (isPlayer.Value)
+                Debug.LogWarning(wrapper.clientID);
         }
 
         if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.LocalClientId == OwnerClientId && isPlayer.Value)
@@ -398,13 +405,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
             }
         }
 
-        if (huskEntity && !(huskEntity as PlayerCore))
-        {
-            huskEntity.TakeCoreDamage(999999);
-            if (huskEntity is ShellCore core) core.KillShellCore();
-            Destroy(huskEntity.gameObject);
-        }
-
         if (isPlayer.Value && playerFactions != null && playerFactions.ContainsKey(passedFaction))
         {
             playerFactions[passedFaction]--;
@@ -413,39 +413,42 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (isPlayer.Value) 
         {
             MasterNetworkAdapter.AttemptServerIntroduce();
+        }
+
+        if (huskEntity && !(huskEntity as PlayerCore))
+        {
+            huskEntity.TakeCoreDamage(999999);
+            if (huskEntity is ShellCore core) core.KillShellCore();
+            Destroy(huskEntity.gameObject);
+        }
+
+        if (isPlayer.Value) 
+        {
             SectorManager.instance.UpdateCounters();
         }
     }
 
-    private void UpdatePlayerState(ServerResponse response)
-    {
-        UpdateCoreState(PlayerCore.Instance, response);
-        CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
-    }
-
     private void UpdateCoreState(Entity core, ServerResponse response)
     {
-        if (isPlayer.Value && response.core > 0 && huskEntity && huskEntity.GetIsDead() && safeToRespawn.Value)
-        {
-            huskEntity.CancelDeath();
-            (huskEntity as ShellCore).Respawn(true);
-        }
-
-        core.transform.position = response.position;
-        core.GetComponent<Rigidbody2D>().velocity = response.velocity;
-        core.transform.rotation = response.rotation;
+        core.transform.position = Vector3.Lerp(core.transform.position, response.position, 0.5F);
+        core.GetComponent<Rigidbody2D>().velocity = Vector3.Lerp(core.GetComponent<Rigidbody2D>().velocity, response.velocity, 0.5F);
+        var q = Quaternion.identity;
+        q.eulerAngles = new Vector3(0, 0, response.rotation);
+        core.transform.rotation = q;
         core.dirty = false;
-        core.SetWeaponGCDTimer(response.weaponGCDTimer);
-        core.SyncHealth(response.shell, response.core, response.energy);
-        if (core is ShellCore shellcore) 
-            shellcore.SyncPower(response.power);
+        if (core is PlayerCore)
+            CameraScript.instance.Focus(PlayerCore.Instance.transform.position);
     }
     
 
     public void SetTractorID(ulong? ID)
     {
         this.tractorID = ID;
-        UpdateTractorClientRpc(ID.HasValue ? ID.Value : 0, !ID.HasValue);
+        if (huskEntity && huskEntity is ShellCore core && core.GetComponentInChildren<TractorBeam>())
+        {
+            var beam = core.GetComponentInChildren<TractorBeam>();
+            beam.SetIdToTractor(ID.HasValue ? ID.Value : ulong.MaxValue);
+        }
     }
 
     private static Entity GetEntityFromNetworkId(ulong networkId)
@@ -474,10 +477,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     public static ulong GetNetworkId(Transform transform)
     {
-        if (!transform) return 0;
+        if (!transform) return ulong.MaxValue;
         var entity = transform.GetComponent<Entity>();
-        ulong networkId = entity && entity.networkAdapter ? entity.networkAdapter.NetworkObjectId : 0;
-        if (networkId == 0) networkId = transform.GetComponent<NetworkObject>() ? transform.GetComponent<NetworkObject>().NetworkObjectId : 0;
+        ulong networkId = entity && entity.networkAdapter ? entity.networkAdapter.NetworkObjectId : ulong.MaxValue;;
+        if (networkId == ulong.MaxValue) networkId = transform.GetComponent<NetworkObject>() ? transform.GetComponent<NetworkObject>().NetworkObjectId : ulong.MaxValue;
         return networkId;
     }
 
@@ -534,16 +537,15 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (tractorID != null && tractorID.HasValue && !NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(tractorID.Value))
         {
             queuedTractor = false;
-            tractorID = null;
             return;
         }
-        if (tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
-        if (tractorID.HasValue && (!TransformIsNetworked(nObj.transform)))
+        if (tractorID != null && tractorID.HasValue) nObj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
+        if (tractorID != null && tractorID.HasValue && nObj && (!TransformIsNetworked(nObj.transform)))
         {
             return;
         }
         var core = huskEntity as ShellCore;
-        if (tractorID == null)
+        if (tractorID == null && core)
         {
             queuedTractor = false;
             core.SetTractorTarget(null, false, true);
@@ -552,12 +554,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
             var ent = obj?.GetComponent<EntityNetworkAdapter>()?.huskEntity?.GetComponentInChildren<Draggable>();
-            if (ent)
+            if (ent && core)
             {
                 core.SetTractorTarget(ent, false, true);
                 queuedTractor = false;
             }
-            else if (obj.GetComponentInChildren<Draggable>())
+            else if (obj.GetComponentInChildren<Draggable>() && core)
             {
                 core.SetTractorTarget(obj.GetComponentInChildren<Draggable>(), false, true);
                 queuedTractor = false;
@@ -565,13 +567,21 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
-    /*
     [ServerRpc(RequireOwnership = false)]
     public void GodModeServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        if (!String.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
         DevConsoleScript.Instance.GodPowers(huskEntity as ShellCore);
     }
-    */
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AddPowerServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        if (!String.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
+        (huskEntity as ShellCore).AddPower(5000);
+    }
+
 
     private bool ShouldSpawnHuskEntity()
     {
@@ -661,8 +671,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
         else if (ShouldReusePlayerCore())
         {
-            var response = wrapper;
-            if (OwnerClientId == response.clientID)
+            if (OwnerClientId == wrapper.clientID)
             {
                 SetUpPlayerCore();
             }
@@ -673,6 +682,11 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
     }
 
+    private bool IsPriorityForUpdates()
+    {
+        return isPlayer.Value || (huskEntity && huskEntity.GetComponent<Draggable>() && huskEntity.GetComponent<Draggable>().dragging);
+    }
+
     private void AttemptCreateServerResponse()
     {
         if (!NetworkManager.Singleton.IsServer) return;
@@ -681,6 +695,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
         if (!huskEntity) return;
         var closePlayers = new List<ulong>();
+        var entityAlwaysUpdated = isPlayer.Value || (huskEntity is ICarrier || huskEntity is IVendor);
         if (isPlayer.Value) closePlayers.Add(OwnerClientId);
         foreach(var ent in AIData.shellCores)
         {
@@ -691,14 +706,16 @@ public class EntityNetworkAdapter : NetworkBehaviour
             break;
         }
         updateTimer -= Time.deltaTime;
-        var craftIsMovingOrDead =  !(huskEntity is Craft craft) || (craft.IsMoving() || craft.GetIsDead());
+        var craftIsMovingOrDead =  !(huskEntity is Craft craft) || (craft.ServerShouldUpdatePosition() || craft.GetIsDead());
+        var craftShouldBeUpdated = isPlayer.Value || craftIsMovingOrDead;
+        var update = dirty || (updateTimer <= 0 && (closePlayers.Count > 0 || entityAlwaysUpdated) && craftShouldBeUpdated);
 
-        if ((closePlayers.Count > 0 && updateTimer <= 0 && (isPlayer.Value || craftIsMovingOrDead)) || dirty)
+        if (update)
         {
-            updateTimer = isPlayer.Value ? UPDATE_RATE_FOR_PLAYERS : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
+            updateTimer = IsPriorityForUpdates() ? PRIORITY_UPDATE_RATE : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
             dirty = false;
             UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
-            if (isPlayer.Value || dirty)
+            if (entityAlwaysUpdated || dirty)
                 UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
             else 
             {
@@ -711,6 +728,12 @@ public class EntityNetworkAdapter : NetworkBehaviour
                     }
                 });
             }
+
+            if (huskEntity is ShellCore core) 
+            {
+                UpdateWeaponGCDClientRpc(huskEntity.GetWeaponGCDTimer());
+                UpdatePowerClientRpc(core.GetPower());
+            }
         };
     }
 
@@ -721,6 +744,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
         SetUpHuskEntity();
         AttemptCreateServerResponse();
         
+        if (huskEntity && MasterNetworkAdapter.lettingServerDecide && isPlayer.Value)
+        {
+            huskEntity.transform.position = Vector3.Lerp(huskEntity.transform.position, wrapper.position, 0.5F);
+        }
         if (!playerNameAdded && !string.IsNullOrEmpty(playerName) && huskEntity as ShellCore && ProximityInteractScript.instance && isPlayer.Value)
         {
             playerNameAdded = true;

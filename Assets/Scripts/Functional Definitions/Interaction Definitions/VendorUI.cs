@@ -264,10 +264,14 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         var ent = creation.GetComponent<Entity>();
         ent.spawnPoint = vendor.GetPosition();
         ent.faction = core.faction;
-        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off) ent.ID = SectorManager.instance.GetFreeEntityID();
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
+        {
+            ent.ID = SectorManager.instance.GetFreeEntityID();
+            ent.blueprintString = JsonUtility.ToJson(blueprint.items[index].entityBlueprint);
+            ent.AttemptCreateNetworkObject(false);
+        }
         if (tractor) core.SetTractorTarget(creation.GetComponent<Draggable>());
         creation.name = blueprint.items[index].entityBlueprint.name;
-        ent.blueprintString = JsonUtility.ToJson(blueprint.items[index].entityBlueprint);
         core.sectorMngr.InsertPersistentObject(blueprint.items[index].entityBlueprint.name, creation);
         core.AddPower(-blueprint.items[index].cost);
         return ent;

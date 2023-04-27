@@ -52,6 +52,23 @@ public class Autobuilder
 	}
 
 	
+    [MenuItem("ShellCore Command/Build/Linux (debug)")]
+	public static void BuildLinuxDebug()
+	{
+		Debug.Log("Starting Linux Build!");
+        BuildPipeline.BuildPlayer(new BuildPlayerOptions() 
+            {
+                scenes = scenes,
+			    locationPathName = 
+			    "Build/Linux/ShellCore Command.x86_64",
+			    target = BuildTarget.StandaloneLinux64,
+			    options = BuildOptions.AutoRunPlayer,
+                subtarget = (int)StandaloneBuildSubtarget.Player
+				
+            });
+	}
+
+	
     [MenuItem("ShellCore Command/Build/OSX (release)")]
 	public static void BuildOSX()
 	{

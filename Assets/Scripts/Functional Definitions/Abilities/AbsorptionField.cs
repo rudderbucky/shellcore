@@ -50,13 +50,7 @@ public class AbsorptionField : ActiveAbility
         {
             craft.entityBody.velocity = Vector2.zero;
             craft.absorptions++;
-            field = new GameObject("Field");
-            field.transform.SetParent(craft.transform);
-            field.transform.localScale = Vector3.one;
-            field.transform.localPosition = Vector3.zero;
-            var sr = field.AddComponent<SpriteRenderer>();
-            sr.sprite = ResourceManager.GetAsset<Sprite>("absorption_sprite");
-            sr.sortingOrder = 1000;
+            Instantiate(ResourceManager.GetAsset<GameObject>("absorb_prefab"), Core.transform);
         }
 
         AudioManager.PlayClipByID("clip_buff", transform.position);

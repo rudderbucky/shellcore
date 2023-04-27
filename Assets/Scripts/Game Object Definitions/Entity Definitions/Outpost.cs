@@ -59,15 +59,12 @@ public class Outpost : AirConstruct, IVendor
         // the timer doesn't tick unless isDead is set to true
         targeter.SetTarget(null);
         int otherFaction = faction;
-        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+        if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
         {
-            if (sectorMngr.GetCurrentType() == Sector.SectorType.BattleZone)
-            {
-                BZManager.UpdateCounters();
-                BZManager.AlertPlayers(otherFaction, "WARNING: Outpost lost!");
-            }
+            BZManager.UpdateCounters();
+            BZManager.AttemptAlertPlayers(otherFaction, "WARNING: Outpost lost!", "clip_stationlost");
         }
-        else if (!MasterNetworkAdapter.lettingServerDecide)
+        else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
         {
             if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
                 && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)

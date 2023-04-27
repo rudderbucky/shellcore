@@ -1576,6 +1576,8 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
             core.preserveAspect = true;
             core.rectTransform.sizeDelta = core.sprite.bounds.size * 100;
+
+            CacheBlueprint();
         }
     }
 

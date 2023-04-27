@@ -58,6 +58,8 @@ public abstract class Ability : MonoBehaviour
     public bool isEnabled { get; set; } = true;
 
     bool autoCast = false;
+    public bool abilityIsReadyOnServer = true;
+
     public bool AutoCast
     {
         get { return autoCast; }
@@ -242,9 +244,13 @@ public abstract class Ability : MonoBehaviour
             charging = false;
             State = AbilityState.Disabled;
         }
-        else if (Time.time >= startTime + cooldownDuration)
+        else if (Time.time >= startTime + cooldownDuration && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer))
         {
             charging = false;
+            if (!MasterNetworkAdapter.lettingServerDecide && State != AbilityState.Ready && Core && Core.networkAdapter && Core.networkAdapter.isPlayer.Value)
+            {
+                Core.networkAdapter.SetAbilityReadyClientRpc(part ? part.info.location : Vector2.zero, part ? part.transform.position : Vector3.zero);
+            }
             State = AbilityState.Ready;
         }
         else if (Time.time >= startTime + activeDuration)
@@ -307,6 +313,7 @@ public abstract class Ability : MonoBehaviour
         
         if (lettingServerDecide && Core && Core.networkAdapter && ExtraCriteriaToActivate()) 
         {
+            if (Core.networkAdapter.isPlayer.Value) abilityIsReadyOnServer = false;
             Core.networkAdapter.ExecuteAbilityServerRpc(part ? part.info.location : Vector2.zero, Vector2.zero);
         }
         // If there's no charge time, execute immediately
@@ -353,7 +360,7 @@ public abstract class Ability : MonoBehaviour
             Execute(); // execute the ability
         }
         // If the ability needs to cool down
-        else if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown && prevState != AbilityState.Ready)
+        else if (State == AbilityState.Cooldown && prevState != AbilityState.Cooldown && prevState != AbilityState.Ready && prevState != AbilityState.Charging)
         {
             Deactivate(); // deactivate the ability
         }

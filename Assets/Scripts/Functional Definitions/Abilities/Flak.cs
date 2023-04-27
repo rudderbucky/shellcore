@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Flak : WeaponAbility
 {
@@ -10,7 +12,7 @@ public class Flak : WeaponAbility
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
     protected string bulletSound = "clip_flak";
     public static readonly int bulletDamage = 100;
-    private static readonly int BULLET_COUNT = 5;
+    private static readonly int BULLET_COUNT = 1;
 
     protected override void Awake()
     {
@@ -18,7 +20,7 @@ public class Flak : WeaponAbility
         // hardcoded values here
         description = "Projectile that deals {damage} damage.";
         abilityName = "Bullet";
-        bulletSpeed = 40;
+        bulletSpeed = 60;
         survivalTime = 0.25F;
         range = bulletSpeed * survivalTime;
         ID = AbilityID.Flak;
@@ -45,13 +47,19 @@ public class Flak : WeaponAbility
         return FireBullet(victimPos); // fire if there is
     }
 
+    public override void ActivationCosmetic(Vector3 targetPos)
+    {
+        AudioManager.PlayClipByID(bulletSound, transform.position);
+        base.ActivationCosmetic(targetPos);
+    }
+
     /// <summary>
     /// Helper method for Execute() that creates a bullet and modifies it to be shot
     /// </summary>
     /// <param name="targetPos">The position to fire the bullet to</param>
     protected virtual bool FireBullet(Vector3 targetPos)
     {
-        AudioManager.PlayClipByID(bulletSound, transform.position);
+        ActivationCosmetic(targetPos);
 
         // Create the Bullet from the Bullet Prefab
         if (bulletPrefab == null)
@@ -59,11 +67,11 @@ public class Flak : WeaponAbility
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
 
-        List<Transform> targets = GetClosestTargets(BULLET_COUNT);
+        List<Transform> targets = GetClosestTargets(BULLET_COUNT, true);
 
 
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
-        for (int i = 0; i < Mathf.Min(BULLET_COUNT, targets.Count); i++)
+        for (int i = 0; i < targets.Count; i++)
         {
             // Calculate future target position
             Vector2 targetVelocity = targets[i] ? targets[i].GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;
@@ -89,7 +97,6 @@ public class Flak : WeaponAbility
             }
 
 
-            var totalSpreadInDegrees = BULLET_COUNT * 20;
             var bullet = Instantiate(bulletPrefab, originPos, Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(relativeDistance.y, relativeDistance.x) * Mathf.Rad2Deg - 90)));
             bullet.transform.localScale = prefabScale;
 
@@ -103,6 +110,7 @@ public class Flak : WeaponAbility
             script.SetPierceFactor(pierceFactor);
             script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
             script.missParticles = true;
+            script.disableDrones = true;
 
             var normalizedVec = Vector3.Normalize(relativeDistance + targetVelocity * t);
             //var angle = (-(bullets / 2) + i) * 20;
@@ -113,6 +121,17 @@ public class Flak : WeaponAbility
 
             // Destroy the bullet after survival time
             script.StartSurvivalTimer(survivalTime);
+
+            if (SceneManager.GetActiveScene().name != "SampleScene")
+            {
+                bullet.GetComponent<NetworkProjectileWrapper>().enabled = false;
+                bullet.GetComponent<NetworkObject>().enabled = false;
+            }
+
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && (!MasterNetworkAdapter.lettingServerDecide))
+            {
+                bullet.GetComponent<NetworkObject>().Spawn();
+            }
         }
 
         return true;

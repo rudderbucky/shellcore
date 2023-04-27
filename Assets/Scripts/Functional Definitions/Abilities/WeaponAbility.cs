@@ -49,6 +49,11 @@ public abstract class WeaponAbility : ActiveAbility
             return "Drones";
         }
 
+        if (bonusDamageType == typeof(Tank))
+        {
+            return "Tank";
+        }
+
         return bonusDamageType?.ToString();
     }
 
@@ -150,15 +155,21 @@ public abstract class WeaponAbility : ActiveAbility
     /// <returns>damage</returns>
     protected float GetDamage()
     {
-        if (GetTarget() != null && bonusDamageType != null && GetTarget().GetComponent<Entity>())
+
+        var final = damage * (1+Core.GetDamageFactor());
+        var finalBonusDamageType = bonusDamageType;
+
+        // counter drones deal double damage vs drones at all times
+        if (Core is Drone drone && drone.type == DroneType.Counter) finalBonusDamageType = typeof(Drone);
+        if (GetTarget() != null && finalBonusDamageType != null && GetTarget().GetComponent<Entity>())
         {
-            if (bonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
+            if (finalBonusDamageType.IsAssignableFrom(GetTarget().GetComponent<Entity>().GetType()))
             {
-                return (damage + Core.GetDamageAddition()) * bonusDamageMultiplier;
+                final = (damage * (1+Core.GetDamageFactor())) * bonusDamageMultiplier;
             }
         }
 
-        return damage + Core.GetDamageAddition();
+        return final;
     }
 
     /// <summary>
@@ -235,9 +246,10 @@ public abstract class WeaponAbility : ActiveAbility
             if (!targetingSystem.GetTarget() || !Core.RequestGCD()) return;
             if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || (!MasterNetworkAdapter.lettingServerDecide))
             {
+                var vec = part ? part.info.location : Vector2.zero;
                 if (!Execute(target.position)) return;
                 if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide && Core.networkAdapter) 
-                    Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(part ? part.info.location : Vector2.zero, target.position);
+                    Core.networkAdapter.ExecuteAbilityCosmeticClientRpc(vec, target.position);
             }
             Core.TakeEnergy(energyCost); // take energy, if the ability was executed
             startTime = Time.time;
@@ -269,30 +281,33 @@ public abstract class WeaponAbility : ActiveAbility
         return true;
     }
 
-    protected virtual List<Transform> GetClosestTargets(int num, Vector3 pos)
+    protected virtual List<Transform> GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
     {
         List<Entity> potentialTargets = TargetManager.GetTargetList(targetingSystem, category);
         List<Transform> targets = new List<Transform>();
         // Just get the N closest entities, the complexity is just O(N) instead of sorting which would be O(NlogN)
-        for (int i = 0; i < num; i++)
+        int i = 0;
+        while (i < num)
         {
             var target = TargetManager.GetClosestFromList(potentialTargets, pos, targetingSystem, category);
             if (target != null)
             {
                 potentialTargets.Remove(target.GetComponentInChildren<Entity>());
                 targets.Add(target);
+                if (!dronesAreFree || !target.GetComponentInChildren<Drone>()) i++;
             }
             else
             {
                 break;
             }
         }
+
         return targets;
     }
 
-    protected List<Transform> GetClosestTargets(int num)
+    protected List<Transform> GetClosestTargets(int num, bool dronesAreFree = false)
     {
-        return GetClosestTargets(num, targetingSystem.GetEntity().transform.position);
+        return GetClosestTargets(num, targetingSystem.GetEntity().transform.position, dronesAreFree);
     }
 
 }

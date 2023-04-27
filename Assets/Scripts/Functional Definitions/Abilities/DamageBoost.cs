@@ -4,7 +4,7 @@
 /// </summary>
 public class DamageBoost : ActiveAbility
 {
-    public const float damageAddition = 100;
+    public const float damageFactor = 0.1F;
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -27,10 +27,17 @@ public class DamageBoost : ActiveAbility
         }
     }
 
+    private GameObject damageBoostEffectPrefab;
+
     public override void ActivationCosmetic(Vector3 targetPos)
     {
-
         AudioManager.PlayClipByID("clip_buff", targetPos);
+        if (!damageBoostEffectPrefab)
+        {
+            damageBoostEffectPrefab = ResourceManager.GetAsset<GameObject>("damage_boost_effect");
+        }
+
+        Instantiate(damageBoostEffectPrefab, Core.transform.position, Quaternion.identity);
         base.ActivationCosmetic(targetPos);
     }
 

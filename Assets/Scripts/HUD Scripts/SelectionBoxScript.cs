@@ -23,7 +23,6 @@ public class SelectionBoxScript : MonoBehaviour
     //private int nodeID = 1;
     private Vector2 lastPosition;
 
-    private bool dronesChecked = false;
     public static bool simpleMouseMovement = true;
 
     private bool clicking = false;
@@ -68,7 +67,7 @@ public class SelectionBoxScript : MonoBehaviour
         clicking = image.enabled = val;
         if (val)
         {
-            dronesChecked = reticleScript.FindTarget();
+            reticleScript.FindTarget();
             reticleScript.ClearSecondaryTargets();
 
             // Get reference point of selection box for drawing

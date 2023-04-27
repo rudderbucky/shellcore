@@ -61,6 +61,7 @@ public class SystemLoader : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        QualitySettings.vSyncCount = 0;  // VSync must be disabled
         Application.targetFrameRate = 60;
 
         if (resourceManager)

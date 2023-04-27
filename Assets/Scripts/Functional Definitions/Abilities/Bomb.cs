@@ -9,7 +9,7 @@ public class Bomb : WeaponAbility
     protected Vector3 prefabScale; // the scale of the bullet prefab, used to enlarge the siege turret bullet
     protected float pierceFactor = 0; // pierce factor; increase this to pierce more of the shell
     protected string bombSound = "clip_bomb";
-    public static readonly int bombDamage = 1000;
+    public static readonly int bombDamage = 800;
 
     protected override void Awake()
     {

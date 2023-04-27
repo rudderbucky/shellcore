@@ -46,6 +46,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected GameObject deathExplosionPrefab;
     protected List<ShellPart> parts; // List containing all parts of the entity
     protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
+    public bool serverSyncHealthDirty = true;
 
     public bool husk;
     [SerializeField]
@@ -72,10 +73,22 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public string ID; // used in tasks
     protected float[] baseMaxHealth = new float[3];
     private int controlStacks;
+    private float TimeToDeath
+    {
+        get 
+        { 
+            var tier = 0;
+            if (blueprint && MasterNetworkAdapter.mode != NetworkMode.Off) 
+                tier = CoreUpgraderScript.GetCoreTier(blueprint.coreShellSpriteID);
+            return RESPAWN_TIMES[tier]; 
+        }
+    }
+
+    private static float[] RESPAWN_TIMES = new float[] {5, 7, 9, 11};
 
     public void CancelDeath()
     {
-        deathTimer = 5;
+        deathTimer = TimeToDeath;
         isDead = false;
     }
     public void HealToMax()
@@ -147,39 +160,46 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
-    private void UpdateInvisibleGraphics()
-    {
-        if (!IsInvisible)
-        {
-            SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                var c = renderers[i].color;
-                c.a = FactionManager.GetFactionColor(faction).a;
-                renderers[i].color = c;
-            }
 
-            Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
-            for (int i = 0; i < colliders.Length; i++)
+    private void UpdateRenderer(Renderer renderer)
+    {
+        var finalAlpha = IsInvisible ? FactionManager.IsAllied(PlayerCore.Instance ? PlayerCore.Instance.faction : 0, faction) ? 0.2f : 0f : FactionManager.GetFactionColor(faction).a;
+        if (renderer is SpriteRenderer spriteRenderer)
+        {
+            var c = spriteRenderer.color;
+            c.a = finalAlpha;
+            spriteRenderer.color = c;
+        }
+        if (renderer is LineRenderer lineRenderer)
+        {
+            var sc = lineRenderer.startColor;
+            var ec = lineRenderer.endColor;
+            sc.a = finalAlpha;
+            ec.a = finalAlpha;
+            lineRenderer.startColor = sc;
+            lineRenderer.endColor = ec;
+            var anim = renderer.GetComponentInChildren<MissileAnimationScript>();
+            if (anim)
             {
-                colliders[i].enabled = true;
+                var ac = anim.lineColor;
+                ac.a = finalAlpha;
+                anim.lineColor = ac;
             }
         }
-        else
-        {
-            SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                var c = renderers[i].color;
-                c.a = FactionManager.IsAllied(PlayerCore.Instance ? PlayerCore.Instance.faction : 0, faction) ? 0.2f : 0f;
-                renderers[i].color = c;
-            }
+    }
 
-            Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                colliders[i].enabled = false;
-            }
+    private void UpdateInvisibleGraphics()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            UpdateRenderer(renderers[i]);
+        }
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = !IsInvisible;
         }
     }
 
@@ -253,7 +273,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     // Performs calculations based on current damage boost and control stats to determine final damage addition
     private void CalculateDamageBoost()
     {
-        damageAddition = controlStacks * Control.damageAddition + damageBoostStacks * DamageBoost.damageAddition;
+        damageFactor = controlStacks * Control.damageFactor + damageBoostStacks * DamageBoost.damageFactor;
     }
 
     private int stealths = 0;
@@ -269,10 +289,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
-    private float damageAddition = 0f;
-    public float GetDamageAddition()
+    private float damageFactor = 0f;
+    public float GetDamageFactor()
     {
-        return damageAddition;
+        return damageFactor;
     }
 
     [HideInInspector]
@@ -956,6 +976,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         // set death, interactibility and immobility
         IsInvisible = false;
+        serverSyncHealthDirty = true;
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -1164,6 +1185,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// <param name="maxHealth">the maximum value this health can have</param>
     protected void RegenHealth(ref float currentHealth, float regenRate, float maxHealth)
     {
+        var oldCurrentHealth = currentHealth;
         if (currentHealth + (regenRate * Time.deltaTime) > maxHealth) // if it would overheal
         {
             currentHealth = maxHealth; // set current health to max health
@@ -1172,6 +1194,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             currentHealth += regenRate * Time.deltaTime; // add regenerated health
         }
+
+        if (oldCurrentHealth != currentHealth) serverSyncHealthDirty = true;
     }
 
     /// <summary>
@@ -1246,12 +1270,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 if (this is PlayerCore player && (deathTimer > 2))
                 {
-                    player.alerter.showMessage($"Respawning in {(5 - (int)deathTimer)} second"
-                                               + ((5 - deathTimer) > 1 ? "s." : "."));
+                    player.alerter.showMessage($"Respawning in {(TimeToDeath - (int)deathTimer)} second"
+                                               + ((TimeToDeath - deathTimer) > 1 ? "s." : "."));
                 }
             }
 
-            if (deathTimer >= 5F)
+            if (deathTimer >= TimeToDeath)
             {
                 if (this is PlayerCore player)
                 {
@@ -1278,7 +1302,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                     weaponGCDTimer += Time.deltaTime; // tick GCD timer
                 }
             }
-
 
             // check if busy state changing is due
             if (busyTimer > 5)
@@ -1315,6 +1338,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 RangeCheckDelegate.Invoke(Vector2.SqrMagnitude(PlayerCore.Instance.transform.position - transform.position));
             }
         }
+
+        if (serverSyncHealthDirty && !MasterNetworkAdapter.lettingServerDecide && networkAdapter)
+        {
+            if (!GetIsDead()) serverSyncHealthDirty = false;
+            networkAdapter.UpdateHealthClientRpc(currentHealth[0], currentHealth[1], currentHealth[2]);
+        }
     }
 
     /// <summary>
@@ -1345,15 +1374,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             part.GetComponent<Ability>().SetDestroyed(true);
         }
 
+        entityBody.mass -= part.partMass;
+        weight -= part.partMass * weightMultiplier;
+        if (this is Craft craft)
+        {
+            craft.CalculatePhysicsConstants();
+        }
+
         if (!lettingServerDecide)
         {
-            entityBody.mass -= part.partMass;
-            weight -= part.partMass * weightMultiplier;
-            if (this is Craft craft)
-            {
-                craft.CalculatePhysicsConstants();
-            }
-
             Domino(part);
         }
 
@@ -1441,6 +1470,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     public virtual float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
+        serverSyncHealthDirty = true;
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
         {
             Debug.Log($"Damage: {amount} (f {lastDamagedBy?.faction} -> {faction})");
@@ -1452,10 +1482,15 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             return 0f;
         }
 
-        // counter drone fighting another drone, multiply damage accordingly
         if (this as Drone && lastDamagedBy is Drone drone && drone.type == DroneType.Counter)
         {
-            amount *= 1.75F;
+            amount *= 5F;
+            shellPiercingFactor = 1;
+        }
+        // if being attacked by another drone as a counter drone, drop damage accordingly
+        if (this as Drone && lastDamagedBy is Drone && (this as Drone).type == DroneType.Counter)
+        {
+            amount /= 5F;
         }
 
         if (lastDamagedBy != this && amount > 0)

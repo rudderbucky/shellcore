@@ -122,7 +122,7 @@ public class DevConsoleScript : MonoBehaviour
         inputField.text = "";
         inputField.ActivateInputField();
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene")//&& MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
             if (command.Equals("poor", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -415,7 +415,11 @@ public class DevConsoleScript : MonoBehaviour
                         // MasterNetworkAdapter.instance.ClientNukeServerRpc();
                         break;
                     case "god":
-                        // PlayerCore.Instance.networkAdapter.GodModeServerRpc();
+                        PlayerCore.Instance.networkAdapter.GodModeServerRpc();
+                        break;
+
+                    case "power":
+                        PlayerCore.Instance.networkAdapter.AddPowerServerRpc();
                         break;
                 }
             }

@@ -165,7 +165,7 @@ public abstract class Craft : Entity
     protected override void FixedUpdate()
     {
         if (!SystemLoader.AllLoaded) return;
-        var lettingServerDecide = this as PlayerCore && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !NetworkManager.Singleton.IsServer && networkAdapter != null;
+        var lettingServerDecide = MasterNetworkAdapter.lettingServerDecide;
 
         entityBody.drag = draggable.dragging  ? 25F : 0;
         if (draggable.dragging)
@@ -183,9 +183,9 @@ public abstract class Craft : Entity
             }
         }
 
+        CraftMover(physicsDirection); // move craft
         if (!lettingServerDecide)
         {
-            CraftMover(physicsDirection); // move craft
         }
         physicsDirection = Vector2.zero;
     }
@@ -232,7 +232,7 @@ public abstract class Craft : Entity
             return;
         }
 
-        if (rotateWhileMoving)
+        if (rotateWhileMoving && !MasterNetworkAdapter.lettingServerDecide)
         {
             RotateCraft(directionVector / weight);
         }
@@ -274,5 +274,19 @@ public abstract class Craft : Entity
     public virtual bool IsMoving()
     {
         return (entityBody && entityBody.velocity != Vector2.zero); // if there is any velocity the craft is moving
+    }
+
+    private bool syncPosition = false;
+
+    public bool ServerShouldUpdatePosition()
+    {
+        if (IsMoving()) syncPosition = true;
+        else if (syncPosition)
+        {
+            syncPosition = false;
+            if (networkAdapter) dirty = true;
+            return true;
+        }
+        return syncPosition;
     }
 }

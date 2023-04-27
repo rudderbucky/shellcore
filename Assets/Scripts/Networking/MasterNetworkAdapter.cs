@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 public class MasterNetworkAdapter : NetworkBehaviour
@@ -30,19 +32,39 @@ public class MasterNetworkAdapter : NetworkBehaviour
 
     public static void AttemptServerIntroduce()
     {
+        if (MainMenu.TESTING)
+        {
+            MainMenu.RDB_SERVER_PASSWORD = "test_password";
+            MainMenu.location = "na";
+            if (string.IsNullOrEmpty(MasterNetworkAdapter.port)) port = "7777";
+        }
         if (mode != MasterNetworkAdapter.NetworkMode.Server || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
         if (string.IsNullOrEmpty(MainMenu.GATEWAY_IP) || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD) || string.IsNullOrEmpty(MainMenu.location) || string.IsNullOrEmpty(MasterNetworkAdapter.port)) return;
         MasterNetworkAdapter.timeOnLastIntroduce = Time.time;
-        MainMenu.client.PostAsync($"http://{MainMenu.GATEWAY_IP}/introduce/{MainMenu.RDB_SERVER_PASSWORD}/{MainMenu.location}/{MasterNetworkAdapter.port}/{NetworkManager.Singleton.ConnectedClients.Count}", null);
+        instance.StartCoroutine(Introduce());
+    }
+
+
+    public static IEnumerator Introduce()
+    {
+        var cnt = EntityNetworkAdapter.playerFactions != null ? EntityNetworkAdapter.playerFactions.Values.ToList().Sum() : 0;
+        UnityWebRequest www = UnityWebRequest.Post($"http://{MainMenu.GATEWAY_IP}/introduce/{MainMenu.RDB_SERVER_PASSWORD}/{MainMenu.location}/{MasterNetworkAdapter.port}/{cnt}", "");
+        www.timeout = 10;
+        yield return www.SendWebRequest();
     }
 
     void Update()
-    {
+    {        
+        if (!MasterNetworkAdapter.lettingServerDecide)
+        {
+            PingClientRpc();
+        }
         if (mode != MasterNetworkAdapter.NetworkMode.Server || string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return;
         if (Time.time - timeOnLastIntroduce > SECONDS_PER_INTRODUCE || timeOnLastIntroduce == 0)
         {
             AttemptServerIntroduce();
         }
+
     }
 
     void Start()
@@ -161,12 +183,27 @@ public class MasterNetworkAdapter : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void BombExplosionClientRpc(Vector3 position)
+    public void BombExplosionClientRpc(Vector3 position, ClientRpcParams clientRpcParams = default)
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
         BombScript.ActivationCosmetic(position);
     }
 
+    [ClientRpc]
+    public void AlertPlayerClientRpc(int faction, string message, string sound, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        var BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
+        if (BZManager && PlayerCore.Instance && PlayerCore.Instance.faction == faction) BZManager.AlertPlayer(message, sound);
+    }
+
+    [ClientRpc]
+    public void DisplayVoteClientRpc(int factionThatWon, ClientRpcParams clientRpcParams = default)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host) return;
+        var BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
+        if (BZManager) BZManager.BattleZoneEndCheck(new List<int>() {factionThatWon}, false);
+    }
 
     public GameObject networkObj;
 
@@ -284,24 +321,29 @@ public class MasterNetworkAdapter : NetworkBehaviour
     }
     */
 
+
+    float lastPing = 0;
+    [ClientRpc]
+    private void PingClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        //Debug.Log(Time.time - lastPing);
+        lastPing = Time.time;
+    }
+
+
     [ClientRpc]
     public void EnergySphereCollectClientRpc(ClientRpcParams clientRpcParams = default)
     {
+        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
         if (PlayerCore.Instance) 
             AudioManager.PlayClipByID("clip_powerup", PlayerCore.Instance.transform.position);
     }
 
-
     [ClientRpc]
-    public void BulletMissClientRpc(Vector2 position, Vector2 rotation, ClientRpcParams clientRpcParams = default)
+    public void BulletEffectClientRpc(string obj, Vector2 position, Vector2 rotation, ClientRpcParams clientRpcParams = default)
     {
-        Instantiate(ResourceManager.GetAsset<GameObject>("bullet_miss_prefab"), position, Quaternion.Euler(0, 0, Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg));
-    }
-
-    [ClientRpc]
-    public void BulletHitClientRpc(Vector2 position, ClientRpcParams clientRpcParams = default)
-    {
-        Instantiate(ResourceManager.GetAsset<GameObject>("bullet_hit_prefab"), position, Quaternion.identity);
+        if (MasterNetworkAdapter.mode == NetworkMode.Host) return;
+        Instantiate(ResourceManager.GetAsset<GameObject>(obj), position, Quaternion.Euler(0, 0, Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg));
     }
 
     public static bool ValidateBluperintOnServer(EntityBlueprint print, out string reason)
@@ -334,13 +376,10 @@ public class MasterNetworkAdapter : NetworkBehaviour
             [AbilityID.ChainBeam] = 0,
             [AbilityID.SpeederMissile] = 0,
             [AbilityID.Ion] = 0,
-            [AbilityID.Flak] = 0,
+            [AbilityID.Disrupt] = 0,
             [AbilityID.Stealth] = 1,
             [AbilityID.PinDown] = 1,
-            [AbilityID.Disrupt] = 1,
             [AbilityID.Retreat] = 1,
-            [AbilityID.Control] = 1,
-            [AbilityID.Command] = 1,
             [AbilityID.Absorb] = 1,
         };
 
@@ -408,6 +447,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
             return false;
         }
         var print = ScriptableObject.CreateInstance<EntityBlueprint>();
+        reason = "";
+        if (world != VersionNumberScript.rdbMap) return true;
         try
         {
             print = SectorManager.TryGettingEntityBlueprint(blueprint);

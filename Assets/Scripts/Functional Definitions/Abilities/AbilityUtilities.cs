@@ -202,9 +202,9 @@ public static class AbilityUtilities
             case 24:
                 return "Become invisible to enemies.";
             case 25:
-                return $"All weapon damage increased by {DamageBoost.damageAddition * Mathf.Max(1, tier)}.";
+                return $"All weapon damage increased by {Mathf.Round(DamageBoost.damageFactor * Mathf.Max(1, tier) * 100)}%.";
             case 26:
-                return $"Instantly heals self and nearby allies by {AreaRestore.heal * Mathf.Max(1, tier)} shell";
+                return $"Instantly heals nearby allies by {AreaRestore.heal * Mathf.Max(1, tier)} shell.";
             case 27:
                 return "Immobilizes the target.";
             case 28:
@@ -220,7 +220,7 @@ public static class AbilityUtilities
             case 33:
                 return "Disrupt enemy ability cooldowns.";
             case 34:
-                return $"Gives allies additional {Control.baseControlFractionBoost * 100 * tier}% shell and {Control.damageAddition * tier} weapon damage.";
+                return $"Gives allies additional {Control.baseControlFractionBoost * 100 * tier}% shell and {Mathf.Round(Control.damageFactor * Mathf.Max(1, tier) * 100)}% weapon damage.";
             case 35:
                 return "Temporarily pulls you to your tractor target and allows you to tractor most entities.";
             case 36:
@@ -229,7 +229,7 @@ public static class AbilityUtilities
                 return $"Slow moving beam that deals {IonLineController.damageC * tier} damage per second for 5 seconds. "
                        + $"\nBeam costs {IonLineController.energyC * tier} energy per second.";
             case 38:
-                return $"Fires at most 5 projectiles at different targets that each deal {Flak.bulletDamage * tier} damage.";
+                return $"Fires at least 1 projectile at different targets that each deal {Flak.bulletDamage * tier} damage.\nCan fire at as many drones as are in range, and disables them for 3 seconds each.";
             case 39:
                 return $"Slow projectile that deals {Rocket.bulletDamage * tier} to air stations.";
             case 40:

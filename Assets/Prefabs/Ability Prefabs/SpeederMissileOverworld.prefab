@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4411932324479962}
   - component: {fileID: 212966113128855962}
-  - component: {fileID: 2390912361637625736}
   - component: {fileID: 50487187397467512}
+  - component: {fileID: 4036941017934396375}
   m_Layer: 10
   m_Name: SpeederMissileOverworld
   m_TagString: Untagged
@@ -86,26 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2390912361637625736
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1112368188499930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37d190ddf5dd57b4b8b92f9994171f07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  missileLinePrefab: {fileID: 0}
-  faction: 0
-  owner: {fileID: 0}
-  hitPrefab: {fileID: 1502281276678149486, guid: 1042cc1ecdd8e644fbf1602a91dac5c9,
-    type: 3}
-  missPrefab: {fileID: 8654600599346773465, guid: 9aa8e24e2ff05cf4499b5f2dbc180396,
-    type: 3}
-  missileColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!50 &50487187397467512
 Rigidbody2D:
   serializedVersion: 4
@@ -127,3 +107,23 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &4036941017934396375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112368188499930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c390e22cd1451014daef51a2f4305143, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missileLinePrefab: {fileID: 0}
+  faction: 0
+  owner: {fileID: 0}
+  hitPrefab: {fileID: 8117088640925686289, guid: d8cb3c9228c6899ea985a27ab9c90300,
+    type: 3}
+  missPrefab: {fileID: 8654600599346773465, guid: 9aa8e24e2ff05cf4499b5f2dbc180396,
+    type: 3}
+  missileColor: {r: 0, g: 0, b: 0, a: 0}

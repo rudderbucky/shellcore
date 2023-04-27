@@ -12,7 +12,7 @@ public class BombScript : MonoBehaviour
     public int faction; // faction of projectile
     public static GameObject missPrefab;
     public static GameObject hitPrefab;
-    public static readonly float explosionRadius = 5f;
+    public static readonly float explosionRadius = 3f;
     private static GameObject explosionCirclePrefab;
     private float timeInstantiated;
     private float fuseTime = 1.5F;
@@ -102,41 +102,30 @@ public class BombScript : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time > timeInstantiated + fuseTime && !fired)
-            foreach (var ent in AIData.entities)
+        if (Time.time <= timeInstantiated + fuseTime || fired) return;
+        foreach (var ent in AIData.entities)
+        {
+            var craft = ent.GetComponent<Entity>(); // check if it has a craft component
+            if (craft == null || craft.GetIsDead()) continue;
+            if (craft as PlayerCore && DevConsoleScript.spectateEnabled) continue;
+            if (FactionManager.IsAllied(faction, craft.GetFaction())) continue;
+            if (craft.GetInvisible()) continue;
+            if (!CheckCategoryCompatibility(craft)) continue;
+            if (owner && (craft.GetTransform() == owner.transform)) continue;
+            if (Vector2.SqrMagnitude(craft.transform.position - transform.position) > explosionRadius * explosionRadius) continue;
+
+            var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
+                                                                    // if the shell is low, damage the part
+            craft.TakeCoreDamage(residue);
+            if (fired) continue;
+            fired = true;
+            ActivationCosmetic(transform.position);
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
             {
-                var craft = ent.GetComponent<Entity>(); // check if it has a craft component
-                if (craft != null && !craft.GetIsDead()) // check if the component was obtained
-                {
-                    if (craft as PlayerCore && DevConsoleScript.spectateEnabled) 
-                    {
-                        continue;
-                    }
-
-
-                    if (!FactionManager.IsAllied(faction, craft.GetFaction())
-                        && Vector2.SqrMagnitude(craft.transform.position - transform.position) <= explosionRadius * explosionRadius
-                            && CheckCategoryCompatibility(craft)
-                                && (!owner || (craft.GetTransform() != owner.transform)))
-                    {
-                        var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
-                                                                               // if the shell is low, damage the part
-
-                        craft.TakeCoreDamage(residue);
-                        if (!fired)
-                        {
-
-                            fired = true;
-                            ActivationCosmetic(transform.position);
-                            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
-                            {
-                                MasterNetworkAdapter.instance.BombExplosionClientRpc(transform.position);
-                            }
-                            Destroy(gameObject); // bullet has collided with a target, delete immediately
-                        }
-                    }
-                }
+                MasterNetworkAdapter.instance.BombExplosionClientRpc(transform.position);
             }
+            Destroy(gameObject); // bullet has collided with a target, delete immediately
+        }
     }
 
     public static void ActivationCosmetic(Vector3 position)

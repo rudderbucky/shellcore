@@ -43,11 +43,13 @@ public class MainMenu : MonoBehaviour
 
     public static string GATEWAY_IP = "34.125.253.226:8000";
     private bool queueNetworkRun = false;
+    public static bool TESTING = false;
 
     public void RunClientFromGateway(string result)
     {
         Debug.Log("Connecting to: " + result);
         var addressArray = result.Split(":");
+        if (addressArray.Length < 2) return;
         SetAddress(addressArray[0]);
         SetPort(addressArray[1]);
         queueNetworkRun = true;
@@ -56,7 +58,7 @@ public class MainMenu : MonoBehaviour
     public static System.Net.Http.HttpClient client;
 
     public static string location = null;
-    public static string RDB_SERVER_PASSWORD = "test_password";
+    public static string RDB_SERVER_PASSWORD = "";
     [SerializeField]
     private Dropdown rdbServerLocation;
     [SerializeField]
@@ -67,7 +69,7 @@ public class MainMenu : MonoBehaviour
     {
         if (!playersConnectedText) yield return null;
         UnityWebRequest www = UnityWebRequest.Get($"http://{GATEWAY_IP}/playercount/{location}");
-        www.timeout = 3;
+        www.timeout = 10;
         yield return www.SendWebRequest();
 
         if (www.result == UnityWebRequest.Result.Success)
@@ -81,8 +83,8 @@ public class MainMenu : MonoBehaviour
     }
     public IEnumerator QueryGatewayHelper()
     {
-        UnityWebRequest www = UnityWebRequest.Get($"http://{GATEWAY_IP}/seekip/{location}");
-        www.timeout = 3;
+        UnityWebRequest www = UnityWebRequest.Get($"http://{GATEWAY_IP}/seekip/{location}/{nameFields[0].text}");
+        www.timeout = 10;
         yield return www.SendWebRequest();
         if (www.result == UnityWebRequest.Result.Success)
         {
@@ -158,11 +160,11 @@ public class MainMenu : MonoBehaviour
             client = new System.Net.Http.HttpClient();
             client.Timeout = new System.TimeSpan(0,0,3);
         }
-
+        if (TESTING) RDB_SERVER_PASSWORD = "127.0.0.1:8000";
         if (string.IsNullOrEmpty(location))
             UpdateLocation(0);
 
-        blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Ad Slayer"));
+        blueprintFields.ForEach(x => x.text = PlayerPrefs.GetString("Network_blueprintName", "Advanced Scout"));
         worldField.text = PlayerPrefs.GetString("Network_worldName", "BattleZone Round Ringer");
         if (rdbServerLocation && string.IsNullOrEmpty(RDB_SERVER_PASSWORD))
         {
@@ -236,7 +238,7 @@ public class MainMenu : MonoBehaviour
     {
         if (queueNetworkRun)
         {
-            MasterNetworkAdapter.world = $"rudderbucky server - {VersionNumberScript.rdbMapVersion}";
+            MasterNetworkAdapter.world = VersionNumberScript.rdbMap;
             NetworkDuel("client");
             queueNetworkRun = false;
         }
@@ -257,6 +259,17 @@ public class MainMenu : MonoBehaviour
 
     public void StartSkirmishHelper(MasterNetworkAdapter.NetworkMode mode)
     {
+        if (NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+            return;
+        }
+
+        foreach (var orb in AIData.energySpheres)
+        {
+            Destroy(orb.gameObject);
+        }
+
         Debug.Log("Duelling. Port: " + MasterNetworkAdapter.port + " Address: " + MasterNetworkAdapter.address + " Blueprint: " + MasterNetworkAdapter.blueprint + " Player name: " + MasterNetworkAdapter.playerName);
         SectorManager.currentSectorIndex = 0;
         if (mode != MasterNetworkAdapter.NetworkMode.Client)

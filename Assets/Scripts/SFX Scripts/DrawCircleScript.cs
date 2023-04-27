@@ -63,6 +63,7 @@ public class DrawCircleScript : MonoBehaviour
             line.useWorldSpace = false;
             line.positionCount = 60;
         }
+        line.sortingLayerName = "Projectiles";
     }
 
     private void Update()

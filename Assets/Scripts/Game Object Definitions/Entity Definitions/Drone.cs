@@ -14,6 +14,16 @@ public class Drone : AirCraft, IOwnable
     private float initialzangle;
     public DroneType type;
     public Path path;
+    
+    private float aiReenableTime;
+
+    public void DisableAITemporarily(float timeToEnableAt)
+    {
+        if (!ai) return;
+        ai.enabled = false;
+        aiReenableTime = timeToEnableAt;
+    }
+
 
     public IOwner GetOwner()
     {
@@ -29,7 +39,6 @@ public class Drone : AirCraft, IOwnable
 
     public void GeneratePath()
     {
-        Debug.Log("Generating path...");
         var path = ScriptableObject.CreateInstance<Path>();
         path.waypoints = new List<Path.Node>();
 
@@ -180,6 +189,7 @@ public class Drone : AirCraft, IOwnable
 
     protected override void Update()
     {
+        if (Time.time > aiReenableTime && ai) ai.enabled = true;
         base.Update();
         if (!draggable || (draggable && !draggable.dragging))
         {

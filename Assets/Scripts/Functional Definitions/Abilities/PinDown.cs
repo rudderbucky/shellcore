@@ -68,21 +68,33 @@ public class PinDown : ActiveAbility
     protected override void Execute()
     {
         ActivationCosmetic(transform.position);
-        var targeting = Core.GetTargetingSystem();
-        float minDist = rangeSquared;
         target = null;
-        for (int i = 0; i < AIData.entities.Count; i++)
+        float minDist = rangeSquared;
+        var targetTransform = Core.GetTargetingSystem().GetTarget();
+
+        if (targetTransform)
         {
-            if (AIData.entities[i] is Craft && !AIData.entities[i].GetIsDead() && !FactionManager.IsAllied(AIData.entities[i].faction, Core.faction))
+            var targetTransformDist = (targetTransform.position - Core.transform.position).sqrMagnitude;
+            if (targetTransformDist < minDist && ValidityCheck(targetTransform.GetComponent<Entity>()))
             {
-                float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
-                if (d < minDist && !AIData.entities[i].IsInvisible)
-                {
-                    minDist = d;
-                    target = AIData.entities[i] as Craft;
-                }
+                target = targetTransform.GetComponent<Entity>() as Craft;
             }
         }
+
+
+        if (!target)
+            for (int i = 0; i < AIData.entities.Count; i++)
+            {
+                if (ValidityCheck(AIData.entities[i]))
+                {
+                    float d = (Core.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
+                    if (d < minDist)
+                    {
+                        minDist = d;
+                        target = AIData.entities[i] as Craft;
+                    }
+                }
+            }
 
         if (target != null)
         {
@@ -92,5 +104,14 @@ public class PinDown : ActiveAbility
         }
 
         base.Execute();
+
     }
+
+
+
+    bool ValidityCheck(Entity ent)
+    {
+        return (ent is Craft && !ent.GetIsDead() && !FactionManager.IsAllied(ent.faction, Core.faction) && !ent.IsInvisible);
+    }
+
 }

@@ -18,6 +18,7 @@ public class BulletScript : MonoBehaviour
     private float pierceFactor = 0;
     public Color particleColor;
     Vector2 vector;
+    public bool disableDrones;
 
     /// <summary>
     /// Sets the damage value of the spawned buller
@@ -78,6 +79,11 @@ public class BulletScript : MonoBehaviour
                     damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
                 }
                 
+                if (craft is Drone drone && disableDrones)
+                {
+                    drone.DisableAITemporarily(Time.time + 3);
+                }
+
                 InstantiateHitPrefab();
                 if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer)
                 {
@@ -94,7 +100,7 @@ public class BulletScript : MonoBehaviour
         Instantiate(hitPrefab, transform.position, Quaternion.identity);
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
         {
-            MasterNetworkAdapter.instance.BulletHitClientRpc(transform.position);
+            MasterNetworkAdapter.instance.BulletEffectClientRpc("bullet_hit_prefab", transform.position, Vector2.zero);
         }
     }
 
@@ -106,7 +112,7 @@ public class BulletScript : MonoBehaviour
         } 
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide)
         {
-            MasterNetworkAdapter.instance.BulletMissClientRpc(transform.position, vector);
+            MasterNetworkAdapter.instance.BulletEffectClientRpc("bullet_miss_prefab",transform.position, vector);
         }
     }
 

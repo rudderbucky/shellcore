@@ -23,6 +23,27 @@ public class WCWorldIO : GUIWindowScripts
     public static bool active = false;
 
     private string originalReadPath = "";
+    public MapMakerScript mapMakerScript;
+    public GameObject window;
+    public GameObject newWorldButton;
+    public InputField field;
+    public Text readButton;
+    private bool rwFromEntityPlaceholder;
+
+    string placeholderPath;    
+    [SerializeField]
+    private Button switchBPDirectoryButton;
+    private bool readingFromPresetBPs;
+
+    private List<Button> buttons = new List<Button>();
+    public Text worldPathName;
+    public InputField authors;
+    public InputField description;
+    public InputField defaultBlueprint;
+    public InputField newWorldInputField;
+    [SerializeField]
+    private InputField fileNameInputField;
+    UnityAction clearAction;
 
     enum IOMode
     {
@@ -280,7 +301,6 @@ public class WCWorldIO : GUIWindowScripts
         }
     }
 
-    public MapMakerScript mapMakerScript;
 
     private string GetLoadingString()
     {
@@ -320,13 +340,6 @@ public class WCWorldIO : GUIWindowScripts
         loadingText.gameObject.SetActive(false);
     }
 
-    public GameObject window;
-    public GameObject newWorldButton;
-    public InputField field;
-    public Text readButton;
-    private bool rwFromEntityPlaceholder;
-
-    string placeholderPath;
 
     void Show(IOMode mode)
     {
@@ -334,7 +347,7 @@ public class WCWorldIO : GUIWindowScripts
     }
 
 
-    void Show(IOMode mode, bool rdbValidty = false)
+    void Show(IOMode mode, bool displayRdbValidity = false)
     {
         clearAction = () => {
             if (displayHandler && builder && builder.currentPartHandler)
@@ -345,9 +358,10 @@ public class WCWorldIO : GUIWindowScripts
         };
         rwFromEntityPlaceholder = SceneManager.GetActiveScene().name != "SampleScene";
         placeholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
-        if (SceneManager.GetActiveScene().name == "MainMenu")
+        var isInMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
+        if (isInMainMenu)
         {
-            var serverPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", "rudderbucky server", "Entities");
+            var serverPath = System.IO.Path.Combine(Application.streamingAssetsPath, "Sectors", VersionNumberScript.rdbMap, "Entities");
             if (Directory.Exists(serverPath))
             {
                 placeholderPath = serverPath;
@@ -381,7 +395,8 @@ public class WCWorldIO : GUIWindowScripts
         {
             Directory.CreateDirectory(PRESET_DIRECTORY);
         }
-        var wrongReadingFromBPS = readingFromPresetBPs == rwFromEntityPlaceholder;
+
+        var wrongReadingFromBPS = (readingFromPresetBPs == rwFromEntityPlaceholder);
         if (wrongReadingFromBPS) SwitchBPDirectory();
         switch (mode)
         {
@@ -450,26 +465,33 @@ public class WCWorldIO : GUIWindowScripts
                             Hide();
                             break;
                     }
-                }), rdbValidty);
+                }), displayRdbValidity);
             }
         }
     }
 
-    [SerializeField]
-    private Button switchBPDirectoryButton;
-    private bool readingFromPresetBPs;
+
+
     public void SwitchBPDirectory()
     {
         readingFromPresetBPs = !readingFromPresetBPs;
         switchBPDirectoryButton.GetComponentInChildren<Text>().text = readingFromPresetBPs ? "Preset BPs" : "World BPs";
-        for (int i = 0; i < content.childCount; i++)
-        {
-            var child = content.GetChild(i);
-        }
     }
-    UnityAction clearAction;
-    void AddButton(string name, UnityAction action, bool rdbValidty = false)
+    void AddButton(string name, UnityAction action, bool displayRdbValidity = false)
     {
+        var rdbValid = false;
+        if (displayRdbValidity)
+        {
+            var output = "";
+            rdbValid = MasterNetworkAdapter.ValidateBluperintOnServer(SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name)), out output);
+        }
+        var isPreset = name.Contains("PresetBlueprints");
+        var isInMainMenu = (SceneManager.GetActiveScene().name == "MainMenu");
+
+        if (!rdbValid && isInMainMenu && !isPreset && displayRdbValidity) return;
+        if (rdbValid && isInMainMenu && isPreset && !readingFromPresetBPs) switchBPDirectoryButton.onClick.Invoke();
+
+
         var button = Instantiate(buttonPrefab, content).GetComponent<Button>();
         button.onClick.AddListener(
             () =>
@@ -483,7 +505,7 @@ public class WCWorldIO : GUIWindowScripts
                 action.Invoke();
             });
         button.onClick.AddListener(clearAction);
-        if (name.Contains("PresetBlueprints"))
+        if (isPreset)
         {
             var assignTrigger = new EventTrigger.TriggerEvent();
             var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name));
@@ -514,31 +536,29 @@ public class WCWorldIO : GUIWindowScripts
             });
         }
         
-        button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name);
+        button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name);
         if (PlayerCore.Instance)
         {
             var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name));
             if (print && print.parts != null && !builder.ContainsParts(print.parts))
             {
-                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (Inadequate parts)";
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name) + " (Inadequate parts)";
                 button.GetComponentInChildren<Text>().color = Color.red;
             }
             if (!ShipBuilder.ValidateBlueprint(print, false, PlayerCore.Instance.blueprint.coreShellSpriteID, true, PlayerCore.Instance.abilityCaps))
             {
-                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (Invalid)";
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name) + " (Invalid)";
                 button.GetComponentInChildren<Text>().color = Color.red;
             }
         }
         buttons.Add(button);
-        if (rdbValidty)
+        if (displayRdbValidity)
         {
-            var output = "";
-            var valid = MasterNetworkAdapter.ValidateBluperintOnServer(SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name)), out output);
-            if (!valid) 
+            if (!rdbValid) 
             {
 
                 button.GetComponentInChildren<Text>().color = Color.red;
-                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileName(name) + " (rdb server invalid)";
+                button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name) + " (rdb server invalid)";
             }
         }
 
@@ -551,16 +571,6 @@ public class WCWorldIO : GUIWindowScripts
             });
         }
     }
-
-    private List<Button> buttons = new List<Button>();
-
-    public Text worldPathName;
-    public InputField authors;
-    public InputField description;
-    public InputField defaultBlueprint;
-    public InputField newWorldInputField;
-    [SerializeField]
-    private InputField fileNameInputField;
 
     public void OpenNewWorldPrompt()
     {
