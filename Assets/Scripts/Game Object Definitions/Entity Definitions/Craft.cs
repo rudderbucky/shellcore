@@ -275,4 +275,18 @@ public abstract class Craft : Entity
     {
         return (entityBody && entityBody.velocity != Vector2.zero); // if there is any velocity the craft is moving
     }
+
+    private bool syncPosition = false;
+
+    public bool ServerShouldUpdatePosition()
+    {
+        if (IsMoving()) syncPosition = true;
+        else if (syncPosition)
+        {
+            syncPosition = false;
+            if (networkAdapter) dirty = true;
+            return true;
+        }
+        return syncPosition;
+    }
 }

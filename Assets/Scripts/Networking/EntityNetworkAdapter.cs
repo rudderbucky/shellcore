@@ -430,7 +430,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private void UpdateCoreState(Entity core, ServerResponse response)
     {
-        
         core.transform.position = Vector3.Lerp(core.transform.position, response.position, 0.5F);
         core.GetComponent<Rigidbody2D>().velocity = Vector3.Lerp(core.GetComponent<Rigidbody2D>().velocity, response.velocity, 0.5F);
         var q = Quaternion.identity;
@@ -707,7 +706,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
             break;
         }
         updateTimer -= Time.deltaTime;
-        var craftIsMovingOrDead =  !(huskEntity is Craft craft) || (craft.IsMoving() || craft.GetIsDead());
+        var craftIsMovingOrDead =  !(huskEntity is Craft craft) || (craft.ServerShouldUpdatePosition() || craft.GetIsDead());
         var craftShouldBeUpdated = isPlayer.Value || craftIsMovingOrDead;
         var update = dirty || (updateTimer <= 0 && (closePlayers.Count > 0 || entityAlwaysUpdated) && craftShouldBeUpdated);
 
