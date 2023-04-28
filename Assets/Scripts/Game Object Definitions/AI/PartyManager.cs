@@ -129,6 +129,12 @@ public class PartyManager : MonoBehaviour
 
     public void ClearParty()
     {
+        foreach (var member in partyMembers)
+        {
+            if (!member) continue;
+            UnassignBackend(null, member);
+        }
+
         partyMembers.Clear();
         foreach (var val in partyIndicators.Values)
         {
