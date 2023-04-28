@@ -158,9 +158,9 @@ public class SettingsScript : MonoBehaviour
 #else
        //Screen.SetResolution(Display.main.renderingWidth, Display.main.renderingHeight, FullScreenMode.FullScreenWindow, 0);
 	    Screen.fullScreenMode = val ? FullScreenMode.Windowed : FullScreenMode.FullScreenWindow;
-        if (Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
+        if (!val)
         {
-            //Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, Screen.fullScreenMode, 0);
+            Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow, 0);
         }
 #endif
     }
