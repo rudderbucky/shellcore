@@ -426,13 +426,18 @@ public class MasterNetworkAdapter : NetworkBehaviour
                 return false;
             }
 
+            if (part.abilityID == 10 && (part.secondaryData == "torpedo_drone" || part.secondaryData == "heavy_drone") && ResourceManager.GetAsset<PartBlueprint>(part.partID).size + 1 < 2)
+            {
+                reason = "Torpedo and Heavy drones cannot go on small parts.";
+                return false;
+            }
+
             partValue += EntityBlueprint.GetPartValue(part);
             if (partValue > SHIP_CREDIT_LIMIT)
             {
                 reason = "Credit limit exceeded.";
                 return false;
             }
-            
         }
 
         reason = "Blueprint is not according to Ship Builder rules.";
