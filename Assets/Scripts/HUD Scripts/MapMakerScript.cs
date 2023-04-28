@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
+public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Image sectorPrefab;
     public SectorManager manager;
@@ -446,6 +446,13 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             anchor = canvas.anchoredPosition;
         }
 
+        if (!Input.GetMouseButton(0) && !followPlayerMode && updatePos)
+        {
+            updatePos = false;
+            anchor = canvas.anchoredPosition;
+        }
+
+
         if (player)
         {
             foreach (var objective in arrows.Keys)
@@ -625,15 +632,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                     player.GetComponent<PlayerCore>().Warp(sect.Item2);
                 }
             }
-        }
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (!followPlayerMode)
-        {
-            updatePos = false;
-            anchor = canvas.anchoredPosition;
         }
     }
 
