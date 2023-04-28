@@ -185,8 +185,8 @@ public class ItemPropertyDisplay : MonoBehaviour
         {
             //Debug.LogWarning(factionDropdown.value);
             PlayerPrefs.SetInt("WCItemPropertyDisplay_defaultFaction", factionDropdown.value);
-            WorldCreatorCursor.instance.UpdateCurrentAppearanceToDefault();
             PlayerPrefs.SetString("WCItemPropertyDisplay_defaultJSON", jsonField.text);
+            WorldCreatorCursor.instance.UpdateCurrentAppearanceToDefault();
         }
 
         rectTransform.gameObject.SetActive(false);

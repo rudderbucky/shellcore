@@ -89,10 +89,8 @@ public class SectorPropertyDisplay : MonoBehaviour
         clearBGSpawnsButton.SetActive(false);
         parseBGSpawnsButton.SetActive(false);
         deleteButton.SetActive(false);
-        for (int i = 0; i < shardCounts.Count; i++)
-        {
-            shardCounts[i].gameObject.SetActive(false);
-        }
+        if (shardCounts != null && shardCounts.Count > 0)
+            shardCounts[0].transform.parent.gameObject.SetActive(false);
 
         opening = false;
     }
@@ -140,10 +138,8 @@ public class SectorPropertyDisplay : MonoBehaviour
         clearBGSpawnsButton.SetActive(true);
         parseBGSpawnsButton.SetActive(true);
         deleteButton.SetActive(true);
-        for (int i = 0; i < shardCounts.Count; i++)
-        {
-            shardCounts[i].gameObject.SetActive(true);
-        }
+        if (shardCounts != null && shardCounts.Count > 0)
+            shardCounts[0].transform.parent.gameObject.SetActive(true);
 
 
         waveSet.text = sector.waveSetPath;
@@ -309,6 +305,8 @@ public class SectorPropertyDisplay : MonoBehaviour
             {
                 PlayerPrefs.SetFloat($"WCSectorPropertyDisplay_defaultB{type.value}", float.Parse(colorB.text));
             }
+
+            WorldCreatorCursor.instance.UpdateCurrentSectorToDefault();
         }
 
         editingDefaults = false;

@@ -288,6 +288,23 @@ public class WorldCreatorCursor : MonoBehaviour
         }
     }
 
+    public void UpdateCurrentSectorToDefault()
+    {
+        if (currentSector == null || !currentSector.sector)
+        {
+            return;
+        }
+
+        currentSector.sector.hasMusic = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultMusicOn", 1) == 1 ? true : false;
+        currentSector.sector.backgroundColor = GetDefaultColor(Sector.SectorType.Neutral);
+        currentSector.sector.rectangleEffectSkin = (RectangleEffectSkin)
+            PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
+        currentSector.sector.backgroundTileSkin = (BackgroundTileSkin)
+            PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
+
+    }
+
+
     public Transform spawnPoint;
     bool changingSpawnPoint = false;
     public GUIWindowScripts taskInterface;
@@ -703,12 +720,7 @@ public class WorldCreatorCursor : MonoBehaviour
                     currentSector.sector = ScriptableObject.CreateInstance<Sector>();
                     currentSector.sector.dimension = currentDim;
                     currentSector.sector.backgroundSpawns = new Sector.BackgroundSpawn[0];
-                    currentSector.sector.hasMusic = true; // sectors have music by default in WC
-                    currentSector.sector.backgroundColor = GetDefaultColor(Sector.SectorType.Neutral);
-                    currentSector.sector.rectangleEffectSkin = (RectangleEffectSkin)
-                        PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
-                    currentSector.sector.backgroundTileSkin = (BackgroundTileSkin)
-                        PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
+                    UpdateCurrentSectorToDefault();
                     var renderer = currentSector.renderer = Instantiate(borderPrefab).GetComponent<LineRenderer>();
                     renderer.GetComponentInChildren<WorldCreatorSectorRepScript>().sector = currentSector.sector;
                     lastSectorPos = null;
