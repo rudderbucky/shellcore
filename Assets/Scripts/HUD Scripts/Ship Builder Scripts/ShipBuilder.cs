@@ -792,10 +792,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         List<EntityBlueprint.PartInfo> parts = new List<EntityBlueprint.PartInfo>();
 
         droneWorkshopPhaseHider.SetActive(mode == BuilderMode.Workshop);
-        if (mode == BuilderMode.Workshop)
-        {
-            sortingObject.SetActive(false);
-        }
+        sortingObject.SetActive(mode != BuilderMode.Workshop);
         if (!editorMode)
         {
             SetUpInventory(parts);
@@ -975,6 +972,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 button.gameObject.SetActive(false);
             }
             */
+            jsonButtonHolder.SetActive(true);
             editorModeButtons.SetActive(true);
         }
 

@@ -269,9 +269,13 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             }
         }
 
-        var mb = gameObject.AddComponent<MainBullet>();
-        mb.SetTier(Mathf.Min(3, 1 + CoreUpgraderScript.GetCoreTier(GetBlueprint().coreShellSpriteID)));
-        currentAbilities.Insert(0, mb);
+
+        if (GetBlueprint())
+        {
+            var mb = gameObject.AddComponent<MainBullet>();
+            mb.SetTier(Mathf.Min(3, 1 + CoreUpgraderScript.GetCoreTier(GetBlueprint().coreShellSpriteID)));
+            currentAbilities.Insert(0, mb);
+        }
         if (handler)
         {
             handler.Deinitialize();
