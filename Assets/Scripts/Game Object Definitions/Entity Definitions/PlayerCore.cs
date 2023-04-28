@@ -13,7 +13,6 @@ public class PlayerCore : ShellCore
     public bool loaded;
     private bool isInteracting;
     protected int credits;
-    public int shards;
     public int[] abilityCaps;
     public int reputation;
     public static PlayerCore Instance;

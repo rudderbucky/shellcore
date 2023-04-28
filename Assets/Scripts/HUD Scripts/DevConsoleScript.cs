@@ -181,7 +181,7 @@ public class DevConsoleScript : MonoBehaviour
             else if (command.StartsWith("Add shards ", StringComparison.CurrentCultureIgnoreCase))
             {
                 int number = int.Parse(command.Substring(11).Trim());
-                PlayerCore.Instance.shards += number;
+                PlayerCore.Instance.cursave.shards += number;
                 textBox.text += "\n<color=lime>I forgot about the shards.</color>";
             }
             else if (command.StartsWith("Add money ", StringComparison.CurrentCultureIgnoreCase))

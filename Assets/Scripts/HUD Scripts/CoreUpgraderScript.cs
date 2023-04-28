@@ -32,7 +32,7 @@ public class CoreUpgraderScript : GUIWindowScripts
         gameObject.SetActive(true);
         drawScreen();
         // TODO: Fix the shard count script
-        ShardCountScript.StickySlideIn(player.shards);
+        ShardCountScript.StickySlideIn(player.cursave.shards);
     }
 
     public override void CloseUI()
@@ -105,10 +105,10 @@ public class CoreUpgraderScript : GUIWindowScripts
     {
         if (player.abilityCaps[type] < maxAbilityCap[type])
         {
-            player.shards -= GetUpgradeCost(type);
+            player.cursave.shards -= GetUpgradeCost(type);
             player.AddCredits(GetUpgradeCostCredits(type) * -1);
             player.abilityCaps[type]++;
-            ShardCountScript.UpdateNumber(player.shards);
+            ShardCountScript.UpdateNumber(player.cursave.shards);
         }
     }
 
@@ -131,7 +131,7 @@ public class CoreUpgraderScript : GUIWindowScripts
 
     public static int GetShards()
     {
-        return instance.player.shards;
+        return instance.player.cursave.shards;
     }
 
     public static string[] GetNextUpgrades(string coreName)
@@ -207,11 +207,11 @@ public class CoreUpgraderScript : GUIWindowScripts
             case "core3weapons_shell":
                 return "Size-L Weapons Core\nHigh aerodynamic capacity allows this core\nto handle large-size parts as well as equip\n3 extra weapons.";
             case "core4commando_shell":
-                return "Size-XL Commando Core\nConstructing a spawning hex around your core\nallows for an additional 2 spawns.";
+                return "Size-XL Commando Core\nConstructing a spawning octagon around your core\nallows for an additional 2 spawns.";
             case "core4elite_shell":
                 return "Size-XL Elite Core\nAdding afterburners and structural padding\nto your core allows for an additional 3 passives.";
             case "core4captain_shell":
-                return "Size-XL Captain Core\nConstructing a spawning hex around\nyour core allows for an additional 2 spawns.";
+                return "Size-XL Captain Core\nConstructing a spawning octagon around\nyour core allows for an additional 2 spawns.";
             case "core4admiral_shell":
                 return "Size-XL Admiral Core\nAdding afterburners and structural padding\nto your core allows for an additional 3 passives.";
             default:

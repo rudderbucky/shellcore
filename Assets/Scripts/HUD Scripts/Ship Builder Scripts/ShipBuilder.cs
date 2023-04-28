@@ -868,7 +868,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
         var partsToAdd = new List<ShellPart>();
         if (!editorMode)
         {
-            var initialShards = player.shards;
+            var initialShards = player.cursave.shards;
 
             foreach (Entity ent in player.GetUnitsCommanding())
             {
@@ -906,9 +906,9 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 Destroy(playerTarget.gameObject);
             }
 
-            if (initialShards != player.shards)
+            if (initialShards != player.cursave.shards)
             {
-                ShardCountScript.DisplayCount(player.shards);
+                ShardCountScript.DisplayCount(player.cursave.shards);
             }
 
             foreach (ShellPart part in partsToAdd)
@@ -1080,7 +1080,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
     public void AddShard(int tier)
     {
         var tiers = new int[] { 1, 5, 20 };
-        player.shards += tiers[tier];
+        player.cursave.shards += tiers[tier];
     }
 
     private void AddPart(EntityBlueprint.PartInfo part)

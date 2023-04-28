@@ -119,8 +119,8 @@ public class Yard : AirConstruct, IShipBuilder
                     PassiveDialogueSystem.Instance.PushPassiveDialogue(ID, "<color=lime>Your shard has been added into your stash.</color>", 4);
                     var shard = currentTarget.GetComponent<Shard>();
                     var tiers = new int[] { 1, 5, 20 };
-                    PlayerCore.Instance.shards += tiers[shard.tier];
-                    ShardCountScript.DisplayCount(PlayerCore.Instance.shards);
+                    PlayerCore.Instance.cursave.shards += tiers[shard.tier];
+                    ShardCountScript.DisplayCount(PlayerCore.Instance.cursave.shards);
                     Destroy(shard.gameObject);
                 }
             }

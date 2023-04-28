@@ -122,7 +122,7 @@ namespace NodeEditorFramework.Standard
 
             SectorManager.instance.player.AddCredits(wrapper.creditReward);
             SectorManager.instance.player.reputation += wrapper.reputationReward;
-            SectorManager.instance.player.shards += wrapper.shardReward;
+            SectorManager.instance.player.cursave.shards += wrapper.shardReward;
             if (wrapper.partReward)
             {
                 SectorManager.instance.player.cursave.partInventory.Add(

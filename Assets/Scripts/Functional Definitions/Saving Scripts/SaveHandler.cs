@@ -83,7 +83,6 @@ public class SaveHandler : MonoBehaviour
             }
 
             player.abilityCaps = save.abilityCaps;
-            player.shards = save.shards;
             player.SetCredits(save.credits);
             player.reputation = save.reputation;
             if (save.presetBlueprints.Length != 5)
@@ -148,7 +147,6 @@ public class SaveHandler : MonoBehaviour
         playerSave.currentPlayerBlueprint = JsonUtility.ToJson(player.blueprint);
         playerSave.credits = player.GetCredits();
         playerSave.abilityCaps = player.abilityCaps;
-        playerSave.shards = player.shards;
         if (playerSave.resourcePath == "" || playerSave.resourcePath.Contains("main"))
         {
             playerSave.resourcePath = SectorManager.instance.resourcePath;

@@ -182,8 +182,8 @@ public class ShardRock : MonoBehaviour, IDamageable
         if (LocationBasedShard && PlayerCore.Instance)
         {
             var tiers = new int[] { 1, 5, 20 };
-            PlayerCore.Instance.shards += tiers[tier];
-            ShardCountScript.DisplayCount(PlayerCore.Instance.shards);
+            PlayerCore.Instance.cursave.shards += tiers[tier];
+            ShardCountScript.DisplayCount(PlayerCore.Instance.cursave.shards);
         }
     }
 

@@ -242,7 +242,7 @@ namespace NodeEditorFramework.Standard
                             ? 0
                             : 1;
                     case 6:
-                        variableToCompare = PlayerCore.Instance.shards;
+                        variableToCompare = PlayerCore.Instance.cursave.shards;
                         break;
                     case 7:
                         variableToCompare = PlayerCore.Instance.GetCredits();
