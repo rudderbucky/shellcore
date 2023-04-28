@@ -218,13 +218,31 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         symmetryLastPart = symmetryCurrentPart;
         currentPart = null;
         symmetryCurrentPart = null;
-        if (lastPart.info.isInChain && lastPart.info.validPos)
+        var validPlacement = (lastPart.info.isInChain && lastPart.info.validPos) &&
+        (!symmetryLastPart || (symmetryLastPart.info.isInChain && symmetryLastPart.info.validPos));
+        var shouldSnapback = Input.GetKey(KeyCode.LeftShift) 
+        || ShipBuilder.CheckPartIntersectsWithShell(lastPart, builder.GetMode())
+        || (symmetryLastPart && ShipBuilder.CheckPartIntersectsWithShell(symmetryLastPart, builder.GetMode()));
+
+
+        if (validPlacement)
         {
             lastPart.SetLastValidPos(lastPart.info.location);
         }
-        else if (Input.GetKey(KeyCode.LeftShift) || ShipBuilder.CheckPartIntersectsWithShell(lastPart, builder.GetMode()))
+        else if (shouldSnapback)
         {
             lastPart.Snapback();
+        }
+
+
+        if (!symmetryLastPart) return;
+        if (validPlacement)
+        {
+            symmetryLastPart.SetLastValidPos(symmetryLastPart.info.location);
+        }
+        else if (shouldSnapback)
+        {
+            symmetryLastPart.Snapback();
         }
     }
 
@@ -442,6 +460,11 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         GetComponent<RectTransform>().anchoredPosition = new Vector2(Mathf.Round(oldPos.x / 10) * 10, Mathf.Round(oldPos.y / 10) * 10);
         // round to nearest 0.1
         // TODO: Make this stuff less messy. Regardless, consistency achieved!
+        if (rotateMode && !Input.GetMouseButton(0))
+        {
+            rotateMode = false;
+        }
+
         if (rotateMode)
         {
             RotateLastPart();
@@ -473,7 +496,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
                 symmetryCurrentPart.info.location = GetSymmetrizedVector(currentPart.info.location, symmetryMode);
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (!Input.GetMouseButton(0))
             {
                 PlaceCurrentPart();
             }
