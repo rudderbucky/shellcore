@@ -77,6 +77,16 @@ public class SaveMenuHandler : GUIWindowScripts
                 continue;
             }
 
+            if (dir.Contains(VersionNumberScript.rdbMap))
+            {
+                continue;
+            }
+
+            if (dir.Contains("TestWorld"))
+            {
+                continue;
+            }
+
             string xdir = dir;
             Button worldButton = Instantiate(worldIconPrefab, worldContents).GetComponent<Button>();
             worldButtons.Add(worldButton);
