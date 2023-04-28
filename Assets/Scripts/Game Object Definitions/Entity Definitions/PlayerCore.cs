@@ -196,13 +196,14 @@ public class PlayerCore : ShellCore
             if (droneInteraction)
             {
                 minimapPoint = null;
-                return Vector2.zero;
+            }
+            else
+            {
+                minimapPoint = new Vector3(minimapPoint.Value.x, minimapPoint.Value.y, 0);
+                var delta = minimapPoint.Value - transform.position;
+                return delta.normalized;
             }
 
-
-            minimapPoint = new Vector3(minimapPoint.Value.x, minimapPoint.Value.y, 0);
-            var delta = minimapPoint.Value - transform.position;
-            return delta.normalized;
         }
 
         //Sum up all inputs
