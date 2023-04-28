@@ -391,7 +391,7 @@ public class AbilityButtonScript : MonoBehaviour, IPointerClickHandler, IPointer
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (abilities[0])
+        if (abilities != null && abilities.Count > 0 && abilities[0])
         {
             ReflectName(abilities[0]);
             ReflectDescription(abilities[0]);
