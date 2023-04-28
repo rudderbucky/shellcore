@@ -244,7 +244,7 @@ public abstract class Ability : MonoBehaviour
             charging = false;
             State = AbilityState.Disabled;
         }
-        else if (Time.time >= startTime + cooldownDuration && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer))
+        else if (Time.time >= startTime + cooldownDuration && (!MasterNetworkAdapter.lettingServerDecide || abilityIsReadyOnServer || Time.time >= startTime + cooldownDuration + 0.5F))
         {
             charging = false;
             if (!MasterNetworkAdapter.lettingServerDecide && State != AbilityState.Ready && Core && Core.networkAdapter && Core.networkAdapter.isPlayer.Value)
