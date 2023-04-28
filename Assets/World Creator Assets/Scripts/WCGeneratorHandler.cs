@@ -43,6 +43,7 @@ public class WCGeneratorHandler : MonoBehaviour
 
     public static void DeleteTestWorld()
     {
+        FactionManager.RemoveExtraFactions();
         if (System.IO.Directory.Exists(testPath))
         {
             foreach (var dir in System.IO.Directory.GetDirectories(testPath))
@@ -771,7 +772,6 @@ public class WCGeneratorHandler : MonoBehaviour
             try
             {
                 // resource pack loading
-                // TODO: actually write these resources into the world instead of just not meddling with them
                 if (!ResourceManager.Instance.LoadResources(path) && SectorManager.testResourcePath != null)
                 {
                     ResourceManager.Instance.LoadResources(SectorManager.testResourcePath);

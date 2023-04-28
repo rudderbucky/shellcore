@@ -10,6 +10,14 @@ public class FactionManager : MonoBehaviour
 
     int factionCount = 0;
 
+    public static void RemoveExtraFactions()
+    {
+        if (!instance) return;
+        ResourceManager.Instance.RemoveExtraFactions();
+        instance.factions = defaultFactions.ToArray();
+        instance.factionCount = instance.factions.Length;
+    }
+
     public static void UpdateFactions()
     {
         if (instance)

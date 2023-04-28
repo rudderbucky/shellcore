@@ -514,6 +514,8 @@ public class WorldCreatorCursor : MonoBehaviour
 
     public void Clear()
     {
+        if (basePropertyHandler)
+            basePropertyHandler.CloseUI();
         WCGeneratorHandler.DeleteTestWorld();
         while (placedItems.Count > 0)
         {

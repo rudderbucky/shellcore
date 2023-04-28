@@ -407,6 +407,24 @@ public class ResourceManager : MonoBehaviour
         return null;
     }
 
+    public void RemoveExtraFactions()
+    {
+        if (!Instance || Instance.resources == null) return;
+        if (FactionManager.defaultFactions == null) return;
+        List<string> results = new List<string>();
+        foreach (var resource in Instance.resources)
+        {
+            if (resource.Value is Faction f && !FactionManager.defaultFactions.Contains(f)) 
+            {
+                results.Add(resource.Key);
+            }
+        }
+
+        foreach (var result in results)
+            resources.Remove(result);
+    }
+
+
     public bool resourceExists(string ID)
     {
         if (string.IsNullOrEmpty(ID))
