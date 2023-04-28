@@ -954,26 +954,22 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
                 editorModeButtons.SetActive(false);
             }
 
-            jsonButtonHolder.SetActive(mode == BuilderMode.Yard);
-            /*
-            foreach (PresetButton button in presetButtons)
+            if (jsonButtonHolder)
             {
-                button.gameObject.SetActive(mode == BuilderMode.Yard);
-                button.CheckValid();
+                jsonButtonHolder.SetActive(mode == BuilderMode.Yard);
             }
-            */
         }
         else
         {
-            /*
-            presetButtons = GetComponentsInChildren<PresetButton>();
-            foreach (PresetButton button in presetButtons)
+            if (jsonButtonHolder)
             {
-                button.gameObject.SetActive(false);
+                jsonButtonHolder.SetActive(true);
             }
-            */
-            jsonButtonHolder.SetActive(true);
-            editorModeButtons.SetActive(true);
+
+            if (editorModeButtons)
+            {
+                editorModeButtons.SetActive(true);
+            }
         }
 
         // set title text
