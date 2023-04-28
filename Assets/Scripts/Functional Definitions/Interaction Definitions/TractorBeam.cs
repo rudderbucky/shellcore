@@ -331,6 +331,11 @@ public class TractorBeam : MonoBehaviour
         {
             Destroy(tractorBeamPrefab);
         }
+
+        if (target && target.GetComponentInChildren<Draggable>())
+        {
+            target.GetComponentInChildren<Draggable>().dragging = false;
+        }
     }
 
     bool forcedTargetHadDraggable = false;
