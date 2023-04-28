@@ -3,13 +3,13 @@ using UnityEngine.UI;
 
 public class ShipBuilderPartDisplay : PartDisplayBase
 {
-    public IBuilderInterface builder;
+    public ShipBuilder builder;
     public GameObject emptyInfoMarker;
     public ShipBuilderCursorScript cursorScript;
     public RectTransform builderBG;
     bool initialized = false;
 
-    public void Initialize(IBuilderInterface inter)
+    public void Initialize(ShipBuilder inter)
     {
         builder = inter;
         initialized = true;

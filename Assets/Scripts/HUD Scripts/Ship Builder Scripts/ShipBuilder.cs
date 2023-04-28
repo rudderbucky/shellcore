@@ -10,7 +10,7 @@ using UnityEditor;
 
 #endif
 
-public class ShipBuilder : GUIWindowScripts, IBuilderInterface
+public class ShipBuilder : GUIWindowScripts
 {
     public Vector3 yardPosition;
     public Image shell;
@@ -447,7 +447,7 @@ public class ShipBuilder : GUIWindowScripts, IBuilderInterface
 
     public static bool ValidateBlueprint(EntityBlueprint print, bool editorMode, string coreShellSpriteID, bool checkPartSizes = false, int[] abilityLimits = null)
     {
-        if (string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD)) return true;
+        if (string.IsNullOrEmpty(MainMenu.RDB_SERVER_PASSWORD) && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off) return true;
         var outcome = true;
         if (!print) return false;
         if (print.parts == null) return false;

@@ -13,7 +13,7 @@ public class ShipBuilderJSONButton : MonoBehaviour, IPointerClickHandler
         if (window)
         {
             window.SetActive(true);
-            field.text = (builder as IBuilderInterface).GetCurrentJSON();
+            field.text = (builder as ShipBuilder).GetCurrentJSON();
         }
     }
 }

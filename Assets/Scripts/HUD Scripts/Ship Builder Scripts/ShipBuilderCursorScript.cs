@@ -3,18 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
-public interface IBuilderInterface
-{
-    BuilderMode GetMode();
-    void DispatchPart(ShipBuilderPart part, ShipBuilder.TransferMode mode, bool updateChain = true);
-    void UpdateChain();
-    EntityBlueprint.PartInfo? GetButtonPartCursorIsOn();
-    void SetSearcherString(string text);
-    string GetCurrentJSON();
-}
-
 public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
 {
     public List<ShipBuilderPart> parts = new List<ShipBuilderPart>();
@@ -25,7 +13,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
     ShipBuilderPart currentPart;
 
     ShipBuilderPart lastPart;
-    public IBuilderInterface builder;
+    public ShipBuilder builder;
     public InputField searchField;
     public GameObject jsonField;
     bool flipped;
@@ -67,7 +55,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         cursorMode = mode;
     }
 
-    public void SetBuilder(IBuilderInterface builder)
+    public void SetBuilder(ShipBuilder builder)
     {
         this.builder = builder;
     }
