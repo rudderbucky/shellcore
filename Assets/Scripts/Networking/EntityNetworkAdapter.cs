@@ -234,7 +234,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void SetAbilityReadyClientRpc(Vector2 location, Vector3 victimPos)
+    public void SetAbilityReadyClientRpc(Vector2 location)
     {
         if (NetworkManager.Singleton.IsServer) return;
         var core = huskEntity ? huskEntity : PlayerCore.Instance;

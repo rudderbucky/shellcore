@@ -249,7 +249,7 @@ public abstract class Ability : MonoBehaviour
             charging = false;
             if (!MasterNetworkAdapter.lettingServerDecide && State != AbilityState.Ready && Core && Core.networkAdapter && Core.networkAdapter.isPlayer.Value)
             {
-                Core.networkAdapter.SetAbilityReadyClientRpc(part ? part.info.location : Vector2.zero, part ? part.transform.position : Vector3.zero);
+                Core.networkAdapter.SetAbilityReadyClientRpc(part ? part.info.location : Vector2.zero);
             }
             State = AbilityState.Ready;
         }
