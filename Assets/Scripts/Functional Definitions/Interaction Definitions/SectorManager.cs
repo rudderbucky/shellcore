@@ -801,6 +801,7 @@ public class SectorManager : MonoBehaviour
         else if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
         {
             MasterNetworkAdapter.instance.CreateNetworkObjectWrapper(MasterNetworkAdapter.playerName, blueprint, data.ID, false, data.faction, data.position);
+            Debug.Log($"Spawning entity: {data.name} with ID: {data.ID}");
         }
         return null;
     }

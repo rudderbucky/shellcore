@@ -118,7 +118,6 @@ public class AirCarrier : AirConstruct, ICarrier
         {
             int temp = (int)(Mathf.Floor((currentHealth[1] / maxHealth[1]) * 5) + 1) * 20;
             coreAlertThreshold -= (maxHealth[1] * 0.2f);
-            Debug.Log("Calling RPC at: " + coreAlertThreshold + " core");
             if (BZManager) BZManager.AttemptAlertPlayers(faction, $"Carrier is at {temp}% core", "clip_alert");
         }
     }
@@ -130,7 +129,6 @@ public class AirCarrier : AirConstruct, ICarrier
         {
             int temp = (int)(Mathf.Floor((currentHealth[0] / maxHealth[0]) * 5) + 1) * 20;
             shellAlertThreshold -= (maxHealth[0] * 0.2f);
-            Debug.Log("Calling RPC at: " + coreAlertThreshold + " shell");
             if (BZManager) BZManager.AttemptAlertPlayers(faction, $"Carrier is at {temp}% shell", "clip_alert");
         }
 
