@@ -289,7 +289,7 @@ public class SectorManager : MonoBehaviour
             dangerZoneTimer = 0;
         }
 
-        if (playerActive && !DialogueSystem.isInCutscene)
+        if (playerActive && !DialogueSystem.isInCutscene && !DialogueSystem.Instance.IsSpeaking())
         {
             bgSpawnTimer += Time.deltaTime;
 

@@ -221,6 +221,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     }
 
     private Entity speaker;
+    public bool IsSpeaking()
+    {
+        return speaker && !speaker.GetIsDead();
+    }
+
     public static void StartDialogue(Dialogue dialogue, IInteractable speaker = null)
     {
         Instance.startDialogue(dialogue, speaker);
