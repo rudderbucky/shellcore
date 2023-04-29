@@ -129,10 +129,11 @@ public class PartyManager : MonoBehaviour
 
     public void ClearParty()
     {
-        foreach (var member in partyMembers)
+        int i = 0;
+        while (partyMembers != null && partyMembers.Count > 0 && i < 10)
         {
-            if (!member) continue;
-            UnassignBackend(null, member);
+            UnassignBackend(null, partyMembers[0]);
+            i++;
         }
 
         partyMembers.Clear();
@@ -212,8 +213,8 @@ public class PartyManager : MonoBehaviour
             member.GetAI().follow(null);
         }
 
-        partyMembers.Remove(member);
-        if (charID != null) partyResponses.Remove(charID);
+        if (partyMembers != null) partyMembers.Remove(member);
+        if (charID != null && partyResponses != null) partyResponses.Remove(charID);
 
         if (member && partyIndicators.ContainsKey(member))
         {
