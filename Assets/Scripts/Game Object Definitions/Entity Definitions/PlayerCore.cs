@@ -180,6 +180,7 @@ public class PlayerCore : ShellCore
 
         if (Input.GetMouseButton(0) && MouseMovementVisualScript.overMinimap && !SelectionBoxScript.GetClicking())
         {
+            if (Input.GetKey(KeyCode.LeftShift)) return Vector2.zero;
             bool droneInteraction = false;
             var mousePosOnMinimap = MouseMovementVisualScript.GetMousePosOnMinimap();
             minimapPoint = CameraScript.instance.minimapCamera.ScreenToWorldPoint(mousePosOnMinimap);

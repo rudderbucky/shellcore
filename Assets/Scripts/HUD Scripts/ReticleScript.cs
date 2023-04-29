@@ -96,18 +96,23 @@ public class ReticleScript : MonoBehaviour
         var mousePos = Input.mousePosition;
         mousePos.z = CameraScript.zLevel;
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-        foreach (var ent in targSys.GetSecondaryTargets())
+        var primaryDroneInteraction = false;
+        if (!Input.GetKey(KeyCode.LeftShift))
         {
-            if (ent != null && !ent.Equals(null) && ent)
+            foreach (var ent in targSys.GetSecondaryTargets())
             {
-                droneInteraction = DroneCheck(ent, hits, mousePos) || droneInteraction;
+                if (ent != null && !ent.Equals(null) && ent)
+                {
+                    droneInteraction = DroneCheck(ent, hits, mousePos) || droneInteraction;
+                }
             }
+
+            // This orders primary target drones to move/follow accordingly.
+            primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits, mousePos);
+            droneInteraction = droneInteraction || primaryDroneInteraction;
+
+            
         }
-
-        // This orders primary target drones to move/follow accordingly.
-        var primaryDroneInteraction = DroneCheck(targSys.GetTarget(), hits, mousePos);
-        droneInteraction = droneInteraction || primaryDroneInteraction;
-
         if (primaryDroneInteraction || hits.Length == 0) // check if there are actually any hits
         {
             targSys.SetTarget(null); // Nothing valid found, set target to null
@@ -261,6 +266,25 @@ public class ReticleScript : MonoBehaviour
                     targSys.SetTarget(null); // if so remove the target lock
                 }
             }
+
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButton(0))
+            {
+                SetTarget(null);
+                ClearSecondaryTargets();
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Tab) && (craft is PlayerCore player))
+            {
+                SetTarget(null);
+                ClearSecondaryTargets();
+                Debug.LogWarning("test");
+                foreach (var ownable in player.GetUnitsCommanding())
+                {
+                    if (ownable == null || ownable.Equals(null) || !(ownable is Entity ent) || ent.GetIsDead()) continue;
+                    AddSecondaryTarget(ent.transform);
+                }
+            }
+
 
             // Toggle tractor beam
             if (InputManager.GetKeyDown(KeyName.ToggleTractorBeam))

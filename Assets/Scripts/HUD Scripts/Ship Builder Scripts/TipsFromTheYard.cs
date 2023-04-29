@@ -38,6 +38,8 @@ public class TipsFromTheYard : MonoBehaviour
         tipsList.Add("Concentrate and ask again!");
         tipsList.Add("You might be able to find shard rocks while roaming around! Shards allow you to increase your ability limits!");
         tipsList.Add("Saving power is important! You can buy several siege turrets in one go to devastate stations.");
+        tipsList.Add("You can press 'Control' and 'Tab' at the same time to select all your owned units!");
+        tipsList.Add("You can left click and press 'Shift' at the same time to clear your secondary targets without ordering them!");
         colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
     }
 

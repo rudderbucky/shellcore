@@ -63,21 +63,14 @@ public class QuantityDisplayScript : MonoBehaviour
         secondary.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction
         (() =>
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            var targSys = PlayerCore.Instance.GetTargetingSystem();
+            if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
             {
-                reticle.RemoveSecondaryTarget(target);
+                reticle.AddSecondaryTarget(targSys.GetTarget());
             }
-            else
-            {
-                var targSys = PlayerCore.Instance.GetTargetingSystem();
-                if (targSys.GetTarget() && targSys.GetTarget().GetComponent<Entity>())
-                {
-                    reticle.AddSecondaryTarget(targSys.GetTarget());
-                }
 
-                reticle.SetTarget(target);
-                reticle.RemoveSecondaryTarget(target);
-            }
+            reticle.SetTarget(target);
+            reticle.RemoveSecondaryTarget(target);
         }));
 
         if (!secondaryInfosByEntity.ContainsKey(target))
