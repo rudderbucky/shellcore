@@ -215,7 +215,7 @@ public class BattleZoneManager : MonoBehaviour
 
     public void BattleZoneEndCheck(List<int> livingFactions, bool allAllied)
     {
-        if (livingFactions.Count >= 2 && !allAllied) return;
+        if ((livingFactions.Count >= 2 && !allAllied) || livingFactions.Count == 0) return;
         if (Time.time < END_CHECK_TIMER) return;
         if (!MasterNetworkAdapter.lettingServerDecide && MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)
             MasterNetworkAdapter.instance.DisplayVoteClientRpc(livingFactions[0]);

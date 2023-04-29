@@ -34,7 +34,7 @@ public class TipsFromTheYard : MonoBehaviour
         tipsList.Add("You can zoom in and out in this Ship Builder by scrolling up/down!");
         tipsList.Add("Some weapons do more damage to certain enemies! Read their tooltips to figure out which ones!");
         tipsList.Add("Some parts have ability tiers greater than their part size!");
-        tipsList.Add("A multiplayer mode exists! Click the Skirmish button in the main menu!");
+        tipsList.Add("A multiplayer mode exists! Click the button in the main menu!");
         tipsList.Add("Concentrate and ask again!");
         tipsList.Add("You might be able to find shard rocks while roaming around! Shards allow you to increase your ability limits!");
         tipsList.Add("Saving power is important! You can buy several siege turrets in one go to devastate stations.");

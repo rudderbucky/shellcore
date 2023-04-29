@@ -333,6 +333,17 @@ public class SectorManager : MonoBehaviour
                 if (obj.Value && obj.Value.GetComponent<EntityNetworkAdapter>())
                     obj.Value.GetComponent<EntityNetworkAdapter>().safeToRespawn.Value = true;
             }
+
+            if (EntityNetworkAdapter.playerFactions != null)
+            {
+                EntityNetworkAdapter.playerFactions.Clear();
+                // Annoying edge case for hosts: they do not change sides
+                if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Host)
+                {
+                    EntityNetworkAdapter.playerFactions.Add(0, 1);
+                }
+            }
+            
         }
     }
 

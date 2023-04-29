@@ -333,11 +333,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private void DeterminePlayerFaction()
     {
-        if (playerFactions == null || playerFactions.Count == 0)
+        if (playerFactions == null || playerFactions.Count < SectorManager.instance.GetFactionCount())
         {
-            playerFactions = new Dictionary<int, int>();
+            if (playerFactions == null)
+                playerFactions = new Dictionary<int, int>();
             for (int i = 0; i < SectorManager.instance.GetFactionCount(); i++)
             {
+                if (playerFactions.ContainsKey(i)) continue;
                 playerFactions.Add(i, 0);
             }
         }
@@ -361,18 +363,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         }
 
     }
-
-    void Start()
-    {        
-        if (!NetworkManager.Singleton.IsServer) return;
-        if (isPlayer.Value)
-        {
-           DeterminePlayerFaction(); 
-        }        
-            
-        UpdateStateClientRpc(wrapper.CreateResponse(this), passedFaction);
-    }
-
     public override void OnNetworkSpawn()
     {
         if (wrapper == null)
@@ -585,7 +575,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
 
     private bool ShouldSpawnHuskEntity()
     {
-        return (!NetworkManager.IsClient || (NetworkManager.Singleton.LocalClientId != OwnerClientId && wrapperUpdated) || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
+        return (!NetworkManager.IsClient || (NetworkManager.Singleton.LocalClientId != OwnerClientId && (!MasterNetworkAdapter.lettingServerDecide || wrapperUpdated)) || (!isPlayer.Value && !string.IsNullOrEmpty(idToUse))) 
             && !huskEntity && SystemLoader.AllLoaded;
     }
 
@@ -651,9 +641,13 @@ public class EntityNetworkAdapter : NetworkBehaviour
             huskEntity = AIData.entities.Find(e => e.ID == idToUse);
             if (!huskEntity)
             {
+                if (!MasterNetworkAdapter.lettingServerDecide && isPlayer.Value)
+                {
+                    DeterminePlayerFaction(); 
+                }
                 CreateHuskEntity();
             }
-            else if (!MasterNetworkAdapter.lettingServerDecide)
+            if (!MasterNetworkAdapter.lettingServerDecide)
             {
                 serverReady.Value = true;
             }
@@ -673,6 +667,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
         {
             if (OwnerClientId == wrapper.clientID)
             {
+                if (!MasterNetworkAdapter.lettingServerDecide)
+                {
+                    DeterminePlayerFaction(); 
+                }
                 SetUpPlayerCore();
             }
         }
