@@ -652,7 +652,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 serverReady.Value = true;
             }
             updateTimer = 0;
-            AttemptCreateServerResponse();
             huskEntity.networkAdapter = this;
             clientReady = true;
             if (huskEntity is IOwnable ownable && ownerId != ulong.MaxValue)
