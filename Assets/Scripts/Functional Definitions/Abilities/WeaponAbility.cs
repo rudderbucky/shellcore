@@ -51,7 +51,7 @@ public abstract class WeaponAbility : ActiveAbility
 
         if (bonusDamageType == typeof(Tank))
         {
-            return "Tank";
+            return "Tanks";
         }
 
         return bonusDamageType?.ToString();
