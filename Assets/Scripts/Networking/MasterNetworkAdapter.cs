@@ -381,6 +381,8 @@ public class MasterNetworkAdapter : NetworkBehaviour
             [AbilityID.PinDown] = 1,
             [AbilityID.Retreat] = 1,
             [AbilityID.Absorb] = 1,
+            [AbilityID.CoreRegen] = 0,
+            [AbilityID.ActiveCoreRegen] = 0,
         };
 
 
