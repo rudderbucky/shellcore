@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.DialogueCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="289.4,35.6" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="End Dialogue" ID="2120326940" type="EndDialogue" pos="-160,-235">
+			<Port ID="1873854830" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">true</boolean>
+			<boolean name="openUpgrader">false</boolean>
+			<boolean name="openWorkshop">false</boolean>
+			<Variable name="traderJSON" refID="-411533413" />
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="End Dialogue" ID="-1808944888" type="EndDialogue" pos="80.20001,-95">
+			<Port ID="-379964254" name="input" dynamic="False" />
+			<boolean name="jumpToStart">true</boolean>
+			<boolean name="openBuilder">false</boolean>
+			<boolean name="openTrader">false</boolean>
+			<boolean name="openUpgrader">false</boolean>
+			<boolean name="openWorkshop">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Dialogue" ID="1948418304" type="DialogueNode" pos="-580,-210">
+			<Port ID="564097554" name="input" dynamic="False" />
+			<Port ID="-745659722" name="cancel" dynamic="False" />
+			<Port ID="-2055416998" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">199</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="929793022" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">Dialogue</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">256</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<boolean name="useEntityColor">true</boolean>
+			<Color xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="textColor">
+				<r>1</r>
+				<g>1</g>
+				<b>1</b>
+				<a>1</a>
+			</Color>
+			<Variable name="text" refID="450841470" />
+			<Variable name="answers" refID="-374427568" />
+			<boolean name="customDialogueSpeed">false</boolean>
+			<double name="speed">0</double>
+			<float name="floatSpeed">0</float>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+		<Node name="Start Dialogue" ID="976146400" type="StartDialogueNode" pos="-810,-100">
+			<Port ID="-1689721530" name="input" dynamic="False" />
+			<Port ID="1295488490" name="output" dynamic="False" />
+			<boolean name="SpeakToEntity">true</boolean>
+			<Variable name="EntityID" refID="715304050" />
+			<boolean name="forceStart">false</boolean>
+			<boolean name="allowAfterSpeaking">false</boolean>
+			<NodeEditorState name="state">Mission</NodeEditorState>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1873854830" port2ID="-2055416998" />
+		<Connection port1ID="-379964254" port2ID="929793022" />
+		<Connection port1ID="564097554" port2ID="1295488490" />
+	</Connections>
+	<Objects>
+		<Object refID="-411533413" type="System.String">
+			<string>{"parts":[{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":1,"tier":2,"secondaryData":"","partID":"MediumExtra1","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":2,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":12,"tier":2,"secondaryData":"","partID":"MediumCenter3","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":4,"tier":2,"secondaryData":"","partID":"MediumSide3","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":5,"tier":2,"secondaryData":"","partID":"MediumSide3","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":13,"tier":2,"secondaryData":"","partID":"MediumSide4","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":17,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false},{"location":{"x":0.0,"y":0.0},"rotation":0.0,"mirrored":false,"abilityID":19,"tier":2,"secondaryData":"","partID":"MediumWing1","shiny":false}]}</string>
+		</Object>
+		<Object refID="450841470" type="System.String">
+			<string>My creator had turned ever since he left. There's not much for me to do other than sell these messily parts.</string>
+		</Object>
+		<Object refID="-374427568" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>Don't care. I would like to trade.</string>
+				<string>Sorry for your loss.</string>
+			</ArrayOfString>
+		</Object>
+		<Object refID="715304050" type="System.String">
+			<string>crimsonhideout1-trader1</string>
+		</Object>
+	</Objects>
+</NodeCanvas>

@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="3.000038,115" zoom="0.8" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="1230783456" type="LoadSectorNode" pos="-500,-50">
+			<Port ID="-1306947566" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="-700247335" />
+		</Node>
+		<Node name="Condition Check" ID="-434839376" type="GeneralConditionCheckNode" pos="-303,-204.6">
+			<Port ID="185657444" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="1678262454" name="Pass" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1124099832" name="Fail" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="-343302249" />
+			<int name="variableType">5</int>
+			<int name="comparisonMode">2</int>
+			<int name="value">0</int>
+		</Node>
+		<Node name="Set Part Drop Rate" ID="405733798" type="SetPartDropRate" pos="-2.799988,-258">
+			<Port ID="413967214" name="output" dynamic="False" />
+			<Port ID="1906572224" name="input" dynamic="False" />
+			<float name="dropRate">0.35</float>
+			<Variable name="sectorName" refID="-700247335" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+		<Node name="Set Part Drop Rate" ID="701586848" type="SetPartDropRate" pos="-6.799988,-90.8">
+			<Port ID="1723724490" name="output" dynamic="False" />
+			<Port ID="-1078637796" name="input" dynamic="False" />
+			<float name="dropRate">0.0075</float>
+			<Variable name="sectorName" refID="-700247335" />
+			<boolean name="restoreOld">false</boolean>
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="-1306947566" port2ID="185657444" />
+		<Connection port1ID="1678262454" port2ID="1906572224" />
+		<Connection port1ID="-1124099832" port2ID="-1078637796" />
+	</Connections>
+	<Objects>
+		<Object refID="-700247335" type="System.String">
+			<string>Infected Capitol Center</string>
+		</Object>
+		<Object refID="-343302249" type="System.String">
+			<string>Truthful Revelation</string>
+		</Object>
+	</Objects>
+</NodeCanvas>
