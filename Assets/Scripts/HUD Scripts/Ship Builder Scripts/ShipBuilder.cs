@@ -399,7 +399,7 @@ public class ShipBuilder : GUIWindowScripts
     /// <returns>is the part too close</returns>
     public static bool CheckPartIntersectsWithShell(ref EntityBlueprint.PartInfo shipPart, BuilderMode mode = BuilderMode.Yard, Sprite partSprite = null)
     {
-        var shellRect = new Bounds(Vector3.zero,  ResourceManager.GetAsset<Sprite>("core1_shell").bounds.size * 100);
+        var shellRect = new Bounds(Vector3.zero, ResourceManager.GetAsset<Sprite>("core1_shell").bounds.size * 100);
 
         Vector2[] partPoints = SATCollision.GetPartVertices(shipPart);
 

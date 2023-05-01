@@ -29,6 +29,7 @@ public static class SATCollision
         {
             partSprite = ResourceManager.GetAsset<Sprite>(info.partID + "_sprite");
         }
+        if (partSprite == null) return new Vector2[4];
         var rect = partSprite.bounds;
         rect.size *= 100;
         rect.Expand(0.001f);
