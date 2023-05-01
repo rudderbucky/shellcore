@@ -216,6 +216,7 @@ public class MasterNetworkAdapter : NetworkBehaviour
         {
             networkAdapter.blueprint.shellHealth = CoreUpgraderScript.defaultHealths;
             networkAdapter.blueprint.baseRegen = CoreUpgraderScript.GetRegens(networkAdapter.blueprint.coreShellSpriteID);
+            networkAdapter.ChangePositionWrapper(pos);
         }
         if (isPlayer) networkAdapter.playerName = name;
         else

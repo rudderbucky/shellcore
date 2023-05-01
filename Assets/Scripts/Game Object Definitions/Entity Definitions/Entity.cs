@@ -150,7 +150,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
             else if (MasterNetworkAdapter.mode != NetworkMode.Client)
             {
-                MasterNetworkAdapter.instance.CreateNetworkObjectWrapper(MasterNetworkAdapter.playerName, blueprintString, idToGrab, false, faction, Vector3.zero);
+                MasterNetworkAdapter.instance.CreateNetworkObjectWrapper(MasterNetworkAdapter.playerName, blueprintString, idToGrab, false, faction, transform.position);
             }
             rpcCalled = true;
         }

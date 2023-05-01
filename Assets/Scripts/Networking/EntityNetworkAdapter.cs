@@ -60,8 +60,8 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 core = buf.huskEntity;
             }
             return new ServerResponse(
-            core ? core.transform.position : Vector3.zero, 
-            body ? body.velocity : Vector3.zero, 
+            core ? core.transform.position : position, 
+            body ? body.velocity : Vector2.zero, 
             core? core.transform.rotation.eulerAngles.z : 0);
         }
     }
@@ -469,7 +469,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
     {
         if (!transform) return ulong.MaxValue;
         var entity = transform.GetComponent<Entity>();
-        ulong networkId = entity && entity.networkAdapter ? entity.networkAdapter.NetworkObjectId : ulong.MaxValue;;
+        ulong networkId = entity && entity.networkAdapter ? entity.networkAdapter.NetworkObjectId : ulong.MaxValue;
         if (networkId == ulong.MaxValue) networkId = transform.GetComponent<NetworkObject>() ? transform.GetComponent<NetworkObject>().NetworkObjectId : ulong.MaxValue;
         return networkId;
     }
@@ -647,6 +647,10 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 }
                 CreateHuskEntity();
             }
+            else
+            {
+                wrapper.position = huskEntity.transform.position;
+            }
             if (!MasterNetworkAdapter.lettingServerDecide)
             {
                 serverReady.Value = true;
@@ -660,6 +664,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 var ownerEntity = ownerAdapter?.huskEntity as IOwner;
                 if (ownerAdapter && ownerAdapter.isPlayer.Value && ownerEntity != null && !ownerEntity.Equals(null)) ownable.SetOwner(ownerEntity);
             }
+            dirty = true;
             ForceNetworkVarUpdateServerRpc();
         }
         else if (ShouldReusePlayerCore())
@@ -710,7 +715,6 @@ public class EntityNetworkAdapter : NetworkBehaviour
         if (update)
         {
             updateTimer = IsPriorityForUpdates() ? PRIORITY_UPDATE_RATE : (UPDATE_RATE + (AIData.entities.Count > 200 ? 1 : 0));
-            dirty = false;
             UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
             if (entityAlwaysUpdated || dirty)
                 UpdateStateClientRpc(wrapper.CreateResponse(this), huskEntity ? huskEntity.faction : passedFaction);
@@ -731,6 +735,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
                 UpdateWeaponGCDClientRpc(huskEntity.GetWeaponGCDTimer());
                 UpdatePowerClientRpc(core.GetPower());
             }
+            dirty = false;
         };
     }
 
