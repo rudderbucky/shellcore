@@ -109,12 +109,15 @@ namespace NodeEditorFramework.Standard
 
         void TryAddObjective()
         {
-            if (!TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName))
+            if (TaskManager.objectiveLocations == null 
+                || !TaskManager.objectiveLocations.ContainsKey((Canvas as QuestCanvas).missionName) 
+                || TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName] == null)
             {
-                Debug.LogError($"Task Manager does not contain an objective list for mission {(Canvas as QuestCanvas).missionName}");
+                Debug.LogWarning($"Task Manager does not contain an objective list for mission {(Canvas as QuestCanvas).missionName}");
                 return;
             }
             var sect = SectorManager.GetSectorByName(sectorName);
+            if (!sect) return;
             var bounds = sect.bounds;
             TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
             objectiveLocation = new TaskManager.ObjectiveLocation
@@ -124,6 +127,7 @@ namespace NodeEditorFramework.Standard
                 (Canvas as QuestCanvas).missionName,
                 sect.dimension
             );
+
             TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Add(objectiveLocation);
             TaskManager.DrawObjectiveLocations();
         }

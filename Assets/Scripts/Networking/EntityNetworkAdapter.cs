@@ -543,6 +543,7 @@ public class EntityNetworkAdapter : NetworkBehaviour
         else
         {
             var obj = NetworkManager.Singleton.SpawnManager.SpawnedObjects[tractorID.Value];
+            if (!obj) return;
             var ent = obj?.GetComponent<EntityNetworkAdapter>()?.huskEntity?.GetComponentInChildren<Draggable>();
             if (ent && core)
             {
