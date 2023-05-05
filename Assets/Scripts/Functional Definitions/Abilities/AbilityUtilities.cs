@@ -235,7 +235,7 @@ public static class AbilityUtilities
             case 40:
                 return "Warps your currently held part directly into your inventory.";
             case 41:
-                return $"Temporarily reduces Global Cooldown by {Mathf.Min(tier, 1)}/{Mathf.Min(tier, 1) + 1}.";
+                return $"Temporarily reduces Global Cooldown by {Mathf.Min(tier, 1)}/{Mathf.Max(tier, 1) + 1}.";
             case 45:
                 return $"Instant attack that deals {Beam.beamDamage * tier} damage to multiple targets.";
             case 46:
