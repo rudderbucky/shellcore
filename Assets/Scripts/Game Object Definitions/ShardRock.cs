@@ -48,7 +48,7 @@ public class ShardRock : MonoBehaviour, IDamageable
             childObject.transform.SetParent(transform, false);
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>();
             renderer.sprite = ResourceManager.GetAsset<Sprite>("minimap_sprite");
-            renderer.transform.localScale = new Vector3(0.475F, 0.475F);
+            renderer.transform.localScale = new Vector3(0.7F, 0.7F);
             childObject.AddComponent<MinimapLockRotationScript>().Initialize();
         }
     }
