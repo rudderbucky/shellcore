@@ -160,11 +160,21 @@ public class BulletScript : MonoBehaviour, IProjectile
         Destroy(gameObject); // bullet has collided with a target, delete immediately
     }
 
+    // Shards, core parts
     public void HitDamageable(IDamageable damageable)
     {
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
         {
-            damageable.TakeShellDamage(damage, pierceFactor, owner);
+            float residue = damageable.TakeShellDamage(damage, pierceFactor, owner);
+
+            if (damageable is Entity)
+            {
+                (damageable as Entity).TakeCoreDamage(residue);
+            }
+            if (damageable is Drone drone && disableDrones)
+            {
+                drone.DisableAITemporarily(Time.time + 3);
+            }
 
             InstantiateHitPrefab();
             if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer)
