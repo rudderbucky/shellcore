@@ -118,8 +118,6 @@ public static class SATCollision
 
         int offset = entity.parts.Count * 4;
         float size = 0.5f;
-        if (entity is Drone)
-            size = 0.25f;
         vertices[offset + 0] = shipMatrix.MultiplyPoint3x4(new Vector3(-size, -size));
         vertices[offset + 1] = shipMatrix.MultiplyPoint3x4(new Vector3( size, -size));
         vertices[offset + 2] = shipMatrix.MultiplyPoint3x4(new Vector3( size,  size));
