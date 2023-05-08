@@ -24,6 +24,7 @@ public class InvertTractor : ActiveAbility
     public override void Deactivate()
     {
         Core.tractorSwitched = false;
+        if (Core is ShellCore core && !MasterNetworkAdapter.lettingServerDecide) core.SetTractorTarget(null);
         base.Deactivate();
     }
 
