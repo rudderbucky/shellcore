@@ -196,6 +196,26 @@ public class PartIndexScript : MonoBehaviour
             attemptAddPartCoroutine = null;
         }
         StartCoroutine(AttemptAddPartHelper());
+
+        // Update tally graphic bar
+        if (statsNumbers[3] > 0)
+        {
+            for (int i = 0; i < statsBar.Length; i++)
+            {
+                statsBar[i].rectTransform.sizeDelta = new Vector2(statsNumbers[i] * 800 / statsNumbers[3], 20);
+            }
+        }
+        else
+        {
+            // no parts in world, just hide the bars
+            for (int i = 0; i < statsBar.Length; i++)
+            {
+                statsBar[i].gameObject.SetActive(false);
+            }
+        }
+
+        // Just found out about string interpolation. Damn that stuff rocks.
+        statsTotalTally.text = $"{statsNumbers[3]}";
     }
 
     private Coroutine attemptAddPartCoroutine;
@@ -220,26 +240,6 @@ public class PartIndexScript : MonoBehaviour
         {
             texts[i].SetActive(contents[i].childCount > 0);
         }
-
-        // Update tally graphic bar
-        if (statsNumbers[3] > 0)
-        {
-            for (int i = 0; i < statsBar.Length; i++)
-            {
-                statsBar[i].rectTransform.sizeDelta = new Vector2(statsNumbers[i] * 800 / statsNumbers[3], 20);
-            }
-        }
-        else
-        {
-            // no parts in world, just hide the bars
-            for (int i = 0; i < statsBar.Length; i++)
-            {
-                statsBar[i].gameObject.SetActive(false);
-            }
-        }
-
-        // Just found out about string interpolation. Damn that stuff rocks.
-        statsTotalTally.text = $"{statsNumbers[3]}";
         yield return null;
     }
 
