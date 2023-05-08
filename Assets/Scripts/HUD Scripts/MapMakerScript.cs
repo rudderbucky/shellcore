@@ -340,6 +340,9 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             }
         }
 
+        // clear markers
+        PartIndexInventoryButton.partMarkerSectorNames.Clear();
+
 
         int x = 0;
         foreach (Sector sector in sectors)
@@ -353,9 +356,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             }
         }
         lpg.Offset = oldLPGOffset;
-
-        // clear markers
-        PartIndexInventoryButton.partMarkerSectorNames.Clear();
 
         yield return null;
     }
