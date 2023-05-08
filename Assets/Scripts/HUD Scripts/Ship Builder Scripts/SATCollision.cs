@@ -102,7 +102,7 @@ public static class SATCollision
             m13 = pos.y,
         };
 
-        Vector2[] vertices = new Vector2[4 * entity.parts.Count];
+        Vector2[] vertices = new Vector2[4 * (entity.parts.Count + 1)];
 
         for (int i = 0; i < entity.parts.Count; i++)
         {
@@ -116,10 +116,16 @@ public static class SATCollision
             //vertices[i * 4 + 3] = (Vector2)(shipMatrix * part.colliderMatrix * (-right + up));
 
             vertices[i * 4 + 0] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4(-right - up + Vector3.forward));
-            vertices[i * 4 + 1] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4(right - up + Vector3.forward));
-            vertices[i * 4 + 2] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4(right + up + Vector3.forward));
+            vertices[i * 4 + 1] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4( right - up + Vector3.forward));
+            vertices[i * 4 + 2] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4( right + up + Vector3.forward));
             vertices[i * 4 + 3] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4(-right + up + Vector3.forward));
         }
+
+        int offset = entity.parts.Count * 4;
+        vertices[offset + 0] = shipMatrix.MultiplyPoint3x4(new Vector3(-0.5f, -0.5f));
+        vertices[offset + 1] = shipMatrix.MultiplyPoint3x4(new Vector3( 0.5f, -0.5f));
+        vertices[offset + 2] = shipMatrix.MultiplyPoint3x4(new Vector3( 0.5f,  0.5f));
+        vertices[offset + 3] = shipMatrix.MultiplyPoint3x4(new Vector3(-0.5f,  0.5f));
 
         return vertices;
     }

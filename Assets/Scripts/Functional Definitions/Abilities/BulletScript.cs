@@ -65,47 +65,6 @@ public class BulletScript : MonoBehaviour, IProjectile
         return (category == Entity.EntityCategory.All || category == entity.GetCategory()) && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
     }
 
-    //void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost) return;
-
-    //    //TODO: Make this collision avoid hitting the core collider which may mess up the part damage calculation a bit  (for missiles as well)
-    //    var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
-    //    var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
-    //    if (craft != null && !craft.GetIsDead() && owner) // check if the component was obtained
-    //    {
-    //        if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && craft.GetTransform() != owner.GetTransform())
-    //        {
-    //            if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
-    //            {
-    //                var residue = craft.TakeShellDamage(damage, pierceFactor, owner); // deal the damage to the target, no shell penetration  
-
-    //                // if the shell is low, damage the part
-    //                ShellPart part = collision.transform.GetComponent<ShellPart>();
-    //                if (part)
-    //                {
-    //                    part.TakeDamage(residue); // damage the part
-    //                }
-
-    //                damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
-    //            }
-                
-    //            if (craft is Drone drone && disableDrones)
-    //            {
-    //                drone.DisableAITemporarily(Time.time + 3);
-    //            }
-
-    //            InstantiateHitPrefab();
-    //            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer)
-    //            {
-    //                if (GetComponent<NetworkObject>().IsSpawned)
-    //                    GetComponent<NetworkObject>().Despawn();
-    //            }
-    //            Destroy(gameObject); // bullet has collided with a target, delete immediately
-    //        }
-    //    }
-    //}
-
     public void InstantiateHitPrefab()
     {
         Instantiate(hitPrefab, transform.position, Quaternion.identity);
@@ -206,6 +165,14 @@ public class BulletScript : MonoBehaviour, IProjectile
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
         {
             damageable.TakeShellDamage(damage, pierceFactor, owner);
+
+            InstantiateHitPrefab();
+            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsServer)
+            {
+                if (GetComponent<NetworkObject>().IsSpawned)
+                    GetComponent<NetworkObject>().Despawn();
+            }
+            Destroy(gameObject); // bullet has collided with a target, delete immediately
         }
     }
 }

@@ -128,8 +128,6 @@ public class ShellPart : MonoBehaviour
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
         part.currentHealth = part.partHealth;
-        //var collider = obj.GetComponent<PolygonCollider2D>();
-        //collider.isTrigger = true;
         part.detachible = blueprint.detachible;
 
         var partSys = obj.GetComponent<ParticleSystem>();
@@ -204,7 +202,6 @@ public class ShellPart : MonoBehaviour
         }
 
         GetComponentInChildren<Ability>()?.SetDestroyed(true);
-        //GetComponent<Collider2D>().enabled = true;
 
         // when a part detaches it should always be completely visible
         var renderers = GetComponentsInChildren<SpriteRenderer>();

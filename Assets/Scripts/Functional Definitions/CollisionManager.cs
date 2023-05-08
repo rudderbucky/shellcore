@@ -67,6 +67,11 @@ public class CollisionManager : MonoBehaviour
                             pos);
                         if (collision)
                         {
+                            if (i == colliders.Length / 4 - 1)
+                            {
+                                projectile.HitDamageable(entity);
+                                break;
+                            }
                             projectile.HitPart(entity.parts[i]);
                             hit = true;
                             break;

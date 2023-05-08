@@ -116,33 +116,6 @@ public class MissileScript : MonoBehaviour, IProjectile
         return (category == Entity.EntityCategory.All || category == entity.GetCategory()) && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
     }
 
-    //void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
-    //    if (fired) return;
-    //    var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
-    //    var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
-    //    if (craft != null && !craft.GetIsDead()) // check if the component was obtained
-    //    {
-    //        if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && (!owner || (craft.GetTransform() != owner.transform)))
-    //        {
-    //            var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
-    //            // if the shell is low, damage the part
-
-    //            ShellPart part = collision.transform.GetComponent<ShellPart>();
-    //            if (part)
-    //            {
-    //                part.TakeDamage(residue); // damage the part
-    //            }
-
-    //            damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
-    //            InstantiateHitPrefab();
-    //            fired = true;
-    //            Destroy(gameObject); // bullet has collided with a target, delete immediately
-    //        }
-    //    }
-    //}
-
     public void OnDestroy()
     {
         if (transform.GetComponentInChildren<TrailRenderer>())
