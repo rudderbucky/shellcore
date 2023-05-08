@@ -22,6 +22,7 @@ public class TractorBeam : MonoBehaviour
     private GameObject tractorBeamPrefab;
     private ulong finalTractorForFrame;
     private bool serverTractorDirty = true;
+    private GameObject auxillaryParticleSystem;
 
     public void SetEnergyEnabled(bool val)
     {
@@ -72,6 +73,7 @@ public class TractorBeam : MonoBehaviour
         lineRenderer.sortingLayerName = "Projectiles";
         childObject.name = "TractorBeam";
         tractorBeamPrefab = childObject;
+        auxillaryParticleSystem = Instantiate(ResourceManager.GetAsset<GameObject>("tractor_specialfx"), childObject.transform);
         initialized = true;
     }
 
@@ -203,6 +205,12 @@ public class TractorBeam : MonoBehaviour
 
                 coreGlow.gameObject.SetActive(true);
                 targetGlow.gameObject.SetActive(true);
+                var x = auxillaryParticleSystem.GetComponentInChildren<ParticleSystem>().main;
+                x.startColor = new ParticleSystem.MinMaxGradient(owner.tractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128));
+                auxillaryParticleSystem.SetActive(true);
+                auxillaryParticleSystem.transform.position = Vector3.Lerp(transform.position, target.transform.position, 0.5F);
+                auxillaryParticleSystem.transform.localScale = new Vector3((target.transform.position - transform.position).magnitude/0.2F, 1F, 1);
+                auxillaryParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 360 - Vector2.SignedAngle(target.transform.position - transform.position, Vector2.right)));// = new Vector3(0, 0, 0);
             }
         }
         else
@@ -211,6 +219,7 @@ public class TractorBeam : MonoBehaviour
             lineRenderer.positionCount = 0;
             coreGlow.gameObject.SetActive(false);
             targetGlow.gameObject.SetActive(false);
+            auxillaryParticleSystem.SetActive(false);
         }
 
         if (serverTractorDirty && owner.networkAdapter)
