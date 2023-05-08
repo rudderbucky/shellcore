@@ -123,4 +123,98 @@ public class CollisionManager : MonoBehaviour
             }
         }
     }
+
+    // Almost same for-loops multiple times. Combine somehow?
+    public static ITargetable GetTargetAtPosition(Vector2 pos)
+    {
+        // Entities
+        foreach (var entity in AIData.entities)
+        {
+            if ((pos - (Vector2)entity.transform.position).sqrMagnitude < 1024f)
+            {
+                if (entity.IsInvisible)
+                    continue;
+                if (entity.GetIsDead())
+                    continue;
+                if (entity.GetInvisible())
+                    continue;
+                if (entity == PlayerCore.Instance)
+                    continue;
+
+                Vector2[] colliders = SATCollision.GetColliders(entity);
+                for (int i = 0; i < colliders.Length / 4; i++)
+                {
+                    bool collision = SATCollision.PointInRectangle(
+                        colliders[i * 4 + 0],
+                        colliders[i * 4 + 1],
+                        colliders[i * 4 + 2],
+                        colliders[i * 4 + 3],
+                        pos);
+                    if (collision)
+                    {
+                        return entity;
+                    }
+                }
+            }
+        }
+
+        // Shard Rocks
+        foreach (var shard in AIData.shards)
+        {
+            Vector2 pos2 = shard.transform.position;
+            if ((pos - pos2).sqrMagnitude < 4f)
+            {
+                return shard;
+            }
+        }
+
+        return null;
+    }
+
+    public static ITargetable[] GetAllTargetsAtPosition(Vector2 pos)
+    {
+        List<ITargetable> targets = new();
+
+        // Entities
+        foreach (var entity in AIData.entities)
+        {
+            if ((pos - (Vector2)entity.transform.position).sqrMagnitude < 1024f)
+            {
+                if (entity.GetIsDead())
+                    continue;
+                if (entity.GetInvisible())
+                    continue;
+                //if (entity == PlayerCore.Instance)
+                //    continue;
+
+                Vector2[] colliders = SATCollision.GetColliders(entity);
+                for (int i = 0; i < colliders.Length / 4; i++)
+                {
+                    bool collision = SATCollision.PointInRectangle(
+                        colliders[i * 4 + 0],
+                        colliders[i * 4 + 1],
+                        colliders[i * 4 + 2],
+                        colliders[i * 4 + 3],
+                        pos);
+                    if (collision)
+                    {
+                        targets.Add(entity);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Shard Rocks
+        foreach (var shard in AIData.shards)
+        {
+            Vector2 pos2 = shard.transform.position;
+            if ((pos - pos2).sqrMagnitude < 4f)
+            {
+                targets.Add(shard);
+            }
+        }
+
+        return targets.ToArray();
+    }
 }

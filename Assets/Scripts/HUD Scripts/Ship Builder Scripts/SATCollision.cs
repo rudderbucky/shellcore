@@ -110,11 +110,6 @@ public static class SATCollision
             Vector3 right = new(part.colliderExtents.x, 0f);
             Vector3 up = new(0f, part.colliderExtents.y);
 
-            //vertices[i * 4 + 0] = (Vector2)(shipMatrix * part.colliderMatrix * (-right - up));
-            //vertices[i * 4 + 1] = (Vector2)(shipMatrix * part.colliderMatrix * ( right - up));
-            //vertices[i * 4 + 2] = (Vector2)(shipMatrix * part.colliderMatrix * ( right + up));
-            //vertices[i * 4 + 3] = (Vector2)(shipMatrix * part.colliderMatrix * (-right + up));
-
             vertices[i * 4 + 0] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4(-right - up + Vector3.forward));
             vertices[i * 4 + 1] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4( right - up + Vector3.forward));
             vertices[i * 4 + 2] = shipMatrix.MultiplyPoint3x4(part.colliderMatrix.MultiplyPoint3x4( right + up + Vector3.forward));

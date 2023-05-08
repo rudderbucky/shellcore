@@ -230,6 +230,7 @@ public class ShellPart : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    // What is this supposed to do?
     public void EditorPlayerPartCheck()
     {
         if (craft is PlayerCore player)

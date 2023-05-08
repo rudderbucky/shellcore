@@ -80,12 +80,18 @@ public class ReticleScript : MonoBehaviour
         {
             return false;
         }
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
-        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity, 513); // get an array of all hits
-        if (hits == null)
+
+        var mousePos = Input.mousePosition;
+        mousePos.z = CameraScript.zLevel;
+        Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
+        var hits = CollisionManager.GetAllTargetsAtPosition(mouseWorldPos);
+        Debug.Log($"Mouse Pos: {mousePos} Mouse World Pos: {mouseWorldPos} Player pos: {PlayerCore.Instance.transform.position}");
+        Debug.Log($"Hit count: {hits.Length}");
+        for (int i = 0; i < hits.Length; i++)
         {
-            return false;
+            Debug.Log(hits[i]);
         }
+
         bool droneInteraction = false;
 
         // This orders secondary target drones to move/follow accordingly.
@@ -93,8 +99,6 @@ public class ReticleScript : MonoBehaviour
         {
             return false;
         }
-        var mousePos = Input.mousePosition;
-        mousePos.z = CameraScript.zLevel;
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
         var primaryDroneInteraction = false;
         if (!Input.GetKey(KeyCode.LeftShift))
@@ -122,8 +126,8 @@ public class ReticleScript : MonoBehaviour
         Draggable draggableTarget = null;
         for (int i = 0; i < hits.Length; i++)
         {
-            draggableTarget = hits[i].transform?.gameObject.GetComponent<Draggable>();
-            if (hits[i].transform?.gameObject.GetComponent<IVendor>() == null) break;
+            draggableTarget = hits[i].GetTransform()?.gameObject.GetComponent<Draggable>();
+            if (hits[i].GetTransform()?.gameObject.GetComponent<IVendor>() == null) break;
         }
 
         if (draggableTarget && TractorBeam.InvertTractorCheck(craft, draggableTarget) && draggableTarget.transform != craft.transform)
@@ -143,7 +147,7 @@ public class ReticleScript : MonoBehaviour
         }
 
 
-        ITargetable curTarg = hits[0].transform?.gameObject.GetComponent<ITargetable>();
+        ITargetable curTarg = hits[0].GetTransform()?.gameObject.GetComponent<ITargetable>();
         // grab the first one's craft component, others don't matter
         if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft)
         // if it is not null, dead or the player itself and is interactible
@@ -346,22 +350,22 @@ public class ReticleScript : MonoBehaviour
     ///
     /// Checks if the passed Transform is a Drone that the player owns. If so, orders it to move/follow accordingly.
     ///
-    public bool DroneCheck(Transform possibleDrone, RaycastHit2D[] hits, Vector3 worldMovementVector)
+    public bool DroneCheck(Transform possibleDrone, ITargetable[] hits, Vector3 worldMovementVector)
     {
         var check = possibleDrone && possibleDrone.GetComponent<Drone>() &&
                     possibleDrone.GetComponent<Drone>().GetOwner() != null
                     && possibleDrone.GetComponent<Drone>().GetOwner().Equals(craft)
-                    && (hits == null || hits.Length == 0 || hits[0].transform != possibleDrone);
+                    && (hits == null || hits.Length == 0 || hits[0].GetTransform() != possibleDrone);
         if (check)
         {
             // Move the drone if the hit array is empty. Otherwise, if the hit array's first element is the player,
             // order a follow.
-            if (hits == null || hits.Length == 0 || hits[0].transform != craft.transform)
+            if (hits == null || hits.Length == 0 || hits[0].GetTransform() != craft.transform)
             {
                 possibleDrone.GetComponent<Drone>().CommandMovement(worldMovementVector);
                 targSys.SetTarget(null);
             }
-            else if (hits[0].transform == craft.transform) // Order a follow if this passes
+            else if (hits[0].GetTransform() == craft.transform) // Order a follow if this passes
             {
                 possibleDrone.GetComponent<Drone>().CommandFollowOwner();
                 targSys.SetTarget(null);

@@ -45,21 +45,8 @@ public class SelectionBoxScript : MonoBehaviour
 
     private bool GetMouseOverTarget()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // create a ray
-        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(ray, Mathf.Infinity); // get an array of all hits
-
-        foreach (var hit in hits)
-        {
-            var hitTransform = hit.transform;
-            var ent = hitTransform.GetComponent<Entity>();
-            if ((hitTransform.GetComponent<ITargetable>() != null && hitTransform != PlayerCore.Instance.transform)
-                || (hitTransform.GetComponent<Draggable>() && (!ent || ent.faction == PlayerCore.Instance.faction)))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return CollisionManager.GetTargetAtPosition(pos) != null;
     }
 
     private void SetClicking(bool val)
