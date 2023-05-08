@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -302,9 +301,12 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         CreateMinimapImages(sector);
     }
 
-    IEnumerator DrawCoroutine(List<Sector> sectors, int dimension, bool displayStations)
-    {        
-        
+    void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0, bool resetPosition = true, bool displayStations = false)
+    {
+        InitializeVariables(zoomoutFactor, resetPosition);
+
+        DefineGridSize(sectors, dimension);
+
         gridImg.rectTransform.sizeDelta = new Vector2((gridSizeX * zoomoutFactor + distancePerTextMarker) / zoomoutFactor,
             (gridSizeY * zoomoutFactor + distancePerTextMarker) / zoomoutFactor);
         // round to multiple of 100 to maintain grid lining
@@ -313,6 +315,12 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
         var lpg = LandPlatformGenerator.Instance;
         Vector2 oldLPGOffset = lpg.Offset;
+
+        foreach (Sector sector in sectors)
+        {
+            DrawSector(sector, dimension, lpg, displayStations);
+        }
+        lpg.Offset = oldLPGOffset;
 
         for (int i = 0; i < Mathf.Max(gridSizeX, gridSizeY) * zoomoutFactor / distancePerTextMarker + 1; i++)
         {
@@ -342,34 +350,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
         // clear markers
         PartIndexInventoryButton.partMarkerSectorNames.Clear();
-
-
-        int x = 0;
-        foreach (Sector sector in sectors)
-        {
-            DrawSector(sector, dimension, lpg, displayStations);
-            x++;
-            if (x >= 10)
-            {
-                x = 0;
-                yield return new WaitForEndOfFrame();
-            }
-        }
-        lpg.Offset = oldLPGOffset;
-
-        yield return null;
-    }
-
-    private Coroutine coroutine;
-
-    void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0, bool resetPosition = true, bool displayStations = false)
-    {
-        InitializeVariables(zoomoutFactor, resetPosition);
-        DefineGridSize(sectors, dimension);
-        
-        if (coroutine != null) StopCoroutine(coroutine);
-        if (gameObject.activeSelf)
-            coroutine = StartCoroutine(DrawCoroutine(sectors, dimension, displayStations));
     }
 
     private void AddMapDistanceMarker(Vector2 pos, int i, TextAnchor anchor)

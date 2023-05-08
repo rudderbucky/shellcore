@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -135,6 +134,7 @@ public class PartIndexScript : MonoBehaviour
     void OnEnable()
     {
         UpdateContent(null, null);
+
         Entity.OnEntityDeath += UpdateContent;
     }
 
@@ -142,9 +142,6 @@ public class PartIndexScript : MonoBehaviour
     {
         Entity.OnEntityDeath -= UpdateContent;
     }
-
-
-
 
     public void UpdateContent(Entity _, Entity __)
     {
@@ -190,12 +187,17 @@ public class PartIndexScript : MonoBehaviour
             }
         }
 
-        if (attemptAddPartCoroutine != null)
+        // index assembly
+
+        foreach (var partData in index)
         {
-            StopCoroutine(attemptAddPartCoroutine);
-            attemptAddPartCoroutine = null;
+            AttemptAddPart(partData.part, partData.origins);
         }
-        StartCoroutine(AttemptAddPartHelper());
+
+        for (int i = 0; i < contents.Length; i++)
+        {
+            texts[i].SetActive(contents[i].childCount > 0);
+        }
 
         // Update tally graphic bar
         if (statsNumbers[3] > 0)
@@ -216,31 +218,6 @@ public class PartIndexScript : MonoBehaviour
 
         // Just found out about string interpolation. Damn that stuff rocks.
         statsTotalTally.text = $"{statsNumbers[3]}";
-    }
-
-    private Coroutine attemptAddPartCoroutine;
-
-    private IEnumerator AttemptAddPartHelper()
-    {
-        int x = 0;
-        // index assembly
-
-        foreach (var partData in index)
-        {
-            AttemptAddPart(partData.part, partData.origins);
-            x++;
-            if (x >= 10)
-            {
-                x = 0;
-                yield return new WaitForEndOfFrame();
-            }
-        }
-
-        for (int i = 0; i < contents.Length; i++)
-        {
-            texts[i].SetActive(contents[i].childCount > 0);
-        }
-        yield return null;
     }
 
     public static void AttemptAddToPartsObtained(EntityBlueprint.PartInfo part)
