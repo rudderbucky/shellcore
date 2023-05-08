@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Script used for the missile projectile
 /// </summary>
-public class MissileScript : MonoBehaviour
+public class MissileScript : MonoBehaviour, IProjectile
 {
     // TODO: Maybe merge all projectile scripts and make it modular?
 
@@ -55,13 +55,15 @@ public class MissileScript : MonoBehaviour
             }
         }
 
-        if (!GetComponent<Collider2D>()) // no collider? no problem
-        {
-            var collider = gameObject.AddComponent<CircleCollider2D>(); // add collider component
-            collider.isTrigger = true; // set trigger
-        }
+        //if (!GetComponent<Collider2D>()) // no collider? no problem
+        //{
+        //    var collider = gameObject.AddComponent<CircleCollider2D>(); // add collider component
+        //    collider.isTrigger = true; // set trigger
+        //}
 
         GetComponent<SpriteRenderer>().color = missileColor;
+
+        AIData.collidingProjectiles.Add(this);
     }
 
     /// <summary>
@@ -114,33 +116,6 @@ public class MissileScript : MonoBehaviour
         return (category == Entity.EntityCategory.All || category == entity.GetCategory()) && (terrain == Entity.TerrainType.All || terrain == entity.GetTerrain());
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
-        if (fired) return;
-        var hit = collision.transform.root; // grab collision, get the topmost GameObject of the hierarchy, which would have the craft component
-        var craft = hit.GetComponent<IDamageable>(); // check if it has a craft component
-        if (craft != null && !craft.GetIsDead()) // check if the component was obtained
-        {
-            if (!FactionManager.IsAllied(faction, craft.GetFaction()) && CheckCategoryCompatibility(craft) && (!owner || (craft.GetTransform() != owner.transform)))
-            {
-                var residue = craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
-                // if the shell is low, damage the part
-
-                ShellPart part = collision.transform.GetComponent<ShellPart>();
-                if (part)
-                {
-                    part.TakeDamage(residue); // damage the part
-                }
-
-                damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
-                InstantiateHitPrefab();
-                fired = true;
-                Destroy(gameObject); // bullet has collided with a target, delete immediately
-            }
-        }
-    }
-
     public void OnDestroy()
     {
         if (transform.GetComponentInChildren<TrailRenderer>())
@@ -148,6 +123,7 @@ public class MissileScript : MonoBehaviour
             transform.GetComponentInChildren<TrailRenderer>().autodestruct = true;
             transform.DetachChildren();
         }
+        AIData.collidingProjectiles.Remove(this);
     }
 
     public void StartSurvivalTimer(float time)
@@ -180,5 +156,51 @@ public class MissileScript : MonoBehaviour
         {
             MasterNetworkAdapter.instance.BulletEffectClientRpc("bullet_miss_prefab",transform.position, vector);
         }
+    }
+
+    public int GetFaction()
+    {
+        return faction;
+    }
+
+    public Entity GetOwner()
+    {
+        return owner;
+    }
+
+    public Vector2 GetPosition()
+    {
+        return transform.position;
+    }
+
+    public float GetDamage()
+    {
+        return damage;
+    }
+
+    public void HitPart(ShellPart part)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
+        if (fired) return;
+
+        var residue = part.craft.TakeShellDamage(damage, 0, owner); // deal the damage to the target, no shell penetration
+        part.TakeDamage(residue);// if the shell is low, damage the part
+
+        damage = 0; // make sure, that other collision events with the same bullet don't do any more damage
+        InstantiateHitPrefab();
+        fired = true;
+        Destroy(gameObject); // bullet has collided with a target, delete immediately
+    }
+
+    public void HitDamageable(IDamageable damageable)
+    {
+        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
+        if (fired) return;
+
+        damageable.TakeShellDamage(damage, 0, owner);
+        damage = 0;
+        InstantiateHitPrefab();
+        fired = true;
+        Destroy(gameObject);
     }
 }

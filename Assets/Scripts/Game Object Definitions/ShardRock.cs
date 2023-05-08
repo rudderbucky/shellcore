@@ -51,6 +51,12 @@ public class ShardRock : MonoBehaviour, IDamageable
             renderer.transform.localScale = new Vector3(0.7F, 0.7F);
             childObject.AddComponent<MinimapLockRotationScript>().Initialize();
         }
+        AIData.shards.Add(this);
+    }
+
+    private void OnDestroy()
+    {
+        AIData.shards.Remove(this);
     }
 
     private Color[] rockColors = new Color[]

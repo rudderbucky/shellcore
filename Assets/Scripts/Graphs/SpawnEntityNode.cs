@@ -189,17 +189,6 @@ namespace NodeEditorFramework.Standard
                 Debug.Log($"Spawn Entity ID ( {entityID} ) does not correspond with a character. Performing normal operations.");
             }
 
-            EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-            try
-            {
-                JsonUtility.FromJsonOverwrite(this.blueprint, blueprint);
-            }
-            catch (System.Exception)
-            {
-                Debug.Log("Could not parse blueprint value as JSON. Now attempting to fetch blueprint through the Resource Manager.");
-                blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
-            }
-
             for (int i = 0; i < count; i++)
             {
                 SpawnAdditionalEntity(flagName);
@@ -239,16 +228,7 @@ namespace NodeEditorFramework.Standard
                 }
             }
 
-            EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-            try
-            {
-                JsonUtility.FromJsonOverwrite(this.blueprint, blueprint);
-            }
-            catch (System.Exception)
-            {
-                Debug.Log("Could not parse blueprint value as JSON. Now attempting to fetch blueprint through the Resource Manager.");
-                blueprint = ResourceManager.GetAsset<EntityBlueprint>(this.blueprint);
-            }
+            EntityBlueprint blueprint = SectorManager.TryGettingEntityBlueprint(this.blueprint);
 
             if (blueprint)
             {

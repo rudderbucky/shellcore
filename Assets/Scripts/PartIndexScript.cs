@@ -133,6 +133,18 @@ public class PartIndexScript : MonoBehaviour
 
     void OnEnable()
     {
+        UpdateContent(null, null);
+
+        Entity.OnEntityDeath += UpdateContent;
+    }
+
+    private void OnDisable()
+    {
+        Entity.OnEntityDeath -= UpdateContent;
+    }
+
+    public void UpdateContent(Entity _, Entity __)
+    {
         statsNumbers = new int[] { 0, 0, 0, 0 };
         foreach (var content in contents)
         {

@@ -29,7 +29,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     protected List<Ability> abilities; // abilities
     public Rigidbody2D entityBody; // entity to modify with this script
-    protected Collider2D hitbox; // the hitbox of the entity (excluding extra parts)
     protected TargetingSystem targeter; // the TargetingSystem of the entity
     protected bool isInCombat; // whether the entity is in combat or not
     protected bool isBusy; // whether the entity is busy or not
@@ -44,7 +43,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     protected GameObject explosionLinePrefab;
     protected GameObject respawnImplosionPrefab;
     protected GameObject deathExplosionPrefab;
-    protected List<ShellPart> parts; // List containing all parts of the entity
+    [HideInInspector]
+    public List<ShellPart> parts; // List containing all parts of the entity
     protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public bool serverSyncHealthDirty = true;
 
@@ -195,12 +195,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             UpdateRenderer(renderers[i]);
         }
-
-        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            colliders[i].enabled = !IsInvisible;
-        }
     }
 
     public int StealthStacks
@@ -302,8 +296,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     {
         get { return absorptions > 0; }
     }
-
-    bool collidersEnabled = true;
     public bool tractorSwitched = false;
 
     public SectorManager sectorMngr;
@@ -494,8 +486,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             GameObject childObject = new GameObject("Shell Sprite"); // create the child gameobject
             childObject.transform.SetParent(transform, false); // set to child
-            PolygonCollider2D collider = childObject.AddComponent<PolygonCollider2D>(); // add collider
-            collider.isTrigger = true; // do not allow "actual" collisions
             SpriteRenderer renderer = childObject.AddComponent<SpriteRenderer>(); // add renderer
             if (blueprint)
             {
@@ -889,6 +879,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         maxHealth[0] += partBlueprint.health / 2;
         maxHealth[1] += partBlueprint.health / 4;
 
+        var rot = part.rotation * Mathf.Deg2Rad;
+        shellPart.colliderMatrix = new()
+        {
+            m00 = Mathf.Cos (rot),
+            m01 = -Mathf.Sin(rot),
+            m10 = Mathf.Sin (rot),
+            m11 = Mathf.Cos (rot),
+            m02 = part.location.x,
+            m12 = part.location.y,
+        };
+
         string shooterID = AbilityUtilities.GetShooterByID(part.abilityID, part.secondaryData);
         // Add shooter
         if (shooterID != null)
@@ -934,14 +935,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             abilities.Insert(0, partObject.GetComponent<Ability>());
         }
-
-        // Disable collider if no sprite
-        if (!(partObject.GetComponent<SpriteRenderer>() && partObject.GetComponent<SpriteRenderer>().sprite)
-            && partObject.GetComponent<Collider2D>() && !partObject.GetComponent<Harvester>())
-        {
-            partObject.GetComponent<Collider2D>().enabled = false;
-        }
-
         return shellPart;
     }
 
@@ -977,12 +970,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         // set death, interactibility and immobility
         IsInvisible = false;
         serverSyncHealthDirty = true;
-        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            colliders[i].enabled = true;
-        }
-
         RememberWeaponActivationStates();
         foreach (var ability in abilities)
         {
@@ -1049,10 +1036,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
         }
 
-        if (OnEntityDeath != null)
-        {
-            OnEntityDeath.Invoke(this, lastDamagedBy);
-        }
+        OnEntityDeath?.Invoke(this, lastDamagedBy);
 
         if (BZM != null && BZM.IsTarget(this))
         {
@@ -1683,22 +1667,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public bool GetInvisible()
     {
         return IsInvisible;
-    }
-
-    public void ToggleColliders(bool enable)
-    {
-        if (enable != collidersEnabled)
-        {
-            foreach (Collider2D c in GetComponentsInChildren<Collider2D>())
-            {
-                if (c.gameObject.name != "Shell Sprite")
-                {
-                    c.enabled = enable;
-                }
-            }
-
-            collidersEnabled = enable;
-        }
     }
 
     // Used by "dumb" stations, that just use their abilities whenever possible
