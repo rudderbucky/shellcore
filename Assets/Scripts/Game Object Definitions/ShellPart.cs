@@ -13,9 +13,11 @@ public class ShellPart : MonoBehaviour
     public List<ShellPart> children = new List<ShellPart>();
     [SerializeField]
     private bool hasDetached; // is the part detached
-    private SpriteRenderer spriteRenderer;
+    [HideInInspector]
+    public SpriteRenderer spriteRenderer;
     private Rigidbody2D rigid;
-    private Entity craft;
+    [HideInInspector]
+    public Entity craft;
     public float partHealth; // health of the part (half added to shell, quarter to core)
     public float partMass; // mass of the part
     private float currentHealth; // current health of part
@@ -31,6 +33,8 @@ public class ShellPart : MonoBehaviour
     public string droppedSectorName;
     public static int partShader = 0;
     public static List<Material> shaderMaterials = null;
+    public Vector2 colliderExtents;
+    public Matrix4x4 colliderMatrix;
 
     public bool weapon = false;
 
@@ -124,8 +128,8 @@ public class ShellPart : MonoBehaviour
         part.partMass = blueprint.mass;
         part.partHealth = blueprint.health;
         part.currentHealth = part.partHealth;
-        var collider = obj.GetComponent<PolygonCollider2D>();
-        collider.isTrigger = true;
+        //var collider = obj.GetComponent<PolygonCollider2D>();
+        //collider.isTrigger = true;
         part.detachible = blueprint.detachible;
 
         var partSys = obj.GetComponent<ParticleSystem>();
@@ -139,6 +143,15 @@ public class ShellPart : MonoBehaviour
         e.rateOverTime = new ParticleSystem.MinMaxCurve(3 * (blueprint.size + 1));
         e.enabled = false;
         part.partSys = partSys;
+        if (spriteRenderer.sprite)
+        {
+            part.colliderExtents = spriteRenderer.sprite.bounds.extents;
+        }
+        else
+        {
+            part.colliderExtents = Vector2.one * 0.5f;
+        }
+
         return obj;
     }
 
@@ -191,7 +204,7 @@ public class ShellPart : MonoBehaviour
         }
 
         GetComponentInChildren<Ability>()?.SetDestroyed(true);
-        GetComponent<Collider2D>().enabled = true;
+        //GetComponent<Collider2D>().enabled = true;
 
         // when a part detaches it should always be completely visible
         var renderers = GetComponentsInChildren<SpriteRenderer>();

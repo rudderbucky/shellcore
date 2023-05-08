@@ -11453,7 +11453,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -405.19873, y: -8.028503}
+  m_AnchoredPosition: {x: -405.19873, y: -8.028564}
   m_SizeDelta: {x: 126.222046, y: 71.2575}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1217874155
@@ -13101,6 +13101,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 1322566509}
   type: 0
+--- !u!1 &1345686860
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1345686862}
+  - component: {fileID: 1345686861}
+  m_Layer: 0
+  m_Name: CollisionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1345686861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345686860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8640a56574798594cbac1c33811d94dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1345686862
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345686860}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1362651031
 GameObject:
   m_ObjectHideFlags: 0
@@ -18084,6 +18128,7 @@ MonoBehaviour:
   regenRate: []
   entityBody: {fileID: 0}
   isDead: 0
+  parts: []
   serverSyncHealthDirty: 1
   husk: 0
   faction: 0
@@ -18147,7 +18192,6 @@ MonoBehaviour:
     locationBasedShardsFound: []
     lastDimension: 0
   loaded: 0
-  shards: 0
   abilityCaps: 
   reputation: 0
   partsToDestroy: []
@@ -21463,12 +21507,12 @@ PrefabInstance:
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1867.5658
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 943.7829
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}

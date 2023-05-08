@@ -59,7 +59,7 @@ public class TargetManager : MonoBehaviour
 
         targetSearchQueries.Clear();
 
-        UpdateColliders();
+        //UpdateColliders();
     }
 
     private void LateUpdate()
@@ -67,28 +67,28 @@ public class TargetManager : MonoBehaviour
         trUpdated = false;
     }
 
-    void UpdateColliders()
-    {
-        for (int i = 0; i < positions.Length; i++)
-        {
-            bool colliderNear = false;
-            for (int j = 0; j < positions.Length; j++)
-            {
-                if (i == j)
-                {
-                    continue;
-                }
+    //void UpdateColliders()
+    //{
+    //    for (int i = 0; i < positions.Length; i++)
+    //    {
+    //        bool colliderNear = false;
+    //        for (int j = 0; j < positions.Length; j++)
+    //        {
+    //            if (i == j)
+    //            {
+    //                continue;
+    //            }
 
-                if ((positions[i] - positions[j]).sqrMagnitude < 900 && !FactionManager.IsAllied(factions[i], factions[j]))
-                {
-                    colliderNear = true;
-                    break;
-                }
-            }
+    //            if ((positions[i] - positions[j]).sqrMagnitude < 900 && !FactionManager.IsAllied(factions[i], factions[j]))
+    //            {
+    //                colliderNear = true;
+    //                break;
+    //            }
+    //        }
 
-            AIData.entities[i].ToggleColliders(colliderNear);
-        }
-    }
+    //        AIData.entities[i].ToggleColliders(colliderNear);
+    //    }
+    //}
 
     void UpdateTargets()
     {

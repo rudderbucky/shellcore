@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class AIData
 {
@@ -12,4 +13,6 @@ public class AIData
     public static List<ShellPart> strayParts = new List<ShellPart>();
     public static List<Draggable> rockFragments = new List<Draggable>();
     public static List<Flag> flags = new List<Flag>();
+    public static List<IProjectile> collidingProjectiles = new List<IProjectile>();
+    public static List<ShardRock> shards = new List<ShardRock>();
 }

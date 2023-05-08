@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class EnergySphereScript : MonoBehaviour
 {
     // TODO: make undraggable if already being dragged
-    private bool collected = false;
+    public bool collected = false;
     public static bool dirty = false;
     private bool initialized = false;
 
@@ -28,7 +28,7 @@ public class EnergySphereScript : MonoBehaviour
             }
         }
 
-        if (NetworkManager.Singleton.IsClient)
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsClient)
         {
             GetComponent<SpriteRenderer>().enabled = false;
         }
@@ -93,31 +93,20 @@ public class EnergySphereScript : MonoBehaviour
         GetComponent<SpriteRenderer>().enabled = Time.time % 0.25F > 0.125F; // math stuff that blinks the part
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void Collect(IHarvester harvester)
     {
-        if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
-        if (((collision.gameObject.name == "Shell Sprite" && collision.GetComponentInParent<IHarvester>() != null)
-             || collision.transform.root.GetComponentInChildren<Harvester>() != null) && !collected)
-        {
-            AudioManager.PlayClipByID("clip_powerup", transform.position);
-            var harvester = collision.GetComponentInParent<IHarvester>();
-            if (harvester == null)
+        AudioManager.PlayClipByID("clip_powerup", transform.position);
+        collected = true;
+        harvester.AddPower(20);
+        harvester.PowerHeal();
+        if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && harvester is ShellCore core)
+            MasterNetworkAdapter.instance.EnergySphereCollectClientRpc(new ClientRpcParams()
             {
-                harvester = collision.transform.root.GetComponentInChildren<IHarvester>();
-            }
-
-            collected = true;
-            harvester.AddPower(20);
-            harvester.PowerHeal();
-            if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && harvester is ShellCore core)
-                MasterNetworkAdapter.instance.EnergySphereCollectClientRpc(new ClientRpcParams()
+                Send = new ClientRpcSendParams()
                 {
-                    Send = new ClientRpcSendParams()
-                    {
-                        TargetClientIds = new List<ulong>() {core.networkAdapter.OwnerClientId}
-                    }
-                });
-            Destroy(gameObject);
-        }
+                    TargetClientIds = new List<ulong>() { core.networkAdapter.OwnerClientId }
+                }
+            });
+        Destroy(gameObject);
     }
 }

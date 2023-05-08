@@ -231,11 +231,11 @@ public class DevConsoleScript : MonoBehaviour
                 }
 
                 spectateEnabled = true;
-                Collider2D[] colliders = player.GetComponentsInChildren<Collider2D>(true);
-                for (int i = 0; i < colliders.Length; i++)
-                {
-                    colliders[i].enabled = false;
-                }
+                //Collider2D[] colliders = player.GetComponentsInChildren<Collider2D>(true);
+                //for (int i = 0; i < colliders.Length; i++)
+                //{
+                //    colliders[i].enabled = false;
+                //}
 
                 player.GetComponent<TractorBeam>().enabled = false;
                 player.GetAbilityHandler().Deinitialize();
