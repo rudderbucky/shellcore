@@ -44,7 +44,8 @@ public class CollisionManager : MonoBehaviour
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off && NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost) return;
         // Projectile collisions
 
-        foreach (var projectile in AIData.collidingProjectiles)
+        var projectiles = AIData.collidingProjectiles.ToArray();
+        foreach (var projectile in projectiles)
         {
             ProjectileCollision(projectile);
         }
@@ -68,7 +69,8 @@ public class CollisionManager : MonoBehaviour
         foreach (var entity in AIData.entities)
         {
             Vector3 pos = entity.transform.position;
-            foreach (var energy in AIData.energySpheres)
+            var spheres = AIData.energySpheres.ToArray();
+            foreach (var energy in spheres)
             {
                 if (energy.collected)
                     continue;
@@ -85,6 +87,7 @@ public class CollisionManager : MonoBehaviour
                         {
                             energy.Collect(entity as IHarvester);
                         }
+                        break;
                     }
                 }
             }
@@ -93,6 +96,7 @@ public class CollisionManager : MonoBehaviour
 
     static bool ProjectileCollision(IProjectile projectile)
     {
+        UpdateEntityColliders();
         Vector2 pos = projectile.GetPosition();
         for (int i = 0; i < AIData.entities.Count; i++)
         {
