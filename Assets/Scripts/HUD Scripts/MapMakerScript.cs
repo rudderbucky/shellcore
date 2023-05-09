@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -257,16 +258,16 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         }
     }
 
-    private void DrawSector(Sector sector, int dimension, LandPlatformGenerator lpg, bool displayStations)
+    private bool DrawSector(Sector sector, int dimension, LandPlatformGenerator lpg, bool displayStations)
     {
         // get every sector to find their representations
         if (SectorManager.testJsonPath == null && !(mapVisibleCheatEnabled || (!playerCore || playerCore.cursave.sectorsSeen.Contains(sector.sectorName)))) 
         {
-            return;
+            return false;
         }
         if ((playerCore && sector.dimension != playerCore.Dimension) || (!playerCore && sector.dimension != dimension))
         {
-            return;
+            return false;
         }
 
         // set up the sector image
@@ -297,16 +298,23 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
         CreateLandPlatforms(sector, lpg, sect);
         // set up minimap images if necessary
-        if (!displayStations) return;
+        if (!displayStations) return true;
         CreateMinimapImages(sector);
+        return true;
     }
 
-    void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0, bool resetPosition = true, bool displayStations = false)
-    {
-        InitializeVariables(zoomoutFactor, resetPosition);
-
-        DefineGridSize(sectors, dimension);
-
+    IEnumerator DrawCoroutine(List<Sector> sectors, int dimension, bool displayStations)
+    {        
+        if (player)
+        {
+            sectors = new List<Sector>(sectors.ToArray());
+            sectors.Sort((x, y) => 
+            {
+                var dx = new Vector3(x.bounds.x + x.bounds.w / 2, x.bounds.y - x.bounds.h / 2);
+                var dy = new Vector3(y.bounds.x + y.bounds.w / 2, y.bounds.y - y.bounds.h / 2);
+                return (int)(dx - player.transform.position).sqrMagnitude - (int)(dy - player.transform.position).sqrMagnitude;
+            });
+        }
         gridImg.rectTransform.sizeDelta = new Vector2((gridSizeX * zoomoutFactor + distancePerTextMarker) / zoomoutFactor,
             (gridSizeY * zoomoutFactor + distancePerTextMarker) / zoomoutFactor);
         // round to multiple of 100 to maintain grid lining
@@ -316,12 +324,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         var lpg = LandPlatformGenerator.Instance;
         Vector2 oldLPGOffset = lpg.Offset;
 
-        foreach (Sector sector in sectors)
-        {
-            DrawSector(sector, dimension, lpg, displayStations);
-        }
-        lpg.Offset = oldLPGOffset;
-
         for (int i = 0; i < Mathf.Max(gridSizeX, gridSizeY) * zoomoutFactor / distancePerTextMarker + 1; i++)
         {
             AddMapDistanceMarker(new Vector2(i * distancePerTextMarker + const4 * zoomoutFactor, const1 * zoomoutFactor) / zoomoutFactor, i, TextAnchor.LowerLeft);
@@ -329,10 +331,8 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 AddMapDistanceMarker(new Vector2(const2 * zoomoutFactor, -i * distancePerTextMarker - const4 * zoomoutFactor) / zoomoutFactor, i, TextAnchor.UpperLeft);
         }
 
-        // draw objective locations
         if (player)
         {
-            DrawObjectiveLocations();
             if (anchor == Vector2.zero)
             {
                 Vector2 playerPos = new Vector2(player.transform.position.x - minX, player.transform.position.y - maxY);
@@ -348,8 +348,41 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             }
         }
 
+        int x = 0;
+        foreach (Sector sector in sectors)
+        {
+            var drew = DrawSector(sector, dimension, lpg, displayStations);
+            if (drew) x++;
+            if (x >= 10)
+            {
+                x = 0;
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        lpg.Offset = oldLPGOffset;
+
         // clear markers
         PartIndexInventoryButton.partMarkerSectorNames.Clear();
+
+        // draw objective locations
+        if (player)
+        {
+            DrawObjectiveLocations();
+        }
+        yield return null;
+    }
+
+    private Coroutine coroutine;
+
+    void Draw(List<Sector> sectors, int zoomoutFactor = 4, int dimension = 0, bool resetPosition = true, bool displayStations = false)
+    {
+        InitializeVariables(zoomoutFactor, resetPosition);
+        DefineGridSize(sectors, dimension);
+        
+        if (coroutine != null) StopCoroutine(coroutine);
+        if (!gameObject.activeInHierarchy) return;
+        instance.arrows.Clear();
+        coroutine = StartCoroutine(DrawCoroutine(sectors, dimension, displayStations));
     }
 
     private void AddMapDistanceMarker(Vector2 pos, int i, TextAnchor anchor)
