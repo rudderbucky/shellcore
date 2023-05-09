@@ -153,6 +153,7 @@ public class CollisionManager : MonoBehaviour
     // Almost same for-loops multiple times. Combine somehow?
     public static Transform GetTargetAtPosition(Vector2 pos)
     {
+        UpdateEntityColliders();
         // Entities
         for (int i = 0; i < AIData.entities.Count; i++)
         {
