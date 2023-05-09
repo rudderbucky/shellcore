@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Linq;
 
 public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -368,6 +369,10 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         if (player)
         {
             DrawObjectiveLocations();
+        }
+        foreach(var c in GetComponentsInParent<Canvas>().Reverse())
+        {
+            c.sortingOrder = ++PlayerViewScript.currentLayer;   
         }
         yield return null;
     }

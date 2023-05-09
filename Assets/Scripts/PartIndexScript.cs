@@ -195,6 +195,7 @@ public class PartIndexScript : MonoBehaviour
             StopCoroutine(attemptAddPartCoroutine);
             attemptAddPartCoroutine = null;
         }
+        GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
         StartCoroutine(AttemptAddPartHelper());
     }
 
