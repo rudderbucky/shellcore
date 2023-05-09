@@ -187,6 +187,11 @@ public class InputManager : MonoBehaviour
         return keys.ContainsKey(key) ? Input.GetKey(keys[key].overrideKey) : false;
     }
 
+    public static KeyCode GetKeyCode(KeyName key)
+    {
+        return keys.ContainsKey(key) ? keys[key].overrideKey : KeyCode.None;
+    }
+
     public static bool GetKeyDown(KeyName key)
     {
         return keys.ContainsKey(key) ? Input.GetKeyDown(keys[key].overrideKey) : false;

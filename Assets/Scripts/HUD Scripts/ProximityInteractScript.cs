@@ -105,6 +105,10 @@ public class ProximityInteractScript : MonoBehaviour
         {
             // interact indicator image and animation
             interactIndicator.gameObject.SetActive(true);
+            var q = InputManager.GetKeyCode(KeyName.Interact) == KeyCode.Q;
+            interactIndicator.GetComponentsInChildren<Text>(true)[1].gameObject.SetActive(q);
+            interactIndicator.GetComponentsInChildren<Text>(true)[0].GetComponent<RectTransform>().anchoredPosition = q ? new Vector2(20, -1) : Vector2.down;
+
             var y = interactIndicator.localScale.y;
             if (lastInteractable != closest)
             {
