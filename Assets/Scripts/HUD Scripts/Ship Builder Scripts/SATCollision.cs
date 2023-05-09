@@ -87,7 +87,7 @@ public static class SATCollision
         return points;
     }
 
-    public static Vector2[] GetColliders(Entity entity)
+    public static Vector2[] GetColliders(Entity entity, out Bounds bounds)
     {
         float rot = entity.transform.eulerAngles.z * Mathf.Deg2Rad;
         Vector2 pos = entity.transform.position;
@@ -122,6 +122,29 @@ public static class SATCollision
         vertices[offset + 1] = shipMatrix.MultiplyPoint3x4(new Vector3( size, -size));
         vertices[offset + 2] = shipMatrix.MultiplyPoint3x4(new Vector3( size,  size));
         vertices[offset + 3] = shipMatrix.MultiplyPoint3x4(new Vector3(-size,  size));
+
+        float minX = vertices[0].x;
+        float minY = vertices[0].y;
+        float maxX = vertices[0].x;
+        float maxY = vertices[0].y;
+
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            if (vertices[i].x < minX)
+                minX = vertices[i].x;
+            if (vertices[i].y < minY)
+                minY = vertices[i].y;
+            if (vertices[i].x > maxX)
+                maxX = vertices[i].x;
+            if (vertices[i].y > maxY)
+                maxY = vertices[i].y;
+        }
+
+        bounds = new Bounds
+        {
+            min = new Vector3(minX, minY),
+            max = new Vector3(maxX, maxY)
+        };
 
         return vertices;
     }

@@ -85,12 +85,6 @@ public class ReticleScript : MonoBehaviour
         mousePos.z = CameraScript.zLevel;
         Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
         var hits = CollisionManager.GetAllTargetsAtPosition(mouseWorldPos);
-        Debug.Log($"Mouse Pos: {mousePos} Mouse World Pos: {mouseWorldPos} Player pos: {PlayerCore.Instance.transform.position}");
-        Debug.Log($"Hit count: {hits.Length}");
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Debug.Log(hits[i]);
-        }
 
         bool droneInteraction = false;
 

@@ -174,13 +174,13 @@ public class IonLineController : MonoBehaviour
             ThickenLine(0.005F);
 
             var dps = damage * Time.deltaTime;
-            var raycastHits = Physics2D.RaycastAll(transform.position, GetVectorByBearing(originalBearing), range);
-            for (int i = 0; i < raycastHits.Length; i++)
+
+            var damageable = CollisionManager.RaycastDamageable(transform.position, transform.position + GetVectorByBearing(originalBearing) * range);
+            if (damageable != null)
             {
-                var damageable = raycastHits[i].transform.GetComponentInParent<IDamageable>();
-                if (raycastHits[i].transform && damageable != null && damageable.GetFaction() != Core.faction && !damageable.GetIsDead() && damageable.GetTerrain() != Entity.TerrainType.Ground)
+                if (damageable.GetFaction() != Core.faction && !damageable.GetIsDead() && damageable.GetTerrain() != Entity.TerrainType.Ground)
                 {
-                    var hitTransform = raycastHits[i].transform;
+                    var hitTransform = damageable.GetTransform();
 
                     var magnitude = (hitTransform.position - transform.position).magnitude;
                     line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * magnitude);
@@ -196,8 +196,6 @@ public class IonLineController : MonoBehaviour
                     {
                         part.TakeDamage(residue);
                     }
-
-                    break;
                 }
             }
 
