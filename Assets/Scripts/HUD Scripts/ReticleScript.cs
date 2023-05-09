@@ -126,8 +126,8 @@ public class ReticleScript : MonoBehaviour
         Draggable draggableTarget = null;
         for (int i = 0; i < hits.Length; i++)
         {
-            draggableTarget = hits[i].GetTransform()?.gameObject.GetComponent<Draggable>();
-            if (hits[i].GetTransform()?.gameObject.GetComponent<IVendor>() == null) break;
+            draggableTarget = hits[i]?.gameObject.GetComponent<Draggable>();
+            if (hits[i]?.gameObject.GetComponent<IVendor>() == null) break;
         }
 
         if (draggableTarget && TractorBeam.InvertTractorCheck(craft, draggableTarget) && draggableTarget.transform != craft.transform)
@@ -147,7 +147,7 @@ public class ReticleScript : MonoBehaviour
         }
 
 
-        ITargetable curTarg = hits[0].GetTransform()?.gameObject.GetComponent<ITargetable>();
+        ITargetable curTarg = hits[0]?.gameObject.GetComponent<ITargetable>();
         // grab the first one's craft component, others don't matter
         if (curTarg != null && !curTarg.GetIsDead() && curTarg as Entity != craft)
         // if it is not null, dead or the player itself and is interactible
@@ -350,22 +350,22 @@ public class ReticleScript : MonoBehaviour
     ///
     /// Checks if the passed Transform is a Drone that the player owns. If so, orders it to move/follow accordingly.
     ///
-    public bool DroneCheck(Transform possibleDrone, ITargetable[] hits, Vector3 worldMovementVector)
+    public bool DroneCheck(Transform possibleDrone, Transform[] hits, Vector3 worldMovementVector)
     {
         var check = possibleDrone && possibleDrone.GetComponent<Drone>() &&
                     possibleDrone.GetComponent<Drone>().GetOwner() != null
                     && possibleDrone.GetComponent<Drone>().GetOwner().Equals(craft)
-                    && (hits == null || hits.Length == 0 || hits[0].GetTransform() != possibleDrone);
+                    && (hits == null || hits.Length == 0 || hits[0] != possibleDrone);
         if (check)
         {
             // Move the drone if the hit array is empty. Otherwise, if the hit array's first element is the player,
             // order a follow.
-            if (hits == null || hits.Length == 0 || hits[0].GetTransform() != craft.transform)
+            if (hits == null || hits.Length == 0 || hits[0] != craft.transform)
             {
                 possibleDrone.GetComponent<Drone>().CommandMovement(worldMovementVector);
                 targSys.SetTarget(null);
             }
-            else if (hits[0].GetTransform() == craft.transform) // Order a follow if this passes
+            else if (hits[0] == craft.transform) // Order a follow if this passes
             {
                 possibleDrone.GetComponent<Drone>().CommandFollowOwner();
                 targSys.SetTarget(null);

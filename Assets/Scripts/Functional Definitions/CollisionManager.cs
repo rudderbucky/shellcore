@@ -125,7 +125,7 @@ public class CollisionManager : MonoBehaviour
     }
 
     // Almost same for-loops multiple times. Combine somehow?
-    public static ITargetable GetTargetAtPosition(Vector2 pos)
+    public static Transform GetTargetAtPosition(Vector2 pos)
     {
         // Entities
         foreach (var entity in AIData.entities)
@@ -152,7 +152,7 @@ public class CollisionManager : MonoBehaviour
                         pos);
                     if (collision)
                     {
-                        return entity;
+                        return entity.transform;
                     }
                 }
             }
@@ -164,16 +164,36 @@ public class CollisionManager : MonoBehaviour
             Vector2 pos2 = shard.transform.position;
             if ((pos - pos2).sqrMagnitude < 4f)
             {
-                return shard;
+                return shard.transform;
+            }
+        }
+
+        // Parts
+        foreach (var part in AIData.strayParts)
+        {
+            Vector2 pos2 = part.transform.position;
+            if ((pos - pos2).sqrMagnitude < 4f)
+            {
+                return part.transform;
+            }
+        }
+
+        // Shards
+        foreach (var shard in AIData.rockFragments)
+        {
+            Vector2 pos2 = shard.transform.position;
+            if ((pos - pos2).sqrMagnitude < 4f)
+            {
+                return shard.transform;
             }
         }
 
         return null;
     }
 
-    public static ITargetable[] GetAllTargetsAtPosition(Vector2 pos)
+    public static Transform[] GetAllTargetsAtPosition(Vector2 pos)
     {
-        List<ITargetable> targets = new();
+        List<Transform> targets = new();
 
         // Entities
         foreach (var entity in AIData.entities)
@@ -198,7 +218,7 @@ public class CollisionManager : MonoBehaviour
                         pos);
                     if (collision)
                     {
-                        targets.Add(entity);
+                        targets.Add(entity.transform);
                         break;
                     }
                 }
@@ -211,7 +231,27 @@ public class CollisionManager : MonoBehaviour
             Vector2 pos2 = shard.transform.position;
             if ((pos - pos2).sqrMagnitude < 4f)
             {
-                targets.Add(shard);
+                targets.Add(shard.transform);
+            }
+        }
+
+        // Parts
+        foreach (var part in AIData.strayParts)
+        {
+            Vector2 pos2 = part.transform.position;
+            if ((pos - pos2).sqrMagnitude < 4f)
+            {
+                targets.Add(part.transform);
+            }
+        }
+
+        // Shards
+        foreach (var shard in AIData.rockFragments)
+        {
+            Vector2 pos2 = shard.transform.position;
+            if ((pos - pos2).sqrMagnitude < 4f)
+            {
+                targets.Add(shard.transform);
             }
         }
 
