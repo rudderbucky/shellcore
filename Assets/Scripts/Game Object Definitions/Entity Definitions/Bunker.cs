@@ -5,7 +5,7 @@ public class Bunker : GroundConstruct, IVendor
     public VendingBlueprint vendingBlueprint;
     BattleZoneManager BZManager;
 
-    public bool NeedsSameFaction()
+    public bool NeedsAlliedFaction()
     {
         return true;
     }

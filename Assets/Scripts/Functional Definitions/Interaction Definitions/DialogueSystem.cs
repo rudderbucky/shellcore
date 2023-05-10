@@ -800,7 +800,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 break;
             case Dialogue.DialogueAction.Outpost:
                 endDialogue(0, false);
-                if ((speaker as IVendor).NeedsSameFaction() && (speaker as IVendor).GetFaction() != player.faction)
+                if ((speaker as IVendor).NeedsAlliedFaction() && !FactionManager.IsAllied((speaker as IVendor).GetFaction(), player.faction))
                 {
                     return;
                 }
