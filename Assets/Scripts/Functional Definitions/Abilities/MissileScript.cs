@@ -197,7 +197,11 @@ public class MissileScript : MonoBehaviour, IProjectile
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Client) return;
         if (fired) return;
 
-        damageable.TakeShellDamage(damage, 0, owner);
+        float residue = damageable.TakeShellDamage(damage, 0, owner);
+        if (damageable is Entity)
+        {
+            (damageable as Entity).TakeCoreDamage(residue);
+        }
         damage = 0;
         InstantiateHitPrefab();
         fired = true;
