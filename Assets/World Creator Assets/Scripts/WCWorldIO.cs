@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Unity.Netcode;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 public class WCWorldIO : GUIWindowScripts
 {
@@ -432,7 +433,12 @@ public class WCWorldIO : GUIWindowScripts
                 break;
             case IOMode.ReadWaveJSON:
             case IOMode.WriteWaveJSON:
-                directories = Directory.GetFiles(System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder"));
+                var path = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                directories = Directory.GetFiles(path);
                 break;
         }
 
@@ -467,6 +473,10 @@ public class WCWorldIO : GUIWindowScripts
                     }
                 }), displayRdbValidity);
             }
+        }
+        foreach(var c in GetComponentsInParent<Canvas>().Reverse())
+        {
+            c.sortingOrder = ++PlayerViewScript.currentLayer;   
         }
     }
 
