@@ -47,6 +47,8 @@ public class CollisionManager : MonoBehaviour
         var projectiles = AIData.collidingProjectiles.ToArray();
         foreach (var projectile in projectiles)
         {
+            if (projectile == null) 
+                continue;
             ProjectileCollision(projectile);
         }
     }
@@ -72,6 +74,8 @@ public class CollisionManager : MonoBehaviour
             var spheres = AIData.energySpheres.ToArray();
             foreach (var energy in spheres)
             {
+                if (!energy)
+                    continue;
                 if (energy.collected)
                     continue;
                 if ((pos - energy.transform.position).sqrMagnitude < 1f)
@@ -295,7 +299,7 @@ public class CollisionManager : MonoBehaviour
         return targets.ToArray();
     }
 
-    public static IDamageable RaycastDamageable(Vector2 start, Vector2 end)
+    public static IDamageable RaycastDamageable(Vector2 start, Vector2 end, out Vector2 point)
     {
         // Update cache once per frame, in case there's multiple ion lines
         if (Time.frameCount >= _ionFrame)
@@ -318,12 +322,13 @@ public class CollisionManager : MonoBehaviour
         }
 
         // Entities
-        for (int i = 0; i < AIData.entities.Count; i++)
+        for (int k = 0; k < pointCount; k++)
         {
+            for (int i = 0; i < AIData.entities.Count; i++)
+            {
             if (!_bounds[i].Intersects(lineBounds))
                 continue;
-            for (int k = 0; k < pointCount; k++)
-            {
+            
                 Vector2 pos = Vector2.Lerp(start, end, (float)k / pointCount);
                 Vector2[] colliders = _colliders[i];
                 for (int j = 0; j < colliders.Length / 4; j++)
@@ -336,6 +341,7 @@ public class CollisionManager : MonoBehaviour
                         pos);
                     if (collision)
                     {
+                        point = pos;
                         return AIData.entities[i];
                     }
                 }
@@ -343,19 +349,21 @@ public class CollisionManager : MonoBehaviour
         }
 
         // Shard Rocks
-        foreach (var shard in AIData.shards)
+        
+        for (int k = 0; k < pointCount; k++)
         {
-            for (int k = 0; k < pointCount; k++)
+            foreach (var shard in AIData.shards)
             {
                 Vector2 pos = Vector2.Lerp(start, end, (float)k / pointCount);
                 Vector2 pos2 = shard.transform.position;
                 if ((pos - pos2).sqrMagnitude < 10f)
                 {
+                    point = pos;
                     return shard;
                 }
             }
         }
-
+        point = Vector2.zero;
         return null;
     }
 }
