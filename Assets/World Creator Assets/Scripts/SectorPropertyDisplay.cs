@@ -174,6 +174,7 @@ public class SectorPropertyDisplay : MonoBehaviour
             w.text = currentSector.bounds.w.ToString();
             h.text = currentSector.bounds.h.ToString();
         }
+        if (updateLayout) ForceUpdateLayoutGroup();
     }
 
     public void UpdateType()
@@ -335,6 +336,13 @@ public class SectorPropertyDisplay : MonoBehaviour
         bgSpawnInputFields.Add((field, drop));
         field.text = text;
         drop.value = faction;
+        updateLayout = true;
+    }
+
+    private bool updateLayout;
+
+    private void ForceUpdateLayoutGroup()
+    {
         Canvas.ForceUpdateCanvases();
         bgSpawnScrollContents.GetComponent<RectTransform>().sizeDelta = new Vector2(100, bgSpawnScrollContents.GetComponent<VerticalLayoutGroup>().minHeight);
         LayoutRebuilder.ForceRebuildLayoutImmediate(mainContents);
@@ -353,6 +361,7 @@ public class SectorPropertyDisplay : MonoBehaviour
         }
 
         bgSpawnInputFields.Clear();
+        updateLayout = true;
     }
 
     public void TryParseBGSpawns()
