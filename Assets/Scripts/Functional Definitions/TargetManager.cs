@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TargetManager : MonoBehaviour
@@ -9,15 +10,38 @@ public class TargetManager : MonoBehaviour
 
     List<(ITargetingSystem, Entity.EntityCategory)> targetSearchQueries = new List<(ITargetingSystem, Entity.EntityCategory)>();
 
-    Dictionary<int, List<Entity>> groundTargets;
-    Dictionary<int, List<Entity>> airTargets;
-    Vector2[] positions;
-    int[] factions;
+    //Dictionary<int, List<Entity>> groundTargets = new();
+    //Dictionary<int, List<Entity>> airTargets = new();
     bool trUpdated = false;
+
+    Entity[][] groundTargets;
+    Entity[][] airTargets;
+    Entity[][] allTargets;
+    public int[] groundCount;
+    public int[] airCount;
+    public int[] allCount;
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        groundTargets = new Entity[FactionManager.FactionArrayLength][];
+        airTargets = new Entity[FactionManager.FactionArrayLength][];
+        allTargets = new Entity[FactionManager.FactionArrayLength][];
+
+        groundCount = new int[FactionManager.FactionArrayLength];
+        airCount = new int[FactionManager.FactionArrayLength];
+        allCount = new int[FactionManager.FactionArrayLength];
+
+        for (int i = 0; i < FactionManager.FactionArrayLength; i++)
+        {
+            groundTargets[i] = new Entity[1024];
+            airTargets[i] = new Entity[1024];
+            allTargets[i] = new Entity[1024];
+        }
     }
 
     public static void Enqueue(ITargetingSystem targetingSystem, Entity.EntityCategory targetCategory = Entity.EntityCategory.All)
@@ -42,7 +66,6 @@ public class TargetManager : MonoBehaviour
         {
             UpdateTargets();
         }
-
         for (int i = 0; i < targetSearchQueries.Count; i++)
         {
             var ts = targetSearchQueries[i];
@@ -58,8 +81,6 @@ public class TargetManager : MonoBehaviour
         }
 
         targetSearchQueries.Clear();
-
-        //UpdateColliders();
     }
 
     private void LateUpdate()
@@ -69,45 +90,65 @@ public class TargetManager : MonoBehaviour
 
     void UpdateTargets()
     {
-        airTargets = new Dictionary<int, List<Entity>>();
-        groundTargets = new Dictionary<int, List<Entity>>();
-        positions = new Vector2[AIData.entities.Count];
-        factions = new int[AIData.entities.Count];
+        Array.Fill(groundCount, 0);
+        Array.Fill(airCount, 0);
+        Array.Fill(allCount, 0);
 
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            positions[i] = AIData.entities[i].transform.position;
-            factions[i] = AIData.entities[i].faction;
-
-            if (AIData.entities[i].GetIsDead()
-                || AIData.entities[i].IsInvisible)
+            Entity ent = AIData.entities[i];
+            if (ent.GetIsDead()
+                || ent.IsInvisible)
             {
                 continue;
             }
-
             int faction = AIData.entities[i].faction;
-            if ((AIData.entities[i].GetTerrain() & Entity.TerrainType.Air) != 0)
+
+            for (int j = 0; j < FactionManager.FactionArrayLength; j++)
             {
-                if (!airTargets.ContainsKey(faction))
+                if (FactionManager.IsAllied(j, faction))
+                    continue;
+                if (!FactionManager.FactionExists(j))
+                    continue;
+                allTargets[j][allCount[j]++] = ent;
+
+                if ((ent.GetTerrain() & Entity.TerrainType.Air) != 0)
                 {
-                    airTargets[faction] = new List<Entity>();
+                    airTargets[j][airCount[j]++] = ent;
                 }
 
-                airTargets[faction].Add(AIData.entities[i]);
-            }
-
-            if ((AIData.entities[i].GetTerrain() & Entity.TerrainType.Ground) != 0)
-            {
-                if (!groundTargets.ContainsKey(faction))
+                if ((AIData.entities[i].GetTerrain() & Entity.TerrainType.Ground) != 0)
                 {
-                    groundTargets[faction] = new List<Entity>();
+                    groundTargets[j][groundCount[j]++] = ent;
                 }
 
-                groundTargets[faction].Add(AIData.entities[i]);
+                CheckArraySizes(j);
             }
         }
 
         trUpdated = true;
+    }
+
+    void CheckArraySizes(int faction)
+    {
+        if (allTargets[faction].Length == allCount[faction] - 1)
+        {
+            Entity[] newArray = new Entity[allTargets[faction].Length * 2];
+            Array.Copy(allTargets[faction], newArray, allTargets[faction].Length);
+            allTargets[faction] = newArray;
+        }
+        if (airTargets[faction].Length == airCount[faction] - 1)
+        {
+            Entity[] newArray = new Entity[airTargets[faction].Length * 2];
+            Array.Copy(airTargets[faction], newArray, airTargets[faction].Length);
+            airTargets[faction] = newArray;
+        }
+        if (groundTargets[faction].Length == groundCount[faction] - 1)
+        {
+            Entity[] newArray = new Entity[groundTargets[faction].Length * 2];
+            Array.Copy(groundTargets[faction], newArray, groundTargets[faction].Length);
+            groundTargets[faction] = newArray;
+        }
     }
 
     public static Transform GetTargetImmediate(ITargetingSystem ts, Entity.EntityCategory ec = Entity.EntityCategory.All)
@@ -115,74 +156,85 @@ public class TargetManager : MonoBehaviour
         return Instance.GetTarget(ts, ec);
     }
 
-    public static List<Entity> GetTargetList(ITargetingSystem ts, Entity.EntityCategory ec)
+    public static Entity[] GetTargetArray(ITargetingSystem ts, Entity.EntityCategory ec, out int count)
     {
-        return Instance.getTargetList(ts, ec);
+        return Instance.getTargetList(ts, ec, out count);
     }
 
-    public static Transform GetClosestFromList(List<Entity> targets, Vector3 pos, ITargetingSystem ts, Entity.EntityCategory ec)
+    public static Transform GetClosestFromList(Entity[] targets, Vector3 pos, ITargetingSystem ts, Entity.EntityCategory ec, int targetCount)
     {
-        return Instance.getClosestFromList(targets, pos, ts.GetEntity(), ts.GetAbility(), ec);
+        return Instance.getClosestFromList(targets, pos, ts, ts.GetAbility(), ec, targetCount);
     }
 
-    public static Transform GetClosestFromList(List<Entity> targets, ITargetingSystem ts, Entity.EntityCategory ec)
+    public static Transform GetClosestFromList(Entity[] targets, ITargetingSystem ts, Entity.EntityCategory ec, int targetCount)
     {
-        return Instance.getClosestFromList(targets, ts, ec);
+        return Instance.getClosestFromList(targets, ts, ec, targetCount);
     }
 
-    private List<Entity> getTargetList(ITargetingSystem ts, Entity.EntityCategory ec)
+    private Entity[] getTargetList(ITargetingSystem ts, Entity.EntityCategory ec, out int count)
     {
-        List<Entity> targets = new List<Entity>();
-        for (int i = 0; i < FactionManager.FactionArrayLength; i++)
+        int faction = ts.GetEntity().faction;
+
+        if (ts.GetAbility() == null)
         {
-            if (FactionManager.IsAllied(ts.GetEntity().faction, i) || !FactionManager.FactionExists(i))
+            count = allCount[faction];
+            return allTargets[faction];
+        }
+        else
+        {
+            bool air = ts.GetAbility().TerrainCheck(Entity.TerrainType.Air);
+            bool ground = ts.GetAbility().TerrainCheck(Entity.TerrainType.Ground);
+
+            if (air && ground)
             {
-                continue;
+                count = allCount[faction];
+                return allTargets[faction];
             }
-
-            if (ts.GetAbility() == null)
+            if (air)
             {
-                if (airTargets.ContainsKey(i))
-                {
-                    targets.AddRange(airTargets[i]);
-                }
-
-                if (groundTargets.ContainsKey(i))
-                {
-                    targets.AddRange(groundTargets[i]);
-                }
+                count = airCount[faction];
+                return airTargets[faction];
             }
-            else
+            if (ground)
             {
-                if (ts.GetAbility().TerrainCheck(Entity.TerrainType.Air)
-                    && airTargets.ContainsKey(i))
-                {
-                    targets.AddRange(airTargets[i]);
-                }
-
-                if (ts.GetAbility().TerrainCheck(Entity.TerrainType.Ground)
-                    && groundTargets.ContainsKey(i))
-                {
-                    targets.AddRange(groundTargets[i]);
-                }
+                count = groundCount[faction];
+                return groundTargets[faction];
             }
         }
-
-        return targets;
+        Debug.LogWarning("No target array!");
+        count = 0;
+        return new Entity[] { };
     }
 
-    private Transform getClosestFromList(List<Entity> targets, ITargetingSystem ts, Entity.EntityCategory ec)
+    private Transform getClosestFromList(Entity[] targets, ITargetingSystem ts, Entity.EntityCategory ec, int targetCount)
     {
         var pos = ts.GetAbility() ? ts.GetAbility().transform.position : ts.GetEntity().transform.position;
-        return getClosestFromList(targets, pos, ts.GetEntity(), ts.GetAbility(), ec);
+        return getClosestFromList(targets, pos, ts, ts.GetAbility(), ec, targetCount);
     }
 
-    private Transform getClosestFromList(List<Entity> targets, Vector3 pos, Entity tsEntity, Ability tsAbility, Entity.EntityCategory ec)
+    public int GetTargetCount(ITargetingSystem ts, int faction)
+    {
+        bool ground = ts.GetAbility().TerrainCheck(Entity.TerrainType.Ground);
+        bool air = ts.GetAbility().TerrainCheck(Entity.TerrainType.Air);
+
+        if (ground && air)
+            return allCount[faction];
+        if (ground)
+            return groundCount[faction];
+        if (air)
+            return airCount[faction];
+        return 0;
+    }
+
+    private Transform getClosestFromList(Entity[] targets, Vector3 pos, ITargetingSystem ts, WeaponAbility tsAbility, Entity.EntityCategory ec, int targetCount)
     {
         Transform closest = null;
         float closestD = float.MaxValue;
+        Entity tsEntity = ts.GetEntity();
 
-        for (int i = 0; i < targets.Count; i++) // go through all entities and check them for several factors
+        //int targetCount = GetTargetCount(ts, ts.GetEntity().faction);
+
+        for (int i = 0; i < targetCount; i++) // go through all entities and check them for several factors
         {
             // check if the target's category matches
             if (ec == Entity.EntityCategory.All || targets[i].category == ec)
@@ -219,11 +271,9 @@ public class TargetManager : MonoBehaviour
         }
 
         //Find the closest enemy
+        Entity[] targets = getTargetList(ts, ec, out var count);
 
-
-        List<Entity> targets = getTargetList(ts, ec);
-
-        var closest = getClosestFromList(targets, ts, ec);
+        var closest = getClosestFromList(targets, ts, ec, count);
         // set to the closest compatible target
         ts.SetTarget(closest);
         return closest;

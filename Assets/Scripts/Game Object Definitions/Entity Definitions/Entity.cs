@@ -47,6 +47,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public List<ShellPart> parts; // List containing all parts of the entity
     protected float[] currentHealth; // current health of the entity (index 0 is shell, index 1 is core, index 2 is energy)
     public bool serverSyncHealthDirty = true;
+    protected Vector2[] _colliders;
+    protected Bounds _bounds;
 
     public bool husk;
     [SerializeField]
@@ -772,6 +774,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         if (shellSprite)
         {
             parts.Add(shellSprite.GetComponent<ShellPart>());
+            UpdateColliders();
         }
 
         ConnectedTreeCreator();
@@ -802,6 +805,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 SetUpPart(blueprint.parts[i]);
             }
+            UpdateColliders();
         }
     }
 
@@ -812,6 +816,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         info.location = part.info.location;
         info.location += new Vector2(Random.Range(-0.1F, 0.1F), Random.Range(-0.1F, 0.1F));
         SetUpPart(info);
+        UpdateColliders();
     }
 
 
@@ -1376,6 +1381,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             networkAdapter.DetachPartClientRpc(part.info.location);
         }
         parts.Remove(part);
+        UpdateColliders();
     }
 
 
@@ -1695,5 +1701,25 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 active.Activate();
             }
         }
+    }
+
+    protected void UpdateColliders()
+    {
+        _colliders = SATCollision.GetColliders(this, out var bounds);
+        _bounds = bounds;
+    }
+
+    public Vector2[] GetColliders()
+    {
+        if (_colliders == null)
+            UpdateColliders();
+        return _colliders;
+    }
+
+    public Bounds GetBounds()
+    {
+        if (_bounds == null)
+            UpdateColliders();
+        return _bounds;
     }
 }

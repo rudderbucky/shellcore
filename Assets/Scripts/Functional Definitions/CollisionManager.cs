@@ -59,8 +59,8 @@ public class CollisionManager : MonoBehaviour
         _bounds = new Bounds[AIData.entities.Count];
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            _colliders[i] = SATCollision.GetColliders(AIData.entities[i], out var bounds);
-            _bounds[i] = bounds;
+            _colliders[i] = AIData.entities[i].GetColliders();
+            _bounds[i] = AIData.entities[i].GetBounds();
         }
     }
 
@@ -100,13 +100,12 @@ public class CollisionManager : MonoBehaviour
 
     static bool ProjectileCollision(IProjectile projectile)
     {
-        UpdateEntityColliders();
         Vector2 pos = projectile.GetPosition();
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if (!_bounds[i].Contains(pos))
-                continue;
             Entity entity = AIData.entities[i];
+            if (!entity.GetBounds().Contains(pos))
+                continue;
             if ((pos - (Vector2)entity.transform.position).sqrMagnitude < 1024f)
             {
                 if (entity.IsInvisible)
@@ -122,7 +121,7 @@ public class CollisionManager : MonoBehaviour
                 if (projectile.GetOwner() && projectile.GetOwner() == entity)
                     continue;
 
-                Vector2[] colliders = _colliders[i];
+                Vector2[] colliders = entity.GetColliders();
                 for (int j = 0; j < colliders.Length / 4; j++)
                 {
                     bool collision = SATCollision.PointInRectangle(

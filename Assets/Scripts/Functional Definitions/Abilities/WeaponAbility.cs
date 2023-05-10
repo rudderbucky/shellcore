@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -281,31 +282,56 @@ public abstract class WeaponAbility : ActiveAbility
         return true;
     }
 
-    protected virtual List<Transform> GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
+    protected virtual Transform[] GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
     {
-        List<Entity> potentialTargets = TargetManager.GetTargetList(targetingSystem, category);
-        List<Transform> targets = new List<Transform>();
         // Just get the N closest entities, the complexity is just O(N) instead of sorting which would be O(NlogN)
-        int i = 0;
-        while (i < num)
+
+        Entity[] potentialTargets = TargetManager.GetTargetArray(targetingSystem, category, out var count);
+        List<Transform> targets = new();
+        List<Transform> drones = new();
+        List<float> closestD = new();
+        
+        for (int i = 0; i < count; i++) // go through all entities and check them for several factors
         {
-            var target = TargetManager.GetClosestFromList(potentialTargets, pos, targetingSystem, category);
-            if (target != null)
+            Entity target = potentialTargets[i];
+            Transform tr = target.transform;
+            // check if the target's category matches
+            if (category == Entity.EntityCategory.All || target.category == category)
             {
-                potentialTargets.Remove(target.GetComponentInChildren<Entity>());
-                targets.Add(target);
-                if (!dronesAreFree || !target.GetComponentInChildren<Drone>()) i++;
-            }
-            else
-            {
-                break;
+                // check if it is the closest entity that passed the checks so far
+                float sqrD = Vector3.SqrMagnitude(pos - tr.position);
+
+                if (target == Core)
+                    continue;
+                if (sqrD >= GetRange() * GetRange())
+                    continue;
+
+                if (dronesAreFree && target is Drone)
+                {
+                    drones.Add(tr);
+                    continue;
+                }
+
+                for (int j = 0; j < targets.Count; j++)
+                {
+                    if (sqrD < closestD[j])
+                    {
+                        targets.Insert(j, tr);
+                        closestD.Insert(j, sqrD);
+
+                        if (targets.Count > num)
+                        {
+                            targets.RemoveAt(targets.Count - 1);
+                            closestD.RemoveAt(targets.Count - 1);
+                        }
+                    }
+                }
             }
         }
-
-        return targets;
+        return targets.ToArray();
     }
 
-    protected List<Transform> GetClosestTargets(int num, bool dronesAreFree = false)
+    protected Transform[] GetClosestTargets(int num, bool dronesAreFree = false)
     {
         return GetClosestTargets(num, targetingSystem.GetEntity().transform.position, dronesAreFree);
     }

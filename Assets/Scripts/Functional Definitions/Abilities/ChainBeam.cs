@@ -69,10 +69,10 @@ public class ChainBeam : Beam
         return true;
     }
 
-    protected override List<Transform> GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
+    protected override Transform[] GetClosestTargets(int num, Vector3 pos, bool dronesAreFree = false)
     {
         var list = base.GetClosestTargets(num, pos);
-        if (list.Count > 0)
+        if (list.Length > 0)
         {
             foreach (var ent in list)
             {

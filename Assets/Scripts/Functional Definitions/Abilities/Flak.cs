@@ -67,11 +67,11 @@ public class Flak : WeaponAbility
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
 
-        List<Transform> targets = GetClosestTargets(BULLET_COUNT, true);
+        Transform[] targets = GetClosestTargets(BULLET_COUNT, true);
 
 
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
-        for (int i = 0; i < targets.Count; i++)
+        for (int i = 0; i < targets.Length; i++)
         {
             // Calculate future target position
             Vector2 targetVelocity = targets[i] ? targets[i].GetComponentInChildren<Rigidbody2D>().velocity : Vector2.zero;

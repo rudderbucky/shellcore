@@ -27,6 +27,7 @@ public abstract class Craft : Entity
     public static readonly float weightNumeratorConstant = 40;
 
     Vector2 oldPosition = Vector2.zero;
+    Vector2 oldAccuratePosition = Vector2.zero;
 
     public void AddPin()
     {
@@ -188,6 +189,12 @@ public abstract class Craft : Entity
         {
         }
         physicsDirection = Vector2.zero;
+
+        if (oldAccuratePosition != (Vector2)transform.position)
+        {
+            oldAccuratePosition = transform.position;
+            UpdateColliders();
+        }
     }
 
     /// <summary>

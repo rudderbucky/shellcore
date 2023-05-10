@@ -67,6 +67,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
             if (!parts.Exists(p => p.info.Equals(part)))
             {
                 SetUpPart(part);
+                UpdateColliders();
 
                 UpdateShooterLayering();
 
@@ -78,6 +79,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
                 yield return new WaitForSeconds(yardRepairDuration / blueprint.parts.Count);
             }
         }
+        UpdateColliders();
         if (!GetIsDead()) FinalizeRepair();
     }
 
@@ -104,6 +106,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         maxHealth.CopyTo(currentHealth, 0);
         ActivatePassives();
         HealToMax();
+        UpdateColliders();
         isYardRepairing = false;
     }
 
