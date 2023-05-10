@@ -275,7 +275,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     public bool IsInvisible
     {
-        get { return StealthStacks > 0 || invisible; }
+        get { return StealthStacks > 0 || invisible || (this is PlayerCore && DevConsoleScript.spectateEnabled); }
         set
         {
             invisible = value;
