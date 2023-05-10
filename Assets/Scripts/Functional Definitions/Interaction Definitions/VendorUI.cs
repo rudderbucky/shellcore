@@ -8,7 +8,7 @@ public interface IVendor
     int GetFaction();
     Vector3 GetPosition();
     Transform GetTransform();
-    bool NeedsSameFaction();
+    bool NeedsAlliedFaction();
     EntityNetworkAdapter GetAdapter();
 }
 
@@ -149,7 +149,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
             player = PlayerCore.Instance;
         }
 
-        if (player && vendor.NeedsSameFaction() && vendor.GetFaction() != player.faction)
+        if (player && vendor.NeedsAlliedFaction() && !FactionManager.IsAllied(vendor.GetFaction(), player.faction))
         {
             Debug.Log("Vendor faction changed");
             CloseUI();
@@ -201,7 +201,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
         }
 
         // TODO: these booleans can be used this way right now but a new IVendor state should be created for if commanding count is needed
-        if (vendor.NeedsSameFaction() && core.unitsCommanding.Count >= core.GetTotalCommandLimit())
+        if (vendor.NeedsAlliedFaction() && core.unitsCommanding.Count >= core.GetTotalCommandLimit())
         {
             return null;
         }
@@ -279,8 +279,8 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
     public void onButtonPressed(int index)
     {
-        if (player.GetPower() >= blueprint.items[index].cost && (!vendor.NeedsSameFaction() || FactionManager.IsAllied(player.faction, vendor.GetFaction()))
-                                                             && (!vendor.NeedsSameFaction() || player.unitsCommanding.Count < player.GetTotalCommandLimit()))
+        if (player.GetPower() >= blueprint.items[index].cost && (!vendor.NeedsAlliedFaction() || FactionManager.IsAllied(player.faction, vendor.GetFaction()))
+                                                             && (!vendor.NeedsAlliedFaction() || player.unitsCommanding.Count < player.GetTotalCommandLimit()))
         {
             BuyItem(player, index, vendor);
             if (GetActive())
@@ -290,7 +290,7 @@ public class VendorUI : MonoBehaviour, IDialogueable, IWindow
 
             ClearVendor();
         }
-        else if (player && (vendor.NeedsSameFaction() && player.GetUnitsCommanding().Count >= player.GetTotalCommandLimit()))
+        else if (player && (vendor.NeedsAlliedFaction() && player.GetUnitsCommanding().Count >= player.GetTotalCommandLimit()))
         {
             player.alerter.showMessage("Unit limit reached!", "clip_alert");
         }

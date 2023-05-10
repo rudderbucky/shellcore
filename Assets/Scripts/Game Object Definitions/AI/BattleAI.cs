@@ -728,7 +728,7 @@ public class BattleAI : AIModule
                 }
             }
 
-            if (vendor.NeedsSameFaction() && vendor.GetFaction() != craft.faction)
+            if (vendor.NeedsAlliedFaction() && vendor.GetFaction() != craft.faction)
             {
                 continue;
             }

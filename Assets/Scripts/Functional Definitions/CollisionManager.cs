@@ -245,9 +245,7 @@ public class CollisionManager : MonoBehaviour
                     continue;
                 if (entity.GetInvisible())
                     continue;
-                if (entity == PlayerCore.Instance)
-                    continue;
-
+                    
                 Vector2[] colliders = _colliders[i];
                 for (int j = 0; j < colliders.Length / 4; j++)
                 {

@@ -107,7 +107,7 @@ public class TowerBase : MonoBehaviour, IInteractable, IVendor
         return 3;
     }
 
-    public bool NeedsSameFaction()
+    public bool NeedsAlliedFaction()
     {
         return false;
     }

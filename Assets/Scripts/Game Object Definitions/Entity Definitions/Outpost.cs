@@ -11,7 +11,7 @@ public class Outpost : AirConstruct, IVendor
         return networkAdapter;
     }
 
-    public bool NeedsSameFaction()
+    public bool NeedsAlliedFaction()
     {
         return true;
     }

@@ -86,6 +86,18 @@ public class FactionManager : MonoBehaviour
         return true;
     }
 
+    public static List<int> GetAllAlliedFactions(int faction)
+    {
+        var fac = new List<int>();
+        if (!instance) return fac;
+        foreach (var f in instance.factions)
+        {
+            if (IsAllied(f.ID, faction))
+                fac.Add(f.ID);
+        }
+        return fac;
+    }
+
     public static bool FactionExists(int faction)
     {
         if (faction < 0 || faction >= 32 || instance.factions.Length <= faction)

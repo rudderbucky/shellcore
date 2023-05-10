@@ -33,6 +33,10 @@ public class WCSiegeWaveHandler : MonoBehaviour
                 AddEntity(ent.entity.assetID, ent.timeSinceWaveStartToSpawn, ent.flagName, ent.entity.faction);
             }
         }
+        foreach(var c in GetComponentsInParent<Canvas>().Reverse())
+        {
+            c.sortingOrder = ++PlayerViewScript.currentLayer;   
+        }
     }
 
     public void AddEntity(string name, float time, string flagName, int faction)
