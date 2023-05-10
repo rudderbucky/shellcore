@@ -102,7 +102,7 @@ public class DevConsoleScript : MonoBehaviour
 
     public static void Print(string logString)
     {
-        Instance.textToAdd.Enqueue("\n <color=white>{logString}</color>");
+        Instance.textToAdd.Enqueue($"\n <color=white>{logString}</color>");
     }
 
     public void GodPowers(ShellCore ent)
