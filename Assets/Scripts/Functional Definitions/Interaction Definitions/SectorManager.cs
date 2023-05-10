@@ -98,7 +98,14 @@ public class SectorManager : MonoBehaviour
             stationsCount[stationFaction]++;
         }
 
-        return stationsCount.ContainsKey(faction) ? stationsCount[faction] * 3 : 0;
+        var cnt = 0;
+
+        foreach (var f in FactionManager.GetAllAlliedFactions(faction))
+        {
+            if (stationsCount.ContainsKey(f)) cnt += stationsCount[f] * 3;
+        }
+
+        return cnt;
     }
 
     public static string testJsonPath;
