@@ -290,7 +290,7 @@ public abstract class WeaponAbility : ActiveAbility
         List<Transform> targets = new();
         List<Transform> drones = new();
         List<float> closestD = new();
-        
+
         for (int i = 0; i < count; i++) // go through all entities and check them for several factors
         {
             Entity target = potentialTargets[i];
@@ -312,6 +312,13 @@ public abstract class WeaponAbility : ActiveAbility
                     continue;
                 }
 
+                if (targets.Count == 0)
+                {
+                    targets.Add(tr);
+                    closestD.Add(sqrD);
+                    continue;
+                }
+
                 for (int j = 0; j < targets.Count; j++)
                 {
                     if (sqrD < closestD[j])
@@ -328,6 +335,7 @@ public abstract class WeaponAbility : ActiveAbility
                 }
             }
         }
+        targets.AddRange(drones);
         return targets.ToArray();
     }
 

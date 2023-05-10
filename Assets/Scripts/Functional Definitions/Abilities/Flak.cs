@@ -67,7 +67,16 @@ public class Flak : WeaponAbility
             bulletPrefab = ResourceManager.GetAsset<GameObject>("bullet_prefab");
         }
 
-        Transform[] targets = GetClosestTargets(BULLET_COUNT, true);
+        var target = Core.GetTargetingSystem().GetTarget();
+        Transform[] targets;
+        if (target != null && target.GetComponent<IDamageable>() != null)
+        {
+            targets = new Transform[] { target };
+        }
+        else
+        {
+            targets = GetClosestTargets(BULLET_COUNT, true);
+        }
 
 
         Vector3 originPos = part ? part.transform.position : Core.transform.position;
