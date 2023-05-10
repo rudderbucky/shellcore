@@ -74,6 +74,8 @@ public class TractorBeam : MonoBehaviour
         childObject.name = "TractorBeam";
         tractorBeamPrefab = childObject;
         auxillaryParticleSystem = Instantiate(ResourceManager.GetAsset<GameObject>("tractor_specialfx"), childObject.transform);
+        auxillaryParticleSystem.SetActive(false);
+        lineRenderer.positionCount = 0;
         initialized = true;
     }
 
