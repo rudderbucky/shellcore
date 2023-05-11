@@ -49,6 +49,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public bool serverSyncHealthDirty = true;
     protected Vector2[] _colliders;
     protected Bounds _bounds;
+    protected Vector2 oldPos;
 
     public bool husk;
     [SerializeField]
@@ -805,8 +806,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 SetUpPart(blueprint.parts[i]);
             }
-            UpdateColliders();
         }
+        UpdateColliders();
     }
 
     public void AttachRandomPart() 
@@ -1164,6 +1165,11 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             AttemptCreateNetworkObject(this as PlayerCore);
         if (!initialized) return;
         TickState();
+        if ((oldPos - (Vector2)transform.position).sqrMagnitude > CollisionManager.movementThreshold)
+        {
+            oldPos = transform.position;
+            UpdateColliders();
+        }
     }
 
     /// <summary>

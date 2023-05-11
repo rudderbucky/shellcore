@@ -5,24 +5,18 @@ using UnityEngine;
 
 public class CollisionManager : MonoBehaviour
 {
-    static Vector2[][] _colliders;
-    static Bounds[] _bounds;
     static int _ionFrame = 0;
+    public static float movementThreshold = 0.025f;
 
     private void OnDrawGizmosSelected()
     {
 
         foreach (var entity in AIData.entities)
         {
-            var points = SATCollision.GetColliders(entity, out var bounds);
+            //var points = SATCollision.GetColliders(entity, out var bounds);
 
-            for (int i = 0; i < points.Length / 4; i++)
-            {
-                Debug.DrawLine(points[i * 4 + 0], points[i * 4 + 1], Color.cyan);
-                Debug.DrawLine(points[i * 4 + 1], points[i * 4 + 2], Color.cyan);
-                Debug.DrawLine(points[i * 4 + 2], points[i * 4 + 3], Color.cyan);
-                Debug.DrawLine(points[i * 4 + 3], points[i * 4 + 0], Color.cyan);
-            }
+            Vector2[] points = entity.GetColliders();
+            Bounds bounds = entity.GetBounds();
 
             float minX = bounds.min.x;
             float minY = bounds.min.y;
@@ -32,12 +26,19 @@ public class CollisionManager : MonoBehaviour
             Debug.DrawLine(new Vector2(minX, maxY), new Vector2(maxX, maxY), Color.green);
             Debug.DrawLine(new Vector2(maxX, maxY), new Vector2(maxX, minY), Color.green);
             Debug.DrawLine(new Vector2(maxX, minY), new Vector2(minX, minY), Color.green);
+
+            for (int i = 0; i < points.Length / 4; i++)
+            {
+                Debug.DrawLine(points[i * 4 + 0], points[i * 4 + 1], Color.cyan);
+                Debug.DrawLine(points[i * 4 + 1], points[i * 4 + 2], Color.cyan);
+                Debug.DrawLine(points[i * 4 + 2], points[i * 4 + 3], Color.cyan);
+                Debug.DrawLine(points[i * 4 + 3], points[i * 4 + 0], Color.cyan);
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        UpdateEntityColliders();
         EnergySphereCollisions();
 
 
@@ -50,17 +51,6 @@ public class CollisionManager : MonoBehaviour
             if (projectile == null) 
                 continue;
             ProjectileCollision(projectile);
-        }
-    }
-
-    static void UpdateEntityColliders()
-    {
-        _colliders = new Vector2[AIData.entities.Count][];
-        _bounds = new Bounds[AIData.entities.Count];
-        for (int i = 0; i < AIData.entities.Count; i++)
-        {
-            _colliders[i] = AIData.entities[i].GetColliders();
-            _bounds[i] = AIData.entities[i].GetBounds();
         }
     }
 
@@ -160,13 +150,12 @@ public class CollisionManager : MonoBehaviour
     // Almost same for-loops multiple times. Combine somehow?
     public static Transform GetTargetAtPosition(Vector2 pos)
     {
-        UpdateEntityColliders();
         // Entities
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if (!_bounds[i].Contains(pos))
-                continue;
             Entity entity = AIData.entities[i];
+            if (!entity.GetBounds().Contains(pos))
+                continue;
             if ((pos - (Vector2)entity.transform.position).sqrMagnitude < 1024f)
             {
                 if (entity.IsInvisible)
@@ -178,7 +167,7 @@ public class CollisionManager : MonoBehaviour
                 if (entity == PlayerCore.Instance)
                     continue;
 
-                Vector2[] colliders = _colliders[i];
+                Vector2[] colliders = entity.GetColliders();
                 for (int j = 0; j < colliders.Length / 4; j++)
                 {
                     bool collision = SATCollision.PointInRectangle(
@@ -235,9 +224,9 @@ public class CollisionManager : MonoBehaviour
         // Entities
         for (int i = 0; i < AIData.entities.Count; i++)
         {
-            if (!_bounds[i].Contains(pos))
-                continue;
             Entity entity = AIData.entities[i];
+            if (!entity.GetBounds().Contains(pos))
+                continue;
             if ((pos - (Vector2)entity.transform.position).sqrMagnitude < 1024f)
             {
                 if (entity.GetIsDead())
@@ -245,7 +234,7 @@ public class CollisionManager : MonoBehaviour
                 if (entity.GetInvisible())
                     continue;
                     
-                Vector2[] colliders = _colliders[i];
+                Vector2[] colliders = entity.GetColliders();
                 for (int j = 0; j < colliders.Length / 4; j++)
                 {
                     bool collision = SATCollision.PointInRectangle(
@@ -301,7 +290,6 @@ public class CollisionManager : MonoBehaviour
         // Update cache once per frame, in case there's multiple ion lines
         if (Time.frameCount >= _ionFrame)
         {
-            UpdateEntityColliders();
             _ionFrame = Time.frameCount;
         }
 
@@ -323,11 +311,12 @@ public class CollisionManager : MonoBehaviour
         {
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-            if (!_bounds[i].Intersects(lineBounds))
-                continue;
+                Entity entity = AIData.entities[i];
+                if (!entity.GetBounds().Intersects(lineBounds))
+                    continue;
             
                 Vector2 pos = Vector2.Lerp(start, end, (float)k / pointCount);
-                Vector2[] colliders = _colliders[i];
+                Vector2[] colliders = entity.GetColliders();
                 for (int j = 0; j < colliders.Length / 4; j++)
                 {
                     bool collision = SATCollision.PointInRectangle(
