@@ -174,6 +174,11 @@ public class SectorPropertyDisplay : MonoBehaviour
             w.text = currentSector.bounds.w.ToString();
             h.text = currentSector.bounds.h.ToString();
         }
+    }
+
+    void LateUpdate()
+    {
+
         if (updateLayout) ForceUpdateLayoutGroup();
     }
 
@@ -404,7 +409,6 @@ public class SectorPropertyDisplay : MonoBehaviour
             }
             else
             {
-                // TODO: Reused code from WCSiegeWaveHandler, fix
                 Sector.LevelEntity ent = new Sector.LevelEntity();
                 ent.assetID = "shellcore_blueprint";
                 ent.faction = field.Item2.value; // maybe change this later
