@@ -499,8 +499,8 @@ public class ShellPart : MonoBehaviour
     public void SetPartColor(Color color)
     {
         color.a = (craft && craft.IsInvisible ? (craft.faction == 0 ? 0.2f : 0f) : color.a);
-        spriteRenderer.color = color;
-        if (shooter)
+        if (spriteRenderer) spriteRenderer.color = color;
+        if (shooter && shooter.GetComponent<SpriteRenderer>())
         {
             shooter.GetComponent<SpriteRenderer>().color = spriteRenderer.color;
         }
