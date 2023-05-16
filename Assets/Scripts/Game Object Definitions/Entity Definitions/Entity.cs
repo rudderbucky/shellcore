@@ -380,6 +380,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
         else
         {
+            if (dialogue.nodes != null && dialogue.nodes.Count > 0)
+            {
+                var tmp = dialogue.nodes[0];
+                tmp.textColor = FactionManager.GetFactionColor(faction);
+                dialogue.nodes[0] = tmp;
+            }
             DialogueSystem.StartDialogue(dialogue, this);
         }
     }
