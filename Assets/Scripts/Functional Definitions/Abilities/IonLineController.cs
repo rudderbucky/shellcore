@@ -175,27 +175,24 @@ public class IonLineController : MonoBehaviour
 
             var dps = damage * Time.deltaTime;
 
-            var damageable = CollisionManager.RaycastDamageable(transform.position, transform.position + GetVectorByBearing(originalBearing) * range, out var point);
+            var damageable = CollisionManager.RaycastDamageable(transform.position, transform.position + GetVectorByBearing(originalBearing) * range, VerifyTarget, out var point);
             if (damageable != null)
             {
-                if (damageable.GetFaction() != Core.faction && !damageable.GetIsDead() && damageable.GetTerrain() != Entity.TerrainType.Ground)
+                var hitTransform = damageable.GetTransform();
+
+                var magnitude = (point - (Vector2)transform.position).magnitude;
+                line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * magnitude);
+                Core.TakeEnergy(energyCost * Time.deltaTime);
+
+                var part = hitTransform.GetComponentInChildren<ShellPart>();
+
+                var residue = damageable.TakeShellDamage(dps, 0, GetComponentInParent<Entity>());
+
+                // deal instant damage
+
+                if (part)
                 {
-                    var hitTransform = damageable.GetTransform();
-
-                    var magnitude = (point - (Vector2)transform.position).magnitude;
-                    line.SetPosition(1, transform.position + GetVectorByBearing(originalBearing) * magnitude);
-                    Core.TakeEnergy(energyCost * Time.deltaTime);
-
-                    var part = hitTransform.GetComponentInChildren<ShellPart>();
-
-                    var residue = damageable.TakeShellDamage(dps, 0, GetComponentInParent<Entity>());
-
-                    // deal instant damage
-
-                    if (part)
-                    {
-                        part.TakeDamage(residue);
-                    }
+                    part.TakeDamage(residue);
                 }
             }
 
@@ -229,6 +226,11 @@ public class IonLineController : MonoBehaviour
                 }
             }
         }
+    }
+
+    bool VerifyTarget(Entity entity)
+    {
+        return entity.GetFaction() != Core.faction && !entity.GetIsDead() && entity.GetTerrain() != Entity.TerrainType.Ground;
     }
 
     public float GetDuration()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -147,7 +148,7 @@ public class CollisionManager : MonoBehaviour
         return false;
     }
 
-    // Almost same for-loops multiple times. Combine somehow?
+    // Almost same for-loops multiple times. Combine somehow? Use a target verification delegate?
     public static Transform GetTargetAtPosition(Vector2 pos)
     {
         // Entities
@@ -285,7 +286,9 @@ public class CollisionManager : MonoBehaviour
         return targets.ToArray();
     }
 
-    public static IDamageable RaycastDamageable(Vector2 start, Vector2 end, out Vector2 point)
+    public delegate bool TargetVerificationDelegate(Entity entity);
+
+    public static IDamageable RaycastDamageable(Vector2 start, Vector2 end, TargetVerificationDelegate targetVerification, out Vector2 point)
     {
         // Update cache once per frame, in case there's multiple ion lines
         if (Time.frameCount >= _ionFrame)
@@ -300,11 +303,11 @@ public class CollisionManager : MonoBehaviour
             min = Vector2.Min(start, end),
         };
 
-        for (int k = 0; k < pointCount; k++)
-        {
-            Vector2 pos = Vector2.Lerp(start, end, (float)k / pointCount);
-            Debug.DrawLine(pos, pos + Vector2.up * 0.1f, Color.red);
-        }
+        //for (int k = 0; k < pointCount; k++)
+        //{
+        //    Vector2 pos = Vector2.Lerp(start, end, (float)k / pointCount);
+        //    Debug.DrawLine(pos, pos + Vector2.up * 0.1f, Color.red);
+        //}
 
         // Entities
         for (int k = 0; k < pointCount; k++)
@@ -313,6 +316,9 @@ public class CollisionManager : MonoBehaviour
             {
                 Entity entity = AIData.entities[i];
                 if (!entity.GetBounds().Intersects(lineBounds))
+                    continue;
+
+                if (!targetVerification(entity))
                     continue;
             
                 Vector2 pos = Vector2.Lerp(start, end, (float)k / pointCount);
