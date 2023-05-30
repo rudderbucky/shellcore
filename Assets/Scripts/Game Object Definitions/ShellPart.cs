@@ -509,10 +509,6 @@ public class ShellPart : MonoBehaviour
         if (partSys)
         {
             partSysColorMod = partSys.colorOverLifetime;
-        }
-
-        if (partSys)
-        {
             partSysColorMod.color = new ParticleSystem.MinMaxGradient(color);
         }
     }
