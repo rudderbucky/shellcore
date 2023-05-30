@@ -1087,6 +1087,11 @@ public class SectorManager : MonoBehaviour
         }
 
         entity.ID = data.ID;
+        while (objects.ContainsKey(data.ID))
+        {
+            maxID++;
+            data.ID = maxID.ToString();
+        }
         if (!objects.ContainsKey(data.ID))
         {
             objects.Add(data.ID, gObj);
