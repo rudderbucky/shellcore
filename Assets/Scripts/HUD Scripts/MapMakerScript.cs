@@ -706,7 +706,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (GetComponent<RectTransform>().rect.Contains(mousePos)) return;
+        if (GetComponent<RectTransform>().rect.Contains(Input.mousePosition)) return;
         mouseInBounds = false;
     }
 }
