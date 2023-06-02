@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
 	<EditorStates>
-		<EditorState selected="" pan="2523.2,83.60001" zoom="0.8" />
+		<EditorState selected="" pan="2548,108.4" zoom="0.8" />
 	</EditorStates>
 	<Groups />
 	<Nodes>
-		<Node name="Spawn Entity" ID="-1720350956" type="SpawnEntityNode" pos="-2638.2,-267.2">
-			<Port ID="-1672590134" name="output" dynamic="False" />
-			<Port ID="-179985124" name="IDOut" dynamic="False" />
-			<Port ID="1312619886" name="input" dynamic="False" />
+		<Node name="Spawn Entity" ID="-1754692332" type="SpawnEntityNode" pos="-2638.2,-267.2">
+			<Port ID="59237988" name="output" dynamic="False" />
+			<Port ID="1551842998" name="IDOut" dynamic="False" />
+			<Port ID="-1250519288" name="input" dynamic="False" />
 			<boolean name="action">false</boolean>
 			<Variable name="entityName" refID="-1212318034" />
 			<int name="faction">0</int>
@@ -22,66 +22,47 @@
 			<boolean name="issueID">true</boolean>
 			<Variable name="entityID" refID="-1207789681" />
 			<boolean name="forceCharacterTeleport">false</boolean>
-			<Variable name="additionalFlags" refID="1583752780" />
-			<Variable name="additionalCounts" refID="1492835256" />
+			<Variable name="additionalFlags" refID="851188874" />
+			<Variable name="additionalCounts" refID="864528634" />
 		</Node>
-		<Node name="Variable condition" ID="882660310" type="VariableConditionNode" pos="-3165.6,-207.6">
-			<Port ID="2862610" name="outputRight" dynamic="False" />
-			<Variable name="variableName" refID="2105952218" />
-			<int name="value">2</int>
-			<int name="mode">0</int>
-		</Node>
-		<Node name="Conditions" ID="-1264371324" type="ConditionGroupNode" pos="-2886.2,-300.2">
-			<Port ID="1495467620" name="input" dynamic="False" />
-			<Port ID="998772490" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">Condition</string>
-				<Direction name="direction">In</Direction>
-				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
-				<NodeSide name="side">Left</NodeSide>
-				<float name="sidePosition">59</float>
-				<float name="sideOffset">0</float>
-			</Port>
-			<Port ID="-1803589796" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">TaskFlow</string>
-				<Direction name="direction">Out</Direction>
-				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
-				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">59</float>
-				<float name="sideOffset">0</float>
-			</Port>
-			<Port ID="-310984786" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">Condition</string>
-				<Direction name="direction">In</Direction>
-				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
-				<NodeSide name="side">Left</NodeSide>
-				<float name="sidePosition">114</float>
-				<float name="sideOffset">0</float>
-			</Port>
-			<Port ID="1181620224" name="Output " dynamic="True" type="NodeEditorFramework.ConnectionKnob">
-				<string name="styleID">TaskFlow</string>
-				<Direction name="direction">Out</Direction>
-				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
-				<NodeSide name="side">Right</NodeSide>
-				<float name="sidePosition">114</float>
-				<float name="sideOffset">0</float>
-			</Port>
-		</Node>
-		<Node name="Variable condition" ID="586807260" type="VariableConditionNode" pos="-3160,10">
-			<Port ID="-1306894666" name="outputRight" dynamic="False" />
-			<Variable name="variableName" refID="2105952218" />
-			<int name="value">1</int>
-			<int name="mode">0</int>
-		</Node>
-		<Node name="Enter Sector" ID="-49245904" type="LoadSectorNode" pos="-3120,-300">
-			<Port ID="-1489742400" name="output" dynamic="False" />
+		<Node name="Enter Sector" ID="156755344" type="LoadSectorNode" pos="-3120,-300">
+			<Port ID="424933456" name="output" dynamic="False" />
 			<Variable name="sectorName" refID="-7346894" />
+		</Node>
+		<Node name="Condition Check" ID="-883897684" type="GeneralConditionCheckNode" pos="-2897.2,-288">
+			<Port ID="1186147530" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-1616214756" name="Pass" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-123609746" name="Fail" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="2105952218" />
+			<int name="variableType">1</int>
+			<int name="comparisonMode">0</int>
+			<int name="value">2</int>
 		</Node>
 	</Nodes>
 	<Connections>
-		<Connection port1ID="1312619886" port2ID="-1803589796" />
-		<Connection port1ID="2862610" port2ID="998772490" />
-		<Connection port1ID="1495467620" port2ID="-1489742400" />
-		<Connection port1ID="-310984786" port2ID="-1306894666" />
+		<Connection port1ID="-1250519288" port2ID="-1616214756" />
+		<Connection port1ID="424933456" port2ID="1186147530" />
 	</Connections>
 	<Objects>
 		<Object refID="-1212318034" type="System.String">
@@ -93,17 +74,17 @@
 		<Object refID="-1207789681" type="System.String">
 			<string>the-architect</string>
 		</Object>
-		<Object refID="1583752780" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="851188874" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
 		</Object>
-		<Object refID="1492835256" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+		<Object refID="864528634" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
 			<ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-		</Object>
-		<Object refID="2105952218" type="System.String">
-			<string>TheArchitectPartyMember</string>
 		</Object>
 		<Object refID="-7346894" type="System.String">
 			<string>Haven 8</string>
+		</Object>
+		<Object refID="2105952218" type="System.String">
+			<string>TheArchitectPartyMember</string>
 		</Object>
 	</Objects>
 </NodeCanvas>
