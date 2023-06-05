@@ -47,6 +47,7 @@ public class IonLineController : MonoBehaviour
 
     public void StartFiring(float duration)
     {
+        if (targetingSystem == null || !targetingSystem.GetTarget() || !line) return;
         this.duration = duration;
         line.startWidth = line.endWidth = startWidth;
 
