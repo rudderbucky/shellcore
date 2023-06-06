@@ -444,6 +444,12 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         }
     }
 
+    public static void DisableMapCheat()
+    {
+        mapVisibleCheatEnabled = false;
+    }
+
+
     RectTransform canvas;
 
     void Awake()

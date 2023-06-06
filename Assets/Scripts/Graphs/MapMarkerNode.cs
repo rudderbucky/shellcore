@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Actions/Map Marker")]
+    [Node(false, "Actions/Map Marker", typeof(QuestCanvas))]
     public class MapMarkerNode : Node
     {
         public const string ID = "MapMarker";
@@ -34,7 +34,7 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             output.DisplayLayout();
-            GUILayout.Label("Sector name: ");
+            GUILayout.Label("Sector Name: ");
             sectorName = GUILayout.TextField(sectorName);
             GUILayout.Label("Entity ID: ");
             entityID = GUILayout.TextField(entityID);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NodeEditorFramework.Standard
 {
-    [Node(false, "Flow/Sector Limiter")]
+    [Node(false, "Flow/Sector Limiter", typeof(QuestCanvas))]
     public class SectorLimiterNode : Node
     {
         public static string LimitedSector;

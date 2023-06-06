@@ -32,6 +32,7 @@ public class DevConsoleScript : MonoBehaviour
     {
         Application.logMessageReceived += HandleLog;
         godModeEnabled = false;
+        MapMakerScript.DisableMapCheat();
         spectateEnabled = false;
         PartIndexScript.partsObtainedCheat = false;
         Instance = this;
