@@ -230,7 +230,7 @@ public class IonLineController : MonoBehaviour
 
     bool VerifyTarget(Entity entity)
     {
-        return entity.GetFaction() != Core.faction && !entity.GetIsDead() && entity.GetTerrain() != Entity.TerrainType.Ground;
+        return entity.GetFaction() != Core.faction && !entity.GetIsDead() && !entity.IsInvisible && entity.GetTerrain() != Entity.TerrainType.Ground;
     }
 
     public float GetDuration()
