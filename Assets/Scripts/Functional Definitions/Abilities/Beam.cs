@@ -81,7 +81,7 @@ public class Beam : WeaponAbility
             }
 
             if (currentVertex == line.positionCount - 2)
-                timer += Time.deltaTime;
+                timer += Time.deltaTime * Time.timeScale;
         }
         else if (firing && timer >= 0.1F*(currentVertex+1) && currentVertex == line.positionCount - 2)
         {

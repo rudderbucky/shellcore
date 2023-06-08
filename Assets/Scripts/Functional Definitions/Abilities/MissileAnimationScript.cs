@@ -38,7 +38,7 @@ public class MissileAnimationScript : MonoBehaviour
     {
         if (initialized)
         {
-            timer += Time.deltaTime; // update timer
+            timer += Time.deltaTime * Time.timeScale; // update timer
             switch (iteration)
             {
                 case 3:
