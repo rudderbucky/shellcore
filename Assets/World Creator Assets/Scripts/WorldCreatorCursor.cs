@@ -554,6 +554,7 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             sectors.Remove(sector);
         }
+        sectorPropertyDisplay.HideIfNotEditingDefaults();
     }
 
     Vector2 sectorStoredMousePos;
@@ -828,13 +829,8 @@ public class WorldCreatorCursor : MonoBehaviour
                 renderer.startColor = renderer.endColor = Color.white;
                 if (CheckMouseContainsSector(sector))
                 {
-                    Destroy(renderer.gameObject);
-                    if (sectors.Contains(sector))
-                    {
-                        sectors.Remove(sector);
-                        currentSector = null;
-                        return;
-                    }
+                    RemoveSector(sector);
+                    return;
                 }
             }
         }

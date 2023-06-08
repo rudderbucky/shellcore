@@ -284,6 +284,12 @@ public class SectorPropertyDisplay : MonoBehaviour
         }
     }
 
+    public void HideIfNotEditingDefaults()
+    {
+        if (editingDefaults) return;
+        Hide();
+    }
+
     public void Hide()
     {
         rectTransform.gameObject.SetActive(false);
