@@ -180,7 +180,6 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
-            Debug.Log("T1");
             if (variableType == 0)
             {
                 return TaskManager.TraversersContainCheckpoint(variableName) ? 0 : 1;
