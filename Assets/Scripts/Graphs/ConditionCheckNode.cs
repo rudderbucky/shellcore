@@ -180,6 +180,7 @@ namespace NodeEditorFramework.Standard
 
         public override int Traverse()
         {
+            Debug.Log("T1");
             if (variableType == 0)
             {
                 return TaskManager.TraversersContainCheckpoint(variableName) ? 0 : 1;
@@ -197,12 +198,14 @@ namespace NodeEditorFramework.Standard
                             case 1: return (status == Mission.MissionStatus.Ongoing) ? 0 : 1;
                             case 2: return (status == Mission.MissionStatus.Complete) ? 0 : 1;
                             default:
-                                return 0;
+                                Debug.LogWarning("Found mission is neither complete, ongoing nor inactive.");
+                                return 1;
                         }
                     }
                 }
 
-                return 0;
+                Debug.LogWarning("Could not find mission in player mission list.");
+                return 1;
             }
             else
             {
