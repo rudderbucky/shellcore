@@ -87,8 +87,8 @@ public class Beam : WeaponAbility
         {
             if (line.startWidth > 0)
             {
-                line.startWidth -= 0.01F;
-                line.endWidth -= 0.01F;
+                line.startWidth -= 0.01F * Time.timeScale;
+                line.endWidth -= 0.01F * Time.timeScale;
             }
 
             if (line.startWidth < 0)
