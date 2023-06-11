@@ -275,10 +275,16 @@ public class WCWorldIO : GUIWindowScripts
         SaveMenuIcon.LoadSaveByPath(savePath, false);
     }
 
+    IEnumerator coroutine;
+
     void SetWorldIndicators(string path)
     {
-        StopAllCoroutines();
-        StartCoroutine(ReadAllSectors(path));
+        if (coroutine != null)
+        {
+            StopCoroutine(coroutine);
+        }
+        coroutine = ReadAllSectors(path);
+        StartCoroutine(coroutine);
         worldPathName.text = "Currently selected: " + System.IO.Path.GetFileName(path);
         WorldData wdata = ScriptableObject.CreateInstance<WorldData>();
         try
@@ -399,6 +405,11 @@ public class WCWorldIO : GUIWindowScripts
 
         var wrongReadingFromBPS = (readingFromPresetBPs == rwFromEntityPlaceholder);
         if (wrongReadingFromBPS) SwitchBPDirectory();
+        if (loadingText)
+        {
+            loadingText.text = "If you select a world, its map will appear here.";
+            loadingText.gameObject.SetActive(true);
+        } 
         switch (mode)
         {
             case IOMode.Read:
