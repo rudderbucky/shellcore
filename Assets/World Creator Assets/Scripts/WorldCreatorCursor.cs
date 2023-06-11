@@ -141,6 +141,41 @@ public class WorldCreatorCursor : MonoBehaviour
     [SerializeField]
     private Text dimensionText;
 
+    private void KeybindToggles()
+    {
+        if (system.IsPointerOverGameObject()) return;
+        if (Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
+        {
+            system.SetSelectedGameObject(null);
+            ShiftMode(1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            system.SetSelectedGameObject(null);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                AddDimension();
+            }
+            else
+            {
+                IncrementDimension();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            system.SetSelectedGameObject(null);
+            manual.ToggleActive();
+        }
+
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
+        {
+            system.SetSelectedGameObject(null);
+            search.ToggleActive();
+        }
+    }
+
     void Update()
     {
         current.pos = CalcPos(current.type);
@@ -155,35 +190,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
         VisualizeMouseInSector();
 
-        if (!system.IsPointerOverGameObject())
-        {
-            if (Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
-            {
-                ShiftMode(1);
-            }
-
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    AddDimension();
-                }
-                else
-                {
-                    IncrementDimension();
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                manual.ToggleActive();
-            }
-
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
-            {
-                search.ToggleActive();
-            }
-        }
+        KeybindToggles();
 
         
 
