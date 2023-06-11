@@ -155,32 +155,37 @@ public class WorldCreatorCursor : MonoBehaviour
 
         VisualizeMouseInSector();
 
-        if (Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
+        if (!system.IsPointerOverGameObject())
         {
-            ShiftMode(1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.G) && !system.IsPointerOverGameObject())
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKeyDown(KeyCode.Z) && (int)mode < 3)
             {
-                AddDimension();
+                ShiftMode(1);
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.G))
             {
-                IncrementDimension();
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    AddDimension();
+                }
+                else
+                {
+                    IncrementDimension();
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                manual.ToggleActive();
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
+            {
+                search.ToggleActive();
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.M) && !system.IsPointerOverGameObject())
-        {
-            manual.ToggleActive();
-        }
-
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F) && !system.IsPointerOverGameObject())
-        {
-            search.ToggleActive();
-        }
+        
 
         dimensionText.text = $"Dimension: {currentDim + 1}/{DimensionCount}";
 
