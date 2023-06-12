@@ -485,6 +485,7 @@ public class WCWorldIO : GUIWindowScripts
                 }), displayRdbValidity);
             }
         }
+        GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
         GetComponentsInChildren<SubcanvasSortingOrder>(true).ToList().ForEach(x => x.Initialize());
     }
 
