@@ -485,10 +485,7 @@ public class WCWorldIO : GUIWindowScripts
                 }), displayRdbValidity);
             }
         }
-        foreach(var c in GetComponentsInParent<Canvas>().Reverse())
-        {
-            c.sortingOrder = ++PlayerViewScript.currentLayer;   
-        }
+        GetComponentsInChildren<SubcanvasSortingOrder>(true).ToList().ForEach(x => x.Initialize());
     }
 
 
