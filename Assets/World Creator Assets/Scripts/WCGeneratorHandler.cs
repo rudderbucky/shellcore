@@ -264,6 +264,16 @@ public class WCGeneratorHandler : MonoBehaviour
         }
 
         Dictionary<string, string> itemSectorsByID = new Dictionary<string, string>();
+        Dictionary<int, int> usedIDs = new Dictionary<int, int>();
+
+        foreach (var item in items)
+        {
+            int test = -1;
+            if (!string.IsNullOrEmpty(item.ID) && int.TryParse(item.ID, out test))
+            {
+                usedIDs.Add(test, 0);
+            }
+        }
 
         foreach (var item in items)
         {
@@ -307,10 +317,13 @@ public class WCGeneratorHandler : MonoBehaviour
                             ent.blueprintJSON = item.shellcoreJSON;
                         }
 
-                        int test;
-                        if (string.IsNullOrEmpty(item.ID) || int.TryParse(item.ID, out test))
+                        if (string.IsNullOrEmpty(item.ID))
                         {
-                            ent.ID = (ID++).ToString();
+                            while (usedIDs.ContainsKey(ID))
+                            {
+                                ID++;
+                            }
+                            ent.ID = (ID).ToString();
                         }
                         else
                         {
