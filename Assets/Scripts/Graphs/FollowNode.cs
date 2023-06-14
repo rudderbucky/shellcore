@@ -192,7 +192,7 @@ namespace NodeEditorFramework.Standard
 
         void SetTargetID(string ID)
         {
-            followerID = ID;
+            targetID = ID;
             WorldCreatorCursor.selectEntity -= SetTargetID;
         }
 
