@@ -271,6 +271,11 @@ public class WCGeneratorHandler : MonoBehaviour
             int test = -1;
             if (!string.IsNullOrEmpty(item.ID) && int.TryParse(item.ID, out test))
             {
+                if (usedIDs.ContainsKey(test))
+                {
+                    item.ID = null;
+                    continue;
+                }
                 usedIDs.Add(test, 0);
             }
         }
