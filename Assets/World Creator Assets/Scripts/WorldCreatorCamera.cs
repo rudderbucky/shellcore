@@ -8,7 +8,7 @@ public class WorldCreatorCamera : MonoBehaviour
     public CanvasGroup group;
     public int sectorIndex = 0;
     public static int minZ = -10;
-    public static int maxZ = -150;
+    public static int maxZ = -600;
     public static WorldCreatorCamera instance;
 
     void FixedUpdate()
