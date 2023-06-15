@@ -25,6 +25,7 @@ public class PartIndexScript : MonoBehaviour
     public Image[] statsBar;
     public int[] statsNumbers;
     public Text statsTotalTally;
+    public static PartIndexScript instance;
 
     public enum PartStatus
     {
@@ -63,6 +64,43 @@ public class PartIndexScript : MonoBehaviour
         return count;
     }
 
+    public void SetPartAsSeen(EntityBlueprint.PartInfo part)
+    {
+        if (!parts.ContainsKey(part)) return;
+        var button = parts[part].GetComponent<PartIndexInventoryButton>();
+        if (!button) return;
+        if (button.status == PartStatus.Seen || button.status == PartStatus.Obtained) return;
+        button.status = PartStatus.Seen;
+        button.displayShiny = false;
+        // Update only the seen tally
+        statsNumbers[2]++;
+        button.UpdateButton();
+    }
+
+    private void SetPartAsObtained(EntityBlueprint.PartInfo part)
+    {
+        if (!parts.ContainsKey(part)) return;
+        var button = parts[part].GetComponent<PartIndexInventoryButton>();
+        if (!button) return;
+        if (button.status == PartStatus.Obtained) return;
+        statsNumbers[1]++;
+        statsNumbers[2]++;
+
+        button.status = PartStatus.Obtained;
+        button.displayShiny = PlayerCore.Instance.cursave.partsObtained.Find(x => CullToPartIndexValues(x).Equals(part)).shiny;
+
+        // Update stats on 3 tallies, possibly the shiny tally
+        if (button.displayShiny)
+        {
+            statsNumbers[0]++;
+        }
+
+        button.UpdateButton();
+    }
+
+
+
+
     ///
     /// Attempt to add a part into the index, check if the player obtained/saw it
     ///
@@ -76,24 +114,11 @@ public class PartIndexScript : MonoBehaviour
             button.part = part;
             if (CheckPartObtained(part))
             {
-                button.status = PartStatus.Obtained;
-                button.displayShiny = PlayerCore.Instance.cursave.partsObtained.Find(x => CullToPartIndexValues(x).Equals(part)).shiny;
-
-                // Update stats on 3 tallies, possibly the shiny tally
-                if (button.displayShiny)
-                {
-                    statsNumbers[0]++;
-                }
-
-                statsNumbers[1]++;
-                statsNumbers[2]++;
+                SetPartAsObtained(part);
             }
             else if (CheckPartSeen(part))
             {
-                button.status = PartStatus.Seen;
-                button.displayShiny = false;
-                // Update only the seen tally
-                statsNumbers[2]++;
+                SetPartAsSeen(part);
             }
             else
             {
@@ -134,6 +159,8 @@ public class PartIndexScript : MonoBehaviour
 
     void OnEnable()
     {
+        instance = this;
+        ResetContent();
         UpdateContent(null, null);
         Entity.OnEntityDeath += UpdateContent;
     }
@@ -143,10 +170,7 @@ public class PartIndexScript : MonoBehaviour
         Entity.OnEntityDeath -= UpdateContent;
     }
 
-
-
-
-    public void UpdateContent(Entity _, Entity __)
+    private void ResetContent()
     {
         statsNumbers = new int[] { 0, 0, 0, 0 };
         foreach (var content in contents)
@@ -158,7 +182,12 @@ public class PartIndexScript : MonoBehaviour
         }
 
         parts.Clear();
+    }
 
+
+
+    public void UpdateContent(Entity _, Entity __)
+    {
         if (index == null)
         {
             Debug.LogWarning("The Part Index cache has not been set up for this world. Please rewrite this world, it will rebuild automatically.");
@@ -250,10 +279,12 @@ public class PartIndexScript : MonoBehaviour
         if (!partsObtained.Exists(x => CullToPartIndexValues(x).Equals(CullToPartIndexValues(part))))
         {
             partsObtained.Add(part);
+            if (instance) instance.SetPartAsObtained(part);
         }
         else if (part.shiny)
         {
             partsObtained[partsObtained.FindIndex(x => CullToPartIndexValues(x).Equals(CullToPartIndexValues(part)))] = part;
+            if (instance) instance.SetPartAsObtained(part);
         }
     }
 
@@ -263,6 +294,7 @@ public class PartIndexScript : MonoBehaviour
         if (!partsSeen.Exists(x => CullToPartIndexValues(x).Equals(CullToPartIndexValues(part))))
         {
             partsSeen.Add(part);
+            if (instance) instance.SetPartAsSeen(part);
         }
     }
 

@@ -46,15 +46,8 @@ public class MissionTraverser : Traverser
                         part.secondaryData = startTask.partSecondaryData;
                         part = PartIndexScript.CullToPartIndexValues(part);
 
-                        if (!PlayerCore.Instance.cursave.partsObtained.Contains(part))
-                        {
-                            PlayerCore.Instance.cursave.partsObtained.Add(part);
-                        }
-
-                        if (!PlayerCore.Instance.cursave.partsSeen.Contains(part))
-                        {
-                            PlayerCore.Instance.cursave.partsSeen.Add(part);
-                        }
+                        PartIndexScript.AttemptAddToPartsObtained(part);
+                        PartIndexScript.AttemptAddToPartsSeen(part);
                     }
                 }
             }

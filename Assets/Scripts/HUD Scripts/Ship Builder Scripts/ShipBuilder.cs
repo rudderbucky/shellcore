@@ -810,7 +810,7 @@ public class ShipBuilder : GUIWindowScripts
                 traderInv.Add(CullSpatialValues(part));
 
                 // Player has now seen all the parts in the trader's inventory.
-                player.cursave.partsSeen.Add(PartIndexScript.CullToPartIndexValues(part));
+                PartIndexScript.AttemptAddToPartsSeen(PartIndexScript.CullToPartIndexValues(part));
             }
 
             traderInventory = traderInv;

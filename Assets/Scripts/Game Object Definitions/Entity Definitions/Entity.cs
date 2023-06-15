@@ -1043,7 +1043,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             {
                 foreach (var part in blueprint.parts)
                 {
-                    player.cursave.partsSeen.Add(PartIndexScript.CullToPartIndexValues(part));
+                    var p = PartIndexScript.CullToPartIndexValues(part);
+                    PartIndexScript.AttemptAddToPartsSeen(p);
                 }
             }
         }

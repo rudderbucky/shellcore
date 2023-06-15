@@ -13,12 +13,16 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
     public PartDisplayBase partDisplay;
     public static List<string> partMarkerSectorNames = new List<string>();
 
+    public void UpdateButton()
+    {
+        Start();
+    }
+
     protected override void Start()
     {
         base.Start();
         val.enabled = false;
         isShiny.enabled = displayShiny;
-
         switch (status)
         {
             case PartIndexScript.PartStatus.Unseen:
