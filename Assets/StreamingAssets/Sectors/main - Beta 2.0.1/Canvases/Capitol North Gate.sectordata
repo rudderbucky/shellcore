@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NodeCanvas type="NodeEditorFramework.Standard.SectorCanvas">
+	<EditorStates>
+		<EditorState selected="" pan="-162,21.6" zoom="0.6" />
+	</EditorStates>
+	<Groups />
+	<Nodes>
+		<Node name="Enter Sector" ID="-298173952" type="LoadSectorNode" pos="-300,-50">
+			<Port ID="1440437888" name="output" dynamic="False" />
+			<Variable name="sectorName" refID="1491036887" />
+		</Node>
+		<Node name="Condition Check" ID="789577984" type="GeneralConditionCheckNode" pos="-100,-50">
+			<Port ID="-1817089280" name="Input" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">In</Direction>
+				<ConnectionCount name="maxConnectionCount">Multi</ConnectionCount>
+				<NodeSide name="side">Left</NodeSide>
+				<float name="sidePosition">0</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="-779649152" name="Pass" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">20</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Port ID="257790976" name="Fail" dynamic="True" type="NodeEditorFramework.ConnectionKnob">
+				<string name="styleID">TaskFlow</string>
+				<Direction name="direction">Out</Direction>
+				<ConnectionCount name="maxConnectionCount">Single</ConnectionCount>
+				<NodeSide name="side">Right</NodeSide>
+				<float name="sidePosition">60</float>
+				<float name="sideOffset">0</float>
+			</Port>
+			<Variable name="variableName" refID="511313553" />
+			<int name="variableType">1</int>
+			<int name="comparisonMode">0</int>
+			<int name="value">1</int>
+		</Node>
+		<Node name="Set Flag Interactibility" ID="586444160" type="SetFlagInteractibilityNode" pos="150,-50">
+			<Port ID="1295231104" name="output" dynamic="False" />
+			<Port ID="-1962296064" name="input" dynamic="False" />
+			<Variable name="flagName" refID="-366630705" />
+			<FlagInteractibility name="interactibility">Warp</FlagInteractibility>
+			<Variable name="sectorName" refID="1517478563" />
+			<Variable name="entityID" refID="-1662643687" />
+			<Variable name="intStrings" refID="-872070144" />
+		</Node>
+	</Nodes>
+	<Connections>
+		<Connection port1ID="1440437888" port2ID="-1817089280" />
+		<Connection port1ID="-779649152" port2ID="-1962296064" />
+	</Connections>
+	<Objects>
+		<Object refID="1491036887" type="System.String">
+			<string>Capitol North</string>
+		</Object>
+		<Object refID="511313553" type="System.String">
+			<string>InfGateDefensesDefeated</string>
+		</Object>
+		<Object refID="-366630705" type="System.String">
+			<string>CapitolGateFlag</string>
+		</Object>
+		<Object refID="1517478563" type="System.String">
+			<string>Sector 2580-540</string>
+		</Object>
+		<Object refID="-1662643687" type="System.String">
+			<string>InfGateCFlag</string>
+		</Object>
+		<Object refID="-872070144" type="System.String[]">
+			<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+				<string>None</string>
+				<string>Warp</string>
+			</ArrayOfString>
+		</Object>
+	</Objects>
+</NodeCanvas>
