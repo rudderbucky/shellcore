@@ -5,7 +5,7 @@
 /// </summary>
 public class Unload : ActiveAbility
 {
-    private float gcdTemp;
+
     protected override void Awake()
     {
         base.Awake(); // base awake
@@ -23,7 +23,7 @@ public class Unload : ActiveAbility
     /// </summary>
     public override void Deactivate()
     {
-        Core.WeaponGCD = Core.WeaponGCD + gcdTemp;
+        Core.WeaponGCD *= ((float)Mathf.Max(abilityTier, 1)+1);
         base.Deactivate();
     }
 
@@ -32,8 +32,7 @@ public class Unload : ActiveAbility
     /// </summary>
     protected override void Execute()
     {
-        gcdTemp = Core.WeaponGCD * ((float)Mathf.Min(abilityTier, 1) / ((float)Mathf.Max(abilityTier, 1) + 1));
-        Core.WeaponGCD = Core.WeaponGCD - gcdTemp;
+        Core.WeaponGCD /= ((float)Mathf.Max(abilityTier, 1)+1);
         AudioManager.PlayClipByID("clip_unload", transform.position);
         base.Execute();
     }

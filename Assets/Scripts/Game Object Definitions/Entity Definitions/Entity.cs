@@ -1146,6 +1146,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         //transform.rotation = Quaternion.identity; // reset rotation
         GetComponent<SpriteRenderer>().enabled = true; // enable sprite renderer
         busyTimer = 0; // reset busy timer
+        weaponGCD = 0.1F;
         if (SectorManager.instance && SectorManager.instance.current &&
         SectorManager.instance.current.type == Sector.SectorType.BattleZone && ((new List<string>(SectorManager.instance.current.targets)).Contains(ID) || (networkAdapter != null && networkAdapter.isPlayer.Value)) )
         {
