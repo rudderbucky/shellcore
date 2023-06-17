@@ -299,7 +299,21 @@ public class ResourceManager : MonoBehaviour
 
     IEnumerator GetAudioClip(string ID, string path)
     {
-        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS))
+        UnityWebRequest www;
+        if (path.EndsWith(".mp3"))
+        {
+            www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.MPEG);
+        }
+        else if (path.EndsWith(".wav"))
+        {
+            www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.WAV);
+        }
+        else
+        {
+            www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
+        }
+
+        using (www)
         {
             yield return www.SendWebRequest();
 
