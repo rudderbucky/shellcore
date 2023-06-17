@@ -361,6 +361,13 @@ public class ShellPart : MonoBehaviour
             spriteRenderer.material = shaderMaterials[partShader];
         }
 
+
+        if (!craft && !hasDetached)
+        {
+            hasDetached = true;
+            detachedTime = 0;
+        }
+
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)
         {
             if (name != "Shell Sprite" && spriteRenderer.sprite)
