@@ -329,6 +329,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 ID++;
                             }
                             ent.ID = (ID).ToString();
+                            ID++;
                         }
                         else
                         {
