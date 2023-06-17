@@ -160,16 +160,25 @@ public class WCBetterBarHandler : MonoBehaviour
         standardImage.localScale = new Vector3(scale, scale, 1);
         var standardImageList = standardImage.GetComponentsInChildren<Image>();
         standardImageList[0].sprite = spriteList[0].sprite;
+        SetAspectRatio(standardImageList[0]);
         standardImageList[0].color = spriteList[0].color;
         if (spriteList.Length > 1 && spriteList[1].sprite.name != "minimapsquare")
         {
             standardImageList[1].sprite = spriteList[1].sprite;
+            SetAspectRatio(standardImageList[1]);
             standardImageList[0].color = spriteList[0].color;
         }
         else
         {
             standardImageList[1].enabled = false;
         }
+    }
+
+    private void SetAspectRatio(Image image)
+    {
+        var x = image.sprite.bounds.extents.x > image.sprite.bounds.extents.y ? 100 : (image.sprite.bounds.extents.x / image.sprite.bounds.extents.y) * 100;
+        var y = image.sprite.bounds.extents.x < image.sprite.bounds.extents.y ? 100 : (image.sprite.bounds.extents.y / image.sprite.bounds.extents.x) * 100;
+        image.rectTransform.sizeDelta = new Vector2(x, y);
     }
 
     void Update()
