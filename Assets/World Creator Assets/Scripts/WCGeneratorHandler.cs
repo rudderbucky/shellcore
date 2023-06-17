@@ -482,7 +482,7 @@ public class WCGeneratorHandler : MonoBehaviour
                                 part.secondaryData = startTask.partSecondaryData;
                                 part = PartIndexScript.CullToPartIndexValues(part);
 
-                                AddPart(part, missionName);
+                                AddPart(part, missionName, true);
                             }
                         }
                         if (missionName != null)
@@ -1046,7 +1046,7 @@ public class WCGeneratorHandler : MonoBehaviour
     ///
     /// Attempt to add a part into the index, check if the player obtained/saw it
     ///
-    public void AddPart(EntityBlueprint.PartInfo part, string origin)
+    public void AddPart(EntityBlueprint.PartInfo part, string origin, bool addAsMission = false)
     {
         part = PartIndexScript.CullToPartIndexValues(part);
         WorldData.PartIndexData data = partData.Find((pData) => pData.part.Equals(part));
@@ -1060,6 +1060,11 @@ public class WCGeneratorHandler : MonoBehaviour
 
         if (!data.origins.Contains(origin))
         {
+            if (addAsMission) 
+            {
+                data.origins.Insert(0, origin);
+                return;
+            }
             data.origins.Add(origin);
         }
     }

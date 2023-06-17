@@ -53,12 +53,19 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
         {
             var textComponent = infoBox.GetComponentInChildren<Text>();
             textComponent.text = "Sector Origins: (Click part to mark on map)";
+            int i = 0;
             foreach (var origin in origins)
             {
+                i++;
                 if (!textComponent.text.Contains(origin))
                 {
                     textComponent.text += "\n" + origin;
                 }
+                if (i >= 10) break;
+            }
+            if (i >= 10 && origins.Count - i > 0)
+            {
+                textComponent.text += $"\nAND {origins.Count - i} OTHER{(origins.Count - i == 1 ? "" : "S")}";
             }
 
             if (status == PartIndexScript.PartStatus.Obtained)
