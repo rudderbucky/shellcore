@@ -151,6 +151,7 @@ public class IonLineController : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale <= 0) return;
         line.gameObject.transform.position = gameObject.transform.position;
         float originalBearing = 0;
         if (initialized && targetingSystem.GetTarget())
