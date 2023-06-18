@@ -305,7 +305,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
     }
 
     IEnumerator DrawCoroutine(List<Sector> sectors, int dimension, bool displayStations)
-    {        
+    {
         if (player)
         {
             sectors = new List<Sector>(sectors.ToArray());
@@ -460,7 +460,7 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
 
     void Update()
     {
-        if (playerCore && playerCore.cursave.sectorsSeen.Count > sectorCount)
+        if (playerCore && playerCore.cursave.sectorsSeen.Count > sectorCount && !mapVisibleCheatEnabled)
         {
             sectorCount = playerCore.cursave.sectorsSeen.Count;
             Destroy();
