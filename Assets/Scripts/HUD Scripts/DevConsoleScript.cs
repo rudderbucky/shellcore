@@ -334,7 +334,7 @@ public class DevConsoleScript : MonoBehaviour
                     {
                         info.partID = name;
                         info.abilityID = i;
-                        if ((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3 || info.abilityID == 39 || info.abilityID <= 42)
+                        if ((info.abilityID >= 14 && info.abilityID <= 16) || info.abilityID == 3 || info.abilityID == 39 || info.abilityID >= 42)
                         {
                             info.abilityID = 0;
                         }
