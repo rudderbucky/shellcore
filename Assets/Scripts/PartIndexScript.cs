@@ -241,15 +241,27 @@ public class PartIndexScript : MonoBehaviour
             if (x >= 10)
             {
                 x = 0;
+                UpdateTextAndTally();
                 yield return new WaitForEndOfFrame();
             }
         }
 
+        UpdateTextAndTally();
+        yield return null;
+    }
+    
+    private void UpdateTextAndTally()
+    {
         for (int i = 0; i < contents.Length; i++)
         {
             texts[i].SetActive(contents[i].childCount > 0);
         }
 
+        UpdateTallyGraphic();
+    }
+
+    private void UpdateTallyGraphic()
+    {
         // Update tally graphic bar
         if (statsNumbers[3] > 0)
         {
@@ -269,7 +281,6 @@ public class PartIndexScript : MonoBehaviour
 
         // Just found out about string interpolation. Damn that stuff rocks.
         statsTotalTally.text = $"{statsNumbers[3]}";
-        yield return null;
     }
 
     public static void AttemptAddToPartsObtained(EntityBlueprint.PartInfo part)
