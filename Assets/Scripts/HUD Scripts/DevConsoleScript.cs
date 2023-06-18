@@ -130,6 +130,12 @@ public class DevConsoleScript : MonoBehaviour
                 GodPowers(PlayerCore.Instance);
                 textBox.text += "\n<color=lime>Have you tried being born into wealth?</color>";
             }
+            else if (command.Equals("speed", StringComparison.CurrentCultureIgnoreCase))
+            {
+                PlayerCore.Instance.speed = 9999f;
+                PlayerCore.Instance.CalculatePhysicsConstants();
+                textBox.text += "\n<color=lime>Breakfast.</color>";
+            }
             else if (command.Equals("I am God", StringComparison.CurrentCultureIgnoreCase))
             {
                 GodPowers(PlayerCore.Instance);
