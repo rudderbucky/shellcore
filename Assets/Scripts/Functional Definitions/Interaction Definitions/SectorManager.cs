@@ -885,11 +885,21 @@ public class SectorManager : MonoBehaviour
             case EntityBlueprint.IntendedType.Turret:
                 {
                     gObj.AddComponent<Turret>();
+                    json = data.blueprintJSON;
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        blueprint = TryGettingEntityBlueprint(json);
+                    }
                     break;
                 }
             case EntityBlueprint.IntendedType.Tank:
                 {
                     gObj.AddComponent<Tank>();
+                    json = data.blueprintJSON;
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        blueprint = TryGettingEntityBlueprint(json);
+                    }
                     break;
                 }
             case EntityBlueprint.IntendedType.Bunker:
@@ -926,6 +936,11 @@ public class SectorManager : MonoBehaviour
             case EntityBlueprint.IntendedType.Drone:
                 {
                     Drone drone = gObj.AddComponent<Drone>();
+                    json = data.blueprintJSON;
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        blueprint = TryGettingEntityBlueprint(json);
+                    }
                     //drone.path = ResourceManager.GetAsset<Path>(data.pathID);
                     break;
                 }

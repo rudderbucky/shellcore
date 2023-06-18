@@ -379,6 +379,13 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
 
                     var charExists = cursor.characters.Exists(ch => ch.ID == ent.ID);
+                    var jsonSensitiveAssets = new List<string>() {"groundcarrier_blueprint" ,"carrier_blueprint" ,"outpost_blueprint"
+                             ,"bunker_blueprint" ,"missile_station" ,"air_weapon_station", "defense_turret", 
+                             "siege_turret", "harvester_turret", "missile_turret", "torpedo_turret", "mini_drone_blueprint", "worker_drone_blueprint",
+                             "strike_drone_blueprint", "light_drone_blueprint", "gun_drone_blueprint", "counter_drone_blueprint", 
+                             "torpedo_drone_blueprint", "heavy_drone_blueprint", "speeder_tank", "bullet_tank", 
+                             "missile_tank", "beam_tank", "laser_tank", "rocket_tank"};
+
                     if (ent.assetID == "shellcore_blueprint" || charExists)
                     {
                         if (container.type != Sector.SectorType.SiegeZone && !sectTargetIDS[container].Contains(ent.ID))
@@ -428,8 +435,8 @@ public class WCGeneratorHandler : MonoBehaviour
                             AttemptAddPartArray(traderInventory.parts, container.sectorName);
                         }
                     }
-                    else if (ent.assetID == "groundcarrier_blueprint" || ent.assetID == "carrier_blueprint" || ent.assetID == "outpost_blueprint"
-                             || ent.assetID == "bunker_blueprint" || ent.assetID == "missile_station" || ent.assetID == "air_weapon_station")
+
+                    else if (jsonSensitiveAssets.Contains(ent.assetID))
                     {
                         ent.blueprintJSON = item.shellcoreJSON;
                     }
