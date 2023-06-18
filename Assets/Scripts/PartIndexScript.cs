@@ -130,11 +130,10 @@ public class PartIndexScript : MonoBehaviour
             button.partDisplay = partDisplay;
             // Update total number
             statsNumbers[3]++;
-        }
-
-        foreach (var origin in origins)
-        {
-            parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(origin);
+            foreach (var origin in origins)
+            {
+                parts[part].GetComponent<PartIndexInventoryButton>().origins.Add(origin);
+            }
         }
     }
 
