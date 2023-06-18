@@ -35,7 +35,7 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
                 break;
             case PartIndexScript.PartStatus.Seen:
                 image.color = Color.gray;
-                if (shooter)
+                if (shooter && shooter.sprite)
                 {
                     shooter.enabled = true;
                     shooter.color = Color.gray;
@@ -45,7 +45,7 @@ public class PartIndexInventoryButton : ShipBuilderInventoryBase, IPointerEnterH
             case PartIndexScript.PartStatus.Obtained:
                 if (PlayerCore.Instance)
                     image.color = FactionManager.GetFactionColor(PlayerCore.Instance.faction);
-                if (shooter)
+                if (shooter && shooter.sprite)
                 {
                     shooter.enabled = true;
                     shooter.color = image.color;
