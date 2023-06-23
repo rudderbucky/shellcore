@@ -110,6 +110,8 @@ public class TargetManager : MonoBehaviour
                     continue;
                 if (!FactionManager.FactionExists(j))
                     continue;
+
+                if (j >= allTargets.Length) continue;
                 allTargets[j][allCount[j]++] = ent;
 
                 if ((ent.GetTerrain() & Entity.TerrainType.Air) != 0)

@@ -7,6 +7,8 @@ public class WorldCreatorCamera : MonoBehaviour
     public EventSystem system;
     public CanvasGroup group;
     public int sectorIndex = 0;
+
+    // Changing zoom requires change to sector border line size equation in WorldCreatorSectorRepScript
     public static int minZ = -10;
     public static int maxZ = -600;
     public static WorldCreatorCamera instance;
