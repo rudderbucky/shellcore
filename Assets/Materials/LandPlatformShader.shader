@@ -87,11 +87,12 @@ Shader "Sprites/LandPlatformShader"
 			fixed4 SpriteFrag2(v2f IN) : SV_Target
 			{
 				fixed4 c = SampleSpriteTexture (IN.texcoord);
-                c.a = 0.75f;
-                //c.a *= IN.color.a;
+				clip(c.a - 80.0 / 255.0);
+				c.a = 0.75f;
+				//c.a *= IN.color.a;
 				c.rgb *= c.a;
 				c = IN.color * c.a; 
-                return c;
+				return c;
 			}
         ENDCG
         }
