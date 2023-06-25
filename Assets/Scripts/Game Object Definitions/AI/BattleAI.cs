@@ -450,12 +450,13 @@ public class BattleAI : AIModule
             UpdateTargetInfluences();
 
             // float closestToZero = float.MaxValue;
-
+            if (AITargets == null) return;
             for (int i = 0; i < AITargets.Count; i++)
             {
+                if (AITargets[i] == null || !AITargets[i].transform) continue;
                 var ent = AITargets[i].transform.GetComponent<Entity>();
                 if (!ent) continue;
-                if (/*Mathf.Abs(AITargets[i].influence) < closestToZero &&*/ ent.faction == shellcore.faction)
+                if (ent.faction == shellcore.faction)
                 {
                     fortificationTarget = ent;
                     break;
@@ -470,14 +471,14 @@ public class BattleAI : AIModule
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i] is Turret)
+                if (AIData.entities[i] is Turret turret)
                 {
-                    float d = (craft.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
-                    float d2 = (fortificationTarget.transform.position - AIData.entities[i].transform.position).sqrMagnitude;
+                    float d = (craft.transform.position - turret.transform.position).sqrMagnitude;
+                    float d2 = (fortificationTarget.transform.position - turret.transform.position).sqrMagnitude;
                     if (d < minDistance && d2 > 150f)
                     {
                         minDistance = d;
-                        attackTurret = AIData.entities[i] as Turret;
+                        attackTurret = turret;
                     }
                 }
             }
@@ -490,13 +491,13 @@ public class BattleAI : AIModule
                 return;
             }
         }
-        else if (shellcore.GetTractorTarget() != attackTurret)
+        else if (attackTurret && shellcore.GetTractorTarget() != attackTurret)
         {
             ai.movement.SetMoveTarget(attackTurret.transform.position, 100f);
             if (ai.movement.targetIsInRange())
             {
                 var target = shellcore.GetTractorTarget();
-                if (target != null && target)
+                if (target != null && target && target.gameObject)
                 {
                     if (target.gameObject.GetComponent<EnergySphereScript>() == null)
                     {
