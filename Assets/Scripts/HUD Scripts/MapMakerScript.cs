@@ -112,7 +112,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
         {
             GameObject prefab = ResourceManager.GetAsset<GameObject>(LandPlatformGenerator.prefabNames[0]);
             float tileSize = prefab.GetComponent<SpriteRenderer>().bounds.size.x;
-            lpg.tileSize = tileSize;
 
             var cols = sector.bounds.h / (int)tileSize;
             var rows = sector.bounds.w / (int)tileSize;
@@ -124,8 +123,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 x = center.x - tileSize * (rows - 1) / 2F,
                 y = center.y + tileSize * (cols - 1) / 2F
             };
-
-            lpg.Offset = offset;
 
             sector.platforms = new GroundPlatform[sector.platformData.Length];
             for (int i = 0; i < sector.platformData.Length; i++)
