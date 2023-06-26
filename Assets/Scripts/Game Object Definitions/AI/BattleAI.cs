@@ -122,15 +122,17 @@ public class BattleAI : AIModule
 
         for (int i = 0; i < AIData.vendors.Count; i++)
         {
-            if (AIData.vendors[i] as TowerBase)
+            if (AIData.vendors[i] == null || AIData.vendors[i].Equals(null)) continue;
+            if (AIData.vendors[i] is TowerBase towerBase)
             {
-                AITargets.Add(new AITarget(AIData.vendors[i].GetTransform(), 50f));
+                AITargets.Add(new AITarget(towerBase.GetTransform(), 50f));
                 continue;
             }
 
             int rockCount = 0;
             for (int j = 0; j < AIData.energyRocks.Count; j++)
             {
+                if (!AIData.energyRocks[j]) continue;
                 if ((AIData.energyRocks[j].transform.position - AIData.vendors[i].GetPosition()).sqrMagnitude < 100)
                 {
                     rockCount++;
@@ -142,6 +144,7 @@ public class BattleAI : AIModule
 
         for (int i = 0; i < carriers.Count; i++)
         {
+            if (!carriers[i]) continue;
             AITargets.Add(new AITarget(carriers[i].GetTransform(), 100f));
         }
         AITargets.Sort((t1, t2) => (int)(t1.significance - t2.significance));
