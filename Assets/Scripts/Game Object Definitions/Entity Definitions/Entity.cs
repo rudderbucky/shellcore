@@ -1099,6 +1099,8 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    public bool IsBGSpawn { get; set; }
+
     protected virtual void OnDestroy()
     {
         if (AIData.entities.Contains(this))
@@ -1117,7 +1119,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
 
         if (SectorManager.instance)
+        {
             SectorManager.instance.RemoveObject(ID, gameObject);
+            if (IsBGSpawn) SectorManager.instance.totalBGSpawnsAlive--;
+        }
 
         RememberWeaponActivationStates();
         if (MasterNetworkAdapter.mode != NetworkMode.Client && networkAdapter && !networkAdapter.isPlayer.Value)

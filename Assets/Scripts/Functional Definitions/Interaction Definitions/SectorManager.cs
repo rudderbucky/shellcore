@@ -300,18 +300,22 @@ public class SectorManager : MonoBehaviour
         {
             bgSpawnTimer += Time.deltaTime;
 
-            if (bgSpawnTimer >= 8 && bgSpawns.Count > 0)
+            if (bgSpawnTimer >= 8 && bgSpawns.Count > 0 && totalBGSpawnsAlive < 5)
             {
                 bgSpawnTimer = 0;
                 var key = bgSpawns[Random.Range(0, bgSpawns.Count)];
                 var spawnPoint = player.transform.position + Quaternion.Euler(0, 0, Random.Range(0, 360)) * new Vector3(key.Item4, 0, 0);
                 key.Item2.position = spawnPoint;
                 key.Item2.ID = "";
-                SpawnEntity(key.Item1, key.Item2);
+                var entity = SpawnEntity(key.Item1, key.Item2);
+                entity.IsBGSpawn = true;
                 AudioManager.PlayClipByID("clip_respawn", spawnPoint);
+                totalBGSpawnsAlive++;
             }
         }
     }
+
+    public float totalBGSpawnsAlive = 0;
 
     public static int currentSectorIndex = 0;
     public void ReloadSector(int sectorToChange)
