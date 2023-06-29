@@ -1647,16 +1647,13 @@ public class SectorManager : MonoBehaviour
                     }
                 }
 
-                if (!droneHasPart)
+                if ((droneHasPart || Vector3.SqrMagnitude(part.transform.position - player.transform.position) < objectDespawnDistance) && current.dimension == lastDimension)
                 {
-                    if (Vector3.SqrMagnitude(part.transform.position - player.transform.position) < objectDespawnDistance && current.dimension == lastDimension)
-                    {
-                        savedParts.Add(part);
-                    }
-                    else
-                    {
-                        Destroy(part.gameObject);
-                    }
+                    savedParts.Add(part);
+                }
+                else
+                {
+                    Destroy(part.gameObject);
                 }
             }
         }

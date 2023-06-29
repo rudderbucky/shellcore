@@ -275,7 +275,6 @@ public class ReticleScript : MonoBehaviour
             {
                 SetTarget(null);
                 ClearSecondaryTargets();
-                Debug.LogWarning("test");
                 foreach (var ownable in player.GetUnitsCommanding())
                 {
                     if (ownable == null || ownable.Equals(null) || !(ownable is Entity ent) || ent.GetIsDead()) continue;
