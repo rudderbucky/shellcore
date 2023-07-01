@@ -1381,9 +1381,10 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             part.GetComponent<Ability>().SetDestroyed(true);
         }
-
+        var drone = this as Drone;
+        var isLightDrone = drone && drone.type == DroneType.Light; // Accounting for light drone weight reduction.
         entityBody.mass -= part.partMass;
-        weight -= part.partMass * weightMultiplier;
+        weight -= isLightDrone ? part.partMass * weightMultiplier * .6F : part.partMass * weightMultiplier;
         if (this is Craft craft)
         {
             craft.CalculatePhysicsConstants();
