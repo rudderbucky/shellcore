@@ -71,6 +71,10 @@ public class CollisionManager : MonoBehaviour
                     continue;
                 if ((pos - energy.transform.position).sqrMagnitude < 1f)
                 {
+                    if (entity.IsInvisible)
+                        continue;
+                    if (entity.GetIsDead())
+                        continue;
                     var harvester = entity.GetComponentInChildren<Harvester>();
                     if (entity is IHarvester || harvester != null)
                     {
