@@ -6,7 +6,7 @@ public interface IProjectile
 {
     public int GetFaction();
     public Entity GetOwner();
-    public Vector2 GetPosition();
+    public Vector4 GetPositions();
     public float GetDamage();
     public bool CheckCategoryCompatibility(IDamageable entity);
     public void HitPart(ShellPart part);
@@ -30,6 +30,7 @@ public class BulletScript : MonoBehaviour, IProjectile
     public Color particleColor;
     Vector2 vector;
     public bool disableDrones;
+    Vector2 prevPos = Vector2.zero;
 
     /// <summary>
     /// Sets the damage value of the spawned buller
@@ -98,6 +99,7 @@ public class BulletScript : MonoBehaviour, IProjectile
 
     void Start()
     {
+        prevPos = transform.position;
         vector = GetComponent<Rigidbody2D>().velocity;
         GetComponent<SpriteRenderer>().color = particleColor;
         AIData.collidingProjectiles.Add(this);
@@ -111,6 +113,10 @@ public class BulletScript : MonoBehaviour, IProjectile
     IEnumerator DestroyTimer(float time)
     {
         yield return new WaitForSeconds(time);
+        if (CollisionManager.ProjectileCollision(this))
+        {
+            yield break;
+        }
         InstantiateMissPrefab();
 
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off || !MasterNetworkAdapter.lettingServerDecide)
@@ -127,9 +133,10 @@ public class BulletScript : MonoBehaviour, IProjectile
         return owner;
     }
 
-    public Vector2 GetPosition()
+    public Vector4 GetPositions()
     {
-        return transform.position;
+        var pos = transform.position;
+        return new Vector4(pos.x, pos.y, prevPos.x, prevPos.y);
     }
 
     public float GetDamage()
@@ -184,5 +191,10 @@ public class BulletScript : MonoBehaviour, IProjectile
             }
             Destroy(gameObject); // bullet has collided with a target, delete immediately
         }
+    }
+
+    private void FixedUpdate()
+    {
+        prevPos = transform.position;
     }
 }
