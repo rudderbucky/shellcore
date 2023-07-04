@@ -44,10 +44,12 @@ public class BattleZoneManager : MonoBehaviour
     {
         Entity.OnEntityDeath -= OnEntityDeath;
         ShellCore.OnPowerCollected -= OnPowerCollected;
+        ClearTargetsAndStats();
     }
 
     public void ClearTargetsAndStats()
     {
+        if (targets == null || stats == null) return;
         targets.Clear();
         stats.Clear();
     }
