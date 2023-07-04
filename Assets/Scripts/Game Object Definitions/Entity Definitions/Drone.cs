@@ -198,13 +198,13 @@ public class Drone : AirCraft, IOwnable
                 ai.setMode(lastMode);
                 time = 0;
             }
+            time = Time.time;
+            initialzangle = transform.localEulerAngles.z;
         }
         else
         {
             if (ai.getMode() != AirCraftAI.AIMode.Inactive)
             {
-                time = Time.time;
-                initialzangle = transform.localEulerAngles.z;
                 lastMode = ai.getMode();
             }
 
