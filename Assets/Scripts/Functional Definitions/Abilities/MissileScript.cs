@@ -20,6 +20,7 @@ public class MissileScript : MonoBehaviour, IProjectile
     public GameObject missPrefab;
     public Color missileColor;
     bool fired = false;
+    Vector2 prevPos;
 
     // Use this for initialization
     void Start()
@@ -62,7 +63,7 @@ public class MissileScript : MonoBehaviour, IProjectile
         //}
 
         GetComponent<SpriteRenderer>().color = missileColor;
-
+        prevPos = transform.position;
         AIData.collidingProjectiles.Add(this);
     }
 
@@ -99,6 +100,7 @@ public class MissileScript : MonoBehaviour, IProjectile
         {
             Destroy(gameObject);
         }
+        prevPos = transform.position;
     }
 
     public void SetTerrain(Entity.TerrainType terrain)
@@ -168,9 +170,10 @@ public class MissileScript : MonoBehaviour, IProjectile
         return owner;
     }
 
-    public Vector2 GetPosition()
+    public Vector4 GetPositions()
     {
-        return transform.position;
+        var pos = transform.position;
+        return new Vector4(pos.x, pos.y, prevPos.x, prevPos.y);
     }
 
     public float GetDamage()
