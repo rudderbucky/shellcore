@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class CollisionManager : MonoBehaviour
 {
@@ -105,7 +104,6 @@ public class CollisionManager : MonoBehaviour
         for (int k = 0; k <= pointCount; k++)
         {
             Vector2 pos = Vector2.Lerp(startPos, endPos, (float)k / pointCount);
-            Debug.DrawLine(pos, pos + Vector2.up * 0.1f, Color.red);
             for (int i = 0; i < AIData.entities.Count; i++)
             {
                 Entity entity = AIData.entities[i];
@@ -137,7 +135,6 @@ public class CollisionManager : MonoBehaviour
                             pos);
                         if (collision)
                         {
-                            Debug.DrawLine(pos, pos + Vector2.up * 0.4f, Color.yellow, 0.2f);
                             if (j == colliders.Length / 4 - 1)
                             {
                                 projectile.HitDamageable(entity);
