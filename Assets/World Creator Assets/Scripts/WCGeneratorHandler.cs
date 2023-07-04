@@ -157,9 +157,9 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
 
                     // make sure the faction was not already copied in
-                    if (!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, faction.factionName + ".json")))
+                    if (!File.Exists(System.IO.Path.Combine(factionPlaceholderPath, $"{faction.factionName}-{faction.ID}.json")))
                     {
-                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, faction.factionName + ".json"));
+                        File.Copy(resPath, System.IO.Path.Combine(factionPlaceholderPath, $"{faction.factionName}-{faction.ID}.json"));
                         legacyFactionFilesToDelete.Add(resPath);
                     }
                 }
@@ -562,7 +562,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     continue;
                 }
 
-                lines.Add($"{faction.factionName}:Factions/{faction.factionName}.json");
+                lines.Add($"{faction.factionName}-{faction.ID}:Factions/{faction.factionName}-{faction.ID}.json");
             }
 
             File.WriteAllLines(resourceTxtPath, lines);

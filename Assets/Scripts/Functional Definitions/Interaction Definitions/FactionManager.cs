@@ -70,7 +70,6 @@ public class FactionManager : MonoBehaviour
             {
                 factionCount++;
             }
-
             factions[fs[i].ID] = fs[i];
         }
     }
