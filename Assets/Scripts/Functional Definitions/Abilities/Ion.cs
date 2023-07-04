@@ -36,7 +36,7 @@ public class Ion : WeaponAbility
             Destroy(lineController.gameObject);
         }
 
-        base.SetDestroyed(true);
+        base.SetDestroyed(destroyed);
     }
 
     void OnDestroy()
