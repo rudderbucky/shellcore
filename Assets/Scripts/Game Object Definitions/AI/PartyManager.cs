@@ -181,6 +181,7 @@ public class PartyManager : MonoBehaviour
         }
 
         var core = AIData.entities.Find(x => x.ID == charID) as ShellCore;
+        if (!core) return;
         if (partyMembers.Contains(core))
             return;
 
@@ -267,19 +268,20 @@ public class PartyManager : MonoBehaviour
 
         foreach (var id in PlayerCore.Instance.cursave.unlockedPartyIDs)
         {
+            WorldData.CharacterData characterData = null;
+            foreach (var ch in SectorManager.instance.characters)
+            {
+                if (ch.ID != id) continue;
+                characterData = ch;
+                break;
+            }
+            if (characterData == null) continue;
             var inst = Instantiate(characterBarPrefab, characterScrollContents.transform).transform;
             var button = inst.Find("Assign").GetComponent<Button>();
             var name = inst.Find("Name").GetComponent<Text>();
-            foreach (var ch in SectorManager.instance.characters)
-            {
-                if (ch.ID == id)
-                {
-                    name.text = ch.name.ToUpper();
-                    EntityBlueprint blueprint = SectorManager.TryGettingEntityBlueprint(ch.blueprintJSON);
-                    inst.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(blueprint, null);
-                }
-            }
-
+            name.text = characterData.name.ToUpper();
+            EntityBlueprint blueprint = SectorManager.TryGettingEntityBlueprint(characterData.blueprintJSON);
+            inst.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(blueprint, null);
             if (partyMembers.Exists(c => c.ID == id))
             {
                 button.GetComponentInChildren<Text>().text = "UNASSIGN";
