@@ -112,7 +112,7 @@ public class CameraScript : MonoBehaviour
         var vec = ((Vector2)target - (Vector2)transform.position).normalized;
         transform.position += (Vector3)vec * velocityFactor;
         var vec2 = ((Vector2)target - (Vector2)transform.position).normalized;
-        if (vec2 != vec)
+        if (Vector2.Distance(vec2,vec) > 0.5F)
         {
             transform.position = new Vector3(target.x, target.y, -zLevel);
         }
