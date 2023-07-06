@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// GUI Reticle to display the target of the player core
@@ -54,8 +56,6 @@ public class ReticleScript : MonoBehaviour
     /// </summary>
     public bool FindTarget()
     {
-        // TODO: To say this needs despaghettification would be an understatement...
-        // despaghettified a little :)
         /*
          * IInteractable
          * - bool Interact() - returns whether the interaction was successful
@@ -85,7 +85,16 @@ public class ReticleScript : MonoBehaviour
         mousePos.z = CameraScript.zLevel;
         Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
         var hits = CollisionManager.GetAllTargetsAtPosition(mouseWorldPos);
-
+        var hitsList = hits.ToList();
+        hitsList.Sort((x, y) => 
+        {
+            var s1 = x.GetComponentInChildren<SortingGroup>();
+            if (!s1) return 1;
+            var s2 = y.GetComponentInChildren<SortingGroup>();
+            if (!s2) return -1;
+            return s2.sortingOrder - s1.sortingOrder;
+        });
+        hits = hitsList.ToArray();
         bool droneInteraction = false;
 
         // This orders secondary target drones to move/follow accordingly.
@@ -121,6 +130,7 @@ public class ReticleScript : MonoBehaviour
         for (int i = 0; i < hits.Length; i++)
         {
             draggableTarget = hits[i]?.gameObject.GetComponent<Draggable>();
+            // This makes sure clicking an outpost with a tank spawned on it selects the tank
             if (hits[i]?.gameObject.GetComponent<IVendor>() == null) break;
         }
 
