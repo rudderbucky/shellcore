@@ -185,18 +185,18 @@ public class Drone : AirCraft, IOwnable
         ai.follow(owner.GetTransform());
     }
 
-    private AirCraftAI.AIMode lastMode;
+    private AirCraftAI.AIMode? lastMode;
 
     protected override void Update()
     {
         if (Time.time > aiReenableTime && ai) ai.enabled = true;
         base.Update();
-        if (!draggable || (draggable && !draggable.dragging))
+        if (!draggable || !draggable.dragging)
         {
-            if (time != 0)
+            if (lastMode.HasValue)
             {
-                ai.setMode(lastMode);
-                time = 0;
+                ai.setMode(lastMode.Value);
+                lastMode = null;
             }
             time = Time.time;
             initialzangle = transform.localEulerAngles.z;
