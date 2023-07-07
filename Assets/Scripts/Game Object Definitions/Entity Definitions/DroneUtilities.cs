@@ -258,7 +258,11 @@ public static class DroneUtilities
         }
     }
 
-    public static List<string> DEFAULT_SECONDARY_DATA = new List<string>() {"mini_drone", "counter_drone", "light_drone", "strike_drone", "gun_drone", "heavy_drone", "torpedo_drone", "worker_drone"};
+    public static List<string> DEFAULT_SECONDARY_DATA = new List<string>() {"mini_drone", "worker_drone", "strike_drone", "light_drone", "gun_drone", "counter_drone", "torpedo_drone", "heavy_drone",};
+    public static string GetDefaultSecondaryDataByType(DroneType type)
+    {
+        return DEFAULT_SECONDARY_DATA[(int)type];
+    }
 
     public static DroneSpawnData GetDroneSpawnDataByShorthand(string secondaryData)
     {

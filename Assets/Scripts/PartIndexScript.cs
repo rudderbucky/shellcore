@@ -320,6 +320,8 @@ public class PartIndexScript : MonoBehaviour
         if (!ShipBuilder.CheckSecondaryDataPurge(partToCull))
         {
             part.secondaryData = partToCull.secondaryData;
+            var data = DroneUtilities.GetDroneSpawnDataByShorthand(part.secondaryData);
+            part.secondaryData = DroneUtilities.GetDefaultSecondaryDataByType(data.type);
         }
 
         part.tier = partToCull.tier;
