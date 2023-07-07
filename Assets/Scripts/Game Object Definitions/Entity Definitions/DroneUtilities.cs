@@ -281,6 +281,19 @@ public static class DroneUtilities
             case "worker_drone":
                 return ResourceManager.GetAsset<DroneSpawnData>("worker_drone_spawn");
             default:
+                try
+                {
+                    var blueprint = SectorManager.TryGettingEntityBlueprint(secondaryData);
+                    var data = ScriptableObject.CreateInstance<DroneSpawnData>();
+                    data.cooldown = GetCooldown(blueprint.customDroneType);
+                    data.energyCost = GetEnergyCost(blueprint.customDroneType);
+                    data.delay = GetDelay(blueprint.customDroneType);
+                    blueprint.entityName = GetAbilityNameByType(blueprint.customDroneType);
+                    data.drone = JsonUtility.ToJson(blueprint);
+                    data.type = blueprint.customDroneType;
+                    return data;
+                }
+                catch {};
                 var spawnData = ScriptableObject.CreateInstance<DroneSpawnData>();
                 JsonUtility.FromJsonOverwrite(secondaryData, spawnData);
                 return spawnData;
