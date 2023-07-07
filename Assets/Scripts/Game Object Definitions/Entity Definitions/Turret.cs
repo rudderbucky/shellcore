@@ -9,7 +9,7 @@
 
     protected override void Awake()
     {
-        category = EntityCategory.Station;
+        Category = EntityCategory.Station;
         base.Awake();
     }
 

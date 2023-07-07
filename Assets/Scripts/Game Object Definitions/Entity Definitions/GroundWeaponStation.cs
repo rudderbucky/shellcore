@@ -42,7 +42,7 @@ public class GroundWeaponStation : GroundConstruct, IOwner
     }
     protected override void Start()
     {
-        category = EntityCategory.Station;
+        Category = EntityCategory.Station;
         base.Start();
     }
 

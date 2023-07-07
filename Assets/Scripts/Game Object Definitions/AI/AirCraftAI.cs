@@ -28,6 +28,7 @@ public class AirCraftAI : MonoBehaviour
         KeepMoving
     }
 
+    [SerializeField]
     private AIMode mode = AIMode.Inactive;
     private AIState state;
     public AIAggression aggression;

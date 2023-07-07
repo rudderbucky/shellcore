@@ -72,7 +72,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     public Dialogue dialogue; // dialogue of entity
     protected Draggable draggable; // associated draggable
     protected bool initialized; // is the entity safe to call update() on?
-    public EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
     public string ID; // used in tasks
     protected float[] baseMaxHealth = new float[3];
     private int controlStacks;
@@ -354,6 +353,13 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         get { return terrain; }
         protected set { terrain = value; }
     }
+    EntityCategory category = EntityCategory.Unset; // these two fields will be changed via hardcoding in child class files
+    public EntityCategory Category
+    {
+        get { return category; }
+        protected set { category = value; }
+    }
+
 
     // boolean used to check if proximity and reticle interactions should trigger for this entity
     private bool interactible = false;

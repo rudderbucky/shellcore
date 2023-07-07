@@ -2,7 +2,7 @@
 {
     protected override void Start()
     {
-        category = EntityCategory.Station;
+        Category = EntityCategory.Station;
         base.Start();
     }
 }

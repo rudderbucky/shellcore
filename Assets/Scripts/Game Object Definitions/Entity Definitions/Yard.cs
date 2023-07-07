@@ -33,7 +33,7 @@ public class Yard : AirConstruct, IShipBuilder
             tractor.SetEnergyEnabled(false);
         }
 
-        category = EntityCategory.Station;
+        Category = EntityCategory.Station;
         base.Start();
     }
 

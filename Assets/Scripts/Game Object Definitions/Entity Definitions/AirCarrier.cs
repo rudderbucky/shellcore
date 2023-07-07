@@ -31,7 +31,7 @@ public class AirCarrier : AirConstruct, ICarrier
 
     protected override void Start()
     {
-        category = EntityCategory.Station;
+        Category = EntityCategory.Station;
         base.Start();
         initialized = true;
         coreAlertThreshold = maxHealth[1] * 0.8f;

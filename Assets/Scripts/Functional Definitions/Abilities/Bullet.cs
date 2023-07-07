@@ -95,8 +95,8 @@ public class Bullet : WeaponAbility
         var script = bullet.GetComponent<BulletScript>();
         script.owner = GetComponentInParent<Entity>();
         script.SetDamage(GetDamage());
-        script.SetCategory(category);
-        script.SetTerrain(terrain);
+        script.SetCategory(type == WeaponDiversityType.Torpedo ? Entity.EntityCategory.All : category);
+        script.SetTerrain(type == WeaponDiversityType.Torpedo ? Entity.TerrainType.Ground : script.owner.Terrain);
         script.SetShooterFaction(Core.faction);
         script.SetPierceFactor(pierceFactor);
         script.particleColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);

@@ -7,7 +7,6 @@ public enum WeaponDiversityType
 {
     Strike,
     Gun,
-
     Torpedo,
     None
 }
@@ -27,6 +26,11 @@ public abstract class WeaponAbility : ActiveAbility
     public WeaponDiversityType type = WeaponDiversityType.None;
     protected System.Type bonusDamageType = null;
     protected float bonusDamageMultiplier = 2f;
+
+    public Entity.TerrainType GetTerrain()
+    {
+        return terrain;
+    }
 
     public string GetBonusDamageType()
     {
@@ -296,7 +300,7 @@ public abstract class WeaponAbility : ActiveAbility
             Entity target = potentialTargets[i];
             Transform tr = target.transform;
             // check if the target's category matches
-            if (category == Entity.EntityCategory.All || target.category == category)
+            if (category == Entity.EntityCategory.All || target.Category == category)
             {
                 // check if it is the closest entity that passed the checks so far
                 float sqrD = Vector3.SqrMagnitude(pos - tr.position);

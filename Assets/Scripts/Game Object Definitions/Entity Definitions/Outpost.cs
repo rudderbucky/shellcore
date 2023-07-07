@@ -23,7 +23,7 @@ public class Outpost : AirConstruct, IVendor
 
     protected override void Start()
     {
-        category = EntityCategory.Station;
+        Category = EntityCategory.Station;
         base.Start();
         BZManager = GameObject.Find("SectorManager").GetComponent<BattleZoneManager>();
     }

@@ -21,6 +21,13 @@ public class IonLineController : MonoBehaviour
     float damage;
     public static float damageC = 1500;
     public static float energyC = 150;
+    private Entity.TerrainType terrain;
+
+    public void SetTerrain(Entity.TerrainType terrain)
+    {
+        this.terrain = terrain;
+    }
+ 
 
     public float GetBeamAngle() 
     {
@@ -57,7 +64,7 @@ public class IonLineController : MonoBehaviour
         beamBearing = targetBearing;
     }
 
-    public void Init(WeaponTargetingSystem targetingSystem, Entity core, float range, ShellPart part, int tier)
+    public void Init(WeaponTargetingSystem targetingSystem, Entity core, float range, ShellPart part, int tier, Entity.TerrainType terrain)
     {
         this.targetingSystem = targetingSystem;
         this.Core = core;
@@ -67,6 +74,7 @@ public class IonLineController : MonoBehaviour
         this.tier = tier;
         energyCost = energyC * tier;
         damage = damageC * tier;
+        SetTerrain(terrain);
     }
 
     public bool GetFiring()
@@ -232,7 +240,7 @@ public class IonLineController : MonoBehaviour
 
     bool VerifyTarget(Entity entity)
     {
-        return entity.GetFaction() != Core.faction && !entity.GetIsDead() && !entity.IsInvisible && entity.GetTerrain() != Entity.TerrainType.Ground;
+        return entity.GetFaction() != Core.faction && !entity.GetIsDead() && !entity.IsInvisible && (entity.GetTerrain() == terrain || terrain == Entity.TerrainType.All);
     }
 
     public float GetDuration()
