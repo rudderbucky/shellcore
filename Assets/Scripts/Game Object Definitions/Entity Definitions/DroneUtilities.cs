@@ -283,6 +283,13 @@ public static class DroneUtilities
             default:
                 try
                 {
+                    var spawnData = ScriptableObject.CreateInstance<DroneSpawnData>();
+                    JsonUtility.FromJsonOverwrite(secondaryData, spawnData);
+                    return spawnData;
+                }
+                catch {}
+                try
+                {
                     var blueprint = SectorManager.TryGettingEntityBlueprint(secondaryData);
                     var data = ScriptableObject.CreateInstance<DroneSpawnData>();
                     data.cooldown = GetCooldown(blueprint.customDroneType);
@@ -294,9 +301,7 @@ public static class DroneUtilities
                     return data;
                 }
                 catch {};
-                var spawnData = ScriptableObject.CreateInstance<DroneSpawnData>();
-                JsonUtility.FromJsonOverwrite(secondaryData, spawnData);
-                return spawnData;
+                return null;
         }
     }
 }
