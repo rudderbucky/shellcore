@@ -69,7 +69,7 @@ public class Bomb : WeaponAbility
         script.owner = GetComponentInParent<Entity>();
         script.SetDamage(GetDamage());
         script.SetCategory(type == WeaponDiversityType.Torpedo ? Entity.EntityCategory.All : category);
-        script.SetTerrain(type == WeaponDiversityType.Torpedo ? Entity.TerrainType.Ground : script.owner.Terrain);
+        script.SetTerrain(type == WeaponDiversityType.Torpedo ? Entity.TerrainType.Ground : terrain);
         script.bombColor = part && part.info.shiny ? FactionManager.GetFactionShinyColor(Core.faction) : new Color(0.8F, 1F, 1F, 0.9F);
         script.faction = Core.faction;
 
