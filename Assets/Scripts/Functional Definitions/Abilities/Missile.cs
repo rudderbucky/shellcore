@@ -41,7 +41,7 @@ public class Missile : WeaponAbility
         script.owner = GetComponentInParent<Entity>();
         script.SetTarget(targetingSystem.GetTarget());
         script.SetCategory(type == WeaponDiversityType.Torpedo ? Entity.EntityCategory.All : category);
-        script.SetTerrain(type == WeaponDiversityType.Torpedo ? Entity.TerrainType.Ground : script.owner.Terrain);
+        script.SetTerrain(type == WeaponDiversityType.Torpedo ? Entity.TerrainType.Ground : terrain);
         script.faction = Core.faction;
         script.SetDamage(GetDamage());
         script.StartSurvivalTimer(3);
