@@ -75,73 +75,8 @@ public class WCSiegeWaveHandler : MonoBehaviour
         wave.entities = new List<SiegeEntity>();
         foreach (var item in waveEntities)
         {
-            wave.entities.Add(TryParseFields(item));
         }
 
         return wave;
-    }
-
-    private SiegeEntity TryParseFields((InputField, InputField, InputField, Dropdown) field)
-    {
-        if (string.IsNullOrEmpty(field.Item1.text))
-        {
-            return null;
-        }
-
-        SiegeEntity siegeEntity = new SiegeEntity();
-        Sector.LevelEntity ent = new Sector.LevelEntity();
-        var item = ItemHandler.instance.items.Find((it) => { return it.assetID == field.Item1.text; });
-
-        if (item != null)
-        {
-            // you can choose to give any object a custom name
-            if (!string.IsNullOrEmpty(item.name))
-            {
-                ent.name = item.name;
-            }
-            else
-            {
-                ent.name = item.obj.name;
-            }
-
-            ent.faction = field.Item4.value; // maybe change this later
-            Debug.Log(ent.faction);
-            ent.assetID = item.assetID;
-        }
-        else
-        {
-            ent.assetID = "shellcore_blueprint";
-            ent.faction = field.Item4.value; // maybe change this later
-            try
-            {
-                EntityBlueprint blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-                JsonUtility.FromJsonOverwrite(field.Item1.text, blueprint);
-                blueprint.intendedType = EntityBlueprint.IntendedType.ShellCore; // for good measure :)
-
-                ent.name = blueprint.entityName;
-                ent.blueprintJSON = JsonUtility.ToJson(blueprint);
-            }
-            catch (System.Exception e)
-            {
-                // try and see if the name is an indirect reference
-                var path = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
-                if (System.IO.Directory.GetFiles(path).Contains<string>(System.IO.Path.Combine(path , field.Item1.text + ".json")))
-                {
-                    ent.name = "ShellCore";
-                    ent.blueprintJSON = field.Item1.text;
-                }
-                else
-                {
-                    Debug.LogWarning(e);
-                    return null;
-                }
-            }
-        }
-
-        siegeEntity.entity = ent;
-        float.TryParse(field.Item2.text, out siegeEntity.timeSinceWaveStartToSpawn);
-        siegeEntity.flagName = field.Item3.text;
-
-        return siegeEntity;
     }
 }

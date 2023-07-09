@@ -674,7 +674,6 @@ public class SectorManager : MonoBehaviour
     public static EntityBlueprint TryGettingEntityBlueprint(string jsonOrName, bool canUseSkirmishBlueprints = false)
     {
         var blueprint = ScriptableObject.CreateInstance<EntityBlueprint>();
-
         // try parsing directly
         try
         {
@@ -691,8 +690,9 @@ public class SectorManager : MonoBehaviour
         {
             try
             {
+                var path = System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints", jsonOrName + ".json");
                 JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                    (System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints", jsonOrName + ".json")), blueprint);
+                    (path), blueprint);
                 return blueprint;
             }
             catch
@@ -704,8 +704,9 @@ public class SectorManager : MonoBehaviour
         // if that fails try fetching the entity file
         try
         {
+            var path = System.IO.Path.Combine(instance.resourcePath, "Entities", jsonOrName + ".json");
             JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
-                (System.IO.Path.Combine(instance.resourcePath, "Entities", jsonOrName + ".json")), blueprint);
+                (path), blueprint);
             return blueprint;
         }
         catch
@@ -713,16 +714,22 @@ public class SectorManager : MonoBehaviour
 
         }
 
-        // if that fails try grabbing a drone
-        try
+        // if that fails try grabbing from the entity placeholder if in the WC
+        if (SceneManager.GetActiveScene().name == "WorldCreator")
         {
-            JsonUtility.FromJsonOverwrite(DroneUtilities.GetDroneSpawnDataByShorthand(jsonOrName).drone, blueprint);
-            return blueprint;
-        }
-        catch
-        {
+            try
+            {                
+                var path = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder", jsonOrName + ".json");
+                JsonUtility.FromJsonOverwrite(System.IO.File.ReadAllText
+                    (path), blueprint);
+                return blueprint;
+            }
+            catch
+            {
 
+            }
         }
+
 
         // if that fails try grabbing from the resource manager
         try

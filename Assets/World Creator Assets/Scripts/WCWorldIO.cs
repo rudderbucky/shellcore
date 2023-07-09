@@ -555,7 +555,11 @@ public class WCWorldIO : GUIWindowScripts
             });
         }
         
-        button.GetComponentInChildren<Text>().text = System.IO.Path.GetFileNameWithoutExtension(name);
+        var nameText = System.IO.Path.GetFileName(name);
+        int test = 0;
+        if (!int.TryParse(nameText[nameText.Length-1]+"", out test))
+            nameText = System.IO.Path.GetFileNameWithoutExtension(name);
+        button.GetComponentInChildren<Text>().text = nameText;
         if (PlayerCore.Instance)
         {
             var print = SectorManager.TryGettingEntityBlueprint(File.ReadAllText(name));
