@@ -78,13 +78,18 @@
                 fixed alpha_down = tex2D(_MainTex, i.uv - fixed2(0, texelSize.y)).a;
                 fixed alpha_right = tex2D(_MainTex, i.uv + fixed2(texelSize.x, 0)).a;
                 fixed alpha_left = tex2D(_MainTex, i.uv - fixed2(texelSize.x, 0)).a;
+                fixed alpha_leftdown = tex2D(_MainTex, i.uv - fixed2(texelSize.x, texelSize.y)).a;
+                fixed alpha_leftup = tex2D(_MainTex, i.uv - fixed2(texelSize.x, -texelSize.y)).a;
+                fixed alpha_rightdown = tex2D(_MainTex, i.uv + fixed2(texelSize.x, -texelSize.y)).a;
+                fixed alpha_rightup = tex2D(_MainTex, i.uv + fixed2(texelSize.x, texelSize.y)).a;
 
-				if (alpha_up > 0.9f && i.uv.y + texelSize.y > 1.0f) alpha_up = 0.0f;
-				if (alpha_down > 0.9f && i.uv.y - texelSize.y < 0.0f) alpha_down = 0.0f;
-				if (alpha_right > 0.9f && i.uv.x + texelSize.x > 1.0f) alpha_right = 0.0f;
-				if (alpha_left > 0.9f && i.uv.x - texelSize.x < 0.0f) alpha_left = 0.0f;
+
+				if (alpha_up > 0.0f && i.uv.y + texelSize.y > 1.0f) alpha_up = 0.0f;
+				if (alpha_down > 0.0f && i.uv.y - texelSize.y < 0.0f) alpha_down = 0.0f;
+				if (alpha_right > 0.0f && i.uv.x + texelSize.x > 1.0f) alpha_right = 0.0f;
+				if (alpha_left > 0.0f && i.uv.x - texelSize.x < 0.0f) alpha_left = 0.0f;
  		    
-                return lerp(outlineC, c, ceil(alpha_up * alpha_down * alpha_right * alpha_left));
+                return lerp(outlineC, c, ceil(alpha_up * alpha_down * alpha_right * alpha_left * alpha_leftdown * alpha_leftup * alpha_rightdown * alpha_rightup));
             }
             ENDCG
         }
