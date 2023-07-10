@@ -68,7 +68,6 @@
 
                 c *= i.color;
                 c.rgb *= c.a;
-                c.rgb = fixed3(0.0f,0.0f,0.0f);
                 half4 outlineC = _Color;
                 outlineC.a *= ceil(c.a);
                 outlineC.rgb *= outlineC.a;
