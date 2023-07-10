@@ -73,23 +73,24 @@
                 outlineC.rgb *= outlineC.a;
  				
 				fixed2 texelSize = _MainTex_TexelSize * 4.0f;
+                fixed u = 1.0f;
+                
+                for (int a=-texelSize.x; a < texelSize.x; a++)
+                {
+                    for (int b=-texelSize.y; b < texelSize.y; b++)
+                    {
+                        fixed x = tex2D(_MainTex, i.uv + fixed2(a, b)).a;
+				        if (i.uv.y + b >= 1.0f) x = 0.0f;
+				        if (i.uv.y - b <= 0.0f) x = 0.0f;
+				        if (i.uv.x + a >= 1.0f) x = 0.0f;
+				        if (i.uv.x - a <= 0.0f) x = 0.0f;
+                        u *= x;
+                    }
+                }
 
-                fixed alpha_up = tex2D(_MainTex, i.uv + fixed2(0, texelSize.y)).a;
-                fixed alpha_down = tex2D(_MainTex, i.uv - fixed2(0, texelSize.y)).a;
-                fixed alpha_right = tex2D(_MainTex, i.uv + fixed2(texelSize.x, 0)).a;
-                fixed alpha_left = tex2D(_MainTex, i.uv - fixed2(texelSize.x, 0)).a;
-                fixed alpha_leftdown = tex2D(_MainTex, i.uv - fixed2(texelSize.x, texelSize.y)).a;
-                fixed alpha_leftup = tex2D(_MainTex, i.uv - fixed2(texelSize.x, -texelSize.y)).a;
-                fixed alpha_rightdown = tex2D(_MainTex, i.uv + fixed2(texelSize.x, -texelSize.y)).a;
-                fixed alpha_rightup = tex2D(_MainTex, i.uv + fixed2(texelSize.x, texelSize.y)).a;
-
-
-				if (alpha_up > 0.0f && i.uv.y + texelSize.y > 1.0f) alpha_up = 0.0f;
-				if (alpha_down > 0.0f && i.uv.y - texelSize.y < 0.0f) alpha_down = 0.0f;
-				if (alpha_right > 0.0f && i.uv.x + texelSize.x > 1.0f) alpha_right = 0.0f;
-				if (alpha_left > 0.0f && i.uv.x - texelSize.x < 0.0f) alpha_left = 0.0f;
+                if (c.a < 1.0f) u = 0.0f;
  		    
-                return lerp(outlineC, c, ceil(alpha_up * alpha_down * alpha_right * alpha_left * alpha_leftdown * alpha_leftup * alpha_rightdown * alpha_rightup));
+                return lerp(outlineC, c, ceil(u));
             }
             ENDCG
         }
