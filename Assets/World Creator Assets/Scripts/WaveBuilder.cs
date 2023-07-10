@@ -30,6 +30,7 @@ public class WaveBuilder : GUIWindowScripts
     private Button existingButton;
     private Color32 selectedColor = new Color32(100,150,100,255);
     private Color32 unselectedColor = new Color32(100,100,100,255);
+    public static WaveBuilder instance;
     
     
 
@@ -37,6 +38,13 @@ public class WaveBuilder : GUIWindowScripts
     {
         ClearWaves();
         waveSet = new WaveSet();
+        instance = this;
+        UpdateFactions();
+    }
+
+    public void UpdateFactions()
+    {
+        ItemPropertyDisplay.AddCustomFactionsToDropdown(factionDropdown);
     }
 
     void OnDisable()
@@ -146,7 +154,7 @@ public class WaveBuilder : GUIWindowScripts
 
     private string GetDescriptor(SiegeEntity entity)
     {
-        return $"{entity.timeSinceWaveStartToSpawn}/{entity.flagName+""}/{(entity.entity.assetID == "shellcore_blueprint" ? entity.entity.blueprintJSON : entity.entity.assetID) }/{FactionManager.GetFactionName(entity.entity.faction)}";
+        return $"{entity.timeSinceWaveStartToSpawn}/{entity.flagName+""}/{(entity.entity.assetID == "shellcore_blueprint" ? entity.entity.blueprintJSON : entity.entity.assetID) }/{entity.entity.faction}";
     }
 
     public void AddOrModifyWaveSpawn()

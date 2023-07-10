@@ -271,6 +271,8 @@ public class WCBasePropertyHandler : GUIWindowScripts
                     JsonUtility.ToJson(newFaction)
                 );
                 SetupMenu();
+                if (WaveBuilder.instance)
+                    WaveBuilder.instance.UpdateFactions();
                 break;
             case Mode.Miscellaneous:
                 break;
