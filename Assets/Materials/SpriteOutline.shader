@@ -72,7 +72,7 @@
                 outlineC.a *= ceil(c.a);
                 outlineC.rgb *= outlineC.a;
  				
-				fixed2 texelSize = _MainTex_TexelSize * 9.0f;
+				fixed2 texelSize = _MainTex_TexelSize * 4.0f;
 
                 fixed alpha_up = tex2D(_MainTex, i.uv + fixed2(0, texelSize.y)).a;
                 fixed alpha_down = tex2D(_MainTex, i.uv - fixed2(0, texelSize.y)).a;
