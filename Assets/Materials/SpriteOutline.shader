@@ -68,28 +68,33 @@
 
                 c *= i.color;
                 c.rgb *= c.a;
+                c.rgb = fixed3(0.0f,0.0f,0.0f);
                 half4 outlineC = _Color;
                 outlineC.a *= ceil(c.a);
                 outlineC.rgb *= outlineC.a;
  				
-				fixed2 texelSize = _MainTex_TexelSize * 4.0f;
-                fixed u = 1.0f;
-                
-                for (int a=-texelSize.x; a < texelSize.x; a++)
+				fixed4 texelSize = _MainTex_TexelSize ;
+                float u = 1.0f;
+
+                for (fixed l=-texelSize.x* 2.0f; l <= texelSize.x* 3.0f; l += texelSize.x)
                 {
-                    for (int b=-texelSize.y; b < texelSize.y; b++)
+                    for (fixed m=-texelSize.y* 2.0f; m <= texelSize.y* 3.0f; m += texelSize.y)
                     {
-                        fixed x = tex2D(_MainTex, i.uv + fixed2(a, b)).a;
-				        if (i.uv.y + b >= 1.0f) x = 0.0f;
-				        if (i.uv.y - b <= 0.0f) x = 0.0f;
-				        if (i.uv.x + a >= 1.0f) x = 0.0f;
-				        if (i.uv.x - a <= 0.0f) x = 0.0f;
-                        u *= x;
+                        fixed o = tex2D(_MainTex, i.uv + fixed2(l, m)).a;
+                        if (c.a <= 0.2f) o = 1.0f;
+                        else
+                        {
+                            fixed jj = 1.0f;
+                            if (i.uv.y + m >= 1.0f - jj*texelSize.y) o = 0.0f;
+                            if (i.uv.y - m <= jj*texelSize.y) o = 0.0f;
+                            if (i.uv.x + l >= 1.0f - jj*texelSize.x) o = 0.0f;
+                            if (i.uv.x - l <= jj*texelSize.x) o = 0.0f;
+                        }
+                        u *= o;
+                        //o = floor(o);
                     }
                 }
 
-                if (c.a < 1.0f) u = 0.0f;
- 		    
                 return lerp(outlineC, c, ceil(u));
             }
             ENDCG
