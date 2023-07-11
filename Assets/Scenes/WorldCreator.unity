@@ -4691,6 +4691,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 244179694}
   m_CullTransparentMesh: 0
+--- !u!1 &244884555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 244884556}
+  m_Layer: 5
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &244884556
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244884555}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 628184708280356063}
+  m_Father: {fileID: 627227664285563683}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.0015411915, y: 0.0031512608}
+  m_AnchorMax: {x: 0.99816483, y: 0.96800005}
+  m_AnchoredPosition: {x: 0.53125, y: 0.42773438}
+  m_SizeDelta: {x: -0.18261719, y: 0.8076782}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &249850219
 GameObject:
   m_ObjectHideFlags: 0
@@ -20967,7 +21004,7 @@ MonoBehaviour:
   canvasPath: DefaultQuest.xml
   canvas: {fileID: 0}
   loadSceneName: 
-  raycastBlocker: {fileID: 0}
+  raycastBlocker: {fileID: 1295128527}
   screenSize: 1
   specifiedRootRect:
     serializedVersion: 2
@@ -35370,7 +35407,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 628111803960693839}
-  - {fileID: 628184708280356063}
+  - {fileID: 244884556}
   m_Father: {fileID: 8809801082498883691}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -35406,18 +35443,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 841201032452651211}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 627227664285563683}
-  m_RootOrder: 1
+  m_Father: {fileID: 244884556}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -32, y: -24}
+  m_SizeDelta: {x: 1.6000977, y: -0.7800293}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &629503296549197847
 CanvasRenderer:
@@ -35619,8 +35656,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8197be5f3b8c0f041a7f7001abf1257d, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 5143cf4d48d4fe44fbb4e48cd0989ac1, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -36046,6 +36083,11 @@ PrefabInstance:
       propertyPath: builder
       value: 
       objectReference: {fileID: 621043130}
+    - target: {fileID: 2008650563796063775, guid: 708eef131c1abae4ea2e42eba88c2364,
+        type: 3}
+      propertyPath: nodeEditor
+      value: 
+      objectReference: {fileID: 1295128524}
     - target: {fileID: 2008650563796063775, guid: 708eef131c1abae4ea2e42eba88c2364,
         type: 3}
       propertyPath: waveBuilder

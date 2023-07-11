@@ -9,6 +9,8 @@ using UnityEngine.UI;
 using Unity.Netcode;
 using UnityEngine.EventSystems;
 using System.Linq;
+using NodeEditorFramework.Standard;
+using NodeEditorFramework.IO;
 
 public class WCWorldIO : GUIWindowScripts
 {
@@ -17,6 +19,7 @@ public class WCWorldIO : GUIWindowScripts
     private SelectionDisplayHandler displayHandler;
     public ShipBuilder builder;
     public WaveBuilder waveBuilder;
+    public RTNodeEditor nodeEditor;
     public GameObject buttonPrefab;
     public Transform content;
     public RectTransform IOContainer;
@@ -55,7 +58,8 @@ public class WCWorldIO : GUIWindowScripts
         ReadWaveJSON,
         WriteWaveJSON,
         ReadVendingBlueprintJSON,
-        WriteVendingBlueprintJSON
+        WriteVendingBlueprintJSON,
+        ReadCanvas,
     }
 
     IOMode mode = IOMode.Read;
@@ -92,6 +96,13 @@ public class WCWorldIO : GUIWindowScripts
         IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
         worldContents.SetActive(false);
         Show(IOMode.WriteShipJSON);
+    }
+
+    public void ShowCanvasReadMode()
+    {
+        IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        worldContents.SetActive(false);
+        Show(IOMode.ReadCanvas);
     }
 
     public void ShowReadMode()
@@ -451,6 +462,15 @@ public class WCWorldIO : GUIWindowScripts
                 }
                 directories = Directory.GetFiles(path);
                 break;
+            case IOMode.ReadCanvas:
+                path = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                directories = Directory.GetFiles(path);
+                break;
+
         }
 
         foreach (var dir in directories)
@@ -479,6 +499,11 @@ public class WCWorldIO : GUIWindowScripts
                             break;
                         case IOMode.WriteWaveJSON:
                             waveBuilder.ParseWaves(dir);
+                            Hide();
+                            break;
+                        case IOMode.ReadCanvas:
+                            var intf = nodeEditor.GetEditorInterface();
+                            intf.canvasCache.SetCanvas(ImportExportManager.ImportCanvas(intf.GetImportExportFormat(), new object[] {dir}));
                             Hide();
                             break;
                     }

@@ -23,6 +23,10 @@ namespace NodeEditorFramework.Standard
 
 		// IO Format modal panel
 		private ImportExportFormat IOFormat;
+		public ImportExportFormat GetImportExportFormat()
+		{
+			return IOFormat;
+		}
 		private object[] IOLocationArgs;
 		private delegate bool? DefExportLocationGUI(string canvasName, ref object[] locationArgs);
 		private delegate bool? DefImportLocationGUI(ref object[] locationArgs);

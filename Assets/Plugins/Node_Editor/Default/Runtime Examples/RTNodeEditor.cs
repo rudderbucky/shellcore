@@ -16,9 +16,12 @@ namespace NodeEditorFramework.Standard
 		public string loadSceneName;
 		private NodeEditorUserCache canvasCache;
 		private NodeEditorInterface editorInterface;
-
 		public Image raycastBlocker;
         string finalPath;
+		public NodeEditorInterface GetEditorInterface()
+		{
+			return editorInterface;
+		}
 
 		// GUI rects
 		public bool screenSize = false;
