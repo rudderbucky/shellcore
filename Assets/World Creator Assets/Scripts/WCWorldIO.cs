@@ -600,8 +600,7 @@ public class WCWorldIO : GUIWindowScripts
         }
         
         var nameText = System.IO.Path.GetFileName(name);
-        int test = 0;
-        if (!int.TryParse(nameText[nameText.Length-1]+"", out test))
+        if (mode != IOMode.Read && mode != IOMode.ReadCanvas && mode != IOMode.WriteCanvas)
             nameText = System.IO.Path.GetFileNameWithoutExtension(name);
         button.GetComponentInChildren<Text>().text = nameText;
         if (PlayerCore.Instance)
