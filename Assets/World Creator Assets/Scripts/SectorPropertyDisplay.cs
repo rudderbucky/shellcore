@@ -27,6 +27,8 @@ public class SectorPropertyDisplay : MonoBehaviour
     public GameObject insertBGSpawnsButton;
     public GameObject clearBGSpawnsButton;
     public GameObject parseBGSpawnsButton;
+    public GameObject mirrorXButton;
+    public GameObject mirrorYButton;
 
     public List<(InputField, Dropdown)> bgSpawnInputFields = new List<(InputField, Dropdown)>();
     public List<int> factionIDs;
@@ -75,24 +77,30 @@ public class SectorPropertyDisplay : MonoBehaviour
         particles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultParticles", 0);
         tiles.value = PlayerPrefs.GetInt("WCSectorPropertyDisplay_defaultTiles", 0);
 
-        sectorName.transform.parent.gameObject.SetActive(false);
-        waveSet.transform.parent.gameObject.SetActive(false);
-        x.transform.parent.gameObject.SetActive(false);
-        y.transform.parent.gameObject.SetActive(false);
-        w.transform.parent.gameObject.SetActive(false);
-        h.transform.parent.gameObject.SetActive(false);
+        SetButtonsActive(false);
+        opening = false;
+    }
+
+    private void SetButtonsActive(bool notDefault)
+    {
+        sectorName.transform.parent.gameObject.SetActive(notDefault);
+        waveSet.transform.parent.gameObject.SetActive(notDefault);
+        x.transform.parent.gameObject.SetActive(notDefault);
+        y.transform.parent.gameObject.SetActive(notDefault);
+        w.transform.parent.gameObject.SetActive(notDefault);
+        h.transform.parent.gameObject.SetActive(notDefault);
         colorR.transform.parent.gameObject.SetActive(true);
         colorG.transform.parent.gameObject.SetActive(true);
         colorB.transform.parent.gameObject.SetActive(true);
-        bgSpawnScrollContents.gameObject.SetActive(false);
-        insertBGSpawnsButton.SetActive(false);
-        clearBGSpawnsButton.SetActive(false);
-        parseBGSpawnsButton.SetActive(false);
-        deleteButton.SetActive(false);
+        bgSpawnScrollContents.gameObject.SetActive(notDefault);
+        insertBGSpawnsButton.SetActive(notDefault);
+        clearBGSpawnsButton.SetActive(notDefault);
+        parseBGSpawnsButton.SetActive(notDefault);
+        mirrorXButton.SetActive(notDefault);
+        mirrorYButton.SetActive(notDefault);
+        deleteButton.SetActive(notDefault);
         if (shardCounts != null && shardCounts.Count > 0)
-            shardCounts[0].transform.parent.gameObject.SetActive(false);
-
-        opening = false;
+            shardCounts[0].transform.parent.gameObject.SetActive(notDefault);
     }
 
     public void ReflectCurrentSector(bool xAxis)
@@ -124,22 +132,8 @@ public class SectorPropertyDisplay : MonoBehaviour
         particles.value = (int)sector.rectangleEffectSkin;
         tiles.value = (int)sector.backgroundTileSkin;
 
-        sectorName.transform.parent.gameObject.SetActive(true);
-        waveSet.transform.parent.gameObject.SetActive(true);
-        x.transform.parent.gameObject.SetActive(true);
-        y.transform.parent.gameObject.SetActive(true);
-        w.transform.parent.gameObject.SetActive(true);
-        h.transform.parent.gameObject.SetActive(true);
-        colorR.transform.parent.gameObject.SetActive(true);
-        colorG.transform.parent.gameObject.SetActive(true);
-        colorB.transform.parent.gameObject.SetActive(true);
-        bgSpawnScrollContents.gameObject.SetActive(true);
-        insertBGSpawnsButton.SetActive(true);
-        clearBGSpawnsButton.SetActive(true);
-        parseBGSpawnsButton.SetActive(true);
-        deleteButton.SetActive(true);
-        if (shardCounts != null && shardCounts.Count > 0)
-            shardCounts[0].transform.parent.gameObject.SetActive(true);
+        
+        SetButtonsActive(true);
 
 
         waveSet.text = sector.waveSetPath;
