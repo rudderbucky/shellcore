@@ -133,7 +133,8 @@ namespace NodeEditorFramework.IO
 
             Debug.Log(path);
 
-			Directory.CreateDirectory(Path.GetDirectoryName(path));
+			if (!Directory.Exists(Path.GetDirectoryName(path)))
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
 			using (XmlTextWriter writer = new XmlTextWriter(path, Encoding.UTF8))
 			{
 				writer.Formatting = Formatting.Indented;

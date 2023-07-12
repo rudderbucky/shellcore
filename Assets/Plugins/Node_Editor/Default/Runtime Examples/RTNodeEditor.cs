@@ -18,6 +18,7 @@ namespace NodeEditorFramework.Standard
 		private NodeEditorInterface editorInterface;
 		public Image raycastBlocker;
         string finalPath;
+
 		public NodeEditorInterface GetEditorInterface()
 		{
 			return editorInterface;
@@ -114,7 +115,7 @@ namespace NodeEditorFramework.Standard
 			OverlayGUI.StartOverlayGUI("RTNodeEditor");
 			
 			// Set various nested groups
-			GUI.BeginGroup(rootRect, GUI.skin.box);
+			GUI.BeginGroup(rootRect, (Texture)null);
 
 			// Begin Node Editor GUI and set canvas rect
 			NodeEditorGUI.StartNodeGUI(false);

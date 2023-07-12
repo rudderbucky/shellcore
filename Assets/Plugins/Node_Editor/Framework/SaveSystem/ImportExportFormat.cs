@@ -170,6 +170,33 @@ namespace NodeEditorFramework.IO
 			return !string.IsNullOrEmpty (path);
 		}
 
+		public static string GetCanvasExtension()
+		{
+			string ext = ".taskdata";
+            switch (NodeEditorGUI.state)
+            {
+                case NodeEditorGUI.NodeEditorState.Mission:
+                    ext = ".taskdata";
+                    break;
+                case NodeEditorGUI.NodeEditorState.Dialogue:
+                    ext = ".dialoguedata";
+                    break;
+                case NodeEditorGUI.NodeEditorState.Sector:
+                    ext = ".sectordata";
+                    break;
+            }
+			return ext;
+		}
+
+		public static object[] GetExportLocation(string fileName)
+		{
+			//if (IOFormat.ExportLocationArgsSelection(canvasCache.nodeCanvas.saveName, out IOLocationArgs))
+			//			ImportExportManager.ExportCanvas(canvasCache.nodeCanvas, IOFormat, IOLocationArgs);
+			
+
+			return new object[] { Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder", fileName, GetCanvasExtension())};
+		}
+
 		/// <summary>
 		/// Called only if RequiresLocationGUI is true.
 		/// Displays GUI filling in locationArgs with the information necessary to locate the export operation.

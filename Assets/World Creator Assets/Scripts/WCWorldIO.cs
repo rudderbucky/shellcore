@@ -60,6 +60,7 @@ public class WCWorldIO : GUIWindowScripts
         ReadVendingBlueprintJSON,
         WriteVendingBlueprintJSON,
         ReadCanvas,
+        WriteCanvas
     }
 
     IOMode mode = IOMode.Read;
@@ -101,8 +102,17 @@ public class WCWorldIO : GUIWindowScripts
     public void ShowCanvasReadMode()
     {
         IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        nodeEditor.enabled = false;
         worldContents.SetActive(false);
         Show(IOMode.ReadCanvas);
+    }
+
+    public void ShowCanvasWriteMode()
+    {
+        IOContainer.sizeDelta = new Vector2(330, IOContainer.sizeDelta.y);
+        nodeEditor.enabled = false;
+        worldContents.SetActive(false);
+        Show(IOMode.WriteCanvas);
     }
 
     public void ShowReadMode()
@@ -373,6 +383,8 @@ public class WCWorldIO : GUIWindowScripts
                 displayHandler.ClearDisplay();
                 builder.currentPartHandler.SetActive(true);
             }
+
+            if (nodeEditor && !nodeEditor.enabled) nodeEditor.enabled = true;
         };
         rwFromEntityPlaceholder = SceneManager.GetActiveScene().name != "SampleScene";
         placeholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
@@ -396,7 +408,7 @@ public class WCWorldIO : GUIWindowScripts
         active = true;
         gameObject.SetActive(true);
         window.SetActive(true);
-        bool writing = mode == IOMode.Write || mode == IOMode.WriteShipJSON || mode == IOMode.WriteWaveJSON;
+        bool writing = mode == IOMode.Write || mode == IOMode.WriteShipJSON || mode == IOMode.WriteWaveJSON || mode == IOMode.WriteCanvas;
         DestroyAllButtons();
         this.mode = mode;
         string[] directories = null;
@@ -463,6 +475,7 @@ public class WCWorldIO : GUIWindowScripts
                 directories = Directory.GetFiles(path);
                 break;
             case IOMode.ReadCanvas:
+            case IOMode.WriteCanvas:
                 path = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
                 if (!Directory.Exists(path))
                 {
@@ -502,8 +515,16 @@ public class WCWorldIO : GUIWindowScripts
                             Hide();
                             break;
                         case IOMode.ReadCanvas:
+                            nodeEditor.enabled = true;
                             var intf = nodeEditor.GetEditorInterface();
                             intf.canvasCache.SetCanvas(ImportExportManager.ImportCanvas(intf.GetImportExportFormat(), new object[] {dir}));
+                            NodeEditorInterface.forceUpdateCanvasUI = true;
+                            Hide();
+                            break;
+                        case IOMode.WriteCanvas:
+                            nodeEditor.enabled = true;
+                            intf = nodeEditor.GetEditorInterface();
+                            ImportExportManager.ExportCanvas(intf.canvasCache.nodeCanvas, intf.GetImportExportFormat(), dir);
                             Hide();
                             break;
                     }
@@ -513,8 +534,6 @@ public class WCWorldIO : GUIWindowScripts
         GetComponentInParent<Canvas>().sortingOrder = ++PlayerViewScript.currentLayer; // move window to top
         GetComponentsInChildren<SubcanvasSortingOrder>(true).ToList().ForEach(x => x.Initialize());
     }
-
-
 
     public void SwitchBPDirectory()
     {
@@ -652,6 +671,9 @@ public class WCWorldIO : GUIWindowScripts
             case IOMode.WriteWaveJSON:
                 path = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder", field.text + ".json");
                 break;
+            case IOMode.WriteCanvas:
+                path = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder", field.text + ImportExportFormat.GetCanvasExtension());
+                break;
         }
 
         if (!Directory.Exists(path) && (mode == IOMode.Read || mode == IOMode.Write))
@@ -680,6 +702,11 @@ public class WCWorldIO : GUIWindowScripts
             case IOMode.WriteWaveJSON:
                 waveBuilder.ParseWaves(path);
                 Hide();
+                break;
+            case IOMode.WriteCanvas:
+                nodeEditor.enabled = true;
+                var intf = nodeEditor.GetEditorInterface();
+                ImportExportManager.ExportCanvas(intf.canvasCache.nodeCanvas, intf.GetImportExportFormat(), path);
                 break;
             default:
                 break;

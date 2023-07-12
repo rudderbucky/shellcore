@@ -252,6 +252,9 @@ namespace NodeEditorFramework
 		/// </summary>
 		public void SetCanvas (NodeCanvas canvas)
 		{
+			if(canvas as QuestCanvas) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Mission;
+			if(canvas as DialogueCanvas) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Dialogue;
+			if(canvas as SectorCanvas) NodeEditorGUI.state = NodeEditorGUI.NodeEditorState.Sector;
 			if (canvas == null)
 				NewNodeCanvas();
 			else if (nodeCanvas != canvas)
