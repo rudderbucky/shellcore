@@ -11,7 +11,6 @@ using UnityEngine.EventSystems;
 using System.Linq;
 using NodeEditorFramework.Standard;
 using NodeEditorFramework.IO;
-
 public class WCWorldIO : GUIWindowScripts
 {
     public WCGeneratorHandler generatorHandler;
@@ -481,7 +480,16 @@ public class WCWorldIO : GUIWindowScripts
                 {
                     Directory.CreateDirectory(path);
                 }
-                directories = Directory.GetFiles(path);
+                var x = new List<string>(Directory.GetFiles(path));
+                x.Sort((x, y) => {
+                    var ext1 = System.IO.Path.GetExtension(x);
+                    var ext2 = System.IO.Path.GetExtension(y);
+                    var i = ext1 == ".sectordata" ? 2 : ext1 == ".dialoguedata" ? 1 : 0;
+                    var j = ext2 == ".sectordata" ? 2 : ext2 == ".dialoguedata" ? 1 : 0;
+                    if (i == j) return x.CompareTo(y);
+                    return i - j;
+                });
+                directories = x.ToArray();
                 break;
 
         }
@@ -706,6 +714,7 @@ public class WCWorldIO : GUIWindowScripts
                 nodeEditor.enabled = true;
                 var intf = nodeEditor.GetEditorInterface();
                 ImportExportManager.ExportCanvas(intf.canvasCache.nodeCanvas, intf.GetImportExportFormat(), path);
+                Hide();
                 break;
             default:
                 break;
