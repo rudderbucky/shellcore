@@ -451,6 +451,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         else
         {
             window.transform.Find("Background/Vote").gameObject.SetActive(false);
+            RectTransform resultsUI = window.transform.Find("Background/ViewBorder").gameObject.GetComponent<RectTransform>();
+            resultsUI.sizeDelta = new Vector2(550, resultsUI.sizeDelta.y);
+            resultsUI.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, -40, 0);
         }
         
         window.DestroyOnClose = true;
