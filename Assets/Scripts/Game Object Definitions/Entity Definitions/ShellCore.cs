@@ -30,6 +30,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
 
     public void StartYardRepairCoroutine()
     {
+        if (!initialized) return;
         yardRepairCoroutine = StartCoroutine(StartYardRepair());
     }
 
