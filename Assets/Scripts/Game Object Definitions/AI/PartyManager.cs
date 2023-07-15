@@ -277,6 +277,33 @@ public class PartyManager : MonoBehaviour
             }
             if (characterData == null) continue;
             var inst = Instantiate(characterBarPrefab, characterScrollContents.transform).transform;
+            var vendingButtonList = inst.GetComponentInChildren<CharacterBarVendingButtonList>().toggles;
+            for (int i = 0; i < vendingButtonList.Count; i++)
+            {
+                var b = vendingButtonList[i];
+                var partyMember = partyMembers.Find(c => c.ID == id);
+                if (partyMember)
+                {
+                    b.isOn = 
+                        !partyMember.GetAI().vendingItemEnabled.ContainsKey((VendingBlueprint.Item.AIEquivalent)i) ||
+                        partyMember.GetAI().vendingItemEnabled[(VendingBlueprint.Item.AIEquivalent)i];
+                }
+                var x = i;
+                b.onValueChanged.AddListener((v) =>
+                {
+                    var partyMember = partyMembers.Find(c => c.ID == id);
+                    if (!partyMember) return;
+                    var dict = partyMember.GetAI().vendingItemEnabled;
+                    var equiv = (VendingBlueprint.Item.AIEquivalent)x;
+                    if (!dict.ContainsKey(equiv))
+                    {
+                        dict.Add(equiv, v);
+                    }
+                    dict[equiv] = v;
+                });
+            }
+
+
             var button = inst.Find("Assign").GetComponent<Button>();
             var name = inst.Find("Name").GetComponent<Text>();
             name.text = characterData.name.ToUpper();
