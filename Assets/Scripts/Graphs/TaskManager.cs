@@ -414,6 +414,9 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
                     }
                 }
 
+                if (traverser.findRoot().prerequisites != null)
+                    mission.prerequisites = new List<string>(traverser.findRoot().prerequisites.ToArray());
+                    
                 if (traverser.findRoot().overrideCheckpoint)
                 {
                     traverser.activateCheckpoint(traverser.findRoot().overrideCheckpointName);
