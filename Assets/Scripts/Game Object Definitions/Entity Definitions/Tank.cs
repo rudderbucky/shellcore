@@ -53,8 +53,21 @@ public class Tank : GroundCraft, IOwnable
         {
             owner.GetUnitsCommanding().Remove(this);
         }
+        if (AIData.tanks.Contains(this))
+        {
+            AIData.tanks.Remove(this);
+        }
 
         base.OnDestroy();
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        if (!AIData.tanks.Contains(this))
+        {
+            AIData.tanks.Add(this);
+        }
     }
 
     protected override void Start()

@@ -6,6 +6,7 @@ public class AIData
     public static List<IInteractable> interactables = new List<IInteractable>();
     public static List<ShellCore> shellCores = new List<ShellCore>();
     public static List<Entity> entities = new List<Entity>();
+    public static List<Tank> tanks = new List<Tank>();
     public static List<EnergyRock> energyRocks = new List<EnergyRock>();
     public static List<EnergySphereScript> energySpheres = new List<EnergySphereScript>();
     public static List<IVendor> vendors = new List<IVendor>();

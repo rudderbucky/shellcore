@@ -554,7 +554,12 @@ public class BattleAI : AIModule
         {
             ai.movement.SetMoveTarget(AITargets[index].transform.position);
         }
+
+        AttemptFindTank();
     }
+    
+
+
 
     private void UpdateWaitingDraggable()
     {
@@ -676,9 +681,9 @@ public class BattleAI : AIModule
                 mostNeeded = AIEquivalent.SpeederTank;
             }
         }
-        else if (numEnemyGroundStations + numEnemyTanks > numOwnTanks)
+        else if (2 * numEnemyGroundStations + numEnemyTanks > numOwnTanks)
         {
-            if (shellcore.GetPower() >= 150 || Random.Range(0, 3) == 1)
+            if (shellcore.GetPower() >= 150 || Random.Range(0, 3) <= 1)
             {
                 if (GetItemEnabled(AIEquivalent.BeamTank) && (!GetItemEnabled(AIEquivalent.SiegeTank) || Random.Range(0, 3) == 0))
                 {
@@ -905,6 +910,9 @@ public class BattleAI : AIModule
                                 shellcore.GetTractorTarget().GetComponent<Turret>()
                                 && shellcore.GetTractorTarget().GetComponent<Turret>().entityName == "Harvester Turret";
 
+        AttemptMoveTank();
+        var hasTank = shellcore.GetTractorTarget() && shellcore.GetTractorTarget().GetComponent<Tank>();
+        if (!hasTank)
         switch (state)
         {
             case BattleState.Attack:
@@ -930,11 +938,75 @@ public class BattleAI : AIModule
         // always drop harvester turrets on close energy rocks
         AttemptDropHarvesterTurret();
 
-        // always collect energy
-        int energyCount = AttemptCollectEnergy();
+        if (!hasTank)
+        {
+            // always collect energy
+            int energyCount = AttemptCollectEnergy();
 
-        // always buy more turrets/tanks
-        AttemptBuyUnits(energyCount);
+            // always buy more turrets/tanks
+            AttemptBuyUnits(energyCount);
+        }
+
+
+    }
+
+    private void AttemptFindTank()
+    {
+        var pickupTargetFlag = FindTankPickupFlag();
+        if (pickupTargetFlag && Vector2.SqrMagnitude(pickupTargetFlag.transform.position - craft.transform.position) > 1F)
+        {
+            ai.movement.SetMoveTarget(pickupTargetFlag.transform.position, 1F);
+        }
+        else if (pickupTargetFlag)
+        {
+            foreach (var tank in AIData.tanks)
+            {
+                if (!FactionManager.IsAllied(tank.faction, craft.faction)) continue;
+                if (Vector2.SqrMagnitude(tank.transform.position - craft.transform.position) > 250) continue;
+                shellcore.SetTractorTarget(tank.GetComponentInChildren<Draggable>());
+                break;
+            }
+        }
+    }
+
+    private void AttemptMoveTank()
+    {
+
+        var hasTank = shellcore.GetTractorTarget() && shellcore.GetTractorTarget().GetComponent<Tank>();
+
+        Flag tankPickupDropoffFlag = null;
+        if (hasTank)
+            tankPickupDropoffFlag = FindTankDropoffFlag();
+
+        if (tankPickupDropoffFlag && Vector2.SqrMagnitude(tankPickupDropoffFlag.transform.position - craft.transform.position) > 1F)
+        {
+            ai.movement.SetMoveTarget(tankPickupDropoffFlag.transform.position, 1F);
+        }
+        else if (tankPickupDropoffFlag)
+        {
+            tankPickupDropoffFlag = null;
+            shellcore.SetTractorTarget(null);
+        }
+    }
+
+    private Flag FindTankPickupFlag()
+    {
+        foreach (var flag in AIData.flags.OrderBy(x => Vector2.SqrMagnitude(x.transform.position - craft.transform.position)))
+        {
+            if (flag.name != $"tankpickup{craft.faction}") continue;
+            return flag;
+        }
+        return null;
+    }
+
+    private Flag FindTankDropoffFlag()
+    {
+        foreach (var flag in AIData.flags.OrderBy(x => Vector2.SqrMagnitude(x.transform.position - craft.transform.position)))
+        {
+            if (flag.name != $"tankdropoff{craft.faction}") continue;
+            return flag;
+        }
+        return null;
     }
 
     private bool IsEnemyGroundTargetPresent(bool allEntities)
