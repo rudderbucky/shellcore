@@ -39,7 +39,6 @@ public class EnergyRock : MonoBehaviour
             targetTime = Time.fixedTime + maxTime;
 
             var x = Instantiate(energySpherePrefab, null, false);
-            x.GetComponent<SpriteRenderer>().sortingLayerID = 0;
             x.transform.position = transform.position;
 
             float dir = Random.Range(0f, 2 * Mathf.PI);
