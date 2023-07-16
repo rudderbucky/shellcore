@@ -333,7 +333,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     {
         if (!offloadingMissions.ContainsKey(missionName)) return;
         var mission = SaveHandler.instance.GetSave().missions.Find(m => m.name == missionName);
-        if (mission.prerequisites != null && !SaveHandler.instance.GetSave().missions.TrueForAll(m =>
+        if (mission.prerequisites != null && SaveHandler.instance.GetSave().missions.Exists(m =>
             mission.prerequisites.Contains(m.name)
                 && m.status != Mission.MissionStatus.Complete))
             return;
@@ -414,9 +414,6 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
                     }
                 }
 
-                if (traverser.findRoot().prerequisites != null)
-                    mission.prerequisites = new List<string>(traverser.findRoot().prerequisites.ToArray());
-                    
                 if (traverser.findRoot().overrideCheckpoint)
                 {
                     traverser.activateCheckpoint(traverser.findRoot().overrideCheckpointName);
