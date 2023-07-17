@@ -299,7 +299,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     {
                         pos = new Vector2Int(index.Item2, index.Item1),
                         type = (byte)item.placeablesIndex,
-                        rotation = (byte)(((int)item.obj.transform.rotation.eulerAngles.z / 90) % 4)
+                        rotation = (byte)item.rotation
                     });
                     break;
                 case ItemType.Other:
@@ -363,7 +363,7 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
                     else
                     {
-                        ent.name = item.obj.name;
+                        ent.name = "World Creator Object";
                     }
 
                     ent.faction = item.faction;
@@ -876,8 +876,6 @@ public class WCGeneratorHandler : MonoBehaviour
 
                     string sectorjson = System.IO.File.ReadAllText(file);
                     Sector.SectorData data = JsonUtility.FromJson<Sector.SectorData>(sectorjson);
-                    // Debug.Log("Platform JSON: " + data.platformjson);
-                    // Debug.Log("Sector JSON: " + data.sectorjson);
                     Sector curSect = ScriptableObject.CreateInstance<Sector>();
                     JsonUtility.FromJsonOverwrite(data.sectorjson, curSect);
 
@@ -899,13 +897,12 @@ public class WCGeneratorHandler : MonoBehaviour
                                 {
                                     if (item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
                                     {
-                                        Item copy = itemHandler.CopyItem(item);
+                                        Item copy = itemHandler.CopyItem(item, false);
                                         copy.dimension = curSect.dimension;
-                                        copy.pos = copy.obj.transform.position
+                                        copy.pos
                                             = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + j * cursor.tileSize,
                                                 -cursor.cursorOffset.y + curSect.bounds.y - i * cursor.tileSize);
                                         copy.rotation = plat.rotations[plat.columns * i + j];
-                                        copy.obj.transform.RotateAround(copy.pos, Vector3.forward, 90 * copy.rotation);
                                         cursor.placedItems.Add(copy);
                                     }
                                 }
@@ -929,13 +926,12 @@ public class WCGeneratorHandler : MonoBehaviour
                                 {
                                     if (item.type == ItemType.Platform && item.placeablesIndex == placeablesIndex)
                                     {
-                                        Item copy = itemHandler.CopyItem(item);
+                                        Item copy = itemHandler.CopyItem(item, false);
                                         copy.dimension = curSect.dimension;
-                                        copy.pos = copy.obj.transform.position
+                                        copy.pos
                                             = new Vector2(cursor.cursorOffset.x + curSect.bounds.x + tiles[i].pos.x * cursor.tileSize,
                                                 -cursor.cursorOffset.y + curSect.bounds.y - tiles[i].pos.y * cursor.tileSize);
                                         copy.rotation = tiles[i].rotation;
-                                        copy.obj.transform.RotateAround(copy.pos, Vector3.forward, 90 * copy.rotation);
                                         cursor.placedItems.Add(copy);
                                     }
                                 }
@@ -964,12 +960,12 @@ public class WCGeneratorHandler : MonoBehaviour
                         {
                             if (ent.assetID == item.assetID && ent.assetID != "")
                             {
-                                Item copy = itemHandler.CopyItem(item);
+                                Item copy = itemHandler.CopyItem(item, false);
                                 copy.dimension = curSect.dimension;
                                 copy.faction = ent.faction;
                                 copy.ID = ent.ID;
                                 copy.name = ent.name;
-                                copy.pos = copy.obj.transform.position = ent.position;
+                                copy.pos = ent.position;
                                 copy.vendingID = ent.vendingID;
                                 copy.shellcoreJSON = ent.blueprintJSON;
                                 copy.patrolPath = ent.patrolPath;
@@ -979,28 +975,8 @@ public class WCGeneratorHandler : MonoBehaviour
                     }
                 }
 
-                /*
-                // now create the character items
-                foreach(var sector in cursor.sectors)
-                {
-                    foreach(var ent in sector.sector.entities)
-                    {
-                        if(cursor.characters.Exists((WorldData.CharacterData x) => {return x.ID == ent.ID;})) 
-                        {
-                            Debug.Log("Character found. Creating new item.");
-                            Item copy = itemHandler.CopyItem(characterItem);
-                            copy.faction = ent.faction;
-                            copy.ID = ent.ID;
-                            copy.name = ent.name;
-                            copy.pos = copy.obj.transform.position = ent.position;
-                            copy.vendingID = ent.vendingID;
-                            cursor.placedItems.Add(copy);
-                        }
-                    }
-                }
-                */
-
                 ImportExportFormat.RuntimeIOPath = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
+                itemHandler.StartInstantiation();
                 Debug.Log("World loaded");
                 return;
             }
