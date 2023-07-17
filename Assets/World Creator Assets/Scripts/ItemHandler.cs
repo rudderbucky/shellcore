@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -80,8 +81,50 @@ public class ItemHandler : MonoBehaviour
         return CopyItem(index);
     }
 
+    Dictionary<Item, GameObject> itemsThatNeedInstantiation = new Dictionary<Item, GameObject>();
+
+    public void StartInstantiation()
+    {
+
+#if UNITY_EDITOR
+        StartCoroutine(InstantiateCoroutine());
+#else        
+        foreach(var kvp in itemsThatNeedInstantiation)
+        {
+            kvp.Key.obj = Instantiate(kvp.Value);
+            kvp.Key.obj.transform.position = kvp.Key.pos;
+            if (kvp.Key.type == ItemType.Platform)
+                kvp.Key.obj.transform.RotateAround(kvp.Key.pos, Vector3.forward, 90 * kvp.Key.rotation);
+        }
+        itemsThatNeedInstantiation.Clear();
+#endif
+    }
+
+    private IEnumerator InstantiateCoroutine()
+    {
+        while (itemsThatNeedInstantiation.Count > 0)
+        {
+            var items = new List<Item>();
+            foreach(var kvp in itemsThatNeedInstantiation)
+            {
+                var pos = Camera.main.WorldToViewportPoint(kvp.Key.pos);
+                if (pos.x < 0 || pos.x > 1 || pos.y < 0 || pos.y > 1) continue;
+                kvp.Key.obj = Instantiate(kvp.Value);
+                kvp.Key.obj.transform.position = kvp.Key.pos;
+                if (kvp.Key.type == ItemType.Platform)
+                    kvp.Key.obj.transform.RotateAround(kvp.Key.pos, Vector3.forward, 90 * kvp.Key.rotation);
+                items.Add(kvp.Key);
+            }
+            foreach (var item in items)
+                itemsThatNeedInstantiation.Remove(item);
+            yield return new WaitForEndOfFrame();
+        }
+        
+        itemsThatNeedInstantiation.Clear();
+    }
+
     // soft copy of seeded items
-    public Item CopyItem(int index)
+    public Item CopyItem(int index, bool instantiate = true)
     {
         var toCopy = itemPack.items[index];
         Item item = new Item();
@@ -91,12 +134,17 @@ public class ItemHandler : MonoBehaviour
         item.shellcoreJSON = toCopy.shellcoreJSON;
         item.placeablesIndex = toCopy.placeablesIndex;
         item.name = toCopy.name;
-        item.obj = Instantiate(toCopy.obj);
+        if (instantiate)
+            item.obj = Instantiate(toCopy.obj);
+        else
+        {
+            itemsThatNeedInstantiation.Add(item, toCopy.obj);
+        }
         return item;
     }
 
     // hard copy
-    public Item CopyItem(Item toCopy)
+    public Item CopyItem(Item toCopy, bool instantiate = true)
     {
         Item item = new Item();
         item.ID = toCopy.ID;
@@ -109,10 +157,16 @@ public class ItemHandler : MonoBehaviour
         item.placeablesIndex = toCopy.placeablesIndex;
         item.pos = toCopy.pos;
         item.name = toCopy.name;
-        item.obj = Instantiate(toCopy.obj);
+        if (instantiate)
+            item.obj = Instantiate(toCopy.obj);
+        else
+        {
+            itemsThatNeedInstantiation.Add(item, toCopy.obj);
+        }
         return item;
     }
 }
+
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(ItemHandler))]

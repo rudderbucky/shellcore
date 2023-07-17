@@ -134,6 +134,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
         foreach (var item in placedItems)
         {
+            if (!item.obj) continue;
             item.obj.SetActive(item.dimension == currentDim);
         }
     }
@@ -259,6 +260,7 @@ public class WorldCreatorCursor : MonoBehaviour
     {
         foreach (var item in placedItems)
         {
+            if (!item.obj) continue;
             if (item.type == ItemType.Other || item.assetID == "core_gate" || item.assetID == "broken_core_gate")
             {
                 foreach (var rend in item.obj.GetComponentsInChildren<SpriteRenderer>())
