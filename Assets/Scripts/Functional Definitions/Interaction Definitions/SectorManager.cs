@@ -303,7 +303,16 @@ public class SectorManager : MonoBehaviour
             if (bgSpawnTimer >= 8 && bgSpawns.Count > 0 && totalBGSpawnsAlive < 5)
             {
                 bgSpawnTimer = 0;
-                var key = bgSpawns[Random.Range(0, bgSpawns.Count)];
+                var validBgSpawns = new List<(EntityBlueprint, Sector.LevelEntity, int, float)>();
+                foreach (var spawn in bgSpawns)
+                {
+                    if (FactionManager.IsAllied(spawn.Item2.faction, player.faction))
+                        continue;
+                    validBgSpawns.Add(spawn);
+                }
+
+                if (validBgSpawns.Count == 0) return;
+                var key = validBgSpawns[Random.Range(0, validBgSpawns.Count)];
                 var spawnPoint = player.transform.position + Quaternion.Euler(0, 0, Random.Range(0, 360)) * new Vector3(key.Item4, 0, 0);
                 key.Item2.position = spawnPoint;
                 key.Item2.ID = "";
