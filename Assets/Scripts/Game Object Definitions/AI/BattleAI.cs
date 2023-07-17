@@ -590,7 +590,7 @@ public class BattleAI : AIModule
 
             foreach (var rock in AIData.energyRocks)
             {
-                if ((rock.transform.position - shellcore.transform.position).sqrMagnitude > 150f)
+                if ((rock.transform.position - shellcore.GetTractorTarget().GetComponent<Turret>().transform.position).sqrMagnitude > 125f)
                 {
                     continue;
                 }
@@ -621,7 +621,7 @@ public class BattleAI : AIModule
                 if ((AIData.energySpheres[i].transform.position - shellcore.transform.position).sqrMagnitude < 150)
                 {
                     energyCount++;
-                    if (shellcore.GetTractorTarget() != null)
+                    if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().GetComponent<Turret>().entityName != "Harvester Turret")
                     {
                         waitingDraggable = shellcore.GetTractorTarget();
                         shellcore.SetTractorTarget(null);
