@@ -614,7 +614,7 @@ public class BattleAI : AIModule
     private int AttemptCollectEnergy()
     {
         int energyCount = 0;
-        if (shellcore.GetTractorTarget() != null && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
+        if (shellcore.GetTractorTarget() && shellcore.GetTractorTarget().gameObject.GetComponent<EnergySphereScript>() == null)
         {
             for (int i = 0; i < AIData.energySpheres.Count; i++)
             {
