@@ -621,7 +621,8 @@ public class BattleAI : AIModule
                 if ((AIData.energySpheres[i].transform.position - shellcore.transform.position).sqrMagnitude < 150)
                 {
                     energyCount++;
-                    if (!(shellcore.GetTractorTarget().GetComponent<Turret>() is Turret turret && turret.entityName == "Harvester Turret"))
+                    var target = shellcore.GetTractorTarget();
+                    if (!(target && target.GetComponent<Turret>() is Turret turret && turret.entityName == "Harvester Turret"))
                     {
                         waitingDraggable = shellcore.GetTractorTarget();
                         shellcore.SetTractorTarget(null);
