@@ -65,9 +65,9 @@ public class CUAbilityCapDisplay : MonoBehaviour
 
         var text = slotHolders[type].GetComponentInChildren<Text>();
         text.text = $"{(AbilityHandler.AbilityTypes)type}: {(caps[type] + extras)}";
-        for (int i = extras + 1; i < CoreUpgraderScript.maxAbilityCap[type] + extras + 1; i++)
+        for (int i = extras; i < caps[type] + extras; i++)
         {
-            slotHolders[type].GetChild(i).GetComponent<Image>().color = Color.green;
+            slotHolders[type].GetChild(i+1).GetComponent<Image>().color = Color.green;
         }
     }
 
