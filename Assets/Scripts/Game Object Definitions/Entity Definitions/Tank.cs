@@ -160,8 +160,8 @@ public class Tank : GroundCraft, IOwnable
 
         // Find a path to the closest one
         if (targets.Count == 0) return;
-        Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), Weapons[0].GetRange());
-        if(newPath == null){newPath = LandPlatformGenerator.pathfind(transform.position, flags.ToArray(), Weapons[0].GetRange());}
+        Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), null, Weapons[0].GetRange());
+        if(newPath == null){newPath = LandPlatformGenerator.pathfind(transform.position, null, flags.ToArray(), Weapons[0].GetRange());}
         if (!HasPath)
         {
             path = newPath;
