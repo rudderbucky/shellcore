@@ -693,6 +693,182 @@ public class LandPlatformGenerator : MonoBehaviour
         return null;
     }
 
+    public static Vector2[] pathfind(Vector2 startPos, Vector2[] positions, float maxDistance = 0f)
+    {
+        float sqrDist = maxDistance * maxDistance;
+
+        // Get correct platform and the starting tile
+        var plat = Instance.GetPlatformInPosition(startPos);
+        Vector2Int startTilePos = WorldToTilePos(startPos);
+
+        // Get end tiles
+        List<Vector2Int> endTiles = new List<Vector2Int>();
+        for (int i = 0; i < positions.Length; i++)
+        {
+            var t = instance.GetNearestTile(plat, positions[i]).Value;
+            if ((TileToWorldPos(t.pos) - positions[i]).sqrMagnitude < sqrDist)
+            {
+                endTiles.Add(t.pos);
+            }
+        }
+
+        if (endTiles.Count == 0)
+        {
+            return null;
+        }
+
+        if (endTiles.Contains(startTilePos))
+        {
+            return new Vector2[] { TileToWorldPos(startTilePos) };
+        }
+
+        // Initialize node lists
+        // TODO: Queue instead of List?
+        List<Node> openList = new List<Node>
+        {
+            new Node
+            {
+                pos = startTilePos,
+                directions = instance.GetDirections(startTilePos),
+                parent = null
+            }
+        };
+        List<Vector2Int> closedList = new List<Vector2Int>();
+
+        // Initialize direction vectors
+        Vector2Int[] unitVectors = new Vector2Int[]
+        {
+            new Vector2Int(1, 0),
+            new Vector2Int(0, -1),
+            new Vector2Int(-1, 0),
+            new Vector2Int(0, 1)
+        };
+
+        // Start flood fill
+        while (openList.Count > 0)
+        {
+            Node current = openList[0];
+
+            // Check for end tiles
+            for (int i = 0; i < endTiles.Count; i++)
+            {
+                if (current.pos == endTiles[i])
+                {
+                    // Path found!
+                    List<Vector2> path = new List<Vector2>();
+                    while (current.parent != null)
+                    {
+                        path.Add(TileToWorldPos(current.pos));
+                        current = current.parent;
+
+                        if (path.Count > 10000)
+                        {
+                            Debug.LogError("Infinite loop at path construction.");
+                            return null;
+                        }
+                    }
+
+                    // Add parentless start position
+                    if ((current.directions == 3 ||
+                        current.directions == 6 ||
+                        current.directions == 9 ||
+                        current.directions == 12) &&
+                        path.Count > 1)
+                    {
+                        Vector2 last = (TileToWorldPos(current.pos));
+                        Vector2 smoothed = (path[path.Count - 1] * 0.35f) + (last * 0.65f);
+                        path.Add(smoothed);
+                    }
+                    else
+                    {
+                        path.Add(TileToWorldPos(current.pos));
+                    }
+
+                    if (path.Count > 1)
+                    {
+                        if (instance.isInLoS(startPos, path[path.Count - 2]))
+                        {
+                            path.RemoveAt(path.Count - 1);
+                        }
+                    }
+
+
+                    List<Vector2> smooth = new List<Vector2> { path[0] };
+
+                    // Path smoothing
+                    if (path.Count > 2)
+                    {
+                        for (int j = 1; j < path.Count - 1; j++)
+                        {
+                            if (path[j - 1].x != path[j + 1].x && path[j - 1].y != path[j + 1].y)
+                            {
+                                Vector2 prev = (path[j - 1] * 0.35f) + (path[j] * 0.65f);
+                                Vector2 next = (path[j + 1] * 0.35f) + (path[j] * 0.65f);
+
+                                smooth.Add(prev);
+                                smooth.Add(next);
+                            }
+                            else
+                            {
+                                smooth.Add(path[j]);
+                            }
+                        }
+                    }
+                    if (path.Count > 1)
+                    {
+                        smooth.Add(path[path.Count - 1]);
+                    }
+
+                    // Path from end to start. Tanks start fron the last node index.
+                    return smooth.ToArray();
+                }
+            }
+
+            // Add new nodes
+            for (int i = 0; i < 4; i++)
+            {
+                if ((current.directions & (1 << i)) == (1 << i))
+                {
+                    Vector2Int nextPos = current.pos + unitVectors[i];
+                    short dirs = instance.GetDirections(nextPos);
+                    if (dirs == -1)
+                    {
+                        // Road ends!
+                        continue;
+                    }
+                    if (!closedList.Contains(nextPos))
+                    {
+                        bool found = false;
+                        for (int j = 0; j < openList.Count; j++)
+                        {
+                            if (openList[j].pos == nextPos)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            openList.Add(
+                                new Node
+                                {
+                                    pos = nextPos,
+                                    directions = dirs,
+                                    parent = current
+                                });
+                        }
+                    }
+                }
+            }
+
+            openList.RemoveAt(0);
+        }
+
+        // It's possible for there to be no path to any target, so it's okay to return nothing
+        Debug.Log($"No viable path found to any of the [{endTiles.Count}] destinations.");
+        return null;
+    }
+
     /// <summary>
     /// Get which directions are available from this tile position
     /// </summary>
