@@ -93,7 +93,7 @@ class PathEditor : Editor
         for (int i = 0; i < path.waypoints.Count; i++)
         {
             EditorGUI.BeginChangeCheck();
-            Vector3 newPos = Handles.FreeMoveHandle(path.waypoints[i].position, Quaternion.identity, 0.1f, Vector3.zero, Handles.RectangleHandleCap);
+            Vector3 newPos = Handles.FreeMoveHandle(path.waypoints[i].position, 0.1f, Vector3.zero, Handles.RectangleHandleCap);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(path, "Changed waypoint position");
