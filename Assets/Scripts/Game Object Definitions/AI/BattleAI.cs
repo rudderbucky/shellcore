@@ -276,8 +276,10 @@ public class BattleAI : AIModule
 
     private void AttackBattleState()
     {
+        bool moveToTank = false;
         if (shellcore.GetTractorTarget() == null)
         {
+            moveToTank = AttemptFindTank();
             if (attackTurret == null)
             {
                 Turret t = null;
@@ -322,7 +324,7 @@ public class BattleAI : AIModule
             //    Debug.Log("AggroTarget: " + primaryTarget.name + " Factions: " + primaryTarget.faction + " - " + craft.faction);
         }
 
-        if (primaryTarget != null)
+        if (primaryTarget != null && (!moveToTank || Vector2.SqrMagnitude(shellcore.transform.position - primaryTarget.transform.position) * 2 < Vector2.SqrMagnitude((Vector2)ai.movement.GetTarget() - (Vector2)primaryTarget.transform.position) + Vector2.SqrMagnitude((Vector2)ai.movement.GetTarget() - (Vector2)shellcore.transform.position)))
         {
             ai.movement.SetMoveTarget(primaryTarget.transform.position);
             //craft.MoveCraft((primaryTarget.transform.position - craft.transform.position).normalized);
@@ -541,9 +543,9 @@ public class BattleAI : AIModule
                 index = i;
                 continue;
             }
-            var ent = AITargets[i].transform.GetComponent<Entity>();
+            var bunker = AITargets[i].transform.GetComponent<Bunker>();
             if (((towerBase && !towerBase.TowerActive()) || 
-                (!foundTowerBase && ent && ent.Terrain == Entity.TerrainType.Ground && ent.faction == shellcore.faction)) && 
+                (!foundTowerBase && bunker && bunker.faction == shellcore.faction)) && 
                 Vector2.SqrMagnitude(craft.transform.position - AITargets[i].transform.transform.position) < dist)
             {
                 dist = Vector2.SqrMagnitude(craft.transform.position - AITargets[i].transform.position);
@@ -554,8 +556,9 @@ public class BattleAI : AIModule
         {
             ai.movement.SetMoveTarget(AITargets[index].transform.position);
         }
-
-        AttemptFindTank();
+        /*else{
+            AttemptFindTank();
+        }*/
     }
     
 
@@ -951,23 +954,27 @@ public class BattleAI : AIModule
 
     }
 
-    private void AttemptFindTank()
+    private bool AttemptFindTank()
     {
-        var pickupTargetFlag = FindTankPickupFlag();
-        if (pickupTargetFlag && Vector2.SqrMagnitude(pickupTargetFlag.transform.position - craft.transform.position) > 1F)
-        {
-            ai.movement.SetMoveTarget(pickupTargetFlag.transform.position, 1F);
-        }
-        else if (pickupTargetFlag)
-        {
-            foreach (var tank in AIData.tanks)
+        if(shellcore.GetTractorTarget() == null){
+            var pickupTargetFlag = FindTankPickupFlag();
+            if (pickupTargetFlag && Vector2.SqrMagnitude(pickupTargetFlag.transform.position - craft.transform.position) > 250F)
             {
-                if (!FactionManager.IsAllied(tank.faction, craft.faction)) continue;
-                if (Vector2.SqrMagnitude(tank.transform.position - craft.transform.position) > 250) continue;
-                shellcore.SetTractorTarget(tank.GetComponentInChildren<Draggable>());
-                break;
+                ai.movement.SetMoveTarget(pickupTargetFlag.transform.position, 1F);
+                return true;
+            }
+            else if (pickupTargetFlag)
+            {
+                foreach (var tank in AIData.tanks)
+                {
+                    if (!FactionManager.IsAllied(tank.faction, craft.faction)) continue;
+                    if (Vector2.SqrMagnitude(tank.transform.position - pickupTargetFlag.transform.position) > 25) continue;
+                    shellcore.SetTractorTarget(tank.GetComponentInChildren<Draggable>());
+                    break;
+                }
             }
         }
+        return false;
     }
 
     private void AttemptMoveTank()
@@ -979,9 +986,9 @@ public class BattleAI : AIModule
         if (hasTank)
             tankPickupDropoffFlag = FindTankDropoffFlag();
 
-        if (tankPickupDropoffFlag && Vector2.SqrMagnitude(tankPickupDropoffFlag.transform.position - craft.transform.position) > 1F)
+        if (tankPickupDropoffFlag && Vector2.SqrMagnitude(tankPickupDropoffFlag.transform.position - shellcore.GetTractorTarget().transform.position) > 1F)
         {
-            ai.movement.SetMoveTarget(tankPickupDropoffFlag.transform.position, 1F);
+            ai.movement.SetMoveTarget(tankPickupDropoffFlag.transform.position + (tankPickupDropoffFlag.transform.position - shellcore.GetTractorTarget().transform.position), 1F);
         }
         else if (tankPickupDropoffFlag)
         {
@@ -995,7 +1002,12 @@ public class BattleAI : AIModule
         foreach (var flag in AIData.flags.OrderBy(x => Vector2.SqrMagnitude(x.transform.position - craft.transform.position)))
         {
             if (flag.name != $"tankpickup{craft.faction}") continue;
-            return flag;
+            foreach (var tank in AIData.tanks)
+            {
+                if (!FactionManager.IsAllied(tank.faction, craft.faction)) continue;
+                if (Vector2.SqrMagnitude(tank.transform.position - flag.transform.position) > 25) continue;
+                return flag;
+            }
         }
         return null;
     }
@@ -1005,7 +1017,16 @@ public class BattleAI : AIModule
         foreach (var flag in AIData.flags.OrderBy(x => Vector2.SqrMagnitude(x.transform.position - craft.transform.position)))
         {
             if (flag.name != $"tankdropoff{craft.faction}") continue;
-            return flag;
+            int alliedPresence = 0;
+            int enemyPresence = 0;
+            foreach(var entity in AIData.entities){
+                if(Vector2.SqrMagnitude(flag.transform.position - entity.transform.position) > 25) continue;
+                if(!(entity as GroundConstruct)) continue;
+                if(entity == shellcore || entity == shellcore.GetTractorTarget().GetComponent<Entity>()) continue;
+                if(entity.faction == craft.faction){alliedPresence++;}
+                else{enemyPresence++;}
+            }
+            if(alliedPresence <= enemyPresence) return flag;
         }
         return null;
     }

@@ -150,11 +150,18 @@ public class Tank : GroundCraft, IOwnable
                 i--;
             }
         }
+        
+        List<Vector2> flags = new List<Vector2>();
+        foreach(Flag flag in AIData.flags){
+            if(flag.name == $"tankpickup{faction}"){
+                flags.Add(flag.transform.position);
+            }
+        }
 
         // Find a path to the closest one
         if (targets.Count == 0) return;
-        Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), Weapons[0].GetRange());
-
+        Vector2[] newPath = LandPlatformGenerator.pathfind(transform.position, targets.ToArray(), null, Weapons[0].GetRange());
+        if(newPath == null){newPath = LandPlatformGenerator.pathfind(transform.position, null, flags.ToArray(), Weapons[0].GetRange());}
         if (!HasPath)
         {
             path = newPath;
