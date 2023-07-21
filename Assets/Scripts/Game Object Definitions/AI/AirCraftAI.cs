@@ -50,6 +50,14 @@ public class AirCraftAI : MonoBehaviour
 
     //public static List<Entity> entities = new List<Entity>();
 
+    public void OnEntityDeath()
+    {
+        if (module is BattleAI battleAI)
+        {
+            battleAI.OnEntityDeath();
+        }
+    }
+
     public void setMode(AIMode mode)
     {
         // Debug.Log("Mode (" + mode + ") set! (try to reduce these, the AI is initialized each time)");

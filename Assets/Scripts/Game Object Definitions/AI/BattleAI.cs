@@ -51,6 +51,11 @@ public class BattleAI : AIModule
     List<AITarget> AITargets = new List<AITarget>();
     Dictionary<EnergyRock, Turret> harvesterTurrets = new Dictionary<EnergyRock, Turret>();
 
+    public void OnEntityDeath()
+    {
+        collectTarget = null;
+    }
+
     public BattleState GetState()
     {
         return state;
@@ -73,6 +78,7 @@ public class BattleAI : AIModule
     {
         carriers = new List<Entity>();
         harvesterTurrets = new Dictionary<EnergyRock, Turret>();
+        collectTarget = null;
 
         Entity[] targetEntities = BattleZoneManager.getTargets();
         if (targetEntities == null)
