@@ -81,6 +81,12 @@ public class ItemHandler : MonoBehaviour
         return CopyItem(index);
     }
 
+    public void ClearInstantiation() 
+    {
+        if (itemsThatNeedInstantiation == null) return;
+        itemsThatNeedInstantiation.Clear();
+    }
+
     Dictionary<Item, GameObject> itemsThatNeedInstantiation = new Dictionary<Item, GameObject>();
 
     public void StartInstantiation()

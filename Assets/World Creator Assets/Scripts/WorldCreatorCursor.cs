@@ -559,6 +559,7 @@ public class WorldCreatorCursor : MonoBehaviour
         }
 
         characters.Clear();
+        handler.ClearInstantiation();
     }
 
     void RemoveSector(SectorWCWrapper sector)
