@@ -795,7 +795,7 @@ public class BattleAI : AIModule
 
             if (state == BattleState.Attack)
             {
-                if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo < 6)
+                if ((int)vendor.GetVendingBlueprint().items[0].equivalentTo >= 6)
                 {
                     bool ownGroundExists = false;
                     for (int j = 0; j < AIData.entities.Count; j++)
