@@ -427,18 +427,17 @@ public class BattleAI : AIModule
 
     void UpdateTargetInfluences()
     {
-        // this code doesn't do anything so I'm commenting it out for now
         /*
-                for (int i = 0; i < AITargets.Count; i++)
+        for (int i = 0; i < AITargets.Count; i++)
         {
             var t = AITargets[i];
-            var ent = t.transform.GetComponent<Entity>();
-            if (t.transform == null || t.transform.GetIsDead())
+            if (!t.transform)
             {
-                Debug.Log("AI Warning: AI target null or dead!"); //Better set this issue aside for later, uncertain how this will be fixed
                 continue;
             }
 
+            var ent = t.transform.GetComponent<Entity>();
+            if (!ent || ent.GetIsDead()) continue;
             t.influence = 0f;
             for (int j = 0; j < AIData.entities.Count; j++)
             {
@@ -446,7 +445,7 @@ public class BattleAI : AIModule
                 {
                     if ((turret.transform.position - t.transform.transform.position).sqrMagnitude < 150f)
                     {
-                        t.influence += FactionManager.IsAllied(turret.faction, t.transform.faction) ? 1f : -1f;
+                        t.influence += FactionManager.IsAllied(turret.faction, ent.faction) ? 1f : -1f;
                     }
                 }
             }
@@ -484,7 +483,7 @@ public class BattleAI : AIModule
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i] is Turret turret)
+                if (AIData.entities[i] is Turret turret && turret.entityName != "Harvester Turret")
                 {
                     float d = (craft.transform.position - turret.transform.position).sqrMagnitude;
                     float d2 = (fortificationTarget.transform.position - turret.transform.position).sqrMagnitude;
@@ -504,7 +503,7 @@ public class BattleAI : AIModule
                 return;
             }
         }
-        else if (attackTurret && shellcore.GetTractorTarget() != attackTurret)
+        else if (attackTurret && shellcore.GetTractorTarget() != attackTurret.GetComponent<Draggable>())
         {
             ai.movement.SetMoveTarget(attackTurret.transform.position, 100f);
             if (ai.movement.targetIsInRange())
@@ -521,12 +520,16 @@ public class BattleAI : AIModule
         }
         else
         {
+            ai.movement.SetMoveTarget(fortificationTarget.transform.position, 5f);
             Vector2 turretDelta = fortificationTarget.transform.position - attackTurret.transform.position;
             Vector2 targetPosition = (Vector2)fortificationTarget.transform.position + turretDelta.normalized * 16f;
             Vector2 delta = targetPosition - (Vector2)craft.transform.position;
             if (turretDelta.sqrMagnitude < 16f)
             {
                 shellcore.SetTractorTarget(null);
+                state = BattleState.Attack;
+                ActionTick();
+                nextStateCheckTime += 1f;
             }
         }
 
