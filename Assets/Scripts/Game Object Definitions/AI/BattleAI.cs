@@ -54,6 +54,7 @@ public class BattleAI : AIModule
     public void OnEntityDeath()
     {
         collectTarget = null;
+        findNewTarget = true;
     }
 
     public BattleState GetState()
@@ -922,7 +923,7 @@ public class BattleAI : AIModule
 
         AttemptMoveTank();
         var hasTank = shellcore.GetTractorTarget() && shellcore.GetTractorTarget().GetComponent<Tank>();
-        if (!hasTank)
+        if (!hasTank && craft && !craft.GetIsDead())
         switch (state)
         {
             case BattleState.Attack:
