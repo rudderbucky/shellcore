@@ -65,7 +65,7 @@ public class BattleAI : AIModule
     public void OrderModeChange(BattleState state)
     {
         this.state = state;
-        nextStateCheckTime = Time.time + 60;
+        nextStateCheckTime = Time.time + 15;
 
         // TODO: prioritize damaged carriers over other carriers
         if (state == BattleState.Defend && carriers.Count > 0)
@@ -484,7 +484,7 @@ public class BattleAI : AIModule
 
             for (int i = 0; i < AIData.entities.Count; i++)
             {
-                if (AIData.entities[i] is Turret turret && FactionManager.IsAllied(turret.faction, craft.faction))
+                if (AIData.entities[i] is Turret turret)
                 {
                     float d = (craft.transform.position - turret.transform.position).sqrMagnitude;
                     float d2 = (fortificationTarget.transform.position - turret.transform.position).sqrMagnitude;
@@ -729,7 +729,7 @@ public class BattleAI : AIModule
 
     private void AttemptBuyUnits(int energyCount)
     {
-        if (shellcore.unitsCommanding.Count >= shellcore.GetTotalCommandLimit()) return;
+        if ((energyCount > 0 && state != BattleState.ReinforceGround) || shellcore.unitsCommanding.Count >= shellcore.GetTotalCommandLimit()) return;
         for (int i = 0; i < AIData.vendors.Count; i++)
         {
             if ((AIData.vendors[i].GetPosition() - craft.transform.position).sqrMagnitude > 100f) continue;
