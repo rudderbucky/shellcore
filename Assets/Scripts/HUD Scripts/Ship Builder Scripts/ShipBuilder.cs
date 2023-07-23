@@ -1165,7 +1165,6 @@ public class ShipBuilder : GUIWindowScripts
         }
         if (!partDict.ContainsKey(part))
         {
-            Debug.LogWarning("test");   
             int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
             ShipBuilderInventoryScript invButton = Instantiate(buttonPrefab,
                 contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();
