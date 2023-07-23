@@ -1323,7 +1323,7 @@ public class ShipBuilder : GUIWindowScripts
             oldData.drone = JsonUtility.ToJson(blueprint);
             button.part.secondaryData = JsonUtility.ToJson(oldData);
             partDict.Remove(dronePart);
-            if (partDict.ContainsKey(button.part)) partDict[button.part].IncrementCount();
+            if (partDict.ContainsKey(button.part)) throw new Exception("Part dict contained the modified drone. Since different parts cannot have the same names this shouldn't be possible.");
             else partDict.Add(button.part, button);
         }
 
