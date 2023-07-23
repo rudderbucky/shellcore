@@ -98,8 +98,9 @@ public class ShipBuilder : GUIWindowScripts
             var p = CullSpatialValues(info);
             if (!counts.ContainsKey(p))
             {
-                counts.Add(p, partDict[p].GetCount());
+                counts.Add(p, 1);
             }
+            else counts[p]++;
         }
 
 
