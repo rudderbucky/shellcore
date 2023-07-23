@@ -168,6 +168,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     {
         tractor.SetTractorTarget(null);
         StopYardRepairCoroutine();
+        if (ai) ai.OnEntityDeath();
         if (MasterNetworkAdapter.mode != NetworkMode.Off && !MasterNetworkAdapter.lettingServerDecide
             && lastDamagedBy is ShellCore core && core.networkAdapter && core.networkAdapter.isPlayer.Value)
         {
