@@ -77,7 +77,8 @@ public class ShipBuilder : GUIWindowScripts
     public GameObject partSelectContainer;
     public Transform[] partSelectTransforms;
 
-    public bool ContainsParts(List<EntityBlueprint.PartInfo> parts)
+    // supplemental parts in addition to existing parts in inventory
+    public bool ContainsParts(List<EntityBlueprint.PartInfo> parts, List<EntityBlueprint.PartInfo> supplementalParts = null)
     {
         Dictionary<EntityBlueprint.PartInfo, int> counts = new Dictionary<EntityBlueprint.PartInfo, int>();
         // get the part counts
@@ -89,6 +90,18 @@ public class ShipBuilder : GUIWindowScripts
                 counts.Add(p, partDict[p].GetCount());
             }
         }
+
+        if (supplementalParts != null)
+        // get the part counts
+        foreach (EntityBlueprint.PartInfo info in supplementalParts)
+        {
+            var p = CullSpatialValues(info);
+            if (!counts.ContainsKey(p))
+            {
+                counts.Add(p, partDict[p].GetCount());
+            }
+        }
+
 
         foreach (ShipBuilderPart inf in cursorScript.parts)
         {
@@ -118,6 +131,28 @@ public class ShipBuilder : GUIWindowScripts
 
         return true;
     }
+
+    public void ResetDroneParts(List<EntityBlueprint.PartInfo> defaultParts, List<EntityBlueprint.PartInfo> existingParts, ShipBuilderInventoryScript button, DroneType type)
+    {
+        foreach (var part in existingParts)
+        {
+            AddPart(CullSpatialValues(part));
+        }
+
+        foreach (var part in defaultParts)
+        {
+            if (!DecrementPartButton(part))
+                throw new Exception("Default drone part not present in inventory.");
+        }
+
+        button.DecrementCount(true);
+        var p = button.part;
+        p.secondaryData = DroneUtilities.GetDefaultSecondaryDataByType(type);
+        p.playerGivenName = "";
+        AddPart(p);
+        SavePartsToInventory();
+    }
+
 
     public bool DecrementPartButton(EntityBlueprint.PartInfo info)
     {
@@ -364,11 +399,16 @@ public class ShipBuilder : GUIWindowScripts
         }
 
         EntityBlueprint.PartInfo info = nameCandidate.part;
+        if (partDict.Keys.ToList().Exists(p => p.playerGivenName == nameInputField.text))
+        {
+            nameBox.SetActive(true);
+            return;
+        } 
+
         info.playerGivenName = nameInputField.text;
         AddPart(info);
         nameCandidate.DecrementCount(true);
         SavePartsToInventory();
-        print( nameCandidate.GetCount());
     }
 
 
@@ -1092,6 +1132,7 @@ public class ShipBuilder : GUIWindowScripts
         }
         if (!partDict.ContainsKey(part))
         {
+            Debug.LogWarning("test");   
             int size = ResourceManager.GetAsset<PartBlueprint>(part.partID).size;
             ShipBuilderInventoryScript invButton = Instantiate(buttonPrefab,
                 contentsArray[size]).GetComponent<ShipBuilderInventoryScript>();

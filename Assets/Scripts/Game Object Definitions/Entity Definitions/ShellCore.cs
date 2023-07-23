@@ -14,6 +14,7 @@ public class ShellCore : AirCraft, IHarvester, IOwner
     public static PowerCollectDelegate OnPowerCollected;
 
     protected ICarrier carrier;
+    [SerializeField]
     protected int totalPower;
     protected GameObject bulletPrefab; // prefab for main bullet
     public int intrinsicCommandLimit;

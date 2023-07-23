@@ -50,7 +50,17 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
                     }
                     else
                     {
-                        ShipBuilder.instance.InitializeDronePart(part);
+                        if (Input.GetKey(KeyCode.LeftControl))
+                        {
+                            var spawnData = DroneUtilities.GetDroneSpawnDataByShorthand(part.secondaryData);
+                            var existingParts = SectorManager.TryGettingEntityBlueprint(spawnData.drone).parts;
+                            var parts = DroneUtilities.GetDefaultBlueprint(spawnData.type).parts;
+                            if (ShipBuilder.instance.ContainsParts(parts, existingParts))
+                            {
+                                ShipBuilder.instance.ResetDroneParts(parts, existingParts, this, spawnData.type);
+                            }
+                        }
+                        else ShipBuilder.instance.InitializeDronePart(part);
                     }
                     return;
                 }
