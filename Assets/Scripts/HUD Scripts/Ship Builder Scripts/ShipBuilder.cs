@@ -1312,6 +1312,7 @@ public class ShipBuilder : GUIWindowScripts
             blueprint.parts = new List<EntityBlueprint.PartInfo>();
             blueprint.coreShellSpriteID = blueprintCoreShellSpriteId;
             blueprint.coreSpriteID = "drone_light";
+            blueprint.entityName = DroneUtilities.GetAbilityNameByType(droneSpawnData.type);
 
             foreach (ShipBuilderPart part in cursorScript.parts)
             {
