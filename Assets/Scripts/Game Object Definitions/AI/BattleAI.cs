@@ -966,7 +966,7 @@ public class BattleAI : AIModule
 
     private bool AttemptFindTank()
     {
-        if(shellcore.GetTractorTarget() == null){
+        if(shellcore.GetTractorTarget() == null && FindTankDropoffFlag() != null){
             var pickupTargetFlag = FindTankPickupFlag();
             if (pickupTargetFlag && Vector2.SqrMagnitude(pickupTargetFlag.transform.position - craft.transform.position) > 250F)
             {
