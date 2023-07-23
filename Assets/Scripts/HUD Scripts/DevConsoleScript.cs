@@ -60,6 +60,7 @@ public class DevConsoleScript : MonoBehaviour
         if (stackTrace.Contains("GetNetworkBehaviourAtOrderIndex")) return;
         if (stackTrace.Contains("Unhandled RPC")) return;
         if (stackTrace.Contains("SynchronizeNetworkBehaviours")) return;
+        if (logString.Contains("Unrecognized thread niceness")) return;
         string startingColor = "<color=white>";
         if ((type == LogType.Log || type == LogType.Assert) && !fullLog)
         {
@@ -262,6 +263,38 @@ public class DevConsoleScript : MonoBehaviour
             {
                 ShipBuilder.heavyCheat = true;
                 textBox.text += "\n<color=lime>I just wanna equip DeadZone parts for god's sake.</color>";
+            }
+            else if (command.StartsWith("addpart", StringComparison.CurrentCultureIgnoreCase))
+            {
+                var parts = PlayerCore.Instance.GetInventory();
+                string[] splits = command.Split(" ");
+                int ability = 0;
+                int tier = 0;
+                int amt = 1;
+                var info = new EntityBlueprint.PartInfo();
+                foreach(var split in splits)
+                {
+                    if (split.StartsWith("a="))
+                        int.TryParse(split.Split("=")[1], out ability);
+                    if (split.StartsWith("t="))
+                        int.TryParse(split.Split("=")[1], out tier);
+                    if (split.StartsWith("c="))
+                        int.TryParse(split.Split("=")[1], out amt);
+                    if (split.StartsWith("s="))
+                        info.secondaryData = split.Split("=")[1];
+                    if (split.StartsWith("p="))
+                        info.partID = split.Split("=")[1];
+
+                }
+                     
+                info.abilityID = ability;
+                info.tier = tier;
+                if (string.IsNullOrEmpty(info.partID)) return;
+                for (int i = 0; i < amt; i++)
+                {
+                    parts.Add(info);
+                }
+                textBox.text += "\n<color=lime>Part added.</color>";
             }
             else if (command.Equals("moar data", StringComparison.CurrentCultureIgnoreCase))
             {
