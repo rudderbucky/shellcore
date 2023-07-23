@@ -132,7 +132,7 @@ public class ShipBuilder : GUIWindowScripts
         return true;
     }
 
-    public void ResetDroneParts(List<EntityBlueprint.PartInfo> defaultParts, List<EntityBlueprint.PartInfo> existingParts, ShipBuilderInventoryScript button, DroneType type)
+    public void SwapDroneParts(List<EntityBlueprint.PartInfo> defaultParts, List<EntityBlueprint.PartInfo> existingParts, ShipBuilderInventoryScript button, DroneType type, bool increment = false)
     {
         foreach (var part in existingParts)
         {
@@ -142,14 +142,24 @@ public class ShipBuilder : GUIWindowScripts
         foreach (var part in defaultParts)
         {
             if (!DecrementPartButton(part))
-                throw new Exception("Default drone part not present in inventory.");
+                throw new Exception("Part of default drone not present in inventory.");
         }
 
-        button.DecrementCount(true);
         var p = button.part;
         p.secondaryData = DroneUtilities.GetDefaultSecondaryDataByType(type);
         p.playerGivenName = "";
-        AddPart(p);
+        if (increment)
+        {
+            button.IncrementCount();
+            if (!partDict.ContainsKey(p))
+                throw new Exception("Default drone part not present in inventory.");
+            partDict[p].DecrementCount(true);
+        }
+        else 
+        {
+            button.DecrementCount(true);
+            AddPart(p);
+        }
         SavePartsToInventory();
     }
 
@@ -399,7 +409,7 @@ public class ShipBuilder : GUIWindowScripts
         }
 
         EntityBlueprint.PartInfo info = nameCandidate.part;
-        if (partDict.Keys.ToList().Exists(p => p.playerGivenName == nameInputField.text))
+        if (string.IsNullOrEmpty(nameInputField.text) || partDict.Keys.ToList().Exists(p => p.playerGivenName == nameInputField.text))
         {
             nameBox.SetActive(true);
             return;

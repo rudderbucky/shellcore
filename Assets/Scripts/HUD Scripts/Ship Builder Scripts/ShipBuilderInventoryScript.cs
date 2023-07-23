@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 
@@ -50,17 +51,32 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
                     }
                     else
                     {
+                        var spawnData = DroneUtilities.GetDroneSpawnDataByShorthand(part.secondaryData);
                         if (Input.GetKey(KeyCode.LeftControl))
                         {
-                            var spawnData = DroneUtilities.GetDroneSpawnDataByShorthand(part.secondaryData);
                             var existingParts = SectorManager.TryGettingEntityBlueprint(spawnData.drone).parts;
                             var parts = DroneUtilities.GetDefaultBlueprint(spawnData.type).parts;
                             if (ShipBuilder.instance.ContainsParts(parts, existingParts))
                             {
-                                ShipBuilder.instance.ResetDroneParts(parts, existingParts, this, spawnData.type);
+                                ShipBuilder.instance.SwapDroneParts(parts, existingParts, this, spawnData.type);
                             }
                         }
-                        else ShipBuilder.instance.InitializeDronePart(part);
+                        else if (Input.GetKey(KeyCode.LeftShift))
+                        {
+                            var p = ShipBuilder.CullSpatialValues(part);
+                            p.secondaryData = DroneUtilities.GetDefaultSecondaryDataByType(spawnData.type);
+                            p.playerGivenName = "";
+                            var existingParts = SectorManager.TryGettingEntityBlueprint(spawnData.drone).parts;
+                            var defaultParts = DroneUtilities.GetDefaultBlueprint(spawnData.type).parts;
+                            if (
+                                ShipBuilder.instance.ContainsParts(new List<EntityBlueprint.PartInfo>() {p}) &&
+                                ShipBuilder.instance.ContainsParts(existingParts, defaultParts))
+                            {
+                                ShipBuilder.instance.SwapDroneParts(existingParts, defaultParts, this, spawnData.type, true);
+                            }
+                        }
+                        else 
+                            ShipBuilder.instance.InitializeDronePart(part);
                     }
                     return;
                 }
