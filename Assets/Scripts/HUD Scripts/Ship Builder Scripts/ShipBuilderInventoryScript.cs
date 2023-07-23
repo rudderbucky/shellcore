@@ -39,7 +39,9 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 #endif
         }
 
-        if (count > 0)
+        var dwNotSelectionPhase = mode == BuilderMode.Workshop && !ShipBuilder.instance.GetDroneWorkshopSelectPhase();
+        var minCount = dwNotSelectionPhase ? -1 : ShipBuilder.instance.GetDronePartCount();
+        if (count > minCount)
         {
             if (mode == BuilderMode.Workshop)
             {
@@ -84,7 +86,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
 
 
             var builderPart = InstantiatePart();
-            DecrementCount();
+            DecrementCount(false, dwNotSelectionPhase);
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 if (mode == BuilderMode.Yard && cursor.builder.GetMode() == BuilderMode.Trader)
@@ -100,7 +102,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
                 }
             }
 
-            ShipBuilderPart symmetryPart = count > 0 && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
+            ShipBuilderPart symmetryPart = count > minCount && cursor.symmetryMode != ShipBuilderCursorScript.SymmetryMode.Off ? InstantiatePart() : null;
             if (symmetryPart)
             {
                 //if(cursor.symmetryMode == ShipBuilderCursorScript.SymmetryMode.X)
@@ -114,7 +116,7 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
             cursor.GrabPart(builderPart, symmetryPart);
             if (symmetryPart)
             {
-                DecrementCount();
+                DecrementCount(false, dwNotSelectionPhase);
             }
 
             cursor.buildValue += EntityBlueprint.GetPartValue(part);
@@ -145,15 +147,29 @@ public class ShipBuilderInventoryScript : ShipBuilderInventoryBase
         return builderPart;
     }
 
-    public void IncrementCount()
+    public void IncrementCount(bool obeyDroneCount = false)
     {
-        count++;
+        if (obeyDroneCount)
+        {
+            for (int i = 0; i < ShipBuilder.instance.GetDronePartCount(); i++)
+            {
+                count++;
+            }
+        }
+        else count++;
     }
 
-    public void DecrementCount(bool destroyIfZero = false)
+    public void DecrementCount(bool destroyIfZero = false, bool obeyDroneCount = false)
     {
-        count--;
-        if (destroyIfZero && count == 0)
+        if (obeyDroneCount)
+        {
+            for (int i = 0; i < ShipBuilder.instance.GetDronePartCount(); i++)
+            {
+                count--;
+            }
+        }
+        else count--;
+        if (destroyIfZero && count <= 0)
         {
             ShipBuilder.instance.RemoveKeyFromPartDict(part);
             Destroy(gameObject);

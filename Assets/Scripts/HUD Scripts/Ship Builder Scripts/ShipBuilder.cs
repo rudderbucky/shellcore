@@ -273,7 +273,7 @@ public class ShipBuilder : GUIWindowScripts
             dict[culledInfo].cursor = cursorScript;
         }
 
-        dict[culledInfo].IncrementCount();
+        dict[culledInfo].IncrementCount(mode == BuilderMode.Workshop && !GetDroneWorkshopSelectPhase());
         cursorScript.buildValue -= EntityBlueprint.GetPartValue(part.info);
         cursorScript.parts.Remove(part);
         Destroy(part.gameObject);
@@ -316,7 +316,8 @@ public class ShipBuilder : GUIWindowScripts
         PastSpawnsLimit,
         PastWeaponsLimit,
         PastPassivesLimit,
-        PartTooHeavy
+        PartTooHeavy,
+        DWTooManyParts,
     }
 
     public ReconstructButtonStatus reconstructStatus;
@@ -369,6 +370,10 @@ public class ShipBuilder : GUIWindowScripts
             case ReconstructButtonStatus.PartTooHeavy:
                 reconstructText.color = Color.red;
                 reconstructText.text = "A PART IS TOO HEAVY FOR YOUR CORE";
+                break;
+            case ReconstructButtonStatus.DWTooManyParts:
+                reconstructText.color = Color.red;
+                reconstructText.text = "TOO MANY PARTS ON DRONE";
                 break;
         }
     }
@@ -620,6 +625,11 @@ public class ShipBuilder : GUIWindowScripts
             SetReconstructButton(ReconstructButtonStatus.PartTooHeavy);
             return;
         }
+        if (mode == BuilderMode.Workshop && droneSpawnData && DroneUtilities.GetPartLimit(droneSpawnData.type) < cursorScript.parts.Count())
+        {
+            SetReconstructButton(ReconstructButtonStatus.DWTooManyParts);
+            return;
+        }
         var ability = CheckAbilityCaps(cursorScript.parts, abilityLimits, shell, editorMode);
         if (ability != 0)
         {
@@ -730,14 +740,24 @@ public class ShipBuilder : GUIWindowScripts
     private GameObject droneWorkshopPhaseHider;
 
     private EntityBlueprint.PartInfo dronePart;
+    private DroneSpawnData droneSpawnData;
+    private int dronePartCount;
     [SerializeField]
     private ShipBuilderSortingButton[] sortingButtons;
     [SerializeField]
     private GameObject sortingObject;
+
+    public int GetDronePartCount()
+    {
+        return dronePartCount;
+    }
+
     public void InitializeDronePart(EntityBlueprint.PartInfo info)
     {
         CloseNameWindow(false);
+        dronePartCount = partDict[info].GetCount();
         dronePart = info;
+        droneSpawnData = DroneUtilities.GetDroneSpawnDataByShorthand(dronePart.secondaryData);
         droneWorkshopPhaseHider.SetActive(false);
         cursorScript.ClearAllParts();
         if (sortingObject)
@@ -778,8 +798,10 @@ public class ShipBuilder : GUIWindowScripts
             CloseUI(false); // prevent initializing twice by closing UI if already initialized
         }
 
+        droneSpawnData = null;
         initialized = true;
         instance = this;
+        dronePartCount = 0;
         Activate();
         cursorScript.gameObject.SetActive(false);
         cursorScript.SetBuilder(this);
@@ -1502,6 +1524,8 @@ public class ShipBuilder : GUIWindowScripts
             {
                 return;
             }
+
+            if (droneSpawnData && cursorScript.parts.Count() > DroneUtilities.GetPartLimit(droneSpawnData.type)) return;
         }
         
 
