@@ -412,7 +412,6 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 if ((action.traverser as MissionTraverser).taskHash == action.taskHash)
                 {
                     interactible = true;
-                    break;
                 }
                 else
                 {
