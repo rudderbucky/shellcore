@@ -872,7 +872,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
             Dialogue.Node next = dialogue.nodes[nextIndex];
 
-            Transform button = CreateButton(next.buttonText, null, 24 + 16 * (current.nextNodes.Count - (i + 1))).transform;
+            Transform button = CreateButton(next.buttonText, null, 24 + 24 * (current.nextNodes.Count - (i + 1))).transform;
 
             button.GetComponent<Button>().onClick.AddListener(() => { Next(dialogue, nextIndex, speaker); });
             if (dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit)
