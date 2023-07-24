@@ -836,6 +836,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 upgraderScript.initialize();
                 endDialogue(0, false);
                 return;
+            case Dialogue.DialogueAction.InvokeEnd:
+                endDialogue(ID, false);
+                return;
             default:
                 break;
         }

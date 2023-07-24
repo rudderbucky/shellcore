@@ -415,7 +415,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
 
     private void TaskDecisionPrompt(Dictionary<string, InteractAction> actionsByMission)
     {
-        var dlg = new Dialogue();
+        var dlg = ScriptableObject.CreateInstance<Dialogue>();
         dlg.nodes = new List<Dialogue.Node>();
         var node = new Dialogue.Node();
         node.text = "...";
@@ -429,6 +429,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             var node2 = new Dialogue.Node();
             node2.buttonText = $"Talk about {kvp.Key}.";
             node2.ID = i;
+            node2.text = "";
+            node2.nextNodes = new List<int>();
+            node2.action = Dialogue.DialogueAction.InvokeEnd;
             node.nextNodes.Add(i);
             i++;
             dlg.nodes.Add(node2);
@@ -440,7 +443,17 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             DialogueSystem.OnDialogueCancel -= onCancel;
             if (i == 0) return;
             var ls = actionsByMission.Keys.ToArray();
-            actionsByMission[ls[i-1]].action.Invoke();
+            var intOver = TaskManager.interactionOverrides[ID];
+            var x = new Stack<InteractAction>();
+            var interactAction = actionsByMission[ls[i-1]];
+            foreach (var a in intOver)
+            {
+                if (a == interactAction) continue;
+                x.Push(a);
+            }
+            x.Push(interactAction);
+            TaskManager.interactionOverrides[ID] = x;
+            interactAction.action.Invoke();
         };
 
         onCancel = () =>
@@ -450,9 +463,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         };
 
 
+        DialogueSystem.StartDialogue(dlg, this);
         DialogueSystem.OnDialogueEnd += onEnd;
         DialogueSystem.OnDialogueCancel += onCancel;
-        DialogueSystem.StartDialogue(dialogue, this);
     }
 
     DialogueSystem.DialogueDelegate onEnd;
