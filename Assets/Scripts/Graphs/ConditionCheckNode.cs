@@ -43,6 +43,7 @@ namespace NodeEditorFramework.Standard
         public int variableType = 0;
         public int comparisonMode = 0;
         public int value = 0;
+        public bool inPercentage = false;
 
         protected PopupMenu typePopup = null;
         protected PopupMenu comparisonPopup = null;
@@ -140,6 +141,15 @@ namespace NodeEditorFramework.Standard
                 {
                     GUILayout.Label("Value:");
                     value = RTEditorGUI.IntField(value);
+                    if (variableType == 3 || variableType == 4)
+                    {
+                        inPercentage = Utilities.RTEditorGUI.Toggle(inPercentage, "In Percent");
+                        if (inPercentage && (value > 100 || value < 0))
+                        {
+                            value = RTEditorGUI.IntField(0);
+                            Debug.LogWarning("Can't register this numbers!");
+                        }
+                    }
                 }
 
                 if (variableType == 5)
@@ -231,12 +241,6 @@ namespace NodeEditorFramework.Standard
                         break;
                     case 4:
                         variableToCompare = PartIndexScript.GetNumberOfPartsObtained();
-#if UNITY_EDITOR
-                        if (Input.GetKey(KeyCode.J))
-                        {
-                            variableToCompare = 1000;
-                        }
-#endif
                         break;
                     case 5:
                         return PlayerCore.Instance.cursave.missions.Exists(m => m.name == variableName) &&

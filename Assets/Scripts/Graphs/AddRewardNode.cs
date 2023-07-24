@@ -104,7 +104,7 @@ namespace NodeEditorFramework.Standard
                 wrapper.partTier = RTEditorGUI.IntField("Part tier", wrapper.partTier, GUILayout.Width(200f));
                 GUILayout.Label("Part Secondary Data:");
                 wrapper.partSecondaryData = GUILayout.TextArea(wrapper.partSecondaryData, GUILayout.Width(200f));
-                partShinyBool = RTEditorGUI.Toggle(partShinyBool, "Is shiny");
+                partShinyBool = RTEditorGUI.Toggle(partShinyBool, "Is Shiny");
             }
             else
             {
