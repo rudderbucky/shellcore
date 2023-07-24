@@ -69,6 +69,7 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
         MissionTraverser missionTraverser = traverser as MissionTraverser;
         action.taskHash = missionTraverser.taskHash;
         action.traverser = traverser;
+        action.taskID = missionTraverser.nodeCanvas.missionName;
         if (GetInteractionOverrides().ContainsKey(entityID))
         {
             GetInteractionOverrides()[entityID].Push(action);

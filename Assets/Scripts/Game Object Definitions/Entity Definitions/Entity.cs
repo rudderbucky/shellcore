@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Unity.Netcode;
+using System.Linq;
 using static MasterNetworkAdapter;
 
 /// <summary>
@@ -376,9 +377,25 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     // Code run on reticle double-click/proximity hotkey press
     public void Interact()
     {
+
         if (TaskManager.interactionOverrides.ContainsKey(ID) && TaskManager.interactionOverrides[ID].Count > 0)
         {
-            TaskManager.interactionOverrides[ID].Peek().action.Invoke();
+            Dictionary<string, InteractAction> actionsByMission = new Dictionary<string, InteractAction>();
+            foreach (var ovr in TaskManager.interactionOverrides[ID])
+            {
+                if (actionsByMission.ContainsKey(ovr.taskID)) continue;
+                actionsByMission.Add(ovr.taskID, ovr);
+            }
+
+            if (actionsByMission.Count == 1)
+            {
+                TaskManager.interactionOverrides[ID].Peek().action.Invoke();
+            }
+            else
+            {
+                TaskDecisionPrompt(actionsByMission);
+            }
+
         }
         else if (DialogueSystem.interactionOverrides.ContainsKey(ID) && DialogueSystem.interactionOverrides[ID].Count > 0)
         {
@@ -396,6 +413,51 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    private void TaskDecisionPrompt(Dictionary<string, InteractAction> actionsByMission)
+    {
+        var dlg = new Dialogue();
+        dlg.nodes = new List<Dialogue.Node>();
+        var node = new Dialogue.Node();
+        node.text = "...";
+        node.textColor = FactionManager.GetFactionColor(faction);
+        node.ID = 0;
+        node.nextNodes = new List<int>();
+        dlg.nodes.Add(node);
+        var i = 1;
+        foreach (var kvp in actionsByMission)
+        {
+            var node2 = new Dialogue.Node();
+            node2.buttonText = $"Talk about {kvp.Key}.";
+            node2.ID = i;
+            node.nextNodes.Add(i);
+            i++;
+            dlg.nodes.Add(node2);
+        }
+
+        onEnd = (i) =>
+        {
+            DialogueSystem.OnDialogueEnd -= onEnd;
+            DialogueSystem.OnDialogueCancel -= onCancel;
+            if (i == 0) return;
+            var ls = actionsByMission.Keys.ToArray();
+            actionsByMission[ls[i-1]].action.Invoke();
+        };
+
+        onCancel = () =>
+        {
+            DialogueSystem.OnDialogueEnd -= onEnd;
+            DialogueSystem.OnDialogueCancel -= onCancel;
+        };
+
+
+        DialogueSystem.OnDialogueEnd += onEnd;
+        DialogueSystem.OnDialogueCancel += onCancel;
+        DialogueSystem.StartDialogue(dialogue, this);
+    }
+
+    DialogueSystem.DialogueDelegate onEnd;
+    DialogueSystem.CancelDelegate onCancel;
+
     public void UpdateInteractible()
     {
         if (!SectorManager.instance.current) return;
@@ -412,6 +474,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 if ((action.traverser as MissionTraverser).taskHash == action.taskHash)
                 {
                     interactible = true;
+                    break;
                 }
                 else
                 {
