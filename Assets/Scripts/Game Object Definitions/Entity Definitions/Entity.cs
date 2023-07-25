@@ -387,7 +387,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
                 actionsByMission.Add(ovr.taskID, ovr);
             }
 
-            if (actionsByMission.Count == 1)
+            if (DialogueSystem.isInCutscene)
             {
                 TaskManager.interactionOverrides[ID].Peek().action.Invoke();
             }
@@ -413,6 +413,18 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    private void CreateNode(Dialogue dlg, Dialogue.Node node, string buttonText, int ID)
+    {
+        var node2 = new Dialogue.Node();
+        node2.buttonText = buttonText;
+        node2.ID = ID;
+        node2.text = "";
+        node2.nextNodes = new List<int>();
+        node2.action = Dialogue.DialogueAction.InvokeEnd;
+        node.nextNodes.Add(ID);
+        dlg.nodes.Add(node2);
+    }
+
     private void TaskDecisionPrompt(Dictionary<string, InteractAction> actionsByMission)
     {
         var dlg = ScriptableObject.CreateInstance<Dialogue>();
@@ -424,27 +436,41 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         node.nextNodes = new List<int>();
         dlg.nodes.Add(node);
         var i = 1;
+        var hasDialogue = DialogueSystem.interactionOverrides.ContainsKey(ID) && DialogueSystem.interactionOverrides[ID].Count > 0;
+        if (!hasDialogue && actionsByMission.Count == 1)
+        {
+            TaskManager.interactionOverrides[ID].Peek().action.Invoke();
+            return;
+        }
         foreach (var kvp in actionsByMission)
         {
-            var node2 = new Dialogue.Node();
-            node2.buttonText = $"Talk about {kvp.Key}.";
-            node2.ID = i;
-            node2.text = "";
-            node2.nextNodes = new List<int>();
-            node2.action = Dialogue.DialogueAction.InvokeEnd;
-            node.nextNodes.Add(i);
+            CreateNode(dlg, node, $"Talk about {kvp.Key}.", i);
             i++;
-            dlg.nodes.Add(node2);
         }
+        if (hasDialogue)
+        {
+            CreateNode(dlg, node, "What's on your mind?", i);
+        }
+
+
 
         onEnd = (i) =>
         {
+            var hasDialogue = DialogueSystem.interactionOverrides.ContainsKey(ID) && DialogueSystem.interactionOverrides[ID].Count > 0;
             DialogueSystem.OnDialogueEnd -= onEnd;
             DialogueSystem.OnDialogueCancel -= onCancel;
             if (i == 0) return;
             var ls = actionsByMission.Keys.ToArray();
+            if (i-1 >= ls.Length)
+            {
+                if (hasDialogue)
+                    DialogueSystem.interactionOverrides[ID].Peek().action.Invoke();
+                return;
+            }
+
             var intOver = TaskManager.interactionOverrides[ID];
             var x = new Stack<InteractAction>();
+
             var interactAction = actionsByMission[ls[i-1]];
             foreach (var a in intOver)
             {
