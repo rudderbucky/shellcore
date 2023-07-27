@@ -87,13 +87,19 @@ public class BulletScript : MonoBehaviour, IProjectile
         }
     }
 
-    public void OnDestroy()
+    private void DetachTrail()
     {
         if (transform.GetComponentInChildren<TrailRenderer>())
         {
+            transform.GetComponentInChildren<TrailRenderer>().transform.position = transform.position;
             transform.GetComponentInChildren<TrailRenderer>().autodestruct = true;
             transform.DetachChildren();
         }
+    }
+
+    public void OnDestroy()
+    {
+        DetachTrail();
         AIData.collidingProjectiles.Remove(this);
     }
 
@@ -164,6 +170,7 @@ public class BulletScript : MonoBehaviour, IProjectile
             if (GetComponent<NetworkObject>().IsSpawned)
                 GetComponent<NetworkObject>().Despawn();
         }
+        DetachTrail();
         Destroy(gameObject); // bullet has collided with a target, delete immediately
     }
 
@@ -189,6 +196,7 @@ public class BulletScript : MonoBehaviour, IProjectile
                 if (GetComponent<NetworkObject>().IsSpawned)
                     GetComponent<NetworkObject>().Despawn();
             }
+            DetachTrail();
             Destroy(gameObject); // bullet has collided with a target, delete immediately
         }
     }
