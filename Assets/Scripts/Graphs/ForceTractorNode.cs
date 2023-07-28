@@ -188,7 +188,7 @@ namespace NodeEditorFramework.Standard
             WorldCreatorCursor.selectEntity -= SetTargetID;
         }
 
-        AirCraft entity = null;
+        Entity entity = null;
         Entity target = null;
 
         public override int Traverse()
@@ -238,12 +238,9 @@ namespace NodeEditorFramework.Standard
             {
                 foreach (var ent in AIData.entities)
                 {
-                    if (ent is AirCraft airCraft)
+                    if (ent.ID == entityID)
                     {
-                        if (ent.ID == entityID)
-                        {
-                            entity = airCraft;
-                        }
+                        entity = ent;
                     }
 
                     if (ent.ID == targetEntityID)
@@ -255,6 +252,12 @@ namespace NodeEditorFramework.Standard
 
             //Debug.LogError(target + " " + entity);
 
+            if (!entity.GetComponent<TractorBeam>())
+            {
+                var beam = entity.gameObject.AddComponent<TractorBeam>();
+                beam.owner = entity;
+                beam.BuildTractor();
+            }
             if (entity && entity.GetComponent<TractorBeam>() && target)
             {
                 entity.GetComponentInChildren<TractorBeam>().ForceTarget(target.transform);
