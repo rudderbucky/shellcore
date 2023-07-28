@@ -79,7 +79,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.EndHorizontal();
             if (!useIDInput)
             {
-                GUILayout.Label("Subject to Rotation:");
+                GUILayout.Label("Subject of rotation:");
                 entityID = GUILayout.TextField(entityID);
                 if (WorldCreatorCursor.instance != null)
                 {
@@ -186,8 +186,8 @@ namespace NodeEditorFramework.Standard
             WorldCreatorCursor.selectEntity -= SetTargetID;
         }
 
-        AirCraft entity = null;
-        Entity target = null;
+        Entity entity = null;
+        Transform target = null;
 
         public override int Traverse()
         {
@@ -215,17 +215,23 @@ namespace NodeEditorFramework.Standard
             {
                 for (int i = 0; i < AIData.entities.Count; i++)
                 {
-                    if (AIData.entities[i] is AirCraft airCraft)
+                    if (!AIData.entities[i]) continue;
+                    if (AIData.entities[i].ID == entityID)
                     {
-                        if (AIData.entities[i].ID == entityID)
-                        {
-                            entity = airCraft;
-                        }
+                        entity = AIData.entities[i];
+                    }
 
-                        if (AIData.entities[i].ID == targetEntityID)
-                        {
-                            target = AIData.entities[i];
-                        }
+                    if (AIData.entities[i].ID == targetEntityID)
+                    {
+                        target = AIData.entities[i].transform;
+                    }
+                }
+                if (!target)
+                {
+                    foreach (var flag in AIData.flags)
+                    {
+                        if (flag.name != targetEntityID) continue;
+                        target = flag.transform;
                     }
                 }
             }
@@ -238,17 +244,25 @@ namespace NodeEditorFramework.Standard
                     return 0;
                 }
 
-                Vector2 targetVector = target.transform.position - entity.transform.position;
+                Vector2 targetVector = target.position - entity.transform.position;
                 //calculate difference of angles and compare them to find the correct turning direction
                 if (!(entity is PlayerCore))
                 {
-                    if (!asynchronous)
+                    if (entity is AirCraft airCraft)
                     {
-                        entity.GetAI().RotateTo(targetVector, continueTraversing);
+                        if (!asynchronous)
+                        {
+                            airCraft.GetAI().RotateTo(targetVector, continueTraversing);
+                        }
+                        else
+                        {
+                            airCraft.GetAI().RotateTo(targetVector);
+                        }
                     }
                     else
                     {
-                        entity.GetAI().RotateTo(targetVector);
+                        entity.transform.RotateAround(entity.transform.position, Vector3.forward, Vector3.SignedAngle(Vector3.up, -targetVector, Vector3.forward));
+                        return 0;
                     }
                 }
                 else
