@@ -59,17 +59,11 @@ public class LandPlatformGenerator : MonoBehaviour
     {
         if (Instance.groundPlatforms == null)
         {
+            if (DevConsoleScript.bugTrackTankDebug)
+            {
+                Debug.LogWarning("Null ground platforms.");
+            }
             return false;
-        }
-
-        if (Instance.tileSize == 0)
-        {
-            Debug.LogError("Tile size = 0");
-        }
-
-        if (Instance.Offset == Vector2.zero)
-        {
-            Debug.LogError("Offset = 0");
         }
 
         Vector2 relativePos = ((Vector2)position - instance.Offset) / Instance.tileSize;
@@ -84,8 +78,18 @@ public class LandPlatformGenerator : MonoBehaviour
             {
                 return true;
             }
+            else if (tile.HasValue && DevConsoleScript.bugTrackTankDebug)
+            {
+                foreach (var collider in tile.Value.colliders)
+                    Debug.LogWarning(collider.transform.position);
+            }
         }
 
+        if (DevConsoleScript.bugTrackTankDebug)
+        {
+            Debug.LogWarning("Did not find ground. " + instance.Offset + " " + Instance.tileSize + " " + position + " " + relativePos + 
+            " " + Instance.groundPlatforms.Length);
+        }
         return false;
     }
 

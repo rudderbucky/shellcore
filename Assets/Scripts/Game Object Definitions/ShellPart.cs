@@ -348,6 +348,10 @@ public class ShellPart : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (DevConsoleScript.bugTrackPartDebug && !craft)
+        {
+            Debug.LogWarning($"Active part at {transform.position} without craft.");
+        }
         EditorPlayerPartCheck();
         if (spriteRenderer)
         {
@@ -388,7 +392,10 @@ public class ShellPart : MonoBehaviour
         }
         else if (hasDetached)
         {
-            // if it has actually detached
+            if (DevConsoleScript.bugTrackPartDebug && !craft)
+            {
+                Debug.LogWarning($"Active part at {transform.position} going through detachment process.");
+            }
             if (collectible && detachible && !SectorManager.instance.current.partDropsDisabled)
             {
                 rigid.drag = 25;
@@ -406,13 +413,15 @@ public class ShellPart : MonoBehaviour
 
                 spriteRenderer.sortingOrder = 0;
                 transform.eulerAngles = new Vector3(0, 0, (rotationDirection ? 1.0f : -1.0f) * 100f * Time.time + rotationOffset);
-
-                //rigid.angularVelocity = rigid.angularVelocity > 0 ? 200 : -200;
             }
             else
             {
                 if (name != "Shell Sprite" && !(craft as PlayerCore))
                 {
+                    if (DevConsoleScript.bugTrackPartDebug && !craft)
+                    {
+                        Debug.LogWarning($"Active part at {transform.position} is being destroyed.");
+                    }
                     Destroy(gameObject);
                 }
                 else

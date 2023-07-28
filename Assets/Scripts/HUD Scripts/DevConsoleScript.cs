@@ -27,6 +27,8 @@ public class DevConsoleScript : MonoBehaviour
     Queue<string> textToAdd = new Queue<string>();
 
     public static DevConsoleScript Instance;
+    public static bool bugTrackPartDebug = false;
+    public static bool bugTrackTankDebug = false;
 
     void OnEnable()
     {
@@ -436,6 +438,23 @@ public class DevConsoleScript : MonoBehaviour
                 string blueprint = command.Substring(7).Trim();
                 ToggleActive();
                 MasterNetworkAdapter.instance.CreatePlayerServerRpc(MasterNetworkAdapter.playerName, blueprint, 0);
+            }
+            else if (command.StartsWith("bugtrack ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                string num = command.Substring(9).Trim();
+                switch (num)
+                {
+                    case "1":
+                    case "part":
+                        bugTrackPartDebug = true;
+                        textBox.text += "\n<color=lime>Part debug enabled.</color>";
+                        break;
+                    case "2":
+                    case "tank":
+                        bugTrackTankDebug = true;
+                        textBox.text += "\n<color=lime>Tank debug enabled.</color>";
+                        break;
+                }
             }
             else if (command.StartsWith("test ", StringComparison.CurrentCultureIgnoreCase))
             {
