@@ -319,7 +319,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
             ((int)gridImg.rectTransform.sizeDelta.y / 100 + 0.5F) * 100);
 
         var lpg = LandPlatformGenerator.Instance;
-        Vector2 oldLPGOffset = lpg.Offset;
 
         for (int i = 0; i < Mathf.Max(gridSizeX, gridSizeY) * zoomoutFactor / distancePerTextMarker + 1; i++)
         {
@@ -356,7 +355,6 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                 yield return new WaitForEndOfFrame();
             }
         }
-        lpg.Offset = oldLPGOffset;
 
         // clear markers
         PartIndexInventoryButton.partMarkerSectorNames.Clear();
