@@ -55,9 +55,12 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
         cursorMode = mode;
     }
 
-    public void SetBuilder(ShipBuilder builder)
+    private RectTransform droneWorkshopPhaseHider;
+
+    public void SetBuilder(ShipBuilder builder, GameObject droneWorkshopPhaseHider = null)
     {
         this.builder = builder;
+        if (droneWorkshopPhaseHider) this.droneWorkshopPhaseHider = droneWorkshopPhaseHider.GetComponent<RectTransform>();
     }
 
     void OnEnable()
@@ -360,6 +363,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             statsSection.anchoredPosition = new Vector2(-125 + 6.35F, 0);
             grid2mask.sizeDelta = new Vector2(750, 1250);
             background.sizeDelta = new Vector2(1270 - 250, 670);
+            if (droneWorkshopPhaseHider) droneWorkshopPhaseHider.sizeDelta = new Vector2(940 - 250, 635);
         }
         else
         {
@@ -367,6 +371,7 @@ public class ShipBuilderCursorScript : MonoBehaviour, IShipStatsDatabase
             statsSection.anchoredPosition = new Vector2(6.35F, 0);
             grid2mask.sizeDelta = new Vector2(1250, 1250);
             background.sizeDelta = new Vector2(1270, 670);
+            if (droneWorkshopPhaseHider) droneWorkshopPhaseHider.sizeDelta = new Vector2(940, 635);
         }
     }
 

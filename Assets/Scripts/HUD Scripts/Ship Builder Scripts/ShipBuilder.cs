@@ -804,7 +804,7 @@ public class ShipBuilder : GUIWindowScripts
         dronePartCount = 0;
         Activate();
         cursorScript.gameObject.SetActive(false);
-        cursorScript.SetBuilder(this);
+        cursorScript.SetBuilder(this, droneWorkshopPhaseHider);
 
         GetComponentInChildren<ShipBuilderPartDisplay>().Initialize(this);
 
