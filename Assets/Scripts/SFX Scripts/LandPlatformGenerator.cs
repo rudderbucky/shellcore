@@ -62,6 +62,16 @@ public class LandPlatformGenerator : MonoBehaviour
             return false;
         }
 
+        if (Instance.tileSize == 0)
+        {
+            Debug.LogError("Tile size = 0");
+        }
+
+        if (Instance.Offset == Vector2.zero)
+        {
+            Debug.LogError("Offset = 0");
+        }
+
         Vector2 relativePos = ((Vector2)position - instance.Offset) / Instance.tileSize;
         relativePos.y = -relativePos.y;
 
