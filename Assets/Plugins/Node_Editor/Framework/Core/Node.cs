@@ -442,7 +442,8 @@ namespace NodeEditorFramework
 				for (int t = 0; t < port.connections.Count; t++)
 				{
 					ConnectionPort conPort = port.connections[t];
-					if (conPort.body != startRecursiveSearchNode && (conPort.body == otherNode || conPort.body.isChildOf(otherNode)))
+					if (conPort.body != startRecursiveSearchNode && (conPort.body == otherNode || conPort.body.isChildOf(otherNode)) && 
+						(!(conPort is ConnectionKnob knob) || (knob.side != NodeSide.Top && knob.side != NodeSide.Bottom)))
 					{
 						StopRecursiveSearchLoop();
 						return true;
