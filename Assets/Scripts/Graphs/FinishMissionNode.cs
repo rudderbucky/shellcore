@@ -18,12 +18,15 @@ namespace NodeEditorFramework.Standard
             get { return "Finish Mission"; }
         }
 
-        public override Vector2 DefaultSize
+        public override Vector2 MinSize
         {
-            get { return new Vector2(208, height); }
+            get { return new Vector2(208, 300f); }
         }
 
-        float height = 300f;
+        public override bool AutoLayout
+        {
+            get { return true; }
+        }
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left)]
         public ConnectionKnob inputLeft;
@@ -43,7 +46,7 @@ namespace NodeEditorFramework.Standard
             GUILayout.Label("Reward Text Field:");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            rewardsText = GUILayout.TextArea(rewardsText);
+            rewardsText = GUILayout.TextArea(rewardsText, GUILayout.ExpandHeight(false));
             GUILayout.EndHorizontal();
         }
 
