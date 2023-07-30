@@ -128,7 +128,7 @@ public abstract class AirCraft : Craft
     }
 
     // NEVER directly use the transform to teleport AirCraft! Use this method instead.
-    public virtual void Warp(Vector3 point)
+    public virtual void Warp(Vector3 point, bool setWarpUninteractable = true)
     {
         transform.position = point;
         oscillatorVector = point;
@@ -138,7 +138,8 @@ public abstract class AirCraft : Craft
         {
             ai.movement.SetMoveTarget(null);
         }
-        SetWarpUninteractable();
+        if (setWarpUninteractable)
+            SetWarpUninteractable();
     }
 
     protected override void CraftMover(Vector2 directionVector)

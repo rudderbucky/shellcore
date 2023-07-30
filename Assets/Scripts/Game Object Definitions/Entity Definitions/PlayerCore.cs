@@ -411,9 +411,9 @@ public class PlayerCore : ShellCore
         }
     }
 
-    public override void Warp(Vector3 point)
+    public override void Warp(Vector3 point, bool setWarpUninteractable = true)
     {
-        base.Warp(point);
+        base.Warp(point, setWarpUninteractable);
         CameraScript.instance.Focus(transform.position);
         foreach (var instance in RectangleEffectScript.instances)
         {

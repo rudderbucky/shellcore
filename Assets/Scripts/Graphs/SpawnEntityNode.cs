@@ -166,7 +166,8 @@ namespace NodeEditorFramework.Standard
                                 Debug.Log("Character already found. Not spawning.");
                                 if (forceCharacterTeleport)
                                 {
-                                    (oj as AirCraft).Warp(coords); // hack for now, all the characters are AirCrafts so this should be fine.
+                                    if (!(oj is AirCraft airCraft)) continue;
+                                    airCraft.Warp(coords, false);
                                 }
 
                                 return 0;
