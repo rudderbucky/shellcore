@@ -245,6 +245,7 @@ namespace NodeEditorFramework.Standard
             var node = new Dialogue.Node();
             node.ID = 0;
             node.text = taskConfirmedDialogue != null ? taskConfirmedDialogue : "Complete the task."; // TODO: Why is this (and the color(?)) sometimes null? Is the task node not loaded correctly?
+            TaskManager.speakerID = entityIDforConfirmedResponse;
             node.textColor = useEntityColor && TaskManager.GetSpeaker() ? FactionManager.GetFactionColor(TaskManager.GetSpeaker().faction) : dialogueColor;
             node.nextNodes = new List<int>() { 1 };
 
@@ -254,7 +255,6 @@ namespace NodeEditorFramework.Standard
             node1.buttonText = actionResponse != null ? actionResponse : "Alright."; // Players can only make one response, I haven't figured a way to make more without breaking it. -FoeFear
             dialogue.nodes.Add(node);
             dialogue.nodes.Add(node1);
-            TaskManager.speakerID = entityIDforConfirmedResponse;
             DialogueSystem.StartDialogue(dialogue, TaskManager.GetSpeaker());
         }
 
