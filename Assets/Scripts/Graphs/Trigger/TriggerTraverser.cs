@@ -10,6 +10,7 @@ public class TriggerTraverser : Traverser
     private Traverser nextTraverser;
     private Node nextNode;
     string triggerName;
+    public LoadSectorNode sectorStartNode;
     public TriggerTraverser(string triggerName, NodeCanvas canvas, Traverser nextTraverser, Node nextNode) : base(canvas)
     {
         this.triggerName = triggerName;
@@ -24,10 +25,36 @@ public class TriggerTraverser : Traverser
         return nodeCanvas.nodes.Find(x => x is StartTriggerNode trigger && trigger.triggerName == triggerName) as StartTriggerNode;
     }
 
+    ~TriggerTraverser()
+    {
+        SectorManager.SectorGraphLoad -= LoadSector;
+    }
+
     public override void StartQuest()
     {
         currentNode = findRoot();
+        if (sectorStartNode != null) 
+            SectorManager.SectorGraphLoad += LoadSector;
         Traverse();
+    }
+
+    void LoadSector(string name)
+    {
+        if (!sectorStartNode) return;
+        if (name != sectorStartNode.sectorName)
+        {
+            if (currentNode is TimelineNode)
+            {
+                TaskManager.Instance.StopAllCoroutines();
+            }
+
+            if (currentNode is ConditionGroupNode cgn)
+            {
+                cgn.DeInit();
+            }
+
+            currentNode = null;
+        }
     }
 
     protected override void Traverse()

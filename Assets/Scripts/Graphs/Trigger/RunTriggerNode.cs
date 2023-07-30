@@ -51,6 +51,7 @@ namespace NodeEditorFramework.Standard
                 {
                     var traverser = new TriggerTraverser(triggerName, Canvas, null, null);
                     TriggerManager.instance.traversers.Add(traverser);
+                    if (Canvas.Traversal is SectorTraverser sectorTraverser) traverser.sectorStartNode = sectorTraverser.startNode;
                     traverser.StartQuest();
                     return 0;
                 }
@@ -59,6 +60,7 @@ namespace NodeEditorFramework.Standard
                     var node = outputKnobs[0].connections.Count > 0 ? outputKnobs[0].connections[0]?.body : null;
                     var traverser = new TriggerTraverser(triggerName, Canvas, Canvas.Traversal as Traverser, node);
                     TriggerManager.instance.traversers.Add(traverser);
+                    if (Canvas.Traversal is SectorTraverser sectorTraverser) traverser.sectorStartNode = sectorTraverser.startNode;
                     traverser.StartQuest();
                     return -1;
                 }
