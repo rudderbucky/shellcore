@@ -310,6 +310,7 @@ namespace NodeEditorFramework.Standard
             }
 
             InteractAction action = new InteractAction();
+            action.prioritize = true;
             action.action = new UnityEngine.Events.UnityAction(() =>
             {
                 TaskManager.interactionOverrides[rewardGiverID].Pop();

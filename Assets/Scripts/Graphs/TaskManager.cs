@@ -20,6 +20,7 @@ public class InteractAction
     public string taskID;
     public UnityAction action;
     public Traverser traverser;
+    public bool prioritize;
 }
 
 public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
