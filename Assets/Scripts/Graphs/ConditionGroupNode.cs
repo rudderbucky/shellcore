@@ -120,8 +120,11 @@ namespace NodeEditorFramework.Standard
                         }
                         else if (groups[i].output.connected())
                         {
-                            overrideTraverser.SetNode(groups[i].output.connections[0].body);
+                            var tmp = overrideTraverser;
+                            // we need to use a temporary variable here because nulling overrideTraverser 
+                            // after SetNode is called would null it out on consecutive calls of the same CGN.
                             overrideTraverser = null;
+                            tmp.SetNode(groups[i].output.connections[0].body);
                         }
 
                         return true;
