@@ -19,7 +19,6 @@ public class TowerAura : PassiveAbility
         circle.dotted = true;
         circle.raycastTarget = false;
         circle.color = FactionManager.GetFactionColor(Core.GetFaction());
-        range = 30;
         if (!AIData.auras.Contains(this)) AIData.auras.Add(this);
     }
 
@@ -30,6 +29,7 @@ public class TowerAura : PassiveAbility
         {
             case AuraType.Heal:
                 ID = AbilityID.HealAura;
+                range = 30;
                 break;
             case AuraType.Speed:
                 ID = AbilityID.SpeedAura;
