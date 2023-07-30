@@ -13,7 +13,7 @@ public class SpeederMissile : WeaponAbility
         abilityName = "Speeder Missile";
         ID = AbilityID.SpeederMissile;
         cooldownDuration = 6F;
-        range = 20;
+        range = 40;
         energyCost = 250;
         terrain = Entity.TerrainType.Air;
         category = Entity.EntityCategory.Unit;
