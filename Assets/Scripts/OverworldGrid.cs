@@ -60,7 +60,6 @@ public class OverworldGrid : MonoBehaviour
             y = mcamera.position.y - lineSpacing * (gridHeight - 1) / 2
         };
 
-        print (gridWidth + " " + gridHeight);
         for (int i = 0; i < gridWidth; i++)
         {
            linesUp.Add(CreateRenderer(new Vector2(i*4 + lineStartPos.x, lineStartPos.y), Vector3.up * Camera.main.pixelHeight));
@@ -139,9 +138,7 @@ public class OverworldGrid : MonoBehaviour
                 line.SetPosition(0, line.GetPosition(0) + displacement);
                 line.SetPosition(1, line.GetPosition(1) + displacement);
                 line.transform.position = displacement; // update the line position, similar process for the other checks as well
-                Debug.LogWarning(oldpos + " " + line.transform.position);
             }
-            //else print (Mathf.Abs(line.transform.position[dimension] - mcamera.position[dimension]) / lineSpacing + " " + limit);
         }
     }
 }
