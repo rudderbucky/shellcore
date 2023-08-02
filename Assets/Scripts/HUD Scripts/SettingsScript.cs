@@ -12,6 +12,7 @@ public class SettingsScript : MonoBehaviour
     public Toggle HUDArrowScriptToggle;
     public Toggle BackgroundScriptToggle;
     public Toggle RectangleEffectScriptToggle;
+    public Toggle overworldGridToggle;
 
     public (int, int)[] resolutions = new (int, int)[] {(1024, 768), (1366, 768), (1600, 900), (1920, 1080), (3840, 2160)};
     public Dropdown windowResolution;
@@ -37,6 +38,7 @@ public class SettingsScript : MonoBehaviour
         HUDArrowScriptToggle.isOn = PlayerPrefs.GetString("HUDArrowScript_active", "False") == "True";
         BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
         RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";
+        overworldGridToggle.isOn = PlayerPrefs.GetString("OverworldGrid_active", "False") == "True";
         masterSoundSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
         hudDamageIndicatorSlider.value = PlayerPrefs.GetFloat("HealthBarScript_hudDamageIndicator", 0.5F);
         musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
@@ -121,6 +123,7 @@ public class SettingsScript : MonoBehaviour
         ChangeShellPartPartShader(partShader.value);
         ChangeHudDamageIndicator(hudDamageIndicatorSlider.value);
         ChangeAllowAutocastSkillsEnabled(allowAutocastSkillsToggle.isOn);
+        ChangeOverworldGridActive(overworldGridToggle.isOn);
 
         //for(int i = 0; i < 9; i++)
         //{
@@ -204,6 +207,13 @@ public class SettingsScript : MonoBehaviour
     {
         PlayerPrefs.SetString("RectangleEffectScript_active", val.ToString());
         RectangleEffectScript.SetActive(val);
+    }
+
+
+    public void ChangeOverworldGridActive(bool val)
+    {
+        PlayerPrefs.SetString("OverworldGrid_active", val.ToString());
+        OverworldGrid.SetActive(val);
     }
 
     public void ChangeDialogueSystemDialogueStyle(int val)
