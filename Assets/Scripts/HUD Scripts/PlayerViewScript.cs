@@ -60,6 +60,8 @@ public class PlayerViewScript : MonoBehaviour
             {
                 hidingHUD = !hidingHUD;
                 DialogueSystem.Instance.hudGroup.alpha = 1 - DialogueSystem.Instance.hudGroup.alpha;
+                if (PassiveDialogueSystem.Instance && PassiveDialogueSystem.Instance.passiveDialogueCanvasGroup) 
+                    PassiveDialogueSystem.Instance.passiveDialogueCanvasGroup.alpha = 1 - PassiveDialogueSystem.Instance.passiveDialogueCanvasGroup.alpha;
             }
         }
 

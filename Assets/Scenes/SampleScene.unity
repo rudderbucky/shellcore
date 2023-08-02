@@ -2962,7 +2962,6 @@ Transform:
   - {fileID: 615260299}
   - {fileID: 1725152188931272534}
   - {fileID: 1135301910}
-  - {fileID: 351535613}
   - {fileID: 136294229}
   - {fileID: 1948726519}
   - {fileID: 1539554000}
@@ -3174,6 +3173,7 @@ GameObject:
   - component: {fileID: 351535616}
   - component: {fileID: 351535615}
   - component: {fileID: 351535614}
+  - component: {fileID: 351535617}
   m_Layer: 5
   m_Name: Passive Dialogue
   m_TagString: Untagged
@@ -3194,7 +3194,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1313601249}
-  m_Father: {fileID: 305617547}
+  m_Father: {fileID: 1446804108}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3262,8 +3262,20 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!225 &351535617
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 351535612}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &358494409
 GameObject:
   m_ObjectHideFlags: 0
@@ -5146,6 +5158,10 @@ PrefabInstance:
       propertyPath: passiveDialogueScrollView
       value: 
       objectReference: {fileID: 1282750775}
+    - target: {fileID: 609528762, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
+      propertyPath: passiveDialogueCanvasGroup
+      value: 
+      objectReference: {fileID: 351535617}
     - target: {fileID: 1517696123555884, guid: ec3b4ef72d802d7448ea4d550f88fc47, type: 3}
       propertyPath: m_Name
       value: Dialogue System
@@ -13978,6 +13994,7 @@ Transform:
   m_Children:
   - {fileID: 562183745}
   - {fileID: 224035880472802623}
+  - {fileID: 351535613}
   - {fileID: 992697191}
   - {fileID: 305617547}
   - {fileID: 1459506505}
@@ -19397,6 +19414,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3923412378873268325, guid: 708eef131c1abae4ea2e42eba88c2364,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4155394739646094540, guid: 708eef131c1abae4ea2e42eba88c2364,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -19411,6 +19433,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: SkirmishMenu, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5106099932303700645, guid: 708eef131c1abae4ea2e42eba88c2364,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5106099932303700647, guid: 708eef131c1abae4ea2e42eba88c2364,
         type: 3}
@@ -21419,12 +21446,12 @@ PrefabInstance:
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1867.5657
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 943.78284
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4076859594884605426, guid: 32a32bac7ec6ea947bc6f2b367fb7171,
         type: 3}
