@@ -420,7 +420,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         var dlg = ScriptableObject.CreateInstance<Dialogue>();
         dlg.nodes = new List<Dialogue.Node>();
         var node = new Dialogue.Node();
-        node.text = "It seems you have queued up a few inactive missions. They are available on my end, so which one would you like to know more about?";
+        node.text = "...";
         node.textColor = FactionManager.GetFactionColor(faction);
         node.ID = 0;
         node.nextNodes = new List<int>();
@@ -429,7 +429,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         foreach (var kvp in actionsByMission)
         {
             var node2 = new Dialogue.Node();
-            node2.buttonText = $"{kvp.Key}.";
+            node2.buttonText = $"Talk about {kvp.Key}.";
             node2.ID = i;
             node2.text = "";
             node2.nextNodes = new List<int>();
