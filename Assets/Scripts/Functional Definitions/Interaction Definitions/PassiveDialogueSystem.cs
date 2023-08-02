@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PassiveDialogueSystem : MonoBehaviour
 {
     public RectTransform passiveDialogueRect;
+    public CanvasGroup passiveDialogueCanvasGroup;
     public GameObject passiveDialogueInstancePrefab;
     public RectTransform passiveDialogueContents;
     public Text passiveDialogueText;
