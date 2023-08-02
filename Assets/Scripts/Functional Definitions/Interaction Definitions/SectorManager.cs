@@ -401,6 +401,7 @@ public class SectorManager : MonoBehaviour
     }
 
     public TaskManager taskManager;
+    public GameObject minimapBorderHolder;
 
     public void LoadSectorFile(string path)
     {
@@ -457,6 +458,7 @@ public class SectorManager : MonoBehaviour
                 current = null;
                 sectors = new List<Sector>();
                 minimapSectorBorders = new Dictionary<Sector, LineRenderer>();
+                minimapBorderHolder = new GameObject("Minimap Border Holder");
                 foreach (string file in files)
                 {
                     if (file.Contains(".meta") || file.Contains("ResourceData.txt") || file.Contains(".DS_Store"))
@@ -550,6 +552,7 @@ public class SectorManager : MonoBehaviour
 
                     // render the borders on the minimap
                     var border = new GameObject("MinimapSectorBorder - " + curSect.sectorName).AddComponent<LineRenderer>();
+                    border.transform.SetParent(minimapBorderHolder.transform);
                     border.material = ResourceManager.GetAsset<Material>("white_material");
                     border.gameObject.layer = 8;
                     border.positionCount = 4;
