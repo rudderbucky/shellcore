@@ -420,7 +420,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         var dlg = ScriptableObject.CreateInstance<Dialogue>();
         dlg.nodes = new List<Dialogue.Node>();
         var node = new Dialogue.Node();
-        node.text = "...";
+        node.text = "It seems you have queued up a few inactive missions. They are available on my end, so which one would you like to know more about?";
         node.textColor = FactionManager.GetFactionColor(faction);
         node.ID = 0;
         node.nextNodes = new List<int>();
@@ -429,7 +429,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         foreach (var kvp in actionsByMission)
         {
             var node2 = new Dialogue.Node();
-            node2.buttonText = $"Talk about {kvp.Key}.";
+            node2.buttonText = $"{kvp.Key}.";
             node2.ID = i;
             node2.text = "";
             node2.nextNodes = new List<int>();
@@ -1384,9 +1384,9 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             // regenerate
             if (!lettingServerDecide && blueprint.intendedType != EntityBlueprint.IntendedType.Tower)
             {
-                RegenHealth(ref currentHealth[0], HealAuraStacks > 0 ? regenRate[0] * 10F : regenRate[0], maxHealth[0]);
+                RegenHealth(ref currentHealth[0], HealAuraStacks > 0 ? regenRate[0] + 150F : regenRate[0], maxHealth[0]);
                 RegenHealth(ref currentHealth[1], regenRate[1], maxHealth[1]);
-                RegenHealth(ref currentHealth[2], EnergyAuraStacks > 0 ? regenRate[2] * 20F : regenRate[2], maxHealth[2]);
+                RegenHealth(ref currentHealth[2], EnergyAuraStacks > 0 ? regenRate[2] + 75F : regenRate[2], maxHealth[2]);
 
                 if (weaponGCDTimer < weaponGCD)
                 {

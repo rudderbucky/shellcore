@@ -29,7 +29,7 @@ public class TowerAura : PassiveAbility
         {
             case AuraType.Heal:
                 ID = AbilityID.HealAura;
-                range = 30;
+                range = 15;
                 break;
             case AuraType.Speed:
                 ID = AbilityID.SpeedAura;
