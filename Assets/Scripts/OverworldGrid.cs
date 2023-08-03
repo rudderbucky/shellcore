@@ -62,11 +62,11 @@ public class OverworldGrid : MonoBehaviour
 
         for (int i = 0; i < gridWidth; i++)
         {
-           linesUp.Add(CreateRenderer(new Vector2(i*4 + lineStartPos.x, lineStartPos.y), Vector3.up * Camera.main.pixelHeight));
+            linesUp.Add(CreateRenderer(new Vector2(i*4 + lineStartPos.x, lineStartPos.y), Vector3.up * Camera.main.pixelHeight));
         }
         for (int i = 0; i < gridHeight; i++)
         {
-           linesRight.Add(CreateRenderer(new Vector2(lineStartPos.x, i*4 + lineStartPos.y), Vector3.right * Camera.main.pixelWidth));
+            linesRight.Add(CreateRenderer(new Vector2(lineStartPos.x, i*4 + lineStartPos.y), Vector3.right * Camera.main.pixelWidth));
         }
         
     }
@@ -86,7 +86,7 @@ public class OverworldGrid : MonoBehaviour
 
     void Update()
     {
-        if (!initialized) return;
+        if (!initialized || !active) return;
         foreach (var renderer in linesRight)
         {
             LineConstantDistance(renderer, 0);
