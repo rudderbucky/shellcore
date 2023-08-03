@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -89,8 +88,8 @@ public class OverworldGrid : MonoBehaviour
         if (!initialized || !active) return;
         foreach (var renderer in linesRight)
         {
-            LineConstantDistance(renderer, 0);
             LineWrapper(renderer, 1);
+            LineConstantDistance(renderer, 0);
         }
 
         foreach (var renderer in linesUp)
@@ -122,10 +121,10 @@ public class OverworldGrid : MonoBehaviour
     {
         if (line)
         {
-            float limit = dimension == 0 ? gridWidth / 2 : gridHeight / 2;
+            float limit = dimension == 0 ? gridWidth / 2F : gridHeight / 2F;
             // the limit before the line should wrap
 
-            if (Mathf.Abs(line.GetPosition(1)[dimension] - mcamera.position[dimension]) / lineSpacing > limit) // this means it is at an axis edge
+            if (Mathf.Abs(line.GetPosition(1)[dimension] - mcamera.position[dimension]) / (float)lineSpacing > limit) // this means it is at an axis edge
             {
                 limit = line.GetPosition(1)[dimension] - mcamera.position[dimension] > 0 ? -limit : limit; // right edge
                 // (this may be slightly inefficient but I don't care it's cool)
