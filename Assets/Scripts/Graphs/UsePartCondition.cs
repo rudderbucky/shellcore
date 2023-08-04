@@ -54,7 +54,7 @@ namespace NodeEditorFramework.Standard
         public override void NodeGUI()
         {
             output.DisplayLayout();
-            if (checkTotalPartCount = Utilities.RTEditorGUI.Toggle(useCustomCount, "Check total part count: "))
+            if (checkTotalPartCount = Utilities.RTEditorGUI.Toggle(checkTotalPartCount, "Check total part count: "))
             {
                 totalPartCount = Utilities.RTEditorGUI.IntField("Total part count: ", totalPartCount);
                 return;
