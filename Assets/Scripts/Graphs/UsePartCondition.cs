@@ -20,9 +20,14 @@ namespace NodeEditorFramework.Standard
             get { return "Use Part"; }
         }
 
-        public override Vector2 DefaultSize
+        public override Vector2 MinSize
         {
             get { return new Vector2(200, 180); }
+        }
+
+        public override bool AutoLayout
+        {
+            get { return true; }
         }
 
         public ConditionState state; // Property can't be serialized -> field
@@ -39,6 +44,8 @@ namespace NodeEditorFramework.Standard
         public string partID;
         public int abilityID;
         public string sectorName;
+        public bool useCustomCount;
+        public int partCount;
 
         public override void NodeGUI()
         {
@@ -53,6 +60,10 @@ namespace NodeEditorFramework.Standard
             }
             GUILayout.Label("Sector name for part to come from:");
             sectorName = GUILayout.TextField(sectorName);
+            if (useCustomCount = Utilities.RTEditorGUI.Toggle(useCustomCount, "Use custom count: "))
+            {
+                partCount = Utilities.RTEditorGUI.IntField("Part count: ", partCount);
+            }
         }
 
         TaskManager.ObjectiveLocation objectiveLocation;
@@ -62,6 +73,7 @@ namespace NodeEditorFramework.Standard
             OnPlayerReconstruct.AddListener(CheckParts);
             State = ConditionState.Listening;
             TryAddObjective(true);
+            CheckParts();
         }
 
         public void DeInit()
@@ -78,6 +90,7 @@ namespace NodeEditorFramework.Standard
 
         public void CheckParts()
         {
+            var count = 0;
             if (string.IsNullOrEmpty(sectorName) || ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
             {
                 var parts = SectorManager.instance.player.blueprint.parts;
@@ -88,6 +101,12 @@ namespace NodeEditorFramework.Standard
                         if (!string.IsNullOrEmpty(sectorName))
                         {
                             ShipBuilder.RemoveOrigin(sectorName, (partID, abilityID));
+                        }
+
+                        if (useCustomCount && count < partCount - 1)
+                        {
+                            count++;
+                            continue;
                         }
 
                         State = ConditionState.Completed;
