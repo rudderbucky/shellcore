@@ -46,6 +46,8 @@ namespace NodeEditorFramework.Standard
         public string sectorName;
         public bool useCustomCount;
         public int partCount;
+        public bool useCustomSecondaryData;
+        public string secondaryData;
 
         public override void NodeGUI()
         {
@@ -63,6 +65,12 @@ namespace NodeEditorFramework.Standard
             if (useCustomCount = Utilities.RTEditorGUI.Toggle(useCustomCount, "Use custom count: "))
             {
                 partCount = Utilities.RTEditorGUI.IntField("Part count: ", partCount);
+            }
+
+            if (useCustomSecondaryData = Utilities.RTEditorGUI.Toggle(useCustomSecondaryData, "Use custom secondary data: "))
+            {
+                GUILayout.Label("Secondary data:");
+                secondaryData = GUILayout.TextField(secondaryData);
             }
         }
 
@@ -101,6 +109,11 @@ namespace NodeEditorFramework.Standard
                         if (!string.IsNullOrEmpty(sectorName))
                         {
                             ShipBuilder.RemoveOrigin(sectorName, (partID, abilityID));
+                        }
+
+                        if (useCustomSecondaryData && secondaryData != parts[i].secondaryData)
+                        {
+                            continue;
                         }
 
                         if (useCustomCount && count < partCount - 1)
