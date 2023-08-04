@@ -1236,6 +1236,12 @@ public class ShipBuilder : GUIWindowScripts
 
     public void CloseUI(bool validClose)
     {
+        var jsonWindow = GetComponentInChildren<ShipBuilderJSONButton>()?.window;
+        if (jsonWindow)
+        {
+            jsonWindow.SetActive(false);
+        }
+
         if (nameBox && nameBox.activeSelf)
         {
             CloseNameWindow(false);
