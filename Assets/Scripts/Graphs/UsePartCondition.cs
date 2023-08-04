@@ -45,13 +45,20 @@ namespace NodeEditorFramework.Standard
         public int abilityID;
         public string sectorName;
         public bool useCustomCount;
-        public int partCount;
+        public int selectedPartCount;
         public bool useCustomSecondaryData;
         public string secondaryData;
+        public bool checkTotalPartCount;
+        public int totalPartCount;
 
         public override void NodeGUI()
         {
             output.DisplayLayout();
+            if (checkTotalPartCount = Utilities.RTEditorGUI.Toggle(useCustomCount, "Check total part count: "))
+            {
+                totalPartCount = Utilities.RTEditorGUI.IntField("Total part count: ", totalPartCount);
+                return;
+            }
             GUILayout.Label("Part ID:");
             partID = GUILayout.TextField(partID);
             abilityID = Utilities.RTEditorGUI.IntField("Ability ID: ", abilityID);
@@ -64,7 +71,7 @@ namespace NodeEditorFramework.Standard
             sectorName = GUILayout.TextField(sectorName);
             if (useCustomCount = Utilities.RTEditorGUI.Toggle(useCustomCount, "Use custom count: "))
             {
-                partCount = Utilities.RTEditorGUI.IntField("Part count: ", partCount);
+                selectedPartCount = Utilities.RTEditorGUI.IntField("Part count: ", selectedPartCount);
             }
 
             if (useCustomSecondaryData = Utilities.RTEditorGUI.Toggle(useCustomSecondaryData, "Use custom secondary data: "))
@@ -98,10 +105,19 @@ namespace NodeEditorFramework.Standard
 
         public void CheckParts()
         {
+            
+            var parts = SectorManager.instance.player.blueprint.parts;
+            if (parts == null) return;
+            if (checkTotalPartCount)
+            {
+                if (parts.Count != totalPartCount) return;
+                State = ConditionState.Completed;
+                connectionKnobs[0].connection(0).body.Calculate();
+                return;
+            }
             var count = 0;
             if (string.IsNullOrEmpty(sectorName) || ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
             {
-                var parts = SectorManager.instance.player.blueprint.parts;
                 for (int i = 0; i < parts.Count; i++)
                 {
                     if (parts[i].partID == partID && parts[i].abilityID == abilityID)
@@ -116,7 +132,7 @@ namespace NodeEditorFramework.Standard
                             continue;
                         }
 
-                        if (useCustomCount && count < partCount - 1)
+                        if (useCustomCount && count < selectedPartCount - 1)
                         {
                             count++;
                             continue;
