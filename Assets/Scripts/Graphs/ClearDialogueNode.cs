@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NodeEditorFramework.Utilities;
 using UnityEngine;
 
@@ -52,6 +53,25 @@ namespace NodeEditorFramework.Standard
             if (state != NodeEditorGUI.NodeEditorState.Dialogue)
             {
                 handler = TaskManager.Instance;
+                // if it's not a quest canvas, just do the normal stack clear
+                // if it is, remove the nodes for the specific mission
+                if ((Canvas is QuestCanvas qc))
+                {
+                    if (handler.GetInteractionOverrides().ContainsKey(EntityID))
+                    {
+                        var stk = new Stack<InteractAction>();
+                        foreach (var p in handler.GetInteractionOverrides()[EntityID])
+                        {
+                            if (p.taskID != qc.missionName)
+                            {
+                                stk.Push(p);
+                            }
+                        }
+                        handler.GetInteractionOverrides()[EntityID] = stk;
+                    }
+                    return 0;
+                }
+                
             }
             else
             {
