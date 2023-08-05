@@ -149,8 +149,10 @@ namespace NodeEditorFramework.Standard
                         if (removeSelectedParts)
                         {
                             partsToRemove.Add(parts[i]);
+                            partsToRemove.ForEach(p => parts.Remove(p));
+                            PlayerCore.Instance.Rebuild();
                         }
-                        PlayerCore.Instance.Rebuild();
+
                         State = ConditionState.Completed;
                         connectionKnobs[0].connection(0).body.Calculate();
                     }
