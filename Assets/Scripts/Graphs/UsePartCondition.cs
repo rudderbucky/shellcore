@@ -120,7 +120,7 @@ namespace NodeEditorFramework.Standard
             {
                 for (int i = 0; i < parts.Count; i++)
                 {
-                    if (parts[i].partID == partID && parts[i].abilityID == abilityID)
+                    if ((string.IsNullOrEmpty(parts[i].partID) || parts[i].partID == partID) && parts[i].abilityID == abilityID)
                     {
                         if (!string.IsNullOrEmpty(sectorName))
                         {
