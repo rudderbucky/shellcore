@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace NodeEditorFramework.Standard
@@ -50,6 +51,7 @@ namespace NodeEditorFramework.Standard
         public string secondaryData;
         public bool checkTotalPartCount;
         public int totalPartCount;
+        public bool removeSelectedParts;
 
         public override void NodeGUI()
         {
@@ -79,6 +81,7 @@ namespace NodeEditorFramework.Standard
                 GUILayout.Label("Secondary data:");
                 secondaryData = GUILayout.TextField(secondaryData);
             }
+            removeSelectedParts = Utilities.RTEditorGUI.Toggle(removeSelectedParts, "Remove selected parts: ");
         }
 
         TaskManager.ObjectiveLocation objectiveLocation;
@@ -116,6 +119,7 @@ namespace NodeEditorFramework.Standard
                 return;
             }
             var count = 0;
+            var partsToRemove = new List<EntityBlueprint.PartInfo>();
             if (string.IsNullOrEmpty(sectorName) || ShipBuilder.CheckForOrigin(sectorName, (partID, abilityID)))
             {
                 for (int i = 0; i < parts.Count; i++)
@@ -135,9 +139,18 @@ namespace NodeEditorFramework.Standard
                         if (useCustomCount && count < selectedPartCount - 1)
                         {
                             count++;
+                            if (removeSelectedParts)
+                            {
+                                partsToRemove.Add(parts[i]);
+                            }
                             continue;
                         }
 
+                        if (removeSelectedParts)
+                        {
+                            partsToRemove.Add(parts[i]);
+                        }
+                        PlayerCore.Instance.Rebuild();
                         State = ConditionState.Completed;
                         connectionKnobs[0].connection(0).body.Calculate();
                     }
