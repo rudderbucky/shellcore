@@ -91,18 +91,20 @@ namespace NodeEditorFramework.Standard
         {
             for (int i = 0; i < groups.Count; i++)
             {
-                if (groups[i].input.connected())
-                {
                     int completed = 0;
                     int conditionCount = 0;
-                    for (int j = 0; j < groups[i].input.connections.Count; j++)
+
+                    if (groups[i].input.connected())
                     {
-                        if (groups[i].input.connections[j].body is ICondition condition)
+                        for (int j = 0; j < groups[i].input.connections.Count; j++)
                         {
-                            conditionCount++;
-                            if (condition.State == ConditionState.Completed)
+                            if (groups[i].input.connections[j].body is ICondition condition)
                             {
-                                completed++;
+                                conditionCount++;
+                                if (condition.State == ConditionState.Completed)
+                                {
+                                    completed++;
+                                }
                             }
                         }
                     }
@@ -129,7 +131,6 @@ namespace NodeEditorFramework.Standard
 
                         return true;
                     }
-                }
             }
 
             return true;
