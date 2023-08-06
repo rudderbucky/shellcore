@@ -44,6 +44,7 @@ namespace NodeEditorFramework.Standard
         public int comparisonMode = 0;
         public int value = 0;
         public bool inPercentage = false;
+        public string sectorName;
 
         protected PopupMenu typePopup = null;
         protected PopupMenu comparisonPopup = null;
@@ -72,7 +73,8 @@ namespace NodeEditorFramework.Standard
             "Mission Status",
             "Shards",
             "Credits",
-            "Player's Build Value"
+            "Player's Build Value",
+            "Sector"
         };
 
         public virtual void InitConnectionKnobs()
@@ -135,44 +137,54 @@ namespace NodeEditorFramework.Standard
                 GUILayout.EndHorizontal();
             }
 
-            if (variableType > 0)
+            if (variableType == 0)
             {
-                if (variableType != 5)
+                return;
+            }
+
+            if (variableType != 5 && variableType != 9)
+            {
+                GUILayout.Label("Value:");
+                value = RTEditorGUI.IntField(value);
+                if (variableType == 3 || variableType == 4)
                 {
-                    GUILayout.Label("Value:");
-                    value = RTEditorGUI.IntField(value);
-                    if (variableType == 3 || variableType == 4)
+                    inPercentage = Utilities.RTEditorGUI.Toggle(inPercentage, "In Percent");
+                    if (inPercentage && (value > 100 || value < 0))
                     {
-                        inPercentage = Utilities.RTEditorGUI.Toggle(inPercentage, "In Percent");
-                        if (inPercentage && (value > 100 || value < 0))
-                        {
-                            value = RTEditorGUI.IntField(0);
-                            Debug.LogWarning("Can't register this numbers!");
-                        }
+                        value = RTEditorGUI.IntField(0);
+                        Debug.LogWarning("Value must be between 0 and 100 inclusive.");
                     }
                 }
+            }
 
-                if (variableType == 5)
-                {
-                    GUILayout.Label("Mission Status:");
-                }
-                else
-                {
-                    GUILayout.Label("Comparison Mode:");
-                }
-                string[] comparisonTexts = variableType == 5 ? missionStatus : comparisonModes;
+            if (variableType == 9)
+            {
+                GUILayout.Label("Current sector:");
+                sectorName = RTEditorGUI.TextField(sectorName);
+                return;
+            }
+            
+            if (variableType == 5)
+            {
+                GUILayout.Label("Mission Status:");
+            }
+            else
+            {
+                GUILayout.Label("Comparison Mode:");
+            }
 
-                if (GUILayout.Button(comparisonTexts[comparisonMode]))
-                {
-                    comparisonPopup = new PopupMenu();
-                    comparisonPopup.SetupGUI();
-                    for (int i = 0; i < comparisonTexts.Length; i++)
-                    {
-                        comparisonPopup.AddItem(new GUIContent(comparisonTexts[i]), false, SelectMode, i);
-                    }
+            string[] comparisonTexts = variableType == 5 ? missionStatus : comparisonModes;
 
-                    comparisonPopup.Show(GUIScaleUtility.GUIToScreenSpace(GUILayoutUtility.GetLastRect().max));
+            if (GUILayout.Button(comparisonTexts[comparisonMode]))
+            {
+                comparisonPopup = new PopupMenu();
+                comparisonPopup.SetupGUI();
+                for (int i = 0; i < comparisonTexts.Length; i++)
+                {
+                    comparisonPopup.AddItem(new GUIContent(comparisonTexts[i]), false, SelectMode, i);
                 }
+
+                comparisonPopup.Show(GUIScaleUtility.GUIToScreenSpace(GUILayoutUtility.GetLastRect().max));
             }
         }
 
@@ -256,6 +268,8 @@ namespace NodeEditorFramework.Standard
                     case 8:
                         variableToCompare = PlayerCore.Instance.GetBuildValue();
                         break;
+                    case 9:
+                        return sectorName == SectorManager.instance.current.sectorName ? 0 : 1;
                 }
 
                 switch (comparisonMode)
