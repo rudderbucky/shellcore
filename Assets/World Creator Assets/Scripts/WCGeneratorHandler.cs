@@ -851,6 +851,8 @@ public class WCGeneratorHandler : MonoBehaviour
                             cursor.characters.Add(ch);
                         }
 
+                        cursor.properties = wdata.baseProperties;
+
                         blueprintField.text = wdata.defaultBlueprintJSON;
                         // authorField.text = wdata.author;
                         // descriptionField.text = wdata.description;

@@ -162,6 +162,7 @@ public class WCBasePropertyHandler : GUIWindowScripts
         Miscellaneous
     }
 
+
     Mode currentMode;
 
     public void SetMode(Mode mode)
@@ -207,6 +208,9 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 strings.Add(faction.colorName);
                 ints.Add(faction.relations);
                 SetupAdditionFields();
+                break;
+            case Mode.Miscellaneous:
+
                 break;
         }
     }
@@ -320,6 +324,10 @@ public class WCBasePropertyHandler : GUIWindowScripts
                 DisplayInt(1, "Relations: ");
                 break;
             case Mode.Miscellaneous:
+                DisplayInt(0, "Default skill count: ");
+                DisplayInt(1, "Default spawn count: ");
+                DisplayInt(2, "Default weapon count: ");
+                DisplayInt(3, "Default passive count: ");
                 break;
         }
     }

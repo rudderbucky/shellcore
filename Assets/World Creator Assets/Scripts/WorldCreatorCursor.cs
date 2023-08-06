@@ -361,6 +361,10 @@ public class WorldCreatorCursor : MonoBehaviour
         {
             ActivateFactionHandler();
         }
+
+        if (Input.GetKeyDown(KeyCode.B) && !system.IsPointerOverGameObject())
+        {
+        }
     }
 
     // revert or destroy pending sector if it exists        
@@ -455,6 +459,13 @@ public class WorldCreatorCursor : MonoBehaviour
         basePropertyHandler.ToggleActive();
     }
 
+    public void ActivateBasePropertyHandler()
+    {
+        basePropertyHandler.SetMode(WCBasePropertyHandler.Mode.Miscellaneous);
+        basePropertyHandler.ToggleActive();        
+    }
+
+    public WorldData.WorldBaseProperties properties;
     public int flagID = 0;
 
     void PollItems()

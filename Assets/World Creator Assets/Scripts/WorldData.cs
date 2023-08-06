@@ -61,4 +61,15 @@ public class WorldData : ScriptableObject
     public PartIndexData[] partIndexDataArray;
     public List<OffloadMappings> dialogueMappings;
     public List<OffloadMappings> sectorMappings;
+    [System.Serializable]
+    public class WorldBaseProperties
+    {
+        public int defaultSkills;
+        public int defaultSpawns;
+        public int defaultWeapons;
+        public int defaultPassives;
+    }
+
+    public WorldBaseProperties baseProperties;
+
 }
