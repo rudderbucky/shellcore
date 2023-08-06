@@ -331,6 +331,16 @@ public class DevConsoleScript : MonoBehaviour
                 }
                 textBox.text += "\n<color=lime>Killing all party members...</color>";
             }
+            else if (command.StartsWith("kill ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                string entityID = command.Substring(5).Trim();
+                foreach (var entity in AIData.entities)
+                {
+                    if (entity.ID == entityID) entity.TakeCoreDamage(9999999);
+                    textBox.text += $"\n<color=lime>Killing entity with ID {entityID}...</color>";
+                    break;
+                }
+            }
             else if (command.StartsWith("addp ", StringComparison.CurrentCultureIgnoreCase))
             {
                 string entityID = command.Substring(5).Trim();
