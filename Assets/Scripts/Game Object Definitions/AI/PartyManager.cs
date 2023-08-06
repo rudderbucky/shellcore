@@ -127,7 +127,7 @@ public class PartyManager : MonoBehaviour
         UpdatePortraits();
     }
 
-    public void ClearParty()
+    public void ClearParty(bool destroyMembers)
     {
         int i = 0;
         while (partyMembers != null && partyMembers.Count > 0 && i < 10)
@@ -136,6 +136,13 @@ public class PartyManager : MonoBehaviour
             i++;
         }
 
+        if (destroyMembers)
+        {
+            foreach (var member in partyMembers)
+            {
+                Destroy(member.gameObject);
+            }
+        }
         partyMembers.Clear();
         foreach (var val in partyIndicators.Values)
         {

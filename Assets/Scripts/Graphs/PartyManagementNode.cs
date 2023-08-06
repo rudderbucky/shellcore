@@ -29,6 +29,7 @@ namespace NodeEditorFramework.Standard
 
         public bool clearParty;
         public string entityID;
+        public bool deletePartyMembers;
         float height = 40f;
 
         [ConnectionKnob("Input Left", Direction.In, "TaskFlow", NodeSide.Left, 20)]
@@ -39,8 +40,8 @@ namespace NodeEditorFramework.Standard
 
         public override void NodeGUI()
         {
-            height = 40f;
-            clearParty = RTEditorGUI.Toggle(clearParty, "Clear Party");
+            height = 60f;
+            clearParty = RTEditorGUI.Toggle(clearParty, "Clear party");
             if (!clearParty)
             {
                 height = 84f;
@@ -49,6 +50,7 @@ namespace NodeEditorFramework.Standard
             }
             else
             {
+                deletePartyMembers = RTEditorGUI.Toggle(deletePartyMembers, "Delete party members");
                 entityID = "";
             }
         }
@@ -57,7 +59,7 @@ namespace NodeEditorFramework.Standard
         {
             if (clearParty)
             {
-                PartyManager.instance.ClearParty();
+                PartyManager.instance.ClearParty(deletePartyMembers);
             }
             else
             {
