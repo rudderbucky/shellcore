@@ -1563,6 +1563,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     public virtual float TakeShellDamage(float amount, float shellPiercingFactor, Entity lastDamagedBy)
     {
+        if (DialogueSystem.isInCutscene) return 0;
         serverSyncHealthDirty = true;
         if (amount != 0 && ReticleScript.instance && ReticleScript.instance.DebugMode)
         {
@@ -1617,6 +1618,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
     /// </summary>
     public virtual void TakeCoreDamage(float amount)
     {
+        if (DialogueSystem.isInCutscene) return;
         if (isAbsorbing && amount > 0f)
         {
             TakeEnergy(-amount);
