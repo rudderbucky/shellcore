@@ -130,12 +130,6 @@ public class PartyManager : MonoBehaviour
     public void ClearParty(bool destroyMembers)
     {
         int i = 0;
-        while (partyMembers != null && partyMembers.Count > 0 && i < 10)
-        {
-            UnassignBackend(null, partyMembers[0]);
-            i++;
-        }
-
         if (destroyMembers)
         {
             foreach (var member in partyMembers)
@@ -143,6 +137,13 @@ public class PartyManager : MonoBehaviour
                 Destroy(member.gameObject);
             }
         }
+        
+        while (partyMembers != null && partyMembers.Count > 0 && i < 10)
+        {
+            UnassignBackend(null, partyMembers[0]);
+            i++;
+        }
+
         partyMembers.Clear();
         foreach (var val in partyIndicators.Values)
         {
