@@ -49,6 +49,11 @@ public class Shard : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        draggable = GetComponent<Draggable>();
+    }
+
     void Update()
     {
         if (hasDetached && Time.time - detachedTime < 1) // checks if the part has been detached for more than a second (hardcoded)

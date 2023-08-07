@@ -1533,6 +1533,7 @@ public class SectorManager : MonoBehaviour
             }
         }
 
+        var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var shard in AIData.rockFragments)
         {
             if (shard && !shard.dragging)
@@ -1561,7 +1562,6 @@ public class SectorManager : MonoBehaviour
         if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Client)
             AIData.energySpheres.Clear();
 
-        var remainingObjects = new Dictionary<string, GameObject>();
         foreach (var obj in objects)
         {
             if (player && (!player.GetTractorTarget() || (obj.Value != player.GetTractorTarget().gameObject))
