@@ -336,9 +336,11 @@ public class DevConsoleScript : MonoBehaviour
                 string entityID = command.Substring(5).Trim();
                 foreach (var entity in AIData.entities)
                 {
-                    if (entity.ID == entityID) entity.TakeCoreDamage(9999999);
-                    textBox.text += $"\n<color=lime>Killing entity with ID {entityID}...</color>";
-                    break;
+                    if (entity.ID == entityID) 
+                    {
+                        entity.TakeCoreDamage(9999999);
+                        textBox.text += $"\n<color=lime>Killing entity with ID {entityID}...</color>";
+                    }
                 }
             }
             else if (command.StartsWith("addp ", StringComparison.CurrentCultureIgnoreCase))
