@@ -151,8 +151,8 @@ namespace NodeEditorFramework.Standard
             killCount = 0;
             Entity.OnEntityDeath += updateState;
 
-            if (!nameMode && passIfEntityDoesNotExist && (!AIData.entities.Exists(e => e.ID == targetID)) || 
-                AIData.entities.Find(e => e.ID == targetID).GetIsDead())
+            var foundEnt = nameMode ? null : AIData.entities.Find(e => e.ID == targetID);
+            if (!nameMode && passIfEntityDoesNotExist && (!foundEnt || foundEnt.GetIsDead()))
             {
                 state = ConditionState.Completed;
                 output.connection(0).body.Calculate();
