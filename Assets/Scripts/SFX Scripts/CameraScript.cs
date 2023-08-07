@@ -47,6 +47,7 @@ public class CameraScript : MonoBehaviour
                     rect.Start();
                 }
             }
+            if (OverworldGrid.instance) OverworldGrid.instance.Initialize();
         }
     }
 
