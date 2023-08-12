@@ -1342,8 +1342,8 @@ public class ShipBuilder : GUIWindowScripts
                 for (int i = 0; i < partDict[info].GetCount(); i++)
                 {
                     player.cursave.partInventory.Add(info);
-                    PartIndexScript.AttemptAddToPartsObtained(info);
                 }
+                PartIndexScript.AttemptAddToPartsObtained(info);
             }
         }      
     }
