@@ -384,9 +384,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             foreach (var ovr in TaskManager.interactionOverrides[ID])
             {
                 if (actionsByMission.ContainsKey(ovr.taskID)) continue;
-                if (ovr.prioritize) actionsByMission.Clear();
+                if (ovr.prioritize) 
+                {
+                    ovr.action.Invoke();
+                    return;
+                }
                 actionsByMission.Add(ovr.taskID, ovr);
-                if (ovr.prioritize) break;
             }
 
             if (actionsByMission.Count == 1)
