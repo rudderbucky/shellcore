@@ -9,6 +9,7 @@ public class SelectionDisplayHandler : MonoBehaviour
     public Image miniDroneShooter;
     public GameObject partPrefab;
     int faction = 0;
+    float opacity = 1f;
     protected List<DisplayPart> parts = new List<DisplayPart>();
 
     void Awake()
@@ -18,7 +19,13 @@ public class SelectionDisplayHandler : MonoBehaviour
 
     private void Update()
     {
-        shell.color = core.color = miniDroneShooter.color = FactionManager.GetFactionColor(faction);
+        shell.color = core.color = miniDroneShooter.color = AdjustColorOpacity(FactionManager.GetFactionColor(faction), opacity);
+    }
+
+    public static Color AdjustColorOpacity(Color color, float opacity)
+    {
+        color.a *= opacity;
+        return color;
     }
 
     public virtual void AssignDisplay(EntityBlueprint blueprint, DroneSpawnData data, int faction = 0)
@@ -35,7 +42,7 @@ public class SelectionDisplayHandler : MonoBehaviour
         {
             shell.enabled = true;
             shell.rectTransform.sizeDelta = shell.sprite.bounds.size * 100;
-            shell.color = FactionManager.GetFactionColor(faction);
+            shell.color = AdjustColorOpacity(FactionManager.GetFactionColor(faction), opacity);
             shell.type = Image.Type.Sliced;
             shell.rectTransform.anchoredPosition = -shell.sprite.pivot + shell.rectTransform.sizeDelta / 2;
         }
@@ -53,7 +60,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             core.type = Image.Type.Sliced;
             if (blueprint.intendedType != EntityBlueprint.IntendedType.Tower)
                 core.material = ResourceManager.GetAsset<Material>("material_color_swap");
-            core.color = FactionManager.GetFactionColor(faction);
+            core.color = AdjustColorOpacity(FactionManager.GetFactionColor(faction), opacity);
             // orient core image so relative center stays the same regardless of shell tier
         }
         else
@@ -65,7 +72,7 @@ public class SelectionDisplayHandler : MonoBehaviour
         {
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite = ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(6));
-            miniDroneShooter.color = FactionManager.GetFactionColor(faction);
+            miniDroneShooter.color = AdjustColorOpacity(FactionManager.GetFactionColor(faction), opacity);
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;
         }
@@ -75,7 +82,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             miniDroneShooter.enabled = true;
             miniDroneShooter.sprite =
                 ResourceManager.GetAsset<Sprite>(AbilityUtilities.GetShooterByID(blueprint.parts[0].abilityID, blueprint.parts[0].secondaryData));
-            miniDroneShooter.color = FactionManager.GetFactionColor(faction);
+            miniDroneShooter.color = AdjustColorOpacity(FactionManager.GetFactionColor(faction), opacity);
             miniDroneShooter.rectTransform.sizeDelta = miniDroneShooter.sprite.bounds.size * 100;
             miniDroneShooter.type = Image.Type.Sliced;
         }
@@ -90,7 +97,7 @@ public class SelectionDisplayHandler : MonoBehaviour
             foreach (EntityBlueprint.PartInfo part in blueprint.parts)
             {
                 DisplayPart basePart = Instantiate(partPrefab, transform, false).GetComponent<DisplayPart>();
-                basePart.UpdateFaction(faction);
+                basePart.UpdateProperties(faction, opacity);
                 parts.Add(basePart);
                 basePart.info = part;
             }

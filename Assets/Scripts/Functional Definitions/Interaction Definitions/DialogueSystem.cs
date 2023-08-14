@@ -279,18 +279,20 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         textRenderer.font = shellcorefont;
 
         // radio image 
-        if (window.GetComponentInChildren<SelectionDisplayHandler>())
+        var display = window.transform.Find("Background/Radio").GetComponentInChildren<SelectionDisplayHandler>();
+        if (display)
         {
-            if (speaker)
+            var remastered = dialogueStyle == DialogueStyle.Remastered;
+            if (speaker && remastered)
             {
                 DialogueViewTransitionIn(speaker);
-                window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(speaker.blueprint, null, speaker.faction);
-                window.transform.Find("Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+                display.AssignDisplay(speaker.blueprint, null, speaker.faction);
+                window.transform.Find("Background/Name").GetComponent<Text>().text = speaker.blueprint.entityName;
             }
             else
             {
-                window.GetComponentInChildren<SelectionDisplayHandler>().gameObject.SetActive(false);
-                window.transform.Find("Name").GetComponent<Text>().text = "Unknown Speaker";
+                display.gameObject.SetActive(false);
+                window.transform.Find("Background/Name").GetComponent<Text>().text = remastered ? "Unknown Speaker" : "";
             }
         }
 
@@ -319,6 +321,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         RectTransform button = Instantiate(dialogueButtonPrefab).GetComponent<RectTransform>();
         button.SetParent(background, false);
         button.anchoredPosition = new Vector2(0, ypos);
+        button.GetComponent<Image>().enabled = dialogueStyle == DialogueStyle.Remastered;
         if (call != null)
         {
             button.GetComponent<Button>().onClick.AddListener(call);
@@ -843,12 +846,14 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 break;
         }
 
+        var remastered = dialogueStyle == DialogueStyle.Remastered;
         if (speaker as Entity)
         {
             var ent = speaker as Entity;
             // radio image 
-            window.GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
-            window.transform.Find("Name").GetComponent<Text>().text = ent.blueprint.entityName;
+            if (remastered)
+                window.transform.Find("Background/Radio").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
+            window.transform.Find("Background/Name").GetComponent<Text>().text = remastered ? ent.blueprint.entityName : "";
         }
 
         // change text

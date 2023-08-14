@@ -9,6 +9,7 @@ public class DisplayPart : MonoBehaviour
     public EntityBlueprint.PartInfo info;
     private bool initialized = false;
     private int faction = 0;
+    private float opacity = 1f;
 
     protected virtual void Awake()
     {
@@ -77,20 +78,21 @@ public class DisplayPart : MonoBehaviour
         }
     }
 
-    public virtual void UpdateFaction(int faction)
+    public virtual void UpdateProperties(int faction, float opacity)
     {
         this.faction = faction;
+        this.opacity = opacity;
     }
 
     protected virtual void UpdateAppearance()
     {
         // set colors
-        image.color = info.shiny ? FactionManager.GetFactionShinyColor(faction) : FactionManager.GetFactionColor(faction);
+        image.color = SelectionDisplayHandler.AdjustColorOpacity(info.shiny ? FactionManager.GetFactionShinyColor(faction) : FactionManager.GetFactionColor(faction), opacity);
         // set position
         ReflectLocation();
         if (shooter)
         {
-            shooter.color = image.color;
+            shooter.color = SelectionDisplayHandler.AdjustColorOpacity(image.color, opacity);
             shooter.gameObject.transform.SetAsLastSibling();
             shooter.rectTransform.anchoredPosition = info.location * 100;
             if (AbilityUtilities.GetShooterByID(info.abilityID) == null)
