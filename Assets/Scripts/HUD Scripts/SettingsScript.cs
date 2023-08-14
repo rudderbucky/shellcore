@@ -13,6 +13,7 @@ public class SettingsScript : MonoBehaviour
     public Toggle BackgroundScriptToggle;
     public Toggle RectangleEffectScriptToggle;
     public Toggle overworldGridToggle;
+    public Toggle coreGlowToggle;
 
     public (int, int)[] resolutions = new (int, int)[] {(1024, 768), (1366, 768), (1600, 900), (1920, 1080), (3840, 2160)};
     public Dropdown windowResolution;
@@ -39,6 +40,7 @@ public class SettingsScript : MonoBehaviour
         BackgroundScriptToggle.isOn = PlayerPrefs.GetString("BackgroundScript_active", "True") == "True";
         RectangleEffectScriptToggle.isOn = PlayerPrefs.GetString("RectangleEffectScript_active", "True") == "True";
         overworldGridToggle.isOn = PlayerPrefs.GetString("OverworldGrid_active", "False") == "True";
+        coreGlowToggle.isOn = PlayerPrefs.GetString("CoreGlow_active", "True") == "True";
         masterSoundSlider.value = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
         hudDamageIndicatorSlider.value = PlayerPrefs.GetFloat("HealthBarScript_hudDamageIndicator", 0.5F);
         musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f);
@@ -124,6 +126,7 @@ public class SettingsScript : MonoBehaviour
         ChangeHudDamageIndicator(hudDamageIndicatorSlider.value);
         ChangeAllowAutocastSkillsEnabled(allowAutocastSkillsToggle.isOn);
         ChangeOverworldGridActive(overworldGridToggle.isOn);
+        ChangeCoreGlowActive(coreGlowToggle.isOn);
 
         //for(int i = 0; i < 9; i++)
         //{
@@ -163,7 +166,7 @@ public class SettingsScript : MonoBehaviour
 	    Screen.fullScreenMode = val ? FullScreenMode.Windowed : FullScreenMode.FullScreenWindow;
         if (!val)
         {
-            Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow, 0);
+            Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow);
         }
 #endif
     }
@@ -214,6 +217,16 @@ public class SettingsScript : MonoBehaviour
     {
         PlayerPrefs.SetString("OverworldGrid_active", val.ToString());
         OverworldGrid.SetActive(val);
+    }
+
+
+    public void ChangeCoreGlowActive(bool val)
+    {
+        PlayerPrefs.SetString("CoreGlow_active", val.ToString());
+        foreach (var ent in AIData.entities)
+        {
+            ent.SetCoreGlowActive(val);
+        }
     }
 
     public void ChangeDialogueSystemDialogueStyle(int val)

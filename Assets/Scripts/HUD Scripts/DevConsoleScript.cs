@@ -240,6 +240,14 @@ public class DevConsoleScript : MonoBehaviour
                     renderers[i].color = new Color(1f, 1f, 1f, 0.1f);
                 }
 
+                var partSys = player.GetComponentInChildren<ParticleSystem>(true);
+                if (partSys)
+                {
+                    var main = partSys.main;
+                    main.startColor = new Color(1f, 1f, 1f, 0.1f);
+                    partSys.Stop();
+                    partSys.Play();
+                }
                 spectateEnabled = true;
 
                 player.GetComponent<TractorBeam>().enabled = false;

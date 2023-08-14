@@ -198,6 +198,18 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         {
             UpdateRenderer(renderers[i]);
         }
+        if (glowParticleSystem)
+        {
+            var main = glowParticleSystem.main;
+            var finalAlpha = IsInvisible ? FactionManager.IsAllied(PlayerCore.Instance ? PlayerCore.Instance.faction : 0, faction) ? 0.2f : 0f : FactionManager.GetFactionColor(faction).a;
+            var startColor = main.startColor;
+            var color = main.startColor.colorMax;
+            color.a = finalAlpha;
+            startColor.colorMax = color;
+            main.startColor = startColor;
+            glowParticleSystem.Stop();
+            glowParticleSystem.Play();
+        }
     }
 
     public int StealthStacks
@@ -717,6 +729,12 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
+    ParticleSystem glowParticleSystem;
+    public void SetCoreGlowActive(bool val)
+    {
+        if (glowParticleSystem) glowParticleSystem.gameObject.SetActive(val);
+    }
+
     /// <summary>
     /// Generate shell parts in the blueprint, change ship stats accordingly
     /// </summary>
@@ -750,6 +768,26 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             }
 
             coreRenderer.sprite = ResourceManager.GetAsset<Sprite>(blueprint.coreSpriteID);
+            if (!glowParticleSystem)
+                switch (blueprint.coreSpriteID)
+                {
+
+                    case "core1_light":
+                    case "groundcarriercore":
+                        glowParticleSystem = Instantiate(ResourceManager.GetAsset<GameObject>("core_glow_effect"), transform).GetComponent<ParticleSystem>();
+                        break;
+                    case "drone_light":
+                        glowParticleSystem = Instantiate(ResourceManager.GetAsset<GameObject>("circle_core_glow_effect"), transform).GetComponent<ParticleSystem>();
+                        break;
+                }
+            if (glowParticleSystem)
+            {
+                glowParticleSystem.gameObject.SetActive(PlayerPrefs.GetString("CoreGlow_active", "True") == "True");
+                var main = glowParticleSystem.main;
+                main.startColor = FactionManager.GetFactionColor(faction);
+                glowParticleSystem.Stop();
+                glowParticleSystem.Play();
+            } 
         }
         else
         {
@@ -1142,6 +1180,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             BZM.UpdateCounters();
         }
 
+        if(glowParticleSystem) Destroy(glowParticleSystem.gameObject);
         GameObject deathExplosion = Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
     }
 
