@@ -65,8 +65,8 @@ public class TractorBeam : MonoBehaviour
         lineRenderer.material = tractorMaterial;
         lineRenderer.material.color = new Color32(88, 239, 255, 128);
         //lineRenderer.material.color = new Color32(255,32,255,128);
-        lineRenderer.startWidth = 0.1F;
-        lineRenderer.endWidth = 0.1F;
+        lineRenderer.startWidth = 0.05F;
+        lineRenderer.endWidth = 0.05F;
         lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
         lineRenderer.sortingOrder = 1;
@@ -162,6 +162,7 @@ public class TractorBeam : MonoBehaviour
             targetGlow.transform.position = target.transform.position;
     }
 
+    private float auxillaryScaleY = 0.6F;
     protected void TractorBeamUpdate()
     {
         lineRenderer.material.color = owner.tractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128);
@@ -211,7 +212,7 @@ public class TractorBeam : MonoBehaviour
                 x.startColor = new ParticleSystem.MinMaxGradient(owner.tractorSwitched ? new Color32(255, 32, 255, 128) : new Color32(88, 239, 255, 128));
                 auxillaryParticleSystem.SetActive(true);
                 auxillaryParticleSystem.transform.position = Vector3.Lerp(transform.position, target.transform.position, 0.5F);
-                auxillaryParticleSystem.transform.localScale = new Vector3((target.transform.position - transform.position).magnitude/0.2F, 1F, 1);
+                auxillaryParticleSystem.transform.localScale = new Vector3((target.transform.position - transform.position).magnitude/0.2F, auxillaryScaleY, 1);
                 auxillaryParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 360 - Vector2.SignedAngle(target.transform.position - transform.position, Vector2.right)));// = new Vector3(0, 0, 0);
             }
         }
