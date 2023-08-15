@@ -279,7 +279,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         textRenderer.font = shellcorefont;
 
         // radio image 
-        var display = window.transform.Find("Background/Radio").GetComponentInChildren<SelectionDisplayHandler>();
+        var display = window.transform.Find("Background/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>();
         if (display)
         {
             var remastered = dialogueStyle == DialogueStyle.Remastered;
@@ -852,7 +852,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             var ent = speaker as Entity;
             // radio image 
             if (remastered)
-                window.transform.Find("Background/Radio").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
+                window.transform.Find("Background/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
             window.transform.Find("Background/Name").GetComponent<Text>().text = remastered ? ent.blueprint.entityName : "";
         }
 
