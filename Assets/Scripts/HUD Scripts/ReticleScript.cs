@@ -134,7 +134,7 @@ public class ReticleScript : MonoBehaviour
             if (hits[i]?.gameObject.GetComponent<IVendor>() == null) break;
         }
 
-        if (draggableTarget && TractorBeam.InvertTractorCheck(craft, draggableTarget) && draggableTarget.transform != craft.transform)
+        if (draggableTarget && TractorBeam.InvertTractorCheck(craft, draggableTarget) && draggableTarget.transform != craft.transform  && !DevConsoleScript.spectateEnabled)
         {
             if (targSys.GetTarget() == draggableTarget.transform)
             {
@@ -294,7 +294,7 @@ public class ReticleScript : MonoBehaviour
 
 
             // Toggle tractor beam
-            if (InputManager.GetKeyDown(KeyName.ToggleTractorBeam))
+            if (InputManager.GetKeyDown(KeyName.ToggleTractorBeam) && !DevConsoleScript.spectateEnabled)
             {
                 if (targSys.GetTarget())
                 {
