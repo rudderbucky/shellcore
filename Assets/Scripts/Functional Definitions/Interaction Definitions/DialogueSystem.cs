@@ -279,7 +279,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         textRenderer.font = shellcorefont;
 
         // radio image 
-        var display = window.transform.Find("Background/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>();
+        var display = window.transform.Find("Background/Radio/Holder")?.GetComponentInChildren<SelectionDisplayHandler>();
         if (display)
         {
             var remastered = dialogueStyle == DialogueStyle.Remastered;
