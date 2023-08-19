@@ -21,7 +21,6 @@ public class ButtonHoverScript : MonoBehaviour, IPointerClickHandler, IPointerEn
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.LogWarning(GetComponentInChildren<Text>().text);
         if (name == "MainMenuButton")
         {
             if (MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off)

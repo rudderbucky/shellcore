@@ -179,6 +179,7 @@ public class WorldCreatorCursor : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0) return;
         current.pos = CalcPos(current.type);
         if (current.obj)
         {

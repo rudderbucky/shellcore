@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 115}
+  m_AnchoredPosition: {x: 0, y: 60}
   m_SizeDelta: {x: 1316.6337, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2821925345251992802
@@ -170,9 +170,8 @@ GameObject:
   - component: {fileID: 5953587420527137658}
   - component: {fileID: 3792872671993523444}
   - component: {fileID: 3270350625268499076}
-  - component: {fileID: 7443846018994580552}
   m_Layer: 5
-  m_Name: MainMenuButton (1)
+  m_Name: MainMenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -280,9 +279,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: Activate
+      - m_Target: {fileID: 383078250771325265}
+        m_TargetAssemblyTypeName: EscapeMenu, Assembly-CSharp
+        m_MethodName: MainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -292,18 +291,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7443846018994580552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5697772836105845316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21813fe3ec40d074eae5ad5ffded50ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8215725505962020413
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,9 +339,8 @@ GameObject:
   - component: {fileID: 9100547848009592118}
   - component: {fileID: 9100547848009592117}
   - component: {fileID: 9100547848009592116}
-  - component: {fileID: 9100547848009592139}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: SettingsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -377,7 +363,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -79.99996, y: -100}
+  m_AnchoredPosition: {x: -79.99996, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &9100547848009592118
@@ -474,18 +460,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &9100547848009592139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9100547848009592137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21813fe3ec40d074eae5ad5ffded50ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &9100547848026096650
 GameObject:
   m_ObjectHideFlags: 0
@@ -684,6 +658,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a116f685a5c140e228a6a35a0a4e3333, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveAndQuitButton: {fileID: 9100547849357250944}
+  mainMenuButton: {fileID: 5697772836105845316}
+  settingsButton: {fileID: 9100547848009592137}
 --- !u!1 &9100547848527252032
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,9 +827,8 @@ GameObject:
   - component: {fileID: 9100547849357250956}
   - component: {fileID: 9100547849357250947}
   - component: {fileID: 9100547849357250946}
-  - component: {fileID: 9100547849357250957}
   m_Layer: 5
-  m_Name: MainMenuButton
+  m_Name: SaveAndQuitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -875,7 +851,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -100}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9100547849357250956
@@ -960,9 +936,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: Activate
+      - m_Target: {fileID: 383078250771325265}
+        m_TargetAssemblyTypeName: EscapeMenu, Assembly-CSharp
+        m_MethodName: SaveAndQuit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -972,15 +948,3 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &9100547849357250957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9100547849357250944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21813fe3ec40d074eae5ad5ffded50ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
