@@ -40,6 +40,7 @@ public class TipsFromTheYard : MonoBehaviour
         tipsList.Add("Saving power is important! You can buy several siege turrets in one go to devastate stations.");
         tipsList.Add("You can press 'Control' and 'Tab' at the same time to select all your owned units!");
         tipsList.Add("You can left click and press 'Shift' at the same time to clear your secondary targets without ordering them!");
+        tipsList.Add("You can prevent your party members from spawning turrets or tanks via the buttons in the Party Status Menu!");
         colors = new Color[] {Color.green, Color.cyan, Color.magenta, Color.yellow, Color.blue};
     }
 
