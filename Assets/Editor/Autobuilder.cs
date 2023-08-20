@@ -21,9 +21,12 @@ public class Autobuilder
         Debug.Log("done");
 	}
 
+
+
 	[MenuItem("ShellCore Command/Build/Windows (release)")]
 	public static void BuildWindows()
 	{
+		WCWorldIO.DeletePlaceholderDirectories();
         EditorUserBuildSettings.standaloneBuildSubtarget = StandaloneBuildSubtarget.Player;
 		Debug.Log("Starting Windows Build!");
 		BuildPipeline.BuildPlayer(new BuildPlayerOptions() 
@@ -39,6 +42,7 @@ public class Autobuilder
     [MenuItem("ShellCore Command/Build/Linux (release)")]
 	public static void BuildLinux()
 	{
+		WCWorldIO.DeletePlaceholderDirectories();
 		Debug.Log("Starting Linux Build!");
         BuildPipeline.BuildPlayer(new BuildPlayerOptions() 
             {
@@ -55,6 +59,7 @@ public class Autobuilder
     [MenuItem("ShellCore Command/Build/Linux (debug)")]
 	public static void BuildLinuxDebug()
 	{
+		WCWorldIO.DeletePlaceholderDirectories();
 		Debug.Log("Starting Linux Build!");
         BuildPipeline.BuildPlayer(new BuildPlayerOptions() 
             {
