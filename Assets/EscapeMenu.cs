@@ -13,25 +13,31 @@ public class EscapeMenu : MonoBehaviour
     private Vector2 originalMainMenuPos;
     public GameObject settingsButton;
     private Vector2 originalSettingsPos;
+    private List<Coroutine> coroutines = new List<Coroutine>();
 
     void OnEnable()
     {
         var mainGame = SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off;
         if (saveAndQuitButton) saveAndQuitButton.gameObject.SetActive(mainGame);
         if (mainMenuButton && mainGame) mainMenuButton.GetComponentInChildren<Text>().text = "QUIT";
-        if (settingsButton) originalSettingsPos = settingsButton.transform.position;
-        if (mainMenuButton) originalMainMenuPos = mainMenuButton.transform.position;
-        if (saveAndQuitButton) originalsaveAndQuitPos = saveAndQuitButton.transform.position;
-        StartCoroutine(ButtonAnimation(settingsButton, 0));
-        StartCoroutine(ButtonAnimation(mainMenuButton, 0.05F));
-        StartCoroutine(ButtonAnimation(saveAndQuitButton, 0.1F));
+        if (settingsButton) originalSettingsPos = settingsButton.GetComponent<RectTransform>().anchoredPosition;
+        if (mainMenuButton) originalMainMenuPos = mainMenuButton.GetComponent<RectTransform>().anchoredPosition;
+        if (saveAndQuitButton) originalsaveAndQuitPos = saveAndQuitButton.GetComponent<RectTransform>().anchoredPosition;
+        Debug.LogWarning(originalsaveAndQuitPos);
+        coroutines.Add(StartCoroutine(ButtonAnimation(settingsButton, 0)));
+        coroutines.Add(StartCoroutine(ButtonAnimation(mainMenuButton, 0.05F)));
+        coroutines.Add(StartCoroutine(ButtonAnimation(saveAndQuitButton, 0.1F)));
     }
 
     void OnDisable()
     {
-        if (settingsButton) settingsButton.transform.position = originalSettingsPos;
-        if (mainMenuButton) mainMenuButton.transform.position = originalMainMenuPos;
-        if (saveAndQuitButton) saveAndQuitButton.transform.position = originalsaveAndQuitPos;
+        Debug.LogWarning("DISABLE");
+
+        if (settingsButton) settingsButton.GetComponent<RectTransform>().anchoredPosition = originalSettingsPos;
+        if (mainMenuButton) mainMenuButton.GetComponent<RectTransform>().anchoredPosition = originalMainMenuPos;
+        if (saveAndQuitButton) saveAndQuitButton.GetComponent<RectTransform>().anchoredPosition = originalsaveAndQuitPos;
+        foreach (var c in coroutines) StopCoroutine(c);
+        coroutines.Clear();
     }
 
     IEnumerator ButtonAnimation(GameObject button, float delay)
@@ -39,7 +45,7 @@ public class EscapeMenu : MonoBehaviour
         if (!button) yield return null;
         var group = button.GetComponent<CanvasGroup>();
         Vector2 orig, curr;
-        orig = curr = button.transform.position;
+        orig = curr = button.GetComponent<RectTransform>().anchoredPosition;
         curr.y -= 20;
         if (!group) yield return null;
         group.alpha = 0;
@@ -48,11 +54,11 @@ public class EscapeMenu : MonoBehaviour
         {
             group.alpha += Time.fixedUnscaledDeltaTime / 0.1F;
             curr.y = Mathf.Min(orig.y, curr.y + 2);
-            button.transform.position = curr;
+            button.GetComponent<RectTransform>().anchoredPosition = curr;
             yield return new WaitForSecondsRealtime(0.01F);
         }
         
-        button.transform.position = orig;
+        button.GetComponent<RectTransform>().anchoredPosition = orig;
         yield return null;
         
     }
