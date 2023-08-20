@@ -16,7 +16,7 @@ public class EscapeMenu : MonoBehaviour
 
     void OnEnable()
     {
-        var mainGame = SceneManager.GetActiveScene().name == "SampleScene";
+        var mainGame = SceneManager.GetActiveScene().name == "SampleScene" && MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off;
         if (saveAndQuitButton) saveAndQuitButton.gameObject.SetActive(mainGame);
         if (mainMenuButton && mainGame) mainMenuButton.GetComponentInChildren<Text>().text = "QUIT";
         if (settingsButton) originalSettingsPos = settingsButton.transform.position;
