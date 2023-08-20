@@ -23,7 +23,6 @@ public class EscapeMenu : MonoBehaviour
         if (settingsButton) originalSettingsPos = settingsButton.GetComponent<RectTransform>().anchoredPosition;
         if (mainMenuButton) originalMainMenuPos = mainMenuButton.GetComponent<RectTransform>().anchoredPosition;
         if (saveAndQuitButton) originalsaveAndQuitPos = saveAndQuitButton.GetComponent<RectTransform>().anchoredPosition;
-        Debug.LogWarning(originalsaveAndQuitPos);
         coroutines.Add(StartCoroutine(ButtonAnimation(settingsButton, 0)));
         coroutines.Add(StartCoroutine(ButtonAnimation(mainMenuButton, 0.05F)));
         coroutines.Add(StartCoroutine(ButtonAnimation(saveAndQuitButton, 0.1F)));
@@ -31,8 +30,6 @@ public class EscapeMenu : MonoBehaviour
 
     void OnDisable()
     {
-        Debug.LogWarning("DISABLE");
-
         if (settingsButton) settingsButton.GetComponent<RectTransform>().anchoredPosition = originalSettingsPos;
         if (mainMenuButton) mainMenuButton.GetComponent<RectTransform>().anchoredPosition = originalMainMenuPos;
         if (saveAndQuitButton) saveAndQuitButton.GetComponent<RectTransform>().anchoredPosition = originalsaveAndQuitPos;
