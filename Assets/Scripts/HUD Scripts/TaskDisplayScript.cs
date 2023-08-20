@@ -66,6 +66,11 @@ public class TaskDisplayScript : MonoBehaviour
     public static void AddMission(Mission mission)
     {
         loadedMissions.Add(mission);
+        if (mission.status == Mission.MissionStatus.Inactive && mission.prerequisites.TrueForAll(
+            m => 
+                !PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == m) ||
+                PlayerCore.Instance.cursave.missions.Find(mi => mi.name == m).status != Mission.MissionStatus.Complete
+            )) return;
         var button = Instantiate(instance.missionButtonPrefab,
             instance.missionListContents[rankNumberByString[mission.rank]]).GetComponent<Button>();
         if (mission.name.Length <= 33)
