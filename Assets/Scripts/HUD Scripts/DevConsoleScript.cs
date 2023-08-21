@@ -282,6 +282,10 @@ public class DevConsoleScript : MonoBehaviour
                 int tier = 0;
                 int amt = 1;
                 var info = new EntityBlueprint.PartInfo();
+                if (splits.Length < 2)
+                {
+                    textBox.text += "\nUsage: addpart a=<abilityID> t=<tier> c=<count> s=<secondaryData> p=<partID>";
+                }
                 foreach(var split in splits)
                 {
                     if (split.StartsWith("a="))
