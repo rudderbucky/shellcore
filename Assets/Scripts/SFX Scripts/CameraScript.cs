@@ -54,7 +54,7 @@ public class CameraScript : MonoBehaviour
     // returns max zoom level based on player core tier
     public static float GetMaxZoomLevel()
     {
-        if (!PlayerCore.Instance)
+        if (!PlayerCore.Instance || !PlayerCore.Instance.blueprint)
         {
             return 10;
         }
