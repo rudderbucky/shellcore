@@ -33,6 +33,8 @@ public class ShipBuilderShipStatsDisplay : MonoBehaviour
         float enginePower = 200;
         float weight = Entity.coreWeight;
         float speed = Craft.initSpeed;
+        var rdbActive = PlayerPrefs.GetString("ShipBuilder_rdbServerValidity", "False") == "True";
+        rdbServerValidityDisplay.gameObject.SetActive(rdbActive);
         foreach (DisplayPart part in statsDatabase.GetParts())
         {
             switch (part.info.abilityID)

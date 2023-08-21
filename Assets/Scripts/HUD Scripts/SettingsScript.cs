@@ -21,6 +21,7 @@ public class SettingsScript : MonoBehaviour
     public Dropdown dialogueStyle;
     public Dropdown partShader;
     public Toggle taskManagerAutoSaveEnabled;
+    public Toggle rdbServerBuilderCheckEnabled;
     public Toggle simpleMouseMovementToggle;
     public Toggle allowAutocastSkillsToggle;
 
@@ -50,6 +51,7 @@ public class SettingsScript : MonoBehaviour
         taskManagerAutoSaveEnabled.isOn = PlayerPrefs.GetString("TaskManager_autoSaveEnabled", "True") == "True";
         simpleMouseMovementToggle.isOn = PlayerPrefs.GetString("SelectionBoxScript_simpleMouseMovement", "True") == "True";
         allowAutocastSkillsToggle.isOn = PlayerPrefs.GetString("AllowAutocastSkills", "False") == "True";
+        rdbServerBuilderCheckEnabled.isOn = PlayerPrefs.GetString("ShipBuilder_rdbServerValidity", "False") == "True";
         SaveSettings();
 
         //for(int i = 0; i < 9; i++)
@@ -127,11 +129,17 @@ public class SettingsScript : MonoBehaviour
         ChangeAllowAutocastSkillsEnabled(allowAutocastSkillsToggle.isOn);
         ChangeOverworldGridActive(overworldGridToggle.isOn);
         ChangeCoreGlowActive(coreGlowToggle.isOn);
+        ChangerdbserverEnabled(rdbServerBuilderCheckEnabled.isOn);
 
         //for(int i = 0; i < 9; i++)
         //{
         //	ChangeAbilityKeybind(i, abilityKeybindFields[i].text);
         //}
+    }
+
+    public void ChangerdbserverEnabled(bool val)
+    {
+        PlayerPrefs.SetString("ShipBuilder_rdbServerValidity", val.ToString());
     }
 
     public void ChangeMasterVolume(float newVol)
