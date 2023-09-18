@@ -17,7 +17,8 @@ public class Dialogue : ScriptableObject, IDialogueable
         Exit,
         Workshop,
         Upgrader,
-        InvokeEnd
+        InvokeEnd,
+        ForceToNextID
     }
 
     public List<Node> nodes;
@@ -33,5 +34,7 @@ public class Dialogue : ScriptableObject, IDialogueable
         public int ID;
         public List<int> nextNodes;
         public DialogueAction action;
+        public string speakerID;
+        public bool useSpeakerColor;
     }
 }

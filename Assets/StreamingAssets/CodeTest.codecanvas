@@ -1,0 +1,49 @@
+Text("dialoguetest1", "This is a dialogue test using the new code system. Code canvases are easier to maintain and contain less bloat than XML.")
+Text("responsetest1", "Woah, that's really cool!")
+Text("responsetest2", "How does responding to you work?")
+Text("dialoguetest2", "Each Dialogue and Response call can also take Response and Dialogue calls recursively! It's readable and functional!")
+Text("responsetest3", "Can I recurse back to the original dialogue like with node canvases?")
+
+dial = Dialogue(
+    speakerID=test, 
+    dialogueText=dialoguetest1,
+    ID=0,
+    responses=[
+        Response(
+            responseText=responsetest1, 
+            next=End()
+        ),
+        Response(
+            responseText=responsetest2, 
+            next=Dialogue(
+                speakerID=test, 
+                dialogueText=dialoguetest2, 
+                responses=[
+                    Response(
+                        responseText=responsetest1, 
+                        next=End()
+                    ),
+                ]
+            )
+        ),
+        Response(
+            responseText=responsetest3, 
+            next=SetID(0)
+        )
+    ]
+) 
+
+MissionTrigger(
+    name=Test,
+    rank=B,
+    prerequisites=[
+        Test2
+    ],
+    sequence=(
+        SetInteraction(entityID=test, interaction=RunDialogue(dial))
+        StartCutscene(
+            RunDialogue(cutsceneDial)
+        )
+    )
+)
+

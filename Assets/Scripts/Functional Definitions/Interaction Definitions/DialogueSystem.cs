@@ -842,6 +842,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             case Dialogue.DialogueAction.InvokeEnd:
                 endDialogue(ID, false);
                 return;
+            case Dialogue.DialogueAction.ForceToNextID:
+                endDialogue(current.nextNodes[0], false);
+                return;
             default:
                 break;
         }
@@ -879,6 +882,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
             Transform button = CreateButton(next.buttonText, null, 24 + 24 * (current.nextNodes.Count - (i + 1))).transform;
 
+            if (next.action == Dialogue.DialogueAction.ForceToNextID)
+            {
+                nextIndex = next.nextNodes[0];
+            }
+            
             button.GetComponent<Button>().onClick.AddListener(() => { Next(dialogue, nextIndex, speaker); });
             if (dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit)
             {
