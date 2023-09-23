@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Text;
 
 public class CodeTraverser : MonoBehaviour
 {
@@ -10,6 +11,21 @@ public class CodeTraverser : MonoBehaviour
     private int index;
     private string codePath = System.IO.Path.Combine(Application.streamingAssetsPath, "CodeTest.codecanvas");
     Dictionary<string, string> localMap = new Dictionary<string, string>();
+    private Dictionary<int, string> dialogueScopes = new Dictionary<int, string>();
+    private Dictionary<int, string> responseListScopes = new Dictionary<int, string>();
+    private Dictionary<int, string> responseScopes = new Dictionary<int, string>();
+    private struct FileCoord
+    {
+        public FileCoord(int line, int character)
+        {
+            this.line = line;
+            this.character = character;
+        }
+        public int line;
+        public int character;
+    }
+    private Dictionary<FileCoord, FileCoord> stringScopes = new Dictionary<FileCoord, FileCoord>();
+
 
     // Start is called before the first frame update
     void Start()
@@ -17,11 +33,97 @@ public class CodeTraverser : MonoBehaviour
         Parse();
     }
 
-    void Parse()
+
+    private void GetStringScopes(string[] lines)
     {
-        string[] lines = System.IO.File.ReadAllLines(codePath);
+
+        bool escaped = false;
+        bool inScope = false;
+        FileCoord interval = new FileCoord();
+        for (int i = 0; i < lines.Length; i++)
+        {
+            for (int c = 0; c < lines[i].Length; c++)
+            {
+                var ch = lines[i][c];
+                if (ch == '\\' && !escaped)
+                {
+                    escaped = true;
+                    continue;
+                }
+
+                if (escaped)
+                {
+                    escaped = false;
+                    continue;
+                }
+                if (ch == '"')
+                {
+                    if (!inScope)
+                    {
+                        inScope = true;
+                        interval.line = i;
+                        interval.character = c;
+                    }
+                    else
+                    {
+                        stringScopes.Add(interval, new FileCoord(i, c));
+                        inScope = false;
+                    }
+                }
+            }
+        }
+    }
+
+    private string GetScope(int startLineNum, string[] lines)
+    {
+        int bCount = 0;
+        var searchStarted = false;
+        var builder = new StringBuilder();
+        
+        for (FileCoord d = new FileCoord(startLineNum, 0); d.line < lines.Length; d = StringSensitiveIterator(d, lines))
+        {
+            var i = d.line;
+            var c = d.character;
+            bool ignoreSpecialChar = false;
+            var ch = lines[i][c];
+            if (ch == '\\')
+            {
+                ignoreSpecialChar = true;
+                c++;
+                continue;
+            }
+
+            builder.Append(ch);
+            if (ch != '(' && ch != ')')
+            {
+                continue;
+            }
+
+            if (ignoreSpecialChar)
+            {
+                ignoreSpecialChar = false;
+                c++;
+                continue;
+            }
+
+            if (ch == '(') bCount++;
+            if (!searchStarted && bCount > 1)
+            {
+                searchStarted = true;
+            }
+            else if (ch == ')') bCount--;
+            if (searchStarted && bCount == 0)
+            {
+                return builder.ToString();
+            }
+        }
+        throw new System.Exception("Did not finish a scope starting at line: " + (startLineNum+1));
+    }
+
+
+    void SetUpLocalMap(string[] lines)
+    {
         int lineIndex = 0;
-        dialogues = new Dictionary<string, Dialogue>();
         localMap.Clear();
         while (lineIndex < lines.Length && lineIndex != -1)
         {
@@ -48,28 +150,76 @@ public class CodeTraverser : MonoBehaviour
 
                 localMap.Add(tok1, tok2);
             }
-            // Check if assignment by checking for an equals sign
-            if (tokens.Length > 1 && tokens[1] == "=")
+            lineIndex++;
+        }
+
+    }
+
+    FileCoord StringSensitiveIterator(FileCoord current, string[] lines)
+    {
+        if (current.line >= lines.Length) return current;
+        if (stringScopes.ContainsKey(current))
+        {
+            current = new FileCoord(stringScopes[current].line, stringScopes[current].character + 1);
+        }
+
+        var lineChange = false;
+
+        while (current.character >= lines[current.line].Length - 1)
+        {
+            lineChange = true;
+            current.line++;
+            current.character = 0;
+            if (current.line >= lines.Length) return current;
+        }
+        
+        if (!lineChange) 
+        {
+            current.character++;
+        }
+        // Debug.LogWarning(current.line + " " + current.character + " " + lines[current.line].Length);
+        return current;
+    }
+
+    void Parse()
+    {
+        string[] lines = System.IO.File.ReadAllLines(codePath);
+        GetStringScopes(lines);
+        dialogues = new Dictionary<string, Dialogue>();
+        
+        SetUpLocalMap(lines);
+
+        var equalsMode = false;
+
+        for (FileCoord d = new FileCoord(); d.line < lines.Length; d = StringSensitiveIterator(d, lines))
+        {
+            var i = d.line;
+            var c = d.character;
+            if (equalsMode)
             {
-                if (tokens.Length > 2 && tokens[2].StartsWith("Dialogue("))
+                if (lines[i][c] == ' ')
+                {
+                    continue;
+                }
+                else if (lines[i].Substring(c).StartsWith("Dialogue"))
                 {
                     var dialogue = ScriptableObject.CreateInstance<Dialogue>();
                     dialogue.nodes = new List<Dialogue.Node>();
-                    nextID = 0;
-                    lineIndex = ParseDialogue(lineIndex, lines, dialogue);
-                    dialogues.Add(tokens[0], dialogue);
-                    
+                    ParseDialogue(c, GetScope(i, lines), dialogue);
 #if UNITY_EDITOR
     UnityEditor.AssetDatabase.CreateAsset(dialogue, "Assets/DebugDialogue.asset");
 #endif
+                    break;
                 }
                 else
                 {
-                    Debug.LogError("If you assign you must also specify what you are assigning in the same line with the bracket.");
-                    break;
+                    equalsMode = false;
                 }
             }
-            lineIndex++;
+            else if (lines[i][c] == '=')
+            {
+                equalsMode = true;
+            }
         }
     }
 
@@ -92,145 +242,175 @@ public class CodeTraverser : MonoBehaviour
         return node;
     }
 
-    int ParseDialogue(int startIndex, string[] lines, Dialogue dialogue, string responseText = null)
+    int ParseDialogue(int index, string line, Dialogue dialogue, string responseText = null)
     {
         if (dialogue == null)
         {
             Debug.LogError("Null dialogue passed while parsing.");
             return -1;
         }
-        int brackets = 0;
         
         var node = new Dialogue.Node();
         bool forcedID = false;
         node.buttonText = responseText;
-        do
-        {
-            var toks = lines[startIndex].Split(",");
-            var pushNode = false;
-            foreach (var tok in toks)
-            {
-                var cleanedTok = tok.Trim();
-                brackets += cleanedTok.Count(x => x == '(');
-                var closeBracketCount = cleanedTok.Count(x => x == ')');
-                brackets -= closeBracketCount;
-                if (closeBracketCount > 0) pushNode = true;
-                if (cleanedTok.StartsWith("speakerID="))
-                {
-                    node.speakerID = cleanedTok.Split("speakerID=")[1];
-                }
-                else if (cleanedTok.StartsWith("dialogueText="))
-                {
-                    node.text = localMap[cleanedTok.Split("dialogueText=")[1]];
-                }
-                else if (cleanedTok.StartsWith("ID="))
-                {
-                    node = SetNodeID(dialogue, node, int.Parse(cleanedTok.Split("ID=")[1]), true);
-                    forcedID = true;
-                }
-                else if (cleanedTok.StartsWith("useSpeakerColor="))
-                {
-                    node.useSpeakerColor = cleanedTok.Split("useSpeakerColor=")[1] == "true";
-                }
-                else if (cleanedTok.StartsWith("customColor="))
-                {
 
-                }
-                else if (cleanedTok.StartsWith("responses="))
-                {
-                    startIndex = ParseResponses(startIndex, lines, dialogue) - 1;
-                }
-            }
-            if (pushNode)
+        // find the first bracket
+        while (index < line.Length && line[index] != '(') index++;
+        index++;
+        int brackets = 1;
+
+        while (index < line.Length && brackets > 0)
+        {
+            if (line[index] == '(')
             {
-                if (!forcedID) node = SetNodeID(dialogue, node, nextID);
-                forcedID = false;
-                dialogue.nodes.Add(node);
+                brackets++;
             }
-            startIndex++;
+            else if (line[index] == ')')
+            {
+                brackets--;
+            }
+            
+            var lineSubstr = line.Substring(index);
+            var val = lineSubstr.Split(",")[0].Split("=")[1];
+            var nextComma = false;
+            if (lineSubstr.StartsWith("speakerID="))
+            {
+                node.speakerID = val;
+                nextComma = true;
+            }
+            else if (lineSubstr.StartsWith("dialogueText="))
+            {
+                node.text = localMap[val];
+                nextComma = true;
+            }
+            else if (lineSubstr.StartsWith("ID="))
+            {
+                Debug.LogWarning(lineSubstr);
+                node.ID = int.Parse(val);
+                forcedID = true;
+                nextComma = true;
+            }
+            else if (lineSubstr.StartsWith("useSpeakerColor="))
+            {
+                node.useSpeakerColor = val == "true";
+                nextComma = true;
+            }
+            else if (lineSubstr.StartsWith("responses="))
+            {
+                index = ParseResponses(index, line, dialogue);
+                nextComma = true;
+            }
+            if (nextComma) 
+            {
+                nextComma = false;
+                index += lineSubstr.IndexOf(",");
+            }
+            index++;
         }
-        while (brackets > 0 && startIndex < lines.Length);
-        return startIndex;
+    
+        if (!forcedID) node = SetNodeID(dialogue, node, nextID);
+        forcedID = false;
+        dialogue.nodes.Add(node);
+        return index;
     }
 
-    int ParseResponses (int startIndex, string[] lines, Dialogue dialogue)
+    int ParseResponses (int index, string line, Dialogue dialogue)
     {
-        int brackets = 0;
-        do
+        // find the first bracket
+        while (index < line.Length && line[index] != '[') index++;
+        index++;
+        int brackets = 1;
+
+        while (index < line.Length && brackets > 0)
         {
-            var toks = lines[startIndex].Split(",");
-            foreach (var tok in toks)
+            if (line[index] == '[')
             {
-                var cleanedTok = tok.Trim();
-                brackets += cleanedTok.Count(x => x == '[');
-                brackets -= cleanedTok.Count(x => x == ']');
-                if (cleanedTok.StartsWith("Response("))
-                {
-                    startIndex = ParseResponse(startIndex, lines, dialogue) - 1;
-                }
-
+                brackets++;
             }
-            startIndex++;
-        } while (brackets > 0 && startIndex < lines.Length);
-        return startIndex;
+            else if (line[index] == ']')
+            {
+                brackets--;
+            }
+
+            var lineSubstr = line.Substring(index);
+            if (lineSubstr.StartsWith("Response("))
+            {
+                index = ParseResponse(index, line, dialogue);
+            }
+            else index++;
+        }
+        return index;
     }
 
-    int ParseResponse (int startIndex, string[] lines, Dialogue dialogue)
+    int ParseResponse (int index, string line, Dialogue dialogue)
     {
-        int brackets = 0;
+        // find the first bracket
+        while (index < line.Length && line[index] != '(') index++;
+        index++;
+        int brackets = 1;
+
         var node = new Dialogue.Node();
         bool insertNode = true;
         var responseText = "";
         bool forcedID = false;
-        do
-        {
-            var toks = lines[startIndex].Split(",");
-            foreach (var tok in toks)
-            {
-                var cleanedTok = tok.Trim();
-                var oldBrackets = brackets;
-                brackets += cleanedTok.Count(x => x == '(');
-                brackets -= cleanedTok.Count(x => x == ')');
-                if (cleanedTok.StartsWith("responseText="))
-                {
-                    node.buttonText = localMap[cleanedTok.Split("responseText=")[1]];
-                    responseText = node.buttonText;
-                }
-                if (cleanedTok.StartsWith("next="))
-                {
-                    var str = cleanedTok.Split("next=")[1];
-                    if (str.StartsWith("End("))
-                    {
-                        node.action = Dialogue.DialogueAction.Exit;
-                        break;
-                    }
-                    else if (str.StartsWith("Dialogue("))
-                    {
-                        // TODO: Figure out edge cases with bracket usage which I don't want to be rigid here
-                        startIndex = ParseDialogue(startIndex, lines, dialogue, responseText) - 3;
-                        insertNode = false;
-                        break;
-                    }
-                    else if (str.StartsWith("SetID("))
-                    {
-                        node.nextNodes = new List<int>();
-                        Debug.LogWarning(str.Split("SetID(")[1].Replace(")", ""));
-                        node.action = Dialogue.DialogueAction.ForceToNextID;
-                        node.nextNodes.Add(int.Parse(str.Split("SetID(")[1].Replace(")", "")));
-                        break;
-                    }
-                }
+        bool nextMode = true;
 
+
+        while (index < line.Length && brackets > 0)
+        {
+            if (line[index] == '(')
+            {
+                brackets++;
             }
-            startIndex++;
-        } while (brackets > 0 && startIndex < lines.Length);
+            else if (line[index] == ')')
+            {
+                brackets--;
+            }
+
+            var lineSubstr = line.Substring(index);
+            if (lineSubstr.StartsWith("responseText="))
+            {
+                var val = lineSubstr.Split(",")[0].Split("=")[1];
+                node.buttonText = localMap[val];
+                responseText = node.buttonText;
+            }
+            else if (lineSubstr.StartsWith("next="))
+            {
+                nextMode = true;
+            }
+            else if (nextMode)
+            {
+                if (lineSubstr.StartsWith("End"))
+                {
+                    node.action = Dialogue.DialogueAction.Exit;
+                }
+                else if (lineSubstr.StartsWith("Dialogue"))
+                {
+                    insertNode = false;
+                    index = ParseDialogue(index, line, dialogue, responseText);
+                    
+                }
+                else if (lineSubstr.StartsWith("SetID"))
+                {
+                    node.nextNodes = new List<int>();
+                    Debug.LogWarning(lineSubstr.Split("SetID(")[1].Replace(")", ""));
+                    node.action = Dialogue.DialogueAction.ForceToNextID;
+                    node.nextNodes.Add(int.Parse(lineSubstr.Split("SetID(")[1].Replace(")", "")));
+                }
+                
+                nextMode = false;
+            }
+            index++;
+        }
+
         if (insertNode)
         {
-            Debug.LogWarning("Inserting node");
             if (!forcedID) node = SetNodeID(dialogue, node, nextID);
             dialogue.nodes.Add(node);
+            Debug.LogWarning("Inserted node: " + dialogue.nodes.Count + " " + dialogue.GetHashCode());
         }
-        return startIndex;
+        
+        return index;
     }
 
 
