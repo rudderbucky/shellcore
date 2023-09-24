@@ -74,7 +74,7 @@ public class CodeTraverser : MonoBehaviour
         }
     }
 
-    private string GetScope(int startLineNum, string[] lines)
+    private string GetScope(int startLineNum, string[] lines, out FileCoord endOfScope)
     {
         int bCount = 0;
         var searchStarted = false;
@@ -114,6 +114,7 @@ public class CodeTraverser : MonoBehaviour
             else if (ch == ')') bCount--;
             if (searchStarted && bCount == 0)
             {
+                endOfScope = d;
                 return builder.ToString();
             }
         }
@@ -181,48 +182,6 @@ public class CodeTraverser : MonoBehaviour
         return current;
     }
 
-    void Parse()
-    {
-        string[] lines = System.IO.File.ReadAllLines(codePath);
-        GetStringScopes(lines);
-        dialogues = new Dictionary<string, Dialogue>();
-        
-        SetUpLocalMap(lines);
-
-        var equalsMode = false;
-
-        for (FileCoord d = new FileCoord(); d.line < lines.Length; d = StringSensitiveIterator(d, lines))
-        {
-            var i = d.line;
-            var c = d.character;
-            if (equalsMode)
-            {
-                if (lines[i][c] == ' ')
-                {
-                    continue;
-                }
-                else if (lines[i].Substring(c).StartsWith("Dialogue"))
-                {
-                    var dialogue = ScriptableObject.CreateInstance<Dialogue>();
-                    dialogue.nodes = new List<Dialogue.Node>();
-                    ParseDialogue(c, GetScope(i, lines), dialogue);
-#if UNITY_EDITOR
-    UnityEditor.AssetDatabase.CreateAsset(dialogue, "Assets/DebugDialogue.asset");
-#endif
-                    break;
-                }
-                else
-                {
-                    equalsMode = false;
-                }
-            }
-            else if (lines[i][c] == '=')
-            {
-                equalsMode = true;
-            }
-        }
-    }
-
     int nextID = 0;
 
     private Dialogue.Node SetNodeID(Dialogue dialogue, Dialogue.Node node, int ID, bool forceReplacement = false)
@@ -236,13 +195,85 @@ public class CodeTraverser : MonoBehaviour
         if (nextID == ID) nextID++;
         if (dialogue.nodes.Exists(n => n.ID == ID) && forceReplacement)
         {
-            var n = dialogue.nodes.Find(n => n.ID == ID);
-            SetNodeID(dialogue, n, nextID);
+            var index = dialogue.nodes.FindIndex(n => n.ID == ID);
+            dialogue.nodes[index] = SetNodeID(dialogue, dialogue.nodes[index], nextID);
+
+            for (int i = 0; i < dialogue.nodes.Count; i++)
+            {
+                if (dialogue.nodes[i].action == Dialogue.DialogueAction.ForceToNextID) continue;
+                if (dialogue.nodes[i].nextNodes.Contains(ID))
+                {
+                    dialogue.nodes[i].nextNodes[dialogue.nodes[i].nextNodes.FindIndex(x => x == ID)] = dialogue.nodes[index].ID;
+                }
+            }
         }
         return node;
     }
 
-    int ParseDialogue(int index, string line, Dialogue dialogue, string responseText = null)
+    private Dialogue.Node GetDefaultNode()
+    {
+        var node = new Dialogue.Node();
+        node.nextNodes = new List<int>();
+        node.useSpeakerColor = true;
+        return node;
+    }
+
+    void Parse()
+    {
+        string[] lines = System.IO.File.ReadAllLines(codePath);
+        GetStringScopes(lines);
+        dialogues = new Dictionary<string, Dialogue>();
+        
+        SetUpLocalMap(lines);
+
+        var equalsMode = false;
+
+        FileCoord d = new FileCoord(); 
+        while (d.line < lines.Length)
+        {
+            var i = d.line;
+            var c = d.character;
+            if (equalsMode)
+            {
+                if (lines[i][c] == ' ')
+                {
+                    d = StringSensitiveIterator(d, lines);
+                    continue;
+                }
+                else if (lines[i].Substring(c).StartsWith("Dialogue"))
+                {
+                    ParseDialogue(i, c, lines, out d);
+                }
+                else
+                {
+                    equalsMode = false;
+                }
+            }
+            else if (lines[i][c] == '=')
+            {
+                equalsMode = true;
+            }
+            d = StringSensitiveIterator(d, lines);
+        }
+    }
+
+
+    void ParseDialogue(int lineIndex, int charIndex, string[] lines, out FileCoord coord)
+    {
+        var dialogue = ScriptableObject.CreateInstance<Dialogue>();
+        dialogue.nodes = new List<Dialogue.Node>();
+        
+        ParseDialogueHelper(charIndex, GetScope(lineIndex, lines, out coord), dialogue);
+
+
+        
+#if UNITY_EDITOR
+        UnityEditor.AssetDatabase.CreateAsset(dialogue, "Assets/DebugDialogue.asset");
+#endif
+    }
+
+    // TODO: Add property inheritance to child nodes like speaker ID, typing speed, color etc
+    int ParseDialogueHelper(int index, string line, Dialogue dialogue, string responseText = null)
     {
         if (dialogue == null)
         {
@@ -250,7 +281,7 @@ public class CodeTraverser : MonoBehaviour
             return -1;
         }
         
-        var node = new Dialogue.Node();
+        var node = GetDefaultNode();
         bool forcedID = false;
         node.buttonText = responseText;
 
@@ -271,34 +302,38 @@ public class CodeTraverser : MonoBehaviour
             }
             
             var lineSubstr = line.Substring(index);
-            var val = lineSubstr.Split(",")[0].Split("=")[1];
             var nextComma = false;
+            var val = "";
             if (lineSubstr.StartsWith("speakerID="))
             {
+                val = lineSubstr.Split(",")[0].Split("=")[1];
                 node.speakerID = val;
                 nextComma = true;
             }
             else if (lineSubstr.StartsWith("dialogueText="))
             {
+                val = lineSubstr.Split(",")[0].Split("=")[1];
                 node.text = localMap[val];
                 nextComma = true;
             }
             else if (lineSubstr.StartsWith("ID="))
             {
-                Debug.LogWarning(lineSubstr);
+                val = lineSubstr.Split(",")[0].Split("=")[1];
+                
                 node.ID = int.Parse(val);
                 forcedID = true;
                 nextComma = true;
             }
             else if (lineSubstr.StartsWith("useSpeakerColor="))
             {
+                val = lineSubstr.Split(",")[0].Split("=")[1];
+                
                 node.useSpeakerColor = val == "true";
                 nextComma = true;
             }
             else if (lineSubstr.StartsWith("responses="))
             {
-                index = ParseResponses(index, line, dialogue);
-                nextComma = true;
+                index = ParseResponses(index, line, dialogue, node.nextNodes);
             }
             if (nextComma) 
             {
@@ -307,14 +342,15 @@ public class CodeTraverser : MonoBehaviour
             }
             index++;
         }
-    
-        if (!forcedID) node = SetNodeID(dialogue, node, nextID);
-        forcedID = false;
+
         dialogue.nodes.Add(node);
+        var last = dialogue.nodes.Count - 1;
+        if (!forcedID) dialogue.nodes[last] = SetNodeID(dialogue, node, nextID);
+        else dialogue.nodes[last] = SetNodeID(dialogue, node, node.ID, true);
         return index;
     }
 
-    int ParseResponses (int index, string line, Dialogue dialogue)
+    int ParseResponses (int index, string line, Dialogue dialogue, List<int> nextNodes)
     {
         // find the first bracket
         while (index < line.Length && line[index] != '[') index++;
@@ -335,21 +371,22 @@ public class CodeTraverser : MonoBehaviour
             var lineSubstr = line.Substring(index);
             if (lineSubstr.StartsWith("Response("))
             {
-                index = ParseResponse(index, line, dialogue);
+                index = ParseResponse(index, line, dialogue, nextNodes);
             }
             else index++;
         }
+        
         return index;
     }
 
-    int ParseResponse (int index, string line, Dialogue dialogue)
+    int ParseResponse (int index, string line, Dialogue dialogue, List<int> nextNodes)
     {
         // find the first bracket
         while (index < line.Length && line[index] != '(') index++;
         index++;
         int brackets = 1;
 
-        var node = new Dialogue.Node();
+        var node = GetDefaultNode();
         bool insertNode = true;
         var responseText = "";
         bool forcedID = false;
@@ -383,22 +420,29 @@ public class CodeTraverser : MonoBehaviour
                 if (lineSubstr.StartsWith("End"))
                 {
                     node.action = Dialogue.DialogueAction.Exit;
+                    nextMode = false;
                 }
                 else if (lineSubstr.StartsWith("Dialogue"))
                 {
                     insertNode = false;
-                    index = ParseDialogue(index, line, dialogue, responseText);
+                    index = ParseDialogueHelper(index, line, dialogue, responseText);
+                    nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
+                    nextMode = false;
                     
                 }
                 else if (lineSubstr.StartsWith("SetID"))
                 {
                     node.nextNodes = new List<int>();
-                    Debug.LogWarning(lineSubstr.Split("SetID(")[1].Replace(")", ""));
                     node.action = Dialogue.DialogueAction.ForceToNextID;
-                    node.nextNodes.Add(int.Parse(lineSubstr.Split("SetID(")[1].Replace(")", "")));
+                    
+                    var parse = lineSubstr.Split("SetID(")[1].Replace(" ", "");
+
+                    //parse = parse.Substring(0, parse.IndexOf(")", 0, 1));
+                    parse = parse.Substring(0, parse.IndexOf(")"));
+                    node.nextNodes.Add(int.Parse(parse));
+                    nextMode = false;
                 }
                 
-                nextMode = false;
             }
             index++;
         }
@@ -406,8 +450,8 @@ public class CodeTraverser : MonoBehaviour
         if (insertNode)
         {
             if (!forcedID) node = SetNodeID(dialogue, node, nextID);
+            nextNodes.Add(node.ID);
             dialogue.nodes.Add(node);
-            Debug.LogWarning("Inserted node: " + dialogue.nodes.Count + " " + dialogue.GetHashCode());
         }
         
         return index;

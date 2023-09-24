@@ -16,9 +16,9 @@ MonoBehaviour:
   - buttonText: Woah, that's really cool!
     text: 
     textColor: {r: 0, g: 0, b: 0, a: 0}
-    ID: 0
+    ID: 4
     nextNodes: 
-    action: 0
+    action: 4
     speakerID: 
     useSpeakerColor: 0
   - buttonText: Woah, that's really cool!
@@ -26,15 +26,24 @@ MonoBehaviour:
     textColor: {r: 0, g: 0, b: 0, a: 0}
     ID: 1
     nextNodes: 
-    action: 0
+    action: 4
     speakerID: 
+    useSpeakerColor: 0
+  - buttonText: How does responding to you work?
+    text: Each Dialogue and Response call can also take Response and Dialogue calls
+      recursively! It's readable and functional!
+    textColor: {r: 0, g: 0, b: 0, a: 0}
+    ID: 2
+    nextNodes: 01000000
+    action: 0
+    speakerID: test
     useSpeakerColor: 0
   - buttonText: Can I recurse back to the original dialogue like with node canvases?
     text: 
     textColor: {r: 0, g: 0, b: 0, a: 0}
-    ID: 2
-    nextNodes: 
-    action: 0
+    ID: 3
+    nextNodes: 00000000
+    action: 8
     speakerID: 
     useSpeakerColor: 0
   - buttonText: 
@@ -42,7 +51,7 @@ MonoBehaviour:
       to maintain and contain less bloat than XML.
     textColor: {r: 0, g: 0, b: 0, a: 0}
     ID: 0
-    nextNodes: 
+    nextNodes: 040000000200000003000000
     action: 0
     speakerID: test
     useSpeakerColor: 0
