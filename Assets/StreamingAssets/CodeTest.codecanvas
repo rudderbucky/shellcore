@@ -4,7 +4,8 @@ Text("responsetest2", "How does responding to you work?")
 Text("dialoguetest2", "Each Dialogue and Response call can also take Response and Dialogue calls recursively! It's readable and functional!")
 Text("responsetest3", "Can I recurse back to the original dialogue like with node canvases?")
 
-dial = Dialogue(
+Dialogue(
+    dialogueID=dial,
     speakerID=test, 
     dialogueText=dialoguetest1,
     ID=0,
@@ -40,10 +41,14 @@ MissionTrigger(
         Test2
     ],
     sequence=(
+        Call(fortnite pro gamer 69),
+    )
+)
+
+Function(
+    name=fortnite pro gamer 69,
+    sequence=(
         SetInteraction(entityID=test, interaction=RunDialogue(dial))
-        StartCutscene(
-            RunDialogue(cutsceneDial)
-        )
     )
 )
 
