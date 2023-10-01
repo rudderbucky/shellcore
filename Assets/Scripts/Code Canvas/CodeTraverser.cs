@@ -107,6 +107,55 @@ public class CodeTraverser : MonoBehaviour
         }
     }
 
+    public static int GetNextOccurenceInScope(int lastOccurrence, string scope, List<string> strings, 
+        ref int brackets, ref bool skipToComma, char opBracket, char clBracket)
+    {
+        // TODO: Optimize by turning string list into a dict, and then using max length strings as keys
+        var cnt = lastOccurrence;
+
+        // find the first bracket
+        while (cnt < scope.Length && scope[cnt] != opBracket && brackets == 0) cnt++;
+        cnt++;
+        if (brackets == 0)
+        {
+            brackets = 1;
+            while (scope[cnt] == ' ') cnt++;
+            return cnt;
+        }
+
+        while (skipToComma && scope[cnt] != ',') 
+        {
+            cnt++;
+        }
+
+        skipToComma = false;
+
+
+        while(cnt < scope.Length && brackets > 0)
+        {
+            if (scope[cnt] == opBracket)
+            {
+                brackets++;
+            }
+            else if (scope[cnt] == clBracket)
+            {
+                brackets--;
+            }
+
+            if (brackets > 1 || scope[cnt] == ' ')
+            {
+                cnt++;
+                continue;
+            }
+
+            var x = strings.Find(s => scope.Substring(cnt).StartsWith(s));
+            if (x != null) return cnt;
+            cnt++;
+        }
+
+        return scope.Length;
+    }
+
     public static string GetScope(int startLineNum, string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, out FileCoord endOfScope)
     {
         int bCount = 0;

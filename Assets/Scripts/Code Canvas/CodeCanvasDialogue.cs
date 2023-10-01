@@ -52,67 +52,53 @@ public class CodeCanvasDialogue : MonoBehaviour
         bool forcedID = false;
         node.buttonText = responseText;
 
-        // find the first bracket
-        while (index < line.Length && line[index] != '(') index++;
-        index++;
-        int brackets = 1;
-
-        while (index < line.Length && brackets > 0)
+        bool skipToComma = false;
+        int brax = 0;
+        var stx = new List<string>()
         {
-            if (line[index] == '(')
+            "dialogueID=",
+            "speakerID=",
+            "dialogueText=",
+            "ID=",
+            "useSpeakerColor=",
+            "responses=",
+        };
+
+        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            var lineSubstr = line.Substring(i).Trim();
+            var val = lineSubstr.Split(",")[0].Split("=")[1];
+
+            if (lineSubstr.StartsWith("responses="))
             {
-                brackets++;
+                ParseResponses(i, line, dialogue, node.nextNodes, localMap);
+                continue;
             }
-            else if (line[index] == ')')
-            {
-                brackets--;
-            }
-            
-            var lineSubstr = line.Substring(index);
-            var nextComma = false;
-            var val = "";
+
+            skipToComma = true;
             if (lineSubstr.StartsWith("dialogueID="))
             {
-                metadata.dialogueID = lineSubstr.Split(",")[0].Split("=")[1];
-                nextComma = true;
+                metadata.dialogueID = val;
             }
             else if (lineSubstr.StartsWith("speakerID="))
             {
-                val = lineSubstr.Split(",")[0].Split("=")[1];
                 node.speakerID = val;
                 node.forceSpeakerChange = true;
-                nextComma = true;
             }
             else if (lineSubstr.StartsWith("dialogueText="))
             {
-                val = lineSubstr.Split(",")[0].Split("=")[1];
                 node.text = localMap[val];
-                nextComma = true;
             }
             else if (lineSubstr.StartsWith("ID="))
             {
-                val = lineSubstr.Split(",")[0].Split("=")[1];
                 node.ID = int.Parse(val);
                 forcedID = true;
-                nextComma = true;
             }
             else if (lineSubstr.StartsWith("useSpeakerColor="))
             {
-                val = lineSubstr.Split(",")[0].Split("=")[1];
-                
                 node.useSpeakerColor = val == "true";
-                nextComma = true;
             }
-            else if (lineSubstr.StartsWith("responses="))
-            {
-                index = ParseResponses(index, line, dialogue, node.nextNodes, localMap);
-            }
-            if (nextComma) 
-            {
-                nextComma = false;
-                index += lineSubstr.IndexOf(",");
-            }
-            index++;
         }
 
         dialogue.nodes.Add(node);
@@ -122,106 +108,83 @@ public class CodeCanvasDialogue : MonoBehaviour
         if (!forcedID) dialogue.nodes[last] = SetNodeID(dialogue, node, nextID);
         else dialogue.nodes[last] = SetNodeID(dialogue, node, node.ID, true);
         metadata.index = index;
-        return;
     }
 
-    private static int ParseResponses (int index, string line, Dialogue dialogue, List<int> nextNodes, Dictionary<string, string> localMap)
+    private static void ParseResponses (int index, string line, Dialogue dialogue, List<int> nextNodes, Dictionary<string, string> localMap)
     {
-        // find the first bracket
-        while (index < line.Length && line[index] != '[') index++;
-        index++;
-        int brackets = 1;
-
-        while (index < line.Length && brackets > 0)
+        bool skipToComma = false;
+        int brax = 0;
+        var stx = new List<string>()
         {
-            if (line[index] == '[')
-            {
-                brackets++;
-            }
-            else if (line[index] == ']')
-            {
-                brackets--;
-            }
+            "Response(",
+        };
 
-            var lineSubstr = line.Substring(index);
+        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("Response("))
             {
-                index = ParseResponse(index, line, dialogue, localMap, nextNodes);
+                ParseResponse(i, line, dialogue, localMap, nextNodes);
             }
-            else index++;
         }
-        
-        return index;
     }
 
     private static int ParseResponse (int index, string line, Dialogue dialogue, Dictionary<string, string> localMap, List<int> nextNodes)
     {
-        // find the first bracket
-        while (index < line.Length && line[index] != '(') index++;
-        index++;
-        int brackets = 1;
-
+        
         var node = GetDefaultNode();
-        bool insertNode = true;
         var responseText = "";
+        bool insertNode = true;
         bool forcedID = false;
-        bool nextMode = true;
 
-
-        while (index < line.Length && brackets > 0)
+        
+        bool skipToComma = false;
+        int brax = 0;
+        var stx = new List<string>()
         {
-            if (line[index] == '(')
-            {
-                brackets++;
-            }
-            else if (line[index] == ')')
-            {
-                brackets--;
-            }
+            "responseText=",
+            "next="
+        };
 
-            var lineSubstr = line.Substring(index);
+        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            var lineSubstr = line.Substring(i);
+            var val = lineSubstr.Split(",")[0].Split("=")[1];
             if (lineSubstr.StartsWith("responseText="))
             {
-                var val = lineSubstr.Split(",")[0].Split("=")[1];
                 node.buttonText = localMap[val];
                 responseText = node.buttonText;
             }
             else if (lineSubstr.StartsWith("next="))
             {
-                nextMode = true;
-            }
-            else if (nextMode)
-            {
-                if (lineSubstr.StartsWith("End"))
+                val = val.Trim();
+                if (val.StartsWith("End"))
                 {
                     node.action = Dialogue.DialogueAction.Exit;
-                    nextMode = false;
                 }
-                else if (lineSubstr.StartsWith("Dialogue"))
+                else if (val.StartsWith("Dialogue"))
                 {
                     insertNode = false;
                     DialogueRecursionMetadata metadata;
                     ParseDialogueHelper(index, line, dialogue, localMap, out metadata, responseText);
                     index = metadata.index;
                     nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
-                    nextMode = false;
                     
                 }
-                else if (lineSubstr.StartsWith("SetID"))
+                else if (val.StartsWith("SetID"))
                 {
                     node.nextNodes = new List<int>();
                     node.action = Dialogue.DialogueAction.ForceToNextID;
                     
-                    var parse = lineSubstr.Split("SetID(")[1].Replace(" ", "");
+                    var parse = val.Split("SetID(")[1].Replace(" ", "");
 
-                    //parse = parse.Substring(0, parse.IndexOf(")", 0, 1));
                     parse = parse.Substring(0, parse.IndexOf(")"));
                     node.nextNodes.Add(int.Parse(parse));
-                    nextMode = false;
                 }
                 
             }
-            index++;
         }
 
         if (insertNode)

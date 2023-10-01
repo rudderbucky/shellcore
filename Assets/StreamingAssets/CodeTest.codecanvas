@@ -10,7 +10,7 @@ Dialogue(
     speakerID=test, 
     dialogueText=dialoguetest1,
     ID=0,
-    responses=[
+    responses=(
         Response(
             responseText=responsetest1, 
             next=End()
@@ -20,7 +20,7 @@ Dialogue(
             next=Dialogue(
                 speakerID=test,
                 dialogueText=dialoguetest2, 
-                responses=[
+                responses=(
                     Response(
                         responseText=responsetest4, 
                         next=End()
@@ -29,18 +29,18 @@ Dialogue(
                         responseText=responsetest3, 
                         next=SetID(0)
                     ),
-                ]
+                )
             )
         ),
-    ]
+    )
 ) 
 
 MissionTrigger(
     name=Test,
     rank=B,
-    prerequisites=[
+    prerequisites=(
         Test2
-    ],
+    ),
     sequence=(
         Call(fortnite pro gamer 69),
     )
