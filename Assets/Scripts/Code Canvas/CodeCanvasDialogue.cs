@@ -20,20 +20,32 @@ public class CodeCanvasDialogue : MonoBehaviour
         var dialogue = ScriptableObject.CreateInstance<Dialogue>();
         dialogue.nodes = new List<Dialogue.Node>();
         nextID = 0;
-        ParseDialogueHelper(charIndex, CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord), dialogue, localMap);
-        dialogues["dial"] = dialogue;
-#if UNITY_EDITOR
-        UnityEditor.AssetDatabase.CreateAsset(dialogue, "Assets/DebugDialogue.asset");
-#endif
+        var metadata = new DialogueRecursionMetadata();
+        var scope = CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord);
+        ParseDialogueHelper(charIndex, scope, dialogue, localMap, out metadata);
+        dialogues[metadata.dialogueID] = dialogue;
+//#if UNITY_EDITOR
+//       UnityEditor.AssetDatabase.CreateAsset(dialogue, "Assets/DebugDialogue.asset");
+//#endif
+    }
+
+    private struct DialogueRecursionMetadata
+    {
+        public int index;
+        public string dialogueID;
     }
 
     // TODO: Add property inheritance to child nodes like speaker ID, typing speed, color etc
-    private static int ParseDialogueHelper(int index, string line, Dialogue dialogue, Dictionary<string, string> localMap, string responseText = null)
+    private static void ParseDialogueHelper(int index, string line, Dialogue dialogue, 
+        Dictionary<string, string> localMap, out DialogueRecursionMetadata metadata, string responseText = null)
     {
+        
+        metadata = new DialogueRecursionMetadata();
+
         if (dialogue == null)
         {
             Debug.LogError("Null dialogue passed while parsing.");
-            return -1;
+            return;
         }
         
         var node = GetDefaultNode();
@@ -61,12 +73,14 @@ public class CodeCanvasDialogue : MonoBehaviour
             var val = "";
             if (lineSubstr.StartsWith("dialogueID="))
             {
+                metadata.dialogueID = lineSubstr.Split(",")[0].Split("=")[1];
                 nextComma = true;
             }
             else if (lineSubstr.StartsWith("speakerID="))
             {
                 val = lineSubstr.Split(",")[0].Split("=")[1];
                 node.speakerID = val;
+                node.forceSpeakerChange = true;
                 nextComma = true;
             }
             else if (lineSubstr.StartsWith("dialogueText="))
@@ -107,7 +121,8 @@ public class CodeCanvasDialogue : MonoBehaviour
         var last = dialogue.nodes.Count - 1;
         if (!forcedID) dialogue.nodes[last] = SetNodeID(dialogue, node, nextID);
         else dialogue.nodes[last] = SetNodeID(dialogue, node, node.ID, true);
-        return index;
+        metadata.index = index;
+        return;
     }
 
     private static int ParseResponses (int index, string line, Dialogue dialogue, List<int> nextNodes, Dictionary<string, string> localMap)
@@ -185,7 +200,9 @@ public class CodeCanvasDialogue : MonoBehaviour
                 else if (lineSubstr.StartsWith("Dialogue"))
                 {
                     insertNode = false;
-                    index = ParseDialogueHelper(index, line, dialogue, localMap, responseText);
+                    DialogueRecursionMetadata metadata;
+                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, responseText);
+                    index = metadata.index;
                     nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
                     nextMode = false;
                     

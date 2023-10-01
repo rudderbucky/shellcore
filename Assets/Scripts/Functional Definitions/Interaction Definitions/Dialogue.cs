@@ -35,6 +35,7 @@ public class Dialogue : ScriptableObject, IDialogueable
         public List<int> nextNodes;
         public DialogueAction action;
         public string speakerID;
+        public bool forceSpeakerChange;
         public bool useSpeakerColor;
     }
 }

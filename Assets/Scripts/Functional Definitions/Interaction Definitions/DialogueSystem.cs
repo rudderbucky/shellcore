@@ -535,7 +535,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public static void ShowDialogueNode(NodeEditorFramework.Standard.DialogueNode node, Entity speaker = null)
     {
-        Instance.showDialogue(node.text, node.answers, speaker, node.textColor, node.useEntityColor);
+        Instance.showCanvasDialogue(node.text, node.answers, speaker, node.textColor, node.useEntityColor);
     }
 
     public static void ShowFinishTaskNode(NodeEditorFramework.Standard.FinishTaskNode node, Entity speaker = null)
@@ -546,10 +546,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             node.answers.Add("Ok");
         }
 
-        Instance.showDialogue(node.rewardText, node.answers, speaker, node.textColor, node.useEntityColor);
+        Instance.showCanvasDialogue(node.rewardText, node.answers, speaker, node.textColor, node.useEntityColor);
     }
 
-    private void showDialogue(string text, List<string> answers, Entity speaker, Color textColor, bool useEntityColor = true)
+    private void showCanvasDialogue(string text, List<string> answers, Entity speaker, Color textColor, bool useEntityColor = true)
     {
         CreateWindow(dialogueBoxPrefab, text, useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : textColor, speaker);
         DialogueViewTransitionIn(speaker);
@@ -762,7 +762,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         builder.Initialize(BuilderMode.Workshop);
     }
 
-    public void next(Dialogue dialogue, int ID, IInteractable speaker)
+    private void next(Dialogue dialogue, int ID, IInteractable speaker)
     {
         if (dialogue.nodes.Count == 0)
         {
@@ -843,10 +843,16 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 endDialogue(ID, false);
                 return;
             case Dialogue.DialogueAction.ForceToNextID:
-                Next(dialogue, current.nextNodes[0], speaker);
+                next(dialogue, current.nextNodes[0], speaker);
                 return;
             default:
                 break;
+        }
+
+        if (current.forceSpeakerChange)
+        {
+            speaker = AIData.entities.Find(x => x.ID == current.speakerID);
+            speakerPos = speaker.GetTransform().position;
         }
 
         var remastered = dialogueStyle == DialogueStyle.Remastered;
@@ -864,6 +870,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         characterCount = 0;
         nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
         textRenderer.color = current.textColor;
+        if (current.useSpeakerColor && speaker is Entity colorEnt) textRenderer.color = FactionManager.GetFactionColor(colorEnt.faction);
 
         // create buttons
         buttons = new GameObject[current.nextNodes.Count];
