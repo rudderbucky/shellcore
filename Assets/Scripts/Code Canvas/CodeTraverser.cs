@@ -32,7 +32,6 @@ public class CodeTraverser : MonoBehaviour
     void Start()
     {
         Parse();
-        Debug.LogWarning("func count: " + functions.Count);
         CodeCanvasSequence.RunSequence(functions["fortnite pro gamer 69"], this);
     }
 
@@ -58,13 +57,11 @@ public class CodeTraverser : MonoBehaviour
             {
                 var f = d;
                 CodeCanvasDialogue.ParseDialogue(i, c, lines, stringScopes, localMap, dialogues, out d);
-                Debug.LogWarning(f.line + " " + d.line);
             }
             else if (lines[i].Substring(c).StartsWith("Function"))
             {
                 var func = CodeCanvasFunction.ParseFunction(i, c, lines, stringScopes, out d);
                 functions.Add(func.name, func.sequence);
-                Debug.LogWarning(func.name);
             }
             d = StringSensitiveIterator(d, lines, stringScopes);
         }
@@ -121,7 +118,6 @@ public class CodeTraverser : MonoBehaviour
             var i = d.line;
             var c = d.character;
             bool ignoreSpecialChar = false;
-            Debug.LogWarning(i + " " + c);
             var ch = lines[i][c];
             if (ch == '\\')
             {
@@ -154,7 +150,6 @@ public class CodeTraverser : MonoBehaviour
                 endOfScope = d;
                 return builder.ToString();
             }
-            Debug.LogWarning(d.line + " " + d.character + " " + lines[d.line]);
         }
         throw new System.Exception("Did not finish a scope starting at line: " + (startLineNum+1));
     }

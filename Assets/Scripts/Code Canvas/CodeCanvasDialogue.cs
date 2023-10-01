@@ -78,7 +78,6 @@ public class CodeCanvasDialogue : MonoBehaviour
             else if (lineSubstr.StartsWith("ID="))
             {
                 val = lineSubstr.Split(",")[0].Split("=")[1];
-                Debug.LogWarning("parsing " + val);
                 node.ID = int.Parse(val);
                 forcedID = true;
                 nextComma = true;

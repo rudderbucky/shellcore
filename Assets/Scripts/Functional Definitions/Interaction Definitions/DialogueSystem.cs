@@ -717,12 +717,12 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
         if (speaker != null)
             speakerPos = speaker.GetTransform().position;
+        else speakerPos = null;
         //create window
         window = Instantiate(dialogueBoxPrefab).GetComponentInChildren<GUIWindowScripts>();
         window.Activate();
 
-        if (speaker as Entity)
-            DialogueViewTransitionIn(speaker as Entity);
+        DialogueViewTransitionIn(speaker as Entity);
 
         background = window.transform.Find("Background").GetComponent<RectTransform>();
         background.transform.Find("Exit").GetComponent<Button>().onClick.AddListener(() => { endDialogue(); });
@@ -843,7 +843,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 endDialogue(ID, false);
                 return;
             case Dialogue.DialogueAction.ForceToNextID:
-                endDialogue(current.nextNodes[0], false);
+                Next(dialogue, current.nextNodes[0], speaker);
                 return;
             default:
                 break;
@@ -887,7 +887,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 nextIndex = next.nextNodes[0];
             }
             
-            button.GetComponent<Button>().onClick.AddListener(() => { Next(dialogue, nextIndex, speaker); });
+            int x = i;
+            button.GetComponent<Button>().onClick.AddListener(() => { Next(dialogue, current.nextNodes[x], speaker); });
             if (dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit)
             {
                 button.GetComponent<Button>().onClick.AddListener(() =>

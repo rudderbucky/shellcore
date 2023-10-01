@@ -3,6 +3,7 @@ Text("responsetest1", "Woah, that's really cool!")
 Text("responsetest2", "How does responding to you work?")
 Text("dialoguetest2", "Each Dialogue and Response call can also take Response and Dialogue calls recursively! It's readable and functional!")
 Text("responsetest3", "Can I recurse back to the original dialogue like with node canvases?")
+Text("responsetest4", "So cool!")
 
 Dialogue(
     dialogueID=dial,
@@ -21,16 +22,16 @@ Dialogue(
                 dialogueText=dialoguetest2, 
                 responses=[
                     Response(
-                        responseText=responsetest1, 
+                        responseText=responsetest4, 
                         next=End()
+                    ),
+                    Response(
+                        responseText=responsetest3, 
+                        next=SetID(0)
                     ),
                 ]
             )
         ),
-        Response(
-            responseText=responsetest3, 
-            next=SetID(0)
-        )
     ]
 ) 
 
