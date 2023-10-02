@@ -13,7 +13,7 @@ Dialogue(
     responses=(
         Response(
             responseText=responsetest1, 
-            next=End()
+            next=End(),
         ),
         Response(
             responseText=responsetest2, 
@@ -49,7 +49,7 @@ MissionTrigger(
 Function(
     name=fortnite pro gamer 69,
     sequence=(
-        SetInteraction(entityID=test, interaction=RunDialogue(dial))
+        SetInteraction(entityID=test, dialogueID=dial,)
     )
 )
 

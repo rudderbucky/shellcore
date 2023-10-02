@@ -107,6 +107,7 @@ public class CodeTraverser : MonoBehaviour
         }
     }
 
+    // if strings is null it treats every character as valid for comma skipping purposes
     public static int GetNextOccurenceInScope(int lastOccurrence, string scope, List<string> strings, 
         ref int brackets, ref bool skipToComma, char opBracket, char clBracket)
     {
@@ -123,8 +124,17 @@ public class CodeTraverser : MonoBehaviour
             return cnt;
         }
 
-        while (skipToComma && scope[cnt] != ',') 
+        while (skipToComma && cnt < scope.Length && (brackets > 1 || scope[cnt] != ',')) 
         {
+            if (scope[cnt] == opBracket)
+            {
+                brackets++;
+            }
+            else if (scope[cnt] == clBracket)
+            {
+                brackets--;
+            }
+
             cnt++;
         }
 
@@ -148,8 +158,12 @@ public class CodeTraverser : MonoBehaviour
                 continue;
             }
 
-            var x = strings.Find(s => scope.Substring(cnt).StartsWith(s));
-            if (x != null) return cnt;
+            if (strings != null)
+            {
+                var x = strings.Find(s => scope.Substring(cnt).StartsWith(s));
+                if (x != null) return cnt;
+            }
+            else return cnt;
             cnt++;
         }
 

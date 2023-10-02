@@ -11,32 +11,28 @@ public class CodeCanvasSequence : MonoBehaviour
         EndCutscene,
         Log
     }
-
-    public enum InteractionType
-    {
-        Dialogue,
-        OpenShipBuilder,
-        OpenTrader,
-        OpenDroneWorkshop,
-        OpenSkirmishMenu
-    }
-
     public struct Instruction
     {
         public InstructionCommand command;
         public string arguments;
-        public string GetArgument(string arg)
+        public string GetArgument(string key)
         {
-            switch (arg)
+            var args = arguments.Split(";");
+            for (int i = 0; i < args.Length; i++)
             {
-                case "entityID":
-                    return "test";
-                case "interactionType":
-                    return "Dialogue";
-                case "dialogueID":
-                    return "dial";
+                if (args[i] == key) 
+                {
+                    return args[i+1];
+                }
             }
             return null;
+        }
+
+        // TODO: escape semicolons
+        public void AddArgument(string key, string value)
+        {
+            if (arguments == null) arguments = $"{key};{value}";
+            arguments += $";{key};{value}";
         }
     }
 
@@ -66,12 +62,10 @@ public class CodeCanvasSequence : MonoBehaviour
                     action.action = new UnityEngine.Events.UnityAction(() =>
                         {
                             DialogueSystem.Instance.SetSpeakerID(entityID);
-                            DialogueSystem.StartDialogue(traverser.dialogues["dial"]);
+                            DialogueSystem.StartDialogue(traverser.dialogues[inst.GetArgument("dialogueID")]);
                         });
 
                     DialogueSystem.Instance.PushInteractionOverrides(entityID, action, null);
-
-
                     break;
             }
         }
@@ -79,40 +73,59 @@ public class CodeCanvasSequence : MonoBehaviour
 
     public static Sequence ParseSequence(int index, string line)
     {
-        // find the first bracket
-        while (index < line.Length && line[index] != '(') index++;
-        index++;
-        int brackets = 1;
         var seq = new Sequence();
         seq.instructions = new List<Instruction>();
 
-        while (index < line.Length && brackets > 0)
-        {
-            if (line[index] == '(')
-            {
-                brackets++;
-            }
-            else if (line[index] == ')')
-            {
-                brackets--;
-            }
+        List<string> stx = null;
+        bool skipToComma = false;
+        int brax = 0;
 
-            var lineSubstr = line.Substring(index);
-            var nextComma = false;
+        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            skipToComma = true;
+            var lineSubstr = line.Substring(i);
             if (lineSubstr.StartsWith("SetInteraction"))
             {
-                var inst = new Instruction();
-                inst.command = InstructionCommand.SetInteraction;
-                seq.instructions.Add(inst);
+                seq.instructions.Add(ParseSetInteraction(i, line));
             }
-            if (nextComma) 
-            {
-                nextComma = false;
-                index += lineSubstr.IndexOf(",");
-            }
-            index++;
         }
 
         return seq;
     }
+
+    private static Instruction ParseSetInteraction(int index, string line)
+    {
+        var inst = new Instruction();
+        inst.command = InstructionCommand.SetInteraction;
+        inst.arguments = "";
+
+        List<string> stx = new List<string>()
+        {
+            "entityID=",
+            "dialogueID=",
+        };
+        bool skipToComma = false;
+        int brax = 0;
+
+        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            skipToComma = true;
+            var lineSubstr = line.Substring(i);
+            var val = lineSubstr.Split(",")[0].Split("=")[1];
+
+            if (lineSubstr.StartsWith("entityID="))
+            {
+                inst.AddArgument("entityID", val);
+            }
+            else if (lineSubstr.StartsWith("dialogueID="))
+            {
+                inst.AddArgument("dialogueID", val);
+            }
+
+        }
+        return inst;
+    }
+
 }
