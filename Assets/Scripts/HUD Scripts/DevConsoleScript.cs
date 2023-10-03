@@ -30,6 +30,8 @@ public class DevConsoleScript : MonoBehaviour
     public static bool bugTrackPartDebug = false;
     public static bool bugTrackTankDebug = false;
 
+    private static bool cheatBackup = false;
+
     void OnEnable()
     {
         Application.logMessageReceived += HandleLog;
@@ -39,6 +41,7 @@ public class DevConsoleScript : MonoBehaviour
         PartIndexScript.partsObtainedCheat = false;
         Instance = this;
         componentEnabled = false;
+        cheatBackup = false;
     }
 
     void Disable()
@@ -126,6 +129,7 @@ public class DevConsoleScript : MonoBehaviour
         inputField.text = "";
         inputField.ActivateInputField();
 
+        bool doNotAttemptBackup = false;
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "SampleScene")//&& MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
         {
             if (command.Equals("poor", StringComparison.CurrentCultureIgnoreCase))
@@ -496,6 +500,14 @@ public class DevConsoleScript : MonoBehaviour
                         PlayerCore.Instance.networkAdapter.AddPowerServerRpc();
                         break;
                 }
+            }
+            else doNotAttemptBackup = true;
+            
+            if (!doNotAttemptBackup && !cheatBackup)
+            {
+                Debug.LogWarning("Backing up...");
+                cheatBackup = true;
+                SaveHandler.instance.BackupSave(" (cheat)");
             }
         }
         else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")

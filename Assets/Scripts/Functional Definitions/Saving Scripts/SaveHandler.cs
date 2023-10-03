@@ -218,10 +218,10 @@ public class SaveHandler : MonoBehaviour
         File.WriteAllText(currentPath, saveJson);
     }
 
-    public void BackupSave()
+    public void BackupSave(string postfix = "")
     {
         string currentPath = File.ReadAllLines(System.IO.Path.Combine(Application.persistentDataPath, "CurrentSavePath"))[0];
-        string backupPath = currentPath + " - Backup";
+        string backupPath = currentPath + " - Backup" + postfix;
 
         PlayerSave saveCopy = JsonUtility.FromJson<PlayerSave>(JsonUtility.ToJson(save));
         UpdateSaveData(saveCopy);
