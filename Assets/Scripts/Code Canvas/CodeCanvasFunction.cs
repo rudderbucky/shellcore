@@ -39,12 +39,6 @@ public class CodeCanvasFunction : MonoBehaviour
             if (lineSubstr.StartsWith("sequence="))
             {
                 func.sequence = CodeCanvasSequence.ParseSequence(i, line);
-                /*
-                var inst = new Instruction();
-                inst.command = InstructionCommand.SetInteraction;
-                inst.arguments = "";
-                func.sequence.instructions.Add(inst);
-                */
                 continue;
             }
 

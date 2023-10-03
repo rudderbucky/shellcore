@@ -16,6 +16,8 @@ public class CodeTraverser : MonoBehaviour
     private Dictionary<int, string> responseListScopes = new Dictionary<int, string>();
     private Dictionary<int, string> responseScopes = new Dictionary<int, string>();
     private Dictionary<string, Sequence> functions = new Dictionary<string, Sequence>();
+
+
     public struct FileCoord
     {
         public FileCoord(int line, int character)
@@ -32,12 +34,6 @@ public class CodeTraverser : MonoBehaviour
     void Start()
     {
         Parse();
-        CodeCanvasSequence.RunSequence(functions["fortnite pro gamer 69"], this);
-    }
-
-    private void ParseMissionTrigger()
-    {
-
     }
 
     void Parse()

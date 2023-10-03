@@ -9,7 +9,8 @@ public class CodeCanvasSequence : MonoBehaviour
         SetInteraction,
         StartCutscene,
         EndCutscene,
-        Log
+        Log,
+        Call
     }
     public struct Instruction
     {
@@ -88,6 +89,10 @@ public class CodeCanvasSequence : MonoBehaviour
             if (lineSubstr.StartsWith("SetInteraction"))
             {
                 seq.instructions.Add(ParseSetInteraction(i, line));
+            }
+            else if (lineSubstr.StartsWith("Call"))
+            {
+                // TODO: Function call recursion
             }
         }
 

@@ -142,7 +142,7 @@ public class WCWorldIO : GUIWindowScripts
     }
 
 //#if UNITY_EDITOR
-    public static bool instantTest = false;
+    public static bool instantTest = true;
 //#endif
 
     [SerializeField]
