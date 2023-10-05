@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using System.Text;
 using static CodeCanvasSequence;
+using NodeEditorFramework.Standard;
 
 public class CodeTraverser : MonoBehaviour
 {
@@ -17,6 +18,11 @@ public class CodeTraverser : MonoBehaviour
     private Dictionary<int, string> responseScopes = new Dictionary<int, string>();
     private Dictionary<string, Sequence> functions = new Dictionary<string, Sequence>();
 
+    public Sequence GetFunction(string key)
+    {
+        if (!functions.ContainsKey(key)) throw new System.Exception("Invalid function name execution.");
+        return functions[key];
+    }
 
     public struct FileCoord
     {
@@ -29,11 +35,38 @@ public class CodeTraverser : MonoBehaviour
         public int character;
     }
     private Dictionary<FileCoord, FileCoord> stringScopes = new Dictionary<FileCoord, FileCoord>();
+    private List<Context> missionTriggers = new List<Context>();
+    public enum TriggerType
+    {
+        Mission,
+        Launch,
+        Sector,
+        Spawn
+    }
+    public class Context
+    {
+        public TriggerType type;
+        public string missionName;
+        public List<string> prerequisites;
+        public Sequence sequence;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         Parse();
+        foreach (var context in missionTriggers)
+        {
+            RunMissionTrigger(context);
+        }
+    }
+
+
+
+    void RunMissionTrigger(Context context)
+    {
+        StartMissionNode.TryAddMission(context.missionName, "B", "Test.", Color.white, 0, context.prerequisites);
+        CodeCanvasSequence.RunSequence(context.sequence, this, context);
     }
 
     void Parse()
@@ -58,6 +91,10 @@ public class CodeTraverser : MonoBehaviour
             {
                 var func = CodeCanvasFunction.ParseFunction(i, c, lines, stringScopes, out d);
                 functions.Add(func.name, func.sequence);
+            }
+            else if (lines[i].Substring(c).StartsWith("MissionTrigger"))
+            {
+                missionTriggers.Add(CodeCanvasMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, out d));
             }
             d = StringSensitiveIterator(d, lines, stringScopes);
         }

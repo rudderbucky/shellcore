@@ -13,6 +13,7 @@ public class CodeCanvasDialogue : MonoBehaviour
         return node;
     }
 
+    // TODO: force top-of-stack dialogue to be ID 0
     public static void ParseDialogue(int lineIndex, int charIndex,
          string[] lines, Dictionary<FileCoord, FileCoord> stringScopes,
         Dictionary<string, string> localMap, Dictionary<string, Dialogue> dialogues, out FileCoord coord)

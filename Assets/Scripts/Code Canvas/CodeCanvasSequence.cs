@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CodeTraverser;
 
 public class CodeCanvasSequence : MonoBehaviour
 {
@@ -51,7 +52,7 @@ public class CodeCanvasSequence : MonoBehaviour
         public Sequence sequence;
     }
 
-    public static void RunSequence (Sequence seq, CodeTraverser traverser)
+    public static void RunSequence (Sequence seq, CodeTraverser traverser, Context context)
     {
         foreach (var inst in seq.instructions)
         {
@@ -67,6 +68,10 @@ public class CodeCanvasSequence : MonoBehaviour
                         });
 
                     DialogueSystem.Instance.PushInteractionOverrides(entityID, action, null);
+                    break;
+                case InstructionCommand.Call:
+                    var s = traverser.GetFunction(inst.GetArgument("name"));
+                    RunSequence(s, traverser, context);
                     break;
             }
         }
@@ -86,12 +91,19 @@ public class CodeCanvasSequence : MonoBehaviour
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
+            Debug.LogWarning(lineSubstr);
             if (lineSubstr.StartsWith("SetInteraction"))
             {
                 seq.instructions.Add(ParseSetInteraction(i, line));
             }
             else if (lineSubstr.StartsWith("Call"))
             {
+                var funcName = lineSubstr.Substring(5);
+                funcName = funcName.Substring(0, funcName.IndexOf(")"));
+                var inst = new Instruction();
+                inst.AddArgument("name", funcName);
+                inst.command = InstructionCommand.Call;
+                seq.instructions.Add(inst);
                 // TODO: Function call recursion
             }
         }
