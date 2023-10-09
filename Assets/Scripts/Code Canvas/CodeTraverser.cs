@@ -17,6 +17,7 @@ public class CodeTraverser : MonoBehaviour
     private Dictionary<int, string> responseListScopes = new Dictionary<int, string>();
     private Dictionary<int, string> responseScopes = new Dictionary<int, string>();
     private Dictionary<string, Sequence> functions = new Dictionary<string, Sequence>();
+    private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
 
     public Sequence GetFunction(string key)
     {
@@ -78,16 +79,28 @@ public class CodeTraverser : MonoBehaviour
         
         SetUpLocalMap(lines);
 
-        // Pass 1: get tasks, so that dialogue 
+        // Pass 1: get tasks, so that dialogue can use the map
         FileCoord d = new FileCoord();
+        while (d.line < lines.Length)
+        {
+            var i = d.line;
+            var c = d.character;
+            if (lines[i].Substring(c).StartsWith("Task"))
+            {
+                var task = CodeCanvasTask.ParseTask(i, c, lines, stringScopes, localMap, out d);
+                tasks.Add(task.taskID, task);
+            }
+            d = StringSensitiveIterator(d, lines, stringScopes);
+        }
+
+        d = new FileCoord();
         while (d.line < lines.Length)
         {
             var i = d.line;
             var c = d.character;
             if (lines[i].Substring(c).StartsWith("Dialogue"))
             {
-                var f = d;
-                CodeCanvasDialogue.ParseDialogue(i, c, lines, stringScopes, localMap, dialogues, out d);
+                CodeCanvasDialogue.ParseDialogue(i, c, lines, stringScopes, localMap, dialogues, tasks, out d);
             }
             else if (lines[i].Substring(c).StartsWith("Function"))
             {

@@ -16,14 +16,14 @@ public class CodeCanvasDialogue : MonoBehaviour
     // TODO: force top-of-stack dialogue to be ID 0
     public static void ParseDialogue(int lineIndex, int charIndex,
          string[] lines, Dictionary<FileCoord, FileCoord> stringScopes,
-        Dictionary<string, string> localMap, Dictionary<string, Dialogue> dialogues, out FileCoord coord)
+        Dictionary<string, string> localMap, Dictionary<string, Dialogue> dialogues, Dictionary<string, Task> tasks, out FileCoord coord)
     {
         var dialogue = ScriptableObject.CreateInstance<Dialogue>();
         dialogue.nodes = new List<Dialogue.Node>();
         nextID = 0;
         var metadata = new DialogueRecursionMetadata();
         var scope = CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord);
-        ParseDialogueHelper(charIndex, scope, dialogue, localMap, out metadata);
+        ParseDialogueHelper(charIndex, scope, dialogue, localMap, out metadata, tasks);
         dialogues[metadata.dialogueID] = dialogue;
 //#if UNITY_EDITOR
 //       UnityEditor.AssetDatabase.CreateAsset(dialogue, "Assets/DebugDialogue.asset");
@@ -38,7 +38,7 @@ public class CodeCanvasDialogue : MonoBehaviour
 
     // TODO: Add property inheritance to child nodes like speaker ID, typing speed, color etc
     private static void ParseDialogueHelper(int index, string line, Dialogue dialogue, 
-        Dictionary<string, string> localMap, out DialogueRecursionMetadata metadata, string responseText = null)
+        Dictionary<string, string> localMap, out DialogueRecursionMetadata metadata, Dictionary<string, Task> tasks, string responseText = null)
     {
         
         metadata = new DialogueRecursionMetadata();
@@ -74,7 +74,7 @@ public class CodeCanvasDialogue : MonoBehaviour
 
             if (lineSubstr.StartsWith("responses="))
             {
-                ParseResponses(i, line, dialogue, node.nextNodes, localMap);
+                ParseResponses(i, line, dialogue, node.nextNodes, localMap, tasks);
                 continue;
             }
 
@@ -103,14 +103,7 @@ public class CodeCanvasDialogue : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("taskID="))
             {
-                Task task = new Task();
-                var part = new EntityBlueprint.PartInfo();
-                part.partID = "MediumCenter1";
-                part.abilityID = 2;
-                part.tier = 1;
-                task.partReward = part;
-                task.creditReward = 2323;
-                node.task = task;
+                node.task = tasks[val];
             }
         }
 
@@ -123,7 +116,7 @@ public class CodeCanvasDialogue : MonoBehaviour
         metadata.index = index;
     }
 
-    private static void ParseResponses (int index, string line, Dialogue dialogue, List<int> nextNodes, Dictionary<string, string> localMap)
+    private static void ParseResponses (int index, string line, Dialogue dialogue, List<int> nextNodes, Dictionary<string, string> localMap, Dictionary<string, Task> tasks)
     {
         bool skipToComma = false;
         int brax = 0;
@@ -138,12 +131,12 @@ public class CodeCanvasDialogue : MonoBehaviour
             var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("Response("))
             {
-                ParseResponse(i, line, dialogue, localMap, nextNodes);
+                ParseResponse(i, line, dialogue, localMap, nextNodes, tasks);
             }
         }
     }
 
-    private static int ParseResponse (int index, string line, Dialogue dialogue, Dictionary<string, string> localMap, List<int> nextNodes)
+    private static int ParseResponse (int index, string line, Dialogue dialogue, Dictionary<string, string> localMap, List<int> nextNodes, Dictionary<string, Task> tasks)
     {
         
         var node = GetDefaultNode();
@@ -181,7 +174,7 @@ public class CodeCanvasDialogue : MonoBehaviour
                 {
                     insertNode = false;
                     DialogueRecursionMetadata metadata;
-                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, responseText);
+                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, tasks, responseText);
                     index = metadata.index;
                     nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
                     

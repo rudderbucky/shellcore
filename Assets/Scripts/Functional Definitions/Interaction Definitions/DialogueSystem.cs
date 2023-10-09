@@ -667,7 +667,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         // so cover for its noise here
 
         // Objective list
-        var objectiveList = background.transform.Find("TaskRewardData/ObjectiveList").GetComponent<Text>();
+        var objectiveList = background.transform.Find("TaskRewardInfo/ObjectiveList").GetComponent<Text>();
         objectiveList.text = node.objectiveList;
 
         var wrapper = new RewardWrapper();
@@ -737,7 +737,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     public static void Next(Dialogue dialogue, int ID, IInteractable speaker, Context context = null)
     {
-        Instance.next(dialogue, ID, speaker);
+        Instance.next(dialogue, ID, speaker, context);
     }
 
     public void OpenBuilder(Vector3 speakerPos)
@@ -891,6 +891,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
             background.Find("RadioVisual").GetComponent<CanvasGroup>().alpha = 0.1F;
             background.Find("TaskRewardInfo").gameObject.SetActive(true);
+            // Objective list
+            var objectiveList = background.transform.Find("TaskRewardInfo/ObjectiveList").GetComponent<Text>();
+            objectiveList.text = current.task.objectived;
             SetupRewards(background.gameObject, wrapper);
         }
         // create buttons
@@ -924,7 +927,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                     current.task.dialogueColor = textRenderer.color;
                     StartTaskNode.RegisterTask(current.task, context.missionName);
                 }
-                Next(dialogue, current.nextNodes[x], speaker); 
+                Next(dialogue, current.nextNodes[x], speaker, context); 
             });
             if (dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit)
             {

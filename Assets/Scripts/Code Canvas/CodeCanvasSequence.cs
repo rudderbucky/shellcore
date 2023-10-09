@@ -108,7 +108,6 @@ public class CodeCanvasSequence : MonoBehaviour
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
-            Debug.LogWarning(lineSubstr);
             if (lineSubstr.StartsWith("SetInteraction"))
             {
                 seq.instructions.Add(ParseSetInteraction(i, line));

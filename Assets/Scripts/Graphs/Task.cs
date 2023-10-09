@@ -5,7 +5,7 @@ using UnityEngine;
 public class Task
 {
     public string taskID;
-    public string objectived;
+    public string objectived; // a haunting typo. it will be with us until the void.
     public string dialogue;
     public Color dialogueColor;
     public float creditReward;
