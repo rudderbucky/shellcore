@@ -4,11 +4,12 @@ using NodeEditorFramework.IO;
 using NodeEditorFramework.Standard;
 using UnityEngine;
 using UnityEngine.Events;
+using static CodeTraverser;
 
 public interface IDialogueOverrideHandler
 {
     Dictionary<string, Stack<InteractAction>> GetInteractionOverrides();
-    void PushInteractionOverrides(string entityID, InteractAction action, Traverser traverser);
+    void PushInteractionOverrides(string entityID, InteractAction action, Traverser traverser, Context context = null);
     void SetNode(ConnectionPort node);
     void SetNode(Node node);
     void SetSpeakerID(string ID);
@@ -17,10 +18,11 @@ public interface IDialogueOverrideHandler
 public class InteractAction 
 {
     public int taskHash;
-    public string taskID;
+    public string taskMissionName;
     public UnityAction action;
     public Traverser traverser;
     public bool prioritize;
+    public Context context;
 }
 
 public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
@@ -65,12 +67,23 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     public Dictionary<string, string> offloadingMissions = new Dictionary<string, string>();
     public Dictionary<string, List<string>> offloadingSectors = new Dictionary<string, List<string>>();
 
-    public void PushInteractionOverrides(string entityID, InteractAction action, Traverser traverser) 
+    public void PushInteractionOverrides(string entityID, InteractAction action, Traverser traverser, Context context = null) 
     {
         MissionTraverser missionTraverser = traverser as MissionTraverser;
-        action.taskHash = missionTraverser.taskHash;
-        action.traverser = traverser;
-        action.taskID = missionTraverser.nodeCanvas.missionName;
+        if (missionTraverser != null)
+        {
+            action.taskHash = missionTraverser.taskHash;
+            action.traverser = traverser;
+            action.taskMissionName = missionTraverser.nodeCanvas.missionName;
+        }
+        else if (context != null)
+        {
+            action.taskMissionName = context.missionName;
+            action.context = context;
+            action.taskHash = context.taskHash;
+        }
+
+
         if (GetInteractionOverrides().ContainsKey(entityID))
         {
             GetInteractionOverrides()[entityID].Push(action);

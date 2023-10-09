@@ -63,11 +63,28 @@ public class CodeCanvasSequence : MonoBehaviour
                     var entityID = inst.GetArgument("entityID");
                     action.action = new UnityEngine.Events.UnityAction(() =>
                         {
-                            DialogueSystem.Instance.SetSpeakerID(entityID);
-                            DialogueSystem.StartDialogue(traverser.dialogues[inst.GetArgument("dialogueID")]);
+                            switch (context.type)
+                            {
+                                case TriggerType.Mission:
+                                    TaskManager.Instance.SetSpeakerID(entityID);
+                                    break;
+                                default:
+                                    DialogueSystem.Instance.SetSpeakerID(entityID);
+                                    break;
+                            }
+                            
+                            DialogueSystem.StartDialogue(traverser.dialogues[inst.GetArgument("dialogueID")], null, context);
                         });
 
-                    DialogueSystem.Instance.PushInteractionOverrides(entityID, action, null);
+                    switch (context.type)
+                    {
+                        case TriggerType.Mission:
+                            TaskManager.Instance.PushInteractionOverrides(entityID, action, null, context);
+                            break;
+                        default:
+                            DialogueSystem.Instance.PushInteractionOverrides(entityID, action, null);
+                            break;
+                    }
                     break;
                 case InstructionCommand.Call:
                     var s = traverser.GetFunction(inst.GetArgument("name"));

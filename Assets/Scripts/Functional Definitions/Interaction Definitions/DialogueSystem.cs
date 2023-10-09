@@ -6,6 +6,7 @@ using NodeEditorFramework.Standard;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static CodeTraverser;
 
 ///
 /// This class manages dialogue windows as well as dialogue traversers/canvases.
@@ -71,7 +72,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public static string speakerID;
     private static bool initialized = false;
 
-    public void PushInteractionOverrides(string entityID, InteractAction action, Traverser traverser) 
+    public void PushInteractionOverrides(string entityID, InteractAction action, Traverser traverser, Context context = null) 
     {
         if (GetInteractionOverrides().ContainsKey(entityID))
         {
@@ -226,9 +227,9 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         return speaker && !speaker.GetIsDead();
     }
 
-    public static void StartDialogue(Dialogue dialogue, IInteractable speaker = null)
+    public static void StartDialogue(Dialogue dialogue, IInteractable speaker = null, Context context = null)
     {
-        Instance.startDialogue(dialogue, speaker);
+        Instance.startDialogue(dialogue, speaker, context);
     }
 
     public static void ShowPopup(string text, Color color, Entity speaker = null)
@@ -279,7 +280,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         textRenderer.font = shellcorefont;
 
         // radio image 
-        var display = window.transform.Find("Background/Radio/Holder")?.GetComponentInChildren<SelectionDisplayHandler>();
+        var display = window.transform.Find("Background/RadioVisual/Radio/Holder")?.GetComponentInChildren<SelectionDisplayHandler>();
         if (display)
         {
             var remastered = dialogueStyle == DialogueStyle.Remastered;
@@ -287,12 +288,12 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             {
                 DialogueViewTransitionIn(speaker);
                 display.AssignDisplay(speaker.blueprint, null, speaker.faction);
-                window.transform.Find("Background/Name").GetComponent<Text>().text = speaker.blueprint.entityName;
+                window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = speaker.blueprint.entityName;
             }
             else
             {
                 display.gameObject.SetActive(false);
-                window.transform.Find("Background/Name").GetComponent<Text>().text = remastered ? "Unknown Speaker" : "";
+                window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = remastered ? "Unknown Speaker" : "";
             }
         }
 
@@ -575,10 +576,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void SetupRewards(GameObject gameObject, RewardWrapper wrapper)
     {
-        gameObject.transform.Find("Credit Reward Text").GetComponent<Text>().text =
+        var taskRewardInfo = gameObject.transform.Find("TaskRewardInfo");
+        taskRewardInfo.Find("Credit Reward Text").GetComponent<Text>().text =
             "Credit reward: " + wrapper.creditReward;
 
-        gameObject.transform.Find("Reputation Reward Text").GetComponent<Text>().text =
+        taskRewardInfo.Find("Reputation Reward Text").GetComponent<Text>().text =
             "Reputation reward: " + wrapper.reputationReward;
         // Part reward
         if (wrapper.partReward)
@@ -590,7 +592,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 Debug.LogWarning("Part reward of Start Task wrapper not found!");
             }
 
-            var partImage = gameObject.transform.Find("Part").GetComponent<Image>();
+            var partImage = taskRewardInfo.Find("Part").GetComponent<Image>();
             partImage.sprite = ResourceManager.GetAsset<Sprite>(blueprint.spriteID);
             partImage.rectTransform.sizeDelta = partImage.sprite.bounds.size * 45;
             partImage.color = Color.green;
@@ -598,7 +600,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             // Ability image:
             if (wrapper.partAbilityID > 0)
             {
-                var backgroudBox = gameObject.transform.Find("backgroundbox");
+                var backgroudBox = taskRewardInfo.Find("backgroundbox");
                 var abilityIcon = backgroudBox.Find("Ability").GetComponent<Image>();
                 var tierIcon = backgroudBox.Find("Tier").GetComponent<Image>();
                 var type = backgroudBox.Find("Type").GetComponent<Text>();
@@ -622,13 +624,13 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             }
             else
             {
-                gameObject.transform.Find("backgroundbox").gameObject.SetActive(false);
+                taskRewardInfo.Find("backgroundbox").gameObject.SetActive(false);
             }
         }
         else
         {
-            gameObject.transform.Find("Part").GetComponent<Image>().enabled = false;
-            gameObject.transform.Find("backgroundbox").gameObject.SetActive(false);
+            taskRewardInfo.Find("Part").GetComponent<Image>().enabled = false;
+            taskRewardInfo.Find("backgroundbox").gameObject.SetActive(false);
         }
     }
 
@@ -665,7 +667,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         // so cover for its noise here
 
         // Objective list
-        var objectiveList = background.transform.Find("ObjectiveList").GetComponent<Text>();
+        var objectiveList = background.transform.Find("TaskRewardData/ObjectiveList").GetComponent<Text>();
         objectiveList.text = node.objectiveList;
 
         var wrapper = new RewardWrapper();
@@ -709,7 +711,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         }
     }
 
-    private void startDialogue(Dialogue dialogue, IInteractable speaker)
+    private void startDialogue(Dialogue dialogue, IInteractable speaker, Context context = null)
     {
         if (window)
         {
@@ -730,10 +732,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         textRenderer = background.transform.Find("Text").GetComponent<Text>();
         textRenderer.font = shellcorefont;
 
-        next(dialogue, 0, speaker);
+        next(dialogue, 0, speaker, context);
     }
 
-    public static void Next(Dialogue dialogue, int ID, IInteractable speaker)
+    public static void Next(Dialogue dialogue, int ID, IInteractable speaker, Context context = null)
     {
         Instance.next(dialogue, ID, speaker);
     }
@@ -762,7 +764,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         builder.Initialize(BuilderMode.Workshop);
     }
 
-    private void next(Dialogue dialogue, int ID, IInteractable speaker)
+    private void next(Dialogue dialogue, int ID, IInteractable speaker, Context context = null)
     {
         if (dialogue.nodes.Count == 0)
         {
@@ -861,8 +863,8 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             var ent = speaker as Entity;
             // radio image 
             if (remastered)
-                window.transform.Find("Background/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
-            window.transform.Find("Background/Name").GetComponent<Text>().text = remastered ? ent.blueprint.entityName : "";
+                window.transform.Find("Background/RadioVisual/Radio/Holder").GetComponentInChildren<SelectionDisplayHandler>().AssignDisplay(ent.blueprint, null, ent.faction);
+            window.transform.Find("Background/RadioVisual/Name").GetComponent<Text>().text = remastered ? ent.blueprint.entityName : "";
         }
 
         // change text
@@ -872,6 +874,25 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         textRenderer.color = current.textColor;
         if (current.useSpeakerColor && speaker is Entity colorEnt) textRenderer.color = FactionManager.GetFactionColor(colorEnt.faction);
 
+        background.Find("RadioVisual").GetComponent<CanvasGroup>().alpha = 1F;
+        background.Find("TaskRewardInfo").gameObject.SetActive(false);
+        if (current.task != null)
+        {
+            var wrapper = new RewardWrapper();
+            wrapper.creditReward = (int)current.task.creditReward;
+            wrapper.partAbilityID = current.task.partReward.abilityID;
+            wrapper.partReward = !string.IsNullOrEmpty(current.task.partReward.partID);
+            wrapper.partSecondaryData = current.task.partReward.secondaryData;
+            wrapper.partTier = current.task.partReward.tier;
+            wrapper.reputationReward = current.task.reputationReward;
+            wrapper.shardReward = (int)current.task.shardReward;
+            wrapper.partID = current.task.partReward.partID;
+
+
+            background.Find("RadioVisual").GetComponent<CanvasGroup>().alpha = 0.1F;
+            background.Find("TaskRewardInfo").gameObject.SetActive(true);
+            SetupRewards(background.gameObject, wrapper);
+        }
         // create buttons
         buttons = new GameObject[current.nextNodes.Count];
 
@@ -895,7 +916,16 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             }
             
             int x = i;
-            button.GetComponent<Button>().onClick.AddListener(() => { Next(dialogue, current.nextNodes[x], speaker); });
+            button.GetComponent<Button>().onClick.AddListener(() => { 
+                if (x == 0 && current.task != null)
+                {
+                    SectorManager.instance.player.alerter.showMessage("New Task", "clip_victory");
+                    current.task.dialogue = current.text;
+                    current.task.dialogueColor = textRenderer.color;
+                    StartTaskNode.RegisterTask(current.task, context.missionName);
+                }
+                Next(dialogue, current.nextNodes[x], speaker); 
+            });
             if (dialogue.nodes[nextIndex].action != Dialogue.DialogueAction.Exit)
             {
                 button.GetComponent<Button>().onClick.AddListener(() =>

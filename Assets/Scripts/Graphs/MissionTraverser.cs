@@ -118,7 +118,7 @@ public class MissionTraverser : Traverser
         {
             if (nodeCanvas.nodes[i] is StartTaskNode node && node.taskID == ID)
             {
-                node.RegisterTask();
+                node.CreateAndRegisterTask();
             }
         }
     }

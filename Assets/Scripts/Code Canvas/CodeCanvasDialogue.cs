@@ -60,9 +60,10 @@ public class CodeCanvasDialogue : MonoBehaviour
             "dialogueID=",
             "speakerID=",
             "dialogueText=",
-            "ID=",
+            "nodeID=",
             "useSpeakerColor=",
             "responses=",
+            "taskID="
         };
 
         index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
@@ -91,7 +92,7 @@ public class CodeCanvasDialogue : MonoBehaviour
             {
                 node.text = localMap[val];
             }
-            else if (lineSubstr.StartsWith("ID="))
+            else if (lineSubstr.StartsWith("nodeID="))
             {
                 node.ID = int.Parse(val);
                 forcedID = true;
@@ -99,6 +100,17 @@ public class CodeCanvasDialogue : MonoBehaviour
             else if (lineSubstr.StartsWith("useSpeakerColor="))
             {
                 node.useSpeakerColor = val == "true";
+            }
+            else if (lineSubstr.StartsWith("taskID="))
+            {
+                Task task = new Task();
+                var part = new EntityBlueprint.PartInfo();
+                part.partID = "MediumCenter1";
+                part.abilityID = 2;
+                part.tier = 1;
+                task.partReward = part;
+                task.creditReward = 2323;
+                node.task = task;
             }
         }
 

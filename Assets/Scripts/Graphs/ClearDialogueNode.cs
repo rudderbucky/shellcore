@@ -62,7 +62,7 @@ namespace NodeEditorFramework.Standard
                         var stk = new Stack<InteractAction>();
                         foreach (var p in handler.GetInteractionOverrides()[EntityID])
                         {
-                            if (p.taskID != qc.missionName)
+                            if (p.taskMissionName != qc.missionName)
                             {
                                 stk.Push(p);
                             }

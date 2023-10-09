@@ -293,7 +293,34 @@ namespace NodeEditorFramework.Standard
             }
         }
 
-        public void RegisterTask()
+        public static void RegisterTask(Task task, string missionName)
+        {
+            // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
+            Debug.LogWarning(missionName);
+            var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == missionName);
+            if (mission != null)
+            {
+                mission.status = Mission.MissionStatus.Ongoing;
+                if (MissionCondition.OnMissionStatusChange != null)
+                {
+                    MissionCondition.OnMissionStatusChange.Invoke(mission);
+                }
+
+                if (!mission.tasks.Exists((x) => x.dialogue == task.dialogue))
+                {
+                    mission.tasks.Add(task);
+                }
+            }
+        }
+
+        public void CreateAndRegisterTask()
+        {
+            var task = CreateTask();
+            RegisterTask(task, (Canvas as QuestCanvas).missionName);
+        }
+
+
+        private Task CreateTask()
         {
             Task task = new Task()
             {
@@ -314,28 +341,13 @@ namespace NodeEditorFramework.Standard
                     tier = partTier
                 };
             }
-
-            // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
-            var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == (Canvas as QuestCanvas).missionName);
-            if (mission != null)
-            {
-                mission.status = Mission.MissionStatus.Ongoing;
-                if (MissionCondition.OnMissionStatusChange != null)
-                {
-                    MissionCondition.OnMissionStatusChange.Invoke(mission);
-                }
-
-                if (!mission.tasks.Exists((x) => x.dialogue == task.dialogue))
-                {
-                    mission.tasks.Add(task);
-                }
-            }
+            return task;
         }
 
         public void StartTask()
         {
-            RegisterTask();
-
+            var task = CreateTask();
+            RegisterTask(task, (Canvas as QuestCanvas).missionName);
             SetTaskCheckpoint();
         }
     }

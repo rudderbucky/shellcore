@@ -395,13 +395,13 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             Dictionary<string, InteractAction> actionsByMission = new Dictionary<string, InteractAction>();
             foreach (var ovr in TaskManager.interactionOverrides[ID])
             {
-                if (actionsByMission.ContainsKey(ovr.taskID)) continue;
+                if (actionsByMission.ContainsKey(ovr.taskMissionName)) continue;
                 if (ovr.prioritize) 
                 {
                     ovr.action.Invoke();
                     return;
                 }
-                actionsByMission.Add(ovr.taskID, ovr);
+                actionsByMission.Add(ovr.taskMissionName, ovr);
             }
 
             if (actionsByMission.Count == 1)
@@ -501,7 +501,7 @@ public class Entity : MonoBehaviour, IDamageable, IInteractable
             while (TaskManager.interactionOverrides[ID].Count > 0)
             {
                 InteractAction action = TaskManager.interactionOverrides[ID].Peek();
-                if ((action.traverser as MissionTraverser).taskHash == action.taskHash)
+                if ((action.traverser is MissionTraverser mt && mt.taskHash == action.taskHash) || (action.context != null && action.context.taskHash == action.taskHash))
                 {
                     interactible = true;
                     break;

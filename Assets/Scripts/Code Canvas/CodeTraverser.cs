@@ -47,6 +47,7 @@ public class CodeTraverser : MonoBehaviour
     {
         public TriggerType type;
         public string missionName;
+        public int taskHash;
         public List<string> prerequisites;
         public Sequence sequence;
     }
@@ -77,7 +78,8 @@ public class CodeTraverser : MonoBehaviour
         
         SetUpLocalMap(lines);
 
-        FileCoord d = new FileCoord(); 
+        // Pass 1: get tasks, so that dialogue 
+        FileCoord d = new FileCoord();
         while (d.line < lines.Length)
         {
             var i = d.line;
@@ -105,38 +107,40 @@ public class CodeTraverser : MonoBehaviour
 
         bool escaped = false;
         bool inScope = false;
+        FileCoord start = new FileCoord();
         FileCoord interval = new FileCoord();
-        for (int i = 0; i < lines.Length; i++)
+        while (interval.line < lines.Length)
         {
-            for (int c = 0; c < lines[i].Length; c++)
+            Debug.Log(interval.line + " " + interval.character);
+            var ch = lines[interval.line][interval.character];
+            // TODO: using backslashes will break the local map
+            if (ch == '\\' && !escaped)
             {
-                var ch = lines[i][c];
-                if (ch == '\\' && !escaped)
-                {
-                    escaped = true;
-                    continue;
-                }
+                escaped = true;
+                interval = IncrementFileCoord(1, interval, lines);
+                continue;
+            }
 
-                if (escaped)
+            if (escaped)
+            {
+                escaped = false;
+                interval = IncrementFileCoord(1, interval, lines);
+                continue;
+            }
+            if (ch == '"')
+            {
+                if (!inScope)
                 {
-                    escaped = false;
-                    continue;
+                    inScope = true;
+                    start = interval;
                 }
-                if (ch == '"')
+                else
                 {
-                    if (!inScope)
-                    {
-                        inScope = true;
-                        interval.line = i;
-                        interval.character = c;
-                    }
-                    else
-                    {
-                        stringScopes.Add(interval, new FileCoord(i, c));
-                        inScope = false;
-                    }
+                    stringScopes.Add(start, interval);
+                    inScope = false;
                 }
             }
+            interval = IncrementFileCoord(1, interval, lines);
         }
     }
 
@@ -250,39 +254,71 @@ public class CodeTraverser : MonoBehaviour
         throw new System.Exception("Did not finish a scope starting at line: " + (startLineNum+1));
     }
 
+    // TODO: optimize complexity
+    private FileCoord IncrementFileCoord(int val, FileCoord coord, string[] lines)
+    {
+        for (int i = 0; i < val; i++)
+        {
+            coord.character++;
+            while (coord.line < lines.Length && coord.character >= lines[coord.line].Length)
+            {
+                coord.character = 0;
+                coord.line++;
+            }
+        }
+        return coord;
+    }
+
 
     void SetUpLocalMap(string[] lines)
     {
-        int lineIndex = 0;
         localMap.Clear();
-        while (lineIndex < lines.Length && lineIndex != -1)
+        bool stringMode = false;
+        FileCoord coord = new FileCoord();
+        var tok1 = "";
+        var tok2 = "";
+        var quotes = 0;
+        while (coord.line < lines.Length)
         {
-            string currentLine = lines[lineIndex];
-            string[] tokens = currentLine.Split(" ");
-
-
-            if (tokens.Length > 0 && tokens[0].StartsWith("Text("))
+            string currentLine = lines[coord.line].Substring(coord.character);
+            if (!stringMode && currentLine.StartsWith("Text("))
             {
-                var tok1 = "";
-                var tok2 = "";
-                var quotes = 0;
-                foreach (char x in currentLine.Substring(5))
+                stringMode = true;
+                quotes = 0;
+                tok1 = "";
+                tok2 = "";
+                coord = IncrementFileCoord(5, coord, lines);
+            }
+
+            if (stringMode)
+            {
+                var x = lines[coord.line][coord.character];
+                if (x == '"') 
                 {
-                    if (x == '"') 
+                    quotes++;
+                    coord = IncrementFileCoord(1, coord, lines);
+                    // TODO: enable escaping quotes
+                    if (quotes == 4)
                     {
-                        quotes++;
-                        continue;
+                        stringMode = false;
+                        localMap.Add(tok1, tok2);
                     }
-                    if (quotes % 2 == 0) continue;
-                    if (quotes < 2) tok1 += x;
-                    else tok2 += x;
+                    continue;
                 }
 
-                localMap.Add(tok1, tok2);
+                
+                if (quotes < 2 && quotes > 0) tok1 += x;
+                else if (quotes > 2) tok2 += x;
             }
-            lineIndex++;
-        }
 
+            var oldLine = coord.line;
+            coord = IncrementFileCoord(1, coord, lines);
+            if (coord.line != oldLine && stringMode && quotes % 2 != 0)
+            {
+                if (quotes < 2) tok1 += '\n';
+                else tok2 += '\n';
+            }
+        }
     }
 
     public static FileCoord StringSensitiveIterator(FileCoord current, string[] lines, Dictionary<FileCoord, FileCoord> stringScopes)
