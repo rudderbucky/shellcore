@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CodeCanvasCondition;
 using static CodeTraverser;
 
 public class CodeCanvasSequence : MonoBehaviour
@@ -11,31 +12,13 @@ public class CodeCanvasSequence : MonoBehaviour
         StartCutscene,
         EndCutscene,
         Log,
-        Call
+        Call,
+        ConditionBlock
     }
     public struct Instruction
     {
         public InstructionCommand command;
         public string arguments;
-        public string GetArgument(string key)
-        {
-            var args = arguments.Split(";");
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (args[i] == key) 
-                {
-                    return args[i+1];
-                }
-            }
-            return null;
-        }
-
-        // TODO: escape semicolons
-        public void AddArgument(string key, string value)
-        {
-            if (arguments == null) arguments = $"{key};{value}";
-            arguments += $";{key};{value}";
-        }
     }
 
 
@@ -52,6 +35,27 @@ public class CodeCanvasSequence : MonoBehaviour
         public Sequence sequence;
     }
 
+    public static string GetArgument(string arguments, string key)
+    {
+        var args = arguments.Split(";");
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == key) 
+            {
+                return args[i+1];
+            }
+        }
+        return null;
+    }
+
+    // TODO: escape semicolons
+    public static string AddArgument(string arguments, string key, string value)
+    {
+        if (arguments == null) arguments = $"{key};{value}";
+        arguments += $";{key};{value}";
+        return arguments;
+    }
+
     public static void RunSequence (Sequence seq, CodeTraverser traverser, Context context)
     {
         foreach (var inst in seq.instructions)
@@ -60,7 +64,7 @@ public class CodeCanvasSequence : MonoBehaviour
             {
                 case InstructionCommand.SetInteraction:
                     InteractAction action = new InteractAction();
-                    var entityID = inst.GetArgument("entityID");
+                    var entityID = GetArgument(inst.arguments, "entityID");
                     action.action = new UnityEngine.Events.UnityAction(() =>
                         {
                             switch (context.type)
@@ -73,7 +77,7 @@ public class CodeCanvasSequence : MonoBehaviour
                                     break;
                             }
                             
-                            DialogueSystem.StartDialogue(traverser.dialogues[inst.GetArgument("dialogueID")], null, context);
+                            DialogueSystem.StartDialogue(traverser.dialogues[GetArgument(inst.arguments, "dialogueID")], null, context);
                         });
 
                     switch (context.type)
@@ -87,14 +91,19 @@ public class CodeCanvasSequence : MonoBehaviour
                     }
                     break;
                 case InstructionCommand.Call:
-                    var s = traverser.GetFunction(inst.GetArgument("name"));
+                    var s = traverser.GetFunction(GetArgument(inst.arguments, "name"));
                     RunSequence(s, traverser, context);
+                    break;
+                case InstructionCommand.ConditionBlock:
+                    var cb = traverser.conditionBlocks[int.Parse(GetArgument(inst.arguments, "ID"))];
+                    cb.traverser = traverser;
+                    CodeCanvasCondition.ExecuteConditionBlock(cb, context);
                     break;
             }
         }
     }
 
-    public static Sequence ParseSequence(int index, string line)
+    public static Sequence ParseSequence(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {
         var seq = new Sequence();
         seq.instructions = new List<Instruction>();
@@ -117,10 +126,19 @@ public class CodeCanvasSequence : MonoBehaviour
                 var funcName = lineSubstr.Substring(5);
                 funcName = funcName.Substring(0, funcName.IndexOf(")"));
                 var inst = new Instruction();
-                inst.AddArgument("name", funcName);
+                inst.arguments = AddArgument(inst.arguments, "name", funcName);
                 inst.command = InstructionCommand.Call;
                 seq.instructions.Add(inst);
                 // TODO: Function call recursion
+            }
+            else if (lineSubstr.StartsWith("ConditionBlock"))
+            {
+                var b = CodeCanvasCondition.ParseConditionBlock(i, line, blocks);
+                blocks.Add(b.ID, b);
+                var inst = new Instruction();
+                inst.command = InstructionCommand.ConditionBlock;
+                inst.arguments = AddArgument(inst.arguments, "ID", b.ID+"");
+                seq.instructions.Add(inst);
             }
         }
 
@@ -150,11 +168,11 @@ public class CodeCanvasSequence : MonoBehaviour
 
             if (lineSubstr.StartsWith("entityID="))
             {
-                inst.AddArgument("entityID", val);
+                inst.arguments = AddArgument(inst.arguments, "entityID", val);
             }
             else if (lineSubstr.StartsWith("dialogueID="))
             {
-                inst.AddArgument("dialogueID", val);
+                inst.arguments = AddArgument(inst.arguments, "dialogueID", val);
             }
 
         }

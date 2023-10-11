@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CodeCanvasCondition;
 using static CodeCanvasSequence;
 using static CodeTraverser;
 
@@ -12,12 +13,12 @@ public class CodeCanvasFunction : MonoBehaviour
         public Sequence sequence;
     }
     public static Function ParseFunction(int lineIndex, int charIndex,
-         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, out FileCoord coord)
+         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, out FileCoord coord)
     {
-        return ParseFunctionHelper(0, CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord));
+        return ParseFunctionHelper(0, CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord), blocks);
     }
 
-    private static Function ParseFunctionHelper(int index, string line)
+    private static Function ParseFunctionHelper(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {
         var func = new Function();
         func.sequence = new Sequence();
@@ -38,7 +39,7 @@ public class CodeCanvasFunction : MonoBehaviour
             var lineSubstr = line.Substring(i);
             if (lineSubstr.StartsWith("sequence="))
             {
-                func.sequence = CodeCanvasSequence.ParseSequence(i, line);
+                func.sequence = CodeCanvasSequence.ParseSequence(i, line, blocks);
                 continue;
             }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CodeCanvasCondition;
 using static CodeCanvasSequence;
 using static CodeTraverser;
 
@@ -8,13 +9,13 @@ public class CodeCanvasMissionTrigger : MonoBehaviour
 {
 
     public static Context ParseMissionTrigger(int lineIndex, int charIndex,
-         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, out FileCoord coord)
+         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, out FileCoord coord)
     {
         var scope = CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord);
-        return ParseMissionTriggerHelper(0, scope);
+        return ParseMissionTriggerHelper(0, scope, blocks);
     }
 
-    private static Context ParseMissionTriggerHelper(int index, string line)
+    private static Context ParseMissionTriggerHelper(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {
         var trigger = new Context();
         trigger.type = TriggerType.Mission;
@@ -50,7 +51,7 @@ public class CodeCanvasMissionTrigger : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("sequence="))
             {
-                trigger.sequence = CodeCanvasSequence.ParseSequence(i, line);
+                trigger.sequence = CodeCanvasSequence.ParseSequence(i, line, blocks);
             }
         }
         return trigger;

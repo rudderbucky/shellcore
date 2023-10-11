@@ -5,19 +5,18 @@ using System.Linq;
 using System.Text;
 using static CodeCanvasSequence;
 using NodeEditorFramework.Standard;
+using static CodeCanvasCondition;
+using static Entity;
 
 public class CodeTraverser : MonoBehaviour
 {
-    private List<string> instructions;
     public Dictionary<string, Dialogue> dialogues = new Dictionary<string, Dialogue>();
-    private int index;
     private string codePath = System.IO.Path.Combine(Application.streamingAssetsPath, "CodeTest.codecanvas");
     private Dictionary<string, string> localMap = new Dictionary<string, string>();
-    private Dictionary<int, string> dialogueScopes = new Dictionary<int, string>();
-    private Dictionary<int, string> responseListScopes = new Dictionary<int, string>();
-    private Dictionary<int, string> responseScopes = new Dictionary<int, string>();
     private Dictionary<string, Sequence> functions = new Dictionary<string, Sequence>();
     private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
+    public Dictionary<int, ConditionBlock> conditionBlocks = new Dictionary<int, ConditionBlock>();
+    public Dictionary<string, EntityDeathDelegate> entityDeathDelegates = new Dictionary<string, EntityDeathDelegate>();
 
     public Sequence GetFunction(string key)
     {
@@ -104,12 +103,12 @@ public class CodeTraverser : MonoBehaviour
             }
             else if (lines[i].Substring(c).StartsWith("Function"))
             {
-                var func = CodeCanvasFunction.ParseFunction(i, c, lines, stringScopes, out d);
+                var func = CodeCanvasFunction.ParseFunction(i, c, lines, stringScopes, conditionBlocks, out d);
                 functions.Add(func.name, func.sequence);
             }
             else if (lines[i].Substring(c).StartsWith("MissionTrigger"))
             {
-                missionTriggers.Add(CodeCanvasMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, out d));
+                missionTriggers.Add(CodeCanvasMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, conditionBlocks, out d));
             }
             d = StringSensitiveIterator(d, lines, stringScopes);
         }
@@ -166,11 +165,11 @@ public class CodeTraverser : MonoBehaviour
 
         // find the first bracket
         while (cnt < scope.Length && scope[cnt] != opBracket && brackets == 0) cnt++;
-        cnt++;
+        if (cnt < scope.Length) cnt++;
         if (brackets == 0)
         {
             brackets = 1;
-            while (scope[cnt] == ' ') cnt++;
+            while (cnt < scope.Length && scope[cnt] == ' ') cnt++;
             return cnt;
         }
 
