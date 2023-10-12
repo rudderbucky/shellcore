@@ -70,4 +70,6 @@ public class PlayerSave
     public AbilityHotkeyStruct abilityHotkeys;
     public List<string> locationBasedShardsFound;
     public int lastDimension;
+    public List<string> coreScriptsGlobalVarNames;
+    public List<string> coreScriptsGlobalVarValues;
 }

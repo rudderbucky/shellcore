@@ -17,10 +17,12 @@ public class CodeTraverser : MonoBehaviour
     private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
     public Dictionary<int, ConditionBlock> conditionBlocks = new Dictionary<int, ConditionBlock>();
     public Dictionary<string, EntityDeathDelegate> entityDeathDelegates = new Dictionary<string, EntityDeathDelegate>();
+    public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
+    public static CodeTraverser instance;
 
     public Sequence GetFunction(string key)
     {
-        if (!functions.ContainsKey(key)) throw new System.Exception("Invalid function name execution.");
+        if (key == null || !functions.ContainsKey(key)) throw new System.Exception($"Invalid function name: {key}");
         return functions[key];
     }
 
@@ -56,6 +58,14 @@ public class CodeTraverser : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        instance = this;
+        // initialize save var arrays
+        if(SaveHandler.instance.GetSave().coreScriptsGlobalVarNames == null)
+            SaveHandler.instance.GetSave().coreScriptsGlobalVarNames = new List<string>();
+        
+        if(SaveHandler.instance.GetSave().coreScriptsGlobalVarValues == null)
+            SaveHandler.instance.GetSave().coreScriptsGlobalVarValues = new List<string>();
+
         Parse();
         foreach (var context in missionTriggers)
         {

@@ -5,6 +5,7 @@ using UnityEngine;
 using static CodeCanvasCondition;
 using static CodeTraverser;
 
+// TODO: Remove ambiguity on when a comma is required and when it's not (Caused because argument hunting does not work with closing brackets)
 public class CodeCanvasSequence : MonoBehaviour
 {
     public enum InstructionCommand
@@ -15,7 +16,10 @@ public class CodeCanvasSequence : MonoBehaviour
         Log,
         Call,
         ConditionBlock,
-        SpawnEntity
+        SpawnEntity,
+        SetVariable,
+        AddIntValues,
+        ConcatenateValues,
     }
     public struct Instruction
     {
@@ -37,15 +41,28 @@ public class CodeCanvasSequence : MonoBehaviour
         public Sequence sequence;
     }
 
-    public static string GetArgument(string arguments, string key)
+    // TODO: Read out of the global variables array for world base properties
+    public static string GetArgument(string arguments, string key, bool rawValue = false)
     {
         var args = arguments.Split(";");
         for (int i = 0; i < args.Length; i++)
         {
-            if (args[i] == key) 
+            if (args[i] != key) continue;
+
+            var val = args[i+1];
+            if (rawValue) return val;
+            else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().coreScriptsGlobalVarNames != null)
             {
-                return args[i+1];
+                
+                var index = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.IndexOf(val.Substring(3));
+                if (index >= 0) 
+                    return SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
             }
+            else if (val.StartsWith("$$") && CodeTraverser.instance.globalVariables != null)
+            {
+                return CodeTraverser.instance.globalVariables[val.Substring(2)];
+            }
+            else return val;
         }
         return null;
     }
@@ -111,8 +128,54 @@ public class CodeCanvasSequence : MonoBehaviour
                         int.Parse(GetArgument(inst.arguments, "faction")),
                         GetArgument(inst.arguments, "name"));
                     break;
-
+                case InstructionCommand.Log:
+                    Debug.LogWarning(GetArgument(inst.arguments, "message"));
+                    break;
+                case InstructionCommand.SetVariable:
+                    var variableName = GetArgument(inst.arguments, "name", true);
+                    var variableValue = GetArgument(inst.arguments, "value");
+                    SetVariable(variableName, variableValue);
+                    break;
+                case InstructionCommand.AddIntValues:
+                    var val1 = int.Parse(GetArgument(inst.arguments, "val1"));
+                    var val2 = int.Parse(GetArgument(inst.arguments, "val2"));
+                    var name = GetArgument(inst.arguments, "name", true);
+                    SetVariable(name, val1+val2+"");
+                    break;
+                case InstructionCommand.ConcatenateValues:
+                    var v1 = GetArgument(inst.arguments, "val1");
+                    var v2 = GetArgument(inst.arguments, "val2");
+                    var varName = GetArgument(inst.arguments, "name", true);
+                    SetVariable(varName, v1+v2);
+                    break;
             }
+        }
+    }
+
+    private static void SetVariable(string variableName, string variableValue)
+    {
+        if (variableName.StartsWith("$$$"))
+        {
+            var names = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames;
+            var vals = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues;
+            var key = variableName.Substring(3);
+            var index = names.IndexOf(key);
+            if (index >= 0) vals[index] = variableValue;
+            else
+            {
+                names.Add(key);
+                vals.Add(variableValue);
+            }
+        }
+        else if (variableName.StartsWith("$$"))
+        {
+            var dict = CodeTraverser.instance.globalVariables;
+            var key = variableName.Substring(2);
+            if (dict.ContainsKey(key))
+            {
+                dict[key] = variableValue;
+            }
+            else dict.Add(key, variableValue);
         }
     }
 
@@ -201,6 +264,10 @@ public class CodeCanvasSequence : MonoBehaviour
         {
             "SetInteraction",
             "SpawnEntity",
+            "Log",
+            "SetVariable",
+            "AddIntValues",
+            "ConcatenateValues",
         };
         index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
