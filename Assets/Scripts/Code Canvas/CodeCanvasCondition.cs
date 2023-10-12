@@ -45,7 +45,6 @@ public class CodeCanvasCondition : MonoBehaviour
 
     public static ConditionBlock ParseConditionBlock(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {
-        Debug.LogWarning("Parse block called");
         var block = CreateConditionBlock();
         bool skipToComma = true;
         int brax = 0;
@@ -59,7 +58,6 @@ public class CodeCanvasCondition : MonoBehaviour
         for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i);
-            Debug.LogWarning(lineSubstr);
             block.conditions.Add(ParseCondition(i, line, condIndex, blocks));
             condIndex++;
         }
@@ -68,7 +66,6 @@ public class CodeCanvasCondition : MonoBehaviour
 
     private static Condition ParseCondition(int index, string line, int condIndex, Dictionary<int, ConditionBlock> blocks)
     {
-        Debug.LogWarning("Parse Cond called");
         var cond = new Condition();
         bool skipToComma = false;
         int brax = 0;
@@ -99,29 +96,15 @@ public class CodeCanvasCondition : MonoBehaviour
             var val = lineSubstr.Split(",")[0].Split("=")[1];
             var key = lineSubstr.Split(",")[0].Split("=")[0];
             cond.arguments = AddArgument(cond.arguments, key, val);
-            Debug.LogWarning(cond.arguments);
 
         }
         Enum.TryParse<ConditionType>(GetArgument(cond.arguments, "type"), out cond.type);
-        Debug.LogWarning(cond.type);
         return cond;
     }
 
 
     public static void ExecuteConditionBlock(ConditionBlock block, Context context)
     {
-        Debug.LogWarning("exec called");
-        /*
-        var cond = new Condition();
-        cond.type = ConditionType.DestroyEntities;
-        cond.arguments = AddArgument(cond.arguments, "targetID", "Strike Drone");
-        cond.arguments = AddArgument(cond.arguments, "nameMode", "true");
-        cond.arguments = AddArgument(cond.arguments, "targetFaction", 1+"");
-        cond.arguments = AddArgument(cond.arguments, "targetCount", 3+"");
-        cond.arguments = AddArgument(cond.arguments, "progressionFeedback", "true");
-        cond.state = "0";
-        block.conditions.Add(cond);
-        */
         block.context = context;
         for (int i = 0; i < block.conditions.Count; i++)
         {
@@ -192,7 +175,7 @@ public class CodeCanvasCondition : MonoBehaviour
         }
 
         if (cond.sequence.instructions != null)
-            CodeCanvasSequence.RunSequence(cond.sequence, cb.traverser, cb.context);
+            CodeCanvasSequence.RunSequence(cond.sequence, cb.context);
     }
 
     private static void DeinitializeCondition(string ID, ConditionBlock cb, Condition cond)

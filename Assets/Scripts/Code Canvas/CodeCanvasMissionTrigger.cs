@@ -9,16 +9,17 @@ public class CodeCanvasMissionTrigger : MonoBehaviour
 {
 
     public static Context ParseMissionTrigger(int lineIndex, int charIndex,
-         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, out FileCoord coord)
+         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, CodeTraverser traverser, out FileCoord coord)
     {
         var scope = CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord);
-        return ParseMissionTriggerHelper(0, scope, blocks);
+        return ParseMissionTriggerHelper(0, scope, traverser, blocks);
     }
 
-    private static Context ParseMissionTriggerHelper(int index, string line, Dictionary<int, ConditionBlock> blocks)
+    private static Context ParseMissionTriggerHelper(int index, string line, CodeTraverser traverser, Dictionary<int, ConditionBlock> blocks)
     {
         var trigger = new Context();
         trigger.type = TriggerType.Mission;
+        trigger.traverser = traverser;
         trigger.prerequisites = new List<string>();
         List<string> stx = new List<string>()
         {

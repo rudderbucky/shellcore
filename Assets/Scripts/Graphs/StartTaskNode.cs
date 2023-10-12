@@ -296,7 +296,6 @@ namespace NodeEditorFramework.Standard
         public static void RegisterTask(Task task, string missionName)
         {
             // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases
-            Debug.LogWarning(missionName);
             var mission = PlayerCore.Instance.cursave.missions.Find((x) => x.name == missionName);
             if (mission != null)
             {

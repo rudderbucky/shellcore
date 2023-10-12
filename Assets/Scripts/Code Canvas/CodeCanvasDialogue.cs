@@ -170,6 +170,12 @@ public class CodeCanvasDialogue : MonoBehaviour
                 {
                     node.action = Dialogue.DialogueAction.Exit;
                 }
+                else if (val.StartsWith("Call"))
+                {
+                    node.action = Dialogue.DialogueAction.Call;
+                    node.functionID = val.Split("Call(")[1].Replace(" ", "");
+                    node.functionID = node.functionID.Substring(0, node.functionID.IndexOf(")"));
+                }
                 else if (val.StartsWith("Dialogue"))
                 {
                     insertNode = false;

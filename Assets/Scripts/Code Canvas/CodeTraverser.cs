@@ -50,6 +50,7 @@ public class CodeTraverser : MonoBehaviour
         public int taskHash;
         public List<string> prerequisites;
         public Sequence sequence;
+        public CodeTraverser traverser;
     }
 
     // Start is called before the first frame update
@@ -67,7 +68,7 @@ public class CodeTraverser : MonoBehaviour
     void RunMissionTrigger(Context context)
     {
         StartMissionNode.TryAddMission(context.missionName, "B", "Test.", Color.white, 0, context.prerequisites);
-        CodeCanvasSequence.RunSequence(context.sequence, this, context);
+        CodeCanvasSequence.RunSequence(context.sequence, context);
     }
 
     void Parse()
@@ -108,7 +109,7 @@ public class CodeTraverser : MonoBehaviour
             }
             else if (lines[i].Substring(c).StartsWith("MissionTrigger"))
             {
-                missionTriggers.Add(CodeCanvasMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, conditionBlocks, out d));
+                missionTriggers.Add(CodeCanvasMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, conditionBlocks, this, out d));
             }
             d = StringSensitiveIterator(d, lines, stringScopes);
         }
@@ -123,7 +124,6 @@ public class CodeTraverser : MonoBehaviour
         FileCoord interval = new FileCoord();
         while (interval.line < lines.Length)
         {
-            Debug.Log(interval.line + " " + interval.character);
             var ch = lines[interval.line][interval.character];
             // TODO: using backslashes will break the local map
             if (ch == '\\' && !escaped)
@@ -186,7 +186,7 @@ public class CodeTraverser : MonoBehaviour
 
             cnt++;
         }
-
+        if (skipToComma) cnt++;
         skipToComma = false;
 
 

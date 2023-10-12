@@ -847,6 +847,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             case Dialogue.DialogueAction.ForceToNextID:
                 next(dialogue, current.nextNodes[0], speaker);
                 return;
+            case Dialogue.DialogueAction.Call:
+                var s = context.traverser.GetFunction(current.functionID);
+                CodeCanvasSequence.RunSequence(s, context);
+                endDialogue(0, false);
+                return;
             default:
                 break;
         }

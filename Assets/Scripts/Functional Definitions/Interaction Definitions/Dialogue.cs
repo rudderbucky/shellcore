@@ -19,7 +19,8 @@ public class Dialogue : ScriptableObject, IDialogueable
         Workshop,
         Upgrader,
         InvokeEnd,
-        ForceToNextID
+        ForceToNextID,
+        Call
     }
 
     public List<Node> nodes;
@@ -43,5 +44,7 @@ public class Dialogue : ScriptableObject, IDialogueable
         public bool useSpeakerColor;
         [NonSerialized]
         public Task task;
+        [NonSerialized]
+        public string functionID;
     }
 }
