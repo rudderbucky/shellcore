@@ -36,38 +36,36 @@ public class CodeCanvasTask : MonoBehaviour
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
-            var val = lineSubstr.Split(",")[0].Split("=")[1];
-            if (lineSubstr.StartsWith("taskID="))
+            var name = "";
+            var val = "";
+            CodeCanvasSequence.GetNameAndValue(lineSubstr, out name, out val);
+
+            switch (name)
             {
-                task.taskID = val;
-            }
-            if (lineSubstr.StartsWith("objectives="))
-            {
-                task.objectived = localMap[val];
-            }
-            if (lineSubstr.StartsWith("creditReward="))
-            {
-                task.creditReward = int.Parse(val);
-            }
-            if (lineSubstr.StartsWith("reputationReward="))
-            {
-                task.reputationReward = int.Parse(val);
-            }
-            if (lineSubstr.StartsWith("shardReward="))
-            {
-                task.shardReward = int.Parse(val);
-            }
-            if (lineSubstr.StartsWith("partID="))
-            {
-                task.partReward.partID = val;
-            }
-            if (lineSubstr.StartsWith("abilityID="))
-            {
-                task.partReward.abilityID = int.Parse(val);
-            }
-            if (lineSubstr.StartsWith("tier="))
-            {
-                task.partReward.tier = int.Parse(val);
+                case "taskID":
+                    task.taskID = val;
+                    break;
+                case "objectives":
+                    task.objectived = localMap[val];
+                    break;
+                case "creditReward":
+                    task.creditReward = int.Parse(val);
+                    break;
+                case "reputationReward":
+                    task.reputationReward = int.Parse(val);
+                    break;
+                case "shardReward":
+                    task.shardReward = int.Parse(val);
+                    break;
+                case "partID":
+                    task.partReward.partID = val;
+                    break;
+                case "abilityID":
+                    task.partReward.abilityID = int.Parse(val);
+                    break;
+                case "tier":
+                    task.partReward.tier = int.Parse(val);
+                    break;
             }
         }
         return task;

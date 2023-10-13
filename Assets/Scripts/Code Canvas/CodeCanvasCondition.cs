@@ -93,8 +93,10 @@ public class CodeCanvasCondition : MonoBehaviour
                 cond.sequence = ParseSequence(i, line, blocks);
                 continue;
             }
-            var val = lineSubstr.Split(",")[0].Split("=")[1];
-            var key = lineSubstr.Split(",")[0].Split("=")[0];
+
+            var key = "";
+            var val = "";
+            CodeCanvasSequence.GetNameAndValue(lineSubstr, out key, out val);
             cond.arguments = AddArgument(cond.arguments, key, val);
 
         }

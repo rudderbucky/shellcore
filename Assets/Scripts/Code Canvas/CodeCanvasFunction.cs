@@ -43,7 +43,9 @@ public class CodeCanvasFunction : MonoBehaviour
                 continue;
             }
 
-            var val = lineSubstr.Split(",")[0].Split("=")[1].Trim();
+            var name = "";
+            var val = "";
+            CodeCanvasSequence.GetNameAndValue(lineSubstr, out name, out val);
 
             if (lineSubstr.StartsWith("name="))
             {

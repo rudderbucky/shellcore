@@ -318,14 +318,40 @@ public class CodeCanvasSequence : MonoBehaviour
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
-            if (lineSubstr.Split(",").Length > 0 && lineSubstr.Split(",")[0].Split("=").Length > 1)
-            {
-                var val = lineSubstr.Split(",")[0].Split("=")[1];
-                var key = lineSubstr.Split(",")[0].Split("=")[0];
-                inst.arguments = AddArgument(inst.arguments, key, val);
-            }
+
+            var name = "";
+            var val = "";
+            GetNameAndValue(lineSubstr, out name, out val);
+            inst.arguments = AddArgument(inst.arguments, name, val);
         }
 
         return inst;
+    }
+
+    public static void GetNameAndValue(string line, out string name, out string val)
+    {
+        Debug.LogWarning(line);
+        if (!line.Contains("="))
+        {
+            name = val = "";
+            return;
+        }
+
+        name = line.Split("=")[0];
+        val = line.Split("=")[1];
+        int minIndex = val.Length;
+        if (val.IndexOf(',') != -1)
+        {
+            minIndex = Mathf.Min(minIndex, val.IndexOf(','));
+        }
+        if (val.IndexOf(')') != -1)
+        {
+            
+            minIndex = Mathf.Min(minIndex, val.IndexOf(')'));
+        }
+
+        Debug.LogWarning(minIndex);
+
+        val = val.Substring(0, minIndex);
     }
 }

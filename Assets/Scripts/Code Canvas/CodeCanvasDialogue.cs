@@ -70,7 +70,10 @@ public class CodeCanvasDialogue : MonoBehaviour
         for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i).Trim();
-            var val = lineSubstr.Split(",")[0].Split("=")[1];
+            
+            var name = "";
+            var val = "";
+            CodeCanvasSequence.GetNameAndValue(lineSubstr, out name, out val);
 
             if (lineSubstr.StartsWith("responses="))
             {
@@ -157,7 +160,10 @@ public class CodeCanvasDialogue : MonoBehaviour
         for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i);
-            var val = lineSubstr.Split(",")[0].Split("=")[1];
+
+            var name = "";
+            var val = "";
+            CodeCanvasSequence.GetNameAndValue(lineSubstr, out name, out val);
             if (lineSubstr.StartsWith("responseText="))
             {
                 node.buttonText = localMap[val];
@@ -173,8 +179,7 @@ public class CodeCanvasDialogue : MonoBehaviour
                 else if (val.StartsWith("Call"))
                 {
                     node.action = Dialogue.DialogueAction.Call;
-                    node.functionID = val.Split("Call(")[1].Replace(" ", "");
-                    node.functionID = node.functionID.Substring(0, node.functionID.IndexOf(")"));
+                    node.functionID = val.Replace("Call(", "").Replace(")", "").Trim();
                 }
                 else if (val.StartsWith("Dialogue"))
                 {
@@ -190,9 +195,7 @@ public class CodeCanvasDialogue : MonoBehaviour
                     node.nextNodes = new List<int>();
                     node.action = Dialogue.DialogueAction.ForceToNextID;
                     
-                    var parse = val.Split("SetID(")[1].Replace(" ", "");
-
-                    parse = parse.Substring(0, parse.IndexOf(")"));
+                    var parse = val.Replace("SetID(", "").Replace(")", "").Trim();
                     node.nextNodes.Add(int.Parse(parse));
                 }
                 
