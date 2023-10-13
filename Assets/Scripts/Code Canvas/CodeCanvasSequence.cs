@@ -6,13 +6,12 @@ using static CodeCanvasCondition;
 using static CodeTraverser;
 
 // TODO: Remove ambiguity on when a comma is required and when it's not (Caused because argument hunting does not work with closing brackets)
+// TODO: Just use CodeTraverser as a singleton and remove all the list passing
 public class CodeCanvasSequence : MonoBehaviour
 {
     public enum InstructionCommand
     {
         SetInteraction,
-        StartCutscene,
-        EndCutscene,
         Log,
         Call,
         ConditionBlock,
@@ -20,11 +19,17 @@ public class CodeCanvasSequence : MonoBehaviour
         SetVariable,
         AddIntValues,
         ConcatenateValues,
+        StartCutscene,
+        FinishCutscene,
+        SetPath,
+        Rotate,
+        PassiveDialogue
     }
     public struct Instruction
     {
         public InstructionCommand command;
         public string arguments;
+        public Sequence sequence;
     }
 
 
@@ -148,6 +153,24 @@ public class CodeCanvasSequence : MonoBehaviour
                     var varName = GetArgument(inst.arguments, "name", true);
                     SetVariable(varName, v1+v2);
                     break;
+                case InstructionCommand.SetPath:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    var rotateWhileMoving = GetArgument(inst.arguments, "rotateWhileMoving") != "false";
+                    var customMass = GetArgument(inst.arguments, "customMass") == null ? -1 : float.Parse(GetArgument(inst.arguments, "customMass"));
+                    var flagName = GetArgument(inst.arguments, "flagName");
+
+                    SetPath.Execute(entityID, rotateWhileMoving, customMass, flagName, inst.sequence, context);
+                    break;
+                case InstructionCommand.Rotate:
+                    break;
+                case InstructionCommand.StartCutscene:
+                    Cutscene.StartCutscene();
+                    break;
+                case InstructionCommand.FinishCutscene:
+                    Cutscene.FinishCutscene();
+                    break;
+                case InstructionCommand.PassiveDialogue:
+                    break;
             }
         }
     }
@@ -177,6 +200,117 @@ public class CodeCanvasSequence : MonoBehaviour
             }
             else dict.Add(key, variableValue);
         }
+    }
+
+    public static Sequence ParseSequence(int index, string line, Dictionary<int, ConditionBlock> blocks)
+    {
+        var seq = new Sequence();
+        seq.instructions = new List<Instruction>();
+
+        List<string> stx = null;
+        bool skipToComma = false;
+        int brax = 0;
+
+        List<string> standardInstructions = new List<string>() 
+        {
+            "SetInteraction",
+            "SpawnEntity",
+            "Log",
+            "SetVariable",
+            "AddIntValues",
+            "ConcatenateValues",
+            "StartCutscene",
+            "FinishCutscene",
+            "SetPath",
+        };
+        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            skipToComma = true;
+            var lineSubstr = line.Substring(i);
+            if (standardInstructions.Exists(s => lineSubstr.StartsWith(s)))
+            {
+                seq.instructions.Add(ParseInstruction(i, line, blocks));
+            }
+            else if (lineSubstr.StartsWith("Call"))
+            {
+                var funcName = lineSubstr.Substring(5);
+                funcName = funcName.Substring(0, funcName.IndexOf(")"));
+                var inst = new Instruction();
+                inst.arguments = AddArgument(inst.arguments, "name", funcName);
+                inst.command = InstructionCommand.Call;
+                seq.instructions.Add(inst);
+                // TODO: Function call recursion
+            }
+            else if (lineSubstr.StartsWith("ConditionBlock"))
+            {
+                var b = CodeCanvasCondition.ParseConditionBlock(i, line, blocks);
+                blocks.Add(b.ID, b);
+                var inst = new Instruction();
+                inst.command = InstructionCommand.ConditionBlock;
+                inst.arguments = AddArgument(inst.arguments, "ID", b.ID+"");
+                seq.instructions.Add(inst);
+            }
+        }
+
+        return seq;
+    }
+
+    // TODO: Move condition type to be declaration instead of type= style element
+    private static Instruction ParseInstruction(int index, string line, Dictionary<int, ConditionBlock> blocks)
+    {
+        var substr = line.Substring(index).Split("(")[0].Trim();
+        var inst = new Instruction();
+        Enum.TryParse<InstructionCommand>(substr, out inst.command);
+        inst.arguments = "";
+        bool skipToComma = true;
+        List<string> stx = null;
+        int brax = 0;
+
+        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        {
+            skipToComma = true;
+            var lineSubstr = line.Substring(i);
+
+            var name = "";
+            var val = "";
+            GetNameAndValue(lineSubstr, out name, out val);
+            if (name == "sequence")
+            {
+                inst.sequence = ParseSequence(i, line, blocks);
+                continue;
+            }
+
+            inst.arguments = AddArgument(inst.arguments, name, val);
+        }
+
+        return inst;
+    }
+
+    public static void GetNameAndValue(string line, out string name, out string val)
+    {
+        if (!line.Contains("="))
+        {
+            name = val = "";
+            return;
+        }
+
+        name = line.Split("=")[0];
+        val = line.Split("=")[1];
+        int minIndex = val.Length;
+        if (val.IndexOf(',') != -1)
+        {
+            minIndex = Mathf.Min(minIndex, val.IndexOf(','));
+        }
+        if (val.IndexOf(')') != -1)
+        {
+            
+            minIndex = Mathf.Min(minIndex, val.IndexOf(')'));
+        }
+
+
+        val = val.Substring(0, minIndex);
     }
 
     private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, string name)
@@ -227,131 +361,26 @@ public class CodeCanvasSequence : MonoBehaviour
         Debug.Log($"Spawn Entity ID ( {entityID} ) does not correspond with a character. Performing normal operations.");
         EntityBlueprint blueprint = SectorManager.TryGettingEntityBlueprint(blueprintJSON);
 
-            if (blueprint)
+        if (blueprint)
+        {
+            Sector.LevelEntity entityData = new Sector.LevelEntity
             {
-                Sector.LevelEntity entityData = new Sector.LevelEntity
-                {
-                    faction = faction,
-                    name = name,
-                    position = coords,
-                    ID = entityID
-                };
-                var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
-                if (DevConsoleScript.fullLog)
-                {
-                    Debug.Log(entity.transform.position + " " + entity.spawnPoint);
-                }
-
-                entity.name = name;
-            }
-            else
+                faction = faction,
+                name = name,
+                position = coords,
+                ID = entityID
+            };
+            var entity = SectorManager.instance.SpawnEntity(blueprint, entityData);
+            if (DevConsoleScript.fullLog)
             {
-                Debug.LogWarning("Blueprint not found!");
+                Debug.Log(entity.transform.position + " " + entity.spawnPoint);
             }
-    }
 
-
-    public static Sequence ParseSequence(int index, string line, Dictionary<int, ConditionBlock> blocks)
-    {
-        var seq = new Sequence();
-        seq.instructions = new List<Instruction>();
-
-        List<string> stx = null;
-        bool skipToComma = false;
-        int brax = 0;
-
-        List<string> standardInstructions = new List<string>() 
-        {
-            "SetInteraction",
-            "SpawnEntity",
-            "Log",
-            "SetVariable",
-            "AddIntValues",
-            "ConcatenateValues",
-        };
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
-        {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
-            if (standardInstructions.Exists(s => lineSubstr.StartsWith(s)))
-            {
-                seq.instructions.Add(ParseInstruction(i, line));
-            }
-            else if (lineSubstr.StartsWith("Call"))
-            {
-                var funcName = lineSubstr.Substring(5);
-                funcName = funcName.Substring(0, funcName.IndexOf(")"));
-                var inst = new Instruction();
-                inst.arguments = AddArgument(inst.arguments, "name", funcName);
-                inst.command = InstructionCommand.Call;
-                seq.instructions.Add(inst);
-                // TODO: Function call recursion
-            }
-            else if (lineSubstr.StartsWith("ConditionBlock"))
-            {
-                var b = CodeCanvasCondition.ParseConditionBlock(i, line, blocks);
-                blocks.Add(b.ID, b);
-                var inst = new Instruction();
-                inst.command = InstructionCommand.ConditionBlock;
-                inst.arguments = AddArgument(inst.arguments, "ID", b.ID+"");
-                seq.instructions.Add(inst);
-            }
+            entity.name = name;
         }
-
-        return seq;
-    }
-
-    // TODO: Move condition type to be declaration instead of type= style element
-    private static Instruction ParseInstruction(int index, string line)
-    {
-        var substr = line.Substring(index).Split("(")[0].Trim();
-        var inst = new Instruction();
-        Enum.TryParse<InstructionCommand>(substr, out inst.command);
-        inst.arguments = "";
-        bool skipToComma = true;
-        List<string> stx = null;
-        int brax = 0;
-
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        else
         {
-            skipToComma = true;
-            var lineSubstr = line.Substring(i);
-
-            var name = "";
-            var val = "";
-            GetNameAndValue(lineSubstr, out name, out val);
-            inst.arguments = AddArgument(inst.arguments, name, val);
+            Debug.LogWarning("Blueprint not found!");
         }
-
-        return inst;
-    }
-
-    public static void GetNameAndValue(string line, out string name, out string val)
-    {
-        Debug.LogWarning(line);
-        if (!line.Contains("="))
-        {
-            name = val = "";
-            return;
-        }
-
-        name = line.Split("=")[0];
-        val = line.Split("=")[1];
-        int minIndex = val.Length;
-        if (val.IndexOf(',') != -1)
-        {
-            minIndex = Mathf.Min(minIndex, val.IndexOf(','));
-        }
-        if (val.IndexOf(')') != -1)
-        {
-            
-            minIndex = Mathf.Min(minIndex, val.IndexOf(')'));
-        }
-
-        Debug.LogWarning(minIndex);
-
-        val = val.Substring(0, minIndex);
     }
 }

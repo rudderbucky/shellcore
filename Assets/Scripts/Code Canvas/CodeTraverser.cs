@@ -55,10 +55,16 @@ public class CodeTraverser : MonoBehaviour
         public CodeTraverser traverser;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private bool initialized = false;
+
+    private void Awake()
     {
         instance = this;
+    }
+
+    public void Initialize()
+    {
+        if (initialized || MasterNetworkAdapter.mode != MasterNetworkAdapter.NetworkMode.Off) return;
         // initialize save var arrays
         if(SaveHandler.instance.GetSave().coreScriptsGlobalVarNames == null)
             SaveHandler.instance.GetSave().coreScriptsGlobalVarNames = new List<string>();
@@ -72,8 +78,6 @@ public class CodeTraverser : MonoBehaviour
             RunMissionTrigger(context);
         }
     }
-
-
 
     void RunMissionTrigger(Context context)
     {
