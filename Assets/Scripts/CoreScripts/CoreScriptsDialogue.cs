@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CodeTraverser;
+using static CoreScriptsManager;
 
-public class CodeCanvasDialogue : MonoBehaviour
+public class CoreScriptsDialogue : MonoBehaviour
 {
     private static Dialogue.Node GetDefaultNode()
     {
@@ -22,7 +22,7 @@ public class CodeCanvasDialogue : MonoBehaviour
         dialogue.nodes = new List<Dialogue.Node>();
         nextID = 0;
         var metadata = new DialogueRecursionMetadata();
-        var scope = CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord);
+        var scope = CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord);
         ParseDialogueHelper(charIndex, scope, dialogue, localMap, out metadata, tasks);
         dialogues[metadata.dialogueID] = dialogue;
 //#if UNITY_EDITOR
@@ -66,14 +66,14 @@ public class CodeCanvasDialogue : MonoBehaviour
             "taskID="
         };
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i).Trim();
             
             var name = "";
             var val = "";
-            CodeCanvasSequence.GetNameAndValue(lineSubstr, out name, out val);
+            CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);
 
             if (lineSubstr.StartsWith("responses="))
             {
@@ -128,8 +128,8 @@ public class CodeCanvasDialogue : MonoBehaviour
             "Response(",
         };
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("Response("))
@@ -156,14 +156,14 @@ public class CodeCanvasDialogue : MonoBehaviour
             "next="
         };
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i);
 
             var name = "";
             var val = "";
-            CodeCanvasSequence.GetNameAndValue(lineSubstr, out name, out val);
+            CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);
             if (lineSubstr.StartsWith("responseText="))
             {
                 node.buttonText = localMap[val];

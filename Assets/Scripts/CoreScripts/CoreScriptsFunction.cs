@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CodeCanvasCondition;
-using static CodeCanvasSequence;
-using static CodeTraverser;
+using static CoreScriptsCondition;
+using static CoreScriptsSequence;
+using static CoreScriptsManager;
 
-public class CodeCanvasFunction : MonoBehaviour
+public class CoreScriptsFunction : MonoBehaviour
 {
     public struct Function
     {
@@ -15,7 +15,7 @@ public class CodeCanvasFunction : MonoBehaviour
     public static Function ParseFunction(int lineIndex, int charIndex,
          string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, out FileCoord coord)
     {
-        return ParseFunctionHelper(0, CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord), blocks);
+        return ParseFunctionHelper(0, CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord), blocks);
     }
 
     private static Function ParseFunctionHelper(int index, string line, Dictionary<int, ConditionBlock> blocks)
@@ -33,19 +33,19 @@ public class CodeCanvasFunction : MonoBehaviour
             "sequence="
         };
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i);
             if (lineSubstr.StartsWith("sequence="))
             {
-                func.sequence = CodeCanvasSequence.ParseSequence(i, line, blocks);
+                func.sequence = CoreScriptsSequence.ParseSequence(i, line, blocks);
                 continue;
             }
 
             var name = "";
             var val = "";
-            CodeCanvasSequence.GetNameAndValue(lineSubstr, out name, out val);
+            CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);
 
             if (lineSubstr.StartsWith("name="))
             {

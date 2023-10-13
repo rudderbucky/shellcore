@@ -6,7 +6,7 @@ using NodeEditorFramework.Standard;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static CodeTraverser;
+using static CoreScriptsManager;
 
 ///
 /// This class manages dialogue windows as well as dialogue traversers/canvases.
@@ -849,7 +849,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 return;
             case Dialogue.DialogueAction.Call:
                 var s = context.traverser.GetFunction(current.functionID);
-                CodeCanvasSequence.RunSequence(s, context);
+                CoreScriptsSequence.RunSequence(s, context);
                 endDialogue(0, false);
                 return;
             default:

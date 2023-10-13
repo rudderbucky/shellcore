@@ -315,7 +315,7 @@ public class PlayerCore : ShellCore
         // force sectors to load once positioning has been determined
         if (MasterNetworkAdapter.mode == MasterNetworkAdapter.NetworkMode.Off)
             SectorManager.instance.AttemptSectorLoad();
-        CodeTraverser.instance.Initialize();
+        CoreScriptsManager.instance.Initialize();
 
         // the player needs a predictable name for task interactions, so its object will always be called this
         name = entityName = "player";

@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CodeCanvasSequence;
-using static CodeTraverser;
+using static CoreScriptsSequence;
+using static CoreScriptsManager;
 
 public class SetPath : MonoBehaviour
 {
@@ -40,7 +40,7 @@ public class SetPath : MonoBehaviour
                     {
                         if (sequence.instructions != null)
                         {
-                            CodeCanvasSequence.RunSequence(sequence, context);
+                            CoreScriptsSequence.RunSequence(sequence, context);
                         }
                     });
 
@@ -75,7 +75,7 @@ public class SetPath : MonoBehaviour
 
         if (sequence.instructions != null)
         {
-            CodeCanvasSequence.RunSequence(sequence, context);
+            CoreScriptsSequence.RunSequence(sequence, context);
         }
     }
 }

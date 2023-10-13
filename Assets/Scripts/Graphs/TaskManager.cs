@@ -4,7 +4,7 @@ using NodeEditorFramework.IO;
 using NodeEditorFramework.Standard;
 using UnityEngine;
 using UnityEngine.Events;
-using static CodeTraverser;
+using static CoreScriptsManager;
 
 public interface IDialogueOverrideHandler
 {

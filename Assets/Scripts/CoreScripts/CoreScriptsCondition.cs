@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using static CodeCanvasSequence;
-using static CodeTraverser;
+using static CoreScriptsSequence;
+using static CoreScriptsManager;
 using static Entity;
-public class CodeCanvasCondition : MonoBehaviour
+public class CoreScriptsCondition : MonoBehaviour
 {
     private static int blockID = 0;
     public enum ConditionType 
@@ -29,7 +29,7 @@ public class CodeCanvasCondition : MonoBehaviour
     public struct ConditionBlock
     {
         public List<Condition> conditions;
-        public CodeTraverser traverser;
+        public CoreScriptsManager traverser;
         public Context context;
         public int ID;
     }
@@ -54,8 +54,8 @@ public class CodeCanvasCondition : MonoBehaviour
         };
 
         int condIndex = 0;
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i);
             block.conditions.Add(ParseCondition(i, line, condIndex, blocks));
@@ -84,8 +84,8 @@ public class CodeCanvasCondition : MonoBehaviour
             "sequence=",
         };
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             var lineSubstr = line.Substring(i);
             if (lineSubstr.StartsWith("sequence=")) 
@@ -96,7 +96,7 @@ public class CodeCanvasCondition : MonoBehaviour
 
             var key = "";
             var val = "";
-            CodeCanvasSequence.GetNameAndValue(lineSubstr, out key, out val);
+            CoreScriptsSequence.GetNameAndValue(lineSubstr, out key, out val);
             cond.arguments = AddArgument(cond.arguments, key, val);
 
         }
@@ -120,11 +120,11 @@ public class CodeCanvasCondition : MonoBehaviour
         switch (c.type)
         {
             case ConditionType.DestroyEntities:
-                var nameMode = CodeCanvasSequence.GetArgument(c.arguments, "nameMode") == "true";
-                var progressionFeedback = CodeCanvasSequence.GetArgument(c.arguments, "progressionFeedback") == "true";
-                var targetID = CodeCanvasSequence.GetArgument(c.arguments, "targetID");
-                var targetFaction = int.Parse(CodeCanvasSequence.GetArgument(c.arguments, "targetFaction"));
-                var targetCount = int.Parse(CodeCanvasSequence.GetArgument(c.arguments, "targetCount"));
+                var nameMode = CoreScriptsSequence.GetArgument(c.arguments, "nameMode") == "true";
+                var progressionFeedback = CoreScriptsSequence.GetArgument(c.arguments, "progressionFeedback") == "true";
+                var targetID = CoreScriptsSequence.GetArgument(c.arguments, "targetID");
+                var targetFaction = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetFaction"));
+                var targetCount = int.Parse(CoreScriptsSequence.GetArgument(c.arguments, "targetCount"));
                 int killCount = 0;
                 EntityDeathDelegate act = (e, _) => 
                 {
@@ -177,7 +177,7 @@ public class CodeCanvasCondition : MonoBehaviour
         }
 
         if (cond.sequence.instructions != null)
-            CodeCanvasSequence.RunSequence(cond.sequence, cb.context);
+            CoreScriptsSequence.RunSequence(cond.sequence, cb.context);
     }
 
     private static void DeinitializeCondition(string ID, ConditionBlock cb, Condition cond)

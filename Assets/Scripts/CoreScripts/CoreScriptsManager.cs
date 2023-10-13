@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Text;
-using static CodeCanvasSequence;
+using static CoreScriptsSequence;
 using NodeEditorFramework.Standard;
-using static CodeCanvasCondition;
+using static CoreScriptsCondition;
 using static Entity;
 
-public class CodeTraverser : MonoBehaviour
+public class CoreScriptsManager : MonoBehaviour
 {
     public Dictionary<string, Dialogue> dialogues = new Dictionary<string, Dialogue>();
     private string codePath = System.IO.Path.Combine(Application.streamingAssetsPath, "CodeTest.codecanvas");
@@ -18,7 +18,7 @@ public class CodeTraverser : MonoBehaviour
     public Dictionary<int, ConditionBlock> conditionBlocks = new Dictionary<int, ConditionBlock>();
     public Dictionary<string, EntityDeathDelegate> entityDeathDelegates = new Dictionary<string, EntityDeathDelegate>();
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
-    public static CodeTraverser instance;
+    public static CoreScriptsManager instance;
     
     public string GetLocalMapString(string key)
     {
@@ -59,7 +59,7 @@ public class CodeTraverser : MonoBehaviour
         public int taskHash;
         public List<string> prerequisites;
         public Sequence sequence;
-        public CodeTraverser traverser;
+        public CoreScriptsManager traverser;
     }
 
     private bool initialized = false;
@@ -89,7 +89,7 @@ public class CodeTraverser : MonoBehaviour
     void RunMissionTrigger(Context context)
     {
         StartMissionNode.TryAddMission(context.missionName, "B", "Test.", Color.white, 0, context.prerequisites);
-        CodeCanvasSequence.RunSequence(context.sequence, context);
+        CoreScriptsSequence.RunSequence(context.sequence, context);
     }
 
     void Parse()
@@ -108,7 +108,7 @@ public class CodeTraverser : MonoBehaviour
             var c = d.character;
             if (lines[i].Substring(c).StartsWith("Task"))
             {
-                var task = CodeCanvasTask.ParseTask(i, c, lines, stringScopes, localMap, out d);
+                var task = CoreScriptsTask.ParseTask(i, c, lines, stringScopes, localMap, out d);
                 tasks.Add(task.taskID, task);
             }
             d = StringSensitiveIterator(d, lines, stringScopes);
@@ -121,16 +121,16 @@ public class CodeTraverser : MonoBehaviour
             var c = d.character;
             if (lines[i].Substring(c).StartsWith("Dialogue"))
             {
-                CodeCanvasDialogue.ParseDialogue(i, c, lines, stringScopes, localMap, dialogues, tasks, out d);
+                CoreScriptsDialogue.ParseDialogue(i, c, lines, stringScopes, localMap, dialogues, tasks, out d);
             }
             else if (lines[i].Substring(c).StartsWith("Function"))
             {
-                var func = CodeCanvasFunction.ParseFunction(i, c, lines, stringScopes, conditionBlocks, out d);
+                var func = CoreScriptsFunction.ParseFunction(i, c, lines, stringScopes, conditionBlocks, out d);
                 functions.Add(func.name, func.sequence);
             }
             else if (lines[i].Substring(c).StartsWith("MissionTrigger"))
             {
-                missionTriggers.Add(CodeCanvasMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, conditionBlocks, this, out d));
+                missionTriggers.Add(CoreScriptsMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, conditionBlocks, this, out d));
             }
             d = StringSensitiveIterator(d, lines, stringScopes);
         }

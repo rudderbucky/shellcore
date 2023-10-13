@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CodeCanvasCondition;
-using static CodeTraverser;
+using static CoreScriptsCondition;
+using static CoreScriptsManager;
 
 // TODO: Remove ambiguity on when a comma is required and when it's not (Caused because argument hunting does not work with closing brackets)
 // TODO: Just use CodeTraverser as a singleton and remove all the list passing
-public class CodeCanvasSequence : MonoBehaviour
+// TODO: Add the Start and Sector triggers
+// TODO: Read CoreScripts from a per-world dedicated file
+public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand
     {
@@ -63,9 +65,9 @@ public class CodeCanvasSequence : MonoBehaviour
                 if (index >= 0) 
                     return SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
             }
-            else if (val.StartsWith("$$") && CodeTraverser.instance.globalVariables != null)
+            else if (val.StartsWith("$$") && CoreScriptsManager.instance.globalVariables != null)
             {
-                return CodeTraverser.instance.globalVariables[val.Substring(2)];
+                return CoreScriptsManager.instance.globalVariables[val.Substring(2)];
             }
             else return val;
         }
@@ -122,7 +124,7 @@ public class CodeCanvasSequence : MonoBehaviour
                 case InstructionCommand.ConditionBlock:
                     var cb = traverser.conditionBlocks[int.Parse(GetArgument(inst.arguments, "ID"))];
                     cb.traverser = traverser;
-                    CodeCanvasCondition.ExecuteConditionBlock(cb, context);
+                    CoreScriptsCondition.ExecuteConditionBlock(cb, context);
                     break;
                 case InstructionCommand.SpawnEntity:
                     SpawnEntity(
@@ -176,7 +178,7 @@ public class CodeCanvasSequence : MonoBehaviour
                     break;
                 case InstructionCommand.PassiveDialogue:
                     entityID = GetArgument(inst.arguments, "entityID");
-                    var text = CodeTraverser.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
+                    var text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
                     var soundType = GetArgument(inst.arguments, "soundType");
                     var onlyShowIfInParty = GetArgument(inst.arguments, "onlyShowIfInParty") == "true";
 
@@ -203,7 +205,7 @@ public class CodeCanvasSequence : MonoBehaviour
         }
         else if (variableName.StartsWith("$$"))
         {
-            var dict = CodeTraverser.instance.globalVariables;
+            var dict = CoreScriptsManager.instance.globalVariables;
             var key = variableName.Substring(2);
             if (dict.ContainsKey(key))
             {
@@ -232,8 +234,8 @@ public class CodeCanvasSequence : MonoBehaviour
             }
         }
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
@@ -253,7 +255,7 @@ public class CodeCanvasSequence : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("ConditionBlock"))
             {
-                var b = CodeCanvasCondition.ParseConditionBlock(i, line, blocks);
+                var b = CoreScriptsCondition.ParseConditionBlock(i, line, blocks);
                 blocks.Add(b.ID, b);
                 var inst = new Instruction();
                 inst.command = InstructionCommand.ConditionBlock;
@@ -276,8 +278,8 @@ public class CodeCanvasSequence : MonoBehaviour
         List<string> stx = null;
         int brax = 0;
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);

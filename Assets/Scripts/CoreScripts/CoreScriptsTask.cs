@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CodeTraverser;
+using static CoreScriptsManager;
 
-public class CodeCanvasTask : MonoBehaviour
+public class CoreScriptsTask : MonoBehaviour
 {
     public static Task ParseTask(int lineIndex, int charIndex,
          string[] lines, Dictionary<FileCoord, FileCoord> stringScopes,
         Dictionary<string, string> localMap, out FileCoord coord)
     {
-        return ParseTaskHelper(0, CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord), localMap);
+        return ParseTaskHelper(0, CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord), localMap);
     }
 
     // TODO: Add property inheritance to child nodes like speaker ID, typing speed, color etc
@@ -31,14 +31,14 @@ public class CodeCanvasTask : MonoBehaviour
 
         var task = new Task();
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
             var name = "";
             var val = "";
-            CodeCanvasSequence.GetNameAndValue(lineSubstr, out name, out val);
+            CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);
 
             switch (name)
             {

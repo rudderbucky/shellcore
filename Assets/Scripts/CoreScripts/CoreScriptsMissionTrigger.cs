@@ -1,21 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CodeCanvasCondition;
-using static CodeCanvasSequence;
-using static CodeTraverser;
+using static CoreScriptsCondition;
+using static CoreScriptsSequence;
+using static CoreScriptsManager;
 
-public class CodeCanvasMissionTrigger : MonoBehaviour
+public class CoreScriptsMissionTrigger : MonoBehaviour
 {
 
     public static Context ParseMissionTrigger(int lineIndex, int charIndex,
-         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, CodeTraverser traverser, out FileCoord coord)
+         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, CoreScriptsManager traverser, out FileCoord coord)
     {
-        var scope = CodeTraverser.GetScope(lineIndex, lines, stringScopes, out coord);
+        var scope = CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord);
         return ParseMissionTriggerHelper(0, scope, traverser, blocks);
     }
 
-    private static Context ParseMissionTriggerHelper(int index, string line, CodeTraverser traverser, Dictionary<int, ConditionBlock> blocks)
+    private static Context ParseMissionTriggerHelper(int index, string line, CoreScriptsManager traverser, Dictionary<int, ConditionBlock> blocks)
     {
         var trigger = new Context();
         trigger.type = TriggerType.Mission;
@@ -30,8 +30,8 @@ public class CodeCanvasMissionTrigger : MonoBehaviour
         bool skipToComma = false;
         int brax = 0;
 
-        index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
-        for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
+        index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
+        for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
@@ -52,7 +52,7 @@ public class CodeCanvasMissionTrigger : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("sequence="))
             {
-                trigger.sequence = CodeCanvasSequence.ParseSequence(i, line, blocks);
+                trigger.sequence = CoreScriptsSequence.ParseSequence(i, line, blocks);
             }
         }
         return trigger;
