@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class PassiveDialogue : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    // TODO: Allow passive dialogue to inherit entity color
+    public static void Execute(string id, string text, string soundType, bool onlyShowIfInParty)
     {
-        
-    }
+        if (!onlyShowIfInParty || (PartyManager.instance.partyMembers.Exists(sc => sc.ID == id)))
+        {
+            int soundIndex;
+            bool success = int.TryParse(soundType, out soundIndex);
+            if (!success)
+            {
+                soundIndex = 1;
+            }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            PassiveDialogueSystem.Instance.PushPassiveDialogue(id, text, soundIndex);
+        }
+        else
+        {
+            Debug.Log("Party member not found, not pushing dialogue");
+        }
     }
 }

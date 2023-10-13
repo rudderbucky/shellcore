@@ -162,6 +162,11 @@ public class CodeCanvasSequence : MonoBehaviour
                     SetPath.Execute(entityID, rotateWhileMoving, customMass, flagName, inst.sequence, context);
                     break;
                 case InstructionCommand.Rotate:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    var targetID = GetArgument(inst.arguments, "targetID");
+                    var angle = GetArgument(inst.arguments, "angle");
+
+                    Rotate.Execute(entityID, targetID, angle, inst.sequence, context);
                     break;
                 case InstructionCommand.StartCutscene:
                     Cutscene.StartCutscene();
@@ -170,6 +175,12 @@ public class CodeCanvasSequence : MonoBehaviour
                     Cutscene.FinishCutscene();
                     break;
                 case InstructionCommand.PassiveDialogue:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    var text = CodeTraverser.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
+                    var soundType = GetArgument(inst.arguments, "soundType");
+                    var onlyShowIfInParty = GetArgument(inst.arguments, "onlyShowIfInParty") == "true";
+
+                    PassiveDialogue.Execute(entityID, text, soundType, onlyShowIfInParty);
                     break;
             }
         }
@@ -211,18 +222,16 @@ public class CodeCanvasSequence : MonoBehaviour
         bool skipToComma = false;
         int brax = 0;
 
-        List<string> standardInstructions = new List<string>() 
+        List<string> standardInstructions = new List<string>();
+
+        foreach (string instType in Enum.GetNames(typeof(InstructionCommand)))
         {
-            "SetInteraction",
-            "SpawnEntity",
-            "Log",
-            "SetVariable",
-            "AddIntValues",
-            "ConcatenateValues",
-            "StartCutscene",
-            "FinishCutscene",
-            "SetPath",
-        };
+            if (instType != "Call" && instType != "ConditionBlock")
+            {
+                standardInstructions.Add(instType);
+            }
+        }
+
         index = CodeTraverser.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CodeTraverser.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {

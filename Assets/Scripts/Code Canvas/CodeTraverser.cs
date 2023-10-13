@@ -19,6 +19,13 @@ public class CodeTraverser : MonoBehaviour
     public Dictionary<string, EntityDeathDelegate> entityDeathDelegates = new Dictionary<string, EntityDeathDelegate>();
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
     public static CodeTraverser instance;
+    
+    public string GetLocalMapString(string key)
+    {
+        key = key.Trim();
+        if (!localMap.ContainsKey(key)) return "";
+        else return localMap[key];
+    }
 
     public Sequence GetFunction(string key)
     {
