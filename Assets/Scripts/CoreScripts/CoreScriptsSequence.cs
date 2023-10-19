@@ -5,10 +5,9 @@ using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
 
-// TODO: Remove ambiguity on when a comma is required and when it's not (Caused because argument hunting does not work with closing brackets)
-// TODO: Just use CodeTraverser as a singleton and remove all the list passing
 // TODO: Add the Start and Sector triggers
-// TODO: Read CoreScripts from a per-world dedicated file
+// TODO: Multiple CoreScripts files
+// TODO: CoreScripts comments
 public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand
@@ -84,7 +83,7 @@ public class CoreScriptsSequence : MonoBehaviour
 
     public static void RunSequence (Sequence seq, Context context)
     {
-        var traverser = context.traverser;
+        var traverser = CoreScriptsManager.instance;
         foreach (var inst in seq.instructions)
         {
             switch (inst.command)
@@ -123,7 +122,6 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 case InstructionCommand.ConditionBlock:
                     var cb = traverser.conditionBlocks[int.Parse(GetArgument(inst.arguments, "ID"))];
-                    cb.traverser = traverser;
                     CoreScriptsCondition.ExecuteConditionBlock(cb, context);
                     break;
                 case InstructionCommand.SpawnEntity:
@@ -251,7 +249,6 @@ public class CoreScriptsSequence : MonoBehaviour
                 inst.arguments = AddArgument(inst.arguments, "name", funcName);
                 inst.command = InstructionCommand.Call;
                 seq.instructions.Add(inst);
-                // TODO: Function call recursion
             }
             else if (lineSubstr.StartsWith("ConditionBlock"))
             {
@@ -299,7 +296,7 @@ public class CoreScriptsSequence : MonoBehaviour
         return inst;
     }
 
-    public static void GetNameAndValue(string line, out string name, out string val)
+    public static void GetNameAndValue(string line, out string name, out string val, bool continueThroughScopes = false)
     {
         if (!line.Contains("="))
         {
@@ -307,19 +304,26 @@ public class CoreScriptsSequence : MonoBehaviour
             return;
         }
 
+        var brackets = 0;
         name = line.Split("=")[0];
         val = line.Split("=")[1];
         int minIndex = val.Length;
-        if (val.IndexOf(',') != -1)
-        {
-            minIndex = Mathf.Min(minIndex, val.IndexOf(','));
-        }
-        if (val.IndexOf(')') != -1)
-        {
-            
-            minIndex = Mathf.Min(minIndex, val.IndexOf(')'));
-        }
 
+        var commaExists = val.IndexOf(',') != -1;
+
+        for (int i = 0; i < val.Length; i++)
+        {
+            if (val[i] == '(') brackets++;
+            else if (val[i] == ')') brackets--;
+
+            if (brackets > 0 && continueThroughScopes) continue;
+
+            if (val[i] == ',' || (!commaExists && val[i] == ')')) 
+            {
+                minIndex = i;
+                break;
+            }
+        }
 
         val = val.Substring(0, minIndex);
     }

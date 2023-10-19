@@ -29,7 +29,6 @@ public class CoreScriptsCondition : MonoBehaviour
     public struct ConditionBlock
     {
         public List<Condition> conditions;
-        public CoreScriptsManager traverser;
         public Context context;
         public int ID;
     }
@@ -131,7 +130,7 @@ public class CoreScriptsCondition : MonoBehaviour
                     killCount = EntityCheck(ID, e, c, cb, nameMode, progressionFeedback, targetID, targetFaction, targetCount, killCount);
                 };
 
-                cb.traverser.entityDeathDelegates.Add(ID, act);
+                CoreScriptsManager.instance.entityDeathDelegates.Add(ID, act);
                 Entity.OnEntityDeath += act;
                 break;
 
@@ -185,7 +184,7 @@ public class CoreScriptsCondition : MonoBehaviour
         switch(cond.type)
         {
             case ConditionType.DestroyEntities:
-                Entity.OnEntityDeath -= cb.traverser.entityDeathDelegates[ID];
+                Entity.OnEntityDeath -= CoreScriptsManager.instance.entityDeathDelegates[ID];
                 break;
             case ConditionType.WinBattleZone:
             case ConditionType.WinSiegeZone:

@@ -46,5 +46,6 @@ public class Dialogue : ScriptableObject, IDialogueable
         public Task task;
         [NonSerialized]
         public string functionID;
+        public float typingSpeedFactor;
     }
 }

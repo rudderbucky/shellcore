@@ -37,6 +37,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public VendorUI vendorUI;
     int characterCount = 0;
     float nextCharacterTime;
+    private float typingSpeedFactor = 1;
     public double timeBetweenCharacters = 0.0175d;
     string text = "";
     public PlayerCore player;
@@ -215,7 +216,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             if (Time.time > nextCharacterTime)
             {
                 characterCount++;
-                nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
+                nextCharacterTime = (float)(Time.time + timeBetweenCharacters / typingSpeedFactor);
                 textRenderer.text = text.Substring(0, characterCount);
             }
         }
@@ -552,6 +553,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void showCanvasDialogue(string text, List<string> answers, Entity speaker, Color textColor, bool useEntityColor = true)
     {
+        typingSpeedFactor = 1;
         CreateWindow(dialogueBoxPrefab, text, useEntityColor && speaker ? FactionManager.GetFactionColor(speaker.faction) : textColor, speaker);
         DialogueViewTransitionIn(speaker);
 
@@ -713,6 +715,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
     private void startDialogue(Dialogue dialogue, IInteractable speaker, Context context = null)
     {
+        typingSpeedFactor = 1;
         if (window)
         {
             endDialogue();
@@ -848,7 +851,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 next(dialogue, current.nextNodes[0], speaker);
                 return;
             case Dialogue.DialogueAction.Call:
-                var s = context.traverser.GetFunction(current.functionID);
+                var s = CoreScriptsManager.instance.GetFunction(current.functionID);
                 CoreScriptsSequence.RunSequence(s, context);
                 endDialogue(0, false);
                 return;
@@ -875,7 +878,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         // change text
         text = current.text.Replace("<br>", "\n");
         characterCount = 0;
-        nextCharacterTime = (float)(Time.time + timeBetweenCharacters);
+
+        typingSpeedFactor = current.typingSpeedFactor;
+        nextCharacterTime = (float)(Time.time + timeBetweenCharacters / current.typingSpeedFactor);
+
         textRenderer.color = current.textColor;
         if (current.useSpeakerColor && speaker is Entity colorEnt) textRenderer.color = FactionManager.GetFactionColor(colorEnt.faction);
 

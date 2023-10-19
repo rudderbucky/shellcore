@@ -59,7 +59,6 @@ public class CoreScriptsManager : MonoBehaviour
         public int taskHash;
         public List<string> prerequisites;
         public Sequence sequence;
-        public CoreScriptsManager traverser;
     }
 
     private bool initialized = false;
@@ -130,7 +129,7 @@ public class CoreScriptsManager : MonoBehaviour
             }
             else if (lines[i].Substring(c).StartsWith("MissionTrigger"))
             {
-                missionTriggers.Add(CoreScriptsMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, conditionBlocks, this, out d));
+                missionTriggers.Add(CoreScriptsMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, conditionBlocks, out d));
             }
             d = StringSensitiveIterator(d, lines, stringScopes);
         }

@@ -10,24 +10,22 @@ public class CoreScriptsDialogue : MonoBehaviour
         var node = new Dialogue.Node();
         node.nextNodes = new List<int>();
         node.useSpeakerColor = true;
+        node.typingSpeedFactor = 1;
         return node;
     }
 
-    // TODO: force top-of-stack dialogue to be ID 0
     public static void ParseDialogue(int lineIndex, int charIndex,
          string[] lines, Dictionary<FileCoord, FileCoord> stringScopes,
-        Dictionary<string, string> localMap, Dictionary<string, Dialogue> dialogues, Dictionary<string, Task> tasks, out FileCoord coord)
+        Dictionary<string, string> localMap, Dictionary<string, Dialogue> dialogues, 
+        Dictionary<string, Task> tasks, out FileCoord coord)
     {
         var dialogue = ScriptableObject.CreateInstance<Dialogue>();
         dialogue.nodes = new List<Dialogue.Node>();
         nextID = 0;
         var metadata = new DialogueRecursionMetadata();
         var scope = CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord);
-        ParseDialogueHelper(charIndex, scope, dialogue, localMap, out metadata, tasks);
+        ParseDialogueHelper(charIndex, scope, dialogue, localMap, out metadata, tasks, Color.white);
         dialogues[metadata.dialogueID] = dialogue;
-//#if UNITY_EDITOR
-//       UnityEditor.AssetDatabase.CreateAsset(dialogue, "Assets/DebugDialogue.asset");
-//#endif
     }
 
     private struct DialogueRecursionMetadata
@@ -36,9 +34,11 @@ public class CoreScriptsDialogue : MonoBehaviour
         public string dialogueID;
     }
 
+    // TODO: Remove order-sensitivity on color properties and response parsing
     // TODO: Add property inheritance to child nodes like speaker ID, typing speed, color etc
     private static void ParseDialogueHelper(int index, string line, Dialogue dialogue, 
-        Dictionary<string, string> localMap, out DialogueRecursionMetadata metadata, Dictionary<string, Task> tasks, string responseText = null)
+        Dictionary<string, string> localMap, out DialogueRecursionMetadata metadata, Dictionary<string, Task> tasks, 
+        Color defaultColor, string responseText = null, bool useSpeakerColor = true, float typingSpeedFactor = 1)
     {
         
         metadata = new DialogueRecursionMetadata();
@@ -50,6 +50,7 @@ public class CoreScriptsDialogue : MonoBehaviour
         }
         
         var node = GetDefaultNode();
+        node.typingSpeedFactor = typingSpeedFactor;
         bool forcedID = false;
         node.buttonText = responseText;
 
@@ -61,10 +62,20 @@ public class CoreScriptsDialogue : MonoBehaviour
             "speakerID=",
             "dialogueText=",
             "nodeID=",
+            "color=",
             "useSpeakerColor=",
             "responses=",
-            "taskID="
+            "taskID=",
+            "typingSpeedFactor=",
         };
+
+        var skipSettingID = false;
+        if (nextID == 0)
+        {
+            // force the top-level node to have ID 0
+            node = SetNodeID(dialogue, node, nextID);
+            skipSettingID = true;
+        }
 
         index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
@@ -73,11 +84,11 @@ public class CoreScriptsDialogue : MonoBehaviour
             
             var name = "";
             var val = "";
-            CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);
+            CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val, true);
 
             if (lineSubstr.StartsWith("responses="))
             {
-                ParseResponses(i, line, dialogue, node.nextNodes, localMap, tasks);
+                ParseResponses(i, line, dialogue, node.nextNodes, localMap, tasks, defaultColor, useSpeakerColor);
                 continue;
             }
 
@@ -100,9 +111,26 @@ public class CoreScriptsDialogue : MonoBehaviour
                 node.ID = int.Parse(val);
                 forcedID = true;
             }
+            else if (lineSubstr.StartsWith("typingSpeedFactor="))
+            {
+                node.typingSpeedFactor = float.Parse(val);
+                typingSpeedFactor = node.typingSpeedFactor;
+            }
+            else if (lineSubstr.StartsWith("color="))
+            {
+                var colorCommaSep = val.Trim().Replace("(", "").Replace(")", "").Split(",");
+                var color = new Color32();
+                color.r = (byte)int.Parse(colorCommaSep[0]);
+                color.g = (byte)int.Parse(colorCommaSep[1]);
+                color.b = (byte)int.Parse(colorCommaSep[2]);
+                color.a = 255;
+                defaultColor = color;
+                useSpeakerColor = false;
+
+            }
             else if (lineSubstr.StartsWith("useSpeakerColor="))
             {
-                node.useSpeakerColor = val == "true";
+                useSpeakerColor = val == "true";
             }
             else if (lineSubstr.StartsWith("taskID="))
             {
@@ -110,16 +138,25 @@ public class CoreScriptsDialogue : MonoBehaviour
             }
         }
 
-        dialogue.nodes.Add(node);
-        
+        node.useSpeakerColor = useSpeakerColor;
         node.textColor = Color.white;
+        
+        if (!useSpeakerColor) 
+        {
+            node.textColor = defaultColor;
+        }
+        dialogue.nodes.Add(node);
         var last = dialogue.nodes.Count - 1;
+        
+        metadata.index = index;
+        if (skipSettingID) return;
         if (!forcedID) dialogue.nodes[last] = SetNodeID(dialogue, node, nextID);
         else dialogue.nodes[last] = SetNodeID(dialogue, node, node.ID, true);
-        metadata.index = index;
     }
 
-    private static void ParseResponses (int index, string line, Dialogue dialogue, List<int> nextNodes, Dictionary<string, string> localMap, Dictionary<string, Task> tasks)
+    private static void ParseResponses (int index, string line, Dialogue dialogue, 
+        List<int> nextNodes, Dictionary<string, string> localMap, 
+        Dictionary<string, Task> tasks, Color defaultColor, bool useSpeakerColor = true, float typingSpeedFactor = 1)
     {
         bool skipToComma = false;
         int brax = 0;
@@ -134,12 +171,14 @@ public class CoreScriptsDialogue : MonoBehaviour
             var lineSubstr = line.Substring(i).Trim();
             if (lineSubstr.StartsWith("Response("))
             {
-                ParseResponse(i, line, dialogue, localMap, nextNodes, tasks);
+                ParseResponse(i, line, dialogue, localMap, nextNodes, defaultColor, tasks, useSpeakerColor, typingSpeedFactor);
             }
         }
     }
 
-    private static int ParseResponse (int index, string line, Dialogue dialogue, Dictionary<string, string> localMap, List<int> nextNodes, Dictionary<string, Task> tasks)
+    private static int ParseResponse (int index, string line, 
+        Dialogue dialogue, Dictionary<string, string> localMap, List<int> nextNodes, Color defaultColor,
+        Dictionary<string, Task> tasks, bool useSpeakerColor = true, float typingSpeedFactor = 1)
     {
         
         var node = GetDefaultNode();
@@ -185,7 +224,7 @@ public class CoreScriptsDialogue : MonoBehaviour
                 {
                     insertNode = false;
                     DialogueRecursionMetadata metadata;
-                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, tasks, responseText);
+                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, tasks, defaultColor, responseText, useSpeakerColor);
                     index = metadata.index;
                     nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
                     
