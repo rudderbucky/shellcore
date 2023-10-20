@@ -12,10 +12,11 @@ public class CoreScriptsFunction : MonoBehaviour
         public string name;
         public Sequence sequence;
     }
+
     public static Function ParseFunction(int lineIndex, int charIndex,
-         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, out FileCoord coord)
+        string[] lines, ScopeParseData data, out FileCoord coord)
     {
-        return ParseFunctionHelper(0, CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord), blocks);
+        return ParseFunctionHelper(0, CoreScriptsManager.GetScope(lineIndex, lines, data.stringScopes, data.commentLines, out coord), data.blocks);
     }
 
     private static Function ParseFunctionHelper(int index, string line, Dictionary<int, ConditionBlock> blocks)

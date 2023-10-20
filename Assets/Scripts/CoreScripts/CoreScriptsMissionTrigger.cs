@@ -7,12 +7,11 @@ using static CoreScriptsManager;
 
 public class CoreScriptsMissionTrigger : MonoBehaviour
 {
-
     public static Context ParseMissionTrigger(int lineIndex, int charIndex,
-         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, Dictionary<int, ConditionBlock> blocks, out FileCoord coord)
+         string[] lines, ScopeParseData data, out FileCoord coord)
     {
-        var scope = CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord);
-        return ParseMissionTriggerHelper(0, scope, blocks);
+        var scope = CoreScriptsManager.GetScope(lineIndex, lines, data.stringScopes, data.commentLines, out coord);
+        return ParseMissionTriggerHelper(0, scope, data.blocks);
     }
 
     private static Context ParseMissionTriggerHelper(int index, string line, Dictionary<int, ConditionBlock> blocks)

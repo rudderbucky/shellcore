@@ -7,7 +7,6 @@ using static CoreScriptsManager;
 
 // TODO: Add the Start and Sector triggers
 // TODO: Multiple CoreScripts files
-// TODO: CoreScripts comments
 public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand

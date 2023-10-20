@@ -6,13 +6,11 @@ using static CoreScriptsManager;
 public class CoreScriptsTask : MonoBehaviour
 {
     public static Task ParseTask(int lineIndex, int charIndex,
-         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes,
-        Dictionary<string, string> localMap, out FileCoord coord)
+         string[] lines, ScopeParseData data, out FileCoord coord)
     {
-        return ParseTaskHelper(0, CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord), localMap);
+        return ParseTaskHelper(0, CoreScriptsManager.GetScope(lineIndex, lines, data.stringScopes, data.commentLines, out coord), data.localMap);
     }
 
-    // TODO: Add property inheritance to child nodes like speaker ID, typing speed, color etc
     private static Task ParseTaskHelper(int index, string line, Dictionary<string, string> localMap)
     {
         List<string> stx = new List<string>()

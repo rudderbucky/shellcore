@@ -45,6 +45,7 @@ public class CoreScriptsManager : MonoBehaviour
     }
     private Dictionary<FileCoord, FileCoord> stringScopes = new Dictionary<FileCoord, FileCoord>();
     private List<Context> missionTriggers = new List<Context>();
+    private HashSet<int> commentLines = new HashSet<int>();
     public enum TriggerType
     {
         Mission,
@@ -94,10 +95,19 @@ public class CoreScriptsManager : MonoBehaviour
     void Parse()
     {
         string[] lines = System.IO.File.ReadAllLines(codePath);
+        GetCommentLines(lines);
         GetStringScopes(lines);
         dialogues = new Dictionary<string, Dialogue>();
         
         SetUpLocalMap(lines);
+
+        var data = new ScopeParseData();
+        data.stringScopes = stringScopes;
+        data.localMap = localMap;
+        data.dialogues = dialogues;
+        data.tasks = tasks;
+        data.commentLines = commentLines;
+        data.blocks = conditionBlocks;
 
         // Pass 1: get tasks, so that dialogue can use the map
         FileCoord d = new FileCoord();
@@ -107,35 +117,50 @@ public class CoreScriptsManager : MonoBehaviour
             var c = d.character;
             if (lines[i].Substring(c).StartsWith("Task"))
             {
-                var task = CoreScriptsTask.ParseTask(i, c, lines, stringScopes, localMap, out d);
+                var task = CoreScriptsTask.ParseTask(i, c, lines, data, out d);
                 tasks.Add(task.taskID, task);
             }
-            d = StringSensitiveIterator(d, lines, stringScopes);
+            d = StringSensitiveIterator(d, lines, stringScopes, commentLines);
         }
+
 
         d = new FileCoord();
         while (d.line < lines.Length)
         {
             var i = d.line;
             var c = d.character;
+
             if (lines[i].Substring(c).StartsWith("Dialogue"))
             {
-                CoreScriptsDialogue.ParseDialogue(i, c, lines, stringScopes, localMap, dialogues, tasks, out d);
+
+                CoreScriptsDialogue.ParseDialogue(i, c, lines, data, out d);
             }
             else if (lines[i].Substring(c).StartsWith("Function"))
             {
-                var func = CoreScriptsFunction.ParseFunction(i, c, lines, stringScopes, conditionBlocks, out d);
+                var func = CoreScriptsFunction.ParseFunction(i, c, lines, data, out d);
                 functions.Add(func.name, func.sequence);
             }
             else if (lines[i].Substring(c).StartsWith("MissionTrigger"))
             {
-                missionTriggers.Add(CoreScriptsMissionTrigger.ParseMissionTrigger(i, c, lines, stringScopes, conditionBlocks, out d));
+                missionTriggers.Add(CoreScriptsMissionTrigger.ParseMissionTrigger(i, c, lines, data, out d));
             }
-            d = StringSensitiveIterator(d, lines, stringScopes);
+            d = StringSensitiveIterator(d, lines, stringScopes, commentLines);
         }
     }
 
-   private void GetStringScopes(string[] lines)
+    private void GetCommentLines(string[] lines)
+    {
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (lines[i].StartsWith("//"))
+            {
+                commentLines.Add(i);
+            }
+        }
+    }
+
+
+    private void GetStringScopes(string[] lines)
     {
 
         bool escaped = false;
@@ -149,14 +174,14 @@ public class CoreScriptsManager : MonoBehaviour
             if (ch == '\\' && !escaped)
             {
                 escaped = true;
-                interval = IncrementFileCoord(1, interval, lines);
+                interval = IncrementFileCoordWithComments(1, interval, lines, commentLines);
                 continue;
             }
 
             if (escaped)
             {
                 escaped = false;
-                interval = IncrementFileCoord(1, interval, lines);
+                interval = IncrementFileCoordWithComments(1, interval, lines, commentLines);
                 continue;
             }
             if (ch == '"')
@@ -172,7 +197,7 @@ public class CoreScriptsManager : MonoBehaviour
                     inScope = false;
                 }
             }
-            interval = IncrementFileCoord(1, interval, lines);
+            interval = IncrementFileCoordWithComments(1, interval, lines, commentLines);
         }
     }
 
@@ -239,13 +264,25 @@ public class CoreScriptsManager : MonoBehaviour
         return scope.Length;
     }
 
-    public static string GetScope(int startLineNum, string[] lines, Dictionary<FileCoord, FileCoord> stringScopes, out FileCoord endOfScope)
+    public struct ScopeParseData
+    {
+        public Dictionary<FileCoord, FileCoord> stringScopes;
+        public Dictionary<string, string> localMap;
+        public Dictionary<string, Dialogue> dialogues;
+        public HashSet<int> commentLines;
+        public Dictionary<int, ConditionBlock> blocks;
+        public Dictionary<string, Task> tasks;
+    }
+
+    public static string GetScope(int startLineNum, string[] lines, 
+    Dictionary<FileCoord, FileCoord> stringScopes, HashSet<int> commentLines,
+     out FileCoord endOfScope)
     {
         int bCount = 0;
         var searchStarted = false;
         var builder = new StringBuilder();
         
-        for (FileCoord d = new FileCoord(startLineNum, 0); d.line < lines.Length; d = StringSensitiveIterator(d, lines, stringScopes))
+        for (FileCoord d = new FileCoord(startLineNum, 0); d.line < lines.Length; d = StringSensitiveIterator(d, lines, stringScopes, commentLines))
         {
             var i = d.line;
             var c = d.character;
@@ -286,8 +323,20 @@ public class CoreScriptsManager : MonoBehaviour
         throw new System.Exception("Did not finish a scope starting at line: " + (startLineNum+1));
     }
 
+    private static FileCoord IncrementFileCoordWithComments(int val, FileCoord coord, string[] lines, HashSet<int> commentLines)
+    {
+        coord = IncrementFileCoord(val, coord, lines);
+        while (commentLines.Contains(coord.line) || (coord.line < lines.Length && coord.character >= lines[coord.line].Length))
+        {
+            coord.line++;
+            coord.character = 0;
+        }
+        return coord;
+        
+    }
+
     // TODO: optimize complexity
-    private FileCoord IncrementFileCoord(int val, FileCoord coord, string[] lines)
+    private static FileCoord IncrementFileCoord(int val, FileCoord coord, string[] lines)
     {
         for (int i = 0; i < val; i++)
         {
@@ -319,7 +368,7 @@ public class CoreScriptsManager : MonoBehaviour
                 quotes = 0;
                 tok1 = "";
                 tok2 = "";
-                coord = IncrementFileCoord(5, coord, lines);
+                coord = IncrementFileCoordWithComments(5, coord, lines, commentLines);
             }
 
             if (stringMode)
@@ -328,7 +377,7 @@ public class CoreScriptsManager : MonoBehaviour
                 if (x == '"') 
                 {
                     quotes++;
-                    coord = IncrementFileCoord(1, coord, lines);
+                    coord = IncrementFileCoordWithComments(1, coord, lines, commentLines);
                     // TODO: enable escaping quotes
                     if (quotes == 4)
                     {
@@ -344,7 +393,7 @@ public class CoreScriptsManager : MonoBehaviour
             }
 
             var oldLine = coord.line;
-            coord = IncrementFileCoord(1, coord, lines);
+            coord = IncrementFileCoordWithComments(1, coord, lines, commentLines);
             if (coord.line != oldLine && stringMode && quotes % 2 != 0)
             {
                 if (quotes < 2) tok1 += '\n';
@@ -353,7 +402,8 @@ public class CoreScriptsManager : MonoBehaviour
         }
     }
 
-    public static FileCoord StringSensitiveIterator(FileCoord current, string[] lines, Dictionary<FileCoord, FileCoord> stringScopes)
+    private static FileCoord StringSensitiveIterator(FileCoord current, string[] lines, 
+        Dictionary<FileCoord, FileCoord> stringScopes, HashSet<int> commentLines)
     {
         if (current.line >= lines.Length) return current;
         if (stringScopes.ContainsKey(current))
@@ -361,16 +411,7 @@ public class CoreScriptsManager : MonoBehaviour
             current = new FileCoord(stringScopes[current].line, stringScopes[current].character + 1);
         }
 
-        current.character++;
-        while (current.character > lines[current.line].Length - 1)
-        {
-            current.line++;
-            current.character = 0;
-            if (current.line >= lines.Length) return current;
-        }
-        
-        // Debug.LogWarning(current.line + " " + current.character + " " + lines[current.line].Length);
-        return current;
+        return IncrementFileCoordWithComments(1, current, lines, commentLines);
     }
 
 }

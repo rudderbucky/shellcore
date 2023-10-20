@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CoreScriptsCondition;
 using static CoreScriptsManager;
 
 public class CoreScriptsDialogue : MonoBehaviour
@@ -14,18 +15,17 @@ public class CoreScriptsDialogue : MonoBehaviour
         return node;
     }
 
+
     public static void ParseDialogue(int lineIndex, int charIndex,
-         string[] lines, Dictionary<FileCoord, FileCoord> stringScopes,
-        Dictionary<string, string> localMap, Dictionary<string, Dialogue> dialogues, 
-        Dictionary<string, Task> tasks, out FileCoord coord)
+         string[] lines, ScopeParseData data, out FileCoord coord)
     {
         var dialogue = ScriptableObject.CreateInstance<Dialogue>();
         dialogue.nodes = new List<Dialogue.Node>();
         nextID = 0;
         var metadata = new DialogueRecursionMetadata();
-        var scope = CoreScriptsManager.GetScope(lineIndex, lines, stringScopes, out coord);
-        ParseDialogueHelper(charIndex, scope, dialogue, localMap, out metadata, tasks, Color.white);
-        dialogues[metadata.dialogueID] = dialogue;
+        var scope = CoreScriptsManager.GetScope(lineIndex, lines, data.stringScopes, data.commentLines, out coord);
+        ParseDialogueHelper(charIndex, scope, dialogue, data.localMap, out metadata, data.tasks, Color.white);
+        data.dialogues[metadata.dialogueID] = dialogue;
     }
 
     private struct DialogueRecursionMetadata
@@ -35,7 +35,6 @@ public class CoreScriptsDialogue : MonoBehaviour
     }
 
     // TODO: Remove order-sensitivity on color properties and response parsing
-    // TODO: Add property inheritance to child nodes like speaker ID, typing speed, color etc
     private static void ParseDialogueHelper(int index, string line, Dialogue dialogue, 
         Dictionary<string, string> localMap, out DialogueRecursionMetadata metadata, Dictionary<string, Task> tasks, 
         Color defaultColor, string responseText = null, bool useSpeakerColor = true, float typingSpeedFactor = 1)
@@ -88,7 +87,7 @@ public class CoreScriptsDialogue : MonoBehaviour
 
             if (lineSubstr.StartsWith("responses="))
             {
-                ParseResponses(i, line, dialogue, node.nextNodes, localMap, tasks, defaultColor, useSpeakerColor);
+                ParseResponses(i, line, dialogue, node.nextNodes, localMap, tasks, defaultColor, useSpeakerColor, typingSpeedFactor);
                 continue;
             }
 
