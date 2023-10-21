@@ -385,8 +385,6 @@ public class CoreScriptsManager : MonoBehaviour
                         
                         tok2 = tok2.Replace("\\\"", "\"");
                         localMap.Add(tok1, tok2);
-                        
-                        Debug.LogWarning(tok1 + " " + tok2);
                     }
                     continue;
                 }

@@ -56,6 +56,7 @@ public class CoreScriptsCondition : MonoBehaviour
         index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
+            skipToComma = true;
             var lineSubstr = line.Substring(i);
             block.conditions.Add(ParseCondition(i, line, condIndex, blocks));
             condIndex++;
@@ -68,24 +69,16 @@ public class CoreScriptsCondition : MonoBehaviour
         var cond = new Condition();
         bool skipToComma = false;
         int brax = 0;
-        var stx = new List<string>()
-        {
-            "type=",
-            "sectorName=",
-            "lossMode=",
-            "sequence=",
-            "entityID=",
-            "targetID=",
-            "nameMode=",
-            "targetFaction=",
-            "targetCount=",
-            "progressionFeedback=",
-            "sequence=",
-        };
+        List<string> stx = null;
+        skipToComma = true;
 
+        var substr = line.Substring(index).Split("(")[0].Trim();
+        
+        Enum.TryParse<ConditionType>(substr, out cond.type);
         index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
         {
+            skipToComma = true;
             var lineSubstr = line.Substring(i);
             if (lineSubstr.StartsWith("sequence=")) 
             {
@@ -99,7 +92,7 @@ public class CoreScriptsCondition : MonoBehaviour
             cond.arguments = AddArgument(cond.arguments, key, val);
 
         }
-        Enum.TryParse<ConditionType>(GetArgument(cond.arguments, "type"), out cond.type);
+
         return cond;
     }
 
