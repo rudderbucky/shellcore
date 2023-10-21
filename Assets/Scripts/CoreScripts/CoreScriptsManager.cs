@@ -130,10 +130,8 @@ public class CoreScriptsManager : MonoBehaviour
         {
             var i = d.line;
             var c = d.character;
-
             if (lines[i].Substring(c).StartsWith("Dialogue"))
             {
-
                 CoreScriptsDialogue.ParseDialogue(i, c, lines, data, out d);
             }
             else if (lines[i].Substring(c).StartsWith("Function"))
@@ -172,20 +170,14 @@ public class CoreScriptsManager : MonoBehaviour
         {
             var ch = lines[interval.line][interval.character];
             // TODO: using backslashes will break the local map
-            if (ch == '\\' && !escaped)
+            if (ch == '\\')
             {
                 escaped = true;
                 interval = IncrementFileCoordWithComments(1, interval, lines, commentLines);
                 continue;
             }
 
-            if (escaped)
-            {
-                escaped = false;
-                interval = IncrementFileCoordWithComments(1, interval, lines, commentLines);
-                continue;
-            }
-            if (ch == '"')
+            if (ch == '"' && !escaped)
             {
                 if (!inScope)
                 {
@@ -197,6 +189,11 @@ public class CoreScriptsManager : MonoBehaviour
                     stringScopes.Add(start, interval);
                     inScope = false;
                 }
+            }
+
+            if (escaped)
+            {
+                escaped = false;
             }
             interval = IncrementFileCoordWithComments(1, interval, lines, commentLines);
         }
@@ -360,6 +357,7 @@ public class CoreScriptsManager : MonoBehaviour
         var tok1 = "";
         var tok2 = "";
         var quotes = 0;
+        var lastCharWasBackslash = false;
         while (coord.line < lines.Length)
         {
             string currentLine = lines[coord.line].Substring(coord.character);
@@ -375,7 +373,10 @@ public class CoreScriptsManager : MonoBehaviour
             if (stringMode)
             {
                 var x = lines[coord.line][coord.character];
-                if (x == '"') 
+                if (x == '\\')
+                    lastCharWasBackslash = true;
+                
+                if (x == '"' && !lastCharWasBackslash) 
                 {
                     quotes++;
                     coord = IncrementFileCoordWithComments(1, coord, lines, commentLines);
@@ -383,11 +384,16 @@ public class CoreScriptsManager : MonoBehaviour
                     if (quotes == 4)
                     {
                         stringMode = false;
+                        
+                        tok2 = tok2.Replace("\\\"", "\"");
                         localMap.Add(tok1, tok2);
+                        
+                        Debug.LogWarning(tok1 + " " + tok2);
                     }
                     continue;
                 }
 
+                if (x != '\\' && lastCharWasBackslash) lastCharWasBackslash = false;
                 
                 if (quotes < 2 && quotes > 0) tok1 += x;
                 else if (quotes > 2) tok2 += x;

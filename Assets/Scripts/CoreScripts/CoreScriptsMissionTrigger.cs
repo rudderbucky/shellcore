@@ -41,7 +41,6 @@ public class CoreScriptsMissionTrigger : MonoBehaviour
             }
             else if (lineSubstr.StartsWith("prerequisites="))
             {
-                // TODO: this introduces a bug where missions cannot have commas in their names
                 var scope = lineSubstr.Substring("prerequisites=".Length);
                 scope = scope.Substring(scope.IndexOf("(")+1, scope.IndexOf(")") - scope.IndexOf("("));
                 var ps = scope.Split(",");
