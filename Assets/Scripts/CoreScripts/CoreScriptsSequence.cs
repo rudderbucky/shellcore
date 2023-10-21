@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
+using System.Linq;
 
 // TODO: Add the Start and Sector triggers
 // TODO: Multiple CoreScripts files
@@ -46,12 +47,38 @@ public class CoreScriptsSequence : MonoBehaviour
         public Sequence sequence;
     }
 
+    private static readonly List<char> specialChars = new List<char>()
+    {
+        ';',
+        '?',
+        ':',
+        '+',
+        '=',
+        '{',
+        '}',
+        '[',
+        ']',
+        '|',
+        '\\',
+        '/',
+        '*',
+        '&',
+        '^',
+        '%',
+        '#',
+        '@',
+        '!',
+        '`',
+        '~',
+    };
+
+
     // TODO: Read out of the global variables array for world base properties
     public static string GetArgument(string arguments, string key, bool rawValue = false)
     {
-        if (key.Contains(";"))
+        if (specialChars.Exists(e => key.Contains(e)))
         {
-            throw new System.Exception("Argument values cannot have semicolons in them.");
+            throw new System.Exception("Argument values cannot have special characters except for underscores in them.");
         }
         var args = arguments.Split(";");
         for (int i = 0; i < args.Length; i++)
@@ -78,9 +105,9 @@ public class CoreScriptsSequence : MonoBehaviour
 
     public static string AddArgument(string arguments, string key, string value)
     {
-        if (key.Contains(";") || value.Contains(";"))
+        if (specialChars.Exists(e => key.Contains(e)) || specialChars.Exists(e => value.Contains(e)))
         {
-            throw new System.Exception("Argument values cannot have semicolons in them.");
+            throw new System.Exception("Argument values cannot have semicolons or commas in them.");
         }
         if (string.IsNullOrEmpty(arguments)) arguments = $"{key};{value}";
         else arguments += $";{key};{value}";
@@ -331,10 +358,18 @@ public class CoreScriptsSequence : MonoBehaviour
             }
         }
 
+        var n = name;
+        var v = val;
         val = val.Substring(0, minIndex);
-        if (val.Contains(";") || name.Contains(";"))
+        if (specialChars.Exists(e => n.Contains(e)))
         {
-            throw new System.Exception("Attribute names or values cannot have semicolons in them.");
+            throw new System.Exception($"Attribute names or values cannot have semicolons or commas in them: {n}");
+        }
+
+        
+        if (specialChars.Exists(e => v.Contains(e)))
+        {
+            throw new System.Exception($"Attribute names or values cannot have semicolons or commas in them: {v}");
         }
     }
 

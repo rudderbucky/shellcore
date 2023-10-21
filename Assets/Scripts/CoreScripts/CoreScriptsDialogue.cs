@@ -223,7 +223,7 @@ public class CoreScriptsDialogue : MonoBehaviour
                 {
                     insertNode = false;
                     DialogueRecursionMetadata metadata;
-                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, tasks, defaultColor, responseText, useSpeakerColor);
+                    ParseDialogueHelper(index, line, dialogue, localMap, out metadata, tasks, defaultColor, responseText, useSpeakerColor, typingSpeedFactor);
                     index = metadata.index;
                     nextNodes.Add(dialogue.nodes[dialogue.nodes.Count - 1].ID);
                     
