@@ -45,11 +45,13 @@ public class CoreScriptsManager : MonoBehaviour
     }
     private Dictionary<FileCoord, FileCoord> stringScopes = new Dictionary<FileCoord, FileCoord>();
     private List<Context> missionTriggers = new List<Context>();
+    private List<Context> startTriggers = new List<Context>();
+    private List<Context> sectorTriggers = new List<Context>();
     private HashSet<int> commentLines = new HashSet<int>();
     public enum TriggerType
     {
         Mission,
-        Launch,
+        Start,
         Sector,
         Spawn
     }
@@ -57,6 +59,7 @@ public class CoreScriptsManager : MonoBehaviour
     {
         public TriggerType type;
         public string missionName;
+        public string sectorName;
         public string entryPoint;
         public int taskHash;
         public List<string> prerequisites;
@@ -69,6 +72,7 @@ public class CoreScriptsManager : MonoBehaviour
     {
         instance = this;
     }
+
 
     public void Initialize()
     {
@@ -85,6 +89,19 @@ public class CoreScriptsManager : MonoBehaviour
         {
             RunMissionTrigger(context);
         }
+
+        foreach (var context in startTriggers)
+        {
+            CoreScriptsSequence.RunSequence(context.sequence, context);
+        }
+
+        SectorManager.OnSectorLoad += (s) => {
+            var context = sectorTriggers.Find(c => c.sectorName == s);
+            if (context != null)
+            {
+                CoreScriptsSequence.RunSequence(context.sequence, context);
+            }
+        };
     }
 
     void RunMissionTrigger(Context context)
@@ -141,7 +158,15 @@ public class CoreScriptsManager : MonoBehaviour
             }
             else if (lines[i].Substring(c).StartsWith("MissionTrigger"))
             {
-                missionTriggers.Add(CoreScriptsMissionTrigger.ParseMissionTrigger(i, c, lines, data, out d));
+                missionTriggers.Add(CoreScriptsTrigger.ParseTrigger(i, c, lines, TriggerType.Mission, data, out d));
+            }
+            else if (lines[i].Substring(c).StartsWith("StartTrigger"))
+            {
+                startTriggers.Add(CoreScriptsTrigger.ParseTrigger(i, c, lines, TriggerType.Start, data, out d));
+            }
+            else if (lines[i].Substring(c).StartsWith("SectorTrigger"))
+            {
+                sectorTriggers.Add(CoreScriptsTrigger.ParseTrigger(i, c, lines, TriggerType.Sector, data, out d));
             }
             d = StringSensitiveIterator(d, lines, stringScopes, commentLines);
         }
