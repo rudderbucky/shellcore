@@ -904,7 +904,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             background.Find("TaskRewardInfo").gameObject.SetActive(true);
             // Objective list
             var objectiveList = background.transform.Find("TaskRewardInfo/ObjectiveList").GetComponent<Text>();
-            objectiveList.text = current.task.objectived;
+            objectiveList.text = current.task.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(current.task.objectived) : current.task.objectived;
             SetupRewards(background.gameObject, wrapper);
         }
         // create buttons

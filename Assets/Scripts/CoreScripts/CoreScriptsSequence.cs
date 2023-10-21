@@ -49,6 +49,10 @@ public class CoreScriptsSequence : MonoBehaviour
     // TODO: Read out of the global variables array for world base properties
     public static string GetArgument(string arguments, string key, bool rawValue = false)
     {
+        if (key.Contains(";"))
+        {
+            throw new System.Exception("Argument values cannot have semicolons in them.");
+        }
         var args = arguments.Split(";");
         for (int i = 0; i < args.Length; i++)
         {
@@ -72,9 +76,12 @@ public class CoreScriptsSequence : MonoBehaviour
         return null;
     }
 
-    // TODO: escape semicolons
     public static string AddArgument(string arguments, string key, string value)
     {
+        if (key.Contains(";") || value.Contains(";"))
+        {
+            throw new System.Exception("Argument values cannot have semicolons in them.");
+        }
         if (string.IsNullOrEmpty(arguments)) arguments = $"{key};{value}";
         else arguments += $";{key};{value}";
         return arguments;
@@ -325,6 +332,10 @@ public class CoreScriptsSequence : MonoBehaviour
         }
 
         val = val.Substring(0, minIndex);
+        if (val.Contains(";") || name.Contains(";"))
+        {
+            throw new System.Exception("Attribute names or values cannot have semicolons in them.");
+        }
     }
 
     private static void SpawnEntity(string entityID, bool forceCharacterTeleport, string flagName, string blueprintJSON, int faction, string name)

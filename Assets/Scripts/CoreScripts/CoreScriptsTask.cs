@@ -28,6 +28,7 @@ public class CoreScriptsTask : MonoBehaviour
         int brax = 0;
 
         var task = new Task();
+        task.useLocalMap = true;
 
         index = CoreScriptsManager.GetNextOccurenceInScope(index, line, stx, ref brax, ref skipToComma, '(', ')');
         for (int i = index; i < line.Length; i = CoreScriptsManager.GetNextOccurenceInScope(i, line, stx, ref brax, ref skipToComma, '(', ')'))
@@ -44,7 +45,7 @@ public class CoreScriptsTask : MonoBehaviour
                     task.taskID = val;
                     break;
                 case "objectives":
-                    task.objectived = localMap[val];
+                    task.objectived = val;
                     break;
                 case "creditReward":
                     task.creditReward = int.Parse(val);

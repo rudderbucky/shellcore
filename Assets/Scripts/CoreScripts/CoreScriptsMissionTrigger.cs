@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static CoreScriptsCondition;
-using static CoreScriptsSequence;
 using static CoreScriptsManager;
 
 public class CoreScriptsMissionTrigger : MonoBehaviour
@@ -23,7 +21,8 @@ public class CoreScriptsMissionTrigger : MonoBehaviour
         {
             "name=",
             "prerequisites=",
-            "sequence="
+            "sequence=",
+            "entryPoint="
         };
         bool skipToComma = false;
         int brax = 0;
@@ -33,9 +32,12 @@ public class CoreScriptsMissionTrigger : MonoBehaviour
         {
             skipToComma = true;
             var lineSubstr = line.Substring(i);
+            var name = "";
+            var val = "";
+            CoreScriptsSequence.GetNameAndValue(lineSubstr, out name, out val);
             if (lineSubstr.StartsWith("name="))
             {
-                trigger.missionName = lineSubstr.Split(",")[0].Split("=")[1];
+                trigger.missionName = val;
             }
             else if (lineSubstr.StartsWith("prerequisites="))
             {
@@ -47,6 +49,10 @@ public class CoreScriptsMissionTrigger : MonoBehaviour
                 {
                     trigger.prerequisites.Add(p.Trim());
                 }
+            }
+            else if (lineSubstr.StartsWith("entryPoint="))
+            {
+                trigger.entryPoint = val;
             }
             else if (lineSubstr.StartsWith("sequence="))
             {

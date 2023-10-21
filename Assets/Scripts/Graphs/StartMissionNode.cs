@@ -153,6 +153,7 @@ namespace NodeEditorFramework.Standard
                 mission.entryPoint = entryPoint;
                 mission.textColor = textColor;
                 mission.episode = episode;
+                mission.useLocalMap = !Canvas;
                 PlayerCore.Instance.cursave.missions.Add(mission);
             }
             else
@@ -163,6 +164,7 @@ namespace NodeEditorFramework.Standard
                 mission.entryPoint = entryPoint;
                 mission.textColor = textColor;
                 mission.episode = episode;
+                mission.useLocalMap = !Canvas;
             }
 
             // TODO: Prevent this from breaking the game by not allowing this node in dialogue canvases

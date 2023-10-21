@@ -57,6 +57,7 @@ public class CoreScriptsManager : MonoBehaviour
     {
         public TriggerType type;
         public string missionName;
+        public string entryPoint;
         public int taskHash;
         public List<string> prerequisites;
         public Sequence sequence;
@@ -88,7 +89,7 @@ public class CoreScriptsManager : MonoBehaviour
 
     void RunMissionTrigger(Context context)
     {
-        StartMissionNode.TryAddMission(context.missionName, "B", "Test.", Color.white, 0, context.prerequisites);
+        StartMissionNode.TryAddMission(context.missionName, "B", context.entryPoint, Color.white, 0, context.prerequisites);
         CoreScriptsSequence.RunSequence(context.sequence, context);
     }
 

@@ -12,6 +12,23 @@ public class Task
     public EntityBlueprint.PartInfo partReward;
     public float shardReward;
     public int reputationReward;
+    public bool useLocalMap;
+
+    public Task GetCopy()
+    {
+        var taskCopy = new Task();
+
+        taskCopy.taskID = this.taskID;
+        taskCopy.creditReward = this.creditReward;
+        taskCopy.dialogue = this.dialogue;
+        taskCopy.dialogueColor = this.dialogueColor;
+        taskCopy.objectived = this.objectived;
+        taskCopy.partReward = this.partReward;
+        taskCopy.reputationReward = this.reputationReward;
+        taskCopy.shardReward = this.shardReward;
+        taskCopy.useLocalMap = this.useLocalMap;
+        return taskCopy;
+    }
 }
 
 [System.Serializable]
@@ -34,4 +51,5 @@ public class Mission
     public Color textColor;
     public string checkpoint;
     public int episode;
+    public bool useLocalMap;
 }

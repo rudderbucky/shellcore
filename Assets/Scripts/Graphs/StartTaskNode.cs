@@ -307,7 +307,7 @@ namespace NodeEditorFramework.Standard
 
                 if (!mission.tasks.Exists((x) => x.dialogue == task.dialogue))
                 {
-                    mission.tasks.Add(task);
+                    mission.tasks.Add(task.GetCopy());
                 }
             }
         }

@@ -73,13 +73,14 @@ public class TaskDisplayScript : MonoBehaviour
             )) return;
         var button = Instantiate(instance.missionButtonPrefab,
             instance.missionListContents[rankNumberByString[mission.rank]]).GetComponent<Button>();
+        var str = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.name) :  mission.name;
         if (mission.name.Length <= 33)
         {
-            button.GetComponentInChildren<Text>().text = mission.name;
+            button.GetComponentInChildren<Text>().text = str;
         }
         else
         {
-            button.GetComponentInChildren<Text>().text = mission.name.Substring(0, 30) + "...";
+            button.GetComponentInChildren<Text>().text = str.Substring(0, 30) + "...";
         }
 
         switch (mission.status)
@@ -119,21 +120,33 @@ public class TaskDisplayScript : MonoBehaviour
     public static void ShowMission(Mission mission)
     {
         instance.ClearMissionObjectivesSpace();
-        instance.nameAndPrerequisitesHeader.text = $"{mission.name}\n\nEntrypoint:\n{mission.entryPoint}\n\nPrerequisites:";
+        var name = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.name) : mission.name;
+        var entryPoint = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.entryPoint) : mission.entryPoint;
+        instance.nameAndPrerequisitesHeader.text = $"{name}\n\nEntrypoint:\n{entryPoint}\n\nPrerequisites:";
         instance.rankHeader.text = mission.rank;
         instance.rankHeader.transform.parent.gameObject.SetActive(true);
         instance.rankHeader.color = rankColorsByString[mission.rank];
         foreach (var prereq in mission.prerequisites)
         {
-            instance.nameAndPrerequisitesHeader.text += $"\n{prereq}";
+            var prMission = PlayerCore.Instance.cursave.missions.Find((x) => { return x.name == prereq; });
+            var prName = prMission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(prMission.name) : prMission.name;
+            instance.nameAndPrerequisitesHeader.text += $"\n{(prName)}";
         }
 
         foreach (var task in mission.tasks)
         {
             var obj = Instantiate(instance.missionObjectivePrefab, instance.missionObjectivesContents, false);
             var strings = obj.GetComponentsInChildren<Text>();
-            strings[0].text = task.dialogue;
-            strings[1].text = task.objectived;
+            if (task.useLocalMap)
+            {
+                strings[0].text = CoreScriptsManager.instance.GetLocalMapString(task.dialogue);
+                strings[1].text = CoreScriptsManager.instance.GetLocalMapString(task.objectived);
+            }
+            else
+            {
+                strings[0].text = task.dialogue;
+                strings[1].text = task.objectived;
+            }
             strings[0].color = task.dialogueColor;
 
             if (task != mission.tasks[mission.tasks.Count - 1] || mission.status == Mission.MissionStatus.Complete)
