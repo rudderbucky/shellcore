@@ -169,7 +169,6 @@ public class CoreScriptsManager : MonoBehaviour
         while (interval.line < lines.Length)
         {
             var ch = lines[interval.line][interval.character];
-            // TODO: using backslashes will break the local map
             if (ch == '\\')
             {
                 escaped = true;
@@ -380,7 +379,6 @@ public class CoreScriptsManager : MonoBehaviour
                 {
                     quotes++;
                     coord = IncrementFileCoordWithComments(1, coord, lines, commentLines);
-                    // TODO: enable escaping quotes
                     if (quotes == 4)
                     {
                         stringMode = false;
