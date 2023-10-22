@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -58,10 +59,17 @@ public class TaskDisplayScript : MonoBehaviour
     public static void AddMission(Mission mission)
     {
         loadedMissions.Add(mission);
+
+        Func<string, bool> missionDoesNotExist = (missionName) => !PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == missionName);
+        Func<string, bool> incompleteMissionLambda = (missionName) => PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == missionName) &&
+                PlayerCore.Instance.cursave.missions.Find(mi => mi.name == missionName).status != Mission.MissionStatus.Complete;
+
         if (mission.status == Mission.MissionStatus.Inactive && mission.prerequisites.Count > 0 && mission.prerequisites.TrueForAll(
             m => 
-                !PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == m) ||
-                PlayerCore.Instance.cursave.missions.Find(mi => mi.name == m).status != Mission.MissionStatus.Complete
+            {
+                return (missionDoesNotExist(m) && missionDoesNotExist(CoreScriptsManager.instance.GetLocalMapString(m)))
+                    || incompleteMissionLambda(m) || incompleteMissionLambda(CoreScriptsManager.instance.GetLocalMapString(m));
+            }
             )) return;
         var button = Instantiate(instance.missionButtonPrefab,
             instance.missionListContents).GetComponent<Button>();
@@ -118,7 +126,7 @@ public class TaskDisplayScript : MonoBehaviour
         instance.rankHeader.transform.parent.gameObject.SetActive(true);
         foreach (var prereq in mission.prerequisites)
         {
-            var prMission = PlayerCore.Instance.cursave.missions.Find((x) => { return x.name == prereq; });
+            var prMission = PlayerCore.Instance.cursave.missions.Find((x) => { return x.name == prereq || (x.name == CoreScriptsManager.instance.GetLocalMapString(prereq)); });
             if (prMission == null) continue;
             var prName = prMission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(prMission.name) : prMission.name;
             instance.nameAndPrerequisitesHeader.text += $"\n{(prName)}";

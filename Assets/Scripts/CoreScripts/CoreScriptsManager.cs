@@ -20,6 +20,18 @@ public class CoreScriptsManager : MonoBehaviour
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
     public static CoreScriptsManager instance;
     
+    public static void AssertArgumentsPresent(string args, string statementType, List<string> argNames)
+    {
+        foreach (var argName in argNames)
+        {
+            if (string.IsNullOrEmpty(GetArgument(args, argName)))
+            {
+                throw new System.Exception($"The required argument \"{argName}\" is missing from a statement of type {statementType}.");
+            }
+        }
+    }
+
+
     public string GetLocalMapString(string key)
     {
         key = key.Trim();
@@ -89,7 +101,6 @@ public class CoreScriptsManager : MonoBehaviour
             Debug.LogWarning("No paths to parse. Returning.");
             return;
         }
-        else Debug.LogWarning(paths.Length);
 
         dialogues = new Dictionary<string, Dialogue>();
         Parse(paths);
