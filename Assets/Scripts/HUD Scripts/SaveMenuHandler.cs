@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class SaveMenuHandler : GUIWindowScripts
 {
@@ -37,7 +38,8 @@ public class SaveMenuHandler : GUIWindowScripts
         "Alpha 4.3.0",
         "Beta 0.0.0",
         "Beta 0.1.1",
-        "Beta 1.0.0"
+        "Beta 1.0.0",
+        "Beta 2.1.0"
     };
 
     public Sprite[] episodeSprites;
@@ -261,6 +263,10 @@ public class SaveMenuHandler : GUIWindowScripts
         indexToMigrate = index;
         switch (saves[index].version)
         {
+            case "Beta 2.1.0":
+                migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will remove old EP3 mission data from your save file. "
+                                                                                                 + "Backup first! (Below save icon delete button)";
+                break;
             case "Beta 1.0.0":
                 migratePrompt.transform.Find("Background").GetComponentInChildren<Text>().text = "This will move your presets to the new dedicated folder the game uses. "
                                                                                                  + "Backup first! (Below save icon delete button)";
@@ -308,6 +314,25 @@ public class SaveMenuHandler : GUIWindowScripts
         var save = saves[indexToMigrate];
         switch (save.version)
         {
+            case "Beta 2.1.0":
+                var missionsNames = new string[] 
+                {
+                    "Abandonment", 
+                    "Awakening the Holy Citadel", 
+                    "Derelict Vanquish", 
+                    "Forsaken Declaration", 
+                    "Gunning Triumph", 
+                    "Reclamation"};
+                var missionsToRemove = save.missions.Where(m => missionsNames.Contains(m.name)).ToArray();
+                foreach (var m in missionsToRemove)
+                {
+                    save.missions.Remove(m);
+                }
+                File.WriteAllText(paths[indexToMigrate], JsonUtility.ToJson(save));
+                SaveMenuIcon.LoadSaveByPath(paths[indexToMigrate], true);
+                break;                
+
+
             case "Beta 1.0.0":
                 int presetNum = 0;
                 if (WCWorldIO.PRESET_DIRECTORY == null) WCWorldIO.PRESET_DIRECTORY = System.IO.Path.Combine(Application.persistentDataPath, "PresetBlueprints");
