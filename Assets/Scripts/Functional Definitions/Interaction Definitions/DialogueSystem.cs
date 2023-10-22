@@ -877,8 +877,10 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
 
         // change text
         text = current.text.Replace("<br>", "\n");
+
         characterCount = 0;
 
+        if (current.typingSpeedFactor == 0) current.typingSpeedFactor = 1;
         typingSpeedFactor = current.typingSpeedFactor;
         nextCharacterTime = (float)(Time.time + timeBetweenCharacters / current.typingSpeedFactor);
 
