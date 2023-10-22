@@ -4,7 +4,6 @@ using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
 
-// TODO: Multiple CoreScripts files
 public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand

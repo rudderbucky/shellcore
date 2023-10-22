@@ -1,0 +1,203 @@
+// CoreScript is a brand-new text-based scripting system used to make things happen in ShellCore Command Remastered.
+// It's meant to replace canvases, but obviously canvases aren't going to be ripped out of the game in one fell swoop.
+// I've left instructions in this file to make it easier to understand CoreScript if you are interested.
+// It's not yet in a widely-usable form but it's currently being used in new main world missions.
+
+// A line can be turned into a comment by starting it with double forward slashes.
+// Unfortunately comments cannot be appended to non-comment lines just yet.
+
+// Text displayed to players is always sent through a localization map. 
+// This makes it easier to organise text, and will also enable localization in the future.
+
+// To add entries to the local map, use a Text() statement, with two double quote separated strings. 
+// The first string is what you will use to refer to the second in other statements.
+
+// Unfortunately, Text statements need to be in one line right now.
+Text("dialoguetest1", "Congratulations on squishing the drones! This is another dialogue test using CoreScript. CoreScript files are easier to maintain and contain less bloat than XML.")
+Text("responsetest1", "Woah, that's really cool!")
+Text("responsetest2", "How does responding to you work?")
+Text("dialoguetest2", "Each Dialogue and Response call can also take Response and Dialogue calls recursively! It's readable and functional!")
+Text("responsetest3", "Can I recurse back to the original dialogue?")
+Text("responsetest4", "So cool!")
+
+// In CoreScript, dialogue is its own class of object rather than something that is created on the fly.
+Dialogue(
+
+// Comments can even go inside of statements.
+
+    dialogueID=dial,
+    speakerID=test, 
+
+
+// As mentioned, the dialogueText attribute refers to text indirectly through the local map.
+    dialogueText=dialoguetest1,
+
+// Attributes like color, typingSpeedFactor, and useEntityColor are 
+// inherited by response Dialogue, so you don't have to keep defining them.
+    typingSpeedFactor=0.5,
+
+// Responses are what define the choices players see as buttons during dialogue, and responseText is also localmapped.
+    responses=(
+
+// The next attribute on a response defines what happens when you press the response button. End() will end the conversation.
+        Response(
+            responseText=responsetest1, 
+            next=End(),
+        ),
+
+// You can recursively define dialogue by simply setting the next attribute to Dialogue again.
+        Response(
+            responseText=responsetest2, 
+            next=Dialogue(
+                speakerID=test,
+                dialogueText=dialoguetest2,
+                responses=(
+                    Response(
+                        responseText=responsetest4, 
+                        next=End(),
+                    ),
+
+// SetID allows you to loop backwards within dialogue. The ID attribute of the dialogue 
+// you wish to loop to needs to be set to the number within the SetID call.
+                    Response(
+                        responseText=responsetest3, 
+                        next=SetID(0),
+                    ),
+                )
+            )
+        ),
+    )
+) 
+
+// Ignore the following two comments.
+// Text("not-present", "Should not parse")
+// Dialogue(DO NOT PARSE THIS)
+
+Text("task-prompt-2", "Hey bud - want a task? \"Nooo I'm too weak for tasks!!!\" that ain't you, right?")
+Text("task-prompt-response2", "No way that's me! Let me at 'em!")
+Text("task-prompt-response3", "On second thought... no thanks.")
+Text("task-prompt", "Enemies are attacking blah blah... kill 3 Strike Drones.")
+Text("test-task-objectives", 
+"- Go to the sector to the right.
+- Kill 3 Strike Drones.
+- Return for your reward."
+)
+Text("task-prompt-response1", "Okay, will do.")
+
+// Like dialogue, tasks are also now independent objects, even between missions. 
+// You can now add the exact same task to multiple missions.
+Task(
+    taskID=test,
+    objectives=test-task-objectives,
+    partID=BigSide1,
+    abilityID=4,
+    tier=2,
+    creditReward=1234,
+    reputationReward=250,
+    shardReward=3,
+)
+
+Dialogue(
+    dialogueID=task_dial,
+    speakerID=test,
+    dialogueText=task-prompt-2,
+    color=(255,0,0),
+    typingSpeedFactor=2,
+    responses=(
+        Response(
+            responseText=task-prompt-response2,
+            next=Dialogue(
+                speakerID=test,
+                dialogueText=task-prompt,
+                taskID=test,
+                useSpeakerColor=true,
+                typingSpeedFactor=1,
+                responses=(
+                    Response(
+                        responseText=task-prompt-response1,
+
+// The Call value for the next attribute allows you to call functions 
+// defined within CoreScript. This call will execute the "condCall" function defined later.
+                        next=Call(condCall),
+                    ),
+                )
+            )
+        ),
+        Response(
+            responseText=task-prompt-response3,
+            next=End(),
+        )
+    )
+)
+
+// Passive Dialogue also uses the local map.
+Text("passiveTest", "<color=lime>This is passive dialogue wired through CoreScript.</color>")
+Text("mission-test", "Test Mission")
+Text("mission-test-entrypoint", "Test entrypoint.")
+
+
+
+// In CoreScript, sequences are groups of instructions to be executed one-after-another. Sequences are defined in several instructions and triggers.
+// Triggers are what CoreScript uses to begin the execution of sequences. Below is a MissionTrigger, which creates a mission based on its attributes,
+// and calls its sequence when the game begins.
+MissionTrigger(
+    name=mission-test,
+    entryPoint=mission-test-entrypoint,
+    sequence=(
+        Call(taskGiver)
+    )
+)
+
+// There is also a Start trigger. Like the mission trigger, this trigger executes
+// its sequence immediately when the game begins, but does not need mission attributes.
+StartTrigger(
+    sequence=(
+        SpawnEntity(
+            faction=1,
+            flagName=flag-4,
+            blueprintJSON=strike_drone_blueprint,
+        ),
+    )
+)
+
+// The Sector trigger executes when a sector is entered.
+SectorTrigger(
+    sectorName=test2,
+    sequence=(
+        SpawnEntity(
+            faction=1,
+            flagName=flag-5,
+            blueprintJSON=strike_drone_blueprint,
+        ),
+    )
+)
+
+// The Entity trigger executes when an entity is spawned with the given ID.
+// Unfortunately, this is unimplemented.
+
+// Functions are basically nicknames you can give to sequences. 
+// The Call instruction allows you to call sequences from within other sequences
+// based on the name attribute you give to a sequence within a Function statement.
+Function(
+    name=testFunc1,
+    sequence=(
+
+// Variables are a cool new feature of CoreScript. In addition to the save variables of yore, there are
+// now static, unsaved variables. 
+// Local unsaved variables are also planned. These will only be referrable within the function they were defined in.
+// Note that arguments (including variable values) cannot have semicolons in them.
+
+// To use a variable, prepend whatever value you are assigning to an attribute with dollar signs.
+// One dollar sign will be a local variable (unimplemented)
+// Two dollar signs is a static variable that won't be placed into the savefile.
+// Three dollar signs is your traditional save variable.
+
+        SetVariable(name=$$reftest, value=dial,),
+
+// SetInteraction takes an entityID and dialogueID and makes the entity spit out the dialogue passed in.
+// Note that the context of the function call matters here. If the function was called via a mission trigger
+// it will override interactions called via other triggers.
+
+        SetInteraction(entityID=test, dialogueID=$$reftest)
+    )
+)

@@ -1,0 +1,50 @@
+Function(
+    name=taskGiver,
+    sequence=(
+        SetInteraction(entityID=test, dialogueID=task_dial)
+    )
+)
+
+
+
+Function(
+    name=condCall,
+    sequence=(
+
+// SpawnEntity does what it says on the tin.
+// note that specifying entityID to a character allows you 
+// to do the canvas-style shenanigans of teleporting characters.
+// (Prevent this by setting forceCharacterTeleport=false)
+
+        SpawnEntity(
+            faction=1,
+            flagName=flag-1,
+            blueprintJSON=strike_drone_blueprint,
+        ),
+        SpawnEntity(
+            faction=1,
+            flagName=flag-2,
+            blueprintJSON=strike_drone_blueprint,
+        ),
+        SpawnEntity(
+            faction=1,
+            flagName=flag-3,
+            blueprintJSON=strike_drone_blueprint,
+        ),
+
+// Condition blocks function like ConditionGroupNodes in the canvas system.
+// Unfortuantely there's no way to tie two conditions to an operator like AND or OR yet.
+        ConditionBlock(
+            DestroyEntities(
+                targetID=Strike Drone,
+                nameMode=true,
+                targetFaction=1,
+                progressionFeedback=true,
+                targetCount=3,
+                sequence=(
+                    Call(testFunc1),
+                ),
+            ),
+        ),
+    )
+)
