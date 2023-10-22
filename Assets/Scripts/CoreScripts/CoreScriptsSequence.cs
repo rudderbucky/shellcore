@@ -90,6 +90,20 @@ public class CoreScriptsSequence : MonoBehaviour
                 if (index >= 0) 
                     return SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
             }
+            else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().taskVariableNames != null)
+            {
+                var index = -1;
+                var names = SaveHandler.instance.GetSave().taskVariableNames;
+                for (int j = 0; j < names.Length; j++)
+                {
+                    if (names[j] != val.Substring(3)) continue;
+                    index = j;
+                    break;
+                }
+                
+                if (index >= 0) 
+                    return SaveHandler.instance.GetSave().taskVariableValues[index].ToString();
+            }
             else if (val.StartsWith("$$") && CoreScriptsManager.instance.globalVariables != null)
             {
                 return CoreScriptsManager.instance.globalVariables[val.Substring(2)];
