@@ -142,7 +142,7 @@ public class WCWorldIO : GUIWindowScripts
     }
 
 //#if UNITY_EDITOR
-    public static bool instantTest = true;
+    public static bool instantTest = false;
 //#endif
 
     [SerializeField]
@@ -173,6 +173,18 @@ public class WCWorldIO : GUIWindowScripts
 
     public static void DeletePlaceholderDirectories()
     {
+        var CoreScriptsPlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "CoreScriptsPlaceholder");
+        if (System.IO.Directory.Exists(CoreScriptsPlaceholder))
+        {
+            foreach (var file in System.IO.Directory.GetFiles(CoreScriptsPlaceholder))
+            {
+                System.IO.File.Delete(file);
+            }
+
+            System.IO.Directory.Delete(CoreScriptsPlaceholder);
+        }
+
+
         var CanvasPlaceholder = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
         if (System.IO.Directory.Exists(CanvasPlaceholder))
         {
@@ -345,7 +357,7 @@ public class WCWorldIO : GUIWindowScripts
     {
         loadingText.gameObject.SetActive(true);
         loadingText.text = GetLoadingString();
-        var skippedFiles = new List<string> { ".meta", ".worlddata", ".taskdata", ".dialoguedata", ".sectordata", "ResourceData.txt" , ".DS_Store"};
+        var skippedFiles = new List<string> { ".meta", ".worlddata", ".taskdata", ".dialoguedata", ".sectordata", "ResourceData.txt" , ".DS_Store", ".corescript"};
         List<Sector> sectors = new List<Sector>();
         foreach (var str in System.IO.Directory.GetFiles(path))
         {

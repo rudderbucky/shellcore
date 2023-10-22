@@ -89,11 +89,10 @@ public class CoreScriptsManager : MonoBehaviour
             Debug.LogWarning("No paths to parse. Returning.");
             return;
         }
-        
-        foreach (var path in paths)
-        {
-            Parse(path);
-        }
+        else Debug.LogWarning(paths.Length);
+
+        dialogues = new Dictionary<string, Dialogue>();
+        Parse(paths);
 
         foreach (var context in missionTriggers)
         {
@@ -120,12 +119,12 @@ public class CoreScriptsManager : MonoBehaviour
         CoreScriptsSequence.RunSequence(context.sequence, context);
     }
 
-    void Parse(string path)
+
+    // Pass 1: get tasks, so that dialogue can use the map
+    ScopeParseData ParsePass1(string[] lines)
     {
-        string[] lines = System.IO.File.ReadAllLines(path);
         var commentLines = GetCommentLines(lines);
         var stringScopes = GetStringScopes(lines, commentLines);
-        dialogues = new Dictionary<string, Dialogue>();
         
         SetUpLocalMap(lines, commentLines);
 
@@ -137,7 +136,6 @@ public class CoreScriptsManager : MonoBehaviour
         data.commentLines = commentLines;
         data.blocks = conditionBlocks;
 
-        // Pass 1: get tasks, so that dialogue can use the map
         FileCoord d = new FileCoord();
         while (d.line < lines.Length)
         {
@@ -151,8 +149,12 @@ public class CoreScriptsManager : MonoBehaviour
             d = StringSensitiveIterator(d, lines, stringScopes, commentLines);
         }
 
+        return data;
+    }
 
-        d = new FileCoord();
+    void ParsePass2(string[] lines, ScopeParseData data)
+    {
+        FileCoord d = new FileCoord();
         while (d.line < lines.Length)
         {
             var i = d.line;
@@ -178,8 +180,28 @@ public class CoreScriptsManager : MonoBehaviour
             {
                 sectorTriggers.Add(CoreScriptsTrigger.ParseTrigger(i, c, lines, TriggerType.Sector, data, out d));
             }
-            d = StringSensitiveIterator(d, lines, stringScopes, commentLines);
+            d = StringSensitiveIterator(d, lines, data.stringScopes, data.commentLines);
         }
+    }
+
+    void Parse(string[] paths)
+    {
+        var linesMap = new Dictionary<string, string[]>();
+        var dataMap = new Dictionary<string, ScopeParseData>();
+
+        foreach (var path in paths)
+        {
+            string[] lines = System.IO.File.ReadAllLines(path);
+            linesMap.Add(path, lines);
+            var data = ParsePass1(lines);
+            dataMap.Add(path, data);
+        }
+
+        foreach (var path in paths)
+        {
+            ParsePass2(linesMap[path], dataMap[path]);
+        }
+        
     }
 
     private HashSet<int> GetCommentLines(string[] lines)

@@ -3,6 +3,7 @@ using System.IO;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 [RequireComponent(typeof(LandPlatformGenerator))]
 public class SectorManager : MonoBehaviour
@@ -426,7 +427,8 @@ public class SectorManager : MonoBehaviour
                 DialogueSystem.ClearStatics();
 
                 if (Directory.Exists(System.IO.Path.Combine(path, "CoreScripts")))
-                    CoreScriptsManager.paths = Directory.GetFiles(System.IO.Path.Combine(path, "CoreScripts"));
+                    CoreScriptsManager.paths = Directory.GetFiles(System.IO.Path.Combine(path, "CoreScripts")).Where(s => 
+                     System.IO.Path.GetExtension(s) == ".corescript").ToArray();
 
                 if (Directory.Exists(System.IO.Path.Combine(path, "Canvases")))
                     foreach (var canvas in Directory.GetFiles(System.IO.Path.Combine(path, "Canvases")))

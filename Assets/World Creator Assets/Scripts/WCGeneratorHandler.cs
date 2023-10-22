@@ -197,6 +197,7 @@ public class WCGeneratorHandler : MonoBehaviour
         Debug.Log("Writing world...");
 
         // Folder paths
+        var coreScriptsPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "CoreScriptsPlaceholder");
         var canvasPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder");
         var entityPlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "EntityPlaceholder");
         var wavePlaceholderPath = System.IO.Path.Combine(Application.streamingAssetsPath, "WavePlaceholder");
@@ -659,6 +660,7 @@ public class WCGeneratorHandler : MonoBehaviour
             File.Copy(resourceTxtPath, System.IO.Path.Combine(path, "ResourceData.txt"));
         }
 
+        TryCopy(coreScriptsPlaceholderPath, System.IO.Path.Combine(path, "CoreScripts"));
         TryCopy(canvasPlaceholderPath, System.IO.Path.Combine(path, "Canvases"));
         TryCopy(entityPlaceholderPath, System.IO.Path.Combine(path, "Entities"));
         TryCopy(wavePlaceholderPath, System.IO.Path.Combine(path, "Waves"));
@@ -802,6 +804,9 @@ public class WCGeneratorHandler : MonoBehaviour
                 {
                     ResourceManager.Instance.LoadResources(SectorManager.testResourcePath);
                 }
+
+                // copying core scripts
+                TryCopy(System.IO.Path.Combine(path, "CoreScripts"), System.IO.Path.Combine(Application.streamingAssetsPath, "CoreScriptsPlaceholder"));
 
                 // copying canvases
                 TryCopy(System.IO.Path.Combine(path, "Canvases"), System.IO.Path.Combine(Application.streamingAssetsPath, "CanvasPlaceholder"));
