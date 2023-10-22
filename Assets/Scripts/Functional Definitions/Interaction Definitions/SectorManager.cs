@@ -425,6 +425,9 @@ public class SectorManager : MonoBehaviour
                 // Clear DialogueSystem statics to prevent canvas reference persistence bugs
                 DialogueSystem.ClearStatics();
 
+                if (Directory.Exists(System.IO.Path.Combine(path, "CoreScripts")))
+                    CoreScriptsManager.paths = Directory.GetFiles(System.IO.Path.Combine(path, "CoreScripts"));
+
                 if (Directory.Exists(System.IO.Path.Combine(path, "Canvases")))
                     foreach (var canvas in Directory.GetFiles(System.IO.Path.Combine(path, "Canvases")))
                     {

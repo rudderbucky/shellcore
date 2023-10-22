@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static CoreScriptsCondition;
 using static CoreScriptsManager;
-using System.Linq;
 
-// TODO: Add the Start and Sector triggers
 // TODO: Multiple CoreScripts files
 public class CoreScriptsSequence : MonoBehaviour
 {
@@ -296,7 +293,7 @@ public class CoreScriptsSequence : MonoBehaviour
 
         return seq;
     }
-    
+
     private static Instruction ParseInstruction(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {
         var substr = line.Substring(index).Split("(")[0].Trim();

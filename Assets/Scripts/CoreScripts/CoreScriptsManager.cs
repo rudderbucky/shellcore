@@ -11,7 +11,7 @@ using static Entity;
 public class CoreScriptsManager : MonoBehaviour
 {
     public Dictionary<string, Dialogue> dialogues = new Dictionary<string, Dialogue>();
-    private string codePath = System.IO.Path.Combine(Application.streamingAssetsPath, "CodeTest.codecanvas");
+    public static string[] paths;
     private Dictionary<string, string> localMap = new Dictionary<string, string>();
     private Dictionary<string, Sequence> functions = new Dictionary<string, Sequence>();
     private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
@@ -43,11 +43,9 @@ public class CoreScriptsManager : MonoBehaviour
         public int line;
         public int character;
     }
-    private Dictionary<FileCoord, FileCoord> stringScopes = new Dictionary<FileCoord, FileCoord>();
     private List<Context> missionTriggers = new List<Context>();
     private List<Context> startTriggers = new List<Context>();
     private List<Context> sectorTriggers = new List<Context>();
-    private HashSet<int> commentLines = new HashSet<int>();
     public enum TriggerType
     {
         Mission,
@@ -84,7 +82,19 @@ public class CoreScriptsManager : MonoBehaviour
         if(SaveHandler.instance.GetSave().coreScriptsGlobalVarValues == null)
             SaveHandler.instance.GetSave().coreScriptsGlobalVarValues = new List<string>();
 
-        Parse();
+        localMap.Clear();
+
+        if (paths == null)
+        {
+            Debug.LogWarning("No paths to parse. Returning.");
+            return;
+        }
+        
+        foreach (var path in paths)
+        {
+            Parse(path);
+        }
+
         foreach (var context in missionTriggers)
         {
             RunMissionTrigger(context);
@@ -110,14 +120,14 @@ public class CoreScriptsManager : MonoBehaviour
         CoreScriptsSequence.RunSequence(context.sequence, context);
     }
 
-    void Parse()
+    void Parse(string path)
     {
-        string[] lines = System.IO.File.ReadAllLines(codePath);
-        GetCommentLines(lines);
-        GetStringScopes(lines);
+        string[] lines = System.IO.File.ReadAllLines(path);
+        var commentLines = GetCommentLines(lines);
+        var stringScopes = GetStringScopes(lines, commentLines);
         dialogues = new Dictionary<string, Dialogue>();
         
-        SetUpLocalMap(lines);
+        SetUpLocalMap(lines, commentLines);
 
         var data = new ScopeParseData();
         data.stringScopes = stringScopes;
@@ -172,8 +182,9 @@ public class CoreScriptsManager : MonoBehaviour
         }
     }
 
-    private void GetCommentLines(string[] lines)
+    private HashSet<int> GetCommentLines(string[] lines)
     {
+        var commentLines = new HashSet<int>();
         for (int i = 0; i < lines.Length; i++)
         {
             if (lines[i].StartsWith("//"))
@@ -181,12 +192,14 @@ public class CoreScriptsManager : MonoBehaviour
                 commentLines.Add(i);
             }
         }
+
+        return commentLines;
     }
 
 
-    private void GetStringScopes(string[] lines)
+    private Dictionary<FileCoord, FileCoord> GetStringScopes(string[] lines, HashSet<int> commentLines)
     {
-
+        var stringScopes = new Dictionary<FileCoord, FileCoord>();
         bool escaped = false;
         bool inScope = false;
         FileCoord start = new FileCoord();
@@ -221,6 +234,8 @@ public class CoreScriptsManager : MonoBehaviour
             }
             interval = IncrementFileCoordWithComments(1, interval, lines, commentLines);
         }
+
+        return stringScopes;
     }
 
     // if strings is null it treats every character as valid for comma skipping purposes
@@ -373,9 +388,8 @@ public class CoreScriptsManager : MonoBehaviour
     }
 
 
-    void SetUpLocalMap(string[] lines)
+    void SetUpLocalMap(string[] lines, HashSet<int> commentLines)
     {
-        localMap.Clear();
         bool stringMode = false;
         FileCoord coord = new FileCoord();
         var tok1 = "";
