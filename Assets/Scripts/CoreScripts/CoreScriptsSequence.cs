@@ -20,7 +20,8 @@ public class CoreScriptsSequence : MonoBehaviour
         FinishCutscene,
         SetPath,
         Rotate,
-        PassiveDialogue
+        PassiveDialogue,
+        ShowAlert,
     }
     public struct Instruction
     {
@@ -42,6 +43,11 @@ public class CoreScriptsSequence : MonoBehaviour
         public List<string> prerequisites;
         public Sequence sequence;
     }
+
+    private Dictionary<InstructionCommand, List<string>> requiredArguments = new Dictionary<InstructionCommand, List<string>>()
+    {
+        
+    };
 
     private static readonly List<char> specialChars = new List<char>()
     {
@@ -224,6 +230,12 @@ public class CoreScriptsSequence : MonoBehaviour
                     var onlyShowIfInParty = GetArgument(inst.arguments, "onlyShowIfInParty") == "true";
 
                     PassiveDialogue.Execute(entityID, text, soundType, onlyShowIfInParty);
+                    break;
+                case InstructionCommand.ShowAlert:
+                    text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
+                    var soundID = GetArgument(inst.arguments, "soundID");
+
+                    SectorManager.instance.player.alerter.showMessage(text, soundID);
                     break;
             }
         }
