@@ -184,6 +184,9 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         return sectorMngr;
     }
 
+
+
+
     protected override void Start()
     {
         if ((carrier != null && !carrier.Equals(null)) && carrier.GetIsInitialized())
@@ -218,6 +221,15 @@ public class ShellCore : AirCraft, IHarvester, IOwner
         }
 
         ai.allowRetreat = true;
+    }
+
+    public void RemoveAllParts()
+    {
+        while (parts.Count > 0)
+        {
+            if (parts[0].name == "Shell Sprite") return;
+            RemovePart(parts[0]);
+        }
     }
 
     protected override void OnDestroy()

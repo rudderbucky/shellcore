@@ -35,7 +35,6 @@ public class Task
 public class Mission
 {
     public string name;
-    public string rank;
     public string entryPoint;
 
     public enum MissionStatus

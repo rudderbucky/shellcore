@@ -27,7 +27,7 @@ public class TaskDisplayScript : MonoBehaviour
     public GameObject missionButtonPrefab;
     public GameObject missionObjectivePrefab;
     public Transform[] rankTexts;
-    public Transform[] missionListContents;
+    public Transform missionListContents;
     public Transform missionObjectivesContents;
 
     void OnEnable()
@@ -39,12 +39,9 @@ public class TaskDisplayScript : MonoBehaviour
     public static void Initialize()
     {
         instance.rankHeader.transform.parent.gameObject.SetActive(false);
-        foreach (var content in instance.missionListContents)
+        for (int i = 0; i < instance.missionListContents.childCount; i++)
         {
-            for (int i = 0; i < content.childCount; i++)
-            {
-                Destroy(content.GetChild(i).gameObject);
-            }
+            Destroy(instance.missionListContents.GetChild(i).gameObject);
         }
 
         instance.ClearMissionObjectivesSpace();
@@ -52,11 +49,6 @@ public class TaskDisplayScript : MonoBehaviour
         foreach (var mission in PlayerCore.Instance.cursave.missions)
         {
             AddMission(mission);
-        }
-
-        for (int i = 0; i < instance.missionListContents.Length; i++)
-        {
-            instance.rankTexts[i].gameObject.SetActive(instance.missionListContents[i].childCount != 0);
         }
     }
 
@@ -72,7 +64,7 @@ public class TaskDisplayScript : MonoBehaviour
                 PlayerCore.Instance.cursave.missions.Find(mi => mi.name == m).status != Mission.MissionStatus.Complete
             )) return;
         var button = Instantiate(instance.missionButtonPrefab,
-            instance.missionListContents[rankNumberByString[mission.rank]]).GetComponent<Button>();
+            instance.missionListContents).GetComponent<Button>();
         var str = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.name) :  mission.name;
         if (mission.name.Length <= 33)
         {
@@ -123,12 +115,11 @@ public class TaskDisplayScript : MonoBehaviour
         var name = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.name) : mission.name;
         var entryPoint = mission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(mission.entryPoint) : mission.entryPoint;
         instance.nameAndPrerequisitesHeader.text = $"{name}\n\nEntrypoint:\n{entryPoint}\n\nPrerequisites:";
-        instance.rankHeader.text = mission.rank;
         instance.rankHeader.transform.parent.gameObject.SetActive(true);
-        instance.rankHeader.color = rankColorsByString[mission.rank];
         foreach (var prereq in mission.prerequisites)
         {
             var prMission = PlayerCore.Instance.cursave.missions.Find((x) => { return x.name == prereq; });
+            if (prMission == null) continue;
             var prName = prMission.useLocalMap ? CoreScriptsManager.instance.GetLocalMapString(prMission.name) : prMission.name;
             instance.nameAndPrerequisitesHeader.text += $"\n{(prName)}";
         }

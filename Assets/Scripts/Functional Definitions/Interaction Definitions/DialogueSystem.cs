@@ -530,8 +530,6 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
             window.transform.Find("Holder").Find("Mission Name").GetComponent<Text>().text = mission.name.ToUpper().Substring(0, 30) + "...";
         }
 
-        window.transform.Find("Rank").GetComponent<Text>().text = mission.rank.ToUpper();
-        window.transform.Find("Rank").GetComponent<Text>().color = TaskDisplayScript.rankColorsByString[mission.rank];
         window.transform.Find("Holder").Find("Rewards").GetComponent<Text>().text = rewardsText;
     }
 

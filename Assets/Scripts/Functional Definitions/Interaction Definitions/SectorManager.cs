@@ -1402,6 +1402,12 @@ public class SectorManager : MonoBehaviour
         //unload previous sector
         UnloadCurrentSector(oldType, oldDimension);
 
+        //foreach (var core in AIData.shellCores)
+        //{
+        //    if (core is PlayerCore) continue;
+        //    core.KillShellCore();
+        //}
+        
         if (overrideProperties)
         {
             Destroy(overrideProperties);
