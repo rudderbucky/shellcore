@@ -85,18 +85,26 @@ public class CoreScriptsSequence : MonoBehaviour
             throw new System.Exception("Argument values cannot have special characters except for underscores in them.");
         }
         var args = arguments.Split(";");
+        string retVal = null;
         for (int i = 0; i < args.Length; i++)
         {
             if (args[i] != key) continue;
 
             var val = args[i+1];
-            if (rawValue) return val;
+            if (rawValue)
+            {
+                retVal = val;
+                break;
+            } 
             else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().coreScriptsGlobalVarNames != null)
             {
                 
                 var index = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.IndexOf(val.Substring(3));
                 if (index >= 0) 
-                    return SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
+                {
+                    retVal = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
+                    break;
+                }
             }
             else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().taskVariableNames != null)
             {
@@ -109,16 +117,25 @@ public class CoreScriptsSequence : MonoBehaviour
                     break;
                 }
                 
-                if (index >= 0) 
-                    return SaveHandler.instance.GetSave().taskVariableValues[index].ToString();
+                if (index >= 0)
+                {
+                    retVal = SaveHandler.instance.GetSave().taskVariableValues[index].ToString();
+                    break;
+                }
             }
             else if (val.StartsWith("$$") && CoreScriptsManager.instance.globalVariables != null)
             {
-                return CoreScriptsManager.instance.globalVariables[val.Substring(2)];
+                retVal = CoreScriptsManager.instance.globalVariables[val.Substring(2)];
+                break;
             }
-            else return val;
+            else 
+            {
+                retVal = val;
+                break;
+            }
         }
-        return null;
+        if (retVal != null) retVal = retVal.Trim();
+        return retVal;
     }
 
     public static string AddArgument(string arguments, string key, string value)
@@ -140,84 +157,20 @@ public class CoreScriptsSequence : MonoBehaviour
             switch (inst.command)
             {
                 case InstructionCommand.AddObjectiveMarker: 
-                
                     var sectorName = GetArgument(inst.arguments, "sectorName");
-                    var missionName = GetArgument(inst.arguments, "missionName");
+                    var missionName = context.missionName;
                     var entityID = GetArgument(inst.arguments, "entityID");
                     var ID = GetArgument(inst.arguments, "ID");
-                    Vector2 pos = Vector2.zero;
-                    int dim = 0;
-                    Entity entity = null;
-                    foreach (var ent in AIData.entities)
-                    {
-                        if (!ent)
-                        {
-                            continue;
-                        }
-
-                        if (entityID != ent.ID)
-                        {
-                            continue;
-                        }
-
-                        entity = ent;
-                        pos = entity.transform.position;
-                        dim = SectorManager.instance.current.dimension;
-                    }
-
-                    var sect = SectorManager.GetSectorByName(sectorName);
-                    if (sect)
-                    {
-                        var bounds = sect.bounds;
-                        pos = new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2);
-                        dim = sect.dimension;
-                    }
-
-
-                    var objectiveLocation = new TaskManager.ObjectiveLocation
-                    (
-                        pos,
-                        missionName,
-                        dim,
-                        entity
-                    );
-
-                    CoreScriptsManager.instance.objectiveLocations.Add(ID, objectiveLocation);
-                    TaskManager.DrawObjectiveLocations();
+                    ObjectiveMarker.AddObjectiveMarker(entityID, sectorName, missionName, ID);
                     break;
                 case InstructionCommand.RemoveObjectiveMarker:
                     ID = GetArgument(inst.arguments, "ID");
-                    if (!CoreScriptsManager.instance.objectiveLocations.ContainsKey(ID)) return;
-                    CoreScriptsManager.instance.objectiveLocations.Remove(ID);
-                    TaskManager.DrawObjectiveLocations();
+                    ObjectiveMarker.RemoveObjectiveMarker(ID);
                     break;
                 case InstructionCommand.SetInteraction:
-                    InteractAction action = new InteractAction();
                     entityID = GetArgument(inst.arguments, "entityID");
-                    action.action = new UnityEngine.Events.UnityAction(() =>
-                        {
-                            switch (context.type)
-                            {
-                                case TriggerType.Mission:
-                                    TaskManager.Instance.SetSpeakerID(entityID);
-                                    break;
-                                default:
-                                    DialogueSystem.Instance.SetSpeakerID(entityID);
-                                    break;
-                            }
-                            
-                            DialogueSystem.StartDialogue(traverser.dialogues[GetArgument(inst.arguments, "dialogueID")], null, context);
-                        });
-
-                    switch (context.type)
-                    {
-                        case TriggerType.Mission:
-                            TaskManager.Instance.PushInteractionOverrides(entityID, action, null, context);
-                            break;
-                        default:
-                            DialogueSystem.Instance.PushInteractionOverrides(entityID, action, null);
-                            break;
-                    }
+                    var dialogueID = GetArgument(inst.arguments, "dialogueID");
+                    Interaction.SetInteraction(context, entityID, dialogueID);
                     break;
                 case InstructionCommand.Call:
                     var s = traverser.GetFunction(GetArgument(inst.arguments, "name"));
@@ -242,19 +195,19 @@ public class CoreScriptsSequence : MonoBehaviour
                 case InstructionCommand.SetVariable:
                     var variableName = GetArgument(inst.arguments, "name", true);
                     var variableValue = GetArgument(inst.arguments, "value");
-                    SetVariable(variableName, variableValue);
+                    Variable.SetVariable(variableName, variableValue);
                     break;
                 case InstructionCommand.AddIntValues:
                     var val1 = int.Parse(GetArgument(inst.arguments, "val1"));
                     var val2 = int.Parse(GetArgument(inst.arguments, "val2"));
                     var name = GetArgument(inst.arguments, "name", true);
-                    SetVariable(name, val1+val2+"");
+                    Variable.SetVariable(name, val1+val2+"");
                     break;
                 case InstructionCommand.ConcatenateValues:
                     var v1 = GetArgument(inst.arguments, "val1");
                     var v2 = GetArgument(inst.arguments, "val2");
                     var varName = GetArgument(inst.arguments, "name", true);
-                    SetVariable(varName, v1+v2);
+                    Variable.SetVariable(varName, v1+v2);
                     break;
                 case InstructionCommand.SetPath:
                     entityID = GetArgument(inst.arguments, "entityID");
@@ -262,14 +215,14 @@ public class CoreScriptsSequence : MonoBehaviour
                     var customMass = GetArgument(inst.arguments, "customMass") == null ? -1 : float.Parse(GetArgument(inst.arguments, "customMass"));
                     var flagName = GetArgument(inst.arguments, "flagName");
 
-                    SetPath.Execute(entityID, rotateWhileMoving, customMass, flagName, inst.sequence, context);
+                    Mobility.SetPath(entityID, rotateWhileMoving, customMass, flagName, inst.sequence, context);
                     break;
                 case InstructionCommand.Rotate:
                     entityID = GetArgument(inst.arguments, "entityID");
                     var targetID = GetArgument(inst.arguments, "targetID");
                     var angle = GetArgument(inst.arguments, "angle");
 
-                    Rotate.Execute(entityID, targetID, angle, inst.sequence, context);
+                    Mobility.Rotate(entityID, targetID, angle, inst.sequence, context);
                     break;
                 case InstructionCommand.StartCutscene:
                     Cutscene.StartCutscene();
@@ -283,42 +236,14 @@ public class CoreScriptsSequence : MonoBehaviour
                     var soundType = GetArgument(inst.arguments, "soundType");
                     var onlyShowIfInParty = GetArgument(inst.arguments, "onlyShowIfInParty") == "true";
 
-                    PassiveDialogue.Execute(entityID, text, soundType, onlyShowIfInParty);
+                    Interaction.PassiveDialogue(entityID, text, soundType, onlyShowIfInParty);
                     break;
                 case InstructionCommand.ShowAlert:
                     text = CoreScriptsManager.instance.GetLocalMapString(GetArgument(inst.arguments, "text"));
                     var soundID = GetArgument(inst.arguments, "soundID");
-
-                    SectorManager.instance.player.alerter.showMessage(text, soundID);
+                    Interaction.ShowAlert(text, soundID);
                     break;
             }
-        }
-    }
-
-    private static void SetVariable(string variableName, string variableValue)
-    {
-        if (variableName.StartsWith("$$$"))
-        {
-            var names = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames;
-            var vals = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues;
-            var key = variableName.Substring(3);
-            var index = names.IndexOf(key);
-            if (index >= 0) vals[index] = variableValue;
-            else
-            {
-                names.Add(key);
-                vals.Add(variableValue);
-            }
-        }
-        else if (variableName.StartsWith("$$"))
-        {
-            var dict = CoreScriptsManager.instance.globalVariables;
-            var key = variableName.Substring(2);
-            if (dict.ContainsKey(key))
-            {
-                dict[key] = variableValue;
-            }
-            else dict.Add(key, variableValue);
         }
     }
 
@@ -426,7 +351,7 @@ public class CoreScriptsSequence : MonoBehaviour
 
             if (brackets > 0 && continueThroughScopes) continue;
 
-            if (val[i] == ',' || (!commaExists && val[i] == ')')) 
+            if (val[i] == ',' || ((!commaExists || brackets < 0) && val[i] == ')')) 
             {
                 minIndex = i;
                 break;

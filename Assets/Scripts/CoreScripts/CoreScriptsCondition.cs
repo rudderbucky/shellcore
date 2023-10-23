@@ -114,6 +114,11 @@ public class CoreScriptsCondition : MonoBehaviour
     {
         switch (c.type)
         {
+            case ConditionType.Time:
+                var time = float.Parse(CoreScriptsSequence.GetArgument(c.arguments, "time"));
+                var timer = TaskManager.Instance.StartCoroutine(Timer(ID, time, cb, c));
+                CoreScriptsManager.instance.timerCoroutines.Add(ID, timer);
+                break;
             case ConditionType.DestroyEntities:
                 var nameMode = CoreScriptsSequence.GetArgument(c.arguments, "nameMode") == "true";
                 var progressionFeedback = CoreScriptsSequence.GetArgument(c.arguments, "progressionFeedback") == "true";
@@ -142,6 +147,12 @@ public class CoreScriptsCondition : MonoBehaviour
                 SectorManager.OnSectorLoad += sectorAct;
                 break;
         }
+    }
+
+    private static IEnumerator Timer(string ID, float delay, ConditionBlock cb, Condition c)
+    {
+        yield return new WaitForSeconds(delay);
+        SatisfyCondition(ID, c, cb);
     }
 
     private static void SectorCheck(string ID, string sector, string selectedSectorName, Condition c, ConditionBlock cb, bool invertMode)
@@ -196,6 +207,10 @@ public class CoreScriptsCondition : MonoBehaviour
     {
         switch(cond.type)
         {
+            case ConditionType.Time:
+                var coroutine = CoreScriptsManager.instance.timerCoroutines[ID];
+                TaskManager.Instance.StopCoroutine(coroutine);
+                break;
             case ConditionType.DestroyEntities:
                 Entity.OnEntityDeath -= CoreScriptsManager.instance.entityDeathDelegates[ID];
                 break;

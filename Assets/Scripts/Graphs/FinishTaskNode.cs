@@ -340,7 +340,6 @@ namespace NodeEditorFramework.Standard
                     TaskManager.objectiveLocations[(Canvas as QuestCanvas).missionName].Clear();
                     objectiveLocation = new TaskManager.ObjectiveLocation(
                         ent.transform.position,
-                        true,
                         (Canvas as QuestCanvas).missionName,
                         SectorManager.instance.current.dimension,
                         ent

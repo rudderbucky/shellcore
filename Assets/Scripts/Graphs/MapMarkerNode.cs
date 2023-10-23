@@ -73,7 +73,6 @@ namespace NodeEditorFramework.Standard
             {
                 objectiveLocation = new TaskManager.ObjectiveLocation(
                     ent.transform.position,
-                    true,
                     (Canvas as QuestCanvas).missionName,
                     SectorManager.instance.current.dimension,
                     ent
@@ -85,7 +84,6 @@ namespace NodeEditorFramework.Standard
                 var bounds = sect.bounds;
                 objectiveLocation = new TaskManager.ObjectiveLocation(
                     new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2),
-                    true,
                     (Canvas as QuestCanvas).missionName,
                     sect.dimension
                 );

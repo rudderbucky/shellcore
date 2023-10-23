@@ -555,7 +555,9 @@ public class MapMakerScript : MonoBehaviour, IPointerDownHandler, IPointerClickH
                     var imgnewRect = new Rect(imgpos.x - imgsizeDelta.x / 2, imgpos.y, imgsizeDelta.x, imgsizeDelta.y);
                     if (imgnewRect.Contains(Input.mousePosition))
                     {
-                        text.text += $"\nCLICK TO VIEW MISSION: {objective.missionName.ToUpper()}";
+                        var missionName = CoreScriptsManager.instance.GetLocalMapString(objective.missionName);
+                        if (string.IsNullOrEmpty(missionName)) missionName = objective.missionName;
+                        text.text += $"\nCLICK TO VIEW MISSION: {missionName.ToUpper()}";
                         break;
                     }
                 }

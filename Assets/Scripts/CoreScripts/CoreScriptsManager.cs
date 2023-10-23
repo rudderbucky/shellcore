@@ -20,6 +20,7 @@ public class CoreScriptsManager : MonoBehaviour
     public Dictionary<int, ConditionBlock> conditionBlocks = new Dictionary<int, ConditionBlock>();
     public Dictionary<string, EntityDeathDelegate> entityDeathDelegates = new Dictionary<string, EntityDeathDelegate>();
     public Dictionary<string, SectorLoadDelegate> sectorLoadDelegates = new Dictionary<string, SectorLoadDelegate>();
+    public Dictionary<string, Coroutine> timerCoroutines = new Dictionary<string, Coroutine>();
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
     public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();
     public static CoreScriptsManager instance;
@@ -98,6 +99,7 @@ public class CoreScriptsManager : MonoBehaviour
         if(SaveHandler.instance.GetSave().coreScriptsGlobalVarValues == null)
             SaveHandler.instance.GetSave().coreScriptsGlobalVarValues = new List<string>();
 
+        timerCoroutines.Clear();
         objectiveLocations.Clear();
         localMap.Clear();
 
