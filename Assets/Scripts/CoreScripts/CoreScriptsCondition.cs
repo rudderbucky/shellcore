@@ -6,6 +6,8 @@ using UnityEngine.Events;
 using static CoreScriptsSequence;
 using static CoreScriptsManager;
 using static Entity;
+using static SectorManager;
+
 public class CoreScriptsCondition : MonoBehaviour
 {
     private static int blockID = 0;
@@ -16,6 +18,7 @@ public class CoreScriptsCondition : MonoBehaviour
         DestroyEntities,
         Time,
         Status,
+        EnterSector,
     }
 
     public struct Condition
@@ -127,7 +130,24 @@ public class CoreScriptsCondition : MonoBehaviour
                 Entity.OnEntityDeath += act;
                 break;
 
+            case ConditionType.EnterSector:
+                var sectorName = CoreScriptsSequence.GetArgument(c.arguments, "sectorName");
+                var invert = CoreScriptsSequence.GetArgument(c.arguments, "invert") == "true";
+
+                SectorLoadDelegate sectorAct = (sector) => 
+                {
+                    SectorCheck(ID, sector, sectorName, c, cb, invert);
+                };
+                CoreScriptsManager.instance.sectorLoadDelegates.Add(ID, sectorAct);
+                SectorManager.OnSectorLoad += sectorAct;
+                break;
         }
+    }
+
+    private static void SectorCheck(string ID, string sector, string selectedSectorName, Condition c, ConditionBlock cb, bool invertMode)
+    {
+        var activate = (sector == selectedSectorName) == !invertMode;
+        if (activate) SatisfyCondition(ID, c, cb);
     }
 
     private static int EntityCheck(string ID, Entity entity, Condition c, ConditionBlock cb,
@@ -180,7 +200,12 @@ public class CoreScriptsCondition : MonoBehaviour
                 Entity.OnEntityDeath -= CoreScriptsManager.instance.entityDeathDelegates[ID];
                 break;
             case ConditionType.WinBattleZone:
+                break;
             case ConditionType.WinSiegeZone:
+                break;
+            case ConditionType.EnterSector:
+                SectorManager.OnSectorLoad -= CoreScriptsManager.instance.sectorLoadDelegates[ID];
+                break;
             default:
                 return;
         }

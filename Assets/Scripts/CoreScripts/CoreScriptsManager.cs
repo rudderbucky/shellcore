@@ -7,6 +7,8 @@ using static CoreScriptsSequence;
 using NodeEditorFramework.Standard;
 using static CoreScriptsCondition;
 using static Entity;
+using static SectorManager;
+using static TaskManager;
 
 public class CoreScriptsManager : MonoBehaviour
 {
@@ -17,7 +19,9 @@ public class CoreScriptsManager : MonoBehaviour
     private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
     public Dictionary<int, ConditionBlock> conditionBlocks = new Dictionary<int, ConditionBlock>();
     public Dictionary<string, EntityDeathDelegate> entityDeathDelegates = new Dictionary<string, EntityDeathDelegate>();
+    public Dictionary<string, SectorLoadDelegate> sectorLoadDelegates = new Dictionary<string, SectorLoadDelegate>();
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
+    public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();
     public static CoreScriptsManager instance;
     
     public static void AssertArgumentsPresent(string args, string statementType, List<string> argNames)
@@ -94,6 +98,7 @@ public class CoreScriptsManager : MonoBehaviour
         if(SaveHandler.instance.GetSave().coreScriptsGlobalVarValues == null)
             SaveHandler.instance.GetSave().coreScriptsGlobalVarValues = new List<string>();
 
+        objectiveLocations.Clear();
         localMap.Clear();
 
         if (paths == null)

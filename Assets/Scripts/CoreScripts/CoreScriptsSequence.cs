@@ -22,6 +22,8 @@ public class CoreScriptsSequence : MonoBehaviour
         Rotate,
         PassiveDialogue,
         ShowAlert,
+        AddObjectiveMarker,
+        RemoveObjectiveMarker
     }
     public struct Instruction
     {
@@ -137,9 +139,61 @@ public class CoreScriptsSequence : MonoBehaviour
         {
             switch (inst.command)
             {
+                case InstructionCommand.AddObjectiveMarker: 
+                
+                    var sectorName = GetArgument(inst.arguments, "sectorName");
+                    var missionName = GetArgument(inst.arguments, "missionName");
+                    var entityID = GetArgument(inst.arguments, "entityID");
+                    var ID = GetArgument(inst.arguments, "ID");
+                    Vector2 pos = Vector2.zero;
+                    int dim = 0;
+                    Entity entity = null;
+                    foreach (var ent in AIData.entities)
+                    {
+                        if (!ent)
+                        {
+                            continue;
+                        }
+
+                        if (entityID != ent.ID)
+                        {
+                            continue;
+                        }
+
+                        entity = ent;
+                        pos = entity.transform.position;
+                        dim = SectorManager.instance.current.dimension;
+                    }
+
+                    var sect = SectorManager.GetSectorByName(sectorName);
+                    if (sect)
+                    {
+                        var bounds = sect.bounds;
+                        pos = new Vector2(bounds.x + bounds.w / 2, bounds.y - bounds.h / 2);
+                        dim = sect.dimension;
+                    }
+
+
+                    var objectiveLocation = new TaskManager.ObjectiveLocation
+                    (
+                        pos,
+                        missionName,
+                        dim,
+                        entity
+                    );
+
+                    CoreScriptsManager.instance.objectiveLocations.Add(ID, objectiveLocation);
+                    TaskManager.DrawObjectiveLocations();
+                    break;
+                case InstructionCommand.RemoveObjectiveMarker:
+                    ID = GetArgument(inst.arguments, "ID");
+                    if (!CoreScriptsManager.instance.objectiveLocations.ContainsKey(ID)) return;
+                    CoreScriptsManager.instance.objectiveLocations.Remove(ID);
+                    TaskManager.DrawObjectiveLocations();
+                    break;
                 case InstructionCommand.SetInteraction:
                     InteractAction action = new InteractAction();
-                    var entityID = GetArgument(inst.arguments, "entityID");
+                    entityID = GetArgument(inst.arguments, "entityID");
                     action.action = new UnityEngine.Events.UnityAction(() =>
                         {
                             switch (context.type)
