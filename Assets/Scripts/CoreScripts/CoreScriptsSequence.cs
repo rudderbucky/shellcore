@@ -251,7 +251,9 @@ using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
                     Interaction.ShowAlert(text, soundID);
                     break;
                 case InstructionCommand.WarpPlayer:
-                    Mobility.WarpPlayer(GetArgument(inst.arguments, "sectorName"), GetArgument(inst.arguments, "entityID"));
+                    Mobility.WarpPlayer(GetArgument(inst.arguments, "sectorName"), 
+                        GetArgument(inst.arguments, "entityID"),
+                        GetArgument(inst.arguments, "flagName"));
                     break;
                 case InstructionCommand.StartCameraPan:
                     flagName = GetArgument(inst.arguments, "flagName");
@@ -279,7 +281,8 @@ using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
                     Party.ClearParty(deletePartyMembers);
                     break;
                 case InstructionCommand.ForceTractor:
-                    Mobility.ForceTractor(GetArgument(inst.arguments, "entityID"), GetArgument(inst.arguments, "targetEntityID"));
+                    Mobility.ForceTractor(GetArgument(inst.arguments, "entityID"), 
+                        GetArgument(inst.arguments, "targetEntityID"));
                     break;
             }
         }

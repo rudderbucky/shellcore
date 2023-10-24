@@ -211,8 +211,9 @@ public class Mobility : MonoBehaviour
         }
     }
 
-    public static void WarpPlayer(string sectorName, string entityID)
+    public static void WarpPlayer(string sectorName, string entityID, string flagName)
     {
-        Flag.FindEntityAndWarpPlayer(sectorName, entityID);
+        if (!string.IsNullOrEmpty(flagName)) entityID = flagName;
+        Flag.FindEntityAndWarpPlayer(sectorName, entityID, !string.IsNullOrEmpty(flagName));
     }
 }
