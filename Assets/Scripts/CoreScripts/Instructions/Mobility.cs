@@ -170,4 +170,49 @@ public class Mobility : MonoBehaviour
             CoreScriptsSequence.RunSequence(sequence, context);
         }
     }
+
+    public static void ForceTractor(string entityID, string targetEntityID)
+    {
+        Entity target = null;
+        Entity entity = null;
+        Debug.Log("Entity ID: " + entityID);
+        Debug.Log("Target ID: " + targetEntityID);
+
+        foreach (var ent in AIData.entities)
+        {
+            if (ent.ID == entityID)
+            {
+                entity = ent;
+            }
+
+            if (ent.ID == targetEntityID)
+            {
+                target = ent;
+            }
+        }
+
+        if (!entity.GetComponent<TractorBeam>())
+        {
+            var beam = entity.gameObject.AddComponent<TractorBeam>();
+            beam.owner = entity;
+            beam.BuildTractor();
+        }
+        if (entity && entity.GetComponent<TractorBeam>() && target)
+        {
+            entity.GetComponentInChildren<TractorBeam>().ForceTarget(target.transform);
+        }
+        else if (entity && entity.GetComponent<TractorBeam>())
+        {
+            entity.GetComponentInChildren<TractorBeam>().ForceTarget(null);
+        }
+        else
+        {
+            Debug.LogError(entity + " " + entity.GetComponentInChildren<TractorBeam>());
+        }
+    }
+
+    public static void WarpPlayer(string sectorName, string entityID)
+    {
+        Flag.FindEntityAndWarpPlayer(sectorName, entityID);
+    }
 }

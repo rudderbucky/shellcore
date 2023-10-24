@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static CoreScriptsCondition;
-using static CoreScriptsManager;
-
-public class CoreScriptsSequence : MonoBehaviour
+using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
 {
     public enum InstructionCommand
     {
@@ -23,7 +21,16 @@ public class CoreScriptsSequence : MonoBehaviour
         PassiveDialogue,
         ShowAlert,
         AddObjectiveMarker,
-        RemoveObjectiveMarker
+        RemoveObjectiveMarker,
+        WarpPlayer,
+        StartCameraPan,
+        EndCameraPan,
+        RegisterPartyMember,
+        AddPartyMember,
+        SetPartyMemberEnabled,
+        RemovePartyMember,
+        ClearParty,
+        ForceTractor
     }
     public struct Instruction
     {
@@ -243,9 +250,41 @@ public class CoreScriptsSequence : MonoBehaviour
                     var soundID = GetArgument(inst.arguments, "soundID");
                     Interaction.ShowAlert(text, soundID);
                     break;
+                case InstructionCommand.WarpPlayer:
+                    Mobility.WarpPlayer(GetArgument(inst.arguments, "sectorName"), GetArgument(inst.arguments, "entityID"));
+                    break;
+                case InstructionCommand.StartCameraPan:
+                    flagName = GetArgument(inst.arguments, "flagName");
+                    var velocityFactor = GetArgument(inst.arguments, "velocityFactor") == null ? 1 : float.Parse(GetArgument(inst.arguments, "velocityFactor"));
+                    Cutscene.StartCameraPan(Vector3.zero, false, flagName, velocityFactor, inst.sequence, context);
+                    break;
+                case InstructionCommand.EndCameraPan:
+                    Cutscene.EndCameraPan();
+                    break;
+                case InstructionCommand.RegisterPartyMember:
+                    Party.RegisterPartyMember(GetArgument(inst.arguments, "entityID"));
+                    break;
+                case InstructionCommand.AddPartyMember:
+                    Party.AddPartyMember(GetArgument(inst.arguments, "entityID"));
+                    break;
+                case InstructionCommand.SetPartyMemberEnabled:
+                    var enabled = GetArgument(inst.arguments, "enabled") != "false";
+                    Party.SetPartyMemberEnabled(GetArgument(inst.arguments, "entityID"), enabled);
+                    break;
+                case InstructionCommand.RemovePartyMember:
+                    Party.RemovePartyMember(GetArgument(inst.arguments, "entityID"));
+                    break;
+                case InstructionCommand.ClearParty:
+                    var deletePartyMembers = GetArgument(inst.arguments, "deletePartyMembers") == "true";
+                    Party.ClearParty(deletePartyMembers);
+                    break;
+                case InstructionCommand.ForceTractor:
+                    Mobility.ForceTractor(GetArgument(inst.arguments, "entityID"), GetArgument(inst.arguments, "targetEntityID"));
+                    break;
             }
         }
     }
+
 
     public static Sequence ParseSequence(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {
