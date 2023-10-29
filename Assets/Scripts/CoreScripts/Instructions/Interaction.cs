@@ -11,6 +11,19 @@ public class Interaction : MonoBehaviour
         SectorManager.instance.player.alerter.showMessage(text, soundID);
     }
 
+    public static void ClearInteraction(Context context, string entityID)
+    {
+        switch (context.type)
+        {
+            case TriggerType.Mission:
+                TaskManager.Instance.ClearInteractionOverrides(entityID);
+                break;
+            default:
+                DialogueSystem.Instance.ClearInteractionOverrides(entityID);
+                break;
+        }
+    }
+
     public static void SetInteraction(Context context, string entityID, string dialogueID)
     {
         InteractAction action = new InteractAction();

@@ -16,7 +16,6 @@ public class CoreScriptsTrigger : MonoBehaviour
     private static readonly List<string> requiredMissionTriggerArguments = new List<string>()
     {
         "name",
-        "prerequisites",
         "entryPoint",
     };
 

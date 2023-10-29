@@ -65,6 +65,22 @@ public class TaskManager : MonoBehaviour, IDialogueOverrideHandler
     public Dictionary<string, string> offloadingMissions = new Dictionary<string, string>();
     public Dictionary<string, List<string>> offloadingSectors = new Dictionary<string, List<string>>();
 
+    public void ClearInteractionOverrides(string entityID)
+    {
+        if (TaskManager.interactionOverrides.ContainsKey(entityID))
+        {
+            var stack = TaskManager.interactionOverrides[entityID];
+            if(stack.Count > 0)
+            {
+                TaskManager.interactionOverrides[entityID].Clear();
+            }
+        }
+        else
+        {
+            Debug.LogWarning(entityID + " missing from interaction override dictionary!");
+        }
+    }
+
     public void PushInteractionOverrides(string entityID, InteractAction action, Traverser traverser, Context context = null) 
     {
         MissionTraverser missionTraverser = traverser as MissionTraverser;

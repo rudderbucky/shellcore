@@ -19,7 +19,10 @@ public class CoreScriptsManager : MonoBehaviour
     private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
     public Dictionary<int, ConditionBlock> conditionBlocks = new Dictionary<int, ConditionBlock>();
     public Dictionary<string, EntityDeathDelegate> entityDeathDelegates = new Dictionary<string, EntityDeathDelegate>();
-    public Dictionary<string, SectorLoadDelegate> sectorLoadDelegates = new Dictionary<string, SectorLoadDelegate>();
+    public Dictionary<string, SectorLoadDelegate> sectorLoadDelegates = new Dictionary<string, SectorLoadDelegate>();        
+    public delegate void VariableChangedDelegate(string variable);
+    public static VariableChangedDelegate OnVariableUpdate;
+    public Dictionary<string, VariableChangedDelegate> variableChangedDelegates = new Dictionary<string, VariableChangedDelegate>(); 
     public Dictionary<string, Coroutine> timerCoroutines = new Dictionary<string, Coroutine>();
     public Dictionary<string, string> globalVariables = new Dictionary<string, string>();
     public Dictionary<string, ObjectiveLocation> objectiveLocations = new Dictionary<string, ObjectiveLocation>();
@@ -102,6 +105,7 @@ public class CoreScriptsManager : MonoBehaviour
         timerCoroutines.Clear();
         objectiveLocations.Clear();
         localMap.Clear();
+        OnVariableUpdate = null;
 
         if (paths == null)
         {
@@ -159,10 +163,11 @@ public class CoreScriptsManager : MonoBehaviour
         {
             var i = d.line;
             var c = d.character;
-            if (lines[i].Substring(c).StartsWith("Task"))
+            if (lines[i].Substring(c).StartsWith("Task") 
+                && (c == 0 || lines[i][c] == ' '))
             {
                 var task = CoreScriptsTask.ParseTask(i, c, lines, data, out d);
-                tasks.Add(task.taskID, task);
+                tasks.Add(task.taskID, task); 
             }
             d = StringSensitiveIterator(d, lines, stringScopes, commentLines);
         }

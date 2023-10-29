@@ -4,7 +4,8 @@ using UnityEngine;
 public enum FlagInteractibility
 {
     None,
-    Warp
+    Warp,
+    Sequence
 }
 
 namespace NodeEditorFramework.Standard

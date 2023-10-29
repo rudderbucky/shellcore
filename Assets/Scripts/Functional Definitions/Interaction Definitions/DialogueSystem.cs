@@ -805,6 +805,7 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
         switch (current.action)
         {
             case Dialogue.DialogueAction.None:
+            case Dialogue.DialogueAction.FinishTask:
                 AudioManager.PlayClipByID("clip_typing", true);
                 break;
             case Dialogue.DialogueAction.Outpost:
@@ -855,6 +856,11 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
                 return;
             default:
                 break;
+        }
+
+        if (current.action == Dialogue.DialogueAction.FinishTask)
+        {
+            TaskFlow.RewardPlayer(context.missionName);
         }
 
         if (current.forceSpeakerChange)
@@ -1163,6 +1169,22 @@ public class DialogueSystem : MonoBehaviour, IDialogueOverrideHandler
     public void SetSpeakerID(string ID)
     {
         speakerID = ID;
+    }
+
+    public void ClearInteractionOverrides(string entityID)
+    {
+        if (DialogueSystem.interactionOverrides.ContainsKey(entityID))
+        {
+            var stack = DialogueSystem.interactionOverrides[entityID];
+            if(stack.Count > 0)
+            {
+                DialogueSystem.interactionOverrides[entityID].Clear();
+            }
+        }
+        else
+        {
+            Debug.LogWarning(entityID + " missing from interaction override dictionary!");
+        }
     }
 
     public void ClearCanvases()

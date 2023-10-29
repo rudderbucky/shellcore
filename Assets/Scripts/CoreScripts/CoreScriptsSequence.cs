@@ -7,6 +7,7 @@ using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
     public enum InstructionCommand
     {
         SetInteraction,
+        ClearInteraction,
         Log,
         Call,
         ConditionBlock,
@@ -30,7 +31,11 @@ using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
         SetPartyMemberEnabled,
         RemovePartyMember,
         ClearParty,
-        ForceTractor
+        ForceTractor,
+        FinishMission,
+        SetFlagInteractibility,
+        FinishTask,
+        FailTask
     }
     public struct Instruction
     {
@@ -103,45 +108,47 @@ using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
                 retVal = val;
                 break;
             } 
-            else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().coreScriptsGlobalVarNames != null)
-            {
-                
-                var index = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.IndexOf(val.Substring(3));
-                if (index >= 0) 
-                {
-                    retVal = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
-                    break;
-                }
-            }
-            else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().taskVariableNames != null)
-            {
-                var index = -1;
-                var names = SaveHandler.instance.GetSave().taskVariableNames;
-                for (int j = 0; j < names.Length; j++)
-                {
-                    if (names[j] != val.Substring(3)) continue;
-                    index = j;
-                    break;
-                }
-                
-                if (index >= 0)
-                {
-                    retVal = SaveHandler.instance.GetSave().taskVariableValues[index].ToString();
-                    break;
-                }
-            }
-            else if (val.StartsWith("$$") && CoreScriptsManager.instance.globalVariables != null)
-            {
-                retVal = CoreScriptsManager.instance.globalVariables[val.Substring(2)];
-                break;
-            }
-            else 
-            {
-                retVal = val;
-                break;
-            }
+            else retVal = VariableSensitizeValue(val);
         }
         if (retVal != null) retVal = retVal.Trim();
+        return retVal;
+    }
+
+    public static string VariableSensitizeValue(string val)
+    {
+        string retVal = null;
+        if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().coreScriptsGlobalVarNames != null)
+        {
+            var index = SaveHandler.instance.GetSave().coreScriptsGlobalVarNames.IndexOf(val.Substring(3));
+            if (index >= 0) 
+            {
+                retVal = SaveHandler.instance.GetSave().coreScriptsGlobalVarValues[index];
+            }
+        }
+        else if (val.StartsWith("$$$") && SaveHandler.instance.GetSave().taskVariableNames != null)
+        {
+            var index = -1;
+            var names = SaveHandler.instance.GetSave().taskVariableNames;
+            for (int j = 0; j < names.Length; j++)
+            {
+                if (names[j] != val.Substring(3)) continue;
+                index = j;
+                break;
+            }
+            
+            if (index >= 0)
+            {
+                retVal = SaveHandler.instance.GetSave().taskVariableValues[index].ToString();
+            }
+        }
+        else if (val.StartsWith("$$") && CoreScriptsManager.instance.globalVariables != null)
+        {
+            retVal = CoreScriptsManager.instance.globalVariables[val.Substring(2)];
+        }
+        else 
+        {
+            retVal = val;
+        }
         return retVal;
     }
 
@@ -178,6 +185,10 @@ using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
                     entityID = GetArgument(inst.arguments, "entityID");
                     var dialogueID = GetArgument(inst.arguments, "dialogueID");
                     Interaction.SetInteraction(context, entityID, dialogueID);
+                    break;
+                case InstructionCommand.ClearInteraction:
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    Interaction.ClearInteraction(context, entityID);
                     break;
                 case InstructionCommand.Call:
                     var s = traverser.GetFunction(GetArgument(inst.arguments, "name"));
@@ -284,10 +295,86 @@ using static CoreScriptsManager;public class CoreScriptsSequence : MonoBehaviour
                     Mobility.ForceTractor(GetArgument(inst.arguments, "entityID"), 
                         GetArgument(inst.arguments, "targetEntityID"));
                     break;
+                case InstructionCommand.FinishMission:
+                    FinishMission(context, 
+                        GetArgument(inst.arguments, "rewardsText"),
+                        GetArgument(inst.arguments, "jingleID"));
+                    break;
+                case InstructionCommand.SetFlagInteractibility:
+                    flagName = GetArgument(inst.arguments, "flagName");
+                    sectorName = GetArgument(inst.arguments, "sectorName");
+                    entityID = GetArgument(inst.arguments, "entityID");
+                    var intString = GetArgument(inst.arguments, "interactibility");
+                    var interactibility = Enum.Parse<FlagInteractibility>(intString);
+
+                    foreach (var flag in AIData.flags)
+                    {
+                        if (flag.name != flagName)
+                        {
+                            continue;
+                        }
+                        
+                        Debug.Log($"Set flag interactibility: {flagName}");
+                        flag.interactibility = interactibility;
+                        switch (interactibility)
+                        {
+                            case FlagInteractibility.Warp:
+                                flag.sectorName = sectorName;
+                                flag.entityID = entityID;
+                                break;
+                            case FlagInteractibility.Sequence:
+                                flag.sequence = inst.sequence;
+                                flag.context = context;
+                                break;
+                        }
+                        
+                        break;
+                    }
+
+                    break;
+                case InstructionCommand.FinishTask:
+                    TaskFlow.FinishTask(context);
+                    break;
+                case InstructionCommand.FailTask:
+                    break;
             }
         }
     }
 
+    private static void FinishMission(Context context, string rewardsText, string jingleID)
+    {
+        if (!PlayerCore.Instance || PlayerCore.Instance.cursave == null || PlayerCore.Instance.cursave.missions == null)
+        {
+            return;
+        }
+
+        if (!TaskManager.objectiveLocations.ContainsKey(context.missionName))
+        {
+            Debug.LogWarning($"Task Manager does not contain an objective list for mission {context.missionName}");
+        }
+        // TODO: prevent using this node in DialogueCanvases
+        var mission = PlayerCore.Instance.cursave.missions.Find(
+            (m) => m.name == context.missionName);
+        mission.status = Mission.MissionStatus.Complete;
+        if (CoreScriptsManager.OnVariableUpdate != null)
+        {
+            CoreScriptsManager.OnVariableUpdate.Invoke("MissionStatus(");
+        }
+
+        if (!string.IsNullOrEmpty(rewardsText) || !string.IsNullOrEmpty(jingleID))
+        {
+            DialogueSystem.ShowMissionComplete(mission, rewardsText);
+            AudioManager.OverrideMusicTemporarily(jingleID);
+        }
+
+        if (TaskManager.objectiveLocations.ContainsKey(context.missionName))
+        {
+            TaskManager.objectiveLocations[context.missionName].Clear();
+        }
+
+
+        TaskManager.Instance.AttemptAutoSave();
+    }
 
     public static Sequence ParseSequence(int index, string line, Dictionary<int, ConditionBlock> blocks)
     {

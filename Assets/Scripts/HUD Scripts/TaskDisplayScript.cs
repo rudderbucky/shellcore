@@ -56,6 +56,22 @@ public class TaskDisplayScript : MonoBehaviour
     public static bool EditMode;
     public static List<Mission> loadedMissions = new List<Mission>();
 
+    public static Mission.MissionStatus GetMissionStatus(string missionName)
+    {
+        Mission m = null;
+        var lmap = CoreScriptsManager.instance.GetLocalMapString(missionName);
+        if (PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == missionName))
+        {
+            m = PlayerCore.Instance.cursave.missions.Find(mi => mi.name == missionName);
+        }
+        else if (PlayerCore.Instance.cursave.missions.Exists(mi => mi.name == lmap))
+        {
+            m = PlayerCore.Instance.cursave.missions.Find(mi => mi.name == lmap);
+        }
+        else return Mission.MissionStatus.Inactive;
+        return m.status;
+    }
+
     public static void AddMission(Mission mission)
     {
         loadedMissions.Add(mission);

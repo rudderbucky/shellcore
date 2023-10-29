@@ -65,6 +65,7 @@ public class CoreScriptsDialogue : MonoBehaviour
             "useSpeakerColor=",
             "responses=",
             "taskID=",
+            "finishTask=",
             "typingSpeedFactor=",
         };
 
@@ -134,6 +135,10 @@ public class CoreScriptsDialogue : MonoBehaviour
             else if (lineSubstr.StartsWith("taskID="))
             {
                 node.task = tasks[val];
+            }
+            else if (lineSubstr.StartsWith("finishTask="))
+            {
+                if (val == "true") node.action = Dialogue.DialogueAction.FinishTask;
             }
         }
 

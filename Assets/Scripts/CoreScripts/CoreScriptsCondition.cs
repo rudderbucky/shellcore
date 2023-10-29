@@ -19,6 +19,7 @@ public class CoreScriptsCondition : MonoBehaviour
         Time,
         Status,
         EnterSector,
+        Comparison
     }
 
     public struct Condition
@@ -26,7 +27,7 @@ public class CoreScriptsCondition : MonoBehaviour
         public ConditionType type;
         public string arguments;
         public Sequence sequence;
-        public string state;
+        public int ID;
     }
 
     public struct ConditionBlock
@@ -106,17 +107,27 @@ public class CoreScriptsCondition : MonoBehaviour
         for (int i = 0; i < block.conditions.Count; i++)
         {
             var c = block.conditions[i];
-            ExecuteCondition($"{block.ID}-{i}", c, block);
+            c.ID = i;
+            ExecuteCondition(c, block);
         }
     }
 
-    private static void ExecuteCondition(string ID, Condition c, ConditionBlock cb)
+
+
+    private static void ExecuteCondition(Condition c, ConditionBlock cb)
     {
+        var ID = $"{cb.ID}-{c.ID}";
         switch (c.type)
         {
+            case ConditionType.Comparison:
+                var val1 = CoreScriptsSequence.GetArgument(c.arguments, "val1", true);
+                var val2 = CoreScriptsSequence.GetArgument(c.arguments, "val2", true);
+                var comp = CoreScriptsSequence.GetArgument(c.arguments, "comp");
+                Variable.CompareVals(val1, val2, comp, c, cb);
+                break;
             case ConditionType.Time:
                 var time = float.Parse(CoreScriptsSequence.GetArgument(c.arguments, "time"));
-                var timer = TaskManager.Instance.StartCoroutine(Timer(ID, time, cb, c));
+                var timer = TaskManager.Instance.StartCoroutine(Timer(time, cb, c));
                 CoreScriptsManager.instance.timerCoroutines.Add(ID, timer);
                 break;
             case ConditionType.DestroyEntities:
@@ -128,7 +139,7 @@ public class CoreScriptsCondition : MonoBehaviour
                 int killCount = 0;
                 EntityDeathDelegate act = (e, _) => 
                 {
-                    killCount = EntityCheck(ID, e, c, cb, nameMode, progressionFeedback, targetID, targetFaction, targetCount, killCount);
+                    killCount = EntityCheck(e, c, cb, nameMode, progressionFeedback, targetID, targetFaction, targetCount, killCount);
                 };
 
                 CoreScriptsManager.instance.entityDeathDelegates.Add(ID, act);
@@ -141,7 +152,7 @@ public class CoreScriptsCondition : MonoBehaviour
 
                 SectorLoadDelegate sectorAct = (sector) => 
                 {
-                    SectorCheck(ID, sector, sectorName, c, cb, invert);
+                    SectorCheck(sector, sectorName, c, cb, invert);
                 };
                 CoreScriptsManager.instance.sectorLoadDelegates.Add(ID, sectorAct);
                 SectorManager.OnSectorLoad += sectorAct;
@@ -149,19 +160,19 @@ public class CoreScriptsCondition : MonoBehaviour
         }
     }
 
-    private static IEnumerator Timer(string ID, float delay, ConditionBlock cb, Condition c)
+    private static IEnumerator Timer(float delay, ConditionBlock cb, Condition c)
     {
         yield return new WaitForSeconds(delay);
-        SatisfyCondition(ID, c, cb);
+        SatisfyCondition(c, cb);
     }
 
-    private static void SectorCheck(string ID, string sector, string selectedSectorName, Condition c, ConditionBlock cb, bool invertMode)
+    private static void SectorCheck(string sector, string selectedSectorName, Condition c, ConditionBlock cb, bool invertMode)
     {
         var activate = (sector == selectedSectorName) == !invertMode;
-        if (activate) SatisfyCondition(ID, c, cb);
+        if (activate) SatisfyCondition(c, cb);
     }
 
-    private static int EntityCheck(string ID, Entity entity, Condition c, ConditionBlock cb,
+    private static int EntityCheck(Entity entity, Condition c, ConditionBlock cb,
         bool nameMode, bool progressionFeedback, string targetID, int targetFaction, int targetCount, int killCount)
     {
 
@@ -184,7 +195,7 @@ public class CoreScriptsCondition : MonoBehaviour
 
             if (killCount == targetCount)
             {
-                SatisfyCondition(ID, c, cb);
+                SatisfyCondition(c, cb);
             }
         }
         return killCount;
@@ -192,19 +203,21 @@ public class CoreScriptsCondition : MonoBehaviour
 
 
 
-    private static void SatisfyCondition(string ID, Condition cond, ConditionBlock cb)
+    public static void SatisfyCondition(Condition cond, ConditionBlock cb)
     {
         foreach (var c in cb.conditions)
         {
-            DeinitializeCondition(ID, cb, c);
+            DeinitializeCondition(cb, c);
         }
 
         if (cond.sequence.instructions != null)
             CoreScriptsSequence.RunSequence(cond.sequence, cb.context);
     }
 
-    private static void DeinitializeCondition(string ID, ConditionBlock cb, Condition cond)
+    private static void DeinitializeCondition(ConditionBlock cb, Condition cond)
     {
+        Debug.LogWarning(cond.ID);
+        var ID = $"{cb.ID}-{cond.ID}";
         switch(cond.type)
         {
             case ConditionType.Time:
@@ -220,6 +233,9 @@ public class CoreScriptsCondition : MonoBehaviour
                 break;
             case ConditionType.EnterSector:
                 SectorManager.OnSectorLoad -= CoreScriptsManager.instance.sectorLoadDelegates[ID];
+                break;
+            case ConditionType.Comparison:
+                CoreScriptsManager.OnVariableUpdate -= CoreScriptsManager.instance.variableChangedDelegates[ID];
                 break;
             default:
                 return;

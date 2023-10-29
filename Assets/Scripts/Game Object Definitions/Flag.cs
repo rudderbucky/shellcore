@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using static CoreScriptsManager;
+using static CoreScriptsSequence;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Flag : MonoBehaviour, IInteractable
@@ -7,6 +9,8 @@ public class Flag : MonoBehaviour, IInteractable
     public FlagInteractibility interactibility;
     public string sectorName;
     public string entityID;
+    public Sequence sequence;
+    public Context context;
     public delegate void EntityRangeCheckDelegate(float range);
     public EntityRangeCheckDelegate RangeCheckDelegate;
 
@@ -79,6 +83,9 @@ public class Flag : MonoBehaviour, IInteractable
         {
             case FlagInteractibility.Warp:
                 FindEntityAndWarpPlayer(sectorName, entityID);
+                break;
+            case FlagInteractibility.Sequence:
+                CoreScriptsSequence.RunSequence(sequence, context);
                 break;
         }
     }

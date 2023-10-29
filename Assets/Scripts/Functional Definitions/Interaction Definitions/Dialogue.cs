@@ -20,7 +20,8 @@ public class Dialogue : ScriptableObject, IDialogueable
         Upgrader,
         InvokeEnd,
         ForceToNextID,
-        Call
+        Call,
+        FinishTask
     }
 
     public List<Node> nodes;
@@ -46,6 +47,7 @@ public class Dialogue : ScriptableObject, IDialogueable
         public Task task;
         [NonSerialized]
         public string functionID;
+        [NonSerialized]
         public float typingSpeedFactor;
     }
 }
