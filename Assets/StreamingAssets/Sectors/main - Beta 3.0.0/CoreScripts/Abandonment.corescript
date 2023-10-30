@@ -16,7 +16,7 @@ MissionTrigger(
     entryPoint=Abandonment_entryPoint,
     prerequisites=(Truthful_Revelation_missionName),
     sequence=(
-        Call(Abandonment_start)
+        Call(Abandonment_postJump)
     )
 )
 
@@ -164,7 +164,7 @@ Function(
                                                             Time(
                                                                 time=5,
                                                                 sequence=(
-                                                                    WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460)
+                                                                    Call(Abandonment_postJump)
                                                                 )
                                                             )
                                                         )
@@ -183,24 +183,32 @@ Function(
     )
 )
 
-Text("Abandonment_cs1_pd1", "Here we are.")
+Text("Abandonment_cs1_d1", "Have faith in our work; we will again bring a peace to all creation.")
+Text("Abandonment_cs1_d2", "What work? What peace? You won’t even tell me what you are.")
+Text("Abandonment_cs1_d3", "You’re the Infection! Leave me alone!")
+Text("Abandonment_cs1_d4", "Are you on our side - the true Uninfected?")
+Text("Abandonment_cs1_pd1", "<color=lime>Here we are.<color>")
 Function(
     name=Abandonment_postJump,
     sequence=(
         WarpPlayer(flagName=new-ep3-entry-flag, sectorName=Sector 2410-6460),
         StartCutscene(),
+
+
+
         SetPath(
             entityID=player,
             flagName=abandonment-cs1-flag1,
             sequence=(
                 Rotate(
                     entityID=player,
-                    flagName=new-ep3-entry-flag,
+                    targetID=new-ep3-entry-flag,
                     sequence=(
                         PassiveDialogue(
                             entityID=player,
                             text=Abandonment_cs1_pd1
-                        )
+                        ),
+                        FinishCutscene()
                     )
                 )
             )
